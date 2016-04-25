@@ -17,11 +17,11 @@ from pyshorteners.shorteners import Shortener
 from sqlalchemy import and_
 from validate_email import validate_email
 
-from .helper.breadcrumb_helper import BreadcrumbHelper
 from .helper.dictionary_helper import DictionaryHelper
 from .helper.dictionary_helper_discussion import DiscussionDictHelper
 from .helper.dictionary_helper_items import ItemDictHelper
 from .helper.issue_helper import IssueHelper
+from .helper.history_helper import HistoryHelper
 from .helper.notification_helper import NotificationHelper
 from .helper.query_helper import QueryHelper
 from .helper.voting_helper import VotingHelper
@@ -93,6 +93,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_page', 'def', 'main, self.request.params: ' + str(self.request.params))
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -129,11 +130,10 @@ class Dbas(object):
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired = UserHandler.update_last_action(transaction, nickname)
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, '')
 		if session_expired:
 			return self.user_logout(True)
-
-		if 'del_history' in params and params['del_history'] == 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
 
 		if for_api and api_data:
 			try:
@@ -154,9 +154,8 @@ class Dbas(object):
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
-
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_start()
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
+			.prepare_discussion_dict_for_start()
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -197,11 +196,11 @@ class Dbas(object):
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired = UserHandler.update_last_action(transaction, nickname)
+		history         = params['history'] if 'history' in params else ''
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 		if session_expired:
 			return self.user_logout(True)
-
-		if 'del_history' in params and params['del_history'] is 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
 
 		ui_locales      = get_language(self.request, get_current_registry())
 		_dh = DictionaryHelper(ui_locales)
@@ -210,13 +209,14 @@ class Dbas(object):
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_attitude(statement_id)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
+			.prepare_discussion_dict_for_attitude(statement_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
-		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_attitude(statement_id)
+		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
+			.prepare_item_dict_for_attitude(statement_id)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -253,15 +253,15 @@ class Dbas(object):
 		logger('discussion_justify', 'def', 'main, self.request.params: ' + str(params))
 
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+		history              = params['history'] if 'history' in params else ''
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 
 		_uh = UserHandler
 		session_expired = _uh.update_last_action(transaction, nickname)
 		if session_expired:
 			return self.user_logout(True)
 
-		if 'del_history' in params and params['del_history'] is 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
-			
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		ui_locales = get_language(self.request, get_current_registry())
@@ -275,9 +275,8 @@ class Dbas(object):
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
-		_ddh                = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
-		_idh                = ItemDictHelper(ui_locales, issue, mainpage, for_api)
+		_ddh                = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
+		_idh                = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			logger('discussion_justify', 'def', 'justify statement')
@@ -285,12 +284,10 @@ class Dbas(object):
 			if not get_text_for_statement_uid(statement_or_arg_id):
 				return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
-			VotingHelper().add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
+			VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 
 			item_dict       = _idh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
-			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(transaction, statement_or_arg_id,
-			                                                                    has_new_crumbs, mainpage, slug,
-			                                                                    supportive, len(item_dict))
+			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict), nickname)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
@@ -303,7 +300,7 @@ class Dbas(object):
 			logger('discussion_justify', 'def', 'dont know statement')
 			# dont know
 			argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
-			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(transaction, argument_uid, has_new_crumbs)
+			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(argument_uid)
 			item_dict       = _idh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
@@ -363,8 +360,8 @@ class Dbas(object):
 		arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
 		attack          = matchdict['mode'] if 'mode' in matchdict else ''
 		arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
-		last_relation   = params['last_relation'] if 'last_relation' in params else ''
 		tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
+		history         = params['history'] if 'history' in params else ''
 
 		if not tmp_argument:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
@@ -372,34 +369,26 @@ class Dbas(object):
 		supportive      = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
 		session_expired  = UserHandler.update_last_action(transaction, nickname)
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 		if session_expired:
 			return self.user_logout(True)
-
-		if 'del_history' in params and params['del_history'] == 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
-
-		rm_last_bubble  = True if 'rm_bubble' in params else False
-		if rm_last_bubble:
-			DictionaryHelper.remove_last_bubble_for_discussion_reaction(nickname, session_id, params['rm_bubble'])
 
 		# sanity check
 		if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
 		# set votings
-		VotingHelper().add_vote_for_argument(arg_id_user, nickname, transaction)
+		VotingHelper.add_vote_for_argument(arg_id_user, nickname, transaction)
 
 		ui_locales      = get_language(self.request, get_current_registry())
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id,
-		                                                                 transaction, ui_locales)
-
-		_ddh = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname)
-		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(transaction, arg_id_user, has_new_crumbs,
-		                                                                 supportive, arg_id_sys, attack, last_relation)
-		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
+		_ddh = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
+		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
+		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
+			.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
 		extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict(slug, False, False, True, True, True, nickname,
 		                                                                   argument_id=arg_id_user, application_url=mainpage,
 		                                                                   for_api=for_api)
@@ -433,12 +422,9 @@ class Dbas(object):
 		logger('discussion_finish', 'def', 'main, self.request.params: ' + str(params))
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
-
-		if 'del_history' in params and params['del_history'] is 'true':
-			nickname, session_id = self.get_nickname_and_session()
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 
@@ -473,6 +459,7 @@ class Dbas(object):
 		uid             = matchdict['id'] if 'id' in matchdict else ''
 		pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+		history         = params['history'] if 'history' in params else ''
 
 		is_argument = True if is_argument is 't' else False
 		is_supportive = True if is_supportive is 't' else False
@@ -483,16 +470,15 @@ class Dbas(object):
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		session_expired = UserHandler.update_last_action(transaction, nickname)
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 		if session_expired:
 			return self.user_logout(True)
 
-		if 'del_history' in params and params['del_history'] is 'true':
-			BreadcrumbHelper.del_duplicated_breacrumbs_of_user(self.request.path, nickname, session_id)
-			
-		breadcrumbs, has_new_crumbs = BreadcrumbHelper.save_breadcrumb(self.request.path, nickname, session_id, transaction, ui_locales)
-
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, breadcrumbs, nickname).prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
-		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
+		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
+			.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
+		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
+			.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -522,6 +508,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -529,10 +516,7 @@ class Dbas(object):
 		send_message = False
 		message = ''
 
-		try:
-			ui_locales = str(self.request.cookies['_LOCALE_'])
-		except KeyError:
-			ui_locales = get_current_registry().settings['pyramid.default_locale_name']
+		ui_locales = get_language(self.request, get_current_registry())
 
 		username        = escape_string(self.request.params['name'] if 'name' in self.request.params else '')
 		email           = escape_string(self.request.params['mail'] if 'mail' in self.request.params else '')
@@ -631,6 +615,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -712,6 +697,7 @@ class Dbas(object):
 		logger('main_notifications', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -736,6 +722,7 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('main_news', 'def', 'main')
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -765,6 +752,7 @@ class Dbas(object):
 		logger('main_imprint', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
@@ -832,8 +820,8 @@ class Dbas(object):
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_user_history', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_dict = BreadcrumbHelper.get_breadcrumbs(self.request.authenticated_userid, self.request.session.id, ui_locales)
-		return json.dumps(return_dict, True)
+		return_list = HistoryHelper.get_history_from_database(self.request.authenticated_userid, ui_locales)
+		return json.dumps(return_list, True)
 
 	# ajax - getting all text edits
 	@view_config(route_name='ajax_get_all_posted_statements', renderer='json', check_csrf=True)
@@ -903,7 +891,7 @@ class Dbas(object):
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 
 		logger('delete_user_history', 'def', 'main')
-		BreadcrumbHelper.del_all_breadcrumbs_of_user(transaction, self.request.authenticated_userid)
+		HistoryHelper.delete_history_in_database(self.request.authenticated_userid, transaction)
 		return_dict = dict()
 		return_dict['removed_data'] = 'true'  # necessary
 
@@ -923,7 +911,7 @@ class Dbas(object):
 		logger('delete_statistics', 'def', 'main')
 
 		return_dict = dict()
-		return_dict['removed_data'] = 'true' if VotingHelper().clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
+		return_dict['removed_data'] = 'true' if VotingHelper.clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
 
 		return json.dumps(return_dict, True)
 
@@ -1304,9 +1292,11 @@ class Dbas(object):
 			# escaping will be done in QueryHelper().set_statement(...)
 			UserHandler.update_last_action(transaction, nickname)
 
-			url, statement_uids, error = QueryHelper.process_input_of_start_premises_and_receive_url(transaction, premisegroups, conclusion_id,
-			                                                                                         supportive, issue, nickname, for_api,
-			                                                                                         mainpage, lang)
+			_qh = QueryHelper
+			url, statement_uids, error = _qh.process_input_of_start_premises_and_receive_url(self.request, transaction,
+			                                                                                 premisegroups, conclusion_id,
+			                                                                                 supportive, issue, nickname,
+			                                                                                 for_api, mainpage, lang)
 			return_dict['error'] = error
 			return_dict['statement_uids'] = statement_uids
 
@@ -1352,9 +1342,13 @@ class Dbas(object):
 				attack_type = self.request.params['attack_type']
 
 			# escaping will be done in QueryHelper().set_statement(...)
-			url, statement_uids, error = QueryHelper.process_input_of_premises_for_arguments_and_receive_url(transaction, arg_uid, attack_type,
-			                                                                                                 premisegroups, issue, nickname, for_api,
-			                                                                                                 mainpage, lang)
+			_qh = QueryHelper
+			url, statement_uids, error = _qh.process_input_of_premises_for_arguments_and_receive_url(self.request,
+			                                                                                         transaction, arg_uid,
+			                                                                                         attack_type,
+			                                                                                         premisegroups, issue,
+			                                                                                         nickname, for_api,
+			                                                                                         mainpage, lang)
 			UserHandler.update_last_action(transaction, nickname)
 
 			return_dict['error'] = error

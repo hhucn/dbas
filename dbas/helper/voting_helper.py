@@ -1,5 +1,5 @@
 """
-TODO
+Class for handling votes of each user.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -12,14 +12,17 @@ from dbas.logger import logger
 from dbas.user_management import UserHandler
 
 
-class VotingHelper(object):
+class VotingHelper:
 	"""
+	Functions for setting votes of users. They set votes by clicking the statments in D-BAS.
 	We are not deleting oppositve votes for detecting opinion changes!
 	"""
 
-	def add_vote_for_argument(self, argument_uid, user, transaction):
+	@staticmethod
+	def add_vote_for_argument(argument_uid, user, transaction):
 		"""
-		Increses the votes of a given argument
+		Increses the votes of a given argument.
+
 		:param argument_uid: id of the argument
 		:param user: self.request.authenticated_userid
 		:param transaction: transaction
@@ -33,12 +36,12 @@ class VotingHelper(object):
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 
 		# set vote for the argument (relation), its premisegroup and conclusion
-		self.__vote_argument(db_argument, db_user, True)
-		self.__vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
+		VotingHelper.__vote_argument(db_argument, db_user, True)
+		VotingHelper.__vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
 
 		if db_argument.argument_uid is None:
 			db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
-			self.__vote_statement(db_conclusion, db_user, True)
+			VotingHelper.__vote_statement(db_conclusion, db_user, True)
 		else:
 			# check for inconsequences
 			db_conclusion_argument = DBDiscussionSession.query(Argument).filter_by(argument_uid=db_argument.argument_uid).first()
@@ -46,25 +49,25 @@ class VotingHelper(object):
 			if db_argument.is_supportive:
 				if db_conclusion_argument.is_supportive:
 					# argument supportive -> conclusion supportive
-					self.__vote_argument(db_conclusion_argument, db_user, True)
-					self.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-					self.__vote_statement(db_conclusion_conclusion, db_user, True)
+					VotingHelper.__vote_argument(db_conclusion_argument, db_user, True)
+					VotingHelper.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+					VotingHelper.__vote_statement(db_conclusion_conclusion, db_user, True)
 				else:
 					# argument supportive -> conclusion attacking
-					self.__vote_argument(db_conclusion_argument, db_user, True)
-					self.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-					self.__vote_statement(db_conclusion_conclusion, db_user, False)
+					VotingHelper.__vote_argument(db_conclusion_argument, db_user, True)
+					VotingHelper.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+					VotingHelper.__vote_statement(db_conclusion_conclusion, db_user, False)
 			else:
 				if db_conclusion_argument.is_supportive:
 					# argument attacking -> conclusion supportive
-					self.__vote_argument(db_conclusion_argument, db_user, False)
-					self.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-					self.__vote_statement(db_conclusion_conclusion, db_user, False)
+					VotingHelper.__vote_argument(db_conclusion_argument, db_user, False)
+					VotingHelper.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+					VotingHelper.__vote_statement(db_conclusion_conclusion, db_user, False)
 				else:
 					# argument attacking -> conclusion attacking
-					self.__vote_argument(db_conclusion_argument, db_user, False)
-					self.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-					self.__vote_statement(db_conclusion_conclusion, db_user, True)
+					VotingHelper.__vote_argument(db_conclusion_argument, db_user, False)
+					VotingHelper.__vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+					VotingHelper.__vote_statement(db_conclusion_conclusion, db_user, True)
 
 		# votes redundance will be handled in the accept and decline methods!
 
@@ -76,27 +79,31 @@ class VotingHelper(object):
 
 		return len(db_votes)
 
-	def add_vote_for_statement(self, statement_uid, user, supportive, transaction):
+	@staticmethod
+	def add_vote_for_statement(statement_uid, user, supportive, transaction):
 		"""
+		Adds a vote for the given statements
 
-		:param statement_uid:
-		:param user:
-		:param supportive:
-		:param transaction:
-		:return:
+		:param statement_uid: Statement.uid
+		:param user: User.nickname
+		:param supportive: boolean
+		:param transaction: Transaction
+		:return: Boolean
 		"""
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if db_user:
-			self.__vote_statement(db_statement, db_user, supportive)
+			VotingHelper.__vote_statement(db_statement, db_user, supportive)
 			transaction.commit()
 
-	def clear_votes_of_user(self, transaction, user):
+	@staticmethod
+	def clear_votes_of_user(transaction, user):
 		"""
+		Deletes all votes of given user
 
-		:param transaction:
-		:param user:
-		:return:
+		:param transaction: Transaction
+		:param user: User.nickname
+		:return: None
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 		if not db_user:
@@ -108,10 +115,12 @@ class VotingHelper(object):
 		transaction.commit()
 		return True
 
-	def __vote_argument(self, argument, user, is_up_vote):
+	@staticmethod
+	def __vote_argument(argument, user, is_up_vote):
 		"""
 		Check if there is a vote for the argument. If not, we will create a new one, otherwise the current one will be
 		invalid an we will create a new entry.
+
 		:param argument: Argument
 		:param user: User
 		:param is_up_vote: Boolean
@@ -148,10 +157,12 @@ class VotingHelper(object):
 			DBDiscussionSession.add(db_new_vote)
 			DBDiscussionSession.flush()
 
-	def __vote_statement(self, statement, user, is_up_vote):
+	@staticmethod
+	def __vote_statement(statement, user, is_up_vote):
 		"""
 		Check if there is a vote for the statement. If not, we will create a new one, otherwise the current one will be
 		invalid an we will create a new entry.
+
 		:param statement: Statement
 		:param user: User
 		:param is_up_vote: Boolean
@@ -189,9 +200,11 @@ class VotingHelper(object):
 			DBDiscussionSession.add(db_new_vote)
 			DBDiscussionSession.flush()
 
-	def __vote_premisesgroup(self, premisesgroup_uid, user, is_up_vote):
+	@staticmethod
+	def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
 		"""
-		Calls statemens-methods for every premise
+		Calls statemens-methods for every premise.
+
 		:param premisegroup_uid: PremiseGroup.uid
 		:param user: User
 		:param is_up_vote: Boolean
@@ -206,4 +219,4 @@ class VotingHelper(object):
 		db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
 		for premise in db_premises:
 			db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
-			self.__vote_statement(db_statement, user, is_up_vote)
+			VotingHelper.__vote_statement(db_statement, user, is_up_vote)
