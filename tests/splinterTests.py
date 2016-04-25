@@ -172,7 +172,6 @@ class FrontendTests:
 		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for right negatives', self.__test_right_negatives, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for content', self.__test_content, self.browser_style)
 		end = time.time()
 
@@ -504,7 +503,7 @@ class FrontendTests:
 
 		# dont know attitude
 		success = success and Helper.check_for_present_text(b, 'What do you think about ' + position, 'check for attitude')
-		b.find_by_css('#discussions-space-list li:last-child input').click()
+		b.find_by_css('#item_dontknow').click()
 		time.sleep(waittime)
 		success = success and Helper.check_for_present_text(b, 'do not have any opinion', 'check for dont know attitude 1')
 		success = success and Helper.check_for_present_text(b, 'ends here', 'check for dont know attitude 2')
@@ -561,24 +560,6 @@ class FrontendTests:
 		return 1 if success else 0
 
 	@staticmethod
-	def __test_right_negatives(browser):
-		"""
-		Checks the right negatives in D-BAS
-		:param browser: current browser
-		:return: 1 if success else 0
-		"""
-		print('Starting tests for demo_discussion:')
-		success = True
-		b = Browser(browser)
-		b = Helper.login(b, nickname, password, mainpage + 'discussion')
-
-		# Todo __test_right_negatives
-
-		b = Helper.logout(b)
-		b.quit()
-		return 1 if success else 0
-
-	@staticmethod
 	def __test_content(browser):
 		"""
 		Checks the forumlation of arguments
@@ -593,7 +574,7 @@ class FrontendTests:
 		# start
 		b.visit(mainpage + 'discuss/town-has-to-cut-spending')
 		success = success and Helper.check_for_present_text(b, 'initial position you are interested', 'check for question of inital position')
-		b.find_by_css('#discussions-space-list li:first-child input').click()
+		b.find_by_text('The city should reduce the number of street festivals').click()
 		time.sleep(waittime)
 
 		# attitude
@@ -609,7 +590,7 @@ class FrontendTests:
 		# confrontation - give feedback
 		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question')
 		success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for acceptive formulation of rebut')
-		#b.find_by_css('#item_support label').click()
+		# b.find_by_css('#item_support label').click()
 		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
@@ -621,7 +602,7 @@ class FrontendTests:
 
 		# confrontation - give feedback again
 		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question again')
-		#b.find_by_css('#item_rebut label').click()
+		# b.find_by_css('#item_rebut label').click()
 		b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
 		time.sleep(waittime)
 
@@ -646,7 +627,7 @@ class FrontendTests:
 		# confrontation - give feedback
 		success = success and Helper.check_for_present_text(b, 'does not hold', 'check for rejective opinion')
 		success = success and Helper.check_for_present_text(b, 'stronger argument for rejecting', 'check for rejective formulation of rebut')
-		#b.find_by_css('#item_rebut label').click()
+		# b.find_by_css('#item_rebut label').click()
 		b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
 		time.sleep(waittime)
 
