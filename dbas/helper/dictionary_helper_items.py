@@ -130,7 +130,7 @@ class ItemDictHelper(object):
 
 				# get attack for each premise, so the urls will be unique
 				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.issue_uid, self.lang)
-				already_used = 'reaction/' + str(argument.uid) in self.path
+				already_used = 'reaction/' + str(argument.uid) + '/' in self.path
 				additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
 				statements_array.append(self.__create_statement_dict(str(argument.uid),
 				                                                     premise_array,
