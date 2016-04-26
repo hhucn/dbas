@@ -11,7 +11,7 @@ from selenium.common.exceptions import ElementNotVisibleException, WebDriverExce
 mainpage = 'http://localhost:4284/'
 testcounter = 0
 waittime = 0.3
-nickname = 'test'
+nickname = 'Pascal'
 password = 'iamatestuser2016'
 
 
@@ -116,19 +116,22 @@ class Helper:
 			return False
 
 	@staticmethod
-	def check_for_non_present_text(browser, text, message):
+	def check_for_non_present_text(browser, text, message, print_message=True):
 		"""
 		Checks whether given text is not presented in the browser
 		:param browser: current browser
 		:param text: text for the check
 		:param message: for pint on console
+		:param print_message: boolean for printing
 		:return: true if text is present else false
 		"""
 		if not browser.is_text_present(text):
-			Helper.print_success(True, message)
+			if print_message:
+				Helper.print_success(True, message)
 			return True
 		else:
-			Helper.print_success(False, message)
+			if print_message:
+				Helper.print_success(False, message)
 			return False
 
 
@@ -163,15 +166,15 @@ class FrontendTests:
 		success_counter = 0
 
 		start = time.time()
-		success_counter += Helper.test_wrapper('tests for normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for login logout', self.__test_login_logout, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for logged in pages', self.__test_pages_when_logged_in, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for popups', self.__test_popups, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for contact formular', self.__test_contact_formular, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for language switch', self.__test_language_switch, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for login logout', self.__test_login_logout, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for logged in pages', self.__test_pages_when_logged_in, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for popups', self.__test_popups, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for contact formular', self.__test_contact_formular, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for language switch', self.__test_language_switch, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
+		#success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
 		success_counter += Helper.test_wrapper('tests for content', self.__test_content, self.browser_style)
 		end = time.time()
 
@@ -592,8 +595,12 @@ class FrontendTests:
 		success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for acceptive formulation of rebut')
 		# b.find_by_css('#item_support label').click()
 		# b.find_by_css('label#support').click()
-		#b.find_by_text('Right, it is true that')[0].click()
+		# b.find_by_text('Right, it is true that')[0].click()
 		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
+		while Helper.check_for_non_present_text(b, 'every street festival is funded by large companies', 'sanity check', print_message=False):
+			b.back()
+			time.sleep(waittime)
+			b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
 		# support of confrontation
