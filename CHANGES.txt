@@ -144,5 +144,9 @@
 0.5.9 (2016-04-05)
 - Lot of fixes for COMMA16
 
+0.5.10 (2016-04-26)
+- Bugfixes
+- History management via url parameter
+
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation
