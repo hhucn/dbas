@@ -39,7 +39,7 @@ from .url_manager import UrlManager
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.5.9'
+version = '0.5.10'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1

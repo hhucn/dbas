@@ -4,22 +4,19 @@
 			<div class="col-md-7 first-container colored-container imprint-container">
 				<h3><span i18n:translate="imprint">Impressum</span> ${project}</h3>
 				<p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
-				<p><a target="_blank" href="http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html">Tobias Krauthoff</a>
+				<br>
+				<p>
+					<h5 i18n:translate="contact">Kontakt:</h5>
+                    <a target="_blank" href="http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html">Tobias Krauthoff</a>
 					<br><span i18n:translate="department">Institut für Informatik</span>
 					<br>Universitätstraße 1
 					<br>40225 Düsseldorf
 					<br>
-				</p>
-				<p>
-					<h5 i18n:translate="contact">Kontakt:</h5>
-					<br>
-					<span i18n:translate="phone">Telefon:</span> 0211-8113461
+					<br><span i18n:translate="phone">Telefon:</span> 0211-8113461
 					<br>E-Mail: <a target="_blank" href='mailto:krauthoff@cs.uni-duesseldorf.de'>krauthoff@cs.uni-duesseldorf.de</a>
 				</p>
 				<br>
-				<br>
-				<h4><span i18n:translate="disclaimer">Haftungsausschluss:</span></h4>
-				<br>
+				<h4 style="margin-bottom: 1em;"><span i18n:translate="disclaimer">Haftungsausschluss:</span></h4>
 				<h5><span i18n:translate="disclaimer_content">Haftung für Inhalte</span></h5>
 				<span i18n:translate="disclaimer_content_content">Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.</span>
 				<br>
@@ -59,7 +56,7 @@
 			</div>
 
 			<div class="col-md-4">
-				<div class="colored-container imprint-container">
+				<div class="colored-container imprint-container" style="margin-bottom: 15px;">
 					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
 					<ul>
 						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
@@ -104,7 +101,13 @@
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
-					<span class="project lead">0.5.9 (2016-03-05)</span>
+					<span class="project lead">0.5.10 (2016-04-26)</span>
+					<ul>
+						<li>Bugfixes</li>
+                        <li>History management via url parameter</li>
+					</ul>
+
+					<span class="project lead">0.5.9 (2016-04-05)</span>
 					<ul>
 						<li>Lot of fixes for <a href="http://www.ling.uni-potsdam.de/comma2016/" target="_blank">COMMA16</a></li>
 					</ul>
@@ -156,59 +159,11 @@
 					<ul>
 						<li>Refactoring:
 							<ul>
-								<li>Less Ajax, more HTML5</li>
+								<li>Less Ajax, more HTML</li>
 								<li>Using Chameleon and TAL</li>
 								<li>Reduced loading time</li>
 							</ul>
 						</li>
-					</ul>
-
-					<span class="project lead">0.4.8 (2015-01-12)</span>
-					<ul>
-						<li>Moved many string building functions to the server side</li>
-						<li>Improved weighting helper, also called voting helper</li>
-					</ul>
-
-					<span class="project lead">0.4.7 (2015-01-06)</span>
-					<ul>
-						<li>Island View</li>
-						<li>Profile Picture based on the MD5-value of the user's mail</li>
-						<li>Improved weighting helper</li>
-					</ul>
-
-					<span class="project lead">0.4.6 (2015-12-16)</span>
-					<ul>
-						<li>Collecting weights for arguments</li>
-						<li>Smaller design improvements like badges for the issues</li>
-					</ul>
-
-					<span class="project lead">0.4.5 (2015-12-01)</span>
-					<ul>
-						<li>Improved session management</li>
-						<li>Improved anti-spam questions</li>
-						<li>Fixes in the GUI for registration</li>
-						<li>Replaced Googel Analytics with Piwik</li>
-					</ul>
-
-					<span class="project lead">0.4.4 (2015-11-30)</span>
-					<ul>
-						<li>Breadcrumbs hover vs. title</li>
-						<li>Supports will redirect to arguments without any justification</li>
-					</ul>
-
-					<span class="project lead">0.4.3 (2015-11-30)</span>
-					<ul>
-						<li>Breadcrumbs</li>
-					</ul>
-
-					<span class="project lead">0.4.2 (2015-11-23)</span>
-					<ul>
-						<li>Bug fixes</li>
-					</ul>
-
-					<span class="project lead">0.4.1 (2015-11-16)</span>
-					<ul>
-						<li>Improving bootstraping: It is now a two-step process!</li>
 					</ul>
 				</div>
 			</div>
