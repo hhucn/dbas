@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-11 16:34+0200\n"
+"POT-Creation-Date: 2016-04-26 08:27+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -174,29 +174,29 @@ msgstr "Impressum"
 msgid "data_tmg"
 msgstr "Angaben gemäß § 5 TMG"
 
-#. Default: Institut für Informatik
-#: dbas/templates/imprint.pt:8
-msgid "department"
-msgstr "Institut für Informatik"
-
 #. Default: Kontakt:
 #. Default: Contact
-#: dbas/templates/imprint.pt:14 dbas/templates/snippet-footer.pt:32
+#: dbas/templates/imprint.pt:9 dbas/templates/snippet-footer.pt:32
 msgid "contact"
 msgstr "Kontakt"
 
+#. Default: Institut für Informatik
+#: dbas/templates/imprint.pt:11
+msgid "department"
+msgstr "Institut für Informatik"
+
 #. Default: Telefon:
-#: dbas/templates/imprint.pt:16
+#: dbas/templates/imprint.pt:15
 msgid "phone"
 msgstr "Telefonnr.:"
 
 #. Default: Haftungsausschluss:
-#: dbas/templates/imprint.pt:21
+#: dbas/templates/imprint.pt:19
 msgid "disclaimer"
 msgstr "Haftungsausschluss:"
 
 #. Default: Haftung für Inhalte
-#: dbas/templates/imprint.pt:23
+#: dbas/templates/imprint.pt:20
 msgid "disclaimer_content"
 msgstr "Haftung für Inhalte"
 
@@ -213,7 +213,7 @@ msgstr "Haftung für Inhalte"
 #. Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von
 #. entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
 #. entfernen.
-#: dbas/templates/imprint.pt:24
+#: dbas/templates/imprint.pt:21
 msgid "disclaimer_content_content"
 msgstr ""
 "Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die "
@@ -231,7 +231,7 @@ msgstr ""
 "entfernen."
 
 #. Default: Haftung für Links
-#: dbas/templates/imprint.pt:27
+#: dbas/templates/imprint.pt:24
 msgid "disclaimer_links"
 msgstr "Haftung für Links"
 
@@ -245,7 +245,7 @@ msgstr "Haftung für Links"
 #. Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer
 #. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
 #. werden wir derartige Links umgehend entfernen.
-#: dbas/templates/imprint.pt:28
+#: dbas/templates/imprint.pt:25
 msgid "disclaimer_links_content"
 msgstr ""
 "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte "
@@ -262,7 +262,7 @@ msgstr ""
 "einschränkend"
 
 #. Default: Urheberrecht
-#: dbas/templates/imprint.pt:31
+#: dbas/templates/imprint.pt:28
 msgid "disclaimer_copyright"
 msgstr "Urheberrecht"
 
@@ -278,7 +278,7 @@ msgstr "Urheberrecht"
 #. aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei
 #. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
 #. entfernen.
-#: dbas/templates/imprint.pt:32
+#: dbas/templates/imprint.pt:29
 msgid "disclaimer_copyright_content"
 msgstr ""
 "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten "
@@ -295,7 +295,7 @@ msgstr ""
 "entfernen."
 
 #. Default: Datenschutz
-#: dbas/templates/imprint.pt:35
+#: dbas/templates/imprint.pt:32
 msgid "disclaimer_dataprotection"
 msgstr "Datenschutz"
 
@@ -313,7 +313,7 @@ msgstr "Datenschutz"
 #. ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich
 #. ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von
 #. Werbeinformationen, etwa durch Spam-Mails, vor.
-#: dbas/templates/imprint.pt:36
+#: dbas/templates/imprint.pt:33
 msgid "disclaimer_dataprotection_content"
 msgstr ""
 "Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener "
@@ -331,7 +331,7 @@ msgstr ""
 "von Werbeinformationen, etwa durch Spam-Mails, vor."
 
 #. Default: Session-Cookies
-#: dbas/templates/imprint.pt:41
+#: dbas/templates/imprint.pt:38
 msgid "disclaimer_session_cookie"
 msgstr "Session-Cookies"
 
@@ -341,7 +341,7 @@ msgstr "Session-Cookies"
 #. Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf
 #. Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung
 #. beenden.
-#: dbas/templates/imprint.pt:42
+#: dbas/templates/imprint.pt:39
 msgid "disclaimer_session_cookie_content"
 msgstr ""
 "Diese erlauben Ihnen notwendige Funktionen auf unseren Websites auszuführen, "
@@ -351,7 +351,7 @@ msgstr ""
 "und laufen ab, sobald Sie Ihre Browser-Sitzung beenden."
 
 #. Default: Tracking-Cookies
-#: dbas/templates/imprint.pt:46
+#: dbas/templates/imprint.pt:43
 msgid "disclaimer_tracking_cookie"
 msgstr "Tracking-Cookies"
 
@@ -361,7 +361,7 @@ msgstr "Tracking-Cookies"
 #. Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen
 #. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
 #. Überwachen dieser Informationen können wir unsere Websites verbessern.
-#: dbas/templates/imprint.pt:47
+#: dbas/templates/imprint.pt:44
 msgid "disclaimer_tracking_cookie_content"
 msgstr ""
 "Diese erlauben uns Ihre wiederholten Besuche unserer Website wahrzunehmen. "
@@ -372,7 +372,7 @@ msgstr ""
 "Überwachen dieser Informationen können wir unsere Websites verbessern. "
 
 #. Default: Piwik
-#: dbas/templates/imprint.pt:52
+#: dbas/templates/imprint.pt:49
 msgid "disclaimer_piwik"
 msgstr "Piwik"
 
@@ -387,7 +387,7 @@ msgstr "Piwik"
 #. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
 #. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
 #. Funktionen dieser Website vollumfänglich nutzen können.
-#: dbas/templates/imprint.pt:53
+#: dbas/templates/imprint.pt:50
 msgid "disclaimer_piwik_content"
 msgstr ""
 "Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur "
@@ -403,22 +403,22 @@ msgstr ""
 "Funktionen dieser Website vollumfänglich nutzen können."
 
 #. Default: Copyrights and used Software
-#: dbas/templates/imprint.pt:63
+#: dbas/templates/imprint.pt:60
 msgid "copyright_and_used_software"
 msgstr "Copyright und benutze Software"
 
 #. Default: Icons by
-#: dbas/templates/imprint.pt:69
+#: dbas/templates/imprint.pt:66
 msgid "icons_by"
 msgstr "Icons von"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:82
+#: dbas/templates/imprint.pt:79
 msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework 1.54"
 
 #. Default: Changes
-#: dbas/templates/imprint.pt:105
+#: dbas/templates/imprint.pt:102
 msgid "changes"
 msgstr "Änderungen in der Version"
 
@@ -650,14 +650,14 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:291 dbas/templates/snippet-popups.pt:398
-#: dbas/templates/content.pt:151
+#: dbas/templates/content.pt:149
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Success:
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:298 dbas/templates/snippet-popups.pt:390
-#: dbas/templates/settings.pt:204 dbas/templates/content.pt:68
+#: dbas/templates/settings.pt:204 dbas/templates/content.pt:62
 msgid "success"
 msgstr "Erfolg:"
 
@@ -679,7 +679,6 @@ msgstr "Nachname"
 #. Default: Your Nickname
 #. Default: Nickname
 #: dbas/templates/snippet-popups.pt:327 dbas/templates/settings.pt:24
-#: dbas/templates/admin.pt:129
 msgid "nickname"
 msgstr "Nickname"
 
@@ -867,14 +866,13 @@ msgid "i_actually_have"
 msgstr "Aktuell habe ich"
 
 #. Default: arguments:
-#. Default: Arguments
-#: dbas/templates/snippet-popups.pt:545 dbas/templates/admin.pt:32
+#: dbas/templates/snippet-popups.pt:545
 msgid "arguments"
 msgstr "Argumente"
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:568 dbas/templates/snippet-popups.pt:599
-#: dbas/templates/content.pt:283 dbas/templates/content.pt:306
+#: dbas/templates/content.pt:281 dbas/templates/content.pt:304
 msgid "error:"
 msgstr "Fehler:"
 
@@ -914,12 +912,12 @@ msgid "personal_information"
 msgstr "Persönliche Informationen"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:16 dbas/templates/admin.pt:127
+#: dbas/templates/settings.pt:16
 msgid "firstname"
 msgstr "Vorname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:20 dbas/templates/admin.pt:128
+#: dbas/templates/settings.pt:20
 msgid "surname"
 msgstr "Nachname"
 
@@ -1118,92 +1116,6 @@ msgstr "Zur Startseite!"
 msgid "back_to_the_discussion"
 msgstr "Zurück zur Diskussion!"
 
-#. Default: Dashboard
-#: dbas/templates/admin.pt:21
-msgid "dashboard"
-msgstr "Übersicht"
-
-#. Default: Users
-#: dbas/templates/admin.pt:26
-msgid "users"
-msgstr "Benutzer"
-
-#. Default: Users!
-#: dbas/templates/admin.pt:52
-msgid "users!"
-msgstr "Benutzer!"
-
-#. Default: View Details
-#: dbas/templates/admin.pt:57 dbas/templates/admin.pt:76
-#: dbas/templates/admin.pt:95 dbas/templates/admin.pt:114
-msgid "view_details"
-msgstr "Details sehen"
-
-#. Default: Votes!
-#: dbas/templates/admin.pt:71
-msgid "votes!"
-msgstr "Stimmen!"
-
-#. Default: Arguments!
-#: dbas/templates/admin.pt:90
-msgid "arguments!"
-msgstr "Argumente!"
-
-#. Default: Statements!
-#: dbas/templates/admin.pt:109
-msgid "statements!"
-msgstr "Aussagen!"
-
-#. Default: E-Mail
-#: dbas/templates/admin.pt:130
-msgid "email"
-msgstr "E-Mail"
-
-#. Default: Gender
-#: dbas/templates/admin.pt:131
-msgid "gender"
-msgstr "Geschlecht"
-
-#. Default: Group
-#: dbas/templates/admin.pt:132
-msgid "group_uid"
-msgstr "Gruppe"
-
-#. Default: Last Login
-#: dbas/templates/admin.pt:133
-msgid "last_login"
-msgstr "Letze Anmeldung"
-
-#. Default: Registered
-#: dbas/templates/admin.pt:134
-msgid "registered"
-msgstr "Registierung"
-
-#. Default: Avatar
-#: dbas/templates/admin.pt:135
-msgid "avatar"
-msgstr "Avatar"
-
-#. Default: List of attacks, clicked by the participants
-#: dbas/templates/admin.pt:158
-msgid "list_attacks"
-msgstr "Attacken aufführen"
-
-#. Default: Some additional options for the administrator.
-#: dbas/templates/admin.pt:159
-msgid "admin_only"
-msgstr "Manche Sachen sind nur für den Admin."
-
-#. Default: Switch Topic
-#: dbas/templates/admin.pt:167 dbas/templates/content.pt:25
-msgid "switch_topc"
-msgstr "Thema wechseln"
-
-#. Default: Topics
-#: dbas/templates/admin.pt:170 dbas/templates/content.pt:28
-msgid "topics"
-msgstr "Themen"
-
 #. Default: You have got
 #: dbas/templates/notifications.pt:13
 msgid "youHaveGot"
@@ -1234,65 +1146,116 @@ msgstr "Bitte JavaScript aktivieren!"
 msgid "current_discussion"
 msgstr "Die aktuelle Diskussion hat folgendes Thema"
 
+#. Default: Switch Topic
+#: dbas/templates/content.pt:20
+msgid "switch_topc"
+msgstr "Thema wechseln"
+
 #. Default: Add a Topic
-#: dbas/templates/content.pt:39
+#: dbas/templates/content.pt:33
 msgid "add_topic"
 msgstr "Thema hinzufügen"
 
 #. Default: Restart
-#: dbas/templates/content.pt:46
+#: dbas/templates/content.pt:40
 msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: and
-#: dbas/templates/content.pt:104
+#: dbas/templates/content.pt:101
 msgid "and"
 msgstr "und"
 
 #. Default: Island View for
-#: dbas/templates/content.pt:165
+#: dbas/templates/content.pt:163
 msgid "island_view_for"
 msgstr "Insel-Ansicht für"
 
 #. Default: Add statement
-#: dbas/templates/content.pt:246
+#: dbas/templates/content.pt:244
 msgid "add_statement"
 msgstr "Aussage hinzufügen"
 
 #. Default: What is your idea? What should we do?
-#: dbas/templates/content.pt:277
+#: dbas/templates/content.pt:275
 msgid "what_is_your_idea"
 msgstr "Was ist Ihre Idee? Was sollten wir machen?"
 
 #. Default: Let me enter my reason!
-#: dbas/templates/content.pt:299
+#: dbas/templates/content.pt:297
 msgid "let_me_enter_my_reason"
 msgstr "Lass' mich meinen Grund angeben!"
 
-#. Default: Because...
-#: dbas/templates/content.pt:312
-msgid "Because..."
-msgstr "Weil..."
-
 #. Default: Change display style
-#: dbas/templates/content.pt:330
+#: dbas/templates/content.pt:325
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:333
+#: dbas/templates/content.pt:328
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:339
+#: dbas/templates/content.pt:334
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:345
+#: dbas/templates/content.pt:340
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "dashboard"
+#~ msgstr "Übersicht"
+
+#~ msgid "users"
+#~ msgstr "Benutzer"
+
+#~ msgid "users!"
+#~ msgstr "Benutzer!"
+
+#~ msgid "view_details"
+#~ msgstr "Details sehen"
+
+#~ msgid "votes!"
+#~ msgstr "Stimmen!"
+
+#~ msgid "arguments!"
+#~ msgstr "Argumente!"
+
+#~ msgid "statements!"
+#~ msgstr "Aussagen!"
+
+#~ msgid "email"
+#~ msgstr "E-Mail"
+
+#~ msgid "gender"
+#~ msgstr "Geschlecht"
+
+#~ msgid "group_uid"
+#~ msgstr "Gruppe"
+
+#~ msgid "last_login"
+#~ msgstr "Letze Anmeldung"
+
+#~ msgid "registered"
+#~ msgstr "Registierung"
+
+#~ msgid "avatar"
+#~ msgstr "Avatar"
+
+#~ msgid "list_attacks"
+#~ msgstr "Attacken aufführen"
+
+#~ msgid "admin_only"
+#~ msgstr "Manche Sachen sind nur für den Admin."
+
+#~ msgid "topics"
+#~ msgstr "Themen"
+
+#~ msgid "Because..."
+#~ msgstr "Weil..."
 
 #~ msgid "password_request"
 #~ msgstr "Passwort-Nachfrage"
