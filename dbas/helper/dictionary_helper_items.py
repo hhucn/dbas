@@ -351,8 +351,8 @@ class ItemDictHelper(object):
 					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
 				# rebutting an rebut will be a justify for the initial argument
 				elif attack == 'rebut':
-					conclusion_uid = None
 					current_user_argument = db_user_argument
+					conclusion_uid = current_user_argument.conclusion_uid
 					while conclusion_uid is None:
 						current_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=current_user_argument.argument_uid).first()
 						conclusion_uid = current_user_argument.conclusion_uid
