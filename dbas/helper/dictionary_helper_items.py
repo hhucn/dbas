@@ -342,6 +342,7 @@ class ItemDictHelper(object):
 				url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, attack)
 
 			elif relation == 'rebut':  # if we are having an rebut, everything seems different
+
 				if attack == 'undermine':  # rebutting an undermine will be a support for the initial argument
 					url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
 				# rebutting an undercut will be a overbid for the initial argument
@@ -350,7 +351,12 @@ class ItemDictHelper(object):
 					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
 				# rebutting an rebut will be a justify for the initial argument
 				elif attack == 'rebut':
-					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+					conclusion_uid = None
+					current_user_argument = db_user_argument
+					while conclusion_uid is None:
+						current_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=current_user_argument.argument_uid).first()
+						conclusion_uid = current_user_argument.conclusion_uid
+					url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid if conclusion_uid is None else conclusion_uid, mode)
 
 			else:
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
