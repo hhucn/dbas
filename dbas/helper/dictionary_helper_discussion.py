@@ -114,7 +114,7 @@ class DiscussionDictHelper(object):
 			if '/undercut' in splitted_history[-1]:
 				intro = _tn.get(_tn.youHaveMuchStrongerArgumentForAccepting) if is_supportive else _tn.get(_tn.youHaveMuchStrongerArgumentForRejecting)
 				intro += ': '
-			elif '/undermine' in splitted_history[-1]:
+			elif '/undermine' in splitted_history[-1] or '/rebut' in splitted_history[-1]:
 				intro = _tn.get(_tn.iHaveMuchStrongerArgumentAccepting) if is_supportive else _tn.get(_tn.iHaveMuchStrongerArgumentRejecting)
 				intro += ': '
 
