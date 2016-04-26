@@ -28,6 +28,7 @@ from .helper.voting_helper import VotingHelper
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
 from .email import EmailHelper
+from .input_validator import Validator
 from .lib import get_language, escape_string, get_text_for_statement_uid
 from .logger import logger
 from .recommender_system import RecommenderSystem
@@ -364,6 +365,9 @@ class Dbas(object):
 		history         = params['history'] if 'history' in params else ''
 
 		if not tmp_argument:
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+
+		if not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
 		supportive      = tmp_argument.is_supportive
