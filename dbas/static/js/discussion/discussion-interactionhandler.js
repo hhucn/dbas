@@ -228,6 +228,8 @@ function InteractionHandler() {
 					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
 				tr = $('<tr>')
 					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
 					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
 				tbody = $('<tbody>'),
 				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', j=0;
