@@ -111,11 +111,8 @@ class DiscussionDictHelper(object):
 			intro = _tn.get(_tn.youDisagreeWith) + ': '
 		splitted_history = self.history.split('-')
 		if len(splitted_history) > 0:
-			if '/undercut' in splitted_history[-1]:
+			if '/undercut' in splitted_history[-1] or '/undermine' in splitted_history[-1] or '/rebut' in splitted_history[-1]:
 				intro = _tn.get(_tn.youHaveMuchStrongerArgumentForAccepting) if is_supportive else _tn.get(_tn.youHaveMuchStrongerArgumentForRejecting)
-				intro += ': '
-			elif '/undermine' in splitted_history[-1] or '/rebut' in splitted_history[-1]:
-				intro = _tn.get(_tn.iHaveMuchStrongerArgumentAccepting) if is_supportive else _tn.get(_tn.iHaveMuchStrongerArgumentRejecting)
 				intro += ': '
 
 		url = UrlManager(application_url, slug).get_slug_url(False)
