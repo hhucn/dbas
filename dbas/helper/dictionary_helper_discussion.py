@@ -115,7 +115,8 @@ class DiscussionDictHelper(object):
 				intro = _tn.get(_tn.youHaveMuchStrongerArgumentForAccepting) if is_supportive else _tn.get(_tn.youHaveMuchStrongerArgumentForRejecting)
 				intro += ': '
 			elif '/undermine' in splitted_history[-1]:
-				intro = _tn.get(_tn.iHaveMuchStrongerArgumentAccepting) + ': '
+				intro = _tn.get(_tn.iHaveMuchStrongerArgumentAccepting) if is_supportive else _tn.get(_tn.iHaveMuchStrongerArgumentRejecting)
+				intro += ': '
 
 		url = UrlManager(application_url, slug).get_slug_url(False)
 		question_bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True)
