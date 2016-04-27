@@ -69,11 +69,11 @@ Backend tests can be executed with:
 
     nosetests dbas
 
-There D-BAS is required.
+Therefore a D-BAS instance is required.
 
 
 ## License
 
 Copyright © 2016 Tobias Krauthoff, Christian Meter
 
-Distributed under the MIT License (MIT).
+Distributed under the [MIT License](https://gitlab.cs.uni-duesseldorf.de/project/dbas/raw/master/LICENSE).
