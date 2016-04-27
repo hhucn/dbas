@@ -348,25 +348,29 @@ class QueryHelper:
 		return return_dict
 
 	@staticmethod
-	def get_logfile_for_statement(uid, lang):
+	def get_logfile_for_statement(uid, lang, mainpage):
 		"""
 		Returns the logfile for the given statement uid
 
 		:param uid: requested statement uid
 		:param lang: ui_locales ui_locales
+		:param mainpage: URL
 		:return: dictionary with the logfile-rows
 		"""
 		logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
 
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).join(User).all()
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
 
 		return_dict = dict()
 		content_dict = dict()
 		# add all corrections
 		for index, versions in enumerate(db_textversions):
+			db_author = DBDiscussionSession.query(User).filter_by(uid=versions.author_uid).first()
 			corr_dict = dict()
 			corr_dict['uid'] = str(versions.uid)
-			corr_dict['author'] = str(versions.users.nickname)
+			corr_dict['author'] = str(db_author.public_nickname)
+			corr_dict['author_url'] = mainpage + '/user/' + str(db_author.nickname)
+			corr_dict['author_gravatar'] = UserHandler.get_profile_picture(db_author, 20)
 			corr_dict['date'] = sql_timestamp_pretty_print(str(versions.timestamp), lang)
 			corr_dict['text'] = str(versions.content)
 			content_dict[str(index)] = corr_dict
