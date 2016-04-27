@@ -1316,7 +1316,7 @@ class Dbas(object):
 			db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
 			if len(title) < 5 or len(text) < 5:
 				error = _tn.get(_tn.empty_notification_input)
-			elif not recipient:
+			elif not db_recipient:
 				error = _tn.get(_tn.recipientNotFound)
 			else:
 				db_author = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
