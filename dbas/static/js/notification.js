@@ -176,7 +176,6 @@ sendNotification = function(recipient){
 
 	$('#popup-writing-notification-success').hide();
 	$('#popup-writing-notification-failed').hide();
-	alert(recipient);
 
 	$.ajax({
 		url: 'ajax_send_notification',
