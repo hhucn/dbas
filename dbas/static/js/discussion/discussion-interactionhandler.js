@@ -149,7 +149,7 @@ function InteractionHandler() {
 			text +=_t(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t(messageInfoParticipantPl)) + '.';
 			if (parsedData.vote_count>0) {
 				$.each(parsedData.supporter, function(index, nick){
-					td_nick = $('<td>').text(nick);
+					td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.public_page[nick]).text(nick));
 					td_avatar = $('<td>').html('<img style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
 					if (i==1){
 						i=0;
@@ -243,7 +243,7 @@ function InteractionHandler() {
 			}
 
 			$.each(users_array, function (i, val) {
-				td_nick = $('<td>').text(val.nickname);
+				td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', val.public_profile_url).text(val.nickname));
 				td_avatar = $('<td>').html('<img style="height: 40%;" src="' + val.avatar_url + '"></td>');
 				if (j==1){
 					j=0;

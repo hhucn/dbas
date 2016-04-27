@@ -6,12 +6,8 @@
 		<div class="container colored-container">
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-6">
-					<h4><!--<span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;" tal:condition="user.is_male"></span>-->
-                        <img id="header_male" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}" tal:condition="user.is_male">
-                        <img id="header_female" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}" tal:condition="user.is_female">
-                        <img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}" tal:condition="user.is_neutral">
-                        <span i18n:translate="public_information_of">Public Information of</span>
-                        <em>${user.nickname}</em>
+					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span>
+                        <span i18n:translate="public_information_of">Public Information of</span> <em>${user.public_nick}</em>
                     </h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
@@ -31,7 +27,7 @@
                         <div class="center text-center" style="margin: 2em;">
 						    <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src user.avatar_url">
 						    <br>
-						    <span i18n:translate="profile_picture_of">Profile Picture of</span> ${user.nickname}
+						    <span i18n:translate="profile_picture_of">Profile Picture of</span> ${user.public_nick}
                         </div>
                     </div>
 				</div>

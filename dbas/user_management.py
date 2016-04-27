@@ -12,7 +12,7 @@ from urllib import parse
 from datetime import datetime
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion
+from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
 from .lib import sql_timestamp_pretty_print
 from .logger import logger
 
@@ -173,6 +173,33 @@ class UserHandler:
 		return should_log_out
 
 	@staticmethod
+	def refresh_public_nickname(user):
+		"""
+
+		:param user:
+		:return:
+		"""
+		list_a = UserHandler.moodlist
+		list_b = UserHandler.animallist
+		list_c = UserHandler.thingslist
+		len_a = len(list_a) - 1
+		len_b = len(list_b) - 1
+		len_c = len(list_c) - 1
+
+		first = list_a[random.randint(0, len_a)]
+		second = list_b[random.randint(0, len_b)] if random.randint(0, 1) == 1 else list_c[random.randint(0, len_c)]
+		nick = first + ' ' + second
+
+		while DBDiscussionSession.query(User).filter_by(public_nickname=nick).first():
+			first = list_a[random.randint(0, len_a)]
+			second = list_b[random.randint(0, len_b)] if random.randint(0, 1) == 1 else list_c[random.randint(0, len_c)]
+			nick = first + ' ' + second
+
+		user.set_public_nickname(nick)
+
+		return nick
+
+	@staticmethod
 	def is_user_in_group(nickname, groupname):
 		"""
 		Returns boolean if the user is in the group
@@ -206,10 +233,27 @@ class UserHandler:
 		:param size: Integer, default 80
 		:return: String
 		"""
-		email = user.email.encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+		email = (user.email).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
 		gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
 		# logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
+		return gravatar_url
+
+	@staticmethod
+	def get_public_profile_picture(user, size=80):
+		"""
+		Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
+		If the user doesn want an public profile, an anoynmous image will be returned
+
+		:param user: User
+		:param size: Integer, default 80
+		:return: String
+		"""
+		additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
+		email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
+		gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
+		# logger('UserHandler', 'get_public_profile_picture', 'url: ' + gravatar_url)
 		return gravatar_url
 
 	def is_user_author(user):
@@ -423,10 +467,10 @@ class UserHandler:
 		:return:
 		"""
 		ret_dict = dict()
-		ret_dict['nickname']    = db_user.nickname
+		ret_dict['public_nick'] = db_user.public_nickname
 		ret_dict['last_login']  = sql_timestamp_pretty_print(str(db_user.last_login), lang)
 		ret_dict['registered']  = sql_timestamp_pretty_print(str(db_user.registered), lang)
-		ret_dict['last_action'] = '#'#sql_timestamp_pretty_print(str(db_user.last_action), lang)
+		ret_dict['last_action'] = sql_timestamp_pretty_print(str(db_user.last_action), lang)
 
 		ret_dict['is_male']     = db_user.gender == 'm'
 		ret_dict['is_female']   = db_user.gender == 'f'
@@ -440,7 +484,7 @@ class UserHandler:
 		ret_dict['edits_done']            = edits
 		ret_dict['discussion_arg_votes']  = arg_vote
 		ret_dict['discussion_stat_votes'] = stat_vote
-		ret_dict['avatar_url']            = UserHandler.get_profile_picture(db_user, 120)
+		ret_dict['avatar_url']            = UserHandler.get_public_profile_picture(db_user, 120)
 
 		return ret_dict
 

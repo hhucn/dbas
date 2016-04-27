@@ -103,7 +103,7 @@ def main(global_config, **settings):
 	config.add_route('ajax_get_all_posted_statements',              'ajax_get_all_posted_statements')
 	config.add_route('ajax_get_all_argument_votes',                 'ajax_get_all_argument_votes')
 	config.add_route('ajax_get_all_statement_votes',                'ajax_get_all_statement_votes')
-	config.add_route('ajax_set_user_receive_information',           'ajax_set_user_receive_information')
+	config.add_route('ajax_set_user_setting',                       'ajax_set_user_setting')
 	config.add_route('ajax_delete_user_history',                    'ajax_delete_user_history')
 	config.add_route('ajax_delete_statistics',                      'ajax_delete_statistics')
 	config.add_route('ajax_get_news',                               'ajax_get_news')

@@ -148,5 +148,9 @@
 - Bugfixes
 - History management via url parameter
 
+0.5.11 (2016-04-27)
+- Public user page
+- Settings for hiding your real nickname behind a fake one
+
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation
