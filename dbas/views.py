@@ -364,8 +364,8 @@ class Dbas(object):
 		tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
 		history         = params['history'] if 'history' in params else ''
 
-		#if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
-		#	return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+		if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
 		supportive           = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
@@ -739,6 +739,44 @@ class Dbas(object):
 			'project': project_name,
 			'extras': extras_dict,
 			'is_author': is_author
+		}
+
+	# public users page for everybody
+	@view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
+	def main_user(self):
+		"""
+		View configuration for the public users.
+
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		matchdict = self.request.matchdict
+		params = self.request.params
+		logger('main_user', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+		logger('main_user', 'def', 'main, self.request.params: ' + str(params))
+
+		nickname = matchdict['nickname'] if 'nickname' in matchdict else ''
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		if db_user is None:
+			return HTTPFound(location=UrlManager(mainpage).get_404([self.request.path[1:]]))
+
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+		if session_expired:
+			return self.user_logout(True)
+
+		ui_locales = get_language(self.request, get_current_registry())
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+
+		user_dict = UserHandler.get_information_of(db_user, ui_locales)
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'User ' + nickname,
+			'project': project_name,
+			'extras': extras_dict,
+			'user': user_dict
 		}
 
 	# imprint
