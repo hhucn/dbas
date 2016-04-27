@@ -350,7 +350,7 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-main.js')}"></script>
 
-		<script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion-barometer.js')}"></script>
+		<script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-barometer.js')}"></script>
 
 		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-graph.js')}"></script>
 		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.min.js')}"></script>
@@ -364,6 +364,10 @@
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.canvas.edgehovers.dotted.js')}"></script>
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.canvas.nodes.border.js')}"></script>
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.plugins.neighborhoods.js')}"></script>
+
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
+
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
 
 	</tal:block>
 </tal:block>
