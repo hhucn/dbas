@@ -568,6 +568,10 @@ $(function () {
 		new SettingsHandler().setReceiveInformation($(this), 'mail');
 	});
 
+	$('#' + settingsPublicNick).change(function publicNickChange() {
+		alert('TODO');
+	});
+
 	// ajax loading animation
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },

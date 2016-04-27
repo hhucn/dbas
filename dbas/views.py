@@ -637,11 +637,13 @@ class Dbas(object):
 			edits       = _uh.get_count_of_statements_of_user(db_user, True)
 			statements  = _uh.get_count_of_statements_of_user(db_user, False)
 			arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
+			public_nick = db_user.public_nick
 		else:
 			edits       = 0
 			statements  = 0
 			arg_vote    = 0
 			stat_vote   = 0
+			public_nick = str(self.request.authenticated_userid)
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			old_pw = escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
@@ -664,6 +666,7 @@ class Dbas(object):
 			'db_firstname': db_user.firstname if db_user else 'unknown',
 			'db_surname': db_user.surname if db_user else 'unknown',
 			'db_nickname': db_user.nickname if db_user else 'unknown',
+			'db_public_nickname': public_nick,
 			'db_mail': db_user.email if db_user else 'unknown',
 			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
 			'avatar_url': gravatar_url,
@@ -673,8 +676,11 @@ class Dbas(object):
 			'discussion_stat_votes': stat_vote,
 			'send_mails': db_settings.should_send_mails if db_settings else False,
 			'send_notifications': db_settings.should_send_notifications if db_settings else False,
+			'public_nick': db_settings.should_show_public_nickname if db_settings else True,
 			'title_mails': _tn.get(_tn.mailSettingsTitle),
-			'title_notifications': _tn.get(_tn.notificationSettingsTitle)
+			'title_notifications': _tn.get(_tn.notificationSettingsTitle),
+			'title_public_nick': _tn.get(_tn.publicNickTitle),
+			'public_page_url': mainpage + '/user/' + public_nick
 		}
 
 		return {
