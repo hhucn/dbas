@@ -161,7 +161,7 @@ class Dbas(object):
 		                                          application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
-			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
+			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_start=True)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -293,7 +293,7 @@ class Dbas(object):
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify=True,
 				                            current_premise=get_text_for_statement_uid(statement_or_arg_id),
 				                            supportive=supportive)
 
@@ -307,7 +307,7 @@ class Dbas(object):
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_dont_know=True,
 				                            current_premise=get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
@@ -320,7 +320,7 @@ class Dbas(object):
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
 		else:
 			logger('discussion_justify', 'def', '404')
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))

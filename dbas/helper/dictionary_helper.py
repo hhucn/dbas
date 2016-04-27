@@ -206,14 +206,15 @@ class DictionaryHelper(object):
 					                                     'report_statement': _tn.get(_tn.reportTitle)}
 		return return_dict
 
-	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
-								at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False):
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False,
+								at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False,):
 		"""
 		Adds a speicif text when the discussion is at the end
 
 		:param discussion_dict: dict()
 		:param extras_dict: dict()
 		:param logged_in: Boolean
+		:param lang: ui_locales
 		:param at_start: Boolean
 		:param at_dont_know: Boolean
 		:param at_justify_argumentation: Boolean
@@ -231,7 +232,7 @@ class DictionaryHelper(object):
 			discussion_dict['mode'] = 'start'
 			user_text = _tn.get(_tn.firstPositionText) + '<br>'
 			user_text += _tn.get(_tn.pleaseAddYourSuggestion) if logged_in else (_tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin))
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_status=True, uid='end', message=user_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=lang))
 			if logged_in:
 				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
 				extras_dict['close_statement_container'] = False
@@ -248,7 +249,7 @@ class DictionaryHelper(object):
 			extras_dict['show_display_style'] = False
 			if logged_in:
 				mid_text = _tn.get(_tn.firstOneReason)
-				discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+				discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=lang))
 			# else:
 			# 	mid_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
 
@@ -257,8 +258,8 @@ class DictionaryHelper(object):
 			sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
 			sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
 			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text))
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=lang))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=lang))
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'
@@ -272,7 +273,7 @@ class DictionaryHelper(object):
 			else:
 				mid_text += _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=lang))
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style']	   = False
 			extras_dict['show_bar_icon']		   = False
@@ -281,7 +282,7 @@ class DictionaryHelper(object):
 
 		else:
 			mid_text = _tn.get(_tn.discussionEnd) + ' ' + (_tn.get(_tn.discussionEndLinkText) if logged_in else _tn.get(_tn.feelFreeToLogin))
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, message=mid_text, lang=lang))
 
 	def add_language_options_for_extra_dict(self, extras_dict):
 		"""
