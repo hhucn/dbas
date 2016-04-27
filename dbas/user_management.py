@@ -198,16 +198,17 @@ class UserHandler:
 		return db_user and db_user.groups.name == 'admins'
 
 	@staticmethod
-	def get_profile_picture(user):
+	def get_profile_picture(user, size=80):
 		"""
 		Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
 
 		:param user: User
+		:param size: Integer, default 80
 		:return: String
 		"""
 		email = user.email.encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 		gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
-		gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(80)})
+		gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
 		# logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
 		return gravatar_url
 
@@ -426,9 +427,20 @@ class UserHandler:
 		ret_dict['last_login']  = sql_timestamp_pretty_print(str(db_user.last_login), lang)
 		ret_dict['registered']  = sql_timestamp_pretty_print(str(db_user.registered), lang)
 		ret_dict['last_action'] = '#'#sql_timestamp_pretty_print(str(db_user.last_action), lang)
+
 		ret_dict['is_male']     = db_user.gender == 'm'
 		ret_dict['is_female']   = db_user.gender == 'f'
 		ret_dict['is_neutral']  = db_user.gender != 'm' and db_user.gender != 'f'
+
+		edits       = UserHandler.get_count_of_statements_of_user(db_user, True)
+		statements  = UserHandler.get_count_of_statements_of_user(db_user, False)
+		arg_vote, stat_vote = UserHandler.get_count_of_votes_of_user(db_user)
+
+		ret_dict['statemens_posted']      = statements
+		ret_dict['edits_done']            = edits
+		ret_dict['discussion_arg_votes']  = arg_vote
+		ret_dict['discussion_stat_votes'] = stat_vote
+		ret_dict['avatar_url']            = UserHandler.get_profile_picture(db_user, 120)
 
 		return ret_dict
 
