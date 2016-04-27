@@ -1625,7 +1625,7 @@ class Dbas(object):
 
 		try:
 			uid = self.request.params['uid']
-			return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales)
+			return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales, mainpage)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))

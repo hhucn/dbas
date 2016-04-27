@@ -569,7 +569,9 @@ function GuiHandler() {
 			tr = $('<tr>')
 				.append($('<td>').text(val.date))
 				.append($('<td>').text(val.text))
-				.append($('<td>').text(val.author));
+				.append($('<td>')
+					.append($('<a>').attr('target', '_blank').attr('href', val.author_url).text(val.author))
+					.append($('<img>').attr('src', val.author_gravatar)));
 			table.append(tr);
 		});
 
