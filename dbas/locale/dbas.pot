@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-26 08:27+0200\n"
+"POT-Creation-Date: 2016-04-27 16:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -136,7 +136,7 @@ msgid "login"
 msgstr ""
 
 #. Default: Settings
-#: ./dbas/templates/snippet-header.pt:74 ./dbas/templates/settings.pt:38
+#: ./dbas/templates/snippet-header.pt:74 ./dbas/templates/settings.pt:43
 msgid "settings"
 msgstr ""
 
@@ -332,17 +332,17 @@ msgid "copyright_and_used_software"
 msgstr ""
 
 #. Default: Icons by
-#: ./dbas/templates/imprint.pt:66
+#: ./dbas/templates/imprint.pt:67
 msgid "icons_by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: ./dbas/templates/imprint.pt:79
+#: ./dbas/templates/imprint.pt:80
 msgid "generated_with"
 msgstr ""
 
 #. Default: Changes
-#: ./dbas/templates/imprint.pt:102
+#: ./dbas/templates/imprint.pt:103
 msgid "changes"
 msgstr ""
 
@@ -443,6 +443,7 @@ msgstr ""
 #: ./dbas/templates/snippet-popups.pt:443
 #: ./dbas/templates/snippet-popups.pt:482
 #: ./dbas/templates/snippet-popups.pt:619
+#: ./dbas/templates/snippet-popups.pt:652
 msgid "close"
 msgstr ""
 
@@ -567,7 +568,7 @@ msgstr ""
 #. Default: Success:
 #. Default: Success
 #: ./dbas/templates/snippet-popups.pt:298
-#: ./dbas/templates/snippet-popups.pt:390 ./dbas/templates/settings.pt:204
+#: ./dbas/templates/snippet-popups.pt:390 ./dbas/templates/settings.pt:215
 #: ./dbas/templates/content.pt:62
 msgid "success"
 msgstr ""
@@ -782,7 +783,8 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:568
-#: ./dbas/templates/snippet-popups.pt:599 ./dbas/templates/content.pt:281
+#: ./dbas/templates/snippet-popups.pt:599
+#: ./dbas/templates/snippet-popups.pt:641 ./dbas/templates/content.pt:281
 #: ./dbas/templates/content.pt:304
 msgid "error:"
 msgstr ""
@@ -799,11 +801,13 @@ msgstr ""
 
 #. Default: Writing a new message
 #: ./dbas/templates/snippet-popups.pt:590
+#: ./dbas/templates/snippet-popups.pt:632
 msgid "writing_message"
 msgstr ""
 
 #. Default: Success:
 #: ./dbas/templates/snippet-popups.pt:604
+#: ./dbas/templates/snippet-popups.pt:646
 msgid "success:"
 msgstr ""
 
@@ -815,6 +819,11 @@ msgstr ""
 #. Default: Send News
 #: ./dbas/templates/snippet-popups.pt:618
 msgid "send_news"
+msgstr ""
+
+#. Default: Send Notifcation
+#: ./dbas/templates/snippet-popups.pt:651
+msgid "send_notification"
 msgstr ""
 
 #. Default: Personal Information
@@ -832,28 +841,43 @@ msgstr ""
 msgid "surname"
 msgstr ""
 
+#. Default: Public Nickname
+#: ./dbas/templates/settings.pt:28
+msgid "public_nickname"
+msgstr ""
+
 #. Default: Group
-#: ./dbas/templates/settings.pt:32
+#: ./dbas/templates/settings.pt:36
 msgid "group"
 msgstr ""
 
+#. Default: Click here for your public page
+#: ./dbas/templates/settings.pt:40
+msgid "click_here_for_public_page"
+msgstr ""
+
 #. Default: Receive Notifications
-#: ./dbas/templates/settings.pt:41
+#: ./dbas/templates/settings.pt:46
 msgid "receive_notifications"
 msgstr ""
 
 #. Default: Receive E-Mails
-#: ./dbas/templates/settings.pt:47
+#: ./dbas/templates/settings.pt:52
 msgid "receive_mails"
 msgstr ""
 
+#. Default: Nickname is public
+#: ./dbas/templates/settings.pt:58
+msgid "nickname_is_public"
+msgstr ""
+
 #. Default: Profile Picture
-#: ./dbas/templates/settings.pt:57
+#: ./dbas/templates/settings.pt:68
 msgid "profile_picture"
 msgstr ""
 
 #. Default: Change your profile picture on the
-#: ./dbas/templates/settings.pt:59
+#: ./dbas/templates/settings.pt:70
 msgid "change_gravatar"
 msgstr ""
 
@@ -861,87 +885,87 @@ msgstr ""
 #. create your profile just once, and then when you participate in any
 #. Gravatar-enabled site, your Gravatar image will automatically follow you
 #. there.
-#: ./dbas/templates/settings.pt:61
+#: ./dbas/templates/settings.pt:72
 msgid "what_is_gravatar"
 msgstr ""
 
 #. Default: Settings could not be set. Please try again later.
-#: ./dbas/templates/settings.pt:70
+#: ./dbas/templates/settings.pt:81
 msgid "settings_not_set"
 msgstr ""
 
 #. Default: Settings were set successfully.
-#: ./dbas/templates/settings.pt:75
+#: ./dbas/templates/settings.pt:86
 msgid "settings_set"
 msgstr ""
 
 #. Default: Change your password
-#: ./dbas/templates/settings.pt:84
+#: ./dbas/templates/settings.pt:95
 msgid "change_password"
 msgstr ""
 
 #. Default: Old password
-#: ./dbas/templates/settings.pt:88
+#: ./dbas/templates/settings.pt:99
 msgid "old_password"
 msgstr ""
 
 #. Default: New Password
-#: ./dbas/templates/settings.pt:95
+#: ./dbas/templates/settings.pt:106
 msgid "new_password"
 msgstr ""
 
 #. Default: Strength
-#: ./dbas/templates/settings.pt:102
+#: ./dbas/templates/settings.pt:113
 msgid "strength"
 msgstr ""
 
 #. Default: New Password (confirm)
-#: ./dbas/templates/settings.pt:110
+#: ./dbas/templates/settings.pt:121
 msgid "new_password_confirm"
 msgstr ""
 
 #. Default: Discussion Statistics
-#: ./dbas/templates/settings.pt:129
+#: ./dbas/templates/settings.pt:140 ./dbas/templates/user.pt:31
 msgid "discussion_stat"
 msgstr ""
 
 #. Default: Statements posted
-#: ./dbas/templates/settings.pt:133
+#: ./dbas/templates/settings.pt:144 ./dbas/templates/user.pt:34
 msgid "statements_posted"
 msgstr ""
 
 #. Default: Edits done
-#: ./dbas/templates/settings.pt:140
+#: ./dbas/templates/settings.pt:151 ./dbas/templates/user.pt:38
 msgid "edits_done"
 msgstr ""
 
 #. Default: Votes for Arguments
-#: ./dbas/templates/settings.pt:147
+#: ./dbas/templates/settings.pt:158 ./dbas/templates/user.pt:42
 msgid "discussion_votes_statements"
 msgstr ""
 
 #. Default: Votes for Statements
-#: ./dbas/templates/settings.pt:154
+#: ./dbas/templates/settings.pt:165 ./dbas/templates/user.pt:46
 msgid "discussion_votes_arguments"
 msgstr ""
 
 #. Default: Your password was changed
-#: ./dbas/templates/settings.pt:169
+#: ./dbas/templates/settings.pt:180
 msgid "password_changed"
 msgstr ""
 
 #. Default: Statistics could not be deleted.
-#: ./dbas/templates/settings.pt:176
+#: ./dbas/templates/settings.pt:187
 msgid "statistics_not_deleted"
 msgstr ""
 
 #. Default: Statistics were set successfully deleted.
-#: ./dbas/templates/settings.pt:182
+#: ./dbas/templates/settings.pt:193
 msgid "statistics_deletet"
 msgstr ""
 
 #. Default: Your last history
-#: ./dbas/templates/settings.pt:192
+#: ./dbas/templates/settings.pt:203
 msgid "history"
 msgstr ""
 
@@ -1032,6 +1056,16 @@ msgstr ""
 msgid "total"
 msgstr ""
 
+#. Default: From:
+#: ./dbas/templates/notifications.pt:44
+msgid "from"
+msgstr ""
+
+#. Default: answer
+#: ./dbas/templates/notifications.pt:49
+msgid "answer"
+msgstr ""
+
 #. Default: JavaScript is not enabled:
 #: ./dbas/templates/basetemplate.pt:36
 msgid "js_disabled1"
@@ -1040,6 +1074,26 @@ msgstr ""
 #. Default: Please enable JavaScript!
 #: ./dbas/templates/basetemplate.pt:37
 msgid "js_disabled2"
+msgstr ""
+
+#. Default: Public Information of
+#: ./dbas/templates/user.pt:10
+msgid "public_information_of"
+msgstr ""
+
+#. Default: Last Login
+#: ./dbas/templates/user.pt:14
+msgid "last_login"
+msgstr ""
+
+#. Default: Registered Since
+#: ./dbas/templates/user.pt:18
+msgid "registered_since"
+msgstr ""
+
+#. Default: Profile Picture of
+#: ./dbas/templates/user.pt:26
+msgid "profile_picture_of"
 msgstr ""
 
 #. Default: Current discussion is about
