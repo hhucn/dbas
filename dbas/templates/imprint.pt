@@ -102,6 +102,11 @@
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
+					<span class="project lead">0.5.11 (2016-04-27)</span>
+					<ul>
+						<li>Public user page</li>
+                        <li>Settings for hiding your real nickname behind a fake one</li>
+					</ul>
 					<span class="project lead">0.5.10 (2016-04-26)</span>
 					<ul>
 						<li>Bugfixes</li>

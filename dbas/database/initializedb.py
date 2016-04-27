@@ -15,7 +15,7 @@ import random
 from math import trunc
 from dbas.logger import logger
 from dbas.user_management import PasswordHandler
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, and_
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue,\
 	Notification, Settings, VoteArgument, VoteStatement, StatementReferences
@@ -385,7 +385,7 @@ def setup_up_users(session):
 	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group1.uid, gender='m')
 	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group0.uid, gender='m')
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
-	usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='tobias.krauthoff@hhu.de', password=pwt, group=group2.uid, gender='m')
+	usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='.tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
 	usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='t.obias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
 	usert02 = User(firstname='Torben', surname='Hartl', nickname='Torben', email='to.bias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
 	usert03 = User(firstname='Thorsten', surname='Scherer', nickname='Thorsten', email='tob.ias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
@@ -424,19 +424,73 @@ def setup_up_users(session):
 	session.flush()
 
 	# adding settings
-	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True)
-	settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True)
-	settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True)
-	settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True)
-	settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True)
-	settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True)
-	settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True)
-	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True)
-	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True)
-	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True)
-	session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7])
-	session.add_all([settings8, settings9])
+	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings10 = Settings(author_uid=user10.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst00 = Settings(author_uid=usert00.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst01 = Settings(author_uid=usert01.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst02 = Settings(author_uid=usert02.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst03 = Settings(author_uid=usert03.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst04 = Settings(author_uid=usert04.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst05 = Settings(author_uid=usert05.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst06 = Settings(author_uid=usert06.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst07 = Settings(author_uid=usert07.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst08 = Settings(author_uid=usert08.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst09 = Settings(author_uid=usert09.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst10 = Settings(author_uid=usert10.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst11 = Settings(author_uid=usert11.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst12 = Settings(author_uid=usert12.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst13 = Settings(author_uid=usert13.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst14 = Settings(author_uid=usert14.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst15 = Settings(author_uid=usert15.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst16 = Settings(author_uid=usert16.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst17 = Settings(author_uid=usert17.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst18 = Settings(author_uid=usert18.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst19 = Settings(author_uid=usert19.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst20 = Settings(author_uid=usert20.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst21 = Settings(author_uid=usert21.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst22 = Settings(author_uid=usert22.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst23 = Settings(author_uid=usert23.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst24 = Settings(author_uid=usert24.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst25 = Settings(author_uid=usert25.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst26 = Settings(author_uid=usert26.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst27 = Settings(author_uid=usert27.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst28 = Settings(author_uid=usert28.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst29 = Settings(author_uid=usert29.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst30 = Settings(author_uid=usert30.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7, settings8])
+	session.add_all([settings9, settings10, settingst00, settingst01, settingst02, settingst03, settingst04, settingst05])
+	session.add_all([settingst06, settingst07, settingst08, settingst09, settingst10, settingst11, settingst12])
+	session.add_all([settingst13, settingst14, settingst15, settingst16, settingst17, settingst18, settingst19])
+	session.add_all([settingst20, settingst21, settingst22, settingst23, settingst24, settingst25, settingst26])
+	session.add_all([settingst27, settingst28, settingst29, settingst30])
 	session.flush()
+
+	from dbas.user_management import UserHandler
+	UserHandler.refresh_public_nickname(usert07)
+	UserHandler.refresh_public_nickname(usert08)
+	UserHandler.refresh_public_nickname(usert09)
+	UserHandler.refresh_public_nickname(usert10)
+	UserHandler.refresh_public_nickname(usert11)
+	UserHandler.refresh_public_nickname(usert12)
+	UserHandler.refresh_public_nickname(usert13)
+	UserHandler.refresh_public_nickname(usert14)
+	UserHandler.refresh_public_nickname(usert15)
+	UserHandler.refresh_public_nickname(usert16)
+	UserHandler.refresh_public_nickname(usert17)
+	UserHandler.refresh_public_nickname(usert18)
+	UserHandler.refresh_public_nickname(usert19)
+	UserHandler.refresh_public_nickname(usert20)
+	UserHandler.refresh_public_nickname(usert21)
+	UserHandler.refresh_public_nickname(usert22)
 
 	# Adding welcome notifications
 	notification0 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
@@ -476,29 +530,62 @@ def setup_dummy_votes(session):
 	arg_down = 0
 	stat_up = 0
 	stat_down = 0
+	max_interval = len(firstnames) - 1
 	for argument in db_arguments:
-		up_votes = random.randint(1, 50)
-		down_votes = random.randint(1, 50)
+		up_votes = random.randint(1, max_interval)
+		down_votes = random.randint(1, max_interval)
 		arg_up += up_votes
 		arg_down += down_votes
+
+		tmp_firstname = list(firstnames)
 		for i in range(0, up_votes):
-			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=firstnames[random.randint(0, len(firstnames)-1)]).first()
-			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
+			nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+			if not session.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+			                                               VoteArgument.author_uid == db_rnd_tst_user.uid,
+			                                               VoteArgument.is_up_vote == True,
+			                                               VoteArgument.is_valid == True)).first():
+				new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
+				tmp_firstname.remove(nick)
+
+		tmp_firstname = list(firstnames)
 		for i in range(0, down_votes):
-			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=firstnames[random.randint(0, len(firstnames)-1)]).first()
-			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
+			nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+			if not session.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+			                                               VoteArgument.author_uid == db_rnd_tst_user.uid,
+			                                               VoteArgument.is_up_vote == False,
+			                                               VoteArgument.is_valid == True)).first():
+				new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
+				tmp_firstname.remove(nick)
 
 	for statement in db_statements:
-		up_votes = random.randint(1, 50)
-		down_votes = random.randint(1, 50)
+		up_votes = random.randint(1, max_interval)
+		down_votes = random.randint(1, max_interval)
 		stat_up += up_votes
 		stat_down += down_votes
+
+		tmp_firstname = list(firstnames)
 		for i in range(0, up_votes):
-			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=firstnames[random.randint(0, len(firstnames)-1)]).first()
-			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
+			nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+			if not session.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+			                                                VoteStatement.author_uid == db_rnd_tst_user.uid,
+			                                                VoteStatement.is_up_vote == True,
+			                                                VoteStatement.is_valid == True)).first():
+				new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
+				tmp_firstname.remove(nick)
+
+		tmp_firstname = list(firstnames)
 		for i in range(0, down_votes):
-			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=firstnames[random.randint(0, len(firstnames)-1)]).first()
-			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
+			nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+			if not session.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+			                                                VoteStatement.author_uid == db_rnd_tst_user.uid,
+			                                                VoteStatement.is_up_vote == False,
+			                                                VoteStatement.is_valid == True)).first():
+				new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
+				tmp_firstname.remove(nick)
 
 	rat_arg_up = str(trunc(arg_up / len(db_arguments) * 100) / 100)
 	rat_arg_down = str(trunc(arg_down / len(db_arguments) * 100) / 100)

@@ -26,7 +26,7 @@
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="public_nickname">Public Nickname</span></td>
-							<td>${settings.db_public_nickname}</td>
+							<td id="value_public_nickname">${settings.db_public_nickname}</td>
 						</tr>
 						<tr>
 							<td><span class="lead">E-Mail</span></td>
@@ -37,7 +37,7 @@
 							<td>${settings.db_group}</td>
 						</tr>
 					</table>
-                    <a href="#" tal:attributes="href settings.public_page_url" i18n:translate="click_here_for_public_page">Click here for your public page</a>
+                    <a id="value_public_page" href="#" tal:attributes="href settings.public_page_url" i18n:translate="click_here_for_public_page">Click here for your public page</a>
 				</div>
 				<div class="col-md-5">
 					<h4><span class="glyphicon glyphicon-cog" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="settings">Settings</span></h4>

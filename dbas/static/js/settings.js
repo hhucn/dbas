@@ -206,18 +206,18 @@ function SettingsHandler(){
 	 * @param toggle_element
 	 * @param service
 	 */
-	this.setReceiveInformation = function(toggle_element, service) {
-		var should_send = toggle_element.prop('checked');
+	this.setUserSetting = function(toggle_element, service) {
+		var settings_value = toggle_element.prop('checked');
 		$.ajax({
-			url: 'ajax_set_user_receive_information',
+			url: 'ajax_set_user_setting',
 			method: 'GET',
-			data:{'should_send': should_send ? 'True': 'False', 'service': service},
+			data:{'settings_value': settings_value ? 'True': 'False', 'service': service},
 			dataType: 'json',
 			async: true
-		}).done(function setReceiveNotificationsDone(data) {
-			new SettingsHandler().callbackReceiveDone(data, toggle_element, should_send, service);
-		}).fail(function setReceiveNotificationsFail() {
-			new SettingsHandler().callbackReceiveFail(toggle_element, should_send, service);
+		}).done(function setUserSettingDone(data) {
+			new SettingsHandler().callbackDone(data, toggle_element, settings_value, service);
+		}).fail(function setUserSettingFail() {
+			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
 		});
 	};
 
@@ -225,30 +225,32 @@ function SettingsHandler(){
 	 *
 	 * @param jsonData
 	 * @param toggle_element
-	 * @param should_send
+	 * @param settings_value
 	 * @param service
 	 */
-	this.callbackReceiveDone = function (jsonData, toggle_element, should_send, service){
+	this.callbackDone = function (jsonData, toggle_element, settings_value, service){
 		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length == 0){
 			$('#' + settingsSuccessDialog).fadeIn();
+			$('#value_public_nickname').text(parsedData.public_nick);
+			$('#value_public_page').attr('href', parsedData.public_page_url);
 			new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 		} else {
-			new SettingsHandler().callbackReceiveFail(toggle_element, should_send, service);
+			new SettingsHandler().callbackReceiveFail(toggle_element, settings_value, service);
 		}
 	};
 
 	/**
 	 *
 	 * @param toggle_element
-	 * @param should_send
+	 * @param settings_value
 	 * @param service
 	 */
-	this.callbackReceiveFail = function (toggle_element, should_send, service){
+	this.callbackFail = function (toggle_element, settings_value, service){
 		$('#' + settingsAlertDialog).fadeIn();
 		new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
-		toggle_element.off('change').bootstrapToggle(should_send ? 'off' : 'on').change(function() {
-			new SettingsHandler().setReceiveInformation(toggle_element, service);
+		toggle_element.off('change').bootstrapToggle(settings_value ? 'off' : 'on').change(function() {
+			new SettingsHandler().setUserSetting(toggle_element, service);
 		});
 	}
 
@@ -561,15 +563,15 @@ $(function () {
 	});
 
 	$('#' + settingsReceiveNotifications).change(function notificationReceiverChange() {
-		new SettingsHandler().setReceiveInformation($(this), 'notification');
+		new SettingsHandler().setUserSetting($(this), 'notification');
 	});
 
 	$('#' + settingsReceiveMails).change(function emailReceiverChange() {
-		new SettingsHandler().setReceiveInformation($(this), 'mail');
+		new SettingsHandler().setUserSetting($(this), 'mail');
 	});
 
 	$('#' + settingsPublicNick).change(function publicNickChange() {
-		alert('TODO');
+		new SettingsHandler().setUserSetting($(this), 'public_nick');
 	});
 
 	// ajax loading animation

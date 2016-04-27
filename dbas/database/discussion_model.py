@@ -74,7 +74,7 @@ class User(DiscussionBase):
 	firstname = Column(Text, nullable=False)
 	surname = Column(Text, nullable=False)
 	nickname = Column(Text, nullable=False)
-	public_nick = Column(Text, nullable=False)
+	public_nickname = Column(Text, nullable=False)
 	email = Column(Text, nullable=False, unique=True)
 	gender = Column(Text, nullable=False)
 	password = Column(Text, nullable=False)
@@ -95,7 +95,7 @@ class User(DiscussionBase):
 		self.firstname = firstname
 		self.surname = surname
 		self.nickname = nickname
-		self.public_nick = nickname
+		self.public_nickname = nickname
 		self.email = email
 		self.gender = gender
 		self.password = password
@@ -128,8 +128,8 @@ class User(DiscussionBase):
 	def set_token(self, token):
 		self.token = token
 
-	def set_public_nick(self, nick):
-		self.public_nick = nick
+	def set_public_nickname(self, nick):
+		self.public_nickname = nick
 
 	def should_hold_the_login(self, keep_logged_in):
 		self.keep_logged_in = keep_logged_in
