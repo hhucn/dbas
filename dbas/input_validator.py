@@ -48,13 +48,15 @@ class Validator:
 
 		elif relation == 'rebut':
 			db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).join(Statement).first()
-			if not db_attacking_arg:
-				return False
-
 			db_attacked_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacked_arg_uid).join(Statement).first()
-			if not db_attacked_arg:
+			if not db_attacked_arg or not db_attacking_arg:
 				return False
 
+			# do have both arguments teh same conclusion?
 			return True if db_attacking_arg.conclusion_uid == db_attacked_arg.conclusion_uid and db_attacked_arg.conclusion_uid is not None else False
+
+		elif relation == 'end':
+			return True
+
 		else:
 			return False

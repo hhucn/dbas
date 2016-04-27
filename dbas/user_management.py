@@ -352,6 +352,26 @@ class UserHandler:
 		return return_array
 
 	@staticmethod
+	def get_information_of(db_user, lang):
+		"""
+		Returns public information of the given user
+
+		:param db_user: User
+		:param lang: ui_locales
+		:return:
+		"""
+		ret_dict = dict()
+		ret_dict['nickname']    = db_user.nickname
+		ret_dict['last_login']  = sql_timestamp_pretty_print(str(db_user.last_login), lang)
+		ret_dict['registered']  = sql_timestamp_pretty_print(str(db_user.registered), lang)
+		ret_dict['last_action'] = '#'#sql_timestamp_pretty_print(str(db_user.last_action), lang)
+		ret_dict['is_male']     = db_user.gender == 'm'
+		ret_dict['is_female']   = db_user.gender == 'f'
+		ret_dict['is_neutral']  = db_user.gender != 'm' and db_user.gender != 'f'
+
+		return ret_dict
+
+	@staticmethod
 	def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
 		"""
 
