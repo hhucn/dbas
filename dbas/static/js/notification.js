@@ -21,6 +21,16 @@ $(function () {
 			sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
 		});
 	});
+
+	// send notification to users
+	$('#send-notification').click(function () {
+		$('#popup-writing-notification').modal('show');
+		$('#popup-writing-notification-success').hide();
+		$('#popup-writing-notification-failed').hide();
+		$('#popup-writing-notification-send').click(function(){
+			sendNotification();
+		});
+	});
 });
 
 /**
@@ -110,5 +120,44 @@ sendAjaxForDeleteMessage = function(id) {
 	}).fail(function sendAjaxForDeleteMessageFail() {
 		$('#error-space').fadeIn();
 		$('#error-description').text('Requested failed');
+	});
+};
+
+/**
+ *
+ */
+sendNotification = function(){
+	var url = window.location.href,
+		splitted = url.split('/'),
+		title = $('#popup-writing-notification-title').val(),
+		text = $('#popup-writing-notification-text').val(),
+		recipient;
+	if (url.indexOf('/user/') != -1){
+		recipient = splitted[splitted.length - 1];
+	} else {
+		recipient = $('#from_author_value').text();
+	}
+
+	$('#popup-writing-notification-success').hide();
+	$('#popup-writing-notification-failed').hide();
+
+	$.ajax({
+		url: 'ajax_send_notification',
+		type: 'POST',
+		data: {title: title, text: text, recipient: recipient},
+		dataType: 'json',
+		async: true
+	}).done(function ajaxSendNewsDone(data) {
+		var parsedData = $.parseJSON(data);
+		if (parsedData.error.length == 0) {
+			$('#popup-writing-notification-success').show();
+			$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
+		} else {
+			$('#popup-writing-notification-failed').show();
+			$('#popup-writing-notification-failed-message').html(parsedData.error);
+		}
+	}).fail(function ajaxSendNewsFail() {
+		$('#popup-writing-notification-failed').show();
+		$('#popup-writing-notification-failed-message').html(_t(internalError));
 	});
 };

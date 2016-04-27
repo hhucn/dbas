@@ -157,6 +157,7 @@ var noEntries                                       = 'noEntries';
 var noEntriesFor                                    = 'noEntriesFor';
 var note 											= 'note';
 var number 											= 'number';
+var notificationWasSend                             = 'notificationWasSend';
 var opinionBarometer                                = 'opinionBarometer';
 var options                                         = 'options';
 var report 											= 'report';
@@ -308,6 +309,7 @@ var dbas_en = {
 	'notInsertedErrorBecauseUnknown': 'Your idea was not inserted due to an unkown error.',
 	'notInsertedErrorBecauseInternal': 'Your idea was not inserted due to an internal error.',
 	'notInsertedErrorBecauseTooShort': 'Your idea was not inserted due to the shortness.',
+	'notificationWasSend': 'Notification was send!',
 	'noEntriesFor': 'No entries for',
 	'noTrackedData': 'No data was tracked.',
 	'number': 'No',
@@ -447,6 +449,7 @@ var dbas_de = {
 	'notInsertedErrorBecauseUnknown': 'Ihre Idee wurde aufgrund eines unbekannten Fehlers nicht gespeichert.',
 	'notInsertedErrorBecauseInternal': 'Ihre Idee wurde aufgrund eines internen Fehlers nicht gespeichert.',
 	'notInsertedErrorBecauseTooShort': 'Ihre Idee wurde aufgrund der Kürze nicht gespeichert.',
+	'notificationWasSend': 'Nachricht wurde gesendet',
 	'noEntries': 'Keine Einträge vorhanden',
 	'noEntriesFor': 'Keine Einträge vorhanden für',
 	'noTrackedData': 'Keine Daten wurden gespeichert.',

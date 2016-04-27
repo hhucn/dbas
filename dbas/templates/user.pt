@@ -12,10 +12,6 @@
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="last_login">Last Login</span></td>
-                            <td>${user.last_action}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="last_activity">Last Activity</span></td>
                             <td>${user.last_login}</td>
 						</tr>
 						<tr>
@@ -53,6 +49,10 @@
 					</table>
 				</div>
             </div>
+            <img style="width: 50px; float: right;" id="send-notification" class="icon-badge send-notification" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
         </div>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
+
 	</tal:block>
 </tal:block>

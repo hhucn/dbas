@@ -705,6 +705,7 @@ class Dbas(object):
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+
 		if session_expired:
 			return self.user_logout(True)
 
@@ -794,13 +795,19 @@ class Dbas(object):
 
 		user_dict = UserHandler.get_information_of(current_user, ui_locales)
 
+		db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
+		can_send_notification = False
+		if db_user_of_request:
+			can_send_notification = current_user.uid != db_user_of_request.uid
+
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'User ' + nickname,
 			'project': project_name,
 			'extras': extras_dict,
-			'user': user_dict
+			'user': user_dict,
+			'can_send_notification': can_send_notification
 		}
 
 	# imprint
@@ -1289,6 +1296,41 @@ class Dbas(object):
 		return_dict = {'error': error, 'public_nick': public_nick, 'public_page_url': public_page_url}
 		return json.dumps(return_dict, True)
 
+	# ajax - sending notification
+	@view_config(route_name='ajax_send_notification', renderer='json')
+	def send_notification(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('send_notification', 'def', 'main, self.request.params: ' + str(self.request.params))
+
+		error = ''
+		_tn = Translator(get_language(self.request, get_current_registry()))
+
+		try:
+			recipient = self.request.params['recipient']
+			title     = self.request.params['title']
+			text      = self.request.params['text']
+			db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
+			if len(title) < 5 or len(text) < 5:
+				error = _tn.get(_tn.empty_notification_input)
+			elif not recipient:
+				error = _tn.get(_tn.recipientNotFound)
+			else:
+				db_author = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
+				if not db_author:
+					error = _tn.get(_tn.notLoggedIn)
+				else:
+					NotificationHelper.send_message(db_author, db_recipient, title, text, transaction)
+
+		except KeyError as e:
+			error = _tn.get(_tn.internalError)
+
+		return_dict = {'error': error}
+		return json.dumps(return_dict, True)
+
 
 # #######################################
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
@@ -1526,7 +1568,7 @@ class Dbas(object):
 			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
 			transaction.commit()
 			return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
-			return_dict['total_messages'] = str(len(NotificationHelper.get_notification_for(self.request.authenticated_userid)))
+			return_dict['total_messages'] = str(len(NotificationHelper.get_notification_for(self.request.authenticated_userid, ui_locales, mainpage)))
 			return_dict['error'] = ''
 			return_dict['success'] = _t.get(_t.messageDeleted)
 		except KeyError as e:

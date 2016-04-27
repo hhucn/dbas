@@ -80,6 +80,7 @@ def main(global_config, **settings):
 	config.add_route('main_notification',       '/notifications')
 	config.add_route('main_news',               '/news')
 	config.add_route('main_imprint',            '/imprint')
+	config.add_route('ajax_send_notification',  '{url:.*}ajax_send_notification')
 	config.add_route('main_user',               '/user/{nickname}')
 
 	# ajax for navigation logic, administration, settings and editing/viewing log

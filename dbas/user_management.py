@@ -470,7 +470,6 @@ class UserHandler:
 		ret_dict['public_nick'] = db_user.public_nickname
 		ret_dict['last_login']  = sql_timestamp_pretty_print(str(db_user.last_login), lang)
 		ret_dict['registered']  = sql_timestamp_pretty_print(str(db_user.registered), lang)
-		ret_dict['last_action'] = sql_timestamp_pretty_print(str(db_user.last_action), lang)
 
 		ret_dict['is_male']     = db_user.gender == 'm'
 		ret_dict['is_female']   = db_user.gender == 'f'
