@@ -895,7 +895,7 @@ msgstr "Send News"
 #. Default: Send Notifcation
 #: dbas/templates/snippet-popups.pt:651
 msgid "send_notification"
-msgstr "Notifcation"
+msgstr "Send Notifcation"
 
 #. Default: Personal Information
 #: dbas/templates/settings.pt:13

@@ -709,7 +709,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, append_notifications=True)
 
 		return {
 			'layout': self.base_layout(),
@@ -1568,7 +1568,8 @@ class Dbas(object):
 			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
 			transaction.commit()
 			return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
-			return_dict['total_messages'] = str(len(NotificationHelper.get_notification_for(self.request.authenticated_userid, ui_locales, mainpage)))
+			return_dict['total_in_messages'] = str(len(NotificationHelper.get_box_for(self.request.authenticated_userid, ui_locales, mainpage, True)))
+			return_dict['total_out_messages'] = str(len(NotificationHelper.get_box_for(self.request.authenticated_userid, ui_locales, mainpage, False)))
 			return_dict['error'] = ''
 			return_dict['success'] = _t.get(_t.messageDeleted)
 		except KeyError as e:

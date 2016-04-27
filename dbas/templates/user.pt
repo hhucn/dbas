@@ -49,7 +49,7 @@
 					</table>
 				</div>
             </div>
-            <img style="width: 50px; float: right;" id="send-notification" class="icon-badge send-notification" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
+            <img style="width: 50px; float: right;" class="answer-notification icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
         </div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>

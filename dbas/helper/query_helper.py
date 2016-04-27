@@ -34,7 +34,7 @@ class QueryHelper:
 
 		:param uid: Argument.uid
 		:param lang: ui_locales
-		:param mainapge: url
+		:param mainpage: url
 		:return: dict()
 		"""
 		return_dict = dict()
