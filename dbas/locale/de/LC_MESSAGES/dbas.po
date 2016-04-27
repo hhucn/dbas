@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-27 16:12+0200\n"
+"POT-Creation-Date: 2016-04-27 22:32+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -516,7 +516,7 @@ msgstr "Fax"
 #: dbas/templates/snippet-popups.pt:75 dbas/templates/snippet-popups.pt:120
 #: dbas/templates/snippet-popups.pt:156 dbas/templates/snippet-popups.pt:229
 #: dbas/templates/snippet-popups.pt:443 dbas/templates/snippet-popups.pt:482
-#: dbas/templates/snippet-popups.pt:619 dbas/templates/snippet-popups.pt:652
+#: dbas/templates/snippet-popups.pt:619 dbas/templates/snippet-popups.pt:653
 msgid "close"
 msgstr "Schließen"
 
@@ -872,7 +872,7 @@ msgstr "Argumente"
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:568 dbas/templates/snippet-popups.pt:599
-#: dbas/templates/snippet-popups.pt:641 dbas/templates/content.pt:281
+#: dbas/templates/snippet-popups.pt:642 dbas/templates/content.pt:281
 #: dbas/templates/content.pt:304
 msgid "error:"
 msgstr "Fehler:"
@@ -893,7 +893,7 @@ msgid "writing_message"
 msgstr "Neue Nachricht schreiben"
 
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:604 dbas/templates/snippet-popups.pt:646
+#: dbas/templates/snippet-popups.pt:604 dbas/templates/snippet-popups.pt:647
 msgid "success:"
 msgstr "Erfolg:"
 
@@ -908,7 +908,7 @@ msgid "send_news"
 msgstr "News abschicken"
 
 #. Default: Send Notifcation
-#: dbas/templates/snippet-popups.pt:651
+#: dbas/templates/snippet-popups.pt:652
 msgid "send_notification"
 msgstr "Nachricht senden"
 
@@ -1147,20 +1147,51 @@ msgstr "Sie haben"
 msgid "unreadNotificationAnd"
 msgstr "ungelesene Benachrichtigungen und"
 
-#. Default: total.
+#. Default: total in the inbox.
 #: dbas/templates/notifications.pt:17
-msgid "total"
-msgstr "insgesamt."
+msgid "totalInTheInbox"
+msgstr "gesamt im Eingang"
+
+#. Default: There are
+#: dbas/templates/notifications.pt:18
+msgid "thereAre"
+msgstr "Es sind"
+
+#. Default: in the outbox.
+#: dbas/templates/notifications.pt:20
+msgid "inTheOutbox"
+msgstr "im Ausgang."
+
+#. Default: Inbox
+#: dbas/templates/notifications.pt:39
+msgid "inbox"
+msgstr "Eingang"
+
+#. Default: Outbox
+#: dbas/templates/notifications.pt:40
+msgid "outbox"
+msgstr "Ausgang"
 
 #. Default: From:
-#: dbas/templates/notifications.pt:44
+#: dbas/templates/notifications.pt:60 dbas/templates/notifications.pt:67
 msgid "from"
 msgstr "Von:"
 
 #. Default: answer
-#: dbas/templates/notifications.pt:49
+#: dbas/templates/notifications.pt:72
 msgid "answer"
 msgstr "antworten"
+
+#. Default: To:
+#. Default: to:
+#: dbas/templates/notifications.pt:89 dbas/templates/notifications.pt:96
+msgid "to"
+msgstr "An:"
+
+#. Default: forward
+#: dbas/templates/notifications.pt:101
+msgid "forward"
+msgstr "weiterleiten"
 
 #. Default: JavaScript is not enabled:
 #: dbas/templates/basetemplate.pt:36
@@ -1256,6 +1287,9 @@ msgstr "Insel-Ansicht"
 #: dbas/templates/content.pt:340
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "total"
+#~ msgstr "insgesamt."
 
 #~ msgid "dashboard"
 #~ msgstr "Übersicht"
