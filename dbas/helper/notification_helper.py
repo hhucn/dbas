@@ -122,7 +122,7 @@ class NotificationHelper:
 
 		message_array = []
 		for message in db_messages:
-			db_from_author              = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first()
+			db_from_author                  = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first()
 			tmp_dict = dict()
 			tmp_dict['id']                  = str(message.uid)
 			tmp_dict['show_from_author']    = db_from_author.public_nickname != 'admin'
