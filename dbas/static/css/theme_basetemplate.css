@@ -436,6 +436,24 @@ comment .container and wrap each container with <div class="coloured-div">
 	padding: 10px;
 }
 
+#popup-writing-news-title,
+#popup-writing-news-text,
+#popup-writing-notification-title,
+#popup-writing-notification-text{
+	padding-left: 3em;
+}
+
+#popup-writing-news-title,
+#popup-writing-notification-title{
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-605-text-size.png) no-repeat 12px 10px;
+}
+
+#popup-writing-news-text,
+#popup-writing-notification-text{
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat 12px 10px;
+	resize: vertical;
+}
+
 #insert_statements_options{
 	list-style-type: none;
 	cursor: pointer;

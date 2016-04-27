@@ -37,7 +37,7 @@
 							<td>${settings.db_group}</td>
 						</tr>
 					</table>
-                    <a id="value_public_page" href="#" tal:attributes="href settings.public_page_url" i18n:translate="click_here_for_public_page">Click here for your public page</a>
+                    <a id="value_public_page" href="#" target="_blank" tal:attributes="href settings.public_page_url" i18n:translate="click_here_for_public_page">Click here for your public page</a>
 				</div>
 				<div class="col-md-5">
 					<h4><span class="glyphicon glyphicon-cog" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="settings">Settings</span></h4>
