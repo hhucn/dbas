@@ -32,28 +32,28 @@ Then follow these steps:
 
 1. Create virtualenv with python3:
 
-    mkvirtualenv "--python=$(which python3)" dbas
+        mkvirtualenv "--python=$(which python3)" dbas
     
 2. Install all requirements:
 
-    pip install -r requirements.txt
+        pip install -r requirements.txt
 
 3. Develop application:
 
-    python setup.py develop
+        python setup.py develop
 
 4. Install PostgreSQL and configure it:
 
-    apt-get install libpq-dev python-dev postgresql
+        apt-get install libpq-dev python-dev postgresql
 
 6. Create database:
 
-    make init
-    make all
+        make init
+        make all
 
 7. Start development web server:
 
-    pserve development.ini --reload
+        pserve development.ini --reload
 
 
 ## Testing
