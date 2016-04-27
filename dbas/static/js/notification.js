@@ -26,6 +26,7 @@ $(function () {
 	$('.answer-notification').each(function () {
 		$(this).click(function(){
 			var _this = $(this);
+			$('popup-writing-notification-recipient').hide();
 			$('#popup-writing-notification').modal('show');
 			$('#popup-writing-notification-success').hide();
 			$('#popup-writing-notification-failed').hide();
@@ -48,12 +49,14 @@ $(function () {
 		$('#popup-writing-notification').modal('show');
 		$('#popup-writing-notification-success').hide();
 		$('#popup-writing-notification-failed').hide();
+		$('popup-writing-notification-recipient').show();
 	});
 
 	// send notification to users
 	$('.forward-notification').each(function () {
 		$(this).click(function(){
 			var _this = $(this);
+			$('popup-writing-notification-recipient').hide();
 			$('#popup-writing-notification').modal('show');
 			$('#popup-writing-notification-success').hide();
 			$('#popup-writing-notification-failed').hide();
