@@ -23,12 +23,48 @@ $(function () {
 	});
 
 	// send notification to users
-	$('#send-notification').click(function () {
+	$('.answer-notification').each(function () {
+		$(this).click(function(){
+			var _this = $(this);
+			$('#popup-writing-notification').modal('show');
+			$('#popup-writing-notification-success').hide();
+			$('#popup-writing-notification-failed').hide();
+			$('#popup-writing-notification-send').click(function(){
+				var url = window.location.href,
+					splitted = url.split('/'),
+					recipient;
+				if (url.indexOf('/user/') != -1){
+					recipient = splitted[splitted.length - 1];
+				} else {
+					recipient = _this.prev().text();
+				}
+				sendNotification(recipient.trim());
+			});
+		});
+	});
+
+	// send notification to users
+	$('#new-notification').click(function () {
 		$('#popup-writing-notification').modal('show');
 		$('#popup-writing-notification-success').hide();
 		$('#popup-writing-notification-failed').hide();
-		$('#popup-writing-notification-send').click(function(){
-			sendNotification();
+	});
+
+	// send notification to users
+	$('.forward-notification').each(function () {
+		$(this).click(function(){
+			var _this = $(this);
+			$('#popup-writing-notification').modal('show');
+			$('#popup-writing-notification-success').hide();
+			$('#popup-writing-notification-failed').hide();
+			var panel = $(this).parent().parent().parent().parent(),
+				title = panel.find('.notification-title').text(),
+				content = panel.find('.notification-content').text();
+			$('#popup-writing-notification-title').val(title);
+			$('#popup-writing-notification-text').text(content);
+			$('#popup-writing-notification-send').click(function() {
+				sendNotification(_this.prev().text().trim());
+			});
 		});
 	});
 });
@@ -110,7 +146,8 @@ sendAjaxForDeleteMessage = function(id) {
 		if (parsedData.success.length > 0) {
 			$('#' + id).remove();
 			setNewBadgeCounter(parsedData.unread_messages);
-			$('#total_counter').text(parsedData.total_messages);
+			$('#total_in_counter').text(parsedData.total_in_messages);
+			$('#total_out_counter').text(parsedData.total_out_messages);
 			$('#success-space').fadeIn();
 			$('#success-description').text(parsedData.success);
 		} else {
@@ -125,21 +162,15 @@ sendAjaxForDeleteMessage = function(id) {
 
 /**
  *
+ * @param recipient
  */
-sendNotification = function(){
-	var url = window.location.href,
-		splitted = url.split('/'),
-		title = $('#popup-writing-notification-title').val(),
-		text = $('#popup-writing-notification-text').val(),
-		recipient;
-	if (url.indexOf('/user/') != -1){
-		recipient = splitted[splitted.length - 1];
-	} else {
-		recipient = $('#from_author_value').text();
-	}
+sendNotification = function(recipient){
+	var title = $('#popup-writing-notification-title').val(),
+		text = $('#popup-writing-notification-text').val();
 
 	$('#popup-writing-notification-success').hide();
 	$('#popup-writing-notification-failed').hide();
+	alert(recipient);
 
 	$.ajax({
 		url: 'ajax_send_notification',
@@ -152,6 +183,8 @@ sendNotification = function(){
 		if (parsedData.error.length == 0) {
 			$('#popup-writing-notification-success').show();
 			$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
+			$('#popup-writing-notification-title').val('');
+			$('#popup-writing-notification-text').text('');
 		} else {
 			$('#popup-writing-notification-failed').show();
 			$('#popup-writing-notification-failed-message').html(parsedData.error);

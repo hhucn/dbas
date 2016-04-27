@@ -64,17 +64,18 @@ class DictionaryHelper(object):
 
 		return return_dict
 
-	def prepare_extras_dict_for_normal_page(self, nickname):
+	def prepare_extras_dict_for_normal_page(self, nickname, append_notifications=False):
 		"""
 		Calls self.prepare_extras_dict('', False, False, False, False, False, nickname)
 		:param nickname: Users.nickname
+		:param append_notifications: Boolean
 		:return: dict()
 		"""
-		return self.prepare_extras_dict('', False, False, False, False, False, nickname)
+		return self.prepare_extras_dict('', False, False, False, False, False, nickname, append_notifications=append_notifications)
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon,
 	                        show_display_styles, show_expert_icon, authenticated_userid, argument_id=0,
-	                        application_url='', for_api=False,):
+	                        application_url='', for_api=False, append_notifications=False):
 		"""
 		Creates the extras.dict() with many options!
 
@@ -88,6 +89,7 @@ class DictionaryHelper(object):
 		:param argument_id: Argument.uid
 		:param application_url: String
 		:param for_api: Boolean
+		:param append_notifications: BOolean
 		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_extras_dict', 'def')
@@ -164,8 +166,13 @@ class DictionaryHelper(object):
 			message_dict = dict()
 			message_dict['new_count']    = NotificationHelper.count_of_new_notifications(authenticated_userid)
 			message_dict['has_unread']   = (message_dict['new_count'] > 0)
-			message_dict['all']		     = NotificationHelper.get_notification_for(authenticated_userid, self.lang, application_url)
-			message_dict['total']		 = len(message_dict['all'])
+			inbox = NotificationHelper.get_box_for(authenticated_userid, self.lang, application_url, True)
+			outbox = NotificationHelper.get_box_for(authenticated_userid, self.lang, application_url, False)
+			if append_notifications:
+				message_dict['inbox']	 = inbox
+				message_dict['outbox']	 = outbox
+			message_dict['total_in']     = len(inbox)
+			message_dict['total_out']    = len(outbox)
 			return_dict['notifications'] = message_dict
 
 			# add everything for the island view
