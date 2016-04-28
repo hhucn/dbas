@@ -6,7 +6,7 @@
 $(function () {
 	'use strict';
 
-	$.each($('#message-space .panel-title-link'), function ajaxLinksRead() {
+	$.each($('#message-').find('.panel-title-link'), function ajaxLinksRead() {
 		$(this).click(function(){
 			var id = $(this).parent().parent().parent().attr('id');
 			if ($(this).html().indexOf('<strong') != -1) {
@@ -15,7 +15,7 @@ $(function () {
 		});
 	});
 
-	$.each($('#message-space .glyphicon-trash'), function ajaxLinksDelete() {
+	$.each($('#message-').find('.glyphicon-trash'), function ajaxLinksDelete() {
 		$(this).off('click').click(function(){
 			$(this).parent().parent().attr('href','');
 			sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
@@ -169,6 +169,51 @@ sendAjaxForDeleteMessage = function(id) {
 /**
  *
  * @param recipient
+ * @param recipient_avatar
+ * @param title
+ * @param text
+ * @param timestamp
+ * @param uid
+ */
+appendMessageInOutbox = function(recipient, recipient_avatar, title, text, timestamp, uid) {
+	var panel_html = '' +
+		'<div class="panel panel-default" style="margin-bottom: 1em;" id="' + uid + '">' +
+			'<div class="panel-heading">' +
+				'<h4 class="panel-title">' +
+					'<a class="accordion-toggle panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse' + uid + '">' +
+						'<span class="text-primary notification-title">aaaaaaaaaaaaaaaaaaaaaaa</span>' +
+					'</a>' +
+					'<span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" data-toggle="tooltip" data-placement="bottom" title="Delete"></span>' +
+					'<span style="float: right; padding-right: 1em;"><span>To:</span> ' + recipient + ', ' + timestamp + '</span>' +
+				'</h4>' +
+			'</div>' +
+			'<div id="collapse' + uid + '" class="panel-collapse collapse">' +
+				'<div class="panel-body">' +
+					'<div class="notification-content">bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</div>' +
+					'<div style="float:right; padding: 0.2em;">' +
+						'<span>To:</span>' +
+						'<a href="/user/' + recipient + '" target="_blank" class="to_author_value">' +
+							recipient +
+							'<img src="' + recipient_avatar + '">' +
+						'</a>' +
+						'<a href="#" class="btn btn-primary btn-xs forward-notification">forward</a>' +
+					'</div>' +
+				'</div>' +
+			'</div>' +
+		'</div>';
+	$('#outbox').find('.panel-group').append(panel_html);
+
+	$.each($('#message-space').find('.glyphicon-trash'), function ajaxLinksDelete() {
+		$(this).off('click').click(function(){
+			$(this).parent().parent().attr('href','');
+			sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
+		});
+	});
+};
+
+/**
+ *
+ * @param recipient
  */
 sendNotification = function(recipient){
 	var title = $('#popup-writing-notification-title').val(),
@@ -188,6 +233,9 @@ sendNotification = function(recipient){
 		if (parsedData.error.length == 0) {
 			$('#popup-writing-notification-success').show();
 			$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
+			var out_counter = $('#total_out_counter');
+			out_counter.text(' ' + (parseInt(out_counter.text()) + 1) + ' ');
+			appendMessageInOutbox(recipient, parsedData.recipient_avatar, title, text, parsedData.timestamp, parsedData.uid)
 		} else {
 			$('#popup-writing-notification-failed').show();
 			$('#popup-writing-notification-failed-message').html(parsedData.error);

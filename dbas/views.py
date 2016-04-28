@@ -1307,7 +1307,11 @@ class Dbas(object):
 		logger('send_notification', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		error = ''
-		_tn = Translator(get_language(self.request, get_current_registry()))
+		ts = ''
+		uid = ''
+		gravatar = ''
+		ui_locales = get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
 
 		try:
 			recipient = self.request.params['recipient']
@@ -1323,12 +1327,13 @@ class Dbas(object):
 				if not db_author:
 					error = _tn.get(_tn.notLoggedIn)
 				else:
-					NotificationHelper.send_message(db_author, db_recipient, title, text, transaction)
+					uid, ts = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction, ui_locales)
+					gravatar = UserHandler.get_profile_picture(db_recipient, 20)
 
-		except KeyError as e:
+		except KeyError:
 			error = _tn.get(_tn.internalError)
 
-		return_dict = {'error': error}
+		return_dict = {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
 		return json.dumps(return_dict, True)
 
 
