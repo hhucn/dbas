@@ -47,10 +47,10 @@ class NotificationHelper:
 
 		# send notifications
 		if send_for_root_author:
-			notification_to_root_author = Notification(from_author_uid=new_author, to_author_uid=root_author, topic=topic, content=content)
+			notification_to_root_author  = Notification(from_author_uid=new_author, to_author_uid=root_author, topic=topic, content=content, is_inbox=True)
 			DBDiscussionSession.add(notification_to_root_author)
 		if last_author != root_author and send_for_last_author:
-			notification_to_last_author = Notification(from_author_uid=new_author, to_author_uid=last_author, topic=topic, content=content)
+			notification_to_last_author  = Notification(from_author_uid=new_author, to_author_uid=last_author, topic=topic, content=content, is_inbox=True)
 			DBDiscussionSession.add(notification_to_last_author)
 
 		DBDiscussionSession.flush()
@@ -68,26 +68,37 @@ class NotificationHelper:
 		_tn = Translator(lang)
 		topic = _tn.get(_tn.welcome)
 		content = _tn.get(_tn.welcomeMessage)
-		notification = Notification(from_author_uid=1, to_author_uid=user, topic=topic, content=content)
+		notification = Notification(from_author_uid=1, to_author_uid=user, topic=topic, content=content, is_inbox=True)
 		DBDiscussionSession.add(notification)
 		DBDiscussionSession.flush()
 		transaction.commit()
 
 	@staticmethod
-	def send_message(from_user, to_user, topic, content, transaction):
+	def send_message(from_user, to_user, topic, content, transaction, lang):
 		"""
+		Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
-		:param from_user:
-		:param to_user:
-		:param topic:
-		:param content:
-		:param transaction:
+		:param from_user: User
+		:param to_user: User
+		:param topic: String
+		:param content: String
+		:param transaction: transaction
+		:param lang: Notification
 		:return:
 		"""
-		notification = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content)
-		DBDiscussionSession.add(notification)
+		notification_in  = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=True)
+		notification_out = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=False, read=True)
+		DBDiscussionSession.add_all([notification_in, notification_out])
 		DBDiscussionSession.flush()
 		transaction.commit()
+
+		db_inserted_notification = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == from_user.uid,
+		                                                                               Notification.to_author_uid == to_user.uid,
+		                                                                               Notification.topic == topic,
+		                                                                               Notification.content == content,
+		                                                                               Notification.is_inbox == True)).order_by(Notification.uid.desc()).first()
+
+		return db_inserted_notification
 
 	@staticmethod
 	def count_of_new_notifications(user):
@@ -100,41 +111,55 @@ class NotificationHelper:
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
 		if db_user:
 			return len(DBDiscussionSession.query(Notification).filter(and_(Notification.to_author_uid == db_user.uid,
-			                                                               Notification.read == False)).all())
+			                                                               Notification.read == False,
+			                                                               Notification.is_inbox == True)).all())
 		else:
 			return 0
 
 	@staticmethod
-	def get_notification_for(user, lang, mainpage):
+	def get_box_for(user, lang, mainpage, is_inbox):
 		"""
 		Returns all notifications for the user
 
 		:param user: User.nickname
 		:param lang: ui_locales
 		:param mainpage: URL
+		:param is_inbox: Boolean
 		:return: [Notification]
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
 		if not db_user:
 			return []
 
-		db_messages = DBDiscussionSession.query(Notification).filter_by(to_author_uid=db_user.uid).all()
+		if is_inbox:
+			db_messages = DBDiscussionSession.query(Notification).filter(and_(Notification.to_author_uid == db_user.uid,
+		                                                                      Notification.is_inbox == is_inbox)).all()
+		else:
+			db_messages = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == db_user.uid,
+		                                                                      Notification.is_inbox == is_inbox)).all()
 
 		message_array = []
 		for message in db_messages:
-			db_from_author                  = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first()
 			tmp_dict = dict()
-			tmp_dict['id']                  = str(message.uid)
-			tmp_dict['show_from_author']    = db_from_author.public_nickname != 'admin'
-			tmp_dict['from_author']         = db_from_author.public_nickname
-			tmp_dict['from_author_avatar']  = UserHandler.get_profile_picture(db_from_author, size=30)
-			tmp_dict['from_author_url']     = mainpage + '/user/' + db_from_author.public_nickname
-			tmp_dict['timestamp']           = sql_timestamp_pretty_print(str(message.timestamp), lang)
-			tmp_dict['read']                = message.read
-			tmp_dict['topic']               = message.topic
-			tmp_dict['content']             = message.content
-			tmp_dict['collapse_link']       = '#collapse' + str(message.uid)
-			tmp_dict['collapse_id']         = 'collapse' + str(message.uid)
+			if is_inbox:
+				db_from_user                   = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first()
+				tmp_dict['show_from_author']   = db_from_user.public_nickname != 'admin'
+				tmp_dict['from_author']        = db_from_user.public_nickname
+				tmp_dict['from_author_avatar'] = UserHandler.get_profile_picture(db_from_user, size=30)
+				tmp_dict['from_author_url']    = mainpage + '/user/' + db_from_user.public_nickname
+			else:
+				db_to_user                   = DBDiscussionSession.query(User).filter_by(uid=message.to_author_uid).first()
+				tmp_dict['to_author']        = db_to_user.public_nickname
+				tmp_dict['to_author_avatar'] = UserHandler.get_profile_picture(db_to_user, size=30)
+				tmp_dict['to_author_url']    = mainpage + '/user/' + db_to_user.public_nickname
+
+			tmp_dict['id']            = str(message.uid)
+			tmp_dict['timestamp']     = sql_timestamp_pretty_print(str(message.timestamp), lang)
+			tmp_dict['read']          = message.read
+			tmp_dict['topic']         = message.topic
+			tmp_dict['content']       = message.content
+			tmp_dict['collapse_link'] = '#collapse' + str(message.uid)
+			tmp_dict['collapse_id']   = 'collapse' + str(message.uid)
 			message_array.append(tmp_dict)
 
 		return message_array

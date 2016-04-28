@@ -439,13 +439,17 @@ comment .container and wrap each container with <div class="coloured-div">
 #popup-writing-news-title,
 #popup-writing-news-text,
 #popup-writing-notification-title,
-#popup-writing-notification-text{
+#popup-writing-notification-text,
+#popup-writing-notification-recipient{
 	padding-left: 3em;
 }
 
 #popup-writing-news-title,
 #popup-writing-notification-title{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-605-text-size.png) no-repeat 12px 10px;
+}
+#popup-writing-notification-recipient{
+	background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat 12px 10px;
 }
 
 #popup-writing-news-text,

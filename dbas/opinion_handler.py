@@ -146,13 +146,14 @@ class OpinionHandler:
 		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
 	@staticmethod
-	def get_user_with_same_opinion_for_premisegroups(pgroup_uids, lang, nickname):
+	def get_user_with_same_opinion_for_premisegroups(pgroup_uids, lang, nickname, mainpage):
 		"""
 		Returns nested dictionary with all kinds of information about the votes of the premisegroups.
 
 		:param pgroup_uids: PremiseGroups.uid
 		:param lang: ui_locales ui_locales
 		:param nickname: User.nickname
+		:param mainpage: URL
 		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
 		"""
 		logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'PGroups ' + str(pgroup_uids))
@@ -185,7 +186,7 @@ class OpinionHandler:
 
 			for vote in db_votes:
 				voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-				users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang)
+				users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang, mainpage)
 				all_users.append(users_dict)
 			statement_dict['users'] = all_users
 
@@ -318,7 +319,6 @@ class OpinionHandler:
 		:param mainpage: Url
 		:return: dict()
 		"""
-		logger('--', db_user.nickname, db_user.public_nickname)
 		return {'nickname': db_user.public_nickname,
 		        'public_profile_url': mainpage + '/user/' + db_user.public_nickname,
 		        'avatar_url': UserHandler.get_public_profile_picture(db_user),

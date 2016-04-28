@@ -11,7 +11,8 @@ from selenium.common.exceptions import ElementNotVisibleException, WebDriverExce
 mainpage = 'http://localhost:4284/'
 testcounter = 0
 waittime = 0.3
-nickname = 'Pascal'
+nickname1 = 'Pascal'
+nickname2 = 'Kurt'
 password = 'iamatestuser2016'
 
 
@@ -140,23 +141,18 @@ class FrontendTests:
 
 	"""
 
-	def __init__(self, browser_style):
-		"""
-
-		:param self:
-		:param browser_style:
-		:return:
-		"""
-		self.browser_style = browser_style
-
-	def run_all_tests(self):
+	@staticmethod
+	def run_all_tests(browser_style, test_list):
 		"""
 		Just runs every test
+
+		:param browser_style: String
+		:param test_list: List
+		:return:
 		"""
 
 		# server check
-
-		if not Helper.test_wrapper('testing for connectivity to server', self.__check_for_server, self.browser_style):
+		if not Helper.test_wrapper('testing for connectivity to server', FrontendTests.__check_for_server, browser_style):
 			print('====================================================')
 			print('Exit gracefully!')
 			return
@@ -165,17 +161,41 @@ class FrontendTests:
 		testcounter = 0
 		success_counter = 0
 
+		splitted_list = test_list.split(',')
+		if len(splitted_list) == 1 and splitted_list[0] == 'a':
+			splitted_list = []
+			for i in range(11):
+				splitted_list.append(str(i))
+
 		start = time.time()
-		success_counter += Helper.test_wrapper('tests for normal pages', self.__test_pages_when_not_logged_in, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for login logout', self.__test_login_logout, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for logged in pages', self.__test_pages_when_logged_in, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for popups', self.__test_popups, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for contact formular', self.__test_contact_formular, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for language switch', self.__test_language_switch, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for discussion buttons', self.__test_discussion_buttons, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for demo discussion', self.__test_demo_discussion, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for demo discussion with all functions', self.__test_functions_while_discussion, self.browser_style)
-		success_counter += Helper.test_wrapper('tests for content', self.__test_content, self.browser_style)
+		while len(splitted_list) > 0:
+			if splitted_list[0].strip() == '0':
+				success_counter += Helper.test_wrapper('tests for normal pages', FrontendTests.__test_pages_when_not_logged_in, browser_style)
+			elif splitted_list[0].strip() == '1':
+				success_counter += Helper.test_wrapper('tests for login logout', FrontendTests.__test_login_logout, browser_style)
+			elif splitted_list[0].strip() == '2':
+				success_counter += Helper.test_wrapper('tests for logged in pages', FrontendTests.__test_pages_when_logged_in, browser_style)
+			elif splitted_list[0].strip() == '3':
+				success_counter += Helper.test_wrapper('tests for popups', FrontendTests.__test_popups, browser_style)
+			elif splitted_list[0].strip() == '4':
+				success_counter += Helper.test_wrapper('tests for contact formular', FrontendTests.__test_contact_formular, browser_style)
+			elif splitted_list[0].strip() == '5':
+				success_counter += Helper.test_wrapper('tests for language switch', FrontendTests.__test_language_switch, browser_style)
+			elif splitted_list[0].strip() == '6':
+				success_counter += Helper.test_wrapper('tests for discussion buttons', FrontendTests.__test_discussion_buttons, browser_style)
+			elif splitted_list[0].strip() == '7':
+				success_counter += Helper.test_wrapper('tests for demo discussion', FrontendTests.__test_demo_discussion, browser_style)
+			elif splitted_list[0].strip() == '8':
+				success_counter += Helper.test_wrapper('tests for demo discussion with all functions', FrontendTests.__test_functions_while_discussion, browser_style)
+			elif splitted_list[0].strip() == '9':
+				success_counter += Helper.test_wrapper('tests for content', FrontendTests.__test_content, browser_style)
+			elif splitted_list[0].strip() == '10':
+				success_counter += Helper.test_wrapper('tests for public user page', FrontendTests.__test_user_page, browser_style)
+			elif splitted_list[0].strip() == '11':
+				success_counter += Helper.test_wrapper('tests for notification system', FrontendTests.__test_notification_system, browser_style)
+			else:
+				print('Malicious list entry: ' + splitted_list[0])
+			splitted_list.remove(splitted_list[0])
 		end = time.time()
 
 		diff = str(end - start)
@@ -253,14 +273,14 @@ class FrontendTests:
 		print('Starting tests for login_logout:')
 		b = Browser(browser)
 
-		b = Helper.login(b, nickname, 'wrongpassword', mainpage)
+		b = Helper.login(b, nickname1, 'wrongpassword', mainpage)
 		test = 'testing wrong login'
 		success = success and Helper.check_for_present_text(b, 'do not match', test)
 
 		time.sleep(waittime)
-		b = Helper.login(b, nickname, password, mainpage)
+		b = Helper.login(b, nickname1, password, mainpage)
 		test = 'testing right login'
-		success = success and Helper.check_for_present_text(b, nickname, test)
+		success = success and Helper.check_for_present_text(b, nickname1, test)
 		time.sleep(waittime)
 
 		b = Helper.logout(b)
@@ -280,7 +300,7 @@ class FrontendTests:
 		success = True
 		print('Starting tests for pages_logged_in:')
 		b = Browser(browser)
-		b = Helper.login(b, nickname, password, mainpage)
+		b = Helper.login(b, nickname1, password, mainpage)
 
 		pages = [mainpage + 'settings',
 		         mainpage + 'notifications',
@@ -392,7 +412,7 @@ class FrontendTests:
 		print('Starting tests for discussion_buttons:')
 		b = Browser(browser)
 		success = True
-		b = Helper.login(b, nickname, password, mainpage + 'discussion')
+		b = Helper.login(b, nickname1, password, mainpage + 'discussion')
 
 		# check url popup
 		b.find_by_id('share-url').click()
@@ -448,7 +468,7 @@ class FrontendTests:
 		print('Starting tests for demo_discussion:')
 		success = True
 		b = Browser(browser)
-		b = Helper.login(b, nickname, password, mainpage + 'discussion')
+		b = Helper.login(b, nickname1, password, mainpage + 'discussion')
 
 		# position
 		success = success and Helper.check_for_present_text(b, 'initial ', 'check for position')
@@ -494,7 +514,7 @@ class FrontendTests:
 		print('Starting tests for functions_while_discussion:')
 		success = True
 		b = Browser(browser)
-		b = Helper.login(b, nickname, password, mainpage + 'discussion')
+		b = Helper.login(b, nickname1, password, mainpage + 'discussion')
 
 		# new position
 		b.find_by_css('#discussions-space-list li:last-child input').click()
@@ -528,7 +548,7 @@ class FrontendTests:
 		success = success and Helper.check_for_present_text(b, 'The discussion ends here.', 'check for end text')
 
 		# go back to first premise
-		#b.find_by_css('div.line-wrapper-r:first-child a').click()
+		# b.find_by_css('div.line-wrapper-r:first-child a').click()
 		b.find_by_css('#discussion-restart-btn').click()
 		b.find_by_text(position)[0].click()
 		b.find_by_css('#discussions-space-list li:first-child input').click()
@@ -572,7 +592,7 @@ class FrontendTests:
 		print('Starting tests for __test_content:')
 		success = True
 		b = Browser(browser)
-		b = Helper.login(b, nickname, password, mainpage + 'discussion')
+		b = Helper.login(b, nickname1, password, mainpage + 'discussion')
 
 		# start
 		b.visit(mainpage + 'discuss/town-has-to-cut-spending')
@@ -654,23 +674,135 @@ class FrontendTests:
 		b.quit()
 		return 1 if success else 0
 
+	@staticmethod
+	def __test_user_page(browser):
+		"""
+		Testing language switch
+		:param browser: current browser
+		:return: 1 if success else 0
+		"""
+		print('Starting tests for user_page:')
+		success = True
+		b = Browser(browser)
+		b = Helper.login(b, nickname1, password, mainpage + 'user/' + nickname1)
+
+		success = success and Helper.check_for_present_text(b, 'Public Information', 'check for public page')
+		success = success and Helper.check_for_present_text(b, nickname1, 'check for real nickname')
+
+		b.visit(mainpage + 'settings')
+		b.find_by_css('#info-table tr:last-child .toggle').click()
+		time.sleep(waittime)
+
+		b.visit(mainpage + 'user/' + nickname1)
+		success = success and Helper.check_for_present_text(b, '/user/' + nickname1, 'check for fake nickname')
+
+		b.visit(mainpage + 'settings')
+		b.find_by_css('#info-table tr:last-child .toggle').click()
+		time.sleep(waittime)
+
+		b.visit(mainpage + 'user/' + nickname1)
+		success = success and Helper.check_for_present_text(b, nickname1, 'check for real nickname again')
+
+		b = Helper.logout(b)
+		b.quit()
+		return 1 if success else 0
+
+	@staticmethod
+	def __test_notification_system(browser):
+		"""
+		Testing language switch
+		:param browser: current browser
+		:return: 1 if success else 0
+		"""
+		print('Starting tests for notification_system:')
+		success = True
+		b = Browser(browser)
+
+		b = Helper.login(b, nickname1, password, mainpage + 'notifications')
+
+		txt = 'You have got 0 unread notifications and 0 total in the inbox. There are 0 in the outbox.'
+		success = success and Helper.check_for_present_text(b, txt, 'check for zero notifications')
+
+		b.find_by_id('new-notification').click()
+		time.sleep(waittime)
+
+		# write message
+		b.find_by_id('popup-writing-notification-recipient').fill(nickname2)
+		b.find_by_id('popup-writing-notification-title').fill('Test notification')
+		b.find_by_id('popup-writing-notification-text').fill('This is a test notification for splinter tests')
+		b.find_by_id('popup-writing-notification-send').click()
+		time.sleep(waittime)
+
+		success = success and Helper.check_for_present_text(b, 'was send', 'check for send notifications')
+
+		b.visit(mainpage + 'notifications')
+		time.sleep(waittime)
+		txt = 'There are 1 in the outbox.'
+		success = success and Helper.check_for_present_text(b, txt, 'check for one outbox notifications')
+
+		b.find_by_id('outbox-link').click()
+		time.sleep(waittime)
+		success = success and Helper.check_for_present_text(b, 'Test notification', 'check for the notification in the outbox')
+
+		# delete message
+		b.find_by_css('.glyphicon-trash').click()
+		time.sleep(waittime)
+		success = success and Helper.check_for_present_text(b, 'deleted', 'check for deleted message')
+		success = success and Helper.check_for_present_text(b, 'There are 0 in the outbox.', 'check for zero outbox notifications')
+
+		b = Helper.logout(b)
+		b = Helper.login(b, nickname2, password, mainpage + 'notifications')
+		success = success and Helper.check_for_present_text(b, '* Test notification', 'check for one new notifications 1')
+		txt = 'You have got 1 unread notifications and 1 total in the inbox. There are 0 in the outbox.'
+		success = success and Helper.check_for_present_text(b, txt, 'check for one new notifications 2')
+
+		# delete message
+		b.find_by_css('.glyphicon-trash').click()
+		time.sleep(waittime)
+		success = success and Helper.check_for_present_text(b, 'deleted', 'check for deleted message')
+		txt = 'You have got 0 unread notifications and 0 total in the inbox. There are 0 in the outbox.'
+		success = success and Helper.check_for_present_text(b, txt, 'check for zero notifications')
+
+		b = Helper.logout(b)
+
+		b.quit()
+		return 1 if success else 0
+
 if __name__ == "__main__":
 	print('Please choose a webbrowser:')
 	print('  [b]reak')
 	print('  [c]hrome  (experimental)')
 	print('  [f]irefox (default)')
-	input_var = input("Enter: ")
+	input_browser = input('Enter: ')
+	print('')
 
-	if str(input_var) != 'b':
-		webdriver = 'chrome' if str(input_var) == 'c' else 'firefox'
+	print('Please choose a testing style:')
+	print('  [ a]ll (default)')
+	print('  [ 0] tests for normal pages')
+	print('  [ 1] tests for login logout')
+	print('  [ 2] tests for logged in pages')
+	print('  [ 3] tests for popups')
+	print('  [ 4] tests for contact formular')
+	print('  [ 5] tests for language switch')
+	print('  [ 6] tests for discussion buttons')
+	print('  [ 7] tests for demo discussion')
+	print('  [ 8] tests for demo discussion with all functions')
+	print('  [ 9] tests for content')
+	print('  [10] tests for public user page')
+	print('  [11] tests for notification system')
+	input_list = input('You can enter a number, like 3, or a list, like 5,2,9: ')
+
+	if str(input_browser) != 'b':
+		webdriver = 'chrome' if str(input_browser) == 'c' else 'firefox'
+		if len(list) == 0:
+			input_list = 'a'
 
 		print('')
 		print('-> Tests will be done with ' + webdriver)
 		print('')
 
 		try:
-			frontendtests = FrontendTests(webdriver)
-			frontendtests.run_all_tests()
+			FrontendTests.run_all_tests(webdriver, input_list)
 		except ConnectionResetError as e1:
 			print('  Server is offline found: ' + str(e1))
 		except FileNotFoundError as e2:

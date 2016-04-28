@@ -64,17 +64,18 @@ class DictionaryHelper(object):
 
 		return return_dict
 
-	def prepare_extras_dict_for_normal_page(self, nickname):
+	def prepare_extras_dict_for_normal_page(self, nickname, append_notifications=False):
 		"""
 		Calls self.prepare_extras_dict('', False, False, False, False, False, nickname)
 		:param nickname: Users.nickname
+		:param append_notifications: Boolean
 		:return: dict()
 		"""
-		return self.prepare_extras_dict('', False, False, False, False, False, nickname)
+		return self.prepare_extras_dict('', False, False, False, False, False, nickname, append_notifications=append_notifications)
 
 	def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon,
 	                        show_display_styles, show_expert_icon, authenticated_userid, argument_id=0,
-	                        application_url='', for_api=False,):
+	                        application_url='', for_api=False, append_notifications=False):
 		"""
 		Creates the extras.dict() with many options!
 
@@ -88,6 +89,7 @@ class DictionaryHelper(object):
 		:param argument_id: Argument.uid
 		:param application_url: String
 		:param for_api: Boolean
+		:param append_notifications: BOolean
 		:return: dict()
 		"""
 		logger('DictionaryHelper', 'prepare_extras_dict', 'def')
@@ -115,9 +117,9 @@ class DictionaryHelper(object):
 			return_dict['is_reportable']	             = is_reportable
 			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
 			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
-			return_dict['show_bar_icon']	             = show_bar_icon #and False
-			return_dict['show_display_style']            = show_display_styles #and False
-			return_dict['show_expert_icon']              = show_expert_icon #and False
+			return_dict['show_bar_icon']	             = show_bar_icon and False
+			return_dict['show_display_style']            = show_display_styles and False
+			return_dict['show_expert_icon']              = show_expert_icon and False
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
 			return_dict['date']	                         = datetime.strftime(datetime.now(), '%d.%m.%Y')
@@ -164,8 +166,13 @@ class DictionaryHelper(object):
 			message_dict = dict()
 			message_dict['new_count']    = NotificationHelper.count_of_new_notifications(authenticated_userid)
 			message_dict['has_unread']   = (message_dict['new_count'] > 0)
-			message_dict['all']		     = NotificationHelper.get_notification_for(authenticated_userid, self.lang, application_url)
-			message_dict['total']		 = len(message_dict['all'])
+			inbox = NotificationHelper.get_box_for(authenticated_userid, self.lang, application_url, True)
+			outbox = NotificationHelper.get_box_for(authenticated_userid, self.lang, application_url, False)
+			if append_notifications:
+				message_dict['inbox']	 = inbox
+				message_dict['outbox']	 = outbox
+			message_dict['total_in']     = len(inbox)
+			message_dict['total_out']    = len(outbox)
 			return_dict['notifications'] = message_dict
 
 			# add everything for the island view
@@ -199,14 +206,15 @@ class DictionaryHelper(object):
 					                                     'report_statement': _tn.get(_tn.reportTitle)}
 		return return_dict
 
-	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
-								at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False):
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False,
+								at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False,):
 		"""
 		Adds a speicif text when the discussion is at the end
 
 		:param discussion_dict: dict()
 		:param extras_dict: dict()
 		:param logged_in: Boolean
+		:param lang: ui_locales
 		:param at_start: Boolean
 		:param at_dont_know: Boolean
 		:param at_justify_argumentation: Boolean
@@ -224,7 +232,7 @@ class DictionaryHelper(object):
 			discussion_dict['mode'] = 'start'
 			user_text = _tn.get(_tn.firstPositionText) + '<br>'
 			user_text += _tn.get(_tn.pleaseAddYourSuggestion) if logged_in else (_tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin))
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_status=True, uid='end', message=user_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=lang))
 			if logged_in:
 				extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
 				extras_dict['close_statement_container'] = False
@@ -241,7 +249,7 @@ class DictionaryHelper(object):
 			extras_dict['show_display_style'] = False
 			if logged_in:
 				mid_text = _tn.get(_tn.firstOneReason)
-				discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+				discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=lang))
 			# else:
 			# 	mid_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
 
@@ -250,8 +258,8 @@ class DictionaryHelper(object):
 			sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
 			sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
 			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text))
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=lang))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=lang))
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'
@@ -265,7 +273,7 @@ class DictionaryHelper(object):
 			else:
 				mid_text += _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=lang))
 			extras_dict['close_premise_container'] = False
 			extras_dict['show_display_style']	   = False
 			extras_dict['show_bar_icon']		   = False
@@ -274,7 +282,7 @@ class DictionaryHelper(object):
 
 		else:
 			mid_text = _tn.get(_tn.discussionEnd) + ' ' + (_tn.get(_tn.discussionEndLinkText) if logged_in else _tn.get(_tn.feelFreeToLogin))
-			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, message=mid_text))
+			discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, message=mid_text, lang=lang))
 
 	def add_language_options_for_extra_dict(self, extras_dict):
 		"""
