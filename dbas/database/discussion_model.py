@@ -517,14 +517,16 @@ class Notification(DiscussionBase):
 	content = Column(Text, nullable=False)
 	timestamp = Column(DateTime(timezone=True), default=func.now())
 	read = Column(Boolean, nullable=False)
+	is_inbox = Column(Boolean, nullable=False)
 
-	def __init__(self, from_author_uid, to_author_uid, topic, content):
+	def __init__(self, from_author_uid, to_author_uid, topic, content, is_inbox=True, read=False):
 		self.from_author_uid = from_author_uid
 		self.to_author_uid = to_author_uid
 		self.topic = topic
 		self.content = content
 		self.timestamp = func.now()
-		self.read = False
+		self.read = read
+		self.is_inbox = is_inbox
 
 	def set_read(self, was_read):
 		"""

@@ -29,7 +29,7 @@ from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
 from .email import EmailHelper
 from .input_validator import Validator
-from .lib import get_language, escape_string, get_text_for_statement_uid
+from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print
 from .logger import logger
 from .recommender_system import RecommenderSystem
 from .news_handler import NewsHandler
@@ -161,7 +161,7 @@ class Dbas(object):
 		                                          application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
-			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
+			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_start=True)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -293,7 +293,7 @@ class Dbas(object):
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify=True,
 				                            current_premise=get_text_for_statement_uid(statement_or_arg_id),
 				                            supportive=supportive)
 
@@ -307,7 +307,7 @@ class Dbas(object):
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_dont_know=True,
 				                            current_premise=get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
@@ -320,7 +320,7 @@ class Dbas(object):
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
 		else:
 			logger('discussion_justify', 'def', '404')
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -709,7 +709,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, append_notifications=True)
 
 		return {
 			'layout': self.base_layout(),
@@ -1300,14 +1300,19 @@ class Dbas(object):
 	@view_config(route_name='ajax_send_notification', renderer='json')
 	def send_notification(self):
 		"""
+		Set a new message into the inbox of an recipient, and the outbox of the sender.
 
-		:return:
+		:return: dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('send_notification', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		error = ''
-		_tn = Translator(get_language(self.request, get_current_registry()))
+		ts = ''
+		uid = ''
+		gravatar = ''
+		ui_locales = get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
 
 		try:
 			recipient = self.request.params['recipient']
@@ -1316,19 +1321,22 @@ class Dbas(object):
 			db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
 			if len(title) < 5 or len(text) < 5:
 				error = _tn.get(_tn.empty_notification_input)
-			elif not recipient:
+			elif not db_recipient:
 				error = _tn.get(_tn.recipientNotFound)
 			else:
 				db_author = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
 				if not db_author:
 					error = _tn.get(_tn.notLoggedIn)
 				else:
-					NotificationHelper.send_message(db_author, db_recipient, title, text, transaction)
+					db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction, ui_locales)
+					uid = db_notification.uid
+					ts = sql_timestamp_pretty_print(str(db_notification.timestamp), ui_locales)
+					gravatar = UserHandler.get_profile_picture(db_recipient, 20)
 
-		except KeyError as e:
+		except KeyError:
 			error = _tn.get(_tn.internalError)
 
-		return_dict = {'error': error}
+		return_dict = {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
 		return json.dumps(return_dict, True)
 
 
@@ -1568,7 +1576,8 @@ class Dbas(object):
 			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
 			transaction.commit()
 			return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
-			return_dict['total_messages'] = str(len(NotificationHelper.get_notification_for(self.request.authenticated_userid, ui_locales, mainpage)))
+			return_dict['total_in_messages'] = str(len(NotificationHelper.get_box_for(self.request.authenticated_userid, ui_locales, mainpage, True)))
+			return_dict['total_out_messages'] = str(len(NotificationHelper.get_box_for(self.request.authenticated_userid, ui_locales, mainpage, False)))
 			return_dict['error'] = ''
 			return_dict['success'] = _t.get(_t.messageDeleted)
 		except KeyError as e:
@@ -1746,10 +1755,13 @@ class Dbas(object):
 					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname, mainpage)
 				else:
 					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname, mainpage)
+			elif is_position:
+				uids = json.loads(uids)
+				return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname, mainpage)
 			else:
 				if not is_attitude:
 					uids = json.loads(uids)
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname, mainpage)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_premisegroups(uids if isinstance(uids, list) else [uids], ui_locales, nickname, mainpage)
 				else:
 					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname, mainpage)
 			return_dict['error'] = ''

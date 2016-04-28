@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-27 16:12+0200\n"
+"POT-Creation-Date: 2016-04-27 22:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -443,7 +443,7 @@ msgstr ""
 #: ./dbas/templates/snippet-popups.pt:443
 #: ./dbas/templates/snippet-popups.pt:482
 #: ./dbas/templates/snippet-popups.pt:619
-#: ./dbas/templates/snippet-popups.pt:652
+#: ./dbas/templates/snippet-popups.pt:653
 msgid "close"
 msgstr ""
 
@@ -784,7 +784,7 @@ msgstr ""
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:568
 #: ./dbas/templates/snippet-popups.pt:599
-#: ./dbas/templates/snippet-popups.pt:641 ./dbas/templates/content.pt:281
+#: ./dbas/templates/snippet-popups.pt:642 ./dbas/templates/content.pt:281
 #: ./dbas/templates/content.pt:304
 msgid "error:"
 msgstr ""
@@ -807,7 +807,7 @@ msgstr ""
 
 #. Default: Success:
 #: ./dbas/templates/snippet-popups.pt:604
-#: ./dbas/templates/snippet-popups.pt:646
+#: ./dbas/templates/snippet-popups.pt:647
 msgid "success:"
 msgstr ""
 
@@ -822,7 +822,7 @@ msgid "send_news"
 msgstr ""
 
 #. Default: Send Notifcation
-#: ./dbas/templates/snippet-popups.pt:651
+#: ./dbas/templates/snippet-popups.pt:652
 msgid "send_notification"
 msgstr ""
 
@@ -1051,19 +1051,50 @@ msgstr ""
 msgid "unreadNotificationAnd"
 msgstr ""
 
-#. Default: total.
+#. Default: total in the inbox.
 #: ./dbas/templates/notifications.pt:17
-msgid "total"
+msgid "totalInTheInbox"
+msgstr ""
+
+#. Default: There are
+#: ./dbas/templates/notifications.pt:18
+msgid "thereAre"
+msgstr ""
+
+#. Default: in the outbox.
+#: ./dbas/templates/notifications.pt:20
+msgid "inTheOutbox"
+msgstr ""
+
+#. Default: Inbox
+#: ./dbas/templates/notifications.pt:39
+msgid "inbox"
+msgstr ""
+
+#. Default: Outbox
+#: ./dbas/templates/notifications.pt:40
+msgid "outbox"
 msgstr ""
 
 #. Default: From:
-#: ./dbas/templates/notifications.pt:44
+#: ./dbas/templates/notifications.pt:60 ./dbas/templates/notifications.pt:67
 msgid "from"
 msgstr ""
 
 #. Default: answer
-#: ./dbas/templates/notifications.pt:49
+#: ./dbas/templates/notifications.pt:72
 msgid "answer"
+msgstr ""
+
+#. Default: To:
+#. Default: to:
+#: ./dbas/templates/notifications.pt:89 ./dbas/templates/notifications.pt:96
+msgid "to"
+msgstr ""
+
+#. Default: forward
+#: ./dbas/templates/notifications.pt:101
+msgid "forward"
 msgstr ""
 
 #. Default: JavaScript is not enabled:

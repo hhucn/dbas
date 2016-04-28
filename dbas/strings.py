@@ -369,8 +369,8 @@ class Translator(object):
 		self.restartDiscussion = 'restartDiscussion'
 		self.restartDiscussionTitle = 'restartDiscussionTitle'
 		self.restartOnError = 'restartOnError'
-		self.reactionFor = 'reactionFor'
 		self.recipientNotFound = 'recipientNotFound'
+		self.reactionFor = 'reactionFor'
 		self.questionTitle = 'questionTitle'
 		self.selectStatement = 'selectStatement'
 		self.showAllUsers = 'showAllUsers'
@@ -1284,11 +1284,8 @@ class Translator(object):
 		de_lang[self.restartDiscussion] = 'Diskussion neustarten'
 		de_lang[self.restartDiscussionTitle] = 'Diskussion neustarten'
 		de_lang[self.restartOnError] = 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.'
-<<<<<<< HEAD
-		de_lang[self.reactionFor] = 'Reaktionen zu'
-=======
 		de_lang[self.recipientNotFound] = 'Empfänger konnte nicht gefunden werden.'
->>>>>>> master
+		de_lang[self.reactionFor] = 'Reaktionen zu'
 		de_lang[self.questionTitle] = 'Erhalten Sie mehr Informationen über die Aussage!'
 		de_lang[self.saveMyStatement] = 'Aussage speichern!'
 		de_lang[self.selectStatement] = 'Bitte Wählen Sie eine Aussage!'
