@@ -482,7 +482,7 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 		children.eq(0).attr('id').indexOf('start_statement') != -1 ||
 		children.eq(0).attr('id').indexOf('start_premise') != -1 ||
 		children.eq(0).attr('id').indexOf('justify_premise') != -1 ||
-		(children.eq(0).attr('id').indexOf('login') != -1) && $('#link_popup_login').text().indexOf(_t(login)) == -1)) {
+		(children.eq(0).attr('id').indexOf('login') != -1) && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
 		children.eq(0).attr('checked', true).prop('checked', true).parent().hide();
 	}
 
