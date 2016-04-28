@@ -155,7 +155,7 @@ class RelationHelper(object):
 		:param current_attack: String
 		:param db_user: User
 		:param issue: Issue.uid
-		:return:
+		:return: Argument, Boolean if the argument is a duplicate
 		"""
 		new_arguments = []
 		already_in = []
@@ -198,7 +198,7 @@ class RelationHelper(object):
 		:param current_attack: String
 		:param db_user: User
 		:param issue: Issue.uid
-		:return:
+		:return: Argument, Boolean if the argument is a duplicate
 		"""
 		# duplicate?
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
@@ -227,7 +227,7 @@ class RelationHelper(object):
 		:param premisegroup_uid: premisesgroup_uid
 		:param current_argument: Argument
 		:param db_user: User
-		:return:
+		:return: Argument, Boolean if the argument is a duplicate
 		"""
 		# duplicate?
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
@@ -256,7 +256,7 @@ class RelationHelper(object):
 		:param premisegroup_uid: premisesgroup_uid
 		:param current_argument: Argument
 		:param db_user: User
-		:return:
+		:return: Argument, Boolean if the argument is a duplicate
 		"""
 		# duplicate?
 		db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
@@ -279,6 +279,7 @@ class RelationHelper(object):
 	@staticmethod
 	def __set_argument(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
 		"""
+		Set an Argument with given values into database
 
 		:param transaction: transaction
 		:param user: User.nickname
@@ -287,7 +288,7 @@ class RelationHelper(object):
 		:param argument_uid: Argument.uid
 		:param is_supportive: Boolean
 		:param issue: Issue.uid
-		:return:
+		:return: Argument.uid or None
 		"""
 		# logger('RelationHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
 		#        ', premisegroup_uid: ' + str(premisegroup_uid) +
@@ -317,20 +318,21 @@ class RelationHelper(object):
                                                                            Argument.issue_uid == issue)).first()
 		transaction.commit()
 		if new_argument:
-		#	logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
+			# logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
 			return new_argument.uid
 		else:
-		#	logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
+			# logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
 			return None
 
 	@staticmethod
 	def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive, lang):
 		"""
+		Querys all
 
 		:param argument_uid: Argument.uid
 		:param is_supportive: Boolean
 		:param lang: ui_locales
-		:return:
+		:return: [{id, text}] or 0
 		"""
 		return_array = []
 		# logger('RelationHelper', '__get_attack_or_support_for_justification_of_argument_uid',
@@ -356,18 +358,20 @@ class RelationHelper(object):
 	@staticmethod
 	def __get_undermines_for_premises(premises_as_statements_uid, lang, is_supportive=False):
 		"""
+		Querys all undermines for the given statements
 
 		:param premises_as_statements_uid:
 		:param lang: ui_locales
 		:param is_supportive
-		:return:
+		:return: [{id, text}]
 		"""
 		# logger('RelationHelper', '__get_undermines_for_premises', 'main')
 		return_array = []
 		index = 0
 		given_undermines = set()
 		for s_uid in premises_as_statements_uid:
-			db_undermine = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive, Argument.conclusion_uid == s_uid)).all()
+			db_undermine = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
+			                                                               Argument.conclusion_uid == s_uid)).all()
 			for undermine in db_undermine:
 				if undermine.premisesgroup_uid not in given_undermines:
 					given_undermines.add(undermine.premisesgroup_uid)

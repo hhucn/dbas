@@ -164,7 +164,7 @@ class DictionaryHelper(object):
 			message_dict = dict()
 			message_dict['new_count']    = NotificationHelper.count_of_new_notifications(authenticated_userid)
 			message_dict['has_unread']   = (message_dict['new_count'] > 0)
-			message_dict['all']		     = NotificationHelper.get_notification_for(authenticated_userid)
+			message_dict['all']		     = NotificationHelper.get_notification_for(authenticated_userid, self.lang, application_url)
 			message_dict['total']		 = len(message_dict['all'])
 			return_dict['notifications'] = message_dict
 

@@ -28,6 +28,7 @@ from .helper.voting_helper import VotingHelper
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
 from .email import EmailHelper
+from .input_validator import Validator
 from .lib import get_language, escape_string, get_text_for_statement_uid
 from .logger import logger
 from .recommender_system import RecommenderSystem
@@ -39,7 +40,7 @@ from .url_manager import UrlManager
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.5.9'
+version = '0.5.11'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -363,12 +364,12 @@ class Dbas(object):
 		tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
 		history         = params['history'] if 'history' in params else ''
 
-		if not tmp_argument:
+		if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-		supportive      = tmp_argument.is_supportive
+		supportive           = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-		session_expired  = UserHandler.update_last_action(transaction, nickname)
+		session_expired      = UserHandler.update_last_action(transaction, nickname)
 		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
 		HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
 		if session_expired:
@@ -636,11 +637,13 @@ class Dbas(object):
 			edits       = _uh.get_count_of_statements_of_user(db_user, True)
 			statements  = _uh.get_count_of_statements_of_user(db_user, False)
 			arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
+			public_nick = db_user.public_nickname
 		else:
 			edits       = 0
 			statements  = 0
 			arg_vote    = 0
 			stat_vote   = 0
+			public_nick = str(self.request.authenticated_userid)
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
 			old_pw = escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
@@ -663,6 +666,7 @@ class Dbas(object):
 			'db_firstname': db_user.firstname if db_user else 'unknown',
 			'db_surname': db_user.surname if db_user else 'unknown',
 			'db_nickname': db_user.nickname if db_user else 'unknown',
+			'db_public_nickname': public_nick,
 			'db_mail': db_user.email if db_user else 'unknown',
 			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
 			'avatar_url': gravatar_url,
@@ -672,8 +676,11 @@ class Dbas(object):
 			'discussion_stat_votes': stat_vote,
 			'send_mails': db_settings.should_send_mails if db_settings else False,
 			'send_notifications': db_settings.should_send_notifications if db_settings else False,
+			'public_nick': db_settings.should_show_public_nickname if db_settings else True,
 			'title_mails': _tn.get(_tn.mailSettingsTitle),
-			'title_notifications': _tn.get(_tn.notificationSettingsTitle)
+			'title_notifications': _tn.get(_tn.notificationSettingsTitle),
+			'title_public_nick': _tn.get(_tn.publicNickTitle),
+			'public_page_url': mainpage + '/user/' + public_nick
 		}
 
 		return {
@@ -698,6 +705,7 @@ class Dbas(object):
 		ui_locales = get_language(self.request, get_current_registry())
 		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+
 		if session_expired:
 			return self.user_logout(True)
 
@@ -738,6 +746,68 @@ class Dbas(object):
 			'project': project_name,
 			'extras': extras_dict,
 			'is_author': is_author
+		}
+
+	# public users page for everybody
+	@view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
+	def main_user(self):
+		"""
+		View configuration for the public users.
+
+		:return: dictionary with title and project name as well as a value, weather the user is logged in
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		matchdict = self.request.matchdict
+		params = self.request.params
+		logger('main_user', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+		logger('main_user', 'def', 'main, self.request.params: ' + str(params))
+
+		nickname = matchdict['nickname'] if 'nickname' in matchdict else ''
+		nickname = nickname.replace('%20', ' ')
+		logger('main_user', 'def', 'nickname: ' + str(nickname))
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+
+		db_settings = None
+		current_user = None
+
+		if db_user:
+			db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+		elif db_public_user:
+			db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
+
+		if db_settings:
+			if db_settings.should_show_public_nickname and db_user:
+				current_user = db_user
+			elif not db_settings.should_show_public_nickname and db_public_user:
+				current_user = db_public_user
+
+		if current_user is None:
+			return HTTPFound(location=UrlManager(mainpage).get_404([self.request.path[1:]]))
+
+		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+		if session_expired:
+			return self.user_logout(True)
+
+		ui_locales = get_language(self.request, get_current_registry())
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+
+		user_dict = UserHandler.get_information_of(current_user, ui_locales)
+
+		db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
+		can_send_notification = False
+		if db_user_of_request:
+			can_send_notification = current_user.uid != db_user_of_request.uid
+
+		return {
+			'layout': self.base_layout(),
+			'language': str(ui_locales),
+			'title': 'User ' + nickname,
+			'project': project_name,
+			'extras': extras_dict,
+			'user': user_dict,
+			'can_send_notification': can_send_notification
 		}
 
 	# imprint
@@ -1046,7 +1116,8 @@ class Dbas(object):
 			passwordconfirm = escape_string(params['passwordconfirm'])
 
 			# database queries mail verification
-			db_nick = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+			db_nick1 = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+			db_nick2 = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
 			db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
 			is_mail_valid = validate_email(email, check_mx=True)
 
@@ -1055,7 +1126,7 @@ class Dbas(object):
 				logger('user_registration', 'main', 'Passwords are not equal')
 				info = _t.get(_t.pwdNotEqual)
 			# is the nick already taken?
-			elif db_nick:
+			elif db_nick1 or db_nick2:
 				logger('user_registration', 'main', 'Nickname \'' + nickname + '\' is taken')
 				info = _t.get(_t.nickIsTaken)
 			# is the email already taken?
@@ -1173,36 +1244,89 @@ class Dbas(object):
 		return json.dumps(return_dict, True)
 
 	# ajax - set boolean for receiving information
-	@view_config(route_name='ajax_set_user_receive_information', renderer='json')
-	def set_user_receive_information_settings(self):
+	@view_config(route_name='ajax_set_user_setting', renderer='json')
+	def set_user_settings(self):
 		"""
 		Will logout the user
 
 		:return:
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-		logger('set_user_receive_information_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
+		logger('set_user_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
 		_tn = Translator(get_language(self.request, get_current_registry()))
 
 		try:
 			error = ''
-			should_send = True if self.request.params['should_send'] == 'True' else False
+			public_nick = ''
+			public_page_url = ''
+			settings_value = True if self.request.params['settings_value'] == 'True' else False
 			service = self.request.params['service']
 			db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
 			if db_user:
+				public_nick = db_user.public_nickname
 				db_setting = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+
 				if service == 'mail':
-					db_setting.set_send_mails(should_send)
+					db_setting.set_send_mails(settings_value)
+
 				elif service == 'notification':
-					db_setting.set_send_notifications(should_send)
+					db_setting.set_send_notifications(settings_value)
+
+				elif service == 'public_nick':
+					db_setting.set_show_public_nickname(settings_value)
+					if settings_value:
+						db_user.set_public_nickname(db_user.nickname)
+					elif db_user.nickname == db_user.public_nickname:
+						# TODO: there are only 52245 different nicks
+						UserHandler.refresh_public_nickname(db_user)
+					public_nick = db_user.public_nickname
 				else:
 					error = _tn.get(_tn.keyword)
+
 				transaction.commit()
+				public_page_url = mainpage + '/user/' + public_nick
 			else:
 				error = _tn.get(_tn.checkNickname)
 		except KeyError as e:
 			error = _tn.get(_tn.internalError)
-			logger('set_user_receive_information_settings', 'error', repr(e))
+			public_nick = ''
+			public_page_url = ''
+			logger('set_user_settings', 'error', repr(e))
+
+		return_dict = {'error': error, 'public_nick': public_nick, 'public_page_url': public_page_url}
+		return json.dumps(return_dict, True)
+
+	# ajax - sending notification
+	@view_config(route_name='ajax_send_notification', renderer='json')
+	def send_notification(self):
+		"""
+
+		:return:
+		"""
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('send_notification', 'def', 'main, self.request.params: ' + str(self.request.params))
+
+		error = ''
+		_tn = Translator(get_language(self.request, get_current_registry()))
+
+		try:
+			recipient = self.request.params['recipient']
+			title     = self.request.params['title']
+			text      = self.request.params['text']
+			db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
+			if len(title) < 5 or len(text) < 5:
+				error = _tn.get(_tn.empty_notification_input)
+			elif not recipient:
+				error = _tn.get(_tn.recipientNotFound)
+			else:
+				db_author = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
+				if not db_author:
+					error = _tn.get(_tn.notLoggedIn)
+				else:
+					NotificationHelper.send_message(db_author, db_recipient, title, text, transaction)
+
+		except KeyError as e:
+			error = _tn.get(_tn.internalError)
 
 		return_dict = {'error': error}
 		return json.dumps(return_dict, True)
@@ -1444,7 +1568,7 @@ class Dbas(object):
 			DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
 			transaction.commit()
 			return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
-			return_dict['total_messages'] = str(len(NotificationHelper.get_notification_for(self.request.authenticated_userid)))
+			return_dict['total_messages'] = str(len(NotificationHelper.get_notification_for(self.request.authenticated_userid, ui_locales, mainpage)))
 			return_dict['error'] = ''
 			return_dict['success'] = _t.get(_t.messageDeleted)
 		except KeyError as e:
@@ -1501,7 +1625,7 @@ class Dbas(object):
 
 		try:
 			uid = self.request.params['uid']
-			return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales)
+			return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales, mainpage)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_logfile_for_statement', 'error', repr(e))
@@ -1589,7 +1713,7 @@ class Dbas(object):
 
 		try:
 			uid = self.request.params['uid']
-			return_dict = QueryHelper.get_infos_about_argument(uid, ui_locales)
+			return_dict = QueryHelper.get_infos_about_argument(uid, ui_locales, mainpage)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_infos_about_argument', 'error', repr(e))
@@ -1619,18 +1743,15 @@ class Dbas(object):
 			is_position = self.request.params['is_position'] == 'true' if 'is_position' in self.request.params else False
 			if is_argument:
 				if not is_reaction:
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname, mainpage)
 				else:
-					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname)
-			elif is_position:
-				uids = json.loads(uids)
-				return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname, mainpage)
 			else:
 				if not is_attitude:
 					uids = json.loads(uids)
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_premisegroups(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname, mainpage)
 				else:
-					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname, mainpage)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))

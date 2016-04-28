@@ -1,0 +1,58 @@
+<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
+
+		<div class="container colored-container">
+			<div class="row" style="margin: 1em;">
+				<div class="col-md-6">
+					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span>
+                        <span i18n:translate="public_information_of">Public Information of</span> <em>${user.public_nick}</em>
+                    </h4>
+					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td><span class="lead" i18n:translate="last_login">Last Login</span></td>
+                            <td>${user.last_login}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="registered_since">Registered Since</span></td>
+                            <td>${user.registered}</td>
+						</tr>
+					</table>
+                    <div>
+                        <div class="center text-center" style="margin: 2em;">
+						    <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src user.avatar_url">
+						    <br>
+						    <span i18n:translate="profile_picture_of">Profile Picture of</span> ${user.public_nick}
+                        </div>
+                    </div>
+				</div>
+				<div class="col-md-6">
+                    <h4><span class="glyphicon glyphicon-stats" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
+					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
+							<td id="statements-done-count" style="text-align: right">${user.statemens_posted}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
+							<td id="edits-done-count" style="text-align: right">${user.edits_done}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
+							<td id="discussion-arg-votes-count" style="text-align: right">${user.discussion_arg_votes}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
+							<td id="discussion-stat-votes-count" style="text-align: right">${user.discussion_stat_votes}</td>
+						</tr>
+					</table>
+				</div>
+            </div>
+            <img style="width: 50px; float: right;" id="send-notification" class="icon-badge send-notification" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
+        </div>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
+
+	</tal:block>
+</tal:block>

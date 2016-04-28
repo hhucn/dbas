@@ -74,6 +74,7 @@ class User(DiscussionBase):
 	firstname = Column(Text, nullable=False)
 	surname = Column(Text, nullable=False)
 	nickname = Column(Text, nullable=False)
+	public_nickname = Column(Text, nullable=False)
 	email = Column(Text, nullable=False, unique=True)
 	gender = Column(Text, nullable=False)
 	password = Column(Text, nullable=False)
@@ -94,6 +95,7 @@ class User(DiscussionBase):
 		self.firstname = firstname
 		self.surname = surname
 		self.nickname = nickname
+		self.public_nickname = nickname
 		self.email = email
 		self.gender = gender
 		self.password = password
@@ -126,6 +128,9 @@ class User(DiscussionBase):
 	def set_token(self, token):
 		self.token = token
 
+	def set_public_nickname(self, nick):
+		self.public_nickname = nick
+
 	def should_hold_the_login(self, keep_logged_in):
 		self.keep_logged_in = keep_logged_in
 
@@ -138,20 +143,25 @@ class Settings(DiscussionBase):
 	author_uid = Column(Integer, ForeignKey('users.uid'), nullable=True, primary_key=True)
 	should_send_mails = Column(Boolean, nullable=False)
 	should_send_notifications = Column(Boolean, nullable=False)
+	should_show_public_nickname = Column(Boolean, nullable=False)
 
-	def __init__(self, author_uid, send_mails, send_notifications):
+	def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True):
 		"""
 		Initializes a row in current settings-table
 		"""
 		self.author_uid = author_uid
 		self.should_send_mails = send_mails
 		self.should_send_notifications = send_notifications
+		self.should_show_public_nickname = should_show_public_nickname
 
 	def set_send_mails(self, send_mails):
 		self.should_send_mails = send_mails
 
 	def set_send_notifications(self, send_notifications):
 		self.should_send_notifications = send_notifications
+
+	def set_show_public_nickname(self, should_show_public_nickname):
+		self.should_show_public_nickname = should_show_public_nickname
 
 
 class Statement(DiscussionBase):

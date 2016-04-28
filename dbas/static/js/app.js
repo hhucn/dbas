@@ -554,15 +554,15 @@ function callbackIfDoneForRegistration(data){
 	$('#' + popupLoginRegistrationInfo).hide();
 	if (parsedData.success.length > 0) {
 		$('#' + popupLoginRegistrationSuccess).show();
-		$('#' + popupLoginRegistrationSuccess + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginRegistrationSuccess + '-message').text(_t(parsedData.success));
 	}
 	if (parsedData.error.length > 0) {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginRegistrationFailed + '-message').text(_t(parsedData.error));
 	}
 	if (parsedData.info.length > 0) {
 		$('#' + popupLoginRegistrationInfo).show();
-		$('#' + popupLoginRegistrationInfo + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginRegistrationInfo + '-message').text(_t(parsedData.info));
 	}
 }
 

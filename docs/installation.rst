@@ -49,14 +49,14 @@ Makefile
 ========
 List of all commands of our Makefile.
 
-* make init_postgres
+* make init
     Creates a user for postgres as well as both databases (discussion and news).
 
-* make postgres
+* make database
     Will drop both databases, create them, assign them to the owner and fills them with data.
 
-* make refresh_postgres:
+* make refresh
     Just drops all data, but keeps Users, Settings and Notifications. Afterwards default data will be set.
 
-* make clean_postgres:
+* make clean
     Drop it all!
