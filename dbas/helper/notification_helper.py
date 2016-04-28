@@ -78,12 +78,12 @@ class NotificationHelper:
 		"""
 		Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
-		:param from_user:
-		:param to_user:
-		:param topic:
-		:param content:
-		:param transaction:
-		:param lang:
+		:param from_user: User
+		:param to_user: User
+		:param topic: String
+		:param content: String
+		:param transaction: transaction
+		:param lang: Notification
 		:return:
 		"""
 		notification_in  = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=True)
@@ -98,7 +98,7 @@ class NotificationHelper:
 		                                                                               Notification.content == content,
 		                                                                               Notification.is_inbox == True)).order_by(Notification.uid.desc()).first()
 
-		return db_inserted_notification.uid, sql_timestamp_pretty_print(str(db_inserted_notification.timestamp), lang)
+		return db_inserted_notification
 
 	@staticmethod
 	def count_of_new_notifications(user):
@@ -132,11 +132,11 @@ class NotificationHelper:
 			return []
 
 		if is_inbox:
-			db_messages = DBDiscussionSession.query(Notification).filter(and_(Notification.to_author_uid==db_user.uid,
-		                                                                      Notification.is_inbox==is_inbox)).all()
+			db_messages = DBDiscussionSession.query(Notification).filter(and_(Notification.to_author_uid == db_user.uid,
+		                                                                      Notification.is_inbox == is_inbox)).all()
 		else:
-			db_messages = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid==db_user.uid,
-		                                                                      Notification.is_inbox==is_inbox)).all()
+			db_messages = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == db_user.uid,
+		                                                                      Notification.is_inbox == is_inbox)).all()
 
 		message_array = []
 		for message in db_messages:

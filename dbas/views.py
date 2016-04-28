@@ -29,7 +29,7 @@ from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
 from .email import EmailHelper
 from .input_validator import Validator
-from .lib import get_language, escape_string, get_text_for_statement_uid
+from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print
 from .logger import logger
 from .recommender_system import RecommenderSystem
 from .news_handler import NewsHandler
@@ -1300,8 +1300,9 @@ class Dbas(object):
 	@view_config(route_name='ajax_send_notification', renderer='json')
 	def send_notification(self):
 		"""
+		Set a new message into the inbox of an recipient, and the outbox of the sender.
 
-		:return:
+		:return: dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('send_notification', 'def', 'main, self.request.params: ' + str(self.request.params))
@@ -1327,7 +1328,9 @@ class Dbas(object):
 				if not db_author:
 					error = _tn.get(_tn.notLoggedIn)
 				else:
-					uid, ts = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction, ui_locales)
+					db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction, ui_locales)
+					uid = db_notification.uid
+					ts = sql_timestamp_pretty_print(str(db_notification.timestamp), ui_locales)
 					gravatar = UserHandler.get_profile_picture(db_recipient, 20)
 
 		except KeyError:
