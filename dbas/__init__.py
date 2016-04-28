@@ -80,8 +80,6 @@ def main(global_config, **settings):
 	config.add_route('main_notification',       '/notifications')
 	config.add_route('main_news',               '/news')
 	config.add_route('main_imprint',            '/imprint')
-	config.add_route('ajax_send_notification',  '{url:.*}ajax_send_notification')
-	config.add_route('main_user',               '/user/{nickname}')
 
 	# ajax for navigation logic, administration, settings and editing/viewing log
 	config.add_route('ajax_user_login',                             '{url:.*}ajax_user_login')
@@ -97,8 +95,10 @@ def main(global_config, **settings):
 	config.add_route('ajax_user_password_request',                  '/{url:.*}ajax_user_password_request')
 	config.add_route('ajax_fuzzy_search',                           '/{url:.*}ajax_fuzzy_search')
 	config.add_route('ajax_switch_language',                        '{url:.*}ajax_switch_language{params:.*}')
+	config.add_route('ajax_send_notification',                      '{url:.*}ajax_send_notification')
 	config.add_route('ajax_get_infos_about_argument',               '/{url:.*}ajax_get_infos_about_argument')
 	config.add_route('ajax_get_user_with_same_opinion',             '/{url:.*}ajax_get_user_with_same_opinion')
+	config.add_route('ajax_get_public_user_data',                   '/{url:.*}ajax_get_public_user_data')
 	config.add_route('ajax_get_user_history',                       'ajax_get_user_history')
 	config.add_route('ajax_get_all_edits',                          'ajax_get_all_edits')
 	config.add_route('ajax_get_all_posted_statements',              'ajax_get_all_posted_statements')
@@ -120,6 +120,8 @@ def main(global_config, **settings):
 	config.add_route('discussion_choose',     '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
 	config.add_route('discussion_finish',     '/discuss/finish')
 	config.add_route('discussion_init',       '/discuss*slug')
+
+	config.add_route('main_user',             '/user/{nickname}')
 
 	# read the input and start
 	config.scan()

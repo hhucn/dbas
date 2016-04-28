@@ -1771,6 +1771,26 @@ class Dbas(object):
 
 		return json.dumps(return_dict, True)
 
+	# ajax - for getting all users with the same opinion
+	@view_config(route_name='ajax_get_public_user_data', renderer='json')
+	def get_public_user_data(self):
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_public_user_data', 'def', 'main: ' + str(self.request.params))
+		ui_locales = get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
+
+		return_dict = dict()
+		try:
+			nickname = self.request.params['nickname']
+			return_dict['labels'] = ["January", "February", "March", "April", "May", "June"]
+			return_dict['data'] = [203, 156, 99, 251, 305, 247]
+
+		except KeyError as e:
+			logger('get_users_with_same_opinion', 'error', repr(e))
+			return_dict['error'] = _tn.get(_tn.internalError)
+
+		return json.dumps(return_dict, True)
+
 
 # ########################################
 # ADDTIONAL AJAX STUFF # ADDITION THINGS #
