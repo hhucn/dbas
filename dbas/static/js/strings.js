@@ -153,6 +153,7 @@ var notInsertedErrorBecauseUnknown 					= 'notInsertedErrorBecauseUnknown';
 var notInsertedErrorBecauseInternal					= 'notInsertedErrorBecauseInternal';
 var notInsertedErrorBecauseTooShort					= 'notInsertedErrorBecauseTooShort';
 var noTrackedData 									= 'noTrackedData';
+var noDecisionstaken                                = 'noDecisionstaken';
 var noEntries                                       = 'noEntries';
 var noEntriesFor                                    = 'noEntriesFor';
 var note 											= 'note';
@@ -312,6 +313,7 @@ var dbas_en = {
 	'notificationWasSend': 'Notification was send!',
 	'noEntriesFor': 'No entries for',
 	'noTrackedData': 'No data was tracked.',
+	'noDecisionstaken': 'No decision has yet been taken.',
 	'number': 'No',
 	'note': 'Note',
 	'opinionBarometer': 'Opinion Barometer',
@@ -453,6 +455,7 @@ var dbas_de = {
 	'noEntries': 'Keine Einträge vorhanden',
 	'noEntriesFor': 'Keine Einträge vorhanden für',
 	'noTrackedData': 'Keine Daten wurden gespeichert.',
+	'noDecisionstaken': 'Es wurden noch keine Entscheidungen getroffen',
 	'number': 'Nr',
 	'note': 'Hinweis',
 	'opinionBarometer': 'Meinungsbarometer',

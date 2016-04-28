@@ -154,7 +154,12 @@ function DiscussionBarometer(){
 		}
 		];
 
-		var chart = new Chart(ctx).Pie(pieData);
+		if (obj.agree_users.length + obj.disagree_users.length == 0){
+			this.setAlertIntoDialog();
+			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
+		} else {
+			var chart = new Chart(ctx).Pie(pieData);
+		}
 	};
 
 	/**
@@ -164,7 +169,8 @@ function DiscussionBarometer(){
 	this.createStatementBarometer = function(obj) {
 		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d"),
 			chart = new Chart(ctx).Pie(),
-			index = 0;
+			index = 0,
+			users = 0;
 		$.each(obj.opinions, function(key,value){
 			if (value.text != null) {
 				chart.addData({
@@ -172,9 +178,15 @@ function DiscussionBarometer(){
 					color: colors[index],
 					label: value.text
 				});
+				users += value.users.length;
 				index += 1;
 			}
 		});
+
+		if (users == 0){
+			this.setAlertIntoDialog();
+			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
+		}
 	};
 
 	/**
@@ -184,7 +196,8 @@ function DiscussionBarometer(){
 	this.createArgumentBarometer = function(obj) {
 		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d"),
 			chart = new Chart(ctx).Pie(),
-			index = 0;
+			index = 0,
+			users = 0;
 		$.each(obj.opinions, function(key, entry) {
 			if(key != 'error') {
 				chart.addData({
@@ -192,8 +205,26 @@ function DiscussionBarometer(){
 					color: colors[index],
 					label: entry.text
 				});
+				users += entry.users.length;
 				index += 1;
 			}
+		});
+
+		if (users == 0){
+			this.setAlertIntoDialog();
+			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
+		}
+	};
+
+	this.setAlertIntoDialog = function(){
+		var div, strong, span;
+		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
+		strong = $('<strong>').text('Ohh...! ');
+		span = $('<span>').text(_t(noDecisionstaken));
+		div.append(strong).append(span);
+		$('#' + popupConfirmDialogId + ' div.modal-body').append(div);
+		$('#' + popupConfirmDialogId).on('hidden.bs.modal', function (e) {
+			div.remove();
 		});
 	};
 
