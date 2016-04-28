@@ -188,8 +188,6 @@ sendNotification = function(recipient){
 		if (parsedData.error.length == 0) {
 			$('#popup-writing-notification-success').show();
 			$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
-			$('#popup-writing-notification-title').val('');
-			$('#popup-writing-notification-text').text('');
 		} else {
 			$('#popup-writing-notification-failed').show();
 			$('#popup-writing-notification-failed-message').html(parsedData.error);

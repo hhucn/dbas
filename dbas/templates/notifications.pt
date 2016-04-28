@@ -36,8 +36,8 @@
                     <div class="container-three-divs">
 						<div class="flex-div">
                             <ul class="nav nav-tabs">
-                                <li class="active"><a href="#inbox" data-toggle="tab" aria-expanded="true" i18n:translate="inbox">Inbox</a></li>
-                                <li class=""><a href="#outbox" data-toggle="tab" aria-expanded="false" i18n:translate="outbox">Outbox</a></li>
+                                <li class="active"><a id="inbox-link" href="#inbox" data-toggle="tab" aria-expanded="true" i18n:translate="inbox">Inbox</a></li>
+                                <li class=""><a id="outbox-link" href="#outbox" data-toggle="tab" aria-expanded="false" i18n:translate="outbox">Outbox</a></li>
                                 <li style="display: none;"><a href="#empty" data-toggle="tab"></a></li>
                             </ul>
 						</div>
