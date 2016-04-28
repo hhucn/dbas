@@ -15,7 +15,7 @@ import random
 from math import trunc
 from dbas.logger import logger
 from dbas.user_management import PasswordHandler
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, and_
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue,\
 	Notification, Settings, VoteArgument, VoteStatement, StatementReferences
@@ -310,11 +310,16 @@ def setup_news_db(session):
 				  author='Tobias Krauthoff',
 				  news='After a few works of testing an debugging, we now have verison of D-BAS, which will be submitted '
 				       ' to <a href="http://www.ling.uni-potsdam.de/comma2016" target="_blank">COMMA 2016</a>.')
+	news46 = News(title='COMMA16',
+				  date='26.04.2016',
+				  author='Tobias Krauthoff',
+				  news='We have changed D-BAS\' history management. Now you can bookmark any link in any discussion and '
+				       'your history will always be with you!')
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
 	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
 	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
 	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
-	              news42, news43, news44, news45]
+	              news42, news43, news44, news45, news46]
 	session.add_all(news_array[::-1])
 	session.flush()
 
@@ -380,37 +385,38 @@ def setup_up_users(session):
 	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group1.uid, gender='m')
 	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group0.uid, gender='m')
 	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
-	usert00 = User(firstname='i am a', surname='testuser', nickname='test', email='tobias.krauthoff@hhu.de', password=pwt, group=group2.uid, gender='-')
-	usert01 = User(firstname='i am a', surname='testuser 01', nickname='test01', email='t.obias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert02 = User(firstname='i am a', surname='testuser 02', nickname='test02', email='to.bias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert03 = User(firstname='i am a', surname='testuser 03', nickname='test03', email='tob.ias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert04 = User(firstname='i am a', surname='testuser 04', nickname='test04', email='tobi.as.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert05 = User(firstname='i am a', surname='testuser 05', nickname='test05', email='tobia.s.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert06 = User(firstname='i am a', surname='testuser 06', nickname='test06', email='tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert07 = User(firstname='i am a', surname='testuser 07', nickname='test07', email='tobias..krauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert08 = User(firstname='i am a', surname='testuser 08', nickname='test08', email='tobias.k.rauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert09 = User(firstname='i am a', surname='testuser 09', nickname='test09', email='tobias.kr.authoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert10 = User(firstname='i am a', surname='testuser 10', nickname='test10', email='tobias.kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert11 = User(firstname='i am a', surname='testuser 11', nickname='test11', email='tobias.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert12 = User(firstname='i am a', surname='testuser 12', nickname='test12', email='tobias.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert13 = User(firstname='i am a', surname='testuser 13', nickname='test13', email='tobias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert14 = User(firstname='i am a', surname='testuser 14', nickname='test14', email='tobias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert15 = User(firstname='i am a', surname='testuser 15', nickname='test15', email='tobias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert16 = User(firstname='i am a', surname='testuser 16', nickname='test16', email='t.obias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert17 = User(firstname='i am a', surname='testuser 17', nickname='test17', email='to.bias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert18 = User(firstname='i am a', surname='testuser 18', nickname='test18', email='tob.ias.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert19 = User(firstname='i am a', surname='testuser 19', nickname='test19', email='tobi.as.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert20 = User(firstname='i am a', surname='testuser 20', nickname='test20', email='tobia.s.kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert21 = User(firstname='i am a', surname='testuser 21', nickname='test21', email='tobias..kr.authoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert22 = User(firstname='i am a', surname='testuser 22', nickname='test22', email='tobias..k.rauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert23 = User(firstname='i am a', surname='testuser 23', nickname='test23', email='tobias.k..rauthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert24 = User(firstname='i am a', surname='testuser 24', nickname='test24', email='tobias.kr..authoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert25 = User(firstname='i am a', surname='testuser 25', nickname='test25', email='tobias..kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert26 = User(firstname='i am a', surname='testuser 26', nickname='test26', email='tobia.s.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert27 = User(firstname='i am a', surname='testuser 27', nickname='test27', email='tobi.as.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert28 = User(firstname='i am a', surname='testuser 28', nickname='test28', email='tob.ias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert29 = User(firstname='i am a', surname='testuser 29', nickname='test29', email='to.bias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='-')
-	usert30 = User(firstname='i am a', surname='testuser 30', nickname='test30', email='t.obias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='-')
+	usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='.tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='t.obias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert02 = User(firstname='Torben', surname='Hartl', nickname='Torben', email='to.bias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert03 = User(firstname='Thorsten', surname='Scherer', nickname='Thorsten', email='tob.ias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert04 = User(firstname='Friedrich', surname='Schutte', nickname='Friedrich', email='tobi.as.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert05 = User(firstname='Aayden', surname='Westermann', nickname='Aayden', email='tobia.s.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert06 = User(firstname='Hermann', surname='Grasshoff', nickname='Hermann', email='tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert07 = User(firstname='Wolf', surname='Himmler', nickname='Wolf', email='tobias..krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert08 = User(firstname='Jakob', surname='Winter', nickname='Jakob', email='tobias.k.rauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert09 = User(firstname='Alwin', surname='Wechter', nickname='Alwin', email='tobias.kr.authoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert10 = User(firstname='Walter', surname='Weisser', nickname='Walter', email='tobias.kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert11 = User(firstname='Volker', surname='Keitel', nickname='Volker', email='tobias.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert12 = User(firstname='Benedikt', surname='Feuerstein', nickname='Benedikt', email='tobias.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert13 = User(firstname='Engelbert', surname='Gottlieb', nickname='Engelbert', email='tobias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert14 = User(firstname='Elias', surname='Auerbach', nickname='Elias', email='tobias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert15 = User(firstname='Rupert', surname='Wenz', nickname='Rupert', email='tobias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='m')
+	usert16 = User(firstname='Marga', surname='Wegscheider', nickname='Marga', email='t.obias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert17 = User(firstname='Larissa', surname='Clauberg', nickname='Larissa', email='to.bias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert18 = User(firstname='Emmi', surname='Rosch', nickname='Emmi', email='tob.ias.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert19 = User(firstname='Konstanze', surname='Krebs', nickname='Konstanze', email='tobi.as.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert20 = User(firstname='Catrin', surname='Fahnrich', nickname='Catrin', email='tobia.s.kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert21 = User(firstname='Antonia', surname='Bartram', nickname='Antonia', email='tobias..kr.authoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert22 = User(firstname='Nora', surname='Kempf', nickname='Nora', email='tobias..k.rauthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert23 = User(firstname='Nora', surname='Wetter', nickname='Nora', email='tobias.k..rauthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert24 = User(firstname='Jutta', surname='Munch', nickname='Jutta', email='tobias.kr..authoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert25 = User(firstname='Helga', surname='Heilmann', nickname='Helga', email='tobias..kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert26 = User(firstname='Denise', surname='Tietjen', nickname='Denise', email='tobia.s.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert27 = User(firstname='Hanne', surname='Beckmann', nickname='Hanne', email='tobi.as.kraut.hoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert28 = User(firstname='Elly', surname='Landauer', nickname='Elly', email='tob.ias.krauth.off@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert29 = User(firstname='Sybille', surname='Redlich', nickname='Sybille', email='to.bias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert30 = User(firstname='Ingeburg', surname='Fischer', nickname='Ingeburg', email='t.obias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='f')
+
 	session.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, usert00])
 	session.add_all([usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10])
 	session.add_all([usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20])
@@ -418,19 +424,73 @@ def setup_up_users(session):
 	session.flush()
 
 	# adding settings
-	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True)
-	settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True)
-	settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True)
-	settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True)
-	settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True)
-	settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True)
-	settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True)
-	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True)
-	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True)
-	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True)
-	session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7])
-	session.add_all([settings8, settings9])
+	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings10 = Settings(author_uid=user10.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst00 = Settings(author_uid=usert00.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst01 = Settings(author_uid=usert01.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst02 = Settings(author_uid=usert02.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst03 = Settings(author_uid=usert03.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst04 = Settings(author_uid=usert04.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst05 = Settings(author_uid=usert05.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst06 = Settings(author_uid=usert06.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst07 = Settings(author_uid=usert07.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst08 = Settings(author_uid=usert08.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst09 = Settings(author_uid=usert09.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst10 = Settings(author_uid=usert10.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst11 = Settings(author_uid=usert11.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst12 = Settings(author_uid=usert12.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst13 = Settings(author_uid=usert13.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst14 = Settings(author_uid=usert14.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst15 = Settings(author_uid=usert15.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst16 = Settings(author_uid=usert16.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst17 = Settings(author_uid=usert17.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst18 = Settings(author_uid=usert18.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst19 = Settings(author_uid=usert19.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst20 = Settings(author_uid=usert20.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst21 = Settings(author_uid=usert21.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst22 = Settings(author_uid=usert22.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
+	settingst23 = Settings(author_uid=usert23.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst24 = Settings(author_uid=usert24.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst25 = Settings(author_uid=usert25.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst26 = Settings(author_uid=usert26.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst27 = Settings(author_uid=usert27.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst28 = Settings(author_uid=usert28.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst29 = Settings(author_uid=usert29.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settingst30 = Settings(author_uid=usert30.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7, settings8])
+	session.add_all([settings9, settings10, settingst00, settingst01, settingst02, settingst03, settingst04, settingst05])
+	session.add_all([settingst06, settingst07, settingst08, settingst09, settingst10, settingst11, settingst12])
+	session.add_all([settingst13, settingst14, settingst15, settingst16, settingst17, settingst18, settingst19])
+	session.add_all([settingst20, settingst21, settingst22, settingst23, settingst24, settingst25, settingst26])
+	session.add_all([settingst27, settingst28, settingst29, settingst30])
 	session.flush()
+
+	from dbas.user_management import UserHandler
+	UserHandler.refresh_public_nickname(usert07)
+	UserHandler.refresh_public_nickname(usert08)
+	UserHandler.refresh_public_nickname(usert09)
+	UserHandler.refresh_public_nickname(usert10)
+	UserHandler.refresh_public_nickname(usert11)
+	UserHandler.refresh_public_nickname(usert12)
+	UserHandler.refresh_public_nickname(usert13)
+	UserHandler.refresh_public_nickname(usert14)
+	UserHandler.refresh_public_nickname(usert15)
+	UserHandler.refresh_public_nickname(usert16)
+	UserHandler.refresh_public_nickname(usert17)
+	UserHandler.refresh_public_nickname(usert18)
+	UserHandler.refresh_public_nickname(usert19)
+	UserHandler.refresh_public_nickname(usert20)
+	UserHandler.refresh_public_nickname(usert21)
+	UserHandler.refresh_public_nickname(usert22)
 
 	# Adding welcome notifications
 	notification0 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
@@ -461,35 +521,71 @@ def setup_dummy_votes(session):
 
 	db_arguments = DBDiscussionSession.query(Argument).all()
 	db_statements = DBDiscussionSession.query(Statement).all()
+	firstnames = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
+	              'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
+	              'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
 
 	new_votes = []
 	arg_up = 0
 	arg_down = 0
 	stat_up = 0
 	stat_down = 0
+	max_interval = len(firstnames) - 1
 	for argument in db_arguments:
-		up_votes = random.randint(1, 50)
-		down_votes = random.randint(1, 50)
+		up_votes = random.randint(1, max_interval)
+		down_votes = random.randint(1, max_interval)
 		arg_up += up_votes
 		arg_down += down_votes
+
+		tmp_firstname = list(firstnames)
 		for i in range(0, up_votes):
-			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
-			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
+			nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+			if not session.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+			                                               VoteArgument.author_uid == db_rnd_tst_user.uid,
+			                                               VoteArgument.is_up_vote == True,
+			                                               VoteArgument.is_valid == True)).first():
+				new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
+				tmp_firstname.remove(nick)
+
+		tmp_firstname = list(firstnames)
 		for i in range(0, down_votes):
-			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
-			new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
+			nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+			if not session.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+			                                               VoteArgument.author_uid == db_rnd_tst_user.uid,
+			                                               VoteArgument.is_up_vote == False,
+			                                               VoteArgument.is_valid == True)).first():
+				new_votes.append(VoteArgument(argument_uid=argument.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
+				tmp_firstname.remove(nick)
 
 	for statement in db_statements:
-		up_votes = random.randint(1, 50)
-		down_votes = random.randint(1, 50)
+		up_votes = random.randint(1, max_interval)
+		down_votes = random.randint(1, max_interval)
 		stat_up += up_votes
 		stat_down += down_votes
+
+		tmp_firstname = list(firstnames)
 		for i in range(0, up_votes):
-			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
-			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
+			nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+			if not session.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+			                                                VoteStatement.author_uid == db_rnd_tst_user.uid,
+			                                                VoteStatement.is_up_vote == True,
+			                                                VoteStatement.is_valid == True)).first():
+				new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
+				tmp_firstname.remove(nick)
+
+		tmp_firstname = list(firstnames)
 		for i in range(0, down_votes):
-			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(nickname='test' + str(random.randint(1, 30)).zfill(2)).first()
-			new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
+			nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
+			db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+			if not session.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+			                                                VoteStatement.author_uid == db_rnd_tst_user.uid,
+			                                                VoteStatement.is_up_vote == False,
+			                                                VoteStatement.is_valid == True)).first():
+				new_votes.append(VoteStatement(statement_uid=statement.uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
+				tmp_firstname.remove(nick)
 
 	rat_arg_up = str(trunc(arg_up / len(db_arguments) * 100) / 100)
 	rat_arg_down = str(trunc(arg_down / len(db_arguments) * 100) / 100)

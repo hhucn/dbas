@@ -207,6 +207,7 @@ var statisticsAlertDialog                       = 'statistics-alert';
 var statisticsAlertMessage                      = 'statistics-alert-message';
 var settingsReceiveNotifications                = 'receive-notifications-toggle';
 var settingsReceiveMails                        = 'receive-mails-toggle';
+var settingsPublicNick                          = 'public-nick-toggle';
 var settingsPasswordInfoIconId					= 'password-info-icon';
 var settingsPasswordInputId 					= 'settings-password-input';
 var settingsPasswordOldInputId 					= 'settings-password-old-input';

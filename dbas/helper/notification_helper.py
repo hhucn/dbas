@@ -6,7 +6,9 @@ Provides functions for te internal messaging system
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Notification, Settings
+from dbas.lib import sql_timestamp_pretty_print
 from dbas.strings import Translator
+from dbas.user_management import UserHandler
 from sqlalchemy import and_
 
 
@@ -66,8 +68,24 @@ class NotificationHelper:
 		_tn = Translator(lang)
 		topic = _tn.get(_tn.welcome)
 		content = _tn.get(_tn.welcomeMessage)
-		motification = Notification(from_author_uid=1, to_author_uid=user, topic=topic, content=content)
-		DBDiscussionSession.add(motification)
+		notification = Notification(from_author_uid=1, to_author_uid=user, topic=topic, content=content)
+		DBDiscussionSession.add(notification)
+		DBDiscussionSession.flush()
+		transaction.commit()
+
+	@staticmethod
+	def send_message(from_user, to_user, topic, content, transaction):
+		"""
+
+		:param from_user:
+		:param to_user:
+		:param topic:
+		:param content:
+		:param transaction:
+		:return:
+		"""
+		notification = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content)
+		DBDiscussionSession.add(notification)
 		DBDiscussionSession.flush()
 		transaction.commit()
 
@@ -87,11 +105,13 @@ class NotificationHelper:
 			return 0
 
 	@staticmethod
-	def get_notification_for(user):
+	def get_notification_for(user, lang, mainpage):
 		"""
 		Returns all notifications for the user
 
 		:param user: User.nickname
+		:param lang: ui_locales
+		:param mainpage: URL
 		:return: [Notification]
 		"""
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
@@ -102,15 +122,19 @@ class NotificationHelper:
 
 		message_array = []
 		for message in db_messages:
+			db_from_author                  = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first()
 			tmp_dict = dict()
-			tmp_dict['id']              = str(message.uid)
-			tmp_dict['from']            = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first().nickname
-			tmp_dict['timestamp']       = str(message.timestamp)
-			tmp_dict['read']            = message.read
-			tmp_dict['topic']           = message.topic
-			tmp_dict['content']         = message.content
-			tmp_dict['collapse_link']   = '#collapse' + str(message.uid)
-			tmp_dict['collapse_id']     = 'collapse' + str(message.uid)
+			tmp_dict['id']                  = str(message.uid)
+			tmp_dict['show_from_author']    = db_from_author.public_nickname != 'admin'
+			tmp_dict['from_author']         = db_from_author.public_nickname
+			tmp_dict['from_author_avatar']  = UserHandler.get_profile_picture(db_from_author, size=30)
+			tmp_dict['from_author_url']     = mainpage + '/user/' + db_from_author.public_nickname
+			tmp_dict['timestamp']           = sql_timestamp_pretty_print(str(message.timestamp), lang)
+			tmp_dict['read']                = message.read
+			tmp_dict['topic']               = message.topic
+			tmp_dict['content']             = message.content
+			tmp_dict['collapse_link']       = '#collapse' + str(message.uid)
+			tmp_dict['collapse_id']         = 'collapse' + str(message.uid)
 			message_array.append(tmp_dict)
 
 		return message_array

@@ -387,8 +387,8 @@ class FunctionalViewTests(IntegrationTestDBAS):
 	Todo
 	"""
 
-	editor_login       = '/ajax_user_login?user=test&password=iamatestuser2016&keep_login=false&url=http://localhost:4284/discuss'
-	viewer_wrong_login = '/ajax_user_login?user=test&password=iamabigfoool2015&keep_login=false&url=http://localhost:4284/discuss'
+	editor_login       = '/ajax_user_login?user=Pascal&password=iamatestuser2016&keep_login=false&url=http://localhost:4284/discuss'
+	viewer_wrong_login = '/ajax_user_login?user=Pascal&password=iamabigfoool2015&keep_login=false&url=http://localhost:4284/discuss'
 	logout             = '/ajax_user_logout'
 
 	# testing main page

@@ -28,11 +28,13 @@ class QueryHelper:
 	"""
 
 	@staticmethod
-	def get_infos_about_argument(uid, lang):
+	def get_infos_about_argument(uid, lang, mainpage):
 		"""
 		Returns several infos about the argument.
 
 		:param uid: Argument.uid
+		:param lang: ui_locales
+		:param mainapge: url
 		:return: dict()
 		"""
 		return_dict = dict()
@@ -44,22 +46,25 @@ class QueryHelper:
 			return return_dict
 
 		db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
-		return_dict['vote_count'] = str(len(db_votes))
-		return_dict['author']     = db_author.nickname
-		return_dict['timestamp']  = sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
-		text                      = get_text_for_argument_uid(uid, lang)
-		return_dict['text']       = '<strong>' + text[0:1].upper() + text[1:] + '.</strong>'
+		return_dict['vote_count']       = str(len(db_votes))
+		return_dict['author']           = db_author.public_nickname
+		return_dict['timestamp']        = sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
+		text                            = get_text_for_argument_uid(uid, lang)
+		return_dict['text']             = '<strong>' + text[0:1].upper() + text[1:] + '.</strong>'
 
 		supporters = []
 		gravatars = dict()
+		public_page = dict()
 		_um = UserHandler
 		for vote in db_votes:
 			db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			supporters.append(db_user.nickname)
-			gravatars[db_user.nickname] = _um.get_profile_picture(db_user)
+			supporters.append(db_user.public_nickname)
+			gravatars[db_user.public_nickname] = _um.get_public_profile_picture(db_user)
+			public_page[db_user.public_nickname] = mainpage + '/user/' + db_user.public_nickname
 
 		return_dict['supporter'] = supporters
 		return_dict['gravatars'] = gravatars
+		return_dict['public_page'] = public_page
 
 		return return_dict
 
@@ -343,25 +348,29 @@ class QueryHelper:
 		return return_dict
 
 	@staticmethod
-	def get_logfile_for_statement(uid, lang):
+	def get_logfile_for_statement(uid, lang, mainpage):
 		"""
 		Returns the logfile for the given statement uid
 
 		:param uid: requested statement uid
 		:param lang: ui_locales ui_locales
+		:param mainpage: URL
 		:return: dictionary with the logfile-rows
 		"""
 		logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
 
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).join(User).all()
+		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
 
 		return_dict = dict()
 		content_dict = dict()
 		# add all corrections
 		for index, versions in enumerate(db_textversions):
+			db_author = DBDiscussionSession.query(User).filter_by(uid=versions.author_uid).first()
 			corr_dict = dict()
 			corr_dict['uid'] = str(versions.uid)
-			corr_dict['author'] = str(versions.users.nickname)
+			corr_dict['author'] = str(db_author.public_nickname)
+			corr_dict['author_url'] = mainpage + '/user/' + str(db_author.nickname)
+			corr_dict['author_gravatar'] = UserHandler.get_profile_picture(db_author, 20)
 			corr_dict['date'] = sql_timestamp_pretty_print(str(versions.timestamp), lang)
 			corr_dict['text'] = str(versions.content)
 			content_dict[str(index)] = corr_dict

@@ -55,8 +55,6 @@ class RecommenderSystem:
 			attack_uid = attacks_array[attack_no]['id']
 
 			logger('RecommenderSystem', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
-			logger('RecommenderSystem', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
-			logger('RecommenderSystem', 'get_attack_for_argument', 'main return ' + key + ' by ' + str(attack_uid))
 
 			return attack_uid, key
 
