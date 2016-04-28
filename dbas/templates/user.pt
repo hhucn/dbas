@@ -7,7 +7,7 @@
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-6">
 					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span>
-                        <span i18n:translate="public_information_of">Public Information of</span> <em>${user.public_nick}</em>
+                        <span i18n:translate="public_information_of">Public Information of</span> <em id="public_nick">${user.public_nick}</em>
                     </h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
@@ -47,12 +47,18 @@
 							<td id="discussion-stat-votes-count" style="text-align: right">${user.discussion_stat_votes}</td>
 						</tr>
 					</table>
+                    <img style="width: 50px; float: right;" id="send-notification" class="icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
 				</div>
             </div>
-            <img style="width: 50px; float: right;" class="answer-notification icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
+			<div class="row" style="margin: 1em;">
+                <span class="text-center lead" i18n:translate="activity_index">Acitivty Index</span>
+                <div class="col-md-12" id="user-activity-chart-space">
+                </div>
+            </div>
         </div>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/user.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
 
 	</tal:block>
 </tal:block>
