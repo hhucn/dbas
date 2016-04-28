@@ -29,7 +29,7 @@ from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
 from .email import EmailHelper
 from .input_validator import Validator
-from .lib import get_language, escape_string, get_text_for_statement_uid
+from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print
 from .logger import logger
 from .recommender_system import RecommenderSystem
 from .news_handler import NewsHandler
@@ -1300,14 +1300,19 @@ class Dbas(object):
 	@view_config(route_name='ajax_send_notification', renderer='json')
 	def send_notification(self):
 		"""
+		Set a new message into the inbox of an recipient, and the outbox of the sender.
 
-		:return:
+		:return: dict()
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('send_notification', 'def', 'main, self.request.params: ' + str(self.request.params))
 
 		error = ''
-		_tn = Translator(get_language(self.request, get_current_registry()))
+		ts = ''
+		uid = ''
+		gravatar = ''
+		ui_locales = get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
 
 		try:
 			recipient = self.request.params['recipient']
@@ -1323,12 +1328,15 @@ class Dbas(object):
 				if not db_author:
 					error = _tn.get(_tn.notLoggedIn)
 				else:
-					NotificationHelper.send_message(db_author, db_recipient, title, text, transaction)
+					db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction, ui_locales)
+					uid = db_notification.uid
+					ts = sql_timestamp_pretty_print(str(db_notification.timestamp), ui_locales)
+					gravatar = UserHandler.get_profile_picture(db_recipient, 20)
 
-		except KeyError as e:
+		except KeyError:
 			error = _tn.get(_tn.internalError)
 
-		return_dict = {'error': error}
+		return_dict = {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
 		return json.dumps(return_dict, True)
 
 
