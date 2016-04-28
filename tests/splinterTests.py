@@ -548,7 +548,7 @@ class FrontendTests:
 		success = success and Helper.check_for_present_text(b, 'The discussion ends here.', 'check for end text')
 
 		# go back to first premise
-		#b.find_by_css('div.line-wrapper-r:first-child a').click()
+		# b.find_by_css('div.line-wrapper-r:first-child a').click()
 		b.find_by_css('#discussion-restart-btn').click()
 		b.find_by_text(position)[0].click()
 		b.find_by_css('#discussions-space-list li:first-child input').click()
@@ -790,19 +790,19 @@ if __name__ == "__main__":
 	print('  [ 9] tests for content')
 	print('  [10] tests for public user page')
 	print('  [11] tests for notification system')
-	test_list = input('You can enter a number, like 3, or a list, like 5,2,9: ')
+	input_list = input('You can enter a number, like 3, or a list, like 5,2,9: ')
 
 	if str(input_browser) != 'b':
 		webdriver = 'chrome' if str(input_browser) == 'c' else 'firefox'
-		if len(test_list) == 0:
-			test_list = 'a'
+		if len(list) == 0:
+			input_list = 'a'
 
 		print('')
 		print('-> Tests will be done with ' + webdriver)
 		print('')
 
 		try:
-			FrontendTests.run_all_tests(webdriver, test_list)
+			FrontendTests.run_all_tests(webdriver, input_list)
 		except ConnectionResetError as e1:
 			print('  Server is offline found: ' + str(e1))
 		except FileNotFoundError as e2:

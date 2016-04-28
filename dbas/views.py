@@ -1746,14 +1746,14 @@ class Dbas(object):
 				if not is_reaction:
 					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname, mainpage)
 				else:
-					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname, mainpage)
 			elif is_position:
 				uids = json.loads(uids)
-				return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
+				return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname, mainpage)
 			else:
 				if not is_attitude:
 					uids = json.loads(uids)
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_premisegroups(uids if isinstance(uids, list) else [uids], ui_locales, nickname)
+					return_dict = OpinionHandler.get_user_with_same_opinion_for_premisegroups(uids if isinstance(uids, list) else [uids], ui_locales, nickname, mainpage)
 				else:
 					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname, mainpage)
 			return_dict['error'] = ''
