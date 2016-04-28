@@ -1,0 +1,13 @@
+version: '2'
+services:
+  db:
+    image: postgres
+  web:
+    build: .
+    command: pserve development.ini --reload
+    volumes:
+      - .:/code
+    ports:
+      - "4349:4349"
+    depends_on:
+      - db
