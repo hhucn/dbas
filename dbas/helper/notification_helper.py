@@ -74,14 +74,16 @@ class NotificationHelper:
 		transaction.commit()
 
 	@staticmethod
-	def send_message(from_user, to_user, topic, content, transaction):
+	def send_message(from_user, to_user, topic, content, transaction, lang):
 		"""
+		Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
 		:param from_user:
 		:param to_user:
 		:param topic:
 		:param content:
 		:param transaction:
+		:param lang:
 		:return:
 		"""
 		notification_in  = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=True)
@@ -89,6 +91,14 @@ class NotificationHelper:
 		DBDiscussionSession.add_all([notification_in, notification_out])
 		DBDiscussionSession.flush()
 		transaction.commit()
+
+		db_inserted_notification = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == from_user.uid,
+		                                                                               Notification.to_author_uid == to_user.uid,
+		                                                                               Notification.topic == topic,
+		                                                                               Notification.content == content,
+		                                                                               Notification.is_inbox == True)).order_by(Notification.uid.desc()).first()
+
+		return db_inserted_notification.uid, sql_timestamp_pretty_print(str(db_inserted_notification.timestamp), lang)
 
 	@staticmethod
 	def count_of_new_notifications(user):
