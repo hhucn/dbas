@@ -27,6 +27,29 @@ var colors = [
 	'#9E9E9E'  // 19 grey
 	];
 
+var highlightColors = [
+	'#e57373', //  0 red
+	'#9575cd', //  1 deep purple
+	'#64b5f6', //  2 light blue
+	'#81c784', //  3 green
+	'#fff176', //  4 yellow
+	'#ff8a65', //  5 deep orange
+	'#90a4ae', //  6 blue grey
+	'#f06292', //  7 pink
+	'#7986cb', //  8 indigo
+	'#4dd0e1', //  9 cyan
+	'#aed581', // 10 light green
+	'#ffd54f', // 11 amber
+	'#a1887f', // 12 brown
+	'#424242', // 13 black
+	'#ba68c8', // 14 purple
+	'#64b5f6', // 15 blue
+	'#4db6ac', // 16 teal
+	'#dce775', // 17 lime
+	'#ffb74d', // 18 orange
+	'#e0e0e0'  // 19 grey
+	];
+
 function DiscussionBarometer(){
 	'use strict';
 
@@ -143,13 +166,13 @@ function DiscussionBarometer(){
         {
 			value: obj.agree_users.length,
         	color: colors[3],
-			highlight: colors[10],
+			highlight: highlightColors[3],
             label: 'agree'
         },
 		{
 			value: obj.disagree_users.length,
         	color: colors[0],
-			highlight: colors[5],
+			highlight: highlightColors[0],
 			label: 'disagree'
 		}
 		];
@@ -176,6 +199,7 @@ function DiscussionBarometer(){
 				chart.addData({
 					value: value.users.length,
 					color: colors[index],
+					highlight: highlightColors[index],
 					label: value.text
 				});
 				users += value.users.length;
@@ -203,6 +227,7 @@ function DiscussionBarometer(){
 				chart.addData({
 					value: entry.users.length,
 					color: colors[index],
+					highlight: highlightColors[index],
 					label: entry.text
 				});
 				users += entry.users.length;
