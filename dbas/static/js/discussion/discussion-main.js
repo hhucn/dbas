@@ -394,11 +394,13 @@ setGuiOptions = function(){
 		item_no_opinion.hide().next().prepend(no_opinion);
 	}
 
-	// uncheck login button on hide
-	$('#' + popupLogin).on('hidden.bs.modal', function () {
+
+	$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
 		var login_item = $('#' + discussionSpaceListId).find('#item_login');
 		if (login_item.length > 0)
 			login_item.attr('checked', false).prop('checked', false)
+	}).on('shown.bs.modal', function () {
+		$('#' + loginUserId).focus();
 	});
 };
 

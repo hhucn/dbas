@@ -374,11 +374,13 @@ class UserHandler:
 		return question, str(answer)
 
 	@staticmethod
-	def get_count_of_statements_of_user(user, only_edits):
+	def get_count_of_statements_of_user(user, only_edits, limit_on_today=False):
 		"""
+		Returns the count of statements of the user
 
-		:param user:
-		:param only_edits:
+		:param user: User
+		:param only_edits: Boolean
+		:param limit_on_today: Boolean
 		:return:
 		"""
 		if not user:
@@ -386,7 +388,12 @@ class UserHandler:
 
 		edit_count      = 0
 		statement_count = 0
-		db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid).all()
+		if limit_on_today:
+			today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
+			db_textversions = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.author_uid == user.uid,
+			                                                                     TextVersion.timestamp >= today)).all()
+		else:
+			db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid).all()
 
 		for tv in db_textversions:
 			db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()
@@ -398,16 +405,25 @@ class UserHandler:
 		return edit_count if only_edits else statement_count
 
 	@staticmethod
-	def get_count_of_votes_of_user(user):
+	def get_count_of_votes_of_user(user, limit_on_today=False):
 		"""
+		Returns the count of votes of the user
 
-		:param user:
+		:param user: User
+		:param limit_on_today: Boolean
 		:return:
 		"""
 		if not user:
 			return 0
-		arg_votes = len(DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user.uid).all())
-		stat_votes = len(DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all())
+		if limit_on_today:
+			today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
+			arg_votes = len(DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == user.uid,
+			                                                                    VoteArgument.timestamp >= today)).all())
+			stat_votes = len(DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == user.uid,
+			                                                                      VoteStatement.timestamp >= today)).all())
+		else:
+			arg_votes = len(DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user.uid).all())
+			stat_votes = len(DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all())
 
 		return arg_votes, stat_votes
 
@@ -521,15 +537,36 @@ class UserHandler:
 		ret_dict['is_female']   = db_user.gender == 'f'
 		ret_dict['is_neutral']  = db_user.gender != 'm' and db_user.gender != 'f'
 
-		edits       = UserHandler.get_count_of_statements_of_user(db_user, True)
-		statements  = UserHandler.get_count_of_statements_of_user(db_user, False)
-		arg_vote, stat_vote = UserHandler.get_count_of_votes_of_user(db_user)
+		arg_vote, stat_vote = UserHandler.get_count_of_votes_of_user(db_user, True)
 
-		ret_dict['statemens_posted']      = statements
-		ret_dict['edits_done']            = edits
+		ret_dict['statements_posted']     = UserHandler.get_count_of_statements_of_user(db_user, False)
+		ret_dict['edits_done']            = UserHandler.get_count_of_statements_of_user(db_user, True)
 		ret_dict['discussion_arg_votes']  = arg_vote
 		ret_dict['discussion_stat_votes'] = stat_vote
 		ret_dict['avatar_url']            = UserHandler.get_public_profile_picture(db_user, 120)
+
+		return ret_dict
+
+	@staticmethod
+	def get_summary_of_today(nickname):
+		"""
+		Returns summary of todays actions
+
+		:param nickname: User.nickname
+		:return: dict()
+		"""
+		ret_dict = dict()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
+		if not db_user:
+			return dict()
+
+		arg_vote, stat_vote = UserHandler.get_count_of_votes_of_user(db_user, True)
+
+		ret_dict['statements_posted']     = UserHandler.get_count_of_statements_of_user(db_user, False, True)
+		ret_dict['edits_done']            = UserHandler.get_count_of_statements_of_user(db_user, True, True)
+		ret_dict['discussion_arg_votes']  = arg_vote
+		ret_dict['discussion_stat_votes'] = stat_vote
 
 		return ret_dict
 
