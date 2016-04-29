@@ -1,13 +1,16 @@
 version: '2'
 services:
   db:
-    image: postgres
+    build: database/
+    #command: /etc/init.d/postgresql start
+    command: /etc/init.d/postgresql start
+    #image: postgres
   web:
     build: .
     command: pserve development.ini --reload
     volumes:
       - .:/code
     ports:
-      - "4349:4349"
+      - "4349:80"
     depends_on:
       - db
