@@ -152,6 +152,8 @@
 - Public user page
 - Settings for hiding your real nickname behind a fake one
 - Participants are able to send notifications to each other
+- Revised timestamps with humanized texts
+- Revised discussion finished page
 
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation

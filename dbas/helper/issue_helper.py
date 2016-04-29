@@ -100,7 +100,7 @@ class IssueHelper:
 		"""
 		#  logger('QueryHelper', 'get_date_for_issue_uid', str(uid))
 		db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
-		return sql_timestamp_pretty_print(str(db_issue.date), lang) if db_issue else 'none'
+		return sql_timestamp_pretty_print(db_issue.date, lang) if db_issue else 'none'
 
 	@staticmethod
 	def prepare_json_of_issue(uid, application_url, lang, for_api):
@@ -161,7 +161,7 @@ class IssueHelper:
 		issue_dict['url']               = UrlManager(application_url, issue.get_slug(), for_api).get_slug_url(False) if str(uid) != str(issue.uid) else ''
 		issue_dict['info']              = issue.info
 		issue_dict['arg_count']         = IssueHelper.get_number_of_arguments(issue.uid)
-		issue_dict['date']              = sql_timestamp_pretty_print(str(issue.date), lang)
+		issue_dict['date']              = sql_timestamp_pretty_print(issue.date, lang)
 		issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 		return issue_dict
 
