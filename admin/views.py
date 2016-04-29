@@ -60,7 +60,7 @@ def main_admin(request):
 
 	ui_locales = get_language(request, get_current_registry())
 	extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid)
-	users = get_all_users(request.authenticated_userid, ui_locales)
+	users = get_all_users(request.authenticated_userid, ui_locales, request.application_url)
 	dashboard = get_dashboard_infos()
 
 	return {

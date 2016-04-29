@@ -50,15 +50,22 @@
                     <img style="width: 50px; float: right;" id="send-notification" class="icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
 				</div>
             </div>
-			<div class="row" style="margin: 1em;">
-                <span class="text-center lead" i18n:translate="activity_index">Acitivty Index</span>
-                <div class="col-md-12" id="user-activity-chart-space">
+            <!--
+			<div class="row text-center" style="margin: 1em;">
+                <div class="col-md-6" id="user-activity-chart-space">
+                <span class="lead" i18n:translate="activity_index">Acitivty Index</span>
+                </div>
+                <div class="col-md-6" id="user-vote-chart-space">
+                <span class="lead" i18n:translate="vote_index">Vote Index</span>
                 </div>
             </div>
+            -->
         </div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/user.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
+		<!--
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
+        -_>
 
 	</tal:block>
 </tal:block>
