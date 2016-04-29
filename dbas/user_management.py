@@ -278,14 +278,10 @@ class UserHandler:
 		return_dict['labelinfo2'] = _tn.get(_tn.decisionIndex30Info)
 
 		for days_diff in range(30, -1, -1):
-			date_begin = date.today() - timedelta(days=days_diff)
-			date_end = date.today() - timedelta(days=(days_diff - 1))
-			begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
-			end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
-
-			logger(python_datetime_pretty_print(date_begin, lang),
-			       python_datetime_pretty_print(date_end, lang),
-			       begin.humanize() + ' ' + end.humanize())
+			date_begin  = date.today() - timedelta(days=days_diff)
+			date_end    = date.today() - timedelta(days=(days_diff - 1))
+			begin       = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+			end         = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
 
 			db_votes_statements = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == db_user.uid,
 			                                                                           VoteStatement.timestamp >= begin,

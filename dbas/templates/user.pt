@@ -53,10 +53,10 @@
 
 			<div class="row text-center" style="margin: 1em;">
                 <div class="col-md-6" id="user-activity-chart-space">
-                <span class="lead" i18n:translate="activity_index">Acitivty Index</span>
+                <span class="lead" i18n:translate="decision_index_7">Decision Index - Last 7 Days</span>
                 </div>
                 <div class="col-md-6" id="user-vote-chart-space">
-                <span class="lead" i18n:translate="vote_index">Vote Index</span>
+                <span class="lead" i18n:translate="decision_index_30">Decision Index - Last 30 Days</span>
                 </div>
             </div>
 
