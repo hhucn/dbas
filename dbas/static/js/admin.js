@@ -55,7 +55,7 @@ function AdminInterface(){
 
 		// add each issue table
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
-			$('#dropdown-issue-list').append($('<li>').addClass('enabled').append($('<a>').text(key).attr('href', '#')));
+			list.append($('<li>').addClass('enabled').append($('<a>').text(key).attr('href', '#')));
 
 			if (value.length == 0){
 				var p = $('<p>').text(_t(noEntriesFor) + ': ' + key),
@@ -104,7 +104,7 @@ function AdminInterface(){
 			tableElement.append(thead);
 
 			// add argument elements
-			$.each(value, function setJsonArgumentkDataToAdminContentEach(index, v_value) {
+			$.each(value, function setJsonArgumentDataToAdminContentEach(index, v_value) {
 				trElement = $('<tr>');
 				for (i = 0; i < tdElement.length; i += 1) {
 					tdElement[i] = $('<td>');
@@ -138,8 +138,8 @@ function AdminInterface(){
 
 		// some magic and gui fixes for the issue dropdown
 		space.children().eq(0).show();
-		list.find('li:nth-child(2)').removeClass('enabled').addClass('disabled');
-		list.find('li:not(:first-child)').each(function(){
+		list.find('li:nth-child(1)').removeClass('enabled').addClass('disabled');
+		list.find('li').each(function(){
 			$(this).click(function(){
 				var current = $('#dropdown-issue-list').find('li.disabled'),
 					currentIssue = current.find('a').text();
@@ -147,6 +147,7 @@ function AdminInterface(){
 				$(this).removeClass('enabled').addClass('disabled');
 				$('#table_' + currentIssue.replace(/\ /g, '_')).hide();
 				$('#table_' + $(this).find('a').text().replace(/\ /g, '_')).show();
+				alert('#table_' + currentIssue.replace(/\ /g, '_') + "\n" + '#table_' + $(this).find('a').text().replace(/\ /g, '_'))
 			})
 		});
 	};

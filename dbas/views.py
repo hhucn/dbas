@@ -1782,8 +1782,10 @@ class Dbas(object):
 		return_dict = dict()
 		try:
 			nickname = self.request.params['nickname']
-			return_dict['labels'] = ["January", "February", "March", "April", "May", "June"]
-			return_dict['data'] = [203, 156, 99, 251, 305, 247]
+			return_dict['labels1'] = ["January", "February", "March", "April", "May", "June"]
+			return_dict['data1'] = [203, 156, 99, 251, 305, 247]
+			return_dict['labels2'] = ["July", "August", "September", "October", "November", "December"]
+			return_dict['data2'] = [99, 156, 203, 305, 251, 147]
 
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
