@@ -322,4 +322,4 @@ class OpinionHandler:
 		return {'nickname': db_user.public_nickname,
 		        'public_profile_url': mainpage + '/user/' + db_user.public_nickname,
 		        'avatar_url': UserHandler.get_public_profile_picture(db_user),
-		        'vote_timestamp': sql_timestamp_pretty_print(str(timestamp), lang)}
+		        'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}

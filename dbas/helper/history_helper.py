@@ -314,7 +314,7 @@ class HistoryHelper:
 		db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
 		return_array = []
 		for history in db_history:
-			return_array.append({'path': history.path, 'timestamp': sql_timestamp_pretty_print(str(history.timestamp), lang)})
+			return_array.append({'path': history.path, 'timestamp': sql_timestamp_pretty_print(history.timestamp, lang)})
 
 		return return_array
 

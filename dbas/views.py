@@ -421,20 +421,24 @@ class Dbas(object):
 		params = self.request.params
 		logger('discussion_finish', 'def', 'main, self.request.matchdict: ' + str(matchdict))
 		logger('discussion_finish', 'def', 'main, self.request.params: ' + str(params))
-		ui_locales = get_language(self.request, get_current_registry())
-		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+		ui_locales      = get_language(self.request, get_current_registry())
+		nickname        = self.request.authenticated_userid
+		session_expired = UserHandler.update_last_action(transaction, nickname)
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname)
+		summary_dict = UserHandler.get_summary_of_today(nickname)
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Finish',
 			'project': project_name,
-			'extras': extras_dict
+			'extras': extras_dict,
+			'summary': summary_dict,
+			'show_summary': len(summary_dict) != 0
 		}
 
 	# choosing page
@@ -1056,9 +1060,12 @@ class Dbas(object):
 			error = _tn.get(_tn.internalError)
 			logger('user_login', 'error', repr(e))
 
-		return_dict['error'] = str(error)
+		return_dict = {'error': error}
+		logger('--', '--', return_dict['error'])
+		logger('--', '--', return_dict['error'])
+		logger('--', '--', return_dict['error'])
 
-		return json.dumps(return_dict, True)
+		return return_dict  # json.dumps(return_dict, True)
 
 	# ajax - user logout
 	@view_config(route_name='ajax_user_logout', renderer='json')
@@ -1330,7 +1337,7 @@ class Dbas(object):
 				else:
 					db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction, ui_locales)
 					uid = db_notification.uid
-					ts = sql_timestamp_pretty_print(str(db_notification.timestamp), ui_locales)
+					ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
 					gravatar = UserHandler.get_profile_picture(db_recipient, 20)
 
 		except KeyError:
@@ -1765,6 +1772,25 @@ class Dbas(object):
 				else:
 					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname, mainpage)
 			return_dict['error'] = ''
+		except KeyError as e:
+			logger('get_users_with_same_opinion', 'error', repr(e))
+			return_dict['error'] = _tn.get(_tn.internalError)
+
+		return json.dumps(return_dict, True)
+
+	# ajax - for getting all users with the same opinion
+	@view_config(route_name='ajax_get_public_user_data', renderer='json')
+	def get_public_user_data(self):
+		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+		logger('get_public_user_data', 'def', 'main: ' + str(self.request.params))
+		ui_locales = get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
+
+		return_dict = dict()
+		try:
+			nickname = self.request.params['nickname']
+			return_dict = UserHandler.get_public_information_data(nickname, ui_locales)
+
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
 			return_dict['error'] = _tn.get(_tn.internalError)

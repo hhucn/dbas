@@ -143,14 +143,14 @@
                              <td>${user.firstname}</td>
                              <td>${user.surname}</td>
                              <td>${user.nickname}</td>
-                             <td>${user.public_nickname}</td>
+                             <td><a href="#" target="_blank" tal:attributes="href user.public_url">${user.public_nickname}</a></td>
                              <td>${user.email}</td>
                              <td>${user.gender}</td>
                              <td>${user.group_uid}</td>
                              <td>${user.last_login}</td>
                              <td>${user.registered}</td>
-                             <td><img style="height: 50%;" tal:attributes="src user.avatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=80"></td>
-                             <td><img style="height: 50%;" tal:attributes="src user.public_avatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=80"></td>
+                             <td><img tal:attributes="src user.avatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=80"></td>
+                             <td><img tal:attributes="src user.public_avatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=80"></td>
                          </tr>
                          </tbody>
                      </table>
@@ -163,14 +163,14 @@
                         <p i18n:translate="admin_only">Some additional options for the administrator.</p>
                         <div class="row">
                             <div class="col-md-6">
-                                <input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-xs btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_arguments"/>
+                                <input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-sm btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_arguments"/>
                             </div>
-                            <div class="col-md-6" id="issue-switch-col" style="display: none;">
-                                <div class="dropdown">
-                                    <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 250px;">
-                                        <li class="dropdown-header" i18n:translate="topics">Topics</li>
-                                    </ul>
-                                </div>
+                            <div class="col-md-6" id="issue-switch-col" style="display: none;  ">
+                                <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" issue="1">
+                                    <span i18n:translate="switch_topc">Switch Topic</span>&nbsp;&nbsp;<span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" id="dropdown-issue-list" >
+                                </ul>
                             </div>
                         </div>
                     </div>
