@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-27 22:32+0200\n"
+"POT-Creation-Date: 2016-04-29 13:19+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -1004,22 +1004,26 @@ msgid "discussion_stat"
 msgstr "Discussion Statistics"
 
 #. Default: Statements posted
-#: dbas/templates/settings.pt:144 dbas/templates/user.pt:34
+#: dbas/templates/settings.pt:144 dbas/templates/finish.pt:23
+#: dbas/templates/user.pt:34
 msgid "statements_posted"
 msgstr "Statements posted"
 
 #. Default: Edits done
-#: dbas/templates/settings.pt:151 dbas/templates/user.pt:38
+#: dbas/templates/settings.pt:151 dbas/templates/finish.pt:27
+#: dbas/templates/user.pt:38
 msgid "edits_done"
 msgstr "Edits done"
 
 #. Default: Votes for Arguments
-#: dbas/templates/settings.pt:158 dbas/templates/user.pt:42
+#: dbas/templates/settings.pt:158 dbas/templates/finish.pt:31
+#: dbas/templates/user.pt:42
 msgid "discussion_votes_statements"
 msgstr "Votes for Arguments"
 
 #. Default: Votes for Statements
-#: dbas/templates/settings.pt:165 dbas/templates/user.pt:46
+#: dbas/templates/settings.pt:165 dbas/templates/finish.pt:35
+#: dbas/templates/user.pt:46
 msgid "discussion_votes_arguments"
 msgstr "Votes for Statements"
 
@@ -1108,13 +1112,18 @@ msgstr ""
 msgid "contact_us"
 msgstr "contact us (click here)"
 
+#. Default: Todays Summary
+#: dbas/templates/finish.pt:19
+msgid "todays_summary"
+msgstr "Todays Summary"
+
 #. Default: Let's go home!
-#: dbas/templates/finish.pt:15
+#: dbas/templates/finish.pt:49
 msgid "lets_go_home"
 msgstr "Let's go home!"
 
 #. Default: Back to the discussion!
-#: dbas/templates/finish.pt:18
+#: dbas/templates/finish.pt:52
 msgid "back_to_the_discussion"
 msgstr "Back to the discussion!"
 
@@ -1203,6 +1212,16 @@ msgstr "Registered Since"
 #: dbas/templates/user.pt:26
 msgid "profile_picture_of"
 msgstr "Profile Picture of"
+
+#. Default: Decision Index - Last 7 Days
+#: dbas/templates/user.pt:56
+msgid "decision_index_7"
+msgstr "Decision Index - Last 7 Days"
+
+#. Default: Decision Index - Last 30 Days
+#: dbas/templates/user.pt:59
+msgid "decision_index_30"
+msgstr "Decision Index - Last 30 Days"
 
 #. Default: Current discussion is about
 #: dbas/templates/content.pt:11
@@ -1526,9 +1545,6 @@ msgstr "Complete View"
 #~ msgid "description_list_2"
 #~ msgstr "Positions and arguments are connected logically by participants"
 
-#~ msgid "description_list_3"
-#~ msgstr "It offers a time-shifted discussion in three modes:"
-
 #~ msgid "guided_view_description"
 #~ msgstr "Guided View: The participants will be lead through the discussion."
 
@@ -1687,9 +1703,6 @@ msgstr "Complete View"
 #~ msgstr ""
 #~ "Do never ever use negations! Every negation will be set extra! This is "
 #~ "highly important!"
-
-#~ msgid "decisions"
-#~ msgstr "Your decisions"
 
 #~ msgid "report"
 #~ msgstr "Report"
