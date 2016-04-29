@@ -1,5 +1,5 @@
 antiorm==1.2.0
-arrow=0.7.0
+arrow==0.7.0
 Babel==2.2.0
 Beaker==1.8.0
 beautifulsoup4==4.4.1
