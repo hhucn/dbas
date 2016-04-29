@@ -5,15 +5,17 @@ TODO
 """
 
 
+import arrow
 import random
 import hashlib
 from urllib import parse
 
-from datetime import datetime
+from sqlalchemy import and_, func
+from datetime import date, timedelta, datetime
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
-from .lib import sql_timestamp_pretty_print
+from .lib import sql_timestamp_pretty_print, python_datetime_pretty_print
 from .logger import logger
 
 from .strings import Translator
@@ -153,20 +155,14 @@ class UserHandler:
 		timeout = 3600
 
 		# check difference of
-		try:  # sqlite
-			last_action_object = datetime.strptime(str(db_user.last_action), '%Y-%m-%d %H:%M:%S')
-			last_login_object  = datetime.strptime(str(db_user.last_login), '%Y-%m-%d %H:%M:%S')
-			diff_action = (datetime.now() - last_action_object).seconds - 3600  # dirty fix for sqlite
-			diff_login = (datetime.now() - last_login_object).seconds - 3600  # dirty fix for sqlite
-		except ValueError:  # postgres
-			last_action_object = datetime.strptime(str(db_user.last_action)[:-6], '%Y-%m-%d %H:%M:%S.%f')
-			last_login_object  = datetime.strptime(str(db_user.last_login)[:-6], '%Y-%m-%d %H:%M:%S.%f')
-			diff_action = (datetime.now() - last_action_object).seconds
-			diff_login = (datetime.now() - last_login_object).seconds
+		# TODO TIME ZONE OF SERVER
+		last_action_object = datetime.strptime(str(db_user.last_action.to('Europe/Berlin').format('YYYY-MM-DD HH:mm:ss', locale='de')), '%Y-%m-%d %H:%M:%S')
+		last_login_object  = datetime.strptime(str(db_user.last_login.to('Europe/Berlin').format('YYYY-MM-DD HH:mm:ss', locale='de')), '%Y-%m-%d %H:%M:%S')
+		diff_action = (datetime.now() - last_action_object).seconds
+		diff_login = (datetime.now() - last_login_object).seconds
 
 		diff = diff_action if diff_action < diff_login else diff_login
 		should_log_out = diff > timeout and not db_user.keep_logged_in
-		logger('UserHandler', 'update_last_action', 'session run out: ' + str(should_log_out) + ', ' + str(diff) + 's (keep login: ' + str(db_user.keep_logged_in) + ')')
 		db_user.update_last_action()
 
 		transaction.commit()
@@ -255,6 +251,60 @@ class UserHandler:
 		gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
 		# logger('UserHandler', 'get_public_profile_picture', 'url: ' + gravatar_url)
 		return gravatar_url
+
+	@staticmethod
+	def get_public_information_data(nickname, lang):
+		"""
+		Fetch some public information about the user with given nickname
+
+		:param nickname: User.public_nickname
+		:return: dict()
+		"""
+		return_dict = dict()
+		db_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+		if not db_user:
+			return return_dict
+
+		_tn = Translator(lang)
+
+		# data for last 7 and 30 days
+		labels7 = []
+		labels30 = []
+		data7 = []
+		data30 = []
+		return_dict['label1'] = _tn.get(_tn.decisionIndex7)
+		return_dict['label2'] = _tn.get(_tn.decisionIndex30)
+		return_dict['labelinfo1'] = _tn.get(_tn.decisionIndex7Info)
+		return_dict['labelinfo2'] = _tn.get(_tn.decisionIndex30Info)
+
+		for days_diff in range(30, -1, -1):
+			date_begin = date.today() - timedelta(days=days_diff)
+			date_end = date.today() - timedelta(days=(days_diff - 1))
+			begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+			end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+
+			logger(python_datetime_pretty_print(date_begin, lang),
+			       python_datetime_pretty_print(date_end, lang),
+			       begin.humanize() + ' ' + end.humanize())
+
+			db_votes_statements = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == db_user.uid,
+			                                                                           VoteStatement.timestamp >= begin,
+			                                                                           VoteStatement.timestamp < end)).all()
+			db_votes_arguments = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == db_user.uid,
+			                                                                         VoteArgument.timestamp >= begin,
+			                                                                         VoteArgument.timestamp < end)).all()
+			labels30.append(python_datetime_pretty_print(date_begin, lang))
+			data30.append(len(db_votes_arguments) + len(db_votes_statements))  # randint(randint(0, 10), randint(20, 200)))
+			if days_diff < 6:
+				labels7.append(python_datetime_pretty_print(date_begin, lang))
+				data7.append(len(db_votes_arguments) + len(db_votes_statements))  # randint(randint(0, 10), randint(20, 200)))
+
+		return_dict['labels1'] = labels7
+		return_dict['labels2'] = labels30
+		return_dict['data1'] = data7
+		return_dict['data2'] = data30
+
+		return return_dict
 
 	def is_user_author(user):
 		"""
@@ -387,7 +437,7 @@ class UserHandler:
 				edit_dict['uid'] = str(edit.uid)
 				edit_dict['statement_uid'] = str(edit.statement_uid)
 				edit_dict['content'] = str(edit.content)
-				edit_dict['timestamp'] = sql_timestamp_pretty_print(str(edit.timestamp), lang)
+				edit_dict['timestamp'] = sql_timestamp_pretty_print(edit.timestamp, lang)
 				return_array.append(edit_dict)
 
 		return return_array
@@ -413,7 +463,7 @@ class UserHandler:
 			edit_dict['uid'] = str(edit.uid)
 			edit_dict['statement_uid'] = str(edit.statement_uid)
 			edit_dict['content'] = str(edit.content)
-			edit_dict['timestamp'] = sql_timestamp_pretty_print(str(edit.timestamp), lang)
+			edit_dict['timestamp'] = sql_timestamp_pretty_print(edit.timestamp, lang)
 			return_array.append(edit_dict)
 
 		return return_array
@@ -444,7 +494,7 @@ class UserHandler:
 		for vote in db_votes:
 			vote_dict = dict()
 			vote_dict['uid'] = str(vote.uid)
-			vote_dict['timestamp'] = sql_timestamp_pretty_print(str(vote.timestamp), lang)
+			vote_dict['timestamp'] = sql_timestamp_pretty_print(vote.timestamp, lang)
 			vote_dict['is_up_vote'] = str(vote.is_up_vote)
 			vote_dict['is_valid'] = str(vote.is_valid)
 			if is_argument:
@@ -468,8 +518,8 @@ class UserHandler:
 		"""
 		ret_dict = dict()
 		ret_dict['public_nick'] = db_user.public_nickname
-		ret_dict['last_login']  = sql_timestamp_pretty_print(str(db_user.last_login), lang)
-		ret_dict['registered']  = sql_timestamp_pretty_print(str(db_user.registered), lang)
+		ret_dict['last_login']  = sql_timestamp_pretty_print(db_user.last_login, lang)
+		ret_dict['registered']  = sql_timestamp_pretty_print(db_user.registered, lang)
 
 		ret_dict['is_male']     = db_user.gender == 'm'
 		ret_dict['is_female']   = db_user.gender == 'f'

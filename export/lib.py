@@ -59,7 +59,7 @@ def get_dump(issue, lang):
 			tmp_dict['statement_uid']    = textversion.statement_uid
 			tmp_dict['content']          = textversion.content
 			tmp_dict['author_uid']       = textversion.author_uid
-			tmp_dict['timestamp']        = sql_timestamp_pretty_print(str(textversion.timestamp), lang)
+			tmp_dict['timestamp']        = sql_timestamp_pretty_print(textversion.timestamp, lang)
 			textversion_dict[str(index)] = tmp_dict
 	ret_dict['textversion'] = textversion_dict
 
@@ -78,7 +78,7 @@ def get_dump(issue, lang):
 		tmp_dict['argument_uid']        = argument.argument_uid if argument.argument_uid else 0
 		tmp_dict['is_supportive']       = argument.is_supportive
 		tmp_dict['author_uid']          = argument.author_uid
-		tmp_dict['timestamp']           = sql_timestamp_pretty_print(str(argument.timestamp), lang)
+		tmp_dict['timestamp']           = sql_timestamp_pretty_print(argument.timestamp, lang)
 		argument_dict[str(index)]       = tmp_dict
 	ret_dict['argument'] = argument_dict
 
@@ -105,7 +105,7 @@ def get_dump(issue, lang):
 			tmp_dict['statement_uid']     = premise.statement_uid
 			tmp_dict['is_negated']        = premise.is_negated
 			tmp_dict['author_uid']        = premise.author_uid
-			tmp_dict['timestamp']         = sql_timestamp_pretty_print(str(premise.timestamp), lang)
+			tmp_dict['timestamp']         = sql_timestamp_pretty_print(premise.timestamp, lang)
 			premise_dict[str(index)]      = tmp_dict
 	ret_dict['premise'] = premise_dict
 

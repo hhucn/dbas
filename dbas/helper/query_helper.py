@@ -48,7 +48,7 @@ class QueryHelper:
 		db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
 		return_dict['vote_count']       = str(len(db_votes))
 		return_dict['author']           = db_author.public_nickname
-		return_dict['timestamp']        = sql_timestamp_pretty_print(str(db_argument.timestamp), lang)
+		return_dict['timestamp']        = sql_timestamp_pretty_print(db_argument.timestamp, lang)
 		text                            = get_text_for_argument_uid(uid, lang)
 		return_dict['text']             = '<strong>' + text[0:1].upper() + text[1:] + '.</strong>'
 
@@ -371,7 +371,7 @@ class QueryHelper:
 			corr_dict['author'] = str(db_author.public_nickname)
 			corr_dict['author_url'] = mainpage + '/user/' + str(db_author.nickname)
 			corr_dict['author_gravatar'] = UserHandler.get_profile_picture(db_author, 20)
-			corr_dict['date'] = sql_timestamp_pretty_print(str(versions.timestamp), lang)
+			corr_dict['date'] = sql_timestamp_pretty_print(versions.timestamp, lang)
 			corr_dict['text'] = str(versions.content)
 			content_dict[str(index)] = corr_dict
 		return_dict['content'] = content_dict
