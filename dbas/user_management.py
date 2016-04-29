@@ -10,7 +10,7 @@ import random
 import hashlib
 from urllib import parse
 
-from sqlalchemy import and_, func
+from sqlalchemy import and_
 from datetime import date, timedelta, datetime
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
@@ -191,6 +191,7 @@ class UserHandler:
 			second = list_b[random.randint(0, len_b)] if random.randint(0, 1) == 1 else list_c[random.randint(0, len_c)]
 			nick = first + ' ' + second
 
+		logger('UserHandler', 'refresh_public_nickname', user.public_nickname + ' -> ' + nick)
 		user.set_public_nickname(nick)
 
 		return nick

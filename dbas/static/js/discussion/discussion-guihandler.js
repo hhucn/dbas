@@ -706,4 +706,17 @@ function GuiHandler() {
 			$('#' + reportButtonId).hide();
 		}
 	};
+
+	/**
+	 *
+	 * @returns {*|jQuery}
+	 */
+	this.getAlertIntoDialogNoDecisions = function(){
+		var div, strong, span;
+		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
+		strong = $('<strong>').text('Ohh...! ');
+		span = $('<span>').text(_t(noDecisionstaken));
+		div.append(strong).append(span);
+		return div;
+	};
 }
