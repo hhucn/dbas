@@ -32,7 +32,7 @@
 					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
-							<td id="statements-done-count" style="text-align: right">${user.statemens_posted}</td>
+							<td id="statements-done-count" style="text-align: right">${user.statements_posted}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>

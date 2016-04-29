@@ -421,20 +421,24 @@ class Dbas(object):
 		params = self.request.params
 		logger('discussion_finish', 'def', 'main, self.request.matchdict: ' + str(matchdict))
 		logger('discussion_finish', 'def', 'main, self.request.params: ' + str(params))
-		ui_locales = get_language(self.request, get_current_registry())
-		session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-		HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+		ui_locales      = get_language(self.request, get_current_registry())
+		nickname        = self.request.authenticated_userid
+		session_expired = UserHandler.update_last_action(transaction, nickname)
+		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname)
+		summary_dict = UserHandler.get_summary_of_today(nickname)
 
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
 			'title': 'Finish',
 			'project': project_name,
-			'extras': extras_dict
+			'extras': extras_dict,
+			'summary': summary_dict,
+			'show_summary': len(summary_dict) != 0
 		}
 
 	# choosing page
