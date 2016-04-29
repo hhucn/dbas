@@ -165,6 +165,7 @@ class OpinionHandler:
 		title = _t.get(_t.informationForStatements)
 
 		for uid in pgroup_uids:
+			logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'group ' + str(uid))
 			statement_dict = dict()
 			all_users = []
 			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).all()
@@ -179,6 +180,7 @@ class OpinionHandler:
 
 			db_votes = []
 			for premise in db_premises:
+				logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'premise ' + str(pgroup_uids))
 				db_votes += DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == premise.statement_uid,
 				                                                                 VoteStatement.is_up_vote == True,
 				                                                                 VoteStatement.is_valid == True,
@@ -273,6 +275,9 @@ class OpinionHandler:
 			ret_dict['text'] = None
 			ret_dict['agree'] = None
 			ret_dict['disagree'] = None
+			ret_dict['agree_users'] = []
+			ret_dict['disagree_users'] = []
+			ret_dict['title'] = title[0:1].upper() + title[1:]
 
 		ret_dict['text'] = get_text_for_statement_uid(statement_uid)
 		ret_dict['agree'] = None

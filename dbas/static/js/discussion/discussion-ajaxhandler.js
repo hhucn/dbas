@@ -246,13 +246,14 @@ function AjaxSiteHandler() {
 	 */
 	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid){
 		var is_argument = type == 'argument',
+			is_position = type == 'position' || type == 'statement',
 			uid = argument_uid == 'None' ? statement_uid : argument_uid,
 			csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			method: 'GET',
 			data: {
-				is_argument: is_argument, uids: uid
+				is_argument: is_argument, uids: uid, is_position: is_position
 			},
 			dataType: 'json',
 			headers: {

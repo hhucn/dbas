@@ -64,7 +64,7 @@ def sql_timestamp_pretty_print(ts, lang):
 	# except ValueError:  # postgres
 	# 	time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
 
-	return ts.humanize(locale=lang)
+	return ts.to('Europe/Berlin'if lang == 'de' else 'US/Pacific').humanize(locale=lang)
 
 
 def python_datetime_pretty_print(ts, lang):

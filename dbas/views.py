@@ -1757,6 +1757,7 @@ class Dbas(object):
 			is_attitude = self.request.params['is_attitude'] == 'true' if 'is_attitude' in self.request.params else False
 			is_reaction = self.request.params['is_reaction'] == 'true' if 'is_reaction' in self.request.params else False
 			is_position = self.request.params['is_position'] == 'true' if 'is_position' in self.request.params else False
+
 			if is_argument:
 				if not is_reaction:
 					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname, mainpage)
