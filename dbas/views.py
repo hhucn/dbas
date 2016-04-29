@@ -1056,9 +1056,12 @@ class Dbas(object):
 			error = _tn.get(_tn.internalError)
 			logger('user_login', 'error', repr(e))
 
-		return_dict['error'] = str(error)
+		return_dict = {'error': error}
+		logger('--', '--', return_dict['error'])
+		logger('--', '--', return_dict['error'])
+		logger('--', '--', return_dict['error'])
 
-		return json.dumps(return_dict, True)
+		return return_dict  # json.dumps(return_dict, True)
 
 	# ajax - user logout
 	@view_config(route_name='ajax_user_logout', renderer='json')
@@ -1330,7 +1333,7 @@ class Dbas(object):
 				else:
 					db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction, ui_locales)
 					uid = db_notification.uid
-					ts = sql_timestamp_pretty_print(str(db_notification.timestamp), ui_locales)
+					ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
 					gravatar = UserHandler.get_profile_picture(db_recipient, 20)
 
 		except KeyError:
@@ -1782,10 +1785,7 @@ class Dbas(object):
 		return_dict = dict()
 		try:
 			nickname = self.request.params['nickname']
-			return_dict['labels1'] = ["January", "February", "March", "April", "May", "June"]
-			return_dict['data1'] = [203, 156, 99, 251, 305, 247]
-			return_dict['labels2'] = ["July", "August", "September", "October", "November", "December"]
-			return_dict['data2'] = [99, 156, 203, 305, 251, 147]
+			return_dict = UserHandler.get_public_information_data(nickname, ui_locales)
 
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
