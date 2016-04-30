@@ -394,11 +394,13 @@ setGuiOptions = function(){
 		item_no_opinion.hide().next().prepend(no_opinion);
 	}
 
-	// uncheck login button on hide
-	$('#' + popupLogin).on('hidden.bs.modal', function () {
+
+	$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
 		var login_item = $('#' + discussionSpaceListId).find('#item_login');
 		if (login_item.length > 0)
 			login_item.attr('checked', false).prop('checked', false)
+	}).on('shown.bs.modal', function () {
+		$('#' + loginUserId).focus();
 	});
 };
 
@@ -482,7 +484,7 @@ setInputExtraOptions = function(guiHandler, interactionHandler){
 		children.eq(0).attr('id').indexOf('start_statement') != -1 ||
 		children.eq(0).attr('id').indexOf('start_premise') != -1 ||
 		children.eq(0).attr('id').indexOf('justify_premise') != -1 ||
-		(children.eq(0).attr('id').indexOf('login') != -1) && $('#link_popup_login').text().indexOf(_t(login)) == -1)) {
+		(children.eq(0).attr('id').indexOf('login') != -1) && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
 		children.eq(0).attr('checked', true).prop('checked', true).parent().hide();
 	}
 

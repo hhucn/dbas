@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-27 22:32+0200\n"
+"POT-Creation-Date: 2016-04-29 13:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -930,22 +930,26 @@ msgid "discussion_stat"
 msgstr ""
 
 #. Default: Statements posted
-#: ./dbas/templates/settings.pt:144 ./dbas/templates/user.pt:34
+#: ./dbas/templates/settings.pt:144 ./dbas/templates/finish.pt:23
+#: ./dbas/templates/user.pt:34
 msgid "statements_posted"
 msgstr ""
 
 #. Default: Edits done
-#: ./dbas/templates/settings.pt:151 ./dbas/templates/user.pt:38
+#: ./dbas/templates/settings.pt:151 ./dbas/templates/finish.pt:27
+#: ./dbas/templates/user.pt:38
 msgid "edits_done"
 msgstr ""
 
 #. Default: Votes for Arguments
-#: ./dbas/templates/settings.pt:158 ./dbas/templates/user.pt:42
+#: ./dbas/templates/settings.pt:158 ./dbas/templates/finish.pt:31
+#: ./dbas/templates/user.pt:42
 msgid "discussion_votes_statements"
 msgstr ""
 
 #. Default: Votes for Statements
-#: ./dbas/templates/settings.pt:165 ./dbas/templates/user.pt:46
+#: ./dbas/templates/settings.pt:165 ./dbas/templates/finish.pt:35
+#: ./dbas/templates/user.pt:46
 msgid "discussion_votes_arguments"
 msgstr ""
 
@@ -1031,13 +1035,18 @@ msgstr ""
 msgid "contact_us"
 msgstr ""
 
+#. Default: Todays Summary
+#: ./dbas/templates/finish.pt:19
+msgid "todays_summary"
+msgstr ""
+
 #. Default: Let's go home!
-#: ./dbas/templates/finish.pt:15
+#: ./dbas/templates/finish.pt:49
 msgid "lets_go_home"
 msgstr ""
 
 #. Default: Back to the discussion!
-#: ./dbas/templates/finish.pt:18
+#: ./dbas/templates/finish.pt:52
 msgid "back_to_the_discussion"
 msgstr ""
 
@@ -1125,6 +1134,16 @@ msgstr ""
 #. Default: Profile Picture of
 #: ./dbas/templates/user.pt:26
 msgid "profile_picture_of"
+msgstr ""
+
+#. Default: Decision Index - Last 7 Days
+#: ./dbas/templates/user.pt:56
+msgid "decision_index_7"
+msgstr ""
+
+#. Default: Decision Index - Last 30 Days
+#: ./dbas/templates/user.pt:59
+msgid "decision_index_30"
 msgstr ""
 
 #. Default: Current discussion is about

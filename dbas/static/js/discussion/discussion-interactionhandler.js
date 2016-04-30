@@ -143,8 +143,8 @@ function InteractionHandler() {
 
 			// supporters = parsedData.supporter.join(', ');
 			text = parsedData.text + '<br><br>';
-			text += _t(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ' ';
-			text += _t(messageInfoAt) + ' ' + parsedData.timestamp + '.<br>';
+			text += _t(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ', ';
+			text += parsedData.timestamp + '.<br>';
 			text += _t(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
 			text +=_t(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t(messageInfoParticipantPl)) + '.';
 			if (parsedData.vote_count>0) {
@@ -163,6 +163,12 @@ function InteractionHandler() {
 				if (i==1)
 					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
 			}
+
+			if (tbody.find('tr').length==0)
+				body.append(new GuiHandler().getAlertIntoDialogNoDecisions());
+			else
+				body.append(span).append(table.append(tbody));
+
 			body.append(text).append(table.append(tbody));
 			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);
 			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
@@ -257,7 +263,11 @@ function InteractionHandler() {
 			if (j==1)
 				tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
 
-			body.append(span).append(table.append(tbody));
+			if (tbody.find('tr').length==0)
+				body.append(new GuiHandler().getAlertIntoDialogNoDecisions());
+			else
+				body.append(span).append(table.append(tbody));
+
 			displayConfirmationDialogWithoutCancelAndFunction(_t(usersWithSameOpinion), body);
 			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
 			new Helper().delay(function(){
@@ -274,7 +284,6 @@ function InteractionHandler() {
 		} else {
 			new GuiHandler().showDiscussionError(parsedData.error);
 		}
-
 	};
 
 	/**

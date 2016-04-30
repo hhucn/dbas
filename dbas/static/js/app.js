@@ -526,6 +526,7 @@ function callbackIfDoneForLogin(data){
 	try {
 		var jsonData = $.parseJSON(data);
 		// It is JSON
+		alert(jsonData.error+"\n"+data);
 		if (jsonData.error.length != 0) {
 			$('#' + popupLoginFailed).show();
 			$('#' + popupLoginFailed + '-message').text(jsonData.error);

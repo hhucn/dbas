@@ -3,14 +3,48 @@
 		
 		<div class="container first-container center">
 			<div class="row">
-				<div class="col-md-6 center colored-container" style="float: none">
+				<div class="col-md-7 center colored-container" style="float: none">
 					<h3 class="text-center" i18n:translate="thank_you">Thank you!</h3>
 					<span class="lead" i18n:translate="finish_text">Your participation in this discussion was saved and will be used for evaluation later. If you have any questions, please do not hesitat to</span>
 					<span class="lead"><a href="/contact" i18n:translate="contact_us">contact us (click here)</a>.</span>
+
+                    <div class="row" style="margin-top: 2em" tal:condition="show_summary">
+                        <div class="col-md-5 text-center">
+                            <img style="margin-top: 3em" class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
+                        </div>
+
+                        <div class="col-md-7">
+                            <h5>
+                                <span class="glyphicon glyphicon-stats" aria-hidden="true" style="margin-right: 0.5em;"></span>
+                                <span i18n:translate="todays_summary">Todays Summary</span>
+                            </h5>
+					        <table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+					        	<tr>
+					        		<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
+					        		<td id="statements-done-count" style="text-align: right">${summary.statements_posted}</td>
+					        	</tr>
+					        	<tr>
+					        		<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
+					        		<td id="edits-done-count" style="text-align: right">${summary.edits_done}</td>
+					        	</tr>
+					        	<tr>
+					        		<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
+					        		<td id="discussion-arg-votes-count" style="text-align: right">${summary.discussion_arg_votes}</td>
+					        	</tr>
+					        	<tr>
+					        		<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
+					        		<td id="discussion-stat-votes-count" style="text-align: right">${summary.discussion_stat_votes}</td>
+					        	</tr>
+					        </table>
+                        </div>
+                    </div>
+
+                    <div class="text-center" style="margin: 3em" tal:condition="not:show_summary">
+                            <img class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
+                        </div>
+
 					<div class="text-center">
-						<img class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
-						<br>
-						<br>
+
 						<a id="home-button" class="button button-block btn-lg btn btn-primary" href="${request.application_url}" style="margin: 10px;">
                             <span i18n:translate="lets_go_home">Let's go home!</span>
                         </a>

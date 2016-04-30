@@ -7,7 +7,7 @@
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-6">
 					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span>
-                        <span i18n:translate="public_information_of">Public Information of</span> <em>${user.public_nick}</em>
+                        <span i18n:translate="public_information_of">Public Information of</span> <em id="public_nick">${user.public_nick}</em>
                     </h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
@@ -32,7 +32,7 @@
 					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
-							<td id="statements-done-count" style="text-align: right">${user.statemens_posted}</td>
+							<td id="statements-done-count" style="text-align: right">${user.statements_posted}</td>
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
@@ -47,12 +47,23 @@
 							<td id="discussion-stat-votes-count" style="text-align: right">${user.discussion_stat_votes}</td>
 						</tr>
 					</table>
+                    <img style="width: 50px; float: right;" id="send-notification" class="icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
 				</div>
             </div>
-            <img style="width: 50px; float: right;" class="answer-notification icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
+
+			<div class="row text-center" style="margin: 1em;">
+                <div class="col-md-6" id="user-activity-chart-space">
+                <span class="lead" i18n:translate="decision_index_7">Decision Index - Last 7 Days</span>
+                </div>
+                <div class="col-md-6" id="user-vote-chart-space">
+                <span class="lead" i18n:translate="decision_index_30">Decision Index - Last 30 Days</span>
+                </div>
+            </div>
+
         </div>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/user.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/chart.min.js')}"></script>
 
 	</tal:block>
 </tal:block>
