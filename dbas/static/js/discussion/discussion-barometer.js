@@ -25,9 +25,8 @@ var colors = [
 	'#CDDC39', // 17 lime
 	'#FF9800', // 18 orange
 	'#9E9E9E'  // 19 grey
-	];
-
-var highlightColors = [
+	],
+	highlightColors = [
 	'#e57373', //  0 red
 	'#9575cd', //  1 deep purple
 	'#64b5f6', //  2 light blue
@@ -138,7 +137,7 @@ function DiscussionBarometer(){
         }
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' div.modal-body')
-			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto;"></canvas>');
+			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto; margin-bottom: 20px;"></canvas>');
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		}).removeClass('btn-success');
@@ -182,6 +181,8 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		} else {
 			var chart = new Chart(ctx).Pie(pieData);
+			// create legend for chart
+			$('#' + popupConfirmDialogId + ' div.modal-body').append(chart.generateLegend());
 		}
 	};
 
@@ -211,6 +212,9 @@ function DiscussionBarometer(){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
+		else {
+			$('#' + popupConfirmDialogId + ' div.modal-body').append(chart.generateLegend());
+		}
 	};
 
 	/**
@@ -235,9 +239,14 @@ function DiscussionBarometer(){
 			}
 		});
 
+		$('#' + popupConfirmDialogId + ' div.modal-body').append(chart.generateLegend());
+
 		if (users == 0){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
+		}
+		else{
+			$('#' + popupConfirmDialogId + ' div.modal-body').append(chart.generateLegend());
 		}
 	};
 
