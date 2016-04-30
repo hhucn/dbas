@@ -56,6 +56,7 @@ var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
 var and 						            		= 'and';
+var answer                                          = 'answer';
 var andAtTheSameTime                                = 'andAtTheSameTime';
 var addedEverything 								= 'addedEverything';
 var addTopic                                        = 'addTopic';
@@ -101,6 +102,7 @@ var edit 											= 'edit';
 var errorCode 										= 'error_code';
 var editTitle										= 'editTitle';
 var forText                                         = 'forText';
+var forward                                         = 'forward';
 var fillLine 										= 'fillLine';
 var feelFreeToShareUrl 								= 'feelFreeToShareUrl';
 var fetchLongUrl 									= 'fetchLongUrl';
@@ -190,6 +192,7 @@ var surname 										= 'surname';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
+var to 											    = 'to';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
@@ -217,6 +220,7 @@ var urlLogout 							= 'logout';
 var dbas_en = {
 	'avatar': 'Avatar',
 	'and': 'and',
+	'answer': 'antworten',
 	'andAtTheSameTime': 'and at the same time',
 	'addedEverything': 'Everything was added.',
 	'addTopic': 'Add a Topic',
@@ -264,6 +268,7 @@ var dbas_en = {
 	'fetchLongUrl': 'Fetch long url!',
 	'fetchShortUrl': 'Fetch short url!',
 	'forgotPassword': 'Forgot Password',
+	'forward' : 'forward',
 	'firstname': 'Firstname',
 	'fillLine': 'Please, fill this this line with your report',
 	'gender': 'Gender',
@@ -348,6 +353,7 @@ var dbas_en = {
 	'switchDiscussionText2': 'and the discussion will be restarted.',
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
+	'to': 'To',
 	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
 	'usersWithSameOpinion': 'Users with same opinion',
@@ -359,6 +365,7 @@ var dbas_en = {
 var dbas_de = {
 	'avatar': 'Avatar',
 	'and': 'und',
+	'answer': 'antworten',
 	'addTopic': 'Thema hinzufügen',
 	'addTopicTitleText': 'Bitte geben Sie Ihr Thema an:',
 	'addTopicShortText': 'Bitte geben Sie die Kurform Ihres Themas an:',
@@ -406,6 +413,7 @@ var dbas_de = {
 	'fetchLongUrl': 'Hole lange URL!',
 	'fetchShortUrl': 'Hole kurze URL!',
 	'forgotPassword': 'Passwort vergessen',
+	'forward' : 'weiterleiten',
 	'firstname': 'Vorname',
 	'gender': 'Geschlecht',
 	'generateSecurePassword': 'Generate secure password',
@@ -489,6 +497,7 @@ var dbas_de = {
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
+	'to': 'An',
 	'timestamp': 'Zeit',
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'typeofVote': 'Zustimmung/Ablehnung',
