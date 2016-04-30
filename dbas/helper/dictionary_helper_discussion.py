@@ -67,7 +67,10 @@ class DiscussionDictHelper(object):
 		statement_text      = get_text_for_statement_uid(uid)
 		if not statement_text:
 			return None
-		text                = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + statement_text[0:1].lower() + statement_text[1:] + '</strong>?'
+		if self.lang == 'en':
+			statement_text = statement_text[0:1].lower() + statement_text[1:]
+
+		text                = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + statement_text + '</strong>?'
 		# select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, '', '', _tn.get(_tn.youAreInterestedIn) + ': <strong>' + statement_text + '</strong>', lang=self.lang)
 		bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
 
@@ -100,7 +103,9 @@ class DiscussionDictHelper(object):
 		text                = text[0:1].upper() + text[1:]
 		if not text:
 			return None
-		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong>' + text[0:1].lower() + text[1:] + '</strong> '
+		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong>'
+		question            += text[0:1].lower() + text[1:] if self.lang == 'en' else text
+		question            += '</strong> '
 		question            += _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else _tn.get(_tn.isNotAGoodIdea)) + ', '  + _tn.get(_tn.because).lower() + '...'
@@ -125,8 +130,8 @@ class DiscussionDictHelper(object):
 		                                                       nickname=nickname, lang=self.lang)
 
 		bubbles_array.append(select_bubble)
-		bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now',
-		                                                                           message=_tn.get(_tn.now), omit_url=True, lang=self.lang))
+		bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now),
+		                                                            omit_url=True, lang=self.lang))
 		bubbles_array.append(question_bubble)
 
 		if not self.nickname and count_of_items == 1:

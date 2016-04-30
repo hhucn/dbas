@@ -5,6 +5,7 @@ Common, pure functions used by the D-BAS.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import arrow
 import locale
 from datetime import datetime
 from html import escape
@@ -45,25 +46,44 @@ def sql_timestamp_pretty_print(ts, lang):
 	"""
 	Pretty printing for sql timestamp in dependence of the language.
 
-	:param ts: timestamp as string
+	:param ts: timestamp (arrow) as string
 	:param lang: language
 	:return:
 	"""
 
-	formatter = '%-I:%M %p, %d. %b. %Y'
+	# ts = str(ts)
+	# formatter = '%-I:%M %p, %d. %b. %Y'
+	# if lang == 'de':
+	# 	try:
+	# 		locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
+	# 		formatter = '%-H:%M Uhr, %d. %b. %Y'
+	# 	except locale.Error:
+	# 		locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
+	# try:  # sqlite
+	# 	time = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+	# except ValueError:  # postgres
+	# 	time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
+
+	return ts.to('Europe/Berlin'if lang == 'de' else 'US/Pacific').humanize(locale=lang)
+
+
+def python_datetime_pretty_print(ts, lang):
+	"""
+
+
+	:param ts:
+	:param lang:
+	:return:
+	"""
+	formatter = '%d. %b.'
 	if lang == 'de':
 		try:
 			locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
-			formatter = '%-H:%M Uhr, %d. %b. %Y'
+			formatter = '%b. %Y'
 		except locale.Error:
 			locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
 
-	try:  # sqlite
-		time = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
-	except ValueError:  # postgres
-		time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
-
-	return time.strftime(formatter)
+	return datetime.strptime(str(ts), '%Y-%m-%d').strftime(formatter)
 
 
 def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False, user_changed_opinion=False):

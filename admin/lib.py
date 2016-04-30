@@ -33,16 +33,16 @@ def get_overview_of_arguments(user='', lang=''):
 
 		if len(db_arguments) > 0:
 			for argument in db_arguments:
+				text = get_text_for_argument_uid(argument.uid, lang)
 				tmp_dict = dict()
 				tmp_dict['uid'] = str(argument.uid)
-				tmp_dict['text'] = get_text_for_argument_uid(argument.uid, lang)
-				tmp_dict['text'] = get_text_for_argument_uid(argument.uid, lang)
-				db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
-				db_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-				                                                                     VoteArgument.is_valid == True)).all()
+				tmp_dict['text'] = text[0:1].upper() + text[1:]
+				db_votes         = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
+				db_valid_votes   = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
+				                                                                       VoteArgument.is_valid == True)).all()
 				db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
 				                                                                       VoteArgument.is_valid == True,
-				                                                                       VoteArgument.is_up_vote)).all()
+				                                                                       VoteArgument.is_up_vote == True)).all()
 				tmp_dict['votes'] = len(db_votes)
 				tmp_dict['valid_votes'] = len(db_valid_votes)
 				tmp_dict['valid_upvotes'] = len(db_valid_upvotes)
@@ -53,7 +53,7 @@ def get_overview_of_arguments(user='', lang=''):
 	return return_dict
 
 
-def get_all_users(user, lang):
+def get_all_users(user, lang, mainpage):
 	"""
 	Bla
 
@@ -79,11 +79,12 @@ def get_all_users(user, lang):
 		tmp_dict['email']           = str(user.email)
 		tmp_dict['gender']          = str(user.gender)
 		tmp_dict['group_uid']       = DBDiscussionSession.query(Group).filter_by(uid=user.group_uid).first().name
-		tmp_dict['last_login']      = sql_timestamp_pretty_print(str(user.last_login), lang)
-		tmp_dict['registered']      = sql_timestamp_pretty_print(str(user.registered), lang)
-		tmp_dict['avatar']          = _uh.get_profile_picture(user)
-		tmp_dict['public_avatar']   = _uh.get_public_profile_picture(user)
-		tmp_dict['last_action']     = sql_timestamp_pretty_print(str(user.last_action), lang)
+		tmp_dict['last_login']      = sql_timestamp_pretty_print(user.last_login, lang)
+		tmp_dict['registered']      = sql_timestamp_pretty_print(user.registered, lang)
+		tmp_dict['avatar']          = _uh.get_profile_picture(user, 40)
+		tmp_dict['public_avatar']   = _uh.get_public_profile_picture(user, 40)
+		tmp_dict['last_action']     = sql_timestamp_pretty_print(user.last_action, lang)
+		tmp_dict['public_url']      = mainpage + '/user/' + str(user.public_nickname)
 		return_array.append(tmp_dict)
 
 	return return_array

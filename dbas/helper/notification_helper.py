@@ -154,7 +154,7 @@ class NotificationHelper:
 				tmp_dict['to_author_url']    = mainpage + '/user/' + db_to_user.public_nickname
 
 			tmp_dict['id']            = str(message.uid)
-			tmp_dict['timestamp']     = sql_timestamp_pretty_print(str(message.timestamp), lang)
+			tmp_dict['timestamp']     = sql_timestamp_pretty_print(message.timestamp, lang)
 			tmp_dict['read']          = message.read
 			tmp_dict['topic']         = message.topic
 			tmp_dict['content']       = message.content

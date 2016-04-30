@@ -427,7 +427,7 @@ var dbas_de = {
 	'last_action': 'Letzte Aktion',
 	'last_login': 'Letze Anmeldung',
 	'logfile': 'Logdatei für',
-	'Login': 'Login',
+	'login': 'Login',
 	'letsGo': 'Wenn Sie direkt starten möchten, klicken Sie bitte hier!',
 	'listOfPostedStatements': 'Dies ist eine Liste von allen gemachten Aussagen:',
 	'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
