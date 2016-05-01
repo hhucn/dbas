@@ -181,8 +181,7 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		} else {
 			var chart = new Chart(ctx).Pie(pieData);
-			// create legend for chart
-			$('#' + popupConfirmDialogId + ' div.modal-body').append(chart.generateLegend());
+			new DiscussionBarometer().createLegend(chart);
 		}
 	};
 
@@ -213,7 +212,7 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
 		else {
-			$('#' + popupConfirmDialogId + ' div.modal-body').append(chart.generateLegend());
+			new DiscussionBarometer().createLegend(chart);
 		}
 	};
 
@@ -239,16 +238,43 @@ function DiscussionBarometer(){
 			}
 		});
 
-		$('#' + popupConfirmDialogId + ' div.modal-body').append(chart.generateLegend());
-
 		if (users == 0){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
 		else{
-			$('#' + popupConfirmDialogId + ' div.modal-body').append(chart.generateLegend());
+			new DiscussionBarometer().createLegend(chart);
 		}
 	};
+
+	/**
+	 * @param chart
+	 */
+	this.createLegend = function(chart){
+		var legend = chart.generateLegend();
+
+		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div class = "chart-legend">' + legend + '</div>');
+
+		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul').css({
+			'list-style-type': 'none',
+			'padding-left': '0px'
+		});
+		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul' + ' li').css({
+			'display': 'block',
+			'clear' : 'both',
+			'padding': '3px'
+
+		});
+		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul' + ' li' + ' span').css({
+			'display': 'block',
+			//'width': '20px',
+			'height': '20px',
+			'border-radius': '5px',
+			'margin-right': '10px',
+			'padding-left': '20px',
+			'float': 'left'
+		});
+	}
 
 	this.setAlertIntoDialog = function(){
 		var div, strong, span;
