@@ -463,7 +463,7 @@ class UserHandler:
 		statement_array = []
 		edit_array = []
 
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		db_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
 
 		if not db_user:
 			return statement_array, edit_array
