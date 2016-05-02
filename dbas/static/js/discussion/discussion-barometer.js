@@ -1,6 +1,6 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff, Teresa Uebber
+ * @email krauthoff@cs.uni-duesseldorf.de, teresa.uebber@hhu.de
  */
 
 // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
@@ -181,7 +181,7 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		} else {
 			var chart = new Chart(ctx).Pie(pieData);
-			new DiscussionBarometer().createLegend(chart);
+			this.createLegend(chart);
 		}
 	};
 
@@ -212,7 +212,7 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
 		else {
-			new DiscussionBarometer().createLegend(chart);
+			this.createLegend(chart);
 		}
 	};
 
@@ -241,9 +241,8 @@ function DiscussionBarometer(){
 		if (users == 0){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
-		}
-		else{
-			new DiscussionBarometer().createLegend(chart);
+		} else{
+			this.createLegend(chart);
 		}
 	};
 
@@ -251,28 +250,27 @@ function DiscussionBarometer(){
 	 * @param chart
 	 */
 	this.createLegend = function(chart){
-		var legend = chart.generateLegend();
+		$('#' + popupConfirmDialogId + ' div.modal-body')
+			.append('<span class="lead">' + _t(legend) + ':</span>')
+			.append('<div class="chart-legend">' + chart.generateLegend() + '</div>');
 
-		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div class = "chart-legend">' + legend + '</div>');
-
-		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul').css({
-			'list-style-type': 'none',
-			'padding-left': '0px'
-		});
-		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul' + ' li').css({
-			'display': 'block',
+		//$('#' + popupConfirmDialogId + ' div.chart-legend ul').css({
+		//	'list-style-type': 'none',
+		//	'padding-left': '0px'
+		//});
+		$('#' + popupConfirmDialogId + ' div.chart-legend li').css({
+			//'display': 'block',
 			'clear' : 'both',
-			'padding': '3px'
+			'padding': '2px'
 
 		});
-		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul' + ' li' + ' span').css({
+		$('#' + popupConfirmDialogId + ' div.chart-legend span').css({
 			'display': 'block',
-			//'width': '20px',
-			'height': '20px',
-			'border-radius': '5px',
-			'margin-right': '10px',
-			'padding-left': '20px',
-			'float': 'left'
+			'border-radius': '4px',
+			'padding-left': '0.5em',
+			'padding-right': '0.5em',
+			'float': 'left',
+			'color': 'white'
 		});
 	}
 
