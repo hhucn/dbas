@@ -456,8 +456,8 @@ class UserHandler:
 
 		:param nickname: User.public_nickname
 		:param lang: ui_locales
-		:param timestamp_after: Arrow
-		:param timestamp_before: Arrow
+		:param timestamp_after: Arrow or None
+		:param timestamp_before: Arrow or None
 		:return:
 		"""
 		statement_array = []
