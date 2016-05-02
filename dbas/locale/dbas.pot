@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-29 13:19+0200\n"
+"POT-Creation-Date: 2016-05-02 14:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
-"Generated-By: Lingua 4.8.1\n"
+"Generated-By: Lingua 4.9\n"
 
 #. Default: 404 Error
 #: ./dbas/templates/404.pt:8
@@ -337,12 +337,12 @@ msgid "icons_by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: ./dbas/templates/imprint.pt:80
+#: ./dbas/templates/imprint.pt:81
 msgid "generated_with"
 msgstr ""
 
 #. Default: Changes
-#: ./dbas/templates/imprint.pt:103
+#: ./dbas/templates/imprint.pt:104
 msgid "changes"
 msgstr ""
 
@@ -1091,7 +1091,7 @@ msgid "from"
 msgstr ""
 
 #. Default: answer
-#: ./dbas/templates/notifications.pt:72
+#: ./dbas/templates/notifications.pt:72 ./dbas/templates/notifications.pt:101
 msgid "answer"
 msgstr ""
 
@@ -1099,11 +1099,6 @@ msgstr ""
 #. Default: to:
 #: ./dbas/templates/notifications.pt:89 ./dbas/templates/notifications.pt:96
 msgid "to"
-msgstr ""
-
-#. Default: forward
-#: ./dbas/templates/notifications.pt:101
-msgid "forward"
 msgstr ""
 
 #. Default: JavaScript is not enabled:
@@ -1126,24 +1121,14 @@ msgstr ""
 msgid "last_login"
 msgstr ""
 
-#. Default: Registered Since
+#. Default: Registered
 #: ./dbas/templates/user.pt:18
-msgid "registered_since"
+msgid "registered"
 msgstr ""
 
 #. Default: Profile Picture of
 #: ./dbas/templates/user.pt:26
 msgid "profile_picture_of"
-msgstr ""
-
-#. Default: Decision Index - Last 7 Days
-#: ./dbas/templates/user.pt:56
-msgid "decision_index_7"
-msgstr ""
-
-#. Default: Decision Index - Last 30 Days
-#: ./dbas/templates/user.pt:59
-msgid "decision_index_30"
 msgstr ""
 
 #. Default: Current discussion is about

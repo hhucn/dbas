@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-29 13:19+0200\n"
+"POT-Creation-Date: 2016-05-02 14:35+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -413,12 +413,12 @@ msgid "icons_by"
 msgstr "Icons von"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:80
+#: dbas/templates/imprint.pt:81
 msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework 1.54"
 
 #. Default: Changes
-#: dbas/templates/imprint.pt:103
+#: dbas/templates/imprint.pt:104
 msgid "changes"
 msgstr "Änderungen in der Version"
 
@@ -1187,7 +1187,7 @@ msgid "from"
 msgstr "Von:"
 
 #. Default: answer
-#: dbas/templates/notifications.pt:72
+#: dbas/templates/notifications.pt:72 dbas/templates/notifications.pt:101
 msgid "answer"
 msgstr "antworten"
 
@@ -1196,11 +1196,6 @@ msgstr "antworten"
 #: dbas/templates/notifications.pt:89 dbas/templates/notifications.pt:96
 msgid "to"
 msgstr "An:"
-
-#. Default: forward
-#: dbas/templates/notifications.pt:101
-msgid "forward"
-msgstr "weiterleiten"
 
 #. Default: JavaScript is not enabled:
 #: dbas/templates/basetemplate.pt:36
@@ -1222,25 +1217,15 @@ msgstr "Persönliche Informationen von"
 msgid "last_login"
 msgstr "Letze Anmeldung"
 
-#. Default: Registered Since
+#. Default: Registered
 #: dbas/templates/user.pt:18
-msgid "registered_since"
-msgstr "Angemeldet seit"
+msgid "registered"
+msgstr "Registierung"
 
 #. Default: Profile Picture of
 #: dbas/templates/user.pt:26
 msgid "profile_picture_of"
 msgstr "Profilbild von"
-
-#. Default: Decision Index - Last 7 Days
-#: dbas/templates/user.pt:56
-msgid "decision_index_7"
-msgstr "Entscheidungs-Index - Letzte 7 Tage"
-
-#. Default: Decision Index - Last 30 Days
-#: dbas/templates/user.pt:59
-msgid "decision_index_30"
-msgstr "Entscheidungs-Index - Letzte 30 Tage"
 
 #. Default: Current discussion is about
 #: dbas/templates/content.pt:11
@@ -1306,6 +1291,18 @@ msgstr "Insel-Ansicht"
 #: dbas/templates/content.pt:340
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "forward"
+#~ msgstr "weiterleiten"
+
+#~ msgid "registered_since"
+#~ msgstr "Angemeldet seit"
+
+#~ msgid "decision_index_7"
+#~ msgstr "Entscheidungs-Index - Letzte 7 Tage"
+
+#~ msgid "decision_index_30"
+#~ msgstr "Entscheidungs-Index - Letzte 30 Tage"
 
 #~ msgid "total"
 #~ msgstr "insgesamt."
