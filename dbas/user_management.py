@@ -269,14 +269,22 @@ class UserHandler:
 		_tn = Translator(lang)
 
 		# data for last 7 and 30 days
-		labels7 = []
-		labels30 = []
-		data7 = []
-		data30 = []
+		labels_decision_7 = []
+		labels_decision_30 = []
+		labels_edit_30 = []
+		labels_statement_30 = []
+		data_decision_7 = []
+		data_decision_30 = []
+		data_edit_30 = []
+		data_statement_30 = []
 		return_dict['label1'] = _tn.get(_tn.decisionIndex7)
 		return_dict['label2'] = _tn.get(_tn.decisionIndex30)
+		return_dict['label3'] = _tn.get(_tn.statementIndex)
+		return_dict['label4'] = _tn.get(_tn.editIndex)
 		return_dict['labelinfo1'] = _tn.get(_tn.decisionIndex7Info)
 		return_dict['labelinfo2'] = _tn.get(_tn.decisionIndex30Info)
+		return_dict['labelinfo3'] = _tn.get(_tn.statementIndexInfo)
+		return_dict['labelinfo4'] = _tn.get(_tn.editIndexInfo)
 
 		for days_diff in range(30, -1, -1):
 			date_begin  = date.today() - timedelta(days=days_diff)
@@ -284,22 +292,35 @@ class UserHandler:
 			begin       = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
 			end         = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
 
+			ts = python_datetime_pretty_print(date_begin, lang)
+			labels_decision_30.append(ts)
+			labels_statement_30.append(ts)
+			labels_edit_30.append(ts)
+
 			db_votes_statements = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == db_user.uid,
 			                                                                           VoteStatement.timestamp >= begin,
 			                                                                           VoteStatement.timestamp < end)).all()
 			db_votes_arguments = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == db_user.uid,
 			                                                                         VoteArgument.timestamp >= begin,
 			                                                                         VoteArgument.timestamp < end)).all()
-			labels30.append(python_datetime_pretty_print(date_begin, lang))
-			data30.append(len(db_votes_arguments) + len(db_votes_statements))  # randint(randint(0, 10), randint(20, 200)))
+			votes = len(db_votes_arguments) + len(db_votes_statements)
+			data_decision_30.append(votes)
 			if days_diff < 6:
-				labels7.append(python_datetime_pretty_print(date_begin, lang))
-				data7.append(len(db_votes_arguments) + len(db_votes_statements))  # randint(randint(0, 10), randint(20, 200)))
+				labels_decision_7.append(ts)
+				data_decision_7.append(votes)
 
-		return_dict['labels1'] = labels7
-		return_dict['labels2'] = labels30
-		return_dict['data1'] = data7
-		return_dict['data2'] = data30
+			statements, edits = UserHandler.get_textversions_of_user(nickname, lang, begin, end)
+			data_statement_30.append(len(statements))
+			data_edit_30.append(len(edits))
+
+		return_dict['labels1'] = labels_decision_7
+		return_dict['labels2'] = labels_decision_30
+		return_dict['labels3'] = labels_statement_30
+		return_dict['labels4'] = labels_edit_30
+		return_dict['data1'] = data_decision_7
+		return_dict['data2'] = data_decision_30
+		return_dict['data3'] = data_statement_30
+		return_dict['data4'] = data_edit_30
 
 		return return_dict
 
@@ -429,57 +450,46 @@ class UserHandler:
 		return arg_votes, stat_votes
 
 	@staticmethod
-	def get_statements_of_user(user, lang):
+	def get_textversions_of_user(nickname, lang, timestamp_after=None, timestamp_before=None):
 		"""
+		Returns all textversions, were the user was author
 
-		:param user:
-		:param lang:
+		:param nickname: User.public_nickname
+		:param lang: ui_locales
+		:param timestamp_after: Arrow
+		:param timestamp_before: Arrow
 		:return:
 		"""
-		return_array = []
+		statement_array = []
+		edit_array = []
 
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
 		if not db_user:
-			return return_array
-		db_edits = DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
+			return statement_array, edit_array
+
+		if not timestamp_after:
+			timestamp_after = arrow.get('1970-01-01').format('YYYY-MM-DD')
+		if not timestamp_before:
+			timestamp_before = arrow.utcnow().replace(days=+1).format('YYYY-MM-DD')
+
+		db_edits = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.author_uid == db_user.uid,
+		                                                              TextVersion.timestamp >= timestamp_after,
+		                                                              TextVersion.timestamp < timestamp_before)).all()
 
 		for edit in db_edits:
 			db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()
-			if db_root_version.uid == edit.uid:
-				edit_dict = dict()
-				edit_dict['uid'] = str(edit.uid)
-				edit_dict['statement_uid'] = str(edit.statement_uid)
-				edit_dict['content'] = str(edit.content)
-				edit_dict['timestamp'] = sql_timestamp_pretty_print(edit.timestamp, lang)
-				return_array.append(edit_dict)
-
-		return return_array
-
-	@staticmethod
-	def get_edits_of_user(user, lang):
-		"""
-
-		:param user:
-		:param lang:
-		:return:
-		"""
-		return_array = []
-
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-		if not db_user:
-			return return_array
-
-		db_edits = DBDiscussionSession.query(TextVersion).filter_by(author_uid=db_user.uid).all()
-
-		for edit in db_edits:
 			edit_dict = dict()
 			edit_dict['uid'] = str(edit.uid)
 			edit_dict['statement_uid'] = str(edit.statement_uid)
 			edit_dict['content'] = str(edit.content)
 			edit_dict['timestamp'] = sql_timestamp_pretty_print(edit.timestamp, lang)
-			return_array.append(edit_dict)
+			if db_root_version.uid == edit.uid:
+				statement_array.append(edit_dict)
+			else:
+				edit_array.append(edit_dict)
 
-		return return_array
+		return statement_array, edit_array
 
 	@staticmethod
 	def get_votes_of_user(user, is_argument, lang, query_helper):
@@ -538,8 +548,9 @@ class UserHandler:
 
 		arg_vote, stat_vote = UserHandler.get_count_of_votes_of_user(db_user, True)
 
-		ret_dict['statements_posted']     = UserHandler.get_count_of_statements_of_user(db_user, False)
-		ret_dict['edits_done']            = UserHandler.get_count_of_statements_of_user(db_user, True)
+		statements, edits                 = UserHandler.get_textversions_of_user(db_user.public_nickname, lang)
+		ret_dict['statements_posted']     = len(statements)
+		ret_dict['edits_done']            = len(edits)
 		ret_dict['discussion_arg_votes']  = arg_vote
 		ret_dict['discussion_stat_votes'] = stat_vote
 		ret_dict['avatar_url']            = UserHandler.get_public_profile_picture(db_user, 120)

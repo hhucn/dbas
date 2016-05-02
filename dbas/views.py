@@ -912,7 +912,7 @@ class Dbas(object):
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_posted_statements', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler.get_statements_of_user(self.request.authenticated_userid, ui_locales)
+		return_array, tmp = UserHandler.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all text edits
@@ -926,7 +926,7 @@ class Dbas(object):
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_edits', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler.get_edits_of_user(self.request.authenticated_userid, ui_locales)
+		tmp, return_array = UserHandler.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for arguments
