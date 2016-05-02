@@ -246,7 +246,7 @@ class HistoryHelper:
 			                                                                     VoteStatement.is_up_vote == is_up_vote,
 			                                                                     VoteStatement.is_valid == True)).all()
 		_t = Translator(lang)
-		diff = 1 if nickname != 'anonymous' else 0
+		diff = 1 if nickname is not None and nickname != 'anonymous' else 0
 		votecounts = len(db_votecounts) - diff if db_votecounts else 0
 
 		if votecounts == 0:

@@ -249,11 +249,11 @@ class DiscussionDictHelper(object):
 		_tg					 = TextGenerator(self.lang)
 		db_argument			 = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 
-		if attack == 'end':
+		if attack.startswith('end'):
 			#  user_text        = _tn.get(_tn.soYourOpinionIsThat) + ': '
 			text             = get_text_for_argument_uid(uid, self.lang, True, user_changed_opinion=user_changed_opinion)
 			user_text        = '<strong>' + text[0:1].upper() + text[1:] + '</strong>.'
-			sys_text         = _tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.'
+			sys_text         = (_tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.') if attack == 'end' else _tn.get(_tn.otherParticipantsDontHaveNewCounterForThat)
 			mid_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 		else:
 			premise, tmp	 = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
@@ -296,7 +296,8 @@ class DiscussionDictHelper(object):
 			sys_text = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive, attack, confr,
 			                                          reply_for_argument, user_is_attacking, db_argument, db_confrontation)
 
-		bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid, is_up_vote=is_supportive, lang=self.lang)
+		bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
+		                                                     is_up_vote=is_supportive, lang=self.lang, nickname=self.nickname)
 		if attack == 'end':
 			bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, lang=self.lang)
 			bubble_mid  = HistoryHelper.create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)

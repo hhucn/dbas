@@ -7,6 +7,7 @@ Core component of DBAS.
 import json
 
 import requests
+import time
 import transaction
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
@@ -1004,8 +1005,6 @@ class Dbas(object):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
-		return_dict = dict()
-
 		lang = get_language(self.request, get_current_registry())
 		_tn = Translator(lang)
 
@@ -1051,6 +1050,7 @@ class Dbas(object):
 					return {'status': 'success'}
 				else:
 					logger('user_login', 'return', 'success: ' + url)
+					time.sleep(0.5)
 					return HTTPFound(
 						location=url,
 						headers=headers,
@@ -1061,9 +1061,6 @@ class Dbas(object):
 			logger('user_login', 'error', repr(e))
 
 		return_dict = {'error': error}
-		logger('--', '--', return_dict['error'])
-		logger('--', '--', return_dict['error'])
-		logger('--', '--', return_dict['error'])
 
 		return return_dict  # json.dumps(return_dict, True)
 
