@@ -129,7 +129,7 @@ class ItemDictHelper(object):
 					premise_array.append({'title': text, 'id': premise.statement_uid})
 
 				# get attack for each premise, so the urls will be unique
-				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.issue_uid, self.lang)
+				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.issue_uid, self.lang, history=self.path)
 				already_used = 'reaction/' + str(argument.uid) + '/' in self.path
 				additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
 				statements_array.append(self.__create_statement_dict(str(argument.uid),
@@ -213,7 +213,7 @@ class ItemDictHelper(object):
 
 				# for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
 				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang,
-				                                                               special_case='undermine' if attack_type == 'undermine' else None)
+				                                                               special_case_on_undermine='undermine' if attack_type == 'undermine' else None)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
@@ -364,8 +364,9 @@ class ItemDictHelper(object):
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the change attack button or step back, if we have bno other attack
-		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.issue_uid, self.lang, restriction_on_attacks=attack, restriction_on_arg_uid=argument_uid_sys)
-		if new_attack == 'no_other_attack' or new_attack == 'end':
+		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.issue_uid, self.lang,
+		                                                     restriction_on_attacks=attack, restriction_on_arg_uid=argument_uid_sys)
+		if new_attack == 'no_other_attack' or new_attack.startswith('end'):
 			relation = 'step_back'
 			url = 'back' if self.for_api else 'window.history.go(-1)'
 		else:
