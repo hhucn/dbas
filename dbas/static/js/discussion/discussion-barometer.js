@@ -180,7 +180,8 @@ function DiscussionBarometer(){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		} else {
-			var chart = new Chart(ctx).Pie(pieData);
+			options = new DiscussionBarometer().createLegendOptions();
+			var chart = new Chart(ctx).Pie(pieData, options);
 			new DiscussionBarometer().createLegend(chart);
 		}
 	};
@@ -212,6 +213,8 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
 		else {
+			var options = new DiscussionBarometer().createLegendOptions();
+			$.extend(chart.options, options);
 			new DiscussionBarometer().createLegend(chart);
 		}
 	};
@@ -243,38 +246,43 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
 		else{
+			var options = new DiscussionBarometer().createLegendOptions();
+			$.extend(chart.options, options);
 			new DiscussionBarometer().createLegend(chart);
 		}
 	};
 
 	/**
+	 * @return options
+	 */
+	this.createLegendOptions = function() {
+		var options = {
+			legendTemplate: '<ul style = "list-style-type: none; padding-left: 0px;">'
+					+ '<% for (var i=0; i<segments.length; i++) { %>'
+						+ '<li style = "padding: 3px;">'
+							+ '<span style=' +
+								'\ " border-radius: 5px;' +
+								'margin-right: 10px;' +
+								'width: 15px;' +
+								'height: 15px;' +
+								'display: inline-block;' +
+								'background-color: <%=segments[i].fillColor%>\"> </span>'
+							+ '<% if (segments[i].label) { %><%= segments[i].label %><% } %>'
+							+ '<% if (segments[i].value) { %><%= ": " + segments[i].value %><% } %>'
+						+ '</li>'
+					+ '<% } %>'
+				+ '</ul>'
+		};
+		return options;
+	};
+
+	/**
 	 * @param chart
 	 */
-	this.createLegend = function(chart){
+	this.createLegend = function(chart) {
 		var legend = chart.generateLegend();
-
-		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div class = "chart-legend">' + legend + '</div>');
-
-		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul').css({
-			'list-style-type': 'none',
-			'padding-left': '0px'
-		});
-		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul' + ' li').css({
-			'display': 'block',
-			'clear' : 'both',
-			'padding': '3px'
-
-		});
-		$('#' + popupConfirmDialogId + ' div.chart-legend' + ' ul' + ' li' + ' span').css({
-			'display': 'block',
-			//'width': '20px',
-			'height': '20px',
-			'border-radius': '5px',
-			'margin-right': '10px',
-			'padding-left': '20px',
-			'float': 'left'
-		});
-	}
+		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div id = "chart-legend">' + legend + '</div>');
+	};
 
 	this.setAlertIntoDialog = function(){
 		var div, strong, span;
