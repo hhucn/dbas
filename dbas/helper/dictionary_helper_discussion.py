@@ -333,7 +333,7 @@ class DiscussionDictHelper(object):
 		save_statement_url = 'ajax_set_new_start_statement'
 
 		logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
-		text = _tn.get(_tn.soYouEnteredMultipleReasons) + '.'
+		text = _tn.get(_tn.soYouEnteredMultipleReasons) + '. '
 		text += _tn.get(_tn.whyAreYouAgreeingWith) if is_supportive else _tn.get(_tn.whyAreYouDisagreeingWith)
 		text += ':<br><strong>'
 		text += get_text_for_argument_uid(uid, self.lang, True) if is_uid_argument else get_text_for_statement_uid(uid)

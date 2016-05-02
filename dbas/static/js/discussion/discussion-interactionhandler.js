@@ -150,7 +150,7 @@ function InteractionHandler() {
 			if (parsedData.vote_count>0) {
 				$.each(parsedData.supporter, function(index, nick){
 					td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.public_page[nick]).text(nick));
-					td_avatar = $('<td>').html('<img style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
+					td_avatar = $('<td>').html('<img class="preload-image" style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
 					if (i==1){
 						i=0;
 						tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
@@ -250,7 +250,7 @@ function InteractionHandler() {
 
 			$.each(users_array, function (i, val) {
 				td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', val.public_profile_url).text(val.nickname));
-				td_avatar = $('<td>').html('<img style="height: 40%;" src="' + val.avatar_url + '"></td>');
+				td_avatar = $('<td>').html('<img class="preload-image" style="height: 40%;" src="' + val.avatar_url + '"></td>');
 				if (j==1){
 					j=0;
 					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));

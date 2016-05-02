@@ -409,6 +409,8 @@ class ItemDictHelper(object):
 																		  Argument.conclusion_uid == conclusion,
 																		  Argument.argument_uid == argument,
 																		  Argument.is_supportive == is_supportive)).first()
+			if not db_argument:
+				return None
 			arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang)
 			url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 

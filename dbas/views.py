@@ -485,6 +485,9 @@ class Dbas(object):
 			.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
 		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
+		if not item_dict:
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+
 		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
 
@@ -1755,20 +1758,21 @@ class Dbas(object):
 			is_reaction = self.request.params['is_reaction'] == 'true' if 'is_reaction' in self.request.params else False
 			is_position = self.request.params['is_position'] == 'true' if 'is_position' in self.request.params else False
 
+			_op = OpinionHandler(ui_locales, nickname, mainpage)
 			if is_argument:
 				if not is_reaction:
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_argument(uids, ui_locales, nickname, mainpage)
+					return_dict = _op.get_user_with_same_opinion_for_argument(uids)
 				else:
-					return_dict = OpinionHandler.get_user_with_opinions_for_argument(uids, ui_locales, nickname, mainpage)
+					return_dict = _op.get_user_with_opinions_for_argument(uids)
 			elif is_position:
 				uids = json.loads(uids)
-				return_dict = OpinionHandler.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], ui_locales, nickname, mainpage)
+				return_dict = _op.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids])
 			else:
 				if not is_attitude:
 					uids = json.loads(uids)
-					return_dict = OpinionHandler.get_user_with_same_opinion_for_premisegroups(uids if isinstance(uids, list) else [uids], ui_locales, nickname, mainpage)
+					return_dict = _op.get_user_with_same_opinion_for_premisegroups(uids if isinstance(uids, list) else [uids])
 				else:
-					return_dict = OpinionHandler.get_user_with_opinions_for_attitude(uids, ui_locales, nickname, mainpage)
+					return_dict = _op.get_user_with_opinions_for_attitude(uids)
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_users_with_same_opinion', 'error', repr(e))
