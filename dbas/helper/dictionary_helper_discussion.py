@@ -302,8 +302,8 @@ class DiscussionDictHelper(object):
 			bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, lang=self.lang)
 			bubble_mid  = HistoryHelper.create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
 		else:
-			uid = 'question-bubble-' + str(additional_uid) if uid > 0 else ''
-			bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(additional_uid), message=sys_text, omit_url=True, lang=self.lang)
+			uid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
+			bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True, lang=self.lang)
 
 		# dirty fixes
 		if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
