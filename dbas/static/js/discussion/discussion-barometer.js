@@ -1,6 +1,6 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff, Teresa Uebber
+ * @email krauthoff@cs.uni-duesseldorf.de, teresa.uebber@hhu.de
  */
 
 // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
@@ -25,6 +25,28 @@ var colors = [
 	'#CDDC39', // 17 lime
 	'#FF9800', // 18 orange
 	'#9E9E9E'  // 19 grey
+	],
+	highlightColors = [
+	'#e57373', //  0 red
+	'#9575cd', //  1 deep purple
+	'#64b5f6', //  2 light blue
+	'#81c784', //  3 green
+	'#fff176', //  4 yellow
+	'#ff8a65', //  5 deep orange
+	'#90a4ae', //  6 blue grey
+	'#f06292', //  7 pink
+	'#7986cb', //  8 indigo
+	'#4dd0e1', //  9 cyan
+	'#aed581', // 10 light green
+	'#ffd54f', // 11 amber
+	'#a1887f', // 12 brown
+	'#424242', // 13 black
+	'#ba68c8', // 14 purple
+	'#64b5f6', // 15 blue
+	'#4db6ac', // 16 teal
+	'#dce775', // 17 lime
+	'#ffb74d', // 18 orange
+	'#e0e0e0'  // 19 grey
 	];
 
 function DiscussionBarometer(){
@@ -115,7 +137,7 @@ function DiscussionBarometer(){
         }
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' div.modal-body')
-			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto;"></canvas>');
+			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto; margin-bottom: 20px;"></canvas>');
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		}).removeClass('btn-success');
@@ -143,13 +165,13 @@ function DiscussionBarometer(){
         {
 			value: obj.agree_users.length,
         	color: colors[3],
-			highlight: colors[10],
+			highlight: highlightColors[3],
             label: 'agree'
         },
 		{
 			value: obj.disagree_users.length,
         	color: colors[0],
-			highlight: colors[5],
+			highlight: highlightColors[0],
 			label: 'disagree'
 		}
 		];
@@ -159,6 +181,7 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		} else {
 			var chart = new Chart(ctx).Pie(pieData);
+			this.createLegend(chart);
 		}
 	};
 
@@ -176,6 +199,7 @@ function DiscussionBarometer(){
 				chart.addData({
 					value: value.users.length,
 					color: colors[index],
+					highlight: highlightColors[index],
 					label: value.text
 				});
 				users += value.users.length;
@@ -186,6 +210,9 @@ function DiscussionBarometer(){
 		if (users == 0){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
+		}
+		else {
+			this.createLegend(chart);
 		}
 	};
 
@@ -203,6 +230,7 @@ function DiscussionBarometer(){
 				chart.addData({
 					value: entry.users.length,
 					color: colors[index],
+					highlight: highlightColors[index],
 					label: entry.text
 				});
 				users += entry.users.length;
@@ -213,8 +241,38 @@ function DiscussionBarometer(){
 		if (users == 0){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
+		} else{
+			this.createLegend(chart);
 		}
 	};
+
+	/**
+	 * @param chart
+	 */
+	this.createLegend = function(chart){
+		$('#' + popupConfirmDialogId + ' div.modal-body')
+			.append('<span class="lead">' + _t(legend) + ':</span>')
+			.append('<div class="chart-legend">' + chart.generateLegend() + '</div>');
+
+		//$('#' + popupConfirmDialogId + ' div.chart-legend ul').css({
+		//	'list-style-type': 'none',
+		//	'padding-left': '0px'
+		//});
+		$('#' + popupConfirmDialogId + ' div.chart-legend li').css({
+			//'display': 'block',
+			'clear' : 'both',
+			'padding': '2px'
+
+		});
+		$('#' + popupConfirmDialogId + ' div.chart-legend span').css({
+			'display': 'block',
+			'border-radius': '4px',
+			'padding-left': '0.5em',
+			'padding-right': '0.5em',
+			'float': 'left',
+			'color': 'white'
+		});
+	}
 
 	this.setAlertIntoDialog = function(){
 		var div, strong, span;
