@@ -393,7 +393,7 @@ class FrontendTests:
 
 		b.click_link_by_partial_text('Language')
 		b.click_link_by_partial_text('Deutsch')
-		success = success and Helper.check_for_present_text(b, 'Teil der Graduierten-Kollegs', 'check switch to german language')
+		success = success and Helper.check_for_present_text(b, 'Teil des Graduierten-Kollegs', 'check switch to german language')
 
 		b.click_link_by_partial_text('Sprache')
 		b.click_link_by_partial_text('English')
@@ -613,14 +613,20 @@ class FrontendTests:
 		# confrontation - give feedback
 		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question')
 		success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for acceptive formulation of rebut')
-		# b.find_by_css('#item_support label').click()
-		# b.find_by_css('label#support').click()
-		# b.find_by_text('Right, it is true that')[0].click()
-		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
-		while Helper.check_for_non_present_text(b, 'every street festival is funded by large companies', 'sanity check', print_message=False):
+
+		# earlier used argument
+		b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
+		time.sleep(waittime)
+		success = success and Helper.check_for_present_text(b, 'You used this earlier', 'check for earlier used formulation')
+		b.back()
+		time.sleep(waittime)
+
+		while Helper.check_for_non_present_text(b, 'Right, it is true that every street festival is funded by large companies.', 'sanity check', print_message=False):
 			b.back()
+			b.reload()
 			time.sleep(waittime)
 			b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
+		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
 		# support of confrontation
@@ -642,7 +648,7 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# rebut of confrontation
-		success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for accepting', 'check for formulation on \'rebut\'')
+		success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for accepting', 'check for formulation on rebut')
 		b.find_by_css('#discussion-restart-btn').click()
 		time.sleep(waittime)
 
@@ -667,7 +673,7 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# rebut of confrontation
-		success = success and Helper.check_for_present_text(b, 'You have much stronger argument for rejecting', 'check for formulation on \'rebut\'')
+		success = success and Helper.check_for_present_text(b, 'You have much stronger argument for accepting', 'check for formulation on rebut')
 		success = success and Helper.check_for_present_text(b, 'is not a good idea', 'check for question again')
 
 		b = Helper.logout(b)
@@ -794,7 +800,7 @@ if __name__ == "__main__":
 
 	if str(input_browser) != 'b':
 		webdriver = 'chrome' if str(input_browser) == 'c' else 'firefox'
-		if len(list) == 0:
+		if len(input_list) == 0:
 			input_list = 'a'
 
 		print('')
