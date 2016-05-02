@@ -164,7 +164,7 @@ class FrontendTests:
 		splitted_list = test_list.split(',')
 		if len(splitted_list) == 1 and splitted_list[0] == 'a':
 			splitted_list = []
-			for i in range(11):
+			for i in range(12):
 				splitted_list.append(str(i))
 
 		start = time.time()
