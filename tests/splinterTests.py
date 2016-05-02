@@ -625,7 +625,7 @@ class FrontendTests:
 			b.back()
 			b.reload()
 			time.sleep(waittime)
-			b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
+			b.find_by_css('#discussions-space-list li:first-child input').click()
 		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
