@@ -15,7 +15,7 @@ from datetime import date, timedelta, datetime
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
-from .lib import sql_timestamp_pretty_print, python_datetime_pretty_print
+from .lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid
 from .logger import logger
 
 from .strings import Translator
@@ -497,8 +497,6 @@ class UserHandler:
 		if not db_user:
 			return return_array
 
-		_qh = query_helper
-
 		if is_argument:
 			db_votes = DBDiscussionSession.query(VoteArgument).filter_by(author_uid=db_user.uid).all()
 		else:
@@ -512,10 +510,10 @@ class UserHandler:
 			vote_dict['is_valid'] = str(vote.is_valid)
 			if is_argument:
 				vote_dict['argument_uid'] = str(vote.argument_uid)
-				vote_dict['text'] = _qh.get_text_for_argument_uid(vote.argument_uid, lang)
+				vote_dict['text'] = get_text_for_argument_uid(vote.argument_uid, lang)
 			else:
 				vote_dict['statement_uid'] = str(vote.statement_uid)
-				vote_dict['text'] = _qh.get_text_for_statement_uid(vote.statement_uid)
+				vote_dict['text'] = get_text_for_statement_uid(vote.statement_uid)
 			return_array.append(vote_dict)
 
 		return return_array
