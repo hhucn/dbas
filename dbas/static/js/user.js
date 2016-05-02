@@ -31,6 +31,11 @@ $(function () {
 	new User().getPublicUserData();
 });
 
+$(document).on({
+	ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0);},
+	ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0);}
+
+});
 function User() {
 	// https://www.google.com/design/spec/style/color.html#color-color-palette
 	// 0 is Blue
@@ -59,6 +64,8 @@ function User() {
 		var parsedData = $.parseJSON(jsonData);
 		this.createChart(parsedData, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
 		this.createChart(parsedData, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
+		this.createChart(parsedData, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
+		this.createChart(parsedData, $('#user-edit-chart-space'), 'user-edit-canvas', 3);
 		this.setLegendCSS();
 	};
 
