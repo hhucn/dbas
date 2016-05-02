@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-29 13:19+0200\n"
+"POT-Creation-Date: 2016-05-02 14:35+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -401,12 +401,12 @@ msgid "icons_by"
 msgstr "Icons by"
 
 #. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:80
+#: dbas/templates/imprint.pt:81
 msgid "generated_with"
 msgstr "generated_with"
 
 #. Default: Changes
-#: dbas/templates/imprint.pt:103
+#: dbas/templates/imprint.pt:104
 msgid "changes"
 msgstr "Changes in Version"
 
@@ -1168,7 +1168,7 @@ msgid "from"
 msgstr "From:"
 
 #. Default: answer
-#: dbas/templates/notifications.pt:72
+#: dbas/templates/notifications.pt:72 dbas/templates/notifications.pt:101
 msgid "answer"
 msgstr "answer"
 
@@ -1177,11 +1177,6 @@ msgstr "answer"
 #: dbas/templates/notifications.pt:89 dbas/templates/notifications.pt:96
 msgid "to"
 msgstr "To:"
-
-#. Default: forward
-#: dbas/templates/notifications.pt:101
-msgid "forward"
-msgstr "forward"
 
 #. Default: JavaScript is not enabled:
 #: dbas/templates/basetemplate.pt:36
@@ -1203,25 +1198,15 @@ msgstr "Public Information of"
 msgid "last_login"
 msgstr "Last Login"
 
-#. Default: Registered Since
+#. Default: Registered
 #: dbas/templates/user.pt:18
-msgid "registered_since"
-msgstr "Registered Since"
+msgid "registered"
+msgstr "Registered"
 
 #. Default: Profile Picture of
 #: dbas/templates/user.pt:26
 msgid "profile_picture_of"
 msgstr "Profile Picture of"
-
-#. Default: Decision Index - Last 7 Days
-#: dbas/templates/user.pt:56
-msgid "decision_index_7"
-msgstr "Decision Index - Last 7 Days"
-
-#. Default: Decision Index - Last 30 Days
-#: dbas/templates/user.pt:59
-msgid "decision_index_30"
-msgstr "Decision Index - Last 30 Days"
 
 #. Default: Current discussion is about
 #: dbas/templates/content.pt:11
@@ -1287,6 +1272,18 @@ msgstr "Island View"
 #: dbas/templates/content.pt:340
 msgid "complete_view"
 msgstr "Complete View"
+
+#~ msgid "forward"
+#~ msgstr "forward"
+
+#~ msgid "registered_since"
+#~ msgstr "Registered Since"
+
+#~ msgid "decision_index_7"
+#~ msgstr "Decision Index - Last 7 Days"
+
+#~ msgid "decision_index_30"
+#~ msgstr "Decision Index - Last 30 Days"
 
 #~ msgid "total"
 #~ msgstr "total."
