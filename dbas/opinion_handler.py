@@ -121,7 +121,8 @@ class OpinionHandler:
 				statement_dict['users']     = None
 
 			statement_dict['uid'] = str(uid)
-			statement_dict['text'] = get_text_for_statement_uid(uid)
+			text = get_text_for_statement_uid(uid)
+			statement_dict['text'] = text[0:1].upper() + text[1:]
 
 			db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == uid,
 		                                                                    VoteStatement.is_up_vote == True,
@@ -146,17 +147,17 @@ class OpinionHandler:
 		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
 	@staticmethod
-	def get_user_with_same_opinion_for_premisegroups(pgroup_uids, lang, nickname, mainpage):
+	def get_user_with_same_opinion_for_premisegroups(argument_uids, lang, nickname, mainpage):
 		"""
 		Returns nested dictionary with all kinds of information about the votes of the premisegroups.
 
-		:param pgroup_uids: PremiseGroups.uid
+		:param argument_uids: Argument.uid
 		:param lang: ui_locales ui_locales
 		:param nickname: User.nickname
 		:param mainpage: URL
 		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
 		"""
-		logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'PGroups ' + str(pgroup_uids))
+		logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'Arguments ' + str(argument_uids))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
@@ -164,11 +165,12 @@ class OpinionHandler:
 		_t = Translator(lang)
 		title = _t.get(_t.informationForStatements)
 
-		for uid in pgroup_uids:
-			logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'group ' + str(uid))
+		for uid in argument_uids:
+			logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'argument ' + str(uid))
 			statement_dict = dict()
 			all_users = []
-			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).all()
+			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+			db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 			if not db_premises:
 				statement_dict['uid']       = None
 				statement_dict['text']      = None
@@ -176,11 +178,13 @@ class OpinionHandler:
 				statement_dict['users']     = None
 
 			statement_dict['uid'] = str(uid)
-			statement_dict['text'], tmp = get_text_for_premisesgroup_uid(uid, lang)
+			text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+			statement_dict['text'] = text[0:1].upper() + text[1:]
 
 			db_votes = []
 			for premise in db_premises:
-				logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'premise ' + str(pgroup_uids))
+				logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'group ' + str(uid)
+				       + ' premises statement ' + str(premise.statement_uid))
 				db_votes += DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == premise.statement_uid,
 				                                                                 VoteStatement.is_up_vote == True,
 				                                                                 VoteStatement.is_valid == True,
@@ -232,7 +236,8 @@ class OpinionHandler:
 			opinions['users']     = None
 
 		opinions['uid'] = str(argument_uid)
-		opinions['text'] = get_text_for_argument_uid(argument_uid, lang)
+		text = get_text_for_argument_uid(argument_uid, lang)
+		opinions['text'] = text[0:1].upper() + text[1:]
 
 		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
 		                                                               VoteArgument.is_up_vote == True,
@@ -279,7 +284,8 @@ class OpinionHandler:
 			ret_dict['disagree_users'] = []
 			ret_dict['title'] = title[0:1].upper() + title[1:]
 
-		ret_dict['text'] = get_text_for_statement_uid(statement_uid)
+		text = get_text_for_statement_uid(statement_uid)
+		ret_dict['text'] = text[0:1].upper() + text[1:]
 		ret_dict['agree'] = None
 		ret_dict['disagree'] = None
 
