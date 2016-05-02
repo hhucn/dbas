@@ -225,13 +225,13 @@ class DiscussionDictHelper(object):
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-	def prepare_discussion_dict_for_argumentation(self, uid, is_supportive, additional_id, attack, history):
+	def prepare_discussion_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history):
 		"""
 		Prepares the discussion dict with all bubbles for the argumentation window.
 
 		:param uid: Argument.uid
 		:param is_supportive: Boolean
-		:param additional_id: Argument.uid
+		:param additional_uid: Argument.uid
 		:param attack: String (undermine, support, undercut, rebut, ...)
 		:param history: History
 		:return: dict()
@@ -258,7 +258,7 @@ class DiscussionDictHelper(object):
 		else:
 			premise, tmp	 = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
 			conclusion       = get_text_for_conclusion(db_argument, self.lang)
-			db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_id).first()
+			db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_uid).first()
 			confr, tmp       = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid, self.lang)
 			sys_conclusion   = get_text_for_conclusion(db_confrontation, self.lang)
 			if attack == 'undermine':
@@ -298,11 +298,12 @@ class DiscussionDictHelper(object):
 
 		bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
 		                                                     is_up_vote=is_supportive, lang=self.lang, nickname=self.nickname)
-		if attack == 'end':
+		if attack.startswith('end'):
 			bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, lang=self.lang)
 			bubble_mid  = HistoryHelper.create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
 		else:
-			bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, uid='question-bubble', message=sys_text, omit_url=True, lang=self.lang)
+			uid = 'question-bubble-' + str(additional_uid) if uid > 0 else ''
+			bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(additional_uid), message=sys_text, omit_url=True, lang=self.lang)
 
 		# dirty fixes
 		if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
@@ -312,7 +313,7 @@ class DiscussionDictHelper(object):
 		bubbles_array.append(bubble_user)
 		bubbles_array.append(bubble_sys)
 
-		if attack == 'end':
+		if attack.startswith('end'):
 			bubbles_array.append(bubble_mid)
 
 		return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}

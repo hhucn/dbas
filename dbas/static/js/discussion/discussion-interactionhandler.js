@@ -167,7 +167,7 @@ function InteractionHandler() {
 			if (tbody.find('tr').length==0)
 				body.append(new GuiHandler().getAlertIntoDialogNoDecisions());
 			else
-				body.append(span).append(table.append(tbody));
+				body.append(table.append(tbody));
 
 			body.append(text).append(table.append(tbody));
 			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);

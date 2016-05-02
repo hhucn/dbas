@@ -387,7 +387,7 @@
     border: 1px solid rgba(0, 0, 0, 0.7);
 }
 
-#question-bubble{
+[id^=question-bubble-]{
 	cursor: help;
 }
 
@@ -396,7 +396,7 @@
 .triangle-m a:hover,
 .triangle-m-info a:hover,
 .triangle-r-info:hover,
-#question-bubble:hover{
+[id^=question-bubble-]:hover{
     color: #2196f3;
     text-decoration: none;
 }

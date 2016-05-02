@@ -167,16 +167,9 @@ setClickFunctions = function (guiHandler, ajaxHandler){
 	});
 
 	// get infos about the author
-	$('#' + questionBubbleId).click(function(){
-		var splits, uid, qmark, tmp;
-		tmp = window.location.href.split('?');
-		splits = tmp[0].split('/');
-		if (tmp[0].indexOf('/justify/') != -1)
-			uid = splits[splits.length - 3];
-		else
-			uid = splits[splits.length - 1];
-		qmark = uid.indexOf('?');
-		ajaxHandler.getMoreInfosAboutArgument(qmark != -1 ? uid.substr(0, qmark) : uid, true);
+	$('[id^="' + questionBubbleId + '-"').click(function(){
+		var uid = $(this).attr('id').replace(questionBubbleId + '-', '');
+		ajaxHandler.getMoreInfosAboutArgument(uid, true);
 	});
 
 	// adding issues
