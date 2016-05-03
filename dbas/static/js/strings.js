@@ -127,6 +127,7 @@ var hideAllArguments								= 'hideAllArguments';
 var languageCouldNotBeSwitched 						= 'languageCouldNotBeSwitched';
 var last_action 									= 'last_action';
 var last_login 										= 'last_login';
+var legend                                          = 'legend';
 var logfile											= 'logfile';
 var login											= 'login';
 var letsGo 											= 'letsGo';
@@ -285,6 +286,7 @@ var dbas_en = {
 	'languageCouldNotBeSwitched': 'Unfortunately, the language could not be switched',
 	'last_action': 'Last Action',
 	'last_login': 'Last Login',
+	'legend': 'Legend',
 	'logfile': 'Logfile for',
 	'login': 'Log In',
 	'letsGo': 'Click here to start now!',
@@ -428,6 +430,7 @@ var dbas_de = {
 	'last_login': 'Letze Anmeldung',
 	'logfile': 'Logdatei für',
 	'login': 'Login',
+	'legend': 'Legende',
 	'letsGo': 'Wenn Sie direkt starten möchten, klicken Sie bitte hier!',
 	'listOfPostedStatements': 'Dies ist eine Liste von allen gemachten Aussagen:',
 	'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
