@@ -4,15 +4,14 @@ Provides helping function for creating the history as bubbles.
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import time
 from sqlalchemy import and_
-
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
 	get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History
 from dbas.strings import Translator, TextGenerator
-from dbas.url_manager import UrlManager
 
 
 class HistoryHelper:
@@ -195,7 +194,7 @@ class HistoryHelper:
 			bubble_syst  = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True,
 			                                                      nickname=nickname, lang=lang)
 		else:
-			bubble_syst  = HistoryHelper.create_speechbubble_dict(is_system=True, uid='question-bubble',
+			bubble_syst  = HistoryHelper.create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(additional_uid),
 			                                                      message=sys_text, omit_url=True, nickname=nickname,
 			                                                      lang=lang)
 		return [bubble_user, bubble_syst]
@@ -227,7 +226,7 @@ class HistoryHelper:
 		speech['is_system']          = is_system
 		speech['is_status']          = is_status
 		speech['is_info']            = is_info
-		speech['id']                 = uid if len(str(uid)) > 0 else 'None'
+		speech['id']                 = uid if len(str(uid)) > 0 else str(time.time())
 		# speech['url']                = url if len(str(url)) > 0 else 'None'
 		speech['url']                = url if len(str(url)) > 0 else 'None'
 		speech['message']            = message
@@ -246,7 +245,7 @@ class HistoryHelper:
 			                                                                     VoteStatement.is_up_vote == is_up_vote,
 			                                                                     VoteStatement.is_valid == True)).all()
 		_t = Translator(lang)
-		diff = 1 if nickname != 'anonymous' else 0
+		diff = 1 if nickname is not None and nickname != 'anonymous' else 0
 		votecounts = len(db_votecounts) - diff if db_votecounts else 0
 
 		if votecounts == 0:

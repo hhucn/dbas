@@ -23,10 +23,10 @@ function GuiHandler() {
 			send = $('#' + sendNewPremiseId),
 			uid = new Date().getTime(),
 			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
-			div_l = $('<div>'),
+			// div_l = $('<div>'),
 			div_m = $('<div>').addClass('flex-div'),
 			div_r = $('<div>'),
-			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
+			// h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
 			id = 'add-premise-container-main-input-' + uid,
 			input = $('<input>').attr('id', id)
 				.attr('type', 'text')
@@ -42,8 +42,8 @@ function GuiHandler() {
 				.attr('src', mainpage + 'static/images/icon_plus1.png')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
 
-		div.append(div_l.append(h5))
-			.append(div_m.append(input))
+		// div.append(div_l.append(h5))
+		div.append(div_m.append(input))
 			.append(div_r.append(imgm).append(imgp));
 		$('#' + addPremiseContainerBodyId).append(div);
 
@@ -370,6 +370,7 @@ function GuiHandler() {
 			id = src.attr('id'),
 			splitted = text.split(' ' + _t(and) + ' '),
 			topic = $('#' + addPremiseContainerMainInputIntroId).text(),
+			topic = topic.substr(0, topic.length-3),
 			input1, input2, input3, list, bigText, bigTextSpan, connection, i;
 
 		if (topic.match(/\.$/)){
@@ -395,9 +396,9 @@ function GuiHandler() {
 		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
 
 		connection = supportive ? _t(itIsTrueThat) : _t(itIsFalseThat);
-		bigText = topic + ' ' + _t(because) + ' ' + connection;
+		bigText = topic + ' ' + connection;
 		for (i = 0; i < splitted.length; i++) {
-			list.append($('<li>').text(topic + ' ' + _t(because) + ' ' + splitted[i] + '.'));
+			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			bigText += ' ' + i == 0 ? ' ' + splitted[i] : (' ' + _t(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
 		}
 		bigTextSpan.text(bigText + '.');
@@ -542,6 +543,22 @@ function GuiHandler() {
 		$('#' + popupEditStatementSubmitButtonId).fadeIn('slow');
 		$('#' + popupEditStatementTextareaId).fadeIn('slow');
 		$('#' + popupEditStatementDescriptionId).fadeIn('slow');
+	};
+
+	/**
+	 * Displays add topic plugin
+	 */
+	this.showAddTopicPopup = function (){
+		$('#popup-add-topic').modal('show');
+		$('#popup-add-topic-accept-btn').click(function () {
+			var info = $('#popup-add-topic-info-input').val(),
+				title = $('#popup-add-topic-title-input').val(),
+				lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
+			new AjaxSiteHandler().sendNewIssue(info, title, lang);
+		});
+		$('#popup-add-topic-refuse-btn').click(function () {
+			$('#popup-add-topic').modal('hide');
+		});
 	};
 
 	/**

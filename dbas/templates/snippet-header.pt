@@ -65,7 +65,7 @@
 							<img id="header_male" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}" tal:condition="extras.is_user_male">
 							<img id="header_female" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}" tal:condition="extras.is_user_female">
 							<img id="header_user" class="glyphicon-local center" src="${request.static_url('dbas:static/images/transparent.gif')}" tal:condition="extras.is_user_neutral">&thinsp;${extras.users_name}
-                            <span tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
+                            <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">

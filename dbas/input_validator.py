@@ -55,7 +55,7 @@ class Validator:
 			# do have both arguments teh same conclusion?
 			return True if db_attacking_arg.conclusion_uid == db_attacked_arg.conclusion_uid and db_attacked_arg.conclusion_uid is not None else False
 
-		elif relation == 'end':
+		elif relation.startswith('end'):
 			return True
 
 		else:

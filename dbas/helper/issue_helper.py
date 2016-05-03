@@ -7,7 +7,7 @@ Provides helping function for issues.
 from slugify import slugify
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue
+from dbas.database.discussion_model import Argument, User, Issue, Language
 from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.strings import Translator
@@ -21,12 +21,13 @@ class IssueHelper:
 	"""
 
 	@staticmethod
-	def set_issue(info, title, nickname, transaction, ui_locales):
+	def set_issue(info, title, lang, nickname, transaction, ui_locales):
 		"""
 		Inserts new issue into database
 
 		:param info: String
 		:param title: String
+		:param lang: String
 		:param nickname: User.nickname
 		:param transaction: transaction
 		:param ui_locales: ui_locales
@@ -46,7 +47,11 @@ class IssueHelper:
 		if db_duplicates1 or db_duplicates2:
 			return False, _tn.get(_tn.duplicate)
 
-		DBDiscussionSession.add(Issue(title=title, info=info, author_uid=db_user.uid))
+		db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
+		if not db_lang:
+			return False, _tn.get(_tn.internalError)
+
+		DBDiscussionSession.add(Issue(title=title, info=info, author_uid=db_user.uid, lang_uid=db_lang.uid))
 		DBDiscussionSession.flush()
 
 		transaction.commit()

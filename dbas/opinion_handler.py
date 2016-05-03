@@ -19,36 +19,44 @@ class OpinionHandler:
 	"""
 	Provides function for getting users with the same opinons as the user
 	"""
+	
+	def __init__(self, lang, nickname, mainpage):
+		"""
+		
+		:param self.lang: ui_locales ui_locales
+		:param self.nickname: self.nickname
+		:param self.mainpage: URL
+		:return: 
+		"""
+		self.lang = lang
+		self.nickname = nickname
+		self.mainpage = mainpage
 
-	@staticmethod
-	def get_user_with_opinions_for_argument(argument_uid, lang, nickname, mainpage):
+	def get_user_with_opinions_for_argument(self, argument_uid):
 		"""
 		Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
 		these attacks.
 
 		:param argument_uid: Argument.uid
-		:param lang: ui_locales ui_locales
-		:param nickname: nickname
-		:param mainpage: URL
-		:return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
+		:return: { 'attack_type': { 'message': 'string', 'users': [{'self.nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
 		"""
 
 		logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid))
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
 		ret_dict = dict()
 		all_users = []
-		_t = Translator(lang)
+		_t = Translator(self.lang)
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uid, lang)
+		title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uid, self.lang)
 
 		if not db_argument:
 			ret_dict['message'] = _t.get(_t.internalError) + '.'
 			ret_dict['users'] = all_users
 			return {'opinions': ret_dict, 'title': title}
 
-		_rh = RelationHelper(argument_uid, lang)
+		_rh = RelationHelper(argument_uid, self.lang)
 		undermines_uids  = _rh.get_undermines_for_argument_uid()
 		supports_uids    = _rh.get_supports_for_argument_uid()
 		undercuts_uids   = _rh.get_undercuts_for_argument_uid()
@@ -75,10 +83,10 @@ class OpinionHandler:
 				                                                               VoteArgument.author_uid != db_user_uid)).all()
 				for vote in db_votes:
 					voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-					users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang, mainpage)
+					users_dict = self.create_users_dict(voted_user, vote.timestamp)
 					all_users.append(users_dict)
 				relation_dict['users'] = all_users
-				text = get_text_for_argument_uid(uid['id'], lang)
+				text = get_text_for_argument_uid(uid['id'], self.lang)
 
 				if len(db_votes) == 0:
 					message = _t.get(_t.voteCountTextMayBeFirst) + '.'
@@ -91,23 +99,19 @@ class OpinionHandler:
 
 		return {'opinions': ret_dict, 'title': title[0:1].upper() + title[1:]}
 
-	@staticmethod
-	def get_user_with_same_opinion_for_statements(statement_uids, lang, nickname, mainpage):
+	def get_user_with_same_opinion_for_statements(self, statement_uids):
 		"""
 		Returns nested dictionary with all kinds of information about the votes of the statements.
 
 		:param statement_uids: Statement.uid
-		:param lang: ui_locales ui_locales
-		:param nickname: User.nickname
-		:param mainpage: URL
-		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
+		:return: {'users':[{self.nickname1.avatar_url, self.nickname1.vote_timestamp}*]}
 		"""
 		logger('OpinionHandler', 'get_user_with_same_opinion_for_statement', 'Statement ' + str(statement_uids))
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
 		opinions = []
-		_t = Translator(lang)
+		_t = Translator(self.lang)
 		title = _t.get(_t.informationForStatements)
 
 		for uid in statement_uids:
@@ -131,7 +135,7 @@ class OpinionHandler:
 
 			for vote in db_votes:
 				voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-				users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang, mainpage)
+				users_dict = self.create_users_dict(voted_user, vote.timestamp)
 				all_users.append(users_dict)
 			statement_dict['users'] = all_users
 
@@ -146,23 +150,19 @@ class OpinionHandler:
 
 		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
-	@staticmethod
-	def get_user_with_same_opinion_for_premisegroups(argument_uids, lang, nickname, mainpage):
+	def get_user_with_same_opinion_for_premisegroups(self, argument_uids):
 		"""
 		Returns nested dictionary with all kinds of information about the votes of the premisegroups.
 
 		:param argument_uids: Argument.uid
-		:param lang: ui_locales ui_locales
-		:param nickname: User.nickname
-		:param mainpage: URL
-		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
+		:return: {'users':[{self.nickname1.avatar_url, self.nickname1.vote_timestamp}*]}
 		"""
 		logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'Arguments ' + str(argument_uids))
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
 		opinions = []
-		_t = Translator(lang)
+		_t = Translator(self.lang)
 		title = _t.get(_t.informationForStatements)
 
 		for uid in argument_uids:
@@ -178,7 +178,7 @@ class OpinionHandler:
 				statement_dict['users']     = None
 
 			statement_dict['uid'] = str(uid)
-			text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+			text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
 			statement_dict['text'] = text[0:1].upper() + text[1:]
 
 			db_votes = []
@@ -192,7 +192,7 @@ class OpinionHandler:
 
 			for vote in db_votes:
 				voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-				users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang, mainpage)
+				users_dict = self.create_users_dict(voted_user, vote.timestamp)
 				all_users.append(users_dict)
 			statement_dict['users'] = all_users
 
@@ -207,25 +207,21 @@ class OpinionHandler:
 
 		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
-	@staticmethod
-	def get_user_with_same_opinion_for_argument(argument_uid, lang, nickname, mainpage):
+	def get_user_with_same_opinion_for_argument(self, argument_uid):
 		"""
 		Returns nested dictionary with all kinds of information about the votes of the argument.
 
 		:param argument_uid: Argument.uid
-		:param lang: ui_locales ui_locales
-		:param nickname: User.nickname
-		:param mainpage: URL
-		:return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
+		:return: {'users':[{self.nickname1.avatar_url, self.nickname1.vote_timestamp}*]}
 		"""
 		logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid))
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
 		opinions = dict()
 		all_users = []
-		_t = Translator(lang)
-		text = get_text_for_argument_uid(argument_uid, lang)
+		_t = Translator(self.lang)
+		text = get_text_for_argument_uid(argument_uid, self.lang)
 		title = _t.get(_t.reactionFor) + ': ' + text[0:1].upper() + text[1:]
 
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
@@ -236,7 +232,7 @@ class OpinionHandler:
 			opinions['users']     = None
 
 		opinions['uid'] = str(argument_uid)
-		text = get_text_for_argument_uid(argument_uid, lang)
+		text = get_text_for_argument_uid(argument_uid, self.lang)
 		opinions['text'] = text[0:1].upper() + text[1:]
 
 		db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
@@ -246,7 +242,7 @@ class OpinionHandler:
 
 		for vote in db_votes:
 			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang, mainpage)
+			users_dict = self.create_users_dict(voted_user, vote.timestamp)
 			all_users.append(users_dict)
 		opinions['users'] = all_users
 
@@ -259,19 +255,15 @@ class OpinionHandler:
 
 		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
-	@staticmethod
-	def get_user_with_opinions_for_attitude(statement_uid, lang, nickname, mainpage):
+	def get_user_with_opinions_for_attitude(statement_uid):
 		"""
 		Returns dictionary with agree- and disagree-votes
 
 		:param statement_uid: Statement.uid
-		:param lang: ui_locales ui_locales
-		:param nickname: User.nickname
-		:param mainpage: URL
 		:return:
 		"""
 		db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-		_t = Translator(lang)
+		_t = Translator(self.lang)
 		text = get_text_for_statement_uid(statement_uid)
 		title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
 		ret_dict = dict()
@@ -289,7 +281,7 @@ class OpinionHandler:
 		ret_dict['agree'] = None
 		ret_dict['disagree'] = None
 
-		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
 		db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
@@ -304,14 +296,14 @@ class OpinionHandler:
 		pro_array = []
 		for vote in db_pro_votes:
 			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang, mainpage)
+			users_dict = self.create_users_dict(voted_user, vote.timestamp)
 			pro_array.append(users_dict)
 		ret_dict['agree_users'] = pro_array
 
 		con_array = []
 		for vote in db_con_votes:
 			voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-			users_dict = OpinionHandler.create_users_dict(voted_user, vote.timestamp, lang, mainpage)
+			users_dict = self.create_users_dict(voted_user, vote.timestamp)
 			con_array.append(users_dict)
 		ret_dict['disagree_users'] = con_array
 
@@ -319,18 +311,17 @@ class OpinionHandler:
 
 		return ret_dict
 
-	@staticmethod
-	def create_users_dict(db_user, timestamp, lang, mainpage):
+	def create_users_dict(self, db_user, timestamp):
 		"""
-		Creates dictionary with nickname, url and timestamp
+		Creates dictionary with self.nickname, url and timestamp
 
 		:param db_user: User
 		:param timestamp: SQL Timestamp
-		:param lang: ui_locales
-		:param mainpage: Url
+		:param self.lang: ui_locales
+		:param self.mainpage: Url
 		:return: dict()
 		"""
 		return {'nickname': db_user.public_nickname,
-		        'public_profile_url': mainpage + '/user/' + db_user.public_nickname,
+		        'public_profile_url': self.mainpage + '/user/' + db_user.public_nickname,
 		        'avatar_url': UserHandler.get_public_profile_picture(db_user),
-		        'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}
+		        'vote_timestamp': sql_timestamp_pretty_print(timestamp, self.lang)}
