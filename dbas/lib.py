@@ -5,13 +5,13 @@ Common, pure functions used by the D-BAS.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
 import locale
 from datetime import datetime
 from html import escape
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue
+from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
+from .logger import logger
 from .strings import Translator
 
 
@@ -40,6 +40,28 @@ def get_language(request, current_registry):
 	except AttributeError:
 		lang = str(current_registry.settings['pyramid.default_locale_name'])
 	return lang
+
+
+def get_discussion_language(request):
+	"""
+	Returns Language.ui_locales
+	CALL AFTER IssueHelper.get_id_of_slug(..)!
+
+	:param request: self.request
+	:return:
+	"""
+	# first matchdict, then params, then session, afterwards fallback
+	issue = request.matchdict['issue'] if 'issue' in request.matchdict \
+		else request.params['issue'] if 'issue' in request.params \
+		else request.session['issue'] if 'issue' in request.session \
+		else DBDiscussionSession.query(Issue).first().uid
+
+	db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
+
+	logger('--', '--', str(issue))
+	logger('--', '--', db_lang.languages.ui_locales)
+
+	return db_lang.languages.ui_locales if db_lang else 'en'
 
 
 def sql_timestamp_pretty_print(ts, lang):
