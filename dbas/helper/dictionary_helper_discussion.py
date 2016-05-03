@@ -44,7 +44,7 @@ class DiscussionDictHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_discussion_dict_for_start', 'at_start')
 		_tn			        = Translator(self.lang)
-		add_premise_text    = ''
+		add_premise_text    = _tn.get(_tn.whatIsYourIdea)
 		intro               = _tn.get(_tn.initialPositionInterest)
 		save_statement_url  = 'ajax_set_new_start_premise'
 

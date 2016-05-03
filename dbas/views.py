@@ -30,7 +30,7 @@ from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
 from .email import EmailHelper
 from .input_validator import Validator
-from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print
+from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
 from .logger import logger
 from .recommender_system import RecommenderSystem
 from .news_handler import NewsHandler
@@ -153,16 +153,16 @@ class Dbas(object):
 			slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
-		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
+		disc_ui_locales = get_discussion_language(self.request)
+		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
+		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_start()
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname,
-		                                          application_url=mainpage, for_api=for_api)
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
-			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_start=True)
+			DictionaryHelper(disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -210,14 +210,15 @@ class Dbas(object):
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
+		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_attitude(statement_id)
 		if not discussion_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
-		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
+		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_attitude(statement_id)
 		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, True, nickname,
 		                                          application_url=mainpage, for_api=for_api)
@@ -276,9 +277,10 @@ class Dbas(object):
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		disc_ui_locales     = get_discussion_language(self.request)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
-		_ddh                = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-		_idh                = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
+		_ddh                = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
+		_idh                = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			logger('discussion_justify', 'def', 'justify statement')
@@ -294,9 +296,10 @@ class Dbas(object):
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify=True,
-				                            current_premise=get_text_for_statement_uid(statement_or_arg_id),
-				                            supportive=supportive)
+				DictionaryHelper(disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname,
+				                                                                at_justify=True,
+				                                                                current_premise=get_text_for_statement_uid(statement_or_arg_id),
+				                                                                supportive=supportive)
 
 		elif 'd' in mode and relation == '':
 			logger('discussion_justify', 'def', 'dont know statement')
@@ -308,8 +311,9 @@ class Dbas(object):
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_dont_know=True,
-				                            current_premise=get_text_for_statement_uid(statement_or_arg_id))
+				DictionaryHelper(disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname,
+				                                                                at_dont_know=True,
+				                                                                current_premise=get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			logger('discussion_justify', 'def', 'justify argument')
@@ -321,7 +325,8 @@ class Dbas(object):
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
-				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, ui_locales, at_justify_argumentation=True)
+				DictionaryHelper(disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname,
+				                                                                at_justify_argumentation=True)
 		else:
 			logger('discussion_justify', 'def', '404')
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -385,11 +390,12 @@ class Dbas(object):
 
 		ui_locales      = get_language(self.request, get_current_registry())
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
-		_ddh = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
+		_ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
 		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
-		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
+		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
 		extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict(slug, False, False, True, True, True, nickname,
 		                                                                   argument_id=arg_id_user, application_url=mainpage,
@@ -471,8 +477,8 @@ class Dbas(object):
 		is_supportive = True if is_supportive is 't' else False
 
 		ui_locales      = get_language(self.request, get_current_registry())
-		_dh             = DictionaryHelper(ui_locales)
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
 
 		session_expired = UserHandler.update_last_action(transaction, nickname)
@@ -483,13 +489,14 @@ class Dbas(object):
 
 		discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
-		item_dict       = ItemDictHelper(ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
+		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
 		if not item_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-		extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
-		                                          application_url=mainpage, for_api=for_api)
+		extras_dict     = DictionaryHelper(disc_ui_locales).prepare_extras_dict(slug, False, False, True, True, True,
+		                                                                        nickname, application_url=mainpage,
+		                                                                        for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict

@@ -206,7 +206,7 @@ class DictionaryHelper(object):
 					                                     'report_statement': _tn.get(_tn.reportTitle)}
 		return return_dict
 
-	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False,
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
 								at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False,):
 		"""
 		Adds a speicif text when the discussion is at the end
