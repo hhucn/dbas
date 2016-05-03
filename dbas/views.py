@@ -1695,8 +1695,9 @@ class Dbas(object):
 			# shortener = Shortener(service, bitly_token=bitly_token)
 
 			service = 'TinyurlShortener'
+			service_ = 'Tinyurl'
 			service_url = 'http://tinyurl.com/'
-			shortener = Shortener(service)
+			shortener = Shortener(service_)
 
 			short_url = format(shortener.short(url))
 			return_dict['url'] = short_url
