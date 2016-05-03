@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-02 14:35+0200\n"
+"POT-Creation-Date: 2016-05-03 16:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -438,8 +438,6 @@ msgstr ""
 
 #. Default: Close
 #: ./dbas/templates/snippet-popups.pt:75 ./dbas/templates/snippet-popups.pt:120
-#: ./dbas/templates/snippet-popups.pt:156
-#: ./dbas/templates/snippet-popups.pt:229
 #: ./dbas/templates/snippet-popups.pt:443
 #: ./dbas/templates/snippet-popups.pt:482
 #: ./dbas/templates/snippet-popups.pt:619
@@ -480,27 +478,6 @@ msgstr ""
 msgid "mit_license_part3"
 msgstr ""
 
-#. Default: Edit Statements / View Changelog
-#: ./dbas/templates/snippet-popups.pt:133
-msgid "edit_statement_view_changelog"
-msgstr ""
-
-#. Default: Please, edit the selected statement here:
-#: ./dbas/templates/snippet-popups.pt:140
-msgid "edit_statement_here"
-msgstr ""
-
-#. Default: Warning:
-#. Default: Warning!
-#: ./dbas/templates/snippet-popups.pt:147 ./dbas/templates/contact.pt:57
-msgid "warning"
-msgstr ""
-
-#. Default: Submit
-#: ./dbas/templates/snippet-popups.pt:155
-msgid "submit"
-msgstr ""
-
 #. Default: Okay
 #: ./dbas/templates/snippet-popups.pt:174
 #: ./dbas/templates/snippet-popups.pt:199
@@ -511,21 +488,6 @@ msgstr ""
 #: ./dbas/templates/snippet-popups.pt:175
 #: ./dbas/templates/snippet-popups.pt:200
 msgid "cancel"
-msgstr ""
-
-#. Default: Share your URL
-#: ./dbas/templates/snippet-popups.pt:213
-msgid "url-sharing"
-msgstr ""
-
-#. Default: Please feel free to share this url:
-#: ./dbas/templates/snippet-popups.pt:218
-msgid "url-sharing-description"
-msgstr ""
-
-#. Default: Fetch long url!
-#: ./dbas/templates/snippet-popups.pt:228
-msgid "fetchurl"
 msgstr ""
 
 #. Default: Sign Up
@@ -1009,6 +971,11 @@ msgstr ""
 msgid "spam_req"
 msgstr ""
 
+#. Default: Warning!
+#: ./dbas/templates/contact.pt:57
+msgid "warning"
+msgstr ""
+
 #. Default: Great:
 #: ./dbas/templates/contact.pt:65
 msgid "great"
@@ -1131,11 +1098,6 @@ msgstr ""
 msgid "profile_picture_of"
 msgstr ""
 
-#. Default: Current discussion is about
-#: ./dbas/templates/content.pt:11
-msgid "current_discussion"
-msgstr ""
-
 #. Default: Switch Topic
 #: ./dbas/templates/content.pt:20
 msgid "switch_topc"
@@ -1164,11 +1126,6 @@ msgstr ""
 #. Default: Add statement
 #: ./dbas/templates/content.pt:244
 msgid "add_statement"
-msgstr ""
-
-#. Default: What is your idea? What should we do?
-#: ./dbas/templates/content.pt:275
-msgid "what_is_your_idea"
 msgstr ""
 
 #. Default: Let me enter my reason!

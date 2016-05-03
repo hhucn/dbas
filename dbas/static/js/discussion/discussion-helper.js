@@ -107,7 +107,7 @@ function Helper() {
 		// buttons
 		edit_button = $('<input>').css('margin', '2px')
 			.attr('type', 'button')
-			.attr('value', 'edit')
+			.attr('value', _t_discussion(edit))
 			.attr('class', 'btn-sm btn button-primary')
 			.click(function edit_button_click() {
 				$('#' + popupEditStatementTextareaId).text($(this).parent().prev().text());
@@ -130,7 +130,7 @@ function Helper() {
 
 		log_button = $('<input>').css('margin', '2px')
 			.attr('type', 'button')
-			.attr('value', 'changelog')
+			.attr('value', _t_discussion(changelog))
 			.attr('class', 'btn-sm btn button-primary')
 			.click(function log_button_click() {
 				$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <strong>' + $(this).parent().prev().text() + '</strong>');

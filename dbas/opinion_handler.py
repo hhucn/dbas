@@ -255,7 +255,7 @@ class OpinionHandler:
 
 		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
-	def get_user_with_opinions_for_attitude(statement_uid):
+	def get_user_with_opinions_for_attitude(self, statement_uid):
 		"""
 		Returns dictionary with agree- and disagree-votes
 

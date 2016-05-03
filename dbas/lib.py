@@ -58,9 +58,6 @@ def get_discussion_language(request):
 
 	db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
 
-	logger('--', '--', str(issue))
-	logger('--', '--', db_lang.languages.ui_locales)
-
 	return db_lang.languages.ui_locales if db_lang else 'en'
 
 
