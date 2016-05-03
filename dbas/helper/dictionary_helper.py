@@ -340,5 +340,3 @@ class DictionaryHelper(object):
 			'warning': _tn_dis.get(_tn_dis.warning),
 			'language': self.discussion_lang
 		}
-		logger('--', '--', str(return_dict['tag']))
-		logger('--', '--', str(return_dict['tag']))
