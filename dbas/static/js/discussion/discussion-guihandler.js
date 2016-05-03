@@ -493,8 +493,8 @@ function GuiHandler() {
 			.attr('class', 'table table-condensed table-hover')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
-		td_text = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
-		td_buttons = $('<td>').html('<strong>' + _t(options) + '</strong>').css('text-align', 'right');
+		td_text = $('<td>').html('<strong>' + _t_discussion(text) + '</strong>').css('text-align', 'center');
+		td_buttons = $('<td>').html('<strong>' + _t_discussion(options) + '</strong>').css('text-align', 'right');
 		table.append($('<tr>').append(td_text).append(td_buttons));
 
 		// append a row for each statement

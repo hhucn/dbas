@@ -136,17 +136,17 @@ function InteractionHandler() {
 					.attr('border', '0')
 					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
 				tr = $('<tr>')
-					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
+					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left')),
 				tbody = $('<tbody>'),
 				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', i=0;
 
 			// supporters = parsedData.supporter.join(', ');
 			text = parsedData.text + '<br><br>';
-			text += _t(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ', ';
+			text += _t_discussion(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ', ';
 			text += parsedData.timestamp + '.<br>';
-			text += _t(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
-			text +=_t(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t(messageInfoParticipantPl)) + '.';
+			text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
+			text +=_t_discussion(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t_discussion(messageInfoParticipantPl)) + '.';
 			if (parsedData.vote_count>0) {
 				$.each(parsedData.supporter, function(index, nick){
 					td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.public_page[nick]).text(nick));
@@ -170,7 +170,7 @@ function InteractionHandler() {
 				body.append(table.append(tbody));
 
 			body.append(text).append(table.append(tbody));
-			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
 			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
 			new Helper().delay(function(){
 				var popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
@@ -186,7 +186,7 @@ function InteractionHandler() {
 		} else {
 			text = parsedData.error;
 			element = $('<p>').html(text);
-			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), element);
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
 		}
 	};
 
@@ -233,10 +233,10 @@ function InteractionHandler() {
 					.attr('border', '0')
 					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
 				tr = $('<tr>')
-					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
+					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left')),
 				tbody = $('<tbody>'),
 				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', j=0;
 
@@ -268,7 +268,7 @@ function InteractionHandler() {
 			else
 				body.append(span).append(table.append(tbody));
 
-			displayConfirmationDialogWithoutCancelAndFunction(_t(usersWithSameOpinion), body);
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(usersWithSameOpinion), body);
 			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
 			new Helper().delay(function(){
 				popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-02 14:35+0200\n"
+"POT-Creation-Date: 2016-05-03 16:39+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -514,7 +514,6 @@ msgstr "Fax"
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:75 dbas/templates/snippet-popups.pt:120
-#: dbas/templates/snippet-popups.pt:156 dbas/templates/snippet-popups.pt:229
 #: dbas/templates/snippet-popups.pt:443 dbas/templates/snippet-popups.pt:482
 #: dbas/templates/snippet-popups.pt:619 dbas/templates/snippet-popups.pt:653
 msgid "close"
@@ -569,27 +568,6 @@ msgstr ""
 "IM ZUSAMMENHANG MIT DER SOFTWARE ODER SONSTIGER VERWENDUNG DER SOFTWARE "
 "ENTSTANDEN."
 
-#. Default: Edit Statements / View Changelog
-#: dbas/templates/snippet-popups.pt:133
-msgid "edit_statement_view_changelog"
-msgstr "Bearbeite die Aussage / Schau ins Changelog"
-
-#. Default: Please, edit the selected statement here:
-#: dbas/templates/snippet-popups.pt:140
-msgid "edit_statement_here"
-msgstr "Bitte hier bearbeiten"
-
-#. Default: Warning:
-#. Default: Warning!
-#: dbas/templates/snippet-popups.pt:147 dbas/templates/contact.pt:57
-msgid "warning"
-msgstr "Warnung!"
-
-#. Default: Submit
-#: dbas/templates/snippet-popups.pt:155
-msgid "submit"
-msgstr "Senden"
-
 #. Default: Okay
 #: dbas/templates/snippet-popups.pt:174 dbas/templates/snippet-popups.pt:199
 msgid "okay"
@@ -599,21 +577,6 @@ msgstr "Okay"
 #: dbas/templates/snippet-popups.pt:175 dbas/templates/snippet-popups.pt:200
 msgid "cancel"
 msgstr "Abbrechen"
-
-#. Default: Share your URL
-#: dbas/templates/snippet-popups.pt:213
-msgid "url-sharing"
-msgstr "Teil' die URL"
-
-#. Default: Please feel free to share this url:
-#: dbas/templates/snippet-popups.pt:218
-msgid "url-sharing-description"
-msgstr "Beschreibung"
-
-#. Default: Fetch long url!
-#: dbas/templates/snippet-popups.pt:228
-msgid "fetchurl"
-msgstr "Hol die lange URL"
 
 #. Default: Sign Up
 #: dbas/templates/snippet-popups.pt:246
@@ -1103,6 +1066,11 @@ msgstr "Deine Nachricht (notwendig)"
 msgid "spam_req"
 msgstr "Anti-Spam (notwendig)"
 
+#. Default: Warning!
+#: dbas/templates/contact.pt:57
+msgid "warning"
+msgstr "Warnung!"
+
 #. Default: Great:
 #: dbas/templates/contact.pt:65
 msgid "great"
@@ -1227,11 +1195,6 @@ msgstr "Registierung"
 msgid "profile_picture_of"
 msgstr "Profilbild von"
 
-#. Default: Current discussion is about
-#: dbas/templates/content.pt:11
-msgid "current_discussion"
-msgstr "Die aktuelle Diskussion hat folgendes Thema"
-
 #. Default: Switch Topic
 #: dbas/templates/content.pt:20
 msgid "switch_topc"
@@ -1262,11 +1225,6 @@ msgstr "Insel-Ansicht für"
 msgid "add_statement"
 msgstr "Aussage hinzufügen"
 
-#. Default: What is your idea? What should we do?
-#: dbas/templates/content.pt:275
-msgid "what_is_your_idea"
-msgstr "Was ist Ihre Idee? Was sollten wir machen?"
-
 #. Default: Let me enter my reason!
 #: dbas/templates/content.pt:297
 msgid "let_me_enter_my_reason"
@@ -1291,6 +1249,30 @@ msgstr "Insel-Ansicht"
 #: dbas/templates/content.pt:340
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "edit_statement_view_changelog"
+#~ msgstr "Bearbeite die Aussage / Schau ins Changelog"
+
+#~ msgid "edit_statement_here"
+#~ msgstr "Bitte hier bearbeiten"
+
+#~ msgid "submit"
+#~ msgstr "Senden"
+
+#~ msgid "url-sharing"
+#~ msgstr "Teil' die URL"
+
+#~ msgid "url-sharing-description"
+#~ msgstr "Beschreibung"
+
+#~ msgid "fetchurl"
+#~ msgstr "Hol die lange URL"
+
+#~ msgid "current_discussion"
+#~ msgstr "Die aktuelle Diskussion hat folgendes Thema"
+
+#~ msgid "what_is_your_idea"
+#~ msgstr "Was ist Ihre Idee? Was sollten wir machen?"
 
 #~ msgid "forward"
 #~ msgstr "weiterleiten"

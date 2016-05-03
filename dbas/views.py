@@ -101,8 +101,9 @@ class Dbas(object):
 
 		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
 		ui_locales = get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
-		DictionaryHelper(ui_locales).add_language_options_for_extra_dict(extras_dict)
+		disc_ui_locales = get_discussion_language(self.request)
+		extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		DictionaryHelper(ui_locales, disc_ui_locales).add_language_options_for_extra_dict(extras_dict)
 
 		return {
 			'layout': self.base_layout(),
@@ -146,7 +147,6 @@ class Dbas(object):
 			logged_in = self.request.authenticated_userid
 
 		ui_locales = get_language(self.request, get_current_registry())
-		_dh = DictionaryHelper(ui_locales)
 		if for_api:
 			slug = matchdict['slug'] if 'slug' in matchdict else ''
 		else:
@@ -156,13 +156,14 @@ class Dbas(object):
 		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
+		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
 
 		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_start()
 		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, application_url=mainpage, for_api=for_api)
 
 		if len(item_dict) == 0:
-			DictionaryHelper(disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
+			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -205,13 +206,12 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		ui_locales      = get_language(self.request, get_current_registry())
-		_dh = DictionaryHelper(ui_locales)
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		disc_ui_locales = get_discussion_language(self.request)
-		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
 		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_attitude(statement_id)
@@ -220,8 +220,11 @@ class Dbas(object):
 
 		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_attitude(statement_id)
-		extras_dict     = _dh.prepare_extras_dict(issue_dict['slug'], False, False, True, False, True, nickname,
-		                                          application_url=mainpage, for_api=for_api)
+		extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False,
+		                                                                                    False, True, False, True,
+		                                                                                    nickname,
+		                                                                                    application_url=mainpage,
+		                                                                                    for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -268,7 +271,6 @@ class Dbas(object):
 		logged_in = _uh.is_user_logged_in(nickname)
 
 		ui_locales = get_language(self.request, get_current_registry())
-		_dh = DictionaryHelper(ui_locales)
 
 		slug                = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
@@ -278,9 +280,10 @@ class Dbas(object):
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		disc_ui_locales     = get_discussion_language(self.request)
-		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 		_ddh                = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
 		_idh                = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
+		_dh                 = DictionaryHelper(ui_locales, disc_ui_locales)
 
 		if [c for c in ('t', 'f') if c in mode] and relation == '':
 			logger('discussion_justify', 'def', 'justify statement')
@@ -296,10 +299,9 @@ class Dbas(object):
 			                                          application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
-				DictionaryHelper(disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname,
-				                                                                at_justify=True,
-				                                                                current_premise=get_text_for_statement_uid(statement_or_arg_id),
-				                                                                supportive=supportive)
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
+				                            current_premise=get_text_for_statement_uid(statement_or_arg_id),
+				                            supportive=supportive)
 
 		elif 'd' in mode and relation == '':
 			logger('discussion_justify', 'def', 'dont know statement')
@@ -311,9 +313,8 @@ class Dbas(object):
 			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
-				DictionaryHelper(disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname,
-				                                                                at_dont_know=True,
-				                                                                current_premise=get_text_for_statement_uid(statement_or_arg_id))
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
+				                            current_premise=get_text_for_statement_uid(statement_or_arg_id))
 
 		elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
 			logger('discussion_justify', 'def', 'justify argument')
@@ -325,8 +326,7 @@ class Dbas(object):
 			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
-				DictionaryHelper(disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname,
-				                                                                at_justify_argumentation=True)
+				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 		else:
 			logger('discussion_justify', 'def', '404')
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -391,15 +391,17 @@ class Dbas(object):
 		ui_locales      = get_language(self.request, get_current_registry())
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		disc_ui_locales = get_discussion_language(self.request)
-		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
 		_ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
 		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
 		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
-		extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict(slug, False, False, True, True, True, nickname,
-		                                                                   argument_id=arg_id_user, application_url=mainpage,
-		                                                                   for_api=for_api)
+		extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True, True,
+		                                                                                    True, nickname,
+		                                                                                    argument_id=arg_id_user,
+		                                                                                    application_url=mainpage,
+		                                                                                    for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -479,7 +481,7 @@ class Dbas(object):
 		ui_locales      = get_language(self.request, get_current_registry())
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		disc_ui_locales = get_discussion_language(self.request)
-		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, ui_locales, for_api)
+		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
 		session_expired = UserHandler.update_last_action(transaction, nickname)
 		HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
@@ -494,9 +496,10 @@ class Dbas(object):
 		if not item_dict:
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-		extras_dict     = DictionaryHelper(disc_ui_locales).prepare_extras_dict(slug, False, False, True, True, True,
-		                                                                        nickname, application_url=mainpage,
-		                                                                        for_api=for_api)
+		extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
+		                                                                                    True, True, nickname,
+		                                                                                    application_url=mainpage,
+		                                                                                    for_api=for_api)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -1731,7 +1734,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_infos_about_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
-		ui_locales = get_language(self.request, get_current_registry())
+		ui_locales = get_discussion_language(self.request)
 		_t = Translator(ui_locales)
 		return_dict = dict()
 
@@ -1754,7 +1757,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_users_with_same_opinion', 'def', 'main: ' + str(self.request.params))
-		ui_locales = get_language(self.request, get_current_registry())
+		ui_locales = get_discussion_language(self.request)
 		_tn = Translator(ui_locales)
 		nickname = self.request.authenticated_userid
 

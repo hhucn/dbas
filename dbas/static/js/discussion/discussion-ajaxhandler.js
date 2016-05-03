@@ -234,8 +234,8 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t_discussion(errorCode)) + ' 8). '
+				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 		});
 	};
 
@@ -263,8 +263,8 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + new Helper().startWithLowerCase(_t_discussion(errorCode)) + ' 10). '
+				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 		});
 
 	};
