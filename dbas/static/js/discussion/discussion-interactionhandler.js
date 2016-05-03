@@ -198,7 +198,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 
 		if (parsedData.error.length == 0) {
-			$('#' + popupConfirmDialogId).modal('hide');
+			$('#popup-add-topic').modal('hide');
 			var li = $('<li>').addClass('enabled'),
 				a = $('<a>').attr('href', parsedData.issue.url).attr('value', parsedData.issue.title),
 				spanTitle = $('<span>').text(parsedData.issue.title),
@@ -209,10 +209,10 @@ function InteractionHandler() {
 				li.insertBefore(divider);
 			}
 		} else {
-			$('#add-topic-error-text').text(parsedData.error);
-			$('#add-topic-error').show();
+			$('#popup-add-topic-error-text').text(parsedData.error);
+			$('#popup-add-topic-error').show();
 			new Helper().delay(function(){
-				$('#add-topic-error').hide();
+				$('#popup-add-topic-error').hide();
 			}, 2500);
 		}
 	};

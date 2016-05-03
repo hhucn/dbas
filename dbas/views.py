@@ -1608,7 +1608,8 @@ class Dbas(object):
 		try:
 			info = escape_string(self.request.params['info'])
 			title = escape_string(self.request.params['title'])
-			was_set, error = IssueHelper.set_issue(info, title, self.request.authenticated_userid, transaction, ui_locales)
+			lang = escape_string(self.request.params['lang'])
+			was_set, error = IssueHelper.set_issue(info, title, lang, self.request.authenticated_userid, transaction, ui_locales)
 			if was_set:
 				db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
 				                                                        Issue.info == info)).first()

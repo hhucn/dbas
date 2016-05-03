@@ -124,7 +124,7 @@ class UserHandler:
 	              'Bottle', 'Box', 'Boy', 'Brain', 'Brake', 'Branch', 'Brick', 'Bridge', 'Brush', 'Bucket', 'Bulb',
 	              'Button', 'Cake', 'Camera', 'Card', 'Cart', 'Carriage', 'Cat', 'Chain', 'Cheese', 'Chest', 'Chin',
 	              'Church', 'Circle', 'Clock', 'Cloud', 'Coat', 'Collar', 'Comb', 'Cord', 'Cow', 'Cup', 'Curtain',
-	              'Cushion', 'Dog', 'Door', 'Drain', 'Drawer', 'Dress', 'Drop', 'Ear', 'Egg', 'Engine', 'Eye', 'Face',
+	              'Cushion', 'Dog', 'rr', 'Drain', 'Drawer', 'Dress', 'Drop', 'Ear', 'Egg', 'Engine', 'Eye', 'Face',
 	              'Farm', 'Feather', 'Finger', 'Fish', 'Flag', 'Floor', 'Fly', 'Foot', 'Fork', 'Fowl', 'Frame', 'Garden',
 	              'Girl', 'Glove', 'Goat', 'Gun', 'Hair', 'Hammer', 'Hand', 'Hat', 'Head', 'Heart', 'Hook', 'Horn',
 	              'Horse', 'Hospital', 'House', 'Island', 'Jewel', 'Kettle', 'Key', 'Knee', 'Knife', 'Knot', 'Leaf',
@@ -273,14 +273,17 @@ class UserHandler:
 		labels_decision_30 = []
 		labels_edit_30 = []
 		labels_statement_30 = []
+
 		data_decision_7 = []
 		data_decision_30 = []
 		data_edit_30 = []
 		data_statement_30 = []
+
 		return_dict['label1'] = _tn.get(_tn.decisionIndex7)
 		return_dict['label2'] = _tn.get(_tn.decisionIndex30)
 		return_dict['label3'] = _tn.get(_tn.statementIndex)
 		return_dict['label4'] = _tn.get(_tn.editIndex)
+
 		return_dict['labelinfo1'] = _tn.get(_tn.decisionIndex7Info)
 		return_dict['labelinfo2'] = _tn.get(_tn.decisionIndex30Info)
 		return_dict['labelinfo3'] = _tn.get(_tn.statementIndexInfo)

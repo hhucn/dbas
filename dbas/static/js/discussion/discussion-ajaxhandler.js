@@ -96,15 +96,16 @@ function AjaxSiteHandler() {
 	 * Sends a new topic
 	 * @param info
 	 * @param title
+	 * @param language
 	 */
-	this.sendNewIssue = function(info, title){
+	this.sendNewIssue = function(info, title, language){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$('#add-topic-error').hide();
 		$.ajax({
 			url: 'ajax_set_new_issue',
 			method: 'POST',
 			data: {
-				info: info, title: title
+				info: info, title: title, lang: language
 			},
 			dataType: 'json',
 			async: true,
@@ -115,11 +116,11 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			$('#add-topic-error-text').text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
+			$('#popup-add-topic-error-text').text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			$('#add-topic-error').show();
+			$('#popup-add-topic-error').show();
 			new Helper().delay(function(){
-				$('#add-topic-error').hide();
+				$('#popup-add-topic-error').hide();
 			}, 2500);
 		});
 	};

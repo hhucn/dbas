@@ -422,8 +422,8 @@ comment .container and wrap each container with <div class="coloured-div">
 #popup-url-sharing-input{
 	background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 5px 5px;
 }
-#add-topic-title-input,
-#add-topic-info-input{
+#popup-add-topic-title-input,
+#popup-add-topic-info-input{
 	padding: 12px 10px 0 50px;
 	background: url('../images/glyphicons_free/glyphicons/glyphicons-40-notes.png') no-repeat 5px 5px;
 }

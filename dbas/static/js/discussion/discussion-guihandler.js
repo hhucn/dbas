@@ -546,6 +546,22 @@ function GuiHandler() {
 	};
 
 	/**
+	 * Displays add topic plugin
+	 */
+	this.showAddTopicPopup = function (){
+		$('#popup-add-topic').modal('show');
+		$('#popup-add-topic-accept-btn').click(function () {
+			var info = $('#popup-add-topic-info-input').val(),
+				title = $('#popup-add-topic-title-input').val(),
+				lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
+			new AjaxSiteHandler().sendNewIssue(info, title, lang);
+		});
+		$('#popup-add-topic-refuse-btn').click(function () {
+			$('#popup-add-topic').modal('hide');
+		});
+	};
+
+	/**
 	 * Displays all corrections in the popup
 	 * @param jsonData json encoded return data
 	 */
