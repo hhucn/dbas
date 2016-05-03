@@ -1,6 +1,6 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff, Teresa Uebber
+ * @email krauthoff@cs.uni-duesseldorf.de, teresa.uebber@hhu.de
  */
 
 // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
@@ -256,24 +256,23 @@ function DiscussionBarometer(){
 	 * @return options
 	 */
 	this.createLegendOptions = function() {
-		var options = {
+		return options = {
 			legendTemplate: '<ul style = "list-style-type: none; padding-left: 0px;">'
-					+ '<% for (var i=0; i<segments.length; i++) { %>'
-						+ '<li style = "padding: 3px;">'
-							+ '<span style=' +
-								'\ " border-radius: 5px;' +
-								'margin-right: 10px;' +
-								'width: 15px;' +
-								'height: 15px;' +
-								'display: inline-block;' +
-								'background-color: <%=segments[i].fillColor%>\"> </span>'
-							+ '<% if (segments[i].label) { %><%= segments[i].label %><% } %>'
-							+ '<% if (segments[i].value) { %><%= ": " + segments[i].value %><% } %>'
-						+ '</li>'
-					+ '<% } %>'
-				+ '</ul>'
+				+ '<% for (var i=0; i<segments.length; i++) { %>'
+					+ '<li style = "padding: 3px;">'
+						+ '<span style=' +
+							'\ " border-radius: 5px;' +
+							'margin-right: 10px;' +
+							'width: 15px;' +
+							'height: 15px;' +
+							'display: inline-block;' +
+							'background-color: <%=segments[i].fillColor%>\"> </span>'
+						+ '<% if (segments[i].label) { %><%= segments[i].label %><% } %>'
+						+ '<% if (segments[i].value) { %><%= ": " + segments[i].value %><% } %>'
+					+ '</li>'
+				+ '<% } %>'
+			+ '</ul>'
 		};
-		return options;
 	};
 
 	/**
