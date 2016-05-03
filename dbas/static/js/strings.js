@@ -3,10 +3,6 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  */
 
-function get_hostname(url) {
-	var m = url.match(/^http:\/\/[^/]+/);
-	return m ? m[0] + '/' : null;
-}
 var mainpage = location.origin + '/'; //get_hostname(window.location.href);
 
 /**
@@ -21,9 +17,9 @@ _t = function(id){
 		if ($(this).hasClass('active')){
 			this_id = $(this).children().first().attr('id');
 
-			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){				value= dbas_en[id];
-			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){		value = dbas_de[id];
-			} else {                                                    				value = 'unknown value';
+			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){			value = dbas_en[id];
+			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){	value = dbas_de[id];
+			} else {                                                    			value = 'unknown value';
 			}
 		}
 	});
@@ -62,6 +58,7 @@ var addedEverything 								= 'addedEverything';
 var addTopic                                        = 'addTopic';
 var addTopicTitleText                               = 'addTopicTitleText';
 var addTopicShortText                               = 'addTopicShortText';
+var addTopicLangText                                = 'addTopicLangText';
 var acceptIt 										= 'acceptIt';
 var allEditsDone                                    = 'allEditsDone';
 var allStatementsPosted                             = 'allStatementsPosted';
@@ -227,6 +224,7 @@ var dbas_en = {
 	'addTopic': 'Add a Topic',
 	'addTopicTitleText': 'Please enter your topic here:',
 	'addTopicShortText': 'Please enter a shorttext for your topic here:',
+	'addTopicLangText': 'Please select the language of the new discussion here:',
 	'acceptIt': 'Accept it...',
 	'acceptItTitle': 'Accept it...',
 	'allEditsDone': 'All edits you\'ve done',
@@ -371,6 +369,7 @@ var dbas_de = {
 	'addTopic': 'Thema hinzufügen',
 	'addTopicTitleText': 'Bitte geben Sie Ihr Thema an:',
 	'addTopicShortText': 'Bitte geben Sie die Kurform Ihres Themas an:',
+	'addTopicLangText': 'Bitte geben Sie die Sprache Ihres Themas an:',
 	'andAtTheSameTime': 'und zur selben Zeit',
 	'addedEverything': 'Alles wurde hinzugefügt.',
 	'acceptItTitle': 'Einsenden...',
