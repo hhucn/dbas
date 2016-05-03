@@ -3,10 +3,6 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  */
 
-function get_hostname(url) {
-	var m = url.match(/^http:\/\/[^/]+/);
-	return m ? m[0] + '/' : null;
-}
 var mainpage = location.origin + '/'; //get_hostname(window.location.href);
 
 /**
@@ -21,9 +17,9 @@ _t = function(id){
 		if ($(this).hasClass('active')){
 			this_id = $(this).children().first().attr('id');
 
-			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){				value= dbas_en[id];
-			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){		value = dbas_de[id];
-			} else {                                                    				value = 'unknown value';
+			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){			value = dbas_en[id];
+			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){	value = dbas_de[id];
+			} else {                                                    			value = 'unknown value';
 			}
 		}
 	});
@@ -56,11 +52,13 @@ var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
 var and 						            		= 'and';
+var answer                                          = 'answer';
 var andAtTheSameTime                                = 'andAtTheSameTime';
 var addedEverything 								= 'addedEverything';
 var addTopic                                        = 'addTopic';
 var addTopicTitleText                               = 'addTopicTitleText';
 var addTopicShortText                               = 'addTopicShortText';
+var addTopicLangText                                = 'addTopicLangText';
 var acceptIt 										= 'acceptIt';
 var allEditsDone                                    = 'allEditsDone';
 var allStatementsPosted                             = 'allStatementsPosted';
@@ -101,6 +99,7 @@ var edit 											= 'edit';
 var errorCode 										= 'error_code';
 var editTitle										= 'editTitle';
 var forText                                         = 'forText';
+var forward                                         = 'forward';
 var fillLine 										= 'fillLine';
 var feelFreeToShareUrl 								= 'feelFreeToShareUrl';
 var fetchLongUrl 									= 'fetchLongUrl';
@@ -191,6 +190,7 @@ var surname 										= 'surname';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
+var to 											    = 'to';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
@@ -218,11 +218,13 @@ var urlLogout 							= 'logout';
 var dbas_en = {
 	'avatar': 'Avatar',
 	'and': 'and',
+	'answer': 'antworten',
 	'andAtTheSameTime': 'and at the same time',
 	'addedEverything': 'Everything was added.',
 	'addTopic': 'Add a Topic',
 	'addTopicTitleText': 'Please enter your topic here:',
 	'addTopicShortText': 'Please enter a shorttext for your topic here:',
+	'addTopicLangText': 'Please select the language of the new discussion here:',
 	'acceptIt': 'Accept it...',
 	'acceptItTitle': 'Accept it...',
 	'allEditsDone': 'All edits you\'ve done',
@@ -265,6 +267,7 @@ var dbas_en = {
 	'fetchLongUrl': 'Fetch long url!',
 	'fetchShortUrl': 'Fetch short url!',
 	'forgotPassword': 'Forgot Password',
+	'forward' : 'forward',
 	'firstname': 'Firstname',
 	'fillLine': 'Please, fill this this line with your report',
 	'gender': 'Gender',
@@ -350,6 +353,7 @@ var dbas_en = {
 	'switchDiscussionText2': 'and the discussion will be restarted.',
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
+	'to': 'To',
 	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
 	'usersWithSameOpinion': 'Users with same opinion',
@@ -361,9 +365,11 @@ var dbas_en = {
 var dbas_de = {
 	'avatar': 'Avatar',
 	'and': 'und',
+	'answer': 'antworten',
 	'addTopic': 'Thema hinzufügen',
 	'addTopicTitleText': 'Bitte geben Sie Ihr Thema an:',
 	'addTopicShortText': 'Bitte geben Sie die Kurform Ihres Themas an:',
+	'addTopicLangText': 'Bitte geben Sie die Sprache Ihres Themas an:',
 	'andAtTheSameTime': 'und zur selben Zeit',
 	'addedEverything': 'Alles wurde hinzugefügt.',
 	'acceptItTitle': 'Einsenden...',
@@ -408,6 +414,7 @@ var dbas_de = {
 	'fetchLongUrl': 'Hole lange URL!',
 	'fetchShortUrl': 'Hole kurze URL!',
 	'forgotPassword': 'Passwort vergessen',
+	'forward' : 'weiterleiten',
 	'firstname': 'Vorname',
 	'gender': 'Geschlecht',
 	'generateSecurePassword': 'Generate secure password',
@@ -492,6 +499,7 @@ var dbas_de = {
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
+	'to': 'An',
 	'timestamp': 'Zeit',
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'typeofVote': 'Zustimmung/Ablehnung',

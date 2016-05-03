@@ -15,7 +15,7 @@
                             <td>${user.last_login}</td>
 						</tr>
 						<tr>
-							<td><span class="lead" i18n:translate="registered_since">Registered Since</span></td>
+							<td><span class="lead" i18n:translate="registered">Registered</span></td>
                             <td>${user.registered}</td>
 						</tr>
 					</table>
@@ -52,12 +52,13 @@
             </div>
 
 			<div class="row text-center" style="margin: 1em;">
-                <div class="col-md-6" id="user-activity-chart-space">
-                <span class="lead" i18n:translate="decision_index_7">Decision Index - Last 7 Days</span>
-                </div>
-                <div class="col-md-6" id="user-vote-chart-space">
-                <span class="lead" i18n:translate="decision_index_30">Decision Index - Last 30 Days</span>
-                </div>
+                <div class="col-md-6" id="user-activity-chart-space"></div>
+                <div class="col-md-6" id="user-vote-chart-space"></div>
+            </div>
+
+			<div class="row text-center" style="margin: 1em;">
+                <div class="col-md-6" id="user-statement-chart-space"></div>
+                <div class="col-md-6" id="user-edit-chart-space"></div>
             </div>
 
         </div>

@@ -72,6 +72,7 @@
 						<li>Avatare by <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
 						<li>Charts by <a target="_blank" href="https://github.com/nnnick/Chart.js">Chart.js</a></li>
 						<li>Graphs by <a target="_blank" href="https://github.com/jacomyal/sigma.js">Sigma.js</a></li>
+                        <li>Loading Bar by <a target="_blank" href="http://github.hubspot.com/pace/docs/welcome/">Pace</a></li>
 					</ul>
 				</div>
 
@@ -109,6 +110,7 @@
                         <li>Participants are able to send notifications to each other</li>
                         <li>Revised timestamps with humanized texts</li>
                         <li>Revised discussion finished page</li>
+                        <li>Added loading bar</li>
 					</ul>
 					<span class="project lead">0.5.10 (2016-04-26)</span>
 					<ul>

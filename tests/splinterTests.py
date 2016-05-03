@@ -164,7 +164,7 @@ class FrontendTests:
 		splitted_list = test_list.split(',')
 		if len(splitted_list) == 1 and splitted_list[0] == 'a':
 			splitted_list = []
-			for i in range(11):
+			for i in range(12):
 				splitted_list.append(str(i))
 
 		start = time.time()
@@ -625,7 +625,7 @@ class FrontendTests:
 			b.back()
 			b.reload()
 			time.sleep(waittime)
-			b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
+			b.find_by_css('#discussions-space-list li:first-child input').click()
 		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
@@ -661,7 +661,7 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# confrontation - give feedback again
-		success = success and Helper.check_for_present_text(b, 'disagree with', 'check for question of rejection')
+		success = success and Helper.check_for_present_text(b, 'You disagree with', 'check for question of rejection')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
 
@@ -673,7 +673,7 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# rebut of confrontation
-		success = success and Helper.check_for_present_text(b, 'You have much stronger argument for accepting', 'check for formulation on rebut')
+		success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for rejecting', 'check for formulation on rebut again')
 		success = success and Helper.check_for_present_text(b, 'is not a good idea', 'check for question again')
 
 		b = Helper.logout(b)
@@ -734,7 +734,7 @@ class FrontendTests:
 
 		# write message
 		b.find_by_id('popup-writing-notification-recipient').fill(nickname2)
-		b.find_by_id('popup-writing-notification-title').fill('Test notification')
+		b.find_by_id('popup-writing-notification-title').fill('Test notification for Kurt')
 		b.find_by_id('popup-writing-notification-text').fill('This is a test notification for splinter tests')
 		b.find_by_id('popup-writing-notification-send').click()
 		time.sleep(waittime)

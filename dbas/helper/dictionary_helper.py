@@ -117,9 +117,9 @@ class DictionaryHelper(object):
 			return_dict['is_reportable']	             = is_reportable
 			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
 			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
-			return_dict['show_bar_icon']	             = show_bar_icon # and False
-			return_dict['show_display_style']            = show_display_styles # and False
-			return_dict['show_expert_icon']              = show_expert_icon # and False
+			return_dict['show_bar_icon']	             = show_bar_icon and False  # TODO SET THIS FOR BAROMETER
+			return_dict['show_display_style']            = show_display_styles and False
+			return_dict['show_expert_icon']              = show_expert_icon and False
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
 			return_dict['date']	                         = datetime.strftime(datetime.now(), '%d.%m.%Y')
@@ -206,7 +206,7 @@ class DictionaryHelper(object):
 					                                     'report_statement': _tn.get(_tn.reportTitle)}
 		return return_dict
 
-	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, lang, at_start=False, at_dont_know=False,
+	def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
 								at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False,):
 		"""
 		Adds a speicif text when the discussion is at the end

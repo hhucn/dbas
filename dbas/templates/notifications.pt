@@ -98,7 +98,7 @@
                                                     ${msg.to_author}
                                                     <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src msg.to_author_avatar">
                                                 </a>
-                                                <a href="#" class="btn btn-primary btn-xs forward-notification" i18n:translate="forward">forward</a>
+                                                <a href="#" class="btn btn-primary btn-xs answer-notification" i18n:translate="answer">answer</a>
                                             </div>
                                         </div>
                                     </div>

@@ -20,7 +20,8 @@ class RecommenderSystem:
 	"""
 
 	@staticmethod
-	def get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks=None, restriction_on_arg_uid=None, special_case=None):
+	def get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks=None, restriction_on_arg_uid=None,
+	                            special_case_on_undermine=None, history=None):
 		"""
 		Selects an attack out of the web of reasons.
 
@@ -29,8 +30,9 @@ class RecommenderSystem:
 		:param lang: ui_locales
 		:param restriction_on_attacks: String
 		:param restriction_on_arg_uid: Argument.uid
-		:param special_case: String
-		:return: Argument.uid, String
+		:param special_case_on_undermine: String
+		:param history: History
+		:return: Argument.uid, String, Boolean if no new attacks are found
 		"""
 		# getting undermines or undercuts or rebuts
 		logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
@@ -46,10 +48,16 @@ class RecommenderSystem:
 		logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0])
 		logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  2: ' + restriction_on_attacks[1])
 
-		attacks_array, key = RecommenderSystem.__get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks,
-		                                                                 restriction_on_arg_uid, special_case)
+		attacks_array, key, no_new_attacks = RecommenderSystem.__get_attack_for_argument(argument_uid, issue, lang,
+		                                                                                 restriction_on_attacks,
+		                                                                                 restriction_on_arg_uid,
+		                                                                                 special_case_on_undermine,
+		                                                                                 history)
 		if not attacks_array or len(attacks_array) == 0:
-			return 0, 'end'
+			if no_new_attacks:
+				return 0, 'end_attack'
+			else:
+				return 0, 'end'
 		else:
 			attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
 			attack_uid = attacks_array[attack_no]['id']
@@ -98,7 +106,7 @@ class RecommenderSystem:
 		return db_arguments
 
 	@staticmethod
-	def __get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_argument_uid, special_case):
+	def __get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks, restriction_on_argument_uid, special_case_on_undermine, history):
 		"""
 		Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
 		Additionally returns id's of premises groups with [key + str(index) + 'id']
@@ -108,8 +116,9 @@ class RecommenderSystem:
 		:param lang: ui_locales
 		:param restriction_on_attacks: String
 		:param restriction_on_argument_uid: Argument.uid
-		:param special_case: String
-		:return: [Argument.uid], String
+		:param special_case_on_undermine: String
+		:param history: History
+		:return: [Argument.uid], String, Boolean if no new attacks are found
 		"""
 
 		# 1 = undermine, 2 = support, 3 = undercut, 4 = overbid, 5 = rebut, all possible attacks
@@ -119,25 +128,33 @@ class RecommenderSystem:
 
 		logger('RecommenderSystem', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
 		attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
-		return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, attack_list,
-		                                                                                   issue, complete_list_of_attacks,
-		                                                                                   lang, restriction_on_attacks,
-		                                                                                   restriction_on_argument_uid,
-		                                                                                   special_case)
+		return_array, key, no_new_attacks = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid,
+		                                                                                                   attack_list,
+		                                                                                                   issue,
+		                                                                                                   complete_list_of_attacks,
+		                                                                                                   lang,
+		                                                                                                   restriction_on_attacks,
+		                                                                                                   restriction_on_argument_uid,
+		                                                                                                   special_case_on_undermine,
+		                                                                                                   history)
 
 		# sanity check if we could not found an attack for a left attack in out set
 		if not return_array and len(attacks) > 0:
-			return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, [], issue,
-			                                                                                   complete_list_of_attacks,
-			                                                                                   lang, restriction_on_attacks,
-			                                                                                   restriction_on_argument_uid,
-			                                                                                   special_case)
+			return_array, key, no_new_attacks = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, [],
+			                                                                                                   issue,
+			                                                                                                   complete_list_of_attacks,
+			                                                                                                   lang,
+			                                                                                                   restriction_on_attacks,
+			                                                                                                   restriction_on_argument_uid,
+			                                                                                                   special_case_on_undermine,
+			                                                                                                   history)
 
-		return return_array, key
+		return return_array, key, no_new_attacks
 
 	@staticmethod
 	def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang,
-	                                                 restriction_on_attacks, restriction_on_argument_uid, special_case):
+	                                                 restriction_on_attacks, restriction_on_argument_uid, special_case,
+	                                                 history):
 		"""
 
 		:param argument_uid: Argument.uid
@@ -148,13 +165,15 @@ class RecommenderSystem:
 		:param restriction_on_attacks: String
 		:param restriction_on_argument_uid: Argument.uid
 		:param special_case: String
-		:return: [Argument.uid], String
+		:param history: History
+		:return: [Argument.uid], String, Boolean if no new attacks are found
 		"""
 		return_array = None
 		key = ''
 		left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
 		attack_found = False
 		is_supportive = False
+		no_new_attacks = False
 		_rh = RelationHelper(argument_uid, lang)
 
 		logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'argument_uid: Argument.uid ' + str(argument_uid) +
@@ -179,26 +198,35 @@ class RecommenderSystem:
 				else (_rh.get_rebuts_for_argument_uid() if attack == 5
 				      else _rh.get_undercuts_for_argument_uid())
 
-			if return_array and len(return_array) != 0\
-					and str(restriction_on_attacks[0]) != str(key)\
-					and str(restriction_on_attacks[1]) != str(key)\
-					and restriction_on_argument_uid != return_array[0]['id']:
-				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found for key: ' + key)
-				attack_found = True
-				break
+			if return_array and len(return_array) != 0:
+				new_attack_step = str(argument_uid) + '/' + str(key) + '/' + str(return_array[0]['id'])
+				no_new_attacks = new_attack_step in str(history)
+				if str(restriction_on_attacks[0]) != str(key)\
+						and str(restriction_on_attacks[1]) != str(key)\
+						and restriction_on_argument_uid != return_array[0]['id']\
+						and new_attack_step not in str(history):  # no duplicated attacks
+					logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found for key: ' + key)
+					attack_found = True
+					break
 			else:
 				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'no attack found for key: ' + key)
 
 		if len(left_attacks) > 0 and not attack_found:
 			logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
-			return_array, key = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid, left_attacks, issue, left_attacks, lang, restriction_on_attacks, restriction_on_argument_uid)
+			return_array, key, no_new_attacks = RecommenderSystem.__get_attack_for_argument_by_random_in_range(argument_uid,
+			                                                                                                   left_attacks,
+			                                                                                                   issue,
+			                                                                                                   left_attacks,
+			                                                                                                   lang,
+			                                                                                                   restriction_on_attacks,
+			                                                                                                   restriction_on_argument_uid)
 		else:
 			if len(left_attacks) == 0:
 				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
 			if attack_found:
 				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found')
 
-		return return_array, key
+		return return_array, key, no_new_attacks
 
 	@staticmethod
 	def __get_best_argument(argument_list):

@@ -150,7 +150,7 @@ function InteractionHandler() {
 			if (parsedData.vote_count>0) {
 				$.each(parsedData.supporter, function(index, nick){
 					td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.public_page[nick]).text(nick));
-					td_avatar = $('<td>').html('<img style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
+					td_avatar = $('<td>').html('<img class="preload-image" style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
 					if (i==1){
 						i=0;
 						tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
@@ -167,7 +167,7 @@ function InteractionHandler() {
 			if (tbody.find('tr').length==0)
 				body.append(new GuiHandler().getAlertIntoDialogNoDecisions());
 			else
-				body.append(span).append(table.append(tbody));
+				body.append(table.append(tbody));
 
 			body.append(text).append(table.append(tbody));
 			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);
@@ -198,7 +198,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 
 		if (parsedData.error.length == 0) {
-			$('#' + popupConfirmDialogId).modal('hide');
+			$('#popup-add-topic').modal('hide');
 			var li = $('<li>').addClass('enabled'),
 				a = $('<a>').attr('href', parsedData.issue.url).attr('value', parsedData.issue.title),
 				spanTitle = $('<span>').text(parsedData.issue.title),
@@ -209,10 +209,10 @@ function InteractionHandler() {
 				li.insertBefore(divider);
 			}
 		} else {
-			$('#add-topic-error-text').text(parsedData.error);
-			$('#add-topic-error').show();
+			$('#popup-add-topic-error-text').text(parsedData.error);
+			$('#popup-add-topic-error').show();
 			new Helper().delay(function(){
-				$('#add-topic-error').hide();
+				$('#popup-add-topic-error').hide();
 			}, 2500);
 		}
 	};
@@ -250,7 +250,7 @@ function InteractionHandler() {
 
 			$.each(users_array, function (i, val) {
 				td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', val.public_profile_url).text(val.nickname));
-				td_avatar = $('<td>').html('<img style="height: 40%;" src="' + val.avatar_url + '"></td>');
+				td_avatar = $('<td>').html('<img class="preload-image" style="height: 40%;" src="' + val.avatar_url + '"></td>');
 				if (j==1){
 					j=0;
 					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
