@@ -18,7 +18,7 @@ from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config, and_
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue,\
-	Notification, Settings, VoteArgument, VoteStatement, StatementReferences
+	Notification, Settings, VoteArgument, VoteStatement, StatementReferences, Language
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
@@ -610,12 +610,18 @@ def setup_discussion_database(session, user):
 	:param user: main author
 	:return:
 	"""
+	# adding languages
+	lang1 = Language(name='English', ui_locales='en')
+	lang2 = Language(name='Deutsch', ui_locales='de')
+	session.add_all([lang1, lang2])
+	session.flush()
+
 	# adding our main issue
-	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid)
-	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid)
-	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid)
-	#  issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user.uid)
-	issue5 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid)
+	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
+	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
+	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
+	#  issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user.uid, lang='en')
+	issue5 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
 	session.add_all([issue1, issue2, issue5])
 	session.flush()
 
