@@ -42,6 +42,7 @@ function User() {
 	var pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
 
 	this.getPublicUserData = function () {
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_public_user_data',
 			method: 'GET',

@@ -130,7 +130,7 @@ function AjaxSiteHandler() {
 	 * @param id_id current uid of the statement
 	 */
 	this.getLogfileForStatement = function (id_id) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
 			method: 'GET',
@@ -141,10 +141,6 @@ function AjaxSiteHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
-			},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
 			}
 		}).done(function ajaxGetLogfileForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
@@ -163,7 +159,7 @@ function AjaxSiteHandler() {
 	 * @param corrected_text the corrected text
 	 */
 	this.sendCorrectureOfStatement = function (uid, corrected_text, element) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(),settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_correcture_of_statement',
 			method: 'POST',
@@ -175,10 +171,6 @@ function AjaxSiteHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
-			},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, element);
@@ -195,7 +187,7 @@ function AjaxSiteHandler() {
 	 * @param long_url for shortening
 	 */
 	this.getShortenUrl = function (long_url) {
-		var encoded_url = encodeURI(long_url), settings_data, url;
+		var encoded_url = encodeURI(long_url);
 		$.ajax({
 			url: 'ajax_get_shortened_url',
 			method: 'GET',
@@ -204,9 +196,8 @@ function AjaxSiteHandler() {
 				url: encoded_url, issue: new Helper().getCurrentIssueId()
 			},
 			async: true,
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
+			headers: {
+				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxGetShortenUrlDone(data) {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data);
@@ -277,7 +268,7 @@ function AjaxSiteHandler() {
 	 * @param extra optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
-		var settings_data, url, callback = $('#' + callbackid),
+		var callback = $('#' + callbackid),
 			pencil = '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>',
 			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
 			bubbleSpace = $('#' + discussionBubbleSpaceId);
@@ -318,9 +309,8 @@ function AjaxSiteHandler() {
 			data: { value: value, type:type, extra: extra, issue: new Helper().getCurrentIssueId() },
 			async: true,
 			global: false,
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
+			headers: {
+				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);

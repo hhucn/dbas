@@ -41,7 +41,7 @@ from .url_manager import UrlManager
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.5.11'
+version = '0.5.12'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -897,7 +897,7 @@ class Dbas(object):
 # ####################################
 
 	# ajax - getting complete track of the user
-	@view_config(route_name='ajax_get_user_history', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_user_history', renderer='json')
 	def get_user_history(self):
 		"""
 		Request the complete user track.
@@ -912,7 +912,7 @@ class Dbas(object):
 		return json.dumps(return_list, True)
 
 	# ajax - getting all text edits
-	@view_config(route_name='ajax_get_all_posted_statements', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_all_posted_statements', renderer='json')
 	def get_all_posted_statements(self):
 		"""
 
@@ -926,7 +926,7 @@ class Dbas(object):
 		return json.dumps(return_array, True)
 
 	# ajax - getting all text edits
-	@view_config(route_name='ajax_get_all_edits', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_all_edits', renderer='json')
 	def get_all_edits(self):
 		"""
 
@@ -940,7 +940,7 @@ class Dbas(object):
 		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for arguments
-	@view_config(route_name='ajax_get_all_argument_votes', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_all_argument_votes', renderer='json')
 	def get_all_argument_votes(self):
 		"""
 
@@ -954,7 +954,7 @@ class Dbas(object):
 		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for statements
-	@view_config(route_name='ajax_get_all_statement_votes', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_get_all_statement_votes', renderer='json')
 	def get_all_statement_votes(self):
 		"""
 
@@ -968,7 +968,7 @@ class Dbas(object):
 		return json.dumps(return_array, True)
 
 	# ajax - deleting complete history of the user
-	@view_config(route_name='ajax_delete_user_history', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_delete_user_history', renderer='json')
 	def delete_user_history(self):
 		"""
 		Request the complete user history.
@@ -986,7 +986,7 @@ class Dbas(object):
 		return json.dumps(return_dict, True)
 
 	# ajax - deleting complete history of the user
-	@view_config(route_name='ajax_delete_statistics', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_delete_statistics', renderer='json')
 	def delete_statistics(self):
 		"""
 		Request the complete user history.
@@ -1362,7 +1362,7 @@ class Dbas(object):
 # #######################################
 
 	# ajax - send new start statement
-	@view_config(route_name='ajax_set_new_start_statement', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_set_new_start_statement', renderer='json')
 	def set_new_start_statement(self, for_api=False, api_data=None):
 		"""
 		Inserts a new statement into the database, which should be available at the beginning
@@ -1409,7 +1409,7 @@ class Dbas(object):
 		return json.dumps(return_dict, True)
 
 	# ajax - send new start premise
-	@view_config(route_name='ajax_set_new_start_premise', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_set_new_start_premise', renderer='json')
 	def set_new_start_premise(self, for_api=False, api_data=None):
 		"""
 		Sets new premise for the start
@@ -1460,7 +1460,7 @@ class Dbas(object):
 		return json.dumps(return_dict, True)
 
 	# ajax - send new premises
-	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
 	def set_new_premises_for_argument(self, for_api=False, api_data=None):
 		"""
 		Sets a new premise for an argument
@@ -1516,7 +1516,7 @@ class Dbas(object):
 		return json.dumps(return_dict, True)
 
 	# ajax - set new textvalue for a statement
-	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json', check_csrf=True)
+	@view_config(route_name='ajax_set_correcture_of_statement', renderer='json')
 	def set_correcture_of_statement(self):
 		"""
 		Sets a new textvalue for a statement
@@ -1636,7 +1636,7 @@ class Dbas(object):
 # ###################################
 
 	# ajax - getting changelog of a statement
-	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json', check_csrf=False)
+	@view_config(route_name='ajax_get_logfile_for_statement', renderer='json')
 	def get_logfile_for_statement(self):
 		"""
 		Returns the changelog of a statement
@@ -1722,7 +1722,7 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_news', 'def', 'main')
-		return_dict = NewsHandler.get_news()
+		return_dict = NewsHandler.get_news(get_language(self.request, get_current_registry()))
 		return json.dumps(return_dict, True)
 
 	# ajax - for getting argument infos
@@ -1856,7 +1856,7 @@ class Dbas(object):
 		try:
 			title = escape_string(self.request.params['title'])
 			text = escape_string(self.request.params['text'])
-			return_dict = NewsHandler.set_news(transaction, title, text, self.request.authenticated_userid)
+			return_dict = NewsHandler.set_news(transaction, title, text, self.request.authenticated_userid, get_language(self.request, get_current_registry()))
 			return_dict['error'] = ''
 		except KeyError as e:
 			return_dict = dict()
