@@ -61,6 +61,10 @@
                 <div class="col-md-6" id="user-edit-chart-space"></div>
             </div>
 
+			<div class="row text-center" style="margin: 1em;">
+                <div class="col-md-12" id="user-statements-chart-space"></div>
+            </div>
+
         </div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/user.js')}"></script>

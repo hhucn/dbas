@@ -110,7 +110,7 @@
                         <li>Participants are able to send notifications to each other</li>
                         <li>Revised timestamps with humanized texts</li>
                         <li>Revised discussion finished page</li>
-                        <li>Added loading bar</li>
+                        <li>Seperated site and discussion language</li>
 					</ul>
 					<span class="project lead">0.5.10 (2016-04-26)</span>
 					<ul>

@@ -7,6 +7,7 @@ TODO
 """
 
 
+import arrow
 import os
 import sys
 import transaction
@@ -522,9 +523,10 @@ def setup_dummy_votes(session):
 
 	db_arguments = DBDiscussionSession.query(Argument).all()
 	db_statements = DBDiscussionSession.query(Statement).all()
-	firstnames = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
-	              'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
-	              'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
+	firstnames = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob',
+	              'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi',
+	              'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly',
+	              'Sybille', 'Ingeburg']
 
 	new_votes = []
 	arg_up = 0
@@ -600,6 +602,15 @@ def setup_dummy_votes(session):
 
 	session.add_all(new_votes)
 	session.flush()
+
+	# random timestamps
+	db_votestatements = session.query(VoteStatement).all()
+	for vs in db_votestatements:
+		vs.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
+
+	db_votearguments = session.query(VoteArgument).all()
+	for va in db_votearguments:
+		va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
 
 def setup_discussion_database(session, user):
@@ -709,6 +720,11 @@ def setup_discussion_database(session, user):
 	session.add_all([textversion200, textversion201, textversion202, textversion203, textversion204, textversion205])
 	session.add_all([textversion206, textversion207, textversion208, textversion209, textversion210, textversion211])
 	session.flush()
+
+	# random timestamps
+	db_textversions = session.query(TextVersion).all()
+	for tv in db_textversions:
+		tv.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
 	# adding all statements
 	statement1 = Statement(textversion=textversion1.uid, is_startpoint=True, issue=issue2.uid)
