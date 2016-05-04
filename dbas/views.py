@@ -393,7 +393,7 @@ class Dbas(object):
 		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
-		_ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
+		_ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
 		discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
 		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
 			.prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
@@ -1758,23 +1758,26 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_users_with_same_opinion', 'def', 'main: ' + str(self.request.params))
-		ui_locales = get_discussion_language(self.request)
-		_tn = Translator(ui_locales)
 		nickname = self.request.authenticated_userid
+		ui_locales = get_language(self.request, get_current_registry())
+		_tn = Translator(ui_locales)
 
 		return_dict = dict()
 		try:
-			uids = self.request.params['uids']
-			is_argument = self.request.params['is_argument'] == 'true' if 'is_argument' in self.request.params else False
-			is_attitude = self.request.params['is_attitude'] == 'true' if 'is_attitude' in self.request.params else False
-			is_reaction = self.request.params['is_reaction'] == 'true' if 'is_reaction' in self.request.params else False
-			is_position = self.request.params['is_position'] == 'true' if 'is_position' in self.request.params else False
+			params = self.request.params
+			ui_locales  = params['lang'] if 'lang' in params else 'en'
+			uids        = params['uids']
+			is_argument = params['is_argument'] == 'true' if 'is_argument' in params else False
+			is_attitude = params['is_attitude'] == 'true' if 'is_attitude' in params else False
+			is_reaction = params['is_reaction'] == 'true' if 'is_reaction' in params else False
+			is_position = params['is_position'] == 'true' if 'is_position' in params else False
 
 			_op = OpinionHandler(ui_locales, nickname, mainpage)
 			if is_argument:
 				if not is_reaction:
 					return_dict = _op.get_user_with_same_opinion_for_argument(uids)
 				else:
+					uids = json.loads(uids)
 					return_dict = _op.get_user_with_opinions_for_argument(uids)
 			elif is_position:
 				uids = json.loads(uids)
@@ -1797,7 +1800,6 @@ class Dbas(object):
 	def get_public_user_data(self):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_public_user_data', 'def', 'main: ' + str(self.request.params))
-		ui_locales = get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
 
 		return_dict = dict()

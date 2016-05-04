@@ -21,28 +21,28 @@ Then follow these steps:
 
     $ mkvirtualenv "--python=$(which python3)" dbas
 
-2. Install all requirements::
-
-    $ pip install -r requirements.txt
-
-3. Develop application::
-
-    $ python setup.py develop
-
-4. Install PostgreSQL and configure it::
+2. Install PostgreSQL and configure it::
 
     $ apt-get install libpq-dev python-dev postgresql
 
-6. Create database::
+3. Install all requirements::
+
+    $ pip install -r requirements.txt
+
+4. Develop application::
+
+    $ python setup.py develop
+
+5. Create database::
 
     $ make init
     $ make all
 
-7. Start development web server::
+6. Start development web server::
 
     $ pserve development.ini --reload
 
-8. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
+7. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
 
 
 Makefile
