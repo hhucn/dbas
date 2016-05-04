@@ -47,15 +47,16 @@ class OpinionHandler:
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
+		# preperation
 		ret_dict = dict()
 		all_users = []
+		regex = re.compile('</?(strong|em)>')  # replacing html tags
 		_t = Translator(self.lang)
 		_tg = TextGenerator(self.lang)
-		logger('--', 'argument_uids[0]', str(argument_uids[0]))
-		logger('--', 'argument_uids[1]', str(argument_uids[1]))
 		db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
 		db_syst_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
 
+		# sanity check
 		if not db_user_argument or not db_syst_argument:
 			ret_dict['message'] = _t.get(_t.internalError) + '.'
 			ret_dict['users'] = all_users
@@ -63,6 +64,7 @@ class OpinionHandler:
 
 		title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uids[0], self.lang)
 
+		# getting uids of all reactions
 		_rh = RelationHelper(argument_uids[0], self.lang)
 		undermines_uids  = _rh.get_undermines_for_argument_uid()
 		supports_uids    = _rh.get_supports_for_argument_uid()
@@ -76,6 +78,7 @@ class OpinionHandler:
 			'rebut': rebuts_uids
 		}
 
+		# getting the text of all reactions
 		conclusion      = get_text_for_conclusion(db_syst_argument, self.lang)
 		premise, tmp    = get_text_for_premisesgroup_uid(db_syst_argument.premisesgroup_uid, self.lang)
 		db_tmp_argument = db_syst_argument
@@ -87,17 +90,14 @@ class OpinionHandler:
 		premise		     = premise[0:1].lower() + premise[1:]
 		relation_text    = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive,
 		                                              first_conclusion=first_conclusion)
-		regex = re.compile('</?(strong|em)>')  # replacing html tags
 
+		# getting votes for every reaction
 		for relation in tmp_dict:
 			relation_dict   = dict()
 			all_users       = []
 			message         = ''
 
-			logger('--', 'tmp_dict', str(tmp_dict))
-
 			for uid in tmp_dict[relation]:
-				logger('--', 'tmp_dict[relation]', str(tmp_dict[relation]))
 				db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
 				                                                               VoteArgument.is_up_vote == True,
 				                                                               VoteArgument.is_valid == True,

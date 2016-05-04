@@ -159,8 +159,8 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row" id="island-view-container-space">
-				<div class="col-md-12 text-center">
-					<h4><span i18n:translate="island_view_for">Island View for</span> <span id="island-view-container-space-heading"><strong>${structure:extras.island.heading}</strong></span></h4>
+				<div class="col-md-11 text-center">
+					<h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading"><strong>${structure:extras.island.heading}</strong></span></h4>
 				</div>
 			</div>
 
@@ -168,10 +168,8 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-								<span class="text-danger">✗</span>
-								<span>${structure:extras.island.undermine_text}</span>
-							</h5>
+                            <span class="text-danger">✗</span>
+                            <span class="lead">${structure:extras.island.undermine_text}</span>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -179,16 +177,15 @@
 									<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
 								</li>
 							</ul>
+				            <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-								<span class="text-success">✓</span>
-								<span>${structure:extras.island.support_text}</span>
-							</h5>
+                            <span class="text-success">✓</span>
+                            <span class="lead">${structure:extras.island.support_text}</span>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -196,6 +193,7 @@
 									<label tal:attributes="for support.id">${structure:support.text}</label>
 								</li>
 							</ul>
+				            <button id="island-view-support-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
 						</div>
 					</div>
 				</div>
@@ -205,10 +203,8 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-                                <span class="text-danger">✗</span>
-                                <span>${structure:extras.island.undercut_text}</span>
-                            </h5>
+                            <span class="text-danger">✗</span>
+                            <span class="lead">${structure:extras.island.undercut_text}</span>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -216,6 +212,7 @@
 									<label tal:attributes="for undercut.id">${structure:undercut.text}</label>
 								</li>
 							</ul>
+				            <button id="island-view-undercut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
 						</div>
 					</div>
 				</div>
@@ -223,10 +220,8 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-                                <span class="text-danger">✗</span>
-                                <span>${structure:extras.island.rebut_text}</span>
-                            </h5>
+                            <span class="text-danger">✗</span>
+                            <span class="lead">${structure:extras.island.rebut_text}</span>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -234,15 +229,10 @@
 									<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
 								</li>
 							</ul>
+				            <button id="island-view-rebut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="center text-center">
-				<button id="island-view-add-arguments" type="button" class="button button-block btn btn-primary disabled" data-dismiss="modal">
-					<span i18n:translate="add_statement">Add statement</span>
-				</button>
 			</div>
 
 		</div>
@@ -365,9 +355,7 @@
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.canvas.nodes.border.js')}"></script>
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.plugins.neighborhoods.js')}"></script>
 
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
-
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/chart.min.js')}"></script>
 
 	</tal:block>
 </tal:block>

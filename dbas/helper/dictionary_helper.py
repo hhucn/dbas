@@ -118,8 +118,8 @@ class DictionaryHelper(object):
 			return_dict['is_reportable']	             = is_reportable
 			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
 			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
-			return_dict['show_bar_icon']	             = show_bar_icon and False  # TODO SET THIS FOR BAROMETER
-			return_dict['show_display_style']            = show_display_styles and False
+			return_dict['show_bar_icon']	             = show_bar_icon #and False  # TODO SET THIS FOR BAROMETER
+			return_dict['show_display_style']            = show_display_styles #and False
 			return_dict['show_expert_icon']              = show_expert_icon and False
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
@@ -145,18 +145,19 @@ class DictionaryHelper(object):
 				# does an argumente exists?
 				db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
 				if db_argument:
-					island_dict = QueryHelper.get_every_attack_for_island_view(argument_id, self.system_lang)
+					island_dict = QueryHelper.get_every_attack_for_island_view(argument_id, self.discussion_lang)
 
 					db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
-					premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.system_lang)
-					conclusion = get_text_for_conclusion(db_argument, self.system_lang)
-					island_dict['heading'] = get_text_for_argument_uid(argument_id, self.system_lang, True)
+					premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.discussion_lang)
+					conclusion = get_text_for_conclusion(db_argument, self.discussion_lang)
+					island_dict['heading'] = get_text_for_argument_uid(argument_id, self.discussion_lang, True)
 
 					island_dict['premise'] = premise[0:1].lower() + premise[1:]
 					island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]
-					island_dict.update(TextGenerator(self.system_lang).get_relation_text_dict(island_dict['premise'],
-																				  island_dict['conclusion'],
-																				  False, False, not db_argument.is_supportive))
+					island_dict.update(TextGenerator(self.discussion_lang).get_relation_text_dict(island_dict['premise'],
+					                                                                              island_dict['conclusion'],
+					                                                                              False, False,
+					                                                                              not db_argument.is_supportive))
 					return_dict['island'] = island_dict
 				else:
 					return_dict['is_editable']		  = False
@@ -289,14 +290,15 @@ class DictionaryHelper(object):
 		                          'count_of_posts': _tn_sys.get(_tn_sys.countOfPosts),
 		                          'default_view': _tn_sys.get(_tn_sys.defaultView)}
 		return_dict['buttons'].update({'report': _tn_dis.get(_tn_dis.report),
-		                          'opinion_barometer': _tn_dis.get(_tn_dis.opinionBarometer),
-		                          'edit_statement': _tn_dis.get(_tn_dis.editTitle),
-		                          'save_my_statement': _tn_dis.get(_tn_dis.saveMyStatement),
-		                          'share_url': _tn_dis.get(_tn_dis.shareUrl),
-		                          'wide_node_view': _tn_dis.get(_tn_dis.wideView),
-		                          'tight_node_view': _tn_dis.get(_tn_dis.tightView),
-		                          'show_content': _tn_dis.get(_tn_dis.showContent),
-		                          'hide_content': _tn_dis.get(_tn_dis.hideContent)})
+		                               'opinion_barometer': _tn_dis.get(_tn_dis.opinionBarometer),
+		                               'edit_statement': _tn_dis.get(_tn_dis.editTitle),
+		                               'save_my_statement': _tn_dis.get(_tn_dis.saveMyStatement),
+		                               'share_url': _tn_dis.get(_tn_dis.shareUrl),
+		                               'wide_node_view': _tn_dis.get(_tn_dis.wideView),
+		                               'tight_node_view': _tn_dis.get(_tn_dis.tightView),
+		                               'show_content': _tn_dis.get(_tn_dis.showContent),
+		                               'hide_content': _tn_dis.get(_tn_dis.hideContent),
+		                               'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
 
 	def add_title_text(self, return_dict):
 		"""
@@ -342,5 +344,6 @@ class DictionaryHelper(object):
 			'url_sharing_description': _tn_dis.get(_tn_dis.urlSharingDescription),
 			'fetchurl': _tn_dis.get(_tn_dis.fetchurl),
 			'warning': _tn_dis.get(_tn_dis.warning),
+			'island_view_for': _tn_dis.get(_tn_dis.islandViewFor),
 			'language': self.discussion_lang
 		}

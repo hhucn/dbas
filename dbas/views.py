@@ -1800,6 +1800,7 @@ class Dbas(object):
 	def get_public_user_data(self):
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_public_user_data', 'def', 'main: ' + str(self.request.params))
+		ui_locales = get_language(self.request, get_current_registry())
 		_tn = Translator(ui_locales)
 
 		return_dict = dict()
