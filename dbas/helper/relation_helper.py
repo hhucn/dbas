@@ -47,7 +47,7 @@ class RelationHelper(object):
 			premises_as_statements_uid.add(premise.statement_uid)
 
 		if len(premises_as_statements_uid) == 0:
-			return None
+			return []
 
 		return self.__get_undermines_for_premises(premises_as_statements_uid, self.lang, is_supportive)
 
@@ -142,7 +142,7 @@ class RelationHelper(object):
 					index += 1
 					given_supports.add(support.premisesgroup_uid)
 
-		return None if len(return_array) == 0 else return_array
+		return [] if len(return_array) == 0 else return_array
 
 	@staticmethod
 	def set_new_undermine_or_support(transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
@@ -219,7 +219,8 @@ class RelationHelper(object):
 			return new_argument, False
 
 	@staticmethod
-	def set_new_rebut(transaction, premisegroup_uid, current_argument, db_user, issue):
+	def set_new_rebut(transaction, premisegroup_uid, current_argument
+	                  , db_user, issue):
 		"""
 		Inserts a new rebut with the given parameters.
 

@@ -234,7 +234,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t_discussion(errorCode)) + ' 8). '
+			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + new Helper().startWithLowerCase(_t_discussion(errorCode)) + ' 8). '
 				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 		});
 	};

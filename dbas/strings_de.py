@@ -305,7 +305,7 @@ class GermanDict:
 		de_lang[_self.iHaveNoOpinionYet] = 'Ich weiß es nicht'
 		de_lang[_self.iHaveNoOpinion] = 'Ich weiß es nicht'
 		de_lang[_self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>, zeige mir eine Aussage für'
-		de_lang[_self.iDisagreeWith] = 'Ich widerspreche die Aussage'
+		de_lang[_self.iDisagreeWith] = 'Ich widerspreche der Aussage'
 		de_lang[_self.iHaveMuchStrongerArgumentRejecting] = 'Ich habe ein viel stärkeres Argument zum Ablehnen von'
 		de_lang[_self.iHaveEvenStrongerArgumentRejecting] = 'Ich habe ein stärkeres Argument zum Ablehnen von'
 		de_lang[_self.iHaveMuchStrongerArgumentAccepting] = 'Ich habe ein viel stärkeres Argument zum Akzeptieren von'

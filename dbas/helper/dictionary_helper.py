@@ -261,8 +261,10 @@ class DictionaryHelper(object):
 
 	def add_button_text(self, return_dict):
 		"""
+		Adds string-map in the return dict with the key 'buttons'
 
-		:return:
+		:param return_dict: current dictionary
+		:return: None
 		"""
 		_tn_sys = Translator(self.system_lang)
 		_tn_dis = Translator(self.discussion_lang)
@@ -289,7 +291,6 @@ class DictionaryHelper(object):
 		return_dict['buttons'].update({'report': _tn_dis.get(_tn_dis.report),
 		                          'opinion_barometer': _tn_dis.get(_tn_dis.opinionBarometer),
 		                          'edit_statement': _tn_dis.get(_tn_dis.editTitle),
-		                          'more_title': _tn_dis.get(_tn_dis.more),
 		                          'save_my_statement': _tn_dis.get(_tn_dis.saveMyStatement),
 		                          'share_url': _tn_dis.get(_tn_dis.shareUrl),
 		                          'wide_node_view': _tn_dis.get(_tn_dis.wideView),
@@ -299,10 +300,11 @@ class DictionaryHelper(object):
 
 	def add_title_text(self, return_dict):
 		"""
+		Adds string-map in the return dict with the key 'title'
 
-		:return:
+		:param return_dict: current dictionary
+		:return: None
 		"""
-		_tn_sys = Translator(self.system_lang)
 		_tn_dis = Translator(self.discussion_lang)
 		return_dict['title'] = {'barometer': _tn_dis.get(_tn_dis.opinionBarometer),
 		                        'guided_view': _tn_dis.get(_tn_dis.displayControlDialogGuidedBody),
@@ -313,14 +315,16 @@ class DictionaryHelper(object):
 		                        'report_title': _tn_dis.get(_tn_dis.reportTitle),
 		                        'finish_title': _tn_dis.get(_tn_dis.finishTitle),
 		                        'question_title': _tn_dis.get(_tn_dis.questionTitle),
+		                        'more_title': _tn_dis.get(_tn_dis.more),
 		                        'add_statement_row_title': _tn_dis.get(_tn_dis.addStatementRow),
 		                        'rem_statement_row_title': _tn_dis.get(_tn_dis.remStatementRow)}
 
 	def add_tag_text(self, return_dict):
 		"""
+		Adds string-map in the return dict with the key 'tag'
 
-		:param return_dict:
-		:return:
+		:param return_dict: current dictionary
+		:return: None
 		"""
 		_tn_dis = Translator(self.discussion_lang)
 		return_dict['tag'] = {
