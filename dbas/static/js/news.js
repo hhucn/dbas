@@ -47,11 +47,15 @@ function News() {
 	 *
 	 */
 	this.ajaxGetNews = function () {
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_news',
 			type: 'POST',
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxGetNewsDone(data) {
 			new News().callbackIfDoneForGettingNews(data);
 		}).fail(function ajaxGetNewsFail() {
@@ -81,12 +85,16 @@ function News() {
 			$('#' + writingNewsSuccessId).hide();
 		}
 
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_send_news',
 			type: 'POST',
 			data: {title: title, text: text},
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
 		}).done(function ajaxSendNewsDone(data) {
 			new News().callbackIfDoneForSendingNews(data);
 		}).fail(function ajaxSendNewsFail() {

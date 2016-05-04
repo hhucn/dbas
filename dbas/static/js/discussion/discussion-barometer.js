@@ -94,6 +94,7 @@ function DiscussionBarometer(){
 	 */
 	this.ajaxRequest = function(uid, adress){
 		var dataString;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		switch(adress){
 			case 'attitude':
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', is_position: 'false', uids: uid};
@@ -113,7 +114,8 @@ function DiscussionBarometer(){
 			type: 'GET',
 			dataType: 'json',
 			data: dataString,
-			async: true
+			async: true,
+			headers: {'X-CSRF-Token': csrfToken}
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, adress);
 		}).fail(function () {
