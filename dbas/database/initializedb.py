@@ -311,7 +311,7 @@ def setup_news_db(session):
 				  author='Tobias Krauthoff',
 				  news='After a few works of testing an debugging, we now have verison of D-BAS, which will be submitted '
 				       ' to <a href="http://www.ling.uni-potsdam.de/comma2016" target="_blank">COMMA 2016</a>.')
-	news46 = News(title='COMMA16',
+	news46 = News(title='History Management',
 				  date='26.04.2016',
 				  author='Tobias Krauthoff',
 				  news='We have changed D-BAS\' history management. Now you can bookmark any link in any discussion and '

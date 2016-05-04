@@ -105,6 +105,8 @@ class EnglischDict:
 		en_lang[_self.fetchurl] = 'Fetch long url!'
 		en_lang[_self.warning] = 'Warning'
 		en_lang[_self.warning] = 'Warning'
+		en_lang[_self.islandViewFor] = 'Island View for'
+		en_lang[_self.resumeHere] = 'Resume here'
 
 		en_lang[_self.aand] = 'and'
 		en_lang[_self.addedEverything] = 'Everything was added.'

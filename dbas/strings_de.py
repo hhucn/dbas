@@ -104,6 +104,8 @@ class GermanDict:
 		de_lang[_self.fetchurl] = 'Lange URL anfordern'
 		de_lang[_self.warning] = 'Warnung'
 		de_lang[_self.warning] = 'Lange URL anfordern'
+		de_lang[_self.islandViewFor] = 'Inselansicht für'
+		de_lang[_self.resumeHere] = 'Hier weitermachen'
 
 		de_lang[_self.aand] = 'und'
 		de_lang[_self.addStatementRow] = 'Fügt eine neue Reihe hinzu.'
@@ -455,7 +457,7 @@ class GermanDict:
 		de_lang[_self.whatDoYouThinkAbout] = 'Was halten Sie von'
 		de_lang[_self.whatDoYouThinkAboutThat] = 'Was halten Sie davon, dass'
 		de_lang[_self.whatIsYourIdea] = 'Was ist Ihre Idee? Was sollten wir machen?'
-		de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für'
+		de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für die Aussage'
 		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund dafür, dass'
 		de_lang[_self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
 		de_lang[_self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
