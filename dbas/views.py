@@ -950,7 +950,7 @@ class Dbas(object):
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_argument_votes', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, True, ui_locales, QueryHelper())
+		return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, True, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - getting all votes for statements
@@ -964,7 +964,7 @@ class Dbas(object):
 		UserHandler.update_last_action(transaction, self.request.authenticated_userid)
 		logger('get_all_statement_votes', 'def', 'main')
 		ui_locales = get_language(self.request, get_current_registry())
-		return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, False, ui_locales, QueryHelper())
+		return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, False, ui_locales)
 		return json.dumps(return_array, True)
 
 	# ajax - deleting complete history of the user
