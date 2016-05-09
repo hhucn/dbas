@@ -341,10 +341,11 @@ def return_fuckin_csrf_token(request):
 	:param request:
 	:return:
 	"""
+	log.debug("[API/CSRF] Returning CSRF token.")
 	return append_csrf_to_dict(request, {})
 
 
-@login.post(validators=validate_credentials)
+@login.post(validators=validate_credentials, require_csrf=False)
 def user_login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
