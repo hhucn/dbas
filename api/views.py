@@ -191,8 +191,7 @@ def discussion_reaction(request):
 	:return: Dbas(request).discussion_reaction(True)
 	"""
 	api_data = prepare_user_information(request)
-	return_dict = Dbas(request).discussion_reaction(for_api=True, api_data=api_data)
-	return append_csrf_to_dict(request, return_dict)
+	return Dbas(request).discussion_reaction(for_api=True, api_data=api_data)
 
 
 @justify.get(validators=validate_login)
@@ -204,8 +203,7 @@ def discussion_justify(request):
 	:return: Dbas(request).discussion_justify(True)
 	"""
 	api_data = prepare_user_information(request)
-	return_dict = Dbas(request).discussion_justify(for_api=True, api_data=api_data)
-	return append_csrf_to_dict(request, return_dict)
+	return Dbas(request).discussion_justify(for_api=True, api_data=api_data)
 
 
 @attitude.get(validators=validate_login)
@@ -217,8 +215,7 @@ def discussion_attitude(request):
 	:return: Dbas(request).discussion_attitude(True)
 	"""
 	api_data = prepare_user_information(request)
-	return_dict = Dbas(request).discussion_attitude(for_api=True, api_data=api_data)
-	return append_csrf_to_dict(request, return_dict)
+	return Dbas(request).discussion_attitude(for_api=True, api_data=api_data)
 
 
 @issues.get(validators=validate_login)
@@ -230,8 +227,7 @@ def issue_selector(request):
 	:return: Dbas(request).discussion_attitude(True)
 	"""
 	api_data = prepare_user_information(request)
-	return_dict = Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
-	return append_csrf_to_dict(request, return_dict)
+	return Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
 
 
 @zinit.get(validators=validate_login)
@@ -243,8 +239,7 @@ def discussion_init(request):
 	:return: Dbas(request).discussion_init(True)
 	"""
 	api_data = prepare_user_information(request)
-	return_dict = Dbas(request).discussion_init(for_api=True, api_data=api_data)
-	return append_csrf_to_dict(request, return_dict)
+	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
 
 
 @zinit_blank.get(validators=validate_login)
@@ -256,8 +251,7 @@ def discussion_init(request):
 	:return: Dbas(request).discussion_init(True)
 	"""
 	api_data = prepare_user_information(request)
-	return_dict = Dbas(request).discussion_init(for_api=True, api_data=api_data)
-	return append_csrf_to_dict(request, return_dict)
+	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
 
 
 #
@@ -271,8 +265,7 @@ def add_start_statement(request):
 	:param request:
 	:return:
 	"""
-	return_dict = prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
-	return append_csrf_to_dict(request, return_dict)
+	return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
 
 
 @start_premise.post(validators=validate_login)
@@ -283,8 +276,7 @@ def add_start_premise(request):
 	:param request:
 	:return:
 	"""
-	return_dict = prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
-	return append_csrf_to_dict(request, return_dict)
+	return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
 
 
 @justify_premise.post(validators=validate_login)
@@ -295,8 +287,7 @@ def add_justify_premise(request):
 	:param request:
 	:return:
 	"""
-	return_dict = prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
-	return append_csrf_to_dict(request, return_dict)
+	return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
 
 
 #
@@ -320,13 +311,13 @@ def get_references(request):
 			for ref in refs_db:
 				url = url_to_statement(ref.issue_uid, ref.statement_uid)
 				refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
-			return append_csrf_to_dict(request, {"references": refs})
+			return {"references": refs}
 		else:
 			log.error("[API/Reference] Returned no references: Database error")
-			return append_csrf_to_dict(request, {"status": "error", "message": "Could not retrieve references"})
+			return {"status": "error", "message": "Could not retrieve references"}
 	else:
 		log.error("[API/Reference] Could not parse host and / or path")
-		return append_csrf_to_dict(request, {"status": "error", "message": "Could not parse your origin"})
+		return {"status": "error", "message": "Could not parse your origin"}
 
 
 # =============================================================================
