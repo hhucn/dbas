@@ -7,7 +7,7 @@
 
 		<div class="container colored-container" id="header-container">
 			<div class="row">
-				<div class="col-md-8 center">
+				<div class="col-md-7 center">
 					<span>${structure:issues.intro}</span>:<br>
 					<span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
 				</div>
@@ -21,11 +21,14 @@
 						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
 							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
-								<a href="#" tal:attributes="href issue.url; value issue.title" style="height: 2em;">
-                                    <span style="float: left; white-space: pre-wrap;">${issue.title}</span>
-                                    <span class="badge" style="float: right; margin-left: 1em" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">
-                                        <span tal:replace="issue.arg_count"></span>
-                                    </span>
+								<a href="#" tal:attributes="href issue.url; value issue.title">
+                                <div class="row" style="padding: 0;">
+                                    <div class="col-md-10" style="white-space: pre-wrap;">${issue.title}</div>
+                                    <div class="col-md-2">
+                                        <span class="badge" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">${issue.arg_count}
+                                        </span>
+                                    </div>
+                                </div>
                                 </a>
 							</li>
                             <li tal:condition="extras.is_admin or extras.is_author" role="separator" class="divider"></li>
@@ -35,7 +38,7 @@
 						</ul>
 					</div>
                  </div>
-                <div class="col-md-1 center text-center">
+                <div class="col-md-2 center text-center">
 					<button id="discussion-restart-btn" class="btn btn-primary btn-sm" data-dismiss="modal" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart</span>&#160;&#160;<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
 					</button>

@@ -191,7 +191,7 @@
     			</div>
     			<div id="modal-checkbox-body">
     				<label id="confirm-dialog-checkbox-label" for="confirm-dialog-checkbox">
-    					<input id="confirm-dialog-checkbox" type="checkbox">&thinsp;&thinsp;<span id="confirm-dialog-checkbox-text">Keep this setting</span>
+    					<input id="confirm-dialog-checkbox" type="checkbox">&thinsp;&thinsp;<span id="confirm-dialog-checkbox-text" i18n:translate="do_not_remind_me_again">Do not remind me again</span>
     				</label>
 
     			</div>
