@@ -1053,7 +1053,7 @@ class Dbas(object):
 				db_user.update_last_login()
 				db_user.update_last_action()
 				transaction.commit()
-				ending = ['/?session_expired=true', '/?session_expired=falses']
+				ending = ['/?session_expired=true', '/?session_expired=false']
 				for e in ending:
 					if url.endswith(e):
 						url = url[0:-len(e)]
