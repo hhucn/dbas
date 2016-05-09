@@ -287,17 +287,23 @@ def get_references(request):
 	:return: References assigned to the queried URL
 	"""
 	host, path = parse_host_and_path(request)
+	csrf = request.session.get_csrf_token()
 	if host and path:
 		refs = []
 		log.debug("[API/Reference] Returning references for %s%s" % (host, path))
 		refs_db = get_references_for_url(host, path)
-		if refs_db:
+		if refs_db is not None:
 			for ref in refs_db:
 				url = url_to_statement(ref.issue_uid, ref.statement_uid)
 				refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
-			return {"references": refs}
+			return {"references": refs,
+			        "csrf": csrf}
+		else:
+			log.error("[API/Reference] Returned no references: Database error")
+			return {"status": "error", "message": "Could not retrieve references", "csrf": csrf}
 	else:
-		return {"status": "error", "message": "Could not parse your origin"}
+		log.error("[API/Reference] Could not parse host and / or path")
+		return {"status": "error", "message": "Could not parse your origin", "csrf": csrf}
 
 
 # =============================================================================
