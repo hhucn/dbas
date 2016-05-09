@@ -118,8 +118,8 @@ class DictionaryHelper(object):
 			return_dict['is_reportable']	             = is_reportable
 			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
 			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
-			return_dict['show_bar_icon']	             = show_bar_icon #and False  # TODO SET THIS FOR BAROMETER
-			return_dict['show_display_style']            = show_display_styles #and False
+			return_dict['show_bar_icon']	             = show_bar_icon and False  # TODO SET THIS FOR BAROMETER
+			return_dict['show_display_style']            = show_display_styles  # and False
 			return_dict['show_expert_icon']              = show_expert_icon and False
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
@@ -183,7 +183,7 @@ class DictionaryHelper(object):
 		:return: None
 		"""
 		logger('DictionaryHelper', 'add_discussion_end_text', 'main')
-		_tn = Translator(self.system_lang)
+		_tn = Translator(self.discussion_lang)
 		current_premise = current_premise[0:1].lower() + current_premise[1:]
 		_hh = HistoryHelper
 
@@ -277,14 +277,9 @@ class DictionaryHelper(object):
 		                          'request_history': _tn_sys.get(_tn_sys.requestHistory),
 		                          'password_submit': _tn_sys.get(_tn_sys.passwordSubmit),
 		                          'contact_submit': _tn_sys.get(_tn_sys.contactSubmit),
-		                          'lets_go': _tn_sys.get(_tn_sys.letsGo),
 		                          'previous': _tn_sys.get(_tn_sys.previous),
 		                          'next': _tn_sys.get(_tn_sys.next),
 		                          'clear_statistics': _tn_sys.get(_tn_sys.clearStatistics),
-		                          'user_options': _tn_sys.get(_tn_sys.userOptions),
-		                          'switch_language': _tn_sys.get(_tn_sys.switchLanguage),
-		                          'login': _tn_sys.get(_tn_sys.login),
-		                          'news_about_dbas': _tn_sys.get(_tn_sys.newsAboutDbas),
 		                          'go_back': _tn_sys.get(_tn_sys.letsGoBack),
 		                          'go_home': _tn_sys.get(_tn_sys.letsGoHome),
 		                          'count_of_posts': _tn_sys.get(_tn_sys.countOfPosts),
@@ -329,6 +324,7 @@ class DictionaryHelper(object):
 		:return: None
 		"""
 		_tn_dis = Translator(self.discussion_lang)
+
 		return_dict['tag'] = {
 			'add_a_topic': _tn_dis.get(_tn_dis.addATopic),
 			'please_enter_topic': _tn_dis.get(_tn_dis.pleaseEnterTopic),
@@ -342,8 +338,9 @@ class DictionaryHelper(object):
 			'close': _tn_dis.get(_tn_dis.close),
 			'url_sharing': _tn_dis.get(_tn_dis.urlSharing),
 			'url_sharing_description': _tn_dis.get(_tn_dis.urlSharingDescription),
-			'fetchurl': _tn_dis.get(_tn_dis.fetchurl),
+			'fetchurl': _tn_dis.get(_tn_dis.fetchLongUrl),
 			'warning': _tn_dis.get(_tn_dis.warning),
 			'island_view_for': _tn_dis.get(_tn_dis.islandViewFor),
-			'language': self.discussion_lang
+			'language': self.discussion_lang,
+			'add_premise_title': _tn_dis.get(_tn_dis.addPremiseRadioButtonText)
 		}

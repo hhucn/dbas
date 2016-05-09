@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 TODO
@@ -309,7 +308,7 @@ def setup_news_db(session):
 	news45 = News(title='COMMA16',
 				  date=arrow.get('2016-04-05'),
 				  author='Tobias Krauthoff',
-				  news='After a few works of testing an debugging, we now have verison of D-BAS, which will be submitted '
+				  news='After much work, testing and debugging, we now have version of D-BAS, which will be submitted '
 				       ' to <a href="http://www.ling.uni-potsdam.de/comma2016" target="_blank">COMMA 2016</a>.')
 	news46 = News(title='History Management',
 				  date=arrow.get('2016-04-26'),
@@ -323,11 +322,10 @@ def setup_news_db(session):
 				       'island view for every argument, where the participants can see every premise for current reactions. '
 				       'Secondly the opinion barometer is still under development. For a more recent update, have a look '
 				       'at out imprint.')
-	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
-	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
-	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
-	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
-	              news42, news43, news44, news45, news46, news47]
+	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
+	              news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
+	              news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
+	              news38, news39, news40, news41, news42, news43, news44, news45, news46, news47]
 	session.add_all(news_array[::-1])
 	session.flush()
 
@@ -375,24 +373,13 @@ def setup_up_users(session):
 	pw1 = PasswordHandler.get_hashed_password('admin')
 	pw2 = PasswordHandler.get_hashed_password('tobias')
 	pw3 = PasswordHandler.get_hashed_password('martin')
-	pw4 = PasswordHandler.get_hashed_password('kalman')
-	pw5 = PasswordHandler.get_hashed_password('mladen')
-	pw6 = PasswordHandler.get_hashed_password('drtobias')
-	pw7 = PasswordHandler.get_hashed_password('michael')
-	pw8 = PasswordHandler.get_hashed_password('gregor')
-	pw9 = PasswordHandler.get_hashed_password('christian')
-	pw10 = PasswordHandler.get_hashed_password('alexander')
+	pw4 = PasswordHandler.get_hashed_password('michael')
+
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
-	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
-	user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3, group=group0.uid, gender='m')
-	user4 = User(firstname='Kalman', surname='Graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de', password=pw4, group=group1.uid, gender='m')
-	user5 = User(firstname='Mladen', surname='Topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw5, group=group1.uid, gender='m')
-	user6 = User(firstname='Tobias', surname='Escher', nickname='drtobias', email='tobias.escher@hhu.de', password=pw6, group=group1.uid, gender='m')
-	user7 = User(firstname='Michael', surname='Baurmann', nickname='michael', email='baurmann@hhu.de', password=pw7, group=group1.uid, gender='m')
-	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group1.uid, gender='m')
-	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group0.uid, gender='m')
-	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
+	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
+	user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf', password=pw3, group=group0.uid, gender='m')
+	user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group=group0.uid, gender='m')
 
 	usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='.tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
 	usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='t.obias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
@@ -426,7 +413,7 @@ def setup_up_users(session):
 	usert29 = User(firstname='Sybille', surname='Redlich', nickname='Sybille', email='to.bias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='f')
 	usert30 = User(firstname='Ingeburg', surname='Fischer', nickname='Ingeburg', email='t.obias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='f')
 
-	session.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, usert00])
+	session.add_all([user0, user1, user2, user3, user4, usert00])
 	session.add_all([usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10])
 	session.add_all([usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20])
 	session.add_all([usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30])
@@ -438,12 +425,6 @@ def setup_up_users(session):
 	settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings10 = Settings(author_uid=user10.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst00 = Settings(author_uid=usert00.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst01 = Settings(author_uid=usert01.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst02 = Settings(author_uid=usert02.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
@@ -475,12 +456,12 @@ def setup_up_users(session):
 	settingst28 = Settings(author_uid=usert28.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst29 = Settings(author_uid=usert29.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst30 = Settings(author_uid=usert30.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7, settings8])
-	session.add_all([settings9, settings10, settingst00, settingst01, settingst02, settingst03, settingst04, settingst05])
-	session.add_all([settingst06, settingst07, settingst08, settingst09, settingst10, settingst11, settingst12])
-	session.add_all([settingst13, settingst14, settingst15, settingst16, settingst17, settingst18, settingst19])
-	session.add_all([settingst20, settingst21, settingst22, settingst23, settingst24, settingst25, settingst26])
-	session.add_all([settingst27, settingst28, settingst29, settingst30])
+	session.add_all([settings0, settings1, settings2, settings3, settings4])
+	session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
+	session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
+	session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
+	session.add_all([settingst21, settingst22, settingst23, settingst24, settingst25, settingst26, settingst27])
+	session.add_all([settingst28, settingst29, settingst30])
 	session.flush()
 
 	from dbas.user_management import UserHandler
@@ -505,14 +486,7 @@ def setup_up_users(session):
 	notification0 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification1 = Notification(from_author_uid=user1.uid, to_author_uid=user3.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification2 = Notification(from_author_uid=user1.uid, to_author_uid=user4.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification3 = Notification(from_author_uid=user1.uid, to_author_uid=user5.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification4 = Notification(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification5 = Notification(from_author_uid=user1.uid, to_author_uid=user7.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification6 = Notification(from_author_uid=user1.uid, to_author_uid=user8.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification7 = Notification(from_author_uid=user1.uid, to_author_uid=user9.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification8 = Notification(from_author_uid=user1.uid, to_author_uid=user10.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	session.add_all([notification0, notification1, notification2, notification3, notification4])
-	session.add_all([notification5, notification6, notification7, notification8])
+	session.add_all([notification0, notification1, notification2])
 	session.flush()
 
 	return user2
@@ -628,6 +602,7 @@ def setup_discussion_database(session, user):
 	:param user: main author
 	:return:
 	"""
+
 	# adding languages
 	lang1 = Language(name='English', ui_locales='en')
 	lang2 = Language(name='Deutsch', ui_locales='de')
@@ -638,9 +613,11 @@ def setup_discussion_database(session, user):
 	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
 	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
 	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
-	#  issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user.uid, lang='en')
-	issue5 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
-	session.add_all([issue1, issue2, issue5])
+	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
+	issue5 = Issue(title='Unterstuetzung der Sekretariate',
+	               info='Unsere Sekretariate in der Informatik sind arbeitstechnisch stark ueberlastet. Bitte diskutieren Sie Moeglichkeiten zur Unterstuetzung der Sekretariate.',
+	               author_uid=user.uid, lang_uid=lang2.uid)
+	session.add_all([issue1, issue2, issue4, issue5])
 	session.flush()
 
 	# Adding all textversions
@@ -791,18 +768,18 @@ def setup_discussion_database(session, user):
 	statement121 = Statement(textversion=textversion121.uid, is_startpoint=False, issue=issue1.uid)
 	statement122 = Statement(textversion=textversion122.uid, is_startpoint=False, issue=issue1.uid)
 	statement123 = Statement(textversion=textversion123.uid, is_startpoint=False, issue=issue1.uid)
-	statement200 = Statement(textversion=textversion200.uid, is_startpoint=True, issue=issue5.uid)
-	statement201 = Statement(textversion=textversion201.uid, is_startpoint=True, issue=issue5.uid)
-	statement202 = Statement(textversion=textversion202.uid, is_startpoint=True, issue=issue5.uid)
-	statement203 = Statement(textversion=textversion203.uid, is_startpoint=False, issue=issue5.uid)
-	statement204 = Statement(textversion=textversion204.uid, is_startpoint=False, issue=issue5.uid)
-	statement205 = Statement(textversion=textversion205.uid, is_startpoint=False, issue=issue5.uid)
-	statement206 = Statement(textversion=textversion206.uid, is_startpoint=False, issue=issue5.uid)
-	statement207 = Statement(textversion=textversion207.uid, is_startpoint=False, issue=issue5.uid)
-	statement208 = Statement(textversion=textversion208.uid, is_startpoint=False, issue=issue5.uid)
-	statement209 = Statement(textversion=textversion209.uid, is_startpoint=False, issue=issue5.uid)
-	statement210 = Statement(textversion=textversion210.uid, is_startpoint=False, issue=issue5.uid)
-	statement211 = Statement(textversion=textversion211.uid, is_startpoint=False, issue=issue5.uid)
+	statement200 = Statement(textversion=textversion200.uid, is_startpoint=True, issue=issue4.uid)
+	statement201 = Statement(textversion=textversion201.uid, is_startpoint=True, issue=issue4.uid)
+	statement202 = Statement(textversion=textversion202.uid, is_startpoint=True, issue=issue4.uid)
+	statement203 = Statement(textversion=textversion203.uid, is_startpoint=False, issue=issue4.uid)
+	statement204 = Statement(textversion=textversion204.uid, is_startpoint=False, issue=issue4.uid)
+	statement205 = Statement(textversion=textversion205.uid, is_startpoint=False, issue=issue4.uid)
+	statement206 = Statement(textversion=textversion206.uid, is_startpoint=False, issue=issue4.uid)
+	statement207 = Statement(textversion=textversion207.uid, is_startpoint=False, issue=issue4.uid)
+	statement208 = Statement(textversion=textversion208.uid, is_startpoint=False, issue=issue4.uid)
+	statement209 = Statement(textversion=textversion209.uid, is_startpoint=False, issue=issue4.uid)
+	statement210 = Statement(textversion=textversion210.uid, is_startpoint=False, issue=issue4.uid)
+	statement211 = Statement(textversion=textversion211.uid, is_startpoint=False, issue=issue4.uid)
 
 	session.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7])
 	session.add_all([statement8, statement9, statement10, statement11, statement12, statement13, statement14])
@@ -1014,15 +991,15 @@ def setup_discussion_database(session, user):
 	premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False, author=user.uid, issue=issue1.uid)
 	premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False, author=user.uid, issue=issue1.uid)
 	premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-	premise203 = Premise(premisesgroup=premisegroup203.uid, statement=statement203.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise204 = Premise(premisesgroup=premisegroup204.uid, statement=statement204.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise205 = Premise(premisesgroup=premisegroup205.uid, statement=statement205.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise206 = Premise(premisesgroup=premisegroup206.uid, statement=statement206.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise207 = Premise(premisesgroup=premisegroup207.uid, statement=statement207.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise208 = Premise(premisesgroup=premisegroup208.uid, statement=statement208.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise209 = Premise(premisesgroup=premisegroup209.uid, statement=statement209.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise210 = Premise(premisesgroup=premisegroup210.uid, statement=statement210.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise211 = Premise(premisesgroup=premisegroup211.uid, statement=statement211.uid, is_negated=False, author=user.uid, issue=issue5.uid)
+	premise203 = Premise(premisesgroup=premisegroup203.uid, statement=statement203.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise204 = Premise(premisesgroup=premisegroup204.uid, statement=statement204.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise205 = Premise(premisesgroup=premisegroup205.uid, statement=statement205.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise206 = Premise(premisesgroup=premisegroup206.uid, statement=statement206.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise207 = Premise(premisesgroup=premisegroup207.uid, statement=statement207.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise208 = Premise(premisesgroup=premisegroup208.uid, statement=statement208.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise209 = Premise(premisesgroup=premisegroup209.uid, statement=statement209.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise210 = Premise(premisesgroup=premisegroup210.uid, statement=statement210.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise211 = Premise(premisesgroup=premisegroup211.uid, statement=statement211.uid, is_negated=False, author=user.uid, issue=issue4.uid)
 
 	session.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
 	session.add_all([premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17])
@@ -1089,15 +1066,15 @@ def setup_discussion_database(session, user):
 	argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement103.uid)
 	argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement115.uid)
 	####
-	argument201 = Argument(premisegroup=premisegroup203.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement200.uid)
-	argument202 = Argument(premisegroup=premisegroup204.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement200.uid)
-	argument203 = Argument(premisegroup=premisegroup205.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement201.uid)
-	argument204 = Argument(premisegroup=premisegroup206.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement202.uid)
-	argument205 = Argument(premisegroup=premisegroup207.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement202.uid)
-	argument206 = Argument(premisegroup=premisegroup208.uid, issupportive=False, author=user.uid, issue=issue5.uid)
-	argument207 = Argument(premisegroup=premisegroup209.uid, issupportive=False, author=user.uid, issue=issue5.uid)
-	argument208 = Argument(premisegroup=premisegroup210.uid, issupportive=False, author=user.uid, issue=issue5.uid)
-	argument209 = Argument(premisegroup=premisegroup211.uid, issupportive=False, author=user.uid, issue=issue5.uid)
+	argument201 = Argument(premisegroup=premisegroup203.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement200.uid)
+	argument202 = Argument(premisegroup=premisegroup204.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement200.uid)
+	argument203 = Argument(premisegroup=premisegroup205.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement201.uid)
+	argument204 = Argument(premisegroup=premisegroup206.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement202.uid)
+	argument205 = Argument(premisegroup=premisegroup207.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement202.uid)
+	argument206 = Argument(premisegroup=premisegroup208.uid, issupportive=False, author=user.uid, issue=issue4.uid)
+	argument207 = Argument(premisegroup=premisegroup209.uid, issupportive=False, author=user.uid, issue=issue4.uid)
+	argument208 = Argument(premisegroup=premisegroup210.uid, issupportive=False, author=user.uid, issue=issue4.uid)
+	argument209 = Argument(premisegroup=premisegroup211.uid, issupportive=False, author=user.uid, issue=issue4.uid)
 
 	session.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
 	session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])

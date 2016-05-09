@@ -34,7 +34,7 @@ class OpinionHandler:
 		self.nickname = nickname
 		self.mainpage = mainpage
 
-	def get_user_with_opinions_for_argument(self, argument_uids):
+	def get_user_and_opinions_for_argument(self, argument_uids):
 		"""
 		Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
 		these attacks.
@@ -234,7 +234,7 @@ class OpinionHandler:
 		:param argument_uid: Argument.uid
 		:return: {'users':[{self.nickname1.avatar_url, self.nickname1.vote_timestamp}*]}
 		"""
-		logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid))
+		logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid) + ' ' + get_text_for_argument_uid(argument_uid, 'de'))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 

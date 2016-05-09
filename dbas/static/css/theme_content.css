@@ -408,6 +408,26 @@
     cursor: help;
 }
 
+.chart {
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+.chart li{
+	padding-top: 5px;
+	text-indent: -25px;
+	padding-left: 25px;
+}
+
+.chart li span{
+	border-radius: 5px;
+	margin-right: 0.5em;
+	width: 1.3em;
+	height: 1.3em;
+	display: inline-block;
+	vertical-align: middle;
+}
+
 @media (max-width: 767px) {
 	#discussions-space ul {
 		display: block;

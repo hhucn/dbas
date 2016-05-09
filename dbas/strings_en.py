@@ -10,10 +10,11 @@ TODO
 class EnglischDict:
 
 	@staticmethod
-	def set_up_en_dict(_self):
+	def set_up(_self):
 		"""
 		Sets up the englisch dictionary
 
+		:param _self:
 		:return: dictionary for the english language
 		"""
 		en_lang = dict()
@@ -21,12 +22,9 @@ class EnglischDict:
 		en_lang[_self.support] = 'You agreed with'
 		en_lang[_self.premise] = 'Premise'
 		en_lang[_self.because] = 'because'
-
 		en_lang[_self.moreAbout] = 'More about'
-		en_lang[_self.undermine1] = 'It is false that'
-		en_lang[_self.undermine2] = ''
+		en_lang[_self.undermine] = 'It is false that'
 		en_lang[_self.support1] = ''
-		en_lang[_self.support2] = ''
 		en_lang[_self.undercut1] = 'It is false that'
 		en_lang[_self.undercut2] = 'and this is no good counter-argument'
 		en_lang[_self.overbid1] = 'It is false that'
@@ -90,20 +88,18 @@ class EnglischDict:
 		en_lang[_self.showContent] = 'Show Content'
 		en_lang[_self.hideContent] = 'Hide Content'
 
-		en_lang[_self.addATopic] = 'Add a topic',
-		en_lang[_self.pleaseEnterTopic] = 'Please enter your topic here:',
-		en_lang[_self.pleaseEnterShorttextForTopic] = 'Please enter a shorttext for your topic here:',
-		en_lang[_self.pleaseSelectLanguageForTopic] = 'Please select the language of the new discussion here:',
-		en_lang[_self.editStatementViewChangelog] = 'Edit Statements / View Changelog',
-		en_lang[_self.editStatementHere] = 'Please, edit the selected statement here:',
-		en_lang[_self.save] = 'Save',
-		en_lang[_self.cancel] = 'Cancel',
-		en_lang[_self.submit] = 'Submit',
-		en_lang[_self.close] = 'Close',
-		en_lang[_self.urlSharing] = 'Share your URL',
-		en_lang[_self.urlSharingDescription] = 'Please feel free to share this url:',
-		en_lang[_self.fetchurl] = 'Fetch long url!'
-		en_lang[_self.warning] = 'Warning'
+		en_lang[_self.addATopic] = 'Add a topic'
+		en_lang[_self.pleaseEnterTopic] = 'Please enter your topic here:'
+		en_lang[_self.pleaseEnterShorttextForTopic] = 'Please enter a shorttext for your topic here:'
+		en_lang[_self.pleaseSelectLanguageForTopic] = 'Please select the language of the new discussion here:'
+		en_lang[_self.editStatementViewChangelog] = 'Edit Statements / View Changelog'
+		en_lang[_self.editStatementHere] = 'Please, edit the selected statement here:'
+		en_lang[_self.save] = 'Save'
+		en_lang[_self.cancel] = 'Cancel'
+		en_lang[_self.submit] = 'Submit'
+		en_lang[_self.close] = 'Close'
+		en_lang[_self.urlSharing] = 'Share your URL'
+		en_lang[_self.urlSharingDescription] = 'Please feel free to share this url:'
 		en_lang[_self.warning] = 'Warning'
 		en_lang[_self.islandViewFor] = 'Island View for'
 		en_lang[_self.resumeHere] = 'Resume here'
@@ -250,8 +246,8 @@ class EnglischDict:
 		en_lang[_self.firstConclusionRadioButtonText] = 'Let me enter my idea!'
 		en_lang[_self.firstArgumentRadioButtonText] = 'Let me enter my own statement(s)!'
 		en_lang[_self.feelFreeToShareUrl] = 'Please feel free to share this url'
-		en_lang[_self.fetchLongUrl] = 'Fetch long url!'
-		en_lang[_self.fetchShortUrl] = 'Fetch short url!'
+		en_lang[_self.fetchLongUrl] = 'Long URL'
+		en_lang[_self.fetchShortUrl] = 'Short URL'
 		en_lang[_self.forgotPassword] = 'Forgot Password'
 		en_lang[_self.firstOneText] = 'You are the first one, who said: '
 		en_lang[_self.firstOneInformationText] = 'You are the first one, who is interested in: '
@@ -261,7 +257,7 @@ class EnglischDict:
 		en_lang[_self.firstPremiseText2] = 'Please enter your reason for your statement.'
 		en_lang[_self.firstname] = 'Firstname'
 		en_lang[_self.fillLine] = 'Please, fill this this line with your report'
-		en_lang[_self.finishTitle] = 'You can leave the discussion here!'
+		en_lang[_self.finishTitle] = 'Leave the discussion!'
 		en_lang[_self.fromm] = 'from'
 		en_lang[_self.gender] = 'Gender'
 		en_lang[_self.goBack] = 'Go back'
@@ -355,7 +351,7 @@ class EnglischDict:
 		en_lang[_self.noCorrections] = 'No corrections for the given statement could be fetched.'
 		en_lang[_self.noCorrectionsSet] = 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?'
 		en_lang[_self.noDecisionDone] = 'No decision was done.'
-		en_lang[_self.notInsertedErrorBecauseEmpty] = 'Your idea was not inserted, because your text is too short.'
+		en_lang[_self.notInsertedErrorBecauseEmpty] = 'Your idea was not inserted, because your text is too short or empty.'
 		en_lang[_self.notInsertedErrorBecauseDuplicate] = 'Your idea was not inserted, because your idea is a duplicate.'
 		en_lang[_self.notInsertedErrorBecauseUnknown] = 'Your idea was not inserted due to an unknown error.'
 		en_lang[_self.notInsertedErrorBecauseInternal] = 'Your idea was not inserted due to an internal error.'
@@ -396,7 +392,7 @@ class EnglischDict:
 		en_lang[_self.restartOnError] = 'Please try to reload this page or restart the discussion, if reloading does not fix the problem.'
 		en_lang[_self.recipientNotFound] = 'Recipient not found!'
 		en_lang[_self.report] = 'Report'
-		en_lang[_self.reportTitle] = 'Contact for reporting!'
+		en_lang[_self.reportTitle] = 'Contact for reporting'
 		en_lang[_self.right] = 'Right'
 		en_lang[_self.requestTrack] = 'Request track'
 		en_lang[_self.refreshTrack] = 'Refresh track'
@@ -448,6 +444,7 @@ class EnglischDict:
 		en_lang[_self.text] = 'Text'
 		en_lang[_self.theySay] = 'They say'
 		en_lang[_self.theyThink] = 'They think'
+		en_lang[_self.thisIsACopyOfMail] = 'This is a copy of your mail'
 		en_lang[_self.thisConfrontationIs] = 'This confrontation is a'
 		en_lang[_self.veryweak] = 'very weak'
 		en_lang[_self.wantToStateNewPosition] = 'If you want to state a new position, please click here to log in.'
@@ -456,7 +453,7 @@ class EnglischDict:
 		en_lang[_self.wouldYourShareArgument] = 'Would you share your argument?'
 		en_lang[_self.whatDoYouThinkAbout] = 'What do you think about'
 		en_lang[_self.whatDoYouThinkAboutThat] = 'What do you think about that'
-		en_lang[_self.whatIsYourIdea] = 'What is your idea? What should we do?'
+		en_lang[_self.whatIsYourIdea] = 'What is your idea / opinion? What should we do?'
 		en_lang[_self.whatIsYourMostImportantReasonFor] = 'What is your most important reason for'
 		en_lang[_self.whatIsYourMostImportantReasonWhy] = 'What is your most important reason why'
 		en_lang[_self.whyDoYouThinkThat] = 'Why do you think that'

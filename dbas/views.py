@@ -15,6 +15,7 @@ from pyramid.security import remember, forget
 from pyramid.threadlocal import get_current_registry
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyshorteners.shorteners import Shortener
+from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from validate_email import validate_email
 
@@ -41,7 +42,7 @@ from .url_manager import UrlManager
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.5.12'
+version = '0.5.13'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -100,10 +101,11 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
-		ui_locales = get_language(self.request, get_current_registry())
+		ui_locales      = get_language(self.request, get_current_registry())
 		disc_ui_locales = get_discussion_language(self.request)
-		extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
-		DictionaryHelper(ui_locales, disc_ui_locales).add_language_options_for_extra_dict(extras_dict)
+		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
+		extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		_dh.add_language_options_for_extra_dict(extras_dict)
 
 		return {
 			'layout': self.base_layout(),
@@ -225,7 +227,6 @@ class Dbas(object):
 		                                                                                    nickname,
 		                                                                                    application_url=mainpage,
 		                                                                                    for_api=for_api)
-
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
 		return_dict['discussion'] = discussion_dict
@@ -541,8 +542,7 @@ class Dbas(object):
 		email           = escape_string(self.request.params['mail'] if 'mail' in self.request.params else '')
 		phone           = escape_string(self.request.params['phone'] if 'phone' in self.request.params else '')
 		content         = escape_string(self.request.params['content'] if 'content' in self.request.params else '')
-		spam            = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
-		request_token   = escape_string(self.request.params['csrf_token'] if 'csrf_token' in self.request.params else '')
+		spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
 		spamquestion    = ''
 
 		if 'form.contact.submitted' not in self.request.params:
@@ -550,16 +550,13 @@ class Dbas(object):
 			spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
 			# save answer in session
 			self.request.session['antispamanswer'] = answer
-			token = self.request.session.new_csrf_token()
 
 		else:
 			_t = Translator(ui_locales)
-			token = self.request.session.get_csrf_token()
 
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
 
-			# sanity checks
 			# check for empty username
 			if not username:
 				logger('main_contact', 'form.contact.submitted', 'username empty')
@@ -579,16 +576,10 @@ class Dbas(object):
 				message = _t.get(_t.emtpyContent)
 
 			# check for empty username
-			elif (not spam) or (not isinstance(spam, int)) or (not (int(spam) == int(self.request.session['antispamanswer']))):
-				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spam + ', right answer ' + str(self.request.session['antispamanswer']))
+			elif int(spamanswer) != int(self.request.session['antispamanswer']):
+				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spamanswer + ', right answer ' + str(self.request.session['antispamanswer']))
 				contact_error = True
 				message = _t.get(_t.maliciousAntiSpam)
-
-			# is the token valid?
-			elif request_token != token:
-				logger('main_contact', 'form.contact.submitted', 'token is not valid' + ', request_token: ' + str(request_token) + ', token: ' + str(token))
-				message = _t.get(_t.nonValidCSRF)
-				contact_error = True
 
 			else:
 				subject = 'Contact D-BAS'
@@ -597,8 +588,8 @@ class Dbas(object):
 				       + _t.get(_t.phone) + ': ' + phone + '\n'\
 				       + _t.get(_t.message) + ':\n' + content
 				EmailHelper.send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
-				body = '* THIS IS A COPY OF YOUR MAIL *\n\n' + body
-				subject = '[INFO] ' + subject
+				body = '* ' + _t.get(_t.thisIsACopyOfMail).upper() + ' *\n\n' + body
+				subject = '[D-BAS INFO] ' + subject
 				send_message, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
 				if send_message:
@@ -619,8 +610,7 @@ class Dbas(object):
 			'phone': phone,
 			'content': content,
 			'spam': '',
-			'spamquestion': spamquestion,
-			'csrf_token': token
+			'spamquestion': spamquestion
 		}
 
 	# settings page, when logged in
@@ -1043,8 +1033,7 @@ class Dbas(object):
 				logger('user_login', 'password not valid', 'wrong password')
 				error = _tn.get(_tn.userPasswordNotMatch)
 			else:
-				logger('user_login', 'login', 'login successful')
-				logger('user_login', 'login', 'keep_login: ' + str(keep_login))
+				logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
 				db_user.should_hold_the_login(keep_login)
 				headers = remember(self.request, nickname)
 
@@ -1707,7 +1696,11 @@ class Dbas(object):
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_shortened_url', 'error', repr(e))
-			_tn = Translator(get_language(self.request, get_current_registry()))
+			_tn = Translator(get_discussion_language(self.request))
+			return_dict['error'] = _tn.get(_tn.internalError)
+		except ReadTimeout as e:
+			logger('get_shortened_url', 'read timeout error', repr(e))
+			_tn = Translator(get_discussion_language(self.request))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
 		return json.dumps(return_dict, True)
@@ -1766,6 +1759,7 @@ class Dbas(object):
 		try:
 			params = self.request.params
 			ui_locales  = params['lang'] if 'lang' in params else 'en'
+
 			uids        = params['uids']
 			is_argument = params['is_argument'] == 'true' if 'is_argument' in params else False
 			is_attitude = params['is_attitude'] == 'true' if 'is_attitude' in params else False
@@ -1778,7 +1772,7 @@ class Dbas(object):
 					return_dict = _op.get_user_with_same_opinion_for_argument(uids)
 				else:
 					uids = json.loads(uids)
-					return_dict = _op.get_user_with_opinions_for_argument(uids)
+					return_dict = _op.get_user_and_opinions_for_argument(uids)
 			elif is_position:
 				uids = json.loads(uids)
 				return_dict = _op.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids])
