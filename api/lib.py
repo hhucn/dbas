@@ -65,7 +65,8 @@ def merge_dicts(d1, d2):
 	:return: merged dictionary
 	"""
 	merged = d1.copy()
-	return merged.update(d2)
+	merged.update(d2)
+	return merged
 
 
 def debug_start():
