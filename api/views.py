@@ -353,7 +353,6 @@ def user_login(request):
 	:param request:
 	:return: token
 	"""
-	print(request)
 	user = request.validated['user']
 	# Convert bytes to string
 	if type(user['token']) == bytes:
