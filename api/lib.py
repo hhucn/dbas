@@ -56,6 +56,18 @@ def flatten(l):
 	return reduce(lambda x, y: x + y, l)
 
 
+def merge_dicts(d1, d2):
+	"""
+	Merge two dictionaries.
+
+	:param d1: first dictionary
+	:param d2: second dictionary, overwriting existing keys in d1
+	:return: merged dictionary
+	"""
+	merged = d1.copy()
+	return merged.update(d2)
+
+
 def debug_start():
 	"""
 	Prepare for debug prints.
