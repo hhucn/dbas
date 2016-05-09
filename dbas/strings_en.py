@@ -14,6 +14,7 @@ class EnglischDict:
 		"""
 		Sets up the englisch dictionary
 
+		:param _self:
 		:return: dictionary for the english language
 		"""
 		en_lang = dict()
@@ -258,7 +259,7 @@ class EnglischDict:
 		en_lang[_self.firstPremiseText2] = 'Please enter your reason for your statement.'
 		en_lang[_self.firstname] = 'Firstname'
 		en_lang[_self.fillLine] = 'Please, fill this this line with your report'
-		en_lang[_self.finishTitle] = 'You can leave the discussion here!'
+		en_lang[_self.finishTitle] = 'Leave the discussion!'
 		en_lang[_self.fromm] = 'from'
 		en_lang[_self.gender] = 'Gender'
 		en_lang[_self.goBack] = 'Go back'
@@ -393,7 +394,7 @@ class EnglischDict:
 		en_lang[_self.restartOnError] = 'Please try to reload this page or restart the discussion, if reloading does not fix the problem.'
 		en_lang[_self.recipientNotFound] = 'Recipient not found!'
 		en_lang[_self.report] = 'Report'
-		en_lang[_self.reportTitle] = 'Contact for reporting!'
+		en_lang[_self.reportTitle] = 'Contact for reporting'
 		en_lang[_self.right] = 'Right'
 		en_lang[_self.requestTrack] = 'Request track'
 		en_lang[_self.refreshTrack] = 'Refresh track'
