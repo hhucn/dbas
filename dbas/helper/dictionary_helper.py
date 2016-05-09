@@ -329,6 +329,7 @@ class DictionaryHelper(object):
 		:return: None
 		"""
 		_tn_dis = Translator(self.discussion_lang)
+
 		return_dict['tag'] = {
 			'add_a_topic': _tn_dis.get(_tn_dis.addATopic),
 			'please_enter_topic': _tn_dis.get(_tn_dis.pleaseEnterTopic),
@@ -342,7 +343,7 @@ class DictionaryHelper(object):
 			'close': _tn_dis.get(_tn_dis.close),
 			'url_sharing': _tn_dis.get(_tn_dis.urlSharing),
 			'url_sharing_description': _tn_dis.get(_tn_dis.urlSharingDescription),
-			'fetchurl': _tn_dis.get(_tn_dis.fetchurl),
+			'fetchurl': _tn_dis.get(_tn_dis.fetchLongUrl),
 			'warning': _tn_dis.get(_tn_dis.warning),
 			'island_view_for': _tn_dis.get(_tn_dis.islandViewFor),
 			'language': self.discussion_lang

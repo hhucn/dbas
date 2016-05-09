@@ -10,7 +10,7 @@ TODO
 class EnglischDict:
 
 	@staticmethod
-	def set_up_en_dict(_self):
+	def set_up(_self):
 		"""
 		Sets up the englisch dictionary
 
@@ -21,7 +21,6 @@ class EnglischDict:
 		en_lang[_self.support] = 'You agreed with'
 		en_lang[_self.premise] = 'Premise'
 		en_lang[_self.because] = 'because'
-
 		en_lang[_self.moreAbout] = 'More about'
 		en_lang[_self.undermine1] = 'It is false that'
 		en_lang[_self.undermine2] = ''
@@ -90,20 +89,18 @@ class EnglischDict:
 		en_lang[_self.showContent] = 'Show Content'
 		en_lang[_self.hideContent] = 'Hide Content'
 
-		en_lang[_self.addATopic] = 'Add a topic',
-		en_lang[_self.pleaseEnterTopic] = 'Please enter your topic here:',
-		en_lang[_self.pleaseEnterShorttextForTopic] = 'Please enter a shorttext for your topic here:',
-		en_lang[_self.pleaseSelectLanguageForTopic] = 'Please select the language of the new discussion here:',
-		en_lang[_self.editStatementViewChangelog] = 'Edit Statements / View Changelog',
-		en_lang[_self.editStatementHere] = 'Please, edit the selected statement here:',
-		en_lang[_self.save] = 'Save',
-		en_lang[_self.cancel] = 'Cancel',
-		en_lang[_self.submit] = 'Submit',
-		en_lang[_self.close] = 'Close',
-		en_lang[_self.urlSharing] = 'Share your URL',
-		en_lang[_self.urlSharingDescription] = 'Please feel free to share this url:',
-		en_lang[_self.fetchurl] = 'Fetch long url!'
-		en_lang[_self.warning] = 'Warning'
+		en_lang[_self.addATopic] = 'Add a topic'
+		en_lang[_self.pleaseEnterTopic] = 'Please enter your topic here:'
+		en_lang[_self.pleaseEnterShorttextForTopic] = 'Please enter a shorttext for your topic here:'
+		en_lang[_self.pleaseSelectLanguageForTopic] = 'Please select the language of the new discussion here:'
+		en_lang[_self.editStatementViewChangelog] = 'Edit Statements / View Changelog'
+		en_lang[_self.editStatementHere] = 'Please, edit the selected statement here:'
+		en_lang[_self.save] = 'Save'
+		en_lang[_self.cancel] = 'Cancel'
+		en_lang[_self.submit] = 'Submit'
+		en_lang[_self.close] = 'Close'
+		en_lang[_self.urlSharing] = 'Share your URL'
+		en_lang[_self.urlSharingDescription] = 'Please feel free to share this url:'
 		en_lang[_self.warning] = 'Warning'
 		en_lang[_self.islandViewFor] = 'Island View for'
 		en_lang[_self.resumeHere] = 'Resume here'

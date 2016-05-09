@@ -188,6 +188,7 @@ function AjaxSiteHandler() {
 	 */
 	this.getShortenUrl = function (long_url) {
 		var encoded_url = encodeURI(long_url);
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_shortened_url',
 			method: 'GET',
@@ -200,7 +201,7 @@ function AjaxSiteHandler() {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxGetShortenUrlDone(data) {
-			new InteractionHandler().callbackIfDoneForShortenUrl(data);
+			new InteractionHandler().callbackIfDoneForShortenUrl(data, long_url);
 		}).fail(function ajaxGetShortenUrl() {
 			$('#' + popupUrlSharingInputId).val(long_url);
 		});

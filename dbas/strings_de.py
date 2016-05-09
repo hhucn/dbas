@@ -10,7 +10,7 @@ TODO
 class GermanDict:
 
 	@staticmethod
-	def set_up_de_dict(_self):
+	def set_up(_self):
 		"""
 		Sets up the german dictionary
 
@@ -100,10 +100,8 @@ class GermanDict:
 		de_lang[_self.submit] = 'Senden'
 		de_lang[_self.close] = 'Schließen'
 		de_lang[_self.urlSharing] = 'URL teilen'
-		de_lang[_self.urlSharingDescription] = 'Verbreiten Sie diese URL:'
-		de_lang[_self.fetchurl] = 'Lange URL anfordern'
+		de_lang[_self.urlSharingDescription] = 'Teilen Sie diese URL:'
 		de_lang[_self.warning] = 'Warnung'
-		de_lang[_self.warning] = 'Lange URL anfordern'
 		de_lang[_self.islandViewFor] = 'Inselansicht für'
 		de_lang[_self.resumeHere] = 'Hier weitermachen'
 
@@ -250,8 +248,8 @@ class GermanDict:
 		de_lang[_self.firstConclusionRadioButtonText] = 'Lass mich meine eigenen Ideen einfügen!'
 		de_lang[_self.firstArgumentRadioButtonText] = 'Lass mich meine eigenen Aussagen einfügen!'
 		de_lang[_self.feelFreeToShareUrl] = 'Bitte teilen Sie diese URL'
-		de_lang[_self.fetchLongUrl] = 'Hole lange URL!'
-		de_lang[_self.fetchShortUrl] = 'Hole kurze URL!'
+		de_lang[_self.fetchLongUrl] = 'Normale URL!'
+		de_lang[_self.fetchShortUrl] = 'Kurze URL!'
 		de_lang[_self.forgotPassword] = 'Passwort vergessen'
 		de_lang[_self.firstOneText] = 'Sie sind der Erste, der sagt: '
 		de_lang[_self.firstOneInformationText] = 'Sie sind der erste, der Informationen haben möchte, über: '
