@@ -423,6 +423,7 @@ class Translator(object):
 		self.therefore = 'therefore'
 		self.thinkWeShould = 'thinkWeShould'
 		self.thisConfrontationIs = 'thisConfrontationIs'
+		self.thisIsACopyOfMail = 'thisIsACopyOfMail'
 		self.textversionChangedTopic = 'textversionChangedTopic'
 		self.textversionChangedContent = 'textversionChangedContent'
 		self.to = 'to'
