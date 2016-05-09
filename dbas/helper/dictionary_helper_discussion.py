@@ -111,7 +111,8 @@ class DiscussionDictHelper(object):
 		question            += '</strong> '
 		question            += _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
-		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else _tn.get(_tn.isNotAGoodIdea)) + ', '  + _tn.get(_tn.because).lower() + '...'
+		false               = _tn.get(_tn.isFalse) if self.lang == 'de' else _tn.get(_tn.isNotAGoodIdea)
+		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else false) + ', '  + _tn.get(_tn.because).lower() + '...'
 
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = ''

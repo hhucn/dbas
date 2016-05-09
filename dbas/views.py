@@ -1759,6 +1759,9 @@ class Dbas(object):
 		try:
 			params = self.request.params
 			ui_locales  = params['lang'] if 'lang' in params else 'en'
+			logger('--', '--', ui_locales)
+			logger('--', '--', ui_locales)
+
 			uids        = params['uids']
 			is_argument = params['is_argument'] == 'true' if 'is_argument' in params else False
 			is_attitude = params['is_attitude'] == 'true' if 'is_attitude' in params else False

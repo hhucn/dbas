@@ -217,7 +217,8 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_infos_about_argument',
 			method: 'POST',
 			data: {
-				uid: uid
+				uid: uid,
+				lang: $('#issue-info').attr('data-discussion-language')
 			},
 			dataType: 'json',
 			headers: {
@@ -246,7 +247,10 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_user_with_same_opinion',
 			method: 'GET',
 			data: {
-				is_argument: is_argument, uids: uid, is_position: is_position
+				is_argument: is_argument,
+				uids: uid,
+				is_position: is_position,
+				lang: $('#issue_info').attr('data-discussion-language')
 			},
 			dataType: 'json',
 			headers: {
