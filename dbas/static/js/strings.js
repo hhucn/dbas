@@ -470,7 +470,7 @@ var dbas_de = {
 	'messageInfoMessage': 'Aussage',
 	'messageInfoCurrentlySupported': 'Sie wird aktuell unterstützt von',
 	'messageInfoParticipant': 'Teilnehmer/in',
-	'messageInfoParticipantPl': '/n/nen',
+	'messageInfoParticipantPl': '',//'/n/nen',
 	'messageInfoSupporterSg': 'Unterstützer/in ist',
 	'messageInfoSupporterPl': 'Unterstützer/innen sind',
 	'nickname': 'Spitzname',

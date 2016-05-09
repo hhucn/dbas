@@ -144,6 +144,9 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 	}
 }
 
+/**
+ *
+ */
 function displayBubbleInformationDialog(){
 	if (!new Helper().isCookieSet(BUBBLE_INFOS)){
 		var img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
