@@ -15,7 +15,7 @@ from api.login import validate_credentials, validate_login
 from cornice import Service
 from dbas.views import Dbas
 
-from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger
+from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger, merge_dicts
 from .references import get_references_for_url, store_reference, url_to_statement
 
 log = logger()
@@ -26,7 +26,7 @@ log = logger()
 cors_policy = dict(enabled=True,
 				   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
 				   origins=('*',),
-				   # credentials=True,  # TODO: how can i use this?
+				   credentials=True,  # TODO: how can i use this?
 				   max_age=42)
 
 
@@ -108,6 +108,19 @@ login = Service(name='login',
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
 
+def append_csrf_to_dict(request, return_dict):
+	"""
+	Append CSRF token to response.
+
+	:param request: needed to extract the token
+	:param d: dictionary, which gets merged with the csrf token
+	:return:
+	"""
+	csrf = request.session.get_csrf_token()
+	csrf_dict = {"csrf": csrf}
+	return merge_dicts(csrf_dict, return_dict)
+
+
 def prepare_user_information(request):
 	"""
 	Check if user is authenticated, return prepared data for D-BAS.
@@ -176,7 +189,8 @@ def discussion_reaction(request):
 	:return: Dbas(request).discussion_reaction(True)
 	"""
 	api_data = prepare_user_information(request)
-	return Dbas(request).discussion_reaction(for_api=True, api_data=api_data)
+	return_dict = Dbas(request).discussion_reaction(for_api=True, api_data=api_data)
+	return append_csrf_to_dict(request, return_dict)
 
 
 @justify.get(validators=validate_login)
@@ -188,7 +202,8 @@ def discussion_justify(request):
 	:return: Dbas(request).discussion_justify(True)
 	"""
 	api_data = prepare_user_information(request)
-	return Dbas(request).discussion_justify(for_api=True, api_data=api_data)
+	return_dict = Dbas(request).discussion_justify(for_api=True, api_data=api_data)
+	return append_csrf_to_dict(request, return_dict)
 
 
 @attitude.get(validators=validate_login)
@@ -200,7 +215,8 @@ def discussion_attitude(request):
 	:return: Dbas(request).discussion_attitude(True)
 	"""
 	api_data = prepare_user_information(request)
-	return Dbas(request).discussion_attitude(for_api=True, api_data=api_data)
+	return_dict = Dbas(request).discussion_attitude(for_api=True, api_data=api_data)
+	return append_csrf_to_dict(request, return_dict)
 
 
 @issues.get(validators=validate_login)
@@ -212,7 +228,8 @@ def issue_selector(request):
 	:return: Dbas(request).discussion_attitude(True)
 	"""
 	api_data = prepare_user_information(request)
-	return Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
+	return_dict = Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
+	return append_csrf_to_dict(request, return_dict)
 
 
 @zinit.get(validators=validate_login)
@@ -224,7 +241,8 @@ def discussion_init(request):
 	:return: Dbas(request).discussion_init(True)
 	"""
 	api_data = prepare_user_information(request)
-	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
+	return_dict = Dbas(request).discussion_init(for_api=True, api_data=api_data)
+	return append_csrf_to_dict(request, return_dict)
 
 
 @zinit_blank.get(validators=validate_login)
@@ -236,7 +254,8 @@ def discussion_init(request):
 	:return: Dbas(request).discussion_init(True)
 	"""
 	api_data = prepare_user_information(request)
-	return Dbas(request).discussion_init(for_api=True, api_data=api_data)
+	return_dict = Dbas(request).discussion_init(for_api=True, api_data=api_data)
+	return append_csrf_to_dict(request, return_dict)
 
 
 #
@@ -250,7 +269,8 @@ def add_start_statement(request):
 	:param request:
 	:return:
 	"""
-	return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
+	return_dict = prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
+	return append_csrf_to_dict(request, return_dict)
 
 
 @start_premise.post(validators=validate_login)
@@ -261,7 +281,8 @@ def add_start_premise(request):
 	:param request:
 	:return:
 	"""
-	return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
+	return_dict = prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
+	return append_csrf_to_dict(request, return_dict)
 
 
 @justify_premise.post(validators=validate_login)
@@ -272,7 +293,8 @@ def add_justify_premise(request):
 	:param request:
 	:return:
 	"""
-	return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
+	return_dict = prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
+	return append_csrf_to_dict(request, return_dict)
 
 
 #
@@ -296,14 +318,13 @@ def get_references(request):
 			for ref in refs_db:
 				url = url_to_statement(ref.issue_uid, ref.statement_uid)
 				refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
-			return {"references": refs,
-			        "csrf": csrf}
+			return append_csrf_to_dict(request, {"references": refs})
 		else:
 			log.error("[API/Reference] Returned no references: Database error")
-			return {"status": "error", "message": "Could not retrieve references", "csrf": csrf}
+			return append_csrf_to_dict(request, {"status": "error", "message": "Could not retrieve references"})
 	else:
 		log.error("[API/Reference] Could not parse host and / or path")
-		return {"status": "error", "message": "Could not parse your origin", "csrf": csrf}
+		return append_csrf_to_dict(request, {"status": "error", "message": "Could not parse your origin"})
 
 
 # =============================================================================
@@ -319,7 +340,8 @@ def testing(request):
 	:return:
 	"""
 	Dbas(request).main_notifications()
-	return {'status': 'success'}
+	return_dict = {'status': 'success'}
+	return append_csrf_to_dict(request, return_dict)
 
 
 @login.post(validators=validate_credentials)
@@ -331,6 +353,7 @@ def user_login(request):
 	:param request:
 	:return: token
 	"""
+	print(request)
 	user = request.validated['user']
 	# Convert bytes to string
 	if type(user['token']) == bytes:
@@ -338,7 +361,8 @@ def user_login(request):
 	else:
 		token = user['token']
 
-	return {'token': '%s-%s' % (user['nickname'], token)}
+	return_dict = {'token': '%s-%s' % (user['nickname'], token)}
+	return append_csrf_to_dict(request, return_dict)
 
 
 # =============================================================================
