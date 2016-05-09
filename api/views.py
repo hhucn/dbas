@@ -177,7 +177,9 @@ def parse_host_and_path(request):
 		return host, path
 	except AttributeError:
 		log.error("[API/Reference] Could not look up origin.")
-		return None, None
+	except KeyError:
+		log.error("[API/Reference] Missing fields in HTTP header (X-Host / X-Path).")
+	return None, None
 
 
 @reaction.get(validators=validate_login)
@@ -332,16 +334,14 @@ def get_references(request):
 # =============================================================================
 
 @login.get()  # TODO test this permission='use'
-def testing(request):
+def return_fuckin_csrf_token(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.
 
 	:param request:
 	:return:
 	"""
-	Dbas(request).main_notifications()
-	return_dict = {'status': 'success'}
-	return append_csrf_to_dict(request, return_dict)
+	return append_csrf_to_dict(request, {})
 
 
 @login.post(validators=validate_credentials)
