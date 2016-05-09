@@ -542,8 +542,7 @@ class Dbas(object):
 		email           = escape_string(self.request.params['mail'] if 'mail' in self.request.params else '')
 		phone           = escape_string(self.request.params['phone'] if 'phone' in self.request.params else '')
 		content         = escape_string(self.request.params['content'] if 'content' in self.request.params else '')
-		spam            = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
-		request_token   = escape_string(self.request.params['csrf_token'] if 'csrf_token' in self.request.params else '')
+		spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
 		spamquestion    = ''
 
 		if 'form.contact.submitted' not in self.request.params:
@@ -551,11 +550,9 @@ class Dbas(object):
 			spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
 			# save answer in session
 			self.request.session['antispamanswer'] = answer
-			token = self.request.session.new_csrf_token()
 
 		else:
 			_t = Translator(ui_locales)
-			token = self.request.session.get_csrf_token()
 
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
@@ -580,16 +577,10 @@ class Dbas(object):
 				message = _t.get(_t.emtpyContent)
 
 			# check for empty username
-			elif (not spam) or (not isinstance(spam, int)) or (not (int(spam) == int(self.request.session['antispamanswer']))):
-				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spam + ', right answer ' + str(self.request.session['antispamanswer']))
+			elif int(spamanswer) != int(self.request.session['antispamanswer']):
+				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spamanswer + ', right answer ' + str(self.request.session['antispamanswer']))
 				contact_error = True
 				message = _t.get(_t.maliciousAntiSpam)
-
-			# is the token valid?
-			elif request_token != token:
-				logger('main_contact', 'form.contact.submitted', 'token is not valid' + ', request_token: ' + str(request_token) + ', token: ' + str(token))
-				message = _t.get(_t.nonValidCSRF)
-				contact_error = True
 
 			else:
 				subject = 'Contact D-BAS'
@@ -620,8 +611,7 @@ class Dbas(object):
 			'phone': phone,
 			'content': content,
 			'spam': '',
-			'spamquestion': spamquestion,
-			'csrf_token': token
+			'spamquestion': spamquestion
 		}
 
 	# settings page, when logged in

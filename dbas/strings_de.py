@@ -14,6 +14,7 @@ class GermanDict:
 		"""
 		Sets up the german dictionary
 
+		:param _self:
 		:return: dictionary for the german language
 		"""
 		de_lang = dict()
@@ -259,7 +260,7 @@ class GermanDict:
 		de_lang[_self.firstPremiseText2] = 'Bitte begründen Sie Ihre Aussage.'
 		de_lang[_self.firstname] = 'Vorname'
 		de_lang[_self.fromm] = 'von'
-		de_lang[_self.finishTitle] = 'Beenden Sie hier die Diskussion'
+		de_lang[_self.finishTitle] = 'Diskussion beenden'
 		de_lang[_self.hold] = 'stimmt'
 		de_lang[_self.gender] = 'Geschlecht'
 		de_lang[_self.goBack] = 'Zurück'
@@ -389,7 +390,7 @@ class GermanDict:
 		de_lang[_self.publicNickTitle] = '(De-)Aktiviert Ihren richtigen Nickname auf Ihrer öffentlichen Seite'
 		de_lang[_self.passwordSubmit] = 'Passwort ändern'
 		de_lang[_self.report] = 'Melden'
-		de_lang[_self.reportTitle] = 'Öffnet die Kontaktseite, damit etwas gemeldet werden kann.'
+		de_lang[_self.reportTitle] = 'Verstoß melden'
 		de_lang[_self.remStatementRow] = 'Entfernt diese Reihe.'
 		de_lang[_self.registered] = 'Registriert'
 		de_lang[_self.right] = 'Ja'

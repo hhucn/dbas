@@ -205,7 +205,9 @@ function Helper() {
 	 * @param params dictionary with at least {'name': ?, 'content': ?}
 	 */
 	this.redirectInNewTabForContact = function(params){
-		var f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr('action', mainpage + 'contact');
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrfField = '<input type="hidden" name="csrf_token" value="' + csrfToken + '">';
+		var f = $("<form target='_blank' method='POST' style='display:none;'>" + csrfField + "</form>").attr('action', mainpage + 'contact');
 		f.appendTo(document.body);
 		for (var prms in params) {
 			if (params.hasOwnProperty(prms)) {
