@@ -274,9 +274,11 @@ function DiscussionBarometer(){
 						+ '<% if (segments[i].value) { %><%= ": " + segments[i].value %><% } %>'
 					+ '</li>'
 				+ '<% } %>'
-			+ '</ul>'
+			+ '</ul>',
+			tooltipTemplate: "<%=value%>"
 		};
 	};
+
 
 	/**
 	 * @param chart
