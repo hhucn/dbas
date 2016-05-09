@@ -260,16 +260,10 @@ function DiscussionBarometer(){
 	 */
 	this.createLegendOptions = function() {
 		return options = {
-			legendTemplate: '<ul style = "list-style-type: none; padding-left: 0px;">'
+			legendTemplate: '<ul class = "chart">'
 				+ '<% for (var i=0; i<segments.length; i++) { %>'
-					+ '<li style = "padding: 3px;">'
-						+ '<span style=' +
-							'\ " border-radius: 5px;' +
-							'margin-right: 10px;' +
-							'width: 15px;' +
-							'height: 15px;' +
-							'display: inline-block;' +
-							'background-color: <%=segments[i].fillColor%>\"> </span>'
+					+ '<li class = "chart">'
+						+ '<span class = "chart" style = "background-color: <%=segments[i].fillColor%>"> </span>'
 						+ '<% if (segments[i].label) { %><%= segments[i].label %><% } %>'
 						+ '<% if (segments[i].value) { %><%= ": " + segments[i].value %><% } %>'
 					+ '</li>'
@@ -278,7 +272,6 @@ function DiscussionBarometer(){
 			tooltipTemplate: "<%=value%>"
 		};
 	};
-
 
 	/**
 	 * @param chart
