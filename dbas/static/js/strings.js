@@ -26,6 +26,23 @@ _t = function(id){
 	return value;
 };
 
+
+/**
+ * Returns a translated string in the discussion language
+ * @param id of the string
+ * @returns {string} which is translated or unknown value
+ * @private
+ */
+_t_discussion = function(id){
+	var lang = $('#issue_info').attr('data-discussion-language'),
+		value = 'unknown identifier';
+	if (lang.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){		value = dbas_en[id];
+	} else if (lang.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){	value = dbas_de[id];
+	} else {                                                    		value = 'unknown value';
+	}
+	return value;
+};
+
 /**
  * Returns the tag of current language. This is either {en,de} or 'unknown value' *
  * @returns {string} language tag
@@ -69,6 +86,7 @@ var acceptItTitle 									= 'acceptItTitle';
 var contactSubmit									= 'contactSubmit';
 var correctionsSet 									= 'correctionsSet';
 var because                                         = 'because';
+var changelog                                       = 'changelog';
 var checkFirstname									= 'checkFirstname';
 var checkLastname									= 'checkLastname';
 var checkNickname									= 'checkNickname';
@@ -235,6 +253,7 @@ var dbas_en = {
 	'countOfArguments': 'Count of arguments',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'correctionsSet': 'Your correction was set.',
+	'changelog': 'changelog',
 	'checkFirstname': 'Better check your first name, because the input is empty!',
 	'checkLastname': 'Better check your last name, because the input is empty!',
 	'checkNickname': 'Better check your nickname, because the input is empty!',
@@ -382,6 +401,7 @@ var dbas_de = {
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
+	'changelog': 'Änderungsprotokoll',
 	'checkFirstname': 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!',
 	'checkLastname': 'Bitte überprüfen Sie Ihren Nachnamen, da die Eingabe leer ist!',
 	'checkNickname': 'Bitte überprüfen Sie Ihren Spitznamen, da die Eingabe leer ist!',
@@ -395,6 +415,7 @@ var dbas_de = {
 	'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
 	'deleteTrack': 'Track löschen',
 	'deleteHistory': 'History löschen',
+	'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
 	'deleteStatisticsTitle': 'Statistik löschen',
 	'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
 	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Piwik.',
@@ -479,7 +500,7 @@ var dbas_de = {
 	'requestHistory': 'History anfragen',
 	'refreshHistory': 'History neuladen',
 	'requestFailed': 'Anfrage fehlgeschlagen',
-	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.',
+	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
 	'saveMyStatement': 'Aussage speichern!',
 	'saveMyStatements': 'Ausagen speichern!',
 	'showAllUsers': 'Zeig\' alle Benutzer',

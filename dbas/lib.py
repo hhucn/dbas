@@ -58,18 +58,17 @@ def get_discussion_language(request):
 
 	db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
 
-	logger('--', '--', str(issue))
-	logger('--', '--', db_lang.languages.ui_locales)
-
 	return db_lang.languages.ui_locales if db_lang else 'en'
 
 
-def sql_timestamp_pretty_print(ts, lang):
+def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 	"""
 	Pretty printing for sql timestamp in dependence of the language.
 
 	:param ts: timestamp (arrow) as string
 	:param lang: language
+	:param lang: humanize: Boolean
+	:param lang: with_exact_time: Boolean
 	:return:
 	"""
 
@@ -85,8 +84,17 @@ def sql_timestamp_pretty_print(ts, lang):
 	# 	time = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
 	# except ValueError:  # postgres
 	# 	time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
-
-	return ts.to('Europe/Berlin'if lang == 'de' else 'US/Pacific').humanize(locale=lang)
+	if humanize:
+		if lang == 'de':
+			ts = ts.to('Europe/Berlin')
+		else:
+			ts = ts.to('US/Pacific')
+		return ts.humanize(locale=lang)
+	else:
+		if lang == 'de':
+			return ts.format('DD.MM.YYYY' + ', HH:mm:ss ' if with_exact_time else '')
+		else:
+			return ts.format('YYYY-MM-DD' + ', HH:mm:ss ' if with_exact_time else '')
 
 
 def python_datetime_pretty_print(ts, lang):

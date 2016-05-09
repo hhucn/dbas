@@ -4,14 +4,16 @@ Provides helping function for getting some opinions.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import re
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise
 from dbas.helper.relation_helper import RelationHelper
-from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid, get_text_for_premisesgroup_uid
+from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
+	get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
-from dbas.strings import Translator
+from dbas.strings import Translator, TextGenerator
 from dbas.user_management import UserHandler
 
 
@@ -32,51 +34,70 @@ class OpinionHandler:
 		self.nickname = nickname
 		self.mainpage = mainpage
 
-	def get_user_with_opinions_for_argument(self, argument_uid):
+	def get_user_with_opinions_for_argument(self, argument_uids):
 		"""
 		Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
 		these attacks.
 
-		:param argument_uid: Argument.uid
+		:param argument_uids: Argument.uid
 		:return: { 'attack_type': { 'message': 'string', 'users': [{'self.nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
 		"""
 
-		logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid))
+		logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Arguments ' + str(argument_uids))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
+		# preperation
 		ret_dict = dict()
 		all_users = []
+		regex = re.compile('</?(strong|em)>')  # replacing html tags
 		_t = Translator(self.lang)
-		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-		title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uid, self.lang)
+		_tg = TextGenerator(self.lang)
+		db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
+		db_syst_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
 
-		if not db_argument:
+		# sanity check
+		if not db_user_argument or not db_syst_argument:
 			ret_dict['message'] = _t.get(_t.internalError) + '.'
 			ret_dict['users'] = all_users
-			return {'opinions': ret_dict, 'title': title}
+			return {'opinions': ret_dict, 'title': _t.get(_t.internalError)}
 
-		_rh = RelationHelper(argument_uid, self.lang)
+		title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uids[0], self.lang)
+
+		# getting uids of all reactions
+		_rh = RelationHelper(argument_uids[0], self.lang)
 		undermines_uids  = _rh.get_undermines_for_argument_uid()
 		supports_uids    = _rh.get_supports_for_argument_uid()
 		undercuts_uids   = _rh.get_undercuts_for_argument_uid()
 		rebuts_uids      = _rh.get_rebuts_for_argument_uid()
 
 		tmp_dict = {
-			'undermines': undermines_uids,
-			'supports': supports_uids,
-			'undercuts': undercuts_uids,
-			'rebuts': rebuts_uids
+			'undermine': undermines_uids,
+			'support': supports_uids,
+			'undercut': undercuts_uids,
+			'rebut': rebuts_uids
 		}
 
+		# getting the text of all reactions
+		conclusion      = get_text_for_conclusion(db_syst_argument, self.lang)
+		premise, tmp    = get_text_for_premisesgroup_uid(db_syst_argument.premisesgroup_uid, self.lang)
+		db_tmp_argument = db_syst_argument
+		while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
+			db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
+		first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
+		first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
+		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
+		premise		     = premise[0:1].lower() + premise[1:]
+		relation_text    = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive,
+		                                              first_conclusion=first_conclusion)
+
+		# getting votes for every reaction
 		for relation in tmp_dict:
-			relation_dict = dict()
-			all_users = []
-			text = ''
-			message = ''
-			logger('--', '--', str(relation) + ' # ' + str(tmp_dict[relation]))
+			relation_dict   = dict()
+			all_users       = []
+			message         = ''
+
 			for uid in tmp_dict[relation]:
-				logger('--', '--', '-->' + str(uid['id']))
 				db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
 				                                                               VoteArgument.is_up_vote == True,
 				                                                               VoteArgument.is_valid == True,
@@ -86,7 +107,6 @@ class OpinionHandler:
 					users_dict = self.create_users_dict(voted_user, vote.timestamp)
 					all_users.append(users_dict)
 				relation_dict['users'] = all_users
-				text = get_text_for_argument_uid(uid['id'], self.lang)
 
 				if len(db_votes) == 0:
 					message = _t.get(_t.voteCountTextMayBeFirst) + '.'
@@ -95,7 +115,7 @@ class OpinionHandler:
 				else:
 					message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
-			ret_dict[relation] = {'users': all_users, 'message': message, 'text': text}
+			ret_dict[relation] = {'users': all_users, 'message': message, 'text': regex.sub('', relation_text[relation + '_text'].replace('<strong>', ''))}
 
 		return {'opinions': ret_dict, 'title': title[0:1].upper() + title[1:]}
 
@@ -255,7 +275,7 @@ class OpinionHandler:
 
 		return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
-	def get_user_with_opinions_for_attitude(statement_uid):
+	def get_user_with_opinions_for_attitude(self, statement_uid):
 		"""
 		Returns dictionary with agree- and disagree-votes
 
@@ -299,6 +319,7 @@ class OpinionHandler:
 			users_dict = self.create_users_dict(voted_user, vote.timestamp)
 			pro_array.append(users_dict)
 		ret_dict['agree_users'] = pro_array
+		ret_dict['agree_text'] = _t.get(_t.iAgreeWith)
 
 		con_array = []
 		for vote in db_con_votes:
@@ -306,6 +327,7 @@ class OpinionHandler:
 			users_dict = self.create_users_dict(voted_user, vote.timestamp)
 			con_array.append(users_dict)
 		ret_dict['disagree_users'] = con_array
+		ret_dict['disagree_text'] = _t.get(_t.iDisagreeWith)
 
 		ret_dict['title'] = title[0:1].upper() + title[1:]
 

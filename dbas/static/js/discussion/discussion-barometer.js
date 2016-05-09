@@ -75,8 +75,9 @@ function DiscussionBarometer(){
 			new DiscussionBarometer().ajaxRequest(uid_array, adress);
 		} else if (url.indexOf('/reaction/') != -1){
 			adress = 'argument';
-			uid = splitted[splitted.length-3];
-			new DiscussionBarometer().ajaxRequest(uid, adress);
+			uid_array.push(splitted[splitted.length-3]);
+			uid_array.push(splitted[splitted.length-1]);
+			new DiscussionBarometer().ajaxRequest(uid_array, adress);
 		} else {
 			adress = 'position';
 			$('#discussions-space-list li:not(:last-child) label').each(function(){
@@ -93,6 +94,7 @@ function DiscussionBarometer(){
 	 */
 	this.ajaxRequest = function(uid, adress){
 		var dataString;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		switch(adress){
 			case 'attitude':
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', is_position: 'false', uids: uid};
@@ -101,18 +103,19 @@ function DiscussionBarometer(){
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'false', uids: JSON.stringify(uid)};
 				break;
 			case 'argument':
-				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', is_position: 'false', uids: uid};
+				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', is_position: 'false', uids: JSON.stringify(uid)};
 				break;
 			case 'position':
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'true', uids: JSON.stringify(uid)};
 		}
-
+		dataString['lang'] = $('#issue_info').attr('data-discussion-language');
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			type: 'GET',
 			dataType: 'json',
 			data: dataString,
-			async: true
+			async: true,
+			headers: {'X-CSRF-Token': csrfToken}
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, adress);
 		}).fail(function () {
@@ -150,7 +153,7 @@ function DiscussionBarometer(){
 			case 'justify':  _db.createStatementBarometer(obj); break;
 			case 'argument': _db.createArgumentBarometer(obj); break;
 		}
-		$('#' + popupConfirmDialogId).find('.modal-title').text(obj.title);
+		$('#' + popupConfirmDialogId).find('.modal-title').text(obj.title).css({'line-height': '1.0'});
 	};
 
 	/**
@@ -166,13 +169,13 @@ function DiscussionBarometer(){
 			value: obj.agree_users.length,
         	color: colors[3],
 			highlight: highlightColors[3],
-            label: 'agree'
+            label: obj.agree_text
         },
 		{
 			value: obj.disagree_users.length,
         	color: colors[0],
 			highlight: highlightColors[0],
-			label: 'disagree'
+			label: obj.disagree_text
 		}
 		];
 
@@ -287,7 +290,7 @@ function DiscussionBarometer(){
 		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
-		span = $('<span>').text(_t(noDecisionstaken));
+		span = $('<span>').text(_t_discussion(noDecisionstaken));
 		div.append(strong).append(span);
 		$('#' + popupConfirmDialogId + ' div.modal-body').append(div);
 		$('#' + popupConfirmDialogId).on('hidden.bs.modal', function (e) {
@@ -299,7 +302,7 @@ function DiscussionBarometer(){
 	 * Callback if the ajax request failed
 	 */
 	this.callbackIfFailForGetDictionary = function(){
-		alert('ajax-request: some error');
-		// TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
+		new GuiHandler().showDiscussionError(_t_discussion(requestFailed)
+			+ ' (' + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 	};
 }

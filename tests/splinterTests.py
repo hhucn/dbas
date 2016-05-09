@@ -237,7 +237,8 @@ class FrontendTests:
 		         mainpage + 'discuss',
 		         mainpage + 'settings',
 		         mainpage + 'notifications',
-		         mainpage + 'admin/main']
+		         mainpage + 'admin/main',
+		         mainpage + 'user/tobias']
 		tests = ['main',
 		         'contact',
 		         'news',
@@ -245,15 +246,17 @@ class FrontendTests:
 		         'discuss',
 		         'settings',
 		         'notifications',
-		         'admin']
+		         'admin',
+		         'user']
 		texts = ['part of the graduate school',
 		         'Feel free to drop us a',
 		         'Speech Bubble System',
 		         'Liability for content',
-		         'The current discussion is about:',
+		         'Current discussion is about:',
 		         'part of the graduate school',
 		         'part of the graduate school',
-		         '401']
+		         '401',
+		         'tobias']
 		for index, p in enumerate(pages):
 			b.visit(p)
 			test = 'testing ' + tests[index] + ' page'
