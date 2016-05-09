@@ -31,11 +31,6 @@ $(function () {
 	new User().getPublicUserData();
 });
 
-$(document).on({
-	ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0);},
-	ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0);}
-
-});
 function User() {
 	// https://www.google.com/design/spec/style/color.html#color-color-palette
 	// 0 is Blue
@@ -47,6 +42,7 @@ function User() {
 	var pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
 
 	this.getPublicUserData = function () {
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_public_user_data',
 			method: 'GET',
@@ -60,6 +56,10 @@ function User() {
 		});
 	};
 
+	/**
+	 *
+	 * @param jsonData
+	 */
 	this.callbackDone = function(jsonData){
 		var parsedData = $.parseJSON(jsonData);
 		this.createChart(parsedData, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
@@ -69,11 +69,17 @@ function User() {
 		this.setLegendCSS();
 	};
 
+	/**
+	 *
+	 * @param parsedData
+	 * @param space
+	 * @param id
+	 * @param count
+	 */
 	this.createChart = function(parsedData, space, id, count){
-		var ctx, chart, data, div_legend;
+		var chart, data, div_legend;
 
 		space.append('<canvas id="' + id + '" width="500" height="300" style= "display: block; margin: 0 auto;"></canvas>');
-		ctx = document.getElementById(id).getContext('2d');
 		data = {
 			labels : parsedData['labels' + (count+1)],
 			datasets : [{
@@ -82,19 +88,25 @@ function User() {
 				strokeColor : strokeColorSet[count],
 				pointStrokeColor : pointStrokeColorSet[count],
 				pointColor : "#fff",
+				// pointHitRadius: 1,
+				// pointHoverRadius: 1,
+                // pointHoverBorderWidth: 1,
 				data : parsedData['data' + (count+1)],
 				hover: {mode: 'single'}
 			}]};
-		chart = new Chart(ctx).Line(data);
+		chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
 		div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
 		space.prepend(div_legend);
 	};
 
+	/**
+	 *
+	 */
 	this.setLegendCSS = function() {
 		var legend = $('.chart-legend');
 
 		legend.find('ul').css({
-			'list-style-type': 'none',
+			'list-style-type': 'none'
 		});
 		legend.find('li').css({
 			'clear' : 'both',
@@ -108,6 +120,9 @@ function User() {
 		}).addClass('lead');
 	};
 
+	/**
+	 *
+	 */
 	this.getPublicUserDataFail = function(){
 		alert('fail');
 	};

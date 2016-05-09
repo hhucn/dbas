@@ -4,9 +4,10 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-
+import arrow
 import sqlalchemy as sa
 
+from sqlalchemy_utils import ArrowType
 from dbas.database import NewsBase
 
 
@@ -18,7 +19,7 @@ class News(NewsBase):
 	uid = sa.Column(sa.Integer, primary_key=True)
 	title = sa.Column(sa.Text, nullable=False)
 	author = sa.Column(sa.Text, nullable=False)
-	date = sa.Column(sa.Text, nullable=False)
+	date = sa.Column(ArrowType, nullable=False)
 	news = sa.Column(sa.Text, nullable=False)
 
 	def __init__(self, title, author, news, date):

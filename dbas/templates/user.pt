@@ -1,8 +1,6 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
-
 		<div class="container colored-container">
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-6">
@@ -59,6 +57,10 @@
 			<div class="row text-center" style="margin: 1em;">
                 <div class="col-md-6" id="user-statement-chart-space"></div>
                 <div class="col-md-6" id="user-edit-chart-space"></div>
+            </div>
+
+			<div class="row text-center" style="margin: 1em;">
+                <div class="col-md-12" id="user-statements-chart-space"></div>
             </div>
 
         </div>

@@ -208,12 +208,14 @@ function SettingsHandler(){
 	 */
 	this.setUserSetting = function(toggle_element, service) {
 		var settings_value = toggle_element.prop('checked');
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_user_setting',
 			method: 'GET',
 			data:{'settings_value': settings_value ? 'True': 'False', 'service': service},
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function setUserSettingDone(data) {
 			new SettingsHandler().callbackDone(data, toggle_element, settings_value, service);
 		}).fail(function setUserSettingFail() {

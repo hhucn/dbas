@@ -589,5 +589,14 @@ $(document).ready(function mainDocumentReady() {
 	tmp = tmp.substr(1, tmp.length-2);
 	$('#' + discussionEndRestart).attr('href', tmp);
 
+	//
+	tmp = window.location.href.split('?');
+	if (tmp[0].indexOf('/reaction/') != -1){
+		$('#island-view-undermine-button').attr('onclick', $('#item_undermine').attr('onclick'));
+		$('#island-view-support-button').attr('onclick', $('#item_support').attr('onclick'));
+		$('#island-view-undercut-button').attr('onclick', $('#item_undercut').attr('onclick'));
+		$('#island-view-rebut-button').attr('onclick', $('#item_rebut').attr('onclick'));
+	}
+
 	// window.addEventListener('resize', setDiscussionWindowHeights());
 });

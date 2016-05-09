@@ -154,7 +154,11 @@
 - Participants are able to send notifications to each other
 - Revised timestamps with humanized texts
 - Revised discussion finished page
-- Added loading bar
+
+0.5.12 (2016-05-04)
+- Seperated site and discussion language
+- Checking CSRF tokens automatically
+- Updated island view and the opinon barometer
 
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation

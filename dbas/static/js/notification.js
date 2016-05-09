@@ -118,13 +118,15 @@ function Notifications() {
     */
 	this.sendAjaxForReadMessage = function(id, _this){
 		new Notifications().hideInfoSpaces();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_notification_read',
 			method: 'POST',
 			data: {
 				id: id
 			},
-			dataType: 'json'
+			dataType: 'json',
+			headers: {'X-CSRF-Token': csrfToken}
 		}).done(function sendAjaxForReadMessageDone(data) {
 			var parsedData = $.parseJSON(data);
 			if (parsedData.error.length > 0) {
@@ -149,13 +151,15 @@ function Notifications() {
     */
 	this.sendAjaxForDeleteMessage = function(id) {
 		new Notifications().hideInfoSpaces();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_notification_delete',
 			method: 'POST',
 			data: {
 				id: id
 			},
-			dataType: 'json'
+			dataType: 'json',
+			headers: {'X-CSRF-Token': csrfToken}
 		}).done(function sendAjaxForDeleteMessageDone(data) {
 			var parsedData = $.parseJSON(data);
 			if (parsedData.success.length > 0) {
@@ -227,6 +231,7 @@ function Notifications() {
 	this.sendNotification = function(recipient){
 		var title = $('#popup-writing-notification-title').val(),
 			text = $('#popup-writing-notification-text').val();
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 
 		$('#popup-writing-notification-success').hide();
 		$('#popup-writing-notification-failed').hide();
@@ -236,7 +241,8 @@ function Notifications() {
 			type: 'POST',
 			data: {title: title, text: text, recipient: recipient},
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: {'X-CSRF-Token': csrfToken}
 		}).done(function ajaxSendNewsDone(data) {
 			var parsedData = $.parseJSON(data);
 			if (parsedData.error.length == 0) {

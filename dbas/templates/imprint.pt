@@ -103,6 +103,13 @@
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
+					<span class="project lead">0.5.12 (2016-05-04)</span>
+					<ul>
+                        <li>Seperated site and discussion language</li>
+                        <li>Checking CSRF tokens automatically</li>
+                        <li>Updated island view and the opinon barometer</li>
+                    </ul>
+
 					<span class="project lead">0.5.11 (2016-04-27)</span>
 					<ul>
 						<li>Public user page</li>
@@ -110,7 +117,6 @@
                         <li>Participants are able to send notifications to each other</li>
                         <li>Revised timestamps with humanized texts</li>
                         <li>Revised discussion finished page</li>
-                        <li>Added loading bar</li>
 					</ul>
 					<span class="project lead">0.5.10 (2016-04-26)</span>
 					<ul>

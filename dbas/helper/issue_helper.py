@@ -136,7 +136,15 @@ class IssueHelper:
 		          _t.get(_t.discussionInfoTooltip2) + ' ' + str(arg_count) + ' ' +\
 		          (_t.get(_t.discussionInfoTooltip3pl) if arg_count > 1 else _t.get(_t.discussionInfoTooltip3sg))
 
-		return {'slug': slug, 'info': info, 'title': title, 'uid': uid, 'arg_count': arg_count, 'date': date, 'all': all_array, 'tooltip': tooltip}
+		return {'slug': slug,
+		        'info': info,
+		        'title': title,
+		        'uid': uid,
+		        'arg_count': arg_count,
+		        'date': date,
+		        'all': all_array,
+		        'tooltip': tooltip,
+		        'intro': _t.get(_t.currentDiscussion)}
 
 	@staticmethod
 	def get_number_of_arguments(issue):

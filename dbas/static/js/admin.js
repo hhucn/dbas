@@ -9,10 +9,7 @@ function AdminInterface(){
 	 * Requests all attacks
 	 */
 	this.getArgumentOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(),
-			settings_data,
-			url,
-			_this = this;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), _this = this;
 
 		$.ajax({
 			url: 'argument_overview',
@@ -20,11 +17,7 @@ function AdminInterface(){
 			dataType: 'json',
 			data: { issue: new Helper().getCurrentIssueId() },
 			async: true,
-			headers: {'X-CSRF-Token': csrfToken},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
-			}
+			headers: {'X-CSRF-Token': csrfToken}
 
 		}).done(function getArgumentOverviewDone(data) { // display fetched data
 			_this.setArgumentOverviewDataContent($.parseJSON(data));

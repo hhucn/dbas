@@ -495,13 +495,12 @@ class UserHandler:
 		return statement_array, edit_array
 
 	@staticmethod
-	def get_votes_of_user(user, is_argument, lang, query_helper):
+	def get_votes_of_user(user, is_argument, lang):
 		"""
 
 		:param user:
 		:param is_argument:
 		:param lang:
-		:param query_helper:
 		:return:
 		"""
 		return_array = []
