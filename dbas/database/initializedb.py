@@ -614,8 +614,8 @@ def setup_discussion_database(session, user):
 	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
 	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
 	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
-	issue5 = Issue(title=('Unterstützung der Sekretariate').encode('utf-8'),
-	               info=('Unsere Sekretariate in der Informatik sind arbeitstechnisch stark überlastet. Bitte diskutieren Sie Möglichkeiten zur Unterstützung der Sekretariate.').encode('utf-8'),
+	issue5 = Issue(title='Unterstuetzung der Sekretariate',
+	               info='Unsere Sekretariate in der Informatik sind arbeitstechnisch stark ueberlastet. Bitte diskutieren Sie Moeglichkeiten zur Unterstuetzung der Sekretariate.',
 	               author_uid=user.uid, lang_uid=lang2.uid)
 	session.add_all([issue1, issue2, issue4, issue5])
 	session.flush()
