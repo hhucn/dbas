@@ -70,7 +70,10 @@ class DiscussionDictHelper(object):
 		if self.lang == 'en':
 			statement_text = statement_text[0:1].lower() + statement_text[1:]
 
-		text                = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + statement_text + '</strong>?'
+		text = _tn.get(_tn.whatDoYouThinkAbout)
+		if self.lang == 'de':
+			text += ':'
+		text += ' <strong>' + statement_text + '</strong>?'
 		# select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, '', '', _tn.get(_tn.youAreInterestedIn) + ': <strong>' + statement_text + '</strong>', lang=self.lang)
 		bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
 

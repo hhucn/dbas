@@ -272,7 +272,8 @@ function AjaxSiteHandler() {
 		var callback = $('#' + callbackid),
 			pencil = '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>',
 			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
-			bubbleSpace = $('#' + discussionBubbleSpaceId);
+			bubbleSpace = $('#' + discussionBubbleSpaceId),
+			csrfToken = $('#' + hiddenCSRFTokenId).val();
 
 		// clear lists if input is empty
 		if(callback.val().length==0) {

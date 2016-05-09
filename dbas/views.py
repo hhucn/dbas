@@ -226,7 +226,6 @@ class Dbas(object):
 		                                                                                    nickname,
 		                                                                                    application_url=mainpage,
 		                                                                                    for_api=for_api)
-
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
 		return_dict['discussion'] = discussion_dict
@@ -557,7 +556,6 @@ class Dbas(object):
 			logger('main_contact', 'form.contact.submitted', 'validating email')
 			is_mail_valid = validate_email(email, check_mx=True)
 
-			# sanity checks
 			# check for empty username
 			if not username:
 				logger('main_contact', 'form.contact.submitted', 'username empty')
@@ -589,8 +587,8 @@ class Dbas(object):
 				       + _t.get(_t.phone) + ': ' + phone + '\n'\
 				       + _t.get(_t.message) + ':\n' + content
 				EmailHelper.send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
-				body = '* THIS IS A COPY OF YOUR MAIL *\n\n' + body
-				subject = '[INFO] ' + subject
+				body = '* ' + _t.get(_t.thisIsACopyOfMail).upper() + ' *\n\n' + body
+				subject = '[D-BAS INFO] ' + subject
 				send_message, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
 				if send_message:

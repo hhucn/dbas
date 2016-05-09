@@ -183,7 +183,7 @@ class DictionaryHelper(object):
 		:return: None
 		"""
 		logger('DictionaryHelper', 'add_discussion_end_text', 'main')
-		_tn = Translator(self.system_lang)
+		_tn = Translator(self.discussion_lang)
 		current_premise = current_premise[0:1].lower() + current_premise[1:]
 		_hh = HistoryHelper
 
@@ -346,5 +346,6 @@ class DictionaryHelper(object):
 			'fetchurl': _tn_dis.get(_tn_dis.fetchLongUrl),
 			'warning': _tn_dis.get(_tn_dis.warning),
 			'island_view_for': _tn_dis.get(_tn_dis.islandViewFor),
-			'language': self.discussion_lang
+			'language': self.discussion_lang,
+			'add_premise_title': _tn_dis.get(_tn_dis.addPremiseRadioButtonText)
 		}
