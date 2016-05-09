@@ -159,8 +159,9 @@ def parse_host_and_path(request):
 	:rtype: str
 	"""
 	try:
-		data = json_bytes_to_dict(request.body)
-		return data["host"], data["path"]
+		host = request.headers["X-Host"]
+		path = request.headers["X-Path"]
+		return host, path
 	except AttributeError:
 		log.error("[API/Reference] Could not look up origin.")
 		return None, None
@@ -277,7 +278,7 @@ def add_justify_premise(request):
 #
 # Get data from D-BAS' database
 #
-@references.post()
+@references.get()
 def get_references(request):
 	"""
 	Query database to get stored references from site. Generate a list with text versions of references.
