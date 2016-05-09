@@ -309,7 +309,7 @@ def setup_news_db(session):
 	news45 = News(title='COMMA16',
 				  date=arrow.get('2016-04-05'),
 				  author='Tobias Krauthoff',
-				  news='After a few works of testing an debugging, we now have verison of D-BAS, which will be submitted '
+				  news='After much work, testing and debugging, we now have version of D-BAS, which will be submitted '
 				       ' to <a href="http://www.ling.uni-potsdam.de/comma2016" target="_blank">COMMA 2016</a>.')
 	news46 = News(title='History Management',
 				  date=arrow.get('2016-04-26'),
@@ -323,11 +323,10 @@ def setup_news_db(session):
 				       'island view for every argument, where the participants can see every premise for current reactions. '
 				       'Secondly the opinion barometer is still under development. For a more recent update, have a look '
 				       'at out imprint.')
-	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
-	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
-	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
-	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
-	              news42, news43, news44, news45, news46, news47]
+	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
+	              news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
+	              news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
+	              news38, news39, news40, news41, news42, news43, news44, news45, news46, news47]
 	session.add_all(news_array[::-1])
 	session.flush()
 
@@ -640,6 +639,7 @@ def setup_discussion_database(session, user):
 	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
 	#  issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user.uid, lang='en')
 	issue5 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
+	issue6 = Issue(title='Maßnahmen zur Unterstützung der Sekretariate', info='', author_uid=user.uid, lang_uid=lang2.uid)
 	session.add_all([issue1, issue2, issue5])
 	session.flush()
 
