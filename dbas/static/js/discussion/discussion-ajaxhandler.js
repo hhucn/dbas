@@ -31,7 +31,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewPremisesArgument(data);
 		}).fail(function ajaxSendNewPremisesForArgumentFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 6). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 6). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -61,7 +61,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
 		}).fail(function ajaxSendNewStartPremiseFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 7). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -87,7 +87,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 8). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -116,7 +116,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			$('#popup-add-topic-error-text').text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
+			$('#popup-add-topic-error-text').text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 			$('#popup-add-topic-error').show();
 			new Helper().delay(function(){
@@ -147,7 +147,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxGetLogfileForStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 15). '
+			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -177,7 +177,7 @@ function AjaxSiteHandler() {
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 13). '
+			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 13). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -227,7 +227,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + new Helper().startWithLowerCase(_t_discussion(errorCode)) + ' 8). '
+			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 8). '
 				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 		});
 	};
@@ -259,7 +259,7 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + new Helper().startWithLowerCase(_t_discussion(errorCode)) + ' 10). '
+			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 10). '
 				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 		});
 
@@ -323,7 +323,7 @@ function AjaxSiteHandler() {
 			new GuiHandler().hideDiscussionError();
 		}).fail(function ajaxGetAllUsersFail() {
 			new Helper().delay(function ajaxGetAllUsersFailDelay() {
-				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11). '
+				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
 						+ _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 			}, 350);
 		});
