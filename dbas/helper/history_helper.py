@@ -49,7 +49,7 @@ class HistoryHelper:
 		if len(history) == 0:
 			return []
 
-		logger('HistoryHelper', 'create_bubbles_from_history', 'history: ' + history)
+		logger('HistoryHelper', 'create_bubbles_from_history', 'nickname: ' + str(nickname) + ', history: ' + history)
 		splitted_history = HistoryHelper.get_splitted_history(history)
 
 		bubble_array = []
@@ -236,17 +236,24 @@ class HistoryHelper:
 		speech['data_statement_uid'] = str(statement_uid)
 		db_votecounts                = None
 
+		if not nickname:
+			nickname = 'anonymous'
+		db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+		if not db_user:
+			db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
+
 		if argument_uid:
 			db_votecounts = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-			                                                                    VoteArgument.is_up_vote == is_up_vote,
-			                                                                    VoteArgument.is_valid == True)).all()
+			                                                                    VoteArgument.is_up_vote == True,
+			                                                                    VoteArgument.is_valid == True,
+		                                                                        VoteArgument.author_uid != db_user.uid)).all()
 		elif statement_uid:
 			db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-			                                                                     VoteStatement.is_up_vote == is_up_vote,
-			                                                                     VoteStatement.is_valid == True)).all()
+			                                                                     VoteStatement.is_up_vote == True,
+			                                                                     VoteStatement.is_valid == True,
+			                                                                     VoteArgument.author_uid != db_user.uid)).all()
 		_t = Translator(lang)
-		diff = 1 if nickname is not None and nickname != 'anonymous' else 0
-		votecounts = len(db_votecounts) - diff if db_votecounts else 0
+		votecounts = len(db_votecounts) if db_votecounts else 0
 
 		if votecounts == 0:
 			speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'

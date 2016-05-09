@@ -22,7 +22,7 @@
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
 							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
 								<a href="#" tal:attributes="href issue.url; value issue.title" style="height: 2em;">
-                                    <span style="float: left;">${issue.title}</span>
+                                    <span style="float: left; white-space: pre-wrap;">${issue.title}</span>
                                     <span class="badge" style="float: right; margin-left: 1em" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">
                                         <span tal:replace="issue.arg_count"></span>
                                     </span>

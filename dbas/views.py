@@ -1032,8 +1032,7 @@ class Dbas(object):
 				logger('user_login', 'password not valid', 'wrong password')
 				error = _tn.get(_tn.userPasswordNotMatch)
 			else:
-				logger('user_login', 'login', 'login successful')
-				logger('user_login', 'login', 'keep_login: ' + str(keep_login))
+				logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
 				db_user.should_hold_the_login(keep_login)
 				headers = remember(self.request, nickname)
 
@@ -1042,7 +1041,7 @@ class Dbas(object):
 				db_user.update_last_login()
 				db_user.update_last_action()
 				transaction.commit()
-				ending = ['/?session_expired=true', '/?session_expired=falses']
+				ending = ['/?session_expired=true', '/?session_expired=false']
 				for e in ending:
 					if url.endswith(e):
 						url = url[0:-len(e)]
@@ -1759,8 +1758,6 @@ class Dbas(object):
 		try:
 			params = self.request.params
 			ui_locales  = params['lang'] if 'lang' in params else 'en'
-			logger('--', '--', ui_locales)
-			logger('--', '--', ui_locales)
 
 			uids        = params['uids']
 			is_argument = params['is_argument'] == 'true' if 'is_argument' in params else False
@@ -1774,7 +1771,7 @@ class Dbas(object):
 					return_dict = _op.get_user_with_same_opinion_for_argument(uids)
 				else:
 					uids = json.loads(uids)
-					return_dict = _op.get_user_with_opinions_for_argument(uids)
+					return_dict = _op.get_user_and_opinions_for_argument(uids)
 			elif is_position:
 				uids = json.loads(uids)
 				return_dict = _op.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids])
