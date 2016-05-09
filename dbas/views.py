@@ -15,6 +15,7 @@ from pyramid.security import remember, forget
 from pyramid.threadlocal import get_current_registry
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyshorteners.shorteners import Shortener
+from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from validate_email import validate_email
 
@@ -1707,7 +1708,11 @@ class Dbas(object):
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_shortened_url', 'error', repr(e))
-			_tn = Translator(get_language(self.request, get_current_registry()))
+			_tn = Translator(get_discussion_language(self.request))
+			return_dict['error'] = _tn.get(_tn.internalError)
+		except ReadTimeout as e:
+			logger('get_shortened_url', 'read timeout error', repr(e))
+			_tn = Translator(get_discussion_language(self.request))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
 		return json.dumps(return_dict, True)

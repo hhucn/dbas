@@ -99,13 +99,14 @@ function Main () {
 		 * Switch between shortened and long url
 		 */
 		$('#' + popupUrlSharingLongUrlButtonID).click(function () {
+			var input_field = $('#' + popupUrlSharingInputId);
 
 			if ($(this).attr('data-is-short-url') == '0') {
-				$('#' + popupUrlSharingInputId).val($('#' + popupUrlSharingInputId).attr('data-short-url'));
-				$(this).attr('data-is-short-url', '1').text(_t(fetchLongUrl));
+				input_field.val(input_field.attr('data-short-url'));
+				$(this).attr('data-is-short-url', '1').text(_t_discussion(fetchLongUrl));
 			} else {
-				$('#' + popupUrlSharingInputId).val(window.location);
-				$(this).attr('data-is-short-url', '0').text(_t(fetchShortUrl));
+				input_field.val(window.location);
+				$(this).attr('data-is-short-url', '0').text(_t_discussion(fetchShortUrl));
 			}
 		});
 

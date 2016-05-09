@@ -11,7 +11,7 @@ from .strings_en import EnglischDict
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Statement, Premise, VoteStatement
-
+from .logger import logger
 
 class Translator(object):
 	"""
@@ -185,7 +185,6 @@ class Translator(object):
 		self.errorTryLateOrContant = 'errorTryLateOrContant'
 		self.editStatementViewChangelog = 'editStatementViewChangelog'
 		self.editStatementHere = 'editStatementHere'
-		self.fetchurl = 'fetchurl'
 		self.feelFreeToLogin = 'feelFreeToLogin'
 		self.forText = 'forText'
 		self.fillLine = 'fillLine'
@@ -489,8 +488,8 @@ class Translator(object):
 		self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
 		self.sentencesOpenersInforming = [self.thinkWeShould, self.letMeExplain, self.sureThat]
 
-		self.en_dict = EnglischDict().set_up_en_dict(self)
-		self.de_dict = GermanDict().set_up_de_dict(self)
+		self.en_dict = EnglischDict().set_up(self)
+		self.de_dict = GermanDict().set_up(self)
 
 	def get(self, sid):
 		"""
