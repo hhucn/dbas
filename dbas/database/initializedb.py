@@ -614,7 +614,7 @@ def setup_discussion_database(session, user):
 	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
 	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
 	issue5 = Issue(title=u'Unterstützung der Sekretariate',
-	               info=u'Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten zur Unterstützung der Sekretariate.',
+	               info=u'Unsere Sekretariate in der Informatik sind arbeitstechnisch stark überlastet. Bitte diskutieren Sie Möglichkeiten zur Unterstützung der Sekretariate.',
 	               author_uid=user.uid, lang_uid=lang2.uid)
 	session.add_all([issue1, issue2, issue4, issue5])
 	session.flush()
