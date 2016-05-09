@@ -183,8 +183,9 @@ function DiscussionBarometer(){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		} else {
-			var chart = new Chart(ctx).Pie(pieData);
-			this.createLegend(chart);
+			options = new DiscussionBarometer().createLegendOptions();
+			var chart = new Chart(ctx).Pie(pieData, options);
+			new DiscussionBarometer().createLegend(chart);
 		}
 	};
 
@@ -215,7 +216,9 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
 		else {
-			this.createLegend(chart);
+			var options = new DiscussionBarometer().createLegendOptions();
+			$.extend(chart.options, options);
+			new DiscussionBarometer().createLegend(chart);
 		}
 	};
 
@@ -244,37 +247,38 @@ function DiscussionBarometer(){
 		if (users == 0){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
-		} else{
-			this.createLegend(chart);
 		}
+		else{
+			var options = new DiscussionBarometer().createLegendOptions();
+			$.extend(chart.options, options);
+			new DiscussionBarometer().createLegend(chart);
+		}
+	};
+
+	/**
+	 * @return options
+	 */
+	this.createLegendOptions = function() {
+		return options = {
+			legendTemplate: '<ul class = "chart">'
+				+ '<% for (var i=0; i<segments.length; i++) { %>'
+					+ '<li class = "chart">'
+						+ '<span class = "chart" style = "background-color: <%=segments[i].fillColor%>"> </span>'
+						+ '<% if (segments[i].label) { %><%= segments[i].label %><% } %>'
+						+ '<% if (segments[i].value) { %><%= ": " + segments[i].value %><% } %>'
+					+ '</li>'
+				+ '<% } %>'
+			+ '</ul>',
+			tooltipTemplate: "<%=value%>"
+		};
 	};
 
 	/**
 	 * @param chart
 	 */
-	this.createLegend = function(chart){
-		$('#' + popupConfirmDialogId + ' div.modal-body')
-			.append('<span class="lead">' + _t_discussion(legend) + ':</span>')
-			.append('<div class="chart-legend">' + chart.generateLegend() + '</div>');
-
-		//$('#' + popupConfirmDialogId + ' div.chart-legend ul').css({
-		//	'list-style-type': 'none',
-		//	'padding-left': '0px'
-		//});
-		$('#' + popupConfirmDialogId + ' div.chart-legend li').css({
-			//'display': 'block',
-			'clear' : 'both',
-			'padding': '2px'
-
-		});
-		$('#' + popupConfirmDialogId + ' div.chart-legend span').css({
-			'display': 'block',
-			'border-radius': '4px',
-			'padding-left': '0.5em',
-			'padding-right': '0.5em',
-			'float': 'left',
-			'color': 'white'
-		});
+	this.createLegend = function(chart) {
+		var legend = chart.generateLegend();
+		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div id = "chart-legend">' + legend + '</div>');
 	};
 
 	this.setAlertIntoDialog = function(){

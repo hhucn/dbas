@@ -95,10 +95,10 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), service;
 		if (parsedData.error.length == 0) {
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
-			$('#' + popupUrlSharingDescriptionPId).html(_t(feelFreeToShareUrl) + ', ' + _t(shortenedBy) + ' ' + service + ':');
+			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ', ' + _t_discussion(shortenedBy) + ' ' + service + ':');
 			$('#' + popupUrlSharingInputId).val(parsedData.url).attr('data-short-url', parsedData.url);
 		} else {
-			$('#' + popupUrlSharingDescriptionPId).text(_t(feelFreeToShareUrl) + ":");
+			$('#' + popupUrlSharingDescriptionPId).text(_t_discussion(feelFreeToShareUrl) + '.');
 			$('#' + popupUrlSharingInputId).val(long_url);
 		}
 	};

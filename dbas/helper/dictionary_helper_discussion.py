@@ -4,7 +4,7 @@ Provides helping function for dictionaries, which are used in discussions.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User
+from dbas.database.discussion_model import Argument, Statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.helper.history_helper import HistoryHelper
@@ -70,7 +70,10 @@ class DiscussionDictHelper(object):
 		if self.lang == 'en':
 			statement_text = statement_text[0:1].lower() + statement_text[1:]
 
-		text                = _tn.get(_tn.whatDoYouThinkAbout) + ' <strong>' + statement_text + '</strong>?'
+		text = _tn.get(_tn.whatDoYouThinkAbout)
+		if self.lang == 'de':
+			text += ':'
+		text += ' <strong>' + statement_text + '</strong>?'
 		# select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, '', '', _tn.get(_tn.youAreInterestedIn) + ': <strong>' + statement_text + '</strong>', lang=self.lang)
 		bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
 
@@ -108,7 +111,8 @@ class DiscussionDictHelper(object):
 		question            += '</strong> '
 		question            += _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
-		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else _tn.get(_tn.isNotAGoodIdea)) + ', '  + _tn.get(_tn.because).lower() + '...'
+		false               = _tn.get(_tn.isFalse) if self.lang == 'de' else _tn.get(_tn.isNotAGoodIdea)
+		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else false) + ', '  + _tn.get(_tn.because).lower() + '...'
 
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = ''

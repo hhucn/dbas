@@ -191,7 +191,7 @@
     			</div>
     			<div id="modal-checkbox-body">
     				<label id="confirm-dialog-checkbox-label" for="confirm-dialog-checkbox">
-    					<input id="confirm-dialog-checkbox" type="checkbox">&thinsp;&thinsp;<span id="confirm-dialog-checkbox-text">Keep this setting</span>
+    					<input id="confirm-dialog-checkbox" type="checkbox">&thinsp;&thinsp;<span id="confirm-dialog-checkbox-text" i18n:translate="do_not_remind_me_again">Do not remind me again</span>
     				</label>
 
     			</div>
@@ -210,12 +210,12 @@
     			<div class="modal-header">
     				<button type="button" id="popup-url-sharing-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h5 class="modal-title" id="myModalLabel">${structure:extras.tag.url_sharing}</h5>
+    				<h5 class="modal-title" id="myModalLabel">${extras.tag.url_sharing}</h5>
     			</div>
     			<div id="popup-url-sharing-body">
     				<div id="popup-url-sharing-content">
     				</div>
-    				<p id="popup-url-sharing-description-p">${structure:extras.tag.url_sharing_description}</p>
+    				<p id="popup-url-sharing-description-p">${extras.tag.url_sharing_description}</p>
     				<input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL" data-short-url="" >
     			</div>
     			<div class="modal-footer">
