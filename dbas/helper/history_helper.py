@@ -238,7 +238,7 @@ class HistoryHelper:
 
 		if not nickname:
 			nickname = 'anonymous'
-		db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+		db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 		if not db_user:
 			db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
 
@@ -251,7 +251,7 @@ class HistoryHelper:
 			db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
 			                                                                     VoteStatement.is_up_vote == True,
 			                                                                     VoteStatement.is_valid == True,
-			                                                                     VoteArgument.author_uid != db_user.uid)).all()
+			                                                                     VoteStatement.author_uid != db_user.uid)).all()
 		_t = Translator(lang)
 		votecounts = len(db_votecounts) if db_votecounts else 0
 

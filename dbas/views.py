@@ -42,7 +42,7 @@ from .url_manager import UrlManager
 from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
-version = '0.5.12'
+version = '0.5.13'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -101,10 +101,11 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
-		ui_locales = get_language(self.request, get_current_registry())
+		ui_locales      = get_language(self.request, get_current_registry())
 		disc_ui_locales = get_discussion_language(self.request)
-		extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
-		DictionaryHelper(ui_locales, disc_ui_locales).add_language_options_for_extra_dict(extras_dict)
+		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
+		extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		_dh.add_language_options_for_extra_dict(extras_dict)
 
 		return {
 			'layout': self.base_layout(),
