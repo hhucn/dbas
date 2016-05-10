@@ -1896,7 +1896,7 @@ class Dbas(object):
 			elif mode == '4':  # getting text
 				return_dict = FuzzyStringMatcher.get_strings_for_search(value)
 			else:
-				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
+				logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
 				return_dict = {'error': _tn.get(_tn.internalError)}
 
 		except KeyError as e:
