@@ -257,7 +257,7 @@ def discussion_init(request):
 #
 # Add new statements / positions
 #
-@start_statement.post(validators=validate_login)
+@start_statement.post(validators=validate_login, require_csrf=False)
 def add_start_statement(request):
 	"""
 	Add new start statement to issue.
@@ -268,7 +268,7 @@ def add_start_statement(request):
 	return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
 
 
-@start_premise.post(validators=validate_login)
+@start_premise.post(validators=validate_login, require_csrf=False)
 def add_start_premise(request):
 	"""
 	Add new premise group.
@@ -279,7 +279,7 @@ def add_start_premise(request):
 	return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
 
 
-@justify_premise.post(validators=validate_login)
+@justify_premise.post(validators=validate_login, require_csrf=False)
 def add_justify_premise(request):
 	"""
 	Add new justifying premise group.
@@ -302,7 +302,6 @@ def get_references(request):
 	:return: References assigned to the queried URL
 	"""
 	host, path = parse_host_and_path(request)
-	csrf = request.session.get_csrf_token()
 	if host and path:
 		refs = []
 		log.debug("[API/Reference] Returning references for %s%s" % (host, path))
@@ -325,7 +324,7 @@ def get_references(request):
 # =============================================================================
 
 @login.get()  # TODO test this permission='use'
-def return_fuckin_csrf_token(request):
+def get_csrf_token(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.
 
