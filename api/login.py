@@ -132,6 +132,6 @@ def validate_credentials(request):
 			user = {'nickname': nickname, 'token': token}
 			token_to_database(nickname, token)
 			request.validated['user'] = user
-	except TypeError:
+	except (TypeError, KeyError):
 		log.error('API Not logged in: %s' % logged_in)
 		request.errors.add(logged_in)
