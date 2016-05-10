@@ -556,7 +556,6 @@ function callbackIfDoneForLogin(data){
 	try {
 		var jsonData = $.parseJSON(data);
 		// It is JSON
-		alert(jsonData.error+"\n"+data);
 		if (jsonData.error.length != 0) {
 			$('#' + popupLoginFailed).show();
 			$('#' + popupLoginFailed + '-message').text(jsonData.error);
@@ -588,15 +587,15 @@ function callbackIfDoneForRegistration(data){
 	info.hide();
 	if (parsedData.success.length > 0) {
 		success.show();
-		$('#' + popupLoginRegistrationSuccess + '-message').text(_t(parsedData.success));
+		$('#' + popupLoginRegistrationSuccess + '-message').text(parsedData.success);
 	}
 	if (parsedData.error.length > 0) {
 		failed.show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(_t(parsedData.error));
+		$('#' + popupLoginRegistrationFailed + '-message').text(parsedData.error);
 	}
 	if (parsedData.info.length > 0) {
 		info.show();
-		$('#' + popupLoginRegistrationInfo + '-message').text(_t(parsedData.info));
+		$('#' + popupLoginRegistrationInfo + '-message').text(parsedData.info);
 	}
 }
 

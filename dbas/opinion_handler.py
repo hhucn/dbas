@@ -203,8 +203,8 @@ class OpinionHandler:
 
 			db_votes = []
 			for premise in db_premises:
-				logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'group ' + str(uid)
-				       + ' premises statement ' + str(premise.statement_uid))
+				logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'group ' + str(uid) +
+				       ' premises statement ' + str(premise.statement_uid))
 				db_votes += DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == premise.statement_uid,
 				                                                                 VoteStatement.is_up_vote == True,
 				                                                                 VoteStatement.is_valid == True,

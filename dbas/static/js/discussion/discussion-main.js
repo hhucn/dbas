@@ -184,6 +184,7 @@ function Main () {
 				});
 			}
 		});
+		$('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click');
 
 		// get infos about the author
 		$('[id^="' + questionBubbleId + '-"').click(function () {

@@ -373,12 +373,12 @@ def setup_up_users(session):
 	pw1 = PasswordHandler.get_hashed_password('admin')
 	pw2 = PasswordHandler.get_hashed_password('tobias')
 	pw3 = PasswordHandler.get_hashed_password('martin')
-	pw4 = PasswordHandler.get_hashed_password('michael')
+	pw4 = PasswordHandler.get_hashed_password('christian')
 
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
 	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
-	user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf', password=pw3, group=group0.uid, gender='m')
+	user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group=group0.uid, gender='m')
 	user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group=group0.uid, gender='m')
 
 	usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='.tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
@@ -614,8 +614,8 @@ def setup_discussion_database(session, user):
 	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
 	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
 	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
-	issue5 = Issue(title='Unterstuetzung der Sekretariate',
-	               info='Unsere Sekretariate in der Informatik sind arbeitstechnisch stark ueberlastet. Bitte diskutieren Sie Moeglichkeiten zur Unterstuetzung der Sekretariate.',
+	issue5 = Issue(title='Unterstützung der Sekretariate',
+	               info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Maßnahmen zur Unterstützung der Sekretariate.',
 	               author_uid=user.uid, lang_uid=lang2.uid)
 	session.add_all([issue1, issue2, issue4, issue5])
 	session.flush()
@@ -679,17 +679,17 @@ def setup_discussion_database(session, user):
 	textversion122 = TextVersion(content="The rate of non-swimmers is too high.", author=user.uid)
 	textversion123 = TextVersion(content="The police cannot patrol in the park for 24/7.", author=user.uid)
 	textversion200 = TextVersion(content="E-Autos verursachen keine Emissionen.", author=user.uid)
-	textversion201 = TextVersion(content="Elektroautos sind sehr guenstig im Unterhalt", author=user.uid)
-	textversion202 = TextVersion(content="E-Autos sind optimal fuer den Stadtverkehr.", author=user.uid)
+	textversion201 = TextVersion(content="Elektroautos sind sehr günstig im Unterhalt", author=user.uid)
+	textversion202 = TextVersion(content="E-Autos sind optimal für den Stadtverkehr.", author=user.uid)
 	textversion203 = TextVersion(content="Sie keine stinkenden Abgase produzieren.", author=user.uid)
 	textversion204 = TextVersion(content="Die Herstellung der Autos und Batterien die Umwelt stark belastet", author=user.uid)
 	textversion205 = TextVersion(content="Sie sind sehr teuer in der Anschaffung.", author=user.uid)
-	textversion206 = TextVersion(content="Die Reichweite von Elektroautos ist ausreichend fuer mindestens 300km.", author=user.uid)
-	textversion207 = TextVersion(content="Die Ladezeit der Batterie kann bis zu 12h dauern und so lange kann man tagsueber nicht warten.", author=user.uid)
-	textversion208 = TextVersion(content="Die Umweltbelastung und Rohstoffabhaengigkeit durch Batterien sehr hoch ist.", author=user.uid)
+	textversion206 = TextVersion(content="Die Reichweite von Elektroautos ist ausreichend für mindestens 300km.", author=user.uid)
+	textversion207 = TextVersion(content="Die Ladezeit der Batterie kann bis zu 12h dauern und so lange kann man tagsüber nicht warten.", author=user.uid)
+	textversion208 = TextVersion(content="Die Umweltbelastung und Rohstoffabhängigkeit durch Batterien sehr hoch ist.", author=user.uid)
 	textversion209 = TextVersion(content="Die Umweltbelastung durch Batterien immernoch viel geringer ist, als durch Verbrennungsmotoren.", author=user.uid)
-	textversion210 = TextVersion(content="In der Stadt sind Fahrraeder und oeffentliche Verkehrsmittel besser.", author=user.uid)
-	textversion211 = TextVersion(content="Man gezielt 'tanken' kann, genauso wie bei einem herkoemmlichen KFZ.", author=user.uid)
+	textversion210 = TextVersion(content="In der Stadt sind Fahrräder und öffentliche Verkehrsmittel besser.", author=user.uid)
+	textversion211 = TextVersion(content="Man gezielt 'tanken' kann, genauso wie bei einem herkömmlichen KFZ.", author=user.uid)
 
 	session.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])
 	session.add_all([textversion7, textversion8, textversion9, textversion10, textversion11, textversion12])

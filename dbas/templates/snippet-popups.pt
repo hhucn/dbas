@@ -428,7 +428,7 @@
     							<br><span i18n:translate="select_password_help">If you need some help with our password, you can get one here:</span>
     							<br>
     							<input class="form-control" type="text" id="password-generator-output">
-    							<input type="button" id="password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
+    				            <button type="button" id="password-generator-button" class="btn btn-primary" i18n:translate="generate_password">Generate secure password</button>
     						</div>
     					</div>
 
