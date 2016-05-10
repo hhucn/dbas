@@ -1864,7 +1864,7 @@ class Dbas(object):
 
 	# ajax - for fuzzy search
 	@view_config(route_name='ajax_fuzzy_search', renderer='json')
-	def fuzzy_search(self, for_api=False):
+	def fuzzy_search(self, for_api=False, api_data=None):
 		"""
 		ajax interface for fuzzy string search
 
@@ -1877,14 +1877,16 @@ class Dbas(object):
 		_tn = Translator(get_language(self.request, get_current_registry()))
 
 		try:
-			value = self.request.params['value']
-			mode = str(self.request.params['type']) if not for_api else ''
-			issue = IssueHelper.get_issue_id(self.request) if not for_api else ''
+			if for_api:
+				value = api_data["value"]
+				mode = str(api_data["mode"])
+				issue = api_data["issue"]
+			else:
+				value = self.request.params['value']
+				mode = str(self.request.params['type'])
+				issue = IssueHelper.get_issue_id(self.request)
 
 			return_dict = dict()
-			if for_api and not mode == '4':
-				return_dict['values'] = FuzzyStringMatcher.get_strings_for_issues(value)
-				return json.dumps(return_dict, True)
 
 			if mode == '0':  # start statement
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_start(value, issue, True)
@@ -1898,7 +1900,7 @@ class Dbas(object):
 			elif mode == '4':  # getting text
 				return_dict = FuzzyStringMatcher.get_strings_for_search(value)
 			else:
-				logger('fuzzy_search', 'main', 'unkown mode: ' + str(mode))
+				logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
 				return_dict = {'error': _tn.get(_tn.internalError)}
 
 		except KeyError as e:

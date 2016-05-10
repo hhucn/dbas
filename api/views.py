@@ -87,6 +87,11 @@ references = Service(name="references",
                      description="Query database to get stored references from site",
                      cors_policy=cors_policy)
 
+find_statements = Service(name="find_statements",
+	                      path="/get/statements/{issue}/{type}/{value}",
+	                      description="Query database to get closest statements",
+	                      cors_policy=cors_policy)
+
 #
 # Other Services
 #
@@ -113,7 +118,7 @@ def append_csrf_to_dict(request, return_dict):
 	Append CSRF token to response.
 
 	:param request: needed to extract the token
-	:param d: dictionary, which gets merged with the csrf token
+	:param return_dict: dictionary, which gets merged with the csrf token
 	:return:
 	"""
 	csrf = request.session.get_csrf_token()
@@ -218,16 +223,16 @@ def discussion_attitude(request):
 	return Dbas(request).discussion_attitude(for_api=True, api_data=api_data)
 
 
-@issues.get(validators=validate_login)
-def issue_selector(request):
-	"""
-	Return data from DBas discussion_attitude page.
-
-	:param request: request
-	:return: Dbas(request).discussion_attitude(True)
-	"""
-	api_data = prepare_user_information(request)
-	return Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
+# @issues.get(validators=validate_login)
+# def issue_selector(request):
+# 	"""
+# 	Return data from DBas discussion_attitude page.
+#
+# 	:param request: request
+# 	:return: Dbas(request).discussion_attitude(True)
+# 	"""
+# 	api_data = prepare_user_information(request)
+# 	return Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
 
 
 @zinit.get(validators=validate_login)
@@ -353,6 +358,19 @@ def user_login(request):
 
 	return_dict = {'token': '%s-%s' % (user['nickname'], token)}
 	return append_csrf_to_dict(request, return_dict)
+
+
+# =============================================================================
+# FINDING STATEMENTS
+# =============================================================================
+
+@find_statements.get()
+def find_statements_fn(request):
+	api_data = dict()
+	api_data["issue"] = request.matchdict["issue"]
+	api_data["mode"] = request.matchdict["type"]
+	api_data["value"] = request.matchdict["value"]
+	return Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
 
 
 # =============================================================================
