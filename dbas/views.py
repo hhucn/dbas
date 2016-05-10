@@ -688,7 +688,9 @@ class Dbas(object):
 			'title_mails': _tn.get(_tn.mailSettingsTitle),
 			'title_notifications': _tn.get(_tn.notificationSettingsTitle),
 			'title_public_nick': _tn.get(_tn.publicNickTitle),
-			'public_page_url': mainpage + '/user/' + public_nick
+			'public_page_url': mainpage + '/user/' + public_nick,
+			'on': _tn.get(_tn.on),
+			'off': _tn.get(_tn.off)
 		}
 
 		return {
@@ -1172,7 +1174,7 @@ class Dbas(object):
 						success = _t.get(_t.accountWasAdded)
 
 						# sending an email
-						subject = 'D-BAS Account Registration'
+						subject = _t.get(_t.accountRegistration)
 						body = _t.get(_t.accountWasRegistered)
 						EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
 						NotificationHelper.send_welcome_message(transaction, checknewuser.uid)

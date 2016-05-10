@@ -12,6 +12,7 @@ from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History
 from dbas.strings import Translator, TextGenerator
+from dbas.input_validator import Validator
 
 
 class HistoryHelper:
@@ -58,7 +59,6 @@ class HistoryHelper:
 		nickname = nickname if nickname else 'anonymous'
 
 		for index, step in enumerate(splitted_history):
-			logger('HistoryHelper', 'create_bubbles_from_history', 'step: ' + step)
 			url = application_url + '/discuss/' + slug + '/' + step
 			if len(consumed_history) != 0:
 				url += '?history=' + consumed_history
@@ -72,7 +72,8 @@ class HistoryHelper:
 
 				if [c for c in ('t', 'f') if c in mode] and relation == '':
 					bubbles = HistoryHelper.__justify_statement_step(step, nickname, lang, url)
-					bubble_array += bubbles
+					if bubbles:
+						bubble_array += bubbles
 
 				# elif 'd' in mode and relation == '':
 
@@ -81,13 +82,14 @@ class HistoryHelper:
 			elif 'reaction/' in step:
 				logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
 				bubbles = HistoryHelper.__reaction_step(step, nickname, lang, splitted_history, url)
-				bubble_array += bubbles
+				if bubbles:
+					bubble_array += bubbles
 
 			#  elif '/choose/' in step:
 			#  logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': ' + step)
 
 			else:
-				logger('HistoryHelper', 'create_bubbles_from_history', 'UNUSED ' + str(index) + ': ' + step)
+				logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
 
 			# for bubble in bubble_array:
 			# 	logger('HistoryHelper', 'create_bubbles_from_history', 'Created: ' + str(bubble['message']) + '; URL: ' + str(bubble['url']))
@@ -158,6 +160,9 @@ class HistoryHelper:
 		uid             = int(steps[1])
 		additional_uid  = int(steps[3])
 		attack          = steps[2]
+
+		if not Validator.check_reaction(uid, additional_uid, attack, is_history=True):
+			return None
 
 		is_supportive   = DBDiscussionSession.query(Argument).filter_by(uid=uid).first().is_supportive
 		last_relation   = splitted_history[-1].split('/')[2]

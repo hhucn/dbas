@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-09 22:14+0200\n"
+"POT-Creation-Date: 2016-05-10 13:33+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -591,12 +591,12 @@ msgstr "Registrieren"
 #. Default: Your Nickname
 #: dbas/templates/snippet-popups.pt:259
 msgid "your_nickname"
-msgstr "Dein Nickname"
+msgstr "Ihr Nickname"
 
 #. Default: Your Password
 #: dbas/templates/snippet-popups.pt:266
 msgid "your_password"
-msgstr "Dein Passwort"
+msgstr "Ihr Passwort"
 
 #. Default: Keep me logged in
 #: dbas/templates/snippet-popups.pt:275
@@ -696,9 +696,9 @@ msgid "password_strength"
 msgstr "sehr schwach"
 
 #. Default: Generate secure password
-#: dbas/templates/snippet-popups.pt:382
+#: dbas/templates/snippet-popups.pt:382 dbas/templates/snippet-popups.pt:431
 msgid "generate_password"
-msgstr "Neues Password"
+msgstr "Password generieren"
 
 #. Default: How to select a strong password
 #: dbas/templates/snippet-popups.pt:412 dbas/templates/snippet-popups.pt:456
@@ -933,7 +933,7 @@ msgstr "Profilbild"
 #. Default: Change your profile picture on the
 #: dbas/templates/settings.pt:72
 msgid "change_gravatar"
-msgstr "Ändere dein Gravatar auf der"
+msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
 
 #. Default: A Gravatar is a Globally Recognized Avatar. You upload it and
 #. create your profile just once, and then when you participate in any
@@ -942,7 +942,7 @@ msgstr "Ändere dein Gravatar auf der"
 #: dbas/templates/settings.pt:74
 msgid "what_is_gravatar"
 msgstr ""
-"Ein Gravatar ist ein Globally Recognized Avatar (Global Wiedererkennender "
+"Ein Gravatar ist ein Globally Recognized Avatar (Global wiedererkennbarer "
 "Avatar). Sie können es einmalig erstellen und hochladen. Dadurch wird dieses "
 "Bild auf jeder Website angezeigt, die Gravat unterstützt. Ihr Bild wird "
 "Ihnen folgen."
@@ -962,7 +962,7 @@ msgstr "Einstellungen wurden gesichert."
 #. Default: Change your password
 #: dbas/templates/settings.pt:97
 msgid "change_password"
-msgstr "Ändere dein Passwort"
+msgstr "Passwort ändern"
 
 #. Default: Old password
 #: dbas/templates/settings.pt:101
@@ -1016,7 +1016,7 @@ msgstr "Stimmen für Argumente"
 #. Default: Your password was changed
 #: dbas/templates/settings.pt:182
 msgid "password_changed"
-msgstr "Dein Passwurd wurde geändert"
+msgstr "Ihr Passwurd wurde geändert"
 
 #. Default: Statistics could not be deleted.
 #: dbas/templates/settings.pt:189
@@ -1049,22 +1049,22 @@ msgstr ""
 #. Default: Your Name (required)
 #: dbas/templates/contact.pt:12
 msgid "name_req"
-msgstr "Dein Name (notwendig)"
+msgstr "Ihr Name (notwendig)"
 
 #. Default: Your E-Mail (required)
 #: dbas/templates/contact.pt:19
 msgid "mail_req"
-msgstr "Deine E-Mail (notwendig)"
+msgstr "Ihre E-Mail (notwendig)"
 
 #. Default: Your Phone Number
 #: dbas/templates/contact.pt:26
 msgid "phone_no"
-msgstr "Deine Telefon-Nr."
+msgstr "Ihre Telefon-Nr."
 
 #. Default: Your Notification (required)
 #: dbas/templates/contact.pt:33
 msgid "message_req"
-msgstr "Deine Nachricht (notwendig)"
+msgstr "Ihre Nachricht (notwendig)"
 
 #. Default: Anti-Spam (required)
 #: dbas/templates/contact.pt:40
@@ -1084,7 +1084,7 @@ msgstr "Großartig:"
 #. Default: Your message was sent.
 #: dbas/templates/contact.pt:65
 msgid "message_sent"
-msgstr "Deine Nachricht wurde gesendet"
+msgstr "Ihre Nachricht wurde gesendet"
 
 #. Default: Thank you!
 #: dbas/templates/finish.pt:7

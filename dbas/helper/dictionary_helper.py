@@ -184,7 +184,6 @@ class DictionaryHelper(object):
 		"""
 		logger('DictionaryHelper', 'add_discussion_end_text', 'main')
 		_tn = Translator(self.discussion_lang)
-		current_premise = current_premise[0:1].lower() + current_premise[1:]
 		_hh = HistoryHelper
 
 		if at_start:
@@ -214,6 +213,7 @@ class DictionaryHelper(object):
 
 		elif at_dont_know:
 			discussion_dict['mode'] = 'dont_know'
+			current_premise = current_premise[0:1].lower() + current_premise[1:]
 			sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
 			sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
 			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)

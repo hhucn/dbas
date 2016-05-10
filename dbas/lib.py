@@ -136,7 +136,9 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 	_t = Translator(lang)
 	sb = '<strong>' if with_strong_html_tag else ''
 	se = '</strong>' if with_strong_html_tag else ''
-	because = ' ' + se + _t.get(_t.because).lower() + ' ' + sb
+	co = ', ' if lang == 'de' else ''
+	because = (se + ', ') if lang == 'de' else (' ' + se)
+	because += _t.get(_t.because).lower() + ' ' + sb
 	doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHoldBecause).lower() + ' ' + sb
 
 	# getting all argument id

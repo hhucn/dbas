@@ -16,12 +16,13 @@ class Validator:
 	"""
 
 	@staticmethod
-	def check_reaction(attacked_arg_uid, attacking_arg_uid, relation):
+	def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=False):
 		"""
 		Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation
 
 		:param attacking_arg_uid: Argument.uid
 		:param relation: String
+		:param is_history: Boolean
 		:return: Boolean
 		"""
 		logger('Validator', 'check_reaction', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
@@ -55,7 +56,7 @@ class Validator:
 			# do have both arguments teh same conclusion?
 			return True if db_attacking_arg.conclusion_uid == db_attacked_arg.conclusion_uid and db_attacked_arg.conclusion_uid is not None else False
 
-		elif relation.startswith('end'):
+		elif relation.startswith('end') and not is_history:
 			return True
 
 		else:

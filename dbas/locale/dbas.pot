@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-09 22:14+0200\n"
+"POT-Creation-Date: 2016-05-10 13:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -609,6 +609,7 @@ msgstr ""
 
 #. Default: Generate secure password
 #: ./dbas/templates/snippet-popups.pt:382
+#: ./dbas/templates/snippet-popups.pt:431
 msgid "generate_password"
 msgstr ""
 

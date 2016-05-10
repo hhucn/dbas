@@ -64,6 +64,7 @@ class Translator(object):
 		self.acceptIt = 'acceptIt'
 		self.attack = 'attack'
 		self.accountWasAdded = 'accountWasAdded'
+		self.accountRegistration = 'accountRegistration'
 		self.accountWasRegistered = 'accountWasRegistered'
 		self.accoutErrorTryLateOrContant = 'accoutErrorTryLateOrContant'
 		self.antispamquestion = 'antispamquestion'
@@ -327,6 +328,8 @@ class Translator(object):
 		self.noRights = 'noRights'
 		self.notLoggedIn = 'notLoggedIn'
 		self.unfortunatelyOnlyOneItem = 'unfortunatelyOnlyOneItem'
+		self.on = 'on'
+		self.off = 'off'
 		self.onlyOneItem = 'onlyOneItem'
 		self.onlyOneItemWithLink = 'onlyOneItemWithLink'
 		self.otherParticipantsConvincedYouThat = 'otherParticipantsConvincedYouThat'
@@ -683,7 +686,7 @@ class TextGenerator(object):
 		tmp = _t.get(_t.butIDoNotBelieveCounterFor) if is_attacking else _t.get(_t.butIDoNotBelieveArgumentFor)
 		ret_dict['undercut_text'] = r + '<strong>' + premise + '</strong>, '\
 		                            + (_t.get(_t.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)\
-		                            + ' <strong>' + conclusion + '</strong>.'
+		                            + ' <strong>' + conclusion + '</strong>' + (' ist' if self.lang == 'de' else '') + '.'
 
 		ret_dict['overbid_text'] = r + '<strong>' + premise + '</strong>, '\
 		                           + (_t.get(_t.andIDoBelieveArgument) if is_dont_know else _t.get(_t.andIDoBelieveCounterFor))\
