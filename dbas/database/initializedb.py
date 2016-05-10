@@ -321,7 +321,7 @@ def setup_news_db(session):
 				  news='Recently we improved some features, which will be released in future. Firstly there will be an '
 				       'island view for every argument, where the participants can see every premise for current reactions. '
 				       'Secondly the opinion barometer is still under development. For a more recent update, have a look '
-				       'at out imprint.')
+				       'at our imprint.')
 	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
 	              news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
 	              news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,

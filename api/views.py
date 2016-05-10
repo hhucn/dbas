@@ -15,7 +15,7 @@ from api.login import validate_credentials, validate_login
 from cornice import Service
 from dbas.views import Dbas
 
-from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger
+from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger, merge_dicts
 from .references import get_references_for_url, store_reference, url_to_statement
 
 log = logger()
@@ -26,7 +26,7 @@ log = logger()
 cors_policy = dict(enabled=True,
 				   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
 				   origins=('*',),
-				   # credentials=True,  # TODO: how can i use this?
+				   credentials=True,  # TODO: how can i use this?
 				   max_age=42)
 
 
@@ -108,6 +108,19 @@ login = Service(name='login',
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
 
+def append_csrf_to_dict(request, return_dict):
+	"""
+	Append CSRF token to response.
+
+	:param request: needed to extract the token
+	:param d: dictionary, which gets merged with the csrf token
+	:return:
+	"""
+	csrf = request.session.get_csrf_token()
+	csrf_dict = {"csrf": csrf}
+	return merge_dicts(csrf_dict, return_dict)
+
+
 def prepare_user_information(request):
 	"""
 	Check if user is authenticated, return prepared data for D-BAS.
@@ -159,11 +172,14 @@ def parse_host_and_path(request):
 	:rtype: str
 	"""
 	try:
-		data = json_bytes_to_dict(request.body)
-		return data["host"], data["path"]
+		host = request.headers["X-Host"]
+		path = request.headers["X-Path"]
+		return host, path
 	except AttributeError:
 		log.error("[API/Reference] Could not look up origin.")
-		return None, None
+	except KeyError:
+		log.error("[API/Reference] Missing fields in HTTP header (X-Host / X-Path).")
+	return None, None
 
 
 @reaction.get(validators=validate_login)
@@ -241,7 +257,7 @@ def discussion_init(request):
 #
 # Add new statements / positions
 #
-@start_statement.post(validators=validate_login)
+@start_statement.post(validators=validate_login, require_csrf=False)
 def add_start_statement(request):
 	"""
 	Add new start statement to issue.
@@ -252,7 +268,7 @@ def add_start_statement(request):
 	return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
 
 
-@start_premise.post(validators=validate_login)
+@start_premise.post(validators=validate_login, require_csrf=False)
 def add_start_premise(request):
 	"""
 	Add new premise group.
@@ -263,7 +279,7 @@ def add_start_premise(request):
 	return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
 
 
-@justify_premise.post(validators=validate_login)
+@justify_premise.post(validators=validate_login, require_csrf=False)
 def add_justify_premise(request):
 	"""
 	Add new justifying premise group.
@@ -277,7 +293,7 @@ def add_justify_premise(request):
 #
 # Get data from D-BAS' database
 #
-@references.post()
+@references.get()
 def get_references(request):
 	"""
 	Query database to get stored references from site. Generate a list with text versions of references.
@@ -290,12 +306,16 @@ def get_references(request):
 		refs = []
 		log.debug("[API/Reference] Returning references for %s%s" % (host, path))
 		refs_db = get_references_for_url(host, path)
-		if refs_db:
+		if refs_db is not None:
 			for ref in refs_db:
 				url = url_to_statement(ref.issue_uid, ref.statement_uid)
 				refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
 			return {"references": refs}
+		else:
+			log.error("[API/Reference] Returned no references: Database error")
+			return {"status": "error", "message": "Could not retrieve references"}
 	else:
+		log.error("[API/Reference] Could not parse host and / or path")
 		return {"status": "error", "message": "Could not parse your origin"}
 
 
@@ -304,18 +324,18 @@ def get_references(request):
 # =============================================================================
 
 @login.get()  # TODO test this permission='use'
-def testing(request):
+def get_csrf_token(request):
 	"""
 	Test user's credentials, return success if valid token and username is provided.
 
 	:param request:
 	:return:
 	"""
-	Dbas(request).main_notifications()
-	return {'status': 'success'}
+	log.debug("[API/CSRF] Returning CSRF token.")
+	return append_csrf_to_dict(request, {})
 
 
-@login.post(validators=validate_credentials)
+@login.post(validators=validate_credentials, require_csrf=False)
 def user_login(request):
 	"""
 	Check provided credentials and return a token, if it is a valid user.
@@ -331,7 +351,8 @@ def user_login(request):
 	else:
 		token = user['token']
 
-	return {'token': '%s-%s' % (user['nickname'], token)}
+	return_dict = {'token': '%s-%s' % (user['nickname'], token)}
+	return append_csrf_to_dict(request, return_dict)
 
 
 # =============================================================================
