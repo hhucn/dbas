@@ -324,14 +324,17 @@ class DictionaryHelper(object):
 		:return: None
 		"""
 		_tn_dis = Translator(self.discussion_lang)
+		_tn_sys = Translator(self.system_lang)
 
 		return_dict['tag'] = {
-			'add_a_topic': _tn_dis.get(_tn_dis.addATopic),
-			'please_enter_topic': _tn_dis.get(_tn_dis.pleaseEnterTopic),
-			'please_enter_shorttext_for_topic': _tn_dis.get(_tn_dis.pleaseEnterShorttextForTopic),
-			'please_select_language_for_topic': _tn_dis.get(_tn_dis.pleaseSelectLanguageForTopic),
+			'add_a_topic': _tn_sys.get(_tn_sys.addATopic),
+			'please_enter_topic': _tn_sys.get(_tn_sys.pleaseEnterTopic),
+			'please_enter_shorttext_for_topic': _tn_sys.get(_tn_sys.pleaseEnterShorttextForTopic),
+			'please_select_language_for_topic': _tn_sys.get(_tn_sys.pleaseSelectLanguageForTopic),
 			'edit_statement_view_changelog': _tn_dis.get(_tn_dis.editStatementViewChangelog),
 			'edit_statement_here': _tn_dis.get(_tn_dis.editStatementHere),
+			'sys_save': _tn_sys.get(_tn_sys.save),
+			'sys_cancel': _tn_sys.get(_tn_sys.cancel),
 			'save': _tn_dis.get(_tn_dis.save),
 			'cancel': _tn_dis.get(_tn_dis.cancel),
 			'submit': _tn_dis.get(_tn_dis.submit),

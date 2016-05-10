@@ -91,7 +91,7 @@ class GermanDict:
 
 		de_lang[_self.addATopic] = 'Thema hinzufügen'
 		de_lang[_self.pleaseEnterTopic] = 'Bitte geben Sie Ihr Thema an:'
-		de_lang[_self.pleaseEnterShorttextForTopic] = 'Bitte geben Sie die Kurform Ihres Themas an:'
+		de_lang[_self.pleaseEnterShorttextForTopic] = 'Bitte geben Sie die Kurzform Ihres Themas an:'
 		de_lang[_self.pleaseSelectLanguageForTopic] = 'Bitte geben Sie die Sprache Ihres Themas an:'
 		de_lang[_self.editStatementViewChangelog] = 'Aussagen editieren / Änderungprotokoll einsehen'
 		de_lang[_self.editStatementHere] = 'Bitte bearbeiten Sie hier die Aussage:'
