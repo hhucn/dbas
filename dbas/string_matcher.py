@@ -129,10 +129,10 @@ class FuzzyStringMatcher:
 
 	def get_strings_for_search(value):
 		"""
-		Returns all statemens which have a substring o the given value as well as the arguments, where the statements are used
+		Returns all statements which have a substring of the given value as well as the arguments, where the statements are used
 
 		:param value: String
-		:return: dict() with Statments.uid as key and 'text', 'distance' as well as 'arguments' as values
+		:return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
 		"""
 		tmp_dict = dict()
 		db_statements = DBDiscussionSession.query(Statement).join(TextVersion, Statement.textversion_uid==TextVersion.uid).all()
