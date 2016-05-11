@@ -88,15 +88,16 @@ class ItemDictHelper(object):
 
 		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-		statements_array.append(self.__create_statement_dict('agree',
-		                                                     [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
-															 'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't')))
-		statements_array.append(self.__create_statement_dict('disagree',
-		                                                     [{'title': _tn.get(_tn.iDisagreeWithInColor) + ': ' + text, 'id': 'disagree'}],
-															 'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f')))
-		statements_array.append(self.__create_statement_dict('dontknow',
-		                                                     [{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
-															 'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd')))
+		colon = ' ' if self.lang == 'de' else ': '
+		titleT = _tn.get(_tn.iAgreeWithInColor) + colon + text
+		titleF = _tn.get(_tn.iDisagreeWithInColor) + colon + text
+		titleD = _tn.get(_tn.iHaveNoOpinionYetInColor) + colon + text
+		urlT = _um.get_url_for_justifying_statement(True, statement_uid, 't')
+		urlF = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
+		urlD = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
+		statements_array.append(self.__create_statement_dict('agree', [{'title': titleT, 'id': 'agree'}], 'agree', urlT))
+		statements_array.append(self.__create_statement_dict('disagree', [{'title': titleF, 'id': 'disagree'}], 'disagree', urlF))
+		statements_array.append(self.__create_statement_dict('dontknow', [{'title': titleD, 'id': 'dontknow'}], 'dontknow', urlD))
 
 		return statements_array
 

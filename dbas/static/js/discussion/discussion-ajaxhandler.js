@@ -237,8 +237,9 @@ function AjaxSiteHandler() {
 	 * @param type
 	 * @param argument_uid
 	 * @param statement_uid
+	 * @param is_supportive
 	 */
-	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid){
+	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
 		var is_argument = type == 'argument',
 			is_position = type == 'position' || type == 'statement',
 			uid = argument_uid == 'None' ? statement_uid : argument_uid,
@@ -250,6 +251,7 @@ function AjaxSiteHandler() {
 				is_argument: is_argument,
 				uids: uid,
 				is_position: is_position,
+				is_supporti: is_supportive,
 				lang: $('#issue_info').attr('data-discussion-language')
 			},
 			dataType: 'json',

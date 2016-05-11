@@ -72,8 +72,6 @@ class DiscussionDictHelper(object):
 			statement_text = statement_text[0:1].lower() + statement_text[1:]
 
 		text = _tn.get(_tn.whatDoYouThinkAbout)
-		if self.lang == 'de':
-			text += ':'
 		text += ' <strong>' + statement_text + '</strong>?'
 		# select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, '', '', _tn.get(_tn.youAreInterestedIn) + ': <strong>' + statement_text + '</strong>', lang=self.lang)
 		bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
@@ -118,7 +116,7 @@ class DiscussionDictHelper(object):
 		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 		intro = ''
 		if not is_supportive:
-			intro = _tn.get(_tn.youDisagreeWith) + ': '
+			intro = _tn.get(_tn.youDisagreeWith) + (' ' if self.lang == 'de' else ': ')
 		splitted_history = self.history.split('-')
 		if len(splitted_history) > 0:
 			if '/undercut' in splitted_history[-1] or '/undermine' in splitted_history[-1] or '/rebut' in splitted_history[-1]:
@@ -129,9 +127,8 @@ class DiscussionDictHelper(object):
 		question_bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True, lang=self.lang)
 		if not text.endswith(('.', '?', '!')):
 			text += '.'
-
 		select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, url=url, message=intro + '<strong>' + text + '</strong>',
-		                                                       omit_url=False, statement_uid=uid, is_up_vote=is_supportive,
+		                                                       omit_url=False, statement_uid=uid, is_supportive=is_supportive,
 		                                                       nickname=nickname, lang=self.lang)
 
 		bubbles_array.append(select_bubble)
@@ -302,7 +299,7 @@ class DiscussionDictHelper(object):
 			                                          reply_for_argument, user_is_attacking, db_argument, db_confrontation)
 
 		bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
-		                                                     is_up_vote=is_supportive, lang=self.lang, nickname=self.nickname)
+		                                                     is_supportive=is_supportive, lang=self.lang, nickname=self.nickname)
 		if attack.startswith('end'):
 			bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, lang=self.lang)
 			bubble_mid  = HistoryHelper.create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)

@@ -294,19 +294,19 @@ class GermanDict:
 		de_lang[_self.initialPosition] = 'Anfangs-interesse'
 		de_lang[_self.initialPositionSupport] = 'Was ist Ihre Meinung, die Sie unterstützen?'
 		de_lang[_self.initialPositionAttack] = 'Was ist Ihre Meinung, di Sie angreifen möchten?'
-		de_lang[_self.initialPositionInterest] = 'An welcher Aussage sind Sie interessiert?'
+		de_lang[_self.initialPositionInterest] = 'Ich möchte über die Aussage reden, dass ...'  # An welcher Aussage sind Sie interessiert?' # TODO ger fix
 		de_lang[_self.islandViewTitle] = 'Zeigt die Insel Ansicht'
 		de_lang[_self.iAcceptCounter] = 'und ich akzeptiere, dass es ein Gegenargument ist, für'
 		de_lang[_self.iAcceptArgument] = 'und ich akzeptiere, dass es ein Argument ist, für'
-		de_lang[_self.iAgreeWithInColor] = 'Ich <span class=\'text-success\'>akzeptiere</span> die Aussage'
-		de_lang[_self.iAgreeWith] = 'Ich akzeptiere die Aussage'
-		de_lang[_self.iDisagreeWithInColor] = 'Ich <span class=\'text-danger\'>widerspreche</span> der Aussage'
-		de_lang[_self.iDoNotKnow] = 'Ich weiß es nicht'
-		de_lang[_self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>'
-		de_lang[_self.iHaveNoOpinionYet] = 'Ich weiß es nicht'
-		de_lang[_self.iHaveNoOpinion] = 'Ich weiß es nicht'
-		de_lang[_self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>, zeige mir eine Aussage für'
-		de_lang[_self.iDisagreeWith] = 'Ich widerspreche der Aussage'
+		de_lang[_self.iAgreeWith] = 'Ich akzeptiere die Aussage, dass'  # TODO ger fix
+		de_lang[_self.iAgreeWithInColor] = 'Ich <span class=\'text-success\'>akzeptiere</span> die Aussage, dass'  # TODO ger fix
+		de_lang[_self.iDisagreeWith] = 'Ich widerspreche der Aussage, dass'  # TODO ger fix
+		de_lang[_self.iDisagreeWithInColor] = 'Ich <span class=\'text-danger\'>widerspreche</span> der Aussage, dass'  # TODO ger fix
+		de_lang[_self.iDoNotKnow] = 'Ich weiß es nicht, dass'  # TODO ger fix
+		de_lang[_self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>, dass'  # TODO ger fix
+		de_lang[_self.iHaveNoOpinionYet] = 'Ich weiß es nicht, dass'  # TODO ger fix
+		de_lang[_self.iHaveNoOpinion] = 'Ich weiß es nicht. Zeige mir eine Aussage dafür, dass'  # TODO ger fix
+		de_lang[_self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>. Zeige mir eine Aussage dafür, dass'  # TODO ger fix
 		de_lang[_self.iHaveMuchStrongerArgumentRejecting] = 'Ich habe ein viel stärkeres Argument zum Ablehnen von'
 		de_lang[_self.iHaveEvenStrongerArgumentRejecting] = 'Ich habe ein stärkeres Argument zum Ablehnen von'
 		de_lang[_self.iHaveMuchStrongerArgumentAccepting] = 'Ich habe ein viel stärkeres Argument zum Akzeptieren von'
@@ -456,9 +456,9 @@ class GermanDict:
 		de_lang[_self.wrong] = 'Nein'
 		de_lang[_self.wouldYourShareArgument] = 'Können Sie einen Grund angeben?'
 		de_lang[_self.wrongURL] = 'Ihre URL scheint falsch zu sein.'
-		de_lang[_self.whatDoYouThinkAbout] = 'Was halten Sie von'
+		de_lang[_self.whatDoYouThinkAbout] = 'Was halten Sie davon, dass '  # TODO ger fix
 		de_lang[_self.whatDoYouThinkAboutThat] = 'Was denken Sie darüber'
-		de_lang[_self.whatIsYourIdea] = 'Was ist Ihre Idee / Meinung? Was sollten wir machen?'
+		de_lang[_self.whatIsYourIdea] = 'Ich denke / meine, dass ...'  # Was ist Ihre Idee / Meinung?'  # Was sollten wir machen?' # TODO ger fix
 		de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für die Aussage'
 		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund für: '
 		de_lang[_self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
@@ -486,7 +486,7 @@ class GermanDict:
 		de_lang[_self.welcomeMessage] = 'Willkommen im neuen Dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!'
 		de_lang[_self.youAreInterestedIn] = 'Sie interessieren Sich für'
 		de_lang[_self.youAgreeWith] = 'Sie sind der Meinung, dass'
-		de_lang[_self.youDisagreeWith] = 'Sie wiedersprechen'
+		de_lang[_self.youDisagreeWith] = 'Sie wiedersprechen, dass'  # TODO ger fix
 		de_lang[_self.youSaidThat] = 'Sie haben gesagt, dass'
 		de_lang[_self.youUsedThisEarlier] = 'Sie haben diese Aussage schon benutzt.'
 		de_lang[_self.youRejectedThisEarlier] = 'Sie haben diese Aussage schon abgelehnt.'
