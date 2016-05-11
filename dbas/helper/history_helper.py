@@ -113,7 +113,7 @@ def __justify_statement_step(step, nickname, lang, url):
 	text	= get_text_for_statement_uid(uid)
 	text    = text[0:1].upper() + text[1:]
 	bubbsle_user = create_speechbubble_dict(is_user=True, message=intro + '<strong>' + text + '</strong>',
-	                                                      omit_url=False, statement_uid=uid, is_up_vote=is_supportive,
+	                                                      omit_url=False, statement_uid=uid, is_supportive=is_supportive,
 	                                                      nickname=nickname, lang=lang, url=url)
 	return [bubbsle_user]
 
@@ -135,7 +135,7 @@ def __dont_know_step(step, nickname, lang, url):
 	text	 = get_text_for_argument_uid(uid, lang)
 	text	 = text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
 	sys_text = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:]  + '</strong>. '
-	return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url)]
+	return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url, is_supportive=True)]
 
 
 def __reaction_step(step, nickname, lang, splitted_history, url):
@@ -187,7 +187,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
 	                                                          db_argument, db_confrontation)
 
 	bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=False,
-	                                                     argument_uid=uid, is_up_vote=is_supportive,
+	                                                     argument_uid=uid, is_supportive=is_supportive,
 	                                                     nickname=nickname, lang=lang, url=url)
 	if attack == 'end':
 		bubble_syst  = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True,
@@ -200,7 +200,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
 
 
 def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, uid='', url='',
-                             message='', omit_url=False, argument_uid=None, statement_uid=None, is_up_vote=True,
+                             message='', omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
                              nickname='anonymous', lang='en'):
 	"""
 	Creates an dictionary which includes every information needed for a bubble.
@@ -215,7 +215,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
 	:param omit_url: Boolean
 	:param argument_uid: Argument.uid
 	:param statement_uid: Statement.uid
-	:param is_up_vote: Boolean
+	:param is_supportive: Boolean
 	:param nickname: String
 	:param lang: String
 	:return: dict()
@@ -233,7 +233,11 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
 	speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'
 	speech['data_argument_uid']  = str(argument_uid)
 	speech['data_statement_uid'] = str(statement_uid)
+	speech['data_is_supportive'] = str(is_supportive)
 	db_votecounts                = None
+
+	if is_supportive is None:
+		is_supportive = False
 
 	if not nickname:
 		nickname = 'anonymous'
@@ -243,12 +247,12 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
 
 	if argument_uid:
 		db_votecounts = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-		                                                                    VoteArgument.is_up_vote == True,
+		                                                                    VoteArgument.is_up_vote == is_supportive,
 		                                                                    VoteArgument.is_valid == True,
 	                                                                        VoteArgument.author_uid != db_user.uid)).all()
 	elif statement_uid:
 		db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-		                                                                     VoteStatement.is_up_vote == True,
+		                                                                     VoteStatement.is_up_vote == is_supportive,
 		                                                                     VoteStatement.is_valid == True,
 		                                                                     VoteStatement.author_uid != db_user.uid)).all()
 	_t = Translator(lang)

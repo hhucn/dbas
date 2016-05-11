@@ -1775,6 +1775,7 @@ class Dbas(object):
 			is_attitude = params['is_attitude'] == 'true' if 'is_attitude' in params else False
 			is_reaction = params['is_reaction'] == 'true' if 'is_reaction' in params else False
 			is_position = params['is_position'] == 'true' if 'is_position' in params else False
+			is_supporti = params['is_supporti'] if 'is_supporti' in params else None
 
 			_op = OpinionHandler(ui_locales, nickname, mainpage)
 			if is_argument:
@@ -1785,7 +1786,7 @@ class Dbas(object):
 					return_dict = _op.get_user_and_opinions_for_argument(uids)
 			elif is_position:
 				uids = json.loads(uids)
-				return_dict = _op.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids])
+				return_dict = _op.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], is_supporti)
 			else:
 				if not is_attitude:
 					uids = json.loads(uids)
@@ -1885,14 +1886,9 @@ class Dbas(object):
 		_tn = Translator(get_language(self.request, get_current_registry()))
 
 		try:
-			if for_api:
-				value = api_data["value"]
-				mode = str(api_data["mode"])
-				issue = api_data["issue"]
-			else:
-				value = self.request.params['value']
-				mode = str(self.request.params['type'])
-				issue = IssueHelper.get_issue_id(self.request)
+			value = api_data["value"] if for_api else self.request.params['value']
+			mode = str(api_data["mode"]) if for_api else str(self.request.params['type'])
+			issue = api_data["issue"] if for_api else IssueHelper.get_issue_id(self.request)
 
 			return_dict = dict()
 

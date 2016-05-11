@@ -74,7 +74,7 @@
                                          <span>${structure:bubble.message}</span>
                                      </a>
                                      <br>
-                                     <em class="triangle-r-info" tal:attributes="data-type bubble.data_type; data-argument-uid bubble.data_argument_uid; data-statement-uid bubble.data_statement_uid; data-votecount bubble.votecounts">${bubble.votecounts_message}</em>
+                                     <em class="triangle-r-info" tal:attributes="data-type bubble.data_type; data-argument-uid bubble.data_argument_uid; data-statement-uid bubble.data_statement_uid; data-votecount bubble.votecounts; data-is-supportive bubble.data_is_supportive">${bubble.votecounts_message}</em>
                                  </p>
                              </div>
                              <div tal:condition="bubble.is_system" class="line-wrapper-l">
