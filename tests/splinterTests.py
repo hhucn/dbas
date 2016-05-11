@@ -521,7 +521,7 @@ class FrontendTests:
 
 		# new position
 		b.find_by_css('#discussions-space-list li:last-child input').click()
-		success = success and Helper.check_for_present_text(b, 'What is your idea? ', 'check for new position field')
+		success = success and Helper.check_for_present_text(b, 'What is your idea', 'check for new position field')
 		position = 'some new position ' + str(time.time())
 		b.find_by_id('add-statement-container-main-input').fill(position)
 		b.find_by_id('send-new-statement').click()
@@ -592,7 +592,7 @@ class FrontendTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print('Starting tests for __test_content:')
+		print('Starting tests for test_content:')
 		success = True
 		b = Browser(browser)
 		b = Helper.login(b, nickname1, password, mainpage + 'discussion')

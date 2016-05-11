@@ -11,10 +11,10 @@ import os
 import sys
 import transaction
 import random
+import dbas.password_handler as PasswordHandler
 
 from math import trunc
 from dbas.logger import logger
-from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config, and_
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue,\
@@ -41,7 +41,7 @@ def main_discussion(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		user2 = setup_up_users(DBDiscussionSession)
+		user2 = set_up_users(DBDiscussionSession)
 		setup_discussion_database(DBDiscussionSession, user2)
 		transaction.commit()
 
@@ -352,7 +352,7 @@ def drop_discussion_database(session):
 	session.flush()
 
 
-def setup_up_users(session):
+def set_up_users(session):
 	"""
 	Creates all users
 
@@ -464,7 +464,7 @@ def setup_up_users(session):
 	session.add_all([settingst28, settingst29, settingst30])
 	session.flush()
 
-	from dbas.user_management import UserHandler
+	import dbas.user_management as UserHandler
 	UserHandler.refresh_public_nickname(usert07)
 	UserHandler.refresh_public_nickname(usert08)
 	UserHandler.refresh_public_nickname(usert09)
@@ -679,16 +679,16 @@ def setup_discussion_database(session, user):
 	textversion122 = TextVersion(content="The rate of non-swimmers is too high.", author=user.uid)
 	textversion123 = TextVersion(content="The police cannot patrol in the park for 24/7.", author=user.uid)
 	textversion200 = TextVersion(content="E-Autos verursachen keine Emissionen.", author=user.uid)
-	textversion201 = TextVersion(content="Elektroautos sind sehr guenstig im Unterhalt", author=user.uid)
-	textversion202 = TextVersion(content="E-Autos sind optimal fuer den Stadtverkehr.", author=user.uid)
+	textversion201 = TextVersion(content="Elektroautos sind sehr g&uuml;nstig im Unterhalt", author=user.uid)
+	textversion202 = TextVersion(content="E-Autos sind optimal f&uuml;r den Stadtverkehr.", author=user.uid)
 	textversion203 = TextVersion(content="Sie keine stinkenden Abgase produzieren.", author=user.uid)
 	textversion204 = TextVersion(content="Die Herstellung der Autos und Batterien die Umwelt stark belastet", author=user.uid)
-	textversion205 = TextVersion(content="Sie sind sehr teuer in der Anschaffung.", author=user.uid)
-	textversion206 = TextVersion(content="Die Reichweite von Elektroautos ist ausreichend fuer mindestens 300km.", author=user.uid)
-	textversion207 = TextVersion(content="Die Ladezeit der Batterie kann bis zu 12h dauern und so lange kann man tagsueber nicht warten.", author=user.uid)
-	textversion208 = TextVersion(content="Die Umweltbelastung und Rohstoffabhaengigkeit durch Batterien sehr hoch ist.", author=user.uid)
+	textversion205 = TextVersion(content="Sie sind sehr te&uuml;r in der Anschaffung.", author=user.uid)
+	textversion206 = TextVersion(content="Die Reichweite von Elektroautos ist ausreichend f&uuml;r mindestens 300km.", author=user.uid)
+	textversion207 = TextVersion(content="Die Ladezeit der Batterie kann bis zu 12h da&uuml;rn und so lange kann man tags&uuml;ber nicht warten.", author=user.uid)
+	textversion208 = TextVersion(content="Die Umweltbelastung und Rohstoffabh&auml;ngigkeit durch Batterien sehr hoch ist.", author=user.uid)
 	textversion209 = TextVersion(content="Die Umweltbelastung durch Batterien immernoch viel geringer ist, als durch Verbrennungsmotoren.", author=user.uid)
-	textversion210 = TextVersion(content="In der Stadt sind Fahrraeder und oeffentliche Verkehrsmittel besser.", author=user.uid)
+	textversion210 = TextVersion(content="In der Stadt sind Fahrr&auml;der und oeffentliche Verkehrsmittel besser.", author=user.uid)
 	textversion211 = TextVersion(content="Man gezielt 'tanken' kann, genauso wie bei einem herkoemmlichen KFZ.", author=user.uid)
 
 	session.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])

@@ -6,17 +6,17 @@ Provides helping function for dictionaries.
 
 import random
 import arrow
+import dbas.helper.history_helper as HistoryHelper
+import dbas.helper.notification_helper as NotificationHelper
+import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User
-from dbas.helper.history_helper import HistoryHelper
-from dbas.helper.notification_helper import NotificationHelper
 from dbas.helper.query_helper import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
-from dbas.user_management import UserHandler
 
 
 class DictionaryHelper(object):
@@ -118,7 +118,7 @@ class DictionaryHelper(object):
 			return_dict['is_reportable']	             = is_reportable
 			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
 			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
-			return_dict['show_bar_icon']	             = show_bar_icon and False  # TODO SET THIS FOR BAROMETER
+			return_dict['show_bar_icon']	             = show_bar_icon # and False  # TODO SET THIS FOR BAROMETER
 			return_dict['show_display_style']            = show_display_styles  # and False
 			return_dict['show_expert_icon']              = show_expert_icon and False
 			return_dict['close_premise_container']	     = True

@@ -5,12 +5,12 @@ Provides helping function for dictionaries, which are used for the radio buttons
 """
 
 from sqlalchemy import and_
+import dbas.recommender_system as RecommenderSystem
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
 from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
-from dbas.recommender_system import RecommenderSystem
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
 

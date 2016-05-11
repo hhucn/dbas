@@ -3,11 +3,12 @@
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+import dbas.user_management as UserHandler
+
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, VoteArgument, Issue, User, Group, Statement, VoteStatement
-from dbas.user_management import UserHandler
 from sqlalchemy import and_
 
 

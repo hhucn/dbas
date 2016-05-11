@@ -173,6 +173,7 @@ class EnglischDict:
 		en_lang[_self.countOfArguments] = 'Count of arguments'
 		en_lang[_self.countOfPosts] = 'Count of posts'
 		en_lang[_self.confirmation] = 'Confirmation'
+		en_lang[_self.contact] = 'Contact'
 		en_lang[_self.contactSubmit] = 'Submit your Notification'
 		en_lang[_self.confirmTranslation] = 'If you change the language, your process on this page will be lost and you have to restart the discussion!'
 		en_lang[_self.correctionsSet] = 'Your correction was set.'
