@@ -9,6 +9,16 @@ import json
 import requests
 import time
 import transaction
+import dbas.string_matcher as FuzzyStringMatcher
+import dbas.helper.notification_helper as NotificationHelper
+import dbas.helper.issue_helper as IssueHelper
+import dbas.helper.history_helper as HistoryHelper
+import dbas.recommender_system as RecommenderSystem
+import dbas.helper.voting_helper as VotingHelper
+import dbas.news_handler as NewsHandler
+import dbas.password_handler as PasswordHandler
+import dbas.user_management as UserHandler
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.security import remember, forget
@@ -22,24 +32,16 @@ from validate_email import validate_email
 from .helper.dictionary_helper import DictionaryHelper
 from .helper.dictionary_helper_discussion import DiscussionDictHelper
 from .helper.dictionary_helper_items import ItemDictHelper
-from .helper.issue_helper import IssueHelper
-from .helper.history_helper import HistoryHelper
-from .helper.notification_helper import NotificationHelper
 from .helper.query_helper import QueryHelper
-from .helper.voting_helper import VotingHelper
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
 from .email import EmailHelper
 from .input_validator import Validator
 from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
 from .logger import logger
-from .recommender_system import RecommenderSystem
-from .news_handler import NewsHandler
 from .opinion_handler import OpinionHandler
-from .string_matcher import FuzzyStringMatcher
 from .strings import Translator
 from .url_manager import UrlManager
-from .user_management import PasswordGenerator, PasswordHandler, UserHandler
 
 name = 'D-BAS'
 version = '0.5.13'
@@ -545,6 +547,10 @@ class Dbas(object):
 		spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
 		spamquestion    = ''
 
+		spamanswer = int(spamanswer) if len(spamanswer) > 0 and isinstance(spamanswer, int) else '#'
+		antispamanswer = self.request.session['antispamanswer'] if 'antispamanswer' in self.request.session and isinstance(self.request.session['antispamanswer'], int) else ''
+		spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
+
 		if 'form.contact.submitted' not in self.request.params:
 			# get anti-spam-question
 			spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
@@ -576,13 +582,13 @@ class Dbas(object):
 				message = _t.get(_t.emtpyContent)
 
 			# check for empty username
-			elif int(spamanswer) != int(self.request.session['antispamanswer']):
+			elif spamanswer != spamsolution:
 				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spamanswer + ', right answer ' + str(self.request.session['antispamanswer']))
 				contact_error = True
 				message = _t.get(_t.maliciousAntiSpam)
 
 			else:
-				subject = 'Contact D-BAS'
+				subject = _t.get(_t.contact) + ' D-BAS'
 				body = _t.get(_t.name) + ': ' + username + '\n'\
 				       + _t.get(_t.mail) + ': ' + email + '\n'\
 				       + _t.get(_t.phone) + ': ' + phone + '\n'\
@@ -592,8 +598,10 @@ class Dbas(object):
 				subject = '[D-BAS INFO] ' + subject
 				send_message, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
-				if send_message:
-					spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
+
+		if not send_message:
+			spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
+			self.request.session['antispamanswer'] = answer
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
 		return {
@@ -1220,7 +1228,7 @@ class Dbas(object):
 			# does the user exists?
 			if db_user:
 				# get password and hashed password
-				pwd = PasswordGenerator.get_rnd_passwd()
+				pwd = PasswordHandler.get_rnd_passwd()
 				hashedpwd = PasswordHandler.get_hashed_password(pwd)
 
 				# set the hashed one
@@ -1336,7 +1344,7 @@ class Dbas(object):
 				if not db_author:
 					error = _tn.get(_tn.notLoggedIn)
 				else:
-					db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction, ui_locales)
+					db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction)
 					uid = db_notification.uid
 					ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
 					gravatar = UserHandler.get_profile_picture(db_recipient, 20)

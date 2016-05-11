@@ -13,6 +13,7 @@ from .database import DBDiscussionSession
 from .database.discussion_model import Statement, Premise, VoteStatement
 from .logger import logger
 
+
 class Translator(object):
 	"""
 	Class for translating string
@@ -93,6 +94,7 @@ class Translator(object):
 		self.butYouAgreedWith = 'butYouAgreedWith'
 		self.clickHereForRegistration = 'clickHereForRegistration'
 		self.confirmation = 'confirmation'
+		self.contact = 'contact'
 		self.contactSubmit = 'contactSubmit'
 		self.confirmTranslation = 'confirmTranslation'
 		self.correctionsSet = 'correctionsSet'

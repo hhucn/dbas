@@ -166,6 +166,7 @@ class GermanDict:
 		de_lang[_self.clickForMore] = 'Klick hier!'
 		de_lang[_self.confirmation] = 'Bestätigung'
 		de_lang[_self.contactSubmit] = 'Absenden der Nachricht'
+		de_lang[_self.contact] = 'Kontakt'
 		de_lang[_self.confirmTranslation] = 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!'
 		de_lang[_self.correctionsSet] = 'Ihre Korrektur wurde gesetzt.'
 		de_lang[_self.countOfArguments] = 'Anzahl der Argumente'

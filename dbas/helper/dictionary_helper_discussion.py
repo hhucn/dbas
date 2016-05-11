@@ -3,11 +3,12 @@ Provides helping function for dictionaries, which are used in discussions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import dbas.helper.history_helper as HistoryHelper
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
-from dbas.helper.history_helper import HistoryHelper
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
 

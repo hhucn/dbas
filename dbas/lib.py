@@ -11,7 +11,6 @@ from html import escape
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
-from .logger import logger
 from .strings import Translator
 
 
