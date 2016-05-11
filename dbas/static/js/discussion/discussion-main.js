@@ -210,6 +210,10 @@ function Main () {
 				$(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
 			}
 		});
+
+		$('#' + contactSubmitButtonId).click(function(e){
+			setTimeout("$('body').addClass('loading')", 0);
+		});
 	};
 
 	/**

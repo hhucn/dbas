@@ -280,7 +280,7 @@
     						<div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">
     							<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>
     							<input id="password-request-email-input" type="email" class="email form-control" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
-    							<input id="popup-login-button-request" type="submit" name="form.passwordrequest.submitted" value="Request
+    							<input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request
     							Password" class="btn
     							btn-primary" />
     						</div>
