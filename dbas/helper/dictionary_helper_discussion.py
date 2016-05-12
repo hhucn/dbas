@@ -68,7 +68,7 @@ class DiscussionDictHelper(object):
 		statement_text      = get_text_for_statement_uid(uid)
 		if not statement_text:
 			return None
-		if self.lang == 'en':
+		if self.lang != 'de':
 			statement_text = statement_text[0:1].lower() + statement_text[1:]
 
 		text = _tn.get(_tn.whatDoYouThinkAbout)
@@ -107,7 +107,7 @@ class DiscussionDictHelper(object):
 			return None
 		false               = _tn.get(_tn.isFalse) if self.lang == 'de' else _tn.get(_tn.isNotAGoodIdea)
 		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong>'
-		question            += text[0:1].lower() + text[1:] if self.lang == 'en' else text
+		question            += text[0:1].lower() + text[1:] if self.lang != 'de' else text
 		question            += '</strong> '
 		question            += _tn.get(_tn.holds if is_supportive else (_tn.isFalse if self.lang == 'de' else _tn.isNotAGoodIdea)) + '?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
@@ -285,7 +285,8 @@ class DiscussionDictHelper(object):
 				current_argument = current_argument[len(prefix):]
 
 			current_argument = current_argument[0:1].upper() + current_argument[1:]
-			premise = premise[0:1].lower() + premise[1:]
+			if self.lang != 'de':
+				premise = premise[0:1].lower() + premise[1:]
 
 			# check for support and build text
 			user_text = (_tn.get(_tn.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''

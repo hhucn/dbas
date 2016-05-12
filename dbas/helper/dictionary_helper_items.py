@@ -249,8 +249,9 @@ class ItemDictHelper(object):
 
 		conclusion   = get_text_for_conclusion(db_argument, self.lang)
 		premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
-		conclusion   = conclusion[0:1].lower() + conclusion[1:]
-		premise	     = premise[0:1].lower() + premise[1:]
+		if self.lang != 'de':
+			conclusion   = conclusion[0:1].lower() + conclusion[1:]
+			premise	     = premise[0:1].lower() + premise[1:]
 		rel_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, False, False, is_dont_know=True)
 		mode		 = 't' if is_supportive else 't'
 		counter_mode = 'f' if is_supportive else 't'
@@ -298,9 +299,10 @@ class ItemDictHelper(object):
 			db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
 		first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
 
-		first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
-		premise		     = premise[0:1].lower() + premise[1:]
+		if self.lang != 'de':
+			first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
+			conclusion	     = conclusion[0:1].lower() + conclusion[1:]
+			premise		     = premise[0:1].lower() + premise[1:]
 
 		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
 		mode		     = 't' if is_supportive else 'f'

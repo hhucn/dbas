@@ -373,7 +373,7 @@ class GermanDict:
 		de_lang[_self.otherParticipantsConvincedYouThat] = 'Andere Teilnehmer haben Sie überzeuge, dass'
 		de_lang[_self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass'
 		de_lang[_self.otherParticipantsAgreeThat] = 'Andere Teilnehmer stimmen zu, dass'
-		de_lang[_self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
+		de_lang[_self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung, dazu dass'  # TODO ger fix
 		de_lang[_self.otherParticipantsDontHaveOpinionRegaringYourSelection] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage'
 		de_lang[_self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für '
 		de_lang[_self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür'

@@ -743,11 +743,13 @@ class TextGenerator(object):
 		_t = Translator(self.lang)
 
 		#  build some confrontation text
-		confrontation = '<strong>' + confrontation[0:1].lower() + confrontation[1:] + '</strong>'
-		premise = premise[0:1].lower() + premise[1:]
-		sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
-
-		conclusion = conclusion[0:1].lower() + conclusion[1:]
+		if self.lang == 'de':
+			confrontation = '<strong>' + confrontation + '</strong>'
+		else:
+			confrontation = '<strong>' + confrontation[0:1].lower() + confrontation[1:] + '</strong>'
+			premise = premise[0:1].lower() + premise[1:]
+			sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
+			conclusion = conclusion[0:1].lower() + conclusion[1:]
 
 		confrontation_text = ''
 
