@@ -188,11 +188,9 @@ class DiscussionDictHelper(object):
 
 		sys_msg  = _tn.get(_tn.whatIsYourMostImportantReasonFor) + ': ' + user_msg[:-1] + '?<br>' + _tn.get(_tn.because) + '...'
 		# bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() + user_msg[1:], omit_url=True, lang=self.lang)
-		bubble_question = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang)
 
 		bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now), omit_url=True, lang=self.lang))
-		# bubbles_array.append(bubble_user)
-		bubbles_array.append(bubble_question)
+		bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang))
 
 		# if save_crumb:
 		# 	db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
