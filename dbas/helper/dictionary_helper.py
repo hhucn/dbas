@@ -346,5 +346,6 @@ class DictionaryHelper(object):
 			'warning': _tn_dis.get(_tn_dis.warning),
 			'island_view_for': _tn_dis.get(_tn_dis.islandViewFor),
 			'language': self.discussion_lang,
+			'aand': _tn_dis.get(_tn_dis.aand),
 			'add_premise_title': _tn_dis.get(_tn_dis.addPremiseRadioButtonText)
 		}

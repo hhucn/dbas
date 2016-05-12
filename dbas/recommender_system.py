@@ -39,8 +39,8 @@ def get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks=No
 	restriction_on_attacks = []
 	restriction_on_attacks.append(tmp)
 	restriction_on_attacks.append('undercut' if is_current_arg_undercut else '')
-	logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0])
-	logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  2: ' + restriction_on_attacks[1])
+	logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0] +
+	       ', restriction  2: ' + restriction_on_attacks[1])
 
 	attacks_array, key, no_new_attacks = __get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks,
 	                                                               restriction_on_arg_uid, special_case, history)
@@ -121,16 +121,16 @@ def __get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks,
 	logger('RecommenderSystem', '__get_attack_for_argument', 'attack_list : ' + str(attacks))
 	attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
 	return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue,
-	                                                                                 complete_list_of_attacks, lang,
-	                                                                                 restriction_on_attacks,
+	                                                                                 complete_list_of_attacks,
+	                                                                                 lang, restriction_on_attacks,
 	                                                                                 restriction_on_argument_uid,
 	                                                                                 special_case, history)
 
 	# sanity check if we could not found an attack for a left attack in out set
 	if not return_array and len(attacks) > 0:
 		return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, [], issue,
-		                                                                                 complete_list_of_attacks, lang,
-		                                                                                 restriction_on_attacks,
+		                                                                                 complete_list_of_attacks,
+		                                                                                 lang, restriction_on_attacks,
 		                                                                                 restriction_on_argument_uid,
 		                                                                                 special_case,
 		                                                                                 history)
@@ -138,7 +138,7 @@ def __get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks,
 	return return_array, key, no_new_attacks
 
 
-def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, complete_list_of_attacks, lang,
+def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issue, list_of_all_attacks, lang,
                                                  restriction_on_attacks, restriction_on_argument_uid, special_case,
                                                  history):
 	"""
@@ -146,7 +146,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issu
 	:param argument_uid: Argument.uid
 	:param attack_list:
 	:param issue: Issue.uid
-	:param complete_list_of_attacks:
+	:param list_of_all_attacks:
 	:param lang: ui_locales
 	:param restriction_on_attacks: String
 	:param restriction_on_argument_uid: Argument.uid
@@ -154,17 +154,17 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issu
 	:param history: History
 	:return: [Argument.uid], String, Boolean if no new attacks are found
 	"""
-	return_array = None
-	key = ''
-	left_attacks = list(set(complete_list_of_attacks) - set(attack_list))
-	attack_found = False
-	is_supportive = False
-	no_new_attacks = False
+	return_array    = None
+	key             = ''
+	left_attacks    = list(set(list_of_all_attacks) - set(attack_list))
+	attack_found    = False
+	is_supportive   = False
+	no_new_attacks  = False
 	_rh = RelationHelper(argument_uid, lang)
 
 	logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'argument_uid: Argument.uid ' + str(argument_uid) +
-	       ', attack_list : ' + str(attack_list)  +
-	       ', complete_list_of_attacks : ' + str(complete_list_of_attacks) +
+	       ', attack_list : ' + str(attack_list) +
+	       ', complete_list_of_attacks : ' + str(list_of_all_attacks) +
 	       ', left_attacks : ' + str(left_attacks))
 
 	# randomize at least 1, maximal 3 times for getting an attack or
