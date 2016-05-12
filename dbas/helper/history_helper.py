@@ -109,7 +109,7 @@ def __justify_statement_step(step, nickname, lang, url):
 
 	_tn		 = Translator(lang)
 	#  url     = UrlManager(application_url, slug).get_slug_url(False)
-	intro   = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
+	intro   = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + (' ' if lang == 'de' else ': ')
 	text	= get_text_for_statement_uid(uid)
 	text    = text[0:1].upper() + text[1:]
 	bubbsle_user = create_speechbubble_dict(is_user=True, message=intro + '<strong>' + text + '</strong>',

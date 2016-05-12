@@ -155,8 +155,8 @@ class GermanDict:
 		de_lang[_self.butIDoNotBelieveCounterFor] = 'aber ich glaube nicht, dass es ein gutes Gegenargument dagegen ist, dass'  # TODO ger fix
 		de_lang[_self.butIDoNotBelieveReasonForReject] = 'aber ich glaube nicht, dass das zur Aussage führt'
 		de_lang[_self.butIDoNotBelieveArgumentFor] = 'aber ich glaube nicht, dass es ein gutes Argument dafür ist, dass'  # TODO ger fix
-		de_lang[_self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass ist kein gutes Gegenargument dagegen, dass'   # TODO ger fix
-		de_lang[_self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass ist kein gutes Argument dafür, dass'   # TODO ger fix
+		de_lang[_self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass es kein gutes Gegenargument dagegen ist, dass'   # TODO ger fix
+		de_lang[_self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass es kein gutes Argument dafür ist, dass'   # TODO ger fix
 		de_lang[_self.butThenYouCounteredWith] = 'Jedoch haben Sie dann das Gegenargument gebracht, dass'
 		de_lang[_self.butYouCounteredWith] = 'Jedoch haben Sie das Gegenargument gebracht, dass'
 		de_lang[_self.butYouAgreedWith] = 'Und Sie haben zugestimmt, weil'
