@@ -109,7 +109,10 @@ class DiscussionDictHelper(object):
 		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong>'
 		question            += text[0:1].lower() + text[1:] if self.lang != 'de' else text
 		question            += '</strong> '
-		question            += _tn.get(_tn.holds if is_supportive else (_tn.isFalse if self.lang == 'de' else _tn.isNotAGoodIdea)) + '?'
+		if self.lang == 'de':
+			question        += (_tn.get(_tn.isTrue if is_supportive else _tn.isNotAGoodIdea)) + '?'
+		else:
+			question        += (_tn.get(_tn.holds) if is_supportive else false) + '?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 		add_premise_text	+= text + ' ' + (_tn.get(_tn.holds) if is_supportive else false) + ', '  + _tn.get(_tn.because).lower() + '...'
 
