@@ -119,7 +119,7 @@ class DictionaryHelper(object):
 			return_dict['is_admin']			             = _uh.is_user_in_group(authenticated_userid, 'admins')
 			return_dict['is_author']			         = _uh.is_user_in_group(authenticated_userid, 'authors')
 			return_dict['show_bar_icon']	             = show_bar_icon and False  # TODO SET THIS FOR BAROMETER
-			return_dict['show_display_style']            = show_display_styles  # and False
+			return_dict['show_display_style']            = show_display_styles and False
 			return_dict['show_expert_icon']              = show_expert_icon and False
 			return_dict['close_premise_container']	     = True
 			return_dict['close_statement_container']	 = True
@@ -157,7 +157,8 @@ class DictionaryHelper(object):
 					island_dict.update(TextGenerator(self.discussion_lang).get_relation_text_dict(island_dict['premise'],
 					                                                                              island_dict['conclusion'],
 					                                                                              False, False,
-					                                                                              not db_argument.is_supportive))
+					                                                                              not db_argument.is_supportive,
+					                                                                              for_island_view=True))
 					return_dict['island'] = island_dict
 				else:
 					return_dict['is_editable']		  = False
