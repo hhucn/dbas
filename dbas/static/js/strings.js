@@ -452,6 +452,7 @@ var dbas_de = {
 	'itIsFalseThat': 'es ist falsch, dass',
 	'keepSetting': 'Entscheidung merken',
 	'hideAllUsers': 'Verstecke alle Benutzer',
+	'hideAllArguments': 'Verstecke alle Argumente',
 	'hideAllAttacks': 'Verstecke alle Angriffe',
 	'languageCouldNotBeSwitched': 'Leider konnte die Sprache nicht gewechselt werden',
 	'last_action': 'Letzte Aktion',
