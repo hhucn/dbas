@@ -202,7 +202,6 @@ class ItemDictHelper(object):
 		if db_arguments:
 			for argument in db_arguments:
 				from dbas.lib import get_text_for_argument_uid
-				logger('---', str(argument.uid), get_text_for_argument_uid(argument.uid, self.lang))
 				# get alles premises in this group
 				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 				premises_array = []
@@ -212,7 +211,7 @@ class ItemDictHelper(object):
 
 				# for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
 				is_undermine = 'undermine' if attack_type == 'undermine' else None
-				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang,
+				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.issue_uid, self.lang,
 				                                                               special_case=is_undermine)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
