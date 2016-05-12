@@ -611,7 +611,7 @@ class TextGenerator(object):
 		t = (_t.get(_t.itIsTrue)[0:1].lower() if start_lower_case else _t.get(_t.itIsTrue)[0:1].upper()) + _t.get(_t.itIsTrue)[1:]
 
 		if self.lang == 'de':  # TODO ger fix
-			r += _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ', '
+			r += _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ' '
 			f = _t.get(_t.wrong) + ', ' + f
 
 		# different cases
@@ -772,7 +772,9 @@ class TextGenerator(object):
 					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
 				else:
 					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
-				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
+				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay)
+				confrontation_text += ' ' if self.lang == 'de' else ': '  # TODO ger fix
+				confrontation_text += confrontation
 			else:  # reply for premise group
 				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(_t.otherParticipantsDontHaveOpinion)
 				confrontation_text += ' <strong>' + premise + '</strong>, '
