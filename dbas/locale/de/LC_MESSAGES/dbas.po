@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-13 10:01+0200\n"
+"POT-Creation-Date: 2016-05-13 14:58+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1286,7 +1286,7 @@ msgstr "Bitte laden Sie die Seite erneut."
 #. Default: Public Information of
 #: dbas/templates/user.pt:8
 msgid "public_information_of"
-msgstr "Persönliche Informationen von"
+msgstr "Öffentliche Informationen von"
 
 #. Default: Profile Picture of
 #: dbas/templates/user.pt:24
