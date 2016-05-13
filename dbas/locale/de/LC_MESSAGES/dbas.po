@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-12 13:07+0200\n"
+"POT-Creation-Date: 2016-05-13 10:01+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1242,19 +1242,24 @@ msgstr "Eingang"
 msgid "outbox"
 msgstr "Ausgang"
 
+#. Default: NEW
+#: dbas/templates/notifications.pt:56
+msgid "new"
+msgstr "NEU"
+
 #. Default: From:
-#: dbas/templates/notifications.pt:60 dbas/templates/notifications.pt:67
+#: dbas/templates/notifications.pt:61 dbas/templates/notifications.pt:68
 msgid "from"
 msgstr "Von:"
 
 #. Default: answer
-#: dbas/templates/notifications.pt:72 dbas/templates/notifications.pt:101
+#: dbas/templates/notifications.pt:73 dbas/templates/notifications.pt:102
 msgid "answer"
 msgstr "antworten"
 
 #. Default: To:
 #. Default: to:
-#: dbas/templates/notifications.pt:89 dbas/templates/notifications.pt:96
+#: dbas/templates/notifications.pt:90 dbas/templates/notifications.pt:97
 msgid "to"
 msgstr "An:"
 
@@ -1267,6 +1272,16 @@ msgstr "JavaScript ist nicht aktiviert:"
 #: dbas/templates/basetemplate.pt:38
 msgid "js_disabled2"
 msgstr "Bitte JavaScript aktivieren!"
+
+#. Default: Your request failed!
+#: dbas/templates/basetemplate.pt:57
+msgid "request_failed"
+msgstr "Ihre Anfrage ist fehlgeschlagen!"
+
+#. Default: Please reload the page.
+#: dbas/templates/basetemplate.pt:58
+msgid "please_reload"
+msgstr "Bitte laden Sie die Seite erneut."
 
 #. Default: Public Information of
 #: dbas/templates/user.pt:8
@@ -1288,11 +1303,6 @@ msgstr "Thema hinzufügen"
 msgid "restart_discussion"
 msgstr "Neustart"
 
-#. Default: and
-#: dbas/templates/content.pt:103
-msgid "and"
-msgstr "und"
-
 #. Default: Change display style
 #: dbas/templates/content.pt:317
 msgid "change_style"
@@ -1312,6 +1322,9 @@ msgstr "Insel-Ansicht"
 #: dbas/templates/content.pt:332
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "and"
+#~ msgstr "und"
 
 #, fuzzy
 #~ msgid "keep_setting"
