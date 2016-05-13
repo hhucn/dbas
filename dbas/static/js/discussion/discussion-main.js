@@ -178,7 +178,10 @@ function Main () {
 			if ($(this).children().length > 0) {
 				$(this).children().click(function () {
 					var href = $(this).attr('href'),
-						text = _t(switchDiscussionText1) + ' <strong>' + $(this).attr('value') + '</strong> ' + _t(switchDiscussionText2);
+						text = _t(switchDiscussionText1) + ' <strong>' + $(this).attr('value') + '</strong> ';
+					text += _t(switchDiscussionText2);
+					text += '<br><br>';
+					text += _t(switchDiscussionText3);
 					$(this).attr('href', '#');
 					displayConfirmationDialogWithCheckbox(_t(switchDiscussion), text, _t.keepSetting, href, true);
 				});

@@ -206,6 +206,7 @@ var statisticsNotThere                              = 'statisticsNotThere';
 var switchDiscussion								= 'switchDiscussion';
 var switchDiscussionText1 							= 'switchDiscussionText1';
 var switchDiscussionText2 							= 'switchDiscussionText2';
+var switchDiscussionText3 							= 'switchDiscussionText3';
 var surname 										= 'surname';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
@@ -374,6 +375,7 @@ var dbas_en = {
 	'switchDiscussion': 'Change of discussion\'s topic',
 	'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
 	'switchDiscussionText2': 'and the discussion will be restarted.',
+	'switchDiscussionText3': 'Please keep in mind, that the discussion language is without reference to the system language.',
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
 	'to': 'To',
@@ -436,8 +438,8 @@ var dbas_de = {
 	'editTitle': 'Aussagen bearbeiten',
 	'fillLine': 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung',
 	'feelFreeToShareUrl': 'Bitte teilen Sie diese URL',
-	'fetchLongUrl': 'Normale URL!',
-	'fetchShortUrl': 'Kurze URL!',
+	'fetchLongUrl': 'Normale URL',
+	'fetchShortUrl': 'Kurze URL',
 	'forgotPassword': 'Passwort vergessen',
 	'forward' : 'weiterleiten',
 	'firstname': 'Vorname',
@@ -524,6 +526,7 @@ var dbas_de = {
 	'switchDiscussion': 'Diskussionsthema ändern',
 	'switchDiscussionText1': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',
 	'switchDiscussionText2': 'und die Diskussion neugestartet.',
+	'switchDiscussionText3': 'Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
