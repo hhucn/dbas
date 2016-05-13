@@ -367,8 +367,14 @@ function ajaxSwitchDisplayLanguage (new_lang){
 	}).done(function ajaxSwitchDisplayLanguageDone() {
 		location.reload(true);
 		setPiwikOptOutLink(new_lang);
-	}).fail(function ajaxSwitchDisplayLanguageFail() {
-		alert(_t(languageCouldNotBeSwitched));
+	}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
+		if (xhr.status == 400) {
+			alert(_t(requestFailedBadToken));
+		} else if (xhr.status == 500) {
+			alert(_t(requestFailedInternalError));
+		} else {
+			alert(_t(languageCouldNotBeSwitched));
+		}
 	});
 }
 
@@ -401,7 +407,13 @@ function ajaxLogin (){
 		if (xhr.status == 200) {
 			location.reload(true);
 		} else if (xhr.status == 302) {
-			location.href = xhr.getResponseHeader("Location");
+			location.href = xhr.getResponseHeader('Location');
+		} else if (xhr.status == 400) {
+			$('#' + popupLoginFailed).show();
+			$('#' + popupLoginFailed + '-message').text(_t(requestFailedBadToken));
+		} else if (xhr.status == 500) {
+			$('#' + popupLoginFailed).show();
+			$('#' + popupLoginFailed + '-message').text(_t(requestFailedInternalError));
 		} else {
 			$('#' + popupLoginFailed).show();
 			$('#' + popupLoginFailed + '-message').text(_t(requestFailed));
@@ -471,9 +483,12 @@ function ajaxRegistration (){
 		}
 	}).done(function ajaxRegistrationDone(data) {
 		callbackIfDoneForRegistration(data);
-	}).fail(function ajaxRegistrationFail() {
+	}).fail(function ajaxRegistrationFail(xhr) {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+		if (xhr.status == 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
+		} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
+		} else {                		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+		}
 	});
 }
 
@@ -494,9 +509,12 @@ function ajaxPasswordRequest (){
 		}
 	}).done(function ajaxPasswordRequestDone(data) {
 		callbackIfDoneForPasswordRequest(data);
-	}).fail(function ajaxPasswordRequestFail() {
+	}).fail(function ajaxPasswordRequestFail(xhr) {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+		if (xhr.status == 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
+		} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
+		} else {            			$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+		}
 	});
 }
 
@@ -669,7 +687,17 @@ $(document).ready(function () {
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
+		// TODO: SEXY GLOBAL AJAX ERROR HANDLING
+		//ajaxError: function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
+		//	$('#request_failed_container').fadeIn();
+		//	new Helper().delay(function(){
+		//		$('#request_failed_container').fadeOut();
+		//	}, 3000);
+		//}
 	});
+	//$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
+    //    alert("There was an ajax error!");
+	//});
 
 	if ($('#session_expired_container').length == 1)
 		new Helper().delay(function(){

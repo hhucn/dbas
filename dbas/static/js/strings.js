@@ -188,6 +188,8 @@ var refreshTrack 									= 'refreshTrack';
 var requestHistory 									= 'requestHistory';
 var refreshHistory 									= 'refreshHistory';
 var requestFailed 									= 'requestFailed';
+var requestFailedBadToken							= 'requestFailedBadToken';
+var requestFailedInternalError                      = 'requestFailedInternalError';
 var restartOnError									= 'restartOnError';
 var saveMyStatement                                 = 'saveMyStatement';
 var saveMyStatements                                = 'saveMyStatements';
@@ -351,7 +353,9 @@ var dbas_en = {
 	'refreshTrack': 'Refresh track',
 	'requestHistory': 'Request history',
 	'refreshHistory': 'Refresh history',
-	'requestFailed': 'Request failed',
+	'requestFailed': 'Request failed, please reload this page.',
+	'requestFailedBadToken': 'Request failed due to bad token, please reload this page.',
+	'requestFailedInternalError': 'Request failed due to bad token, please reload this page. If the reload fails again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
 	'saveMyStatement': 'Save my Statement!',
 	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
@@ -500,7 +504,9 @@ var dbas_de = {
 	'refreshTrack': 'Track neuladen',
 	'requestHistory': 'History anfragen',
 	'refreshHistory': 'History neuladen',
-	'requestFailed': 'Anfrage fehlgeschlagen',
+	'requestFailed': 'Anfrage fehlgeschlagen, bitte laden Sie die Seite erneut.',
+	'requestFailedBadToken': 'Anfrage aufgrund eines falschen Tokens fehlgeschlagen. Bitte laden Sie die Seite neu.',
+	'requestFailedInternalError': 'Anfrage aufgrund eines internen Fehlers fehlgeschlagen. Bitte laden Sie die Seite neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">kontaktieren sie uns bitte (hier klicken)</span>',
 	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
 	'saveMyStatement': 'Aussage speichern!',
 	'saveMyStatements': 'Ausagen speichern!',

@@ -48,7 +48,8 @@ function User() {
 			method: 'GET',
 			data:{'nickname': $('#public_nick').text()},
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function getPublicUserDataDone(data) {
 			new User().callbackDone(data);
 		}).fail(function getPublicUserDataFail() {

@@ -170,7 +170,7 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 		for uid in arg_array:
 			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 			text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-			pgroups.append((text[0:1].lower() + text[1:] )if lang != 'de' else text)
+			pgroups.append((text[0:1].lower() + text[1:])if lang != 'de' else text)
 			supportive.append(db_argument.is_supportive)
 		conclusion = get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
 
