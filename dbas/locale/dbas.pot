@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-12 13:07+0200\n"
+"POT-Creation-Date: 2016-05-13 10:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1146,19 +1146,24 @@ msgstr ""
 msgid "outbox"
 msgstr ""
 
+#. Default: NEW
+#: ./dbas/templates/notifications.pt:56
+msgid "new"
+msgstr ""
+
 #. Default: From:
-#: ./dbas/templates/notifications.pt:60 ./dbas/templates/notifications.pt:67
+#: ./dbas/templates/notifications.pt:61 ./dbas/templates/notifications.pt:68
 msgid "from"
 msgstr ""
 
 #. Default: answer
-#: ./dbas/templates/notifications.pt:72 ./dbas/templates/notifications.pt:101
+#: ./dbas/templates/notifications.pt:73 ./dbas/templates/notifications.pt:102
 msgid "answer"
 msgstr ""
 
 #. Default: To:
 #. Default: to:
-#: ./dbas/templates/notifications.pt:89 ./dbas/templates/notifications.pt:96
+#: ./dbas/templates/notifications.pt:90 ./dbas/templates/notifications.pt:97
 msgid "to"
 msgstr ""
 
@@ -1170,6 +1175,16 @@ msgstr ""
 #. Default: Please enable JavaScript!
 #: ./dbas/templates/basetemplate.pt:38
 msgid "js_disabled2"
+msgstr ""
+
+#. Default: Your request failed!
+#: ./dbas/templates/basetemplate.pt:57
+msgid "request_failed"
+msgstr ""
+
+#. Default: Please reload the page.
+#: ./dbas/templates/basetemplate.pt:58
+msgid "please_reload"
 msgstr ""
 
 #. Default: Public Information of
@@ -1190,11 +1205,6 @@ msgstr ""
 #. Default: Restart
 #: ./dbas/templates/content.pt:43
 msgid "restart_discussion"
-msgstr ""
-
-#. Default: and
-#: ./dbas/templates/content.pt:103
-msgid "and"
 msgstr ""
 
 #. Default: Change display style
