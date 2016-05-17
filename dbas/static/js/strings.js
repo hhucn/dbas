@@ -188,6 +188,8 @@ var refreshTrack 									= 'refreshTrack';
 var requestHistory 									= 'requestHistory';
 var refreshHistory 									= 'refreshHistory';
 var requestFailed 									= 'requestFailed';
+var requestFailedBadToken							= 'requestFailedBadToken';
+var requestFailedInternalError                      = 'requestFailedInternalError';
 var restartOnError									= 'restartOnError';
 var saveMyStatement                                 = 'saveMyStatement';
 var saveMyStatements                                = 'saveMyStatements';
@@ -204,6 +206,7 @@ var statisticsNotThere                              = 'statisticsNotThere';
 var switchDiscussion								= 'switchDiscussion';
 var switchDiscussionText1 							= 'switchDiscussionText1';
 var switchDiscussionText2 							= 'switchDiscussionText2';
+var switchDiscussionText3 							= 'switchDiscussionText3';
 var surname 										= 'surname';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
@@ -351,7 +354,9 @@ var dbas_en = {
 	'refreshTrack': 'Refresh track',
 	'requestHistory': 'Request history',
 	'refreshHistory': 'Refresh history',
-	'requestFailed': 'Request failed',
+	'requestFailed': 'Request failed, please reload this page.',
+	'requestFailedBadToken': 'Request failed due to bad token, please reload this page.',
+	'requestFailedInternalError': 'Request failed due to bad token, please reload this page. If the reload fails again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
 	'saveMyStatement': 'Save my Statement!',
 	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
@@ -370,6 +375,7 @@ var dbas_en = {
 	'switchDiscussion': 'Change of discussion\'s topic',
 	'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
 	'switchDiscussionText2': 'and the discussion will be restarted.',
+	'switchDiscussionText3': 'Please keep in mind, that the discussion language is without reference to the system language.',
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
 	'to': 'To',
@@ -432,8 +438,8 @@ var dbas_de = {
 	'editTitle': 'Aussagen bearbeiten',
 	'fillLine': 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung',
 	'feelFreeToShareUrl': 'Bitte teilen Sie diese URL',
-	'fetchLongUrl': 'Normale URL!',
-	'fetchShortUrl': 'Kurze URL!',
+	'fetchLongUrl': 'Normale URL',
+	'fetchShortUrl': 'Kurze URL',
 	'forgotPassword': 'Passwort vergessen',
 	'forward' : 'weiterleiten',
 	'firstname': 'Vorname',
@@ -452,6 +458,7 @@ var dbas_de = {
 	'itIsFalseThat': 'es ist falsch, dass',
 	'keepSetting': 'Entscheidung merken',
 	'hideAllUsers': 'Verstecke alle Benutzer',
+	'hideAllArguments': 'Verstecke alle Argumente',
 	'hideAllAttacks': 'Verstecke alle Angriffe',
 	'languageCouldNotBeSwitched': 'Leider konnte die Sprache nicht gewechselt werden',
 	'last_action': 'Letzte Aktion',
@@ -499,7 +506,9 @@ var dbas_de = {
 	'refreshTrack': 'Track neuladen',
 	'requestHistory': 'History anfragen',
 	'refreshHistory': 'History neuladen',
-	'requestFailed': 'Anfrage fehlgeschlagen',
+	'requestFailed': 'Anfrage fehlgeschlagen, bitte laden Sie die Seite erneut.',
+	'requestFailedBadToken': 'Anfrage aufgrund eines falschen Tokens fehlgeschlagen. Bitte laden Sie die Seite neu.',
+	'requestFailedInternalError': 'Anfrage aufgrund eines internen Fehlers fehlgeschlagen. Bitte laden Sie die Seite neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">kontaktieren sie uns bitte (hier klicken)</span>',
 	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
 	'saveMyStatement': 'Aussage speichern!',
 	'saveMyStatements': 'Ausagen speichern!',
@@ -517,6 +526,7 @@ var dbas_de = {
 	'switchDiscussion': 'Diskussionsthema ändern',
 	'switchDiscussionText1': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',
 	'switchDiscussionText2': 'und die Diskussion neugestartet.',
+	'switchDiscussionText3': 'Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',

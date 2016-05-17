@@ -155,8 +155,8 @@ class GermanDict:
 		de_lang[_self.butIDoNotBelieveCounterFor] = 'aber ich glaube nicht, dass es ein gutes Gegenargument dagegen ist, dass'  # TODO ger fix
 		de_lang[_self.butIDoNotBelieveReasonForReject] = 'aber ich glaube nicht, dass das zur Aussage führt'
 		de_lang[_self.butIDoNotBelieveArgumentFor] = 'aber ich glaube nicht, dass es ein gutes Argument dafür ist, dass'  # TODO ger fix
-		de_lang[_self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass ist kein gutes Gegenargument dagegen, dass'   # TODO ger fix
-		de_lang[_self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass ist kein gutes Argument dafür, dass'   # TODO ger fix
+		de_lang[_self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass es kein gutes Gegenargument dagegen ist, dass'   # TODO ger fix
+		de_lang[_self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass es kein gutes Argument dafür ist, dass'   # TODO ger fix
 		de_lang[_self.butThenYouCounteredWith] = 'Jedoch haben Sie dann das Gegenargument gebracht, dass'
 		de_lang[_self.butYouCounteredWith] = 'Jedoch haben Sie das Gegenargument gebracht, dass'
 		de_lang[_self.butYouAgreedWith] = 'Und Sie haben zugestimmt, weil'
@@ -373,7 +373,7 @@ class GermanDict:
 		de_lang[_self.otherParticipantsConvincedYouThat] = 'Andere Teilnehmer haben Sie überzeuge, dass'
 		de_lang[_self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass'
 		de_lang[_self.otherParticipantsAgreeThat] = 'Andere Teilnehmer stimmen zu, dass'
-		de_lang[_self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage.'
+		de_lang[_self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung, dazu dass'  # TODO ger fix
 		de_lang[_self.otherParticipantsDontHaveOpinionRegaringYourSelection] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage'
 		de_lang[_self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für '
 		de_lang[_self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür'
@@ -460,7 +460,7 @@ class GermanDict:
 		de_lang[_self.whatDoYouThinkAboutThat] = 'Was denken Sie darüber'
 		de_lang[_self.whatIsYourIdea] = 'Ich denke / meine, dass ...'  # Was ist Ihre Idee / Meinung?'  # Was sollten wir machen?' # TODO ger fix
 		de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für die Aussage'
-		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund für: '
+		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund für, dafür dass '  # TODO ger fix
 		de_lang[_self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
 		de_lang[_self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
 		de_lang[_self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'

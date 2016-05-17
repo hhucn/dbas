@@ -281,7 +281,6 @@ class DictionaryHelper(object):
 		                          'previous': _tn_sys.get(_tn_sys.previous),
 		                          'next': _tn_sys.get(_tn_sys.next),
 		                          'clear_statistics': _tn_sys.get(_tn_sys.clearStatistics),
-		                          'go_back': _tn_sys.get(_tn_sys.letsGoBack),
 		                          'go_home': _tn_sys.get(_tn_sys.letsGoHome),
 		                          'count_of_posts': _tn_sys.get(_tn_sys.countOfPosts),
 		                          'default_view': _tn_sys.get(_tn_sys.defaultView)}
@@ -294,6 +293,7 @@ class DictionaryHelper(object):
 		                               'tight_node_view': _tn_dis.get(_tn_dis.tightView),
 		                               'show_content': _tn_dis.get(_tn_dis.showContent),
 		                               'hide_content': _tn_dis.get(_tn_dis.hideContent),
+		                               'go_back': _tn_dis.get(_tn_dis.letsGoBack),
 		                               'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
 
 	def add_title_text(self, return_dict):
@@ -346,5 +346,6 @@ class DictionaryHelper(object):
 			'warning': _tn_dis.get(_tn_dis.warning),
 			'island_view_for': _tn_dis.get(_tn_dis.islandViewFor),
 			'language': self.discussion_lang,
+			'aand': _tn_dis.get(_tn_dis.aand),
 			'add_premise_title': _tn_dis.get(_tn_dis.addPremiseRadioButtonText)
 		}

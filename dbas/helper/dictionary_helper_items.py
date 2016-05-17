@@ -201,20 +201,18 @@ class ItemDictHelper(object):
 
 		if db_arguments:
 			for argument in db_arguments:
+				from dbas.lib import get_text_for_argument_uid
 				# get alles premises in this group
 				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 				premises_array = []
 				for premise in db_premises:
-					premise_dict = dict()
-					premise_dict['id'] = premise.statement_uid
 					text = get_text_for_statement_uid(premise.statement_uid)
-					text = text[0:1].upper() + text[1:]
-					premise_dict['title'] = text
-					premises_array.append(premise_dict)
+					premises_array.append({'id': premise.statement_uid, 'title': text[0:1].upper() + text[1:]})
 
 				# for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
-				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang,
-				                                                               special_case_on_undermine='undermine' if attack_type == 'undermine' else None)
+				is_undermine = 'undermine' if attack_type == 'undermine' else None
+				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.issue_uid, self.lang,
+				                                                               special_case=is_undermine)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
@@ -251,8 +249,9 @@ class ItemDictHelper(object):
 
 		conclusion   = get_text_for_conclusion(db_argument, self.lang)
 		premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
-		conclusion   = conclusion[0:1].lower() + conclusion[1:]
-		premise	     = premise[0:1].lower() + premise[1:]
+		if self.lang != 'de':
+			conclusion   = conclusion[0:1].lower() + conclusion[1:]
+			premise	     = premise[0:1].lower() + premise[1:]
 		rel_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, False, False, is_dont_know=True)
 		mode		 = 't' if is_supportive else 't'
 		counter_mode = 'f' if is_supportive else 't'
@@ -300,9 +299,10 @@ class ItemDictHelper(object):
 			db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
 		first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
 
-		first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
-		premise		     = premise[0:1].lower() + premise[1:]
+		if self.lang != 'de':
+			first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
+			conclusion	     = conclusion[0:1].lower() + conclusion[1:]
+			premise		     = premise[0:1].lower() + premise[1:]
 
 		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
 		mode		     = 't' if is_supportive else 'f'

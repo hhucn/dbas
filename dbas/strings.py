@@ -611,8 +611,8 @@ class TextGenerator(object):
 		t = (_t.get(_t.itIsTrue)[0:1].lower() if start_lower_case else _t.get(_t.itIsTrue)[0:1].upper()) + _t.get(_t.itIsTrue)[1:]
 
 		if self.lang == 'de':  # TODO ger fix
-			r += _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ', '
-			f = _t.get(_t.wrong) + ', ' + f
+			r += _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ' '
+			f = _t.get(_t.wrong) + ', ' + _t.get(_t.itIsFalse)[0:1].lower() + _t.get(_t.itIsFalse)[1:] + ' '
 
 		# different cases
 		if attack_type == 'undermine':
@@ -684,10 +684,10 @@ class TextGenerator(object):
 		w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:]
 		r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:]
 
-		w += ', ' + _t.get(_t.itIsFalse) + ' ' if self.lang == 'de' else ', '  # TODO ger fix
-		r += ', ' + _t.get(_t.itIsTrue) + ' ' if self.lang == 'de' else ', '  # TODO ger fix
+		w += ', ' + _t.get(_t.itIsFalse)[0:1].lower() + _t.get(_t.itIsFalse)[1:] + ' ' if self.lang == 'de' else ', '  # TODO ger fix
+		r += ', ' + _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ' ' if self.lang == 'de' else ', '  # TODO ger fix
 
-		ret_dict['undermine_text'] = w + (_t.get(_t.itIsFalse) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.'
+		ret_dict['undermine_text'] = w + (_t.get(_t.itIsFalse) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.a'
 
 		ret_dict['support_text'] = r + (_t.get(_t.itIsTrue) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.'
 
@@ -743,11 +743,13 @@ class TextGenerator(object):
 		_t = Translator(self.lang)
 
 		#  build some confrontation text
-		confrontation = '<strong>' + confrontation[0:1].lower() + confrontation[1:] + '</strong>'
-		premise = premise[0:1].lower() + premise[1:]
-		sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
-
-		conclusion = conclusion[0:1].lower() + conclusion[1:]
+		if self.lang == 'de':
+			confrontation = '<strong>' + confrontation + '</strong>'
+		else:
+			confrontation = '<strong>' + confrontation[0:1].lower() + confrontation[1:] + '</strong>'
+			premise = premise[0:1].lower() + premise[1:]
+			sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
+			conclusion = conclusion[0:1].lower() + conclusion[1:]
 
 		confrontation_text = ''
 
@@ -772,7 +774,9 @@ class TextGenerator(object):
 					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
 				else:
 					confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
-				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay) + ': ' + confrontation
+				confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay)
+				confrontation_text += ' ' if self.lang == 'de' else ': '  # TODO ger fix
+				confrontation_text += confrontation
 			else:  # reply for premise group
 				confrontation_text = _t.get(_t.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(_t.otherParticipantsDontHaveOpinion)
 				confrontation_text += ' <strong>' + premise + '</strong>, '
