@@ -845,6 +845,8 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		import pkg_resources
+		extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
 		return {
 			'layout': self.base_layout(),
