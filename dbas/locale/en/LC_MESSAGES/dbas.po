@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-17 11:08+0200\n"
+"POT-Creation-Date: 2016-05-17 15:25+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -805,14 +805,18 @@ msgstr "Okay"
 msgid "need-help-to-understand-statement"
 msgstr "We need your help to understand your statement!"
 
-#. Default: You have used 'and' in your statement. As a result there are two
-#. ways it could be interpreted. Please help us by selecting the right
-#. interpretation:
+#. Default: You have used 'and' in your statement:
 #: dbas/templates/snippet-popups.pt:535
-msgid "set_premisegroups_intro"
+msgid "set_premisegroups_intro1"
+msgstr "You have used 'and' in your statement: "
+
+#. Default: . As a result there are two ways it could be interpreted. Please
+#. help us by selecting the right interpretation:
+#: dbas/templates/snippet-popups.pt:537
+msgid "set_premisegroups_intro2"
 msgstr ""
-"You have used 'and' in your statement. As a result there are two ways it "
-"could be interpreted. Please help us by selecting the right interpretation:"
+"As a result there are two ways it could be interpreted. Please help us by "
+"selecting the right interpretation:"
 
 #. Default: I actually have
 #: dbas/templates/snippet-popups.pt:545

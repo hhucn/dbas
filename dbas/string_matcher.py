@@ -20,6 +20,8 @@ return_count = 10  # same number as in googles suggest list (16.12.2015)
 mechanism = 'Levensthein'
 # mechanism = 'SequenceMatcher'
 
+# TODO : [ {index, distance, text} ]
+
 
 def get_strings_for_start(value, issue, is_startpoint):
 	"""
@@ -31,20 +33,22 @@ def get_strings_for_start(value, issue, is_startpoint):
 	:return: dict()
 	"""
 	db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.is_startpoint == is_startpoint, Statement.issue_uid == issue)).all()
-	tmp_dict = dict()
+	return_array = []
 	index = 1
 	for statement in db_statements:
 		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
 		if value.lower() in db_textversion.content.lower():
 			dist = __get_distance__(value, db_textversion.content)
-			tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = db_textversion.content
+			return_array.append({'index': 0,
+			                     'distance': dist,
+			                     'text': db_textversion.content})
 			index += 1
 
-	return_dict = __sort_dict(tmp_dict)
+	return_array = __sort_array(return_array)
 
-	logger('FuzzyStringMatcher', 'get_strings_for_start', 'dictionary length: ' + str(len(return_dict.keys())), debug=True)
+	logger('FuzzyStringMatcher', 'get_strings_for_start', 'dictionary length: ' + str(len(return_array)), debug=True)
 
-	return mechanism, return_dict
+	return mechanism, return_array
 
 
 def get_strings_for_edits(value, statement_uid):
@@ -61,20 +65,22 @@ def get_strings_for_edits(value, statement_uid):
 	# db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
 	db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).join(User).all()
 
-	tmp_dict = dict()
+	return_array = []
 	index = 1
 	for textversion in db_textversions:
 		if value.lower() in textversion.content.lower():
 			dist = __get_distance__(value, textversion.content)
-			tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = textversion.content
+			return_array.append({'index': 0,
+			                     'distance': dist,
+			                     'text': textversion.content})
 			index += 1
 
-	return_dict = __sort_dict(tmp_dict)
+	return_array = __sort_array(return_array)
 
 	logger('FuzzyStringMatcher', 'get_strings_for_edits', 'string: ' + value + ', string: ' + value +
-	       ', statement uid: ' + str(statement_uid) + ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
+	       ', statement uid: ' + str(statement_uid) + ', dictionary length: ' + str(len(return_array)), debug=True)
 
-	return mechanism, return_dict
+	return mechanism, return_array
 
 
 def get_strings_for_reasons(value, issue):
@@ -87,6 +93,7 @@ def get_strings_for_reasons(value, issue):
 	"""
 	db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
 	tmp_dict = dict()
+	return_array = []
 
 	index = 1
 	for statement in db_statements:
@@ -94,14 +101,17 @@ def get_strings_for_reasons(value, issue):
 		if value.lower() in db_textversion.content.lower():
 			dist = __get_distance__(value, db_textversion.content)
 			tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = db_textversion.content
+			return_array.append({'index': 0,
+			                     'distance': dist,
+			                     'text': db_textversion.content})
 			index += 1
 
-	return_dict = __sort_dict(tmp_dict)
+	return_array = __sort_array(return_array)
 
 	logger('FuzzyStringMatcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
-	       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
+	       ', dictionary length: ' + str(len(return_array)), debug=True)
 
-	return mechanism, return_dict
+	return mechanism, return_array
 
 
 def get_strings_for_issues(value):
@@ -112,18 +122,20 @@ def get_strings_for_issues(value):
 	:return:
 	"""
 	db_issues = DBDiscussionSession.query(Issue).all()
-	tmp_dict = dict()
+	return_array = []
 
 	for index, issue in enumerate(db_issues):
 		dist = __get_distance__(value, issue.title)
-		tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = issue.title
+		return_array.append({'index': 0,
+		                     'distance': dist,
+		                     'text': issue.title})
 
-	return_dict = __sort_dict(tmp_dict)
+	return_array = __sort_array(return_array)
 
 	logger('FuzzyStringMatcher', 'get_strings_for_issues', 'string: ' + value +
-	       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
+	       ', dictionary length: ' + str(len(return_array)), debug=True)
 
-	return mechanism, return_dict
+	return mechanism, return_array
 
 
 def get_strings_for_search(value):
@@ -133,7 +145,7 @@ def get_strings_for_search(value):
 	:param value: String
 	:return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
 	"""
-	tmp_dict = dict()
+	return_dict = OrderedDict()
 	db_statements = DBDiscussionSession.query(Statement).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
 	for statement in db_statements:
 		arg_set = []
@@ -151,36 +163,49 @@ def get_strings_for_search(value):
 					db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
 					for argument in db_arguments:
 						arg_set.append(argument.uid)
-		tmp_dict[str(statement.uid)] = {'text': statement.textversions.content,
-		                                'distance': dist,
-		                                'arguments': arg_set}
-
-	return_dict = __sort_dict(tmp_dict)
+		return_dict[str(statement.uid)] = {'text': statement.textversions.content,
+		                                   'distance': dist,
+		                                   'arguments': arg_set}
 
 	logger('FuzzyStringMatcher', 'get_strings_for_search', 'string: ' + value +
 	       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
 	return return_dict
 
 
-def __sort_dict(dictionary):
-	"""
-
-	:return:
-	"""
-	dictionary = OrderedDict(sorted(dictionary.items()))
-
-	return_dict = OrderedDict()
-	for i in list(dictionary.keys())[0:return_count]:
-		return_dict[i] = dictionary[i]
+def __sort_array(list):
+	return_list = []
+	newlist = sorted(list, key=lambda k: k['distance'])
 
 	if mechanism == 'SequenceMatcher':  # sort descending
-		return_dict = OrderedDict(sorted(dictionary.items(), key=lambda kv: kv[0], reverse=True))
-	else:  # sort ascending
-		return_dict = OrderedDict()
-		for i in list(dictionary.keys())[0:return_count]:
-			return_dict[i] = dictionary[i]
+		newlist = list(reversed(newlist))
 
-	return return_dict
+	# add index
+	for index, dict in enumerate(newlist):
+		dict['index'] = index
+		return_list.append(dict)
+
+	return return_list
+
+
+# def __sort_dict(dictionary):
+# 	"""
+#
+# 	:return:
+# 	"""
+# 	dictionary = OrderedDict(sorted(dictionary.items()))
+#
+# 	return_dict = OrderedDict()
+# 	for i in list(dictionary.keys())[0:return_count]:
+# 		return_dict[i] = dictionary[i]
+#
+# 	if mechanism == 'SequenceMatcher':  # sort descending
+# 		return_dict = OrderedDict(sorted(dictionary.items(), key=lambda kv: kv[0], reverse=True))
+# 	else:  # sort ascending
+# 		return_dict = OrderedDict()
+# 		for i in list(dictionary.keys())[0:return_count]:
+# 			return_dict[i] = dictionary[i]
+#
+# 	return return_dict
 
 
 def __get_distance__(string_a, string_b):
