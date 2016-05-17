@@ -532,9 +532,9 @@
     				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">We need your help to understand your statement!</h4>
     			</div>
     			<div id="popup-set-premisegroups-body" class="lead">
-    				<span id="popup-set-premisegroups-body-intro" i18n:translate="set_premisegroups_intro">
-    					You have used 'and' in your statement. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:
-    				</span>
+    				<span id="popup-set-premisegroups-body-intro1" i18n:translate="set_premisegroups_intro1">You have used 'and' in your statement: </span>
+    				<strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong>
+    				<span id="popup-set-premisegroups-body-intro2" i18n:translate="set_premisegroups_intro2">. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:</span>
                     <br>
                     <br>
     				<div id="insert_statements_page_" style="display: none;">
