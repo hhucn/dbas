@@ -373,6 +373,8 @@ function GuiHandler() {
 			topic = topic.substr(0, topic.length-3),
 			input1, input2, input3, list, bigText, bigTextSpan, connection, i;
 
+		$('#popup-set-premisegroups-body-intro-statements').text(text.trim());
+
 		if (topic.match(/\.$/)){
 			topic = topic.substr(0, topic.length-1) + ', '
 		}
@@ -420,25 +422,24 @@ function GuiHandler() {
 		else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).empty();
 
 		// is there any value ?
-		if (Object.keys(parsedData).length == 0){
+		if (parsedData.length == 0){
 			return;
 		}
 
-		var params, token, button, span_dist, span_text, distance, index;
+		var token, button, span_dist, span_text, distance, index, text;
 		callbackElement.focus();
 
 		$.each(parsedData.values, function (key, val) {
-			params = key.split('_');
-			distance = parseInt(params[0]);
-			index = params[1];
+			distance = parseInt(val.distance);
+			index = val.index;
 
 			token = callbackElement.val();
 			//var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
 
 			// make all tokens bold
-			uneditted_value = val;
+			uneditted_value = val.text;
 			// replacement from http://stackoverflow.com/a/280805/2648872
-			val = val.replace( new RegExp( "(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "</b>$1<b>" );
+			text = val.text.replace( new RegExp( "(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "</b>$1<b>" );
 
 			button = $('<button>')
 				.attr('type', 'button')
@@ -448,7 +449,7 @@ function GuiHandler() {
 				.hover(function(){$(this).addClass('active');},
 					   function(){ $(this).removeClass('active');});
 			span_dist = $('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
-			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(val);
+			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
 			button.append(span_dist).append(span_text).click(function(){
 				callbackElement.val($(this).attr('text'));
 				$('#' + proposalStatementListGroupId).empty();
