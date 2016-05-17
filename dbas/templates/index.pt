@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
-    
+
     <link type="text/css" href="${request.static_url('dbas:static/css/theme_index.css')}" rel="stylesheet">
 
 		<div class="blocked session_expired center alert-warning" id="session_expired_container" tal:condition="session_expired">
