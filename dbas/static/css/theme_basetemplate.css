@@ -199,12 +199,15 @@ comment .container and wrap each container with <div class="coloured-div">
 	z-index: 9999998;
 }
 
-.session_expired {
+.session_expired,
+.request_failed{
 	z-index: 9999997;
     width: 300px;
 }
 .session_expired h5,
-.session_expired h6{
+.session_expired h6,
+.request_failed h5,
+.request_failed h6{
     color: #fff;
 }
 

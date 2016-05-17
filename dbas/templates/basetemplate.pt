@@ -52,6 +52,12 @@
 	</script>
 	-->
 
+
+	<div class="blocked request_failed center alert-danger" id="request_failed_container" style="display:none;">
+		<h5 i18n:translate="request_failed">Your request failed!</h5>
+        <h6 i18n:translate="please_reload">Please reload the page.</h6>
+	</div>
+
 	<div id="additional-wrapper">
 		<div id="wrapper-header">
 			<div metal:use-macro="load: snippet-header.pt"></div>
