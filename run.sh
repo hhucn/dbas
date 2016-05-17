@@ -21,7 +21,7 @@ then
         sudo systemctl start $service
     else
         echo "Invoking service..."
-        sudo service $service Start
+        sudo service $service start
     fi
 fi
 
