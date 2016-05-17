@@ -687,7 +687,7 @@ class TextGenerator(object):
 		w += ', ' + _t.get(_t.itIsFalse)[0:1].lower() + _t.get(_t.itIsFalse)[1:] + ' ' if self.lang == 'de' else ', '  # TODO ger fix
 		r += ', ' + _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ' ' if self.lang == 'de' else ', '  # TODO ger fix
 
-		ret_dict['undermine_text'] = w + (_t.get(_t.itIsFalse) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.a'
+		ret_dict['undermine_text'] = w + (_t.get(_t.itIsFalse) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.'
 
 		ret_dict['support_text'] = r + (_t.get(_t.itIsTrue) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.'
 
