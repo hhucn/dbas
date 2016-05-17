@@ -124,8 +124,8 @@
     </div>
 
     <!-- EDIT STATEMENTS -->
-    <div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    	<div class="modal-dialog">
+    <div class="modal fade bs-example-modal-lg" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog modal-lg">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
@@ -152,8 +152,8 @@
     				</div>
     			</div>
     			<div class="modal-footer">
-    				<button type="button" class="btn btn-primary" id="popup-edit-statement-submit">${structure:extras.tag.submit}</button>
-    				<button type="button" class="btn btn-default" id="popup-edit-statement-close-button">${structure:extras.tag.close}</button>
+    				<button type="button" class="btn btn-success" id="popup-edit-statement-submit">${structure:extras.tag.submit}</button>
+    				<button type="button" class="btn btn-danger" id="popup-edit-statement-close-button">${structure:extras.tag.close}</button>
     			</div>
     		</div>
     	</div>
@@ -532,9 +532,9 @@
     				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">We need your help to understand your statement!</h4>
     			</div>
     			<div id="popup-set-premisegroups-body" class="lead">
-    				<span id="popup-set-premisegroups-body-intro" i18n:translate="set_premisegroups_intro">
-    					You have used 'and' in your statement. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:
-    				</span>
+    				<span id="popup-set-premisegroups-body-intro1" i18n:translate="set_premisegroups_intro1">You have used 'and' in your statement: </span>
+    				<strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong>
+    				<span id="popup-set-premisegroups-body-intro2" i18n:translate="set_premisegroups_intro2">. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:</span>
                     <br>
                     <br>
     				<div id="insert_statements_page_" style="display: none;">
