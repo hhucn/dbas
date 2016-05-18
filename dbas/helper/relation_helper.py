@@ -101,8 +101,6 @@ class RelationHelper(object):
 		db_rebut = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == (not db_argument.is_supportive),
                                                               Argument.conclusion_uid == db_argument.conclusion_uid).all()
 		for rebut in db_rebut:
-			logger('--- RelationHelper', 'get_rebuts_for_arguments_conclusion_uid', str(rebut.uid))
-			logger('--- RelationHelper', 'get_rebuts_for_arguments_conclusion_uid', str(rebut.uid))
 
 			if rebut.premisesgroup_uid not in given_rebuts:
 				given_rebuts.add(rebut.premisesgroup_uid)

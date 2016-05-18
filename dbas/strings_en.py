@@ -296,6 +296,8 @@ class EnglischDict:
 		en_lang[_self.irrelevant] = 'Irrelevant'
 		en_lang[_self.itIsTrue] = 'it is true that'
 		en_lang[_self.itIsFalse] = 'it is false that'
+		en_lang[_self.itTrueIs] = 'it is true that'
+		en_lang[_self.itFalseIs] = 'it is false that'
 		en_lang[_self.isFalse] = 'is false'
 		en_lang[_self.isNotAGoodIdea] = 'is not a good idea'
 		en_lang[_self.isTrue] = 'is true'
