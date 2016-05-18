@@ -233,6 +233,8 @@ class Translator(object):
 		self.irrelevant = 'irrelevant'
 		self.itIsTrue = 'itIsTrue'
 		self.itIsFalse = 'itIsFalse'
+		self.itTrueIs = 'itTrueIs'
+		self.itFalseIs = 'itFalseIs'
 		self.islandView = 'islandView'
 		self.isFalse = 'isFalse'
 		self.isTrue = 'isTrue'
@@ -692,24 +694,23 @@ class TextGenerator(object):
 		ret_dict['support_text'] = r + (_t.get(_t.itIsTrue) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.'
 
 		tmp = _t.get(_t.butIDoNotBelieveCounterFor) if is_attacking else _t.get(_t.butIDoNotBelieveArgumentFor)
-		ret_dict['undercut_text'] = r + '<strong>' + premise + '</strong>, '\
-		                            + (_t.get(_t.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)\
-		                            + ' <strong>' + conclusion + '</strong>' + '.'
+		ret_dict['undercut_text'] = r + '<strong>' + premise + '</strong>, '
+		ret_dict['undercut_text'] += (_t.get(_t.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)
+		ret_dict['undercut_text'] += ' <strong>' + conclusion + '</strong>' + '.'
 
-		ret_dict['overbid_text'] = r + '<strong>' + premise + '</strong>, '\
-		                           + (_t.get(_t.andIDoBelieveArgument) if is_dont_know else _t.get(_t.andIDoBelieveCounterFor))\
-		                           + ' <strong>' + conclusion + '</strong>. '\
-		                           + (_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting))\
-		                           + ' <strong>' + conclusion + '</strong>.'
+		ret_dict['overbid_text'] = r + '<strong>' + premise + '</strong>, '
+		ret_dict['overbid_text'] += (_t.get(_t.andIDoBelieveArgument) if is_dont_know else _t.get(_t.andIDoBelieveCounterFor))
+		ret_dict['overbid_text'] += ' <strong>' + conclusion + '</strong>. '
+		ret_dict['overbid_text'] += (_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting))
+		ret_dict['overbid_text'] += ' <strong>' + conclusion + '</strong>.'
 
-		ret_dict['rebut_text'] = r + '<strong>' + premise + '</strong> ' \
-								 + (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument)) \
-								 + ' <strong>' + conclusion + '</strong>. '\
-								 + (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))\
-								 + ' <strong>' + (first_conclusion if first_conclusion else conclusion) + '</strong>.'
+		ret_dict['rebut_text'] = r + '<strong>' + premise + '</strong> '
+		ret_dict['rebut_text'] += (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument))
+		ret_dict['rebut_text'] += ' <strong>' + conclusion + '</strong>. '
+		ret_dict['rebut_text'] += (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))
+		ret_dict['rebut_text'] += ' <strong>' + (first_conclusion if first_conclusion else conclusion) + '</strong>.'
 		# + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
 
-		logger('--', str(for_island_view), str(self.lang) + ' ' + str(self.lang == 'de'))
 		if for_island_view and self.lang == 'de':
 			ret_dict['undermine_text'] = ret_dict['undermine_text'][:-1] + ', ' + _t.get(_t.because).lower()
 			ret_dict['support_text'] = ret_dict['support_text'][:-1] + ', ' + _t.get(_t.because).lower()
