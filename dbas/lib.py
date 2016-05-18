@@ -115,7 +115,8 @@ def python_datetime_pretty_print(ts, lang):
 	return datetime.strptime(str(ts), '%Y-%m-%d').strftime(formatter)
 
 
-def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False, user_changed_opinion=False):
+def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False,
+                              user_changed_opinion=False, rearrange_intro=False):
 	"""
 	Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -125,6 +126,7 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 	:param start_with_intro: Boolean
 	:param first_arg_by_user: Boolean
 	:param user_changed_opinion: Boolean
+	:param rearrange_intro: Boolean
 	:return: String
 	"""
 	db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -155,7 +157,10 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 		ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
 
 		if lang == 'de':
-			intro = _t.get(_t.itIsTrue) if db_argument.is_supportive else _t.get(_t.itIsFalse)
+			if rearrange_intro:
+				intro = _t.get(_t.itTrueIs) if db_argument.is_supportive else _t.get(_t.itFalseIs)
+			else:
+				intro = _t.get(_t.itIsTrue) if db_argument.is_supportive else _t.get(_t.itIsFalse)
 			ret_value += se + intro[0:1].upper() + intro[1:] + ' ' + sb + conclusion + because + premises
 		else:
 			ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
@@ -251,17 +256,18 @@ def get_text_for_statement_uid(uid):
 	return tmp
 
 
-def get_text_for_conclusion(argument, lang, start_with_intro=False):
+def get_text_for_conclusion(argument, lang, start_with_intro=False, rearrange_intro=False):
 	"""
 	Check the arguments conclusion whether it is an statement or an argument and returns the text
 
 	:param argument: Argument
 	:param lang: ui_locales
 	:param start_with_intro: Boolean
+	:param rearrange_intro: Boolean
 	:return: String
 	"""
 	if argument.argument_uid:
-		return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro)
+		return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro,rearrange_intro=rearrange_intro)
 	else:
 		return get_text_for_statement_uid(argument.conclusion_uid)
 

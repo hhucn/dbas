@@ -149,9 +149,6 @@ class OpinionHandler:
 			text = get_text_for_statement_uid(uid)
 			statement_dict['text'] = text[0:1].upper() + text[1:]
 
-			logger('--', str(is_supportive), str(str(is_supportive) == 'True'))
-			logger('--', str(is_supportive), str(str(is_supportive) == 'True'))
-			logger('--', str(is_supportive), str(str(is_supportive) == 'True'))
 			if is_supportive is not None:
 				is_supportive = True if str(is_supportive) == 'True' else False
 			else:

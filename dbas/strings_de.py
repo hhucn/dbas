@@ -287,6 +287,8 @@ class GermanDict:
 		de_lang[_self.irrelevant] = 'Irrelevant'
 		de_lang[_self.itIsTrue] = 'es ist richtig, dass'
 		de_lang[_self.itIsFalse] = 'es ist falsch, dass'
+		de_lang[_self.itTrueIs] = 'es richtig ist , dass'
+		de_lang[_self.itFalseIs] = 'es falsch ist , dass'
 		de_lang[_self.islandView] = 'Insel Ansicht'
 		de_lang[_self.isFalse] = 'ist falsch'
 		de_lang[_self.isTrue] = 'richtig ist'
