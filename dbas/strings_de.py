@@ -17,7 +17,19 @@ class GermanDict:
 		:param _self:
 		:return: dictionary for the german language
 		"""
+
 		de_lang = dict()
+
+		de_lang[_self.arguments] = 'Argumente'
+		de_lang[_self.error] = 'Fehler'
+		de_lang[_self.iActuallyHave] = 'Ich habe'
+		de_lang[_self.insertOneArgument] = 'Ich habe eine Aussage:'
+		de_lang[_self.insertDontCare] = 'Es ist mir egal. Nimm\' meine Aussage wie sie ist!'
+		de_lang[_self.forgotInputRadio] = 'Sie haben eine Auswahl vergessen'
+		de_lang[_self.needHelpToUnderstandStatement] = 'Wir brauchen Hilfe zum Verständniss Ihrer Aussage!'
+		de_lang[_self.setPremisegroupsIntro1] = 'Sie haben \'und\' in Ihrer Aussage '
+		de_lang[_self.setPremisegroupsIntro2] = ' benutzt. Daher existieren mehrer mögliche Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen:'
+
 		de_lang[_self.attack] = 'Sie lehnen ab, dass'
 		de_lang[_self.support] = 'Sie akzeptieren'
 		de_lang[_self.premise] = 'Prämisse'

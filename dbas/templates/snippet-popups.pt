@@ -529,12 +529,10 @@
     					<span aria-hidden="true">&times;</span>
     				</button>
     				<span id="popup-set-premisegroups-counter" class="lead badge" style="float:right; margin: 1em;">1/4</span>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">We need your help to understand your statement!</h4>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">${extras.tag.need_help_to_understand_statement}</h4>
     			</div>
     			<div id="popup-set-premisegroups-body" class="lead">
-    				<span id="popup-set-premisegroups-body-intro1" i18n:translate="set_premisegroups_intro1">You have used 'and' in your statement: </span>
-    				<strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong>
-    				<span id="popup-set-premisegroups-body-intro2" i18n:translate="set_premisegroups_intro2">. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:</span>
+    				<span id="popup-set-premisegroups-body-intro1">${extras.tag.set_premisegroups_intro1}</span><strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong><span id="popup-set-premisegroups-body-intro2">${extras.tag.set_premisegroups_intro2}</span>
                     <br>
                     <br>
     				<div id="insert_statements_page_" style="display: none;">
@@ -542,21 +540,21 @@
     						<li>
     							<label for="insert_more_arguments">
     								<input type="radio" name="insert_statements" id="insert_more_arguments">
-    								<span i18n:translate="i_actually_have">I actually have</span>&#160;<span id="insert_statements_count"></span>&#160;<span i18n:translate="arguments">arguments:</span>
+    								<span>${extras.tag.i_actually_have}</span>&#160;<span id="insert_statements_count"></span>&#160;<span>${extras.tag.arguments}:</span>
     							    <ul id="insert_statements_list_more_arguments" style="font-weight: 300;">
     							    </ul>
     							</label>
     						</li>
     						<li>
     							<label for="insert_one_argument">
-    								<input type="radio" name="insert_statements" id="insert_one_argument" i18n:translate="insert_one_arguments">I have one argument:
+    								<input type="radio" name="insert_statements" id="insert_one_argument">${extras.tag.insert_one_argument}
     							    <br>
     							    <span id="insert_statements_one_argument" style="font-weight: 300;"></span>
     							</label>
     						</li>
     						<li>
     							<label for="insert_dont_care">
-    								<input type="radio" name="insert_statements" id="insert_dont_care" i18n:translate="insert_dont_care">I don’t care about this, leave me alone and take my statement as it is!
+    								<input type="radio" name="insert_statements" id="insert_dont_care">${extras.tag.insert_dont_care}
     							</label>
     						</li>
     					</ul>
@@ -565,14 +563,14 @@
     	    		</div>
                     <div id="insert_statements_page_error" class="alert alert-danger" role="alert" style="display:none">
     					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    					<span i18n:translate="error:">Error:</span>
-    					<span i18n:translate="forgot_input_radio">You forgot to choose the right interpretation</span>
+    					<span>${extras.tag.error}</span>:
+    					<span>${extras.tag.forgot_input_radio}</span>
     				</div>
     	    		<div class="modal-footer">
     	    			<ul class="pager" style="margin: 0;">
     	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" style="float: left;" tal:attributes="title extras.buttons.previous">←</a></li>
     	    				<li class="next"><a href="#" id="popup-set-premisegroups-next-button" style="float: left;" tal:attributes="title extras.buttons.next">→</a></li>
-    	    				<li><button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" i18n:translate="save_my_statement" style="float: right;" >Save my Statement!</button></li>
+    	    				<li><button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" style="float: right;" >${extras.buttons.save_my_statement}</button></li>
     	    			</ul>
     	    		</div>
     			</div>
