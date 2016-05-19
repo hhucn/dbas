@@ -27,6 +27,16 @@ class Translator(object):
 		"""
 		self.lang = lang
 
+		self.arguments = 'arguments'
+		self.error = 'error'
+		self.forgotInputRadio = 'forgotInputRadio'
+		self.iActuallyHave = 'iActuallyHave'
+		self.insertOneArgument = 'insertOneArgument'
+		self.insertDontCare = 'insertDontCare'
+		self.needHelpToUnderstandStatement = 'needHelpToUnderstandStatement'
+		self.setPremisegroupsIntro1 = 'setPremisegroupsIntro1'
+		self.setPremisegroupsIntro2 = 'setPremisegroupsIntro2'
+
 		self.aand = 'and'
 		self.addedEverything = 'addedEverything'
 		self.addTopic = 'addTopic'

@@ -215,7 +215,7 @@ def __get_distance__(string_a, string_b):
 	:param string_b:
 	:return:
 	"""
-	logger('FuzzyStringMatcher', '__get_distance__', string_a + ' - ' + string_b)
+	# logger('FuzzyStringMatcher', '__get_distance__', string_a + ' - ' + string_b)
 	if mechanism == 'Levensthein':
 		dist = distance(string_a.lower(), string_b.lower())
 		#  logger('FuzzyStringMatcher', '__get_distance__', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())

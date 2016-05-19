@@ -347,5 +347,14 @@ class DictionaryHelper(object):
 			'island_view_for': _tn_dis.get(_tn_dis.islandViewFor),
 			'language': self.discussion_lang,
 			'aand': _tn_dis.get(_tn_dis.aand),
-			'add_premise_title': _tn_dis.get(_tn_dis.addPremiseRadioButtonText)
+			'add_premise_title': _tn_dis.get(_tn_dis.addPremiseRadioButtonText),
+			'arguments': _tn_dis.get(_tn_dis.arguments),
+			'error': _tn_dis.get(_tn_dis.error),
+			'forgot_input_radio': _tn_dis.get(_tn_dis.forgotInputRadio),
+			'i_actually_have': _tn_dis.get(_tn_dis.iActuallyHave),
+			'insert_one_argument': _tn_dis.get(_tn_dis.insertOneArgument),
+			'insert_dont_care': _tn_dis.get(_tn_dis.insertDontCare),
+			'need_help_to_understand_statement': _tn_dis.get(_tn_dis.needHelpToUnderstandStatement),
+			'set_premisegroups_intro1': _tn_dis.get(_tn_dis.setPremisegroupsIntro1),
+			'set_premisegroups_intro2': _tn_dis.get(_tn_dis.setPremisegroupsIntro2)
 		}
