@@ -299,8 +299,8 @@ class ItemDictHelper(object):
 			db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
 		first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
 
-		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
 		if self.lang != 'de':
+			conclusion	     = conclusion[0:1].lower() + conclusion[1:]
 			first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
 			premise		     = premise[0:1].lower() + premise[1:]
 
