@@ -105,7 +105,7 @@ class DiscussionDictHelper(object):
 		if not text:
 			return None
 		false               = _tn.isFalse if self.lang == 'de' else _tn.isNotAGoodIdea
-		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong>'
+		question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong> '
 		question            += text[0:1].lower() + text[1:] if self.lang != 'de' else text
 		question            += '</strong> '
 		if self.lang == 'de':
@@ -120,10 +120,11 @@ class DiscussionDictHelper(object):
 			add_premise_text = text + ' ' + (_tn.get(_tn.holds) if is_supportive else false)
 		add_premise_text    += ', '  + _tn.get(_tn.because).lower() + '...'
 
-		# intro = _tn.get(_tn.youAgreeWith) if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
-		intro = ''
-		if not is_supportive:
-			intro = _tn.get(_tn.youDisagreeWith) + (' ' if self.lang == 'de' else ': ')
+		if self.lang == 'de':
+			intro   = _tn.get(_tn.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
+		else:
+			intro   = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
+
 		splitted_history = self.history.split('-')
 		if len(splitted_history) > 0:
 			if '/undercut' in splitted_history[-1] or '/undermine' in splitted_history[-1] or '/rebut' in splitted_history[-1]:
