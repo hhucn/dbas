@@ -395,8 +395,8 @@ class GermanDict:
 		de_lang[_self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für '
 		de_lang[_self.otherParticipantsAcceptBut] = 'Andere Teilnehmer akzeptieren Ihr Argument, aber'
 		de_lang[_self.otherParticipantDisagreeThat] = 'Andere Teilnehmer widersprechen, dass '
-		de_lang[_self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon, dass'  # TODO ger fix
-		de_lang[_self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme davon, dass'  # TODO ger fix
+		de_lang[_self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon dass,'  # TODO ger fix
+		de_lang[_self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme davon dass,'  # TODO ger fix
 		de_lang[_self.otherUsersHaveCounterArgument] = 'Andere Teilnehmer haben das Gegenargument, dass'
 		de_lang[_self.otherUsersSaidThat] = 'Andere Teilnehmer haben gesagt, dass'
 		de_lang[_self.opinionBarometer] = 'Meinungsbarometer'
@@ -474,7 +474,7 @@ class GermanDict:
 		de_lang[_self.whatDoYouThinkAboutThat] = 'Was denken Sie darüber'
 		de_lang[_self.whatIsYourIdea] = 'Ich denke / meine, dass ...'  # Was ist Ihre Idee / Meinung?'  # Was sollten wir machen?' # TODO ger fix
 		de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für die Aussage'
-		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund für, dafür dass '  # TODO ger fix
+		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund dafür, dass '  # TODO ger fix
 		de_lang[_self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
 		de_lang[_self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
 		de_lang[_self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'

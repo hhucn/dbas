@@ -608,7 +608,8 @@ class TextGenerator(object):
 		user_msg   = ''
 		system_msg = ''
 		premise    = premise[0:1].lower() + premise[1:]
-		conclusion = conclusion[0:1].lower() + conclusion[1:]
+		if self.lang != 'de':
+			conclusion = conclusion[0:1].lower() + conclusion[1:]
 
 		if premise[-1] == '.':
 			premise = premise[:-1]
