@@ -224,7 +224,7 @@ class DiscussionDictHelper(object):
 		save_statement_url = 'ajax_set_new_start_statement'
 
 		if uid != 0:
-			text			= get_text_for_argument_uid(uid, self.lang)
+			text			= get_text_for_argument_uid(uid, self.lang, rearrange_intro=True)
 			text			= text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
 			sys_text    	= _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:]  + '</strong>. '
 
