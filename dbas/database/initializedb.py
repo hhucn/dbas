@@ -682,7 +682,7 @@ def setup_discussion_database(session, user):
 	textversion201 = TextVersion(content="Elektroautos sehr g&uuml;nstig im Unterhalt sind", author=user.uid)
 	textversion202 = TextVersion(content="E-Autos optimal f&uuml;r den Stadtverkehr sind.", author=user.uid)
 	textversion203 = TextVersion(content="sie keine stinkenden Abgase produzieren.", author=user.uid)
-	textversion204 = TextVersion(content="die Herstellung der Autos und Batterien die Umwelt stark belastet", author=user.uid)
+	textversion204 = TextVersion(content="die Herstellung der Autos und Batterien die Umwelt stark belasten", author=user.uid)
 	textversion205 = TextVersion(content="sie sehr teuer in der Anschaffung sind.", author=user.uid)
 	textversion206 = TextVersion(content="die Reichweite von Elektroautos ausreichend f&uuml;r mindestens 300km ist.", author=user.uid)
 	textversion207 = TextVersion(content="die Ladezeit der Batterie bis zu 12h da&uuml;rn kann und so lange man tags&uuml;ber nicht warten kann.", author=user.uid)
