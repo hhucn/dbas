@@ -737,7 +737,7 @@ function GuiHandler() {
 		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
-		span = $('<span>').text(_t(noDecisionstaken));
+		span = $('<span>').text(_t_discussion(noDecisionstaken));
 		div.append(strong).append(span);
 		return div;
 	};
