@@ -218,7 +218,7 @@ class GermanDict:
 		de_lang[_self.dataRemoved] = 'Daten wurden erfolgreich gelöscht.'
 		de_lang[_self.didYouMean] = 'Top 10 der Aussagen, die Sie eventuell meinten:'
 		de_lang[_self.discussionEnd] = 'Die Diskussion endet hier.'
-		de_lang[_self.discussionEndLinkText] = 'Sie können <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">hier</a> klicken, um einen Schritt zurück zugehen oder den oberen Button bzw. <a href="" id="discussionEndRestart">diesen Link</a> nutzen, um die Diskussion neu zustarten.'
+		de_lang[_self.discussionEndLinkText] = 'Sie können <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">hier</a> klicken, um einen Schritt zurückzugehen oder den oberen Button bzw. <a href="" id="discussionEndRestart">diesen Link</a> nutzen, um die Diskussion neu zustarten.'
 		de_lang[_self.duplicateDialog] = 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?'
 		de_lang[_self.duplicate] = 'Duplikat'
 		de_lang[_self.displayControlDialogGuidedTitle] = 'geführte Ansicht'
