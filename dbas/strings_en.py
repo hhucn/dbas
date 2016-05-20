@@ -28,7 +28,7 @@ class EnglischDict:
 		en_lang[_self.forgotInputRadio] = 'You forgot to choose the right interpretation'
 		en_lang[_self.needHelpToUnderstandStatement] = 'We need your help to understand your statement!'
 		en_lang[_self.setPremisegroupsIntro1] = 'You have used \'and\' in your statement: '
-		en_lang[_self.setPremisegroupsIntro2] = '. There are two ways it could be interpreted. Please help us by selecting the right interpretation:'
+		en_lang[_self.setPremisegroupsIntro2] = '. There are two ways this could be interpreted. Please help us by selecting the right interpretation:'
 
 		en_lang[_self.attack] = 'You disagreed with'
 		en_lang[_self.support] = 'You agreed with'
