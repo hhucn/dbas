@@ -396,10 +396,9 @@ function GuiHandler() {
 		input1.parent().attr('for', input1.parent().attr('for') + '_' + page_no);
 		input2.parent().attr('for', input2.parent().attr('for') + '_' + page_no);
 		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
-
-
+		
 		connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
-		alert(getDiscussionLanguage() + "\n" + (getDiscussionLanguage() == 'de'));
+
 		if (getDiscussionLanguage() == 'de')
 			bigText = topic;
 		else
