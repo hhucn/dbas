@@ -62,6 +62,20 @@ getLanguage = function(){
 };
 
 /**
+ * Returns the tag of current discussion language. This is either {en,de} or 'unknown value' *
+ * @returns {string} language tag
+ */
+getDiscussionLanguage = function(){
+	var lang = $('#issue_info').attr('data-discussion-language'),
+		value = 'unknown identifier';
+	if (lang.indexOf('en') != -1){  		value = 'en';
+	} else if (lang.indexOf('de') != -1){	value = 'de';
+	} else {                                value = 'unknown value';
+	}
+	return value;
+};
+
+/**
  * Messages & Errors
  * @type {string}
  */
@@ -138,6 +152,8 @@ var interestingOnDBAS 								= 'interestingOnDBAS';
 var initialPositionInterest                         = 'initialPositionInterest';
 var itIsTrueThat                                    = 'itIsTrueThat';
 var itIsFalseThat                                   = 'itIsFalseThat';
+var isItTrueThat                                    = 'isItTrueThat';
+var isItFalseThat                                   = 'isItFalseThat';
 var keepSetting										= 'keepSetting';
 var hideAllUsers 									= 'hideAllUsers';
 var hideAllArguments								= 'hideAllArguments';
@@ -306,6 +322,8 @@ var dbas_en = {
 	'interestingOnDBAS': 'Interesting discussion on DBAS',
 	'itIsTrueThat': 'it is true that',
 	'itIsFalseThat': 'it is false that',
+	'isItTrueThat': 'it is true that',
+	'isItFalseThat': 'it is false that',
 	'keepSetting': 'Keep this',
 	'hideAllUsers': 'Hide all users',
 	'hideAllArguments': 'Hide all arguments',
@@ -458,6 +476,8 @@ var dbas_de = {
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
 	'itIsTrueThat': 'es ist richtig, dass',
 	'itIsFalseThat': 'es ist falsch, dass',
+	'isItTrueThat': 'ist es richtig, dass',
+	'isItFalseThat': 'ist es falsch, dass',
 	'keepSetting': 'Entscheidung merken',
 	'hideAllUsers': 'Verstecke alle Benutzer',
 	'hideAllArguments': 'Verstecke alle Argumente',
@@ -474,12 +494,12 @@ var dbas_de = {
 	'listOfGivenVotes': 'Dies ist eine Liste von allen Stimmen:',
 	'medium': 'mittel',
 	'messageInfoTitle': 'Informationen über eine Aussage',
-	'messageInfoStatementCreatedBy': 'Diese Aussage wurde gemacht von',
+	'messageInfoStatementCreatedBy': 'Diese Aussage stammt von',
 	'messageInfoAt': 'am',
 	'messageInfoMessage': 'Aussage',
-	'messageInfoCurrentlySupported': 'Sie wird aktuell unterstützt von',
-	'messageInfoParticipant': 'Teilnehmer/in',
-	'messageInfoParticipantPl': '',//'/n/nen',
+	'messageInfoCurrentlySupported': 'Sie wird aktuell von',
+	'messageInfoParticipant': 'Teilnehmer/in unterstützt',
+	'messageInfoParticipantPl': '/n/nen',
 	'messageInfoSupporterSg': 'Unterstützer/in ist',
 	'messageInfoSupporterPl': 'Unterstützer/innen sind',
 	'nickname': 'Spitzname',

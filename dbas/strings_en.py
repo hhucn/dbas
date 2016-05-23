@@ -17,7 +17,19 @@ class EnglischDict:
 		:param _self:
 		:return: dictionary for the english language
 		"""
+
 		en_lang = dict()
+
+		en_lang[_self.arguments] = 'arguments'
+		en_lang[_self.error] = 'Error'
+		en_lang[_self.iActuallyHave] = 'I actually have'
+		en_lang[_self.insertOneArgument] = 'I have one argument:'
+		en_lang[_self.insertDontCare] = 'I don’t care about this, leave me alone and take my statement as it is!'
+		en_lang[_self.forgotInputRadio] = 'You forgot to choose the right interpretation'
+		en_lang[_self.needHelpToUnderstandStatement] = 'We need your help to understand your statement!'
+		en_lang[_self.setPremisegroupsIntro1] = 'You have used \'and\' in your statement: '
+		en_lang[_self.setPremisegroupsIntro2] = '. There are two ways this could be interpreted. Please help us by selecting the right interpretation:'
+
 		en_lang[_self.attack] = 'You disagreed with'
 		en_lang[_self.support] = 'You agreed with'
 		en_lang[_self.premise] = 'Premise'
@@ -296,6 +308,8 @@ class EnglischDict:
 		en_lang[_self.irrelevant] = 'Irrelevant'
 		en_lang[_self.itIsTrue] = 'it is true that'
 		en_lang[_self.itIsFalse] = 'it is false that'
+		en_lang[_self.itTrueIs] = 'it is true that'
+		en_lang[_self.itFalseIs] = 'it is false that'
 		en_lang[_self.isFalse] = 'is false'
 		en_lang[_self.isNotAGoodIdea] = 'is not a good idea'
 		en_lang[_self.isTrue] = 'is true'

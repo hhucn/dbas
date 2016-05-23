@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-17 15:25+0200\n"
+"POT-Creation-Date: 2016-05-20 13:25+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -62,56 +62,56 @@ msgid "to_the_discussion"
 msgstr "to the discussion"
 
 #. Default: Your session has expired!
-#: dbas/templates/index.pt:10
+#: dbas/templates/index.pt:8
 msgid "session_expired"
 msgstr "Your session has expired!"
 
 #. Default: You have to log in again.
-#: dbas/templates/index.pt:11
+#: dbas/templates/index.pt:9
 msgid "login_again"
 msgstr "You have to log in again."
 
 #. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
 #. argumentation system. There will be bugs. Please feel free to
-#: dbas/templates/index.pt:20
+#: dbas/templates/index.pt:18
 msgid "welcome_text1"
 msgstr ""
 "Welcome to D-BAS! This is an early prototype of our dialog-based "
 "argumentation system. There will be bugs. Please feel free to"
 
 #. Default: contact
-#: dbas/templates/index.pt:21
+#: dbas/templates/index.pt:19
 msgid "welcome_text2"
 msgstr "contact"
 
 #. Default: us to report bugs or provide feedback.
-#: dbas/templates/index.pt:22
+#: dbas/templates/index.pt:20
 msgid "welcome_text3"
 msgstr "us to report bugs or provide feedback."
 
 #. Default: Click here to start now!
-#: dbas/templates/index.pt:28
+#: dbas/templates/index.pt:26
 msgid "lets_start_now"
 msgstr "Click here to start now!"
 
 #. Default: This work is part of the graduate school on
-#: dbas/templates/index.pt:34
+#: dbas/templates/index.pt:32
 msgid "work_based_on"
 msgstr "This work is part of the graduate school on"
 
 #. Default: Online-Participation
-#: dbas/templates/index.pt:34
+#: dbas/templates/index.pt:32
 msgid "online_participation"
 msgstr "Online-Participation"
 
 #. Default: It is funded by the
-#: dbas/templates/index.pt:35
+#: dbas/templates/index.pt:33
 msgid "funded_by"
 msgstr "It is funded by the"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: dbas/templates/index.pt:35
+#: dbas/templates/index.pt:33
 msgid "ministry_of_innovation"
 msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
@@ -416,7 +416,7 @@ msgid "imprint_copyright"
 msgstr "Imprint and Copyright"
 
 #. Default: Author
-#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:611
+#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:609
 msgid "author"
 msgstr "Author"
 
@@ -503,7 +503,7 @@ msgstr "Fax"
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:75 dbas/templates/snippet-popups.pt:120
 #: dbas/templates/snippet-popups.pt:443 dbas/templates/snippet-popups.pt:482
-#: dbas/templates/snippet-popups.pt:619 dbas/templates/snippet-popups.pt:653
+#: dbas/templates/snippet-popups.pt:617 dbas/templates/snippet-popups.pt:651
 msgid "close"
 msgstr "Close"
 
@@ -800,74 +800,34 @@ msgstr "Only one statement/argument/point per field!"
 msgid "Okay"
 msgstr "Okay"
 
-#. Default: We need your help to understand your statement!
-#: dbas/templates/snippet-popups.pt:532
-msgid "need-help-to-understand-statement"
-msgstr "We need your help to understand your statement!"
-
-#. Default: You have used 'and' in your statement:
-#: dbas/templates/snippet-popups.pt:535
-msgid "set_premisegroups_intro1"
-msgstr "You have used 'and' in your statement: "
-
-#. Default: . As a result there are two ways it could be interpreted. Please
-#. help us by selecting the right interpretation:
-#: dbas/templates/snippet-popups.pt:537
-msgid "set_premisegroups_intro2"
-msgstr ""
-"As a result there are two ways it could be interpreted. Please help us by "
-"selecting the right interpretation:"
-
-#. Default: I actually have
-#: dbas/templates/snippet-popups.pt:545
-msgid "i_actually_have"
-msgstr "I actually have"
-
-#. Default: arguments:
-#. Default: Arguments
-#: dbas/templates/snippet-popups.pt:545 dbas/templates/admin.pt:32
-msgid "arguments"
-msgstr "arguments"
-
-#. Default: Error:
-#: dbas/templates/snippet-popups.pt:568 dbas/templates/snippet-popups.pt:599
-#: dbas/templates/snippet-popups.pt:642 dbas/templates/content.pt:273
-#: dbas/templates/content.pt:296
-msgid "error:"
-msgstr "Error:"
-
-#. Default: You forgot to choose the right interpretation
-#: dbas/templates/snippet-popups.pt:569
-msgid "forgot_input_radio"
-msgstr "You forgot to choose the right interpretation"
-
-#. Default: Save my Statement!
-#: dbas/templates/snippet-popups.pt:575
-msgid "save_my_statement"
-msgstr "Save my Statement!"
-
 #. Default: Writing a new message
-#: dbas/templates/snippet-popups.pt:590 dbas/templates/snippet-popups.pt:632
+#: dbas/templates/snippet-popups.pt:588 dbas/templates/snippet-popups.pt:630
 msgid "writing_message"
 msgstr "Writing a new message"
 
+#. Default: Error:
+#: dbas/templates/snippet-popups.pt:597 dbas/templates/snippet-popups.pt:640
+#: dbas/templates/content.pt:273 dbas/templates/content.pt:296
+msgid "error:"
+msgstr "Error:"
+
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:604 dbas/templates/snippet-popups.pt:647
+#: dbas/templates/snippet-popups.pt:602 dbas/templates/snippet-popups.pt:645
 msgid "success:"
 msgstr "Success:"
 
 #. Default: Date
-#: dbas/templates/snippet-popups.pt:613
+#: dbas/templates/snippet-popups.pt:611
 msgid "date"
 msgstr "Date"
 
 #. Default: Send News
-#: dbas/templates/snippet-popups.pt:618
+#: dbas/templates/snippet-popups.pt:616
 msgid "send_news"
 msgstr "Send News"
 
 #. Default: Send Notifcation
-#: dbas/templates/snippet-popups.pt:652
+#: dbas/templates/snippet-popups.pt:650
 msgid "send_notification"
 msgstr "Send Notifcation"
 
@@ -1116,6 +1076,11 @@ msgstr "Dashboard"
 msgid "users"
 msgstr "Users"
 
+#. Default: Arguments
+#: dbas/templates/admin.pt:32
+msgid "arguments"
+msgstr "arguments"
+
 #. Default: Users!
 #: dbas/templates/admin.pt:51
 msgid "users!"
@@ -1249,22 +1214,22 @@ msgid "to"
 msgstr "To:"
 
 #. Default: JavaScript is not enabled:
-#: dbas/templates/basetemplate.pt:37
+#: dbas/templates/basetemplate.pt:36
 msgid "js_disabled1"
 msgstr "JavaScript is not enabled:"
 
 #. Default: Please enable JavaScript!
-#: dbas/templates/basetemplate.pt:38
+#: dbas/templates/basetemplate.pt:37
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
 #. Default: Your request failed!
-#: dbas/templates/basetemplate.pt:57
+#: dbas/templates/basetemplate.pt:56
 msgid "request_failed"
 msgstr "Your request failed!"
 
 #. Default: Please reload the page.
-#: dbas/templates/basetemplate.pt:58
+#: dbas/templates/basetemplate.pt:57
 msgid "please_reload"
 msgstr "Please reload the page."
 
@@ -1307,6 +1272,26 @@ msgstr "Island View"
 #: dbas/templates/content.pt:332
 msgid "complete_view"
 msgstr "Complete View"
+
+#~ msgid "need-help-to-understand-statement"
+#~ msgstr "We need your help to understand your statement!"
+
+#~ msgid "set_premisegroups_intro1"
+#~ msgstr "You have used 'and' in your statement: "
+
+#~ msgid "set_premisegroups_intro2"
+#~ msgstr ""
+#~ "As a result there are two ways it could be interpreted. Please help us by "
+#~ "selecting the right interpretation:"
+
+#~ msgid "i_actually_have"
+#~ msgstr "I actually have"
+
+#~ msgid "forgot_input_radio"
+#~ msgstr "You forgot to choose the right interpretation"
+
+#~ msgid "save_my_statement"
+#~ msgstr "Save my Statement!"
 
 #~ msgid "and"
 #~ msgstr "and"
