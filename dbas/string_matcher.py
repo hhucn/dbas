@@ -20,8 +20,6 @@ return_count = 10  # same number as in googles suggest list (16.12.2015)
 mechanism = 'Levensthein'
 # mechanism = 'SequenceMatcher'
 
-# TODO : [ {index, distance, text} ]
-
 
 def get_strings_for_start(value, issue, is_startpoint):
 	"""
@@ -41,7 +39,8 @@ def get_strings_for_start(value, issue, is_startpoint):
 			dist = __get_distance__(value, db_textversion.content)
 			return_array.append({'index': 0,
 			                     'distance': dist,
-			                     'text': db_textversion.content})
+			                     'text': db_textversion.content,
+			                     'statement_uid': db_textversion.statement_uid})
 			index += 1
 
 	return_array = __sort_array(return_array)
@@ -72,7 +71,8 @@ def get_strings_for_edits(value, statement_uid):
 			dist = __get_distance__(value, textversion.content)
 			return_array.append({'index': 0,
 			                     'distance': dist,
-			                     'text': textversion.content})
+			                     'text': textversion.content,
+			                     'statement_uid': textversion.statement_uid})
 			index += 1
 
 	return_array = __sort_array(return_array)
@@ -103,7 +103,8 @@ def get_strings_for_reasons(value, issue):
 			tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = db_textversion.content
 			return_array.append({'index': 0,
 			                     'distance': dist,
-			                     'text': db_textversion.content})
+			                     'text': db_textversion.content,
+			                     'statement_uid': db_textversion.statement_uid})
 			index += 1
 
 	return_array = __sort_array(return_array)
