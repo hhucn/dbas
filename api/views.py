@@ -380,13 +380,14 @@ def find_statements_fn(request):
 	results = Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
 
 	return_dict = dict()
-	return_dict['distance_name'] = results['distance_name']
-	return_dict['values'] = []
+	return_dict["distance_name"] = results["distance_name"]
+	return_dict["issue"] = api_data["issue"]
+	return_dict["values"] = []
 
-	for statement in results['values']:
-		statement_uid = statement['statement_uid']
-		statement['url'] = url_to_statement(api_data["issue"], statement_uid)
-		return_dict['values'].append(statement)
+	for statement in results["values"]:
+		statement_uid = statement["statement_uid"]
+		statement["url"] = url_to_statement(api_data["issue"], statement_uid)
+		return_dict["values"].append(statement)
 	return json.dumps(return_dict, True)
 
 
