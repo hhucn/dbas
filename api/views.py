@@ -366,11 +366,28 @@ def user_login(request):
 
 @find_statements.get()
 def find_statements_fn(request):
+	"""
+	Receives search requests, queries database to find all occurrences and returns these results
+	with the correct URL to get directly access to the location in the discussion.
+
+	:param request:
+	:return: json conform dictionary of all occurrences
+	"""
 	api_data = dict()
 	api_data["issue"] = request.matchdict["issue"]
 	api_data["mode"] = request.matchdict["type"]
 	api_data["value"] = request.matchdict["value"]
-	return Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
+	results = Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
+
+	return_dict = dict()
+	return_dict['distance_name'] = results['distance_name']
+	return_dict['values'] = []
+
+	for statement in results['values']:
+		statement_uid = statement['statement_uid']
+		statement['url'] = url_to_statement(api_data["issue"], statement_uid)
+		return_dict['values'].append(statement)
+	return json.dumps(return_dict, True)
 
 
 # =============================================================================
