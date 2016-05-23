@@ -6,6 +6,7 @@ Provides helping function for getting some opinions.
 
 import re
 from sqlalchemy import and_
+import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise
@@ -14,7 +15,6 @@ from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get
 	get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.strings import Translator, TextGenerator
-from dbas.user_management import UserHandler
 
 
 class OpinionHandler:
@@ -119,14 +119,15 @@ class OpinionHandler:
 
 		return {'opinions': ret_dict, 'title': title[0:1].upper() + title[1:]}
 
-	def get_user_with_same_opinion_for_statements(self, statement_uids):
+	def get_user_with_same_opinion_for_statements(self, statement_uids, is_supportive):
 		"""
 		Returns nested dictionary with all kinds of information about the votes of the statements.
 
 		:param statement_uids: Statement.uid
+		:param is_supportive: Boolean
 		:return: {'users':[{self.nickname1.avatar_url, self.nickname1.vote_timestamp}*]}
 		"""
-		logger('OpinionHandler', 'get_user_with_same_opinion_for_statement', 'Statement ' + str(statement_uids))
+		logger('OpinionHandler', 'get_user_with_same_opinion_for_statements', 'Statement ' + str(statement_uids))
 		db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
 		db_user_uid = db_user.uid if db_user else 0
 
@@ -148,8 +149,16 @@ class OpinionHandler:
 			text = get_text_for_statement_uid(uid)
 			statement_dict['text'] = text[0:1].upper() + text[1:]
 
+			logger('--', str(is_supportive), str(str(is_supportive) == 'True'))
+			logger('--', str(is_supportive), str(str(is_supportive) == 'True'))
+			logger('--', str(is_supportive), str(str(is_supportive) == 'True'))
+			if is_supportive is not None:
+				is_supportive = True if str(is_supportive) == 'True' else False
+			else:
+				is_supportive = False
+
 			db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == uid,
-		                                                                    VoteStatement.is_up_vote == True,
+		                                                                    VoteStatement.is_up_vote == is_supportive,
 		                                                                    VoteStatement.is_valid == True,
 		                                                                    VoteStatement.author_uid != db_user_uid)).all()
 

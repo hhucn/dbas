@@ -124,8 +124,8 @@
     </div>
 
     <!-- EDIT STATEMENTS -->
-    <div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    	<div class="modal-dialog">
+    <div class="modal fade bs-example-modal-lg" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog modal-lg">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
@@ -152,8 +152,8 @@
     				</div>
     			</div>
     			<div class="modal-footer">
-    				<button type="button" class="btn btn-primary" id="popup-edit-statement-submit">${structure:extras.tag.submit}</button>
-    				<button type="button" class="btn btn-default" id="popup-edit-statement-close-button">${structure:extras.tag.close}</button>
+    				<button type="button" class="btn btn-success" id="popup-edit-statement-submit">${structure:extras.tag.submit}</button>
+    				<button type="button" class="btn btn-danger" id="popup-edit-statement-close-button">${structure:extras.tag.close}</button>
     			</div>
     		</div>
     	</div>
@@ -280,7 +280,7 @@
     						<div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">
     							<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>
     							<input id="password-request-email-input" type="email" class="email form-control" name="email" autocomplete="on" placeholder="example: krauthoff@cs.uni-duesseldorf.de">
-    							<input id="popup-login-button-request" type="submit" name="form.passwordrequest.submitted" value="Request
+    							<input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request
     							Password" class="btn
     							btn-primary" />
     						</div>
@@ -532,9 +532,9 @@
     				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">We need your help to understand your statement!</h4>
     			</div>
     			<div id="popup-set-premisegroups-body" class="lead">
-    				<span id="popup-set-premisegroups-body-intro" i18n:translate="set_premisegroups_intro">
-    					You have used 'and' in your statement. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:
-    				</span>
+    				<span id="popup-set-premisegroups-body-intro1" i18n:translate="set_premisegroups_intro1">You have used 'and' in your statement: </span>
+    				<strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong>
+    				<span id="popup-set-premisegroups-body-intro2" i18n:translate="set_premisegroups_intro2">. As a result there are two ways it could be interpreted. Please help us by selecting the right interpretation:</span>
                     <br>
                     <br>
     				<div id="insert_statements_page_" style="display: none;">
@@ -591,7 +591,7 @@
     			</div>
     			<div id="popup-url-sharing-body">
 
-                    <input id="popup-writing-news-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" autocomplete="on" placeholder="..." tabindex="1">
+                    <input id="popup-writing-news-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" autocomplete="on" tabindex="1">
                     <textarea id="popup-writing-news-text" type="text" class="form-control news-text" name="newstext" autocomplete="on" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
 
                     <div id="popup-writing-news-failed" class="alert alert-danger" role="alert">
@@ -632,9 +632,9 @@
     				<h5 class="modal-title" id="myModalLabel" i18n:translate="writing_message">Writing a new message</h5>
     			</div>
     			<div id="popup-url-sharing-body">
-                    <input id="popup-writing-notification-recipient" name="newstitle" type="text" class="form-control news-title" placeholder="Recipient" autocomplete="on" placeholder="..." tabindex="1" style="dispaly: none;">
+                    <input id="popup-writing-notification-recipient" name="newstitle" type="text" class="form-control news-title" placeholder="Recipient" autocomplete="on" tabindex="1" style="dispaly: none;">
 
-                    <input id="popup-writing-notification-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" autocomplete="on" placeholder="..." tabindex="2">
+                    <input id="popup-writing-notification-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" autocomplete="on" tabindex="2">
                     <textarea id="popup-writing-notification-text" type="text" class="form-control news-text" name="newstext" autocomplete="on" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="3"></textarea>
 
                     <div id="popup-writing-notification-failed" class="alert alert-danger" role="alert">

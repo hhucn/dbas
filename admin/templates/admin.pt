@@ -37,7 +37,6 @@
 			</div>
 
 			<div class="col-md-10"  id="content-wrapper" tal:condition="extras.is_admin">
-
                 <div class="row col-md-12" id="admins-space-dashboard">
                     <div class="row">
                         <div class="col-lg-3 col-md-6">
@@ -54,7 +53,8 @@
                                     </div>
                                 </div>
                                 <a href="#">
-                                    <div class="panel-footer" id="dashboard-user-count-detail" i18n:translate="view_details">View Details
+                                    <div class="panel-footer" id="dashboard-user-count-detail">
+                                        <span i18n:translate="view_details">View Details</span>
                                     </div>
                                 </a>
                             </div>
@@ -73,7 +73,8 @@
                                     </div>
                                 </div>
                                 <a href="#">
-                                    <div class="panel-footer"  id="dashboard-vote-count-detail" i18n:translate="view_details">View Details
+                                    <div class="panel-footer"  id="dashboard-vote-count-detail">
+                                        <span i18n:translate="view_details">View Details</span>
                                     </div>
                                 </a>
                             </div>
@@ -92,7 +93,8 @@
                                     </div>
                                 </div>
                                 <a href="#">
-                                    <div class="panel-footer" id="dashboard-argument-count-detail" i18n:translate="view_details">View Details
+                                    <div class="panel-footer" id="dashboard-argument-count-detail">
+                                        <span i18n:translate="view_details">View Details</span>
                                     </div>
                                 </a>
                             </div>
@@ -111,7 +113,8 @@
                                     </div>
                                 </div>
                                 <a href="#">
-                                    <div class="panel-footer"  id="dashboard-statement-count-detail" i18n:translate="view_details">View Details
+                                    <div class="panel-footer"  id="dashboard-statement-count-detail">
+                                        <span i18n:translate="view_details">View Details</span>
                                     </div>
                                 </a>
                             </div>

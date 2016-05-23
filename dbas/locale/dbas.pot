@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-10 13:33+0200\n"
+"POT-Creation-Date: 2016-05-17 15:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -336,7 +336,7 @@ msgstr ""
 msgid "icons_by"
 msgstr ""
 
-#. Default: is generated with Pyramid Web Framework 1.5.4
+#. Default: is generated with Pyramid Web Framework
 #: ./dbas/templates/imprint.pt:81
 msgid "generated_with"
 msgstr ""
@@ -559,6 +559,7 @@ msgstr ""
 #. Default: Your Nickname
 #. Default: Nickname
 #: ./dbas/templates/snippet-popups.pt:327 ./dbas/templates/settings.pt:22
+#: ./dbas/templates/admin.pt:132
 msgid "nickname"
 msgstr ""
 
@@ -732,11 +733,15 @@ msgstr ""
 msgid "need-help-to-understand-statement"
 msgstr ""
 
-#. Default: You have used 'and' in your statement. As a result there are two
-#. ways it could be interpreted. Please help us by selecting the right
-#. interpretation:
+#. Default: You have used 'and' in your statement:
 #: ./dbas/templates/snippet-popups.pt:535
-msgid "set_premisegroups_intro"
+msgid "set_premisegroups_intro1"
+msgstr ""
+
+#. Default: . As a result there are two ways it could be interpreted. Please
+#. help us by selecting the right interpretation:
+#: ./dbas/templates/snippet-popups.pt:537
+msgid "set_premisegroups_intro2"
 msgstr ""
 
 #. Default: I actually have
@@ -745,7 +750,8 @@ msgid "i_actually_have"
 msgstr ""
 
 #. Default: arguments:
-#: ./dbas/templates/snippet-popups.pt:545
+#. Default: Arguments
+#: ./dbas/templates/snippet-popups.pt:545 ./dbas/templates/admin.pt:32
 msgid "arguments"
 msgstr ""
 
@@ -800,17 +806,17 @@ msgid "personal_information"
 msgstr ""
 
 #. Default: Firstname
-#: ./dbas/templates/settings.pt:14
+#: ./dbas/templates/settings.pt:14 ./dbas/templates/admin.pt:130
 msgid "firstname"
 msgstr ""
 
 #. Default: Surname
-#: ./dbas/templates/settings.pt:18
+#: ./dbas/templates/settings.pt:18 ./dbas/templates/admin.pt:131
 msgid "surname"
 msgstr ""
 
 #. Default: Public Nickname
-#: ./dbas/templates/settings.pt:26
+#: ./dbas/templates/settings.pt:26 ./dbas/templates/admin.pt:133
 msgid "public_nickname"
 msgstr ""
 
@@ -983,12 +989,12 @@ msgid "warning"
 msgstr ""
 
 #. Default: Great:
-#: ./dbas/templates/contact.pt:65
+#: ./dbas/templates/contact.pt:64
 msgid "great"
 msgstr ""
 
 #. Default: Your message was sent.
-#: ./dbas/templates/contact.pt:65
+#: ./dbas/templates/contact.pt:64
 msgid "message_sent"
 msgstr ""
 
@@ -1021,6 +1027,92 @@ msgstr ""
 #. Default: Back to the discussion!
 #: ./dbas/templates/finish.pt:52
 msgid "back_to_the_discussion"
+msgstr ""
+
+#. Default: Dashboard
+#: ./dbas/templates/admin.pt:21
+msgid "dashboard"
+msgstr ""
+
+#. Default: Users
+#: ./dbas/templates/admin.pt:26
+msgid "users"
+msgstr ""
+
+#. Default: Users!
+#: ./dbas/templates/admin.pt:51
+msgid "users!"
+msgstr ""
+
+#. Default: View Details
+#: ./dbas/templates/admin.pt:57 ./dbas/templates/admin.pt:77
+#: ./dbas/templates/admin.pt:97 ./dbas/templates/admin.pt:117
+msgid "view_details"
+msgstr ""
+
+#. Default: Votes!
+#: ./dbas/templates/admin.pt:71
+msgid "votes!"
+msgstr ""
+
+#. Default: Arguments!
+#: ./dbas/templates/admin.pt:91
+msgid "arguments!"
+msgstr ""
+
+#. Default: Statements!
+#: ./dbas/templates/admin.pt:111
+msgid "statements!"
+msgstr ""
+
+#. Default: E-Mail
+#: ./dbas/templates/admin.pt:134
+msgid "email"
+msgstr ""
+
+#. Default: Gender
+#: ./dbas/templates/admin.pt:135
+msgid "gender"
+msgstr ""
+
+#. Default: Group
+#: ./dbas/templates/admin.pt:136
+msgid "group_uid"
+msgstr ""
+
+#. Default: Last Login
+#: ./dbas/templates/admin.pt:137 ./dbas/templates/user.pt:12
+msgid "last_login"
+msgstr ""
+
+#. Default: Registered
+#: ./dbas/templates/admin.pt:138 ./dbas/templates/user.pt:16
+msgid "registered"
+msgstr ""
+
+#. Default: Avatar
+#: ./dbas/templates/admin.pt:139
+msgid "avatar"
+msgstr ""
+
+#. Default: Public Avatar
+#: ./dbas/templates/admin.pt:140
+msgid "public_avatar"
+msgstr ""
+
+#. Default: List of attacks, clicked by the participants
+#: ./dbas/templates/admin.pt:165
+msgid "list_attacks"
+msgstr ""
+
+#. Default: Some additional options for the administrator.
+#: ./dbas/templates/admin.pt:166
+msgid "admin_only"
+msgstr ""
+
+#. Default: Switch Topic
+#: ./dbas/templates/admin.pt:173 ./dbas/templates/content.pt:20
+msgid "switch_topc"
 msgstr ""
 
 #. Default: You have got
@@ -1058,19 +1150,24 @@ msgstr ""
 msgid "outbox"
 msgstr ""
 
+#. Default: NEW
+#: ./dbas/templates/notifications.pt:56
+msgid "new"
+msgstr ""
+
 #. Default: From:
-#: ./dbas/templates/notifications.pt:60 ./dbas/templates/notifications.pt:67
+#: ./dbas/templates/notifications.pt:61 ./dbas/templates/notifications.pt:68
 msgid "from"
 msgstr ""
 
 #. Default: answer
-#: ./dbas/templates/notifications.pt:72 ./dbas/templates/notifications.pt:101
+#: ./dbas/templates/notifications.pt:73 ./dbas/templates/notifications.pt:102
 msgid "answer"
 msgstr ""
 
 #. Default: To:
 #. Default: to:
-#: ./dbas/templates/notifications.pt:89 ./dbas/templates/notifications.pt:96
+#: ./dbas/templates/notifications.pt:90 ./dbas/templates/notifications.pt:97
 msgid "to"
 msgstr ""
 
@@ -1084,29 +1181,24 @@ msgstr ""
 msgid "js_disabled2"
 msgstr ""
 
+#. Default: Your request failed!
+#: ./dbas/templates/basetemplate.pt:57
+msgid "request_failed"
+msgstr ""
+
+#. Default: Please reload the page.
+#: ./dbas/templates/basetemplate.pt:58
+msgid "please_reload"
+msgstr ""
+
 #. Default: Public Information of
 #: ./dbas/templates/user.pt:8
 msgid "public_information_of"
 msgstr ""
 
-#. Default: Last Login
-#: ./dbas/templates/user.pt:12
-msgid "last_login"
-msgstr ""
-
-#. Default: Registered
-#: ./dbas/templates/user.pt:16
-msgid "registered"
-msgstr ""
-
 #. Default: Profile Picture of
 #: ./dbas/templates/user.pt:24
 msgid "profile_picture_of"
-msgstr ""
-
-#. Default: Switch Topic
-#: ./dbas/templates/content.pt:20
-msgid "switch_topc"
 msgstr ""
 
 #. Default: Add a Topic
@@ -1117,11 +1209,6 @@ msgstr ""
 #. Default: Restart
 #: ./dbas/templates/content.pt:43
 msgid "restart_discussion"
-msgstr ""
-
-#. Default: and
-#: ./dbas/templates/content.pt:103
-msgid "and"
 msgstr ""
 
 #. Default: Change display style

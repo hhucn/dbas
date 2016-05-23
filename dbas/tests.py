@@ -6,13 +6,13 @@ All kind of tests
 
 import os
 import unittest
+import dbas.password_handler as PasswordHandler
 
 from admin.views import main_admin
 
 from webtest import TestApp
 from dbas.views import Dbas
 from dbas import main
-from dbas.user_management import PasswordHandler
 from dbas.database import DBDiscussionSession, initializedb
 from dbas.database.discussion_model import Group, User
 from mock import Mock

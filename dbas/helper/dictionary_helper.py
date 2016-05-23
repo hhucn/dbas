@@ -6,17 +6,17 @@ Provides helping function for dictionaries.
 
 import random
 import arrow
+import dbas.helper.history_helper as HistoryHelper
+import dbas.helper.notification_helper as NotificationHelper
+import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User
-from dbas.helper.history_helper import HistoryHelper
-from dbas.helper.notification_helper import NotificationHelper
 from dbas.helper.query_helper import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
-from dbas.user_management import UserHandler
 
 
 class DictionaryHelper(object):
@@ -157,7 +157,8 @@ class DictionaryHelper(object):
 					island_dict.update(TextGenerator(self.discussion_lang).get_relation_text_dict(island_dict['premise'],
 					                                                                              island_dict['conclusion'],
 					                                                                              False, False,
-					                                                                              not db_argument.is_supportive))
+					                                                                              not db_argument.is_supportive,
+					                                                                              for_island_view=True))
 					return_dict['island'] = island_dict
 				else:
 					return_dict['is_editable']		  = False
@@ -280,7 +281,6 @@ class DictionaryHelper(object):
 		                          'previous': _tn_sys.get(_tn_sys.previous),
 		                          'next': _tn_sys.get(_tn_sys.next),
 		                          'clear_statistics': _tn_sys.get(_tn_sys.clearStatistics),
-		                          'go_back': _tn_sys.get(_tn_sys.letsGoBack),
 		                          'go_home': _tn_sys.get(_tn_sys.letsGoHome),
 		                          'count_of_posts': _tn_sys.get(_tn_sys.countOfPosts),
 		                          'default_view': _tn_sys.get(_tn_sys.defaultView)}
@@ -293,6 +293,7 @@ class DictionaryHelper(object):
 		                               'tight_node_view': _tn_dis.get(_tn_dis.tightView),
 		                               'show_content': _tn_dis.get(_tn_dis.showContent),
 		                               'hide_content': _tn_dis.get(_tn_dis.hideContent),
+		                               'go_back': _tn_dis.get(_tn_dis.letsGoBack),
 		                               'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
 
 	def add_title_text(self, return_dict):
@@ -345,5 +346,6 @@ class DictionaryHelper(object):
 			'warning': _tn_dis.get(_tn_dis.warning),
 			'island_view_for': _tn_dis.get(_tn_dis.islandViewFor),
 			'language': self.discussion_lang,
+			'aand': _tn_dis.get(_tn_dis.aand),
 			'add_premise_title': _tn_dis.get(_tn_dis.addPremiseRadioButtonText)
 		}

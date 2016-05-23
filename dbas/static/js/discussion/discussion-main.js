@@ -178,7 +178,10 @@ function Main () {
 			if ($(this).children().length > 0) {
 				$(this).children().click(function () {
 					var href = $(this).attr('href'),
-						text = _t(switchDiscussionText1) + ' <strong>' + $(this).attr('value') + '</strong> ' + _t(switchDiscussionText2);
+						text = _t(switchDiscussionText1) + ' <strong>' + $(this).attr('value') + '</strong> ';
+					text += _t(switchDiscussionText2);
+					text += '<br><br>';
+					text += _t(switchDiscussionText3);
 					$(this).attr('href', '#');
 					displayConfirmationDialogWithCheckbox(_t(switchDiscussion), text, _t.keepSetting, href, true);
 				});
@@ -203,12 +206,17 @@ function Main () {
 				$(this).click(function () {
 					var data_type = $(this).attr('data-type'),
 						data_argument_uid = $(this).attr('data-argument-uid'),
-						data_statement_uid = $(this).attr('data-statement-uid');
-					new AjaxSiteHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid);
+						data_statement_uid = $(this).attr('data-statement-uid'),
+						data_is_supportive = $(this).attr('data-is-supportive');
+					new AjaxSiteHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid, data_is_supportive);
 				});
 			} else {
 				$(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
 			}
+		});
+
+		$('#' + contactSubmitButtonId).click(function(e){
+			setTimeout("$('body').addClass('loading')", 0);
 		});
 	};
 

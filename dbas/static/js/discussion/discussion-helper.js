@@ -108,7 +108,7 @@ function Helper() {
 		edit_button = $('<input>').css('margin', '2px')
 			.attr('type', 'button')
 			.attr('value', _t_discussion(edit))
-			.attr('class', 'btn-sm btn button-primary')
+			.attr('class', 'btn btn-primary btn-xs')
 			.click(function edit_button_click() {
 				$('#' + popupEditStatementTextareaId).text($(this).parent().prev().text());
 				$('#' + popupEditStatementContentId + ' td').removeClass('text-hover');
@@ -131,7 +131,7 @@ function Helper() {
 		log_button = $('<input>').css('margin', '2px')
 			.attr('type', 'button')
 			.attr('value', _t_discussion(changelog))
-			.attr('class', 'btn-sm btn button-primary')
+			.attr('class', 'btn btn-primary btn-xs')
 			.click(function log_button_click() {
 				$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <strong>' + $(this).parent().prev().text() + '</strong>');
 				$('#' + popupEditStatementErrorDescriptionId).text('');

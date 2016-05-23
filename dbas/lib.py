@@ -11,7 +11,6 @@ from html import escape
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
-from .logger import logger
 from .strings import Translator
 
 
@@ -136,7 +135,6 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 	_t = Translator(lang)
 	sb = '<strong>' if with_strong_html_tag else ''
 	se = '</strong>' if with_strong_html_tag else ''
-	co = ', ' if lang == 'de' else ''
 	because = (se + ', ') if lang == 'de' else (' ' + se)
 	because += _t.get(_t.because).lower() + ' ' + sb
 	doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHoldBecause).lower() + ' ' + sb
@@ -148,13 +146,19 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 		arg_array.append(db_argument.uid)
 
 	if len(arg_array) == 1:
-		# build one and only argument
+		# build one argument only
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
 		premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
 		conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
-		conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+		if lang != 'de':
+			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
 		ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
-		ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
+
+		if lang == 'de':
+			intro = _t.get(_t.itIsTrue) if db_argument.is_supportive else _t.get(_t.itIsFalse)
+			ret_value += se + intro[0:1].upper() + intro[1:] + ' ' + sb + conclusion + because + premises
+		else:
+			ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
 
 		return ret_value
 
@@ -166,7 +170,7 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 		for uid in arg_array:
 			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 			text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-			pgroups.append(text[0:1].lower() + text[1:])
+			pgroups.append((text[0:1].lower() + text[1:])if lang != 'de' else text)
 			supportive.append(db_argument.is_supportive)
 		conclusion = get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
 
@@ -175,7 +179,8 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 			ret_value += _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
 			ret_value += sb + ' '
 			users_opinion = True  # user after system
-			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+			if lang != 'de':
+				conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
 		else:  # user starts
 			ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
 			users_opinion = False  # system after user
@@ -217,8 +222,10 @@ def get_text_for_premisesgroup_uid(uid, lang):
 	_t = Translator(lang)
 	for premise in db_premises:
 		tmp = get_text_for_statement_uid(premise.statements.uid)
+		if lang != 'de':
+			tmp[0:1].lower() + tmp[1:]
 		uids.append(str(premise.statements.uid))
-		text += ' ' + _t.get(_t.aand) + ' ' + tmp[0:1].lower() + tmp[1:]
+		text += ' ' + _t.get(_t.aand) + ' ' + tmp
 
 	return text[5:], uids
 
