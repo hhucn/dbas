@@ -17,9 +17,8 @@
 	<title>${project} - ${title}</title>
 </head>
 
-<img src="${request.static_url('dbas:static/images/alpha.png')}" alt="alpha logo" style="position:fixed; z-index:10; top:65px; width:100px;">
-
 <body>
+  <img src="${request.static_url('dbas:static/images/alpha.png')}" alt="alpha logo" style="position:fixed; z-index:10; top:65px; width:100px;">
 	<input type="hidden" id="hidden_language" value="${language}">
     <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
@@ -51,6 +50,12 @@
 	  }
 	</script>
 	-->
+
+
+	<div class="blocked request_failed center alert-danger" id="request_failed_container" style="display:none;">
+		<h5 i18n:translate="request_failed">Your request failed!</h5>
+        <h6 i18n:translate="please_reload">Please reload the page.</h6>
+	</div>
 
 	<div id="additional-wrapper">
 		<div id="wrapper-header">

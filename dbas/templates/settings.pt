@@ -134,7 +134,7 @@
 								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>${settings.message}
 							</div>
 						</div>
-						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
+						<input id="settings-password-submit" type="submit" onclick="$('body').addClass('loading')" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
 					</form>
 				</div>
 

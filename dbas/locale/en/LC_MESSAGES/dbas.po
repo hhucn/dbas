@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-10 13:33+0200\n"
+"POT-Creation-Date: 2016-05-17 15:25+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -400,10 +400,10 @@ msgstr "Copyright and used Software"
 msgid "icons_by"
 msgstr "Icons by"
 
-#. Default: is generated with Pyramid Web Framework 1.5.4
+#. Default: is generated with Pyramid Web Framework
 #: dbas/templates/imprint.pt:81
 msgid "generated_with"
-msgstr "generated_with"
+msgstr "is generated with Pyramid Web Framework"
 
 #. Default: Changes
 #: dbas/templates/imprint.pt:104
@@ -633,6 +633,7 @@ msgstr "Your Last Name"
 #. Default: Your Nickname
 #. Default: Nickname
 #: dbas/templates/snippet-popups.pt:327 dbas/templates/settings.pt:22
+#: dbas/templates/admin.pt:132
 msgid "nickname"
 msgstr "Nickname"
 
@@ -804,14 +805,18 @@ msgstr "Okay"
 msgid "need-help-to-understand-statement"
 msgstr "We need your help to understand your statement!"
 
-#. Default: You have used 'and' in your statement. As a result there are two
-#. ways it could be interpreted. Please help us by selecting the right
-#. interpretation:
+#. Default: You have used 'and' in your statement:
 #: dbas/templates/snippet-popups.pt:535
-msgid "set_premisegroups_intro"
+msgid "set_premisegroups_intro1"
+msgstr "You have used 'and' in your statement: "
+
+#. Default: . As a result there are two ways it could be interpreted. Please
+#. help us by selecting the right interpretation:
+#: dbas/templates/snippet-popups.pt:537
+msgid "set_premisegroups_intro2"
 msgstr ""
-"You have used 'and' in your statement. As a result there are two ways it "
-"could be interpreted. Please help us by selecting the right interpretation:"
+"As a result there are two ways it could be interpreted. Please help us by "
+"selecting the right interpretation:"
 
 #. Default: I actually have
 #: dbas/templates/snippet-popups.pt:545
@@ -819,7 +824,8 @@ msgid "i_actually_have"
 msgstr "I actually have"
 
 #. Default: arguments:
-#: dbas/templates/snippet-popups.pt:545
+#. Default: Arguments
+#: dbas/templates/snippet-popups.pt:545 dbas/templates/admin.pt:32
 msgid "arguments"
 msgstr "arguments"
 
@@ -871,17 +877,17 @@ msgid "personal_information"
 msgstr "Personal Information"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:14
+#: dbas/templates/settings.pt:14 dbas/templates/admin.pt:130
 msgid "firstname"
 msgstr "Firstname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:18
+#: dbas/templates/settings.pt:18 dbas/templates/admin.pt:131
 msgid "surname"
 msgstr "Surname"
 
 #. Default: Public Nickname
-#: dbas/templates/settings.pt:26
+#: dbas/templates/settings.pt:26 dbas/templates/admin.pt:133
 msgid "public_nickname"
 msgstr "Public Nickname"
 
@@ -1058,12 +1064,12 @@ msgid "warning"
 msgstr "Warning!"
 
 #. Default: Great:
-#: dbas/templates/contact.pt:65
+#: dbas/templates/contact.pt:64
 msgid "great"
 msgstr "Great:"
 
 #. Default: Your message was sent.
-#: dbas/templates/contact.pt:65
+#: dbas/templates/contact.pt:64
 msgid "message_sent"
 msgstr "Your message was sent."
 
@@ -1100,6 +1106,92 @@ msgstr "Let's go home!"
 msgid "back_to_the_discussion"
 msgstr "Back to the discussion!"
 
+#. Default: Dashboard
+#: dbas/templates/admin.pt:21
+msgid "dashboard"
+msgstr "Dashboard"
+
+#. Default: Users
+#: dbas/templates/admin.pt:26
+msgid "users"
+msgstr "Users"
+
+#. Default: Users!
+#: dbas/templates/admin.pt:51
+msgid "users!"
+msgstr "Users!"
+
+#. Default: View Details
+#: dbas/templates/admin.pt:57 dbas/templates/admin.pt:77
+#: dbas/templates/admin.pt:97 dbas/templates/admin.pt:117
+msgid "view_details"
+msgstr "View Details"
+
+#. Default: Votes!
+#: dbas/templates/admin.pt:71
+msgid "votes!"
+msgstr "Votes!"
+
+#. Default: Arguments!
+#: dbas/templates/admin.pt:91
+msgid "arguments!"
+msgstr "Arguments!"
+
+#. Default: Statements!
+#: dbas/templates/admin.pt:111
+msgid "statements!"
+msgstr "Statements!"
+
+#. Default: E-Mail
+#: dbas/templates/admin.pt:134
+msgid "email"
+msgstr "Email Address"
+
+#. Default: Gender
+#: dbas/templates/admin.pt:135
+msgid "gender"
+msgstr "Gender"
+
+#. Default: Group
+#: dbas/templates/admin.pt:136
+msgid "group_uid"
+msgstr "Group"
+
+#. Default: Last Login
+#: dbas/templates/admin.pt:137 dbas/templates/user.pt:12
+msgid "last_login"
+msgstr "Last Login"
+
+#. Default: Registered
+#: dbas/templates/admin.pt:138 dbas/templates/user.pt:16
+msgid "registered"
+msgstr "Registered"
+
+#. Default: Avatar
+#: dbas/templates/admin.pt:139
+msgid "avatar"
+msgstr "Avatar"
+
+#. Default: Public Avatar
+#: dbas/templates/admin.pt:140
+msgid "public_avatar"
+msgstr "Public Avatar"
+
+#. Default: List of attacks, clicked by the participants
+#: dbas/templates/admin.pt:165
+msgid "list_attacks"
+msgstr "List of attacks, clicked by the participants"
+
+#. Default: Some additional options for the administrator.
+#: dbas/templates/admin.pt:166
+msgid "admin_only"
+msgstr "Some additional options for the administrator."
+
+#. Default: Switch Topic
+#: dbas/templates/admin.pt:173 dbas/templates/content.pt:20
+msgid "switch_topc"
+msgstr "Switch Topic"
+
 #. Default: You have got
 #: dbas/templates/notifications.pt:13
 msgid "youHaveGot"
@@ -1135,19 +1227,24 @@ msgstr "Inbox"
 msgid "outbox"
 msgstr "Outbox"
 
+#. Default: NEW
+#: dbas/templates/notifications.pt:56
+msgid "new"
+msgstr "NEW"
+
 #. Default: From:
-#: dbas/templates/notifications.pt:60 dbas/templates/notifications.pt:67
+#: dbas/templates/notifications.pt:61 dbas/templates/notifications.pt:68
 msgid "from"
 msgstr "From:"
 
 #. Default: answer
-#: dbas/templates/notifications.pt:72 dbas/templates/notifications.pt:101
+#: dbas/templates/notifications.pt:73 dbas/templates/notifications.pt:102
 msgid "answer"
 msgstr "answer"
 
 #. Default: To:
 #. Default: to:
-#: dbas/templates/notifications.pt:89 dbas/templates/notifications.pt:96
+#: dbas/templates/notifications.pt:90 dbas/templates/notifications.pt:97
 msgid "to"
 msgstr "To:"
 
@@ -1161,30 +1258,25 @@ msgstr "JavaScript is not enabled:"
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
+#. Default: Your request failed!
+#: dbas/templates/basetemplate.pt:57
+msgid "request_failed"
+msgstr "Your request failed!"
+
+#. Default: Please reload the page.
+#: dbas/templates/basetemplate.pt:58
+msgid "please_reload"
+msgstr "Please reload the page."
+
 #. Default: Public Information of
 #: dbas/templates/user.pt:8
 msgid "public_information_of"
 msgstr "Public Information of"
 
-#. Default: Last Login
-#: dbas/templates/user.pt:12
-msgid "last_login"
-msgstr "Last Login"
-
-#. Default: Registered
-#: dbas/templates/user.pt:16
-msgid "registered"
-msgstr "Registered"
-
 #. Default: Profile Picture of
 #: dbas/templates/user.pt:24
 msgid "profile_picture_of"
 msgstr "Profile Picture of"
-
-#. Default: Switch Topic
-#: dbas/templates/content.pt:20
-msgid "switch_topc"
-msgstr "Switch Topic"
 
 #. Default: Add a Topic
 #: dbas/templates/content.pt:36
@@ -1195,11 +1287,6 @@ msgstr "Add a topic"
 #: dbas/templates/content.pt:43
 msgid "restart_discussion"
 msgstr "Restart"
-
-#. Default: and
-#: dbas/templates/content.pt:103
-msgid "and"
-msgstr "and"
 
 #. Default: Change display style
 #: dbas/templates/content.pt:317
@@ -1220,6 +1307,9 @@ msgstr "Island View"
 #: dbas/templates/content.pt:332
 msgid "complete_view"
 msgstr "Complete View"
+
+#~ msgid "and"
+#~ msgstr "and"
 
 #~ msgid "keep_setting"
 #~ msgstr "Settings"
@@ -1271,45 +1361,6 @@ msgstr "Complete View"
 
 #~ msgid "total"
 #~ msgstr "total."
-
-#~ msgid "dashboard"
-#~ msgstr "Dashboard"
-
-#~ msgid "users"
-#~ msgstr "Users"
-
-#~ msgid "users!"
-#~ msgstr "Users!"
-
-#~ msgid "view_details"
-#~ msgstr "View Details"
-
-#~ msgid "votes!"
-#~ msgstr "Votes!"
-
-#~ msgid "arguments!"
-#~ msgstr "Arguments!"
-
-#~ msgid "statements!"
-#~ msgstr "Statements!"
-
-#~ msgid "email"
-#~ msgstr "Email Address"
-
-#~ msgid "gender"
-#~ msgstr "Gender"
-
-#~ msgid "group_uid"
-#~ msgstr "Group"
-
-#~ msgid "avatar"
-#~ msgstr "Avatar"
-
-#~ msgid "list_attacks"
-#~ msgstr "List of attacks, clicked by the participants"
-
-#~ msgid "admin_only"
-#~ msgstr "Some additional options for the administrator."
 
 #~ msgid "topics"
 #~ msgstr "Topics"
