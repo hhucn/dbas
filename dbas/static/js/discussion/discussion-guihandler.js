@@ -234,7 +234,7 @@ function GuiHandler() {
 
 			// merge every text part to one array
 			for (i=0; i<undecided_texts.length; i++){
-				splitted = undecided_texts[i].split(' ' + _t(and) + ' ');
+				splitted = undecided_texts[i].split(' ' + _t_discussion(and) + ' ');
 
 				if (selections[i].id.indexOf(attr_more_args) != -1){ // each splitted text part is one argument
 					for (j=0; j<splitted.length; j++)
@@ -261,7 +261,7 @@ function GuiHandler() {
 		if (undecided_texts.length == 1){ // we only need one page div
 			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
 			body.append(page);
-			send.text(_t(saveMyStatement));
+			send.text(_t_discussion(saveMyStatement));
 
 			page.find('input').each(function(){
 				$(this).click(function inputClick (){
@@ -365,13 +365,13 @@ function GuiHandler() {
 	 * @returns {*}
 	 */
 	this.getPageOfSetStatementContainer = function(page_no, text, supportive){
-		var src = $('#insert_statements_page_'),
-			div_page = src.clone(),
-			id = src.attr('id'),
-			splitted = text.split(' ' + _t(and) + ' '),
-			topic = $('#' + addPremiseContainerMainInputIntroId).text(),
-			topic = topic.substr(0, topic.length-3),
-			input1, input2, input3, list, bigText, bigTextSpan, connection, i;
+		var src = $('#insert_statements_page_');
+		var div_page = src.clone();
+		var id = src.attr('id');
+		var splitted = text.split(' ' + _t_discussion(and) + ' ');
+		var topic = $('#' + addPremiseContainerMainInputIntroId).text();
+		var input1, input2, input3, list, bigText, bigTextSpan, connection, i;
+		topic = topic.substr(0, topic.length-3);
 
 		$('#popup-set-premisegroups-body-intro-statements').text(text.trim());
 
@@ -396,12 +396,16 @@ function GuiHandler() {
 		input1.parent().attr('for', input1.parent().attr('for') + '_' + page_no);
 		input2.parent().attr('for', input2.parent().attr('for') + '_' + page_no);
 		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
+		
+		connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
 
-		connection = supportive ? _t(itIsTrueThat) : _t(itIsFalseThat);
-		bigText = topic + ' ' + connection;
+		if (getDiscussionLanguage() == 'de')
+			bigText = topic;
+		else
+			bigText = topic + ' ' + supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
 		for (i = 0; i < splitted.length; i++) {
 			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
-			bigText += ' ' + i == 0 ? ' ' + splitted[i] : (' ' + _t(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
+			bigText += ' ' + i == 0 ? ' ' + splitted[i] : (' ' + _t_discussion(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
 		}
 		bigTextSpan.text(bigText + '.');
 
@@ -733,7 +737,7 @@ function GuiHandler() {
 		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
-		span = $('<span>').text(_t(noDecisionstaken));
+		span = $('<span>').text(_t_discussion(noDecisionstaken));
 		div.append(strong).append(span);
 		return div;
 	};

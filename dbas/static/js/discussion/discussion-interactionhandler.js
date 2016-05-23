@@ -316,12 +316,12 @@ function InteractionHandler() {
 					text[i] = text[i].replace(/\s\s+/g, ' ');
 
 					// cutting all 'and ' and 'and'
-					while (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1 ||
-					text[i].indexOf((_t(and)), text[i].length - (_t(and) ).length) !== -1) {
-						if (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1)
-							text[i] = text[i].substr(0, text[i].length - (_t(and) + ' ').length);
+					while (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1 ||
+					text[i].indexOf((_t_discussion(and)), text[i].length - (_t_discussion(and) ).length) !== -1) {
+						if (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1)
+							text[i] = text[i].substr(0, text[i].length - (_t_discussion(and) + ' ').length);
 						else
-							text[i] = text[i].substr(0, text[i].length - (_t(and)).length);
+							text[i] = text[i].substr(0, text[i].length - (_t_discussion(and)).length);
 					}
 
 					// whitespace at the end
@@ -329,7 +329,7 @@ function InteractionHandler() {
 						text[i] = text[i].substr(0, text[i].length - (' ').length);
 
 					// sorting the statements, whether they include the keyword 'AND'
-					if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1)
+					if (text[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') != -1)
 						undecided_texts.push(text[i]);
 					else
 						decided_texts.push(text[i]);

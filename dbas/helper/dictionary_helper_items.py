@@ -291,7 +291,7 @@ class ItemDictHelper(object):
 		if not db_sys_argument or not db_user_argument:
 			return statements_array
 
-		conclusion   = get_text_for_conclusion(db_sys_argument, self.lang)
+		conclusion   = get_text_for_conclusion(db_sys_argument, self.lang, rearrange_intro=True)
 		premise, tmp = get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid, self.lang)
 		# getting the real conclusion: if the arguments conclusion is an argument, we will get the conclusion of the last argument
 		db_tmp_argument = db_sys_argument
@@ -300,8 +300,8 @@ class ItemDictHelper(object):
 		first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
 
 		if self.lang != 'de':
-			first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
 			conclusion	     = conclusion[0:1].lower() + conclusion[1:]
+			first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
 			premise		     = premise[0:1].lower() + premise[1:]
 
 		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)

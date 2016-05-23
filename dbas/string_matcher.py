@@ -46,7 +46,7 @@ def get_strings_for_start(value, issue, is_startpoint):
 
 	return_array = __sort_array(return_array)
 
-	logger('FuzzyStringMatcher', 'get_strings_for_start', 'dictionary length: ' + str(len(return_array)), debug=True)
+	# logger('FuzzyStringMatcher', 'get_strings_for_start', 'dictionary length: ' + str(len(return_array)), debug=True)
 
 	return mechanism, return_array
 
@@ -77,8 +77,8 @@ def get_strings_for_edits(value, statement_uid):
 
 	return_array = __sort_array(return_array)
 
-	logger('FuzzyStringMatcher', 'get_strings_for_edits', 'string: ' + value + ', string: ' + value +
-	       ', statement uid: ' + str(statement_uid) + ', dictionary length: ' + str(len(return_array)), debug=True)
+	# logger('FuzzyStringMatcher', 'get_strings_for_edits', 'string: ' + value + ', string: ' + value +
+	#        ', statement uid: ' + str(statement_uid) + ', dictionary length: ' + str(len(return_array)), debug=True)
 
 	return mechanism, return_array
 
@@ -108,8 +108,8 @@ def get_strings_for_reasons(value, issue):
 
 	return_array = __sort_array(return_array)
 
-	logger('FuzzyStringMatcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
-	       ', dictionary length: ' + str(len(return_array)), debug=True)
+	# logger('FuzzyStringMatcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
+	#        ', dictionary length: ' + str(len(return_array)), debug=True)
 
 	return mechanism, return_array
 
@@ -132,8 +132,8 @@ def get_strings_for_issues(value):
 
 	return_array = __sort_array(return_array)
 
-	logger('FuzzyStringMatcher', 'get_strings_for_issues', 'string: ' + value +
-	       ', dictionary length: ' + str(len(return_array)), debug=True)
+	# logger('FuzzyStringMatcher', 'get_strings_for_issues', 'string: ' + value +
+	#        ', dictionary length: ' + str(len(return_array)), debug=True)
 
 	return mechanism, return_array
 
@@ -167,8 +167,9 @@ def get_strings_for_search(value):
 		                                   'distance': dist,
 		                                   'arguments': arg_set}
 
-	logger('FuzzyStringMatcher', 'get_strings_for_search', 'string: ' + value +
-	       ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
+	# logger('FuzzyStringMatcher', 'get_strings_for_search', 'string: ' + value +
+	#        ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
+
 	return return_dict
 
 
@@ -215,7 +216,7 @@ def __get_distance__(string_a, string_b):
 	:param string_b:
 	:return:
 	"""
-	logger('FuzzyStringMatcher', '__get_distance__', string_a + ' - ' + string_b)
+	# logger('FuzzyStringMatcher', '__get_distance__', string_a + ' - ' + string_b)
 	if mechanism == 'Levensthein':
 		dist = distance(string_a.lower(), string_b.lower())
 		#  logger('FuzzyStringMatcher', '__get_distance__', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())

@@ -761,7 +761,7 @@ class FrontendTests:
 
 		b = Helper.logout(b)
 		b = Helper.login(b, nickname2, password, mainpage + 'notifications')
-		success = success and Helper.check_for_present_text(b, '* Test notification', 'check for one new notifications 1')
+		success = success and Helper.check_for_present_text(b, 'Test notification', 'check for one new notifications 1')
 		txt = 'You have got 1 unread notifications and 1 total in the inbox. There are 0 in the outbox.'
 		success = success and Helper.check_for_present_text(b, txt, 'check for one new notifications 2')
 

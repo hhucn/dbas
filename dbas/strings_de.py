@@ -17,7 +17,19 @@ class GermanDict:
 		:param _self:
 		:return: dictionary for the german language
 		"""
+
 		de_lang = dict()
+
+		de_lang[_self.arguments] = 'Argumente'
+		de_lang[_self.error] = 'Fehler'
+		de_lang[_self.iActuallyHave] = 'Ich habe'
+		de_lang[_self.insertOneArgument] = 'Ich habe eine Aussage:'
+		de_lang[_self.insertDontCare] = 'Es ist mir egal. Nimm\' meine Aussage wie sie ist!'
+		de_lang[_self.forgotInputRadio] = 'Sie haben eine Auswahl vergessen'
+		de_lang[_self.needHelpToUnderstandStatement] = 'Wir brauchen Hilfe zum Verständniss Ihrer Aussage!'
+		de_lang[_self.setPremisegroupsIntro1] = 'Sie haben \'und\' in Ihrer Aussage '
+		de_lang[_self.setPremisegroupsIntro2] = ' benutzt. Daher existieren mehrere mögliche Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen:'
+
 		de_lang[_self.attack] = 'Sie lehnen ab, dass'
 		de_lang[_self.support] = 'Sie akzeptieren'
 		de_lang[_self.premise] = 'Prämisse'
@@ -206,7 +218,7 @@ class GermanDict:
 		de_lang[_self.dataRemoved] = 'Daten wurden erfolgreich gelöscht.'
 		de_lang[_self.didYouMean] = 'Top 10 der Aussagen, die Sie eventuell meinten:'
 		de_lang[_self.discussionEnd] = 'Die Diskussion endet hier.'
-		de_lang[_self.discussionEndLinkText] = 'Sie können <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">hier</a> klicken, um einen Schritt zurück zugehen oder den oberen Button bzw. <a href="" id="discussionEndRestart">diesen Link</a> nutzen, um die Diskussion neu zustarten.'
+		de_lang[_self.discussionEndLinkText] = 'Sie können <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">hier</a> klicken, um einen Schritt zurückzugehen oder den oberen Button bzw. <a href="" id="discussionEndRestart">diesen Link</a> nutzen, um die Diskussion neu zustarten.'
 		de_lang[_self.duplicateDialog] = 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?'
 		de_lang[_self.duplicate] = 'Duplikat'
 		de_lang[_self.displayControlDialogGuidedTitle] = 'geführte Ansicht'
@@ -287,6 +299,8 @@ class GermanDict:
 		de_lang[_self.irrelevant] = 'Irrelevant'
 		de_lang[_self.itIsTrue] = 'es ist richtig, dass'
 		de_lang[_self.itIsFalse] = 'es ist falsch, dass'
+		de_lang[_self.itTrueIs] = 'es richtig ist, dass'
+		de_lang[_self.itFalseIs] = 'es falsch ist, dass'
 		de_lang[_self.islandView] = 'Insel Ansicht'
 		de_lang[_self.isFalse] = 'ist falsch'
 		de_lang[_self.isTrue] = 'richtig ist'
@@ -381,8 +395,8 @@ class GermanDict:
 		de_lang[_self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für '
 		de_lang[_self.otherParticipantsAcceptBut] = 'Andere Teilnehmer akzeptieren Ihr Argument, aber'
 		de_lang[_self.otherParticipantDisagreeThat] = 'Andere Teilnehmer widersprechen, dass '
-		de_lang[_self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon, dass'  # TODO ger fix
-		de_lang[_self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme davon, dass'  # TODO ger fix
+		de_lang[_self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon dass,'  # TODO ger fix
+		de_lang[_self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme davon dass,'  # TODO ger fix
 		de_lang[_self.otherUsersHaveCounterArgument] = 'Andere Teilnehmer haben das Gegenargument, dass'
 		de_lang[_self.otherUsersSaidThat] = 'Andere Teilnehmer haben gesagt, dass'
 		de_lang[_self.opinionBarometer] = 'Meinungsbarometer'
@@ -460,7 +474,7 @@ class GermanDict:
 		de_lang[_self.whatDoYouThinkAboutThat] = 'Was denken Sie darüber'
 		de_lang[_self.whatIsYourIdea] = 'Ich denke / meine, dass ...'  # Was ist Ihre Idee / Meinung?'  # Was sollten wir machen?' # TODO ger fix
 		de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für die Aussage'
-		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund für, dafür dass '  # TODO ger fix
+		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund dafür, dass '  # TODO ger fix
 		de_lang[_self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
 		de_lang[_self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
 		de_lang[_self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'
