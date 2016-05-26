@@ -1913,6 +1913,8 @@ class Dbas(object):
 			return_dict = {'error': _tn.get(_tn.internalError)}
 			logger('fuzzy_search', 'error', repr(e))
 
+		if for_api:
+			return return_dict
 		return json.dumps(return_dict, True)
 
 	# ajax - for additional service
