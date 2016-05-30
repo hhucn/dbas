@@ -55,12 +55,12 @@ class UrlManagerTests(unittest.TestCase):
         url2 = self._makeOne(application_url='application_url',
                              for_api=False)
 
-        # Verify that, if 'for_api' is true, the path is returned.
         response_for_api_true = url1.get_url(path='discuss')
+        # Verify that, if 'for_api' is true, the path is returned.
         self.assertEqual(response_for_api_true, 'discuss')
 
-        # Verify that, if 'for_api' is false, the path with the url as prefix is returned.
         response_for_api_false = url2.get_url(path='discuss')
+        # Verify that, if 'for_api' is false, the path with the url as prefix is returned.
         self.assertEqual(response_for_api_false, 'application_url/discuss')
 
     def test_get_404(self):
@@ -101,3 +101,14 @@ class UrlManagerTests(unittest.TestCase):
         # there is no backslash between empty element and next element.
         self.assertEqual(response_empty_false, 'application_url/404/discuss/123')
 
+    def test_get_slug_url(self):
+        url = self._makeOne(application_url='application_url',
+                            slug='cat-or-dog')
+
+        response_as_location_href_true = url.get_slug_url(as_location_href=True)
+        # Verify that, if 'as_location_href' is true, 'discussion_url/slug' is returned.
+        self.assertEqual(response_as_location_href_true, 'location.href="application_url/discuss/cat-or-dog"')
+
+        response_as_location_href_false = url.get_slug_url(as_location_href=False)
+        # Verify that, if 'as_location_href' is false, 'discussion_url/slug' with 'location.href=' as prefix is returned.
+        self.assertEqual(response_as_location_href_false, 'application_url/discuss/cat-or-dog')
