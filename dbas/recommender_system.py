@@ -60,7 +60,7 @@ def get_attack_for_argument(argument_uid, issue, lang, restriction_on_attacks=No
 
 def get_argument_by_conclusion(statement_uid, is_supportive):
 	"""
-	Returns an random argument by its conclusion
+	Returns a random argument by its conclusion
 
 	:param statement_uid: Statement.uid
 	:param is_supportive: Boolean
