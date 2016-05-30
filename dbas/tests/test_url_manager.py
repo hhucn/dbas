@@ -19,7 +19,7 @@ class UrlManagerTests(unittest.TestCase):
         url2 = self._makeOne(application_url='application_url/',
                              slug='cat-or-dog',
                              for_api=False,
-                             history='Abc123/()')
+                             history='attitude/35')
         # TODO Hier würde ich mir doch ein paar Kommentare wünschen, warum du das hier gerade so testest...
         # Test whether backslash is added, if application_url does not end with it.
         self.assertEqual(url1.url, 'application_url/')
@@ -44,9 +44,9 @@ class UrlManagerTests(unittest.TestCase):
         # Test empty string.
         self.assertEqual(url1.history, '')
         # Test string.
-        self.assertEqual(url2.history, 'Abc123/()')
+        self.assertEqual(url2.history, 'attitude/35')
 
-        # Test whether function returns 'None'.
+        # Test whether 'None' is returned.
         self.assertEqual(url1.__init__('application_url/'), None)
 
     def test_get_url(self):
@@ -56,11 +56,11 @@ class UrlManagerTests(unittest.TestCase):
                              for_api=False)
 
         response_for_api_true = url1.get_url(path='discuss')
-        # Verify that, if 'for_api' is true, the path is returned.
+        # Verify that, if 'for_api' is 'True', the path is returned.
         self.assertEqual(response_for_api_true, 'discuss')
 
         response_for_api_false = url2.get_url(path='discuss')
-        # Verify that, if 'for_api' is false, the path with the url as prefix is returned.
+        # Verify that, if 'for_api' is 'False', the path with the 'application_url' as prefix is returned.
         self.assertEqual(response_for_api_false, 'application_url/discuss')
 
     def test_get_404(self):
@@ -118,7 +118,7 @@ class UrlManagerTests(unittest.TestCase):
                             slug='cat-or-dog')
 
         response_string_true = url.get_url_for_statement_attitude(as_location_href=True,
-                                                                  statement_uid='123')
+                                                                  statement_uid=123)
         # Verify that, if 'as_location_href' is 'True' and 'statement_uid' is not empty,
         # '{discussion_url}/{slug}/attitude/{statement_uid}' with 'location.href=' as prefix is returned.
         self.assertEqual(response_string_true, 'location.href="application_url/discuss/cat-or-dog/attitude/123"')
@@ -133,7 +133,7 @@ class UrlManagerTests(unittest.TestCase):
                             slug='cat-or-dog')
 
         response_string_true = url.get_url_for_justifying_statement(as_location_href=True,
-                                                                    statement_uid='123',
+                                                                    statement_uid=123,
                                                                     mode='t')
         # Verify that, if 'as_location_href' is 'True', 'statement_uid' and 'mode' are not empty,
         # 'location.href="{discussion_url}/{slug}/justify/{statement_or_arg_id}/{mode}"' is returned.
@@ -151,7 +151,7 @@ class UrlManagerTests(unittest.TestCase):
                             slug='cat-or-dog')
 
         response_no_additional_id_true = url.get_url_for_justifying_argument(as_location_href=True,
-                                                                             argument_uid='123',
+                                                                             argument_uid=123,
                                                                              mode='t',
                                                                              attitude='attitude',
                                                                              additional_id=-1)
@@ -160,7 +160,7 @@ class UrlManagerTests(unittest.TestCase):
         self.assertEqual(response_no_additional_id_true, 'location.href="application_url/discuss/cat-or-dog/justify/123/t/attitude"')
 
         response_additional_id_false = url.get_url_for_justifying_argument(as_location_href=False,
-                                                                           argument_uid='123',
+                                                                           argument_uid=123,
                                                                            mode='t',
                                                                            attitude='attitude',
                                                                            additional_id=30)
