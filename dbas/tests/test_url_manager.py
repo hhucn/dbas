@@ -210,3 +210,38 @@ class UrlManagerTests(unittest.TestCase):
         # Verify that, if 'as_location_href', 'is_argument', 'is_supportive' are 'False' and length of array 'pgroup_id_list' is equal 0,
         # '{discussion-url}/{slug}/choose/{is_argument}/{is_supportive}/{statement_or_argument_id}' is returned.
         self.assertEqual(response_false, 'application_url/discuss/cat-or-dog/choose/f/f/20')
+
+    def test_return_url(self):
+        url1 = self._makeOne(application_url='application_url',
+                             for_api=True,
+                             history='attitude/35')
+        url2 = self._makeOne(application_url='application_url',
+                             for_api=True,
+                             history='')
+        url3 = self._makeOne(application_url='application_url',
+                             for_api=False,
+                             history='attitude/35')
+
+        response_history = url1._UrlManager__return_url(as_location_href=True,
+                                                        url='cat-or-dog/justify/30/t')
+        # Verify that, if length of string 'history' is greater than 1 and 'for_api' is 'True',
+        # 'api/{url}?history={history}' is returned.
+        self.assertEqual(response_history, 'api/cat-or-dog/justify/30/t?history=attitude/35')
+
+        response_history_empty = url2._UrlManager__return_url(as_location_href=True,
+                                                              url='cat-or-dog/justify/30/t')
+        # Verify that, if length of string 'history' is less than 1 or equal 1 and 'for_api' is 'True', 'api/{url}' is returned.
+        self.assertEqual(response_history_empty, 'api/cat-or-dog/justify/30/t')
+
+        response_as_location_href_true = url3._UrlManager__return_url(as_location_href=True,
+                                                                      url='cat-or-dog/justify/30/t')
+        # Verify that, if 'as_location_href' is 'True' and 'for_api' is 'False',
+        # 'location.href="{discussion_url}/{url}?history={history}"' is returned.
+        self.assertEqual(response_as_location_href_true,
+                         'location.href="application_url/discuss/cat-or-dog/justify/30/t?history=attitude/35"')
+
+        response_as_location_href_true = url3._UrlManager__return_url(as_location_href=False,
+                                                                      url='cat-or-dog/justify/30/t')
+        # Verify that, if 'as_location_href' and 'for_api' are 'False', '{discussion_url}/{url}?history={history}' is returned.
+        self.assertEqual(response_as_location_href_true,
+                         'application_url/discuss/cat-or-dog/justify/30/t?history=attitude/35')
