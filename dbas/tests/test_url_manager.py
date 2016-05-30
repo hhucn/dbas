@@ -49,6 +49,20 @@ class UrlManagerTests(unittest.TestCase):
         # Test whether function returns 'None'.
         self.assertEqual(url1.__init__('application_url/'), None)
 
+    def test_get_url(self):
+        url1 = self._makeOne(application_url='application_url',
+                             for_api=True)
+        url2 = self._makeOne(application_url='application_url',
+                             for_api=False)
+
+        # Verify that, if 'for_api' is true, the path is returned.
+        response_for_api_true = url1.get_url(path='discuss')
+        self.assertEqual(response_for_api_true, 'discuss')
+
+        # Verify that, if 'for_api' is false, the path with the url as prefix is returned.
+        response_for_api_false = url2.get_url(path='discuss')
+        self.assertEqual(response_for_api_false, 'application_url/discuss')
+
     def test_get_404(self):
         url = self._makeOne('application_url')
 
