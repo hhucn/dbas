@@ -106,11 +106,11 @@ class UrlManagerTests(unittest.TestCase):
                             slug='cat-or-dog')
 
         response_as_location_href_true = url.get_slug_url(as_location_href=True)
-        # Verify that, if 'as_location_href' is true, 'discussion_url/slug' with 'location.href=' as prefix is returned.
+        # Verify that, if 'as_location_href' is 'True', 'discussion_url/slug' with 'location.href=' as prefix is returned.
         self.assertEqual(response_as_location_href_true, 'location.href="application_url/discuss/cat-or-dog"')
 
         response_as_location_href_false = url.get_slug_url(as_location_href=False)
-        # Verify that, if 'as_location_href' is false, 'discussion_url/slug' is returned.
+        # Verify that, if 'as_location_href' is 'False', 'discussion_url/slug' is returned.
         self.assertEqual(response_as_location_href_false, 'application_url/discuss/cat-or-dog')
 
     def test_get_url_for_statement_attitude(self):
@@ -119,12 +119,29 @@ class UrlManagerTests(unittest.TestCase):
 
         response_string_true = url.get_url_for_statement_attitude(as_location_href=True,
                                                                   statement_uid='123')
-        # Verify that, if 'as_location_href' is true and 'statement_uid' is not empty,
-        # 'discussion_url/slug/statement_uid' with 'location.href=' as prefix is returned.
+        # Verify that, if 'as_location_href' is 'True' and 'statement_uid' is not empty,
+        # '{discussion_url}/{slug}/attitude/{statement_uid}' with 'location.href=' as prefix is returned.
         self.assertEqual(response_string_true, 'location.href="application_url/discuss/cat-or-dog/attitude/123"')
 
         response_empty_string_false = url.get_url_for_statement_attitude(as_location_href=False,
                                                                          statement_uid = '')
-        # Verify that, if 'as_location_href' is false and 'statement_uid' is empty, 'discussion_url/slug' is returned.
+        # Verify that, if 'as_location_href' is 'False' and 'statement_uid' is empty, '{discussion_url}/{slug}/attitude/' is returned.
         self.assertEqual(response_empty_string_false, 'application_url/discuss/cat-or-dog/attitude/')
 
+    def test_get_url_for_justifying_statement(self):
+        url = self._makeOne(application_url='application_url',
+                            slug='cat-or-dog')
+
+        response_string_true = url.get_url_for_justifying_statement(as_location_href=True,
+                                                                    statement_uid='123',
+                                                                    mode='t')
+        # Verify that, if 'as_location_href' is 'True', 'statement_uid' and 'mode' are not empty,
+        # 'location.href="discussion_url/{slug}/justify/{statement_or_arg_id}/{mode}"' is returned.
+        self.assertEqual(response_string_true, 'location.href="application_url/discuss/cat-or-dog/justify/123/t"')
+
+        response_empty_string_false = url.get_url_for_justifying_statement(as_location_href=False,
+                                                                           statement_uid = '',
+                                                                           mode = '')
+        # Verify that, if 'as_location_href' is 'False', 'statement_uid' and 'mode' are empty,
+        # 'discussion_url/{slug}/justify//' is returned.
+        self.assertEqual(response_empty_string_false, 'application_url/discuss/cat-or-dog/justify//')
