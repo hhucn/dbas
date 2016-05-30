@@ -21,8 +21,6 @@ votes:
 	init_discussion_testvotes development.ini
 
 all:
-	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
-	sudo -u postgres bash -c "psql -c \"drop database news;\""
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
 	sudo -u postgres bash -c "psql -c \"create database news;\""
 	sudo -u postgres bash -c "psql -c \"alter database discussion owner to dbas;\""
