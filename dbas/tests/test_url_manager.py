@@ -181,9 +181,32 @@ class UrlManagerTests(unittest.TestCase):
         self.assertEqual(response_as_location_href_true, 'location.href="application_url/discuss/cat-or-dog/reaction/123/rebut/35"')
 
         response_as_location_href_false = url.get_url_for_reaction_on_argument(as_location_href=False,
-                                                                    argument_uid=0,
-                                                                    mode='undercut',
-                                                                    confrontation_argument=0)
+                                                                               argument_uid=0,
+                                                                               mode='undercut',
+                                                                               confrontation_argument=0)
         # Verify that, if 'as_location_href' is 'False',
         # '{discussion_url}/{slug}/reaction/{argument_uid}/{mode}/{confrontation_argument}' is returned.
         self.assertEqual(response_as_location_href_false, 'application_url/discuss/cat-or-dog/reaction/0/undercut/0')
+
+    def test_get_url_for_choosing_premisegroup(self):
+        url = self._makeOne(application_url='application_url',
+                            slug='cat-or-dog')
+
+        response_true = url.get_url_for_choosing_premisegroup(as_location_href=True,
+                                                              is_argument=True,
+                                                              is_supportive=True,
+                                                              statement_or_argument_id=20,
+                                                              pgroup_id_list=[1,2,3])
+        # Verify that, if 'as_location_href', 'is_argument', 'is_supportive' are 'True' and length of array 'pgroup_id_list' is greater than 0,
+        # the url 'location.href="{discussion-url}/{slug}/choose/{is_argument}/{is_supportive}/{statement_or_argument_id}"'
+        # and the elements of array 'pgroup_id_list' are put together, separated with backslash, and are attached in url.
+        self.assertEqual(response_true, 'location.href="application_url/discuss/cat-or-dog/choose/t/t/20/1/2/3"')
+
+        response_false = url.get_url_for_choosing_premisegroup(as_location_href=False,
+                                                               is_argument=False,
+                                                               is_supportive=False,
+                                                               statement_or_argument_id=20,
+                                                               pgroup_id_list='')
+        # Verify that, if 'as_location_href', 'is_argument', 'is_supportive' are 'False' and length of array 'pgroup_id_list' is equal 0,
+        # '{discussion-url}/{slug}/choose/{is_argument}/{is_supportive}/{statement_or_argument_id}' is returned.
+        self.assertEqual(response_false, 'application_url/discuss/cat-or-dog/choose/f/f/20')
