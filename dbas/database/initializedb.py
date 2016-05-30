@@ -59,8 +59,9 @@ def main_discussion_reload(argv=sys.argv):
 
 	with transaction.manager:
 		drop_discussion_database(DBDiscussionSession)
-		main_author = DBDiscussionSession.query(User).filter_by(nickname='tobias').first()
+		main_author = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 		setup_discussion_database(DBDiscussionSession, main_author)
+		setup_dummy_votes(DBDiscussionSession)
 		transaction.commit()
 
 
@@ -349,6 +350,7 @@ def drop_discussion_database(session):
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Statement).delete()) + ' in Statement')
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(TextVersion).delete()) + ' in TextVersion')
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Issue).delete()) + ' in Issue')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Language).delete()) + ' in Language')
 	session.flush()
 
 
