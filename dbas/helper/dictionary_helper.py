@@ -214,7 +214,8 @@ class DictionaryHelper(object):
 
 		elif at_dont_know:
 			discussion_dict['mode'] = 'dont_know'
-			current_premise = current_premise[0:1].lower() + current_premise[1:]
+			if self.discussion_lang != 'de':
+				current_premise = current_premise[0:1].lower() + current_premise[1:]
 			sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
 			sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
 			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
@@ -223,6 +224,8 @@ class DictionaryHelper(object):
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'
+			if self.discussion_lang != 'de':
+				current_premise = current_premise[0:1].lower() + current_premise[1:]
 			mid_text = _tn.get(_tn.firstPremiseText1) + ' <strong>' + current_premise + '</strong>'
 			if not supportive:
 				mid_text += ' ' + _tn.get(_tn.doesNotHold)
