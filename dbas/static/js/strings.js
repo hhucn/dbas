@@ -233,6 +233,7 @@ var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
 var veryweak 										= 'veryweak';
 var valid    										= 'valid';
+var vote                                            = 'vote';
 var votes                                           = 'votes';
 var weak 											= 'weak';
 
@@ -403,6 +404,7 @@ var dbas_en = {
 	'usersWithSameOpinion': 'Users with same opinion',
 	'valid': 'Valid',
 	'veryweak': 'very weak',
+	'vote': 'vote',
 	'votes': 'votes',
 	'weak': 'weak'
 };
@@ -558,6 +560,7 @@ var dbas_de = {
 	'typeofVote': 'Zustimmung/Ablehnung',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
+	'vote': 'Stimme',
 	'votes': 'Stimmen',
 	'weak': 'schwach'
 };
