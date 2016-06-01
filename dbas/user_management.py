@@ -575,7 +575,7 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
 		else:
 			hashed_pw = PasswordHandler.get_hashed_password(new_pw)
 
-			# set the hased one
+			# set the hashed one
 			user.password = hashed_pw
 			DBDiscussionSession.add(user)
 			transaction.commit()
