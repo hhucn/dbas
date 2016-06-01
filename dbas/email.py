@@ -29,7 +29,7 @@ class EmailHelper:
 		:param body: body text of the mail
 		:param recipient: recipient of the mail
 		:param lang: current language
-		:return: tripple with boolean for sent message, message-string
+		:return: triple with boolean for sent message, message-string
 		"""
 		logger('EmailHelper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
 		_t = Translator(lang)
