@@ -240,7 +240,7 @@ class GermanDict:
 		de_lang[_self.doYouWantToEnterYourStatements] = 'Möchten Sie Ihre eigenen Gründe angeben?'
 		de_lang[_self.doNotHesitateToContact] = 'Zögern Sie nicht, uns zu <span style="cursor: pointer;" id="contact-on-error"><strong>kontaktieren (hier klicken)</strong></span>'
 		de_lang[_self.earlierYouArguedThat] = 'Zuerst haben Sie argumentiert, dass'
-		de_lang[_self.editIndex] = 'Änderunsg Index - Letzte 30 Tage'
+		de_lang[_self.editIndex] = 'Änderungs Index - Letzte 30 Tage'
 		de_lang[_self.editIndexInfo] = 'Anzahl an Änderungen'
 		de_lang[_self.euCookiePopupTitle] = 'Diese Seite nutzt Cookies und Piwik.'
 		de_lang[_self.euCookiePopupText] = 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.'
