@@ -324,7 +324,7 @@ class Translator(object):
 		self.newConclusionRadioButtonText = 'newConclusionRadioButtonText'
 		self.newsAboutDbas = 'newsAboutDbas'
 		self.nickname = 'nickname'
-		self.noOtherAttack = 'noOhterAttack'
+		self.noOtherAttack = 'noOtherAttack'
 		self.noIslandView = 'noIslandView'
 		self.noCorrections = 'noCorrections'
 		self.noDecisionDone = 'noDecisionDone'
