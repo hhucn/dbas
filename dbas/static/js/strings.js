@@ -233,6 +233,7 @@ var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
 var veryweak 										= 'veryweak';
 var valid    										= 'valid';
+var votes                                           = 'votes';
 var weak 											= 'weak';
 
 // cookies
@@ -402,6 +403,7 @@ var dbas_en = {
 	'usersWithSameOpinion': 'Users with same opinion',
 	'valid': 'Valid',
 	'veryweak': 'very weak',
+	'votes': 'votes',
 	'weak': 'weak'
 };
 
@@ -418,7 +420,7 @@ var dbas_de = {
 	'acceptItTitle': 'Einsenden...',
 	'acceptIt': 'Eintragen...',
 	'allEditsDone': 'Alle Änderungen von Ihnen:',
-	'allStatementsPosted': 'Alle Ausagen von Ihnen:',
+	'allStatementsPosted': 'Alle Aussagen von Ihnen:',
 	'allGivenVotes': 'Alle Stimmen',
 	'author': 'Autor',
 	'because':'weil',
@@ -556,5 +558,6 @@ var dbas_de = {
 	'typeofVote': 'Zustimmung/Ablehnung',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
+	'votes': 'Stimmen',
 	'weak': 'schwach'
 };

@@ -265,7 +265,8 @@ function DiscussionBarometer(){
 					+ '<li class = "chart">'
 						+ '<span class = "chart" style = "background-color: <%=segments[i].fillColor%>"> </span>'
 						+ '<% if (segments[i].label) { %><%= segments[i].label %><% } %>'
-						+ '<% if (segments[i].value) { %><%= ": " + segments[i].value %><% } %>'
+						+ '<% if (segments[i].value == 0) { %><%= " (0 " + _t_discussion(votes) + ")" %><% } %>'
+						+ '<% if (segments[i].value) { %><%= " (" + segments[i].value + " " + _t_discussion(votes) + ")" %><% } %>'
 					+ '</li>'
 				+ '<% } %>'
 			+ '</ul>',
