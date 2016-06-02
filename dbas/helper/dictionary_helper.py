@@ -258,6 +258,7 @@ class DictionaryHelper(object):
 		lang_is_en = (self.system_lang != 'de')
 		lang_is_de = (self.system_lang == 'de')
 		extras_dict.update({
+			'lang': self.system_lang,
 			'lang_is_de': lang_is_de,
 			'lang_is_en': lang_is_en,
 			'link_de_class': ('active' if lang_is_de else ''),
