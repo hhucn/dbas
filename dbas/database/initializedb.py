@@ -372,7 +372,7 @@ def set_up_users(session):
 	# adding some dummy users
 	pwt = PasswordHandler.get_hashed_password('iamatestuser2016')
 	pw0 = PasswordHandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-	pw1 = PasswordHandler.get_hashed_password('admin')
+	pw1 = PasswordHandler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
 	pw2 = PasswordHandler.get_hashed_password('tobias')
 	pw3 = PasswordHandler.get_hashed_password('martin')
 	pw4 = PasswordHandler.get_hashed_password('christian')
