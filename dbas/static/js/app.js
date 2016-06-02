@@ -597,15 +597,18 @@ function callbackIfDoneForLogin(data){
  */
 function callbackIfDoneForRegistration(data){
 	var parsedData = $.parseJSON(data);
-	var success = $('#' + popupLoginRegistrationSuccess);
+	var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
 	var failed = $('#' + popupLoginRegistrationFailed);
 	var info = $('#' + popupLoginRegistrationInfo);
 	success.hide();
 	failed.hide();
 	info.hide();
+
 	if (parsedData.success.length > 0) {
+		// trigger click
+		$('a[href="#login"]').trigger('click');
 		success.show();
-		$('#' + popupLoginRegistrationSuccess + '-message').text(parsedData.success);
+		$('#' + popupLoginSuccess + '-message').text(parsedData.success);
 	}
 	if (parsedData.error.length > 0) {
 		failed.show();
