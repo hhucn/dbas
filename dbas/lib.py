@@ -91,9 +91,9 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 		return ts.humanize(locale=lang)
 	else:
 		if lang == 'de':
-			return ts.format('DD.MM.YYYY' + ', HH:mm:ss ' if with_exact_time else '')
+			return ts.format('DD.MM.YYYY' + (', HH:mm:ss ' if with_exact_time else ''))
 		else:
-			return ts.format('YYYY-MM-DD' + ', HH:mm:ss ' if with_exact_time else '')
+			return ts.format('YYYY-MM-DD' + (', HH:mm:ss ' if with_exact_time else ''))
 
 
 def python_datetime_pretty_print(ts, lang):
