@@ -443,7 +443,7 @@ class QueryHelper:
 			statement = statement[8:]
 
 		# check, if the statement already exists
-		db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == func.lower(statement)).first()
+		db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == statement.lower()).first()
 		if db_duplicate:
 			db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == db_duplicate.uid,
 			                                                                Statement.issue_uid == issue)).first()
