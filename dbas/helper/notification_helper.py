@@ -156,4 +156,4 @@ def get_box_for(user, lang, mainpage, is_inbox):
 		tmp_dict['collapse_id']   = 'collapse' + str(message.uid)
 		message_array.append(tmp_dict)
 
-	return message_array
+	return message_array[::-1]
