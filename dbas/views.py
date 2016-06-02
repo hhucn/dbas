@@ -1176,6 +1176,10 @@ class Dbas(object):
 					               group=db_group.uid)
 					DBDiscussionSession.add(newuser)
 					transaction.commit()
+					db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+					settings = Settings(author_uid=db_user.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+					DBDiscussionSession.add(settings)
+					transaction.commit()
 
 					# sanity check, whether the user exists
 					checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
