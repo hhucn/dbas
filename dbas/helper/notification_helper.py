@@ -8,7 +8,7 @@ import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Notification, Settings
-from dbas.lib import sql_timestamp_pretty_print
+from dbas.lib import sql_timestamp_pretty_print, escape_string
 from dbas.strings import Translator
 from sqlalchemy import and_
 
@@ -80,6 +80,7 @@ def send_message(from_user, to_user, topic, content, transaction):
 	:param transaction: transaction
 	:return:
 	"""
+	content = escape_string(content)
 	notification_in  = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=True)
 	notification_out = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=False, read=True)
 	DBDiscussionSession.add_all([notification_in, notification_out])
