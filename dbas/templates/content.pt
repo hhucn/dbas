@@ -25,7 +25,7 @@
                                 <div class="row" style="padding: 0;">
                                     <div class="col-md-10" style="white-space: pre-wrap;">${structure:issue.title}</div>
                                     <div class="col-md-2">
-                                        <span class="badge" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">${issue.arg_count}
+                                        <span class="badge" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">${issue.stat_count}
                                         </span>
                                     </div>
                                 </div>
