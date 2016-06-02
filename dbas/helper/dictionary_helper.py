@@ -224,12 +224,16 @@ class DictionaryHelper(object):
 
 		elif at_justify:
 			discussion_dict['mode'] = 'justify'
-			if self.discussion_lang != 'de':
+			if self.discussion_lang == 'de':
+				current_premise = current_premise[0:1].upper() + current_premise[1:]
+			else:
 				current_premise = current_premise[0:1].lower() + current_premise[1:]
 			mid_text = _tn.get(_tn.firstPremiseText1) + ' <strong>' + current_premise + '</strong>'
+
 			if not supportive:
 				mid_text += ' ' + _tn.get(_tn.doesNotHold)
 			mid_text += '.<br>'
+
 			if logged_in:
 				extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
 				mid_text += _tn.get(_tn.firstPremiseText2)

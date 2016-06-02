@@ -114,7 +114,8 @@ def __justify_statement_step(step, nickname, lang, url):
 	else:
 		intro   = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 	text	= get_text_for_statement_uid(uid)
-	text    = text[0:1].upper() + text[1:]
+	if lang != 'de':
+		text    = text[0:1].upper() + text[1:]
 	bubbsle_user = create_speechbubble_dict(is_user=True, message=intro + '<strong>' + text + '</strong>',
 	                                                      omit_url=False, statement_uid=uid, is_supportive=is_supportive,
 	                                                      nickname=nickname, lang=lang, url=url)
@@ -177,7 +178,8 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
 	reply_for_argument   = not (db_statement and db_statement.is_startpoint)
 	user_is_attacking    = not db_argument.is_supportive
 
-	current_argument = current_argument[0:1].upper() + current_argument[1:]
+	if lang != 'de':
+		current_argument = current_argument[0:1].upper() + current_argument[1:]
 	premise = premise[0:1].lower() + premise[1:]
 
 	_tn = Translator(lang)

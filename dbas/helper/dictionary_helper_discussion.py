@@ -101,7 +101,8 @@ class DiscussionDictHelper(object):
 		bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
 		save_statement_url  = 'ajax_set_new_start_statement'
 		text				= get_text_for_statement_uid(uid)
-		text                = text[0:1].upper() + text[1:]
+		if self.lang != 'de':
+			text            = text[0:1].upper() + text[1:]
 		if not text:
 			return None
 		false               = _tn.isFalse if self.lang == 'de' else _tn.isNotAGoodIdea
