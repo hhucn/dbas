@@ -164,11 +164,11 @@ class GermanDict:
 		de_lang[_self.butOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'aber andere Teilnehmer haben keine Meinung bezüglich ihrer Eingabe'
 		de_lang[_self.butOtherParticipantsDontHaveArgument] = 'aber andere Teilnehmer haben keine Begründung für dafür'
 		de_lang[_self.butOtherParticipantsDontHaveCounterArgument] = 'aber andere Teilnehmer haben kein Gegenargument.'
-		de_lang[_self.butIDoNotBelieveCounterFor] = 'aber ich glaube nicht, dass es ein gutes Gegenargument dagegen ist, dass'  # TODO ger fix
+		de_lang[_self.butIDoNotBelieveCounterFor] = 'aber ich glaube nicht, dass es ein gutes Argument dagegen ist, dass'
 		de_lang[_self.butIDoNotBelieveReasonForReject] = 'aber ich glaube nicht, dass das zur Aussage führt'
-		de_lang[_self.butIDoNotBelieveArgumentFor] = 'aber ich glaube nicht, dass es ein gutes Argument dafür ist, dass'  # TODO ger fix
-		de_lang[_self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass es kein gutes Gegenargument dagegen ist, dass'   # TODO ger fix
-		de_lang[_self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass es kein gutes Argument dafür ist, dass'   # TODO ger fix
+		de_lang[_self.butIDoNotBelieveArgumentFor] = 'aber ich glaube nicht, dass es ein gutes Argument dafür ist, dass'
+		de_lang[_self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass es kein gutes Argument dagegen ist, dass' 
+		de_lang[_self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass es kein gutes Argument dafür ist, dass' 
 		de_lang[_self.butThenYouCounteredWith] = 'Jedoch haben Sie dann das Gegenargument gebracht, dass'
 		de_lang[_self.butYouCounteredWith] = 'Jedoch haben Sie das Gegenargument gebracht, dass'
 		de_lang[_self.butYouAgreedWith] = 'Und Sie haben zugestimmt, weil'
@@ -240,7 +240,7 @@ class GermanDict:
 		de_lang[_self.doYouWantToEnterYourStatements] = 'Möchten Sie Ihre eigenen Gründe angeben?'
 		de_lang[_self.doNotHesitateToContact] = 'Zögern Sie nicht, uns zu <span style="cursor: pointer;" id="contact-on-error"><strong>kontaktieren (hier klicken)</strong></span>'
 		de_lang[_self.earlierYouArguedThat] = 'Zuerst haben Sie argumentiert, dass'
-		de_lang[_self.editIndex] = 'Änderunsg Index - Letzte 30 Tage'
+		de_lang[_self.editIndex] = 'Änderungs Index - Letzte 30 Tage'
 		de_lang[_self.editIndexInfo] = 'Anzahl an Änderungen'
 		de_lang[_self.euCookiePopupTitle] = 'Diese Seite nutzt Cookies und Piwik.'
 		de_lang[_self.euCookiePopupText] = 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.'
@@ -285,9 +285,9 @@ class GermanDict:
 		de_lang[_self.hidePasswordRequest] = 'Verstecke die Passwort-Anfrage'
 		de_lang[_self.hideGenerator] = 'Verstecke Generator'
 		de_lang[_self.history] = 'Geschichte'
-		de_lang[_self.howeverIHaveMuchStrongerArgumentRejecting] = 'Jedoch habe ich ein viel stärkeres Argument dagegen, dass'  # TODO ger fix
+		de_lang[_self.howeverIHaveMuchStrongerArgumentRejecting] = 'Jedoch habe ich ein viel stärkeres Argument dagegen, dass'
 		de_lang[_self.howeverIHaveEvenStrongerArgumentRejecting] = 'Jedoch habe ich ein stärkeres Argument gegen:'
-		de_lang[_self.howeverIHaveMuchStrongerArgumentAccepting] = 'Jedoch habe ich ein viel stärkeres Argument dafür, dass'  # TODO ger fix
+		de_lang[_self.howeverIHaveMuchStrongerArgumentAccepting] = 'Jedoch habe ich ein viel stärkeres Argument dafür, dass'
 		de_lang[_self.howeverIHaveEvenStrongerArgumentAccepting] = 'Jedoch habe ich ein stärkeres Argument für:'
 		de_lang[_self.internalFailureWhileDeletingTrack] = 'Interner Fehler, bitte versuchen Sie es später erneut.'
 		de_lang[_self.internalFailureWhileDeletingHistory] = 'Interner Fehler, bitte versuchen Sie es später erneut.'
@@ -308,19 +308,19 @@ class GermanDict:
 		de_lang[_self.initialPosition] = 'Anfangs-interesse'
 		de_lang[_self.initialPositionSupport] = 'Was ist Ihre Meinung, die Sie unterstützen?'
 		de_lang[_self.initialPositionAttack] = 'Was ist Ihre Meinung, di Sie angreifen möchten?'
-		de_lang[_self.initialPositionInterest] = 'Ich möchte über die Aussage reden, dass ...'  # An welcher Aussage sind Sie interessiert?' # TODO ger fix
+		de_lang[_self.initialPositionInterest] = 'Ich möchte über die Aussage reden, dass ...'
 		de_lang[_self.islandViewTitle] = 'Zeigt die Insel Ansicht'
-		de_lang[_self.iAcceptCounter] = 'und ich akzeptiere, dass es ein Gegenargument dagegen ist, dass'   # TODO ger fix
-		de_lang[_self.iAcceptArgument] = 'und ich akzeptiere, dass es ein Argument dafür ist, dass'   # TODO ger fix
-		de_lang[_self.iAgreeWith] = 'Ich akzeptiere die Aussage, dass'  # TODO ger fix
-		de_lang[_self.iAgreeWithInColor] = 'Ich <span class=\'text-success\'>akzeptiere</span> die Aussage, dass'  # TODO ger fix
-		de_lang[_self.iDisagreeWith] = 'Ich widerspreche der Aussage, dass'  # TODO ger fix
-		de_lang[_self.iDisagreeWithInColor] = 'Ich <span class=\'text-danger\'>widerspreche</span> der Aussage, dass'  # TODO ger fix
-		de_lang[_self.iDoNotKnow] = 'Ich weiß es nicht, dass'  # TODO ger fix
-		de_lang[_self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>, dass'  # TODO ger fix
-		de_lang[_self.iHaveNoOpinionYet] = 'Ich weiß es nicht, dass'  # TODO ger fix
-		de_lang[_self.iHaveNoOpinion] = 'Ich weiß es nicht'  # TODO ger fix
-		de_lang[_self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>. Zeige mir eine Aussage dafür, dass'  # TODO ger fix
+		de_lang[_self.iAcceptCounter] = 'und ich akzeptiere, dass es ein Argument dagegen ist, dass' 
+		de_lang[_self.iAcceptArgument] = 'und ich akzeptiere, dass es ein Argument dafür ist, dass' 
+		de_lang[_self.iAgreeWith] = 'Ich akzeptiere die Aussage, dass'
+		de_lang[_self.iAgreeWithInColor] = 'Ich <span class=\'text-success\'>akzeptiere</span> die Aussage, dass'
+		de_lang[_self.iDisagreeWith] = 'Ich widerspreche der Aussage, dass'
+		de_lang[_self.iDisagreeWithInColor] = 'Ich <span class=\'text-danger\'>widerspreche</span> der Aussage, dass'
+		de_lang[_self.iDoNotKnow] = 'Ich weiß es nicht, dass'
+		de_lang[_self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>, dass'
+		de_lang[_self.iHaveNoOpinionYet] = 'Ich weiß es nicht, dass'
+		de_lang[_self.iHaveNoOpinion] = 'Ich weiß es nicht'
+		de_lang[_self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>. Zeige mir eine Aussage dafür, dass'
 		de_lang[_self.iHaveMuchStrongerArgumentRejecting] = 'Ich habe ein viel stärkeres Argument zum Ablehnen von'
 		de_lang[_self.iHaveEvenStrongerArgumentRejecting] = 'Ich habe ein stärkeres Argument zum Ablehnen von'
 		de_lang[_self.iHaveMuchStrongerArgumentAccepting] = 'Ich habe ein viel stärkeres Argument zum Akzeptieren von'
@@ -387,7 +387,7 @@ class GermanDict:
 		de_lang[_self.otherParticipantsConvincedYouThat] = 'Andere Teilnehmer haben Sie überzeuge, dass'
 		de_lang[_self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass'
 		de_lang[_self.otherParticipantsAgreeThat] = 'Andere Teilnehmer stimmen zu, dass'
-		de_lang[_self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung, dazu dass'  # TODO ger fix
+		de_lang[_self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung, dazu dass'
 		de_lang[_self.otherParticipantsDontHaveOpinionRegaringYourSelection] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage'
 		de_lang[_self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für '
 		de_lang[_self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür'
@@ -395,8 +395,8 @@ class GermanDict:
 		de_lang[_self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für '
 		de_lang[_self.otherParticipantsAcceptBut] = 'Andere Teilnehmer akzeptieren Ihr Argument, aber'
 		de_lang[_self.otherParticipantDisagreeThat] = 'Andere Teilnehmer widersprechen, dass '
-		de_lang[_self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon dass,'  # TODO ger fix
-		de_lang[_self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme davon dass,'  # TODO ger fix
+		de_lang[_self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon dass,'
+		de_lang[_self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme davon dass,'
 		de_lang[_self.otherUsersHaveCounterArgument] = 'Andere Teilnehmer haben das Gegenargument, dass'
 		de_lang[_self.otherUsersSaidThat] = 'Andere Teilnehmer haben gesagt, dass'
 		de_lang[_self.opinionBarometer] = 'Meinungsbarometer'
@@ -429,8 +429,8 @@ class GermanDict:
 		de_lang[_self.showAllUsersTitle] = 'Zeige alle Nutzer'
 		de_lang[_self.strength] = 'Stärke'
 		de_lang[_self.strong] = 'stark'
-		de_lang[_self.strongerStatementForAccepting] = 'aber Sie haben eine stärkere Aussage zur Annahme, davon dass'  # TODO ger fix
-		de_lang[_self.strongerStatementForRecjecting] = 'aber Sie haben eine stärkere Aussage zur Ablehnung, davon dass'  # TODO ger fix
+		de_lang[_self.strongerStatementForAccepting] = 'aber Sie haben eine stärkere Aussage zur Annahme, davon dass'
+		de_lang[_self.strongerStatementForRecjecting] = 'aber Sie haben eine stärkere Aussage zur Ablehnung, davon dass'
 		de_lang[_self.soYouEnteredMultipleReasons] = 'Sie haben mehrere Gründe eingegeben'
 		de_lang[_self.soYourOpinionIsThat] = 'Ihre Meinung ist, dass'
 		de_lang[_self.soYouWantToArgueAgainst] = 'Sie möchten ein Gegenargument bringen für'
@@ -470,11 +470,11 @@ class GermanDict:
 		de_lang[_self.wrong] = 'Nein'
 		de_lang[_self.wouldYourShareArgument] = 'Können Sie einen Grund angeben?'
 		de_lang[_self.wrongURL] = 'Ihre URL scheint falsch zu sein.'
-		de_lang[_self.whatDoYouThinkAbout] = 'Was halten Sie davon, dass '  # TODO ger fix
+		de_lang[_self.whatDoYouThinkAbout] = 'Was halten Sie davon, dass '
 		de_lang[_self.whatDoYouThinkAboutThat] = 'Was denken Sie darüber'
-		de_lang[_self.whatIsYourIdea] = 'Ich denke / meine, dass ...'  # Was ist Ihre Idee / Meinung?'  # Was sollten wir machen?' # TODO ger fix
+		de_lang[_self.whatIsYourIdea] = 'Ich denke / meine, dass ...'
 		de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für die Aussage'
-		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund dafür, dass '  # TODO ger fix
+		de_lang[_self.whatIsYourMostImportantReasonWhy] = 'Was ist Ihr wichtigster Grund dafür, dass '
 		de_lang[_self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
 		de_lang[_self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
 		de_lang[_self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'
@@ -500,7 +500,7 @@ class GermanDict:
 		de_lang[_self.welcomeMessage] = 'Willkommen im neuen Dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!'
 		de_lang[_self.youAreInterestedIn] = 'Sie interessieren Sich für'
 		de_lang[_self.youAgreeWith] = 'Sie sind der Meinung, dass'
-		de_lang[_self.youDisagreeWith] = 'Sie wiedersprechen, dass'  # TODO ger fix
+		de_lang[_self.youDisagreeWith] = 'Sie wiedersprechen, dass'
 		de_lang[_self.youSaidThat] = 'Sie haben gesagt, dass'
 		de_lang[_self.youUsedThisEarlier] = 'Sie haben diese Aussage schon benutzt.'
 		de_lang[_self.youRejectedThisEarlier] = 'Sie haben diese Aussage schon abgelehnt.'
