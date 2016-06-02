@@ -133,8 +133,8 @@ function Notifications() {
 				$('#error-space').fadeIn();
 				$('#error-description').text(parsedData.error);
 			} else {
-				var text = $(_this).text().replace('* ', ''),
-					spanEl = $('<span>').addClass('text-primary').text($(_this).text().replace('* ', ''));
+				var text = $(_this).text().replace('NEW ', ''),
+					spanEl = $('<span>').addClass('text-primary').text($(_this).text().replace('NEW ', ''));
 				$(_this).empty().html(spanEl);
 				$('#collapse' + id).addClass('in');
 				new Notifications().setNewBadgeCounter(parsedData.unread_messages);
