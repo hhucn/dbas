@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-20 13:25+0200\n"
+"POT-Creation-Date: 2016-06-02 13:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -342,7 +342,7 @@ msgid "generated_with"
 msgstr ""
 
 #. Default: Changes
-#: ./dbas/templates/imprint.pt:104
+#: ./dbas/templates/imprint.pt:107
 msgid "changes"
 msgstr ""
 
@@ -528,7 +528,7 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:291
-#: ./dbas/templates/snippet-popups.pt:398 ./dbas/templates/content.pt:151
+#: ./dbas/templates/snippet-popups.pt:398 ./dbas/templates/content.pt:153
 msgid "error"
 msgstr ""
 
@@ -736,8 +736,8 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:597
-#: ./dbas/templates/snippet-popups.pt:640 ./dbas/templates/content.pt:273
-#: ./dbas/templates/content.pt:296
+#: ./dbas/templates/snippet-popups.pt:640 ./dbas/templates/content.pt:275
+#: ./dbas/templates/content.pt:298
 msgid "error:"
 msgstr ""
 
@@ -1179,21 +1179,21 @@ msgid "restart_discussion"
 msgstr ""
 
 #. Default: Change display style
-#: ./dbas/templates/content.pt:317
+#: ./dbas/templates/content.pt:319
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:320
+#: ./dbas/templates/content.pt:322
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/content.pt:326
+#: ./dbas/templates/content.pt:328
 msgid "island_view"
 msgstr ""
 
 #. Default: Complete View
-#: ./dbas/templates/content.pt:332
+#: ./dbas/templates/content.pt:334
 msgid "complete_view"
 msgstr ""
