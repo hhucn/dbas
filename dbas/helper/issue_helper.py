@@ -178,7 +178,7 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
 	issue_dict['title']             = issue.title
 	issue_dict['url']               = UrlManager(application_url, issue.get_slug(), for_api).get_slug_url(False) if str(uid) != str(issue.uid) else ''
 	issue_dict['info']              = issue.info
-	issue_dict['stat_count']        = get_number_of_arguments(issue.uid)
+	issue_dict['stat_count']        = get_number_of_statements(issue.uid)
 	issue_dict['date']              = sql_timestamp_pretty_print(issue.date, lang)
 	issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 	return issue_dict
