@@ -10,8 +10,6 @@ services:
     volumes:
       - .:/code
     ports:
-      - "4349:80"
-    # depends_on:
-    #  - db
+      - "4284:4284"
     links:
       - db:db
