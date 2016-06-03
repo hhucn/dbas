@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-05-20 13:25+0200\n"
+"POT-Creation-Date: 2016-06-02 13:48+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -347,8 +347,7 @@ msgstr ""
 "Diese erlauben Ihnen notwendige Funktionen auf unseren Websites auszuführen, "
 "wie das Aufrechterhalten von Log-in Informationen für Ihre Sitzung oder "
 "einer Überweisung. Ebenfalls helfen sie dabei die Datenübertragung hindurch "
-"des Internets zu minimieren. Sie werden nicht auf Ihrem Computer gespeichert "
-"und laufen ab, sobald Sie Ihre Browser-Sitzung beenden."
+"des Internets zu minimieren."
 
 #. Default: Tracking-Cookies
 #: dbas/templates/imprint.pt:43
@@ -418,7 +417,7 @@ msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework"
 
 #. Default: Changes
-#: dbas/templates/imprint.pt:104
+#: dbas/templates/imprint.pt:107
 msgid "changes"
 msgstr "Änderungen in der Version"
 
@@ -618,7 +617,7 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:291 dbas/templates/snippet-popups.pt:398
-#: dbas/templates/content.pt:151
+#: dbas/templates/content.pt:153
 msgid "error"
 msgstr "Fehler:"
 
@@ -822,7 +821,7 @@ msgstr "Neue Nachricht schreiben"
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:597 dbas/templates/snippet-popups.pt:640
-#: dbas/templates/content.pt:273 dbas/templates/content.pt:296
+#: dbas/templates/content.pt:275 dbas/templates/content.pt:298
 msgid "error:"
 msgstr "Fehler:"
 
@@ -1273,22 +1272,22 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Change display style
-#: dbas/templates/content.pt:317
+#: dbas/templates/content.pt:319
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:320
+#: dbas/templates/content.pt:322
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:326
+#: dbas/templates/content.pt:328
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:332
+#: dbas/templates/content.pt:334
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 

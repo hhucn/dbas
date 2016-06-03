@@ -21,13 +21,15 @@ def logger(who, when, what, warn=False, error=False, debug=False):
 	:return: None
 	"""
 	info = not(warn or error or debug)
-
 	logger = logging.getLogger(__name__)
-	if info:
-		logger.info('[' + who.upper() + '] ' + when + ': ' + what)
-	if warn:
-		logger.warn('[' + who.upper() + '] ' + when + ': ' + what)
-	if error:
-		logger.error('[' + who.upper() + '] ' + when + ': ' + what)
-	if debug:
-		logger.debug('[' + who.upper() + '] ' + when + ': ' + what)
+	try:
+		if info:
+			logger.info('[' + who.upper() + '] ' + when + ': ' + what)
+		if warn:
+			logger.warn('[' + who.upper() + '] ' + when + ': ' + what)
+		if error:
+			logger.error('[' + who.upper() + '] ' + when + ': ' + what)
+		if debug:
+			logger.debug('[' + who.upper() + '] ' + when + ': ' + what)
+	except Exception as e:
+		logger.error('[LOGGER] LOGGER ERROR: ' + repr(e))

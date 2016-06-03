@@ -197,7 +197,7 @@ function Main () {
 
 		// adding issues
 		$('#' + addTopicButtonId).click(function () {
-			guiHandler.showAddTopicPopup();
+			guiHandler.showAddTopicPopup(new InteractionHandler().callbackIfDoneForSendNewIssue);
 		});
 
 		// user info click

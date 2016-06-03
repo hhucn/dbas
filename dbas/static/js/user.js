@@ -23,7 +23,7 @@ $(function () {
 				} else {
 					recipient = _this.prev().text();
 				}
-				sendNotification(recipient.trim()); // declared in notification.js
+				new Notifications().sendNotification(recipient.trim()); // declared in notification.js
 			});
 		});
 	});

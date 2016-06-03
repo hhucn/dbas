@@ -552,14 +552,16 @@ function GuiHandler() {
 
 	/**
 	 * Displays add topic plugin
+	 *
+	 * @param callbackFunctionOnDone
 	 */
-	this.showAddTopicPopup = function (){
+	this.showAddTopicPopup = function (callbackFunctionOnDone){
 		$('#popup-add-topic').modal('show');
 		$('#popup-add-topic-accept-btn').click(function () {
 			var info = $('#popup-add-topic-info-input').val(),
 				title = $('#popup-add-topic-title-input').val(),
 				lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
-			new AjaxSiteHandler().sendNewIssue(info, title, lang);
+			new AjaxSiteHandler().sendNewIssue(info, title, lang, callbackFunctionOnDone);
 		});
 		$('#popup-add-topic-refuse-btn').click(function () {
 			$('#popup-add-topic').modal('hide');

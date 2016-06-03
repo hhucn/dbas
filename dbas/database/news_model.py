@@ -4,7 +4,6 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
 import sqlalchemy as sa
 
 from sqlalchemy_utils import ArrowType

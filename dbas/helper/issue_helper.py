@@ -8,7 +8,7 @@ from slugify import slugify
 import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Language
+from dbas.database.discussion_model import Argument, User, Issue, Language, Statement
 from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.strings import Translator
@@ -116,7 +116,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
 	slug = __get_slug_for_issue_uid(uid)
 	title = __get_title_for_issue_uid(uid)
 	info = __get_info_for_issue_uid(uid)
-	arg_count = get_number_of_arguments(uid)
+	stat_count = get_number_of_statements(uid)
 	date = __get_date_for_issue_uid(uid, lang)
 
 	db_issues = DBDiscussionSession.query(Issue).all()
@@ -127,14 +127,14 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
 
 	_t = Translator(lang)
 	tooltip = _t.get(_t.discussionInfoTooltip1) + ' ' + date + ' ' +\
-	          _t.get(_t.discussionInfoTooltip2) + ' ' + str(arg_count) + ' ' +\
-	          (_t.get(_t.discussionInfoTooltip3pl) if arg_count > 1 else _t.get(_t.discussionInfoTooltip3sg))
+	          _t.get(_t.discussionInfoTooltip2) + ' ' + str(stat_count) + ' ' +\
+	          (_t.get(_t.discussionInfoTooltip3pl) if stat_count > 1 else _t.get(_t.discussionInfoTooltip3sg))
 
 	return {'slug': slug,
 	        'info': info,
 	        'title': title,
 	        'uid': uid,
-	        'arg_count': arg_count,
+	        'stat_count': stat_count,
 	        'date': date,
 	        'all': all_array,
 	        'tooltip': tooltip,
@@ -149,6 +149,16 @@ def get_number_of_arguments(issue):
 	:return: Integer
 	"""
 	return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all())
+
+
+def get_number_of_statements(issue):
+	"""
+	Returns number of statements for the issue
+
+	:param issue: Issue Issue.uid
+	:return: Integer
+	"""
+	return len(DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all())
 
 
 def get_issue_dict_for(issue, application_url, for_api, uid, lang):
@@ -168,7 +178,7 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
 	issue_dict['title']             = issue.title
 	issue_dict['url']               = UrlManager(application_url, issue.get_slug(), for_api).get_slug_url(False) if str(uid) != str(issue.uid) else ''
 	issue_dict['info']              = issue.info
-	issue_dict['arg_count']         = get_number_of_arguments(issue.uid)
+	issue_dict['stat_count']        = get_number_of_statements(issue.uid)
 	issue_dict['date']              = sql_timestamp_pretty_print(issue.date, lang)
 	issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
 	return issue_dict
