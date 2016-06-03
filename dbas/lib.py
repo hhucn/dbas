@@ -91,9 +91,9 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 		return ts.humanize(locale=lang)
 	else:
 		if lang == 'de':
-			return ts.format('DD.MM.YYYY' + ', HH:mm:ss ' if with_exact_time else '')
+			return ts.format('DD.MM.YYYY' + (', HH:mm:ss ' if with_exact_time else ''))
 		else:
-			return ts.format('YYYY-MM-DD' + ', HH:mm:ss ' if with_exact_time else '')
+			return ts.format('YYYY-MM-DD' + (', HH:mm:ss ' if with_exact_time else ''))
 
 
 def python_datetime_pretty_print(ts, lang):
@@ -154,6 +154,7 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 		conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 		if lang != 'de':
 			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+			premises = premises[0:1].lower() + premises[1:]  # pretty print
 		ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
 
 		if lang == 'de':

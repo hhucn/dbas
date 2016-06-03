@@ -97,8 +97,9 @@ function AjaxSiteHandler() {
 	 * @param info
 	 * @param title
 	 * @param language
+	 * @param callbackFunctionOnDone
 	 */
-	this.sendNewIssue = function(info, title, language){
+	this.sendNewIssue = function(info, title, language, callbackFunctionOnDone){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$('#add-topic-error').hide();
 		$.ajax({
@@ -113,7 +114,7 @@ function AjaxSiteHandler() {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
+			callbackFunctionOnDone(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			$('#popup-add-topic-error-text').text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). '
