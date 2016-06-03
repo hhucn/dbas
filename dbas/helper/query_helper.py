@@ -5,19 +5,19 @@ Provides helping function for database querys.
 """
 
 import random
+import dbas.helper.notification_helper as NotificationHelper
+import dbas.recommender_system as RecommenderSystem
+import dbas.user_management as UserHandler
 
 from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
-from dbas.helper.notification_helper import NotificationHelper
 from dbas.helper.relation_helper import RelationHelper
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid
 from dbas.logger import logger
-from dbas.recommender_system import RecommenderSystem
 from dbas.strings import Translator
 from dbas.url_manager import UrlManager
-from dbas.user_management import UserHandler
 
 statement_min_length = 10
 
@@ -443,7 +443,7 @@ class QueryHelper:
 			statement = statement[8:]
 
 		# check, if the statement already exists
-		db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == func.lower(statement)).first()
+		db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == statement.lower()).first()
 		if db_duplicate:
 			db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == db_duplicate.uid,
 			                                                                Statement.issue_uid == issue)).first()

@@ -5,13 +5,12 @@ Common, pure functions used by the D-BAS.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
 import locale
 from datetime import datetime
 from html import escape
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue
+from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
 from .strings import Translator
 
 
@@ -42,12 +41,33 @@ def get_language(request, current_registry):
 	return lang
 
 
-def sql_timestamp_pretty_print(ts, lang):
+def get_discussion_language(request):
+	"""
+	Returns Language.ui_locales
+	CALL AFTER IssueHelper.get_id_of_slug(..)!
+
+	:param request: self.request
+	:return:
+	"""
+	# first matchdict, then params, then session, afterwards fallback
+	issue = request.matchdict['issue'] if 'issue' in request.matchdict \
+		else request.params['issue'] if 'issue' in request.params \
+		else request.session['issue'] if 'issue' in request.session \
+		else DBDiscussionSession.query(Issue).first().uid
+
+	db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
+
+	return db_lang.languages.ui_locales if db_lang else 'en'
+
+
+def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 	"""
 	Pretty printing for sql timestamp in dependence of the language.
 
 	:param ts: timestamp (arrow) as string
 	:param lang: language
+	:param lang: humanize: Boolean
+	:param lang: with_exact_time: Boolean
 	:return:
 	"""
 
@@ -63,8 +83,17 @@ def sql_timestamp_pretty_print(ts, lang):
 	# 	time = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
 	# except ValueError:  # postgres
 	# 	time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
-
-	return ts.humanize(locale=lang)
+	if humanize:
+		if lang == 'de':
+			ts = ts.to('Europe/Berlin')
+		else:
+			ts = ts.to('US/Pacific')
+		return ts.humanize(locale=lang)
+	else:
+		if lang == 'de':
+			return ts.format('DD.MM.YYYY' + (', HH:mm:ss ' if with_exact_time else ''))
+		else:
+			return ts.format('YYYY-MM-DD' + (', HH:mm:ss ' if with_exact_time else ''))
 
 
 def python_datetime_pretty_print(ts, lang):
@@ -86,7 +115,8 @@ def python_datetime_pretty_print(ts, lang):
 	return datetime.strptime(str(ts), '%Y-%m-%d').strftime(formatter)
 
 
-def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False, user_changed_opinion=False):
+def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False,
+                              user_changed_opinion=False, rearrange_intro=False):
 	"""
 	Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -96,6 +126,7 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 	:param start_with_intro: Boolean
 	:param first_arg_by_user: Boolean
 	:param user_changed_opinion: Boolean
+	:param rearrange_intro: Boolean
 	:return: String
 	"""
 	db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -106,7 +137,8 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 	_t = Translator(lang)
 	sb = '<strong>' if with_strong_html_tag else ''
 	se = '</strong>' if with_strong_html_tag else ''
-	because = ' ' + se + _t.get(_t.because).lower() + ' ' + sb
+	because = (se + ', ') if lang == 'de' else (' ' + se)
+	because += _t.get(_t.because).lower() + ' ' + sb
 	doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHoldBecause).lower() + ' ' + sb
 
 	# getting all argument id
@@ -116,13 +148,23 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 		arg_array.append(db_argument.uid)
 
 	if len(arg_array) == 1:
-		# build one and only argument
+		# build one argument only
 		db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
 		premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
 		conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
-		conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+		if lang != 'de':
+			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+			premises = premises[0:1].lower() + premises[1:]  # pretty print
 		ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
-		ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
+
+		if lang == 'de':
+			if rearrange_intro:
+				intro = _t.get(_t.itTrueIs) if db_argument.is_supportive else _t.get(_t.itFalseIs)
+			else:
+				intro = _t.get(_t.itIsTrue) if db_argument.is_supportive else _t.get(_t.itIsFalse)
+			ret_value += se + intro[0:1].upper() + intro[1:] + ' ' + sb + conclusion + because + premises
+		else:
+			ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
 
 		return ret_value
 
@@ -134,7 +176,7 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 		for uid in arg_array:
 			db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 			text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-			pgroups.append(text[0:1].lower() + text[1:])
+			pgroups.append((text[0:1].lower() + text[1:])if lang != 'de' else text)
 			supportive.append(db_argument.is_supportive)
 		conclusion = get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
 
@@ -143,7 +185,8 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 			ret_value += _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
 			ret_value += sb + ' '
 			users_opinion = True  # user after system
-			conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+			if lang != 'de':
+				conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
 		else:  # user starts
 			ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
 			users_opinion = False  # system after user
@@ -185,8 +228,10 @@ def get_text_for_premisesgroup_uid(uid, lang):
 	_t = Translator(lang)
 	for premise in db_premises:
 		tmp = get_text_for_statement_uid(premise.statements.uid)
+		if lang != 'de':
+			tmp[0:1].lower() + tmp[1:]
 		uids.append(str(premise.statements.uid))
-		text += ' ' + _t.get(_t.aand) + ' ' + tmp[0:1].lower() + tmp[1:]
+		text += ' ' + _t.get(_t.aand) + ' ' + tmp
 
 	return text[5:], uids
 
@@ -212,17 +257,18 @@ def get_text_for_statement_uid(uid):
 	return tmp
 
 
-def get_text_for_conclusion(argument, lang, start_with_intro=False):
+def get_text_for_conclusion(argument, lang, start_with_intro=False, rearrange_intro=False):
 	"""
 	Check the arguments conclusion whether it is an statement or an argument and returns the text
 
 	:param argument: Argument
 	:param lang: ui_locales
 	:param start_with_intro: Boolean
+	:param rearrange_intro: Boolean
 	:return: String
 	"""
 	if argument.argument_uid:
-		return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro)
+		return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro,rearrange_intro=rearrange_intro)
 	else:
 		return get_text_for_statement_uid(argument.conclusion_uid)
 

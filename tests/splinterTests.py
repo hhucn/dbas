@@ -164,7 +164,7 @@ class FrontendTests:
 		splitted_list = test_list.split(',')
 		if len(splitted_list) == 1 and splitted_list[0] == 'a':
 			splitted_list = []
-			for i in range(11):
+			for i in range(12):
 				splitted_list.append(str(i))
 
 		start = time.time()
@@ -237,7 +237,8 @@ class FrontendTests:
 		         mainpage + 'discuss',
 		         mainpage + 'settings',
 		         mainpage + 'notifications',
-		         mainpage + 'admin/main']
+		         mainpage + 'admin/main',
+		         mainpage + 'user/tobias']
 		tests = ['main',
 		         'contact',
 		         'news',
@@ -245,15 +246,17 @@ class FrontendTests:
 		         'discuss',
 		         'settings',
 		         'notifications',
-		         'admin']
+		         'admin',
+		         'user']
 		texts = ['part of the graduate school',
 		         'Feel free to drop us a',
 		         'Speech Bubble System',
 		         'Liability for content',
-		         'The current discussion is about:',
+		         'Current discussion is about:',
 		         'part of the graduate school',
 		         'part of the graduate school',
-		         '401']
+		         '401',
+		         'tobias']
 		for index, p in enumerate(pages):
 			b.visit(p)
 			test = 'testing ' + tests[index] + ' page'
@@ -393,7 +396,7 @@ class FrontendTests:
 
 		b.click_link_by_partial_text('Language')
 		b.click_link_by_partial_text('Deutsch')
-		success = success and Helper.check_for_present_text(b, 'Teil der Graduierten-Kollegs', 'check switch to german language')
+		success = success and Helper.check_for_present_text(b, 'Teil des Graduierten-Kollegs', 'check switch to german language')
 
 		b.click_link_by_partial_text('Sprache')
 		b.click_link_by_partial_text('English')
@@ -518,7 +521,7 @@ class FrontendTests:
 
 		# new position
 		b.find_by_css('#discussions-space-list li:last-child input').click()
-		success = success and Helper.check_for_present_text(b, 'What is your idea? ', 'check for new position field')
+		success = success and Helper.check_for_present_text(b, 'What is your idea', 'check for new position field')
 		position = 'some new position ' + str(time.time())
 		b.find_by_id('add-statement-container-main-input').fill(position)
 		b.find_by_id('send-new-statement').click()
@@ -589,7 +592,7 @@ class FrontendTests:
 		:param browser: current browser
 		:return: 1 if success else 0
 		"""
-		print('Starting tests for __test_content:')
+		print('Starting tests for test_content:')
 		success = True
 		b = Browser(browser)
 		b = Helper.login(b, nickname1, password, mainpage + 'discussion')
@@ -613,14 +616,20 @@ class FrontendTests:
 		# confrontation - give feedback
 		success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question')
 		success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for acceptive formulation of rebut')
-		# b.find_by_css('#item_support label').click()
-		# b.find_by_css('label#support').click()
-		# b.find_by_text('Right, it is true that')[0].click()
-		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
-		while Helper.check_for_non_present_text(b, 'every street festival is funded by large companies', 'sanity check', print_message=False):
+
+		# earlier used argument
+		b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
+		time.sleep(waittime)
+		success = success and Helper.check_for_present_text(b, 'You used this earlier', 'check for earlier used formulation')
+		b.back()
+		time.sleep(waittime)
+
+		while Helper.check_for_non_present_text(b, 'Right, it is true that every street festival is funded by large companies.', 'sanity check', print_message=False):
 			b.back()
+			b.reload()
 			time.sleep(waittime)
-			b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
+			b.find_by_css('#discussions-space-list li:first-child input').click()
+		b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
 		time.sleep(waittime)
 
 		# support of confrontation
@@ -642,7 +651,7 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# rebut of confrontation
-		success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for accepting', 'check for formulation on \'rebut\'')
+		success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for accepting', 'check for formulation on rebut')
 		b.find_by_css('#discussion-restart-btn').click()
 		time.sleep(waittime)
 
@@ -655,7 +664,7 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# confrontation - give feedback again
-		success = success and Helper.check_for_present_text(b, 'disagree with', 'check for question of rejection')
+		success = success and Helper.check_for_present_text(b, 'You disagree with', 'check for question of rejection')
 		b.find_by_css('#discussions-space-list li:first-child input').click()
 		time.sleep(waittime)
 
@@ -667,7 +676,7 @@ class FrontendTests:
 		time.sleep(waittime)
 
 		# rebut of confrontation
-		success = success and Helper.check_for_present_text(b, 'You have much stronger argument for rejecting', 'check for formulation on \'rebut\'')
+		success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for rejecting', 'check for formulation on rebut again')
 		success = success and Helper.check_for_present_text(b, 'is not a good idea', 'check for question again')
 
 		b = Helper.logout(b)
@@ -728,7 +737,7 @@ class FrontendTests:
 
 		# write message
 		b.find_by_id('popup-writing-notification-recipient').fill(nickname2)
-		b.find_by_id('popup-writing-notification-title').fill('Test notification')
+		b.find_by_id('popup-writing-notification-title').fill('Test notification for Kurt')
 		b.find_by_id('popup-writing-notification-text').fill('This is a test notification for splinter tests')
 		b.find_by_id('popup-writing-notification-send').click()
 		time.sleep(waittime)
@@ -752,7 +761,7 @@ class FrontendTests:
 
 		b = Helper.logout(b)
 		b = Helper.login(b, nickname2, password, mainpage + 'notifications')
-		success = success and Helper.check_for_present_text(b, '* Test notification', 'check for one new notifications 1')
+		success = success and Helper.check_for_present_text(b, 'Test notification', 'check for one new notifications 1')
 		txt = 'You have got 1 unread notifications and 1 total in the inbox. There are 0 in the outbox.'
 		success = success and Helper.check_for_present_text(b, txt, 'check for one new notifications 2')
 
@@ -794,7 +803,7 @@ if __name__ == "__main__":
 
 	if str(input_browser) != 'b':
 		webdriver = 'chrome' if str(input_browser) == 'c' else 'firefox'
-		if len(list) == 0:
+		if len(input_list) == 0:
 			input_list = 'a'
 
 		print('')

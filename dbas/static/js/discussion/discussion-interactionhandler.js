@@ -95,10 +95,10 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), service;
 		if (parsedData.error.length == 0) {
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
-			$('#' + popupUrlSharingDescriptionPId).html(_t(feelFreeToShareUrl) + ', ' + _t(shortenedBy) + ' ' + service + ':');
+			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ', ' + _t_discussion(shortenedBy) + ' ' + service + ':');
 			$('#' + popupUrlSharingInputId).val(parsedData.url).attr('data-short-url', parsedData.url);
 		} else {
-			$('#' + popupUrlSharingDescriptionPId).text(_t(feelFreeToShareUrl) + ":");
+			$('#' + popupUrlSharingDescriptionPId).text(_t_discussion(feelFreeToShareUrl) + '.');
 			$('#' + popupUrlSharingInputId).val(long_url);
 		}
 	};
@@ -136,21 +136,28 @@ function InteractionHandler() {
 					.attr('border', '0')
 					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
 				tr = $('<tr>')
-					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
+					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left')),
 				tbody = $('<tbody>'),
 				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', i=0;
+			
+			if (Object.keys(parsedData.supporter).length > 1)
+				tr.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left'));
 
 			// supporters = parsedData.supporter.join(', ');
 			text = parsedData.text + '<br><br>';
-			text += _t(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ' ';
-			text += _t(messageInfoAt) + ' ' + parsedData.timestamp + '.<br>';
-			text += _t(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
-			text +=_t(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t(messageInfoParticipantPl)) + '.';
+			text += _t_discussion(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ', ';
+			text += parsedData.timestamp + '.<br>';
+			text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
+			text +=_t_discussion(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t_discussion(messageInfoParticipantPl)) + '.';
+
 			if (parsedData.vote_count>0) {
 				$.each(parsedData.supporter, function(index, nick){
 					td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.public_page[nick]).text(nick));
-					td_avatar = $('<td>').html('<img style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
+					td_avatar = $('<td>').html('<img class="preload-image" style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
 					if (i==1){
 						i=0;
 						tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
@@ -163,8 +170,14 @@ function InteractionHandler() {
 				if (i==1)
 					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
 			}
+
+			if (tbody.find('tr').length==0)
+				body.append(new GuiHandler().getAlertIntoDialogNoDecisions());
+			else
+				body.append(table.append(tbody));
+
 			body.append(text).append(table.append(tbody));
-			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), body);
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
 			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
 			new Helper().delay(function(){
 				var popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
@@ -180,7 +193,7 @@ function InteractionHandler() {
 		} else {
 			text = parsedData.error;
 			element = $('<p>').html(text);
-			displayConfirmationDialogWithoutCancelAndFunction(_t(messageInfoTitle), element);
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
 		}
 	};
 
@@ -192,7 +205,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 
 		if (parsedData.error.length == 0) {
-			$('#' + popupConfirmDialogId).modal('hide');
+			$('#popup-add-topic').modal('hide');
 			var li = $('<li>').addClass('enabled'),
 				a = $('<a>').attr('href', parsedData.issue.url).attr('value', parsedData.issue.title),
 				spanTitle = $('<span>').text(parsedData.issue.title),
@@ -203,10 +216,10 @@ function InteractionHandler() {
 				li.insertBefore(divider);
 			}
 		} else {
-			$('#add-topic-error-text').text(parsedData.error);
-			$('#add-topic-error').show();
+			$('#popup-add-topic-error-text').text(parsedData.error);
+			$('#popup-add-topic-error').show();
 			new Helper().delay(function(){
-				$('#add-topic-error').hide();
+				$('#popup-add-topic-error').hide();
 			}, 2500);
 		}
 	};
@@ -227,24 +240,20 @@ function InteractionHandler() {
 					.attr('border', '0')
 					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
 				tr = $('<tr>')
-					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t(nickname) + '</strong>').css('text-align', 'left')),
+					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left')),
 				tbody = $('<tbody>'),
 				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', j=0;
 
+			users_array = is_argument ? parsedData.opinions.users : parsedData.opinions[0].users;
+			if (Object.keys(users_array).length > 1)
+				tr.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
+					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left'));
 			table.append($('<thead>').append(tr));
-
-			if (is_argument){
-				users_array = parsedData.opinions.users;
-			} else {
-				users_array = parsedData.opinions[0].users;
-			}
 
 			$.each(users_array, function (i, val) {
 				td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', val.public_profile_url).text(val.nickname));
-				td_avatar = $('<td>').html('<img style="height: 40%;" src="' + val.avatar_url + '"></td>');
+				td_avatar = $('<td>').html('<img class="preload-image" style="height: 40%;" src="' + val.avatar_url + '"></td>');
 				if (j==1){
 					j=0;
 					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
@@ -257,8 +266,12 @@ function InteractionHandler() {
 			if (j==1)
 				tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
 
-			body.append(span).append(table.append(tbody));
-			displayConfirmationDialogWithoutCancelAndFunction(_t(usersWithSameOpinion), body);
+			if (tbody.find('tr').length==0)
+				body.append(new GuiHandler().getAlertIntoDialogNoDecisions());
+			else
+				body.append(span).append(table.append(tbody));
+
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(usersWithSameOpinion), body);
 			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
 			new Helper().delay(function(){
 				popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
@@ -274,7 +287,6 @@ function InteractionHandler() {
 		} else {
 			new GuiHandler().showDiscussionError(parsedData.error);
 		}
-
 	};
 
 	/**
@@ -304,12 +316,12 @@ function InteractionHandler() {
 					text[i] = text[i].replace(/\s\s+/g, ' ');
 
 					// cutting all 'and ' and 'and'
-					while (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1 ||
-					text[i].indexOf((_t(and)), text[i].length - (_t(and) ).length) !== -1) {
-						if (text[i].indexOf((_t(and) + ' '), text[i].length - (_t(and) + ' ').length) !== -1)
-							text[i] = text[i].substr(0, text[i].length - (_t(and) + ' ').length);
+					while (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1 ||
+					text[i].indexOf((_t_discussion(and)), text[i].length - (_t_discussion(and) ).length) !== -1) {
+						if (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1)
+							text[i] = text[i].substr(0, text[i].length - (_t_discussion(and) + ' ').length);
 						else
-							text[i] = text[i].substr(0, text[i].length - (_t(and)).length);
+							text[i] = text[i].substr(0, text[i].length - (_t_discussion(and)).length);
 					}
 
 					// whitespace at the end
@@ -317,7 +329,7 @@ function InteractionHandler() {
 						text[i] = text[i].substr(0, text[i].length - (' ').length);
 
 					// sorting the statements, whether they include the keyword 'AND'
-					if (text[i].toLocaleLowerCase().indexOf(' ' + _t(and) + ' ') != -1)
+					if (text[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') != -1)
 						undecided_texts.push(text[i]);
 					else
 						decided_texts.push(text[i]);

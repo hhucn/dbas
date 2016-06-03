@@ -81,5 +81,4 @@ def get_references_for_url(host=None, path=None):
     :rtype: list
     """
     if host and path:
-        refs = DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()
-        return refs if refs else None
+        return DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()

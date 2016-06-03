@@ -31,7 +31,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewPremisesArgument(data);
 		}).fail(function ajaxSendNewPremisesForArgumentFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 6). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 6). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -61,7 +61,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
 		}).fail(function ajaxSendNewStartPremiseFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 7). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 7). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -87,7 +87,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 8). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -96,15 +96,17 @@ function AjaxSiteHandler() {
 	 * Sends a new topic
 	 * @param info
 	 * @param title
+	 * @param language
+	 * @param callbackFunctionOnDone
 	 */
-	this.sendNewIssue = function(info, title){
+	this.sendNewIssue = function(info, title, language, callbackFunctionOnDone){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$('#add-topic-error').hide();
 		$.ajax({
 			url: 'ajax_set_new_issue',
 			method: 'POST',
 			data: {
-				info: info, title: title
+				info: info, title: title, lang: language
 			},
 			dataType: 'json',
 			async: true,
@@ -112,14 +114,14 @@ function AjaxSiteHandler() {
 				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
+			callbackFunctionOnDone(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			$('#add-topic-error-text').text(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 9). '
+			$('#popup-add-topic-error-text').text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			$('#add-topic-error').show();
+			$('#popup-add-topic-error').show();
 			new Helper().delay(function(){
-				$('#add-topic-error').hide();
+				$('#popup-add-topic-error').hide();
 			}, 2500);
 		});
 	};
@@ -129,7 +131,7 @@ function AjaxSiteHandler() {
 	 * @param id_id current uid of the statement
 	 */
 	this.getLogfileForStatement = function (id_id) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(), settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
 			method: 'GET',
@@ -140,17 +142,13 @@ function AjaxSiteHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
-			},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
 			}
 		}).done(function ajaxGetLogfileForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
 		}).fail(function ajaxGetLogfileForStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 15). '
+			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -162,7 +160,7 @@ function AjaxSiteHandler() {
 	 * @param corrected_text the corrected text
 	 */
 	this.sendCorrectureOfStatement = function (uid, corrected_text, element) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(),settings_data, url;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_correcture_of_statement',
 			method: 'POST',
@@ -174,17 +172,13 @@ function AjaxSiteHandler() {
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrfToken
-			},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, element);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 13). '
+			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 13). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
@@ -194,7 +188,8 @@ function AjaxSiteHandler() {
 	 * @param long_url for shortening
 	 */
 	this.getShortenUrl = function (long_url) {
-		var encoded_url = encodeURI(long_url), settings_data, url;
+		var encoded_url = encodeURI(long_url);
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_shortened_url',
 			method: 'GET',
@@ -203,12 +198,11 @@ function AjaxSiteHandler() {
 				url: encoded_url, issue: new Helper().getCurrentIssueId()
 			},
 			async: true,
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
+			headers: {
+				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxGetShortenUrlDone(data) {
-			new InteractionHandler().callbackIfDoneForShortenUrl(data);
+			new InteractionHandler().callbackIfDoneForShortenUrl(data, long_url);
 		}).fail(function ajaxGetShortenUrl() {
 			$('#' + popupUrlSharingInputId).val(long_url);
 		});
@@ -224,7 +218,8 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_infos_about_argument',
 			method: 'POST',
 			data: {
-				uid: uid
+				uid: uid,
+				lang: $('#issue-info').attr('data-discussion-language')
 			},
 			dataType: 'json',
 			headers: {
@@ -233,8 +228,8 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 8). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 8). '
+				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 		});
 	};
 
@@ -243,16 +238,22 @@ function AjaxSiteHandler() {
 	 * @param type
 	 * @param argument_uid
 	 * @param statement_uid
+	 * @param is_supportive
 	 */
-	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid){
+	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
 		var is_argument = type == 'argument',
+			is_position = type == 'position' || type == 'statement',
 			uid = argument_uid == 'None' ? statement_uid : argument_uid,
 			csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			method: 'GET',
 			data: {
-				is_argument: is_argument, uids: uid
+				is_argument: is_argument,
+				uids: uid,
+				is_position: is_position,
+				is_supporti: is_supportive,
+				lang: $('#issue_info').attr('data-discussion-language')
 			},
 			dataType: 'json',
 			headers: {
@@ -261,8 +262,8 @@ function AjaxSiteHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 10). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 10). '
+				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 		});
 
 	};
@@ -275,10 +276,11 @@ function AjaxSiteHandler() {
 	 * @param extra optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
-		var settings_data, url, callback = $('#' + callbackid),
+		var callback = $('#' + callbackid),
 			pencil = '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>',
 			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
-			bubbleSpace = $('#' + discussionBubbleSpaceId);
+			bubbleSpace = $('#' + discussionBubbleSpaceId),
+			csrfToken = $('#' + hiddenCSRFTokenId).val();
 
 		// clear lists if input is empty
 		if(callback.val().length==0) {
@@ -316,16 +318,15 @@ function AjaxSiteHandler() {
 			data: { value: value, type:type, extra: extra, issue: new Helper().getCurrentIssueId() },
 			async: true,
 			global: false,
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
+			headers: {
+				'X-CSRF-Token': csrfToken
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
 			new GuiHandler().hideDiscussionError();
 		}).fail(function ajaxGetAllUsersFail() {
 			new Helper().delay(function ajaxGetAllUsersFailDelay() {
-				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + new Helper().startWithLowerCase(_t(errorCode)) + ' 11). '
+				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
 						+ _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 			}, 350);
 		});

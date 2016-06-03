@@ -1,6 +1,6 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff, Teresa Uebber
+ * @email krauthoff@cs.uni-duesseldorf.de, teresa.uebber@hhu.de
  */
 
 // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
@@ -25,6 +25,28 @@ var colors = [
 	'#CDDC39', // 17 lime
 	'#FF9800', // 18 orange
 	'#9E9E9E'  // 19 grey
+	],
+	highlightColors = [
+	'#e57373', //  0 red
+	'#9575cd', //  1 deep purple
+	'#64b5f6', //  2 light blue
+	'#81c784', //  3 green
+	'#fff176', //  4 yellow
+	'#ff8a65', //  5 deep orange
+	'#90a4ae', //  6 blue grey
+	'#f06292', //  7 pink
+	'#7986cb', //  8 indigo
+	'#4dd0e1', //  9 cyan
+	'#aed581', // 10 light green
+	'#ffd54f', // 11 amber
+	'#a1887f', // 12 brown
+	'#424242', // 13 black
+	'#ba68c8', // 14 purple
+	'#64b5f6', // 15 blue
+	'#4db6ac', // 16 teal
+	'#dce775', // 17 lime
+	'#ffb74d', // 18 orange
+	'#e0e0e0'  // 19 grey
 	];
 
 function DiscussionBarometer(){
@@ -53,8 +75,9 @@ function DiscussionBarometer(){
 			new DiscussionBarometer().ajaxRequest(uid_array, adress);
 		} else if (url.indexOf('/reaction/') != -1){
 			adress = 'argument';
-			uid = splitted[splitted.length-3];
-			new DiscussionBarometer().ajaxRequest(uid, adress);
+			uid_array.push(splitted[splitted.length-3]);
+			uid_array.push(splitted[splitted.length-1]);
+			new DiscussionBarometer().ajaxRequest(uid_array, adress);
 		} else {
 			adress = 'position';
 			$('#discussions-space-list li:not(:last-child) label').each(function(){
@@ -71,6 +94,7 @@ function DiscussionBarometer(){
 	 */
 	this.ajaxRequest = function(uid, adress){
 		var dataString;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		switch(adress){
 			case 'attitude':
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', is_position: 'false', uids: uid};
@@ -79,18 +103,19 @@ function DiscussionBarometer(){
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'false', uids: JSON.stringify(uid)};
 				break;
 			case 'argument':
-				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', is_position: 'false', uids: uid};
+				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', is_position: 'false', uids: JSON.stringify(uid)};
 				break;
 			case 'position':
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'true', uids: JSON.stringify(uid)};
 		}
-
+		dataString['lang'] = $('#issue_info').attr('data-discussion-language');
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			type: 'GET',
 			dataType: 'json',
 			data: dataString,
-			async: true
+			async: true,
+			headers: {'X-CSRF-Token': csrfToken}
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, adress);
 		}).fail(function () {
@@ -115,7 +140,7 @@ function DiscussionBarometer(){
         }
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' div.modal-body')
-			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto;"></canvas>');
+			.html('<canvas id="chartCanvas" width="400" height="400" style= "display: block; margin: 0 auto; margin-bottom: 20px;"></canvas>');
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		}).removeClass('btn-success');
@@ -128,7 +153,7 @@ function DiscussionBarometer(){
 			case 'justify':  _db.createStatementBarometer(obj); break;
 			case 'argument': _db.createArgumentBarometer(obj); break;
 		}
-		$('#' + popupConfirmDialogId).find('.modal-title').text(obj.title);
+		$('#' + popupConfirmDialogId).find('.modal-title').text(obj.title).css({'line-height': '1.0'});
 	};
 
 	/**
@@ -143,14 +168,14 @@ function DiscussionBarometer(){
         {
 			value: obj.agree_users.length,
         	color: colors[3],
-			highlight: colors[10],
-            label: 'agree'
+			highlight: highlightColors[3],
+            label: obj.agree_text
         },
 		{
 			value: obj.disagree_users.length,
         	color: colors[0],
-			highlight: colors[5],
-			label: 'disagree'
+			highlight: highlightColors[0],
+			label: obj.disagree_text
 		}
 		];
 
@@ -158,7 +183,9 @@ function DiscussionBarometer(){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		} else {
-			var chart = new Chart(ctx).Pie(pieData);
+			options = new DiscussionBarometer().createLegendOptions();
+			var chart = new Chart(ctx).Pie(pieData, options);
+			new DiscussionBarometer().createLegend(chart);
 		}
 	};
 
@@ -176,6 +203,7 @@ function DiscussionBarometer(){
 				chart.addData({
 					value: value.users.length,
 					color: colors[index],
+					highlight: highlightColors[index],
 					label: value.text
 				});
 				users += value.users.length;
@@ -186,6 +214,11 @@ function DiscussionBarometer(){
 		if (users == 0){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
+		}
+		else {
+			var options = new DiscussionBarometer().createLegendOptions();
+			$.extend(chart.options, options);
+			new DiscussionBarometer().createLegend(chart);
 		}
 	};
 
@@ -203,6 +236,7 @@ function DiscussionBarometer(){
 				chart.addData({
 					value: entry.users.length,
 					color: colors[index],
+					highlight: highlightColors[index],
 					label: entry.text
 				});
 				users += entry.users.length;
@@ -214,13 +248,46 @@ function DiscussionBarometer(){
 			this.setAlertIntoDialog();
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
+		else{
+			var options = new DiscussionBarometer().createLegendOptions();
+			$.extend(chart.options, options);
+			new DiscussionBarometer().createLegend(chart);
+		}
+	};
+
+	/**
+	 * @return options
+	 */
+	this.createLegendOptions = function() {
+		return options = {
+			legendTemplate: '<ul class = "chart">'
+				+ '<% for (var i=0; i<segments.length; i++) { %>'
+					+ '<li class = "chart">'
+						+ '<span class = "chart" style = "background-color: <%=segments[i].fillColor%>"> </span>'
+						+ '<% if (segments[i].label) { %><%= segments[i].label %><% } %>'
+						+ '<% if (segments[i].value == 0) { %><%= " (0 " + _t_discussion(votes) + ")" %><% } %>'
+						+ '<% if (segments[i].value == 1) { %><%= " (" + segments[i].value + " " + _t_discussion(vote) + ")" %><% } %>'
+						+ '<% if (segments[i].value) { %><%= " (" + segments[i].value + " " + _t_discussion(votes) + ")" %><% } %>'
+					+ '</li>'
+				+ '<% } %>'
+			+ '</ul>',
+			tooltipTemplate: "<%=value%>"
+		};
+	};
+
+	/**
+	 * @param chart
+	 */
+	this.createLegend = function(chart) {
+		var legend = chart.generateLegend();
+		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div id = "chart-legend">' + legend + '</div>');
 	};
 
 	this.setAlertIntoDialog = function(){
 		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
-		span = $('<span>').text(_t(noDecisionstaken));
+		span = $('<span>').text(_t_discussion(noDecisionstaken));
 		div.append(strong).append(span);
 		$('#' + popupConfirmDialogId + ' div.modal-body').append(div);
 		$('#' + popupConfirmDialogId).on('hidden.bs.modal', function (e) {
@@ -232,7 +299,7 @@ function DiscussionBarometer(){
 	 * Callback if the ajax request failed
 	 */
 	this.callbackIfFailForGetDictionary = function(){
-		alert('ajax-request: some error');
-		// TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
+		new GuiHandler().showDiscussionError(_t_discussion(requestFailed)
+			+ ' (' + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
 	};
 }

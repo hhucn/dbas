@@ -5,12 +5,12 @@ Provides helping function for dictionaries, which are used for the radio buttons
 """
 
 from sqlalchemy import and_
+import dbas.recommender_system as RecommenderSystem
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
 from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
-from dbas.recommender_system import RecommenderSystem
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
 
@@ -88,15 +88,16 @@ class ItemDictHelper(object):
 
 		_um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-		statements_array.append(self.__create_statement_dict('agree',
-		                                                     [{'title': _tn.get(_tn.iAgreeWithInColor) + ': ' + text, 'id': 'agree'}],
-															 'agree', _um.get_url_for_justifying_statement(True, statement_uid, 't')))
-		statements_array.append(self.__create_statement_dict('disagree',
-		                                                     [{'title': _tn.get(_tn.iDisagreeWithInColor) + ': ' + text, 'id': 'disagree'}],
-															 'disagree', _um.get_url_for_justifying_statement(True, statement_uid, 'f')))
-		statements_array.append(self.__create_statement_dict('dontknow',
-		                                                     [{'title': _tn.get(_tn.iHaveNoOpinionYetInColor) + ': ' + text, 'id': 'dontknow'}],
-															 'dontknow', _um.get_url_for_justifying_statement(True, statement_uid, 'd')))
+		colon = ' ' if self.lang == 'de' else ': '
+		titleT = _tn.get(_tn.iAgreeWithInColor) + colon + text
+		titleF = _tn.get(_tn.iDisagreeWithInColor) + colon + text
+		titleD = _tn.get(_tn.iHaveNoOpinionYetInColor) + colon + text
+		urlT = _um.get_url_for_justifying_statement(True, statement_uid, 't')
+		urlF = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
+		urlD = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
+		statements_array.append(self.__create_statement_dict('agree', [{'title': titleT, 'id': 'agree'}], 'agree', urlT))
+		statements_array.append(self.__create_statement_dict('disagree', [{'title': titleF, 'id': 'disagree'}], 'disagree', urlF))
+		statements_array.append(self.__create_statement_dict('dontknow', [{'title': titleD, 'id': 'dontknow'}], 'dontknow', urlD))
 
 		return statements_array
 
@@ -129,7 +130,7 @@ class ItemDictHelper(object):
 					premise_array.append({'title': text, 'id': premise.statement_uid})
 
 				# get attack for each premise, so the urls will be unique
-				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.issue_uid, self.lang)
+				arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.issue_uid, self.lang, history=self.path)
 				already_used = 'reaction/' + str(argument.uid) + '/' in self.path
 				additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
 				statements_array.append(self.__create_statement_dict(str(argument.uid),
@@ -200,20 +201,18 @@ class ItemDictHelper(object):
 
 		if db_arguments:
 			for argument in db_arguments:
+				from dbas.lib import get_text_for_argument_uid
 				# get alles premises in this group
 				db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 				premises_array = []
 				for premise in db_premises:
-					premise_dict = dict()
-					premise_dict['id'] = premise.statement_uid
 					text = get_text_for_statement_uid(premise.statement_uid)
-					text = text[0:1].upper() + text[1:]
-					premise_dict['title'] = text
-					premises_array.append(premise_dict)
+					premises_array.append({'id': premise.statement_uid, 'title': text[0:1].upper() + text[1:]})
 
 				# for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
-				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang,
-				                                                               special_case='undermine' if attack_type == 'undermine' else None)
+				is_undermine = 'undermine' if attack_type == 'undermine' else None
+				arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.issue_uid, self.lang,
+				                                                               special_case=is_undermine)
 
 				url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 				statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
@@ -250,8 +249,9 @@ class ItemDictHelper(object):
 
 		conclusion   = get_text_for_conclusion(db_argument, self.lang)
 		premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
-		conclusion   = conclusion[0:1].lower() + conclusion[1:]
-		premise	     = premise[0:1].lower() + premise[1:]
+		if self.lang != 'de':
+			conclusion   = conclusion[0:1].lower() + conclusion[1:]
+			premise	     = premise[0:1].lower() + premise[1:]
 		rel_dict	 = _tg.get_relation_text_dict(premise, conclusion, False, False, False, is_dont_know=True)
 		mode		 = 't' if is_supportive else 't'
 		counter_mode = 'f' if is_supportive else 't'
@@ -291,7 +291,7 @@ class ItemDictHelper(object):
 		if not db_sys_argument or not db_user_argument:
 			return statements_array
 
-		conclusion   = get_text_for_conclusion(db_sys_argument, self.lang)
+		conclusion   = get_text_for_conclusion(db_sys_argument, self.lang, rearrange_intro=True)
 		premise, tmp = get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid, self.lang)
 		# getting the real conclusion: if the arguments conclusion is an argument, we will get the conclusion of the last argument
 		db_tmp_argument = db_sys_argument
@@ -299,9 +299,10 @@ class ItemDictHelper(object):
 			db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
 		first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
 
-		first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-		conclusion	     = conclusion[0:1].lower() + conclusion[1:]
-		premise		     = premise[0:1].lower() + premise[1:]
+		if self.lang != 'de':
+			conclusion	     = conclusion[0:1].lower() + conclusion[1:]
+			first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
+			premise		     = premise[0:1].lower() + premise[1:]
 
 		rel_dict	     = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
 		mode		     = 't' if is_supportive else 'f'
@@ -364,8 +365,9 @@ class ItemDictHelper(object):
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
 		# last item is the change attack button or step back, if we have bno other attack
-		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.issue_uid, self.lang, restriction_on_attacks=attack, restriction_on_arg_uid=argument_uid_sys)
-		if new_attack == 'no_other_attack' or new_attack == 'end':
+		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.issue_uid, self.lang,
+		                                                     restriction_on_attacks=attack, restriction_on_arg_uid=argument_uid_sys)
+		if new_attack == 'no_other_attack' or new_attack.startswith('end'):
 			relation = 'step_back'
 			url = 'back' if self.for_api else 'window.history.go(-1)'
 		else:
@@ -408,6 +410,8 @@ class ItemDictHelper(object):
 																		  Argument.conclusion_uid == conclusion,
 																		  Argument.argument_uid == argument,
 																		  Argument.is_supportive == is_supportive)).first()
+			if not db_argument:
+				return None
 			arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang)
 			url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 

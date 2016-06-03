@@ -72,12 +72,13 @@
 						<li>Avatare by <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
 						<li>Charts by <a target="_blank" href="https://github.com/nnnick/Chart.js">Chart.js</a></li>
 						<li>Graphs by <a target="_blank" href="https://github.com/jacomyal/sigma.js">Sigma.js</a></li>
+                        <li>Loading Bar by <a target="_blank" href="http://github.hubspot.com/pace/docs/welcome/">Pace</a></li>
 					</ul>
 				</div>
 
 				<div class="colored-container imprint-container row links">
 					<h4><span >Pylons Pyramid</span></h4>
-					<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework 1.5.4</span>
+					<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework </span> ${extras.pyramid_version}
 					<br>
 					<ul>
 						<li>
@@ -96,11 +97,26 @@
 							<a target="_blank" href="http://pylonsproject.org">
 								<i class="glyphicon glyphicon-home icon-muted">&thinsp;</i>Pylons Project</a>
 						</li>
+                        <li>
+                            <a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">Tumbeasts</a> by Matthew Inman of The Oatmeal
+                        </li>
 					</ul>
 				</div>
 
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
+
+					<span class="project lead">0.5.13 (2016-05-09)</span>
+					<ul>
+						<li>Many fixes for the german language</li>
+					</ul>
+
+					<span class="project lead">0.5.12 (2016-05-04)</span>
+					<ul>
+                        <li>Seperated site and discussion language</li>
+                        <li>Checking CSRF tokens automatically</li>
+                        <li>Updated island view and the opinon barometer</li>
+                    </ul>
 
 					<span class="project lead">0.5.11 (2016-04-27)</span>
 					<ul>

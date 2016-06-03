@@ -53,8 +53,9 @@
 					        	    <div class="panel-heading">
                                         <h4 class="panel-title">
                                             <a class="accordion-toggle panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
+                                                <span tal:condition="not:msg.read" class="label label-info" i18n:translate="new">NEW</span>
                                                 <span class="text-primary" tal:condition="msg.read">${structure:msg.topic}</span>
-                                                <strong class="text-primary" tal:condition="not:msg.read">* ${msg.topic}</strong>
+                                                <strong class="text-primary" tal:condition="not:msg.read">${msg.topic}</strong>
                                             </a>
                                             <span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" data-toggle="tooltip" data-placement="bottom" title="Delete"></span>
                                             <span style="float: right; padding-right: 1em;"><span i18n:translate="from">From:</span> ${msg.from_author}, ${msg.timestamp}</span>
@@ -98,7 +99,7 @@
                                                     ${msg.to_author}
                                                     <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src msg.to_author_avatar">
                                                 </a>
-                                                <a href="#" class="btn btn-primary btn-xs forward-notification" i18n:translate="forward">forward</a>
+                                                <a href="#" class="btn btn-primary btn-xs answer-notification" i18n:translate="answer">answer</a>
                                             </div>
                                         </div>
                                     </div>

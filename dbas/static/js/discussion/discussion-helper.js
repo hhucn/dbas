@@ -107,8 +107,8 @@ function Helper() {
 		// buttons
 		edit_button = $('<input>').css('margin', '2px')
 			.attr('type', 'button')
-			.attr('value', 'edit')
-			.attr('class', 'btn-sm btn button-primary')
+			.attr('value', _t_discussion(edit))
+			.attr('class', 'btn btn-primary btn-xs')
 			.click(function edit_button_click() {
 				$('#' + popupEditStatementTextareaId).text($(this).parent().prev().text());
 				$('#' + popupEditStatementContentId + ' td').removeClass('text-hover');
@@ -130,8 +130,8 @@ function Helper() {
 
 		log_button = $('<input>').css('margin', '2px')
 			.attr('type', 'button')
-			.attr('value', 'changelog')
-			.attr('class', 'btn-sm btn button-primary')
+			.attr('value', _t_discussion(changelog))
+			.attr('class', 'btn btn-primary btn-xs')
 			.click(function log_button_click() {
 				$('#' + popupEditStatementLogfileHeaderId).html(_t(logfile) + ': <strong>' + $(this).parent().prev().text() + '</strong>');
 				$('#' + popupEditStatementErrorDescriptionId).text('');
@@ -205,7 +205,9 @@ function Helper() {
 	 * @param params dictionary with at least {'name': ?, 'content': ?}
 	 */
 	this.redirectInNewTabForContact = function(params){
-		var f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr('action', mainpage + 'contact');
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrfField = '<input type="hidden" name="csrf_token" value="' + csrfToken + '">';
+		var f = $("<form target='_blank' method='POST' style='display:none;'>" + csrfField + "</form>").attr('action', mainpage + 'contact');
 		f.appendTo(document.body);
 		for (var prms in params) {
 			if (params.hasOwnProperty(prms)) {

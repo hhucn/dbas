@@ -144,6 +144,9 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 	}
 }
 
+/**
+ *
+ */
 function displayBubbleInformationDialog(){
 	if (!new Helper().isCookieSet(BUBBLE_INFOS)){
 		var img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
@@ -351,17 +354,27 @@ function prepareLoginRegistrationPopup(){
  * @param new_lang is the shortcut for the language
  */
 function ajaxSwitchDisplayLanguage (new_lang){
+	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	$.ajax({
 		url: 'ajax_switch_language',
 		type: 'POST',
 		data: { lang: new_lang},
 		dataType: 'json',
-		async: true
+		async: true,
+		headers: {
+			'X-CSRF-Token': csrfToken
+		}
 	}).done(function ajaxSwitchDisplayLanguageDone() {
 		location.reload(true);
 		setPiwikOptOutLink(new_lang);
-	}).fail(function ajaxSwitchDisplayLanguageFail() {
-		alert(_t(languageCouldNotBeSwitched));
+	}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
+		if (xhr.status == 400) {
+			alert(_t(requestFailedBadToken));
+		} else if (xhr.status == 500) {
+			alert(_t(requestFailedInternalError));
+		} else {
+			alert(_t(languageCouldNotBeSwitched));
+		}
 	});
 }
 
@@ -369,6 +382,7 @@ function ajaxSwitchDisplayLanguage (new_lang){
  *
  */
 function ajaxLogin (){
+	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	var user = $('#' + loginUserId).val(),
 		password = $('#' + loginPwId).val(),
 		url = window.location.href,
@@ -383,14 +397,23 @@ function ajaxLogin (){
 			keep_login: keep_login
 		},
 		dataType: 'html',
-		async: true
+		async: true,
+		headers: {
+			'X-CSRF-Token': csrfToken
+		}
 	}).done(function ajaxLoginDone(data) {
 		callbackIfDoneForLogin(data);
 	}).fail(function ajaxLoginFail(xhr) {
 		if (xhr.status == 200) {
 			location.reload(true);
 		} else if (xhr.status == 302) {
-			location.href = xhr.getResponseHeader("Location");
+			location.href = xhr.getResponseHeader('Location');
+		} else if (xhr.status == 400) {
+			$('#' + popupLoginFailed).show();
+			$('#' + popupLoginFailed + '-message').text(_t(requestFailedBadToken));
+		} else if (xhr.status == 500) {
+			$('#' + popupLoginFailed).show();
+			$('#' + popupLoginFailed + '-message').text(_t(requestFailedInternalError));
 		} else {
 			$('#' + popupLoginFailed).show();
 			$('#' + popupLoginFailed + '-message').text(_t(requestFailed));
@@ -402,12 +425,15 @@ function ajaxLogin (){
  *
  */
 function ajaxLogout (){
-	// var url = window.location.href;
+	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	$.ajax({
 		url: 'ajax_user_logout',
 		type: 'POST',
 		dataType: 'json',
-		async: true
+		async: true,
+		headers: {
+			'X-CSRF-Token': csrfToken
+		}
 	}).done(function ajaxLogoutDone(data) {
 	}).fail(function ajaxLogoutFail(xhr) {
 		if (xhr.status == 200) {
@@ -426,6 +452,7 @@ function ajaxLogout (){
  *
  */
 function ajaxRegistration (){
+	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	var firstname = $('#userfirstname-input').val(),
 		lastname = $('#userlastname-input').val(),
 		nickname = $('#nick-input').val(),
@@ -450,12 +477,18 @@ function ajaxRegistration (){
 				passwordconfirm: passwordconfirm,
 				lang: getLanguage()},
 		dataType: 'json',
-		async: true
+		async: true,
+		headers: {
+			'X-CSRF-Token': csrfToken
+		}
 	}).done(function ajaxRegistrationDone(data) {
 		callbackIfDoneForRegistration(data);
-	}).fail(function ajaxRegistrationFail() {
+	}).fail(function ajaxRegistrationFail(xhr) {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+		if (xhr.status == 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
+		} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
+		} else {                		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+		}
 	});
 }
 
@@ -464,17 +497,24 @@ function ajaxRegistration (){
  */
 function ajaxPasswordRequest (){
 	var email = $('#password-request-email-input').val();
+	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	$.ajax({
 		url: 'ajax_user_password_request',
 		type: 'POST',
 		data: { email: email, lang: getLanguage()},
 		dataType: 'json',
-		async: true
+		async: true,
+		headers: {
+			'X-CSRF-Token': csrfToken
+		}
 	}).done(function ajaxPasswordRequestDone(data) {
 		callbackIfDoneForPasswordRequest(data);
-	}).fail(function ajaxPasswordRequestFail() {
+	}).fail(function ajaxPasswordRequestFail(xhr) {
 		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+		if (xhr.status == 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
+		} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
+		} else {            			$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+		}
 	});
 }
 
@@ -482,12 +522,16 @@ function ajaxPasswordRequest (){
  * Get-Request for an roundhouse kick
  */
 function ajaxRoundhouseKick(){
+	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	$.ajax({
 		url: 'additional_service',
 		type: 'GET',
 		data: {type:'chuck'},
 		global: false,
-		async: true
+		async: true,
+		headers: {
+			'X-CSRF-Token': csrfToken
+		}
 	}).done(function ajaxRoundhouseKickDone(data) {
 		if (data.type == 'success'){
 			displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,
@@ -502,12 +546,16 @@ function ajaxRoundhouseKick(){
  * Get your mama
  */
 function ajaxMama(){
+	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	$.ajax({
 		url: 'additional_service',
 		type: 'GET',
 		data: {type:'mama'},
 		global: false,
-		async: true
+		async: true,
+		headers: {
+			'X-CSRF-Token': csrfToken
+		}
 	}).done(function ajaxMamaDone(data) {
 		displayConfirmationDialogWithoutCancelAndFunction('Yo Mamma',  '<h4>' + data.joke + '</h4>\n\n<span' +
 				' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
@@ -526,7 +574,6 @@ function callbackIfDoneForLogin(data){
 	try {
 		var jsonData = $.parseJSON(data);
 		// It is JSON
-		alert(jsonData.error+"\n"+data);
 		if (jsonData.error.length != 0) {
 			$('#' + popupLoginFailed).show();
 			$('#' + popupLoginFailed + '-message').text(jsonData.error);
@@ -550,20 +597,26 @@ function callbackIfDoneForLogin(data){
  */
 function callbackIfDoneForRegistration(data){
 	var parsedData = $.parseJSON(data);
-	$('#' + popupLoginRegistrationSuccess).hide();
-	$('#' + popupLoginRegistrationFailed).hide();
-	$('#' + popupLoginRegistrationInfo).hide();
+	var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
+	var failed = $('#' + popupLoginRegistrationFailed);
+	var info = $('#' + popupLoginRegistrationInfo);
+	success.hide();
+	failed.hide();
+	info.hide();
+
 	if (parsedData.success.length > 0) {
-		$('#' + popupLoginRegistrationSuccess).show();
-		$('#' + popupLoginRegistrationSuccess + '-message').text(_t(parsedData.success));
+		// trigger click
+		$('a[href="#login"]').trigger('click');
+		success.show();
+		$('#' + popupLoginSuccess + '-message').text(parsedData.success);
 	}
 	if (parsedData.error.length > 0) {
-		$('#' + popupLoginRegistrationFailed).show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(_t(parsedData.error));
+		failed.show();
+		$('#' + popupLoginRegistrationFailed + '-message').text(parsedData.error);
 	}
 	if (parsedData.info.length > 0) {
-		$('#' + popupLoginRegistrationInfo).show();
-		$('#' + popupLoginRegistrationInfo + '-message').text(_t(parsedData.info));
+		info.show();
+		$('#' + popupLoginRegistrationInfo + '-message').text(parsedData.info);
 	}
 }
 
@@ -573,21 +626,24 @@ function callbackIfDoneForRegistration(data){
  */
 function callbackIfDoneForPasswordRequest(data){
 	var parsedData = $.parseJSON(data);
-	$('#' + popupLoginFailed).hide();
-	$('#' + popupLoginSuccess).hide();
-	$('#' + popupLoginInfo).hide();
+	var success = $('#' + popupLoginSuccess);
+	var failed = $('#' + popupLoginFailed);
+	var info = $('#' + popupLoginInfo);
+	success.hide();
+	failed.hide();
+	info.hide();
 	if (parsedData.success.length > 0) {
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
-		$('#' + popupLoginSuccess).show();
+		success.show();
 		$('#' + popupLoginSuccess + '-message').text(_t(parsedData.message));
 	}
 	if (parsedData.error.length > 0) {
-		$('#' + popupLoginFailed).show();
+		failed.show();
 		$('#' + popupLoginFailed + '-message').text(_t(parsedData.message));
 	}
 	if (parsedData.info.length > 0) {
-		$('#' + popupLoginInfo).show();
+		info.show();
 		$('#' + popupLoginInfo + '-message').text(_t(parsedData.message));
 	}
 }
@@ -634,7 +690,17 @@ $(document).ready(function () {
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
+		// TODO: SEXY GLOBAL AJAX ERROR HANDLING
+		//ajaxError: function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
+		//	$('#request_failed_container').fadeIn();
+		//	new Helper().delay(function(){
+		//		$('#request_failed_container').fadeOut();
+		//	}, 3000);
+		//}
 	});
+	//$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
+    //    alert("There was an ajax error!");
+	//});
 
 	if ($('#session_expired_container').length == 1)
 		new Helper().delay(function(){

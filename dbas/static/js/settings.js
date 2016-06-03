@@ -20,8 +20,8 @@ function HistoryHandler(){
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetUserHistoryDone(data) {
 			new HistoryHandler().getUserHistoryDataDone(data);
-		}).fail(function ajaxGetUserHistoryFail() {
-			new HistoryHandler().getDataFail();
+		}).fail(function ajaxGetUserHistoryFail(xhr) {
+			new HistoryHandler().getDataFail(xhr.status);
 		});
 	};
 
@@ -39,8 +39,8 @@ function HistoryHandler(){
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function ajaxGetUserHistoryDone(data) {
 			new HistoryHandler().removeUserHistoryDataDone(data);
-		}).fail(function ajaxGetUserHistoryFail() {
-			new HistoryHandler().getDataFail();
+		}).fail(function ajaxGetUserHistoryFail(xhr) {
+			new HistoryHandler().getDataFail(xhr.status);
 		});
 	};
 
@@ -54,12 +54,17 @@ function HistoryHandler(){
 
 	/**
 	 *
+	 * @param statuscode
 	 */
-	this.getDataFail = function(){
+	this.getDataFail = function(statuscode){
 		$('#' + historyTableSuccessId).hide();
 		$('#' + historyTableFailureId).fadeIn('slow');
 		new Helper().delay(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
-		$('#' + historyFailureMessageId).html(_t(internalError));
+
+		if (statuscode == 400) {		$('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
+		} else if (statuscode == 500) {	$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
+		} else {                		$('#' + historyFailureMessageId).html(_t(requestFailed));
+		}
 	};
 
 	/**
@@ -208,12 +213,14 @@ function SettingsHandler(){
 	 */
 	this.setUserSetting = function(toggle_element, service) {
 		var settings_value = toggle_element.prop('checked');
+		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_user_setting',
 			method: 'GET',
 			data:{'settings_value': settings_value ? 'True': 'False', 'service': service},
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function setUserSettingDone(data) {
 			new SettingsHandler().callbackDone(data, toggle_element, settings_value, service);
 		}).fail(function setUserSettingFail() {
