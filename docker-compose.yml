@@ -2,15 +2,16 @@ version: '2'
 services:
   db:
     build: database/
-    #command: /etc/init.d/postgresql start
-    command: /etc/init.d/postgresql start
-    #image: postgres
+    ports:
+      - "5433:5432"
   web:
     build: .
-    command: pserve development.ini --reload
+    command: /bin/bash docker_init.sh
     volumes:
       - .:/code
     ports:
       - "4349:80"
-    depends_on:
-      - db
+    # depends_on:
+    #  - db
+    links:
+      - db:db
