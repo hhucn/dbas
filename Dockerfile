@@ -6,13 +6,17 @@ RUN mkdir /code
 WORKDIR /code
 
 ADD requirements.txt /code/
+RUN pip install -U pip
 RUN pip install -r requirements.txt
 
-RUN apt-get update
-RUN apt-get --yes install sudo
+# RUN apt-get update
+# RUN apt-get --yes install sudo
 
 ADD . /code/
-# RUN make init
-# RUN make all
+
 RUN python setup.py develop
 
+# RUN initialize_discussion_sql development.ini
+# RUN initialize_news_sql development.ini
+
+# RUN pserve development.ini --reload
