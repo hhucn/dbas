@@ -23,7 +23,7 @@ $(function () {
 				} else {
 					recipient = _this.prev().text();
 				}
-				sendNotification(recipient.trim()); // declared in notification.js
+				new Notifications().sendNotification(recipient.trim()); // declared in notification.js
 			});
 		});
 	});
@@ -42,12 +42,14 @@ function User() {
 	var pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
 
 	this.getPublicUserData = function () {
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_public_user_data',
 			method: 'GET',
 			data:{'nickname': $('#public_nick').text()},
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function getPublicUserDataDone(data) {
 			new User().callbackDone(data);
 		}).fail(function getPublicUserDataFail() {
@@ -55,41 +57,73 @@ function User() {
 		});
 	};
 
+	/**
+	 *
+	 * @param jsonData
+	 */
 	this.callbackDone = function(jsonData){
-		$('#user-activity-chart-space').append('<canvas id="user-activity-canvas" width="500" height="300" style= "display: block; margin: 0 auto;"></canvas>');
-		var ctx_act = document.getElementById('user-activity-canvas').getContext('2d'),
-			parsedData = $.parseJSON(jsonData),
-			datas_act = {
-				labels : parsedData.labels1,
-				datasets : [{
-					label: parsedData.label1,
-					fillColor : fillColorSet[0],
-					strokeColor : strokeColorSet[0],
-					pointStrokeColor : pointStrokeColorSet[0],
-					pointColor : "#fff",
-					data : parsedData.data1,
-					hover: {mode: 'single'}
-				}]};
-
-		new Chart(ctx_act).Line(datas_act);
-
-		$('#user-vote-chart-space').append('<canvas id="user-vote-canvas" width="500" height="300" style= "display: block; margin: 0 auto;"></canvas>');
-		var ctx_vot = document.getElementById('user-vote-canvas').getContext('2d'),
-			datas_vot = {
-				labels : parsedData.labels2,
-				datasets : [{
-					label: parsedData.label2,
-					fillColor : fillColorSet[1],
-					strokeColor : strokeColorSet[1],
-					pointStrokeColor : pointStrokeColorSet[1],
-					pointColor : "#fff",
-					data : parsedData.data2,
-					hover: {mode: 'single'}
-				}]};
-
-		new Chart(ctx_vot).Line(datas_vot);
+		var parsedData = $.parseJSON(jsonData);
+		this.createChart(parsedData, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
+		this.createChart(parsedData, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
+		this.createChart(parsedData, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
+		this.createChart(parsedData, $('#user-edit-chart-space'), 'user-edit-canvas', 3);
+		this.setLegendCSS();
 	};
 
+	/**
+	 *
+	 * @param parsedData
+	 * @param space
+	 * @param id
+	 * @param count
+	 */
+	this.createChart = function(parsedData, space, id, count){
+		var chart, data, div_legend;
+
+		space.append('<canvas id="' + id + '" width="500" height="300" style= "display: block; margin: 0 auto;"></canvas>');
+		data = {
+			labels : parsedData['labels' + (count+1)],
+			datasets : [{
+				label: parsedData['label' + (count+1)],
+				fillColor : fillColorSet[count],
+				strokeColor : strokeColorSet[count],
+				pointStrokeColor : pointStrokeColorSet[count],
+				pointColor : "#fff",
+				// pointHitRadius: 1,
+				// pointHoverRadius: 1,
+                // pointHoverBorderWidth: 1,
+				data : parsedData['data' + (count+1)],
+				hover: {mode: 'single'}
+			}]};
+		chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
+		div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
+		space.prepend(div_legend);
+	};
+
+	/**
+	 *
+	 */
+	this.setLegendCSS = function() {
+		var legend = $('.chart-legend');
+
+		legend.find('ul').css({
+			'list-style-type': 'none'
+		});
+		legend.find('li').css({
+			'clear' : 'both',
+			'padding': '2px'
+
+		});
+		legend.find('span').css({
+			'border-radius': '4px',
+			'padding': '0.2em',
+			'color': 'white'
+		}).addClass('lead');
+	};
+
+	/**
+	 *
+	 */
 	this.getPublicUserDataFail = function(){
 		alert('fail');
 	};

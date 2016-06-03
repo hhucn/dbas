@@ -86,7 +86,7 @@ textarea.content {
 
 #inlineRadioGender2,
 #inlineRadioGender3{
-	margin-left: 35px;
+	margin-left: 1em;
 }
 #inlineRadioGender1img{
 	background: url(../images/glyphicons_free/glyphicons/glyphicons-200-ban.png) no-repeat;

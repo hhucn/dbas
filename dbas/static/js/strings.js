@@ -3,10 +3,6 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  */
 
-function get_hostname(url) {
-	var m = url.match(/^http:\/\/[^/]+/);
-	return m ? m[0] + '/' : null;
-}
 var mainpage = location.origin + '/'; //get_hostname(window.location.href);
 
 /**
@@ -21,12 +17,29 @@ _t = function(id){
 		if ($(this).hasClass('active')){
 			this_id = $(this).children().first().attr('id');
 
-			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){				value= dbas_en[id];
-			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){		value = dbas_de[id];
-			} else {                                                    				value = 'unknown value';
+			if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){			value = dbas_en[id];
+			} else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){	value = dbas_de[id];
+			} else {                                                    			value = 'unknown value';
 			}
 		}
 	});
+	return value;
+};
+
+
+/**
+ * Returns a translated string in the discussion language
+ * @param id of the string
+ * @returns {string} which is translated or unknown value
+ * @private
+ */
+_t_discussion = function(id){
+	var lang = $('#issue_info').attr('data-discussion-language'),
+		value = 'unknown identifier';
+	if (lang.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){		value = dbas_en[id];
+	} else if (lang.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){	value = dbas_de[id];
+	} else {                                                    		value = 'unknown value';
+	}
 	return value;
 };
 
@@ -49,6 +62,20 @@ getLanguage = function(){
 };
 
 /**
+ * Returns the tag of current discussion language. This is either {en,de} or 'unknown value' *
+ * @returns {string} language tag
+ */
+getDiscussionLanguage = function(){
+	var lang = $('#issue_info').attr('data-discussion-language'),
+		value = 'unknown identifier';
+	if (lang.indexOf('en') != -1){  		value = 'en';
+	} else if (lang.indexOf('de') != -1){	value = 'de';
+	} else {                                value = 'unknown value';
+	}
+	return value;
+};
+
+/**
  * Messages & Errors
  * @type {string}
  */
@@ -56,11 +83,13 @@ var checkmark                                       = '&#x2713;'; // ✓
 var ballot                                          = '&#x2717;'; // ✗
 
 var and 						            		= 'and';
+var answer                                          = 'answer';
 var andAtTheSameTime                                = 'andAtTheSameTime';
 var addedEverything 								= 'addedEverything';
 var addTopic                                        = 'addTopic';
 var addTopicTitleText                               = 'addTopicTitleText';
 var addTopicShortText                               = 'addTopicShortText';
+var addTopicLangText                                = 'addTopicLangText';
 var acceptIt 										= 'acceptIt';
 var allEditsDone                                    = 'allEditsDone';
 var allStatementsPosted                             = 'allStatementsPosted';
@@ -71,6 +100,7 @@ var acceptItTitle 									= 'acceptItTitle';
 var contactSubmit									= 'contactSubmit';
 var correctionsSet 									= 'correctionsSet';
 var because                                         = 'because';
+var changelog                                       = 'changelog';
 var checkFirstname									= 'checkFirstname';
 var checkLastname									= 'checkLastname';
 var checkNickname									= 'checkNickname';
@@ -101,6 +131,7 @@ var edit 											= 'edit';
 var errorCode 										= 'error_code';
 var editTitle										= 'editTitle';
 var forText                                         = 'forText';
+var forward                                         = 'forward';
 var fillLine 										= 'fillLine';
 var feelFreeToShareUrl 								= 'feelFreeToShareUrl';
 var fetchLongUrl 									= 'fetchLongUrl';
@@ -121,12 +152,15 @@ var interestingOnDBAS 								= 'interestingOnDBAS';
 var initialPositionInterest                         = 'initialPositionInterest';
 var itIsTrueThat                                    = 'itIsTrueThat';
 var itIsFalseThat                                   = 'itIsFalseThat';
+var isItTrueThat                                    = 'isItTrueThat';
+var isItFalseThat                                   = 'isItFalseThat';
 var keepSetting										= 'keepSetting';
 var hideAllUsers 									= 'hideAllUsers';
 var hideAllArguments								= 'hideAllArguments';
 var languageCouldNotBeSwitched 						= 'languageCouldNotBeSwitched';
 var last_action 									= 'last_action';
 var last_login 										= 'last_login';
+var legend                                          = 'legend';
 var logfile											= 'logfile';
 var login											= 'login';
 var letsGo 											= 'letsGo';
@@ -170,6 +204,8 @@ var refreshTrack 									= 'refreshTrack';
 var requestHistory 									= 'requestHistory';
 var refreshHistory 									= 'refreshHistory';
 var requestFailed 									= 'requestFailed';
+var requestFailedBadToken							= 'requestFailedBadToken';
+var requestFailedInternalError                      = 'requestFailedInternalError';
 var restartOnError									= 'restartOnError';
 var saveMyStatement                                 = 'saveMyStatement';
 var saveMyStatements                                = 'saveMyStatements';
@@ -186,15 +222,19 @@ var statisticsNotThere                              = 'statisticsNotThere';
 var switchDiscussion								= 'switchDiscussion';
 var switchDiscussionText1 							= 'switchDiscussionText1';
 var switchDiscussionText2 							= 'switchDiscussionText2';
+var switchDiscussionText3 							= 'switchDiscussionText3';
 var surname 										= 'surname';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
+var to 											    = 'to';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
 var veryweak 										= 'veryweak';
 var valid    										= 'valid';
+var vote                                            = 'vote';
+var votes                                           = 'votes';
 var weak 											= 'weak';
 
 // cookies
@@ -217,11 +257,13 @@ var urlLogout 							= 'logout';
 var dbas_en = {
 	'avatar': 'Avatar',
 	'and': 'and',
+	'answer': 'antworten',
 	'andAtTheSameTime': 'and at the same time',
 	'addedEverything': 'Everything was added.',
 	'addTopic': 'Add a Topic',
 	'addTopicTitleText': 'Please enter your topic here:',
 	'addTopicShortText': 'Please enter a shorttext for your topic here:',
+	'addTopicLangText': 'Please select the language of the new discussion here:',
 	'acceptIt': 'Accept it...',
 	'acceptItTitle': 'Accept it...',
 	'allEditsDone': 'All edits you\'ve done',
@@ -232,6 +274,7 @@ var dbas_en = {
 	'countOfArguments': 'Count of arguments',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'correctionsSet': 'Your correction was set.',
+	'changelog': 'changelog',
 	'checkFirstname': 'Better check your first name, because the input is empty!',
 	'checkLastname': 'Better check your last name, because the input is empty!',
 	'checkNickname': 'Better check your nickname, because the input is empty!',
@@ -264,6 +307,7 @@ var dbas_en = {
 	'fetchLongUrl': 'Fetch long url!',
 	'fetchShortUrl': 'Fetch short url!',
 	'forgotPassword': 'Forgot Password',
+	'forward' : 'forward',
 	'firstname': 'Firstname',
 	'fillLine': 'Please, fill this this line with your report',
 	'gender': 'Gender',
@@ -279,12 +323,15 @@ var dbas_en = {
 	'interestingOnDBAS': 'Interesting discussion on DBAS',
 	'itIsTrueThat': 'it is true that',
 	'itIsFalseThat': 'it is false that',
+	'isItTrueThat': 'it is true that',
+	'isItFalseThat': 'it is false that',
 	'keepSetting': 'Keep this',
 	'hideAllUsers': 'Hide all users',
 	'hideAllArguments': 'Hide all arguments',
 	'languageCouldNotBeSwitched': 'Unfortunately, the language could not be switched',
 	'last_action': 'Last Action',
 	'last_login': 'Last Login',
+	'legend': 'Legend',
 	'logfile': 'Logfile for',
 	'login': 'Log In',
 	'letsGo': 'Click here to start now!',
@@ -327,7 +374,9 @@ var dbas_en = {
 	'refreshTrack': 'Refresh track',
 	'requestHistory': 'Request history',
 	'refreshHistory': 'Refresh history',
-	'requestFailed': 'Request failed',
+	'requestFailed': 'Request failed, please reload this page.',
+	'requestFailedBadToken': 'Request failed due to bad token, please reload this page.',
+	'requestFailedInternalError': 'Request failed due to bad token, please reload this page. If the reload fails again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
 	'saveMyStatement': 'Save my Statement!',
 	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
@@ -346,34 +395,41 @@ var dbas_en = {
 	'switchDiscussion': 'Change of discussion\'s topic',
 	'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
 	'switchDiscussionText2': 'and the discussion will be restarted.',
+	'switchDiscussionText3': 'Please keep in mind, that the discussion language is without reference to the system language.',
 	'showMeAnArgumentFor': 'Show me an argument for',
 	'text': 'Text',
+	'to': 'To',
 	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
 	'usersWithSameOpinion': 'Users with same opinion',
 	'valid': 'Valid',
 	'veryweak': 'very weak',
+	'vote': 'vote',
+	'votes': 'votes',
 	'weak': 'weak'
 };
 
 var dbas_de = {
 	'avatar': 'Avatar',
 	'and': 'und',
+	'answer': 'antworten',
 	'addTopic': 'Thema hinzufügen',
 	'addTopicTitleText': 'Bitte geben Sie Ihr Thema an:',
 	'addTopicShortText': 'Bitte geben Sie die Kurform Ihres Themas an:',
+	'addTopicLangText': 'Bitte geben Sie die Sprache Ihres Themas an:',
 	'andAtTheSameTime': 'und zur selben Zeit',
 	'addedEverything': 'Alles wurde hinzugefügt.',
 	'acceptItTitle': 'Einsenden...',
 	'acceptIt': 'Eintragen...',
 	'allEditsDone': 'Alle Änderungen von Ihnen:',
-	'allStatementsPosted': 'Alle Ausagen von Ihnen:',
+	'allStatementsPosted': 'Alle Aussagen von Ihnen:',
 	'allGivenVotes': 'Alle Stimmen',
 	'author': 'Autor',
 	'because':'weil',
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
+	'changelog': 'Änderungsprotokoll',
 	'checkFirstname': 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!',
 	'checkLastname': 'Bitte überprüfen Sie Ihren Nachnamen, da die Eingabe leer ist!',
 	'checkNickname': 'Bitte überprüfen Sie Ihren Spitznamen, da die Eingabe leer ist!',
@@ -387,6 +443,7 @@ var dbas_de = {
 	'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
 	'deleteTrack': 'Track löschen',
 	'deleteHistory': 'History löschen',
+	'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
 	'deleteStatisticsTitle': 'Statistik löschen',
 	'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
 	'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Piwik.',
@@ -403,9 +460,10 @@ var dbas_de = {
 	'editTitle': 'Aussagen bearbeiten',
 	'fillLine': 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung',
 	'feelFreeToShareUrl': 'Bitte teilen Sie diese URL',
-	'fetchLongUrl': 'Hole lange URL!',
-	'fetchShortUrl': 'Hole kurze URL!',
+	'fetchLongUrl': 'Normale URL',
+	'fetchShortUrl': 'Kurze URL',
 	'forgotPassword': 'Passwort vergessen',
+	'forward' : 'weiterleiten',
 	'firstname': 'Vorname',
 	'gender': 'Geschlecht',
 	'generateSecurePassword': 'Generate secure password',
@@ -420,25 +478,29 @@ var dbas_de = {
 	'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
 	'itIsTrueThat': 'es ist richtig, dass',
 	'itIsFalseThat': 'es ist falsch, dass',
+	'isItTrueThat': 'ist es richtig, dass',
+	'isItFalseThat': 'ist es falsch, dass',
 	'keepSetting': 'Entscheidung merken',
 	'hideAllUsers': 'Verstecke alle Benutzer',
+	'hideAllArguments': 'Verstecke alle Argumente',
 	'hideAllAttacks': 'Verstecke alle Angriffe',
 	'languageCouldNotBeSwitched': 'Leider konnte die Sprache nicht gewechselt werden',
 	'last_action': 'Letzte Aktion',
 	'last_login': 'Letze Anmeldung',
 	'logfile': 'Logdatei für',
 	'login': 'Login',
+	'legend': 'Legende',
 	'letsGo': 'Wenn Sie direkt starten möchten, klicken Sie bitte hier!',
 	'listOfPostedStatements': 'Dies ist eine Liste von allen gemachten Aussagen:',
 	'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
 	'listOfGivenVotes': 'Dies ist eine Liste von allen Stimmen:',
 	'medium': 'mittel',
 	'messageInfoTitle': 'Informationen über eine Aussage',
-	'messageInfoStatementCreatedBy': 'Diese Aussage wurde gemacht von',
+	'messageInfoStatementCreatedBy': 'Diese Aussage stammt von',
 	'messageInfoAt': 'am',
 	'messageInfoMessage': 'Aussage',
-	'messageInfoCurrentlySupported': 'Sie wird aktuell unterstützt von',
-	'messageInfoParticipant': 'Teilnehmer/in',
+	'messageInfoCurrentlySupported': 'Sie wird aktuell von',
+	'messageInfoParticipant': 'Teilnehmer/in unterstützt',
 	'messageInfoParticipantPl': '/n/nen',
 	'messageInfoSupporterSg': 'Unterstützer/in ist',
 	'messageInfoSupporterPl': 'Unterstützer/innen sind',
@@ -468,8 +530,10 @@ var dbas_de = {
 	'refreshTrack': 'Track neuladen',
 	'requestHistory': 'History anfragen',
 	'refreshHistory': 'History neuladen',
-	'requestFailed': 'Anfrage fehlgeschlagen',
-	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.',
+	'requestFailed': 'Anfrage fehlgeschlagen, bitte laden Sie die Seite erneut.',
+	'requestFailedBadToken': 'Anfrage aufgrund eines falschen Tokens fehlgeschlagen. Bitte laden Sie die Seite neu.',
+	'requestFailedInternalError': 'Anfrage aufgrund eines internen Fehlers fehlgeschlagen. Bitte laden Sie die Seite neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">kontaktieren sie uns bitte (hier klicken)</span>',
+	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
 	'saveMyStatement': 'Aussage speichern!',
 	'saveMyStatements': 'Ausagen speichern!',
 	'showAllUsers': 'Zeig\' alle Benutzer',
@@ -482,17 +546,21 @@ var dbas_de = {
 	'statisticsNotThere': 'Sie haben keine Statistiken.',
 	'strength': 'Stärke',
 	'strong': 'stark',
-	'shortenedBy': 'welche gekürzt wurde mit',
+	'shortenedBy': 'gekürzt mit',
 	'switchDiscussion': 'Diskussionsthema ändern',
 	'switchDiscussionText1': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',
 	'switchDiscussionText2': 'und die Diskussion neugestartet.',
+	'switchDiscussionText3': 'Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
 	'surname': 'Nachname',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
+	'to': 'An',
 	'timestamp': 'Zeit',
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'typeofVote': 'Zustimmung/Ablehnung',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
+	'vote': 'Stimme',
+	'votes': 'Stimmen',
 	'weak': 'schwach'
 };

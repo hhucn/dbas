@@ -9,10 +9,7 @@ function AdminInterface(){
 	 * Requests all attacks
 	 */
 	this.getArgumentOverview = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val(),
-			settings_data,
-			url,
-			_this = this;
+		var csrfToken = $('#' + hiddenCSRFTokenId).val(), _this = this;
 
 		$.ajax({
 			url: 'argument_overview',
@@ -20,11 +17,7 @@ function AdminInterface(){
 			dataType: 'json',
 			data: { issue: new Helper().getCurrentIssueId() },
 			async: true,
-			headers: {'X-CSRF-Token': csrfToken},
-			beforeSend: function(jqXHR, settings ){
-				settings_data = settings.data;
-				url = this.url;
-			}
+			headers: {'X-CSRF-Token': csrfToken}
 
 		}).done(function getArgumentOverviewDone(data) { // display fetched data
 			_this.setArgumentOverviewDataContent($.parseJSON(data));
@@ -55,10 +48,10 @@ function AdminInterface(){
 
 		// add each issue table
 		$.each(jsonData, function setJsonDataToAdminContentEach(key, value) {
-			list.append($('<li>').addClass('enabled').append($('<a>').text(key).attr('href', '#')));
+			list.append($('<li>').addClass('enabled').append($('<a>').html(key).attr('href', '#')));
 
 			if (value.length == 0){
-				var p = $('<p>').text(_t(noEntriesFor) + ': ' + key),
+				var p = $('<p>').html(_t(noEntriesFor) + ': ' + key),
 					div = $('<div>').attr('id', 'table_' + key.replace(/\ /g, '_'))
 						.addClass('alert-warning')
 						.addClass('alert')
@@ -117,7 +110,7 @@ function AdminInterface(){
 				});
 
 				tdElement[0].text(v_value.uid).attr('argument_' + v_value.uid);
-				tdElement[1].text(v_value.text);
+				tdElement[1].html(v_value.text);
 				tdElement[2].text(v_value.votes);
 				tdElement[3].text(v_value.valid_votes);
 				tdElement[4].text(v_value.valid_upvotes);
@@ -147,7 +140,6 @@ function AdminInterface(){
 				$(this).removeClass('enabled').addClass('disabled');
 				$('#table_' + currentIssue.replace(/\ /g, '_')).hide();
 				$('#table_' + $(this).find('a').text().replace(/\ /g, '_')).show();
-				alert('#table_' + currentIssue.replace(/\ /g, '_') + "\n" + '#table_' + $(this).find('a').text().replace(/\ /g, '_'))
 			})
 		});
 	};

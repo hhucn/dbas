@@ -7,9 +7,9 @@
 
 		<div class="container colored-container" id="header-container">
 			<div class="row">
-				<div class="col-md-8 center">
-					<span i18n:translate="current_discussion">Current discussion is about</span>:<br>
-					<span class="lead" id="issue_info">${structure:issues.info}</span>
+				<div class="col-md-7 center">
+					<span>${structure:issues.intro}</span>:<br>
+					<span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
 				</div>
 				<div class="col-md-1 center text-center">
                     <img style="width: 30px; margin-bottom: 0.5em;" class="icon-badge" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"/>
@@ -21,11 +21,14 @@
 						</button>
 						<ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
 							<li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
-								<a href="#" tal:attributes="href issue.url; value issue.title" style="height: 2em;">
-                                    <span style="float: left;">${issue.title}</span>
-                                    <span class="badge" style="float: right; margin-left: 1em" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">
-                                        <span tal:replace="issue.arg_count"></span>
-                                    </span>
+								<a href="#" tal:attributes="href issue.url; value issue.title">
+                                <div class="row" style="padding: 0;">
+                                    <div class="col-md-10" style="white-space: pre-wrap;">${structure:issue.title}</div>
+                                    <div class="col-md-2">
+                                        <span class="badge" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">${issue.stat_count}
+                                        </span>
+                                    </div>
+                                </div>
                                 </a>
 							</li>
                             <li tal:condition="extras.is_admin or extras.is_author" role="separator" class="divider"></li>
@@ -35,7 +38,7 @@
 						</ul>
 					</div>
                  </div>
-                <div class="col-md-1 center text-center">
+                <div class="col-md-2 center text-center">
 					<button id="discussion-restart-btn" class="btn btn-primary btn-sm" data-dismiss="modal" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart</span>&#160;&#160;<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
 					</button>
@@ -44,7 +47,6 @@
 		</div>
 
 		<div class="container colored-container" id="discussion-container">
-			<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 			<div class="row">
 				<div class="col-md-11" style="text-align: justify;">
 
@@ -72,7 +74,7 @@
                                          <span>${structure:bubble.message}</span>
                                      </a>
                                      <br>
-                                     <em class="triangle-r-info" tal:attributes="data-type bubble.data_type; data-argument-uid bubble.data_argument_uid; data-statement-uid bubble.data_statement_uid; data-votecount bubble.votecounts">${bubble.votecounts_message}</em>
+                                     <em class="triangle-r-info" tal:attributes="data-type bubble.data_type; data-argument-uid bubble.data_argument_uid; data-statement-uid bubble.data_statement_uid; data-votecount bubble.votecounts; data-is-supportive bubble.data_is_supportive">${bubble.votecounts_message}</em>
                                  </p>
                              </div>
                              <div tal:condition="bubble.is_system" class="line-wrapper-l">
@@ -98,7 +100,7 @@
 								<input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
 								<span tal:repeat="premise item.premises" tal:omit-tag="">
                                     <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
-                                    <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em i18n:translate="and">and</em></label>
+                                    <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
                                     <label tal:condition="repeat.premise.end and item.already_used"><em>${item.already_used_text}</em></label>
                                 </span>
 							</li>
@@ -116,23 +118,25 @@
 							<img id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
 						</li>
 						<li tal:condition="extras.is_reportable" >
-							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.report; title extras.buttons.report_title" />
+							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.report; title extras.title.report_title" />
 						</li>
-                        <!--<li><img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_qmark.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.question_title" /></li>-->
+                        <!--<li><img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_qmark.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.question_title" /></li>-->
 						<li tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
 							<div id="discussion-sidebar-style-menu">
-								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="bottom" tal:attributes="title extras.buttons.more_title"/>
+								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="bottom" tal:attributes="title extras.title.more_title"/>
 
 								<ul id="site-navigation">
 									<li tal:condition="extras.show_bar_icon"><img id="opinion-barometer-img" class="display-style-menu-icon icon-badge" alt="icon-bars" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" /></li>
-									<li tal:condition="extras.show_display_style"><img id="display-style-icon-guided-img" class="display-style-menu-icon icon-badge" alt="icon-guided" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" /></li>
-									<li tal:condition="extras.show_display_style"><img id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" /></li>
+									<!--
+                                    <li tal:condition="extras.show_display_style"><img id="display-style-icon-guided-img" class="display-style-menu-icon icon-badge" alt="icon-guided" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" /></li>
+									-->
+                                    <li tal:condition="extras.show_display_style"><img id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" /></li>
 									<li tal:condition="extras.show_expert_icon"><img id="display-style-icon-expert-img" class="display-style-menu-icon icon-badge" alt="icon-expert" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" /></li>
 								</ul>
 							</div>
 						</li>
 						<li>
-                            <img onclick="window.location='/discuss/finish'" id="finish-button" class="icon-badge" alt="icon-finish" src="${request.static_url('dbas:static/images/icon_finish.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.finish_title" />
+                            <img onclick="window.location='/discuss/finish'" id="finish-button" class="icon-badge" alt="icon-finish" src="${request.static_url('dbas:static/images/icon_finish.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.title.finish_title" />
 						</li>
 					</ul>
 				</div>
@@ -159,8 +163,8 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row" id="island-view-container-space">
-				<div class="col-md-12 text-center">
-					<h4><span i18n:translate="island_view_for">Island View for</span> <span id="island-view-container-space-heading"><strong>${structure:extras.island.heading}</strong></span></h4>
+				<div class="col-md-11 text-center">
+					<h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading"><strong>${structure:extras.island.heading}</strong></span></h4>
 				</div>
 			</div>
 
@@ -168,10 +172,8 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-								<span class="text-danger">✗</span>
-								<span>${structure:extras.island.undermine_text}</span>
-							</h5>
+                            <span class="text-danger">✗</span>
+                            <span class="lead">${structure:extras.island.undermine_text}</span>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -179,16 +181,15 @@
 									<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
 								</li>
 							</ul>
+				            <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-								<span class="text-success">✓</span>
-								<span>${structure:extras.island.support_text}</span>
-							</h5>
+                            <span class="text-success">✓</span>
+                            <span class="lead">${structure:extras.island.support_text}</span>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -196,6 +197,7 @@
 									<label tal:attributes="for support.id">${structure:support.text}</label>
 								</li>
 							</ul>
+				            <button id="island-view-support-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
 						</div>
 					</div>
 				</div>
@@ -205,10 +207,8 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-                                <span class="text-danger">✗</span>
-                                <span>${structure:extras.island.undercut_text}</span>
-                            </h5>
+                            <span class="text-danger">✗</span>
+                            <span class="lead">${structure:extras.island.undercut_text}</span>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -216,6 +216,7 @@
 									<label tal:attributes="for undercut.id">${structure:undercut.text}</label>
 								</li>
 							</ul>
+				            <button id="island-view-undercut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
 						</div>
 					</div>
 				</div>
@@ -223,10 +224,8 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h5>
-                                <span class="text-danger">✗</span>
-                                <span>${structure:extras.island.rebut_text}</span>
-                            </h5>
+                            <span class="text-danger">✗</span>
+                            <span class="lead">${structure:extras.island.rebut_text}</span>
 						</div>
 						<div class="panel-body">
 							<ul>
@@ -234,15 +233,10 @@
 									<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
 								</li>
 							</ul>
+				            <button id="island-view-rebut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="center text-center">
-				<button id="island-view-add-arguments" type="button" class="button button-block btn btn-primary disabled" data-dismiss="modal">
-					<span i18n:translate="add_statement">Add statement</span>
-				</button>
 			</div>
 
 		</div>
@@ -272,7 +266,7 @@
 			</button>
             <br>
 			<div class="col-md-12 text-center">
-				<h5><span i18n:translate="what_is_your_idea">What is your idea? What should we do?</span></h5>
+				<h5>${structure:discussion.add_premise_text}</h5>
 				<div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -282,10 +276,10 @@
 					<span id="add-statement-error-msg"></span>
 				</div>
 				<div id="add-statement-container-body">
-					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="Your statement" value="" />
+					<input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="..." value="" />
 				</div>
 				<div class="list-group" id="proposal-statement-list-group"></div>
-				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="Saving the data." tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
+				<input id="send-new-statement" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
 			</div>
 		</div>
 
@@ -294,7 +288,7 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="col-md-12 text-center">
-				<h5 i18n:translate="let_me_enter_my_reason">Let me enter my reason!</h5>
+				<h5>${structure:extras.tag.add_premise_title}</h5>
 				<p class="lead" id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</p>
 				<div id="add-premise-error-container" class="alert alert-danger" role="alert" style="display:none">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -307,16 +301,16 @@
 				<div id="add-premise-container-body">
 					<div class="container-three-divs" style="padding-bottom: 2em;">
 						<div class="flex-div">
-							<input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="Your statement" value="">
+							<input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="..." value="">
 						</div>
 						<div>
-							<img class="icon-badge icon-rem-premise" src="${request.static_url('dbas:static/images/icon_minus1.png')}" tal:attributes="title extras.buttons.rem_statement_row_title"/>
-							<img class="icon-badge icon-add-premise" src="${request.static_url('dbas:static/images/icon_plus1.png')}" tal:attributes="title extras.buttons.add_statement_row_title"/>
+							<img class="icon-badge icon-rem-premise" src="${request.static_url('dbas:static/images/icon_minus1.png')}" tal:attributes="title extras.title.rem_statement_row_title"/>
+							<img class="icon-badge icon-add-premise" src="${request.static_url('dbas:static/images/icon_plus1.png')}" tal:attributes="title extras.title.add_statement_row_title"/>
 						</div>
 					</div>
 				</div>
 				<div class="list-group" id="proposal-premise-list-group"></div>
-				<input id="send-new-premise" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="Saving the data." tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
+				<input id="send-new-premise" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
 			</div>
 		</div>
 
@@ -365,9 +359,7 @@
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.canvas.nodes.border.js')}"></script>
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.plugins.neighborhoods.js')}"></script>
 
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
-
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/Chart.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/chart.min.js')}"></script>
 
 	</tal:block>
 </tal:block>

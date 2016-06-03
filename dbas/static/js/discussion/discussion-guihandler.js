@@ -23,10 +23,10 @@ function GuiHandler() {
 			send = $('#' + sendNewPremiseId),
 			uid = new Date().getTime(),
 			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
-			div_l = $('<div>'),
+			// div_l = $('<div>'),
 			div_m = $('<div>').addClass('flex-div'),
 			div_r = $('<div>'),
-			h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
+			// h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
 			id = 'add-premise-container-main-input-' + uid,
 			input = $('<input>').attr('id', id)
 				.attr('type', 'text')
@@ -42,8 +42,8 @@ function GuiHandler() {
 				.attr('src', mainpage + 'static/images/icon_plus1.png')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
 
-		div.append(div_l.append(h5))
-			.append(div_m.append(input))
+		// div.append(div_l.append(h5))
+		div.append(div_m.append(input))
 			.append(div_r.append(imgm).append(imgp));
 		$('#' + addPremiseContainerBodyId).append(div);
 
@@ -234,7 +234,7 @@ function GuiHandler() {
 
 			// merge every text part to one array
 			for (i=0; i<undecided_texts.length; i++){
-				splitted = undecided_texts[i].split(' ' + _t(and) + ' ');
+				splitted = undecided_texts[i].split(' ' + _t_discussion(and) + ' ');
 
 				if (selections[i].id.indexOf(attr_more_args) != -1){ // each splitted text part is one argument
 					for (j=0; j<splitted.length; j++)
@@ -261,7 +261,7 @@ function GuiHandler() {
 		if (undecided_texts.length == 1){ // we only need one page div
 			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
 			body.append(page);
-			send.text(_t(saveMyStatement));
+			send.text(_t_discussion(saveMyStatement));
 
 			page.find('input').each(function(){
 				$(this).click(function inputClick (){
@@ -365,12 +365,15 @@ function GuiHandler() {
 	 * @returns {*}
 	 */
 	this.getPageOfSetStatementContainer = function(page_no, text, supportive){
-		var src = $('#insert_statements_page_'),
-			div_page = src.clone(),
-			id = src.attr('id'),
-			splitted = text.split(' ' + _t(and) + ' '),
-			topic = $('#' + addPremiseContainerMainInputIntroId).text(),
-			input1, input2, input3, list, bigText, bigTextSpan, connection, i;
+		var src = $('#insert_statements_page_');
+		var div_page = src.clone();
+		var id = src.attr('id');
+		var splitted = text.split(' ' + _t_discussion(and) + ' ');
+		var topic = $('#' + addPremiseContainerMainInputIntroId).text();
+		var input1, input2, input3, list, bigText, bigTextSpan, connection, i;
+		topic = topic.substr(0, topic.length-3);
+
+		$('#popup-set-premisegroups-body-intro-statements').text(text.trim());
 
 		if (topic.match(/\.$/)){
 			topic = topic.substr(0, topic.length-1) + ', '
@@ -393,12 +396,16 @@ function GuiHandler() {
 		input1.parent().attr('for', input1.parent().attr('for') + '_' + page_no);
 		input2.parent().attr('for', input2.parent().attr('for') + '_' + page_no);
 		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
+		
+		connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
 
-		connection = supportive ? _t(itIsTrueThat) : _t(itIsFalseThat);
-		bigText = topic + ' ' + _t(because) + ' ' + connection;
+		if (getDiscussionLanguage() == 'de')
+			bigText = topic;
+		else
+			bigText = topic + ' ' + supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
 		for (i = 0; i < splitted.length; i++) {
-			list.append($('<li>').text(topic + ' ' + _t(because) + ' ' + splitted[i] + '.'));
-			bigText += ' ' + i == 0 ? ' ' + splitted[i] : (' ' + _t(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
+			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
+			bigText += ' ' + i == 0 ? ' ' + splitted[i] : (' ' + _t_discussion(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
 		}
 		bigTextSpan.text(bigText + '.');
 
@@ -419,25 +426,24 @@ function GuiHandler() {
 		else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).empty();
 
 		// is there any value ?
-		if (Object.keys(parsedData).length == 0){
+		if (parsedData.length == 0){
 			return;
 		}
 
-		var params, token, button, span_dist, span_text, distance, index;
+		var token, button, span_dist, span_text, distance, index, text;
 		callbackElement.focus();
 
 		$.each(parsedData.values, function (key, val) {
-			params = key.split('_');
-			distance = parseInt(params[0]);
-			index = params[1];
+			distance = parseInt(val.distance);
+			index = val.index;
 
 			token = callbackElement.val();
 			//var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
 
 			// make all tokens bold
-			uneditted_value = val;
+			uneditted_value = val.text;
 			// replacement from http://stackoverflow.com/a/280805/2648872
-			val = val.replace( new RegExp( "(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "</b>$1<b>" );
+			text = val.text.replace( new RegExp( "(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "</b>$1<b>" );
 
 			button = $('<button>')
 				.attr('type', 'button')
@@ -447,7 +453,7 @@ function GuiHandler() {
 				.hover(function(){$(this).addClass('active');},
 					   function(){ $(this).removeClass('active');});
 			span_dist = $('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
-			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(val);
+			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
 			button.append(span_dist).append(span_text).click(function(){
 				callbackElement.val($(this).attr('text'));
 				$('#' + proposalStatementListGroupId).empty();
@@ -492,8 +498,8 @@ function GuiHandler() {
 			.attr('class', 'table table-condensed table-hover')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
-		td_text = $('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center');
-		td_buttons = $('<td>').html('<strong>' + _t(options) + '</strong>').css('text-align', 'right');
+		td_text = $('<td>').html('<strong>' + _t_discussion(text) + '</strong>').css('text-align', 'center');
+		td_buttons = $('<td>').html('<strong>' + _t_discussion(options) + '</strong>').css('text-align', 'right');
 		table.append($('<tr>').append(td_text).append(td_buttons));
 
 		// append a row for each statement
@@ -542,6 +548,24 @@ function GuiHandler() {
 		$('#' + popupEditStatementSubmitButtonId).fadeIn('slow');
 		$('#' + popupEditStatementTextareaId).fadeIn('slow');
 		$('#' + popupEditStatementDescriptionId).fadeIn('slow');
+	};
+
+	/**
+	 * Displays add topic plugin
+	 *
+	 * @param callbackFunctionOnDone
+	 */
+	this.showAddTopicPopup = function (callbackFunctionOnDone){
+		$('#popup-add-topic').modal('show');
+		$('#popup-add-topic-accept-btn').click(function () {
+			var info = $('#popup-add-topic-info-input').val(),
+				title = $('#popup-add-topic-title-input').val(),
+				lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
+			new AjaxSiteHandler().sendNewIssue(info, title, lang, callbackFunctionOnDone);
+		});
+		$('#popup-add-topic-refuse-btn').click(function () {
+			$('#popup-add-topic').modal('hide');
+		});
 	};
 
 	/**
@@ -705,5 +729,18 @@ function GuiHandler() {
 			$('#' + editStatementButtonId).hide();
 			$('#' + reportButtonId).hide();
 		}
+	};
+
+	/**
+	 *
+	 * @returns {*|jQuery}
+	 */
+	this.getAlertIntoDialogNoDecisions = function(){
+		var div, strong, span;
+		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
+		strong = $('<strong>').text('Ohh...! ');
+		span = $('<span>').text(_t_discussion(noDecisionstaken));
+		div.append(strong).append(span);
+		return div;
 	};
 }

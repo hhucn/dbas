@@ -5,16 +5,15 @@ Introducing an admin interface to enable easy database mangement.
 """
 
 import json
-
 import transaction
+import dbas.helper.history_helper as HistoryHelper
+import dbas.user_management as UserHandler
+
 from cornice import Service
 from pyramid.threadlocal import get_current_registry
-
 from admin.lib import get_overview_of_arguments, get_all_users, get_dashboard_infos
-from dbas.helper.history_helper import HistoryHelper
 from dbas.lib import get_language
 from dbas.logger import logger
-from dbas.user_management import UserHandler
 from dbas.views import Dbas
 from dbas.views import project_name
 from dbas.helper.dictionary_helper import DictionaryHelper

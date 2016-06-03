@@ -387,7 +387,7 @@
     border: 1px solid rgba(0, 0, 0, 0.7);
 }
 
-#question-bubble{
+[id^=question-bubble-]{
 	cursor: help;
 }
 
@@ -396,7 +396,7 @@
 .triangle-m a:hover,
 .triangle-m-info a:hover,
 .triangle-r-info:hover,
-#question-bubble:hover{
+[id^=question-bubble-]:hover{
     color: #2196f3;
     text-decoration: none;
 }
@@ -406,6 +406,26 @@
 }
 .triangle-r-info:hover{
     cursor: help;
+}
+
+.chart {
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+.chart li{
+	padding-top: 5px;
+	text-indent: -25px;
+	padding-left: 25px;
+}
+
+.chart li span{
+	border-radius: 5px;
+	margin-right: 0.5em;
+	width: 1.3em;
+	height: 1.3em;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 @media (max-width: 767px) {

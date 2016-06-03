@@ -5,8 +5,6 @@
 			<link type="text/css" href="${request.static_url('dbas:static/css/theme_settings.css')}" rel="stylesheet">
 		</head>
 
-		<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
-
 		<div class="container colored-container" id="first-settings-container">
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-7">
@@ -26,7 +24,12 @@
 						</tr>
 						<tr>
 							<td><span class="lead" i18n:translate="public_nickname">Public Nickname</span></td>
-							<td id="value_public_nickname">${settings.db_public_nickname}</td>
+                            <td>
+                                <a id="value_public_page" href="#" target="_blank" tal:attributes="href settings.public_page_url">
+                                    <span id="value_public_nickname">${settings.db_public_nickname}</span>
+                                     (<span i18n:translate="click_here_for_public_page">Click here for your public page</span>)
+                                </a>
+							</td>
 						</tr>
 						<tr>
 							<td><span class="lead">E-Mail</span></td>
@@ -37,7 +40,6 @@
 							<td>${settings.db_group}</td>
 						</tr>
 					</table>
-                    <a id="value_public_page" href="#" target="_blank" tal:attributes="href settings.public_page_url" i18n:translate="click_here_for_public_page">Click here for your public page</a>
 				</div>
 				<div class="col-md-5">
 					<h4><span class="glyphicon glyphicon-cog" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="settings">Settings</span></h4>
@@ -45,19 +47,19 @@
 						<tr>
 							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_notifications"></span></td>
 							<td class="text-center">
-								<input id="receive-notifications-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_notifications">
+								<input id="receive-notifications-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_notifications; data-on settings.on; data-off settings.off">
 							</td>
 						</tr>
 						<tr>
 							<td><span i18n:translate="receive_mails" class="lead">Receive E-Mails</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_mails"></span></td>
 							<td class="text-center">
-								<input id="receive-mails-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_mails">
+								<input id="receive-mails-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.send_mails; data-on settings.on; data-off settings.off">
 							</td>
 						</tr>
 						<tr>
 							<td><span i18n:translate="nickname_is_public" class="lead">Nickname is public</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_public_nick"></span></td>
 							<td class="text-center">
-								<input id="public-nick-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.public_nick">
+								<input id="public-nick-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.public_nick; data-on settings.on; data-off settings.off">
 							</td>
 						</tr>
 					</table>
@@ -132,7 +134,7 @@
 								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>${settings.message}
 							</div>
 						</div>
-						<input id="settings-password-submit" type="submit" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
+						<input id="settings-password-submit" type="submit" onclick="$('body').addClass('loading')" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
 					</form>
 				</div>
 

@@ -1,11 +1,13 @@
 """
-Managing URLS can be done with a very hardcoded scheme. We are differntiating between several steps in the discussion:
+Managing URLS can be done with a very hardcoded scheme. We are differentiating between several steps in the discussion:
+
 * Staring discussion
 * Getting attitude for the first position
-* Justifing the first position with an premisegroup
-* Getting confrontated because the user clicked his first statement
-* Justify the reaction due to the confronfrontation
+* Justifying the first position with an premisegroup
+* Getting confronted because the user clicked his first statement
+* Justify the reaction due to the confrontation
 * Choose an point for the discussion, when two or more statements we entered
+
 Next to this we have a 404 page.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
@@ -77,7 +79,7 @@ class UrlManager(object):
 
 		:param as_location_href: Boolean
 		:param statement_uid: Statement.uid
-		:return: discussion_url/slug/a/statement_uid
+		:return: discussion_url/slug/attitude/statement_uid
 		"""
 		url = self.slug + '/attitude/' + str(statement_uid)
 		return self.__return_url(as_location_href, url)
@@ -114,7 +116,7 @@ class UrlManager(object):
 
 	def get_url_for_reaction_on_argument(self, as_location_href, argument_uid, mode, confrontation_argument):
 		"""
-		Returns url for getting teh reaction regarding an argument of the user or the API-version
+		Returns url for getting the reaction regarding an argument of the user or the API-version
 
 		:param as_location_href: Boolean
 		:param argument_uid: Argument.uid

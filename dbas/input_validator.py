@@ -16,12 +16,13 @@ class Validator:
 	"""
 
 	@staticmethod
-	def check_reaction(attacked_arg_uid, attacking_arg_uid, relation):
+	def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=False):
 		"""
 		Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation
 
 		:param attacking_arg_uid: Argument.uid
 		:param relation: String
+		:param is_history: Boolean
 		:return: Boolean
 		"""
 		logger('Validator', 'check_reaction', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
@@ -47,15 +48,18 @@ class Validator:
 			return True if db_attacking_arg else False
 
 		elif relation == 'rebut':
-			db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).join(Statement).first()
-			db_attacked_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacked_arg_uid).join(Statement).first()
+			db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).first()
+			db_attacked_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacked_arg_uid).first()
 			if not db_attacked_arg or not db_attacking_arg:
 				return False
 
-			# do have both arguments teh same conclusion?
-			return True if db_attacking_arg.conclusion_uid == db_attacked_arg.conclusion_uid and db_attacked_arg.conclusion_uid is not None else False
+			# do have both arguments the same conclusion?
+			same_conclusion = db_attacking_arg.conclusion_uid == db_attacked_arg.conclusion_uid
+			not_none = db_attacked_arg.conclusion_uid is not None
+			attacking = not db_attacking_arg.is_supportive or not db_attacked_arg.is_supportive
+			return True if same_conclusion and not_none and attacking else False
 
-		elif relation == 'end':
+		elif relation.startswith('end') and not is_history:
 			return True
 
 		else:

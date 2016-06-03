@@ -24,16 +24,19 @@ class Issue(DiscussionBase):
 	info = Column(Text, nullable=False)
 	date = Column(ArrowType, default=arrow.utcnow())
 	author_uid = Column(Integer, ForeignKey('users.uid'))
+	lang_uid = Column(Integer, ForeignKey('languages.uid'))
 
 	users = relationship('User', foreign_keys=[author_uid])
+	languages = relationship('Language', foreign_keys=[lang_uid])
 
-	def __init__(self, title, info, author_uid):
+	def __init__(self, title, info, author_uid, lang_uid):
 		"""
 		Initializes a row in current position-table
 		"""
 		self.title = title
 		self.info = info
 		self.author_uid = author_uid
+		self.lang_uid = lang_uid
 
 	@classmethod
 	def by_text(cls):
@@ -42,6 +45,23 @@ class Issue(DiscussionBase):
 
 	def get_slug(self):
 		return slugify(self.title)
+
+
+class Language(DiscussionBase):
+	"""
+	language-table with several column.
+	"""
+	__tablename__ = 'languages'
+	uid = Column(Integer, primary_key=True)
+	name = Column(Text, nullable=False)
+	ui_locales = Column(Text, nullable=False, unique=True)
+
+	def __init__(self, name, ui_locales):
+		"""
+		Initializes a row in current table
+		"""
+		self.name = name
+		self.ui_locales = ui_locales
 
 
 class Group(DiscussionBase):

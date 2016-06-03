@@ -5,6 +5,7 @@ Introducing an export manager.
 """
 
 import json
+import dbas.helper.issue_helper as IssueHelper
 
 from cornice import Service
 from pyramid.threadlocal import get_current_registry
@@ -12,7 +13,6 @@ from pyramid.threadlocal import get_current_registry
 from dbas.lib import get_language
 from dbas.logger import logger
 from export.lib import get_dump, get_sigma_export
-from dbas.helper.issue_helper import IssueHelper
 
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS

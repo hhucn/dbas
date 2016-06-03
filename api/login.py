@@ -47,13 +47,13 @@ def valid_token(request):
 	"""
 	header = 'X-Messaging-Token'
 	htoken = request.headers.get(header)
-	if htoken is None:
-		log.error("[API] htoken is None")
+	if htoken is None or htoken == "null":
+		log.debug("[API] htoken is None")
 		raise HTTP401()
 	try:
 		user, token = htoken.split('-', 1)
 	except ValueError:
-		log.error("[API] ValueError")
+		log.debug("[API] Could not split htoken: %s" % htoken)
 		raise HTTP401()
 
 	log.debug("[API] Login Attempt: %s: %s" % (user, token))
@@ -132,6 +132,6 @@ def validate_credentials(request):
 			user = {'nickname': nickname, 'token': token}
 			token_to_database(nickname, token)
 			request.validated['user'] = user
-	except TypeError:
+	except (TypeError, KeyError):
 		log.error('API Not logged in: %s' % logged_in)
 		request.errors.add(logged_in)

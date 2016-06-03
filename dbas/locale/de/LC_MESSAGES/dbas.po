@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-04-27 22:32+0200\n"
+"POT-Creation-Date: 2016-06-02 13:48+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -62,56 +62,56 @@ msgid "to_the_discussion"
 msgstr "Zurück zur Diskussion!"
 
 #. Default: Your session has expired!
-#: dbas/templates/index.pt:10
+#: dbas/templates/index.pt:8
 msgid "session_expired"
 msgstr "Ihre Sitzung ist abgelaufen!"
 
 #. Default: You have to log in again.
-#: dbas/templates/index.pt:11
+#: dbas/templates/index.pt:9
 msgid "login_again"
 msgstr "Sie müssen sich erneut anmelden."
 
 #. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
 #. argumentation system. There will be bugs. Please feel free to
-#: dbas/templates/index.pt:20
+#: dbas/templates/index.pt:18
 msgid "welcome_text1"
 msgstr ""
 "Willkommen bei D-BAS! Dies ist ein früher Prototyp unseres Dialog-basierten "
 "Argumentationssystem. Falls Fehler auftreten, "
 
 #. Default: contact
-#: dbas/templates/index.pt:21
+#: dbas/templates/index.pt:19
 msgid "welcome_text2"
 msgstr "kontaktieren"
 
 #. Default: us to report bugs or provide feedback.
-#: dbas/templates/index.pt:22
+#: dbas/templates/index.pt:20
 msgid "welcome_text3"
 msgstr "Sie uns bitte."
 
 #. Default: Click here to start now!
-#: dbas/templates/index.pt:28
+#: dbas/templates/index.pt:26
 msgid "lets_start_now"
 msgstr "Hier klicken um zu starten"
 
 #. Default: This work is part of the graduate school on
-#: dbas/templates/index.pt:34
+#: dbas/templates/index.pt:32
 msgid "work_based_on"
 msgstr "Dieses Projekt ist Teil des Graduierten-Kollegs"
 
 #. Default: Online-Participation
-#: dbas/templates/index.pt:34
+#: dbas/templates/index.pt:32
 msgid "online_participation"
 msgstr "Online-Partizipation"
 
 #. Default: It is funded by the
-#: dbas/templates/index.pt:35
+#: dbas/templates/index.pt:33
 msgid "funded_by"
 msgstr "Es wird finanziert bei dem"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: dbas/templates/index.pt:35
+#: dbas/templates/index.pt:33
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium für Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
@@ -140,7 +140,7 @@ msgid "login"
 msgstr "Login"
 
 #. Default: Settings
-#: dbas/templates/snippet-header.pt:74 dbas/templates/settings.pt:43
+#: dbas/templates/snippet-header.pt:74 dbas/templates/settings.pt:45
 msgid "settings"
 msgstr "Einstellungen"
 
@@ -347,8 +347,7 @@ msgstr ""
 "Diese erlauben Ihnen notwendige Funktionen auf unseren Websites auszuführen, "
 "wie das Aufrechterhalten von Log-in Informationen für Ihre Sitzung oder "
 "einer Überweisung. Ebenfalls helfen sie dabei die Datenübertragung hindurch "
-"des Internets zu minimieren. Sie werden nicht auf Ihrem Computer gespeichert "
-"und laufen ab, sobald Sie Ihre Browser-Sitzung beenden."
+"des Internets zu minimieren."
 
 #. Default: Tracking-Cookies
 #: dbas/templates/imprint.pt:43
@@ -412,13 +411,13 @@ msgstr "Copyright und benutze Software"
 msgid "icons_by"
 msgstr "Icons von"
 
-#. Default: is generated with Pyramid Web Framework 1.5.4
-#: dbas/templates/imprint.pt:80
+#. Default: is generated with Pyramid Web Framework
+#: dbas/templates/imprint.pt:81
 msgid "generated_with"
-msgstr "erstellt mit dem Pyramid Web Framework 1.54"
+msgstr "erstellt mit dem Pyramid Web Framework"
 
 #. Default: Changes
-#: dbas/templates/imprint.pt:103
+#: dbas/templates/imprint.pt:107
 msgid "changes"
 msgstr "Änderungen in der Version"
 
@@ -428,7 +427,7 @@ msgid "imprint_copyright"
 msgstr "Impressum und Urheberrecht"
 
 #. Default: Author
-#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:611
+#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:609
 msgid "author"
 msgstr "Autor"
 
@@ -514,9 +513,8 @@ msgstr "Fax"
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:75 dbas/templates/snippet-popups.pt:120
-#: dbas/templates/snippet-popups.pt:156 dbas/templates/snippet-popups.pt:229
 #: dbas/templates/snippet-popups.pt:443 dbas/templates/snippet-popups.pt:482
-#: dbas/templates/snippet-popups.pt:619 dbas/templates/snippet-popups.pt:653
+#: dbas/templates/snippet-popups.pt:617 dbas/templates/snippet-popups.pt:651
 msgid "close"
 msgstr "Schließen"
 
@@ -569,27 +567,6 @@ msgstr ""
 "IM ZUSAMMENHANG MIT DER SOFTWARE ODER SONSTIGER VERWENDUNG DER SOFTWARE "
 "ENTSTANDEN."
 
-#. Default: Edit Statements / View Changelog
-#: dbas/templates/snippet-popups.pt:133
-msgid "edit_statement_view_changelog"
-msgstr "Bearbeite die Aussage / Schau ins Changelog"
-
-#. Default: Please, edit the selected statement here:
-#: dbas/templates/snippet-popups.pt:140
-msgid "edit_statement_here"
-msgstr "Bitte hier bearbeiten"
-
-#. Default: Warning:
-#. Default: Warning!
-#: dbas/templates/snippet-popups.pt:147 dbas/templates/contact.pt:57
-msgid "warning"
-msgstr "Warnung!"
-
-#. Default: Submit
-#: dbas/templates/snippet-popups.pt:155
-msgid "submit"
-msgstr "Senden"
-
 #. Default: Okay
 #: dbas/templates/snippet-popups.pt:174 dbas/templates/snippet-popups.pt:199
 msgid "okay"
@@ -600,20 +577,10 @@ msgstr "Okay"
 msgid "cancel"
 msgstr "Abbrechen"
 
-#. Default: Share your URL
-#: dbas/templates/snippet-popups.pt:213
-msgid "url-sharing"
-msgstr "Teil' die URL"
-
-#. Default: Please feel free to share this url:
-#: dbas/templates/snippet-popups.pt:218
-msgid "url-sharing-description"
-msgstr "Beschreibung"
-
-#. Default: Fetch long url!
-#: dbas/templates/snippet-popups.pt:228
-msgid "fetchurl"
-msgstr "Hol die lange URL"
+#. Default: Do not remind me again
+#: dbas/templates/snippet-popups.pt:194
+msgid "do_not_remind_me_again"
+msgstr "Nicht erneut erinnern"
 
 #. Default: Sign Up
 #: dbas/templates/snippet-popups.pt:246
@@ -623,12 +590,12 @@ msgstr "Registrieren"
 #. Default: Your Nickname
 #: dbas/templates/snippet-popups.pt:259
 msgid "your_nickname"
-msgstr "Dein Nickname"
+msgstr "Ihr Nickname"
 
 #. Default: Your Password
 #: dbas/templates/snippet-popups.pt:266
 msgid "your_password"
-msgstr "Dein Passwort"
+msgstr "Ihr Passwort"
 
 #. Default: Keep me logged in
 #: dbas/templates/snippet-popups.pt:275
@@ -650,14 +617,14 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:291 dbas/templates/snippet-popups.pt:398
-#: dbas/templates/content.pt:149
+#: dbas/templates/content.pt:153
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Success:
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:298 dbas/templates/snippet-popups.pt:390
-#: dbas/templates/settings.pt:215 dbas/templates/content.pt:62
+#: dbas/templates/settings.pt:217 dbas/templates/content.pt:64
 msgid "success"
 msgstr "Erfolg:"
 
@@ -678,7 +645,8 @@ msgstr "Nachname"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: dbas/templates/snippet-popups.pt:327 dbas/templates/settings.pt:24
+#: dbas/templates/snippet-popups.pt:327 dbas/templates/settings.pt:22
+#: dbas/templates/admin.pt:132
 msgid "nickname"
 msgstr "Nickname"
 
@@ -728,9 +696,9 @@ msgid "password_strength"
 msgstr "sehr schwach"
 
 #. Default: Generate secure password
-#: dbas/templates/snippet-popups.pt:382
+#: dbas/templates/snippet-popups.pt:382 dbas/templates/snippet-popups.pt:431
 msgid "generate_password"
-msgstr "Neues Password"
+msgstr "Password generieren"
 
 #. Default: How to select a strong password
 #: dbas/templates/snippet-popups.pt:412 dbas/templates/snippet-popups.pt:456
@@ -846,218 +814,187 @@ msgstr "Immer nur eine Aussage/Argumete/Punkt pro Feld!"
 msgid "Okay"
 msgstr "Okay"
 
-#. Default: We need your help to understand your statement!
-#: dbas/templates/snippet-popups.pt:532
-msgid "need-help-to-understand-statement"
-msgstr "Wir brauchen Hilfe zum Verständniss Ihrer Aussage!"
-
-#. Default: You have used 'and' in your statement. As a result there are two
-#. ways it could be interpreted. Please help us by selecting the right
-#. interpretation:
-#: dbas/templates/snippet-popups.pt:535
-msgid "set_premisegroups_intro"
-msgstr ""
-"Sie haben 'und' in Ihrer Aussage benutzt. Daher existeiren zwei mögliche "
-"Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen"
-
-#. Default: I actually have
-#: dbas/templates/snippet-popups.pt:545
-msgid "i_actually_have"
-msgstr "Aktuell habe ich"
-
-#. Default: arguments:
-#: dbas/templates/snippet-popups.pt:545
-msgid "arguments"
-msgstr "Argumente"
-
-#. Default: Error:
-#: dbas/templates/snippet-popups.pt:568 dbas/templates/snippet-popups.pt:599
-#: dbas/templates/snippet-popups.pt:642 dbas/templates/content.pt:281
-#: dbas/templates/content.pt:304
-msgid "error:"
-msgstr "Fehler:"
-
-#. Default: You forgot to choose the right interpretation
-#: dbas/templates/snippet-popups.pt:569
-msgid "forgot_input_radio"
-msgstr "Eingabe vergessen"
-
-#. Default: Save my Statement!
-#: dbas/templates/snippet-popups.pt:575
-msgid "save_my_statement"
-msgstr "Aussage speichern"
-
 #. Default: Writing a new message
-#: dbas/templates/snippet-popups.pt:590 dbas/templates/snippet-popups.pt:632
+#: dbas/templates/snippet-popups.pt:588 dbas/templates/snippet-popups.pt:630
 msgid "writing_message"
 msgstr "Neue Nachricht schreiben"
 
+#. Default: Error:
+#: dbas/templates/snippet-popups.pt:597 dbas/templates/snippet-popups.pt:640
+#: dbas/templates/content.pt:275 dbas/templates/content.pt:298
+msgid "error:"
+msgstr "Fehler:"
+
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:604 dbas/templates/snippet-popups.pt:647
+#: dbas/templates/snippet-popups.pt:602 dbas/templates/snippet-popups.pt:645
 msgid "success:"
 msgstr "Erfolg:"
 
 #. Default: Date
-#: dbas/templates/snippet-popups.pt:613
+#: dbas/templates/snippet-popups.pt:611
 msgid "date"
 msgstr "Datum"
 
 #. Default: Send News
-#: dbas/templates/snippet-popups.pt:618
+#: dbas/templates/snippet-popups.pt:616
 msgid "send_news"
 msgstr "News abschicken"
 
 #. Default: Send Notifcation
-#: dbas/templates/snippet-popups.pt:652
+#: dbas/templates/snippet-popups.pt:650
 msgid "send_notification"
 msgstr "Nachricht senden"
 
 #. Default: Personal Information
-#: dbas/templates/settings.pt:13
+#: dbas/templates/settings.pt:11
 msgid "personal_information"
 msgstr "Persönliche Informationen"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:16
+#: dbas/templates/settings.pt:14 dbas/templates/admin.pt:130
 msgid "firstname"
 msgstr "Vorname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:20
+#: dbas/templates/settings.pt:18 dbas/templates/admin.pt:131
 msgid "surname"
 msgstr "Nachname"
 
 #. Default: Public Nickname
-#: dbas/templates/settings.pt:28
+#: dbas/templates/settings.pt:26 dbas/templates/admin.pt:133
 msgid "public_nickname"
 msgstr "Öffentlicher Nickname"
 
-#. Default: Group
-#: dbas/templates/settings.pt:36
-msgid "group"
-msgstr "Gruppe"
-
 #. Default: Click here for your public page
-#: dbas/templates/settings.pt:40
+#: dbas/templates/settings.pt:30
 msgid "click_here_for_public_page"
 msgstr "Öffentliche Seite ansehen"
 
+#. Default: Group
+#: dbas/templates/settings.pt:39
+msgid "group"
+msgstr "Gruppe"
+
 #. Default: Receive Notifications
-#: dbas/templates/settings.pt:46
+#: dbas/templates/settings.pt:48
 msgid "receive_notifications"
 msgstr "Benachrichtigungen erhalten"
 
 #. Default: Receive E-Mails
-#: dbas/templates/settings.pt:52
+#: dbas/templates/settings.pt:54
 msgid "receive_mails"
 msgstr "E-Mails erhalten"
 
 #. Default: Nickname is public
-#: dbas/templates/settings.pt:58
+#: dbas/templates/settings.pt:60
 msgid "nickname_is_public"
 msgstr "Nickname ist öffentlich"
 
 #. Default: Profile Picture
-#: dbas/templates/settings.pt:68
+#: dbas/templates/settings.pt:70
 msgid "profile_picture"
 msgstr "Profilbild"
 
 #. Default: Change your profile picture on the
-#: dbas/templates/settings.pt:70
+#: dbas/templates/settings.pt:72
 msgid "change_gravatar"
-msgstr "Ändere dein Gravatar auf der"
+msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
 
 #. Default: A Gravatar is a Globally Recognized Avatar. You upload it and
 #. create your profile just once, and then when you participate in any
 #. Gravatar-enabled site, your Gravatar image will automatically follow you
 #. there.
-#: dbas/templates/settings.pt:72
+#: dbas/templates/settings.pt:74
 msgid "what_is_gravatar"
 msgstr ""
-"Ein Gravatar ist ein Globally Recognized Avatar (Global Wiedererkennender "
+"Ein Gravatar ist ein Globally Recognized Avatar (Global wiedererkennbarer "
 "Avatar). Sie können es einmalig erstellen und hochladen. Dadurch wird dieses "
 "Bild auf jeder Website angezeigt, die Gravat unterstützt. Ihr Bild wird "
 "Ihnen folgen."
 
 #. Default: Settings could not be set. Please try again later.
-#: dbas/templates/settings.pt:81
+#: dbas/templates/settings.pt:83
 msgid "settings_not_set"
 msgstr ""
 "Einstellungen konnten nicht gesichert werden. Bitte versuchen Sie es später "
 "erneut."
 
 #. Default: Settings were set successfully.
-#: dbas/templates/settings.pt:86
+#: dbas/templates/settings.pt:88
 msgid "settings_set"
 msgstr "Einstellungen wurden gesichert."
 
 #. Default: Change your password
-#: dbas/templates/settings.pt:95
+#: dbas/templates/settings.pt:97
 msgid "change_password"
-msgstr "Ändere dein Passwort"
+msgstr "Passwort ändern"
 
 #. Default: Old password
-#: dbas/templates/settings.pt:99
+#: dbas/templates/settings.pt:101
 msgid "old_password"
 msgstr "Altes Password"
 
 #. Default: New Password
-#: dbas/templates/settings.pt:106
+#: dbas/templates/settings.pt:108
 msgid "new_password"
 msgstr "Neues Password"
 
 #. Default: Strength
-#: dbas/templates/settings.pt:113
+#: dbas/templates/settings.pt:115
 msgid "strength"
 msgstr "Stärke"
 
 #. Default: New Password (confirm)
-#: dbas/templates/settings.pt:121
+#: dbas/templates/settings.pt:123
 msgid "new_password_confirm"
 msgstr "Neues Password (Bestätigung)"
 
 #. Default: Discussion Statistics
-#: dbas/templates/settings.pt:140 dbas/templates/user.pt:31
+#: dbas/templates/settings.pt:142 dbas/templates/user.pt:29
 msgid "discussion_stat"
 msgstr "Diskussions-Statistik"
 
 #. Default: Statements posted
-#: dbas/templates/settings.pt:144 dbas/templates/user.pt:34
+#: dbas/templates/settings.pt:146 dbas/templates/finish.pt:23
+#: dbas/templates/user.pt:32
 msgid "statements_posted"
 msgstr "Aussagen hinzugefügt"
 
 #. Default: Edits done
-#: dbas/templates/settings.pt:151 dbas/templates/user.pt:38
+#: dbas/templates/settings.pt:153 dbas/templates/finish.pt:27
+#: dbas/templates/user.pt:36
 msgid "edits_done"
 msgstr "Änderungen"
 
 #. Default: Votes for Arguments
-#: dbas/templates/settings.pt:158 dbas/templates/user.pt:42
+#: dbas/templates/settings.pt:160 dbas/templates/finish.pt:31
+#: dbas/templates/user.pt:40
 msgid "discussion_votes_statements"
 msgstr "Stimmen für Aussagen"
 
 #. Default: Votes for Statements
-#: dbas/templates/settings.pt:165 dbas/templates/user.pt:46
+#: dbas/templates/settings.pt:167 dbas/templates/finish.pt:35
+#: dbas/templates/user.pt:44
 msgid "discussion_votes_arguments"
 msgstr "Stimmen für Argumente"
 
 #. Default: Your password was changed
-#: dbas/templates/settings.pt:180
+#: dbas/templates/settings.pt:182
 msgid "password_changed"
-msgstr "Dein Passwurd wurde geändert"
+msgstr "Ihr Passwurd wurde geändert"
 
 #. Default: Statistics could not be deleted.
-#: dbas/templates/settings.pt:187
+#: dbas/templates/settings.pt:189
 msgid "statistics_not_deleted"
 msgstr "Statistiken konnten nicht gelöscht werden."
 
 #. Default: Statistics were set successfully deleted.
-#: dbas/templates/settings.pt:193
+#: dbas/templates/settings.pt:195
 msgid "statistics_deletet"
 msgstr "Statistiken wurden gelöscht."
 
 #. Default: Your last history
-#: dbas/templates/settings.pt:203
+#: dbas/templates/settings.pt:205
 msgid "history"
 msgstr "Ihre letzte URL-History"
 
@@ -1077,37 +1014,42 @@ msgstr ""
 #. Default: Your Name (required)
 #: dbas/templates/contact.pt:12
 msgid "name_req"
-msgstr "Dein Name (notwendig)"
+msgstr "Ihr Name (notwendig)"
 
 #. Default: Your E-Mail (required)
 #: dbas/templates/contact.pt:19
 msgid "mail_req"
-msgstr "Deine E-Mail (notwendig)"
+msgstr "Ihre E-Mail (notwendig)"
 
 #. Default: Your Phone Number
 #: dbas/templates/contact.pt:26
 msgid "phone_no"
-msgstr "Deine Telefon-Nr."
+msgstr "Ihre Telefon-Nr."
 
 #. Default: Your Notification (required)
 #: dbas/templates/contact.pt:33
 msgid "message_req"
-msgstr "Deine Nachricht (notwendig)"
+msgstr "Ihre Nachricht (notwendig)"
 
 #. Default: Anti-Spam (required)
 #: dbas/templates/contact.pt:40
 msgid "spam_req"
 msgstr "Anti-Spam (notwendig)"
 
+#. Default: Warning!
+#: dbas/templates/contact.pt:57
+msgid "warning"
+msgstr "Warnung!"
+
 #. Default: Great:
-#: dbas/templates/contact.pt:65
+#: dbas/templates/contact.pt:64
 msgid "great"
 msgstr "Großartig:"
 
 #. Default: Your message was sent.
-#: dbas/templates/contact.pt:65
+#: dbas/templates/contact.pt:64
 msgid "message_sent"
-msgstr "Deine Nachricht wurde gesendet"
+msgstr "Ihre Nachricht wurde gesendet"
 
 #. Default: Thank you!
 #: dbas/templates/finish.pt:7
@@ -1119,7 +1061,7 @@ msgstr "Vielen Dank!"
 #: dbas/templates/finish.pt:8
 msgid "finish_text"
 msgstr ""
-"Ihre Beteiligung in dieser Diskussion wurde gespeichert udn später für "
+"Ihre Beteiligung in dieser Diskussion wurde gespeichert und später für "
 "Auswertungen benutzt. Sollten Sie diesbezüglich Fragen haben, so "
 
 #. Default: contact us (click here)
@@ -1127,15 +1069,111 @@ msgstr ""
 msgid "contact_us"
 msgstr "kontaktieren Sie uns bitte (hier klicken)"
 
+#. Default: Todays Summary
+#: dbas/templates/finish.pt:19
+msgid "todays_summary"
+msgstr "Heutige Zusammenfassung"
+
 #. Default: Let's go home!
-#: dbas/templates/finish.pt:15
+#: dbas/templates/finish.pt:49
 msgid "lets_go_home"
 msgstr "Zur Startseite!"
 
 #. Default: Back to the discussion!
-#: dbas/templates/finish.pt:18
+#: dbas/templates/finish.pt:52
 msgid "back_to_the_discussion"
 msgstr "Zurück zur Diskussion!"
+
+#. Default: Dashboard
+#: dbas/templates/admin.pt:21
+msgid "dashboard"
+msgstr "Übersicht"
+
+#. Default: Users
+#: dbas/templates/admin.pt:26
+msgid "users"
+msgstr "Benutzer"
+
+#. Default: Arguments
+#: dbas/templates/admin.pt:32
+msgid "arguments"
+msgstr "Argumente"
+
+#. Default: Users!
+#: dbas/templates/admin.pt:51
+msgid "users!"
+msgstr "Benutzer!"
+
+#. Default: View Details
+#: dbas/templates/admin.pt:57 dbas/templates/admin.pt:77
+#: dbas/templates/admin.pt:97 dbas/templates/admin.pt:117
+msgid "view_details"
+msgstr "Details sehen"
+
+#. Default: Votes!
+#: dbas/templates/admin.pt:71
+msgid "votes!"
+msgstr "Stimmen!"
+
+#. Default: Arguments!
+#: dbas/templates/admin.pt:91
+msgid "arguments!"
+msgstr "Argumente!"
+
+#. Default: Statements!
+#: dbas/templates/admin.pt:111
+msgid "statements!"
+msgstr "Aussagen!"
+
+#. Default: E-Mail
+#: dbas/templates/admin.pt:134
+msgid "email"
+msgstr "E-Mail"
+
+#. Default: Gender
+#: dbas/templates/admin.pt:135
+msgid "gender"
+msgstr "Geschlecht"
+
+#. Default: Group
+#: dbas/templates/admin.pt:136
+msgid "group_uid"
+msgstr "Gruppe"
+
+#. Default: Last Login
+#: dbas/templates/admin.pt:137 dbas/templates/user.pt:12
+msgid "last_login"
+msgstr "Letze Anmeldung"
+
+#. Default: Registered
+#: dbas/templates/admin.pt:138 dbas/templates/user.pt:16
+msgid "registered"
+msgstr "Registierung"
+
+#. Default: Avatar
+#: dbas/templates/admin.pt:139
+msgid "avatar"
+msgstr "Avatar"
+
+#. Default: Public Avatar
+#: dbas/templates/admin.pt:140
+msgid "public_avatar"
+msgstr "Öffentlicher Avatar"
+
+#. Default: List of attacks, clicked by the participants
+#: dbas/templates/admin.pt:165
+msgid "list_attacks"
+msgstr "Attacken aufführen"
+
+#. Default: Some additional options for the administrator.
+#: dbas/templates/admin.pt:166
+msgid "admin_only"
+msgstr "Manche Sachen sind nur für den Admin."
+
+#. Default: Switch Topic
+#: dbas/templates/admin.pt:173 dbas/templates/content.pt:20
+msgid "switch_topc"
+msgstr "Thema wechseln"
 
 #. Default: You have got
 #: dbas/templates/notifications.pt:13
@@ -1172,26 +1210,26 @@ msgstr "Eingang"
 msgid "outbox"
 msgstr "Ausgang"
 
+#. Default: NEW
+#: dbas/templates/notifications.pt:56
+msgid "new"
+msgstr "NEU"
+
 #. Default: From:
-#: dbas/templates/notifications.pt:60 dbas/templates/notifications.pt:67
+#: dbas/templates/notifications.pt:61 dbas/templates/notifications.pt:68
 msgid "from"
 msgstr "Von:"
 
 #. Default: answer
-#: dbas/templates/notifications.pt:72
+#: dbas/templates/notifications.pt:73 dbas/templates/notifications.pt:102
 msgid "answer"
 msgstr "antworten"
 
 #. Default: To:
 #. Default: to:
-#: dbas/templates/notifications.pt:89 dbas/templates/notifications.pt:96
+#: dbas/templates/notifications.pt:90 dbas/templates/notifications.pt:97
 msgid "to"
 msgstr "An:"
-
-#. Default: forward
-#: dbas/templates/notifications.pt:101
-msgid "forward"
-msgstr "weiterleiten"
 
 #. Default: JavaScript is not enabled:
 #: dbas/templates/basetemplate.pt:36
@@ -1203,132 +1241,130 @@ msgstr "JavaScript ist nicht aktiviert:"
 msgid "js_disabled2"
 msgstr "Bitte JavaScript aktivieren!"
 
+#. Default: Your request failed!
+#: dbas/templates/basetemplate.pt:56
+msgid "request_failed"
+msgstr "Ihre Anfrage ist fehlgeschlagen!"
+
+#. Default: Please reload the page.
+#: dbas/templates/basetemplate.pt:57
+msgid "please_reload"
+msgstr "Bitte laden Sie die Seite erneut."
+
 #. Default: Public Information of
-#: dbas/templates/user.pt:10
+#: dbas/templates/user.pt:8
 msgid "public_information_of"
-msgstr "Persönliche Informationen von"
-
-#. Default: Last Login
-#: dbas/templates/user.pt:14
-msgid "last_login"
-msgstr "Letze Anmeldung"
-
-#. Default: Registered Since
-#: dbas/templates/user.pt:18
-msgid "registered_since"
-msgstr "Angemeldet seit"
+msgstr "Öffentliche Informationen von"
 
 #. Default: Profile Picture of
-#: dbas/templates/user.pt:26
+#: dbas/templates/user.pt:24
 msgid "profile_picture_of"
 msgstr "Profilbild von"
 
-#. Default: Current discussion is about
-#: dbas/templates/content.pt:11
-msgid "current_discussion"
-msgstr "Die aktuelle Diskussion hat folgendes Thema"
-
-#. Default: Switch Topic
-#: dbas/templates/content.pt:20
-msgid "switch_topc"
-msgstr "Thema wechseln"
-
 #. Default: Add a Topic
-#: dbas/templates/content.pt:33
+#: dbas/templates/content.pt:36
 msgid "add_topic"
 msgstr "Thema hinzufügen"
 
 #. Default: Restart
-#: dbas/templates/content.pt:40
+#: dbas/templates/content.pt:43
 msgid "restart_discussion"
 msgstr "Neustart"
 
-#. Default: and
-#: dbas/templates/content.pt:101
-msgid "and"
-msgstr "und"
-
-#. Default: Island View for
-#: dbas/templates/content.pt:163
-msgid "island_view_for"
-msgstr "Insel-Ansicht für"
-
-#. Default: Add statement
-#: dbas/templates/content.pt:244
-msgid "add_statement"
-msgstr "Aussage hinzufügen"
-
-#. Default: What is your idea? What should we do?
-#: dbas/templates/content.pt:275
-msgid "what_is_your_idea"
-msgstr "Was ist Ihre Idee? Was sollten wir machen?"
-
-#. Default: Let me enter my reason!
-#: dbas/templates/content.pt:297
-msgid "let_me_enter_my_reason"
-msgstr "Lass' mich meinen Grund angeben!"
-
 #. Default: Change display style
-#: dbas/templates/content.pt:325
+#: dbas/templates/content.pt:319
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:328
+#: dbas/templates/content.pt:322
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:334
+#: dbas/templates/content.pt:328
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:340
+#: dbas/templates/content.pt:334
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
+#~ msgid "need-help-to-understand-statement"
+#~ msgstr "Wir brauchen Hilfe zum Verständniss Ihrer Aussage!"
+
+#~ msgid "set_premisegroups_intro1"
+#~ msgstr "Sie haben 'und' in Ihrer Aussage benutzt: "
+
+#~ msgid "set_premisegroups_intro2"
+#~ msgstr ""
+#~ " Daher existeiren zwei mögliche Auswertungen. Bitte helfen Sie uns, die "
+#~ "richtig Eingabe zu wählen"
+
+#~ msgid "i_actually_have"
+#~ msgstr "Aktuell habe ich"
+
+#~ msgid "forgot_input_radio"
+#~ msgstr "Eingabe vergessen"
+
+#~ msgid "save_my_statement"
+#~ msgstr "Aussage speichern"
+
+#~ msgid "and"
+#~ msgstr "und"
+
+#, fuzzy
+#~ msgid "keep_setting"
+#~ msgstr "Auswahl merken"
+
+#~ msgid "island_view_for"
+#~ msgstr "Insel-Ansicht für"
+
+#~ msgid "add_statement"
+#~ msgstr "Aussage hinzufügen"
+
+#~ msgid "let_me_enter_my_reason"
+#~ msgstr "Lass' mich meinen Grund angeben!"
+
+#~ msgid "edit_statement_view_changelog"
+#~ msgstr "Bearbeite die Aussage / Schau ins Changelog"
+
+#~ msgid "edit_statement_here"
+#~ msgstr "Bitte hier bearbeiten"
+
+#~ msgid "submit"
+#~ msgstr "Senden"
+
+#~ msgid "url-sharing"
+#~ msgstr "Teil' die URL"
+
+#~ msgid "url-sharing-description"
+#~ msgstr "Beschreibung"
+
+#~ msgid "fetchurl"
+#~ msgstr "Hol die lange URL"
+
+#~ msgid "current_discussion"
+#~ msgstr "Die aktuelle Diskussion hat folgendes Thema"
+
+#~ msgid "what_is_your_idea"
+#~ msgstr "Was ist Ihre Idee? Was sollten wir machen?"
+
+#~ msgid "forward"
+#~ msgstr "weiterleiten"
+
+#~ msgid "registered_since"
+#~ msgstr "Angemeldet seit"
+
+#~ msgid "decision_index_7"
+#~ msgstr "Entscheidungs-Index - Letzte 7 Tage"
+
+#~ msgid "decision_index_30"
+#~ msgstr "Entscheidungs-Index - Letzte 30 Tage"
+
 #~ msgid "total"
 #~ msgstr "insgesamt."
-
-#~ msgid "dashboard"
-#~ msgstr "Übersicht"
-
-#~ msgid "users"
-#~ msgstr "Benutzer"
-
-#~ msgid "users!"
-#~ msgstr "Benutzer!"
-
-#~ msgid "view_details"
-#~ msgstr "Details sehen"
-
-#~ msgid "votes!"
-#~ msgstr "Stimmen!"
-
-#~ msgid "arguments!"
-#~ msgstr "Argumente!"
-
-#~ msgid "statements!"
-#~ msgstr "Aussagen!"
-
-#~ msgid "email"
-#~ msgstr "E-Mail"
-
-#~ msgid "gender"
-#~ msgstr "Geschlecht"
-
-#~ msgid "group_uid"
-#~ msgstr "Gruppe"
-
-#~ msgid "avatar"
-#~ msgstr "Avatar"
-
-#~ msgid "list_attacks"
-#~ msgstr "Attacken aufführen"
-
-#~ msgid "admin_only"
-#~ msgstr "Manche Sachen sind nur für den Admin."
 
 #~ msgid "topics"
 #~ msgstr "Themen"
@@ -1539,9 +1575,6 @@ msgstr "Komplette Ansicht"
 #~ msgstr ""
 #~ "Argumente/Aussagen und Positionen sind logisch miteinander verbunden"
 
-#~ msgid "description_list_3"
-#~ msgstr "Das System ist sehr einfach in der Benutzung"
-
 #~ msgid "guided_view_description"
 #~ msgstr "Geführte Asnicht: Teilnehmer werden durch die Diskussion geführt."
 
@@ -1704,9 +1737,6 @@ msgstr "Komplette Ansicht"
 #~ msgid "how-to-write-text-negations"
 #~ msgstr ""
 #~ "Nutzen Sie niemals Verneinungen! Diese werden später immer extra gesetzt!"
-
-#~ msgid "decisions"
-#~ msgstr "Deine Entscheidungen"
 
 #~ msgid "report"
 #~ msgstr "Melden"

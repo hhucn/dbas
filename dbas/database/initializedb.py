@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 TODO
@@ -7,18 +6,19 @@ TODO
 """
 
 
+import arrow
 import os
 import sys
 import transaction
 import random
+import dbas.password_handler as PasswordHandler
 
 from math import trunc
 from dbas.logger import logger
-from dbas.user_management import PasswordHandler
 from sqlalchemy import engine_from_config, and_
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue,\
-	Notification, Settings, VoteArgument, VoteStatement, StatementReferences
+	Notification, Settings, VoteArgument, VoteStatement, StatementReferences, Language
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
@@ -41,7 +41,7 @@ def main_discussion(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		user2 = setup_up_users(DBDiscussionSession)
+		user2 = set_up_users(DBDiscussionSession)
 		setup_discussion_database(DBDiscussionSession, user2)
 		transaction.commit()
 
@@ -59,8 +59,9 @@ def main_discussion_reload(argv=sys.argv):
 
 	with transaction.manager:
 		drop_discussion_database(DBDiscussionSession)
-		main_author = DBDiscussionSession.query(User).filter_by(nickname='tobias').first()
+		main_author = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 		setup_discussion_database(DBDiscussionSession, main_author)
+		setup_dummy_votes(DBDiscussionSession)
 		transaction.commit()
 
 
@@ -98,109 +99,109 @@ def main_news(argv=sys.argv):
 
 def setup_news_db(session):
 	news01 = News(title='Anonymous users after vacation',
-	              date='24.09.2015',
+	              date=arrow.get('2015-09-24'),
 				  author='Tobias Krauthoff',
 				  news='After two and a half week of vacation we have a new feature. The discussion is now available for anonymous ' +
 				       'users, therefore everyone can participate, but only registered users can make and edit statements.')
 	news02 = News(title='Vacation done',
-				  date='23.09.2015',
+				  date=arrow.get('2015-09-23'),
 				  author='Tobias Krauthoff',
 				  news='After two and a half weeks of vacation a new feature was done. Hence anonymous users can participate, the ' +
 				       'discussion is open for all, but commiting end editing statements is for registeres users only.')
 	news03 = News(title='New URL-Schemes',
-				  date='01.09.2015',
+				  date=arrow.get('2015-09-01'),
 				  author='Tobias Krauthoff',
 				  news='Now D-BAS has unique urls for the discussion, therefore these urls can be shared.')
 	news04 = News(title='Long time, no see!',
-				  date='31.08.2015',
+				  date=arrow.get('2015-08-31'),
 				  author='Tobias Krauthoff',
 				  news='In the mean time we have developed a new, better, more logically data structure. Additionally the navigation ' +
 				       'was refreshed.')
 	news05 = News(title='i18n/l10n',
-				  date='28.07.2015',
+				  date=arrow.get('2015-07-28'),
 				  author='Tobias Krauthoff',
 				  news='Internationalization is now working :)')
 	news06 = News(title='i18n',
-				  date='22.07.2015',
+				  date=arrow.get('2015-07-22'),
 				  author='Tobias Krauthoff',
 				  news='Still working on i18n-problems of chameleon templates due to lingua. If this is fixed, i18n of jQuery will ' +
 				       'happen. Afterwards l10n will take place.')
 	news07 = News(title='Design & Research',
-				  date='13.07.2015',
+				  date=arrow.get('2015-07-13'),
 				  author='Tobias Krauthoff',
 				  news='D-BAS is still under construction. Meanwhile the index page was recreated and we are improving our algorithm for ' +
 				       'the guided view mode. Next to this we are inventing a bunch of metrics for measuring the quality of discussion ' +
 				       'in several software programs.')
 	news08 = News(title='Session Management / CSRF',
-				  date='25.06.2015',
+				  date=arrow.get('2015-06-25'),
 				  author='Tobias Krauthoff',
 				  news='D-BAS is no able to manage a session as well as it has protection against CSRF.')
 	news09 = News(title='Edit/Changelog',
-				  date='24.06.2015',
+				  date=arrow.get('2015-06-24'),
 				  author='Tobias Krauthoff',
 				  news='Now, each user can edit positions and arguments. All changes will be saved and can be watched. Future work is ' +
 				       'the chance to edit the relations between positions.')
 	news10 = News(title='Simple Navigation was improved',
-				  date='19.06.2015',
+				  date=arrow.get('2015-06-19'),
 				  author='Tobias Krauthoff',
 				  news='Because the first kind of navigation was finished recently, D-BAS is now dynamically. That means, that each user ' +
 				       'can add positions and arguments on his own.<br><i>Open issues</i> are i18n, a framework for JS-tests as well as ' +
 				       'the content of the popups.')
 	news11 = News(title='Simple Navigation ready',
-				  date='09.06.2015',
+				  date=arrow.get('2015-06-09'),
 				  author='Tobias Krauthoff',
 				  news='First beta of D-BAS navigation is now ready. Within this kind the user will be permantly confronted with ' +
 				       'arguments, which have a attack relation to the current selected argument/position. For an justification the user ' +
 				       'can select out of all arguments, which have a attack relation to the \'attacking\' argument. Unfortunately the ' +
 				       'support-relation are currently useless except for the justification for the position at start.')
 	news12 = News(title='Workshop',
-				  date='27.05.2015',
+				  date=arrow.get('2015-05-27'),
 				  author='Tobias Krauthoff',
 				  news='Today: A new workshop at the O.A.S.E. :)')
 	news13 = News(title='Admin Interface',
-				  date='29.05.2015',
+				  date=arrow.get('2015-05-29'),
 				  author='Tobias Krauthoff',
 				  news='Everything is growing, we have now a little admin interface and a navigation for the discussion is finshed, ' +
 				       'but this is very basic and simple')
 	news14 = News(title='Sharing',
-				  date='27.05.2015',
+				  date=arrow.get('2015-05-27'),
 				  author='Tobias Krauthoff',
 				  news='Every news can now be shared via FB, G+, Twitter and Mail. Not very important, but in some kind it is...')
 	news15 = News(title='Tests and JS',
-				  date='26.05.2015',
+				  date=arrow.get('2015-05-26'),
 				  author='Tobias Krauthoff',
 				  news='Front-end tests with Splinter are now finished. They are great and easy to manage. Additionally I\'am working ' +
 				       'on JS, so we can navigate in a static graph. Next to this, the I18N is waiting...')
 	news16 = News(title='JS Starts',
-				  date='18.05.2015',
+				  date=arrow.get('2015-05-18'),
 				  author='Tobias Krauthoff',
 				  news='Today started the funny part about the dialog based part, embedded in the content page.')
 	news18 = News(title='No I18N + L10N',
-				  date='18.05.2015',
+				  date=arrow.get('2015-05-18'),
 				  author='Tobias Krauthoff',
 				  news='Interationalization and localization is much more diffult than described by the pyramid. This has something todo ' +
 				       'with Chameleon 2, Lingua and Babel, so this feature has to wait.')
 	news19 = News(title='I18N + L10N',
-				  date='12.05.2015',
+				  date=arrow.get('2015-05-12'),
 				  author='Tobias Krauthoff',
 				  news='D-BAS, now with internationalization and translation.')
 	news20 = News(title='Settings',
-				  date='10.05.2015',
+				  date=arrow.get('2015-05-10'),
 				  author='Tobias Krauthoff',
 				  news='New part of the website is finished: a settings page for every user.')
 	news21 = News(title='About the Workshop in Karlsruhe',
-				  date='09.05.2015',
+				  date=arrow.get('2015-05-09'),
 				  author='Tobias Krauthoff',
 				  news='The workshop was very interesting. We have had very interesting talks and got much great feedback vom Jun.-Prof. ' +
 				       'Dr. Betz and Mr. Voigt. A repetition will be planed for the middle of july.')
 	news22 = News(title='Workshop in Karlsruhe',
-				  date='07.05.2015',
+				  date=arrow.get('2015-05-07'),
 				  author='Tobias Krauthoff',
 				  news='The working group \'functionality\' will drive to Karlsruhe for a workshop with Jun.-Prof. Dr. Betz as well as ' +
 				       'with C. Voigt until 08.05.2015. Our main topics will be the measurement of quality of discussions and the design of ' +
 				       'online-participation. I think, this will be very interesting!')
 	news23 = News(title='System will be build up',
-				  date='01.05.2015',
+				  date=arrow.get('2015-05-01'),
 				  author='Tobias Krauthoff',
 				  news='Currently I am working a lot at the system. This work includes:<br><ul><li>frontend-design with CSS and ' +
 				       'jQuery</li><li>backend-development with pything</li><li>development of unit- and integration tests</li><li>a ' +
@@ -208,65 +209,65 @@ def setup_news_db(session):
 				       '<a href="http://docs.pylonsproject.org/projects/colander/en/latest/">Colander</a></li><li>translating string ' +
 				       'with <a href="http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/i18n.html#localization-deployment-settings">internationalization</a></li></ul>')
 	news24 = News(title='First set of tests',
-				  date='06.05.2015',
+				  date=arrow.get('2015-05-06'),
 				  author='Tobias Krauthoff',
 				  news='Finished first set of unit- and integration tests for the database and frontend.')
 	news25 = News(title='Page is growing',
-				  date='05.05.2015',
+				  date=arrow.get('2015-05-05'),
 				  author='Tobias Krauthoff',
 				  news='The contact page is now working as well as the password-request option.')
 	news26 = News(title='First mockup',
-				  date='01.05.2015',
+				  date=arrow.get('2015-05-01'),
 				  author='Tobias Krauthoff',
 				  news='The webpage has now a contact, login and register site.')
 	news27 = News(title='Start',
-				  date='14.04.2015',
+				  date=arrow.get('2015-04-14'),
 				  author='Tobias Krauthoff',
 				  news='I\'ve started with the Prototype.')
 	news28 = News(title='First steps',
-				  date='01.12.2014',
+				  date=arrow.get('2014-12-01'),
 				  author='Tobias Krauthoff',
 				  news='I\'ve started with with my PhD.')
 	news29 = News(title='New logic for inserting',
-				  date='14.10.2015',
+				  date=arrow.get('2015-10-14'),
 				  author='Tobias Krauthoff',
 				  news='Logic for inserting statements was redone. Everytime, where the user can add information via a textarea, '
 				       'only the area is visible, which is logically correct. Therefore the decisions are based on argumentations theory.')
 	news30 = News(title='Different topics',
-				  date='15.10.2015',
+				  date=arrow.get('2015-10-15'),
 				  author='Tobias Krauthoff',
 				  news='Since today we can switch between different topics :) Unfortunately this feature is not really tested ;-)')
 	news31 = News(title='Stable release',
-				  date='10.11.2015',
+				  date=arrow.get('2015-11-10'),
 				  author='Tobias Krauthoff',
 				  news='After two weeks of debugging, a first and stable version is online. Now we can start with the interessing things!')
 	news32 = News(title='Design Update',
-				  date='11.11.2015',
+				  date=arrow.get('2015-11-11'),
 				  author='Tobias Krauthoff',
 				  news='Today we released a new material-oriented design. Enjoy it!')
 	news33 = News(title='Improved Bootstrapping',
-				  date='16.11.2015',
+				  date=arrow.get('2015-11-16'),
 				  author='Tobias Krauthoff',
 				  news='Bootstraping is one of the main challenges in discussion. Therefore we have a two-step process for this task!')
 	news34 = News(title='Breadcrumbs',
-				  date='24.11.2015',
+				  date=arrow.get('2015-11-24'),
 				  author='Tobias Krauthoff',
 				  news='Now we have a breadcrumbs with shortcuts for every step in our discussion. This feature will be im improved soon!')
 	news35 = News(title='Logic improvements',
-				  date='01.12.2015',
+				  date=arrow.get('2015-12-01'),
 				  author='Tobias Krauthoff',
 				  news='Every week we try to improve the look and feel of the discussions navigation. Sometimes just a few words are '
 				       'edited, but on other day the logic itself gets an update. So keep on testing :)')
 	news36 = News(title='Piwik',
-				  date='08.12.2015',
+				  date=arrow.get('2015-12-08'),
 				  author='Tobias Krauthoff',
 				  news='Today Piwik was installed. It will help to improve the services of D-BAS!')
 	news37 = News(title='Happy new Year',
-				  date='01.01.2016',
+				  date=arrow.get('2016-01-01'),
 				  author='Tobias Krauthoff',
 				  news='Frohes Neues Jahr ... Bonne Annee ... Happy New Year ... Feliz Ano Nuevo ... Feliz Ano Novo')
 	news38 = News(title='Island View and Pictures',
-				  date='06.01.2016',
+				  date=arrow.get('2016-01-06'),
 				  author='Tobias Krauthoff',
 				  news='D-BAS will be more personal and results driven. Therefore the new release has profile pictures for '
 				       'everyone. They are powered by gravatar and are based on a md5-hash of the users email. Next to this '
@@ -274,52 +275,58 @@ def setup_news_db(session):
 				       'improvement just collects the attacks and supports for arguments...this is needed for our next big '
 				       'thing :) Stay tuned!')
 	news39 = News(title='Refactoring',
-				  date='27.01.2016',
+				  date=arrow.get('2016-01-27'),
 				  author='Tobias Krauthoff',
 				  news='D-BAS refactored the last two weeks. During this time, a lot of JavaScript was removed. Therefore '
 				       'D-BAS uses Chameleon with TAL in the Pyramid-Framework. So D-BAS will be more stable and faster. '
 				       'The next period all functions will be tested and recovered.')
 	news40 = News(title='API',
-				  date='29.01.2016',
+				  date=arrow.get('2016-01-29'),
 				  author='Tobias Krauthoff',
 				  news='Now D-BAS has an API. Just replace the "discuss"-tag in your url with api to get your current steps raw data.')
 	news41 = News(title='Voting Model',
-				  date='05.01.2016',
+				  date=arrow.get('2016-01-05'),
 				  author='Tobias Krauthoff',
 				  news='Currently we are improving out model of voting for arguments as well as statements. Therefore we are working'
 				       'together with our colleage out of the theoretical computer science...because D-BAS datastructure can be '
 				       'formalized to be compatible with frameworks of Dung.')
 	news42 = News(title='Premisegroups',
-				  date='09.02.2016',
+				  date=arrow.get('2016-02-09'),
 				  author='Tobias Krauthoff',
 				  news='Now we have a mechanism for unclear statements. For example the user enters "I want something because '
 				       'A and B". The we do not know, whether A and B must hold at the same time, or if she wants something '
 				       'when A or B holds. Therefore the system requests feedback.')
 	news43 = News(title='Notification System',
-				  date='16.02.2016',
+				  date=arrow.get('2016-02-16'),
 				  author='Tobias Krauthoff',
 				  news='Yesterday we have develope a minimal notification system. This system could send information to every author, '
 				       'if one of their statement was edited. More features are comming soon!')
 	news44 = News(title='Speech Bubble System',
-				  date='02.03.2016',
+				  date=arrow.get('2016-03-02'),
 				  author='Tobias Krauthoff',
 				  news='After one week of testing, we released a new minor version of D-BAS. Instead of the text presentation,'
 				       'we will use chat-like style :) Come on and try it! Additionally anonymous users will have a history now!')
 	news45 = News(title='COMMA16',
-				  date='05.04.2016',
+				  date=arrow.get('2016-04-05'),
 				  author='Tobias Krauthoff',
-				  news='After a few works of testing an debugging, we now have verison of D-BAS, which will be submitted '
+				  news='After much work, testing and debugging, we now have version of D-BAS, which will be submitted '
 				       ' to <a href="http://www.ling.uni-potsdam.de/comma2016" target="_blank">COMMA 2016</a>.')
-	news46 = News(title='COMMA16',
-				  date='26.04.2016',
+	news46 = News(title='History Management',
+				  date=arrow.get('2016-04-26'),
 				  author='Tobias Krauthoff',
 				  news='We have changed D-BAS\' history management. Now you can bookmark any link in any discussion and '
 				       'your history will always be with you!')
-	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10,
-	              news11, news12, news13, news14, news15, news16, news29, news18, news19, news20,
-	              news21, news22, news23, news24, news25, news26, news27, news28, news30, news31,
-	              news32, news33, news34, news35, news36, news37, news38, news39, news40, news41,
-	              news42, news43, news44, news45, news46]
+	news47 = News(title='Development is going on',
+				  date=arrow.get('2016-04-05'),
+				  author='Tobias Krauthoff',
+				  news='Recently we improved some features, which will be released in future. Firstly there will be an '
+				       'island view for every argument, where the participants can see every premise for current reactions. '
+				       'Secondly the opinion barometer is still under development. For a more recent update, have a look '
+				       'at our imprint.')
+	news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
+	              news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
+	              news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
+	              news38, news39, news40, news41, news42, news43, news44, news45, news46, news47]
 	session.add_all(news_array[::-1])
 	session.flush()
 
@@ -343,10 +350,11 @@ def drop_discussion_database(session):
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Statement).delete()) + ' in Statement')
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(TextVersion).delete()) + ' in TextVersion')
 	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Issue).delete()) + ' in Issue')
+	logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Language).delete()) + ' in Language')
 	session.flush()
 
 
-def setup_up_users(session):
+def set_up_users(session):
 	"""
 	Creates all users
 
@@ -367,24 +375,14 @@ def setup_up_users(session):
 	pw1 = PasswordHandler.get_hashed_password('admin')
 	pw2 = PasswordHandler.get_hashed_password('tobias')
 	pw3 = PasswordHandler.get_hashed_password('martin')
-	pw4 = PasswordHandler.get_hashed_password('kalman')
-	pw5 = PasswordHandler.get_hashed_password('mladen')
-	pw6 = PasswordHandler.get_hashed_password('drtobias')
-	pw7 = PasswordHandler.get_hashed_password('michael')
-	pw8 = PasswordHandler.get_hashed_password('gregor')
-	pw9 = PasswordHandler.get_hashed_password('christian')
-	pw10 = PasswordHandler.get_hashed_password('alexander')
+	pw4 = PasswordHandler.get_hashed_password('christian')
+
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
-	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
-	user3 = User(firstname='Martin', surname='Mauve', nickname='martin', email='mauve@cs.uni-duesseldorf', password=pw3, group=group0.uid, gender='m')
-	user4 = User(firstname='Kalman', surname='Graffi', nickname='kalman', email='graffi@cs.uni-duesseldorf.de', password=pw4, group=group1.uid, gender='m')
-	user5 = User(firstname='Mladen', surname='Topic', nickname='mladen', email='mladen.topic@hhu.de', password=pw5, group=group1.uid, gender='m')
-	user6 = User(firstname='Tobias', surname='Escher', nickname='drtobias', email='tobias.escher@hhu.de', password=pw6, group=group1.uid, gender='m')
-	user7 = User(firstname='Michael', surname='Baurmann', nickname='michael', email='baurmann@hhu.de', password=pw7, group=group1.uid, gender='m')
-	user8 = User(firstname='Gregor', surname='Betz', nickname='gregor', email='gregor.betz@kit.edu', password=pw8, group=group1.uid, gender='m')
-	user9 = User(firstname='Christian', surname='Meter', nickname='christian', email='meter@cs.uni-duesseldorf.de', password=pw9, group=group0.uid, gender='m')
-	user10 = User(firstname='Alexander', surname='Schneider', nickname='alexander', email='aschneider@cs.uni-duesseldorf.de', password=pw10, group=group1.uid, gender='m')
+	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
+	user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group=group0.uid, gender='m')
+	user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group=group0.uid, gender='m')
+
 	usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='.tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
 	usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='t.obias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
 	usert02 = User(firstname='Torben', surname='Hartl', nickname='Torben', email='to.bias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
@@ -417,7 +415,7 @@ def setup_up_users(session):
 	usert29 = User(firstname='Sybille', surname='Redlich', nickname='Sybille', email='to.bias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='f')
 	usert30 = User(firstname='Ingeburg', surname='Fischer', nickname='Ingeburg', email='t.obias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='f')
 
-	session.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, usert00])
+	session.add_all([user0, user1, user2, user3, user4, usert00])
 	session.add_all([usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10])
 	session.add_all([usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20])
 	session.add_all([usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30])
@@ -429,12 +427,6 @@ def setup_up_users(session):
 	settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings7 = Settings(author_uid=user7.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings8 = Settings(author_uid=user8.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings9 = Settings(author_uid=user9.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	settings10 = Settings(author_uid=user10.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst00 = Settings(author_uid=usert00.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst01 = Settings(author_uid=usert01.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst02 = Settings(author_uid=usert02.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
@@ -466,15 +458,15 @@ def setup_up_users(session):
 	settingst28 = Settings(author_uid=usert28.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst29 = Settings(author_uid=usert29.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst30 = Settings(author_uid=usert30.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7, settings8])
-	session.add_all([settings9, settings10, settingst00, settingst01, settingst02, settingst03, settingst04, settingst05])
-	session.add_all([settingst06, settingst07, settingst08, settingst09, settingst10, settingst11, settingst12])
-	session.add_all([settingst13, settingst14, settingst15, settingst16, settingst17, settingst18, settingst19])
-	session.add_all([settingst20, settingst21, settingst22, settingst23, settingst24, settingst25, settingst26])
-	session.add_all([settingst27, settingst28, settingst29, settingst30])
+	session.add_all([settings0, settings1, settings2, settings3, settings4])
+	session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
+	session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
+	session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
+	session.add_all([settingst21, settingst22, settingst23, settingst24, settingst25, settingst26, settingst27])
+	session.add_all([settingst28, settingst29, settingst30])
 	session.flush()
 
-	from dbas.user_management import UserHandler
+	import dbas.user_management as UserHandler
 	UserHandler.refresh_public_nickname(usert07)
 	UserHandler.refresh_public_nickname(usert08)
 	UserHandler.refresh_public_nickname(usert09)
@@ -496,14 +488,7 @@ def setup_up_users(session):
 	notification0 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification1 = Notification(from_author_uid=user1.uid, to_author_uid=user3.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification2 = Notification(from_author_uid=user1.uid, to_author_uid=user4.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification3 = Notification(from_author_uid=user1.uid, to_author_uid=user5.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification4 = Notification(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification5 = Notification(from_author_uid=user1.uid, to_author_uid=user7.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification6 = Notification(from_author_uid=user1.uid, to_author_uid=user8.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification7 = Notification(from_author_uid=user1.uid, to_author_uid=user9.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	notification8 = Notification(from_author_uid=user1.uid, to_author_uid=user10.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	session.add_all([notification0, notification1, notification2, notification3, notification4])
-	session.add_all([notification5, notification6, notification7, notification8])
+	session.add_all([notification0, notification1, notification2])
 	session.flush()
 
 	return user2
@@ -521,9 +506,10 @@ def setup_dummy_votes(session):
 
 	db_arguments = DBDiscussionSession.query(Argument).all()
 	db_statements = DBDiscussionSession.query(Statement).all()
-	firstnames = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
-	              'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
-	              'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
+	firstnames = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob',
+	              'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi',
+	              'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly',
+	              'Sybille', 'Ingeburg']
 
 	new_votes = []
 	arg_up = 0
@@ -600,6 +586,15 @@ def setup_dummy_votes(session):
 	session.add_all(new_votes)
 	session.flush()
 
+	# random timestamps
+	db_votestatements = session.query(VoteStatement).all()
+	for vs in db_votestatements:
+		vs.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
+
+	db_votearguments = session.query(VoteArgument).all()
+	for va in db_votearguments:
+		va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
+
 
 def setup_discussion_database(session, user):
 	"""
@@ -609,13 +604,20 @@ def setup_discussion_database(session, user):
 	:param user: main author
 	:return:
 	"""
+
+	# adding languages
+	lang1 = Language(name='English', ui_locales='en')
+	lang2 = Language(name='Deutsch', ui_locales='de')
+	session.add_all([lang1, lang2])
+	session.flush()
+
 	# adding our main issue
-	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid)
-	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid)
-	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid)
-	#  issue4 = Issue(title='Reducing workload of the secretary', info='With wich measures can we reduce the workload of our secretaries?', author_uid=user.uid)
-	issue5 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid)
-	session.add_all([issue1, issue2, issue5])
+	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
+	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
+	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
+	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
+	issue5 = Issue(title='Unterstützung der Sekretariate', info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Mögleichkeiten um dies zu verbessern.', author_uid=user.uid, lang_uid=lang2.uid)
+	session.add_all([issue1, issue2, issue4, issue5])
 	session.flush()
 
 	# Adding all textversions
@@ -657,37 +659,37 @@ def setup_discussion_database(session, user):
 	textversion101 = TextVersion(content="The city should reduce the number of street festivals.", author=user.uid)
 	textversion102 = TextVersion(content="We should shut down university park.", author=user.uid)
 	textversion103 = TextVersion(content="We should close public swimming pools.", author=user.uid)
-	textversion105 = TextVersion(content="Reducing the number of street festivals can save up to 50.000$ a year.", author=user.uid)
+	textversion105 = TextVersion(content="Reducing the number of street festivals can save up to $50.000 a year.", author=user.uid)
 	textversion106 = TextVersion(content="Every street festival is funded by large companies.", author=user.uid)
 	textversion107 = TextVersion(content="Then we will have more money to expand out pedestrian zone", author=user.uid)
 	textversion108 = TextVersion(content="Our city will get more attractive for shopping.", author=user.uid)
 	textversion109 = TextVersion(content="Street festivals attract many people, which will increase the citys income.", author=user.uid)
-	textversion110 = TextVersion(content="Spending of the city for these festicals are higher than the earnings.", author=user.uid)
+	textversion110 = TextVersion(content="Spending of the city for these festivals are higher than the earnings.", author=user.uid)
 	textversion111 = TextVersion(content="Money does not solve problems of our society.", author=user.uid)
 	textversion112 = TextVersion(content="Criminals use university park to sell drugs.", author=user.uid)
-	textversion113 = TextVersion(content="Shutting down university park will save 100.000$ a year.", author=user.uid)
+	textversion113 = TextVersion(content="Shutting down university park will save $100.000 a year.", author=user.uid)
 	textversion114 = TextVersion(content="We should not give in to criminals.", author=user.uid)
 	textversion115 = TextVersion(content="The number of police patrols has been increased recently.", author=user.uid)
 	textversion116 = TextVersion(content="This is the only park in our city.", author=user.uid)
 	textversion117 = TextVersion(content="There are many parks in neighbouring towns.", author=user.uid)
 	textversion118 = TextVersion(content="The city is planing a new park in the upcoming month.", author=user.uid)
-	textversion119 = TextVersion(content="Parks are highly important for our climate.", author=user.uid)
+	textversion119 = TextVersion(content="Parks are very important for our climate.", author=user.uid)
 	textversion120 = TextVersion(content="Our swimming pools are very old and it would take a major investment to repair them.", author=user.uid)
 	textversion121 = TextVersion(content="Schools need the swimming pools for their sports lessons.", author=user.uid)
 	textversion122 = TextVersion(content="The rate of non-swimmers is too high.", author=user.uid)
 	textversion123 = TextVersion(content="The police cannot patrol in the park for 24/7.", author=user.uid)
-	textversion200 = TextVersion(content="E-Autos verursachen keine Emissionen.", author=user.uid)
-	textversion201 = TextVersion(content="Elektroautos sind sehr guenstig im Unterhalt", author=user.uid)
-	textversion202 = TextVersion(content="E-Autos sind optimal fuer den Stadtverkehr.", author=user.uid)
-	textversion203 = TextVersion(content="Sie keine stinkenden Abgase produzieren.", author=user.uid)
-	textversion204 = TextVersion(content="Die Herstellung der Autos und Batterien die Umwelt stark belastet", author=user.uid)
-	textversion205 = TextVersion(content="Sie sind sehr teuer in der Anschaffung.", author=user.uid)
-	textversion206 = TextVersion(content="Die Reichweite von Elektroautos ist ausreichend fuer mindestens 300km.", author=user.uid)
-	textversion207 = TextVersion(content="Die Ladezeit der Batterie kann bis zu 12h dauern und so lange kann man tagsueber nicht warten.", author=user.uid)
-	textversion208 = TextVersion(content="Die Umweltbelastung und Rohstoffabhaengigkeit durch Batterien sehr hoch ist.", author=user.uid)
-	textversion209 = TextVersion(content="Die Umweltbelastung durch Batterien immernoch viel geringer ist, als durch Verbrennungsmotoren.", author=user.uid)
-	textversion210 = TextVersion(content="In der Stadt sind Fahrraeder und oeffentliche Verkehrsmittel besser.", author=user.uid)
-	textversion211 = TextVersion(content="Man gezielt 'tanken' kann, genauso wie bei einem herkoemmlichen KFZ.", author=user.uid)
+	textversion200 = TextVersion(content="E-Autos keine Emissionen verursachen.", author=user.uid)
+	textversion201 = TextVersion(content="Elektroautos sehr g&uuml;nstig im Unterhalt sind", author=user.uid)
+	textversion202 = TextVersion(content="E-Autos optimal f&uuml;r den Stadtverkehr sind.", author=user.uid)
+	textversion203 = TextVersion(content="sie keine stinkenden Abgase produzieren.", author=user.uid)
+	textversion204 = TextVersion(content="die Herstellung der Autos und Batterien die Umwelt stark belasten", author=user.uid)
+	textversion205 = TextVersion(content="sie sehr teuer in der Anschaffung sind.", author=user.uid)
+	textversion206 = TextVersion(content="die Reichweite von Elektroautos ausreichend f&uuml;r mindestens 300km ist.", author=user.uid)
+	textversion207 = TextVersion(content="die Ladezeit der Batterie bis zu 12h da&uuml;rn kann und so lange man tags&uuml;ber nicht warten kann.", author=user.uid)
+	textversion208 = TextVersion(content="die Umweltbelastung und Rohstoffabh&auml;ngigkeit durch Batterien sehr hoch ist.", author=user.uid)
+	textversion209 = TextVersion(content="die Umweltbelastung durch Batterien immernoch viel geringer als durch Verbrennungsmotoren ist.", author=user.uid)
+	textversion210 = TextVersion(content="in der Stadt Fahrr&auml;der und oeffentliche Verkehrsmittel besser sind.", author=user.uid)
+	textversion211 = TextVersion(content="man gezielt 'tanken' kann, genauso wie bei einem herk&ouml;mmlichen KFZ.", author=user.uid)
 
 	session.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])
 	session.add_all([textversion7, textversion8, textversion9, textversion10, textversion11, textversion12])
@@ -702,6 +704,11 @@ def setup_discussion_database(session, user):
 	session.add_all([textversion200, textversion201, textversion202, textversion203, textversion204, textversion205])
 	session.add_all([textversion206, textversion207, textversion208, textversion209, textversion210, textversion211])
 	session.flush()
+
+	# random timestamps
+	db_textversions = session.query(TextVersion).all()
+	for tv in db_textversions:
+		tv.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
 	# adding all statements
 	statement1 = Statement(textversion=textversion1.uid, is_startpoint=True, issue=issue2.uid)
@@ -761,18 +768,18 @@ def setup_discussion_database(session, user):
 	statement121 = Statement(textversion=textversion121.uid, is_startpoint=False, issue=issue1.uid)
 	statement122 = Statement(textversion=textversion122.uid, is_startpoint=False, issue=issue1.uid)
 	statement123 = Statement(textversion=textversion123.uid, is_startpoint=False, issue=issue1.uid)
-	statement200 = Statement(textversion=textversion200.uid, is_startpoint=True, issue=issue5.uid)
-	statement201 = Statement(textversion=textversion201.uid, is_startpoint=True, issue=issue5.uid)
-	statement202 = Statement(textversion=textversion202.uid, is_startpoint=True, issue=issue5.uid)
-	statement203 = Statement(textversion=textversion203.uid, is_startpoint=False, issue=issue5.uid)
-	statement204 = Statement(textversion=textversion204.uid, is_startpoint=False, issue=issue5.uid)
-	statement205 = Statement(textversion=textversion205.uid, is_startpoint=False, issue=issue5.uid)
-	statement206 = Statement(textversion=textversion206.uid, is_startpoint=False, issue=issue5.uid)
-	statement207 = Statement(textversion=textversion207.uid, is_startpoint=False, issue=issue5.uid)
-	statement208 = Statement(textversion=textversion208.uid, is_startpoint=False, issue=issue5.uid)
-	statement209 = Statement(textversion=textversion209.uid, is_startpoint=False, issue=issue5.uid)
-	statement210 = Statement(textversion=textversion210.uid, is_startpoint=False, issue=issue5.uid)
-	statement211 = Statement(textversion=textversion211.uid, is_startpoint=False, issue=issue5.uid)
+	statement200 = Statement(textversion=textversion200.uid, is_startpoint=True, issue=issue4.uid)
+	statement201 = Statement(textversion=textversion201.uid, is_startpoint=True, issue=issue4.uid)
+	statement202 = Statement(textversion=textversion202.uid, is_startpoint=True, issue=issue4.uid)
+	statement203 = Statement(textversion=textversion203.uid, is_startpoint=False, issue=issue4.uid)
+	statement204 = Statement(textversion=textversion204.uid, is_startpoint=False, issue=issue4.uid)
+	statement205 = Statement(textversion=textversion205.uid, is_startpoint=False, issue=issue4.uid)
+	statement206 = Statement(textversion=textversion206.uid, is_startpoint=False, issue=issue4.uid)
+	statement207 = Statement(textversion=textversion207.uid, is_startpoint=False, issue=issue4.uid)
+	statement208 = Statement(textversion=textversion208.uid, is_startpoint=False, issue=issue4.uid)
+	statement209 = Statement(textversion=textversion209.uid, is_startpoint=False, issue=issue4.uid)
+	statement210 = Statement(textversion=textversion210.uid, is_startpoint=False, issue=issue4.uid)
+	statement211 = Statement(textversion=textversion211.uid, is_startpoint=False, issue=issue4.uid)
 
 	session.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7])
 	session.add_all([statement8, statement9, statement10, statement11, statement12, statement13, statement14])
@@ -984,15 +991,15 @@ def setup_discussion_database(session, user):
 	premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False, author=user.uid, issue=issue1.uid)
 	premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False, author=user.uid, issue=issue1.uid)
 	premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-	premise203 = Premise(premisesgroup=premisegroup203.uid, statement=statement203.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise204 = Premise(premisesgroup=premisegroup204.uid, statement=statement204.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise205 = Premise(premisesgroup=premisegroup205.uid, statement=statement205.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise206 = Premise(premisesgroup=premisegroup206.uid, statement=statement206.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise207 = Premise(premisesgroup=premisegroup207.uid, statement=statement207.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise208 = Premise(premisesgroup=premisegroup208.uid, statement=statement208.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise209 = Premise(premisesgroup=premisegroup209.uid, statement=statement209.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise210 = Premise(premisesgroup=premisegroup210.uid, statement=statement210.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-	premise211 = Premise(premisesgroup=premisegroup211.uid, statement=statement211.uid, is_negated=False, author=user.uid, issue=issue5.uid)
+	premise203 = Premise(premisesgroup=premisegroup203.uid, statement=statement203.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise204 = Premise(premisesgroup=premisegroup204.uid, statement=statement204.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise205 = Premise(premisesgroup=premisegroup205.uid, statement=statement205.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise206 = Premise(premisesgroup=premisegroup206.uid, statement=statement206.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise207 = Premise(premisesgroup=premisegroup207.uid, statement=statement207.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise208 = Premise(premisesgroup=premisegroup208.uid, statement=statement208.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise209 = Premise(premisesgroup=premisegroup209.uid, statement=statement209.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise210 = Premise(premisesgroup=premisegroup210.uid, statement=statement210.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise211 = Premise(premisesgroup=premisegroup211.uid, statement=statement211.uid, is_negated=False, author=user.uid, issue=issue4.uid)
 
 	session.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
 	session.add_all([premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17])
@@ -1059,15 +1066,15 @@ def setup_discussion_database(session, user):
 	argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement103.uid)
 	argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement115.uid)
 	####
-	argument201 = Argument(premisegroup=premisegroup203.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement200.uid)
-	argument202 = Argument(premisegroup=premisegroup204.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement200.uid)
-	argument203 = Argument(premisegroup=premisegroup205.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement201.uid)
-	argument204 = Argument(premisegroup=premisegroup206.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement202.uid)
-	argument205 = Argument(premisegroup=premisegroup207.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement202.uid)
-	argument206 = Argument(premisegroup=premisegroup208.uid, issupportive=False, author=user.uid, issue=issue5.uid)
-	argument207 = Argument(premisegroup=premisegroup209.uid, issupportive=False, author=user.uid, issue=issue5.uid)
-	argument208 = Argument(premisegroup=premisegroup210.uid, issupportive=False, author=user.uid, issue=issue5.uid)
-	argument209 = Argument(premisegroup=premisegroup211.uid, issupportive=False, author=user.uid, issue=issue5.uid)
+	argument201 = Argument(premisegroup=premisegroup203.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement200.uid)
+	argument202 = Argument(premisegroup=premisegroup204.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement200.uid)
+	argument203 = Argument(premisegroup=premisegroup205.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement201.uid)
+	argument204 = Argument(premisegroup=premisegroup206.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement202.uid)
+	argument205 = Argument(premisegroup=premisegroup207.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement202.uid)
+	argument206 = Argument(premisegroup=premisegroup208.uid, issupportive=False, author=user.uid, issue=issue4.uid)
+	argument207 = Argument(premisegroup=premisegroup209.uid, issupportive=False, author=user.uid, issue=issue4.uid)
+	argument208 = Argument(premisegroup=premisegroup210.uid, issupportive=False, author=user.uid, issue=issue4.uid)
+	argument209 = Argument(premisegroup=premisegroup211.uid, issupportive=False, author=user.uid, issue=issue4.uid)
 
 	session.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
 	session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
