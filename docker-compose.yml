@@ -1,12 +1,12 @@
 version: '2'
 services:
   db:
-    build: database/
+    build: docker/database/
     ports:
       - "5433:5432"
   web:
-    build: .
-    command: /bin/bash docker_init.sh
+    build: docker/core/
+    command: /bin/bash docker/core/docker_init.sh
     volumes:
       - .:/code
     ports:
