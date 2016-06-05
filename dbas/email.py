@@ -41,7 +41,7 @@ class EmailHelper:
 		try:
 			mailer.send_immediately(message, fail_silently=False)
 			send_message = True
-			message = 'emailWasSent'
+			message = _t.get(_t.emailWasSent)
 		except smtplib.SMTPConnectError as exception:
 			logger('EmailHelper', 'send_mail', 'error while sending')
 			code = str(exception.smtp_code)
