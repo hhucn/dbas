@@ -60,7 +60,7 @@ class Validator:
 			return True if same_conclusion and not_none and attacking else False
 
 		elif relation.startswith('end') and not is_history:
-			if attacked_arg_uid != 0:
+			if attacking_arg_uid != 0:
 				return False
 			return True
 

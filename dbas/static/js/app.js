@@ -632,9 +632,6 @@ function callbackIfDoneForPasswordRequest(data){
 	success.hide();
 	failed.hide();
 	info.hide();
-	alert(parsedData.success.length + " " + parsedData.success + "\n" +
-		parsedData.error.length + " " + parsedData.error + "\n" +
-		parsedData.info.length + " " + parsedData.info);
 	if (parsedData.success.length > 0) {
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
