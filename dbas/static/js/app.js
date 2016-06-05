@@ -632,19 +632,22 @@ function callbackIfDoneForPasswordRequest(data){
 	success.hide();
 	failed.hide();
 	info.hide();
+	alert(parsedData.success.length + " " + parsedData.success + "\n" +
+		parsedData.error.length + " " + parsedData.error + "\n" +
+		parsedData.info.length + " " + parsedData.info);
 	if (parsedData.success.length > 0) {
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 		success.show();
-		$('#' + popupLoginSuccess + '-message').text(_t(parsedData.success));
+		$('#' + popupLoginSuccess + '-message').text(parsedData.success);
 	}
 	if (parsedData.error.length > 0) {
 		failed.show();
-		$('#' + popupLoginFailed + '-message').text(_t(parsedData.error));
+		$('#' + popupLoginFailed + '-message').text(parsedData.error);
 	}
 	if (parsedData.info.length > 0) {
 		info.show();
-		$('#' + popupLoginInfo + '-message').text(_t(parsedData.info));
+		$('#' + popupLoginInfo + '-message').text(parsedData.info);
 	}
 }
 
