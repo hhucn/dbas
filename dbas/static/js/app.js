@@ -128,7 +128,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 			// maybe set a cookie
 			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7);
+				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7, true);
 			}
 
 			if (isRestartingDiscussion) {
@@ -156,7 +156,7 @@ function displayBubbleInformationDialog(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(img);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			new Helper().setCookieForDays(BUBBLE_INFOS, 30);
+			new Helper().setCookieForDays(BUBBLE_INFOS, 30, true);
 		}).removeClass('btn-success');
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 	}

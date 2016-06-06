@@ -156,11 +156,17 @@ class Dbas(object):
 		else:
 			slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
 
-		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		last_topic      = HistoryHelper.get_saved_issue(nickname)
+		if len(slug) == 0:
+			issue      = last_topic
+		else:
+			issue      = IssueHelper.get_id_of_slug(slug, self.request, True)
+
 		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
+		HistoryHelper.save_issue_uid(transaction, issue, nickname)
 
 		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_start()
@@ -645,6 +651,7 @@ class Dbas(object):
 		message     = ''
 		error       = False
 		success     = False
+		group       = '-'
 
 		db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
@@ -654,6 +661,8 @@ class Dbas(object):
 			statements  = _uh.get_count_of_statements_of_user(db_user, False)
 			arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
 			public_nick = db_user.public_nickname
+			db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first()
+			group       = db_group.name if db_group else '-'
 		else:
 			edits       = 0
 			statements  = 0
@@ -662,7 +671,7 @@ class Dbas(object):
 			public_nick = str(self.request.authenticated_userid)
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
-			old_pw = escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
+			old_pw = escape_string(self.request.params['passwordold'])
 			new_pw = escape_string(self.request.params['password'])
 			confirm_pw = escape_string(self.request.params['passwordconfirm'])
 
@@ -684,7 +693,7 @@ class Dbas(object):
 			'db_nickname': db_user.nickname if db_user else 'unknown',
 			'db_public_nickname': public_nick,
 			'db_mail': db_user.email if db_user else 'unknown',
-			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
+			'db_group': group,
 			'avatar_url': gravatar_url,
 			'edits_done': edits,
 			'statemens_posted': statements,
