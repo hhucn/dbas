@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-06-02 13:48+0200\n"
+"POT-Creation-Date: 2016-06-06 15:52+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -135,7 +135,7 @@ msgstr "Nachrichten"
 #. Default: Login
 #. Default: Log In
 #: dbas/templates/snippet-header.pt:59 dbas/templates/snippet-popups.pt:244
-#: dbas/templates/snippet-popups.pt:440
+#: dbas/templates/snippet-popups.pt:449
 msgid "login"
 msgstr "Login"
 
@@ -427,7 +427,7 @@ msgid "imprint_copyright"
 msgstr "Impressum und Urheberrecht"
 
 #. Default: Author
-#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:609
+#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:618
 msgid "author"
 msgstr "Autor"
 
@@ -513,8 +513,8 @@ msgstr "Fax"
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:75 dbas/templates/snippet-popups.pt:120
-#: dbas/templates/snippet-popups.pt:443 dbas/templates/snippet-popups.pt:482
-#: dbas/templates/snippet-popups.pt:617 dbas/templates/snippet-popups.pt:651
+#: dbas/templates/snippet-popups.pt:452 dbas/templates/snippet-popups.pt:491
+#: dbas/templates/snippet-popups.pt:626 dbas/templates/snippet-popups.pt:662
 msgid "close"
 msgstr "Schließen"
 
@@ -588,145 +588,150 @@ msgid "sign_up"
 msgstr "Registrieren"
 
 #. Default: Your Nickname
-#: dbas/templates/snippet-popups.pt:259
+#: dbas/templates/snippet-popups.pt:260
 msgid "your_nickname"
 msgstr "Ihr Nickname"
 
 #. Default: Your Password
-#: dbas/templates/snippet-popups.pt:266
+#: dbas/templates/snippet-popups.pt:267
 msgid "your_password"
 msgstr "Ihr Passwort"
 
 #. Default: Keep me logged in
-#: dbas/templates/snippet-popups.pt:275
+#: dbas/templates/snippet-popups.pt:277
 msgid "keep_me_logged_in"
 msgstr "Angemeldet bleiben"
 
 #. Default: Forgot your password?
-#: dbas/templates/snippet-popups.pt:277
+#: dbas/templates/snippet-popups.pt:279
 msgid "forgot_password"
 msgstr "Passwort vergessen?"
 
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
-#: dbas/templates/snippet-popups.pt:281
+#: dbas/templates/snippet-popups.pt:283
 msgid "fill_in_mail_for_password"
 msgstr ""
 "Bitte trage unten deine E-Mail-Adresse ein. Ein neues Passwort wird an diese "
 "Adresse gesendet."
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:291 dbas/templates/snippet-popups.pt:398
+#: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:407
 #: dbas/templates/content.pt:153
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Success:
 #. Default: Success
-#: dbas/templates/snippet-popups.pt:298 dbas/templates/snippet-popups.pt:390
-#: dbas/templates/settings.pt:217 dbas/templates/content.pt:64
+#: dbas/templates/snippet-popups.pt:300 dbas/templates/snippet-popups.pt:399
+#: dbas/templates/settings.pt:218 dbas/templates/content.pt:64
 msgid "success"
 msgstr "Erfolg:"
 
 #. Default: Info:
-#: dbas/templates/snippet-popups.pt:305 dbas/templates/snippet-popups.pt:406
+#: dbas/templates/snippet-popups.pt:307 dbas/templates/snippet-popups.pt:415
 msgid "info"
 msgstr "Info:"
 
 #. Default: Your First Name
-#: dbas/templates/snippet-popups.pt:313
+#: dbas/templates/snippet-popups.pt:315
 msgid "first_name"
 msgstr "Vorname"
 
 #. Default: Your Last Name
-#: dbas/templates/snippet-popups.pt:320
+#: dbas/templates/snippet-popups.pt:322
 msgid "last_name"
 msgstr "Nachname"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: dbas/templates/snippet-popups.pt:327 dbas/templates/settings.pt:22
+#: dbas/templates/snippet-popups.pt:329 dbas/templates/settings.pt:22
 #: dbas/templates/admin.pt:132
 msgid "nickname"
 msgstr "Nickname"
 
 #. Default: Your Gender
-#: dbas/templates/snippet-popups.pt:334
+#: dbas/templates/snippet-popups.pt:336
 msgid "your_gender"
 msgstr "Ihr Geschlecht"
 
 #. Default: none
-#: dbas/templates/snippet-popups.pt:339
+#: dbas/templates/snippet-popups.pt:341
 msgid "none"
 msgstr "keine Angabe"
 
 #. Default: female
-#: dbas/templates/snippet-popups.pt:344
+#: dbas/templates/snippet-popups.pt:346
 msgid "female"
 msgstr "weiblich"
 
 #. Default: male
-#: dbas/templates/snippet-popups.pt:349
+#: dbas/templates/snippet-popups.pt:351
 msgid "male"
 msgstr "männlich"
 
 #. Default: Your Email Address
-#: dbas/templates/snippet-popups.pt:355
+#: dbas/templates/snippet-popups.pt:357
 msgid "your_email"
 msgstr "Ihre E-Mail"
 
 #. Default: Your Password
-#: dbas/templates/snippet-popups.pt:362
+#: dbas/templates/snippet-popups.pt:364
 msgid "password"
 msgstr "Passwort"
 
 #. Default: Password (confirm)
-#: dbas/templates/snippet-popups.pt:369
+#: dbas/templates/snippet-popups.pt:371
 msgid "password-confirm"
 msgstr "Passwort (Bestätigung)"
 
 #. Default: Password Strength
-#: dbas/templates/snippet-popups.pt:376
+#: dbas/templates/snippet-popups.pt:378
 msgid "password-strength"
 msgstr "Stärke"
 
 #. Default: very weak
-#: dbas/templates/snippet-popups.pt:379
+#: dbas/templates/snippet-popups.pt:381
 msgid "password_strength"
 msgstr "sehr schwach"
 
 #. Default: Generate secure password
-#: dbas/templates/snippet-popups.pt:382 dbas/templates/snippet-popups.pt:431
+#: dbas/templates/snippet-popups.pt:384 dbas/templates/snippet-popups.pt:440
 msgid "generate_password"
 msgstr "Password generieren"
 
+#. Default: Anti-Spam (required)
+#: dbas/templates/snippet-popups.pt:390
+msgid "spam"
+msgstr "Anti-Spam"
+
 #. Default: How to select a strong password
-#: dbas/templates/snippet-popups.pt:412 dbas/templates/snippet-popups.pt:456
+#: dbas/templates/snippet-popups.pt:421 dbas/templates/snippet-popups.pt:465
 msgid "select_password"
 msgstr "Wie wählt man ein sicheres Password"
 
 #. Default: A Password is strong, when it contains at least:
-#: dbas/templates/snippet-popups.pt:414 dbas/templates/snippet-popups.pt:459
+#: dbas/templates/snippet-popups.pt:423 dbas/templates/snippet-popups.pt:468
 msgid "select_password_intro"
 msgstr "Ein Passwort ist stark, wenn es mindestens folgende Sachen enthält:"
 
 #. Default: eight characters
-#: dbas/templates/snippet-popups.pt:416 dbas/templates/snippet-popups.pt:461
+#: dbas/templates/snippet-popups.pt:425 dbas/templates/snippet-popups.pt:470
 msgid "select_password_rule1"
 msgstr "acht Zeichen"
 
 #. Default: one uppercase letter
-#: dbas/templates/snippet-popups.pt:417 dbas/templates/snippet-popups.pt:462
+#: dbas/templates/snippet-popups.pt:426 dbas/templates/snippet-popups.pt:471
 msgid "select_password_rule2"
 msgstr "ein Großbuchstaben"
 
 #. Default: one lowercase letter
-#: dbas/templates/snippet-popups.pt:418 dbas/templates/snippet-popups.pt:463
+#: dbas/templates/snippet-popups.pt:427 dbas/templates/snippet-popups.pt:472
 msgid "select_password_rule3"
 msgstr "ein Kleinbuchstaben"
 
 #. Default: one special sign
-#: dbas/templates/snippet-popups.pt:419 dbas/templates/snippet-popups.pt:464
+#: dbas/templates/snippet-popups.pt:428 dbas/templates/snippet-popups.pt:473
 msgid "select_password_rule4"
 msgstr "ein Sonderzeichen"
 
@@ -734,7 +739,7 @@ msgstr "ein Sonderzeichen"
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: dbas/templates/snippet-popups.pt:421 dbas/templates/snippet-popups.pt:466
+#: dbas/templates/snippet-popups.pt:430 dbas/templates/snippet-popups.pt:475
 msgid "popup_password_text"
 msgstr ""
 "Als Beispiel ist 'M2015_fiO' ein starkes Passwort, dass erst nach ca. 275 "
@@ -743,51 +748,51 @@ msgstr ""
 "Foldenges sollte beachtet werden."
 
 #. Default: Avoid using a password on several pages
-#: dbas/templates/snippet-popups.pt:423 dbas/templates/snippet-popups.pt:468
+#: dbas/templates/snippet-popups.pt:432 dbas/templates/snippet-popups.pt:477
 msgid "select_password_avoid1"
 msgstr "Niemals Passwörter für mehrere Seiten nutzen"
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: dbas/templates/snippet-popups.pt:424 dbas/templates/snippet-popups.pt:469
+#: dbas/templates/snippet-popups.pt:433 dbas/templates/snippet-popups.pt:478
 msgid "select_password_avoid2"
 msgstr "Phrasen vermeiden, die in Büchern gefunden werden können"
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: dbas/templates/snippet-popups.pt:425 dbas/templates/snippet-popups.pt:470
+#: dbas/templates/snippet-popups.pt:434 dbas/templates/snippet-popups.pt:479
 msgid "select_password_avoid3"
 msgstr ""
 "Verwendung von Informationen, die eventuell in Verbindung zur Person stehen"
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: dbas/templates/snippet-popups.pt:426 dbas/templates/snippet-popups.pt:471
+#: dbas/templates/snippet-popups.pt:435 dbas/templates/snippet-popups.pt:480
 msgid "select_password_avoid4"
 msgstr ""
 "Verwendung von Informationen, die eventuell Freund/Bekannte der Person  "
 "kennen"
 
 #. Default: If you need some help with our password, you can get one here:
-#: dbas/templates/snippet-popups.pt:428 dbas/templates/snippet-popups.pt:473
+#: dbas/templates/snippet-popups.pt:437 dbas/templates/snippet-popups.pt:482
 msgid "select_password_help"
 msgstr ""
 "Wenn Sie Hilfe bei der Erstellung brauchen, können Sie sich hier eins "
 "generieren lassen:"
 
 #. Default: Register
-#: dbas/templates/snippet-popups.pt:441
+#: dbas/templates/snippet-popups.pt:450
 msgid "register"
 msgstr "Registierung"
 
 #. Default: How to write text
-#: dbas/templates/snippet-popups.pt:495
+#: dbas/templates/snippet-popups.pt:504
 msgid "how-to-write-text-header"
 msgstr "Wie schreibe ich Texte"
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: dbas/templates/snippet-popups.pt:498
+#: dbas/templates/snippet-popups.pt:507
 msgid "how-to-write-text-header-body"
 msgstr ""
 "Gut zu schreiben ist ein Herausforderung und notwendig für die Benutzung von "
@@ -795,53 +800,53 @@ msgstr ""
 "paar Regeln gelistet, was gut ist."
 
 #. Default: Do's:
-#: dbas/templates/snippet-popups.pt:501
+#: dbas/templates/snippet-popups.pt:510
 msgid "dos"
 msgstr "Gut:"
 
 #. Default: Write short!
-#: dbas/templates/snippet-popups.pt:503
+#: dbas/templates/snippet-popups.pt:512
 msgid "how-to-write-text-short"
 msgstr "Schreiben Sie kurz!"
 
 #. Default: Only one statement per field!
-#: dbas/templates/snippet-popups.pt:504
+#: dbas/templates/snippet-popups.pt:513
 msgid "how-to-write-text-one-point"
 msgstr "Immer nur eine Aussage/Argumete/Punkt pro Feld!"
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:517
+#: dbas/templates/snippet-popups.pt:526
 msgid "Okay"
 msgstr "Okay"
 
 #. Default: Writing a new message
-#: dbas/templates/snippet-popups.pt:588 dbas/templates/snippet-popups.pt:630
+#: dbas/templates/snippet-popups.pt:597 dbas/templates/snippet-popups.pt:639
 msgid "writing_message"
 msgstr "Neue Nachricht schreiben"
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:597 dbas/templates/snippet-popups.pt:640
+#: dbas/templates/snippet-popups.pt:606 dbas/templates/snippet-popups.pt:651
 #: dbas/templates/content.pt:275 dbas/templates/content.pt:298
 msgid "error:"
 msgstr "Fehler:"
 
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:602 dbas/templates/snippet-popups.pt:645
+#: dbas/templates/snippet-popups.pt:611 dbas/templates/snippet-popups.pt:656
 msgid "success:"
 msgstr "Erfolg:"
 
 #. Default: Date
-#: dbas/templates/snippet-popups.pt:611
+#: dbas/templates/snippet-popups.pt:620
 msgid "date"
 msgstr "Datum"
 
 #. Default: Send News
-#: dbas/templates/snippet-popups.pt:616
+#: dbas/templates/snippet-popups.pt:625
 msgid "send_news"
 msgstr "News abschicken"
 
 #. Default: Send Notifcation
-#: dbas/templates/snippet-popups.pt:650
+#: dbas/templates/snippet-popups.pt:661
 msgid "send_notification"
 msgstr "Nachricht senden"
 
@@ -930,71 +935,71 @@ msgid "change_password"
 msgstr "Passwort ändern"
 
 #. Default: Old password
-#: dbas/templates/settings.pt:101
+#: dbas/templates/settings.pt:102
 msgid "old_password"
 msgstr "Altes Password"
 
 #. Default: New Password
-#: dbas/templates/settings.pt:108
+#: dbas/templates/settings.pt:109
 msgid "new_password"
 msgstr "Neues Password"
 
-#. Default: Strength
-#: dbas/templates/settings.pt:115
-msgid "strength"
-msgstr "Stärke"
-
 #. Default: New Password (confirm)
-#: dbas/templates/settings.pt:123
+#: dbas/templates/settings.pt:116
 msgid "new_password_confirm"
 msgstr "Neues Password (Bestätigung)"
 
+#. Default: Strength
+#: dbas/templates/settings.pt:123
+msgid "strength"
+msgstr "Stärke"
+
 #. Default: Discussion Statistics
-#: dbas/templates/settings.pt:142 dbas/templates/user.pt:29
+#: dbas/templates/settings.pt:143 dbas/templates/user.pt:29
 msgid "discussion_stat"
 msgstr "Diskussions-Statistik"
 
 #. Default: Statements posted
-#: dbas/templates/settings.pt:146 dbas/templates/finish.pt:23
+#: dbas/templates/settings.pt:147 dbas/templates/finish.pt:23
 #: dbas/templates/user.pt:32
 msgid "statements_posted"
 msgstr "Aussagen hinzugefügt"
 
 #. Default: Edits done
-#: dbas/templates/settings.pt:153 dbas/templates/finish.pt:27
+#: dbas/templates/settings.pt:154 dbas/templates/finish.pt:27
 #: dbas/templates/user.pt:36
 msgid "edits_done"
 msgstr "Änderungen"
 
 #. Default: Votes for Arguments
-#: dbas/templates/settings.pt:160 dbas/templates/finish.pt:31
+#: dbas/templates/settings.pt:161 dbas/templates/finish.pt:31
 #: dbas/templates/user.pt:40
 msgid "discussion_votes_statements"
 msgstr "Stimmen für Aussagen"
 
 #. Default: Votes for Statements
-#: dbas/templates/settings.pt:167 dbas/templates/finish.pt:35
+#: dbas/templates/settings.pt:168 dbas/templates/finish.pt:35
 #: dbas/templates/user.pt:44
 msgid "discussion_votes_arguments"
 msgstr "Stimmen für Argumente"
 
 #. Default: Your password was changed
-#: dbas/templates/settings.pt:182
+#: dbas/templates/settings.pt:183
 msgid "password_changed"
 msgstr "Ihr Passwurd wurde geändert"
 
 #. Default: Statistics could not be deleted.
-#: dbas/templates/settings.pt:189
+#: dbas/templates/settings.pt:190
 msgid "statistics_not_deleted"
 msgstr "Statistiken konnten nicht gelöscht werden."
 
 #. Default: Statistics were set successfully deleted.
-#: dbas/templates/settings.pt:195
+#: dbas/templates/settings.pt:196
 msgid "statistics_deletet"
 msgstr "Statistiken wurden gelöscht."
 
 #. Default: Your last history
-#: dbas/templates/settings.pt:205
+#: dbas/templates/settings.pt:206
 msgid "history"
 msgstr "Ihre letzte URL-History"
 
