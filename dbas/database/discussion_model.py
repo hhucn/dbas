@@ -165,6 +165,10 @@ class Settings(DiscussionBase):
 	should_send_mails = Column(Boolean, nullable=False)
 	should_send_notifications = Column(Boolean, nullable=False)
 	should_show_public_nickname = Column(Boolean, nullable=False)
+	last_topic_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
+
+	users = relationship('User', foreign_keys=[author_uid])
+	issues = relationship('Issue', foreign_keys=[last_topic_uid])
 
 	def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True):
 		"""
@@ -174,6 +178,7 @@ class Settings(DiscussionBase):
 		self.should_send_mails = send_mails
 		self.should_send_notifications = send_notifications
 		self.should_show_public_nickname = should_show_public_nickname
+		self.last_topic_uid = 1
 
 	def set_send_mails(self, send_mails):
 		self.should_send_mails = send_mails
@@ -183,6 +188,9 @@ class Settings(DiscussionBase):
 
 	def set_show_public_nickname(self, should_show_public_nickname):
 		self.should_show_public_nickname = should_show_public_nickname
+
+	def set_last_topic_uid(self, uid):
+		self.last_topic_uid = uid
 
 
 class Statement(DiscussionBase):
