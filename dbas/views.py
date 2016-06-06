@@ -1923,7 +1923,8 @@ class Dbas(object):
 			elif mode == '4':  # getting text
 				return_dict = FuzzyStringMatcher.get_strings_for_search(value)
 			elif mode == '5':  # getting public nicknames
-				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_public_nickname(value)
+				nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_public_nickname(value, nickname)
 			else:
 				logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
 				return_dict = {'error': _tn.get(_tn.internalError)}

@@ -12,7 +12,7 @@ from Levenshtein import distance
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Statement, User, TextVersion, Issue, Premise, Argument
-from .logger import logger
+from .user_management import get_profile_picture
 
 max_count_zeros = 5
 index_zeros = 3
@@ -172,10 +172,11 @@ def get_strings_for_search(value):
 	return return_dict
 
 
-def get_strings_for_public_nickname(value):
+def get_strings_for_public_nickname(value, nickname):
 	"""
 
 	:param value:
+	:param nickname:
 	:return:
 	"""
 	db_user = DBDiscussionSession.query(User).all()
@@ -183,11 +184,12 @@ def get_strings_for_public_nickname(value):
 
 	index = 1
 	for user in db_user:
-		if user.public_nickname.lower().startswith(value.lower()):
+		if user.public_nickname.lower().startswith(value.lower()) and user.nickname != nickname:
 			dist = __get_distance__(value, user.public_nickname)
 			return_array.append({'index': 0,
 			                     'distance': dist,
-			                     'text': user.public_nickname})
+			                     'text': user.public_nickname,
+			                     'avatar': get_profile_picture(user)})
 			index += 1
 
 	return_array = __sort_array(return_array)[:5]
