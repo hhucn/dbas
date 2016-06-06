@@ -636,15 +636,15 @@ function callbackIfDoneForPasswordRequest(data){
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 		success.show();
-		$('#' + popupLoginSuccess + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginSuccess + '-message').text(parsedData.success);
 	}
 	if (parsedData.error.length > 0) {
 		failed.show();
-		$('#' + popupLoginFailed + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginFailed + '-message').text(parsedData.error);
 	}
 	if (parsedData.info.length > 0) {
 		info.show();
-		$('#' + popupLoginInfo + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginInfo + '-message').text(parsedData.info);
 	}
 }
 
