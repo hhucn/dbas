@@ -41,8 +41,11 @@ def main_discussion(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		user2 = set_up_users(DBDiscussionSession)
-		setup_discussion_database(DBDiscussionSession, user2)
+		user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
+		lang1, lang2 = set_up_language(DBDiscussionSession)
+		issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
+		set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
+		setup_discussion_database(DBDiscussionSession, user2, issue1, issue2, issue4)
 		transaction.commit()
 
 
@@ -60,7 +63,9 @@ def main_discussion_reload(argv=sys.argv):
 	with transaction.manager:
 		drop_discussion_database(DBDiscussionSession)
 		main_author = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-		setup_discussion_database(DBDiscussionSession, main_author)
+		lang1, lang2 = set_up_language(DBDiscussionSession)
+		issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
+		setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4)
 		setup_dummy_votes(DBDiscussionSession)
 		transaction.commit()
 
@@ -334,6 +339,7 @@ def setup_news_db(session):
 def drop_discussion_database(session):
 	"""
 
+	:param session:
 	:return:
 	"""
 	db_textversions = session.query(TextVersion).all()
@@ -421,6 +427,13 @@ def set_up_users(session):
 	session.add_all([usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30])
 	session.flush()
 
+	return user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
+
+
+def set_up_settings(session, user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05,
+                    usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16,
+                    usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27,
+                    usert28, usert29, usert30):
 	# adding settings
 	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
@@ -491,7 +504,39 @@ def set_up_users(session):
 	session.add_all([notification0, notification1, notification2])
 	session.flush()
 
-	return user2
+
+def set_up_language(session):
+	"""
+
+	:param session:
+	:return:
+	"""
+	# adding languages
+	lang1 = Language(name='English', ui_locales='en')
+	lang2 = Language(name='Deutsch', ui_locales='de')
+	session.add_all([lang1, lang2])
+	session.flush()
+	return lang1, lang2
+
+
+def set_up_issue(session, user, lang1, lang2):
+	"""
+
+	:param session:
+	:param user:
+	:param lang1:
+	:param lang2:
+	:return:
+	"""
+	# adding our main issue
+	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
+	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
+	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
+	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
+	issue5 = Issue(title='Unterstützung der Sekretariate', info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Mögleichkeiten um dies zu verbessern.', author_uid=user.uid, lang_uid=lang2.uid)
+	session.add_all([issue1, issue2, issue4, issue5])
+	session.flush()
+	return issue1, issue2, issue4, issue5
 
 
 def setup_dummy_votes(session):
@@ -596,29 +641,17 @@ def setup_dummy_votes(session):
 		va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
 
-def setup_discussion_database(session, user):
+def setup_discussion_database(session, user, issue1, issue2, issue4):
 	"""
 	Fills the database with dummy date, created by given user
 
 	:param session: database session
 	:param user: main author
+	:param issue1: issue1
+	:param issue2: issue2
+	:param issue4: issue4
 	:return:
 	"""
-
-	# adding languages
-	lang1 = Language(name='English', ui_locales='en')
-	lang2 = Language(name='Deutsch', ui_locales='de')
-	session.add_all([lang1, lang2])
-	session.flush()
-
-	# adding our main issue
-	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
-	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
-	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
-	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
-	issue5 = Issue(title='Unterstützung der Sekretariate', info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Mögleichkeiten um dies zu verbessern.', author_uid=user.uid, lang_uid=lang2.uid)
-	session.add_all([issue1, issue2, issue4, issue5])
-	session.flush()
 
 	# Adding all textversions
 	textversion1 = TextVersion(content="We should get a cat.", author=user.uid)

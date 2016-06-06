@@ -156,11 +156,17 @@ class Dbas(object):
 		else:
 			slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
 
-		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		last_topic      = HistoryHelper.get_saved_issue(nickname)
+		if len(slug) == 0:
+			issue      = last_topic
+		else:
+			issue      = IssueHelper.get_id_of_slug(slug, self.request, True)
+
 		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
+		HistoryHelper.save_issue_uid(transaction, issue, nickname)
 
 		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_start()
