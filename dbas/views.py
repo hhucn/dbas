@@ -157,7 +157,7 @@ class Dbas(object):
 			slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
 
 		last_topic      = HistoryHelper.get_saved_issue(nickname)
-		if len(slug) == 0:
+		if len(slug) == 0 and last_topic != 0:
 			issue      = last_topic
 		else:
 			issue      = IssueHelper.get_id_of_slug(slug, self.request, True)
@@ -1922,6 +1922,8 @@ class Dbas(object):
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_reasons(value, issue)
 			elif mode == '4':  # getting text
 				return_dict = FuzzyStringMatcher.get_strings_for_search(value)
+			elif mode == '5':  # getting public nicknames
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_public_nickname(value)
 			else:
 				logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
 				return_dict = {'error': _tn.get(_tn.internalError)}

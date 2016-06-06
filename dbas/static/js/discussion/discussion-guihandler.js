@@ -426,6 +426,7 @@ function GuiHandler() {
 		else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).empty();
 		else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).empty();
 		else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).empty();
+		else if (type == fuzzy_find_user) $('#' + proposalUserListGroupId).empty();
 
 		// is there any value ?
 		if (parsedData.length == 0){
@@ -461,12 +462,14 @@ function GuiHandler() {
 				$('#' + proposalStatementListGroupId).empty();
 				$('#' + proposalPremiseListGroupId).empty();
 				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
+				$('#' + proposalUserListGroupId).empty();
 			});
 
 			if (type == fuzzy_start_premise)        $('#' + proposalPremiseListGroupId).append(button);
 			else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).append(button);
 			else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).append(button);
 			else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).append(button);
+			else if (type == fuzzy_find_user)       $('#' + proposalUserListGroupId).append(button);
 		});
 	};
 
