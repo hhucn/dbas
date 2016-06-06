@@ -311,7 +311,8 @@ function prepareLoginRegistrationPopup(){
 			text = '',
 			i,
 			fields = [userfirstname, userlastname, nick, email, password, passwordconfirm],
-			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword), _t(checkConfirmation), _t(checkPasswordConfirm)];
+			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword),
+				_t(checkConfirmation), _t(checkPasswordConfirm)];
 
 		// check all vields for obivously errors
 		for (i=0; i<fields.length; i++){
@@ -459,6 +460,7 @@ function ajaxRegistration (){
 		email = $('#email-input').val(),
 		password = $('#' + popupLoginPasswordInputId).val(),
 		passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
+		spamanswer = $('#popup-login-spamanswer-input').val(),
 		gender = '';
 
 	if ($('#' + popupLoginInlineRadioGenderN).is(':checked')) gender = 'n';
@@ -475,6 +477,7 @@ function ajaxRegistration (){
 				email: email,
 				password: password,
 				passwordconfirm: passwordconfirm,
+				spamanswer: spamanswer,
 				lang: getLanguage()},
 		dataType: 'json',
 		async: true,
@@ -617,6 +620,7 @@ function callbackIfDoneForRegistration(data){
 	if (parsedData.info.length > 0) {
 		info.show();
 		$('#' + popupLoginRegistrationInfo + '-message').text(parsedData.info);
+		$('#popup-login-spamanswer-input').attr('placeholder', parsedData.spamquestion).val('');
 	}
 }
 
