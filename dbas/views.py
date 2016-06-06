@@ -1263,6 +1263,10 @@ class Dbas(object):
 		return_dict['error']   = str(error)
 		return_dict['info']    = str(info)
 
+		logger('user_password_request', 'success', str(success))
+		logger('user_password_request', 'error', str(error))
+		logger('user_password_request', 'info', str(info))
+
 		return json.dumps(return_dict, True)
 
 	# ajax - set boolean for receiving information

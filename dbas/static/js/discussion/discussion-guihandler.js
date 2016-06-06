@@ -403,11 +403,13 @@ function GuiHandler() {
 			bigText = topic;
 		else
 			bigText = topic + ' ' + supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
+
 		for (i = 0; i < splitted.length; i++) {
 			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			bigText += ' ' + i == 0 ? ' ' + splitted[i] : (' ' + _t_discussion(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
 		}
-		bigTextSpan.text(bigText + '.');
+
+		bigTextSpan.text(new Helper().startWithUpperCase(bigText) + '.');
 
 		return div_page;
 	};
