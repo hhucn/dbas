@@ -10,9 +10,46 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_
 get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History
+from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History, Settings
 from dbas.strings import Translator, TextGenerator
 from dbas.input_validator import Validator
+
+
+def save_issue_uid(transaction, issue_uid, nickname):
+	"""
+
+	:param transaction:
+	:param issue_uid:
+	:param nickname:
+	:return:
+	"""
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+	if not db_user:
+		return False
+
+	db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+	if not db_settings:
+		return False
+
+	db_settings.set_last_topic_uid(issue_uid)
+	transaction.commit()
+
+
+def get_saved_issue(nickname):
+	"""
+
+	:param nickname:
+	:return:
+	"""
+	db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+	if not db_user:
+		return 0
+
+	db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+	if not db_settings:
+		return 0
+
+	return db_settings.last_topic_uid
 
 
 def get_splitted_history(history):

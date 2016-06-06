@@ -41,8 +41,11 @@ def main_discussion(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		user2 = set_up_users(DBDiscussionSession)
-		setup_discussion_database(DBDiscussionSession, user2)
+		user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
+		lang1, lang2 = set_up_language(DBDiscussionSession)
+		issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
+		set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
+		setup_discussion_database(DBDiscussionSession, user2, issue1, issue2, issue4, issue5)
 		transaction.commit()
 
 
@@ -60,7 +63,9 @@ def main_discussion_reload(argv=sys.argv):
 	with transaction.manager:
 		drop_discussion_database(DBDiscussionSession)
 		main_author = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-		setup_discussion_database(DBDiscussionSession, main_author)
+		lang1, lang2 = set_up_language(DBDiscussionSession)
+		issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
+		setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
 		setup_dummy_votes(DBDiscussionSession)
 		transaction.commit()
 
@@ -334,6 +339,7 @@ def setup_news_db(session):
 def drop_discussion_database(session):
 	"""
 
+	:param session:
 	:return:
 	"""
 	db_textversions = session.query(TextVersion).all()
@@ -421,6 +427,13 @@ def set_up_users(session):
 	session.add_all([usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30])
 	session.flush()
 
+	return user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
+
+
+def set_up_settings(session, user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05,
+                    usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16,
+                    usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27,
+                    usert28, usert29, usert30):
 	# adding settings
 	settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
@@ -491,7 +504,39 @@ def set_up_users(session):
 	session.add_all([notification0, notification1, notification2])
 	session.flush()
 
-	return user2
+
+def set_up_language(session):
+	"""
+
+	:param session:
+	:return:
+	"""
+	# adding languages
+	lang1 = Language(name='English', ui_locales='en')
+	lang2 = Language(name='Deutsch', ui_locales='de')
+	session.add_all([lang1, lang2])
+	session.flush()
+	return lang1, lang2
+
+
+def set_up_issue(session, user, lang1, lang2):
+	"""
+
+	:param session:
+	:param user:
+	:param lang1:
+	:param lang2:
+	:return:
+	"""
+	# adding our main issue
+	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
+	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
+	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
+	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
+	issue5 = Issue(title='Unterstützung der Sekretariate', info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Mögleichkeiten um dies zu verbessern.', author_uid=user.uid, lang_uid=lang2.uid)
+	session.add_all([issue1, issue2, issue4, issue5])
+	session.flush()
+	return issue1, issue2, issue4, issue5
 
 
 def setup_dummy_votes(session):
@@ -596,29 +641,18 @@ def setup_dummy_votes(session):
 		va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
 
-def setup_discussion_database(session, user):
+def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	"""
 	Fills the database with dummy date, created by given user
 
 	:param session: database session
 	:param user: main author
+	:param issue1: issue1
+	:param issue2: issue2
+	:param issue4: issue4
+	:param issue5: issue5
 	:return:
 	"""
-
-	# adding languages
-	lang1 = Language(name='English', ui_locales='en')
-	lang2 = Language(name='Deutsch', ui_locales='de')
-	session.add_all([lang1, lang2])
-	session.flush()
-
-	# adding our main issue
-	issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
-	issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
-	#  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
-	issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
-	issue5 = Issue(title='Unterstützung der Sekretariate', info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Mögleichkeiten um dies zu verbessern.', author_uid=user.uid, lang_uid=lang2.uid)
-	session.add_all([issue1, issue2, issue4, issue5])
-	session.flush()
 
 	# Adding all textversions
 	textversion1 = TextVersion(content="We should get a cat.", author=user.uid)
@@ -690,6 +724,10 @@ def setup_discussion_database(session, user):
 	textversion209 = TextVersion(content="die Umweltbelastung durch Batterien immernoch viel geringer als durch Verbrennungsmotoren ist.", author=user.uid)
 	textversion210 = TextVersion(content="in der Stadt Fahrr&auml;der und oeffentliche Verkehrsmittel besser sind.", author=user.uid)
 	textversion211 = TextVersion(content="man gezielt 'tanken' kann, genauso wie bei einem herk&ouml;mmlichen KFZ.", author=user.uid)
+	textversion301 = TextVersion(content="durch rücksichtsvolle Verhaltensanpassungen der wissenschaftlichen Mitarbeitenden der Arbeitsaufwand der Sekretärinnen gesenkt werden könnte", author=user.uid)
+	textversion302 = TextVersion(content="wir Standard-Formulare, wie Urlaubsanträge, selbst faxen können", author=user.uid)
+	textversion303 = TextVersion(content="Etliche Abläufe durch ein besseres Zusammenarbeiten optimiert werden können. Dies sollte auch schriftlich als Anleitungen festgehalten werden, damit neue Angestellt einen leichten Einstieg finden", author=user.uid)
+	textversion304 = TextVersion(content="Viele Arbeiten auch durch die Mitarbeiter erledigt werden können", author=user.uid)
 
 	session.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])
 	session.add_all([textversion7, textversion8, textversion9, textversion10, textversion11, textversion12])
@@ -703,6 +741,7 @@ def setup_discussion_database(session, user):
 	session.add_all([textversion118, textversion119, textversion120, textversion121, textversion122, textversion123])
 	session.add_all([textversion200, textversion201, textversion202, textversion203, textversion204, textversion205])
 	session.add_all([textversion206, textversion207, textversion208, textversion209, textversion210, textversion211])
+	session.add_all([textversion301, textversion302, textversion303, textversion304])
 	session.flush()
 
 	# random timestamps
@@ -780,6 +819,10 @@ def setup_discussion_database(session, user):
 	statement209 = Statement(textversion=textversion209.uid, is_startpoint=False, issue=issue4.uid)
 	statement210 = Statement(textversion=textversion210.uid, is_startpoint=False, issue=issue4.uid)
 	statement211 = Statement(textversion=textversion211.uid, is_startpoint=False, issue=issue4.uid)
+	statement301 = Statement(textversion=textversion301.uid, is_startpoint=True, issue=issue5.uid)
+	statement302 = Statement(textversion=textversion302.uid, is_startpoint=True, issue=issue5.uid)
+	statement303 = Statement(textversion=textversion303.uid, is_startpoint=False, issue=issue5.uid)
+	statement304 = Statement(textversion=textversion304.uid, is_startpoint=False, issue=issue5.uid)
 
 	session.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7])
 	session.add_all([statement8, statement9, statement10, statement11, statement12, statement13, statement14])
@@ -792,6 +835,8 @@ def setup_discussion_database(session, user):
 	session.add_all([statement123])
 	session.add_all([statement200, statement201, statement202, statement203, statement204, statement205, statement206])
 	session.add_all([statement207, statement208, statement209, statement210, statement211])
+	session.add_all([statement301, statement302, statement303, statement304])
+
 	session.flush()
 
 	session.flush()
@@ -866,6 +911,10 @@ def setup_discussion_database(session, user):
 	textversion209.set_statement(statement209.uid)
 	textversion210.set_statement(statement210.uid)
 	textversion211.set_statement(statement211.uid)
+	textversion301.set_statement(statement301.uid)
+	textversion302.set_statement(statement302.uid)
+	textversion303.set_statement(statement303.uid)
+	textversion304.set_statement(statement304.uid)
 
 	# adding all premisegroups
 	premisegroup1 = PremiseGroup(author=user.uid)
@@ -927,6 +976,8 @@ def setup_discussion_database(session, user):
 	premisegroup211 = PremiseGroup(author=user.uid)
 	premisegroup212 = PremiseGroup(author=user.uid)
 	premisegroup213 = PremiseGroup(author=user.uid)
+	premisegroup303 = PremiseGroup(author=user.uid)
+	premisegroup304 = PremiseGroup(author=user.uid)
 
 	session.add_all([premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6])
 	session.add_all([premisegroup7, premisegroup8, premisegroup9, premisegroup10, premisegroup11, premisegroup12])
@@ -940,6 +991,7 @@ def setup_discussion_database(session, user):
 	session.add_all([premisegroup203, premisegroup204, premisegroup205, premisegroup206, premisegroup207])
 	session.add_all([premisegroup208, premisegroup209, premisegroup210, premisegroup211, premisegroup212])
 	session.add_all([premisegroup213])
+	session.add_all([premisegroup303, premisegroup304])
 	session.flush()
 
 	premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement4.uid, is_negated=False, author=user.uid, issue=issue2.uid)
@@ -1000,6 +1052,8 @@ def setup_discussion_database(session, user):
 	premise209 = Premise(premisesgroup=premisegroup209.uid, statement=statement209.uid, is_negated=False, author=user.uid, issue=issue4.uid)
 	premise210 = Premise(premisesgroup=premisegroup210.uid, statement=statement210.uid, is_negated=False, author=user.uid, issue=issue4.uid)
 	premise211 = Premise(premisesgroup=premisegroup211.uid, statement=statement211.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+	premise303 = Premise(premisesgroup=premisegroup303.uid, statement=statement303.uid, is_negated=False, author=user.uid, issue=issue5.uid)
+	premise304 = Premise(premisesgroup=premisegroup304.uid, statement=statement304.uid, is_negated=False, author=user.uid, issue=issue5.uid)
 
 	session.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
 	session.add_all([premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17])
@@ -1010,6 +1064,7 @@ def setup_discussion_database(session, user):
 	session.add_all([premise121, premise122, premise123])
 	session.add_all([premise203, premise204, premise205, premise206, premise207, premise208, premise209, premise210])
 	session.add_all([premise211])
+	session.add_all([premise303, premise304])
 	session.flush()
 
 	# adding all arguments and set the adjacency list
@@ -1075,6 +1130,9 @@ def setup_discussion_database(session, user):
 	argument207 = Argument(premisegroup=premisegroup209.uid, issupportive=False, author=user.uid, issue=issue4.uid)
 	argument208 = Argument(premisegroup=premisegroup210.uid, issupportive=False, author=user.uid, issue=issue4.uid)
 	argument209 = Argument(premisegroup=premisegroup211.uid, issupportive=False, author=user.uid, issue=issue4.uid)
+	####
+	argument303 = Argument(premisegroup=premisegroup303.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
+	argument304 = Argument(premisegroup=premisegroup304.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
 
 	session.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
 	session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
@@ -1086,6 +1144,7 @@ def setup_discussion_database(session, user):
 	session.add_all([argument115, argument116, argument117, argument118, argument119])
 	session.add_all([argument201, argument202, argument203, argument204, argument205, argument206, argument207])
 	session.add_all([argument208, argument209])
+	session.add_all([argument303, argument304])
 	session.flush()
 
 	argument5.conclusions_argument(argument3.uid)

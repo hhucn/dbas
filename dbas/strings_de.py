@@ -47,7 +47,7 @@ class GermanDict:
 		de_lang[_self.newPwdEmtpy] = 'Neues Passwortfeld ist leer.'
 		de_lang[_self.confPwdEmpty] = 'Bestätigungs-Passwordfeld ist leer.'
 		de_lang[_self.newPwdNotEqual] = 'Password und Bestätigung stimmen nicht überein.'
-		de_lang[_self.pwdsSame] = 'Altes und neues Passwort sind identisch.'
+		de_lang[_self.pwdsSame] = 'Beide eingegeben Passwörter sind identisch.'
 		de_lang[_self.oldPwdWrong] = 'Ihr altes Passwort ist falsch.'
 		de_lang[_self.pwdChanged] = 'Ihr Passwort würde geändert.'
 		de_lang[_self.emptyName] = 'Ihr Name ist leer!'

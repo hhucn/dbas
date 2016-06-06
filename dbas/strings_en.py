@@ -47,7 +47,7 @@ class EnglischDict:
 		en_lang[_self.newPwdEmtpy] = 'New password field is empty.'
 		en_lang[_self.confPwdEmpty] = 'Password confirmation field is empty.'
 		en_lang[_self.newPwdNotEqual] = 'New passwords are not equal'
-		en_lang[_self.pwdsSame] = 'New and old password are the same'
+		en_lang[_self.pwdsSame] = 'Both entered passwords are equal.'
 		en_lang[_self.oldPwdWrong] = 'Your old password is wrong.'
 		en_lang[_self.pwdChanged] = 'Your password was changed'
 		en_lang[_self.emptyName] = 'Your name is empty!'
