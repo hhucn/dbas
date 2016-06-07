@@ -12,7 +12,7 @@ from Levenshtein import distance
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Statement, User, TextVersion, Issue, Premise, Argument
-from .user_management import get_profile_picture
+from .user_management import get_public_profile_picture
 
 max_count_zeros = 5
 index_zeros = 3
@@ -189,7 +189,7 @@ def get_strings_for_public_nickname(value, nickname):
 			return_array.append({'index': 0,
 			                     'distance': dist,
 			                     'text': user.public_nickname,
-			                     'avatar': get_profile_picture(user)})
+			                     'avatar': get_public_profile_picture(user)})
 			index += 1
 
 	return_array = __sort_array(return_array)[:5]
