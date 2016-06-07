@@ -272,6 +272,7 @@ class Translator(object):
 		self.isNotAGoodIdea = 'isNotAGoodIdea'
 		self.interestingOnDBAS = 'interestingOnDBAS'
 		self.informationForStatements = 'informationForStatements'
+		self.invalidEmail = 'invalidEmail'
 		self.keyword = 'keyword'
 		self.keywordStart = 'keywordStart'
 		self.keywordChooseActionForStatement = 'keywordChooseActionForStatement'

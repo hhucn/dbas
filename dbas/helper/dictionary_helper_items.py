@@ -126,7 +126,6 @@ class ItemDictHelper(object):
 				premise_array = []
 				for premise in db_premises:
 					text = get_text_for_statement_uid(premise.statement_uid)
-					text = text[0:1].upper() + text[1:]
 					premise_array.append({'title': text, 'id': premise.statement_uid})
 
 				# get attack for each premise, so the urls will be unique

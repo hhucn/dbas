@@ -106,7 +106,7 @@ class Dbas(object):
 		ui_locales      = get_language(self.request, get_current_registry())
 		disc_ui_locales = get_discussion_language(self.request)
 		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
-		extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 		_dh.add_language_options_for_extra_dict(extras_dict)
 
 		return {
@@ -156,15 +156,22 @@ class Dbas(object):
 		else:
 			slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
 
-		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+		last_topic      = HistoryHelper.get_saved_issue(nickname)
+		if len(slug) == 0 and last_topic != 0:
+			issue      = last_topic
+		else:
+			issue      = IssueHelper.get_id_of_slug(slug, self.request, True)
+
 		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
 		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
+		HistoryHelper.save_issue_uid(transaction, issue, nickname)
 
 		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_start()
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, application_url=mainpage, for_api=for_api)
+		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, application_url=mainpage, for_api=for_api,
+		                                          request=self.request)
 
 		if len(item_dict) == 0:
 			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
@@ -228,7 +235,8 @@ class Dbas(object):
 		                                                                                    False, True, False, True,
 		                                                                                    nickname,
 		                                                                                    application_url=mainpage,
-		                                                                                    for_api=for_api)
+		                                                                                    for_api=for_api,
+		                                                                                    request=self.request)
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
 		return_dict['discussion'] = discussion_dict
@@ -299,7 +307,7 @@ class Dbas(object):
 			item_dict       = _idh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
 			discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict), nickname)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
-			                                          application_url=mainpage, for_api=for_api)
+			                                          application_url=mainpage, for_api=for_api, request=self.request)
 			# is the discussion at the end?
 			if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
@@ -313,7 +321,8 @@ class Dbas(object):
 			discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(argument_uid)
 			item_dict       = _idh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
 			extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
-			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api)
+			                                          argument_id=argument_uid, application_url=mainpage, for_api=for_api,
+			                                          request=self.request)
 			# is the discussion at the end?
 			if len(item_dict) == 0:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
@@ -326,7 +335,8 @@ class Dbas(object):
 			item_dict       = _idh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, logged_in)
 			discussion_dict = _ddh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
 			extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
-			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
+			                                          argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api,
+			                                          request=self.request)
 			# is the discussion at the end?
 			if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
 				_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
@@ -404,7 +414,8 @@ class Dbas(object):
 		                                                                                    True, nickname,
 		                                                                                    argument_id=arg_id_user,
 		                                                                                    application_url=mainpage,
-		                                                                                    for_api=for_api)
+		                                                                                    for_api=for_api,
+		                                                                                    request=self.request)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -440,7 +451,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname, self.request)
 		summary_dict = UserHandler.get_summary_of_today(nickname)
 
 		return {
@@ -502,7 +513,8 @@ class Dbas(object):
 		extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
 		                                                                                    True, True, nickname,
 		                                                                                    application_url=mainpage,
-		                                                                                    for_api=for_api)
+		                                                                                    for_api=for_api,
+		                                                                                    request=self.request)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -520,7 +532,7 @@ class Dbas(object):
 			return return_dict
 
 	# contact page
-	@view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody')
+	@view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody', require_csrf=False)
 	def main_contact(self):
 		"""
 		View configuration for the contact view.
@@ -547,17 +559,19 @@ class Dbas(object):
 		spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
 		spamquestion    = ''
 
-		spamanswer = int(spamanswer) if len(spamanswer) > 0 and isinstance(spamanswer, int) else '#'
-		antispamanswer = self.request.session['antispamanswer'] if 'antispamanswer' in self.request.session and isinstance(self.request.session['antispamanswer'], int) else ''
+		try:
+			spamanswer = int(spamanswer) if len(spamanswer) > 0 else '#'
+		except ValueError and TypeError:
+			spamanswer = '#'
+		key = 'contact-antispamanswer'
+		antispamanswer = self.request.session[key] if key in self.request.session else ''
 		spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
 
-		if 'form.contact.submitted' not in self.request.params:
-			# get anti-spam-question
-			spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
-			# save answer in session
-			self.request.session['antispamanswer'] = answer
+		logger('x', 'x', str(self.request.params))
+		logger('x', 'x', str(self.request.params))
+		logger('x', 'x', str(self.request.params))
 
-		else:
+		if 'form.contact.submitted' in self.request.params:
 			_t = Translator(ui_locales)
 
 			logger('main_contact', 'form.contact.submitted', 'validating email')
@@ -573,7 +587,7 @@ class Dbas(object):
 			elif not is_mail_valid:
 				logger('main_contact', 'form.contact.submitted', 'mail is not valid')
 				contact_error = True
-				message = _t.get(_t.emptyEmail)
+				message = _t.get(_t.invalidEmail)
 
 			# check for empty content
 			elif not content:
@@ -581,9 +595,10 @@ class Dbas(object):
 				contact_error = True
 				message = _t.get(_t.emtpyContent)
 
-			# check for empty username
-			elif spamanswer != spamsolution:
-				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' + spamanswer + ', right answer ' + str(self.request.session['antispamanswer']))
+			# check for empty spam
+			elif str(spamanswer) != str(spamsolution):
+				logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' +
+				       str(spamanswer) + ', right answer ' + str(antispamanswer))
 				contact_error = True
 				message = _t.get(_t.maliciousAntiSpam)
 
@@ -599,11 +614,10 @@ class Dbas(object):
 				send_message, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
 				contact_error = not send_message
 
-		if not send_message:
-			spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
-			self.request.session['antispamanswer'] = answer
+		spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
+		self.request.session[key] = answer
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 		return {
 			'layout': self.base_layout(),
 			'language': str(ui_locales),
@@ -617,7 +631,7 @@ class Dbas(object):
 			'mail': email,
 			'phone': phone,
 			'content': content,
-			'spam': '',
+			'spamanswer': '',
 			'spamquestion': spamquestion
 		}
 
@@ -645,6 +659,7 @@ class Dbas(object):
 		message     = ''
 		error       = False
 		success     = False
+		group       = '-'
 
 		db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
 		db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
@@ -654,6 +669,8 @@ class Dbas(object):
 			statements  = _uh.get_count_of_statements_of_user(db_user, False)
 			arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
 			public_nick = db_user.public_nickname
+			db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first()
+			group       = db_group.name if db_group else '-'
 		else:
 			edits       = 0
 			statements  = 0
@@ -662,7 +679,7 @@ class Dbas(object):
 			public_nick = str(self.request.authenticated_userid)
 
 		if db_user and 'form.passwordchange.submitted' in self.request.params:
-			old_pw = escape_string(self.request.params['passwordold'])  # TODO passwords with html strings
+			old_pw = escape_string(self.request.params['passwordold'])
 			new_pw = escape_string(self.request.params['password'])
 			confirm_pw = escape_string(self.request.params['passwordconfirm'])
 
@@ -671,7 +688,7 @@ class Dbas(object):
 		# get gravater profile picture
 		gravatar_url = _uh.get_profile_picture(db_user)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 		settings_dict = {
 			'passwordold': '' if success else old_pw,
 			'password': '' if success else new_pw,
@@ -684,7 +701,7 @@ class Dbas(object):
 			'db_nickname': db_user.nickname if db_user else 'unknown',
 			'db_public_nickname': public_nick,
 			'db_mail': db_user.email if db_user else 'unknown',
-			'db_group': db_user.groups.name if db_user and db_user.groups else 'unknown',
+			'db_group': group,
 			'avatar_url': gravatar_url,
 			'edits_done': edits,
 			'statemens_posted': statements,
@@ -727,7 +744,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, append_notifications=True)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request, append_notifications=True)
 
 		return {
 			'layout': self.base_layout(),
@@ -755,7 +772,7 @@ class Dbas(object):
 		ui_locales = get_language(self.request, get_current_registry())
 		is_author = UserHandler.is_user_author(self.request.authenticated_userid)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 
 		return {
 			'layout': self.base_layout(),
@@ -809,7 +826,7 @@ class Dbas(object):
 			return self.user_logout(True)
 
 		ui_locales = get_language(self.request, get_current_registry())
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 
 		user_dict = UserHandler.get_information_of(current_user, ui_locales)
 
@@ -844,7 +861,7 @@ class Dbas(object):
 		if session_expired:
 			return self.user_logout(True)
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 		import pkg_resources
 		extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
@@ -879,7 +896,7 @@ class Dbas(object):
 		self.request.response.status = 404
 		ui_locales = get_language(self.request, get_current_registry())
 
-		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid)
+		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 
 		# return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
@@ -1132,6 +1149,7 @@ class Dbas(object):
 			gender          = escape_string(params['gender'])
 			password        = escape_string(params['password'])
 			passwordconfirm = escape_string(params['passwordconfirm'])
+			spamanswer      = escape_string(params['spamanswer'])
 
 			# database queries mail verification
 			db_nick1 = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -1155,6 +1173,10 @@ class Dbas(object):
 			elif not is_mail_valid:
 				logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
 				info = _t.get(_t.mailNotValid)
+			# is anti-spam correct?
+			elif str(spamanswer) != str(self.request.session['antispamanswer']):
+				logger('user_registration', 'main', 'Anti-Spam answer \'' + str(spamanswer) + '\' is not equal ' + str(self.request.session['antispamanswer']))
+				info = _t.get(_t.maliciousAntiSpam)
 			else:
 				# getting the authors group
 				db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
@@ -1201,9 +1223,15 @@ class Dbas(object):
 			logger('user_registration', 'error', repr(e))
 			error = _t.get(_t.internalError)
 
-		return_dict['success'] = str(success)
-		return_dict['error']   = str(error)
-		return_dict['info']    = str(info)
+		# get anti-spam-question
+		spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
+		# save answer in session
+		self.request.session['antispamanswer'] = answer
+
+		return_dict['success']      = str(success)
+		return_dict['error']        = str(error)
+		return_dict['info']         = str(info)
+		return_dict['spamquestion'] = str(spamquestion)
 
 		return json.dumps(return_dict, True)
 
@@ -1262,6 +1290,10 @@ class Dbas(object):
 		return_dict['success'] = str(success)
 		return_dict['error']   = str(error)
 		return_dict['info']    = str(info)
+
+		logger('user_password_request', 'success', str(success))
+		logger('user_password_request', 'error', str(error))
+		logger('user_password_request', 'info', str(info))
 
 		return json.dumps(return_dict, True)
 
@@ -1909,6 +1941,9 @@ class Dbas(object):
 				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_reasons(value, issue)
 			elif mode == '4':  # getting text
 				return_dict = FuzzyStringMatcher.get_strings_for_search(value)
+			elif mode == '5':  # getting public nicknames
+				nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+				return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_public_nickname(value, nickname)
 			else:
 				logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
 				return_dict = {'error': _tn.get(_tn.internalError)}

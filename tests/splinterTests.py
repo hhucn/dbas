@@ -362,11 +362,27 @@ class FrontendTests:
 		b = Browser(browser)
 		b.visit('http://localhost:4284/contact')
 
-		form = ['', 'name', 'mail', 'content', 'spam']
-		content = ['', 'some_name', 'some_mail@gmx.de', 'some_content', 'some_spam']
-		txt = ['name is empty', 'e-mail is empty', 'content is empty', 'anti-spam message is empty or wrong', 'anti-spam message is empty or wrong']
+		form = ['',
+		        'name',
+		        'mail',
+		        'content',
+		        'spam']
+		content = ['',
+		           'some_name',
+		           'some_mail@gmx.de',
+		           'some_content',
+		           'some_spam']
+		txt = ['name is empty',
+		       'mail is',
+		       'content is empty',
+		       'anti-spam message is empty or wrong',
+		       'anti-spam message is empty or wrong']
 		prefix = 'testing contact formular for '
-		msg = [prefix + 'empty name', prefix + 'empty e-mail', prefix + 'empty content', prefix + 'empty anti-spam', prefix + 'wrong anti-spam']
+		msg = [prefix + 'empty name',
+		       prefix + 'empty e-mail',
+		       prefix + 'empty content',
+		       prefix + 'empty anti-spam',
+		       prefix + 'wrong anti-spam']
 
 		success = True
 		for i in range(0, len(txt)):
