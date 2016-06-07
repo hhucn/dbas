@@ -186,7 +186,10 @@ def get_public_profile_picture(user, size=80):
 	:param size: Integer, default 80
 	:return: String
 	"""
-	additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
+	if user:
+		additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
+	else:
+		additional_id = 'y'
 	email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 	gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
 	gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
