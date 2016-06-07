@@ -16,6 +16,8 @@ $(function () {
 			var escapedText = new Helper().escapeHtml($('#popup-writing-notification-recipient').val());
 			new AjaxSiteHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
 		}, 200);
+	}).focusout(function() {
+		$('#proposal-user-list-group').empty();
 	});
 });
 

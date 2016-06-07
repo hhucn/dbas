@@ -44,7 +44,7 @@ from .strings import Translator
 from .url_manager import UrlManager
 
 name = 'D-BAS'
-version = '0.5.13'
+version = '0.5.14'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1

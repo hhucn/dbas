@@ -110,7 +110,7 @@ class DiscussionDictHelper(object):
 		question            += text[0:1].lower() + text[1:] if self.lang != 'de' else text
 		question            += '</strong> '
 		if self.lang == 'de':
-			question        += (_tn.get(_tn.isTrue if is_supportive else _tn.isNotAGoodIdea)) + '?'
+			question        += ', ' + (_tn.get(_tn.isTrue if is_supportive else _tn.isNotAGoodIdea)) + '?'
 		else:
 			question        += _tn.get(_tn.holds if is_supportive else false) + '?'
 		because			    = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'

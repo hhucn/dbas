@@ -170,7 +170,7 @@ class FrontendTests:
 		start = time.time()
 		while len(splitted_list) > 0:
 			if splitted_list[0].strip() == '0':
-				success_counter += Helper.test_wrapper('tests for normal pages', FrontendTests.__test_pages_when_not_logged_in, browser_style)
+				success_counter += Helper.test_wrapper('tests for normal/not logged in pages', FrontendTests.__test_pages_when_not_logged_in, browser_style)
 			elif splitted_list[0].strip() == '1':
 				success_counter += Helper.test_wrapper('tests for login logout', FrontendTests.__test_login_logout, browser_style)
 			elif splitted_list[0].strip() == '2':
@@ -229,6 +229,7 @@ class FrontendTests:
 		success = True
 		b = Browser(browser)
 		b = Helper.logout(b)
+		b.find_by_id('link-trans-en').click()
 
 		pages = [mainpage,
 		         mainpage + 'contact',
@@ -803,7 +804,7 @@ if __name__ == "__main__":
 
 	print('Please choose a testing style:')
 	print('  [ a]ll (default)')
-	print('  [ 0] tests for normal pages')
+	print('  [ 0] tests for normal/not logged in pages')
 	print('  [ 1] tests for login logout')
 	print('  [ 2] tests for logged in pages')
 	print('  [ 3] tests for popups')
