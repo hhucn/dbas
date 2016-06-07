@@ -47,6 +47,14 @@ Components Documentation
 
     components/index
 
+Docker
+======
+
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+    docker/index
 
 Pyramid-Specific Stuff
 ======================
