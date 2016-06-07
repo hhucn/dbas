@@ -11,7 +11,7 @@ import os
 import sys
 import transaction
 import random
-import dbas.password_handler as PasswordHandler
+import dbas.password_handler as passwordHandler
 
 from math import trunc
 from dbas.logger import logger
@@ -41,10 +41,10 @@ def main_discussion(argv=sys.argv):
 	DiscussionBase.metadata.create_all(discussion_engine)
 
 	with transaction.manager:
-		user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
+		user0, user1, user2, user3, user4, user5, user6, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
 		lang1, lang2 = set_up_language(DBDiscussionSession)
 		issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
-		set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
+		set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user5, user6, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
 		setup_discussion_database(DBDiscussionSession, user2, issue1, issue2, issue4, issue5)
 		transaction.commit()
 
@@ -376,18 +376,22 @@ def set_up_users(session):
 	session.flush()
 
 	# adding some dummy users
-	pwt = PasswordHandler.get_hashed_password('iamatestuser2016')
-	pw0 = PasswordHandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-	pw1 = PasswordHandler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
-	pw2 = PasswordHandler.get_hashed_password('tobias')
-	pw3 = PasswordHandler.get_hashed_password('martin')
-	pw4 = PasswordHandler.get_hashed_password('christian')
+	pwt = passwordHandler.get_hashed_password('iamatestuser2016')
+	pw0 = passwordHandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+	pw1 = passwordHandler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
+	pw2 = passwordHandler.get_hashed_password('tobias')
+	pw3 = passwordHandler.get_hashed_password('martin')
+	pw4 = passwordHandler.get_hashed_password('christian')
+	pw5 = passwordHandler.get_hashed_password('daszimistdoof123#')
+	pw6 = passwordHandler.get_hashed_password('daszimistdoof321!')
 
 	user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
 	user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
 	user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
 	user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group=group0.uid, gender='m')
 	user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group=group0.uid, gender='m')
+	user5 = User(firstname='Raphael', surname='Bialon', nickname='Яaphael', email='bialon@cs.uni-duesseldorf.de', password=pw5, group=group1.uid, gender='m')
+	user6 = User(firstname='Alexander', surname='Schneider', nickname='WeGi', email='aschneider@cs.uni-duesseldorf.de', password=pw6, group=group1.uid, gender='m')
 
 	usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='.tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
 	usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='t.obias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
@@ -412,7 +416,7 @@ def set_up_users(session):
 	usert20 = User(firstname='Catrin', surname='Fahnrich', nickname='Catrin', email='tobia.s.kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
 	usert21 = User(firstname='Antonia', surname='Bartram', nickname='Antonia', email='tobias..kr.authoff@gmail.com', password=pwt, group=group2.uid, gender='f')
 	usert22 = User(firstname='Nora', surname='Kempf', nickname='Nora', email='tobias..k.rauthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
-	usert23 = User(firstname='Nora', surname='Wetter', nickname='Nora', email='tobias.k..rauthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
+	usert23 = User(firstname='Julia', surname='Wetter', nickname='Julia', email='tobias.k..rauthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
 	usert24 = User(firstname='Jutta', surname='Munch', nickname='Jutta', email='tobias.kr..authoff@gmail.com', password=pwt, group=group2.uid, gender='f')
 	usert25 = User(firstname='Helga', surname='Heilmann', nickname='Helga', email='tobias..kra.uthoff@gmail.com', password=pwt, group=group2.uid, gender='f')
 	usert26 = User(firstname='Denise', surname='Tietjen', nickname='Denise', email='tobia.s.krau.thoff@gmail.com', password=pwt, group=group2.uid, gender='f')
@@ -421,16 +425,16 @@ def set_up_users(session):
 	usert29 = User(firstname='Sybille', surname='Redlich', nickname='Sybille', email='to.bias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='f')
 	usert30 = User(firstname='Ingeburg', surname='Fischer', nickname='Ingeburg', email='t.obias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='f')
 
-	session.add_all([user0, user1, user2, user3, user4, usert00])
+	session.add_all([user0, user1, user2, user3, user4, user5, user6, usert00])
 	session.add_all([usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10])
 	session.add_all([usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20])
 	session.add_all([usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30])
 	session.flush()
 
-	return user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
+	return user0, user1, user2, user3, user4, user5, user6, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
 
 
-def set_up_settings(session, user0, user1, user2, user3, user4, usert00, usert01, usert02, usert03, usert04, usert05,
+def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, usert00, usert01, usert02, usert03, usert04, usert05,
                     usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16,
                     usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27,
                     usert28, usert29, usert30):
@@ -440,6 +444,8 @@ def set_up_settings(session, user0, user1, user2, user3, user4, usert00, usert01
 	settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+	settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst00 = Settings(author_uid=usert00.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst01 = Settings(author_uid=usert01.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst02 = Settings(author_uid=usert02.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
@@ -471,7 +477,7 @@ def set_up_settings(session, user0, user1, user2, user3, user4, usert00, usert01
 	settingst28 = Settings(author_uid=usert28.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst29 = Settings(author_uid=usert29.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
 	settingst30 = Settings(author_uid=usert30.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-	session.add_all([settings0, settings1, settings2, settings3, settings4])
+	session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6])
 	session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
 	session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
 	session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
@@ -501,7 +507,9 @@ def set_up_settings(session, user0, user1, user2, user3, user4, usert00, usert01
 	notification0 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification1 = Notification(from_author_uid=user1.uid, to_author_uid=user3.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
 	notification2 = Notification(from_author_uid=user1.uid, to_author_uid=user4.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-	session.add_all([notification0, notification1, notification2])
+	notification3 = Notification(from_author_uid=user1.uid, to_author_uid=user5.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	notification4 = Notification(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+	session.add_all([notification0, notification1, notification2, notification3, notification4])
 	session.flush()
 
 
@@ -726,8 +734,11 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	textversion211 = TextVersion(content="man gezielt 'tanken' kann, genauso wie bei einem herk&ouml;mmlichen KFZ.", author=user.uid)
 	textversion301 = TextVersion(content="durch rücksichtsvolle Verhaltensanpassungen der wissenschaftlichen Mitarbeitenden der Arbeitsaufwand der Sekretärinnen gesenkt werden könnte", author=user.uid)
 	textversion302 = TextVersion(content="wir Standard-Formulare, wie Urlaubsanträge, selbst faxen können", author=user.uid)
-	textversion303 = TextVersion(content="Etliche Abläufe durch ein besseres Zusammenarbeiten optimiert werden können. Dies sollte auch schriftlich als Anleitungen festgehalten werden, damit neue Angestellt einen leichten Einstieg finden", author=user.uid)
-	textversion304 = TextVersion(content="Viele Arbeiten auch durch die Mitarbeiter erledigt werden können", author=user.uid)
+	textversion303 = TextVersion(content="etliche Abläufe durch ein besseres Zusammenarbeiten optimiert werden können. Dies sollte auch schriftlich als Anleitungen festgehalten werden, damit neue Angestellt einen leichten Einstieg finden", author=user.uid)
+	textversion304 = TextVersion(content="viele Arbeiten auch durch die Mitarbeiter erledigt werden können", author=user.uid)
+	textversion305 = TextVersion(content="\"rücksichtsvolle Verhaltensanpassungen\" viel zu allgemein gehalten ist", author=user.uid)
+	textversion306 = TextVersion(content="das Faxgerät nicht immer zugänglich ist, wenn die Sekretärinnen nicht anwesend sind", author=user.uid)
+	textversion307 = TextVersion(content="wir keine eigenen Faxgeräte haben und so oder so entweder bei Martin stören müssten oder doch bei Sabine im Büro landen würden", author=user.uid)
 
 	session.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])
 	session.add_all([textversion7, textversion8, textversion9, textversion10, textversion11, textversion12])
@@ -741,7 +752,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	session.add_all([textversion118, textversion119, textversion120, textversion121, textversion122, textversion123])
 	session.add_all([textversion200, textversion201, textversion202, textversion203, textversion204, textversion205])
 	session.add_all([textversion206, textversion207, textversion208, textversion209, textversion210, textversion211])
-	session.add_all([textversion301, textversion302, textversion303, textversion304])
+	session.add_all([textversion301, textversion302, textversion303, textversion304, textversion305, textversion306])
+	session.add_all([textversion307])
 	session.flush()
 
 	# random timestamps
@@ -823,6 +835,9 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	statement302 = Statement(textversion=textversion302.uid, is_startpoint=True, issue=issue5.uid)
 	statement303 = Statement(textversion=textversion303.uid, is_startpoint=False, issue=issue5.uid)
 	statement304 = Statement(textversion=textversion304.uid, is_startpoint=False, issue=issue5.uid)
+	statement305 = Statement(textversion=textversion305.uid, is_startpoint=False, issue=issue5.uid)
+	statement306 = Statement(textversion=textversion306.uid, is_startpoint=False, issue=issue5.uid)
+	statement307 = Statement(textversion=textversion307.uid, is_startpoint=False, issue=issue5.uid)
 
 	session.add_all([statement1, statement2, statement3, statement4, statement5, statement6, statement7])
 	session.add_all([statement8, statement9, statement10, statement11, statement12, statement13, statement14])
@@ -835,7 +850,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	session.add_all([statement123])
 	session.add_all([statement200, statement201, statement202, statement203, statement204, statement205, statement206])
 	session.add_all([statement207, statement208, statement209, statement210, statement211])
-	session.add_all([statement301, statement302, statement303, statement304])
+	session.add_all([statement301, statement302, statement303, statement304, statement305, statement306, statement307])
 
 	session.flush()
 
@@ -915,6 +930,9 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	textversion302.set_statement(statement302.uid)
 	textversion303.set_statement(statement303.uid)
 	textversion304.set_statement(statement304.uid)
+	textversion305.set_statement(statement305.uid)
+	textversion306.set_statement(statement306.uid)
+	textversion307.set_statement(statement307.uid)
 
 	# adding all premisegroups
 	premisegroup1 = PremiseGroup(author=user.uid)
@@ -978,6 +996,9 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	premisegroup213 = PremiseGroup(author=user.uid)
 	premisegroup303 = PremiseGroup(author=user.uid)
 	premisegroup304 = PremiseGroup(author=user.uid)
+	premisegroup305 = PremiseGroup(author=user.uid)
+	premisegroup306 = PremiseGroup(author=user.uid)
+	premisegroup307 = PremiseGroup(author=user.uid)
 
 	session.add_all([premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6])
 	session.add_all([premisegroup7, premisegroup8, premisegroup9, premisegroup10, premisegroup11, premisegroup12])
@@ -991,7 +1012,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	session.add_all([premisegroup203, premisegroup204, premisegroup205, premisegroup206, premisegroup207])
 	session.add_all([premisegroup208, premisegroup209, premisegroup210, premisegroup211, premisegroup212])
 	session.add_all([premisegroup213])
-	session.add_all([premisegroup303, premisegroup304])
+	session.add_all([premisegroup303, premisegroup304, premisegroup305, premisegroup306, premisegroup307])
 	session.flush()
 
 	premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement4.uid, is_negated=False, author=user.uid, issue=issue2.uid)
@@ -1054,6 +1075,9 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	premise211 = Premise(premisesgroup=premisegroup211.uid, statement=statement211.uid, is_negated=False, author=user.uid, issue=issue4.uid)
 	premise303 = Premise(premisesgroup=premisegroup303.uid, statement=statement303.uid, is_negated=False, author=user.uid, issue=issue5.uid)
 	premise304 = Premise(premisesgroup=premisegroup304.uid, statement=statement304.uid, is_negated=False, author=user.uid, issue=issue5.uid)
+	premise305 = Premise(premisesgroup=premisegroup305.uid, statement=statement305.uid, is_negated=False, author=user.uid, issue=issue5.uid)
+	premise306 = Premise(premisesgroup=premisegroup306.uid, statement=statement306.uid, is_negated=False, author=user.uid, issue=issue5.uid)
+	premise307 = Premise(premisesgroup=premisegroup307.uid, statement=statement307.uid, is_negated=False, author=user.uid, issue=issue5.uid)
 
 	session.add_all([premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
 	session.add_all([premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17])
@@ -1064,7 +1088,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	session.add_all([premise121, premise122, premise123])
 	session.add_all([premise203, premise204, premise205, premise206, premise207, premise208, premise209, premise210])
 	session.add_all([premise211])
-	session.add_all([premise303, premise304])
+	session.add_all([premise303, premise304, premise305, premise306, premise307])
 	session.flush()
 
 	# adding all arguments and set the adjacency list
@@ -1131,8 +1155,11 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	argument208 = Argument(premisegroup=premisegroup210.uid, issupportive=False, author=user.uid, issue=issue4.uid)
 	argument209 = Argument(premisegroup=premisegroup211.uid, issupportive=False, author=user.uid, issue=issue4.uid)
 	####
-	argument303 = Argument(premisegroup=premisegroup303.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
-	argument304 = Argument(premisegroup=premisegroup304.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
+	argument303 = Argument(premisegroup=premisegroup303.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
+	argument304 = Argument(premisegroup=premisegroup304.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
+	argument305 = Argument(premisegroup=premisegroup305.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
+	argument306 = Argument(premisegroup=premisegroup306.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement302.uid)
+	argument307 = Argument(premisegroup=premisegroup307.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement302.uid)
 
 	session.add_all([argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
 	session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
@@ -1144,7 +1171,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	session.add_all([argument115, argument116, argument117, argument118, argument119])
 	session.add_all([argument201, argument202, argument203, argument204, argument205, argument206, argument207])
 	session.add_all([argument208, argument209])
-	session.add_all([argument303, argument304])
+	session.add_all([argument303, argument304, argument305, argument306, argument307])
 	session.flush()
 
 	argument5.conclusions_argument(argument3.uid)

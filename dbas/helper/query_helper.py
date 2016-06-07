@@ -370,7 +370,7 @@ class QueryHelper:
 			corr_dict['uid'] = str(versions.uid)
 			corr_dict['author'] = str(db_author.public_nickname)
 			corr_dict['author_url'] = mainpage + '/user/' + str(db_author.nickname)
-			corr_dict['author_gravatar'] = UserHandler.get_profile_picture(db_author, 20)
+			corr_dict['author_gravatar'] = UserHandler.get_public_profile_picture(db_author, 20)
 			corr_dict['date'] = sql_timestamp_pretty_print(versions.timestamp, lang)
 			corr_dict['text'] = str(versions.content)
 			content_dict[str(index)] = corr_dict

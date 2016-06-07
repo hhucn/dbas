@@ -44,7 +44,7 @@ from .strings import Translator
 from .url_manager import UrlManager
 
 name = 'D-BAS'
-version = '0.5.13'
+version = '0.5.14'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -686,7 +686,7 @@ class Dbas(object):
 			message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
 		# get gravater profile picture
-		gravatar_url = _uh.get_profile_picture(db_user)
+		gravatar_public_url = _uh.get_public_profile_picture(db_user)
 
 		extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 		settings_dict = {
@@ -702,7 +702,7 @@ class Dbas(object):
 			'db_public_nickname': public_nick,
 			'db_mail': db_user.email if db_user else 'unknown',
 			'db_group': group,
-			'avatar_url': gravatar_url,
+			'avatar_public_url': gravatar_public_url,
 			'edits_done': edits,
 			'statemens_posted': statements,
 			'discussion_arg_votes': arg_vote,
@@ -1385,7 +1385,7 @@ class Dbas(object):
 					db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction)
 					uid = db_notification.uid
 					ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-					gravatar = UserHandler.get_profile_picture(db_recipient, 20)
+					gravatar = UserHandler.get_public_profile_picture(db_recipient, 20)
 
 		except KeyError:
 			error = _tn.get(_tn.internalError)
