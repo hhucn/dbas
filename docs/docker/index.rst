@@ -86,3 +86,10 @@ You can execute any command inside the container, or start a bash with this comm
 in `NAMES`::
 
    $ docker exec -it dbas_web_1 bash
+
+Optimizations
+=============
+
+.. todo::
+   Docker has its own `docker.ini`. I don't like this, reduce this to one file and merge it with
+   `development.ini`.
