@@ -10,6 +10,13 @@ $(function () {
 	not.setPanelClickFunctions();
 	not.setClickFunctionsForAnswerNotification();
 	not.setClickFunctionsForNewNotification();
+
+	$('#popup-writing-notification-recipient').keyup(function () {
+		new Helper().delay(function () {
+			var escapedText = new Helper().escapeHtml($('#popup-writing-notification-recipient').val());
+			new AjaxSiteHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
+		}, 200);
+	});
 });
 
 function Notifications() {

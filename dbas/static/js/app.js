@@ -128,7 +128,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 			// maybe set a cookie
 			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7);
+				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7, true);
 			}
 
 			if (isRestartingDiscussion) {
@@ -156,7 +156,7 @@ function displayBubbleInformationDialog(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(img);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			new Helper().setCookieForDays(BUBBLE_INFOS, 30);
+			new Helper().setCookieForDays(BUBBLE_INFOS, 30, true);
 		}).removeClass('btn-success');
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 	}
@@ -311,7 +311,8 @@ function prepareLoginRegistrationPopup(){
 			text = '',
 			i,
 			fields = [userfirstname, userlastname, nick, email, password, passwordconfirm],
-			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword), _t(checkConfirmation), _t(checkPasswordConfirm)];
+			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword),
+				_t(checkConfirmation), _t(checkPasswordConfirm)];
 
 		// check all vields for obivously errors
 		for (i=0; i<fields.length; i++){
@@ -459,6 +460,7 @@ function ajaxRegistration (){
 		email = $('#email-input').val(),
 		password = $('#' + popupLoginPasswordInputId).val(),
 		passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
+		spamanswer = $('#popup-login-spamanswer-input').val(),
 		gender = '';
 
 	if ($('#' + popupLoginInlineRadioGenderN).is(':checked')) gender = 'n';
@@ -475,6 +477,7 @@ function ajaxRegistration (){
 				email: email,
 				password: password,
 				passwordconfirm: passwordconfirm,
+				spamanswer: spamanswer,
 				lang: getLanguage()},
 		dataType: 'json',
 		async: true,
@@ -617,6 +620,7 @@ function callbackIfDoneForRegistration(data){
 	if (parsedData.info.length > 0) {
 		info.show();
 		$('#' + popupLoginRegistrationInfo + '-message').text(parsedData.info);
+		$('#popup-login-spamanswer-input').attr('placeholder', parsedData.spamquestion).val('');
 	}
 }
 
@@ -636,15 +640,15 @@ function callbackIfDoneForPasswordRequest(data){
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 		success.show();
-		$('#' + popupLoginSuccess + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginSuccess + '-message').text(parsedData.success);
 	}
 	if (parsedData.error.length > 0) {
 		failed.show();
-		$('#' + popupLoginFailed + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginFailed + '-message').text(parsedData.error);
 	}
 	if (parsedData.info.length > 0) {
 		info.show();
-		$('#' + popupLoginInfo + '-message').text(_t(parsedData.message));
+		$('#' + popupLoginInfo + '-message').text(parsedData.info);
 	}
 }
 
