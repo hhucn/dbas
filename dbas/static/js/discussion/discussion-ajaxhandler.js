@@ -281,7 +281,6 @@ function AjaxSiteHandler() {
 			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
 			bubbleSpace = $('#' + discussionBubbleSpaceId),
 			csrfToken = $('#' + hiddenCSRFTokenId).val();
-
 		// clear lists if input is empty
 		if(callback.val().length==0) {
 			$('#' + proposalStatementListGroupId).empty();
