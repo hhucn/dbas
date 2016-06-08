@@ -97,7 +97,7 @@ def update_last_action(transaction, nick):
 	if not db_user:
 		return False
 
-	timeout = 3600
+	timeoutInSec = 60 * 60 * 24 * 7
 
 	# check difference of
 	# TODO TIME ZONE OF SERVER
@@ -107,7 +107,7 @@ def update_last_action(transaction, nick):
 	diff_login = (datetime.now() - last_login_object).seconds
 
 	diff = diff_action if diff_action < diff_login else diff_login
-	should_log_out = diff > timeout and not db_user.keep_logged_in
+	should_log_out = diff > timeoutInSec and not db_user.keep_logged_in
 	db_user.update_last_action()
 
 	transaction.commit()
