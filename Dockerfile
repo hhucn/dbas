@@ -5,14 +5,14 @@ MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 RUN mkdir /code
 WORKDIR /code
 
+ADD . /code/
+
 ADD requirements.txt /code/
 RUN pip install -U pip
 RUN pip install -r requirements.txt
 
 # RUN apt-get update
 # RUN apt-get --yes install sudo
-
-ADD . /code/
 
 RUN python setup.py develop
 
