@@ -145,8 +145,10 @@ function Notifications() {
 				$('#error-space').fadeIn();
 				$('#error-description').text(parsedData.error);
 			} else {
-				var text = $(_this).text().replace('NEW ', ''),
-					spanEl = $('<span>').addClass('text-primary').text($(_this).text().replace('NEW ', ''));
+				alert($(_this).text());
+				var titletext = $(_this).text().replace(_t(neww).toLocaleUpperCase(), '').trim();
+				alert(titletext);
+				var spanEl = $('<span>').addClass('text-primary').text(titletext);
 				$(_this).empty().html(spanEl);
 				$('#collapse' + id).addClass('in');
 				new Notifications().setNewBadgeCounter(parsedData.unread_messages);

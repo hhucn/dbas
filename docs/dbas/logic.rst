@@ -4,7 +4,7 @@ Logic
 
 Description
 ===========
-....
+...
 
 Dialogsequence
 ==============
