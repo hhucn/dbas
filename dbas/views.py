@@ -557,7 +557,6 @@ class Dbas(object):
 		phone           = escape_string(self.request.params['phone'] if 'phone' in self.request.params else '')
 		content         = escape_string(self.request.params['content'] if 'content' in self.request.params else '')
 		spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
-		spamquestion    = ''
 
 		try:
 			spamanswer = int(spamanswer) if len(spamanswer) > 0 else '#'
@@ -566,10 +565,6 @@ class Dbas(object):
 		key = 'contact-antispamanswer'
 		antispamanswer = self.request.session[key] if key in self.request.session else ''
 		spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
-
-		logger('x', 'x', str(self.request.params))
-		logger('x', 'x', str(self.request.params))
-		logger('x', 'x', str(self.request.params))
 
 		if 'form.contact.submitted' in self.request.params:
 			_t = Translator(ui_locales)

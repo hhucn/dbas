@@ -365,7 +365,9 @@ class ItemDictHelper(object):
 
 		# last item is the change attack button or step back, if we have bno other attack
 		arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.issue_uid, self.lang,
-		                                                     restriction_on_attacks=attack, restriction_on_arg_uid=argument_uid_sys)
+		                                                     restriction_on_attacks=attack,
+		                                                     restriction_on_arg_uid=argument_uid_sys)
+
 		if new_attack == 'no_other_attack' or new_attack.startswith('end'):
 			relation = 'step_back'
 			url = 'back' if self.for_api else 'window.history.go(-1)'
