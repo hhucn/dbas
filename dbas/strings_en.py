@@ -352,6 +352,7 @@ class EnglischDict:
 		en_lang[_self.letsGoHome] = 'Let\'s go home!'
 		en_lang[_self.more] = 'More'
 		en_lang[_self.medium] = 'medium'
+		en_lang[_self.minLength] = 'Minimal length'
 		en_lang[_self.next] = 'Next Entry'
 		en_lang[_self.now] = 'Now'
 		en_lang[_self.newPremiseRadioButtonText] = 'None of the above! Let me state my own reason!'

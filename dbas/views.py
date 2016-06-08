@@ -1369,8 +1369,8 @@ class Dbas(object):
 			text      = self.request.params['text']
 			db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
 			if len(title) < 5 or len(text) < 5:
-				error = _tn.get(_tn.empty_notification_input)
-			elif not db_recipient:
+				error = _tn.get(_tn.empty_notification_input) + ' (' + _tn.get(_tn.minLength) + ': 5)'
+			elif not db_recipient or recipient == 'admin' or recipient == 'anonymous':
 				error = _tn.get(_tn.recipientNotFound)
 			else:
 				db_author = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
@@ -1478,6 +1478,9 @@ class Dbas(object):
 			                                                                                 premisegroups, conclusion_id,
 			                                                                                 supportive, issue, nickname,
 			                                                                                 for_api, mainpage, lang)
+
+			# TODO Issue 88 notify user
+
 			return_dict['error'] = error
 			return_dict['statement_uids'] = statement_uids
 
@@ -1534,6 +1537,8 @@ class Dbas(object):
 
 			return_dict['error'] = error
 			return_dict['statement_uids'] = statement_uids
+
+			# TODO Issue 88 notify user
 
 			if url == -1:
 				return json.dumps(return_dict, True)

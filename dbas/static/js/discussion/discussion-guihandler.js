@@ -426,7 +426,7 @@ function GuiHandler() {
 		else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).empty();
 		else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).empty();
 		else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).empty();
-		else if (type == fuzzy_find_user) $('#' + proposalUserListGroupId).empty();
+		else if (type == fuzzy_find_user)       $('#' + proposalUserListGroupId).empty();
 
 		// is there any value ?
 		if (parsedData.length == 0){

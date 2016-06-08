@@ -16,7 +16,11 @@ $(function () {
 			var escapedText = new Helper().escapeHtml($('#popup-writing-notification-recipient').val());
 			new AjaxSiteHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
 		}, 200);
-	}).focusout(function() {
+	});
+	$('#popup-writing-notification-title').focusin(function(){
+		$('#proposal-user-list-group').empty();
+	});
+	$('#popup-writing-notification-text').focusin(function(){
 		$('#proposal-user-list-group').empty();
 	});
 });
@@ -59,7 +63,6 @@ function Notifications() {
 		$('.answer-notification').each(function () {
 			$(this).click(function(){
 				var _this = $(this);
-				alert(_this.prev().text().trim());
 				$('#popup-writing-notification-recipient').show().val(_this.prev().text().trim());
 				$('#popup-writing-notification').modal('show');
 				$('#popup-writing-notification-success').hide();
