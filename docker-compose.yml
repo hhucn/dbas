@@ -5,8 +5,8 @@ services:
     ports:
       - "5433:5432"
   web:
-    build: docker/core/
-    command: /bin/bash docker/core/docker_init.sh
+    build: .
+    command: /bin/bash core/docker_init.sh
     volumes:
       - .:/code
     ports:
