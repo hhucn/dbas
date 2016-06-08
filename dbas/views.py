@@ -1364,7 +1364,7 @@ class Dbas(object):
 		_tn = Translator(ui_locales)
 
 		try:
-			recipient = self.request.params['recipient']
+			recipient = self.request.params['recipient'].replace('%20', ' ')
 			title     = self.request.params['title']
 			text      = self.request.params['text']
 			db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
