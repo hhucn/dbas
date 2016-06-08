@@ -268,7 +268,7 @@ class GermanDict:
 		de_lang[_self.firstOneInformationText] = 'Sie sind der Erste, der Informationen haben möchte, über: '
 		de_lang[_self.firstOneReason] = 'Sie sind der Erste mit diesem Argument. Bitte geben Sie Ihre Begründung an.'
 		de_lang[_self.firstPositionText] = 'Sie sind der Erste in dieser Diskussion!'
-		de_lang[_self.firstPremiseText1] = 'Sie sind der Erste, der sagt:'
+		de_lang[_self.firstPremiseText1] = 'Sie sind der Erste, der sagt, dass '
 		de_lang[_self.firstPremiseText2] = 'Bitte begründen Sie Ihre Aussage.'
 		de_lang[_self.firstname] = 'Vorname'
 		de_lang[_self.fromm] = 'von'
