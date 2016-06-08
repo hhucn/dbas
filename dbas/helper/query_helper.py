@@ -100,7 +100,7 @@ class QueryHelper:
 		for group in premisegroups:  # premise groups is a list of lists
 			new_argument_uid, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
 			if new_argument_uid == -1:  # break on error
-				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+				error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 				return -1, None, error
 
 			new_argument_uids.append(new_argument_uid)
@@ -111,7 +111,7 @@ class QueryHelper:
 		# #arguments=1: deliver new url
 		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_argument_uids) == 0:
-			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+			error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 
 		elif len(new_argument_uids) == 1:
 			new_argument_uid = random.choice(new_argument_uids)
@@ -168,7 +168,7 @@ class QueryHelper:
 		for group in premisegroups:  # premise groups is a list of lists
 			new_argument_uid = QueryHelper.__insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
 			if new_argument_uid == -1:  # break on error
-				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+				error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 				return -1, None, error
 			new_argument_uids.append(new_argument_uid)
 
@@ -187,7 +187,7 @@ class QueryHelper:
 		# #arguments=1: deliver new url
 		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_argument_uids) == 0:
-			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+			error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 
 		elif len(new_argument_uids) == 1:
 			new_argument_uid = random.choice(new_argument_uids)

@@ -184,7 +184,10 @@ def get_strings_for_public_nickname(value, nickname):
 
 	index = 1
 	for user in db_user:
-		if user.public_nickname.lower().startswith(value.lower()) and user.nickname != nickname:
+		if user.public_nickname.lower().startswith(value.lower())\
+				and user.nickname != nickname\
+				and user.nickname != 'admin'\
+				and user.nickname != 'anonymous':
 			dist = __get_distance__(value, user.public_nickname)
 			return_array.append({'index': 0,
 			                     'distance': dist,

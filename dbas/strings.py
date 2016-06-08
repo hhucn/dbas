@@ -305,6 +305,7 @@ class Translator(object):
 		self.mailNotValid = 'mailNotValid'
 		self.mailSettingsTitle = 'mailSettingsTitle'
 		self.moreAbout = 'moreAbout'
+		self.minLength = 'minLength'
 		self.nickIsTaken = 'nickIsTaken'
 		self.nicknameIs = 'nicknameIs'
 		self.newPwdEmtpy = 'newPwdEmtpy'
