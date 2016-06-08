@@ -1408,8 +1408,8 @@ class Dbas(object):
 
 		logger('set_new_start_statement', 'def', 'main')
 
-		lang = get_language(self.request, get_current_registry())
-		_tn = Translator(lang)
+		discussion_lang = get_discussion_language(self.request)
+		_tn = Translator(discussion_lang)
 		return_dict = dict()
 		return_dict['error'] = ''
 		return_dict['statement_uids'] = []
@@ -1429,7 +1429,7 @@ class Dbas(object):
 			UserHandler.update_last_action(transaction, nickname)
 			new_statement = QueryHelper.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
 			if new_statement == -1:
-				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+				return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': 10)'
 			else:
 				url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
 				return_dict['url'] = url

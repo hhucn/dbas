@@ -150,7 +150,6 @@
 					</button>
 					<div class="alert alert-danger" role="alert">
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span i18n:translate="error">Error:</span>
 						<span id="discussion-failure-msg"></span>
 					</div>
 					<div class="col-md-3"></div>
@@ -272,7 +271,6 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-					<span i18n:translate="error:">Error:</span>
 					<span id="add-statement-error-msg"></span>
 				</div>
 				<div id="add-statement-container-body">
@@ -295,7 +293,6 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-					<span i18n:translate="error:">Error:</span>
 					<span id="add-premise-error-msg"></span>
 				</div>
 				<div id="add-premise-container-body">
