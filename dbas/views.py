@@ -66,7 +66,10 @@ class Dbas(object):
 		self.request = request
 		global mainpage
 		mainpage = request.application_url
-		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid # TODO
+		try:
+			self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
+		except Exception:
+			self.issue_fallback = 1
 
 	@staticmethod
 	def base_layout():
