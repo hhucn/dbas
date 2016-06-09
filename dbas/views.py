@@ -66,7 +66,7 @@ class Dbas(object):
 		self.request = request
 		global mainpage
 		mainpage = request.application_url
-		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
+		self.issue_fallback = DBDiscussionSession.query(Issue).first().uid # TODO
 
 	@staticmethod
 	def base_layout():
@@ -220,6 +220,9 @@ class Dbas(object):
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
+		if not Validator.check_for_integer(statement_id, True):
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
+
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		disc_ui_locales = get_discussion_language(self.request)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
@@ -288,6 +291,9 @@ class Dbas(object):
 		mode                = matchdict['mode'] if 'mode' in matchdict else ''
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
+
+		if not Validator.check_for_integer(statement_or_arg_id, True):
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 		disc_ui_locales     = get_discussion_language(self.request)
