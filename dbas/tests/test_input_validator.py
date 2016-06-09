@@ -53,6 +53,18 @@ class InputValidatorTests(unittest.TestCase):
                                                   is_history=False)
         self.assertEqual(undermine_false, False)
 
+        undermine_empty_string_false = reaction.check_reaction(attacked_arg_uid='',
+                                                               attacking_arg_uid='',
+                                                               relation='undermine',
+                                                               is_history=False)
+        self.assertEqual(undermine_empty_string_false, False)
+
+        undermine_string_false = reaction.check_reaction(attacked_arg_uid='2str/',
+                                                         attacking_arg_uid='19str',
+                                                         relation='undermine',
+                                                         is_history=True)
+        self.assertEqual(undermine_string_false, False)
+
         # undercut
         undercut_true = reaction.check_reaction(attacked_arg_uid=1,
                                                 attacking_arg_uid=17,
@@ -65,6 +77,18 @@ class InputValidatorTests(unittest.TestCase):
                                                  relation='undercut',
                                                  is_history=False)
         self.assertEqual(undercut_false, False)
+
+        undercut_empty_string_false = reaction.check_reaction(attacked_arg_uid='',
+                                                              attacking_arg_uid='',
+                                                              relation='undercut',
+                                                              is_history=False)
+        self.assertEqual(undercut_empty_string_false, False)
+
+        undercut_string_false = reaction.check_reaction(attacked_arg_uid='1str/',
+                                                        attacking_arg_uid='17str',
+                                                        relation='undercut',
+                                                        is_history=True)
+        self.assertEqual(undercut_string_false, False)
 
         # rebut
         rebut_not_db_attacked_arg_false = reaction.check_reaction(attacked_arg_uid=1,
@@ -98,6 +122,18 @@ class InputValidatorTests(unittest.TestCase):
                                              is_history=False)
         self.assertEqual(rebut_true, True)
 
+        rebut_empty_string_false = reaction.check_reaction(attacked_arg_uid='',
+                                                           attacking_arg_uid='',
+                                                           relation='rebut',
+                                                           is_history=False)
+        self.assertEqual(rebut_empty_string_false, False)
+
+        rebut_string_false = reaction.check_reaction(attacked_arg_uid='31str/',
+                                                     attacking_arg_uid='35str',
+                                                     relation='rebut',
+                                                     is_history=True)
+        self.assertEqual(rebut_string_false, False)
+
         # end
         end_attacking_arg_uid_not_zero_true = reaction.check_reaction(attacked_arg_uid=1,
                                                                       attacking_arg_uid=0,
@@ -116,4 +152,16 @@ class InputValidatorTests(unittest.TestCase):
                                                            relation='end',
                                                            is_history=True)
         self.assertEqual(end_not_is_history_false, False)
+
+        end_empty_string_false = reaction.check_reaction(attacked_arg_uid='',
+                                                         attacking_arg_uid='',
+                                                         relation='end',
+                                                         is_history=False)
+        self.assertEqual(end_empty_string_false, False)
+
+        end_string_false = reaction.check_reaction(attacked_arg_uid='1str/',
+                                                   attacking_arg_uid='str',
+                                                   relation='end',
+                                                   is_history=False)
+        self.assertEqual(end_string_false, False)
 
