@@ -364,7 +364,7 @@ def get_history_from_database(nickname, lang):
 	db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
 	return_array = []
 	for history in db_history:
-		return_array.append({'path': history.path, 'timestamp': sql_timestamp_pretty_print(history.timestamp, lang, False, True)})
+		return_array.append({'path': history.path, 'timestamp': sql_timestamp_pretty_print(history.timestamp, lang, False, True) + ' GMT'})
 
 	return return_array
 
