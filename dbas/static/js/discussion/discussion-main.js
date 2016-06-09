@@ -190,7 +190,8 @@ function Main () {
 		$('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click');
 
 		// get infos about the author
-		$('[id^="' + questionBubbleId + '-"').click(function () {
+		//$('[id^="' + questionBubbleId + '-"').click(function () {
+		$('.triangle-l').click(function () {
 			var uid = $(this).attr('id').replace(questionBubbleId + '-', '');
 			ajaxHandler.getMoreInfosAboutArgument(uid, true);
 		});
