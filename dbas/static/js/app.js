@@ -439,8 +439,10 @@ function ajaxLogout (){
 			'X-CSRF-Token': csrfToken
 		}
 	}).done(function ajaxLogoutDone(data) {
+		alert("1");
 		location.reload();
 	}).fail(function ajaxLogoutFail(xhr) {
+		alert("2 " + xhr.status);
 		if (xhr.status == 200) {
 			if (window.location.href.indexOf('settings') != 0){
 				window.location.href = mainpage;
