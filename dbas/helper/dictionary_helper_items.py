@@ -368,10 +368,6 @@ class ItemDictHelper(object):
 		                                                     restriction_on_attacks=attack,
 		                                                     restriction_on_arg_uid=argument_uid_sys)
 
-		logger('--', '--', new_attack)
-		logger('--', '--', new_attack)
-		logger('--', '--', new_attack)
-
 		if new_attack == 'no_other_attack' or new_attack.startswith('end'):
 			relation = 'step_back'
 			url = 'back' if self.for_api else 'window.history.go(-1)'
