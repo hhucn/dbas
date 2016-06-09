@@ -14,12 +14,11 @@
                         <span tal:condition="param_error" i18n:translate="wrong_input_params">, because the input parameter seems to be wrong.</span>
                         <br>
                         <br>
-                        <span i18n:translate="go-home_by">Go home by</span>
-                        <a href="self.location.href='/'" i18n:translate="clicking_here">clicking here</a>
+                        <a href="/" i18n:translate="go_home">Go home</a>
                         <span tal:condition="not:param_error">
                         <span i18n:translate="or">or</span>
                         <span i18n:translate="go_back">go back</span>
-                        <a href="javascript:'window.history.back();'" i18n:translate="to_the_discussion">to the discussion</a>
+                        <a href="javascript:window.history.back();" i18n:translate="to_the_discussion">to the discussion</a>
                         </span>
                         !
 					</p>
