@@ -1297,7 +1297,7 @@ msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #~ msgid "need-help-to-understand-statement"
-#~ msgstr "Wir brauchen Hilfe zum Verständniss Ihrer Aussage!"
+#~ msgstr "Wir brauchen Hilfe zum Verständnis Ihrer Aussage!"
 
 #~ msgid "set_premisegroups_intro1"
 #~ msgstr "Sie haben 'und' in Ihrer Aussage benutzt: "

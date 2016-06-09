@@ -26,7 +26,7 @@ class GermanDict:
 		de_lang[_self.insertOneArgument] = 'Ich habe eine Aussage:'
 		de_lang[_self.insertDontCare] = 'Es ist mir egal. Nimm\' meine Aussage wie sie ist!'
 		de_lang[_self.forgotInputRadio] = 'Sie haben eine Auswahl vergessen'
-		de_lang[_self.needHelpToUnderstandStatement] = 'Wir brauchen Hilfe zum Verständniss Ihrer Aussage!'
+		de_lang[_self.needHelpToUnderstandStatement] = 'Wir brauchen Hilfe zum Verständnis Ihrer Aussage!'
 		de_lang[_self.setPremisegroupsIntro1] = 'Sie haben \'und\' in Ihrer Aussage '
 		de_lang[_self.setPremisegroupsIntro2] = ' benutzt. Daher existieren mehrere mögliche Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen:'
 
