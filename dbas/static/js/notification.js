@@ -17,6 +17,12 @@ $(function () {
 			new AjaxSiteHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
 		}, 200);
 	});
+	$('#popup-writing-notification-title').focusin(function(){
+		$('#proposal-user-list-group').empty();
+	});
+	$('#popup-writing-notification-text').focusin(function(){
+		$('#proposal-user-list-group').empty();
+	});
 });
 
 function Notifications() {
@@ -57,7 +63,6 @@ function Notifications() {
 		$('.answer-notification').each(function () {
 			$(this).click(function(){
 				var _this = $(this);
-				alert(_this.prev().text().trim());
 				$('#popup-writing-notification-recipient').show().val(_this.prev().text().trim());
 				$('#popup-writing-notification').modal('show');
 				$('#popup-writing-notification-success').hide();
@@ -140,8 +145,8 @@ function Notifications() {
 				$('#error-space').fadeIn();
 				$('#error-description').text(parsedData.error);
 			} else {
-				var text = $(_this).text().replace('NEW ', ''),
-					spanEl = $('<span>').addClass('text-primary').text($(_this).text().replace('NEW ', ''));
+				var titletext = $(_this).text().replace(_t(neww).toLocaleUpperCase(), '').trim();
+				var spanEl = $('<span>').addClass('text-primary').text(titletext);
 				$(_this).empty().html(spanEl);
 				$('#collapse' + id).addClass('in');
 				new Notifications().setNewBadgeCounter(parsedData.unread_messages);

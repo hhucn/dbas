@@ -426,14 +426,14 @@ function GuiHandler() {
 		else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).empty();
 		else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).empty();
 		else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).empty();
-		else if (type == fuzzy_find_user) $('#' + proposalUserListGroupId).empty();
+		else if (type == fuzzy_find_user)       $('#' + proposalUserListGroupId).empty();
 
 		// is there any value ?
 		if (parsedData.length == 0){
 			return;
 		}
 
-		var token, button, span_dist, span_text, distance, index, text;
+		var token, button, span_dist, span_text, distance, index, text, img;
 		callbackElement.focus();
 
 		$.each(parsedData.values, function (key, val) {
@@ -457,7 +457,8 @@ function GuiHandler() {
 					   function(){ $(this).removeClass('active');});
 			span_dist = $('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
 			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
-			button.append(span_dist).append(span_text).click(function(){
+			img = $('<img>').addClass('preload-image').attr('style', 'height: 20pt;, margin-right: 1em;').attr('src', val.avatar);
+			button.append(img).append(span_dist).append(span_text).click(function(){
 				callbackElement.val($(this).attr('text'));
 				$('#' + proposalStatementListGroupId).empty();
 				$('#' + proposalPremiseListGroupId).empty();

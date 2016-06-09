@@ -380,10 +380,17 @@
     								<div class="col-md-9 veryweak" id="popup-login-password-meter"></div>
     								<h6 id="popup-login-password-strength" i18n:translate="password_strength">very weak</h6>
     								<br>
-    								<div id="popup-login-generate-password" class="form-group">
+    								<div id="popup-login-generate-password" class="form-group" style="margin-bottom: 0;">
     									<a i18n:translate="generate_password" style="cursor: pointer;">Generate secure password</a>
     								</div>
     							</div>
+    						</div>
+
+    						<div class="form-group">
+					            <label class="col-sm-3 control-label" for="spam-input" i18n:translate="spam">Anti-Spam (required)</label>
+					            <div class="col-sm-9">
+						            <input id="popup-login-spamanswer-input" type="text" class="spam form-control" name="spam" autocomplete="off" placeholder="${extras.spamquestion}" value="${extras.spamanswer}">
+					            </div>
     						</div>
 
     						<div class="col-md-12" id="popup-login-registration-success" role="alert">

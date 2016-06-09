@@ -4,10 +4,11 @@ Logic
 
 Description
 ===========
-....
+...
 
-Dialogsequence
-==============
+
+Dialog-Sequence
+===============
 ...
 Let us assume the user states an supportive argument *arg1*: *A --(+)-> B*. Then the system (other users) has three ways to react:
 
@@ -15,7 +16,7 @@ Let us assume the user states an supportive argument *arg1*: *A --(+)-> B*. Then
 2. *undercut*: The system disagrees that this leads to accepting the conclusion. He attacks the relation with *arg2ii* *D --(-)-> (A --(+)-> B)*
 3. *rebut*: The system disagrees that B holds. He states an attack against the conclusion with *arg2iii* *D --(-)-> B*
 
-Now the system presents the users opinion and the systems attack. Additionally D-BAS offers five differnt feedback possibilities,
+Now the system presents the users opinion and the systems attack. Additionally D-BAS offers five different feedback possibilities,
 where we currently do not know, which overbid will be taken.
 
 ====================  ===============  ================  ==================

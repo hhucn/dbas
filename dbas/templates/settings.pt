@@ -65,7 +65,7 @@
 					</table>
 					<div>
                         <div class="center text-center" style="float:left; margin: 2em;">
-						    <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
+                            <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
 						    <br>
 						    <span i18n:translate="profile_picture">Profile Picture</span>
                         </div>
@@ -74,7 +74,7 @@
                         <span i18n:translate="what_is_gravatar">A Gravatar is a Globally Recognized Avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
 					</div>
 				</div>
-                </div>
+            </div>
             <div class="row">
 				<div class="col-md-12">
 					<div id="settings-alert" class="alert alert-dismissible alert-danger" style="display: none;">

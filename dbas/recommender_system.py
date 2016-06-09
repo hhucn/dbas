@@ -187,6 +187,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issu
 		if return_array and len(return_array) != 0:
 			new_attack_step = str(argument_uid) + '/' + str(key) + '/' + str(return_array[0]['id'])
 			no_new_attacks = new_attack_step in str(history)
+
 			if str(restriction_on_attacks[0]) != str(key)\
 					and str(restriction_on_attacks[1]) != str(key)\
 					and restriction_on_argument_uid != return_array[0]['id']\
@@ -194,6 +195,10 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, issu
 				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found for key: ' + key)
 				attack_found = True
 				break
+			else:
+				logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack \'' + key + '\' is restricted')
+				key = ''
+				return_array = []
 		else:
 			logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'no attack found for key: ' + key)
 
