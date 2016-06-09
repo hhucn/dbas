@@ -29,11 +29,42 @@ class InputValidatorTests(unittest.TestCase):
         # undermine
 
         # relation_ishistory
-        undermine_true = reaction.check_reaction(attacked_arg_uid=0,
-                                                 attacking_arg_uid=0,
+        undermine_true = reaction.check_reaction(attacked_arg_uid=2,
+                                                 attacking_arg_uid=19,
                                                  relation='undermine',
                                                  is_history=False)
-        self.assertEqual(undermine_true, False)
+        self.assertEqual(undermine_true, True)
+
+        undermine_not_db_attacking_arg_false = reaction.check_reaction(attacked_arg_uid=2,
+                                                                       attacking_arg_uid=1,
+                                                                       relation='undermine',
+                                                                       is_history=False)
+        self.assertEqual(undermine_not_db_attacking_arg_false, False)
+
+        undermine_db_attacked_arg_false = reaction.check_reaction(attacked_arg_uid=1,
+                                                                  attacking_arg_uid=19,
+                                                                  relation='undermine',
+                                                                  is_history=False)
+        self.assertEqual(undermine_db_attacked_arg_false, False)
+
+        undermine_false = reaction.check_reaction(attacked_arg_uid=0,
+                                                  attacking_arg_uid=0,
+                                                  relation='undermine',
+                                                  is_history=False)
+        self.assertEqual(undermine_false, False)
+
+        # undercut
+        undercut_true = reaction.check_reaction(attacked_arg_uid=1,
+                                                attacking_arg_uid=17,
+                                                relation='undercut',
+                                                is_history=False)
+        self.assertEqual(undercut_true, True)
+
+        undercut_false = reaction.check_reaction(attacked_arg_uid=0,
+                                                 attacking_arg_uid=0,
+                                                 relation='undercut',
+                                                 is_history=False)
+        self.assertEqual(undercut_false, False)
 
         # rebut
         rebut_not_db_attacked_arg_false = reaction.check_reaction(attacked_arg_uid=1,
@@ -43,9 +74,9 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(rebut_not_db_attacked_arg_false, False)
 
         rebut_not_db_attacking_arg_false = reaction.check_reaction(attacked_arg_uid=31,
-                                                                  attacking_arg_uid=1,
-                                                                  relation='rebut',
-                                                                  is_history=False)
+                                                                   attacking_arg_uid=1,
+                                                                   relation='rebut',
+                                                                   is_history=False)
         self.assertEqual(rebut_not_db_attacking_arg_false, False)
 
         rebut_not_db_attacked_arg_false = reaction.check_reaction(attacked_arg_uid=1,
