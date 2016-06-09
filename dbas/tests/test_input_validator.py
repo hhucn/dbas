@@ -24,26 +24,65 @@ class InputValidatorTests(unittest.TestCase):
     def test_check_reaction(self):
         reaction = self._makeOne()
 
-        # relation_ishistory
-        end_true = reaction.check_reaction(attacked_arg_uid=1,
-                                           attacking_arg_uid=0,
-                                           relation='end',
-                                           is_history=False)
-        self.assertEqual(end_true, True)
-
-        end_false = reaction.check_reaction(attacked_arg_uid=1,
-                                            attacking_arg_uid=1,
-                                            relation='end',
-                                            is_history=False)
-        self.assertEqual(end_false, False)
-
-
         DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
-        rebut_false = reaction.check_reaction(attacked_arg_uid=1,
+        # undermine
+
+        # relation_ishistory
+        undermine_true = reaction.check_reaction(attacked_arg_uid=0,
+                                                 attacking_arg_uid=0,
+                                                 relation='undermine',
+                                                 is_history=False)
+        self.assertEqual(undermine_true, False)
+
+        # rebut
+        rebut_not_db_attacked_arg_false = reaction.check_reaction(attacked_arg_uid=1,
+                                                                  attacking_arg_uid=35,
+                                                                  relation='rebut',
+                                                                  is_history=False)
+        self.assertEqual(rebut_not_db_attacked_arg_false, False)
+
+        rebut_not_db_attacking_arg_false = reaction.check_reaction(attacked_arg_uid=31,
+                                                                  attacking_arg_uid=1,
+                                                                  relation='rebut',
+                                                                  is_history=False)
+        self.assertEqual(rebut_not_db_attacking_arg_false, False)
+
+        rebut_not_db_attacked_arg_false = reaction.check_reaction(attacked_arg_uid=1,
+                                                                  attacking_arg_uid=35,
+                                                                  relation='rebut',
+                                                                  is_history=False)
+        self.assertEqual(rebut_not_db_attacked_arg_false, False)
+
+        # db_attacked_arg and db_attacking_arg are False
+        rebut_false = reaction.check_reaction(attacked_arg_uid=0,
                                               attacking_arg_uid=0,
                                               relation='rebut',
                                               is_history=False)
         self.assertEqual(rebut_false, False)
 
+        rebut_true = reaction.check_reaction(attacked_arg_uid=31,
+                                             attacking_arg_uid=35,
+                                             relation='rebut',
+                                             is_history=False)
+        self.assertEqual(rebut_true, True)
+
+        # end
+        end_attacking_arg_uid_not_zero_true = reaction.check_reaction(attacked_arg_uid=1,
+                                                                      attacking_arg_uid=0,
+                                                                      relation='end',
+                                                                      is_history=False)
+        self.assertEqual(end_attacking_arg_uid_not_zero_true, True)
+
+        end_attacking_arg_uid_not_zero_false = reaction.check_reaction(attacked_arg_uid=1,
+                                                                       attacking_arg_uid=1,
+                                                                       relation='end',
+                                                                       is_history=False)
+        self.assertEqual(end_attacking_arg_uid_not_zero_false, False)
+
+        end_not_is_history_false = reaction.check_reaction(attacked_arg_uid=1,
+                                                           attacking_arg_uid=0,
+                                                           relation='end',
+                                                           is_history=True)
+        self.assertEqual(end_not_is_history_false, False)
 
