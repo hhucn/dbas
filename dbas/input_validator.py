@@ -16,6 +16,10 @@ class Validator:
 	"""
 
 	@staticmethod
+	def check_for_integer(input):
+		return len(str(input)) > 0 and isinstance(input, int)
+
+	@staticmethod
 	def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=False):
 		"""
 		Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation
@@ -26,6 +30,10 @@ class Validator:
 		:return: Boolean
 		"""
 		logger('Validator', 'check_reaction', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
+
+		if not Validator.check_for_integer(attacked_arg_uid) or Validator.check_for_integer(attacking_arg_uid):
+			return False
+
 		if relation == 'undermine':
 			# conclusion of the attacking argument
 			db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).join(Statement).first()

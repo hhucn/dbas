@@ -388,6 +388,7 @@ function ajaxLogin (){
 		password = $('#' + loginPwId).val(),
 		url = window.location.href,
 		keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
+
 	$.ajax({
 		url: 'ajax_user_login',
 		type: 'POST',
@@ -419,6 +420,8 @@ function ajaxLogin (){
 			$('#' + popupLoginFailed).show();
 			$('#' + popupLoginFailed + '-message').text(_t(requestFailed));
 		}
+	}).always(function ajaxLoginAlways(){
+		$('#' + loginPwId).val('');
 	});
 }
 
@@ -492,6 +495,9 @@ function ajaxRegistration (){
 		} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
 		} else {                		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
 		}
+	}).always(function ajaxLoginAlways(){
+		$('#' + popupLoginPasswordInputId).val('');
+		$('#' + popupLoginPasswordconfirmInputId).val('');
 	});
 }
 
