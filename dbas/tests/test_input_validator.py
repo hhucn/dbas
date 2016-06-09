@@ -21,6 +21,35 @@ class InputValidatorTests(unittest.TestCase):
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
 
+    def test_check_for_integer(self):
+        reaction = self._makeOne()
+
+        # conditions_response
+        ignore_empty_case_len_zero_true = reaction.check_for_integer(input='',
+                                                                     ignoreEmptyCase=True)
+        self.assertEqual(ignore_empty_case_len_zero_true, True)
+
+        ignore_empty_case_len_false = reaction.check_for_integer(input='str',
+                                                                 ignoreEmptyCase=True)
+        self.assertEqual(ignore_empty_case_len_false, False)
+
+        not_ignore_empty_case_len_zero_false = reaction.check_for_integer(input='',
+                                                                          ignoreEmptyCase=False)
+        self.assertEqual(not_ignore_empty_case_len_zero_false, False)
+
+        not_ignore_empty_case_len_false = reaction.check_for_integer(input='str',
+                                                                     ignoreEmptyCase=False)
+        self.assertEqual(not_ignore_empty_case_len_false, False)
+
+        ignore_empty_case_int_true = reaction.check_for_integer(input=123,
+                                                                ignoreEmptyCase=True)
+        self.assertEqual(ignore_empty_case_int_true, True)
+
+        not_ignore_empty_case_int_true = reaction.check_for_integer(input=1,
+                                                                    ignoreEmptyCase=False)
+        self.assertEqual(not_ignore_empty_case_int_true, True)
+
+
     def test_check_reaction(self):
         reaction = self._makeOne()
 
