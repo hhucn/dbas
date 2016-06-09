@@ -6,8 +6,8 @@ TODO
 """
 
 
-import arrow
 import os
+import arrow
 import sys
 import transaction
 import random
