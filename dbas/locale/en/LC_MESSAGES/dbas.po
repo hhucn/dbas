@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-06-09 08:53+0200\n"
+"POT-Creation-Date: 2016-06-09 09:16+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -693,7 +693,7 @@ msgstr "How to select a strong password"
 #. Default: A Password is strong, when it contains at least:
 #: dbas/templates/snippet-popups.pt:423 dbas/templates/snippet-popups.pt:468
 msgid "select_password_intro"
-msgstr "A Password is strong, when it contains at least:"
+msgstr "A Password is strong when it contains at least:"
 
 #. Default: eight characters
 #: dbas/templates/snippet-popups.pt:425 dbas/templates/snippet-popups.pt:470
@@ -721,21 +721,17 @@ msgstr "one special sign"
 #. years. It should be noted:
 #: dbas/templates/snippet-popups.pt:430 dbas/templates/snippet-popups.pt:475
 msgid "popup_password_text"
-msgstr ""
-"For example 'M2015_fiO' is a strong password. And it would take 275 days to "
-"crack this password with a desktop pc in 2015. Removing one sign, reduces "
-"the time to 3 days, and adding a sign increases the time to 57 years. It "
-"should be noted:"
+msgstr "For example 'M2015_fiO' is a strong password. A couple of hints:"
 
 #. Default: Avoid using a password on several pages
 #: dbas/templates/snippet-popups.pt:432 dbas/templates/snippet-popups.pt:477
 msgid "select_password_avoid1"
-msgstr "Avoid using a password on several pages"
+msgstr "Avoid using the same password on several pages."
 
 #. Default: Avoid using patterns, which can be found in a dictionary
 #: dbas/templates/snippet-popups.pt:433 dbas/templates/snippet-popups.pt:478
 msgid "select_password_avoid2"
-msgstr "Avoid using patterns, which can be found in a dictionary"
+msgstr "Avoid using patterns which can be found in a dictionary."
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
@@ -743,7 +739,7 @@ msgstr "Avoid using patterns, which can be found in a dictionary"
 msgid "select_password_avoid3"
 msgstr ""
 "Avoid using information that is or might become publicly associated with the "
-"user or the account"
+"user, such as your employer's name."
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
@@ -751,7 +747,7 @@ msgstr ""
 msgid "select_password_avoid4"
 msgstr ""
 "Avoid using information that the user's colleagues and/or acquaintances "
-"might know to be associated with the user"
+"might know about you, such as your pet's name."
 
 #. Default: If you need some help with our password, you can get one here:
 #: dbas/templates/snippet-popups.pt:437 dbas/templates/snippet-popups.pt:482

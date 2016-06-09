@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-06-09 08:53+0200\n"
+"POT-Creation-Date: 2016-06-09 09:16+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -736,15 +736,12 @@ msgstr "ein Sonderzeichen"
 #: dbas/templates/snippet-popups.pt:430 dbas/templates/snippet-popups.pt:475
 msgid "popup_password_text"
 msgstr ""
-"Als Beispiel ist 'M2015_fiO' ein starkes Passwort, dass erst nach ca. 275 "
-"Tagen mit einem handelsüblichen Desktop PC geknackt werden kann. Mit einem "
-"Zeichen weniger, sind es nur noch 3 Tage, mit einem mehr schon 57 Jahre. "
-"Foldenges sollte beachtet werden."
+"Als Beispiel ist 'M2015_fiO' ein starkes Passwort. Hier noch ein paar Tipps:"
 
 #. Default: Avoid using a password on several pages
 #: dbas/templates/snippet-popups.pt:432 dbas/templates/snippet-popups.pt:477
 msgid "select_password_avoid1"
-msgstr "Niemals Passwörter für mehrere Seiten nutzen"
+msgstr "Niemals das gleiche Passwort für verschiedene Seiten nutzen."
 
 #. Default: Avoid using patterns, which can be found in a dictionary
 #: dbas/templates/snippet-popups.pt:433 dbas/templates/snippet-popups.pt:478
@@ -763,7 +760,7 @@ msgstr ""
 #: dbas/templates/snippet-popups.pt:435 dbas/templates/snippet-popups.pt:480
 msgid "select_password_avoid4"
 msgstr ""
-"Verwendung von Informationen, die eventuell Freund/Bekannte der Person  "
+"Verwendung von Informationen, die eventuell Freunde/Bekannte der Person  "
 "kennen"
 
 #. Default: If you need some help with our password, you can get one here:
