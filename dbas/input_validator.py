@@ -16,8 +16,18 @@ class Validator:
 	"""
 
 	@staticmethod
-	def check_for_integer(input):
-		return len(str(input)) > 0 and isinstance(input, int)
+	def check_for_integer(input, ignoreEmptyCase=False):
+		if ignoreEmptyCase:
+			if len(str(input)) == 0:
+				logger('Validator', 'check_for_integer', 'ignoreEmptyCase and input: ' + str(input))
+				return True
+		try:
+			int(input)
+			logger('Validator', 'check_for_integer', 'input: ' + str(input) + ' is an int')
+			return True
+		except ValueError:
+			logger('Validator', 'check_for_integer', 'input: ' + str(input) + ' is no int')
+			return False
 
 	@staticmethod
 	def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=False):
@@ -31,7 +41,7 @@ class Validator:
 		"""
 		logger('Validator', 'check_reaction', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
 
-		if not Validator.check_for_integer(attacked_arg_uid) or Validator.check_for_integer(attacking_arg_uid):
+		if not Validator.check_for_integer(attacked_arg_uid) or not Validator.check_for_integer(attacking_arg_uid):
 			return False
 
 		if relation == 'undermine':
@@ -64,7 +74,10 @@ class Validator:
 			# do have both arguments the same conclusion?
 			same_conclusion = db_attacking_arg.conclusion_uid == db_attacked_arg.conclusion_uid
 			not_none = db_attacked_arg.conclusion_uid is not None
-			attacking = not db_attacking_arg.is_supportive or not db_attacked_arg.is_supportive
+			attacking = not db_attacking_arg.is_supportive
+			logger('--', '--', 'same_conclusion ' + str(same_conclusion))
+			logger('--', '--', 'not_none ' + str(not_none))
+			logger('--', '--', 'attacking ' + str(attacking))
 			return True if same_conclusion and not_none and attacking else False
 
 		elif relation.startswith('end') and not is_history:
@@ -73,4 +86,5 @@ class Validator:
 			return True
 
 		else:
+			logger('Validator', 'check_reaction', 'else-case')
 			return False

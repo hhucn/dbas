@@ -220,7 +220,7 @@ class Dbas(object):
 		slug            = matchdict['slug'] if 'slug' in matchdict else ''
 		statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
 
-		if not Validator.check_for_integer(statement_id):
+		if not Validator.check_for_integer(statement_id, True):
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
@@ -292,7 +292,7 @@ class Dbas(object):
 		supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
 		relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
-		if not Validator.check_for_integer(statement_or_arg_id):
+		if not Validator.check_for_integer(statement_or_arg_id, True):
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
