@@ -4,6 +4,10 @@
 Installation
 ============
 
+*This is the classical way to install D-BAS on your local machine. If you want to use docker,
+see* `docker installation instructions <docker/index.html>`_.
+
+
 Requirements
 ============
 

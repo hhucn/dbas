@@ -39,7 +39,7 @@
 				<div class="form-group">
 					<label class="col-sm-3 control-label" for="spam-input" i18n:translate="spam_req">Anti-Spam (required)</label>
 					<div class="col-sm-9">
-						<input type="text" id="spam-input" class="spam form-control" name="spam" autocomplete="off" placeholder="${spamquestion}" tabindex="5" value="${spam}">
+						<input type="text" id="spam-input" class="spam form-control" name="spam" autocomplete="off" placeholder="${spamquestion}" tabindex="5" value="${spamanswer}">
 					</div>
 				</div>
 

@@ -65,6 +65,7 @@ def main(global_config, **settings):
 
 	# Include apps
 	config.include('api', route_prefix='/api')
+	config.include('graph', route_prefix='/graph')
 	config.include('export', route_prefix='/export')
 	config.include('admin', route_prefix='/admin')
 
