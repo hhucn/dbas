@@ -439,6 +439,7 @@ function ajaxLogout (){
 			'X-CSRF-Token': csrfToken
 		}
 	}).done(function ajaxLogoutDone(data) {
+		location.reload();
 	}).fail(function ajaxLogoutFail(xhr) {
 		if (xhr.status == 200) {
 			if (window.location.href.indexOf('settings') != 0){
@@ -678,7 +679,7 @@ $(document).ready(function () {
 	else if (path.indexOf(urlContent) != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf(urlSettings) != -1 ||
 			 path.indexOf(urlImprint) != -1 ||
-			 path.indexOf(urlLogout) != -1){											$('#' + navbarLeft).hide(); }
+			 path.indexOf(urlLogout) != -1){										$('#' + navbarLeft).hide(); }
 	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// language switch
