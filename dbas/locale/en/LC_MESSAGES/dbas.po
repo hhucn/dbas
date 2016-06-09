@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-06-06 15:52+0200\n"
+"POT-Creation-Date: 2016-06-09 09:16+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -36,28 +36,23 @@ msgstr "could not be found"
 msgid "wrong_input_params"
 msgstr ", because the input parameter seems to be wrong."
 
-#. Default: Go home by
+#. Default: Go home
 #: dbas/templates/404.pt:17
-msgid "go-home_by"
-msgstr "Go home by"
-
-#. Default: clicking here
-#: dbas/templates/404.pt:18
-msgid "clicking_here"
-msgstr "clicking here"
+msgid "go_home"
+msgstr "Go home"
 
 #. Default: or
-#: dbas/templates/404.pt:20
+#: dbas/templates/404.pt:19
 msgid "or"
 msgstr "oder"
 
 #. Default: go back
-#: dbas/templates/404.pt:21
+#: dbas/templates/404.pt:20
 msgid "go_back"
 msgstr "go back"
 
 #. Default: to the discussion
-#: dbas/templates/404.pt:22
+#: dbas/templates/404.pt:21
 msgid "to_the_discussion"
 msgstr "to the discussion"
 
@@ -603,7 +598,6 @@ msgstr ""
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:293 dbas/templates/snippet-popups.pt:407
-#: dbas/templates/content.pt:153
 msgid "error"
 msgstr "Error:"
 
@@ -699,7 +693,7 @@ msgstr "How to select a strong password"
 #. Default: A Password is strong, when it contains at least:
 #: dbas/templates/snippet-popups.pt:423 dbas/templates/snippet-popups.pt:468
 msgid "select_password_intro"
-msgstr "A Password is strong, when it contains at least:"
+msgstr "A Password is strong when it contains at least:"
 
 #. Default: eight characters
 #: dbas/templates/snippet-popups.pt:425 dbas/templates/snippet-popups.pt:470
@@ -727,21 +721,17 @@ msgstr "one special sign"
 #. years. It should be noted:
 #: dbas/templates/snippet-popups.pt:430 dbas/templates/snippet-popups.pt:475
 msgid "popup_password_text"
-msgstr ""
-"For example 'M2015_fiO' is a strong password. And it would take 275 days to "
-"crack this password with a desktop pc in 2015. Removing one sign, reduces "
-"the time to 3 days, and adding a sign increases the time to 57 years. It "
-"should be noted:"
+msgstr "For example 'M2015_fiO' is a strong password. A couple of hints:"
 
 #. Default: Avoid using a password on several pages
 #: dbas/templates/snippet-popups.pt:432 dbas/templates/snippet-popups.pt:477
 msgid "select_password_avoid1"
-msgstr "Avoid using a password on several pages"
+msgstr "Avoid using the same password on several pages."
 
 #. Default: Avoid using patterns, which can be found in a dictionary
 #: dbas/templates/snippet-popups.pt:433 dbas/templates/snippet-popups.pt:478
 msgid "select_password_avoid2"
-msgstr "Avoid using patterns, which can be found in a dictionary"
+msgstr "Avoid using patterns which can be found in a dictionary."
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
@@ -749,7 +739,7 @@ msgstr "Avoid using patterns, which can be found in a dictionary"
 msgid "select_password_avoid3"
 msgstr ""
 "Avoid using information that is or might become publicly associated with the "
-"user or the account"
+"user, such as your employer's name."
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
@@ -757,7 +747,7 @@ msgstr ""
 msgid "select_password_avoid4"
 msgstr ""
 "Avoid using information that the user's colleagues and/or acquaintances "
-"might know to be associated with the user"
+"might know about you, such as your pet's name."
 
 #. Default: If you need some help with our password, you can get one here:
 #: dbas/templates/snippet-popups.pt:437 dbas/templates/snippet-popups.pt:482
@@ -811,7 +801,6 @@ msgstr "Writing a new message"
 
 #. Default: Error:
 #: dbas/templates/snippet-popups.pt:606 dbas/templates/snippet-popups.pt:651
-#: dbas/templates/content.pt:275 dbas/templates/content.pt:298
 msgid "error:"
 msgstr "Error:"
 
@@ -1258,24 +1247,30 @@ msgid "restart_discussion"
 msgstr "Restart"
 
 #. Default: Change display style
-#: dbas/templates/content.pt:319
+#: dbas/templates/content.pt:316
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:322
+#: dbas/templates/content.pt:319
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Island View
-#: dbas/templates/content.pt:328
+#: dbas/templates/content.pt:325
 msgid "island_view"
 msgstr "Island View"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:334
+#: dbas/templates/content.pt:331
 msgid "complete_view"
 msgstr "Complete View"
+
+#~ msgid "go-home_by"
+#~ msgstr "Go home by"
+
+#~ msgid "clicking_here"
+#~ msgstr "clicking here"
 
 #~ msgid "need-help-to-understand-statement"
 #~ msgstr "We need your help to understand your statement!"

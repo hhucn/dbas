@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-06-06 15:52+0200\n"
+"POT-Creation-Date: 2016-06-09 09:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,28 +36,23 @@ msgstr ""
 msgid "wrong_input_params"
 msgstr ""
 
-#. Default: Go home by
+#. Default: Go home
 #: ./dbas/templates/404.pt:17
-msgid "go-home_by"
-msgstr ""
-
-#. Default: clicking here
-#: ./dbas/templates/404.pt:18
-msgid "clicking_here"
+msgid "go_home"
 msgstr ""
 
 #. Default: or
-#: ./dbas/templates/404.pt:20
+#: ./dbas/templates/404.pt:19
 msgid "or"
 msgstr ""
 
 #. Default: go back
-#: ./dbas/templates/404.pt:21
+#: ./dbas/templates/404.pt:20
 msgid "go_back"
 msgstr ""
 
 #. Default: to the discussion
-#: ./dbas/templates/404.pt:22
+#: ./dbas/templates/404.pt:21
 msgid "to_the_discussion"
 msgstr ""
 
@@ -528,7 +523,7 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:293
-#: ./dbas/templates/snippet-popups.pt:407 ./dbas/templates/content.pt:153
+#: ./dbas/templates/snippet-popups.pt:407
 msgid "error"
 msgstr ""
 
@@ -741,8 +736,7 @@ msgstr ""
 
 #. Default: Error:
 #: ./dbas/templates/snippet-popups.pt:606
-#: ./dbas/templates/snippet-popups.pt:651 ./dbas/templates/content.pt:275
-#: ./dbas/templates/content.pt:298
+#: ./dbas/templates/snippet-popups.pt:651
 msgid "error:"
 msgstr ""
 
@@ -1184,21 +1178,21 @@ msgid "restart_discussion"
 msgstr ""
 
 #. Default: Change display style
-#: ./dbas/templates/content.pt:319
+#: ./dbas/templates/content.pt:316
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ./dbas/templates/content.pt:322
+#: ./dbas/templates/content.pt:319
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Island View
-#: ./dbas/templates/content.pt:328
+#: ./dbas/templates/content.pt:325
 msgid "island_view"
 msgstr ""
 
 #. Default: Complete View
-#: ./dbas/templates/content.pt:334
+#: ./dbas/templates/content.pt:331
 msgid "complete_view"
 msgstr ""
