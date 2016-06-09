@@ -12,7 +12,7 @@ from pyramid.threadlocal import get_current_registry
 
 from dbas.lib import get_language
 from dbas.logger import logger
-from export.lib import get_dump, get_sigma_export
+from export.lib import get_dump
 
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
@@ -21,10 +21,6 @@ from export.lib import get_dump, get_sigma_export
 dump = Service(name='export_dump',
 			   path='/dump',
 			   description="Database Dump")
-
-sigma = Service(name='export_sigma',
-                path='/sigma',
-                description="Sigma Dump")
 
 
 # =============================================================================
@@ -40,14 +36,4 @@ def get_database_dump(request):
 
 	return_dict = get_dump(issue, ui_locales)
 
-	return json.dumps(return_dict, True)
-
-
-@sigma.get()
-def get_sigma_dump(request):
-	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-	logger('Export', 'get_sigma_dump', 'main')
-	issue = IssueHelper.get_issue_id(request)
-
-	return_dict = get_sigma_export(issue)
 	return json.dumps(return_dict, True)
