@@ -56,14 +56,13 @@ class InputValidatorTests(unittest.TestCase):
         DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
         # undermine
-
-        # relation_ishistory
         undermine_true = reaction.check_reaction(attacked_arg_uid=2,
                                                  attacking_arg_uid=19,
                                                  relation='undermine',
                                                  is_history=False)
         self.assertEqual(undermine_true, True)
 
+        # relation_conditions_ishistory
         undermine_not_db_attacking_arg_false = reaction.check_reaction(attacked_arg_uid=2,
                                                                        attacking_arg_uid=1,
                                                                        relation='undermine',
@@ -120,6 +119,12 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(undercut_string_false, False)
 
         # rebut
+        rebut_true = reaction.check_reaction(attacked_arg_uid=31,
+                                             attacking_arg_uid=35,
+                                             relation='rebut',
+                                             is_history=False)
+        self.assertEqual(rebut_true, True)
+
         rebut_not_db_attacked_arg_false = reaction.check_reaction(attacked_arg_uid=1,
                                                                   attacking_arg_uid=35,
                                                                   relation='rebut',
@@ -144,12 +149,6 @@ class InputValidatorTests(unittest.TestCase):
                                               relation='rebut',
                                               is_history=False)
         self.assertEqual(rebut_false, False)
-
-        rebut_true = reaction.check_reaction(attacked_arg_uid=31,
-                                             attacking_arg_uid=35,
-                                             relation='rebut',
-                                             is_history=False)
-        self.assertEqual(rebut_true, True)
 
         rebut_empty_string_false = reaction.check_reaction(attacked_arg_uid='',
                                                            attacking_arg_uid='',
