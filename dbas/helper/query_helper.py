@@ -455,7 +455,7 @@ class QueryHelper:
 		DBDiscussionSession.flush()
 
 		# add statement
-		statement = Statement(textversion=textversion.uid, is_startpoint=is_start, issue=issue)
+		statement = Statement(textversion=textversion.uid, is_position=is_start, issue=issue)
 		DBDiscussionSession.add(statement)
 		DBDiscussionSession.flush()
 
