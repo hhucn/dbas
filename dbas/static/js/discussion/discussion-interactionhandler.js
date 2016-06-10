@@ -117,6 +117,7 @@ function InteractionHandler() {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
+			$('#' + proposalUserListGroupId).empty();
 		} else {
 			new GuiHandler().setStatementsAsProposal(parsedData, callbackid, type);
 		}

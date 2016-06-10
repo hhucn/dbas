@@ -65,7 +65,7 @@
 					</table>
 					<div>
                         <div class="center text-center" style="float:left; margin: 2em;">
-						    <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_url">
+                            <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
 						    <br>
 						    <span i18n:translate="profile_picture">Profile Picture</span>
                         </div>
@@ -74,7 +74,7 @@
                         <span i18n:translate="what_is_gravatar">A Gravatar is a Globally Recognized Avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
 					</div>
 				</div>
-                </div>
+            </div>
             <div class="row">
 				<div class="col-md-12">
 					<div id="settings-alert" class="alert alert-dismissible alert-danger" style="display: none;">
@@ -96,6 +96,7 @@
 				<div class="col-md-7">
 					<h4><span class="glyphicon glyphicon-asterisk" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="change_password">Change your password</span></h4>
 					<form action="/settings" method="post">
+                        <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
 
 						<div class="form-group">
 							<label for="settings-password-old-input" class="col-md-5 control-label lead" i18n:translate="old_password">Old password</label>
@@ -109,6 +110,13 @@
 							<div class="col-md-7">
 								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${settings.password}">
 							</div>
+						</div>
+
+						<div class="form-group">
+							<p class="col-md-5 control-label lead" i18n:translate="new_password_confirm">New Password (confirm)</p>
+							<div class="col-md-7">
+								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
+							</div>
 
 							<div id="settings-password-extras" style="display: none;">
 								<div id="settings-password-meter" class="veryweak"></div>
@@ -116,13 +124,6 @@
 								<a id="settings-password-info-link" href="" data-toggle="modal" data-toggle="tooltip" data-placement="bottom" data-target="#popup_password_info" title="Show Password Information">
 									<i id="settings-password-info-icon" aria-hidden="true" class="glyphicon glyphicon-question-sign">&#160;</i>
 								</a>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<p class="col-md-5 control-label lead" i18n:translate="new_password_confirm">New Password (confirm)</p>
-							<div class="col-md-7">
-								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
 							</div>
 						</div>
 

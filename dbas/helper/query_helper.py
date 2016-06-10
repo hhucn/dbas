@@ -100,7 +100,7 @@ class QueryHelper:
 		for group in premisegroups:  # premise groups is a list of lists
 			new_argument_uid, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
 			if new_argument_uid == -1:  # break on error
-				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+				error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 				return -1, None, error
 
 			new_argument_uids.append(new_argument_uid)
@@ -111,7 +111,7 @@ class QueryHelper:
 		# #arguments=1: deliver new url
 		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_argument_uids) == 0:
-			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+			error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 
 		elif len(new_argument_uids) == 1:
 			new_argument_uid = random.choice(new_argument_uids)
@@ -168,7 +168,7 @@ class QueryHelper:
 		for group in premisegroups:  # premise groups is a list of lists
 			new_argument_uid = QueryHelper.__insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
 			if new_argument_uid == -1:  # break on error
-				error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+				error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 				return -1, None, error
 			new_argument_uids.append(new_argument_uid)
 
@@ -187,7 +187,7 @@ class QueryHelper:
 		# #arguments=1: deliver new url
 		# #arguments>1: deliver url where the user has to choose between her inputs
 		if len(new_argument_uids) == 0:
-			error = _tn.get(_tn.notInsertedErrorBecauseEmpty)
+			error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 
 		elif len(new_argument_uids) == 1:
 			new_argument_uid = random.choice(new_argument_uids)
@@ -369,8 +369,8 @@ class QueryHelper:
 			corr_dict = dict()
 			corr_dict['uid'] = str(versions.uid)
 			corr_dict['author'] = str(db_author.public_nickname)
-			corr_dict['author_url'] = mainpage + '/user/' + str(db_author.nickname)
-			corr_dict['author_gravatar'] = UserHandler.get_profile_picture(db_author, 20)
+			corr_dict['author_url'] = mainpage + '/user/' + str(db_author.public_nickname)
+			corr_dict['author_gravatar'] = UserHandler.get_public_profile_picture(db_author, 20)
 			corr_dict['date'] = sql_timestamp_pretty_print(versions.timestamp, lang)
 			corr_dict['text'] = str(versions.content)
 			content_dict[str(index)] = corr_dict
@@ -455,7 +455,7 @@ class QueryHelper:
 		DBDiscussionSession.flush()
 
 		# add statement
-		statement = Statement(textversion=textversion.uid, is_startpoint=is_start, issue=issue)
+		statement = Statement(textversion=textversion.uid, is_position=is_start, issue=issue)
 		DBDiscussionSession.add(statement)
 		DBDiscussionSession.flush()
 

@@ -140,12 +140,12 @@ def get_box_for(user, lang, mainpage, is_inbox):
 			db_from_user                   = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first()
 			tmp_dict['show_from_author']   = db_from_user.public_nickname != 'admin'
 			tmp_dict['from_author']        = db_from_user.public_nickname
-			tmp_dict['from_author_avatar'] = UserHandler.get_profile_picture(db_from_user, size=30)
+			tmp_dict['from_author_avatar'] = UserHandler.get_public_profile_picture(db_from_user, size=30)
 			tmp_dict['from_author_url']    = mainpage + '/user/' + db_from_user.public_nickname
 		else:
 			db_to_user                   = DBDiscussionSession.query(User).filter_by(uid=message.to_author_uid).first()
 			tmp_dict['to_author']        = db_to_user.public_nickname
-			tmp_dict['to_author_avatar'] = UserHandler.get_profile_picture(db_to_user, size=30)
+			tmp_dict['to_author_avatar'] = UserHandler.get_public_profile_picture(db_to_user, size=30)
 			tmp_dict['to_author_url']    = mainpage + '/user/' + db_to_user.public_nickname
 
 		tmp_dict['id']            = str(message.uid)

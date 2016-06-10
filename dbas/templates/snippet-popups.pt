@@ -380,10 +380,17 @@
     								<div class="col-md-9 veryweak" id="popup-login-password-meter"></div>
     								<h6 id="popup-login-password-strength" i18n:translate="password_strength">very weak</h6>
     								<br>
-    								<div id="popup-login-generate-password" class="form-group">
+    								<div id="popup-login-generate-password" class="form-group" style="margin-bottom: 0;">
     									<a i18n:translate="generate_password" style="cursor: pointer;">Generate secure password</a>
     								</div>
     							</div>
+    						</div>
+
+    						<div class="form-group">
+					            <label class="col-sm-3 control-label" for="spam-input" i18n:translate="spam">Anti-Spam (required)</label>
+					            <div class="col-sm-9">
+						            <input id="popup-login-spamanswer-input" type="text" class="spam form-control" name="spam" autocomplete="off" placeholder="${extras.spamquestion}" value="${extras.spamanswer}">
+					            </div>
     						</div>
 
     						<div class="col-md-12" id="popup-login-registration-success" role="alert">
@@ -633,6 +640,8 @@
     			</div>
     			<div id="popup-url-sharing-body">
                     <input id="popup-writing-notification-recipient" name="newstitle" type="text" class="form-control news-title" placeholder="Recipient" tabindex="1" style="dispaly: none;">
+
+                    <div class="list-group" id="proposal-user-list-group"></div>
 
                     <input id="popup-writing-notification-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" tabindex="2">
                     <textarea id="popup-writing-notification-text" type="text" class="form-control news-text" name="newstext" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="3"></textarea>

@@ -191,6 +191,7 @@ var noDecisionstaken                                = 'noDecisionstaken';
 var noEntries                                       = 'noEntries';
 var noEntriesFor                                    = 'noEntriesFor';
 var note 											= 'note';
+var neww 											= 'new';
 var number 											= 'number';
 var notificationWasSend                             = 'notificationWasSend';
 var opinionBarometer                                = 'opinionBarometer';
@@ -349,6 +350,7 @@ var dbas_en = {
 	'messageInfoSupporterSg': 'Supporter is',
 	'messageInfoSupporterPl': 'Supporters are',
 	'nickname': 'Nickname',
+	'new': 'NEW',
 	'noCorrections': 'No corrections for the given statement.',
 	'noCorrectionsSet': 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?',
 	'noDecisionDone': 'No decision was done.',
@@ -505,6 +507,7 @@ var dbas_de = {
 	'messageInfoSupporterSg': 'Unterstützer/in ist',
 	'messageInfoSupporterPl': 'Unterstützer/innen sind',
 	'nickname': 'Spitzname',
+	'new': 'neu',
 	'noCorrections': 'Keinte Korreturen für die aktuelle Aussage.',
 	'noDecisionDone': 'Es liegt keine Entscheidung vor.',
 	'noCorrectionsSet': 'Korrektur wurde nicht gespeichert, da der Benutzer unbekannt ist. Sind Sie angemeldet?',

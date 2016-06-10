@@ -1,0 +1,15 @@
+version: '2'
+services:
+  db:
+    build: docker/database/
+    ports:
+      - "5433:5432"
+  web:
+    build: .
+    command: /bin/bash docker_init.sh
+    volumes:
+      - .:/code
+    ports:
+      - "80:80"
+    links:
+      - db:db

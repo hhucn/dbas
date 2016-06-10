@@ -60,7 +60,7 @@ animallist = ['Aardvark', 'Albatross', 'Alligator', 'Alpaca', 'Ant', 'Anteater',
               'Raven', 'Red Deer', 'Red Panda', 'Reindeer', 'Rhinoceros', 'RookSalamander', 'Salmon', 'Sand Dollar',
               'Sandpiper', 'Sardine', 'Sea Lion', 'Sea Urchin', 'Seahorse', 'Seal', 'Shark', 'Sheep', 'Shrew', 'Skunk',
               'Sloth', 'Snail', 'Snake ', 'Spider', 'Squirrel', 'Starling', 'Swan Tapir', 'Tarsier', 'Termite', 'Tiger',
-              'Toad', 'Turkey', 'TurtleV', 'Walrus', 'Wasp', 'Water Buffalo', 'Weasel', 'Whale', 'Wolf', 'Wolverine',
+              'Toad', 'Turkey', 'Turtle', 'Walrus', 'Wasp', 'Water Buffalo', 'Weasel', 'Whale', 'Wolf', 'Wolverine',
               'Wombat', 'Yak', 'Zebra']
 
 # http://www.manythings.org/vocabulary/lists/l/words.php?f=ogden-picturable
@@ -97,7 +97,7 @@ def update_last_action(transaction, nick):
 	if not db_user:
 		return False
 
-	timeout = 3600
+	timeoutInSec = 60 * 60 * 24 * 7
 
 	# check difference of
 	# TODO TIME ZONE OF SERVER
@@ -107,7 +107,7 @@ def update_last_action(transaction, nick):
 	diff_login = (datetime.now() - last_login_object).seconds
 
 	diff = diff_action if diff_action < diff_login else diff_login
-	should_log_out = diff > timeout and not db_user.keep_logged_in
+	should_log_out = diff > timeoutInSec and not db_user.keep_logged_in
 	db_user.update_last_action()
 
 	transaction.commit()
@@ -186,7 +186,10 @@ def get_public_profile_picture(user, size=80):
 	:param size: Integer, default 80
 	:return: String
 	"""
-	additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
+	if user:
+		additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
+	else:
+		additional_id = 'y'
 	email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 	gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
 	gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
