@@ -128,7 +128,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 			// maybe set a cookie
 			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7);
+				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7, true);
 			}
 
 			if (isRestartingDiscussion) {
@@ -156,7 +156,7 @@ function displayBubbleInformationDialog(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(img);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			new Helper().setCookieForDays(BUBBLE_INFOS, 30);
+			new Helper().setCookieForDays(BUBBLE_INFOS, 30, true);
 		}).removeClass('btn-success');
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 	}
@@ -311,7 +311,8 @@ function prepareLoginRegistrationPopup(){
 			text = '',
 			i,
 			fields = [userfirstname, userlastname, nick, email, password, passwordconfirm],
-			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword), _t(checkConfirmation), _t(checkPasswordConfirm)];
+			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword),
+				_t(checkConfirmation), _t(checkPasswordConfirm)];
 
 		// check all vields for obivously errors
 		for (i=0; i<fields.length; i++){
@@ -387,6 +388,7 @@ function ajaxLogin (){
 		password = $('#' + loginPwId).val(),
 		url = window.location.href,
 		keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
+
 	$.ajax({
 		url: 'ajax_user_login',
 		type: 'POST',
@@ -418,6 +420,8 @@ function ajaxLogin (){
 			$('#' + popupLoginFailed).show();
 			$('#' + popupLoginFailed + '-message').text(_t(requestFailed));
 		}
+	}).always(function ajaxLoginAlways(){
+		$('#' + loginPwId).val('');
 	});
 }
 
@@ -435,6 +439,7 @@ function ajaxLogout (){
 			'X-CSRF-Token': csrfToken
 		}
 	}).done(function ajaxLogoutDone(data) {
+		location.reload();
 	}).fail(function ajaxLogoutFail(xhr) {
 		if (xhr.status == 200) {
 			if (window.location.href.indexOf('settings') != 0){
@@ -444,7 +449,11 @@ function ajaxLogout (){
 			}
 		} else if (xhr.status == 403) {
 			window.location.href = mainpage;
+		} else {
+			location.reload();
 		}
+	}).ajaxComplete(function() {
+		location.reload();
 	});
 }
 
@@ -459,6 +468,7 @@ function ajaxRegistration (){
 		email = $('#email-input').val(),
 		password = $('#' + popupLoginPasswordInputId).val(),
 		passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
+		spamanswer = $('#popup-login-spamanswer-input').val(),
 		gender = '';
 
 	if ($('#' + popupLoginInlineRadioGenderN).is(':checked')) gender = 'n';
@@ -475,6 +485,7 @@ function ajaxRegistration (){
 				email: email,
 				password: password,
 				passwordconfirm: passwordconfirm,
+				spamanswer: spamanswer,
 				lang: getLanguage()},
 		dataType: 'json',
 		async: true,
@@ -489,6 +500,9 @@ function ajaxRegistration (){
 		} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
 		} else {                		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
 		}
+	}).always(function ajaxLoginAlways(){
+		$('#' + popupLoginPasswordInputId).val('');
+		$('#' + popupLoginPasswordconfirmInputId).val('');
 	});
 }
 
@@ -617,6 +631,7 @@ function callbackIfDoneForRegistration(data){
 	if (parsedData.info.length > 0) {
 		info.show();
 		$('#' + popupLoginRegistrationInfo + '-message').text(parsedData.info);
+		$('#popup-login-spamanswer-input').attr('placeholder', parsedData.spamquestion).val('');
 	}
 }
 
@@ -668,7 +683,7 @@ $(document).ready(function () {
 	else if (path.indexOf(urlContent) != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf(urlSettings) != -1 ||
 			 path.indexOf(urlImprint) != -1 ||
-			 path.indexOf(urlLogout) != -1){											$('#' + navbarLeft).hide(); }
+			 path.indexOf(urlLogout) != -1){										$('#' + navbarLeft).hide(); }
 	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// language switch

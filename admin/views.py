@@ -58,7 +58,7 @@ def main_admin(request):
 		return Dbas(request).user_logout(True)
 
 	ui_locales = get_language(request, get_current_registry())
-	extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid)
+	extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
 	users = get_all_users(request.authenticated_userid, ui_locales, request.application_url)
 	dashboard = get_dashboard_infos()
 

@@ -8,6 +8,7 @@ from pyramid.security import Allow, Everyone
 from dbas.views import logger
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
+from sqlalchemy.exc import InternalError as sqlie
 
 
 class RootFactory(object):
@@ -31,7 +32,10 @@ def groupfinder(nick, request):
 	:return: given group as list or empty list
 	"""
 	logger('security', 'groupfinder', 'parameter nick = ' + nick)
-	user = DBDiscussionSession.query(User).filter_by(nickname=nick).first()
+	try:
+		user = DBDiscussionSession.query(User).filter_by(nickname=nick).first()
+	except sqlie:
+		return []
 
 	if user:
 		group = DBDiscussionSession.query(Group).filter_by(uid=user.group_uid).first()

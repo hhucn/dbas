@@ -27,7 +27,6 @@ all:
 	sudo -u postgres bash -c "psql -c \"alter database news owner to dbas;\""
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
-
 	init_discussion_testvotes development.ini
 
 clean:

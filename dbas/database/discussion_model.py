@@ -5,12 +5,19 @@ D-BAS database Model
 """
 
 import arrow
+import time
+import datetime
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey
 from sqlalchemy_utils import ArrowType
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from sqlalchemy.orm import relationship
 from dbas.database import DBDiscussionSession, DiscussionBase
+
+
+def get_now():
+	# return arrow.utcnow()
+	return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Issue(DiscussionBase):
@@ -22,7 +29,7 @@ class Issue(DiscussionBase):
 	uid = Column(Integer, primary_key=True)
 	title = Column(Text, nullable=False)
 	info = Column(Text, nullable=False)
-	date = Column(ArrowType, default=arrow.utcnow())
+	date = Column(ArrowType, default=get_now())
 	author_uid = Column(Integer, ForeignKey('users.uid'))
 	lang_uid = Column(Integer, ForeignKey('languages.uid'))
 
@@ -100,9 +107,9 @@ class User(DiscussionBase):
 	gender = Column(Text, nullable=False)
 	password = Column(Text, nullable=False)
 	group_uid = Column(Integer, ForeignKey('groups.uid'))
-	last_action = Column(ArrowType, default=arrow.utcnow())
-	last_login = Column(ArrowType, default=arrow.utcnow())
-	registered = Column(ArrowType, default=arrow.utcnow())
+	last_action = Column(ArrowType, default=get_now())
+	last_login = Column(ArrowType, default=get_now())
+	registered = Column(ArrowType, default=get_now())
 	token = Column(Text, nullable=True)
 	token_timestamp = Column(ArrowType, nullable=True)
 	keep_logged_in = Column(Boolean, nullable=False)
@@ -121,9 +128,9 @@ class User(DiscussionBase):
 		self.gender = gender
 		self.password = password
 		self.group_uid = group
-		self.last_action = arrow.utcnow()
-		self.last_login = arrow.utcnow()
-		self.registered = arrow.utcnow()
+		self.last_action = get_now()
+		self.last_login = get_now()
+		self.registered = get_now()
 		self.token = token
 		self.token_timestamp = token_timestamp
 		self.keep_logged_in = keep_logged_in
@@ -138,13 +145,13 @@ class User(DiscussionBase):
 		return manager.check(self.password, password)
 
 	def update_last_login(self):
-		self.last_login = arrow.utcnow()
+		self.last_login = get_now()
 
 	def update_last_action(self):
-		self.last_action = arrow.utcnow()
+		self.last_action = get_now()
 
 	def update_token_timestamp(self):
-		self.token_timestamp = arrow.utcnow()
+		self.token_timestamp = get_now()
 
 	def set_token(self, token):
 		self.token = token
@@ -165,6 +172,10 @@ class Settings(DiscussionBase):
 	should_send_mails = Column(Boolean, nullable=False)
 	should_send_notifications = Column(Boolean, nullable=False)
 	should_show_public_nickname = Column(Boolean, nullable=False)
+	last_topic_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
+
+	users = relationship('User', foreign_keys=[author_uid])
+	issues = relationship('Issue', foreign_keys=[last_topic_uid])
 
 	def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True):
 		"""
@@ -174,6 +185,7 @@ class Settings(DiscussionBase):
 		self.should_send_mails = send_mails
 		self.should_send_notifications = send_notifications
 		self.should_show_public_nickname = should_show_public_nickname
+		self.last_topic_uid = 1
 
 	def set_send_mails(self, send_mails):
 		self.should_send_mails = send_mails
@@ -183,6 +195,9 @@ class Settings(DiscussionBase):
 
 	def set_show_public_nickname(self, should_show_public_nickname):
 		self.should_show_public_nickname = should_show_public_nickname
+
+	def set_last_topic_uid(self, uid):
+		self.last_topic_uid = uid
 
 
 class Statement(DiscussionBase):
@@ -199,16 +214,16 @@ class Statement(DiscussionBase):
 	textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
 	issues = relationship('Issue', foreign_keys=[issue_uid])
 
-	def __init__(self, textversion, is_startpoint, issue):
+	def __init__(self, textversion, is_position, issue):
 		"""
 
 		:param textversion:
-		:param is_startpoint:
+		:param is_position:
 		:param issue:
 		:return:
 		"""
 		self.textversion_uid = textversion
-		self.is_startpoint = is_startpoint
+		self.is_startpoint = is_position
 		self.issue_uid = issue
 		self.weight_uid = 0
 
@@ -228,7 +243,7 @@ class StatementReferences(DiscussionBase):
 	author_uid = Column(Integer, ForeignKey('users.uid'), nullable=False)
 	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
 	issue_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
-	created = Column(ArrowType, default=arrow.utcnow())
+	created = Column(ArrowType, default=get_now())
 
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
@@ -264,7 +279,7 @@ class TextVersion(DiscussionBase):
 	statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
 	content = Column(Text, nullable=False)
 	author_uid = Column(Integer, ForeignKey('users.uid'))
-	timestamp = Column(ArrowType, default=arrow.utcnow())
+	timestamp = Column(ArrowType, default=get_now())
 
 	statements = relationship('Statement', foreign_keys=[statement_uid])
 	users = relationship('User', foreign_keys=[author_uid])
@@ -278,7 +293,7 @@ class TextVersion(DiscussionBase):
 		"""
 		self.content = content
 		self.author_uid = author
-		self.timestamp = arrow.utcnow()
+		self.timestamp = get_now()
 		self.statement_uid = statement_uid
 
 	def set_statement(self, statement_uid):
@@ -321,7 +336,7 @@ class Premise(DiscussionBase):
 	statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
 	is_negated = Column(Boolean, nullable=False)
 	author_uid = Column(Integer, ForeignKey('users.uid'))
-	timestamp = Column(ArrowType, default=arrow.utcnow())
+	timestamp = Column(ArrowType, default=get_now())
 	issue_uid = Column(Integer, ForeignKey('issues.uid'))
 
 	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
@@ -343,7 +358,7 @@ class Premise(DiscussionBase):
 		self.statement_uid = statement
 		self.is_negated = is_negated
 		self.author_uid = author
-		self.timestamp = arrow.utcnow()
+		self.timestamp = get_now()
 		self.issue_uid = issue
 
 
@@ -360,7 +375,7 @@ class Argument(DiscussionBase):
 	argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
 	is_supportive = Column(Boolean, nullable=False)
 	author_uid = Column(Integer, ForeignKey('users.uid'))
-	timestamp = Column(ArrowType, default=arrow.utcnow())
+	timestamp = Column(ArrowType, default=get_now())
 	issue_uid = Column(Integer, ForeignKey('issues.uid'))
 
 	premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
@@ -401,7 +416,7 @@ class History(DiscussionBase):
 	uid = Column(Integer, primary_key=True)
 	author_uid = Column(Integer, ForeignKey('users.uid'))
 	path = Column(Text, nullable=False)
-	timestamp = Column(ArrowType, default=arrow.utcnow())
+	timestamp = Column(ArrowType, default=get_now())
 
 	users = relationship('User', foreign_keys=[author_uid])
 
@@ -414,6 +429,7 @@ class History(DiscussionBase):
 		"""
 		self.author_uid = author_uid
 		self.path = path
+		self.timestamp = get_now()
 
 
 class VoteArgument(DiscussionBase):
@@ -425,7 +441,7 @@ class VoteArgument(DiscussionBase):
 	uid = Column(Integer, primary_key=True)
 	argument_uid = Column(Integer, ForeignKey('arguments.uid'))
 	author_uid = Column(Integer, ForeignKey('users.uid'))
-	timestamp = Column(ArrowType, default=arrow.utcnow())
+	timestamp = Column(ArrowType, default=get_now())
 	is_up_vote = Column(Boolean, nullable=False)
 	is_valid = Column(Boolean, nullable=False)
 
@@ -444,7 +460,7 @@ class VoteArgument(DiscussionBase):
 		self.argument_uid = argument_uid
 		self.author_uid = author_uid
 		self.is_up_vote = is_up_vote
-		self.timestamp = arrow.utcnow()
+		self.timestamp = get_now()
 		self.is_valid = is_valid
 
 	def set_up_vote(self, is_up_vote):
@@ -468,7 +484,7 @@ class VoteArgument(DiscussionBase):
 		Updates timestamp of this record
 		:return: None
 		"""
-		self.timestamp = arrow.utcnow()
+		self.timestamp = get_now()
 
 
 class VoteStatement(DiscussionBase):
@@ -480,7 +496,7 @@ class VoteStatement(DiscussionBase):
 	uid = Column(Integer, primary_key=True)
 	statement_uid = Column(Integer, ForeignKey('statements.uid'))
 	author_uid = Column(Integer, ForeignKey('users.uid'))
-	timestamp = Column(ArrowType, default=arrow.utcnow())
+	timestamp = Column(ArrowType, default=get_now())
 	is_up_vote = Column(Boolean, nullable=False)
 	is_valid = Column(Boolean, nullable=False)
 
@@ -499,7 +515,7 @@ class VoteStatement(DiscussionBase):
 		self.statement_uid = statement_uid
 		self.author_uid = author_uid
 		self.is_up_vote = is_up_vote
-		self.timestamp = arrow.utcnow()
+		self.timestamp = get_now()
 		self.is_valid = is_valid
 
 	def set_up_vote(self, is_up_vote):
@@ -523,7 +539,7 @@ class VoteStatement(DiscussionBase):
 		Updates timestamp of this record
 		:return: None
 		"""
-		self.timestamp = arrow.utcnow()
+		self.timestamp = get_now()
 
 
 class Notification(DiscussionBase):
@@ -536,7 +552,7 @@ class Notification(DiscussionBase):
 	to_author_uid = Column(Integer, ForeignKey('users.uid'))
 	topic = Column(Text, nullable=False)
 	content = Column(Text, nullable=False)
-	timestamp = Column(ArrowType, default=arrow.utcnow())
+	timestamp = Column(ArrowType, default=get_now())
 	read = Column(Boolean, nullable=False)
 	is_inbox = Column(Boolean, nullable=False)
 
@@ -545,7 +561,7 @@ class Notification(DiscussionBase):
 		self.to_author_uid = to_author_uid
 		self.topic = topic
 		self.content = content
-		self.timestamp = arrow.utcnow()
+		self.timestamp = get_now()
 		self.read = read
 		self.is_inbox = is_inbox
 

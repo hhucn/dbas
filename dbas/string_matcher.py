@@ -12,7 +12,7 @@ from Levenshtein import distance
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Statement, User, TextVersion, Issue, Premise, Argument
-from .logger import logger
+from .user_management import get_public_profile_picture
 
 max_count_zeros = 5
 index_zeros = 3
@@ -92,7 +92,6 @@ def get_strings_for_reasons(value, issue):
 	:return: dict()
 	"""
 	db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
-	tmp_dict = dict()
 	return_array = []
 
 	index = 1
@@ -100,7 +99,6 @@ def get_strings_for_reasons(value, issue):
 		db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
 		if value.lower() in db_textversion.content.lower():
 			dist = __get_distance__(value, db_textversion.content)
-			tmp_dict[str(dist) + '_' + str(index).zfill(index_zeros)] = db_textversion.content
 			return_array.append({'index': 0,
 			                     'distance': dist,
 			                     'text': db_textversion.content,
@@ -172,6 +170,33 @@ def get_strings_for_search(value):
 	#        ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
 
 	return return_dict
+
+
+def get_strings_for_public_nickname(value, nickname):
+	"""
+
+	:param value:
+	:param nickname:
+	:return:
+	"""
+	db_user = DBDiscussionSession.query(User).all()
+	return_array = []
+
+	index = 1
+	for user in db_user:
+		if user.public_nickname.lower().startswith(value.lower())\
+				and user.nickname != nickname\
+				and user.nickname != 'admin'\
+				and user.nickname != 'anonymous':
+			dist = __get_distance__(value, user.public_nickname)
+			return_array.append({'index': 0,
+			                     'distance': dist,
+			                     'text': user.public_nickname,
+			                     'avatar': get_public_profile_picture(user)})
+			index += 1
+
+	return_array = __sort_array(return_array)[:5]
+	return mechanism, return_array
 
 
 def __sort_array(list):

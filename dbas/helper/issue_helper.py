@@ -34,7 +34,7 @@ def set_issue(info, title, lang, nickname, transaction, ui_locales):
 		return False, _tn.get(_tn.noRights)
 
 	if len(info) < 10:
-		return False, _tn.get(_tn.notInsertedErrorBecauseEmpty)
+		return False, (_tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': 10)')
 
 	db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
 	db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()

@@ -173,9 +173,10 @@ function Helper() {
 	 * Sets Cookie with given name for given days
 	 * @param cookie_name string
 	 * @param days int
+	 * @param consent value
 	 */
-	this.setCookieForDays = function(cookie_name, days){
-		var d = new Date(), consent = true;
+	this.setCookieForDays = function(cookie_name, days, consent){
+		var d = new Date();
 		var expiresInDays = days * 24 * 60 * 60 * 1000;
 		d.setTime( d.getTime() + expiresInDays );
 		var expires = 'expires=' + d.toGMTString();
