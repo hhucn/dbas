@@ -452,8 +452,6 @@ function ajaxLogout (){
 		} else {
 			location.reload();
 		}
-	}).ajaxComplete(function() {
-		location.reload();
 	});
 }
 
@@ -691,7 +689,10 @@ $(document).ready(function () {
 	$('#' + translationLinkEn).click(function(){ ajaxSwitchDisplayLanguage('en') });
 	$('#' + translationLinkDe + ' img').click(function(){ ajaxSwitchDisplayLanguage('de') });
 	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
-	$('#' + logoutLinkId).click(function(){ ajaxLogout()});
+	$('#' + logoutLinkId).click(function(e){
+		e.preventDefault();
+		ajaxLogout();
+	});
 
 	// gui preperation
 	prepareLoginRegistrationPopup();
