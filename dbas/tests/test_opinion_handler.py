@@ -38,3 +38,4 @@ class OpinionHandlerTests(unittest.TestCase):
                                 mainpage='url')
 
         DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+
