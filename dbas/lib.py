@@ -41,7 +41,7 @@ def get_language(request, current_registry):
 	return lang
 
 
-def get_discussion_language(request):
+def get_discussion_language(request, current_issue_uid=1):
 	"""
 	Returns Language.ui_locales
 	CALL AFTER IssueHelper.get_id_of_slug(..)!
@@ -53,7 +53,7 @@ def get_discussion_language(request):
 	issue = request.matchdict['issue'] if 'issue' in request.matchdict \
 		else request.params['issue'] if 'issue' in request.params \
 		else request.session['issue'] if 'issue' in request.session \
-		else DBDiscussionSession.query(Issue).first().uid
+		else current_issue_uid
 
 	db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
 
