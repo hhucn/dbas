@@ -82,3 +82,14 @@ def get_references_for_url(host=None, path=None):
     """
     if host and path:
         return DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()
+
+
+def get_reference_by_id(ref_id=None):
+    """
+    Query database to get a reference by its id.
+
+    :param ref_id: StatementReferences.uid
+    :return:
+    """
+    if ref_id:
+        return DBDiscussionSession.query(StatementReferences).filter_by(uid=ref_id).first()
