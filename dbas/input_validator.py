@@ -74,10 +74,9 @@ class Validator:
 			# do have both arguments the same conclusion?
 			same_conclusion = db_attacking_arg.conclusion_uid == db_attacked_arg.conclusion_uid
 			not_none = db_attacked_arg.conclusion_uid is not None
-			attacking = not db_attacking_arg.is_supportive
-			logger('--', '--', 'same_conclusion ' + str(same_conclusion))
-			logger('--', '--', 'not_none ' + str(not_none))
-			logger('--', '--', 'attacking ' + str(attacking))
+			attacking1 = not db_attacking_arg.is_supportive and db_attacked_arg.is_supportive
+			attacking2 = not db_attacked_arg.is_supportive and db_attacking_arg.is_supportive
+			attacking = attacking1 or attacking2
 			return True if same_conclusion and not_none and attacking else False
 
 		elif relation.startswith('end') and not is_history:
