@@ -392,8 +392,8 @@ class Dbas(object):
 		tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
 		history         = params['history'] if 'history' in params else ''
 
-		if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
-			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+		# if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
+		# 	return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
 		supportive           = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
