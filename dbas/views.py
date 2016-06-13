@@ -1418,7 +1418,7 @@ class Dbas(object):
 
 		logger('set_new_start_statement', 'def', 'main')
 
-		discussion_lang = get_discussion_language(self.request, issue)
+		discussion_lang = get_discussion_language(self.request)
 		_tn = Translator(discussion_lang)
 		return_dict = dict()
 		return_dict['error'] = ''
@@ -1754,11 +1754,11 @@ class Dbas(object):
 			return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_shortened_url', 'error', repr(e))
-			_tn = Translator(get_discussion_language(self.request), issue)
+			_tn = Translator(get_discussion_language(self.request))
 			return_dict['error'] = _tn.get(_tn.internalError)
 		except ReadTimeout as e:
 			logger('get_shortened_url', 'read timeout error', repr(e))
-			_tn = Translator(get_discussion_language(self.request), issue)
+			_tn = Translator(get_discussion_language(self.request))
 			return_dict['error'] = _tn.get(_tn.internalError)
 
 		return json.dumps(return_dict, True)
@@ -1786,14 +1786,17 @@ class Dbas(object):
 		"""
 		logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
 		logger('get_infos_about_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
-		ui_locales = get_discussion_language(self.request, issue)
+		ui_locales = get_discussion_language(self.request)
 		_t = Translator(ui_locales)
 		return_dict = dict()
 
 		try:
 			uid = self.request.params['uid']
-			return_dict = QueryHelper.get_infos_about_argument(uid, ui_locales, mainpage)
-			return_dict['error'] = ''
+			if not Validator.check_for_integer(uid):
+				return_dict['error'] = _t.get(_t.internalError)
+			else:
+				return_dict = QueryHelper.get_infos_about_argument(uid, ui_locales, mainpage)
+				return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_infos_about_argument', 'error', repr(e))
 			return_dict['error'] = _t.get(_t.internalError)
