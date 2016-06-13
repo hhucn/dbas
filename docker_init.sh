@@ -27,3 +27,10 @@ printf "\n# Starting integrated web server -- for development use only!\n"
 pserve docker.ini --reload
 
 echo "I feel a disturbance in the Force..."
+echo ""
+echo "__.-._"
+echo "'-._\"7'"
+echo " /'.-c"
+echo " |  /T"
+echo "_)_/LI"
+echo ""
