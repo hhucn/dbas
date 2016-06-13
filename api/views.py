@@ -23,7 +23,7 @@ log = logger()
 
 
 # Enable console print when in dockerized environment
-ENABLE_DOCKER_PRINT = True
+ENABLE_DOCKER_PRINT = False
 
 if ENABLE_DOCKER_PRINT:
 	class Unbuffered(object):
