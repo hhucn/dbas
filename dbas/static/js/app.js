@@ -452,8 +452,6 @@ function ajaxLogout (){
 		} else {
 			location.reload();
 		}
-	}).ajaxComplete(function() {
-		location.reload();
 	});
 }
 
