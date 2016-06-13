@@ -282,6 +282,7 @@ class ItemDictHelper(object):
 		"""
 		logger('DictionaryHelper', 'prepare_item_dict_for_reaction', 'def')
 		_tg  = TextGenerator(self.lang)
+		_tn  = Translator(self.lang)
 		slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
 		db_sys_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_sys).first()
@@ -360,6 +361,10 @@ class ItemDictHelper(object):
 
 			else:
 				url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+
+			# TODO PREVENT LOOPING
+			# newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
+			# additionalText = (' (<em>' + _tn.get(_tn.youUsedThisEarlier) + '<em>)') if newStepInUrl in url[url.index('?'):] else ''
 
 			statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
