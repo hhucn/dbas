@@ -286,7 +286,8 @@ class TextVersion(DiscussionBase):
 
 	def __init__(self, content, author, statement_uid=None):
 		"""
-		Initializes a row in current text versions-table
+		Initializes a row in current text versions-table.
+
 		:param content:
 		:param author:
 		:return:
@@ -466,6 +467,7 @@ class VoteArgument(DiscussionBase):
 	def set_up_vote(self, is_up_vote):
 		"""
 		Sets up/down vote of this record
+
 		:param is_up_vote: boolean
 		:return: None
 		"""
