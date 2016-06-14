@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*.mo
 
 # Distribution / packaging
 build/
@@ -39,7 +40,6 @@ coverage.xml
 *.bak
 pull*.sh
 dbas/static/minimize.sh
-
 
 # Pycharm
 .idea/
