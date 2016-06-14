@@ -10,14 +10,13 @@ function DiscussionGraph() {
 	 */
 	this.showGraph = function () {
 		$.ajax({
-			url: '/export/sigma',
+			url: '/graph/sigma',
 			type: 'GET',
 			dataType: 'json',
 			async: true
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
 		}).fail(function () {
-			new DiscussionGraph().setDefaultViewParams(false, null);
 			new GuiHandler().showDiscussionError(_t(internalError));
 		});
 	};
@@ -33,7 +32,7 @@ function DiscussionGraph() {
 		try {
 			s = this.getSigmaGraph(jsonData);
 		} catch (err){
-			new DiscussionGraph().setDefaultViewParams(false, null);
+			new DiscussionGraph().setDefaultViewParams(false, null, s);
 			new GuiHandler().showDiscussionError(_t(internalError));
 		}
 
@@ -49,7 +48,7 @@ function DiscussionGraph() {
 
 		// buttons
 		$('#start-view').click(function() {
-			new DiscussionGraph().setDefaultViewParams(true, jsonData);
+			new DiscussionGraph().setDefaultViewParams(true, jsonData, s);
 		});
 
 		$('#show-content').click(function() {
@@ -91,7 +90,7 @@ function DiscussionGraph() {
 
 		// empty graphViewContainerSpaceId after closing
 		$('#' + closeGraphViewContainerId).click(function(){
-			new DiscussionGraph().setDefaultViewParams(false, null);
+			new DiscussionGraph().setDefaultViewParams(false, null, s);
 		});
 	};
 
@@ -99,22 +98,23 @@ function DiscussionGraph() {
 	 *
 	 * @param startSigma
 	 * @param jsonData
+	 * @param sigma
 	 */
-	this.setDefaultViewParams = function (startSigma, jsonData) {
+	this.setDefaultViewParams = function (startSigma, jsonData, sigma) {
 		$('#hide-content').hide();
 		$('#show-content').show();
 		$('#wide-view').show();
 		$('#tight-view').hide();
-		s.stopForceAtlas2();
-		s.killForceAtlas2();
-		s.graph.clear();
-		s.graph.kill();
+		sigma.stopForceAtlas2();
+		sigma.killForceAtlas2();
+		sigma.graph.clear();
+		sigma.graph.kill();
 
 		if (startSigma){
 			try {
-				s = this.getSigmaGraph(jsonData);
+				sigma = this.getSigmaGraph(jsonData);
 			} catch (err){
-				new DiscussionGraph().setDefaultViewParams(false, null);
+				new DiscussionGraph().setDefaultViewParams(false, null, sigma);
 				new GuiHandler().showDiscussionError(_t(internalError));
 			}
 		} else {

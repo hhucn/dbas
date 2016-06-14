@@ -13,12 +13,13 @@ from dbas.strings import Translator
 from sqlalchemy import and_
 
 
-def send_edit_text_notification(textversion, lang):
+def send_edit_text_notification(textversion, lang, path):
 	"""
 	Sends an notification to the root-author and last author, when their text was edited.
 
 	:param textversion: new Textversion
 	:param lang: ui_locales
+	:param path: curren path
 	:return: None
 	"""
 	all_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=textversion.statement_uid).order_by(TextVersion.uid.desc()).all()
@@ -34,11 +35,12 @@ def send_edit_text_notification(textversion, lang):
 		return None
 
 	# create content
-	_t = Translator(lang)
+	_t = Translator(lang)  # TODO Send notificatio in language of recipient
 	topic = _t.get(_t.textversionChangedTopic)
 	content = _t.get(_t.textversionChangedContent) + ' ' + DBDiscussionSession.query(User).filter_by(uid=new_author).first().nickname
 	content += '<br>' + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + textversion.content + '<br>'
-	content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + oem.content
+	content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + oem.content + '<br>'
+	content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': ' + path
 
 	# send notifications
 	if send_for_root_author:

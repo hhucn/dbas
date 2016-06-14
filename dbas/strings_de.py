@@ -469,6 +469,7 @@ class GermanDict:
 		de_lang[_self.veryweak] = 'sehr schwach'
 		de_lang[_self.wantToStateNewPosition] = 'Um eine neue Aussage hinzuzufügen, klicken Sie bitte hier um sich anzumelden.'
 		de_lang[_self.weak] = 'schwach'
+		de_lang[_self.where] = 'Wo'
 		de_lang[_self.wrong] = 'Nein'
 		de_lang[_self.wouldYourShareArgument] = 'Können Sie einen Grund angeben?'
 		de_lang[_self.wrongURL] = 'Ihre URL scheint falsch zu sein.'

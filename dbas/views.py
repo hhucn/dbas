@@ -1580,7 +1580,8 @@ class Dbas(object):
 			uid = self.request.params['uid']
 			corrected_text = escape_string(self.request.params['text'])
 			ui_locales = get_language(self.request, get_current_registry())
-			return_dict = QueryHelper.correct_statement(transaction, self.request.authenticated_userid, uid, corrected_text, ui_locales)
+			return_dict = QueryHelper.correct_statement(transaction, self.request.authenticated_userid, uid,
+			                                            corrected_text, ui_locales, self.request.path)
 			if return_dict == -1:
 				return_dict = dict()
 				return_dict['error'] = _tn.get(_tn.noCorrectionsSet)

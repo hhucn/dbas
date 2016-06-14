@@ -470,6 +470,7 @@ class EnglischDict:
 		en_lang[_self.wantToStateNewPosition] = 'If you want to state a new position, please click here to log in.'
 		en_lang[_self.weak] = 'weak'
 		en_lang[_self.wrong] = 'Wrong'
+		en_lang[_self.where] = 'Where'
 		en_lang[_self.wouldYourShareArgument] = 'Would you share your argument?'
 		en_lang[_self.whatDoYouThinkAbout] = 'What do you think about'
 		en_lang[_self.whatDoYouThinkAboutThat] = 'What do you think about that'
