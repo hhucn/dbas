@@ -13,12 +13,29 @@ from html import escape
 from webob import Response, exc
 
 from dbas import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences
+from dbas.database.discussion_model import StatementReferences, User, Issue
 
 
 # =============================================================================
 # Getting Information from database
 # =============================================================================
+
+def get_joined_reference(ref_id=None):
+    """
+    Get reference and join it by author_uid and issue_uid to get all information.
+    Returns a tuple containing the complete StatementReference, User and Issue.
+
+    :param ref_id: StatementReference.uid
+    :return: reference, user, issue
+    :rtype: tuple
+    """
+    if ref_id:
+        return DBDiscussionSession.query(StatementReferences, User, Issue)\
+            .filter_by(uid=ref_id)\
+            .join(User, User.uid == StatementReferences.author_uid)\
+            .join(Issue, Issue.uid == StatementReferences.issue_uid)\
+            .first()
+
 
 def get_references_for_url(host=None, path=None):
     """
@@ -40,7 +57,7 @@ def get_reference_by_id(ref_id=None):
     Query database to get a reference by its id.
 
     :param ref_id: StatementReferences.uid
-    :return:
+    :return: StatementReference
     """
     if ref_id:
         return DBDiscussionSession.query(StatementReferences).filter_by(uid=ref_id).first()
