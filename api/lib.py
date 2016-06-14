@@ -19,6 +19,7 @@ from dbas.database.discussion_model import StatementReferences
 # =============================================================================
 # Getting Information from database
 # =============================================================================
+
 def get_references_for_url(host=None, path=None):
 	"""
 	Query database for given URL and return all references.
@@ -48,6 +49,7 @@ def get_reference_by_id(ref_id=None):
 # =============================================================================
 # Other
 # =============================================================================
+
 def logger():
 	"""
 	Create a logger.
