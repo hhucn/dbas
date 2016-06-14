@@ -192,8 +192,10 @@ function Main () {
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		$('.triangle-l').click(function () {
-			var uid = $(this).attr('id').replace(questionBubbleId + '-', '');
-			ajaxHandler.getMoreInfosAboutArgument(uid, true);
+			if ($(this).attr('id').indexOf(questionBubbleId) != -1){
+				var uid = $(this).attr('id').replace(questionBubbleId + '-', '');
+				ajaxHandler.getMoreInfosAboutArgument(uid, true);
+			}
 		});
 
 		// adding issues

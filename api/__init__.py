@@ -3,8 +3,26 @@ REST API for to communicate with the world. Enables remote discussion from arbit
 
 .. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+import sys
+
 from pyramid.config import Configurator
-from dbas.logger import logger
+
+# Enable console print when in dockerized environment
+ENABLE_DOCKER_PRINT = True
+
+if ENABLE_DOCKER_PRINT:
+	class Unbuffered(object):
+		def __init__(self, stream):
+			self.stream = stream
+
+		def write(self, data):
+			self.stream.write(data)
+			self.stream.flush()
+
+		def __getattr__(self, attr):
+			return getattr(self.stream, attr)
+
+	sys.stdout = Unbuffered(sys.stdout)
 
 
 def init(config):

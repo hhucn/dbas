@@ -107,8 +107,7 @@ class Dbas(object):
 
 		session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
 		ui_locales      = get_language(self.request, get_current_registry())
-		disc_ui_locales = get_discussion_language(self.request)
-		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
+		_dh             = DictionaryHelper(ui_locales, ui_locales)
 		extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 		_dh.add_language_options_for_extra_dict(extras_dict)
 
@@ -165,19 +164,21 @@ class Dbas(object):
 		else:
 			issue      = IssueHelper.get_id_of_slug(slug, self.request, True)
 
-		disc_ui_locales = get_discussion_language(self.request)
+		disc_ui_locales = get_discussion_language(self.request, issue)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 		item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
-		_dh             = DictionaryHelper(ui_locales, disc_ui_locales)
 		HistoryHelper.save_issue_uid(transaction, issue, nickname)
 
 		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
 			.prepare_discussion_dict_for_start()
-		extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, application_url=mainpage, for_api=for_api,
-		                                          request=self.request)
+		extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
+		                                                                                    False, True, nickname,
+		                                                                                    application_url=mainpage,
+		                                                                                    for_api=for_api,
+		                                                                                    request=self.request)
 
 		if len(item_dict) == 0:
-			_dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
+			DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
 
 		return_dict = dict()
 		return_dict['issues'] = issue_dict
@@ -227,7 +228,7 @@ class Dbas(object):
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
-		disc_ui_locales = get_discussion_language(self.request)
+		disc_ui_locales = get_discussion_language(self.request, issue)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
 		discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
@@ -299,7 +300,7 @@ class Dbas(object):
 			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
 		issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
-		disc_ui_locales     = get_discussion_language(self.request)
+		disc_ui_locales     = get_discussion_language(self.request, issue)
 		issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 		_ddh                = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
 		_idh                = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
@@ -392,8 +393,8 @@ class Dbas(object):
 		tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
 		history         = params['history'] if 'history' in params else ''
 
-		# if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
-		# 	return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+		if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
+			return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
 		supportive           = tmp_argument.is_supportive
 		nickname, session_id = self.get_nickname_and_session(for_api, api_data)
@@ -412,7 +413,7 @@ class Dbas(object):
 
 		ui_locales      = get_language(self.request, get_current_registry())
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
-		disc_ui_locales = get_discussion_language(self.request)
+		disc_ui_locales = get_discussion_language(self.request, issue)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
 		_ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
@@ -503,7 +504,7 @@ class Dbas(object):
 
 		ui_locales      = get_language(self.request, get_current_registry())
 		issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
-		disc_ui_locales = get_discussion_language(self.request)
+		disc_ui_locales = get_discussion_language(self.request, issue)
 		issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
 		session_expired = UserHandler.update_last_action(transaction, nickname)
@@ -1791,8 +1792,11 @@ class Dbas(object):
 
 		try:
 			uid = self.request.params['uid']
-			return_dict = QueryHelper.get_infos_about_argument(uid, ui_locales, mainpage)
-			return_dict['error'] = ''
+			if not Validator.check_for_integer(uid):
+				return_dict['error'] = _t.get(_t.internalError)
+			else:
+				return_dict = QueryHelper.get_infos_about_argument(uid, ui_locales, mainpage)
+				return_dict['error'] = ''
 		except KeyError as e:
 			logger('get_infos_about_argument', 'error', repr(e))
 			return_dict['error'] = _t.get(_t.internalError)

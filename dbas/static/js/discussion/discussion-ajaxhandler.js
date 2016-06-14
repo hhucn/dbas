@@ -87,7 +87,7 @@ function AjaxSiteHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 8). '
+			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 2). '
 				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
 		});
 	};
