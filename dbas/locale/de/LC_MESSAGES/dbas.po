@@ -1183,7 +1183,7 @@ msgstr "ungelesene Benachrichtigungen und"
 #. Default: total in the inbox.
 #: dbas/templates/notifications.pt:17
 msgid "totalInTheInbox"
-msgstr "gesamt im Eingang"
+msgstr "insgesamt im Eingang."
 
 #. Default: There are
 #: dbas/templates/notifications.pt:18

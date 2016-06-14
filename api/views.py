@@ -15,10 +15,11 @@ from api.login import validate_credentials, validate_login
 from cornice import Service
 from dbas.views import Dbas
 
-from .lib import HTTP204, debug_end, debug_start, flatten, json_bytes_to_dict, logger, merge_dicts
-from .references import get_references_for_url, store_reference, url_to_statement
+from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts
+from .references import get_references_for_url, store_reference, url_to_statement, get_reference_by_id
 
 log = logger()
+
 
 #
 # CORS configuration
@@ -65,32 +66,36 @@ zinit_blank = Service(name='api_init_blank',
 # Add new data to D-BAS
 #
 start_statement = Service(name="start_statement",
-                          path="/add/start_statement",
-                          description="Add new position to issue",
-                          cors_policy=cors_policy)
+						  path="/add/start_statement",
+						  description="Add new position to issue",
+						  cors_policy=cors_policy)
 
 start_premise = Service(name="start_premise",
-                        path="/add/start_premise",
-                        description="Add new premises",
-                        cors_policy=cors_policy)
+						path="/add/start_premise",
+						description="Add new premises",
+						cors_policy=cors_policy)
 
 justify_premise = Service(name="justify_premise",
-                          path="/add/justify_premise",
-                          description="Add new justifying premises",
-                          cors_policy=cors_policy)
+						  path="/add/justify_premise",
+						  description="Add new justifying premises",
+						  cors_policy=cors_policy)
 
 #
 # Get data from D-BAS' database
 #
 references = Service(name="references",
-                     path="/get/references",
-                     description="Query database to get stored references from site",
-                     cors_policy=cors_policy)
+					 path="/get/references",
+					 description="Query database to get stored references from site",
+					 cors_policy=cors_policy)
+reference_usages = Service(name="reference_usages",
+						   path="/get/reference/usages/{ref_id}",
+						   description="Return dict containing all information about the usages of this reference",
+						   cors_policy=cors_policy)
 
 find_statements = Service(name="find_statements",
-	                      path="/get/statements/{issue}/{type}/{value}",
-	                      description="Query database to get closest statements",
-	                      cors_policy=cors_policy)
+						  path="/get/statements/{issue}/{type}/{value}",
+						  description="Query database to get closest statements",
+						  cors_policy=cors_policy)
 
 #
 # Other Services
@@ -136,8 +141,8 @@ def prepare_user_information(request):
 	val = request.validated
 	try:
 		api_data = {"nickname": val["user"],
-		            "user_uid": val["user_uid"],
-		            "session_id": val["session_id"]}
+					"user_uid": val["user_uid"],
+					"session_id": val["session_id"]}
 	except KeyError:
 		api_data = None
 	return api_data
@@ -322,6 +327,18 @@ def get_references(request):
 	else:
 		log.error("[API/Reference] Could not parse host and / or path")
 		return {"status": "error", "message": "Could not parse your origin"}
+
+
+@reference_usages.get()
+def get_reference_usages(request):
+	db_ref = get_reference_by_id(1)
+	if db_ref:
+		print("\n\n\n##################")
+		print(db_ref)
+		log.info(db_ref)
+		# for ref in db_ref:
+		# 	print(ref)
+	return {"foo": "bar"}
 
 
 # =============================================================================

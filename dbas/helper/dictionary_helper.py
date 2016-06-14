@@ -223,8 +223,6 @@ class DictionaryHelper(object):
 
 		elif at_dont_know:
 			discussion_dict['mode'] = 'dont_know'
-			if self.discussion_lang != 'de':
-				current_premise = current_premise[0:1].lower() + current_premise[1:]
 			sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
 			sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
 			mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
