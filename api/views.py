@@ -11,13 +11,13 @@ which can then be used in external websites.
 """
 import json
 
-from api.extractor import extract_reference_information
-from api.login import validate_credentials, validate_login
 from cornice import Service
 from dbas.views import Dbas
 
-from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, get_reference_by_id, get_references_for_url
-from .references import store_reference, url_to_statement
+from .extractor import extract_author_information, extract_issue_information, extract_reference_information
+from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts
+from .login import validate_credentials, validate_login
+from .references import store_reference, url_to_statement, get_references_for_url, get_joined_reference
 
 log = logger()
 
@@ -302,9 +302,10 @@ def add_justify_premise(request):
     return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
 
 
-#
-# Get data from D-BAS' database
-#
+# =============================================================================
+# REFERENCES - Get references from database
+# =============================================================================
+
 @references.get()
 def get_references(request):
     """
@@ -326,9 +327,8 @@ def get_references(request):
         else:
             log.error("[API/Reference] Returned no references: Database error")
             return {"status": "error", "message": "Could not retrieve references"}
-    else:
-        log.error("[API/Reference] Could not parse host and / or path")
-        return {"status": "error", "message": "Could not parse your origin"}
+    log.error("[API/Reference] Could not parse host and / or path")
+    return {"status": "error", "message": "Could not parse your origin"}
 
 
 @reference_usages.get()
@@ -342,15 +342,18 @@ def get_reference_usages(request):
     :rtype: list
     """
     ref_uid = request.matchdict["ref_uid"]
-    db_ref = get_reference_by_id(ref_uid)
-    # ref = extract_reference_information(db_ref)
-    refs = list()
-    if db_ref:
-        refs.append({"uid": db_ref.uid,
-                     "reference": db_ref.reference})
-        print("\n\n\n##################")
-        print(db_ref)
-        print(db_ref.uid)
+    db_ref, db_user, db_issue = get_joined_reference(ref_uid)
+
+    if db_ref and db_user and db_issue:
+        statement_url = url_to_statement(db_issue.uid, db_ref.statement_uid)
+        # This is a list, which should contain one or more reference usages
+        refs = list()
+        refs.append({"reference": extract_reference_information(db_ref),
+                     "author": extract_author_information(db_user),
+                     "issue": extract_issue_information(db_issue),
+                     "statement": {"uid": db_ref.statement_uid,
+                                   "url": statement_url}})
+        return json.dumps(refs, True)
 
     return {"status": "error", "message": "Reference could not be found"}
 
