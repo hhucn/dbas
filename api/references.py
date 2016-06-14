@@ -25,7 +25,7 @@ def url_to_statement(issue_uid, statement_uid):
     :type issue_uid: id
     :param statement_uid: Statement id to generate the link to
     :type statement_uid: int
-    :return: Direct URL to jump to the provided statement
+    :return: direct URL to jump to the provided statement
     :rtype: str
     """
     slug = resolve_issue_uid_to_slug(issue_uid)
