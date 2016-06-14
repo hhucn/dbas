@@ -466,6 +466,7 @@ class VoteArgument(DiscussionBase):
     def set_up_vote(self, is_up_vote):
         """
         Sets up/down vote of this record
+
         :param is_up_vote: boolean
         :return: None
         """
@@ -474,6 +475,7 @@ class VoteArgument(DiscussionBase):
     def set_valid(self, is_valid):
         """
         Sets validity of this record
+
         :param is_valid: boolean
         :return: None
         """
@@ -529,6 +531,7 @@ class VoteStatement(DiscussionBase):
     def set_valid(self, is_valid):
         """
         Sets validity of this record
+
         :param is_valid: boolean
         :return: None
         """
@@ -537,6 +540,7 @@ class VoteStatement(DiscussionBase):
     def update_timestamp(self):
         """
         Updates timestamp of this record
+
         :return: None
         """
         self.timestamp = get_now()
