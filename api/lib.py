@@ -64,9 +64,11 @@ def merge_dicts(d1, d2):
 	:param d2: second dictionary, overwriting existing keys in d1
 	:return: merged dictionary
 	"""
-	merged = d1.copy()
-	merged.update(d2)
-	return merged
+	if isinstance(d1, dict) and isinstance(d2, dict):
+		merged = d1.copy()
+		merged.update(d2)
+		return merged
+	return None
 
 
 def debug_start():
