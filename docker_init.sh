@@ -30,7 +30,7 @@ while true; do
 
     echo ""
     echo "      --------------------------------------"
-    echo "     < I feel a disturbance in the Force... >"
+    echo "     < A disturbance in the Force, I sense... >"
     echo "      --------------------------------------"
     echo "        /"
     echo "       /"
@@ -41,7 +41,6 @@ while true; do
     echo " |  /T"
     echo "_)_/LI"
     echo ""
-    echo "Fix your errors!"
 
     sleep 3
 
