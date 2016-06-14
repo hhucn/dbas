@@ -16,8 +16,7 @@ def extract_issue_information(db_issue):
     if db_issue:
         return {"uid": db_issue.uid,
                 "title": db_issue.title,
-                "info": db_issue.info,
-                "date": db_issue.date}
+                "info": db_issue.info}
 
 
 def extract_author_information(db_user):
@@ -46,5 +45,4 @@ def extract_reference_information(db_ref):
                 "reference": db_ref.reference,
                 "host": db_ref.host,
                 "path": db_ref.path,
-                "statement_uid": db_ref.statement_uid,
-                "created": db_ref.created}
+                "statement_uid": db_ref.statement_uid}
