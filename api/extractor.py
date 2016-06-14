@@ -6,7 +6,16 @@ Common file to extract and prepare information provided by the database.
 
 
 def extract_author_information(db_user):
-    pass
+    """
+    Given a User from the database, extract public information and return it as a dictionary.
+
+    :param db_user:
+    :return: public author information
+    :rtype: dict
+    """
+    if db_user:
+        return {"uid": db_user.uid,
+                "nickname": db_user.public_nickname}
 
 
 def extract_reference_information(db_ref):
@@ -17,8 +26,6 @@ def extract_reference_information(db_ref):
     :return: prepared reference information
     :rtype: dict
     """
-    ref = dict()
-
     if db_ref:
         ref = {"uid": db_ref.uid,
                "reference": db_ref.reference,
