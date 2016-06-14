@@ -29,9 +29,9 @@ while true; do
     pserve docker.ini --reload
 
     echo ""
-    echo "      --------------------------------------"
+    echo "      ---------------------------------------"
     echo "     < A disturbance in the Force, I sense... >"
-    echo "      --------------------------------------"
+    echo "      ---------------------------------------"
     echo "        /"
     echo "       /"
     echo "      /"
