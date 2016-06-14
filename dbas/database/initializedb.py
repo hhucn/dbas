@@ -992,8 +992,6 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	premisegroup209 = PremiseGroup(author=user.uid)
 	premisegroup210 = PremiseGroup(author=user.uid)
 	premisegroup211 = PremiseGroup(author=user.uid)
-	premisegroup212 = PremiseGroup(author=user.uid)
-	premisegroup213 = PremiseGroup(author=user.uid)
 	premisegroup303 = PremiseGroup(author=user.uid)
 	premisegroup304 = PremiseGroup(author=user.uid)
 	premisegroup305 = PremiseGroup(author=user.uid)
@@ -1010,8 +1008,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 	session.add_all([premisegroup115, premisegroup116, premisegroup117, premisegroup118, premisegroup119])
 	session.add_all([premisegroup120, premisegroup121, premisegroup122, premisegroup123])
 	session.add_all([premisegroup203, premisegroup204, premisegroup205, premisegroup206, premisegroup207])
-	session.add_all([premisegroup208, premisegroup209, premisegroup210, premisegroup211, premisegroup212])
-	session.add_all([premisegroup213])
+	session.add_all([premisegroup208, premisegroup209, premisegroup210, premisegroup211])
 	session.add_all([premisegroup303, premisegroup304, premisegroup305, premisegroup306, premisegroup307])
 	session.flush()
 
