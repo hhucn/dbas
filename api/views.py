@@ -11,12 +11,13 @@ which can then be used in external websites.
 """
 import json
 
+from api.extractor import extract_reference_information
 from api.login import validate_credentials, validate_login
 from cornice import Service
 from dbas.views import Dbas
 
-from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts
-from .references import get_references_for_url, store_reference, url_to_statement, get_reference_by_id
+from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, get_reference_by_id, get_references_for_url
+from .references import store_reference, url_to_statement
 
 log = logger()
 
@@ -87,8 +88,9 @@ references = Service(name="references",
 					 path="/get/references",
 					 description="Query database to get stored references from site",
 					 cors_policy=cors_policy)
+
 reference_usages = Service(name="reference_usages",
-						   path="/get/reference/usages/{ref_id}",
+						   path="/get/reference/usages/{ref_uid}",
 						   description="Return dict containing all information about the usages of this reference",
 						   cors_policy=cors_policy)
 
@@ -123,7 +125,7 @@ def append_csrf_to_dict(request, return_dict):
 	Append CSRF token to response.
 
 	:param request: needed to extract the token
-	:param return_dict: dictionary, which gets merged with the csrf token
+	:param return_dict: dictionary, which gets merged with the CSRF token
 	:return:
 	"""
 	csrf = request.session.get_csrf_token()
@@ -331,14 +333,26 @@ def get_references(request):
 
 @reference_usages.get()
 def get_reference_usages(request):
-	db_ref = get_reference_by_id(1)
+	"""
+	Return a JSON object containing all information about the stored reference and its usages.
+	Currently, this might be the same as get_references, but this will change in the future.
+
+	:param request:
+	:return: JSON with all information about the stored reference
+	:rtype: list
+	"""
+	ref_uid = request.matchdict["ref_uid"]
+	db_ref = get_reference_by_id(ref_uid)
+	ref = extract_reference_information(db_ref)
+	refs = list()
 	if db_ref:
+		refs.append({"uid": db_ref.uid,
+		             "reference": db_ref.reference})
 		print("\n\n\n##################")
 		print(db_ref)
-		log.info(db_ref)
-		# for ref in db_ref:
-		# 	print(ref)
-	return {"foo": "bar"}
+		print(db_ref.uid)
+
+	return {"status": "error", "message": "Reference could not be found"}
 
 
 # =============================================================================
