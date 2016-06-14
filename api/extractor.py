@@ -5,6 +5,21 @@ Common file to extract and prepare information provided by the database.
 """
 
 
+def extract_issue_information(db_issue):
+    """
+    Given an Issue object from the database, extract public information and pack it into a dict.
+
+    :param db_issue:
+    :return: public issue information
+    :rtype: dict
+    """
+    if db_issue:
+        return {"uid": db_issue.uid,
+                "title": db_issue.title,
+                "info": db_issue.info,
+                "date": db_issue.date}
+
+
 def extract_author_information(db_user):
     """
     Given a User from the database, extract public information and return it as a dictionary.
@@ -27,13 +42,9 @@ def extract_reference_information(db_ref):
     :rtype: dict
     """
     if db_ref:
-        ref = {"uid": db_ref.uid,
-               "reference": db_ref.reference,
-               "host": db_ref.host,
-               "path": db_ref.path,
-               "author_uid": db_ref.author_uid,
-               "statement_uid": db_ref.statement_uid,
-               "issue_uid": db_ref.issue_uid,
-               "created": db_ref.created}
-
-    return ref
+        return {"uid": db_ref.uid,
+                "reference": db_ref.reference,
+                "host": db_ref.host,
+                "path": db_ref.path,
+                "statement_uid": db_ref.statement_uid,
+                "created": db_ref.created}
