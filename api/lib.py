@@ -12,7 +12,42 @@ from html import escape
 
 from webob import Response, exc
 
+from dbas import DBDiscussionSession
+from dbas.database.discussion_model import StatementReferences
 
+
+# =============================================================================
+# Getting Information from database
+# =============================================================================
+def get_references_for_url(host=None, path=None):
+	"""
+	Query database for given URL and return all references.
+
+	:param host: sanitized string of the reference's host
+	:type host: str
+	:param path: path to article / reference on reference's host
+	:type path: str
+	:return: list of strings representing quotes from the given site, which were stored in our database
+	:rtype: list
+	"""
+	if host and path:
+		return DBDiscussionSession.query(StatementReferences).filter_by(host=host, path=path).all()
+
+
+def get_reference_by_id(ref_id=None):
+	"""
+	Query database to get a reference by its id.
+
+	:param ref_id: StatementReferences.uid
+	:return:
+	"""
+	if ref_id:
+		return DBDiscussionSession.query(StatementReferences).filter_by(uid=ref_id).first()
+
+
+# =============================================================================
+# Other
+# =============================================================================
 def logger():
 	"""
 	Create a logger.
