@@ -41,23 +41,23 @@ reaction = Service(name='api_reaction',
                    path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
                    description="Discussion Reaction",
                    cors_policy=cors_policy)
-justify  = Service(name='api_justify',
-                   path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
-                   description="Discussion Justify",
-                   cors_policy=cors_policy)
+justify = Service(name='api_justify',
+                  path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
+                  description="Discussion Justify",
+                  cors_policy=cors_policy)
 attitude = Service(name='api_attitude',
                    path='/{slug}/attitude/*statement_id',
                    description="Discussion Attitude",
                    cors_policy=cors_policy)
-issues   = Service(name='get_issues',
-                   path='/get_issues',
-                   description="Issue Selector",
-                   cors_policy=cors_policy)
+issues = Service(name='get_issues',
+                 path='/get_issues',
+                 description="Issue Selector",
+                 cors_policy=cors_policy)
 # Prefix with 'z' so it is added as the last route
-zinit    = Service(name='api_init',
-                   path='/{slug}',
-                   description="Discussion Init",
-                   cors_policy=cors_policy)
+zinit = Service(name='api_init',
+                path='/{slug}',
+                description="Discussion Init",
+                cors_policy=cors_policy)
 zinit_blank = Service(name='api_init_blank',
                       path='/',
                       description="Discussion Init",
@@ -343,7 +343,7 @@ def get_reference_usages(request):
     """
     ref_uid = request.matchdict["ref_uid"]
     db_ref = get_reference_by_id(ref_uid)
-    ref = extract_reference_information(db_ref)
+    # ref = extract_reference_information(db_ref)
     refs = list()
     if db_ref:
         refs.append({"uid": db_ref.uid,
