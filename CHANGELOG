@@ -166,6 +166,7 @@
 0.5.14 (2016-06-07)
 - Many fixes
 - Security fixes
+- Docker integration
 
 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation
