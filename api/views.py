@@ -10,7 +10,6 @@ which can then be used in external websites.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import json
-import sys
 
 from api.login import validate_credentials, validate_login
 from cornice import Service
@@ -21,23 +20,6 @@ from .references import get_references_for_url, store_reference, url_to_statemen
 
 log = logger()
 
-
-# Enable console print when in dockerized environment
-ENABLE_DOCKER_PRINT = False
-
-if ENABLE_DOCKER_PRINT:
-	class Unbuffered(object):
-		def __init__(self, stream):
-			self.stream = stream
-
-		def write(self, data):
-			self.stream.write(data)
-			self.stream.flush()
-
-		def __getattr__(self, attr):
-			return getattr(self.stream, attr)
-
-	sys.stdout = Unbuffered(sys.stdout)
 
 #
 # CORS configuration
