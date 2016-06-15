@@ -129,14 +129,16 @@ function GuiHandler() {
 		$('#' + headerContainerId).hide();
 		$('#' + breadcrumbContainerId).hide();
 		new GuiHandler().hideDiscussionError();
-		new DiscussionGraph().showGraph();
 
 		// text
-		// $('#' + graphViewContainerHeaderId).html($('#issue_info').html());
+		$('#' + graphViewContainerHeaderId).html($('#issue_info').html());
 
 		// height
 		var innerHeight = new Helper().getMaxSizeOfGraphViewContainer();
-		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; padding: 0 0 0 0;');
+		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
+		innerHeight -= $('#graph-view-container-header').outerHeight(true) + 20;
+		$('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em;');
+		new DiscussionGraph().showGraph();
 	};
 
 	/**

@@ -440,6 +440,7 @@ class GermanDict:
         de_lang[_self.shortenedBy] = 'welche gekürzt wurde mit'
         de_lang[_self.shareUrl] = 'Link teilen'
         de_lang[_self.showMeAnotherArgument] = 'Zeige mir ein weiteres Argument'
+        de_lang[_self.snapshotGraph] = 'Bildschirmfoto'
         de_lang[_self.switchDiscussion] = 'Diskussionsthema ändern'
         de_lang[_self.switchDiscussionTitle] = 'Diskussionsthema ändern'
         de_lang[_self.switchDiscussionText1] = 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu'

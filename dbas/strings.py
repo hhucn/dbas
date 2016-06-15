@@ -433,6 +433,7 @@ class Translator(object):
         self.submit = 'submit'
         self.signs = 'signs'
         self.showContent = 'showContent'
+        self.snapshotGraph = 'snapshotGraph'
         self.support = 'support'
         self.support1 = 'support1'
         self.tightView = 'tightView'
