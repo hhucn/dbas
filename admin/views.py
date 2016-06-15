@@ -22,9 +22,9 @@ from dbas.helper.dictionary_helper import DictionaryHelper
 # CORS configuration
 #
 cors_policy = dict(enabled=True,
-				   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
-				   origins=('*',),
-				   max_age=42)
+                   headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
+                   origins=('*',),
+                   max_age=42)
 
 
 # =============================================================================
@@ -46,31 +46,31 @@ all_arguments = Service(name='admin',
 
 @dashboard.get()
 def main_admin(request):
-	"""
-	View configuration for the content view. Only logged in user can reach this page.
-	:return: dictionary with title and project name as well as a value, weather the user is logged in
-	"""
-	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-	logger('Admin', 'main_admin', 'def')
-	HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
-	should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
-	if should_log_out:
-		return Dbas(request).user_logout(True)
+    """
+    View configuration for the content view. Only logged in user can reach this page.
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'main_admin', 'def')
+    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
+    if should_log_out:
+        return Dbas(request).user_logout(True)
 
-	ui_locales = get_language(request, get_current_registry())
-	extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
-	users = get_all_users(request.authenticated_userid, ui_locales, request.application_url)
-	dashboard = get_dashboard_infos()
+    ui_locales = get_language(request, get_current_registry())
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
+    users = get_all_users(request.authenticated_userid, ui_locales, request.application_url)
+    dashboard = get_dashboard_infos()
 
-	return {
-		'layout': Dbas.base_layout(),
-		'language': str(ui_locales),
-		'title': 'Admin',
-		'project': project_name,
-		'extras': extras_dict,
-		'users': users,
-		'dashboard': dashboard
- 	}
+    return {
+        'layout': Dbas.base_layout(),
+        'language': str(ui_locales),
+        'title': 'Admin',
+        'project': project_name,
+        'extras': extras_dict,
+        'users': users,
+        'dashboard': dashboard
+     }
 
 
 # =============================================================================
@@ -79,9 +79,9 @@ def main_admin(request):
 
 @all_arguments.get()
 def get_argument_overview(request):
-	logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-	logger('Admin', 'get_argument_overview', 'main')
-	ui_locales = get_language(request, get_current_registry())
-	return_dict = get_overview_of_arguments(request.authenticated_userid, ui_locales)
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'get_argument_overview', 'main')
+    ui_locales = get_language(request, get_current_registry())
+    return_dict = get_overview_of_arguments(request.authenticated_userid, ui_locales)
 
-	return json.dumps(return_dict, True)
+    return json.dumps(return_dict, True)

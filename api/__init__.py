@@ -11,30 +11,30 @@ from pyramid.config import Configurator
 ENABLE_DOCKER_PRINT = True
 
 if ENABLE_DOCKER_PRINT:
-	class Unbuffered(object):
-		def __init__(self, stream):
-			self.stream = stream
+    class Unbuffered(object):
+        def __init__(self, stream):
+            self.stream = stream
 
-		def write(self, data):
-			self.stream.write(data)
-			self.stream.flush()
+        def write(self, data):
+            self.stream.write(data)
+            self.stream.flush()
 
-		def __getattr__(self, attr):
-			return getattr(self.stream, attr)
+        def __getattr__(self, attr):
+            return getattr(self.stream, attr)
 
-	sys.stdout = Unbuffered(sys.stdout)
+    sys.stdout = Unbuffered(sys.stdout)
 
 
 def init(config):
-	config.include("cornice")
-	config.scan("api.views")
+    config.include("cornice")
+    config.scan("api.views")
 
 
 def main(global_config, **settings):
-	config = Configurator(settings=settings)
-	init(config)
-	return config.make_wsgi_app()
+    config = Configurator(settings=settings)
+    init(config)
+    return config.make_wsgi_app()
 
 
 def includeme(config):
-	init(config)
+    init(config)

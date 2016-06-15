@@ -19,14 +19,14 @@ DBNewsEngine        = None
 
 
 def load_discussion_database(engine):
-	db_discussion_engine = engine
-	DBDiscussionSession.configure(bind=db_discussion_engine)
-	DiscussionBase.metadata.bind = db_discussion_engine
-	DiscussionBase.metadata.create_all(db_discussion_engine)
+    db_discussion_engine = engine
+    DBDiscussionSession.configure(bind=db_discussion_engine)
+    DiscussionBase.metadata.bind = db_discussion_engine
+    DiscussionBase.metadata.create_all(db_discussion_engine)
 
 
 def load_news_database(engine):
-	db_news_engine = engine
-	DBNewsSession.configure(bind=db_news_engine)
-	NewsBase.metadata.bind = db_news_engine
-	NewsBase.metadata.create_all(db_news_engine)
+    db_news_engine = engine
+    DBNewsSession.configure(bind=db_news_engine)
+    NewsBase.metadata.bind = db_news_engine
+    NewsBase.metadata.create_all(db_news_engine)
