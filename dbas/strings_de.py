@@ -221,7 +221,7 @@ class GermanDict:
         de_lang[_self.discussionEndLinkText] = 'Sie können <a id="discussionEndStepBack" onclick="window.history.back();" style="cursor: pointer;">hier</a> klicken, um einen Schritt zurückzugehen oder den oberen Button bzw. <a href="" id="discussionEndRestart">diesen Link</a> nutzen, um die Diskussion neu zustarten.'
         de_lang[_self.duplicateDialog] = 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?'
         de_lang[_self.duplicate] = 'Duplikat'
-        de_lang[_self.displayControlDialogGuidedTitle] = 'geführte Ansicht'
+        de_lang[_self.displayControlDialogGuidedTitle] = 'Dialog-Ansicht'
         de_lang[_self.displayControlDialogGuidedBody] = 'Du wirst nie etwas wie eine Argumentationskarte sehen, da das System dich führt. Das System ist daher dynamisch und generisch für dich.'
         de_lang[_self.displayControlDialogIslandTitle] = 'Insel-Ansicht'
         de_lang[_self.displayControlDialogIslandBody] = 'Okay, Sie möchten mehr sehen, aber nicht alles? Genau dafür haben wie eine Insel-Ansicht als weitere Modus. Mit dieser Möglichkeit sehen Sie alle Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind.'
