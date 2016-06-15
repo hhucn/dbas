@@ -7,7 +7,7 @@ Handle references from other websites, prepare, store and load them into D-BAS.
 
 import transaction
 from dbas import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences
+from dbas.database.discussion_model import StatementReferences, User, Issue
 from dbas.lib import resolve_issue_uid_to_slug
 from dbas.url_manager import UrlManager
 
@@ -25,7 +25,7 @@ def url_to_statement(issue_uid, statement_uid):
     :type issue_uid: id
     :param statement_uid: Statement id to generate the link to
     :type statement_uid: int
-    :return: Direct URL to jump to the provided statement
+    :return: direct URL to jump to the provided statement
     :rtype: str
     """
     slug = resolve_issue_uid_to_slug(issue_uid)
@@ -69,6 +69,27 @@ def store_reference(api_data, statement_uid=None):
         log.error("[API/Reference] KeyError: could not access field in api_data.")
 
 
+# =============================================================================
+# Getting references from database
+# =============================================================================
+
+def get_joined_reference(ref_id=None):
+    """
+    Get reference and join it by author_uid and issue_uid to get all information.
+    Returns a tuple containing the complete StatementReference, User and Issue.
+
+    :param ref_id: StatementReference.uid
+    :return: reference, user, issue
+    :rtype: tuple
+    """
+    if ref_id:
+        return DBDiscussionSession.query(StatementReferences, User, Issue)\
+            .filter_by(uid=ref_id)\
+            .join(User, User.uid == StatementReferences.author_uid)\
+            .join(Issue, Issue.uid == StatementReferences.issue_uid)\
+            .first()
+
+
 def get_references_for_url(host=None, path=None):
     """
     Query database for given URL and return all references.
@@ -89,7 +110,7 @@ def get_reference_by_id(ref_id=None):
     Query database to get a reference by its id.
 
     :param ref_id: StatementReferences.uid
-    :return:
+    :return: StatementReference
     """
     if ref_id:
         return DBDiscussionSession.query(StatementReferences).filter_by(uid=ref_id).first()
