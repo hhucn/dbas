@@ -4,6 +4,7 @@
  */
 
 function DiscussionGraph() {
+	var s;
 
 	/**
 	 * Displays a graph of current discussion
@@ -13,6 +14,7 @@ function DiscussionGraph() {
 			url: '/graph/sigma',
 			type: 'GET',
 			dataType: 'json',
+			data: {issue: new Helper().getCurrentIssueId()},
 			async: true
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
@@ -31,9 +33,14 @@ function DiscussionGraph() {
 
 		try {
 			s = this.getSigmaGraph(jsonData);
+			s.addRenderer({
+				type: 'canvas',
+				container: graphViewContainerSpaceId
+			});
 		} catch (err){
 			new DiscussionGraph().setDefaultViewParams(false, null, s);
 			new GuiHandler().showDiscussionError(_t(internalError));
+			return;
 		}
 
 		// dragging
@@ -88,6 +95,19 @@ function DiscussionGraph() {
 			$('#tight-view').hide();
 		});
 
+		$('#snapshot-graph').click(function() {
+			var now = new Date(Date.now());
+			var formatted = now.getYear + '-' + now.getMonth + '-' + now.getHours();
+			formatted += '_' + now.getMinutes() + '-' + now.getSeconds();
+			formatted += '_' + new Helper().getCurrentIssueId();
+			window.open(s.renderers[0].snapshot({
+				format: 'png',
+				background: 'white',
+				filename: formatted + '.png',
+				labels: false
+            }));
+		});
+
 		// empty graphViewContainerSpaceId after closing
 		$('#' + closeGraphViewContainerId).click(function(){
 			new DiscussionGraph().setDefaultViewParams(false, null, s);
@@ -109,6 +129,8 @@ function DiscussionGraph() {
 		sigma.killForceAtlas2();
 		sigma.graph.clear();
 		sigma.graph.kill();
+
+            $('#' + graphViewContainerSpaceId).empty();
 
 		if (startSigma){
 			try {
@@ -181,6 +203,6 @@ function DiscussionGraph() {
 		}).bind('doubleClickNode', function(e){
 			var tmp = '<br><br><ul><li>edit</li><li>supportes</li><li>author</li></ul>';
 			displayConfirmationDialogWithoutCancelAndFunction('Edit Node: ' + e.data.node.id, 'Content: ' + e.data.node.label + tmp);
-		}).refresh();
+        }).refresh();
 	}
 }

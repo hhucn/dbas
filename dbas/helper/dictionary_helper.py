@@ -306,6 +306,7 @@ class DictionaryHelper(object):
                                        'show_content': _tn_dis.get(_tn_dis.showContent),
                                        'hide_content': _tn_dis.get(_tn_dis.hideContent),
                                        'go_back': _tn_dis.get(_tn_dis.letsGoBack),
+                                       'snapshot_graph': _tn_dis.get(_tn_dis.snapshotGraph),
                                        'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
 
     def add_title_text(self, return_dict):
