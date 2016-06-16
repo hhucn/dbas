@@ -25,29 +25,43 @@ class InputValidatorTests(unittest.TestCase):
         reaction = self._makeOne()
 
         # conditions_response
-        ignore_empty_case_len_zero_true = reaction.check_for_integer(input='',
-                                                                     ignoreEmptyCase=True)
+        ignore_empty_case_len_zero_true = reaction.check_for_integer(variable='',
+                                                                     ignore_empty_case=True)
         self.assertEqual(ignore_empty_case_len_zero_true, True)
 
-        ignore_empty_case_len_false = reaction.check_for_integer(input='str',
-                                                                 ignoreEmptyCase=True)
+        long_string_false = reaction.check_for_integer(variable=',' * 1000 + '30' + '?' * 1000,
+                                                       ignore_empty_case=True)
+        self.assertEqual(long_string_false, False)
+
+        ignore_empty_case_len_false = reaction.check_for_integer(variable='str',
+                                                                 ignore_empty_case=True)
         self.assertEqual(ignore_empty_case_len_false, False)
 
-        not_ignore_empty_case_len_zero_false = reaction.check_for_integer(input='',
-                                                                          ignoreEmptyCase=False)
+        not_ignore_empty_case_len_zero_false = reaction.check_for_integer(variable='',
+                                                                          ignore_empty_case=False)
         self.assertEqual(not_ignore_empty_case_len_zero_false, False)
 
-        not_ignore_empty_case_len_false = reaction.check_for_integer(input='str',
-                                                                     ignoreEmptyCase=False)
+        not_ignore_empty_case_len_false = reaction.check_for_integer(variable='str',
+                                                                     ignore_empty_case=False)
         self.assertEqual(not_ignore_empty_case_len_false, False)
 
-        ignore_empty_case_int_true = reaction.check_for_integer(input=123,
-                                                                ignoreEmptyCase=True)
+        ignore_empty_case_int_true = reaction.check_for_integer(variable=123,
+                                                                ignore_empty_case=True)
         self.assertEqual(ignore_empty_case_int_true, True)
 
-        not_ignore_empty_case_int_true = reaction.check_for_integer(input=1,
-                                                                    ignoreEmptyCase=False)
+        not_ignore_empty_case_int_true = reaction.check_for_integer(variable=1,
+                                                                    ignore_empty_case=False)
         self.assertEqual(not_ignore_empty_case_int_true, True)
+
+        input_none_false = reaction.check_for_integer(variable=None,
+                                                      ignore_empty_case=True)
+        self.assertEqual(input_none_false, False)
+
+        input_array_false = reaction.check_for_integer(variable=[1, 2, 3, 'str'],
+                                                       ignore_empty_case=True)
+        self.assertEqual(input_array_false, False)
+
+
 
 
     def test_check_reaction(self):
