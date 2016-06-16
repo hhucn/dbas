@@ -3,9 +3,11 @@
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
+from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue, User, VoteStatement
+from dbas.user_management import get_public_profile_picture
 
 
 grey = '#9E9E9E'
@@ -35,6 +37,7 @@ def get_sigma_data(issue):
 
     nodes_array = []
     edges_array = []
+    extras_dict = {}
     db_issue = DBDiscussionSession.query(Issue).filter_by(uid=issue).first()
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
@@ -61,6 +64,7 @@ def get_sigma_data(issue):
                                     position_size if statement.is_startpoint else node_size,
                                     x,
                                     y)
+        extras_dict[str(statement.uid)] = __get_extras_dict(statement)
         x = (x + 1) % 10
         y += (1 if x == 0 else 0)
         nodes_array.append(node_dict)
@@ -109,7 +113,9 @@ def get_sigma_data(issue):
                                     edge_type)
         edges_array.append(edge_dict)
 
-    sigma_dict = {'nodes': nodes_array, 'edges': edges_array}
+    # sigma only needs the nodes and edges dict!
+    # extras will be used for click events
+    sigma_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
     return sigma_dict
 
 
@@ -169,3 +175,21 @@ def __get_edge_dict(uid, source, target, color, size, edge_type):
             'hover_color': dark_green if color == green else dark_red,
             'size': size,
             'type': edge_type}
+
+
+def __get_extras_dict(statement):
+    """
+
+    :param statement:
+    :return:
+    """
+    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
+    db_author = DBDiscussionSession.query(User).filter_by(uid=db_textversion.author_uid).first()
+    db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
+                                                                    VoteStatement.is_up_vote == True,
+                                                                    VoteStatement.is_valid == True)).all()
+    return {'text': db_textversion.content,
+            'author': db_author.public_nickname,
+            'author_gravatar': get_public_profile_picture(db_author, 20),
+            'author_url': get_public_profile_picture(db_author, 20),
+            'votes': len(db_votes)}
