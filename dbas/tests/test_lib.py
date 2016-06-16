@@ -16,17 +16,14 @@ class LibTests(unittest.TestCase):
 
         self.assertEqual(lib.escape_string(text='" str & str2'), '&quot; str &amp; str2')
 
-        long_str_with_special_char = 'str'
-        long_str_without_special_char = 'str'
-        for i in range(1, 1000):
-            long_str_with_special_char += '"'
-        for i in range(1, 1000):
-            long_str_without_special_char += '&quot;'
+        long_str_with_special_char = 'str' + '"' * 1000
+        long_str_without_special_char = 'str' + '&quot;' * 1000
         self.assertEqual(lib.escape_string(long_str_with_special_char), long_str_without_special_char)
 
     def test_sql_timestamp_pretty_print(self):
         utc = arrow.utcnow()
 
+        # TODO replace docker
         time_humanize_de = utc.to('Europe/Berlin').humanize(locale='de')
         self.assertEqual(lib.sql_timestamp_pretty_print(ts=utc,
                                                         lang='de',
