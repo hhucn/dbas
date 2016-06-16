@@ -4,6 +4,7 @@
  */
 
 function DiscussionGraph() {
+	var s;
 
 	/**
 	 * Displays a graph of current discussion
@@ -13,6 +14,7 @@ function DiscussionGraph() {
 			url: '/graph/sigma',
 			type: 'GET',
 			dataType: 'json',
+			data: {issue: new Helper().getCurrentIssueId()},
 			async: true
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
@@ -30,10 +32,11 @@ function DiscussionGraph() {
 		var jsonData = $.parseJSON(data);
 
 		try {
-			s = this.getSigmaGraph(jsonData);
+			s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
 		} catch (err){
-			new DiscussionGraph().setDefaultViewParams(false, null, s);
+			new DiscussionGraph().setDefaultViewParams(false, null, null);
 			new GuiHandler().showDiscussionError(_t(internalError));
+			return;
 		}
 
 		// dragging
@@ -46,23 +49,26 @@ function DiscussionGraph() {
 		// hack
 		$('#graph-view-container-space').attr('style', 'height:95%; float: left;');
 
-		// buttons
+		// restore default view
 		$('#start-view').click(function() {
 			new DiscussionGraph().setDefaultViewParams(true, jsonData, s);
 		});
 
+		// show content
 		$('#show-content').click(function() {
 			s.settings({labelThreshold: 0, defaultLabelColor: '#2E2E2E'});
 			$('#show-content').hide();
 			$('#hide-content').show();
 		});
 
+		// hide content
 		$('#hide-content').click(function() {
 			s.settings({labelThreshold: 8});
 			$('#show-content').show();
 			$('#hide-content').hide();
 		});
 
+		// increase distance between nodes
 		$('#wide-view').click(function() {
 			if (!s.isForceAtlas2Running()){
                 s.startForceAtlas2({
@@ -82,10 +88,25 @@ function DiscussionGraph() {
             });
 		});
 
+		// decrease distance between nodes
 		$('#tight-view').click(function() {
             s.configForceAtlas2({outboundAttractionDistribution:true});
 			$('#wide-view').show();
 			$('#tight-view').hide();
+		});
+
+		// make a snapshow
+		$('#snapshot-graph').click(function() {
+			var now = new Date(Date.now());
+			var formatted = now.getYear + '-' + now.getMonth + '-' + now.getHours();
+			formatted += '_' + now.getMinutes() + '-' + now.getSeconds();
+			formatted += '_' + new Helper().getCurrentIssueId();
+			window.open(s.renderers[0].snapshot({
+				format: 'png',
+				background: 'white',
+				filename: formatted + '.png',
+				labels: false
+            }));
 		});
 
 		// empty graphViewContainerSpaceId after closing
@@ -105,14 +126,18 @@ function DiscussionGraph() {
 		$('#show-content').show();
 		$('#wide-view').show();
 		$('#tight-view').hide();
-		sigma.stopForceAtlas2();
-		sigma.killForceAtlas2();
-		sigma.graph.clear();
-		sigma.graph.kill();
+		if (sigma != null) {
+			sigma.stopForceAtlas2();
+			sigma.killForceAtlas2();
+			sigma.graph.clear();
+			sigma.graph.kill();
+		}
+
+		$('#' + graphViewContainerSpaceId).empty();
 
 		if (startSigma){
 			try {
-				sigma = this.getSigmaGraph(jsonData);
+				return this.getSigmaGraph(jsonData);
 			} catch (err){
 				new DiscussionGraph().setDefaultViewParams(false, null, sigma);
 				new GuiHandler().showDiscussionError(_t(internalError));
@@ -127,6 +152,7 @@ function DiscussionGraph() {
 	 * @param jsonData
 	 */
 	this.getSigmaGraph = function(jsonData){
+		$('#' + graphViewContainerSpaceId).empty();
 		return new sigma({
 			graph: jsonData,
 			renderer: {
@@ -179,8 +205,16 @@ function DiscussionGraph() {
 			barnesHutTheta: 10,
 			scalingRatio: 20
 		}).bind('doubleClickNode', function(e){
-			var tmp = '<br><br><ul><li>edit</li><li>supportes</li><li>author</li></ul>';
-			displayConfirmationDialogWithoutCancelAndFunction('Edit Node: ' + e.data.node.id, 'Content: ' + e.data.node.label + tmp);
-		}).refresh();
+			var uid = e.data.node.id.substr(e.data.node.id.indexOf('_') + 1);
+			var img = '<img class="preload-image" style="height: 20pt; margin-right: 1em;" src="' + jsonData.extras[uid].author_gravatar + '">';
+			var a = '<a target="_blank" href="' + mainpage + 'user/' + jsonData.extras[uid].author + '">';
+			var tmp = '<ul>';
+			tmp += '<li>Content: ' + e.data.node.label + '</li>';
+			tmp += '<li>Node: ' + e.data.node.id + '</li>';
+			tmp += '<li>Supporters: ' + jsonData.extras[uid].votes + '</li>';
+			tmp += '<li>Author: ' + a + jsonData.extras[uid].author + ' ' + img + '</a></li>';
+			tmp += '</ul>';
+			displayConfirmationDialogWithoutCancelAndFunction('Statement ' + uid, tmp);
+        }).refresh();
 	}
 }

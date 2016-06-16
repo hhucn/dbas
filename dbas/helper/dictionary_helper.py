@@ -306,6 +306,7 @@ class DictionaryHelper(object):
                                        'show_content': _tn_dis.get(_tn_dis.showContent),
                                        'hide_content': _tn_dis.get(_tn_dis.hideContent),
                                        'go_back': _tn_dis.get(_tn_dis.letsGoBack),
+                                       'snapshot_graph': _tn_dis.get(_tn_dis.snapshotGraph),
                                        'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
 
     def add_title_text(self, return_dict):
@@ -317,9 +318,9 @@ class DictionaryHelper(object):
         """
         _tn_dis = Translator(self.discussion_lang)
         return_dict['title'] = {'barometer': _tn_dis.get(_tn_dis.opinionBarometer),
-                                'guided_view': _tn_dis.get(_tn_dis.displayControlDialogGuidedBody),
-                                'island_view': _tn_dis.get(_tn_dis.displayControlDialogIslandBody),
-                                'expert_view': _tn_dis.get(_tn_dis.displayControlDialogExpertBody),
+                                'guided_view': _tn_dis.get(_tn_dis.displayControlDialogGuidedTitle),
+                                'island_view': _tn_dis.get(_tn_dis.displayControlDialogIslandTitle),
+                                'expert_view': _tn_dis.get(_tn_dis.displayControlDialogExpertTitle),
                                 'edit_statement': _tn_dis.get(_tn_dis.editTitle),
                                 'report_statement': _tn_dis.get(_tn_dis.reportTitle),
                                 'report_title': _tn_dis.get(_tn_dis.reportTitle),

@@ -439,6 +439,7 @@ class EnglischDict:
         en_lang[_self.shortenedBy] = 'which was shortened with'
         en_lang[_self.shareUrl] = 'Share Link'
         en_lang[_self.showMeAnotherArgument] = 'Show me another argument'
+        en_lang[_self.snapshotGraph] = 'Screenshot'
         en_lang[_self.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'so that participants do not have any opinion regarding your selection'
         en_lang[_self.switchDiscussion] = 'Change the discussion\'s topic'
         en_lang[_self.switchDiscussionTitle] = 'Switch Discussion'
