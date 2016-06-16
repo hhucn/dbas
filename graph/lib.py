@@ -183,12 +183,17 @@ def __get_extras_dict(statement):
     :param statement:
     :return:
     """
-    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
-    db_author = DBDiscussionSession.query(User).filter_by(uid=db_textversion.author_uid).first()
+    db_textversion_modifier = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
+    db_textversion_author = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.textversion_uid).first()
+
+    db_modifier = DBDiscussionSession.query(User).filter_by(uid=db_textversion_modifier.author_uid).first()
+    db_author = DBDiscussionSession.query(User).filter_by(uid=db_textversion_author.author_uid).first()
     db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
                                                                     VoteStatement.is_up_vote == True,
                                                                     VoteStatement.is_valid == True)).all()
-    return {'text': db_textversion.content,
+    return {'text': db_textversion_modifier.content,
             'author': db_author.public_nickname,
             'author_gravatar': get_public_profile_picture(db_author, 20),
+            'modifier': db_modifier.public_nickname,
+            'modifier_gravatar': get_public_profile_picture(db_modifier, 20),
             'votes': len(db_votes)}
