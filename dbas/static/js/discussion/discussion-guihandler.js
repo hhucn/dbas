@@ -128,6 +128,7 @@ function GuiHandler() {
 		$('#' + discussionContainerId).hide();
 		$('#' + headerContainerId).hide();
 		$('#' + breadcrumbContainerId).hide();
+		$('#' + addPremiseContainerId).hide();
 		new GuiHandler().hideDiscussionError();
 
 		// text
