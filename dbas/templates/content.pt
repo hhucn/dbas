@@ -255,6 +255,7 @@
                     <li><a id="hide-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.hide_content" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_notext.png')}"/></a></li>
                     <li><a id="wide-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.wide_node_view"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_wide.png')}"/></a></li>
                     <li><a id="tight-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.tight_node_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_tight.png')}"/></a></li>
+                    <li><a id="snapshot-graph" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.snapshot_graph" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_snapshot_graph.png')}"/></a></li>
                 </ul>
             </div>
 		</div>
@@ -343,7 +344,7 @@
 
 		<script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-barometer.js')}"></script>
 
-		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-graph.js')}"></script>
+		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-graph-sigma.js')}"></script>
 		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.min.js')}"></script>
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.parsers.json.min.js')}"></script>
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.plugins.dragNodes.js')}"></script>
