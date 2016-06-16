@@ -191,5 +191,4 @@ def __get_extras_dict(statement):
     return {'text': db_textversion.content,
             'author': db_author.public_nickname,
             'author_gravatar': get_public_profile_picture(db_author, 20),
-            'author_url': get_public_profile_picture(db_author, 20),
             'votes': len(db_votes)}
