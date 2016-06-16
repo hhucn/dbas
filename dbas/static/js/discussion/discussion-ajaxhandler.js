@@ -136,7 +136,8 @@ function AjaxSiteHandler() {
 			url: 'ajax_get_logfile_for_statement',
 			method: 'GET',
 			data: {
-				uid: id_id
+				uid: id_id,
+				issue: new Helper().getCurrentIssueId(),
 			},
 			dataType: 'json',
 			async: true,
