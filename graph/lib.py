@@ -184,7 +184,7 @@ def __get_extras_dict(statement):
     :return:
     """
     db_textversion_modifier = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
-    db_textversion_author = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.textversion_uid).first()
+    db_textversion_author = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).first()
 
     db_modifier = DBDiscussionSession.query(User).filter_by(uid=db_textversion_modifier.author_uid).first()
     db_author = DBDiscussionSession.query(User).filter_by(uid=db_textversion_author.author_uid).first()
