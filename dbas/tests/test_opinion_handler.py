@@ -166,4 +166,3 @@ class OpinionHandlerTests(unittest.TestCase):
                     'title': 'Reaktionen zu: Ich akzeptiere, dass The city should reduce the number of street festivals, weil Reducing the number of street festivals can save up to $50.000 a year'}
 
         self.assertEqual(opinion.get_user_and_opinions_for_argument([31, 30]), response)
-        print(opinion.get_user_and_opinions_for_argument([49, 48]))
