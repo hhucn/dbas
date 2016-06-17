@@ -1700,6 +1700,8 @@ class Dbas(object):
 
         try:
             uid = self.request.params['uid']
+            issue = self.request.params['issue']
+            ui_locales = get_discussion_language(self.request, issue)
             return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales, mainpage)
             return_dict['error'] = ''
         except KeyError as e:

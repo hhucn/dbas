@@ -206,13 +206,21 @@ function DiscussionGraph() {
 			scalingRatio: 20
 		}).bind('doubleClickNode', function(e){
 			var uid = e.data.node.id.substr(e.data.node.id.indexOf('_') + 1);
-			var img = '<img class="preload-image" style="height: 20pt; margin-right: 1em;" src="' + jsonData.extras[uid].author_gravatar + '">';
-			var a = '<a target="_blank" href="' + mainpage + 'user/' + jsonData.extras[uid].author + '">';
+			var img_modifier = '';
+			var img_author = '<img class="preload-image" style="height: 20pt; margin-right: 1em;" src="' + jsonData.extras[uid].author_gravatar + '">';
+			var a_modifier = '<a target="_blank" href="' + mainpage + 'user/' + jsonData.extras[uid].author + '">';
+			var a_author = '<a target="_blank" href="' + mainpage + 'user/' + jsonData.extras[uid].modifier + '">';
 			var tmp = '<ul>';
+
 			tmp += '<li>Content: ' + e.data.node.label + '</li>';
 			tmp += '<li>Node: ' + e.data.node.id + '</li>';
 			tmp += '<li>Supporters: ' + jsonData.extras[uid].votes + '</li>';
-			tmp += '<li>Author: ' + a + jsonData.extras[uid].author + ' ' + img + '</a></li>';
+			tmp += '<li>Author: ' + a_author + jsonData.extras[uid].author + ' ' + img_author + '</a></li>';
+
+			if (jsonData.extras[uid].was_modified === 'true') {
+				img_modifier = '<img class="preload-image" style="height: 20pt; margin-right: 1em;" src="' + jsonData.extras[uid].modifier_gravatar + '">';
+				tmp += '<li>Edit by: ' + a_modifier + jsonData.extras[uid].modifier + ' ' + img_modifier + '</a></li>';
+			}
 			tmp += '</ul>';
 			displayConfirmationDialogWithoutCancelAndFunction('Statement ' + uid, tmp);
         }).refresh();
