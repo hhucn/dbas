@@ -1,14 +1,11 @@
 import unittest
 
-import os
-
-from paste.deploy.loadwsgi import appconfig
 from sqlalchemy import engine_from_config
 
 from dbas import DBDiscussionSession
+from dbas.helper.tests_helper import add_settings_to_appconfig
 
-dir_name = os.path.dirname(os.path.dirname(os.path.abspath(os.curdir)))
-settings = appconfig('config:' + os.path.join(dir_name, 'development.ini'))
+settings = add_settings_to_appconfig("development.ini")
 
 
 class OpinionHandlerTests(unittest.TestCase):
