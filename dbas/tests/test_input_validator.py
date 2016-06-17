@@ -76,7 +76,13 @@ class InputValidatorTests(unittest.TestCase):
                                                  is_history=False)
         self.assertEqual(undermine_true, True)
 
-        # relation_conditions_ishistory
+        undermine_uid_array_false = reaction.check_reaction(attacked_arg_uid=[1,2,3],
+                                                            attacking_arg_uid=[1,2,3],
+                                                            relation='undermine',
+                                                            is_history=False)
+        self.assertEqual(undermine_uid_array_false, False)
+
+        # relation_conditions_response
         undermine_not_db_attacking_arg_false = reaction.check_reaction(attacked_arg_uid=2,
                                                                        attacking_arg_uid=1,
                                                                        relation='undermine',
@@ -206,4 +212,23 @@ class InputValidatorTests(unittest.TestCase):
                                                    relation='end',
                                                    is_history=False)
         self.assertEqual(end_string_false, False)
+
+        end_string_long_false = reaction.check_reaction(attacked_arg_uid=',' * 1000 + '30' + 'str' * 1000,
+                                                        attacking_arg_uid=',' * 1000 + '30' + 'str' * 1000,
+                                                        relation='end',
+                                                        is_history=False)
+        self.assertEqual(end_string_long_false, False)
+
+        # no relation
+        no_relation_false = reaction.check_reaction(attacked_arg_uid='',
+                                                    attacking_arg_uid='3',
+                                                    relation='',
+                                                    is_history=False)
+        self.assertEqual(no_relation_false, False)
+
+        no_relation_uid_none_false = reaction.check_reaction(attacked_arg_uid=None,
+                                                            attacking_arg_uid=None,
+                                                            relation='',
+                                                            is_history=False)
+        self.assertEqual(no_relation_uid_none_false, False)
 
