@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-06-09 09:16+0200\n"
+"POT-Creation-Date: 2016-06-20 08:32+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -38,7 +38,7 @@ msgstr ", weil die Paramter wahrscheinlich falsch sind"
 
 #. Default: Go home
 #: dbas/templates/404.pt:17
-msgid "go_home"
+msgid "go-home"
 msgstr "Zur Startseite"
 
 #. Default: or
@@ -46,15 +46,10 @@ msgstr "Zur Startseite"
 msgid "or"
 msgstr "oder"
 
-#. Default: go back
+#. Default: go back to the discussion
 #: dbas/templates/404.pt:20
-msgid "go_back"
-msgstr "Willkommen zurück!"
-
-#. Default: to the discussion
-#: dbas/templates/404.pt:21
-msgid "to_the_discussion"
-msgstr "Zurück zur Diskussion!"
+msgid "go_back_to_the_discussion"
+msgstr "zurück zur Diskussion"
 
 #. Default: Your session has expired!
 #: dbas/templates/index.pt:8
@@ -130,7 +125,7 @@ msgstr "Nachrichten"
 #. Default: Login
 #. Default: Log In
 #: dbas/templates/snippet-header.pt:59 dbas/templates/snippet-popups.pt:244
-#: dbas/templates/snippet-popups.pt:449
+#: dbas/templates/snippet-popups.pt:451
 msgid "login"
 msgstr "Login"
 
@@ -422,7 +417,7 @@ msgid "imprint_copyright"
 msgstr "Impressum und Urheberrecht"
 
 #. Default: Author
-#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:618
+#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:620
 msgid "author"
 msgstr "Autor"
 
@@ -508,8 +503,8 @@ msgstr "Fax"
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:75 dbas/templates/snippet-popups.pt:120
-#: dbas/templates/snippet-popups.pt:452 dbas/templates/snippet-popups.pt:491
-#: dbas/templates/snippet-popups.pt:626 dbas/templates/snippet-popups.pt:662
+#: dbas/templates/snippet-popups.pt:454 dbas/templates/snippet-popups.pt:493
+#: dbas/templates/snippet-popups.pt:628 dbas/templates/snippet-popups.pt:664
 msgid "close"
 msgstr "Schließen"
 
@@ -690,7 +685,7 @@ msgid "password_strength"
 msgstr "sehr schwach"
 
 #. Default: Generate secure password
-#: dbas/templates/snippet-popups.pt:384 dbas/templates/snippet-popups.pt:440
+#: dbas/templates/snippet-popups.pt:384 dbas/templates/snippet-popups.pt:442
 msgid "generate_password"
 msgstr "Password generieren"
 
@@ -700,90 +695,100 @@ msgid "spam"
 msgstr "Anti-Spam"
 
 #. Default: How to select a strong password
-#: dbas/templates/snippet-popups.pt:421 dbas/templates/snippet-popups.pt:465
+#: dbas/templates/snippet-popups.pt:421 dbas/templates/snippet-popups.pt:467
 msgid "select_password"
 msgstr "Wie wählt man ein sicheres Password"
 
 #. Default: A Password is strong, when it contains at least:
-#: dbas/templates/snippet-popups.pt:423 dbas/templates/snippet-popups.pt:468
+#: dbas/templates/snippet-popups.pt:423 dbas/templates/snippet-popups.pt:470
 msgid "select_password_intro"
 msgstr "Ein Passwort ist stark, wenn es mindestens folgende Sachen enthält:"
 
 #. Default: eight characters
-#: dbas/templates/snippet-popups.pt:425 dbas/templates/snippet-popups.pt:470
+#: dbas/templates/snippet-popups.pt:425 dbas/templates/snippet-popups.pt:472
 msgid "select_password_rule1"
 msgstr "acht Zeichen"
 
 #. Default: one uppercase letter
-#: dbas/templates/snippet-popups.pt:426 dbas/templates/snippet-popups.pt:471
+#: dbas/templates/snippet-popups.pt:426 dbas/templates/snippet-popups.pt:473
 msgid "select_password_rule2"
 msgstr "ein Großbuchstaben"
 
 #. Default: one lowercase letter
-#: dbas/templates/snippet-popups.pt:427 dbas/templates/snippet-popups.pt:472
+#: dbas/templates/snippet-popups.pt:427 dbas/templates/snippet-popups.pt:474
 msgid "select_password_rule3"
 msgstr "ein Kleinbuchstaben"
 
 #. Default: one special sign
-#: dbas/templates/snippet-popups.pt:428 dbas/templates/snippet-popups.pt:473
+#: dbas/templates/snippet-popups.pt:428 dbas/templates/snippet-popups.pt:475
 msgid "select_password_rule4"
 msgstr "ein Sonderzeichen"
 
-#. Default: For example 'M2015_fiO' is a strong password. And it would take 275
-#. days to crack this password with a desktop pc in 2015. Removing one sign,
-#. reduces the time to 3 days, and adding a sign increases the time to 57
-#. years. It should be noted:
-#: dbas/templates/snippet-popups.pt:430 dbas/templates/snippet-popups.pt:475
-msgid "popup_password_text"
-msgstr ""
-"Als Beispiel ist 'M2015_fiO' ein starkes Passwort. Hier noch ein paar Tipps:"
+#. Default: For example
+#: dbas/templates/snippet-popups.pt:430
+msgid "popup_password_text1"
+msgstr "Als Beispiel ist "
+
+#. Default: is a strong password. A couple of hints:
+#: dbas/templates/snippet-popups.pt:432
+msgid "popup_password_text2"
+msgstr " ein starkes Passwort. Hier noch ein paar Tipps:"
 
 #. Default: Avoid using a password on several pages
-#: dbas/templates/snippet-popups.pt:432 dbas/templates/snippet-popups.pt:477
+#: dbas/templates/snippet-popups.pt:434 dbas/templates/snippet-popups.pt:479
 msgid "select_password_avoid1"
 msgstr "Niemals das gleiche Passwort für verschiedene Seiten nutzen."
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: dbas/templates/snippet-popups.pt:433 dbas/templates/snippet-popups.pt:478
+#: dbas/templates/snippet-popups.pt:435 dbas/templates/snippet-popups.pt:480
 msgid "select_password_avoid2"
 msgstr "Phrasen vermeiden, die in Büchern gefunden werden können"
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: dbas/templates/snippet-popups.pt:434 dbas/templates/snippet-popups.pt:479
+#: dbas/templates/snippet-popups.pt:436 dbas/templates/snippet-popups.pt:481
 msgid "select_password_avoid3"
 msgstr ""
 "Verwendung von Informationen, die eventuell in Verbindung zur Person stehen"
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: dbas/templates/snippet-popups.pt:435 dbas/templates/snippet-popups.pt:480
+#: dbas/templates/snippet-popups.pt:437 dbas/templates/snippet-popups.pt:482
 msgid "select_password_avoid4"
 msgstr ""
 "Verwendung von Informationen, die eventuell Freunde/Bekannte der Person  "
 "kennen"
 
 #. Default: If you need some help with our password, you can get one here:
-#: dbas/templates/snippet-popups.pt:437 dbas/templates/snippet-popups.pt:482
+#: dbas/templates/snippet-popups.pt:439 dbas/templates/snippet-popups.pt:484
 msgid "select_password_help"
 msgstr ""
 "Wenn Sie Hilfe bei der Erstellung brauchen, können Sie sich hier eins "
 "generieren lassen:"
 
 #. Default: Register
-#: dbas/templates/snippet-popups.pt:450
+#: dbas/templates/snippet-popups.pt:452
 msgid "register"
 msgstr "Registierung"
 
+#. Default: For example 'M2015_fiO' is a strong password. And it would take 275
+#. days to crack this password with a desktop pc in 2015. Removing one sign,
+#. reduces the time to 3 days, and adding a sign increases the time to 57
+#. years. It should be noted:
+#: dbas/templates/snippet-popups.pt:477
+msgid "popup_password_text"
+msgstr ""
+"Als Beispiel ist 'M2015_fiO' ein starkes Passwort. Hier noch ein paar Tipps:"
+
 #. Default: How to write text
-#: dbas/templates/snippet-popups.pt:504
+#: dbas/templates/snippet-popups.pt:506
 msgid "how-to-write-text-header"
 msgstr "Wie schreibe ich Texte"
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: dbas/templates/snippet-popups.pt:507
+#: dbas/templates/snippet-popups.pt:509
 msgid "how-to-write-text-header-body"
 msgstr ""
 "Gut zu schreiben ist ein Herausforderung und notwendig für die Benutzung von "
@@ -791,52 +796,52 @@ msgstr ""
 "paar Regeln gelistet, was gut ist."
 
 #. Default: Do's:
-#: dbas/templates/snippet-popups.pt:510
+#: dbas/templates/snippet-popups.pt:512
 msgid "dos"
 msgstr "Gut:"
 
 #. Default: Write short!
-#: dbas/templates/snippet-popups.pt:512
+#: dbas/templates/snippet-popups.pt:514
 msgid "how-to-write-text-short"
 msgstr "Schreiben Sie kurz!"
 
 #. Default: Only one statement per field!
-#: dbas/templates/snippet-popups.pt:513
+#: dbas/templates/snippet-popups.pt:515
 msgid "how-to-write-text-one-point"
 msgstr "Immer nur eine Aussage/Argumete/Punkt pro Feld!"
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:526
+#: dbas/templates/snippet-popups.pt:528
 msgid "Okay"
 msgstr "Okay"
 
 #. Default: Writing a new message
-#: dbas/templates/snippet-popups.pt:597 dbas/templates/snippet-popups.pt:639
+#: dbas/templates/snippet-popups.pt:599 dbas/templates/snippet-popups.pt:641
 msgid "writing_message"
 msgstr "Neue Nachricht schreiben"
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:606 dbas/templates/snippet-popups.pt:651
+#: dbas/templates/snippet-popups.pt:608 dbas/templates/snippet-popups.pt:653
 msgid "error:"
 msgstr "Fehler:"
 
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:611 dbas/templates/snippet-popups.pt:656
+#: dbas/templates/snippet-popups.pt:613 dbas/templates/snippet-popups.pt:658
 msgid "success:"
 msgstr "Erfolg:"
 
 #. Default: Date
-#: dbas/templates/snippet-popups.pt:620
+#: dbas/templates/snippet-popups.pt:622
 msgid "date"
 msgstr "Datum"
 
 #. Default: Send News
-#: dbas/templates/snippet-popups.pt:625
+#: dbas/templates/snippet-popups.pt:627
 msgid "send_news"
 msgstr "News abschicken"
 
 #. Default: Send Notifcation
-#: dbas/templates/snippet-popups.pt:661
+#: dbas/templates/snippet-popups.pt:663
 msgid "send_notification"
 msgstr "Nachricht senden"
 
@@ -1267,24 +1272,30 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Change display style
-#: dbas/templates/content.pt:316
+#: dbas/templates/content.pt:317
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:319
+#: dbas/templates/content.pt:320
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:325
+#: dbas/templates/content.pt:326
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:331
+#: dbas/templates/content.pt:332
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "go_back"
+#~ msgstr "Willkommen zurück!"
+
+#~ msgid "to_the_discussion"
+#~ msgstr "Zurück zur Diskussion!"
 
 #~ msgid "go-home_by"
 #~ msgstr "Gehen Sie zurück indem Sie"
