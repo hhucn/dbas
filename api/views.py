@@ -17,7 +17,7 @@ from dbas.views import Dbas
 from .extractor import extract_author_information, extract_issue_information, extract_reference_information
 from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
-from .references import store_reference, url_to_statement, get_references_for_url, get_joined_reference
+from .references import store_reference, url_to_statement, get_references_for_url, get_complete_reference
 
 log = logger()
 
@@ -342,7 +342,7 @@ def get_reference_usages(request):
     :rtype: list
     """
     ref_uid = request.matchdict["ref_uid"]
-    db_ref, db_user, db_issue, db_textversion = get_joined_reference(ref_uid)
+    db_ref, db_user, db_issue, db_textversion = get_complete_reference(ref_uid)
 
     if db_ref and db_user and db_issue and db_textversion:
         statement_url = url_to_statement(db_issue.uid, db_ref.statement_uid)
@@ -354,7 +354,7 @@ def get_reference_usages(request):
                                    "url": statement_url,
                                    "text": db_textversion.content}})
         return json.dumps(refs, True)
-    
+
     log.error("[API/GET Reference Usages] Error when trying to find matching reference for id " + ref_uid)
     return {"status": "error", "message": "Reference could not be found"}
 
