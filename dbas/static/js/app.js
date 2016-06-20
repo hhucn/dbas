@@ -283,10 +283,11 @@ function prepareLoginRegistrationPopup(){
 	$('#' + popupLoginGeneratePassword + ' > a').click(function(){
 		if (popupLoginGeneratePasswordBody.is(':visible')){
 			popupLoginGeneratePasswordBody.hide();
-			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(generateSecurePassword));
+			$('#' + popupLoginGeneratePassword + ' > a').text(_t(generateSecurePassword));
 		} else {
 			popupLoginGeneratePasswordBody.show();
-			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(hideGenerator));
+			$('#' + popupLoginGeneratePassword + ' > a').text(_t(hideGenerator));
+			new PasswordHandler().generate_password($('#popup_password_example'));
 		}
 	});
 
@@ -321,7 +322,7 @@ function prepareLoginRegistrationPopup(){
 				break;
 			}
 		}
-
+		alert('|' + text  + '|');
 		if (text == '' ){
 			$('#' + popupLoginWarningMessage).hide();
 			ajaxRegistration();
