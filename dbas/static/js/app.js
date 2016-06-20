@@ -322,7 +322,7 @@ function prepareLoginRegistrationPopup(){
 				break;
 			}
 		}
-
+		alert('|' + text  + '|');
 		if (text == '' ){
 			$('#' + popupLoginWarningMessage).hide();
 			ajaxRegistration();
