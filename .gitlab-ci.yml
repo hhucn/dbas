@@ -7,4 +7,5 @@ before_script:
 
 nosetests:
   script:
+    - echo "Test caching..."
     - nosetests
