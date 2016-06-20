@@ -1,8 +1,7 @@
 image: python:3.5
 
 before_script:
-  - ls -al
-#  - pip install requirements.txt
+  - pip install -r requirements.txt
 
 nosetests:
   script:
