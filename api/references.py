@@ -72,10 +72,9 @@ def store_reference(api_data, statement_uid=None):
 # Getting references from database
 # =============================================================================
 
-def get_joined_reference(ref_id=None):
+def get_complete_reference(ref_id=None):
     """
-    Get reference and join it by author_uid and issue_uid to get all information.
-    Returns a tuple containing the complete StatementReference, User and Issue.
+    Given a reference uid, query all interesting information and retrieve the database objects.
 
     :param ref_id: StatementReference.uid
     :return: reference, user, issue
