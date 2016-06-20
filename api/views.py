@@ -342,19 +342,20 @@ def get_reference_usages(request):
     :rtype: list
     """
     ref_uid = request.matchdict["ref_uid"]
-    db_ref, db_user, db_issue = get_joined_reference(ref_uid)
+    db_ref, db_user, db_issue, db_textversion = get_joined_reference(ref_uid)
 
-    if db_ref and db_user and db_issue:
+    if db_ref and db_user and db_issue and db_textversion:
         statement_url = url_to_statement(db_issue.uid, db_ref.statement_uid)
-        # This is a list, which should contain one or more reference usages
         refs = list()
         refs.append({"reference": extract_reference_information(db_ref),
                      "author": extract_author_information(db_user),
                      "issue": extract_issue_information(db_issue),
                      "statement": {"uid": db_ref.statement_uid,
-                                   "url": statement_url}})
+                                   "url": statement_url,
+                                   "text": db_textversion.content}})
         return json.dumps(refs, True)
-
+    
+    log.error("[API/GET Reference Usages] Error when trying to find matching reference for id " + ref_uid)
     return {"status": "error", "message": "Reference could not be found"}
 
 
