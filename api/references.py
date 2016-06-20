@@ -2,12 +2,11 @@
 Handle references from other websites, prepare, store and load them into D-BAS.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import transaction
 from dbas import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, User, Issue
+from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
 from dbas.lib import resolve_issue_uid_to_slug
 from dbas.url_manager import UrlManager
 
@@ -83,11 +82,11 @@ def get_joined_reference(ref_id=None):
     :rtype: tuple
     """
     if ref_id:
-        return DBDiscussionSession.query(StatementReferences, User, Issue)\
-            .filter_by(uid=ref_id)\
-            .join(User, User.uid == StatementReferences.author_uid)\
-            .join(Issue, Issue.uid == StatementReferences.issue_uid)\
-            .first()
+        reference = DBDiscussionSession.query(StatementReferences).filter_by(uid=ref_id).first()
+        user = DBDiscussionSession.query(User).filter_by(uid=reference.author_uid).first()
+        issue = DBDiscussionSession.query(Issue).filter_by(uid=reference.issue_uid).first()
+        textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=reference.statement_uid).first()
+        return reference, user, issue, textversion
 
 
 def get_references_for_url(host=None, path=None):
