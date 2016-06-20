@@ -16,7 +16,6 @@ from graph.lib import get_sigma_data, get_d3_data
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
-# Example: $ curl localhost:4284/graph/sigma
 sigma_graph = Service(name='sigma',
                       path='/sigma',
                       description="Sigma Dump")

@@ -577,6 +577,34 @@ function GuiHandler() {
 		});
 	};
 
+     /**
+	 * Opens the edit issues popup
+	 */
+	this.showEditIssuesPopup = function () {
+		var table, trTitle,trInfo, td_title, td_info, td_buttons, helper = new Helper(), ids = [];
+		$('#' + popupEditIssueId).modal('show');
+		$('#' + popupEditIssueWarning).hide();
+		// top row
+		table = $('<table>')
+			.attr('class', 'table table-condensed table-hover')
+			.attr('border', '0')
+			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
+		td_title = $('<td>').html('<strong>' + _t_discussion(text) + '</strong>').css('text-align', 'center');
+		td_info = $('<td>').html('<strong>' + _t_discussion(text) + '</strong>').css('text-align', 'center');
+		td_buttons = $('<td>').html('<strong>' + _t_discussion(options) + '</strong>').css('text-align', 'right');
+		trTitle.append(td_title);
+		trInfo.append((td_info).append(td_buttons));
+		table.append((trTitle).append(trInfo));
+
+		$('#' + popupEditIssueContentId).empty().append(table);
+		$('#' + popupEditTitleTextareaId).hide();
+		$('#' + popupEditTitleDescriptionId).hide();
+		$('#' + popupEditInfoTextareaId).hide();
+		$('#' + popupEditInfoDescriptionId).hide();
+		$('#' + popupEditIssueSubmitButtonId).hide();
+		$('#' + proposalEditListGroupId).empty();
+	};
+
 	/**
 	 * Displays all corrections in the popup
 	 * @param jsonData json encoded return data

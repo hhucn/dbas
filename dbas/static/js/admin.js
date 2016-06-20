@@ -155,10 +155,14 @@ function NavBarInterface(){
 		$('#admin-dashboards').click(function(){	_this.showDashboard();	});
 		$('#admin-users').click(function(){			_this.showUsers();		});
 		$('#admin-arguments').click(function(){		_this.showArguments()	});
+		$('#admin-issues').click(function(){		_this.showIssues()	});
+		$('#admin-statements').click(function(){		_this.showStatements()	});
+		$('#admin-premisegroups').click(function(){		_this.showPremisegroups()	});
 		$('#dashboard-user-count-detail').click(function(){			_this.showUsers();		});
 		$('#dashboard-vote-count-detail').click(function(){			_this.showVotes();		});
 		$('#dashboard-argument-count-detail').click(function(){		_this.showArguments();	});
 		$('#dashboard-statement-count-detail').click(function(){	_this.showStatements();	});
+		$('#dashboard-premisegroups-count-detail').click(function(){	_this.showPremisegroups();	});
 	};
 
 	/**
@@ -207,17 +211,37 @@ function NavBarInterface(){
 	};
 
 	/**
-	 *
+	 * Shows the issue space
+	 */
+	this.showIssues = function(){
+
+		this.hideEverything();
+		$('#admin-issues').parent().addClass('active');
+		$('#admins-space-issue').show();
+	};
+
+	/**
+	 * Shows the statement space
 	 */
 	this.showStatements = function(){
 		this.hideEverything();
-		// TODO
+		$('#admin-statements').parent().addClass('active');
+		$('#admins-space-statements').show();
+	};
+
+	/**
+	 * Shows the premisegroup space
+	 */
+	this.showPremisegroups = function(){
+		this.hideEverything();
+		$('#admin-premisegroups').parent().addClass('active');
+		$('#admins-space-premisegroups').show();
 	};
 }
 
 // main function
 $(function () {
-	var ai = new AdminInterface(), nbi = new NavBarInterface();
+	var ai = new AdminInterface(), nbi = new NavBarInterface(), guiHandler = new GuiHandler();
 
 	// hide or show all users
 	$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
@@ -245,6 +269,16 @@ $(function () {
 			$('#' + listAllArgumentId).val(_t(showAllArguments));
 		}
 	});
+
+	// adding issues
+		$('#' + addTopicButtonId).click(function () {
+		    guiHandler.showAddTopicPopup(new InteractionHandler().callbackIfDoneForSendNewIssueTable);
+		});
+
+	//  edit issue
+		$('#' + editIssueButtonId).click(function () {
+			guiHandler.showEditIssuesPopup();
+		});
 
 	nbi.setUpLinks();
 });

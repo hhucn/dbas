@@ -201,7 +201,6 @@ function PasswordHandler(){
 			}
 		}
 		output.val(password);
-		output.text(password);
 	};
 }
 
