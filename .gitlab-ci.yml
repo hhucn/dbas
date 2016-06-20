@@ -4,4 +4,5 @@ before_script:
   - pip install requirements.txt
 
 nosetests:
-  - nosetests
+  script:
+    - nosetests
