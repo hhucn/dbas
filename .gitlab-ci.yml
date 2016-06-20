@@ -1,0 +1,7 @@
+image: python:3.5
+
+before_script:
+  - pip install requirements.txt
+
+nosetests:
+  - nosetests
