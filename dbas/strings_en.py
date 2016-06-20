@@ -105,6 +105,9 @@ class EnglischDict:
         en_lang[_self.pleaseEnterTopic] = 'Please enter your topic here:'
         en_lang[_self.pleaseEnterShorttextForTopic] = 'Please enter a shorttext for your topic here:'
         en_lang[_self.pleaseSelectLanguageForTopic] = 'Please select the language of the new discussion here:'
+        en_lang[_self.editIssueViewChangelog] = 'Edit Issues / View Changelog'
+        en_lang[_self.editTitleHere] = 'Please, edit the selected Title here:'
+        en_lang[_self.editInfoHere] = 'Please, edit the selected info here:'
         en_lang[_self.editStatementViewChangelog] = 'Edit Statements / View Changelog'
         en_lang[_self.editStatementHere] = 'Please, edit the selected statement here:'
         en_lang[_self.save] = 'Save'
@@ -119,7 +122,7 @@ class EnglischDict:
 
         en_lang[_self.aand] = 'and'
         en_lang[_self.addedEverything] = 'Everything was added.'
-        en_lang[_self.addStatementRow] = 'Add another row for adding a new statement.'
+        en_lang[_self.addStatementRow] = 'Add another row for adding a new statemtent.'
         en_lang[_self.addTopic] = 'Add a Topic'
         en_lang[_self.alreadyInserted] = 'This is a duplicate and already there.'
         en_lang[_self.addPremisesRadioButtonText] = 'Let me enter my reasons!'
