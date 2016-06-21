@@ -400,12 +400,13 @@ function GuiHandler() {
 		input2.parent().attr('for', input2.parent().attr('for') + '_' + page_no);
 		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
 		
-		connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
+		//connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
+		connection = _t_discussion(isItTrueThat);
 
 		if (getDiscussionLanguage() == 'de')
 			bigText = topic;
 		else
-			bigText = topic + ' ' + supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
+			bigText = topic + ' ' + connection; //supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
 
 		for (i = 0; i < splitted.length; i++) {
 			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
