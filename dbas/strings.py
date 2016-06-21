@@ -772,6 +772,8 @@ class TextGenerator(object):
             conclusion = conclusion[0:1].lower() + conclusion[1:]
 
         confrontation_text = ''
+        db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
+        db_votes = DBDiscussionSession.query(VoteStatement).filter_by(statement_uid=db_users_premise.statements.uid).all()
 
         # build some confrontation text
         if attack == 'undermine':
@@ -781,8 +783,6 @@ class TextGenerator(object):
 
         elif attack == 'rebut':
             #
-            db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
-            db_votes = DBDiscussionSession.query(VoteStatement).filter_by(statement_uid=db_users_premise.statements.uid).all()
 
             # distinguish between reply for argument and reply for premise group
             if reply_for_argument:  # reply for argument
@@ -807,7 +807,8 @@ class TextGenerator(object):
                 confrontation_text += confrontation
 
         elif attack == 'undercut':
-            confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
+            confrontation_text = _t.get(_t.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(_t.otherParticipantsDontHaveOpinion)
+            confrontation_text += ' <strong>' + premise + '</strong>, '
             confrontation_text += (_t.get(_t.butTheyDoNotBelieveArgument) if supportive else _t.get(_t.butTheyDoNotBelieveCounter))
             confrontation_text += ' <strong>' + conclusion + '</strong>'
             if self.lang == 'de':
