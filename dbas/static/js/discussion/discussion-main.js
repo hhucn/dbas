@@ -284,7 +284,8 @@ function Main () {
 		// issues.attr('style', restartWidth>issueWidth ? 'width: ' + restartWidth + 'px;' : '');
 
 		// focus text of input elements
-		$("input[type='text']").on("click", function () {
+		// $('input[type='text']'').on("click", function () {
+		$('#' + popupUrlSharingInputId).on("click", function () {
 			$(this).select();
 		});
 
