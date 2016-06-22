@@ -1,10 +1,15 @@
 image: python:3.5
 
+services:
+  - hhucn/dbas-docker-postgresy
+
 before_script:
   - pip install -U pip
   - pip install -r requirements.txt
   - python setup.py develop
+  - initialize_discussion_sql gitlab.ini
+  - initialize_news_sql gitlab.ini
 
 nosetests:
   script:
-    - pserve development.ini
+    - nosetests
