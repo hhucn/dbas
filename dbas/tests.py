@@ -23,7 +23,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 
 
-settings = add_settings_to_appconfig("development.ini")
+settings = add_settings_to_appconfig()
 
 
 class Setup:

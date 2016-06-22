@@ -8,7 +8,7 @@ import dbas.user_management as UserHandler
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, VoteArgument, Issue, User, Group, Statement, VoteStatement
+from dbas.database.discussion_model import Argument, VoteArgument, Issue, User, Group, Statement, VoteStatement, PremiseGroup
 from sqlalchemy import and_
 
 
@@ -90,6 +90,49 @@ def get_all_users(user, lang, mainpage):
 
     return return_array
 
+def get_all_issues(user, lang, mainpage):
+	"""
+    Bla
+
+	:param issue:
+	:param lang:
+	:return:
+	"""
+	is_admin = UserHandler.is_user_in_group(user, 'admins')
+	logger('AdminLib', 'get_all_issues', 'is_admin ' + str(is_admin))
+	return_array = []
+	if not is_admin:
+		return return_array
+
+	_uh = UserHandler
+	db_issues = DBDiscussionSession.query(Issue)\
+		.join(User)\
+		.order_by(Issue.uid.asc()).all()
+	for issue in db_issues:
+		tmp_dict = dict()
+		tmp_dict['uid'] = str(issue.uid)
+		tmp_dict['title'] = issue.get_slug()
+		tmp_dict['info'] = issue.info
+		tmp_dict['date'] = sql_timestamp_pretty_print(issue.date, lang, humanize=False, with_exact_time=True)
+		tmp_dict['author'] = issue.users.public_nickname
+		tmp_dict['public_url'] = mainpage + '/user/' + str(issue.users.public_nickname)
+		return_array.append(tmp_dict)
+
+	return return_array
+
+def get_all_statements(user, lang, mainpage):
+	"""
+        Bla
+
+        :return:
+        """
+
+def get_all_premisegroups(user, lang, mainpage):
+	"""
+        Bla
+
+        :return:
+        """
 
 def get_dashboard_infos():
     """
@@ -103,4 +146,6 @@ def get_dashboard_infos():
     return_dict['vote_count'] = str(len(DBDiscussionSession.query(VoteArgument).all()) + len(DBDiscussionSession.query(VoteStatement).all()))
     return_dict['argument_count'] = str(len(DBDiscussionSession.query(Argument).all()))
     return_dict['statement_count'] = str(len(DBDiscussionSession.query(Statement).all()))
+    return_dict['issue_count'] = str(len(DBDiscussionSession.query(Issue).all()))
+    return_dict['premisegroup_count'] = str(len(DBDiscussionSession.query(PremiseGroup).all()))
     return return_dict
