@@ -1,6 +1,7 @@
 import unittest
 from dbas import lib
 import arrow
+from datetime import datetime, date
 
 
 class LibTests(unittest.TestCase):
@@ -60,3 +61,21 @@ class LibTests(unittest.TestCase):
                                                         humanize=False,
                                                         with_exact_time=False), time_format_en_without_exact_time)
 
+    def test_python_datetime_pretty_print(self):
+        # datetime corresponding to Gregorian ordinal
+        d = date.fromordinal(736132)
+
+        # Verify, that if 'lang' is 'de' format of date is 'month. year'
+        self.assertEqual(lib.python_datetime_pretty_print(ts=d,
+                                                          lang='de'), 'Jun. 2016')
+
+        # Verify, that if 'lang' is not 'de' format of date is 'day. month.'
+        self.assertEqual(lib.python_datetime_pretty_print(ts=d,
+                                                          lang='en'), '17. Jun.')
+
+        self.assertEqual(lib.python_datetime_pretty_print(ts='2016-01-01',
+                                                          lang=''), '01. Jan.')
+
+    def test_get_text_for_premisesgroup_uid(self):
+        # language = de
+        self.assertEqual(lib.get_text_for_premisesgroup_uid([123, 23, 4], 'de'), 'str')

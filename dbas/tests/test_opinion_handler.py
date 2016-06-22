@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config
 from dbas import DBDiscussionSession
 from dbas.helper.tests_helper import add_settings_to_appconfig
 
-settings = add_settings_to_appconfig("development.ini")
+settings = add_settings_to_appconfig()
 
 
 class OpinionHandlerTests(unittest.TestCase):
@@ -163,4 +163,3 @@ class OpinionHandlerTests(unittest.TestCase):
                     'title': 'Reaktionen zu: Ich akzeptiere, dass The city should reduce the number of street festivals, weil Reducing the number of street festivals can save up to $50.000 a year'}
 
         self.assertEqual(opinion.get_user_and_opinions_for_argument([31, 30]), response)
-        print(opinion.get_user_and_opinions_for_argument([49, 48]))
