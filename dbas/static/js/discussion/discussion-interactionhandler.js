@@ -225,6 +225,39 @@ function InteractionHandler() {
 		}
 	};
 
+
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackIfDoneForSendNewIssueTable = function(data){
+	var parsedData = $.parseJSON(data);
+
+        if (parsedData.error.length == 0) {
+			$('#popup-add-topic').modal('hide');
+
+			var space = $('#issue-table');
+
+			var tr = $('<tr>')
+					.append($('<td>').html( parsedData.issue.uid ))
+					.append($('<td>').html( parsedData.issue.title ))
+					.append($('<td>').html( parsedData.issue.info ))
+					.append($('<td>').html( parsedData.issue.date ))
+			        .append($('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.issue.public_url).text(parsedData.issue.author)))
+			        .append($('<td>').append( $('<a>').attr('href', '#').attr('class' , 'btn btn-info btn-lg').append($('<span>').attr('class', 'glyphicon glyphicon-edit'))));
+           	 space.append(tr);
+
+
+		} else {
+			$('#popup-add-topic-error-text').text(parsedData.error);
+			$('#popup-add-topic-error').show();
+			new Helper().delay(function(){
+				$('#popup-add-topic-error').hide();
+			}, 2500);
+		}
+
+	};
+
 	/**
 	 *
 	 * @param data

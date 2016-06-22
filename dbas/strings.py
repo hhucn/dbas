@@ -189,6 +189,9 @@ class Translator(object):
         self.edit = 'edit'
         self.error_code = 'error_code'
         self.editTitle = 'editTitle'
+        self.editIssueViewChangelog = 'editIssueViewChangelog'
+        self.editInfoHere = 'editInfoHere'
+        self.editTitleHere ='editTitleHere'
         self.emailBodyText = 'emailBodyText'
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
@@ -532,6 +535,7 @@ class Translator(object):
 
         else:
             return 'unknown language: ' + str(self.lang)
+
 
 
 class TextGenerator(object):

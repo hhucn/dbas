@@ -1176,6 +1176,11 @@ msgstr ""
 msgid "add_topic"
 msgstr ""
 
+#. Default: Add a Topic
+#: ./dbas/admin/templates/admin.pt:253
+msgid "add_topic"
+msgstr ""
+
 #. Default: Restart
 #: ./dbas/templates/content.pt:43
 msgid "restart_discussion"

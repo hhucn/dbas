@@ -32,6 +32,24 @@
                                 <span i18n:translate="arguments">Arguments</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="#" id="admin-issues">
+                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&thinsp;&thinsp;
+                                <span i18n:translate="issues">Issues</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="admin-statements">
+                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&thinsp;&thinsp;
+                                <span i18n:translate="statements">Statements</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="admin-premisegroups">
+                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&thinsp;&thinsp;
+                                <span i18n:translate="premisegroups">Premisegroups</span>
+                            </a>
+                        </li>
 					</ul>
 				</nav>
 			</div>
@@ -100,6 +118,26 @@
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <img id="dashboard_issue" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">${dashboard.issue_count}</div>
+                                            <div i18n:translate="issues!">Issues!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer"  id="dashboard-issue-count-detail">
+                                        <span i18n:translate="view_details">View Details</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
                             <div class="panel panel-danger">
                                 <div class="panel-heading">
                                     <div class="row">
@@ -114,6 +152,26 @@
                                 </div>
                                 <a href="#">
                                     <div class="panel-footer"  id="dashboard-statement-count-detail">
+                                        <span i18n:translate="view_details">View Details</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <img id="dashboard_premisegroup" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">${dashboard.premisegroup_count}</div>
+                                            <div i18n:translate="premisegroups!">Premisegroups!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#">
+                                    <div class="panel-footer"  id="dashboard-premisegroup-count-detail">
                                         <span i18n:translate="view_details">View Details</span>
                                     </div>
                                 </a>
@@ -181,12 +239,57 @@
                 </div >
                 <div class="row col-md-12 colored-container" id="admins-space-argument" style="display:none;">
                 </div>
+
+
+                <div class="row col-md-12 center container colored-container" id="admins-space-issue" style="display:none;">
+
+                     <div class="row col-md-12 container colored-container">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                              <h4><span class="lead" i18n:translate="new-issue">Issues</span></h4>
+                               <p i18n:translate="admin_only">Some additional options for the administrator.</p>
+                                 <div class="row">
+                                     <div class="col-md-12">
+                                          <a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
+                                     </div>
+                                 </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div >
+                    <table style="border-collapse: separate; border-spacing: 0;" class="table table-condensed tablesorter" border="0">
+                         <thead>
+                         <tr>
+                             <th>#</th>
+                             <th i18n:translate="title">Title</th>
+                             <th i18n:translate="info">Info</th>
+                             <th i18n:translate="date">Date</th>
+                             <th i18n:translate="author">Author</th>
+                             <th i18n:translate="edit">Edit</th>
+                         </tr>
+                         </thead>
+                         <tbody id="issue-table">
+                         <tr tal:repeat="issue issues">
+                             <td>${issue.uid}</td>
+                             <td>${issue.title}</td>
+                             <td>${issue.info}</td>
+                             <td>${issue.date}</td>
+                             <td><a href="#" target="_blank" tal:attributes="href issue.public_url">${issue.author}</a></td>
+                             <td><a href="#"  class="btn btn-info btn-lg" id="edit-issue"><span class="glyphicon glyphicon-edit"></span></a></td>
+                         </tr>
+                         </tbody>
+                     </table>
+                </div>
+
             </div>
 		</div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-guihandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/admin.js')}"></script>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-interactionhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-ajaxhandler.js')}"></script>
+
 
 	</tal:block>
 </tal:block>
