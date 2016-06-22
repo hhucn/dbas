@@ -55,6 +55,9 @@ Then follow these steps:
 
         pserve development.ini --reload
 
+or all in one step:
+
+    docker-compose up
 
 ## Testing
 
