@@ -76,3 +76,6 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.python_datetime_pretty_print(ts='2016-01-01',
                                                           lang=''), '01. Jan.')
 
+    def test_get_text_for_premisesgroup_uid(self):
+        # language = de
+        self.assertEqual(lib.get_text_for_premisesgroup_uid([123, 23, 4], 'de'), 'str')
