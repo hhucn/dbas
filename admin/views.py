@@ -11,7 +11,7 @@ import dbas.user_management as UserHandler
 
 from cornice import Service
 from pyramid.threadlocal import get_current_registry
-from admin.lib import get_overview_of_arguments, get_all_users, get_dashboard_infos
+from admin.lib import get_overview_of_arguments, get_all_users, get_all_issues,get_all_statements, get_all_premisegroups , get_dashboard_infos
 from dbas.lib import get_language
 from dbas.logger import logger
 from dbas.views import Dbas
@@ -60,6 +60,9 @@ def main_admin(request):
     ui_locales = get_language(request, get_current_registry())
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
     users = get_all_users(request.authenticated_userid, ui_locales, request.application_url)
+    issues = get_all_issues(request.authenticated_userid, ui_locales, request.application_url)
+    statements = get_all_statements(request.authenticated_userid, ui_locales, request.application_url)
+    premisegroups = get_all_premisegroups(request.authenticated_userid, ui_locales, request.application_url)
     dashboard = get_dashboard_infos()
 
     return {
@@ -69,6 +72,9 @@ def main_admin(request):
         'project': project_name,
         'extras': extras_dict,
         'users': users,
+        'issues': issues,
+		'statements': statements,
+		'premisegroups': premisegroups,
         'dashboard': dashboard
      }
 

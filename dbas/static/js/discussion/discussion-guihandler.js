@@ -400,12 +400,13 @@ function GuiHandler() {
 		input2.parent().attr('for', input2.parent().attr('for') + '_' + page_no);
 		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
 		
-		connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
+		//connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
+		connection = _t_discussion(isItTrueThat);
 
 		if (getDiscussionLanguage() == 'de')
 			bigText = topic;
 		else
-			bigText = topic + ' ' + supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
+			bigText = topic + ' ' + connection; //supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
 
 		for (i = 0; i < splitted.length; i++) {
 			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
@@ -575,6 +576,34 @@ function GuiHandler() {
 		$('#popup-add-topic-refuse-btn').click(function () {
 			$('#popup-add-topic').modal('hide');
 		});
+	};
+
+     /**
+	 * Opens the edit issues popup
+	 */
+	this.showEditIssuesPopup = function () {
+		var table, trTitle,trInfo, td_title, td_info, td_buttons, helper = new Helper(), ids = [];
+		$('#' + popupEditIssueId).modal('show');
+		$('#' + popupEditIssueWarning).hide();
+		// top row
+		table = $('<table>')
+			.attr('class', 'table table-condensed table-hover')
+			.attr('border', '0')
+			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
+		td_title = $('<td>').html('<strong>' + _t_discussion(text) + '</strong>').css('text-align', 'center');
+		td_info = $('<td>').html('<strong>' + _t_discussion(text) + '</strong>').css('text-align', 'center');
+		td_buttons = $('<td>').html('<strong>' + _t_discussion(options) + '</strong>').css('text-align', 'right');
+		trTitle.append(td_title);
+		trInfo.append((td_info).append(td_buttons));
+		table.append((trTitle).append(trInfo));
+
+		$('#' + popupEditIssueContentId).empty().append(table);
+		$('#' + popupEditTitleTextareaId).hide();
+		$('#' + popupEditTitleDescriptionId).hide();
+		$('#' + popupEditInfoTextareaId).hide();
+		$('#' + popupEditInfoDescriptionId).hide();
+		$('#' + popupEditIssueSubmitButtonId).hide();
+		$('#' + proposalEditListGroupId).empty();
 	};
 
 	/**
