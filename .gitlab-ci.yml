@@ -1,7 +1,7 @@
 image: python:3.5
 
 services:
-  - hhucn/dbas-docker-postgres
+  - hhucn/docker-dbas-postgres
 
 before_script:
   - pip install -U pip
