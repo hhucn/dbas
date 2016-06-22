@@ -7,8 +7,8 @@ before_script:
   - pip install -U pip
   - pip install -r requirements.txt
   - python setup.py develop
-  - initialize_discussion_sql gitlab.ini
-  - initialize_news_sql gitlab.ini
+  - initialize_discussion_sql docker.ini
+  - initialize_news_sql docker.ini
 
 nosetests:
   script:
