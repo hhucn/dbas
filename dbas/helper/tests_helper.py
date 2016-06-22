@@ -24,9 +24,12 @@ def path_to_settings(ini_file):
 def add_settings_to_appconfig(ini_file="development.ini"):
     """
     Configure appconfig to set correct ini-file. Defaults to development.ini for testing purposes.
+    If dbas runs inside a docker container and no ini-file is provided, then load the docker.ini.
 
     :param ini_file: name of ini-file
-    :rtype: str
     :return: config with loaded ini-file
+    :rtype: str
     """
+    if os.path.isfile("/.dockerenv") and not ini_file:
+        return appconfig("config:" + path_to_settings("docker.ini"))
     return appconfig("config:" + path_to_settings(ini_file))

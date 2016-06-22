@@ -137,7 +137,7 @@ function AjaxSiteHandler() {
 			method: 'GET',
 			data: {
 				uid: id_id,
-				issue: new Helper().getCurrentIssueId(),
+				issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
