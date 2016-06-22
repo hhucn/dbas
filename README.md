@@ -15,7 +15,7 @@ documentation run:
 
     make html
 
-The documentaiton require [Sphinx](http://www.sphinx-doc.org/en/stable/).
+The documentation requires [Sphinx](http://www.sphinx-doc.org/en/stable/).
 
 
 ## Setup for Linux
