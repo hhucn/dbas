@@ -50,3 +50,10 @@
 #info-vote-statements:hover{
 	color: #2196f3;
 }
+
+.dropdown a {
+    color: #000;
+}
+.dropdown {
+    list-style-type: none;
+}
