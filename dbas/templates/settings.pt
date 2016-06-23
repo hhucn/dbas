@@ -62,10 +62,29 @@
 								<input id="public-nick-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked settings.public_nick; data-on settings.on; data-off settings.off">
 							</td>
 						</tr>
+						<tr>
+							<td><span i18n:translate="message_language" class="lead">Prefered message language</span><span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_prefered_lang"></span></td>
+							<td class="text-center">
+
+                                <li class="dropdown" data-toggle="tooltip" data-placement="left">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#language" id="current-lang-images" tal:attributes="data-lang settings.current_ui_locales">
+                                        <img id="indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}">
+                                        <img id="indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
+                                        <span>${settings.current_lang}</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" id="settings-language-dropdown">
+                                        <li tal:attributes="class extras.link_de_class"><a id="link-settings-de" style="cursor:pointer" data-ui-locales="de" ><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">Deutsch</a></li>
+                                        <li tal:attributes="class extras.link_en_class"><a id="link-settings-en" style="cursor:pointer" data-ui-locales="en" ><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">English</a></li>
+                                    </ul>
+                                </li>
+
+							</td>
+						</tr>
 					</table>
 					<div>
                         <div class="center text-center" style="float:left; margin: 2em;">
-                            <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
+                            <img id="user_gravatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
 						    <br>
 						    <span i18n:translate="profile_picture">Profile Picture</span>
                         </div>

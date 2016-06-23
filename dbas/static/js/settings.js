@@ -216,7 +216,7 @@ function SettingsHandler(){
 		var csrfToken = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_user_setting',
-			method: 'GET',
+			method: 'POST',
 			data:{'settings_value': settings_value ? 'True': 'False', 'service': service},
 			dataType: 'json',
 			async: true,
@@ -225,6 +225,40 @@ function SettingsHandler(){
 			new SettingsHandler().callbackDone(data, toggle_element, settings_value, service);
 		}).fail(function setUserSettingFail() {
 			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
+		});
+	};
+
+	/**
+	 *
+	 * @param ui_locales
+	 */
+	this.setNotifcationLanguage = function(ui_locales){
+		var csrfToken = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_set_user_language',
+			method: 'POST',
+			data:{'ui_locales': ui_locales},
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function setUserSettingDone(data) {
+			var parsedData = $.parseJSON(data);
+
+			if (parsedData.error.length == 0){
+				$('#' + settingsSuccessDialog).fadeIn();
+				new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
+				$.each($('#settings-language-dropdown').find('li'), function(){ $(this).removeClass('active');});
+				$.each($('#current-lang-images').find('img'), function(){ $(this).hide()});
+				$('#link-settings-' + parsedData.ui_locales).addClass('active');
+				$('#indicator-' + parsedData.ui_locales).show();
+				$('#current-lang-images span').eq(0).text(parsedData.current_lang);
+			} else {
+				$('#' + settingsAlertDialog).fadeIn();
+				new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
+			}
+		}).fail(function setUserSettingFail() {
+			$('#' + settingsAlertDialog).fadeIn();
+			new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 		});
 	};
 
@@ -241,9 +275,10 @@ function SettingsHandler(){
 			$('#' + settingsSuccessDialog).fadeIn();
 			$('#value_public_nickname').text(parsedData.public_nick);
 			$('#value_public_page').attr('href', parsedData.public_page_url);
+			$('#user_gravatar').attr('src', parsedData.gravatar_url);
 			new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 		} else {
-			new SettingsHandler().callbackReceiveFail(toggle_element, settings_value, service);
+			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
 		}
 	};
 
@@ -581,9 +616,23 @@ $(function () {
 		new SettingsHandler().setUserSetting($(this), 'public_nick');
 	});
 
+	$.each($('#settings-language-dropdown').find('a'), function(){
+		$(this).click(function(){
+			new SettingsHandler().setNotifcationLanguage($(this).attr('data-ui-locales'));
+		});
+	});
+
 	// ajax loading animation
 	$(document).on({
 		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
 		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
+	});
+
+	/**
+	 * main function
+	 */
+	$(document).ready(function settingsDocumentReady() {
+		$.each($('#current-lang-images').find('img'), function(){ $(this).hide()});
+		$('#indicator-' + $('#current-lang-images').attr('data-lang')).show();
 	});
 });

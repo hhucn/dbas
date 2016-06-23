@@ -105,6 +105,7 @@ class DiscussionDictHelper(object):
             text            = text[0:1].upper() + text[1:]
         if not text:
             return None
+
         question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' <strong> '
         question            += text[0:1].lower() + text[1:] if self.lang != 'de' else text
         question            += '</strong>'

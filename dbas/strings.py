@@ -186,15 +186,17 @@ class Translator(object):
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
         self.emailUnknown = 'emailUnknown'
+        self.emailBodyText = 'emailBodyText'
+        self.emailWasSent = 'emailWasSent'
+        self.emailWasNotSent = 'emailWasNotSent'
+        self.emailArgumentAddTitle = 'emailArgumentAddTitle'
+        self.emailArgumentAddBody = 'emailArgumentAddBody'
         self.edit = 'edit'
         self.error_code = 'error_code'
         self.editTitle = 'editTitle'
         self.editIssueViewChangelog = 'editIssueViewChangelog'
         self.editInfoHere = 'editInfoHere'
         self.editTitleHere ='editTitleHere'
-        self.emailBodyText = 'emailBodyText'
-        self.emailWasSent = 'emailWasSent'
-        self.emailWasNotSent = 'emailWasNotSent'
         self.emptyName = 'emptyName'
         self.emptyEmail = 'emptyEmail'
         self.emtpyContent = 'emtpyContent'
@@ -226,6 +228,7 @@ class Translator(object):
         self.generateSecurePassword = 'generateSecurePassword'
         self.goodPointTakeMeBackButtonText = 'goodPointTakeMeBackButtonText'
         self.group_uid = 'group_uid'
+        self.goBackToTheDiscussion = 'goBackToTheDiscussion'
         self.haveALookAt = 'haveALookAt'
         self.hidePasswordRequest = 'hidePasswordRequest'
         self.hideGenerator = 'hideGenerator'
@@ -375,6 +378,7 @@ class Translator(object):
         self.pleaseEnterShorttextForTopic = 'pleaseEnterShorttextForTopic'
         self.pleaseSelectLanguageForTopic = 'pleaseSelectLanguageForTopic'
         self.premise = 'premise'
+        self.preferedLangTitle = 'preferedLangTitle'
         self.phone = 'phone'
         self.pwdNotEqual = 'pwdNotEqual'
         self.pwdsSame = 'pwdsSame'
@@ -820,6 +824,16 @@ class TextGenerator(object):
 
         sys_text = confrontation_text + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
         return sys_text
+
+    @staticmethod
+    def get_text_for_edit_text_message(lang, nickname, original, edited, path):
+        _t = Translator(lang)
+        content = _t.get(_t.textversionChangedContent) + ' ' + nickname
+        content += '<br>' + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + original + '<br>'
+        content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + edited + '<br>'
+        content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
+        content += '<a href="' + path + '">' + _t.get(_t.goBackToTheDiscussion) + '</a>'
+
 
     def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
         """
