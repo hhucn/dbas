@@ -7,6 +7,7 @@ Chameleon==2.24
 chardet==2.3.0
 colorama==0.3.7
 cornice==1.2.1
+coverage==4.1
 cryptacular==1.4.1
 db==0.1.1
 db-psycopg2==0.0.7
