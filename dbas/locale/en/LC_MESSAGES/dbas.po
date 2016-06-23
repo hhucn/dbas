@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-06-20 08:32+0200\n"
+"POT-Creation-Date: 2016-06-23 12:44+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Spanish\n"
@@ -49,7 +49,7 @@ msgstr "oder"
 #. Default: go back to the discussion
 #: dbas/templates/404.pt:20
 msgid "go_back_to_the_discussion"
-msgstr "go back to the discussion"
+msgstr "go back to the discussion!"
 
 #. Default: Your session has expired!
 #: dbas/templates/index.pt:8
@@ -123,7 +123,7 @@ msgstr "News"
 #. Default: Login
 #. Default: Log In
 #: dbas/templates/snippet-header.pt:59 dbas/templates/snippet-popups.pt:244
-#: dbas/templates/snippet-popups.pt:451
+#: dbas/templates/snippet-popups.pt:449
 msgid "login"
 msgstr "Log In"
 
@@ -405,7 +405,8 @@ msgid "imprint_copyright"
 msgstr "Imprint and Copyright"
 
 #. Default: Author
-#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:620
+#: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:618
+#: dbas/templates/admin.pt:266
 msgid "author"
 msgstr "Author"
 
@@ -491,8 +492,8 @@ msgstr "Fax"
 
 #. Default: Close
 #: dbas/templates/snippet-popups.pt:75 dbas/templates/snippet-popups.pt:120
-#: dbas/templates/snippet-popups.pt:454 dbas/templates/snippet-popups.pt:493
-#: dbas/templates/snippet-popups.pt:628 dbas/templates/snippet-popups.pt:664
+#: dbas/templates/snippet-popups.pt:452 dbas/templates/snippet-popups.pt:491
+#: dbas/templates/snippet-popups.pt:626 dbas/templates/snippet-popups.pt:662
 msgid "close"
 msgstr "Close"
 
@@ -599,12 +600,14 @@ msgstr "Error:"
 #. Default: Success:
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:300 dbas/templates/snippet-popups.pt:399
-#: dbas/templates/settings.pt:218 dbas/templates/content.pt:64
+#: dbas/templates/settings.pt:237 dbas/templates/content.pt:64
 msgid "success"
 msgstr "Success:"
 
 #. Default: Info:
+#. Default: Info
 #: dbas/templates/snippet-popups.pt:307 dbas/templates/snippet-popups.pt:415
+#: dbas/templates/admin.pt:264
 msgid "info"
 msgstr "Info:"
 
@@ -621,7 +624,7 @@ msgstr "Your Last Name"
 #. Default: Your Nickname
 #. Default: Nickname
 #: dbas/templates/snippet-popups.pt:329 dbas/templates/settings.pt:22
-#: dbas/templates/admin.pt:132
+#: dbas/templates/admin.pt:190
 msgid "nickname"
 msgstr "Nickname"
 
@@ -671,7 +674,7 @@ msgid "password_strength"
 msgstr "very weak"
 
 #. Default: Generate secure password
-#: dbas/templates/snippet-popups.pt:384 dbas/templates/snippet-popups.pt:442
+#: dbas/templates/snippet-popups.pt:384 dbas/templates/snippet-popups.pt:440
 msgid "generate_password"
 msgstr "Generate secure password"
 
@@ -681,58 +684,56 @@ msgid "spam"
 msgstr "Anti-Spam"
 
 #. Default: How to select a strong password
-#: dbas/templates/snippet-popups.pt:421 dbas/templates/snippet-popups.pt:467
+#: dbas/templates/snippet-popups.pt:421 dbas/templates/snippet-popups.pt:465
 msgid "select_password"
 msgstr "How to select a strong password"
 
 #. Default: A Password is strong, when it contains at least:
-#: dbas/templates/snippet-popups.pt:423 dbas/templates/snippet-popups.pt:470
+#: dbas/templates/snippet-popups.pt:423 dbas/templates/snippet-popups.pt:468
 msgid "select_password_intro"
 msgstr "A Password is strong when it contains at least:"
 
 #. Default: eight characters
-#: dbas/templates/snippet-popups.pt:425 dbas/templates/snippet-popups.pt:472
+#: dbas/templates/snippet-popups.pt:425 dbas/templates/snippet-popups.pt:470
 msgid "select_password_rule1"
 msgstr "eight characters"
 
 #. Default: one uppercase letter
-#: dbas/templates/snippet-popups.pt:426 dbas/templates/snippet-popups.pt:473
+#: dbas/templates/snippet-popups.pt:426 dbas/templates/snippet-popups.pt:471
 msgid "select_password_rule2"
 msgstr "one uppercase letter"
 
 #. Default: one lowercase letter
-#: dbas/templates/snippet-popups.pt:427 dbas/templates/snippet-popups.pt:474
+#: dbas/templates/snippet-popups.pt:427 dbas/templates/snippet-popups.pt:472
 msgid "select_password_rule3"
 msgstr "one lowercase letter"
 
 #. Default: one special sign
-#: dbas/templates/snippet-popups.pt:428 dbas/templates/snippet-popups.pt:475
+#: dbas/templates/snippet-popups.pt:428 dbas/templates/snippet-popups.pt:473
 msgid "select_password_rule4"
 msgstr "one special sign"
 
-#. Default: For example
-#: dbas/templates/snippet-popups.pt:430
-msgid "popup_password_text1"
-msgstr "For example "
-
-#. Default: is a strong password. A couple of hints:
-#: dbas/templates/snippet-popups.pt:432
-msgid "popup_password_text2"
-msgstr " is a strong password. A couple of hints:"
+#. Default: For example 'M2015_fiO' is a strong password. And it would take 275
+#. days to crack this password with a desktop pc in 2015. Removing one sign,
+#. reduces the time to 3 days, and adding a sign increases the time to 57
+#. years. It should be noted:
+#: dbas/templates/snippet-popups.pt:430 dbas/templates/snippet-popups.pt:475
+msgid "popup_password_text"
+msgstr "For example 'M2015_fiO' is a strong password. A couple of hints:"
 
 #. Default: Avoid using a password on several pages
-#: dbas/templates/snippet-popups.pt:434 dbas/templates/snippet-popups.pt:479
+#: dbas/templates/snippet-popups.pt:432 dbas/templates/snippet-popups.pt:477
 msgid "select_password_avoid1"
 msgstr "Avoid using the same password on several pages."
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: dbas/templates/snippet-popups.pt:435 dbas/templates/snippet-popups.pt:480
+#: dbas/templates/snippet-popups.pt:433 dbas/templates/snippet-popups.pt:478
 msgid "select_password_avoid2"
 msgstr "Avoid using patterns which can be found in a dictionary."
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: dbas/templates/snippet-popups.pt:436 dbas/templates/snippet-popups.pt:481
+#: dbas/templates/snippet-popups.pt:434 dbas/templates/snippet-popups.pt:479
 msgid "select_password_avoid3"
 msgstr ""
 "Avoid using information that is or might become publicly associated with the "
@@ -740,39 +741,31 @@ msgstr ""
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: dbas/templates/snippet-popups.pt:437 dbas/templates/snippet-popups.pt:482
+#: dbas/templates/snippet-popups.pt:435 dbas/templates/snippet-popups.pt:480
 msgid "select_password_avoid4"
 msgstr ""
 "Avoid using information that the user's colleagues and/or acquaintances "
 "might know about you, such as your pet's name."
 
 #. Default: If you need some help with our password, you can get one here:
-#: dbas/templates/snippet-popups.pt:439 dbas/templates/snippet-popups.pt:484
+#: dbas/templates/snippet-popups.pt:437 dbas/templates/snippet-popups.pt:482
 msgid "select_password_help"
 msgstr "If you need some help with our password, you can get one here:"
 
 #. Default: Register
-#: dbas/templates/snippet-popups.pt:452
+#: dbas/templates/snippet-popups.pt:450
 msgid "register"
 msgstr "Register"
 
-#. Default: For example 'M2015_fiO' is a strong password. And it would take 275
-#. days to crack this password with a desktop pc in 2015. Removing one sign,
-#. reduces the time to 3 days, and adding a sign increases the time to 57
-#. years. It should be noted:
-#: dbas/templates/snippet-popups.pt:477
-msgid "popup_password_text"
-msgstr "For example 'M2015_fiO' is a strong password. A couple of hints:"
-
 #. Default: How to write text
-#: dbas/templates/snippet-popups.pt:506
+#: dbas/templates/snippet-popups.pt:504
 msgid "how-to-write-text-header"
 msgstr "How to write text"
 
 #. Default: Writing good is a necessary skill for using D-BAS, unless you do
 #. not want to persuade other participants. Hereafter a few rules are listed,
 #. what should be noted, and what should not.
-#: dbas/templates/snippet-popups.pt:509
+#: dbas/templates/snippet-popups.pt:507
 msgid "how-to-write-text-header-body"
 msgstr ""
 "Writing good is a necessary skill for using D-BAS, unless you do not want to "
@@ -780,52 +773,52 @@ msgstr ""
 "be noted."
 
 #. Default: Do's:
-#: dbas/templates/snippet-popups.pt:512
+#: dbas/templates/snippet-popups.pt:510
 msgid "dos"
 msgstr "Do's:"
 
 #. Default: Write short!
-#: dbas/templates/snippet-popups.pt:514
+#: dbas/templates/snippet-popups.pt:512
 msgid "how-to-write-text-short"
 msgstr "Write short!"
 
 #. Default: Only one statement per field!
-#: dbas/templates/snippet-popups.pt:515
+#: dbas/templates/snippet-popups.pt:513
 msgid "how-to-write-text-one-point"
 msgstr "Only one statement/argument/point per field!"
 
 #. Default: Okay
-#: dbas/templates/snippet-popups.pt:528
+#: dbas/templates/snippet-popups.pt:526
 msgid "Okay"
 msgstr "Okay"
 
 #. Default: Writing a new message
-#: dbas/templates/snippet-popups.pt:599 dbas/templates/snippet-popups.pt:641
+#: dbas/templates/snippet-popups.pt:597 dbas/templates/snippet-popups.pt:639
 msgid "writing_message"
 msgstr "Writing a new message"
 
 #. Default: Error:
-#: dbas/templates/snippet-popups.pt:608 dbas/templates/snippet-popups.pt:653
+#: dbas/templates/snippet-popups.pt:606 dbas/templates/snippet-popups.pt:651
 msgid "error:"
 msgstr "Error:"
 
 #. Default: Success:
-#: dbas/templates/snippet-popups.pt:613 dbas/templates/snippet-popups.pt:658
+#: dbas/templates/snippet-popups.pt:611 dbas/templates/snippet-popups.pt:656
 msgid "success:"
 msgstr "Success:"
 
 #. Default: Date
-#: dbas/templates/snippet-popups.pt:622
+#: dbas/templates/snippet-popups.pt:620 dbas/templates/admin.pt:265
 msgid "date"
 msgstr "Date"
 
 #. Default: Send News
-#: dbas/templates/snippet-popups.pt:627
+#: dbas/templates/snippet-popups.pt:625
 msgid "send_news"
 msgstr "Send News"
 
 #. Default: Send Notifcation
-#: dbas/templates/snippet-popups.pt:663
+#: dbas/templates/snippet-popups.pt:661
 msgid "send_notification"
 msgstr "Send Notifcation"
 
@@ -835,17 +828,17 @@ msgid "personal_information"
 msgstr "Personal Information"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:14 dbas/templates/admin.pt:130
+#: dbas/templates/settings.pt:14 dbas/templates/admin.pt:188
 msgid "firstname"
 msgstr "Firstname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:18 dbas/templates/admin.pt:131
+#: dbas/templates/settings.pt:18 dbas/templates/admin.pt:189
 msgid "surname"
 msgstr "Surname"
 
 #. Default: Public Nickname
-#: dbas/templates/settings.pt:26 dbas/templates/admin.pt:133
+#: dbas/templates/settings.pt:26 dbas/templates/admin.pt:191
 msgid "public_nickname"
 msgstr "Public Nickname"
 
@@ -874,13 +867,18 @@ msgstr "Receive E-Mails"
 msgid "nickname_is_public"
 msgstr "Nickname is public"
 
+#. Default: Prefered message language
+#: dbas/templates/settings.pt:66
+msgid "message_language"
+msgstr "Prefered message language"
+
 #. Default: Profile Picture
-#: dbas/templates/settings.pt:70
+#: dbas/templates/settings.pt:89
 msgid "profile_picture"
 msgstr "Profile Picture"
 
 #. Default: Change your profile picture on the
-#: dbas/templates/settings.pt:72
+#: dbas/templates/settings.pt:91
 msgid "change_gravatar"
 msgstr "Change your profile picture on the"
 
@@ -888,7 +886,7 @@ msgstr "Change your profile picture on the"
 #. create your profile just once, and then when you participate in any
 #. Gravatar-enabled site, your Gravatar image will automatically follow you
 #. there.
-#: dbas/templates/settings.pt:74
+#: dbas/templates/settings.pt:93
 msgid "what_is_gravatar"
 msgstr ""
 "A Gravatar is a Globally Recognized Avatar. You upload it and create your "
@@ -896,86 +894,86 @@ msgstr ""
 "site, your Gravatar image will automatically follow you there."
 
 #. Default: Settings could not be set. Please try again later.
-#: dbas/templates/settings.pt:83
+#: dbas/templates/settings.pt:102
 msgid "settings_not_set"
 msgstr "Settings could not be set. Please try again later."
 
 #. Default: Settings were set successfully.
-#: dbas/templates/settings.pt:88
+#: dbas/templates/settings.pt:107
 msgid "settings_set"
 msgstr "Settings were set successfully."
 
 #. Default: Change your password
-#: dbas/templates/settings.pt:97
+#: dbas/templates/settings.pt:116
 msgid "change_password"
 msgstr "Change your password"
 
 #. Default: Old password
-#: dbas/templates/settings.pt:102
+#: dbas/templates/settings.pt:121
 msgid "old_password"
 msgstr "Old password"
 
 #. Default: New Password
-#: dbas/templates/settings.pt:109
+#: dbas/templates/settings.pt:128
 msgid "new_password"
 msgstr "New Password"
 
 #. Default: New Password (confirm)
-#: dbas/templates/settings.pt:116
+#: dbas/templates/settings.pt:135
 msgid "new_password_confirm"
 msgstr "New Password (confirm)"
 
 #. Default: Strength
-#: dbas/templates/settings.pt:123
+#: dbas/templates/settings.pt:142
 msgid "strength"
 msgstr "Strength"
 
 #. Default: Discussion Statistics
-#: dbas/templates/settings.pt:143 dbas/templates/user.pt:29
+#: dbas/templates/settings.pt:162 dbas/templates/user.pt:29
 msgid "discussion_stat"
 msgstr "Discussion Statistics"
 
 #. Default: Statements posted
-#: dbas/templates/settings.pt:147 dbas/templates/finish.pt:23
+#: dbas/templates/settings.pt:166 dbas/templates/finish.pt:23
 #: dbas/templates/user.pt:32
 msgid "statements_posted"
 msgstr "Statements posted"
 
 #. Default: Edits done
-#: dbas/templates/settings.pt:154 dbas/templates/finish.pt:27
+#: dbas/templates/settings.pt:173 dbas/templates/finish.pt:27
 #: dbas/templates/user.pt:36
 msgid "edits_done"
 msgstr "Edits done"
 
 #. Default: Votes for Arguments
-#: dbas/templates/settings.pt:161 dbas/templates/finish.pt:31
+#: dbas/templates/settings.pt:180 dbas/templates/finish.pt:31
 #: dbas/templates/user.pt:40
 msgid "discussion_votes_statements"
 msgstr "Votes for Arguments"
 
 #. Default: Votes for Statements
-#: dbas/templates/settings.pt:168 dbas/templates/finish.pt:35
+#: dbas/templates/settings.pt:187 dbas/templates/finish.pt:35
 #: dbas/templates/user.pt:44
 msgid "discussion_votes_arguments"
 msgstr "Votes for Statements"
 
 #. Default: Your password was changed
-#: dbas/templates/settings.pt:183
+#: dbas/templates/settings.pt:202
 msgid "password_changed"
 msgstr "Your password was changed"
 
 #. Default: Statistics could not be deleted.
-#: dbas/templates/settings.pt:190
+#: dbas/templates/settings.pt:209
 msgid "statistics_not_deleted"
 msgstr "Statistics could not be deleted."
 
 #. Default: Statistics were set successfully deleted.
-#: dbas/templates/settings.pt:196
+#: dbas/templates/settings.pt:215
 msgid "statistics_deletet"
 msgstr "Statistics were set successfully deleted."
 
 #. Default: Your last history
-#: dbas/templates/settings.pt:206
+#: dbas/templates/settings.pt:225
 msgid "history"
 msgstr "Your last URL-History"
 
@@ -1079,81 +1077,127 @@ msgstr "Users"
 msgid "arguments"
 msgstr "arguments"
 
+#. Default: Issues
+#: dbas/templates/admin.pt:38
+msgid "issues"
+msgstr "Issues"
+
+#. Default: Statements
+#: dbas/templates/admin.pt:44
+msgid "statements"
+msgstr "Statements"
+
+#. Default: Premisegroups
+#: dbas/templates/admin.pt:50
+msgid "premisegroups"
+msgstr "Premisegroups"
+
 #. Default: Users!
-#: dbas/templates/admin.pt:51
+#: dbas/templates/admin.pt:69
 msgid "users!"
 msgstr "Users!"
 
 #. Default: View Details
-#: dbas/templates/admin.pt:57 dbas/templates/admin.pt:77
-#: dbas/templates/admin.pt:97 dbas/templates/admin.pt:117
+#: dbas/templates/admin.pt:75 dbas/templates/admin.pt:95
+#: dbas/templates/admin.pt:115 dbas/templates/admin.pt:135
+#: dbas/templates/admin.pt:155 dbas/templates/admin.pt:175
 msgid "view_details"
 msgstr "View Details"
 
 #. Default: Votes!
-#: dbas/templates/admin.pt:71
+#: dbas/templates/admin.pt:89
 msgid "votes!"
 msgstr "Votes!"
 
 #. Default: Arguments!
-#: dbas/templates/admin.pt:91
+#: dbas/templates/admin.pt:109
 msgid "arguments!"
 msgstr "Arguments!"
 
+#. Default: Issues!
+#: dbas/templates/admin.pt:129
+msgid "issues!"
+msgstr "Issues!"
+
 #. Default: Statements!
-#: dbas/templates/admin.pt:111
+#: dbas/templates/admin.pt:149
 msgid "statements!"
 msgstr "Statements!"
 
+#. Default: Premisegroups!
+#: dbas/templates/admin.pt:169
+msgid "premisegroups!"
+msgstr "Premisegroups!"
+
 #. Default: E-Mail
-#: dbas/templates/admin.pt:134
+#: dbas/templates/admin.pt:192
 msgid "email"
 msgstr "Email Address"
 
 #. Default: Gender
-#: dbas/templates/admin.pt:135
+#: dbas/templates/admin.pt:193
 msgid "gender"
 msgstr "Gender"
 
 #. Default: Group
-#: dbas/templates/admin.pt:136
+#: dbas/templates/admin.pt:194
 msgid "group_uid"
 msgstr "Group"
 
 #. Default: Last Login
-#: dbas/templates/admin.pt:137 dbas/templates/user.pt:12
+#: dbas/templates/admin.pt:195 dbas/templates/user.pt:12
 msgid "last_login"
 msgstr "Last Login"
 
 #. Default: Registered
-#: dbas/templates/admin.pt:138 dbas/templates/user.pt:16
+#: dbas/templates/admin.pt:196 dbas/templates/user.pt:16
 msgid "registered"
 msgstr "Registered"
 
 #. Default: Avatar
-#: dbas/templates/admin.pt:139
+#: dbas/templates/admin.pt:197
 msgid "avatar"
 msgstr "Avatar"
 
 #. Default: Public Avatar
-#: dbas/templates/admin.pt:140
+#: dbas/templates/admin.pt:198
 msgid "public_avatar"
 msgstr "Public Avatar"
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/admin.pt:165
+#: dbas/templates/admin.pt:223
 msgid "list_attacks"
 msgstr "List of attacks, clicked by the participants"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/admin.pt:166
+#: dbas/templates/admin.pt:224 dbas/templates/admin.pt:250
 msgid "admin_only"
 msgstr "Some additional options for the administrator."
 
 #. Default: Switch Topic
-#: dbas/templates/admin.pt:173 dbas/templates/content.pt:20
+#: dbas/templates/admin.pt:231 dbas/templates/content.pt:20
 msgid "switch_topc"
 msgstr "Switch Topic"
+
+#. Default: Issues
+#: dbas/templates/admin.pt:249
+msgid "new-issue"
+msgstr "Issues"
+
+#. Default: Add a Topic
+#: dbas/templates/admin.pt:253 dbas/templates/content.pt:36
+msgid "add_topic"
+msgstr "Add a topic"
+
+#. Default: Title
+#: dbas/templates/admin.pt:263
+msgid "title"
+msgstr "Title"
+
+#. Default: Edit
+#: dbas/templates/admin.pt:267
+msgid "edit"
+msgstr "Edit"
 
 #. Default: You have got
 #: dbas/templates/notifications.pt:13
@@ -1240,11 +1284,6 @@ msgstr "Public Information of"
 #: dbas/templates/user.pt:24
 msgid "profile_picture_of"
 msgstr "Profile Picture of"
-
-#. Default: Add a Topic
-#: dbas/templates/content.pt:36
-msgid "add_topic"
-msgstr "Add a topic"
 
 #. Default: Restart
 #: dbas/templates/content.pt:43
@@ -1688,9 +1727,6 @@ msgstr "Complete View"
 #~ "Sometimes you want to state more than one statement, but they are "
 #~ "connected...in some way. These statements can be connected in one premisse"
 
-#~ msgid "set-premissegroups2"
-#~ msgstr "If you want to add an 'and' in your statement, please do not do it!"
-
 #~ msgid "set-premissegroups3"
 #~ msgstr "Sometimes you have dependent statemens, like:"
 
@@ -1748,9 +1784,6 @@ msgstr "Complete View"
 
 #~ msgid "want_to_state_own_reason"
 #~ msgstr "You want to state your own reason?"
-
-#~ msgid "edit"
-#~ msgstr "Edit"
 
 #~ msgid "istland_view"
 #~ msgstr "Island View"
