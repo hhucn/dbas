@@ -27,6 +27,9 @@ $(function () {
 
 function Notifications() {
 
+	/**
+	 *
+	 */
 	this.setPanelClickFunctions = function(){
 		$.each($('.panel-title-link'), function ajaxLinksRead() {
 			$(this).click(function(){
@@ -45,6 +48,9 @@ function Notifications() {
 		});
 	};
 
+	/**
+	 *
+	 */
 	this.setClickFunctionsForNewNotification = function() {
 		// send notification to users
 		$('#new-notification').click(function () {
@@ -58,6 +64,9 @@ function Notifications() {
 		});
 	};
 
+	/**
+	 *
+	 */
 	this.setClickFunctionsForAnswerNotification = function() {
 		// send notification to users
 		$('.answer-notification').each(function () {

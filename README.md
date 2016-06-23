@@ -15,7 +15,7 @@ documentation run:
 
     make html
 
-The documentaiton require [Sphinx](http://www.sphinx-doc.org/en/stable/).
+The documentation requires [Sphinx](http://www.sphinx-doc.org/en/stable/).
 
 
 ## Setup for Linux
@@ -55,6 +55,9 @@ Then follow these steps:
 
         pserve development.ini --reload
 
+or all in one step:
+
+    docker-compose up
 
 ## Testing
 

@@ -186,6 +186,7 @@ class Translator(object):
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
         self.emailUnknown = 'emailUnknown'
+
         self.edit = 'edit'
         self.error_code = 'error_code'
         self.editTitle = 'editTitle'
@@ -195,6 +196,14 @@ class Translator(object):
         self.emailBodyText = 'emailBodyText'
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
+        self.emailArgumentAddTitle = 'emailArgumentAddTitle'
+        self.emailArgumentAddBody = 'emailArgumentAddBody'
+        self.edit = 'edit'
+        self.error_code = 'error_code'
+        self.editTitle = 'editTitle'
+        self.editIssueViewChangelog = 'editIssueViewChangelog'
+        self.editInfoHere = 'editInfoHere'
+        self.editTitleHere ='editTitleHere'
         self.emptyName = 'emptyName'
         self.emptyEmail = 'emptyEmail'
         self.emtpyContent = 'emtpyContent'
@@ -226,6 +235,7 @@ class Translator(object):
         self.generateSecurePassword = 'generateSecurePassword'
         self.goodPointTakeMeBackButtonText = 'goodPointTakeMeBackButtonText'
         self.group_uid = 'group_uid'
+        self.goBackToTheDiscussion = 'goBackToTheDiscussion'
         self.haveALookAt = 'haveALookAt'
         self.hidePasswordRequest = 'hidePasswordRequest'
         self.hideGenerator = 'hideGenerator'
@@ -375,6 +385,7 @@ class Translator(object):
         self.pleaseEnterShorttextForTopic = 'pleaseEnterShorttextForTopic'
         self.pleaseSelectLanguageForTopic = 'pleaseSelectLanguageForTopic'
         self.premise = 'premise'
+        self.preferedLangTitle = 'preferedLangTitle'
         self.phone = 'phone'
         self.pwdNotEqual = 'pwdNotEqual'
         self.pwdsSame = 'pwdsSame'
@@ -772,6 +783,8 @@ class TextGenerator(object):
             conclusion = conclusion[0:1].lower() + conclusion[1:]
 
         confrontation_text = ''
+        db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
+        db_votes = DBDiscussionSession.query(VoteStatement).filter_by(statement_uid=db_users_premise.statements.uid).all()
 
         # build some confrontation text
         if attack == 'undermine':
@@ -781,8 +794,6 @@ class TextGenerator(object):
 
         elif attack == 'rebut':
             #
-            db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
-            db_votes = DBDiscussionSession.query(VoteStatement).filter_by(statement_uid=db_users_premise.statements.uid).all()
 
             # distinguish between reply for argument and reply for premise group
             if reply_for_argument:  # reply for argument
@@ -807,7 +818,8 @@ class TextGenerator(object):
                 confrontation_text += confrontation
 
         elif attack == 'undercut':
-            confrontation_text = _t.get(_t.otherParticipantsAgreeThat) + ' <strong>' + premise + '</strong>, '
+            confrontation_text = _t.get(_t.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(_t.otherParticipantsDontHaveOpinion)
+            confrontation_text += ' <strong>' + premise + '</strong>, '
             confrontation_text += (_t.get(_t.butTheyDoNotBelieveArgument) if supportive else _t.get(_t.butTheyDoNotBelieveCounter))
             confrontation_text += ' <strong>' + conclusion + '</strong>'
             if self.lang == 'de':
@@ -819,6 +831,15 @@ class TextGenerator(object):
 
         sys_text = confrontation_text + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
         return sys_text
+
+    @staticmethod
+    def get_text_for_edit_text_message(lang, nickname, original, edited, path):
+        _t = Translator(lang)
+        content = _t.get(_t.textversionChangedContent) + ' ' + nickname
+        content += '<br>' + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + original + '<br>'
+        content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + edited + '<br>'
+        content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
+        content += '<a href="' + path + '">' + _t.get(_t.goBackToTheDiscussion) + '</a>'
 
     def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
         """
@@ -841,7 +862,7 @@ class TextGenerator(object):
 
         w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:]
         r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:]
-        counter_justi = ' <strong>' + conclusion + ', ' + _t.get(t.because).toLocaleLowerCase() + ' ' + premise + '</strong>'
+        counter_justi = ' <strong>' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() + ' ' + premise + '</strong>'
 
         ret_dict['undermine_text'] = w + ', <strong>' + premise + '</strong>.'
         ret_dict['undercut_text'] = r + ', <strong>' + conclusion + '</strong>, ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + counter_justi + '.'

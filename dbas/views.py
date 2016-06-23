@@ -5,20 +5,10 @@ Core component of DBAS.
 """
 
 import json
+import time
 
 import requests
-import time
 import transaction
-import dbas.string_matcher as FuzzyStringMatcher
-import dbas.helper.notification_helper as NotificationHelper
-import dbas.helper.issue_helper as IssueHelper
-import dbas.helper.history_helper as HistoryHelper
-import dbas.recommender_system as RecommenderSystem
-import dbas.helper.voting_helper as VotingHelper
-import dbas.news_handler as NewsHandler
-import dbas.password_handler as PasswordHandler
-import dbas.user_management as UserHandler
-
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.security import remember, forget
@@ -29,13 +19,22 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from validate_email import validate_email
 
+import dbas.helper.email_helper as EmailHelper
+import dbas.helper.history_helper as HistoryHelper
+import dbas.helper.issue_helper as IssueHelper
+import dbas.helper.notification_helper as NotificationHelper
+import dbas.helper.voting_helper as VotingHelper
+import dbas.news_handler as NewsHandler
+import dbas.password_handler as PasswordHandler
+import dbas.recommender_system as RecommenderSystem
+import dbas.string_matcher as FuzzyStringMatcher
+import dbas.user_management as UserHandler
+from .database import DBDiscussionSession
+from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings, Language
 from .helper.dictionary_helper import DictionaryHelper
 from .helper.dictionary_helper_discussion import DiscussionDictHelper
 from .helper.dictionary_helper_items import ItemDictHelper
 from .helper.query_helper import QueryHelper
-from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings
-from .email import EmailHelper
 from .input_validator import Validator
 from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
 from .logger import logger
@@ -668,6 +667,8 @@ class Dbas(object):
 
         db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
         db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
+        db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None
+
         _uh         = UserHandler
         if db_user:
             edits       = _uh.get_count_of_statements_of_user(db_user, True)
@@ -718,9 +719,12 @@ class Dbas(object):
             'title_mails': _tn.get(_tn.mailSettingsTitle),
             'title_notifications': _tn.get(_tn.notificationSettingsTitle),
             'title_public_nick': _tn.get(_tn.publicNickTitle),
+            'title_prefered_lang': _tn.get(_tn.preferedLangTitle),
             'public_page_url': mainpage + '/user/' + public_nick,
             'on': _tn.get(_tn.on),
-            'off': _tn.get(_tn.off)
+            'off': _tn.get(_tn.off),
+            'current_lang': db_language.name if db_language else '?',
+            'current_ui_locales': db_language.ui_locales if db_language else '?'
         }
 
         return {
@@ -1217,8 +1221,8 @@ class Dbas(object):
                         # sending an email
                         subject = _t.get(_t.accountRegistration)
                         body = _t.get(_t.accountWasRegistered)
-                        EmailHelper().send_mail(self.request, subject, body, email, ui_locales)
-                        NotificationHelper.send_welcome_message(transaction, checknewuser.uid)
+                        EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
+                        NotificationHelper.send_welcome_notification(transaction, checknewuser.uid)
 
                     else:
                         logger('user_registration', 'main', 'New data was not added')
@@ -1275,10 +1279,13 @@ class Dbas(object):
                 DBDiscussionSession.add(db_user)
                 transaction.commit()
 
+                db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+                db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
+
                 body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
                 body += _t.get(_t.newPwdIs) + pwd
                 subject = _t.get(_t.dbasPwdRequest)
-                reg_success, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
+                reg_success, message = EmailHelper.send_mail(self.request, subject, body, email, db_language.ui_locales)
 
                 if reg_success:
                     success = message
@@ -1318,6 +1325,7 @@ class Dbas(object):
             error = ''
             public_nick = ''
             public_page_url = ''
+            gravatar_url = ''
             settings_value = True if self.request.params['settings_value'] == 'True' else False
             service = self.request.params['service']
             db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
@@ -1344,15 +1352,57 @@ class Dbas(object):
 
                 transaction.commit()
                 public_page_url = mainpage + '/user/' + public_nick
+                gravatar_url = UserHandler.get_public_profile_picture(db_user, 80)
             else:
                 error = _tn.get(_tn.checkNickname)
         except KeyError as e:
             error = _tn.get(_tn.internalError)
             public_nick = ''
             public_page_url = ''
+            gravatar_url = ''
             logger('set_user_settings', 'error', repr(e))
 
-        return_dict = {'error': error, 'public_nick': public_nick, 'public_page_url': public_page_url}
+        return_dict = {'error': error, 'public_nick': public_nick, 'public_page_url': public_page_url, 'gravatar_url': gravatar_url}
+        return json.dumps(return_dict, True)
+
+    # ajax - set boolean for receiving information
+    @view_config(route_name='ajax_set_user_language', renderer='json')
+    def set_user_language(self):
+        """
+        Will logout the user
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('set_user_language', 'def', 'main, self.request.params: ' + str(self.request.params))
+        _tn = Translator(get_language(self.request, get_current_registry()))
+
+        try:
+            error = ''
+            current_lang = ''
+            ui_locales = self.request.params['ui_locales']
+            db_user = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
+            if db_user:
+                db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+                if db_settings:
+                    db_language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+                    if db_language:
+                        current_lang = db_language.name
+                        db_settings.set_lang_uid(db_language.uid)
+                        transaction.commit()
+                    else:
+                        error = _tn.get(_tn.internalError)
+                else:
+                    error = _tn.get(_tn.checkNickname)
+            else:
+                error = _tn.get(_tn.checkNickname)
+        except KeyError as e:
+            error = _tn.get(_tn.internalError)
+            ui_locales = ''
+            current_lang = ''
+            logger('set_user_settings', 'error', repr(e))
+
+        return_dict = {'error': error, 'ui_locales': ui_locales, 'current_lang': current_lang}
         return json.dumps(return_dict, True)
 
     # ajax - sending notification
@@ -1387,7 +1437,7 @@ class Dbas(object):
                 if not db_author:
                     error = _tn.get(_tn.notLoggedIn)
                 else:
-                    db_notification = NotificationHelper.send_message(db_author, db_recipient, title, text, transaction)
+                    db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, transaction)
                     uid = db_notification.uid
                     ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
                     gravatar = UserHandler.get_public_profile_picture(db_recipient, 20)
@@ -1579,9 +1629,8 @@ class Dbas(object):
         try:
             uid = self.request.params['uid']
             corrected_text = escape_string(self.request.params['text'])
-            ui_locales = get_language(self.request, get_current_registry())
             return_dict = QueryHelper.correct_statement(transaction, self.request.authenticated_userid, uid,
-                                                        corrected_text, ui_locales, self.request.path)
+                                                        corrected_text, mainpage + self.request.path, self.request)
             if return_dict == -1:
                 return_dict = dict()
                 return_dict['error'] = _tn.get(_tn.noCorrectionsSet)

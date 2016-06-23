@@ -5,21 +5,22 @@ Provides functions for te internal messaging system
 """
 
 import dbas.user_management as UserHandler
+import dbas.helper.email_helper as EmailHelper
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Notification, Settings
+from dbas.database.discussion_model import User, TextVersion, Notification, Settings, Language
 from dbas.lib import sql_timestamp_pretty_print, escape_string
-from dbas.strings import Translator
+from dbas.strings import Translator, TextGenerator
 from sqlalchemy import and_
 
 
-def send_edit_text_notification(textversion, lang, path):
+def send_edit_text_notification(textversion, path, request):
     """
     Sends an notification to the root-author and last author, when their text was edited.
 
     :param textversion: new Textversion
-    :param lang: ui_locales
     :param path: curren path
+    :param request: curren request
     :return: None
     """
     all_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=textversion.statement_uid).order_by(TextVersion.uid.desc()).all()
@@ -27,33 +28,40 @@ def send_edit_text_notification(textversion, lang, path):
     root_author = oem.author_uid
     new_author = textversion.author_uid
     last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
-    send_for_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first().should_send_notifications
-    send_for_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first().should_send_notifications
+    settings_new_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first()
+    settings_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first()
+
+    if settings_new_author.should_send_mails:
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, new_author, root_author, path, request)
+
+    if settings_last_author.should_send_mails:
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, new_author, last_author, path, request)
 
     # check for different authors
     if root_author == new_author:
         return None
 
     # create content
-    _t = Translator(lang)  # TODO Send notificatio in language of recipient
+    db_editor = DBDiscussionSession.query(User).filter_by(uid=new_author).first().nickname
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_editor.uid).first()
+    db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
+
+    _t = Translator(db_language.ui_locales)
     topic = _t.get(_t.textversionChangedTopic)
-    content = _t.get(_t.textversionChangedContent) + ' ' + DBDiscussionSession.query(User).filter_by(uid=new_author).first().nickname
-    content += '<br>' + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + textversion.content + '<br>'
-    content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + oem.content + '<br>'
-    content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': ' + path
+    content = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.publick_nickname, textversion.content, oem.content, path)
 
     # send notifications
-    if send_for_root_author:
+    if settings_last_author.should_send_notifications:
         notification_to_root_author  = Notification(from_author_uid=new_author, to_author_uid=root_author, topic=topic, content=content, is_inbox=True)
         DBDiscussionSession.add(notification_to_root_author)
-    if last_author != root_author and send_for_last_author:
+    if last_author != root_author and settings_new_author.should_send_notifications:
         notification_to_last_author  = Notification(from_author_uid=new_author, to_author_uid=last_author, topic=topic, content=content, is_inbox=True)
         DBDiscussionSession.add(notification_to_last_author)
 
     DBDiscussionSession.flush()
 
 
-def send_welcome_message(transaction, user, lang='en'):
+def send_welcome_notification(transaction, user, lang='en'):
     """
     Creates and send the welcome message to a new user.
 
@@ -71,7 +79,7 @@ def send_welcome_message(transaction, user, lang='en'):
     transaction.commit()
 
 
-def send_message(from_user, to_user, topic, content, transaction):
+def send_notification(from_user, to_user, topic, content, transaction):
     """
     Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
