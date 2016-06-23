@@ -186,6 +186,13 @@ class Translator(object):
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
         self.emailUnknown = 'emailUnknown'
+
+        self.edit = 'edit'
+        self.error_code = 'error_code'
+        self.editTitle = 'editTitle'
+        self.editIssueViewChangelog = 'editIssueViewChangelog'
+        self.editInfoHere = 'editInfoHere'
+        self.editTitleHere ='editTitleHere'
         self.emailBodyText = 'emailBodyText'
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
@@ -834,7 +841,6 @@ class TextGenerator(object):
         content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
         content += '<a href="' + path + '">' + _t.get(_t.goBackToTheDiscussion) + '</a>'
 
-
     def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
         """
 
@@ -856,7 +862,7 @@ class TextGenerator(object):
 
         w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:]
         r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:]
-        counter_justi = ' <strong>' + conclusion + ', ' + _t.get(t.because).toLocaleLowerCase() + ' ' + premise + '</strong>'
+        counter_justi = ' <strong>' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() + ' ' + premise + '</strong>'
 
         ret_dict['undermine_text'] = w + ', <strong>' + premise + '</strong>.'
         ret_dict['undercut_text'] = r + ', <strong>' + conclusion + '</strong>, ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + counter_justi + '.'

@@ -4,7 +4,6 @@ All kind of tests
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import os
 import unittest
 import dbas.password_handler as PasswordHandler
 
@@ -15,16 +14,16 @@ from dbas.views import Dbas
 from dbas import main
 from dbas.database import DBDiscussionSession, initializedb
 from dbas.database.discussion_model import Group, User
+from dbas.helper.tests_helper import add_settings_to_appconfig
 from mock import Mock
-from paste.deploy.loadwsgi import appconfig
 from pyramid import testing
 from pyramid_mailer.mailer import DummyMailer
 from pyramid_mailer.message import Message
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 
-here = os.path.dirname(__file__)
-settings = appconfig('config:' + os.path.join(here, '../', 'development.ini'))
+
+settings = add_settings_to_appconfig()
 
 
 class Setup:
