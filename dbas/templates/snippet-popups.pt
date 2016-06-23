@@ -427,9 +427,7 @@
     								<li i18n:translate="select_password_rule3">one lowercase letter</li>
     								<li i18n:translate="select_password_rule4">one special sign</li>
     							</ul>
-    							<span i18n:translate="popup_password_text1">For example </span>
-                                <em id="popup_password_example"></em>
-                                <span i18n:translate="popup_password_text2"> is a strong password. A couple of hints:</span>
+    							<span i18n:translate="popup_password_text">For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 years. It should be noted:</span>
     							<ul>
     								<li i18n:translate="select_password_avoid1">Avoid using a password on several pages</li>
     								<li i18n:translate="select_password_avoid2">Avoid using patterns, which can be found in a dictionary</li>
@@ -441,16 +439,6 @@
     							<input class="form-control" type="text" id="password-generator-output">
     				            <button type="button" id="password-generator-button" class="btn btn-primary" i18n:translate="generate_password">Generate secure password</button>
     						</div>
-
-
-
-    						<div class="col-md-12" id="popup-login-warning-message">
-    							<div class="alert alert-danger" role="alert">
-    								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    								<span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-warning-message-text"></span>
-    							</div>
-    						</div>
-
     					</div>
 
     				</div>
