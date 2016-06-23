@@ -1,9 +1,10 @@
 version: '2'
 services:
   db:
-    build: docker/database/
-    ports:
-      - "5433:5432"
+    image: hhucn/docker-dbas-postgres
+    #build: docker/database/
+    #ports:
+    #  - "5433:5432"
   web:
     build: .
     command: /bin/bash docker_init.sh
