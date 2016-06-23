@@ -20,7 +20,6 @@ class UrlManagerTests(unittest.TestCase):
                              slug='cat-or-dog',
                              for_api=False,
                              history='attitude/35')
-        # TODO Hier würde ich mir doch ein paar Kommentare wünschen, warum du das hier gerade so testest...
         # Test whether backslash is added, if application_url does not end with it.
         self.assertEqual(url1.url, 'application_url/')
         # Test whether empty String is added, if application_url ends with backslash.
