@@ -229,7 +229,7 @@ class QueryHelper:
         return url, statement_uids, error
 
     @staticmethod
-    def correct_statement(transaction, user, uid, corrected_text, lang, path):
+    def correct_statement(transaction, user, uid, corrected_text, path, request):
         """
         Corrects a statement
 
@@ -237,8 +237,8 @@ class QueryHelper:
         :param user: User.nickname requesting user
         :param uid: requested statement uid
         :param corrected_text: new text
-        :param lang: ui_locales current ui_locales
         :param path: current path
+        :param request: current request
         :return: True
         """
         logger('QueryHelper', 'correct_statement', 'def ' + str(uid))
@@ -265,7 +265,7 @@ class QueryHelper:
             DBDiscussionSession.add(textversion)
             DBDiscussionSession.flush()
 
-            NotificationHelper.send_edit_text_notification(textversion, lang, path)
+            NotificationHelper.send_edit_text_notification(textversion, path, request)
 
         db_statement.set_textversion(textversion.uid)
         transaction.commit()
