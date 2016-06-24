@@ -66,16 +66,11 @@ class OpinionHandler:
 
         # getting uids of all reactions
         _rh = RelationHelper(argument_uids[0], self.lang)
-        undermines_uids  = _rh.get_undermines_for_argument_uid()
-        supports_uids    = _rh.get_supports_for_argument_uid()
-        undercuts_uids   = _rh.get_undercuts_for_argument_uid()
-        rebuts_uids      = _rh.get_rebuts_for_argument_uid()
-
         tmp_dict = {
-            'undermine': undermines_uids,
-            'support': supports_uids,
-            'undercut': undercuts_uids,
-            'rebut': rebuts_uids
+            'undermine': _rh.get_undermines_for_argument_uid(),
+            'support': _rh.get_supports_for_argument_uid(),
+            'undercut': _rh.get_undercuts_for_argument_uid(),
+            'rebut': _rh.get_rebuts_for_argument_uid()
         }
 
         # getting the text of all reactions
@@ -84,10 +79,11 @@ class OpinionHandler:
         db_tmp_argument = db_syst_argument
         while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
             db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
+
         first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
         first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-        conclusion         = conclusion[0:1].lower() + conclusion[1:]
-        premise             = premise[0:1].lower() + premise[1:]
+        conclusion       = conclusion[0:1].lower() + conclusion[1:]
+        premise          = premise[0:1].lower() + premise[1:]
         relation_text    = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive,
                                                       first_conclusion=first_conclusion)
 
@@ -97,23 +93,24 @@ class OpinionHandler:
             all_users       = []
             message         = ''
 
-            for uid in tmp_dict[relation]:
-                db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
-                                                                               VoteArgument.is_up_vote == True,
-                                                                               VoteArgument.is_valid == True,
-                                                                               VoteArgument.author_uid != db_user_uid)).all()
-                for vote in db_votes:
-                    voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-                    users_dict = self.create_users_dict(voted_user, vote.timestamp)
-                    all_users.append(users_dict)
-                relation_dict['users'] = all_users
-
-                if len(db_votes) == 0:
-                    message = _t.get(_t.voteCountTextMayBeFirst) + '.'
-                elif len(db_votes) == 1:
-                    message = _t.get(_t.voteCountTextOneOther) + '.'
-                else:
-                    message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+            if tmp_dict[relation]:
+                for uid in tmp_dict[relation]:
+                    db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
+                                                                                   VoteArgument.is_up_vote == True,
+                                                                                   VoteArgument.is_valid == True,
+                                                                                   VoteArgument.author_uid != db_user_uid)).all()
+                    for vote in db_votes:
+                        voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+                        users_dict = self.create_users_dict(voted_user, vote.timestamp)
+                        all_users.append(users_dict)
+                    relation_dict['users'] = all_users
+    
+                    if len(db_votes) == 0:
+                        message = _t.get(_t.voteCountTextMayBeFirst) + '.'
+                    elif len(db_votes) == 1:
+                        message = _t.get(_t.voteCountTextOneOther) + '.'
+                    else:
+                        message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
             ret_dict[relation] = {'users': all_users, 'message': message, 'text': regex.sub('', relation_text[relation + '_text'].replace('<strong>', ''))}
 
