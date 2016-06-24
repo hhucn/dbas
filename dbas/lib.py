@@ -84,9 +84,9 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
     # except ValueError:  # postgres
     #     time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
     if humanize:
-        #if lang == 'de':
+        # if lang == 'de':
         ts = ts.to('Europe/Berlin')
-        #else:
+        # else:
         #    ts = ts.to('US/Pacific')
         return ts.humanize(locale=lang)
     else:
@@ -149,69 +149,107 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 
     if len(arg_array) == 1:
         # build one argument only
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
-        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-        conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
-        if lang != 'de':
-            conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
-            premises = premises[0:1].lower() + premises[1:]  # pretty print
-        ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
-
-        if lang == 'de':
-            if rearrange_intro:
-                intro = _t.get(_t.itTrueIs) if db_argument.is_supportive else _t.get(_t.itFalseIs)
-            else:
-                intro = _t.get(_t.itIsTrue) if db_argument.is_supportive else _t.get(_t.itIsFalse)
-            ret_value += se + intro[0:1].upper() + intro[1:] + ' ' + sb + conclusion + because + premises
-        else:
-            ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
-
-        return ret_value
+        return __build_single_argument(arg_array[0], lang, rearrange_intro, sb, se, start_with_intro, because, doesnt_hold_because, _t)
 
     else:
         # get all pgroups and at last, the conclusion
-        pgroups = []
-        supportive = []
-        arg_array = arg_array[::-1]
-        for uid in arg_array:
-            db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-            text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-            pgroups.append((text[0:1].lower() + text[1:])if lang != 'de' else text)
-            supportive.append(db_argument.is_supportive)
-        conclusion = get_text_for_statement_uid(DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid)
+        return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, se, sb, start_with_intro, because, doesnt_hold_because, _t)
 
-        if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
-            ret_value = se
-            ret_value += _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
-            ret_value += sb + ' '
-            users_opinion = True  # user after system
-            if lang != 'de':
-                conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
-        else:  # user starts
-            ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
-            users_opinion = False  # system after user
-            conclusion = conclusion[0:1].upper() + conclusion[1:]  # pretty print
-        ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
 
-        for i in range(1, len(pgroups)):
-            ret_value += ' ' + se
-            if users_opinion:
-                if user_changed_opinion:
-                    ret_value += _t.get(_t.otherParticipantsConvincedYouThat)
-                else:
-                    ret_value += _t.get(_t.butYouCounteredWith)
+def __build_single_argument(uid, lang, rearrange_intro, sb, se, start_with_intro, because, doesnt_hold_because, _t):
+    """
+
+    :param uid:
+    :param lang:
+    :param rearrange_intro:
+    :param sb:
+    :param se:
+    :param start_with_intro:
+    :param because:
+    :param doesnt_hold_because:
+    :param _t:
+    :return:
+    """
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+    conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+    if lang != 'de':
+        conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+        premises = premises[0:1].lower() + premises[1:]  # pretty print
+    ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
+
+    if lang == 'de':
+        if rearrange_intro:
+            intro = _t.get(_t.itTrueIs) if db_argument.is_supportive else _t.get(_t.itFalseIs)
+        else:
+            intro = _t.get(_t.itIsTrue) if db_argument.is_supportive else _t.get(_t.itIsFalse)
+        ret_value += se + intro[0:1].upper() + intro[1:] + ' ' + sb + conclusion + because + premises
+    else:
+        ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
+
+    return ret_value
+
+
+def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, se, sb, start_with_intro, because, doesnt_hold_because, _t):
+    """
+
+    :param arg_array:
+    :param lang:
+    :param first_arg_by_user:
+    :param user_changed_opinion:
+    :param se:
+    :param sb:
+    :param start_with_intro:
+    :param because:
+    :param doesnt_hold_because:
+    :param _t:
+    :return:
+    """
+
+    # get all pgroups and at last, the conclusion
+    pgroups = []
+    supportive = []
+    arg_array = arg_array[::-1]
+    for uid in arg_array:
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+        pgroups.append((text[0:1].lower() + text[1:])if lang != 'de' else text)
+        supportive.append(db_argument.is_supportive)
+    uid = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid
+    conclusion = get_text_for_statement_uid(uid)
+
+    if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
+        ret_value = se
+        ret_value += _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
+        ret_value += sb + ' '
+        users_opinion = True  # user after system
+        if lang != 'de':
+            conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+    else:  # user starts
+        ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
+        users_opinion = False  # system after user
+        conclusion = conclusion[0:1].upper() + conclusion[1:]  # pretty print
+    ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
+
+    for i in range(1, len(pgroups)):
+        ret_value += ' ' + se
+        if users_opinion:
+            if user_changed_opinion:
+                ret_value += _t.get(_t.otherParticipantsConvincedYouThat)
             else:
-                ret_value += _t.get(_t.otherUsersHaveCounterArgument)
-            ret_value += sb + ' ' + pgroups[i] + '.'
+                ret_value += _t.get(_t.butYouCounteredWith)
+        else:
+            ret_value += _t.get(_t.otherUsersHaveCounterArgument)
+        ret_value += sb + ' ' + pgroups[i] + '.'
 
-            # if user_changed_opinion:
-            # ret_value += ' ' + se + _t.get(_t.butThenYouCounteredWith) + sb + ' ' + pgroups[i] + '.'
-            # else:
-            # ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
-            users_opinion = not users_opinion
+        # if user_changed_opinion:
+        # ret_value += ' ' + se + _t.get(_t.butThenYouCounteredWith) + sb + ' ' + pgroups[i] + '.'
+        # else:
+        # ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
+        users_opinion = not users_opinion
 
-        ret_value = ret_value.replace('.</strong>', '</strong>.').replace('. </strong>', '</strong>. ')
-        return ret_value[:-1]  # cut off punctuation
+    ret_value = ret_value.replace('.</strong>', '</strong>.').replace('. </strong>', '</strong>. ')
+    return ret_value[:-1]  # cut off punctuation
 
 
 def get_text_for_premisesgroup_uid(uid, lang):
