@@ -11,6 +11,7 @@ before_script:
   - initialize_news_sql docker.ini
 
 test:
+  stage: test
   script:
     - flake8 .
     - nosetests --with-coverage --cover-package=api
