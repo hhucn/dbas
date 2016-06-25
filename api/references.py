@@ -29,7 +29,11 @@ def url_to_statement(issue_uid, statement_uid, agree=True):
     :return: direct URL to jump to the provided statement
     :rtype: str
     """
-    mode = "t" if agree else "f"
+    if isinstance(agree, str):
+        if agree == "true":
+            mode = "t"
+        elif agree == "false":
+            mode = "f"
     slug = resolve_issue_uid_to_slug(issue_uid)
     url_manager = UrlManager(application_url="", slug=slug, for_api=True)
     return url_manager.get_url_for_justifying_statement(as_location_href=True,
