@@ -100,7 +100,7 @@ find_statements = Service(name="find_statements",
                           cors_policy=cors_policy)
 
 statement_url = Service(name="statement_url",
-                        path="/get/statement_url/{issue_uid}/{statement_uid}/{agree}",
+                        path="/get/statement/url/{issue_uid}/{statement_uid}/{agree}",
                         description="Get URL to a statement inside the discussion for direct jumping to it",
                         cors_policy=cors_policy)
 
