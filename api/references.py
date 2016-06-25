@@ -32,8 +32,10 @@ def url_to_statement(issue_uid, statement_uid, agree=True):
     if isinstance(agree, str):
         if agree == "true":
             mode = "t"
-        elif agree == "false":
+        else:
             mode = "f"
+    else:
+        mode = "t" if agree is True else "f"
     slug = resolve_issue_uid_to_slug(issue_uid)
     url_manager = UrlManager(application_url="", slug=slug, for_api=True)
     return url_manager.get_url_for_justifying_statement(as_location_href=True,
