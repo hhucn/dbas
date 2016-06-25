@@ -99,6 +99,11 @@ find_statements = Service(name="find_statements",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
 
+statement_url = Service(name="statement_url",
+                        path="/get/statement_url/{statement_uid}/{agree}",
+                        description="Get URL to a statement inside the discussion for direct jumping to it",
+                        cors_policy=cors_policy)
+
 #
 # Other Services
 #
