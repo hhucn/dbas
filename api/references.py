@@ -15,7 +15,7 @@ from .lib import escape_html, logger
 log = logger()
 
 
-def url_to_statement(issue_uid, statement_uid):
+def url_to_statement(issue_uid, statement_uid, mode="t"):
     """
     Generate URL to given statement_uid in specific issue (by slug).
     Used to directly jump into the discussion.
@@ -24,6 +24,7 @@ def url_to_statement(issue_uid, statement_uid):
     :type issue_uid: id
     :param statement_uid: Statement id to generate the link to
     :type statement_uid: int
+    :param mode: Should be "t" for true or "f" for false to (dis-)agree with a statement
     :return: direct URL to jump to the provided statement
     :rtype: str
     """
@@ -31,7 +32,7 @@ def url_to_statement(issue_uid, statement_uid):
     url_manager = UrlManager(application_url="", slug=slug, for_api=True)
     return url_manager.get_url_for_justifying_statement(as_location_href=True,
                                                         statement_uid=statement_uid,
-                                                        mode="t")
+                                                        mode=mode)
 
 
 def store_reference(api_data, statement_uid=None):
