@@ -100,7 +100,7 @@ find_statements = Service(name="find_statements",
                           cors_policy=cors_policy)
 
 statement_url = Service(name="statement_url",
-                        path="/get/statement_url/{statement_uid}/{agree}",
+                        path="/get/statement_url/{issue_uid}/{statement_uid}/{agree}",
                         description="Get URL to a statement inside the discussion for direct jumping to it",
                         cors_policy=cors_policy)
 
@@ -428,6 +428,25 @@ def find_statements_fn(request):
         statement_uid = statement["statement_uid"]
         statement["url"] = url_to_statement(api_data["issue"], statement_uid)
         return_dict["values"].append(statement)
+    return json.dumps(return_dict, True)
+
+
+# =============================================================================
+# GET INFORMATION - several functions to get information from the database
+# =============================================================================
+@statement_url.get()
+def get_statement_url(request):
+    """
+    Given an issue, the statement_uid and an (dis-)agreement, produce a url to the statement inside
+    the corresponding discussion.
+
+    :param request:
+    :return:
+    """
+    issue_uid = request.matchdict["issue_uid"]
+    statement_uid = request.matchdict["statement_uid"]
+    agree = request.matchdict["agree"]
+    return_dict = {"url": url_to_statement(issue_uid, statement_uid, agree)}
     return json.dumps(return_dict, True)
 
 
