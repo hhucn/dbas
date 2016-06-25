@@ -10,10 +10,7 @@ before_script:
   - initialize_discussion_sql docker.ini
   - initialize_news_sql docker.ini
 
-flake8:
+test:
   script:
     - flake8 .
-
-nosetests:
-  script:
     - nosetests --with-coverage --cover-package=api
