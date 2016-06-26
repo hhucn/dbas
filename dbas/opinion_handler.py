@@ -342,8 +342,6 @@ class OpinionHandler:
 
         :param db_user: User
         :param timestamp: SQL Timestamp
-        :param self.lang: ui_locales
-        :param self.mainpage: Url
         :return: dict()
         """
         return {'nickname': db_user.public_nickname,
