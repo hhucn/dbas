@@ -80,7 +80,7 @@ function GuiHandler() {
 		$('#' + id).keyup(function () {
 			new Helper().delay(function () {
 				var escapedText = new Helper().escapeHtml($('#' + id).val());
-				new AjaxSiteHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
+				new AjaxDiscussionHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
 			}, 200);
 		});
 	};
@@ -255,9 +255,9 @@ function GuiHandler() {
 			}
 
 			if (type == fuzzy_add_reason){
-				new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
+				new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
 			} else if (type == fuzzy_start_premise){
-				new AjaxSiteHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
+				new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
 			} else {
 			 	alert("Todo: unknown type")
 			}
@@ -537,7 +537,7 @@ function GuiHandler() {
 	 */
 	this.showUrlSharingPopup = function () {
 		$('#' + popupUrlSharingId).modal('show');
-		new AjaxSiteHandler().getShortenUrl(window.location);
+		new AjaxDiscussionHandler().getShortenUrl(window.location);
 		//$('#' + popupUrlSharingInputId).val(window.location);
 	};
 
@@ -574,7 +574,7 @@ function GuiHandler() {
 			var info = $('#popup-add-topic-info-input').val(),
 				title = $('#popup-add-topic-title-input').val(),
 				lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
-			new AjaxSiteHandler().sendNewIssue(info, title, lang, callbackFunctionOnDone);
+			new AjaxDiscussionHandler().sendNewIssue(info, title, lang, callbackFunctionOnDone);
 		});
 		$('#popup-add-topic-refuse-btn').click(function () {
 			$('#popup-add-topic').modal('hide');
