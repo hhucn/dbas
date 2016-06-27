@@ -507,17 +507,24 @@ $(document).ready(function () {
 
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
-		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
+		ajaxStart: function ajaxStartFct() {
+			setTimeout("$('body').addClass('loading')", 0);
+		},
+		ajaxStop: function ajaxStopFct() {
+			setTimeout("$('body').removeClass('loading')", 0);
+		},
 		// TODO: SEXY GLOBAL AJAX ERROR HANDLING
-		//ajaxError: function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
-		//	$('#request_failed_container').fadeIn();
-		//  //$('#request_failed_container_heading').text('Please');
-		//  $('#request_failed_container_message').text('Enter your text here');
-		//	new Helper().delay(function(){
-		//		$('#request_failed_container').fadeOut();
-		//	}, 3000);
-		//}
+		ajaxError: function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
+			$('#request_failed_container').fadeIn();
+			$('#close_request_failed_container').click(function(){
+				$('#request_failed_container').fadeOut();
+			});
+			//$('#request_failed_container_heading').text('Please');
+			$('#request_failed_container_message').text('Enter your text here');
+			new Helper().delay(function(){
+				$('#request_failed_container').fadeOut();
+			}, 3000);
+		}
 	});
 	//$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
     //    alert("There was an ajax error!");

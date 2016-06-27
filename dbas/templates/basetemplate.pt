@@ -49,8 +49,15 @@
 
 
 	<div class="blocked request_failed center alert-danger" id="request_failed_container" style="display:none;">
-		<h5 id="request_failed_container_heading" i18n:translate="request_failed">Your request failed!</h5>
-        <h6 id="request_failed_container_message" i18n:translate="please_reload">Please reload the page.</h6>
+		<span id="request_failed_container_heading" i18n:translate="request_failed">Your request failed!</span>
+        <span id="request_failed_container_message" i18n:translate="please_reload" style="padding-left: 0.5em; ">Please reload the page.</span>
+        <button type="button" class="close" aria-label="Close"><span id="close_request_failed_container" aria-hidden="true">×</span> </button>
+	</div>
+
+	<div class="blocked request_success center alert-success" id="request_success_container" style="display:none;">
+		<span id="request_success_container_heading" i18n:translate="request_success">Your request succeded!</span>
+        <span id="request_success_container_message" i18n:translate="request_success" style="padding-left: 0.5em; ">Your request succeded!</span>
+        <button type="button" class="close" aria-label="Close"><span id="close_request_success_container" aria-hidden="true">×</span> </button>
 	</div>
 
 	<div id="additional-wrapper">
