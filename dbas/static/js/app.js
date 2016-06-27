@@ -217,6 +217,15 @@ function setEasterEggs(){
 		});
 		*/
 	}
+
+	$('#dbas-logo').click(function(){
+		var counter = parseInt($(this).attr('data-counter'));
+		counter += 1;
+		if (counter == 5){
+			$(this).attr('src', mainpage + 'static/images/dabas.png');
+		}
+		$(this).attr('data-counter', counter);
+	});
 }
 
 /**

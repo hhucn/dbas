@@ -28,35 +28,36 @@ def send_edit_text_notification(textversion, path, request):
     root_author = oem.author_uid
     new_author = textversion.author_uid
     last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
-    settings_new_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first()
+    settings_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first()
     settings_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first()
 
-    if settings_new_author.should_send_mails:
-        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, new_author, root_author, path, request)
+    if settings_root_author.should_send_mails:
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, path, request)
 
-    if settings_last_author.should_send_mails:
-        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, new_author, last_author, path, request)
+    if new_author != last_author and settings_last_author.should_send_mails:
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, path, request)
 
     # check for different authors
     if root_author == new_author:
         return None
 
     # create content
-    db_editor = DBDiscussionSession.query(User).filter_by(uid=new_author).first().nickname
+    db_editor = DBDiscussionSession.query(User).filter_by(uid=new_author).first()
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_editor.uid).first()
     db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
     _t = Translator(db_language.ui_locales)
     topic = _t.get(_t.textversionChangedTopic)
-    content = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.publick_nickname, textversion.content, oem.content, path)
+    content = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
     # send notifications
-    if settings_last_author.should_send_notifications:
-        notification_to_root_author  = Notification(from_author_uid=new_author, to_author_uid=root_author, topic=topic, content=content, is_inbox=True)
-        DBDiscussionSession.add(notification_to_root_author)
-    if last_author != root_author and settings_new_author.should_send_notifications:
-        notification_to_last_author  = Notification(from_author_uid=new_author, to_author_uid=last_author, topic=topic, content=content, is_inbox=True)
-        DBDiscussionSession.add(notification_to_last_author)
+    if settings_root_author.should_send_notifications:
+        notification1  = Notification(from_author_uid=new_author, to_author_uid=root_author, topic=topic, content=content, is_inbox=True)
+        DBDiscussionSession.add(notification1)
+
+    if last_author != root_author and settings_last_author.should_send_notifications:
+        notification2  = Notification(from_author_uid=new_author, to_author_uid=last_author, topic=topic, content=content, is_inbox=True)
+        DBDiscussionSession.add(notification2)
 
     DBDiscussionSession.flush()
 
