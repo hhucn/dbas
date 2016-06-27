@@ -16,17 +16,23 @@ class Validator:
     """
 
     @staticmethod
-    def check_for_integer(input, ignoreEmptyCase=False):
-        if ignoreEmptyCase:
-            if len(str(input)) == 0:
-                logger('Validator', 'check_for_integer', 'ignoreEmptyCase and input: ' + str(input))
+    def check_for_integer(variable, ignore_empty_case=False):
+        """
+        Validates if variable is an integer.
+
+        :param variable: some input
+        :param ignore_empty_case:
+        :rtype: boolean
+        """
+        if variable is None:
+            return False
+        if ignore_empty_case:
+            if len(str(variable)) == 0:
                 return True
         try:
-            int(input)
-            logger('Validator', 'check_for_integer', 'input: ' + str(input) + ' is an int')
+            int(variable)
             return True
-        except ValueError:
-            logger('Validator', 'check_for_integer', 'input: ' + str(input) + ' is no int')
+        except (ValueError, TypeError):
             return False
 
     @staticmethod
@@ -34,6 +40,7 @@ class Validator:
         """
         Checks whether the attacked argument uid and the attacking argument uid are connected via the given relation
 
+        :param attacked_arg_uid:
         :param attacking_arg_uid: Argument.uid
         :param relation: String
         :param is_history: Boolean

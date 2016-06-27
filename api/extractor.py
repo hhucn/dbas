@@ -42,7 +42,7 @@ def extract_reference_information(db_ref):
     """
     if db_ref:
         return {"uid": db_ref.uid,
-                "reference": db_ref.reference,
+                "title": db_ref.reference,
                 "host": db_ref.host,
                 "path": db_ref.path,
                 "statement_uid": db_ref.statement_uid}
