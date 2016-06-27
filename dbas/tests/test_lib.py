@@ -8,6 +8,8 @@ from datetime import date
 
 settings = add_settings_to_appconfig("development.ini")
 
+DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+
 
 class LibTests(unittest.TestCase):
 
@@ -82,8 +84,6 @@ class LibTests(unittest.TestCase):
                                                           lang=''), '01. Jan.')
 
     def test_get_text_for_premisesgroup_uid(self):
-        DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
         # premise, which is in db_premises and premise_group contains only one premise
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1,
                                                             lang='de'), ('Cats are very independent', ['4']))
@@ -99,10 +99,31 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
                                                             lang='en'), ('Cats are fluffy and Cats are small', ['14', '15']))
 
+        # unknown language
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
+                                                            lang='fr'),
+                         ('own language: fr Cats are fluffy unknown language: fr Cats are small', ['14', '15']))
+
+
         # premise, which is not in db_premises
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
                                                             lang='de'), ('', []))
 
-        # language is empty strings
+        # language is empty string
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
                                                             lang=''), ('', []))
+
+    def test_get_text_for_statement_uid(self):
+        # uid for no statement
+        self.assertEqual(lib.get_text_for_statement_uid(uid=0), None)
+
+        self.assertEqual(lib.get_text_for_statement_uid(uid='22222222'), None)
+
+        # uid for statement, which ends with '.'
+        self.assertEqual(lib.get_text_for_statement_uid(uid=1), 'We should get a cat')
+
+        # uid for statement, which ends with '!'
+        self.assertEqual(lib.get_text_for_statement_uid(uid=30), 'It is important, that pets are small and fluffy')
+
+
+
