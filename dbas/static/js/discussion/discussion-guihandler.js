@@ -19,25 +19,28 @@ function GuiHandler() {
 	 * Adds a premise row in the 'add premise'-container
 	 */
 	this.appendAddPremiseRow = function(){
-		var body = $('#add-premise-container-body'),
-			send = $('#' + sendNewPremiseId),
-			uid = new Date().getTime(),
-			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
-			// div_l = $('<div>'),
-			div_m = $('<div>').addClass('flex-div'),
-			div_r = $('<div>'),
-			// h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
-			id = 'add-premise-container-main-input-' + uid,
-			input = $('<input>').attr('id', id)
+		var body = $('#add-premise-container-body');
+		var send = $('#' + sendNewPremiseId);
+		var uid = new Date().getTime();
+		var div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs');
+			//var div_l = $('<div>');
+		var div_m = $('<div>').addClass('flex-div');
+		var div_r = $('<div>');
+			//var h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...');
+		var id = 'add-premise-container-main-input-' + uid;
+		var input = $('<input>').attr('id', id)
 				.attr('type', 'text')
 				.attr('class', 'form-control')
 				.attr('autocomplete', 'off')
-				.attr('placeholder', 'Your statement'),
-			imgm = $('<img>')
+				.attr('placeholder', 'Your statement')
+				.attr('data-min-length', '10')
+				.keyup(function() { setTextWatcherForMinLength($(this)); })
+				.focusin(function() { setTextWatcherForMinLength($(this)); });
+		var imgm = $('<img>')
 				.attr('class', 'icon-rem-premise')
 				.attr('src', mainpage + 'static/images/icon_minus1.png')
-				.attr('title', body.find('.icon-rem-premise').first().attr('title')),
-			imgp = $('<img>')
+				.attr('title', body.find('.icon-rem-premise').first().attr('title'));;
+		var imgp = $('<img>')
 				.attr('class', 'icon-add-premise')
 				.attr('src', mainpage + 'static/images/icon_plus1.png')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
