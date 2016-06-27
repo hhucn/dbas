@@ -4,7 +4,7 @@ RUN pg_createcluster 9.5 main --start
 
 USER postgres
 RUN /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER dbas WITH SUPERUSER PASSWORD 'SQL_2015&';" &&\
+    psql --command "CREATE USER dbas WITH SUPERUSER PASSWORD 'gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz';" &&\
     createdb -O dbas discussion &&\
     createdb -O dbas news
 

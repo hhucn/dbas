@@ -12,4 +12,4 @@ services:
     ports:
       - "80:80"
     links:
-      - db:db
+      - db:hhucn__docker-dbas-postgres

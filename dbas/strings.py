@@ -834,7 +834,6 @@ class TextGenerator(object):
         content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
         content += '<a href="' + path + '">' + _t.get(_t.goBackToTheDiscussion) + '</a>'
 
-
     def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
         """
 
