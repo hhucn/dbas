@@ -1,7 +1,12 @@
 import unittest
-from dbas import lib
+
+from sqlalchemy import engine_from_config
+from dbas import lib, DBDiscussionSession
+from dbas.helper.tests_helper import add_settings_to_appconfig
 import arrow
-from datetime import datetime, date
+from datetime import date
+
+settings = add_settings_to_appconfig("development.ini")
 
 
 class LibTests(unittest.TestCase):
@@ -77,5 +82,27 @@ class LibTests(unittest.TestCase):
                                                           lang=''), '01. Jan.')
 
     def test_get_text_for_premisesgroup_uid(self):
-        # language = de
-        self.assertEqual(lib.get_text_for_premisesgroup_uid([123, 23, 4], 'de'), 'str')
+        DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+
+        # premise, which is in db_premises and premise_group contains only one premise
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1,
+                                                            lang='de'), ('Cats are very independent', ['4']))
+
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1,
+                                                            lang='en'), ('Cats are very independent', ['4']))
+
+
+        # premise_group with more than one premises
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
+                                                            lang='de'), ('Cats are fluffy und Cats are small', ['14', '15']))
+
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
+                                                            lang='en'), ('Cats are fluffy and Cats are small', ['14', '15']))
+
+        # premise, which is not in db_premises
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
+                                                            lang='de'), ('', []))
+
+        # language is empty strings
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
+                                                            lang=''), ('', []))
