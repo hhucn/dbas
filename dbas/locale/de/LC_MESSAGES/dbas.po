@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-06-09 09:16+0200\n"
+"POT-Creation-Date: 2016-06-23 12:44+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -38,7 +38,7 @@ msgstr ", weil die Paramter wahrscheinlich falsch sind"
 
 #. Default: Go home
 #: dbas/templates/404.pt:17
-msgid "go_home"
+msgid "go-home"
 msgstr "Zur Startseite"
 
 #. Default: or
@@ -46,14 +46,9 @@ msgstr "Zur Startseite"
 msgid "or"
 msgstr "oder"
 
-#. Default: go back
+#. Default: go back to the discussion
 #: dbas/templates/404.pt:20
-msgid "go_back"
-msgstr "Willkommen zurück!"
-
-#. Default: to the discussion
-#: dbas/templates/404.pt:21
-msgid "to_the_discussion"
+msgid "go_back_to_the_discussion"
 msgstr "Zurück zur Diskussion!"
 
 #. Default: Your session has expired!
@@ -423,6 +418,7 @@ msgstr "Impressum und Urheberrecht"
 
 #. Default: Author
 #: dbas/templates/snippet-footer.pt:19 dbas/templates/snippet-popups.pt:618
+#: dbas/templates/admin.pt:266
 msgid "author"
 msgstr "Autor"
 
@@ -618,12 +614,14 @@ msgstr "Fehler:"
 #. Default: Success:
 #. Default: Success
 #: dbas/templates/snippet-popups.pt:300 dbas/templates/snippet-popups.pt:399
-#: dbas/templates/settings.pt:218 dbas/templates/content.pt:64
+#: dbas/templates/settings.pt:237 dbas/templates/content.pt:64
 msgid "success"
 msgstr "Erfolg:"
 
 #. Default: Info:
+#. Default: Info
 #: dbas/templates/snippet-popups.pt:307 dbas/templates/snippet-popups.pt:415
+#: dbas/templates/admin.pt:264
 msgid "info"
 msgstr "Info:"
 
@@ -640,7 +638,7 @@ msgstr "Nachname"
 #. Default: Your Nickname
 #. Default: Nickname
 #: dbas/templates/snippet-popups.pt:329 dbas/templates/settings.pt:22
-#: dbas/templates/admin.pt:132
+#: dbas/templates/admin.pt:190
 msgid "nickname"
 msgstr "Nickname"
 
@@ -826,7 +824,7 @@ msgid "success:"
 msgstr "Erfolg:"
 
 #. Default: Date
-#: dbas/templates/snippet-popups.pt:620
+#: dbas/templates/snippet-popups.pt:620 dbas/templates/admin.pt:265
 msgid "date"
 msgstr "Datum"
 
@@ -846,17 +844,17 @@ msgid "personal_information"
 msgstr "Persönliche Informationen"
 
 #. Default: Firstname
-#: dbas/templates/settings.pt:14 dbas/templates/admin.pt:130
+#: dbas/templates/settings.pt:14 dbas/templates/admin.pt:188
 msgid "firstname"
 msgstr "Vorname"
 
 #. Default: Surname
-#: dbas/templates/settings.pt:18 dbas/templates/admin.pt:131
+#: dbas/templates/settings.pt:18 dbas/templates/admin.pt:189
 msgid "surname"
 msgstr "Nachname"
 
 #. Default: Public Nickname
-#: dbas/templates/settings.pt:26 dbas/templates/admin.pt:133
+#: dbas/templates/settings.pt:26 dbas/templates/admin.pt:191
 msgid "public_nickname"
 msgstr "Öffentlicher Nickname"
 
@@ -885,13 +883,18 @@ msgstr "E-Mails erhalten"
 msgid "nickname_is_public"
 msgstr "Nickname ist öffentlich"
 
+#. Default: Prefered message language
+#: dbas/templates/settings.pt:66
+msgid "message_language"
+msgstr "Sprache der Nachrichten"
+
 #. Default: Profile Picture
-#: dbas/templates/settings.pt:70
+#: dbas/templates/settings.pt:89
 msgid "profile_picture"
 msgstr "Profilbild"
 
 #. Default: Change your profile picture on the
-#: dbas/templates/settings.pt:72
+#: dbas/templates/settings.pt:91
 msgid "change_gravatar"
 msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
 
@@ -899,7 +902,7 @@ msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
 #. create your profile just once, and then when you participate in any
 #. Gravatar-enabled site, your Gravatar image will automatically follow you
 #. there.
-#: dbas/templates/settings.pt:74
+#: dbas/templates/settings.pt:93
 msgid "what_is_gravatar"
 msgstr ""
 "Ein Gravatar ist ein Globally Recognized Avatar (Global wiedererkennbarer "
@@ -908,88 +911,88 @@ msgstr ""
 "Ihnen folgen."
 
 #. Default: Settings could not be set. Please try again later.
-#: dbas/templates/settings.pt:83
+#: dbas/templates/settings.pt:102
 msgid "settings_not_set"
 msgstr ""
 "Einstellungen konnten nicht gesichert werden. Bitte versuchen Sie es später "
 "erneut."
 
 #. Default: Settings were set successfully.
-#: dbas/templates/settings.pt:88
+#: dbas/templates/settings.pt:107
 msgid "settings_set"
 msgstr "Einstellungen wurden gesichert."
 
 #. Default: Change your password
-#: dbas/templates/settings.pt:97
+#: dbas/templates/settings.pt:116
 msgid "change_password"
 msgstr "Passwort ändern"
 
 #. Default: Old password
-#: dbas/templates/settings.pt:102
+#: dbas/templates/settings.pt:121
 msgid "old_password"
 msgstr "Altes Password"
 
 #. Default: New Password
-#: dbas/templates/settings.pt:109
+#: dbas/templates/settings.pt:128
 msgid "new_password"
 msgstr "Neues Password"
 
 #. Default: New Password (confirm)
-#: dbas/templates/settings.pt:116
+#: dbas/templates/settings.pt:135
 msgid "new_password_confirm"
 msgstr "Neues Password (Bestätigung)"
 
 #. Default: Strength
-#: dbas/templates/settings.pt:123
+#: dbas/templates/settings.pt:142
 msgid "strength"
 msgstr "Stärke"
 
 #. Default: Discussion Statistics
-#: dbas/templates/settings.pt:143 dbas/templates/user.pt:29
+#: dbas/templates/settings.pt:162 dbas/templates/user.pt:29
 msgid "discussion_stat"
 msgstr "Diskussions-Statistik"
 
 #. Default: Statements posted
-#: dbas/templates/settings.pt:147 dbas/templates/finish.pt:23
+#: dbas/templates/settings.pt:166 dbas/templates/finish.pt:23
 #: dbas/templates/user.pt:32
 msgid "statements_posted"
 msgstr "Aussagen hinzugefügt"
 
 #. Default: Edits done
-#: dbas/templates/settings.pt:154 dbas/templates/finish.pt:27
+#: dbas/templates/settings.pt:173 dbas/templates/finish.pt:27
 #: dbas/templates/user.pt:36
 msgid "edits_done"
 msgstr "Änderungen"
 
 #. Default: Votes for Arguments
-#: dbas/templates/settings.pt:161 dbas/templates/finish.pt:31
+#: dbas/templates/settings.pt:180 dbas/templates/finish.pt:31
 #: dbas/templates/user.pt:40
 msgid "discussion_votes_statements"
 msgstr "Stimmen für Aussagen"
 
 #. Default: Votes for Statements
-#: dbas/templates/settings.pt:168 dbas/templates/finish.pt:35
+#: dbas/templates/settings.pt:187 dbas/templates/finish.pt:35
 #: dbas/templates/user.pt:44
 msgid "discussion_votes_arguments"
 msgstr "Stimmen für Argumente"
 
 #. Default: Your password was changed
-#: dbas/templates/settings.pt:183
+#: dbas/templates/settings.pt:202
 msgid "password_changed"
 msgstr "Ihr Passwurd wurde geändert"
 
 #. Default: Statistics could not be deleted.
-#: dbas/templates/settings.pt:190
+#: dbas/templates/settings.pt:209
 msgid "statistics_not_deleted"
 msgstr "Statistiken konnten nicht gelöscht werden."
 
 #. Default: Statistics were set successfully deleted.
-#: dbas/templates/settings.pt:196
+#: dbas/templates/settings.pt:215
 msgid "statistics_deletet"
 msgstr "Statistiken wurden gelöscht."
 
 #. Default: Your last history
-#: dbas/templates/settings.pt:206
+#: dbas/templates/settings.pt:225
 msgid "history"
 msgstr "Ihre letzte URL-History"
 
@@ -1094,81 +1097,127 @@ msgstr "Benutzer"
 msgid "arguments"
 msgstr "Argumente"
 
+#. Default: Issues
+#: dbas/templates/admin.pt:38
+msgid "issues"
+msgstr "Themen"
+
+#. Default: Statements
+#: dbas/templates/admin.pt:44
+msgid "statements"
+msgstr "Aussagen"
+
+#. Default: Premisegroups
+#: dbas/templates/admin.pt:50
+msgid "premisegroups"
+msgstr "Aussagengruppen"
+
 #. Default: Users!
-#: dbas/templates/admin.pt:51
+#: dbas/templates/admin.pt:69
 msgid "users!"
 msgstr "Benutzer!"
 
 #. Default: View Details
-#: dbas/templates/admin.pt:57 dbas/templates/admin.pt:77
-#: dbas/templates/admin.pt:97 dbas/templates/admin.pt:117
+#: dbas/templates/admin.pt:75 dbas/templates/admin.pt:95
+#: dbas/templates/admin.pt:115 dbas/templates/admin.pt:135
+#: dbas/templates/admin.pt:155 dbas/templates/admin.pt:175
 msgid "view_details"
 msgstr "Details sehen"
 
 #. Default: Votes!
-#: dbas/templates/admin.pt:71
+#: dbas/templates/admin.pt:89
 msgid "votes!"
 msgstr "Stimmen!"
 
 #. Default: Arguments!
-#: dbas/templates/admin.pt:91
+#: dbas/templates/admin.pt:109
 msgid "arguments!"
 msgstr "Argumente!"
 
+#. Default: Issues!
+#: dbas/templates/admin.pt:129
+msgid "issues!"
+msgstr "Themen!"
+
 #. Default: Statements!
-#: dbas/templates/admin.pt:111
+#: dbas/templates/admin.pt:149
 msgid "statements!"
 msgstr "Aussagen!"
 
+#. Default: Premisegroups!
+#: dbas/templates/admin.pt:169
+msgid "premisegroups!"
+msgstr "Aussagengruppen!"
+
 #. Default: E-Mail
-#: dbas/templates/admin.pt:134
+#: dbas/templates/admin.pt:192
 msgid "email"
 msgstr "E-Mail"
 
 #. Default: Gender
-#: dbas/templates/admin.pt:135
+#: dbas/templates/admin.pt:193
 msgid "gender"
 msgstr "Geschlecht"
 
 #. Default: Group
-#: dbas/templates/admin.pt:136
+#: dbas/templates/admin.pt:194
 msgid "group_uid"
 msgstr "Gruppe"
 
 #. Default: Last Login
-#: dbas/templates/admin.pt:137 dbas/templates/user.pt:12
+#: dbas/templates/admin.pt:195 dbas/templates/user.pt:12
 msgid "last_login"
 msgstr "Letze Anmeldung"
 
 #. Default: Registered
-#: dbas/templates/admin.pt:138 dbas/templates/user.pt:16
+#: dbas/templates/admin.pt:196 dbas/templates/user.pt:16
 msgid "registered"
 msgstr "Registierung"
 
 #. Default: Avatar
-#: dbas/templates/admin.pt:139
+#: dbas/templates/admin.pt:197
 msgid "avatar"
 msgstr "Avatar"
 
 #. Default: Public Avatar
-#: dbas/templates/admin.pt:140
+#: dbas/templates/admin.pt:198
 msgid "public_avatar"
 msgstr "Öffentlicher Avatar"
 
 #. Default: List of attacks, clicked by the participants
-#: dbas/templates/admin.pt:165
+#: dbas/templates/admin.pt:223
 msgid "list_attacks"
 msgstr "Attacken aufführen"
 
 #. Default: Some additional options for the administrator.
-#: dbas/templates/admin.pt:166
+#: dbas/templates/admin.pt:224 dbas/templates/admin.pt:250
 msgid "admin_only"
 msgstr "Manche Sachen sind nur für den Admin."
 
 #. Default: Switch Topic
-#: dbas/templates/admin.pt:173 dbas/templates/content.pt:20
+#: dbas/templates/admin.pt:231 dbas/templates/content.pt:20
 msgid "switch_topc"
 msgstr "Thema wechseln"
+
+#. Default: Issues
+#: dbas/templates/admin.pt:249
+msgid "new-issue"
+msgstr "Thema"
+
+#. Default: Add a Topic
+#: dbas/templates/admin.pt:253 dbas/templates/content.pt:36
+msgid "add_topic"
+msgstr "Thema hinzufügen"
+
+#. Default: Title
+#: dbas/templates/admin.pt:263
+msgid "title"
+msgstr "Title"
+
+#. Default: Edit
+#: dbas/templates/admin.pt:267
+msgid "edit"
+msgstr "Ändern"
 
 #. Default: You have got
 #: dbas/templates/notifications.pt:13
@@ -1256,35 +1305,36 @@ msgstr "Öffentliche Informationen von"
 msgid "profile_picture_of"
 msgstr "Profilbild von"
 
-#. Default: Add a Topic
-#: dbas/templates/content.pt:36
-msgid "add_topic"
-msgstr "Thema hinzufügen"
-
 #. Default: Restart
 #: dbas/templates/content.pt:43
 msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Change display style
-#: dbas/templates/content.pt:316
+#: dbas/templates/content.pt:317
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: dbas/templates/content.pt:319
+#: dbas/templates/content.pt:320
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: dbas/templates/content.pt:325
+#: dbas/templates/content.pt:326
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: dbas/templates/content.pt:331
+#: dbas/templates/content.pt:332
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "go_back"
+#~ msgstr "Willkommen zurück!"
+
+#~ msgid "to_the_discussion"
+#~ msgstr "Zurück zur Diskussion!"
 
 #~ msgid "go-home_by"
 #~ msgstr "Gehen Sie zurück indem Sie"
@@ -1693,11 +1743,6 @@ msgstr "Komplette Ansicht"
 #~ "sind irgendwie voneinander abhängig. Wenn das so ist,  können die "
 #~ "Aussagen als Gruppe markeirt werden."
 
-#~ msgid "set-premissegroups2"
-#~ msgstr ""
-#~ "Wenn Sie ein 'und' in Ihrer Aussage hinzufügen möchten, lassen Sie es. Es "
-#~ "sind meistens zwei unabhängige Aussagen."
-
 #~ msgid "set-premissegroups3"
 #~ msgstr "Manchmal haben Sie abhängige Aussagen, wie:"
 
@@ -1755,9 +1800,6 @@ msgstr "Komplette Ansicht"
 
 #~ msgid "want_to_state_own_reason"
 #~ msgstr "Sie möchten Ihre eigene Begründung angeben?"
-
-#~ msgid "edit"
-#~ msgstr "Ändern"
 
 #~ msgid "istland_view"
 #~ msgstr "Insel-Ansicht"
