@@ -200,6 +200,7 @@ var number 											= 'number';
 var notificationWasSend                             = 'notificationWasSend';
 var opinionBarometer                                = 'opinionBarometer';
 var options                                         = 'options';
+var ohsnap                                          = 'ohsnap';
 var report 											= 'report';
 var reportTitle										= 'reportTitle';
 var passwordSubmit 									= 'passwordSubmit';
@@ -373,6 +374,7 @@ var dbas_en = {
 	'note': 'Note',
 	'opinionBarometer': 'Opinion Barometer',
 	'options': 'Options',
+	'ohsnap': 'Oh snap!',
 	'passwordSubmit': 'Change Password',
 	'registered': 'Registered',
 	'restartOnError': 'Please try to reload this page or restart the discussion when the error stays',
@@ -533,6 +535,7 @@ var dbas_de = {
 	'note': 'Hinweis',
 	'opinionBarometer': 'Meinungsbarometer',
 	'options': 'Optionen',
+	'ohsnap': 'Verdammt!',
 	'passwordSubmit': 'Passwort ändern',
 	'report': 'Melden',
 	'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',
