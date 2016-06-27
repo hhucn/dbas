@@ -22,6 +22,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.2.3.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.6.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/main.js')}"></script>
 	<!--
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ads.js')}"></script>
 	-->
@@ -49,8 +50,8 @@
 
 
 	<div class="blocked request_failed center alert-danger" id="request_failed_container" style="display:none;">
-		<h5 i18n:translate="request_failed">Your request failed!</h5>
-        <h6 i18n:translate="please_reload">Please reload the page.</h6>
+		<h5 id="request_failed_container_heading" i18n:translate="request_failed">Your request failed!</h5>
+        <h6 id="request_failed_container_message" i18n:translate="please_reload">Please reload the page.</h6>
 	</div>
 
 	<div id="additional-wrapper">

@@ -1,4 +1,4 @@
-/*global $, jQuery, alert, addActiveLinksInNavBar, removeActiveLinksInNavBar*/
+/*global $, jQuery, alert*/
 
 /**
  * @author Tobias Krauthoff
@@ -718,6 +718,8 @@ $(document).ready(function () {
 		// TODO: SEXY GLOBAL AJAX ERROR HANDLING
 		//ajaxError: function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
 		//	$('#request_failed_container').fadeIn();
+		//  //$('#request_failed_container_heading').text('Please');
+		//  $('#request_failed_container_message').text('Enter your text here');
 		//	new Helper().delay(function(){
 		//		$('#request_failed_container').fadeOut();
 		//	}, 3000);
@@ -727,12 +729,12 @@ $(document).ready(function () {
     //    alert("There was an ajax error!");
 	//});
 
-	if ($('#session_expired_container').length == 1)
+	if ($('#' + sesseionExpiredContainer).length == 1)
 		new Helper().delay(function(){
-			$('#session_expired_container').fadeOut();
+			$('#' + sesseionExpiredContainer).fadeOut();
 		}, 3000);
 
-	// testring
+	// testing with gremlins
 	//var horde = gremlins.createHorde()
 	//	.gremlin(gremlins.species.formFiller())
 	//	.gremlin(gremlins.species.clicker().clickTypes(['click']))
