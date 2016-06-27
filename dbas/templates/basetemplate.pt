@@ -22,7 +22,6 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.2.3.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.6.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/main.js')}"></script>
 	<!--
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ads.js')}"></script>
 	-->

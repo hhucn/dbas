@@ -119,7 +119,7 @@ class GermanDict:
         de_lang[_self.resumeHere] = 'Hier weitermachen'
 
         de_lang[_self.aand] = 'und'
-        de_lang[_self.addStatementRow] = 'Fügt eine neue Reihe hinzu.'
+        de_lang[_self.addStatementRow] = 'Weiteres Argument angegeben.'
         de_lang[_self.addedEverything] = 'Alles wurde hinzugefügt.'
         de_lang[_self.addTopic] = 'Thema hinzufügen'
         de_lang[_self.at] = 'am'

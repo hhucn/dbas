@@ -461,6 +461,9 @@ function News() {
 }
 
 $(document).ready(function () {
+	if (window.location.href != mainpage + 'news'){
+		return;
+	}
 	var news = new News();
 	news.ajaxGetNews();
 

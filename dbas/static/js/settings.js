@@ -543,6 +543,9 @@ function StatisticsHandler(){
 
 $(function () {
 	'use strict';
+	if (window.location.href != mainpage + 'settings'){
+		return;
+	}
 	var settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
 
 	$('#' + requestHistoryButtonId).click(function requestTrack() {
