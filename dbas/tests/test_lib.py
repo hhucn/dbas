@@ -5,6 +5,7 @@ from dbas import lib, DBDiscussionSession
 from dbas.helper.tests_helper import add_settings_to_appconfig
 import arrow
 from datetime import date
+from dbas.database.discussion_model import Argument, Statement
 
 settings = add_settings_to_appconfig("development.ini")
 
@@ -125,5 +126,25 @@ class LibTests(unittest.TestCase):
         # uid for statement, which ends with '!'
         self.assertEqual(lib.get_text_for_statement_uid(uid=30), 'It is important, that pets are small and fluffy')
 
+    def test_get_text_for_conclusion(self):
+        argument1 = Argument(premisegroup=1, issupportive=True, author=1, conclusion=1, issue=1)
+        # 'argument' is an argument
+        self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
+                                                     lang='de',
+                                                     start_with_intro=False,
+                                                     rearrange_intro=False), 'We should get a cat')
 
+        argument2 = Argument(premisegroup=1, issupportive=False, author=1, issue=1)
+        # 'argument' is a statement
+        self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
+                                                     lang='en',
+                                                     start_with_intro=True,
+                                                     rearrange_intro=True), None)
+
+        # unknown conclusion id
+        argument3 = Argument(premisegroup=0, issupportive=True, author=0, conclusion=0, issue=0)
+        self.assertEqual(lib.get_text_for_conclusion(argument=argument3,
+                                                     lang='de',
+                                                     start_with_intro=False,
+                                                     rearrange_intro=True), None)
 
