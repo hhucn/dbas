@@ -355,6 +355,28 @@ function prepareLoginRegistrationPopup(){
 	});
 }
 
+/**
+ *
+ * @param element
+ */
+function setTextWatcherForMinLength(element){
+	var text = element.val().trim();
+	var offset = parseInt(element.attr('data-min-length') - text.length);
+	var id = element.attr('id') + '-text-counter';
+	var msg = _t_discussion(textCountMessage1) + ' ' + offset + ' ' + _t_discussion(textCountMessage2);
+	if (offset > 0) {
+		if ($('#' + id).length > 0) {
+			$('#' + id).text(msg);
+		} else {
+			$('<span>').text(msg).attr('id', id).addClass('text-counter-input').insertBefore(element);
+		}
+	} else {
+		if ($('#' + id).length > 0) {
+			$('#' + id).remove();
+		}
+	}
+}
+
 // *********************
 //	AJAX
 // *********************
@@ -728,6 +750,16 @@ $(document).ready(function () {
 	//$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
     //    alert("There was an ajax error!");
 	//});
+
+	// add minimal text length field
+	$('input[data-min-length]').each(function(){
+		$(this).keyup(function() { setTextWatcherForMinLength($(this)); });
+		$(this).focusin(function() { setTextWatcherForMinLength($(this)); });
+	});
+	$('textarea[data-min-length]').each(function(){
+		$(this).keyup(function() { setTextWatcherForMinLength($(this)); });
+		$(this).focusin(function() { setTextWatcherForMinLength($(this)); });
+	});
 
 	if ($('#' + sesseionExpiredContainer).length == 1)
 		new Helper().delay(function(){
