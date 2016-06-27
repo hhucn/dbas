@@ -24,11 +24,11 @@ function AjaxMainHandler(){
 			setPiwikOptOutLink(new_lang);
 		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
 			if (xhr.status == 400) {
-				alert(_t(requestFailedBadToken));
+				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
 			} else if (xhr.status == 500) {
-				alert(_t(requestFailedInternalError));
+				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedInternalError));
 			} else {
-				alert(_t(languageCouldNotBeSwitched));
+				setGlobalErrorHandler(_t(ohsnap), _t(languageCouldNotBeSwitched));
 			}
 		});
 	};
@@ -99,7 +99,7 @@ function AjaxMainHandler(){
 				if (window.location.href.indexOf('settings') != 0){
 					window.location.href = mainpage;
 				} else {
-					location.reload(); // TODO page will not be reloaded properly
+					location.reload();
 				}
 			} else if (xhr.status == 403) {
 				window.location.href = mainpage;
@@ -853,7 +853,6 @@ function AjaxSettingsHandler(){
 			new StatisticsHandler().callbackStatisticsFail();
 		});
 	};
-
 }
 
 function AjaxNotificationHandler(){

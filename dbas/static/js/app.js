@@ -356,7 +356,8 @@ function prepareLoginRegistrationPopup(){
 }
 
 /**
- *
+ * Sets an text watcher for the given element. After every input the attribute 'data-min-length' will be checked
+ * and maybe a text is shown
  * @param element
  */
 function setTextWatcherForMinLength(element){
@@ -364,17 +365,52 @@ function setTextWatcherForMinLength(element){
 	var offset = parseInt(element.attr('data-min-length') - text.length);
 	var id = element.attr('id') + '-text-counter';
 	var msg = _t_discussion(textCountMessage1) + ' ' + offset + ' ' + _t_discussion(textCountMessage2);
+	var field = $('#' + id);
 	if (offset > 0) {
-		if ($('#' + id).length > 0) {
-			$('#' + id).text(msg);
+		if (field.length > 0) {
+			field.text(msg);
 		} else {
 			$('<span>').text(msg).attr('id', id).addClass('text-counter-input').insertBefore(element);
 		}
 	} else {
-		if ($('#' + id).length > 0) {
-			$('#' + id).remove();
+		if (field.length > 0) {
+			field.remove();
 		}
 	}
+}
+
+/**
+ * Sets data for the global sucess field
+ * @param heading text
+ * @param body text
+ */
+function setGlobalErrorHandler(heading, body){
+	$('#' + requestFailedContainer).fadeIn();
+	$('#' + requestFailedContainerClose).click(function(){
+		$('#' + requestFailedContainer).fadeOut();
+	});
+	$('#' + requestFailedContainerHeading).text(heading);
+	$('#' + requestFailedContainerMessage).text(body);
+	new Helper().delay(function(){
+		$('#' + requestFailedContainer).fadeOut();
+	}, 3000);
+}
+
+/**
+ * Sets data for the global sucess field
+ * @param heading text
+ * @param body text
+ */
+function setGlobalSuccessHandler(heading, body){
+	$('#' + requestSuccessContainer).fadeIn();
+	$('#' + requestSuccessContainerClose).click(function(){
+		$('#' + requestSuccessContainer).fadeOut();
+	});
+	$('#' + requestSuccessContainerHeading).text(heading);
+	$('#' + requestSuccessContainerMessage).text(body);
+	new Helper().delay(function(){
+		$('#' + requestSuccessContainer).fadeOut();
+	}, 3000);
 }
 
 // *********************
@@ -467,7 +503,6 @@ function callbackIfDoneForPasswordRequest(data){
 // *********************
 //	MAIN
 // *********************
-
 $(document).ready(function () {
 	'use strict';
 	var path = window.location.href, lang = $('#hidden_language').val();
@@ -514,6 +549,7 @@ $(document).ready(function () {
 			setTimeout("$('body').removeClass('loading')", 0);
 		},
 		// TODO: SEXY GLOBAL AJAX ERROR HANDLING
+		/*
 		ajaxError: function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
 			$('#request_failed_container').fadeIn();
 			$('#close_request_failed_container').click(function(){
@@ -525,6 +561,7 @@ $(document).ready(function () {
 				$('#request_failed_container').fadeOut();
 			}, 3000);
 		}
+		*/
 	});
 	//$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
     //    alert("There was an ajax error!");
@@ -540,9 +577,10 @@ $(document).ready(function () {
 		$(this).focusin(function() { setTextWatcherForMinLength($(this)); });
 	});
 
-	if ($('#' + sesseionExpiredContainer).length == 1)
+	// session expired popup
+	if ($('#' + sessionExpiredContainer).length == 1)
 		new Helper().delay(function(){
-			$('#' + sesseionExpiredContainer).fadeOut();
+			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
 
 	// testing with gremlins
