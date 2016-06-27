@@ -237,6 +237,7 @@ var settingsPasswordChangeDangerMessage 		= 'settings-danger-message';
 var settingsPasswordChangeSuccessMessage 		= 'settings-success-message';
 var settingsNotificationLangDe                  = 'link-settings-de';
 var settingsNotificationLangEn                  = 'link-settings-en';
+var sesseionExpiredContainer                    = 'session_expired_container';
 var sidebarEditButtonId                         = 'edit-statement';
 var sidebarReportButtonId                       = 'report-button';
 var sidebarMoreButtonId                         = 'more-statement';
@@ -253,7 +254,6 @@ var writingNewsFailedMessageId 					= 'popup-writing-news-failed-message';
 var writingNewsSuccessMessageId 				= 'popup-writing-news-success-message';
 var writingNewNewsTitleId 						= 'popup-writing-news-title';
 var writingNewNewsTextId 						= 'popup-writing-news-text';
-
 
 // classes and id's
 var fuzzy_start_statement		= 0;
