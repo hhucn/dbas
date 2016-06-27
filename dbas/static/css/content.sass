@@ -1,0 +1,237 @@
+$accent-color: #006ab3
+$blue: #2196f3
+$bubble-space: #f3f3f3
+$user-bubble: #C5E1A5
+$sytem-bubble: #CFD8DC
+$info-bubble: #FFF9C4
+$now-bubble: #BBDEFB
+$error-color: #be0a26
+$success-color: #97bf0d
+
+#navbar-left
+  visibility: hidden
+
+.btn-discussion
+  margin: 10px
+
+.center
+  margin-left: auto
+  margin-right: auto
+  text-align: center
+
+#header-container .tooltip
+  width: 150px
+
+#discussions-space
+  margin-top: 25px
+  label
+    max-width: 95%
+  ul
+    display: inline-block
+    li
+      list-style: none
+      padding-bottom: 10px
+
+#discussions-avoidance-space ul li
+  list-style: none
+  padding-bottom: 10px
+
+.error-description
+  color: $error-color
+  font-size: 15px
+  font-weight: 600
+
+.success-description
+  color: $success-color
+  font-size: 15px
+  font-weight: 600
+
+#discussions-space ul
+  li
+    &:hover
+      color: $blue
+    input
+      margin-right: 5px
+    width: 100%
+    vertical-align: middle
+    font-weight: 400
+  width: 100%
+
+#insert_statement_form
+  text-align: center
+
+#pro-textareas div div textarea, #con-textareas div div textarea, #pro-textareas div div input, #con-textareas div div input
+  resize: vertical
+  width: 85%
+  background: url(../images/glyphicons_free/glyphicons/glyphicons-547-quote.png) no-repeat 12px 10px
+
+.add-statement-container-input
+  width: 100%
+
+#add-statement-container-body input, #add-premise-container-body input
+  -webkit-border-radius: 3px
+  -moz-border-radius: 5px
+  -o-border-radius: 5px
+  margin: 0 0 10px 0
+  -webkit-appearance: none
+  background: url(../images/glyphicons_free/glyphicons/glyphicons-547-quote.png) no-repeat 12px 10px
+  margin-bottom: 0
+  padding: 12px 10px 0 50px
+
+#add-statement-container-main-input-intro
+  float: left
+  line-height: 50px
+  text-align: center
+
+#insert_statement_form div a
+  text-decoration: none
+  color: #000
+
+#add-pro-textarea, #add-con-textarea, #pro-textarea-premissegroup, #con-textarea-premissegroup
+  display: inline-block
+  padding: 10px
+
+#add-pro-textarea:hover, #add-con-textarea:hover
+  text-decoration: underline
+  color: $accent-color
+
+/* link color of 'add a textfield'
+
+#pro-textareas li a:hover, #con-textareas li a:hover
+  color: #fff
+
+/* link color for the 'dropdown'
+
+#add-pro-position, #add-con-position
+  background: url(../images/glyphicons_free/glyphicons/glyphicons-433-plus.png) center no-repeat 12px 10px
+
+#island-view-container-h4, #island-view-container-header-h4
+  text-align: center
+
+#island-view-container-space ul
+  list-style-type: circle
+
+#discussion-failure-row
+  padding-top: 25px
+
+#list-all-users, #list-all-attacks
+  margin-bottom: 15px
+
+#navigation-minimap-container
+  position: fixed
+  color: $accent-color
+  top: 50px
+  right: 0
+
+#popup-edit-statement-body
+  padding-left: 10px
+  padding-right: 10px
+
+#popup-edit-statement-logfile-header
+  margin-top: 20px
+
+#add-premise-container textarea, #popup-edit-statement-textarea, #popup-url-sharing-input
+  width: 100%
+  padding: 12px 10px 0 12px
+  -webkit-border-radius: 3px
+  -moz-border-radius: 5px
+  -o-border-radius: 5px
+  margin: 0 0 10px 0
+  -webkit-appearance: none
+  resize: vertical
+
+#add-premise-container textarea, #popup-url-sharing-input
+  padding: 12px 10px 0 50px
+
+#popup-url-sharing-body
+  margin-left: 10px
+  margin-right: 10px
+
+.share-icon
+  float: left
+
+.icon-rem-premise
+  height: 30px
+  display: none
+  padding-right: 0.5em
+
+.icon-add-premise
+  height: 30px
+
+#opinion-barometer-img
+  width: 80px
+
+.hidden-discussion-information, .hidden-information
+  visibility: hidden
+
+.display-style-menu-icon
+  opacity: 0
+
+#discussion-sidebar img, #discussion-sidebar-style-menu img, #display-style-menu-icon
+  width: 50px
+  margin-bottom: 0.5em
+
+#discussion-sidebar img:hover
+  width: 60px
+  cursor: pointer
+
+#discussion-sidebar-style-menu
+  img:hover
+    width: 60px
+    cursor: pointer
+  &:hover .display-style-menu-icon
+    opacity: 1
+    transition: opacity .45s ease-in-out
+    -moz-transition: opacity .45s ease-in-out
+    -webkit-transition: opacity .45s ease-in-out
+
+#site-navigation
+  padding-left: 0
+  .tooltip
+    width: 150px
+
+#discussion-sidebar
+  list-style-type: none
+  text-align: right
+  padding-left: 0
+  ul
+    list-style-type: none
+
+#site-navigation ul
+  list-style-type: none
+
+.container-three-divs
+  display: -webkit-flex
+  display: flex
+
+.flex-div
+  -webkit-flex: 1
+  flex: 1
+
+.chart
+  list-style-type: none
+  padding-left: 0
+  li
+    padding-top: 5px
+    text-indent: -25px
+    padding-left: 25px
+    span
+      border-radius: 5px
+      margin-right: 0.5em
+      width: 1.3em
+      height: 1.3em
+      display: inline-block
+      vertical-align: middle
+
+@media (max-width: 767px)
+  #discussions-space ul
+    display: block
+    li
+      display: block
+  #pro-position-column, #con-position-column
+    float: none
+    width: 95%
+
+@media (max-width: 992px)
+  #issue-dropdown
+    margin-bottom: 1em
