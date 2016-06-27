@@ -485,6 +485,7 @@ def get_information_of(db_user, lang):
     """
     ret_dict = dict()
     ret_dict['public_nick'] = db_user.public_nickname
+    ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)
     ret_dict['last_login']  = sql_timestamp_pretty_print(db_user.last_login, lang)
     ret_dict['registered']  = sql_timestamp_pretty_print(db_user.registered, lang)
 

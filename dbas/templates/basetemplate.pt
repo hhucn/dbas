@@ -84,6 +84,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-guihandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-helper.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajaxhandler.js')}"></script>
 	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/gremlins.min.js')}"></script>-->
 
 	<!-- Piwik -->
