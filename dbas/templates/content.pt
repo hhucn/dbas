@@ -158,82 +158,110 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
 			<div class="row" id="island-view-container-space">
+			<div class="row">
 				<div class="col-md-11 text-center">
 					<h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading"><strong>${structure:extras.island.heading}</strong></span></h4>
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-                            <span class="text-danger">✗</span>
-                            <span class="lead">${structure:extras.island.undermine_text}</span>
-						</div>
-						<div class="panel-body">
-							<ul>
-								<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
-									<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
-								</li>
-							</ul>
-				            <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-                            <span class="text-success">✓</span>
-                            <span class="lead">${structure:extras.island.support_text}</span>
-						</div>
-						<div class="panel-body">
-							<ul>
-								<li tal:repeat="support extras.island.support" tal:attributes="id support.id">
-									<label tal:attributes="for support.id">${structure:support.text}</label>
-								</li>
-							</ul>
-				            <button id="island-view-support-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-						</div>
-					</div>
-				</div>
-			</div>
+                <!--!
+		    	<div class="row">
+		    		<div class="col-md-12">
+		    			<div class="panel panel-default">
+		    				<div class="panel-heading">
+                                <span class="text-danger">&#10008;</span>
+                                <span class="lead">${structure:extras.island.undermine_text}</span>
+		    				</div>
+		    				<div class="panel-body">
+		    					<ul>
+		    						<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
+		    							<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
+		    						</li>
+		    					</ul>
+		    		            <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+		    				</div>
+		    			</div>
+		    		</div>
+		    	</div>
+                -->
 
-			<div class="row">
-				<div class="col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-                            <span class="text-danger">✗</span>
-                            <span class="lead">${structure:extras.island.undercut_text}</span>
-						</div>
-						<div class="panel-body">
-							<ul>
-								<li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
-									<label tal:attributes="for undercut.id">${structure:undercut.text}</label>
-								</li>
-							</ul>
-				            <button id="island-view-undercut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-						</div>
-					</div>
-				</div>
+		    	<div class="row">
+		    		<div class="col-md-12">
+                        <div class="bs-callout bs-callout-danger">
+                            <h4>
+                                <span class="text-danger">&#10008;</span>
+                                <span class="lead">${structure:extras.island.undermine_text}</span>
+                            </h4>
+                            <div>
+		    					<ul>
+		    						<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
+		    							<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
+		    						</li>
+		    					</ul>
+		    		            <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+                            </div>
+                        </div>
+		    		</div>
+		    	</div>
 
-				<div class="col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-                            <span class="text-danger">✗</span>
-                            <span class="lead">${structure:extras.island.rebut_text}</span>
-						</div>
-						<div class="panel-body">
-							<ul>
-								<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
-									<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
-								</li>
-							</ul>
-				            <button id="island-view-rebut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-						</div>
-					</div>
-				</div>
-			</div>
+		    	<div class="row">
+                    <div class="col-md-12">
+                        <div class="bs-callout bs-callout-success">
+                            <h4>
+                                <span class="text-success">&#10004;</span>
+                                <span class="lead">${structure:extras.island.support_text}</span>
+                            </h4>
+                            <div>
+		    					<ul>
+		    						<li tal:repeat="support extras.island.support" tal:attributes="id support.id">
+		    							<label tal:attributes="for support.id">${structure:support.text}</label>
+		    						</li>
+		    					</ul>
+		    		            <button id="island-view-support-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+                            </div>
+		    			</div>
+		    		</div>
+		    	</div>
 
+		    	<div class="row">
+		    		<div class="col-md-12">
+                        <div class="bs-callout bs-callout-info">
+                            <h4>
+                                <span class="text-info">&#10134</span>
+                                <span class="lead">${structure:extras.island.undercut_text}</span>
+                            </h4>
+                            <div>
+		    					<ul>
+		    						<li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
+		    							<label tal:attributes="for undercut.id">${structure:undercut.text}</label>
+		    						</li>
+		    					</ul>
+		    		            <button id="island-view-undercut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+                            </div>
+		    			</div>
+		    		</div>
+		    	</div>
+
+		    	<div class="row">
+		    		<div class="col-md-12">
+                        <div class="bs-callout bs-callout-info">
+                            <h4>
+                                <span class="text-info">&#10134;</span>
+                                <span class="lead">${structure:extras.island.rebut_text}</span>
+                            </h4>
+                            <div>
+		    					<ul>
+		    						<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
+		    							<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
+		    						</li>
+		    					</ul>
+		    		            <button id="island-view-rebut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+                            </div>
+		    			</div>
+		    		</div>
+		    	</div>
+
+		    </div>
 		</div>
 
 		<div class="colored-container" id="graph-view-container" style="display:none">

@@ -277,14 +277,15 @@ function prepareLoginRegistrationPopup(){
 	}).keypress(function(e) { if (e.which == 13) { new AjaxMainHandler().ajaxRegistration() } });
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
-		if ($('#' + popupLoginForgotPasswordBody).is(':visible')){
-			$('#' + popupLoginForgotPasswordBody).fadeOut();
+		var body = $('#' + popupLoginForgotPasswordBody);
+		if (body.is(':visible')){
+			body.fadeOut();
 			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 			$('#' + popupLoginFailed).fadeOut();
 			$('#' + popupLoginSuccess).fadeOut();
 			$('#' + popupLoginInfo).fadeOut();
 		} else {
-			$('#' + popupLoginForgotPasswordBody).fadeIn();
+			body.fadeIn();
 			$('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
 		}
 	});
@@ -547,21 +548,7 @@ $(document).ready(function () {
 		},
 		ajaxStop: function ajaxStopFct() {
 			setTimeout("$('body').removeClass('loading')", 0);
-		},
-		// TODO: SEXY GLOBAL AJAX ERROR HANDLING
-		/*
-		ajaxError: function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
-			$('#request_failed_container').fadeIn();
-			$('#close_request_failed_container').click(function(){
-				$('#request_failed_container').fadeOut();
-			});
-			//$('#request_failed_container_heading').text('Please');
-			$('#request_failed_container_message').text('Enter your text here');
-			new Helper().delay(function(){
-				$('#request_failed_container').fadeOut();
-			}, 3000);
 		}
-		*/
 	});
 	//$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
     //    alert("There was an ajax error!");
