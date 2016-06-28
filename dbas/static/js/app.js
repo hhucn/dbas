@@ -394,7 +394,7 @@ function setGlobalErrorHandler(heading, body){
 	$('#' + requestFailedContainerMessage).text(body);
 	new Helper().delay(function(){
 		$('#' + requestFailedContainer).fadeOut();
-	}, 3000);
+	}, 5000);
 }
 
 /**
@@ -411,7 +411,7 @@ function setGlobalSuccessHandler(heading, body){
 	$('#' + requestSuccessContainerMessage).text(body);
 	new Helper().delay(function(){
 		$('#' + requestSuccessContainer).fadeOut();
-	}, 3000);
+	}, 5000);
 }
 
 // *********************

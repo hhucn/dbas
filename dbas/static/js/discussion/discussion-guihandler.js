@@ -32,14 +32,14 @@ function GuiHandler() {
 				.attr('type', 'text')
 				.attr('class', 'form-control')
 				.attr('autocomplete', 'off')
-				.attr('placeholder', 'Your statement')
+				.attr('placeholder', '...')
 				.attr('data-min-length', '10')
 				.keyup(function() { setTextWatcherForMinLength($(this)); })
 				.focusin(function() { setTextWatcherForMinLength($(this)); });
 		var imgm = $('<img>')
 				.attr('class', 'icon-rem-premise')
 				.attr('src', mainpage + 'static/images/icon_minus1.png')
-				.attr('title', body.find('.icon-rem-premise').first().attr('title'));;
+				.attr('title', body.find('.icon-rem-premise').first().attr('title'));
 		var imgp = $('<img>')
 				.attr('class', 'icon-add-premise')
 				.attr('src', mainpage + 'static/images/icon_plus1.png')
@@ -265,7 +265,7 @@ function GuiHandler() {
 		});
 
 		if (undecided_texts.length == 1){ // we only need one page div
-			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
+			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0]);
 			body.append(page);
 			send.text(_t_discussion(saveMyStatement));
 
@@ -284,7 +284,7 @@ function GuiHandler() {
 
 			// for each statement a new page div will be added
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
-				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no], supportive);
+				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no]);
 				if (page_no > 0)
 					page.hide();
 				body.append(page);
@@ -367,10 +367,9 @@ function GuiHandler() {
 	 *
 	 * @param page_no
 	 * @param text
-	 * @param supportive
 	 * @returns {*}
 	 */
-	this.getPageOfSetStatementContainer = function(page_no, text, supportive){
+	this.getPageOfSetStatementContainer = function(page_no, text){
 		var src = $('#insert_statements_page_');
 		var div_page = src.clone();
 		var id = src.attr('id');

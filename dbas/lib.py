@@ -33,12 +33,10 @@ def get_language(request, current_registry):
     :return: language abrreviation
     """
     try:
-        lang = str(request.cookies['_LOCALE_'])
-    except KeyError:
-        lang = str(current_registry.settings['pyramid.default_locale_name'])
-    except AttributeError:
-        lang = str(current_registry.settings['pyramid.default_locale_name'])
-    return lang
+        lang = request.cookies['_LOCALE_']
+    except (KeyError, AttributeError):
+        lang = current_registry.settings['pyramid.default_locale_name']
+    return str(lang)
 
 
 def get_discussion_language(request, current_issue_uid=1):
