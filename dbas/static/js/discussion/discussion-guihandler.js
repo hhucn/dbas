@@ -375,7 +375,7 @@ function GuiHandler() {
 		var id = src.attr('id');
 		var splitted = text.split(' ' + _t_discussion(and) + ' ');
 		var topic = $('#' + addPremiseContainerMainInputIntroId).text();
-		var input1, input2, input3, list, bigText, bigTextSpan, connection, i;
+		var input1, input2, input3, list, bigText, bigTextSpan, connection, i, infix;
 		topic = topic.substr(0, topic.length-3);
 
 		$('#popup-set-premisegroups-body-intro-statements').text(text.trim());
@@ -412,10 +412,11 @@ function GuiHandler() {
 
 		for (i = 0; i < splitted.length; i++) {
 			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
-			bigText += ' ' + i == 0 ? ' ' + splitted[i] : (' ' + _t_discussion(andAtTheSameTime) + ' ' + connection + ' ' + splitted[i])
+			infix = i == 0 ? '' : ('<em>' + _t_discussion(andAtTheSameTime) + '</em> ' + connection + ' ');
+			bigText += ' ' + infix + splitted[i];
 		}
 
-		bigTextSpan.text(new Helper().startWithUpperCase(bigText) + '.');
+		bigTextSpan.html(new Helper().startWithUpperCase(bigText) + '.');
 
 		return div_page;
 	};
