@@ -31,10 +31,12 @@ def send_edit_text_notification(textversion, path, request):
     settings_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first()
     settings_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first()
 
-    if settings_root_author.should_send_mails:
+    from dbas.logger import logger
+
+    if settings_root_author.should_send_mails is True:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, path, request)
 
-    if new_author != last_author and settings_last_author.should_send_mails:
+    if new_author != last_author and settings_last_author.should_send_mails is True:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, path, request)
 
     # check for different authors
