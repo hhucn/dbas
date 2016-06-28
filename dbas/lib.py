@@ -33,12 +33,10 @@ def get_language(request, current_registry):
     :return: language abrreviation
     """
     try:
-        lang = str(request.cookies['_LOCALE_'])
-    except KeyError:
-        lang = str(current_registry.settings['pyramid.default_locale_name'])
-    except AttributeError:
-        lang = str(current_registry.settings['pyramid.default_locale_name'])
-    return lang
+        lang = request.cookies['_LOCALE_']
+    except (KeyError, AttributeError):
+        lang = current_registry.settings['pyramid.default_locale_name']
+    return str(lang)
 
 
 def get_discussion_language(request, current_issue_uid=1):
@@ -70,19 +68,7 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
     :param lang: with_exact_time: Boolean
     :return:
     """
-
-    # ts = str(ts)
-    # formatter = '%-I:%M %p, %d. %b. %Y'
-    # if lang == 'de':
-    #     try:
-    #         locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
-    #         formatter = '%-H:%M Uhr, %d. %b. %Y'
-    #     except locale.Error:
-    #         locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
-    # try:  # sqlite
-    #     time = datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
-    # except ValueError:  # postgres
-    #     time = datetime.strptime(ts[:-6], '%Y-%m-%d %H:%M:%S.%f')
+    ts = ts.replace(hours=-2)
     if humanize:
         # if lang == 'de':
         ts = ts.to('Europe/Berlin')
