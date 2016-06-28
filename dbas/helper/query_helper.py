@@ -337,7 +337,7 @@ class QueryHelper:
         # pretty pring
         for dict in return_dict:
             for entry in return_dict[dict]:
-                has_entry = False if entry['id'] == 0 else True
+                has_entry = False if entry['id'] == 0 or lang == 'de' else True
                 entry['text'] = (_t.get(_t.because) + ' ' if has_entry else '') + entry['text']
 
         logger('QueryHelper', 'get_every_attack_for_island_view', 'summary: ' +
