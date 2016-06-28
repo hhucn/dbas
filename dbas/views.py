@@ -435,7 +435,7 @@ class Dbas(object):
             .prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True, True,
                                                                                             True, nickname,
-                                                                                            argument_id=arg_id_user,
+                                                                                            argument_id=arg_id_sys,
                                                                                             application_url=mainpage,
                                                                                             for_api=for_api,
                                                                                             request=self.request)
