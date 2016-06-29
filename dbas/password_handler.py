@@ -1,5 +1,5 @@
 """
-TODO
+Class for handling passwords.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -13,7 +13,8 @@ from cryptacular.bcrypt import BCRYPTPasswordManager
 def get_rnd_passwd():
     """
     Generates a password with the length of 10 out of ([a-z][A-Z][+-*/#!*?])+
-    :return: new secure password
+
+    :return: String
     """
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     upperalphabet = alphabet.upper()
@@ -39,7 +40,7 @@ def get_rnd_passwd():
 
 def get_hashed_password(password):
     """
-    Returns encrypted password
+    Returns hashed password
 
     :param password: String
     :return: String
