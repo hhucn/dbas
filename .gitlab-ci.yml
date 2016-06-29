@@ -1,0 +1,18 @@
+image: hhucn/python
+
+services:
+  - hhucn/docker-dbas-postgres
+
+before_script:
+  - pip install -U pip
+  - pip install -r requirements.txt
+  - python setup.py develop
+  - initialize_discussion_sql docker.ini
+  - initialize_news_sql docker.ini
+
+test:
+  stage: test
+  script:
+    # - flake8 .
+    - cp docker.ini development.ini
+    - nosetests --with-coverage --cover-package=api

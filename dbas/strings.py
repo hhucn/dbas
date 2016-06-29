@@ -186,13 +186,6 @@ class Translator(object):
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
         self.emailUnknown = 'emailUnknown'
-
-        self.edit = 'edit'
-        self.error_code = 'error_code'
-        self.editTitle = 'editTitle'
-        self.editIssueViewChangelog = 'editIssueViewChangelog'
-        self.editInfoHere = 'editInfoHere'
-        self.editTitleHere ='editTitleHere'
         self.emailBodyText = 'emailBodyText'
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'

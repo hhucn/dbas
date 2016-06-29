@@ -2,12 +2,11 @@
 Handle references from other websites, prepare, store and load them into D-BAS.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import transaction
 from dbas import DBDiscussionSession
-from dbas.database.discussion_model import StatementReferences, User, Issue
+from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
 from dbas.lib import resolve_issue_uid_to_slug
 from dbas.url_manager import UrlManager
 
@@ -16,7 +15,7 @@ from .lib import escape_html, logger
 log = logger()
 
 
-def url_to_statement(issue_uid, statement_uid):
+def url_to_statement(issue_uid, statement_uid, agree=True):
     """
     Generate URL to given statement_uid in specific issue (by slug).
     Used to directly jump into the discussion.
@@ -25,14 +24,23 @@ def url_to_statement(issue_uid, statement_uid):
     :type issue_uid: id
     :param statement_uid: Statement id to generate the link to
     :type statement_uid: int
+    :param agree: Indicate (dis-)agreement with a statement
+    :type agree: boolean
     :return: direct URL to jump to the provided statement
     :rtype: str
     """
+    if isinstance(agree, str):
+        if agree == "true":
+            mode = "t"
+        else:
+            mode = "f"
+    else:
+        mode = "t" if agree is True else "f"
     slug = resolve_issue_uid_to_slug(issue_uid)
     url_manager = UrlManager(application_url="", slug=slug, for_api=True)
     return url_manager.get_url_for_justifying_statement(as_location_href=True,
                                                         statement_uid=statement_uid,
-                                                        mode="t")
+                                                        mode=mode)
 
 
 def store_reference(api_data, statement_uid=None):
@@ -73,21 +81,20 @@ def store_reference(api_data, statement_uid=None):
 # Getting references from database
 # =============================================================================
 
-def get_joined_reference(ref_id=None):
+def get_complete_reference(ref_id=None):
     """
-    Get reference and join it by author_uid and issue_uid to get all information.
-    Returns a tuple containing the complete StatementReference, User and Issue.
+    Given a reference uid, query all interesting information and retrieve the database objects.
 
     :param ref_id: StatementReference.uid
     :return: reference, user, issue
     :rtype: tuple
     """
     if ref_id:
-        return DBDiscussionSession.query(StatementReferences, User, Issue)\
-            .filter_by(uid=ref_id)\
-            .join(User, User.uid == StatementReferences.author_uid)\
-            .join(Issue, Issue.uid == StatementReferences.issue_uid)\
-            .first()
+        reference = DBDiscussionSession.query(StatementReferences).filter_by(uid=ref_id).first()
+        user = DBDiscussionSession.query(User).filter_by(uid=reference.author_uid).first()
+        issue = DBDiscussionSession.query(Issue).filter_by(uid=reference.issue_uid).first()
+        textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=reference.statement_uid).first()
+        return reference, user, issue, textversion
 
 
 def get_references_for_url(host=None, path=None):
