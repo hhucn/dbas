@@ -211,7 +211,7 @@ function Main () {
 						data_argument_uid = $(this).attr('data-argument-uid'),
 						data_statement_uid = $(this).attr('data-statement-uid'),
 						data_is_supportive = $(this).attr('data-is-supportive');
-					new AjaxSiteHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid, data_is_supportive);
+					new AjaxDiscussionHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid, data_is_supportive);
 				});
 			} else {
 				$(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
@@ -582,7 +582,7 @@ function Main () {
  */
 $(document).ready(function mainDocumentReady() {
 	var guiHandler = new GuiHandler(),
-		ajaxHandler = new AjaxSiteHandler(),
+		ajaxHandler = new AjaxDiscussionHandler(),
 		interactionHandler = new InteractionHandler(),
 		tmp,
 		main = new Main();

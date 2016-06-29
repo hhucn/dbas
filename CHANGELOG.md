@@ -168,5 +168,8 @@
 - Security fixes
 - Docker integration
 
+## 0.5.15 (2016-06-28)
+- Island wiew
+
 ## 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation

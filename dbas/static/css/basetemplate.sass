@@ -105,8 +105,8 @@ body.loading
   position: fixed
   bottom: 1em
   z-index: 10
-  right: 0em
-  padding: 0em
+  right: 0
+  padding: 0
   display: none
   opacity: 0.6
   filter: alpha(opacity = 60)
@@ -157,9 +157,9 @@ body.loading
 .blocked
   position: fixed
   padding: 10px
-  top: 0px
-  left: 0px
-  right: 0px
+  top: 0
+  left: 0
+  right: 0
   width: 100%
   text-align: center
   color: #fff
@@ -174,16 +174,17 @@ body.loading
   background: url('../images/bg_diagonals2.png') repeat fixed center
   z-index: 9999998
 
-.session_expired, .request_failed
+.session_expired, .request_failed, .request_success
   z-index: 9999997
-  width: 300px
+  display: none
 
 .session_expired
   h5, h6
+    width: 300px
     color: #fff
 
-.request_failed
-  h5, h6
+.request_failed, .request_success
+  span
     color: #fff
 
 .button:hover
@@ -195,8 +196,8 @@ body.loading
   margin-bottom: 15px
   color: #000
   ul
-    padding: 0px
-    margin: 0px
+    padding: 0
+    margin: 0
     li
       list-style: none
       display: inline
@@ -541,7 +542,7 @@ body.loading
   background: url(../images/icon_qmark_rev.png)
 
 #modal-checkbox-body
-  padding: 0px 15px 0px 15px
+  padding: 0 15px 0 15px
 
 #confirm-dialog-checkbox-label
   font-weight: 100
@@ -577,4 +578,4 @@ body.loading
 
 @media (max-width: 992px)
   #breadcrumb-container
-    margin-top: 0px
+    margin-top: 0

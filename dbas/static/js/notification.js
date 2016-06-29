@@ -14,7 +14,7 @@ $(function () {
 	$('#popup-writing-notification-recipient').keyup(function () {
 		new Helper().delay(function () {
 			var escapedText = new Helper().escapeHtml($('#popup-writing-notification-recipient').val());
-			new AjaxSiteHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
+			new AjaxDiscussionHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
 		}, 200);
 	});
 	$('#popup-writing-notification-title').focusin(function(){
@@ -35,7 +35,7 @@ function Notifications() {
 			$(this).click(function(){
 				var id = $(this).parent().parent().parent().attr('id');
 				if ($(this).html().indexOf('<strong') != -1) {
-					new Notifications().sendAjaxForReadMessage(id, this);
+					new AjaxNotificationHandler().sendAjaxForReadMessage(id, this);
 				}
 			});
 		}) ;
@@ -43,7 +43,7 @@ function Notifications() {
 		$.each($('.glyphicon-trash'), function ajaxLinksDelete() {
 			$(this).off('click').click(function(){
 				$(this).parent().parent().attr('href','');
-				new Notifications().sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
+				new AjaxNotificationHandler().sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
 			});
 		});
 	};
@@ -59,7 +59,7 @@ function Notifications() {
 			$('#popup-writing-notification-failed').hide();
 			$('#popup-writing-notification-recipient').show();
 			$('#popup-writing-notification-send').click(function() {
-				new Notifications().sendNotification($('#popup-writing-notification-recipient').val());
+				new AjaxNotificationHandler().sendNotification($('#popup-writing-notification-recipient').val());
 			});
 		});
 	};
@@ -82,7 +82,7 @@ function Notifications() {
 				$('#popup-writing-notification-title').val(title);
 				$('#popup-writing-notification-text').text(content);
 				$('#popup-writing-notification-send').click(function() {
-					new Notifications().sendNotification($('#popup-writing-notification-recipient').text());
+					new AjaxNotificationHandler().sendNotification($('#popup-writing-notification-recipient').text());
 				});
 			});
 		});
@@ -134,74 +134,6 @@ function Notifications() {
 
 	/**
     *
-    * @param id
-    * @param _this
-    */
-	this.sendAjaxForReadMessage = function(id, _this){
-		new Notifications().hideInfoSpaces();
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_notification_read',
-			method: 'POST',
-			data: {
-				id: id
-			},
-			dataType: 'json',
-			headers: {'X-CSRF-Token': csrfToken}
-		}).done(function sendAjaxForReadMessageDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length > 0) {
-				$('#error-space').fadeIn();
-				$('#error-description').text(parsedData.error);
-			} else {
-				var titletext = $(_this).text().replace(_t(neww).toLocaleUpperCase(), '').trim();
-				var spanEl = $('<span>').addClass('text-primary').text(titletext);
-				$(_this).empty().html(spanEl);
-				$('#collapse' + id).addClass('in');
-				new Notifications().setNewBadgeCounter(parsedData.unread_messages);
-			}
-		}).fail(function sendAjaxForReadMessageFail() {
-			$('#error-space').fadeIn();
-			$('#error-description').text('Requested failed');
-		});
-	};
-
-	/**
-    *
-    * @param id
-    */
-	this.sendAjaxForDeleteMessage = function(id) {
-		new Notifications().hideInfoSpaces();
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_notification_delete',
-			method: 'POST',
-			data: {
-				id: id
-			},
-			dataType: 'json',
-			headers: {'X-CSRF-Token': csrfToken}
-		}).done(function sendAjaxForDeleteMessageDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.success.length > 0) {
-				$('#' + id).remove();
-				new Notifications().setNewBadgeCounter(parsedData.unread_messages);
-				$('#total_in_counter').text(parsedData.total_in_messages);
-				$('#total_out_counter').text(parsedData.total_out_messages);
-				$('#success-space').fadeIn();
-				$('#success-description').text(parsedData.success);
-			} else {
-				$('#error-space').fadeIn();
-				$('#error-description').text(parsedData.error);
-			}
-		}).fail(function sendAjaxForDeleteMessageFail() {
-			$('#error-space').fadeIn();
-			$('#error-description').text('Requested failed');
-		});
-	};
-
-	/**
-    *
     * @param recipient
     * @param recipient_avatar
     * @param title
@@ -244,42 +176,4 @@ function Notifications() {
 			});
 		});
 	};
-
-	/**
-    *
-    * @param recipient
-    */
-	this.sendNotification = function(recipient){
-		var title = $('#popup-writing-notification-title').val(),
-			text = $('#popup-writing-notification-text').val();
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
-
-		$('#popup-writing-notification-success').hide();
-		$('#popup-writing-notification-failed').hide();
-
-		$.ajax({
-			url: 'ajax_send_notification',
-			type: 'POST',
-			data: {title: title, text: text, recipient: recipient},
-			dataType: 'json',
-			async: true,
-			headers: {'X-CSRF-Token': csrfToken}
-		}).done(function ajaxSendNewsDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length == 0) {
-				$('#popup-writing-notification-success').show();
-				$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
-				var out_counter = $('#total_out_counter');
-				out_counter.text(' ' + (parseInt(out_counter.text()) + 1) + ' ');
-				new Notifications().appendMessageInOutbox(recipient, parsedData.recipient_avatar, title, text, parsedData.timestamp, parsedData.uid)
-			} else {
-				$('#popup-writing-notification-failed').show();
-				$('#popup-writing-notification-failed-message').html(parsedData.error);
-			}
-		}).fail(function ajaxSendNewsFail() {
-			$('#popup-writing-notification-failed').show();
-			$('#popup-writing-notification-failed-message').html(_t(internalError));
-		});
-	};
-
 }

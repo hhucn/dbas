@@ -43,7 +43,7 @@ from .strings import Translator
 from .url_manager import UrlManager
 
 name = 'D-BAS'
-version = '0.5.14'
+version = '0.5.15'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -143,6 +143,9 @@ class Dbas(object):
         if session_expired:
             return self.user_logout(True)
 
+        if len(matchdict['slug']) > 1:
+            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
+
         if for_api and api_data:
             try:
                 logged_in = api_data["nickname"]
@@ -222,11 +225,13 @@ class Dbas(object):
         ui_locales      = get_language(self.request, get_current_registry())
         slug            = matchdict['slug'] if 'slug' in matchdict else ''
         statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
+        issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
-        if not Validator.check_for_integer(statement_id, True):
+        if not Validator.check_for_integer(statement_id, True) \
+                or not Validator.check_belonging_of_statement(issue, statement_id) \
+                or not Validator.is_position(statement_id):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
-        issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
         disc_ui_locales = get_discussion_language(self.request, issue)
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
@@ -308,7 +313,8 @@ class Dbas(object):
         if [c for c in ('t', 'f') if c in mode] and relation == '':
             logger('discussion_justify', 'def', 'justify statement')
             # justifying statement
-            if not get_text_for_statement_uid(statement_or_arg_id):
+            if not get_text_for_statement_uid(statement_or_arg_id) \
+                or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
             VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
@@ -325,6 +331,9 @@ class Dbas(object):
 
         elif 'd' in mode and relation == '':
             logger('discussion_justify', 'def', 'dont know statement')
+            if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
+                return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
+
             # dont know
             argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
             discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(argument_uid)
@@ -339,6 +348,9 @@ class Dbas(object):
 
         elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
             logger('discussion_justify', 'def', 'justify argument')
+            if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
+                return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
+
             # justifying argument
             # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
             item_dict       = _idh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, logged_in)
@@ -391,8 +403,11 @@ class Dbas(object):
         arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
         tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
         history         = params['history'] if 'history' in params else ''
+        issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
-        if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack):
+        if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack)\
+                or not Validator.check_belonging_of_argument(issue, arg_id_user)\
+                or not Validator.check_belonging_of_argument(issue, arg_id_sys):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         supportive           = tmp_argument.is_supportive
@@ -411,7 +426,6 @@ class Dbas(object):
         VotingHelper.add_vote_for_argument(arg_id_user, nickname, transaction)
 
         ui_locales      = get_language(self.request, get_current_registry())
-        issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
         disc_ui_locales = get_discussion_language(self.request, issue)
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
@@ -505,6 +519,9 @@ class Dbas(object):
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
         disc_ui_locales = get_discussion_language(self.request, issue)
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+
+        if not Validator.check_belonging_of_premisegroups(issue, pgroup_ids):
+            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         session_expired = UserHandler.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)

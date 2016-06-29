@@ -1215,15 +1215,6 @@ msgstr ""
 msgid "profile_picture_of"
 msgstr ""
 
-#. Default: Add a Topic
-#: ./dbas/templates/content.pt:36
-msgid "add_topic"
-msgstr ""
-
-#. Default: Add a Topic
-#: ./dbas/admin/templates/admin.pt:253
-msgid "add_topic"
-msgstr ""
 
 #. Default: Restart
 #: ./dbas/templates/content.pt:43

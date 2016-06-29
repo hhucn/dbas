@@ -283,7 +283,7 @@
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/admin.js')}"></script>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-interactionhandler.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-ajaxhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/ajaxhandler.js')}"></script>
 
 
 	</tal:block>

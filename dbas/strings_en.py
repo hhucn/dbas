@@ -120,7 +120,7 @@ class EnglischDict:
 
         en_lang[_self.aand] = 'and'
         en_lang[_self.addedEverything] = 'Everything was added.'
-        en_lang[_self.addStatementRow] = 'Add another row for adding a new statemtent.'
+        en_lang[_self.addStatementRow] = 'Add another statement.'
         en_lang[_self.addTopic] = 'Add a Topic'
         en_lang[_self.alreadyInserted] = 'This is a duplicate and already there.'
         en_lang[_self.addPremisesRadioButtonText] = 'Let me enter my reasons!'
