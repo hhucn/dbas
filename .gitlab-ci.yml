@@ -14,5 +14,5 @@ test:
   stage: test
   script:
     # - flake8 .
-    - mv development.ini docker.ini
+    - mv docker.ini development.ini
     - nosetests --with-coverage --cover-package=api
