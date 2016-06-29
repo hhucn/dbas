@@ -548,7 +548,6 @@ class Translator(object):
             return 'unknown language: ' + str(self.lang)
 
 
-
 class TextGenerator(object):
     """
     Generates text for D-BAS
