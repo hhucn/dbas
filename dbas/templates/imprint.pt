@@ -106,10 +106,16 @@
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
+					<span class="project lead">0.5.15 (2016-06-28)</span>
+					<ul>
+						<li>Island view</li>
+					</ul>
+
 					<span class="project lead">0.5.14 (2016-06-07)</span>
 					<ul>
 						<li>Many bugfixes</li>
                         <li>Security fixes</li>
+                        <li>Docker integration</li>
 					</ul>
 
 					<span class="project lead">0.5.13 (2016-05-09)</span>

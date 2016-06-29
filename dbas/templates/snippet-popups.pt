@@ -138,7 +138,7 @@
     				<div id="popup-edit-statement-content">
     				</div>
     				<p id="popup-edit-statement-description-p">${structure:extras.tag.edit_statement_here}</p>
-    				<textarea class="form-control"  id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement"></textarea>
+    				<textarea class="form-control"  id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement" data-min-length="10"></textarea>
     				<div class="list-group" id="proposal-edit-list-group">
     				</div>
 
@@ -598,8 +598,8 @@
     			</div>
     			<div id="popup-url-sharing-body">
 
-                    <input id="popup-writing-news-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" tabindex="1">
-                    <textarea id="popup-writing-news-text" type="text" class="form-control news-text" name="newstext" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
+                    <input data-min-length="10" id="popup-writing-news-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" tabindex="1">
+                    <textarea data-min-length="10" id="popup-writing-news-text" type="text" class="form-control news-text" name="newstext" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="2"></textarea>
 
                     <div id="popup-writing-news-failed" class="alert alert-danger" role="alert">
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -643,8 +643,8 @@
 
                     <div class="list-group" id="proposal-user-list-group"></div>
 
-                    <input id="popup-writing-notification-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" tabindex="2">
-                    <textarea id="popup-writing-notification-text" type="text" class="form-control news-text" name="newstext" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="3"></textarea>
+                    <input data-min-length="5" id="popup-writing-notification-title" name="newstitle" type="text" class="form-control news-title" placeholder="Today is a wonderful day!" tabindex="2">
+                    <textarea data-min-length="5" id="popup-writing-notification-text" type="text" class="form-control news-text" name="newstext" placeholder="Today is a wonderful day, because the sun is shining, the birds are singing..." tabindex="3"></textarea>
 
                     <div id="popup-writing-notification-failed" class="alert alert-danger" role="alert">
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>

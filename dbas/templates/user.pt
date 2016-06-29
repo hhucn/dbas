@@ -9,6 +9,10 @@
                     </h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
+							<td><span class="lead" i18n:translate="last_action">Last Action</span></td>
+                            <td>${user.last_action}</td>
+						</tr>
+						<tr>
 							<td><span class="lead" i18n:translate="last_login">Last Login</span></td>
                             <td>${user.last_login}</td>
 						</tr>

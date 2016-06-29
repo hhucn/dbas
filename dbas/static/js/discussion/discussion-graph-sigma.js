@@ -5,22 +5,11 @@
 
 function DiscussionGraph() {
 	var s;
-
 	/**
 	 * Displays a graph of current discussion
 	 */
 	this.showGraph = function () {
-		$.ajax({
-			url: '/graph/sigma',
-			type: 'GET',
-			dataType: 'json',
-			data: {issue: new Helper().getCurrentIssueId()},
-			async: true
-		}).done(function (data) {
-			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
-		}).fail(function () {
-			new GuiHandler().showDiscussionError(_t(internalError));
-		});
+		new AjaxGraphHandler().getDiscussionGraphData('/graph/sigma');
 	};
 
 
