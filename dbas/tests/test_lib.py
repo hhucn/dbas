@@ -6,7 +6,7 @@ from dbas.helper.tests_helper import add_settings_to_appconfig
 from datetime import date
 from dbas.database.discussion_model import Argument
 
-settings = add_settings_to_appconfig("development.ini")
+settings = add_settings_to_appconfig()
 
 DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
