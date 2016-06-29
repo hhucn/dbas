@@ -267,19 +267,22 @@ def get_text_for_statement_uid(uid):
     :param uid: Statement.uid
     :return: String
     """
-    if isinstance(uid, int):
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
-        if not db_statement:
-            return None
+    try:
+        if isinstance(int(uid), int):
+            db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+            if not db_statement:
+                return None
 
-        db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
-            uid=db_statement.textversion_uid).first()
-        tmp = db_textversion.content
+            db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
+                uid=db_statement.textversion_uid).first()
+            tmp = db_textversion.content
 
-        while tmp.endswith(('.', '?', '!')):
-            tmp = tmp[:-1]
+            while tmp.endswith(('.', '?', '!')):
+                tmp = tmp[:-1]
 
-        return tmp
+            return tmp
+    except (ValueError, TypeError):
+        return None
 
 
 def get_text_for_conclusion(argument, lang, start_with_intro=False, rearrange_intro=False):
