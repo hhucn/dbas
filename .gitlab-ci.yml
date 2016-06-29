@@ -13,5 +13,5 @@ before_script:
 test:
   stage: test
   script:
-    - flake8 .
+    # - flake8 .
     - nosetests --with-coverage --cover-package=api
