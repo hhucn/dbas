@@ -186,13 +186,6 @@ class Translator(object):
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
         self.emailUnknown = 'emailUnknown'
-
-        self.edit = 'edit'
-        self.error_code = 'error_code'
-        self.editTitle = 'editTitle'
-        self.editIssueViewChangelog = 'editIssueViewChangelog'
-        self.editInfoHere = 'editInfoHere'
-        self.editTitleHere ='editTitleHere'
         self.emailBodyText = 'emailBodyText'
         self.emailWasSent = 'emailWasSent'
         self.emailWasNotSent = 'emailWasNotSent'
@@ -833,13 +826,16 @@ class TextGenerator(object):
         return sys_text
 
     @staticmethod
-    def get_text_for_edit_text_message(lang, nickname, original, edited, path):
+    def get_text_for_edit_text_message(lang, nickname, original, edited, path, for_html=True):
+        nl = '<br>' if for_html else '\n'
         _t = Translator(lang)
         content = _t.get(_t.textversionChangedContent) + ' ' + nickname
-        content += '<br>' + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + original + '<br>'
-        content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + edited + '<br>'
-        content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
-        content += '<a href="' + path + '">' + _t.get(_t.goBackToTheDiscussion) + '</a>'
+        content += nl + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + original + nl
+        content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + edited + nl
+        if for_html:
+            content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
+            content += '<a href="' + path + '">' + path + '</a>'
+        return content
 
     def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
         """

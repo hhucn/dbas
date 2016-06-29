@@ -383,11 +383,11 @@ function InteractionHandler() {
 					if (decided_texts.length > 0)
 						alert("TODO: more than one decided text");
 					else
-						new AjaxSiteHandler().sendNewStartStatement(text);
+						new AjaxDiscussionHandler().sendNewStartStatement(text);
 				} else if (type == fuzzy_start_premise) {
-					new AjaxSiteHandler().sendNewStartPremise(text, conclusion, supportive);
+					new AjaxDiscussionHandler().sendNewStartPremise(text, conclusion, supportive);
 				} else  if (type == fuzzy_add_reason) {
-					new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, text);
+					new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, text);
 				}
 			}
 		}

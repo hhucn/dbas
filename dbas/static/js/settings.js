@@ -7,44 +7,6 @@ function HistoryHandler(){
 	'use strict';
 
 	/**
-	 * Ajax request for getting the users history
-	 */
-	this.getUserHistoryData = function(){
-		'use strict';
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_user_history',
-			method: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxGetUserHistoryDone(data) {
-			new HistoryHandler().getUserHistoryDataDone(data);
-		}).fail(function ajaxGetUserHistoryFail(xhr) {
-			new HistoryHandler().getDataFail(xhr.status);
-		});
-	};
-
-	/**
-	 * Ajax request for deleting the users history
-	 */
-	this.deleteUserHistoryData = function(){
-		'use strict';
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_delete_user_history',
-			method: 'POST',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function ajaxGetUserHistoryDone(data) {
-			new HistoryHandler().removeUserHistoryDataDone(data);
-		}).fail(function ajaxGetUserHistoryFail(xhr) {
-			new HistoryHandler().getDataFail(xhr.status);
-		});
-	};
-
-	/**
 	 *
 	 * @param data
 	 */
@@ -208,62 +170,6 @@ function SettingsHandler(){
 
 	/**
 	 *
-	 * @param toggle_element
-	 * @param service
-	 */
-	this.setUserSetting = function(toggle_element, service) {
-		var settings_value = toggle_element.prop('checked');
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_set_user_setting',
-			method: 'POST',
-			data:{'settings_value': settings_value ? 'True': 'False', 'service': service},
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function setUserSettingDone(data) {
-			new SettingsHandler().callbackDone(data, toggle_element, settings_value, service);
-		}).fail(function setUserSettingFail() {
-			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
-		});
-	};
-
-	/**
-	 *
-	 * @param ui_locales
-	 */
-	this.setNotifcationLanguage = function(ui_locales){
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_set_user_language',
-			method: 'POST',
-			data:{'ui_locales': ui_locales},
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function setUserSettingDone(data) {
-			var parsedData = $.parseJSON(data);
-
-			if (parsedData.error.length == 0){
-				$('#' + settingsSuccessDialog).fadeIn();
-				new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
-				$.each($('#settings-language-dropdown').find('li'), function(){ $(this).removeClass('active');});
-				$.each($('#current-lang-images').find('img'), function(){ $(this).hide()});
-				$('#link-settings-' + parsedData.ui_locales).addClass('active');
-				$('#indicator-' + parsedData.ui_locales).show();
-				$('#current-lang-images span').eq(0).text(parsedData.current_lang);
-			} else {
-				$('#' + settingsAlertDialog).fadeIn();
-				new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
-			}
-		}).fail(function setUserSettingFail() {
-			$('#' + settingsAlertDialog).fadeIn();
-			new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
-		});
-	};
-
-	/**
-	 *
 	 * @param jsonData
 	 * @param toggle_element
 	 * @param settings_value
@@ -292,107 +198,13 @@ function SettingsHandler(){
 		$('#' + settingsAlertDialog).fadeIn();
 		new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 		toggle_element.off('change').bootstrapToggle(settings_value ? 'off' : 'on').change(function() {
-			new SettingsHandler().setUserSetting(toggle_element, service);
+			new AjaxSettingsHandler().setUserSetting(toggle_element, service);
 		});
 	}
 
 }
 
 function StatisticsHandler(){
-
-	/**
-	 *
-	 */
-	this.getEditsDone = function() {
-		if ($('#' + editsDoneCountId).text() == '0'){
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-			return;
-		}
-
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_edits',
-			method: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function deleteStatisticsRequestDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
-		}).fail(function deleteStatisticsRequestFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
-	};
-
-	/**
-	 *
-	 */
-	this.getStatementsSend = function() {
-		if ($('#' + statementsDoneCountId).text() == '0'){
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-			return;
-		}
-
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_posted_statements',
-			method: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function deleteStatisticsRequestDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
-		}).fail(function deleteStatisticsRequestFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
-	};
-
-	/**
-	 *
-	 */
-	this.getArgumentVotes = function(){
-		if ($('#' + discussionArgVoteCountId).text() == '0'){
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-			return;
-		}
-
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_argument_votes',
-			method: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function deleteStatisticsRequestDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
-		}).fail(function deleteStatisticsRequestFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
-
-	};
-
-	/**
-	 *
-	 */
-	this.getStatementVotes = function(){
-		if ($('#' + discussionStatVoteCountId).text() == '0'){
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-			return;
-		}
-
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_statement_votes',
-			method: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function deleteStatisticsRequestDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
-		}).fail(function deleteStatisticsRequestFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
-
-	};
 
 	/**
 	 *
@@ -410,28 +222,10 @@ function StatisticsHandler(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(_t(deleteStatisticsBody));
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			new StatisticsHandler().deleteStatisticsRequest()
+			new AjaxSettingsHandler().deleteStatisticsRequest()
 		});
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-		});
-	};
-
-	/**
-	 *
-	 */
-	this.deleteStatisticsRequest = function() {
-		var csrfToken = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_delete_statistics',
-			method: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function deleteStatisticsRequestDone(data) {
-			new StatisticsHandler().callbackDeleteStatisticsDone(data);
-		}).fail(function deleteStatisticsRequestFail() {
-			new StatisticsHandler().callbackStatisticsFail();
 		});
 	};
 
@@ -543,10 +337,13 @@ function StatisticsHandler(){
 
 $(function () {
 	'use strict';
+	if (window.location.href != mainpage + 'settings'){
+		return;
+	}
 	var settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
 
 	$('#' + requestHistoryButtonId).click(function requestTrack() {
-		new HistoryHandler().getUserHistoryData();
+		new AjaxSettingsHandler().getUserHistoryData();
 		$('#' + historyTableSuccessId).fadeOut('slow');
 		$('#' + historyTableFailureId).fadeOut('slow');
 		$('#' + historyTableSpaceId).empty();
@@ -554,7 +351,7 @@ $(function () {
 	});
 
 	$('#' + deleteHistoryButtonId).hide().click(function deleteTrack() {
-		new HistoryHandler().deleteUserHistoryData();
+		new AjaxSettingsHandler().deleteUserHistoryData();
 		$('#' + historyTableSuccessId).fadeOut('slow');
 		$('#' + historyTableFailureId).fadeOut('slow');
 		$('#' + requestHistoryButtonId).val(_t(requestHistory));
@@ -585,40 +382,40 @@ $(function () {
 	});
 
 	$('#' + clearStatisticsButtonId).click(function clearCtatisticsButton(){
-		new StatisticsHandler().deleteStatistics();
+		new AjaxSettingsHandler().deleteStatistics();
 	});
 
 	$('#' + infoEditsId).click(function (){
-		new StatisticsHandler().getEditsDone();
+		new AjaxSettingsHandler().getEditsDone();
 	});
 
 	$('#' + infoStatementsId).click(function (){
-		new StatisticsHandler().getStatementsSend();
+		new AjaxSettingsHandler().getStatementsSend();
 	});
 
 	$('#' + infoVoteArgumentsId).click(function (){
-		new StatisticsHandler().getArgumentVotes();
+		new AjaxSettingsHandler().getArgumentVotes();
 	});
 
 	$('#' + infoVoteStatementsId).click(function (){
-		new StatisticsHandler().getStatementVotes();
+		new AjaxSettingsHandler().getStatementVotes();
 	});
 
 	$('#' + settingsReceiveNotifications).change(function notificationReceiverChange() {
-		new SettingsHandler().setUserSetting($(this), 'notification');
+		new AjaxSettingsHandler().setUserSetting($(this), 'notification');
 	});
 
 	$('#' + settingsReceiveMails).change(function emailReceiverChange() {
-		new SettingsHandler().setUserSetting($(this), 'mail');
+		new AjaxSettingsHandler().setUserSetting($(this), 'mail');
 	});
 
 	$('#' + settingsPublicNick).change(function publicNickChange() {
-		new SettingsHandler().setUserSetting($(this), 'public_nick');
+		new AjaxSettingsHandler().setUserSetting($(this), 'public_nick');
 	});
 
 	$.each($('#settings-language-dropdown').find('a'), function(){
 		$(this).click(function(){
-			new SettingsHandler().setNotifcationLanguage($(this).attr('data-ui-locales'));
+			new AjaxSettingsHandler().setNotifcationLanguage($(this).attr('data-ui-locales'));
 		});
 	});
 

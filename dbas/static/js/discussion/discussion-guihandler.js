@@ -19,25 +19,28 @@ function GuiHandler() {
 	 * Adds a premise row in the 'add premise'-container
 	 */
 	this.appendAddPremiseRow = function(){
-		var body = $('#add-premise-container-body'),
-			send = $('#' + sendNewPremiseId),
-			uid = new Date().getTime(),
-			div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs'),
-			// div_l = $('<div>'),
-			div_m = $('<div>').addClass('flex-div'),
-			div_r = $('<div>'),
-			// h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...'),
-			id = 'add-premise-container-main-input-' + uid,
-			input = $('<input>').attr('id', id)
+		var body = $('#add-premise-container-body');
+		var send = $('#' + sendNewPremiseId);
+		var uid = new Date().getTime();
+		var div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs');
+			//var div_l = $('<div>');
+		var div_m = $('<div>').addClass('flex-div');
+		var div_r = $('<div>');
+			//var h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...');
+		var id = 'add-premise-container-main-input-' + uid;
+		var input = $('<input>').attr('id', id)
 				.attr('type', 'text')
 				.attr('class', 'form-control')
 				.attr('autocomplete', 'off')
-				.attr('placeholder', 'Your statement'),
-			imgm = $('<img>')
+				.attr('placeholder', '...')
+				.attr('data-min-length', '10')
+				.keyup(function() { setTextWatcherForMinLength($(this)); })
+				.focusin(function() { setTextWatcherForMinLength($(this)); });
+		var imgm = $('<img>')
 				.attr('class', 'icon-rem-premise')
 				.attr('src', mainpage + 'static/images/icon_minus1.png')
-				.attr('title', body.find('.icon-rem-premise').first().attr('title')),
-			imgp = $('<img>')
+				.attr('title', body.find('.icon-rem-premise').first().attr('title'));
+		var imgp = $('<img>')
 				.attr('class', 'icon-add-premise')
 				.attr('src', mainpage + 'static/images/icon_plus1.png')
 				.attr('title', body.find('.icon-add-premise').first().attr('title'));
@@ -77,7 +80,7 @@ function GuiHandler() {
 		$('#' + id).keyup(function () {
 			new Helper().delay(function () {
 				var escapedText = new Helper().escapeHtml($('#' + id).val());
-				new AjaxSiteHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
+				new AjaxDiscussionHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
 			}, 200);
 		});
 	};
@@ -252,9 +255,9 @@ function GuiHandler() {
 			}
 
 			if (type == fuzzy_add_reason){
-				new AjaxSiteHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
+				new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
 			} else if (type == fuzzy_start_premise){
-				new AjaxSiteHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
+				new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
 			} else {
 			 	alert("Todo: unknown type")
 			}
@@ -262,7 +265,7 @@ function GuiHandler() {
 		});
 
 		if (undecided_texts.length == 1){ // we only need one page div
-			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0], supportive);
+			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0]);
 			body.append(page);
 			send.text(_t_discussion(saveMyStatement));
 
@@ -281,7 +284,7 @@ function GuiHandler() {
 
 			// for each statement a new page div will be added
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
-				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no], supportive);
+				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no]);
 				if (page_no > 0)
 					page.hide();
 				body.append(page);
@@ -364,10 +367,9 @@ function GuiHandler() {
 	 *
 	 * @param page_no
 	 * @param text
-	 * @param supportive
 	 * @returns {*}
 	 */
-	this.getPageOfSetStatementContainer = function(page_no, text, supportive){
+	this.getPageOfSetStatementContainer = function(page_no, text){
 		var src = $('#insert_statements_page_');
 		var div_page = src.clone();
 		var id = src.attr('id');
@@ -534,7 +536,7 @@ function GuiHandler() {
 	 */
 	this.showUrlSharingPopup = function () {
 		$('#' + popupUrlSharingId).modal('show');
-		new AjaxSiteHandler().getShortenUrl(window.location);
+		new AjaxDiscussionHandler().getShortenUrl(window.location);
 		//$('#' + popupUrlSharingInputId).val(window.location);
 	};
 
@@ -571,7 +573,7 @@ function GuiHandler() {
 			var info = $('#popup-add-topic-info-input').val(),
 				title = $('#popup-add-topic-title-input').val(),
 				lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
-			new AjaxSiteHandler().sendNewIssue(info, title, lang, callbackFunctionOnDone);
+			new AjaxDiscussionHandler().sendNewIssue(info, title, lang, callbackFunctionOnDone);
 		});
 		$('#popup-add-topic-refuse-btn').click(function () {
 			$('#popup-add-topic').modal('hide');

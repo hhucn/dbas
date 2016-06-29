@@ -38,71 +38,6 @@ function News() {
 				+ '</div>';
 	};
 
-
-	// *********************
-	//	AJAX
-	// *********************
-
-	/**
-	 *
-	 */
-	this.ajaxGetNews = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_get_news',
-			type: 'POST',
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrfToken
-			}
-		}).done(function ajaxGetNewsDone(data) {
-			new News().callbackIfDoneForGettingNews(data);
-		}).fail(function ajaxGetNewsFail() {
-			$('#' + newsBodyId).append("<h4>" + internalError + "</h4>");
-		});
-	};
-
-	/**
-	 *
-	 */
-	this. ajaxSendNews = function () {
-		var title = $('#' + writingNewNewsTitleId).val(),
-				text = $('#' + writingNewNewsTextId).val();
-
-		if (title.length == 0 || text.length < 10) {
-			$('#' + writingNewsFailedId).show();
-			$('#' + writingNewsFailedMessageId).text(_t(empty_news_input));
-			new Helper().delay(function(){
-				$('#' + writingNewsFailedId).fadeOut();
-				new Helper().delay(function(){
-					$('#' + writingNewsFailedMessageId).text('');
-				}, 2000);
-			}, 2000);
-			return;
-		} else {
-			$('#' + writingNewsFailedId).hide();
-			$('#' + writingNewsSuccessId).hide();
-		}
-
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_send_news',
-			type: 'POST',
-			data: {title: title, text: text},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrfToken
-			}
-		}).done(function ajaxSendNewsDone(data) {
-			new News().callbackIfDoneForSendingNews(data);
-		}).fail(function ajaxSendNewsFail() {
-			$('#' + writingNewsFailedId).show();
-			$('#' + writingNewsFailedMessageId).html(_t(internalError));
-		});
-	};
-
 	// *********************
 	//	CALLBACKS
 	// *********************
@@ -461,19 +396,21 @@ function News() {
 }
 
 $(document).ready(function () {
-	var news = new News();
-	news.ajaxGetNews();
+	if (window.location.href != mainpage + 'news'){
+		return;
+	}
+	new AjaxNewsHandler().ajaxGetNews();
 
 	$('#' + writingNewsFailedId).hide();
 	$('#' + writingNewsSuccessId).hide();
 
-	news.setSharingClasses();
+	new News().setSharingClasses();
 
 	/**
 	 * Sharing shortened url on google
 	 */
 	$('#' + sendNewsButtonId).click(function(){
-		news.ajaxSendNews();
+		new AjaxNewsHandler().ajaxSendNews();
 	});
 
 	$('#icon-add-news').click(function(){
@@ -482,6 +419,6 @@ $(document).ready(function () {
 
 	// make some things pretty
 	$(window).on('resize', function resizeWindow(){
-		news.setMaxHeightOfNewsRows();
+		new News().setMaxHeightOfNewsRows();
 	});
 });
