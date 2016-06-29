@@ -33,7 +33,7 @@ d3_graph = Service(name='d3js',
 @sigma_graph.get()
 def get_sigma_dump(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Graph', 'simap', 'main')
+    logger('Graph', 'sigma', 'main')
     issue = IssueHelper.get_issue_id(request)
 
     return_dict = get_sigma_data(issue)
