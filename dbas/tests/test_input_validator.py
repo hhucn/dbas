@@ -4,6 +4,7 @@ from sqlalchemy import engine_from_config
 from dbas import DBDiscussionSession
 from dbas.helper.tests_helper import add_settings_to_appconfig
 
+
 settings = add_settings_to_appconfig()
 
 
@@ -223,8 +224,8 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(no_relation_false, False)
 
         no_relation_uid_none_false = reaction.check_reaction(attacked_arg_uid=None,
-                                                            attacking_arg_uid=None,
-                                                            relation='',
-                                                            is_history=False)
+                                                             attacking_arg_uid=None,
+                                                             relation='',
+                                                             is_history=False)
         self.assertEqual(no_relation_uid_none_false, False)
 

@@ -17,7 +17,7 @@ from dbas.views import Dbas
 from .extractor import extract_author_information, extract_issue_information, extract_reference_information
 from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
-from .references import store_reference, url_to_statement, get_references_for_url, get_joined_reference
+from .references import store_reference, url_to_statement, get_references_for_url, get_complete_reference
 
 log = logger()
 
@@ -98,6 +98,11 @@ find_statements = Service(name="find_statements",
                           path="/get/statements/{issue}/{type}/{value}",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
+
+statement_url_service = Service(name="statement_url",
+                                path="/get/statement/url/{issue_uid}/{statement_uid}/{agree}",
+                                description="Get URL to a statement inside the discussion for direct jumping to it",
+                                cors_policy=cors_policy)
 
 #
 # Other Services
@@ -342,19 +347,20 @@ def get_reference_usages(request):
     :rtype: list
     """
     ref_uid = request.matchdict["ref_uid"]
-    db_ref, db_user, db_issue = get_joined_reference(ref_uid)
+    db_ref, db_user, db_issue, db_textversion = get_complete_reference(ref_uid)
 
-    if db_ref and db_user and db_issue:
+    if db_ref and db_user and db_issue and db_textversion:
         statement_url = url_to_statement(db_issue.uid, db_ref.statement_uid)
-        # This is a list, which should contain one or more reference usages
         refs = list()
         refs.append({"reference": extract_reference_information(db_ref),
                      "author": extract_author_information(db_user),
                      "issue": extract_issue_information(db_issue),
                      "statement": {"uid": db_ref.statement_uid,
-                                   "url": statement_url}})
+                                   "url": statement_url,
+                                   "text": db_textversion.content}})
         return json.dumps(refs, True)
 
+    log.error("[API/GET Reference Usages] Error when trying to find matching reference for id " + ref_uid)
     return {"status": "error", "message": "Reference could not be found"}
 
 
@@ -422,6 +428,25 @@ def find_statements_fn(request):
         statement_uid = statement["statement_uid"]
         statement["url"] = url_to_statement(api_data["issue"], statement_uid)
         return_dict["values"].append(statement)
+    return json.dumps(return_dict, True)
+
+
+# =============================================================================
+# GET INFORMATION - several functions to get information from the database
+# =============================================================================
+@statement_url_service.get()
+def get_statement_url(request):
+    """
+    Given an issue, the statement_uid and an (dis-)agreement, produce a url to the statement inside
+    the corresponding discussion.
+
+    :param request:
+    :return:
+    """
+    issue_uid = request.matchdict["issue_uid"]
+    statement_uid = request.matchdict["statement_uid"]
+    agree = request.matchdict["agree"]
+    return_dict = {"url": url_to_statement(issue_uid, statement_uid, agree)}
     return json.dumps(return_dict, True)
 
 
