@@ -119,6 +119,7 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_text_for_statement_uid(uid=0), None)
 
         self.assertEqual(lib.get_text_for_statement_uid(uid='22222222'), None)
+        self.assertEqual(lib.get_text_for_statement_uid(uid="str"), None)
 
         # id for statement, which ends with '.'
         self.assertEqual(lib.get_text_for_statement_uid(uid=1), 'We should get a cat')
