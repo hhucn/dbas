@@ -8,6 +8,8 @@
  * @type {string}
  */
 var addTopicButtonId                            = 'add-topic';
+var addTopicPopupContainer                      = 'popup-add-topic-error';
+var addTopicPopupErrorText                      = 'popup-add-topic-error-text';
 var addReasonButtonId 							= 'add-reason';
 var addStatementContainerId 					= 'add-statement-container';
 var addStatementContainerMainInputId 			= 'add-statement-container-main-input';
@@ -194,14 +196,14 @@ var reportButtonId 								= 'report-button';
 var requestTrackButtonId 						= 'request-track';
 var requestHistoryButtonId 						= 'request-history';
 var radioButtonGroup 							= 'radioButtonGroup';
-var requestFailedContainer                    = 'request_failed_container';
-var requestFailedContainerClose              = 'request_failed_container_close';
-var requestFailedContainerHeading            = 'request_failed_container_heading';
-var requestFailedContainerMessage            = 'request_failed_container_message';
-var requestSuccessContainer                   = 'request_success_container';
-var requestSuccessContainerClose             = 'request_success_container_close';
-var requestSuccessContainerHeading           = 'request_success_container_heading';
-var requestSuccessContainerMessage           = 'request_success_container_message';
+var requestFailedContainer                      = 'request_failed_container';
+var requestFailedContainerClose                 = 'request_failed_container_close';
+var requestFailedContainerHeading               = 'request_failed_container_heading';
+var requestFailedContainerMessage               = 'request_failed_container_message';
+var requestSuccessContainer                     = 'request_success_container';
+var requestSuccessContainerClose                = 'request_success_container_close';
+var requestSuccessContainerHeading              = 'request_success_container_heading';
+var requestSuccessContainerMessage              = 'request_success_container_message';
 var translationLink 							= 'link-trans-';
 var translationLinkDe 							= 'link-trans-de';
 var translationLinkEn 							= 'link-trans-en';

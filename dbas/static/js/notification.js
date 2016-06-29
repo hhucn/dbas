@@ -115,8 +115,6 @@ function Notifications() {
 	this.hideInfoSpaces = function() {
 		$('#error-space').hide();
 		$('#error-description').text('');
-		$('#success-space').hide();
-		$('#success-description').text('');
 	};
 
 	/**
