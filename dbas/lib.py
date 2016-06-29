@@ -12,6 +12,7 @@ from html import escape
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
 from .strings import Translator
+from .input_validator import Validator
 
 
 def escape_string(text):
@@ -267,6 +268,9 @@ def get_text_for_statement_uid(uid):
     :param uid: Statement.uid
     :return: String
     """
+    if not Validator.check_for_integer(uid):
+        return None
+
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
     if not db_statement:
         return None
