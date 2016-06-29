@@ -18,7 +18,7 @@ def get_rnd_passwd():
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     upperalphabet = alphabet.upper()
     symbols = '+-*/#!*?'
-    pw_len = 10
+    pw_len = 8
     pwlist = []
 
     for i in range(pw_len // 3):
