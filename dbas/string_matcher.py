@@ -14,6 +14,7 @@ from .database import DBDiscussionSession
 from .database.discussion_model import Statement, User, TextVersion, Issue, Premise, Argument
 from .user_management import get_public_profile_picture
 
+list_length = 5
 max_count_zeros = 5
 index_zeros = 3
 return_count = 10  # same number as in googles suggest list (16.12.2015)
@@ -47,7 +48,7 @@ def get_strings_for_start(value, issue, is_startpoint):
 
     # logger('FuzzyStringMatcher', 'get_strings_for_start', 'dictionary length: ' + str(len(return_array)), debug=True)
 
-    return mechanism, return_array
+    return mechanism, return_array[:list_length]
 
 
 def get_strings_for_edits(value, statement_uid):
@@ -80,7 +81,7 @@ def get_strings_for_edits(value, statement_uid):
     # logger('FuzzyStringMatcher', 'get_strings_for_edits', 'string: ' + value + ', string: ' + value +
     #        ', statement uid: ' + str(statement_uid) + ', dictionary length: ' + str(len(return_array)), debug=True)
 
-    return mechanism, return_array
+    return mechanism, return_array[:list_length]
 
 
 def get_strings_for_reasons(value, issue):
@@ -110,7 +111,7 @@ def get_strings_for_reasons(value, issue):
     # logger('FuzzyStringMatcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
     #        ', dictionary length: ' + str(len(return_array)), debug=True)
 
-    return mechanism, return_array
+    return mechanism, return_array[:list_length]
 
 
 def get_strings_for_issues(value):
@@ -134,7 +135,7 @@ def get_strings_for_issues(value):
     # logger('FuzzyStringMatcher', 'get_strings_for_issues', 'string: ' + value +
     #        ', dictionary length: ' + str(len(return_array)), debug=True)
 
-    return mechanism, return_array
+    return mechanism, return_array[:list_length]
 
 
 def get_strings_for_search(value):
@@ -169,7 +170,7 @@ def get_strings_for_search(value):
     # logger('FuzzyStringMatcher', 'get_strings_for_search', 'string: ' + value +
     #        ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
 
-    return return_dict
+    return return_dict[:list_length]
 
 
 def get_strings_for_public_nickname(value, nickname):
@@ -195,8 +196,8 @@ def get_strings_for_public_nickname(value, nickname):
                                  'avatar': get_public_profile_picture(user)})
             index += 1
 
-    return_array = __sort_array(return_array)[:5]
-    return mechanism, return_array
+    return_array = __sort_array(return_array)
+    return mechanism, return_array[:list_length]
 
 
 def __sort_array(list):

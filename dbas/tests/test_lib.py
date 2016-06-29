@@ -1,7 +1,14 @@
 import unittest
-from dbas import lib
-import arrow
-from datetime import datetime, date
+
+from sqlalchemy import engine_from_config
+from dbas import lib, DBDiscussionSession
+from dbas.helper.tests_helper import add_settings_to_appconfig
+from datetime import date
+from dbas.database.discussion_model import Argument
+
+settings = add_settings_to_appconfig("development.ini")
+
+DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class LibTests(unittest.TestCase):
@@ -21,6 +28,7 @@ class LibTests(unittest.TestCase):
         long_str_without_special_char = 'str' + '&quot;' * 1000
         self.assertEqual(lib.escape_string(long_str_with_special_char), long_str_without_special_char)
 
+    """
     def test_sql_timestamp_pretty_print(self):
         utc = arrow.utcnow()
 
@@ -60,7 +68,7 @@ class LibTests(unittest.TestCase):
                                                         lang='en',
                                                         humanize=False,
                                                         with_exact_time=False), time_format_en_without_exact_time)
-
+    """
     def test_python_datetime_pretty_print(self):
         # datetime corresponding to Gregorian ordinal
         d = date.fromordinal(736132)
@@ -77,5 +85,79 @@ class LibTests(unittest.TestCase):
                                                           lang=''), '01. Jan.')
 
     def test_get_text_for_premisesgroup_uid(self):
-        # language = de
-        self.assertEqual(lib.get_text_for_premisesgroup_uid([123, 23, 4], 'de'), 'str')
+        # premise, which is in db_premises and premise_group contains only one premise
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1,
+                                                            lang='de'), ('Cats are very independent', ['4']))
+
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1,
+                                                            lang='en'), ('Cats are very independent', ['4']))
+
+
+        # premise_group with more than one premises
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
+                                                            lang='de'), ('Cats are fluffy und Cats are small', ['14', '15']))
+
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
+                                                            lang='en'), ('Cats are fluffy and Cats are small', ['14', '15']))
+
+        # unknown language
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
+                                                            lang='fr'),
+                         ('own language: fr Cats are fluffy unknown language: fr Cats are small', ['14', '15']))
+
+
+        # premise, which is not in db_premises
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
+                                                            lang='de'), ('', []))
+
+        # language is empty string
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
+                                                            lang=''), ('', []))
+
+    def test_get_text_for_statement_uid(self):
+        # id for no statement
+        self.assertEqual(lib.get_text_for_statement_uid(uid=0), None)
+
+        self.assertEqual(lib.get_text_for_statement_uid(uid='22222222'), None)
+        self.assertEqual(lib.get_text_for_statement_uid(uid="str"), None)
+
+        # id for statement, which ends with '.'
+        self.assertEqual(lib.get_text_for_statement_uid(uid=1), 'We should get a cat')
+
+        # id for statement, which ends with '!'
+        self.assertEqual(lib.get_text_for_statement_uid(uid=30), 'It is important, that pets are small and fluffy')
+
+    def test_get_text_for_conclusion(self):
+        argument1 = Argument(premisegroup=1, issupportive=True, author=1, conclusion=1, issue=1)
+        # 'argument' is an argument
+        self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
+                                                     lang='de',
+                                                     start_with_intro=False,
+                                                     rearrange_intro=False), 'We should get a cat')
+
+        argument2 = Argument(premisegroup=1, issupportive=False, author=1, issue=1)
+        # 'argument' is a statement
+        self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
+                                                     lang='en',
+                                                     start_with_intro=True,
+                                                     rearrange_intro=True), None)
+
+        # unknown conclusion id
+        argument3 = Argument(premisegroup=0, issupportive=True, author=0, conclusion=0, issue=0)
+        self.assertEqual(lib.get_text_for_conclusion(argument=argument3,
+                                                     lang='de',
+                                                     start_with_intro=False,
+                                                     rearrange_intro=True), None)
+
+    def test_resolve_issue_uid_to_slug(self):
+        # id for issue
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=1), 'town-has-to-cut-spending');
+
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=4), 'unterstützung-der-sekretariate');
+
+
+        # id for no issue
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=0), None);
+
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=22222222), None);
+

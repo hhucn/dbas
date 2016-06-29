@@ -4,6 +4,9 @@
  */
 
 $(function () {
+	if (window.location.href.indexOf(mainpage + 'user/') == -1){
+		return;
+	}
 	'use strict';
 
 	// send notification to users
@@ -23,12 +26,12 @@ $(function () {
 				} else {
 					recipient = _this.prev().text();
 				}
-				new Notifications().sendNotification(recipient.trim()); // declared in notification.js
+				new AjaxNotificationHandler().sendNotification(recipient.trim()); // declared in notification.js
 			});
 		});
 	});
 
-	new User().getPublicUserData();
+	new AjaxUserHandler().getPublicUserData();
 });
 
 function User() {
@@ -40,22 +43,6 @@ function User() {
 	var fillColorSet = ['rgba(187,222,251,0.4)', 'rgba(178,223,219,0.4)', 'rgba(255,204,188,0.4)', 'rgba(215,204,200,0.4']; //100
 	var strokeColorSet = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
 	var pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
-
-	this.getPublicUserData = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_get_public_user_data',
-			method: 'GET',
-			data:{'nickname': $('#public_nick').text()},
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
-		}).done(function getPublicUserDataDone(data) {
-			new User().callbackDone(data);
-		}).fail(function getPublicUserDataFail() {
-			new User().callbackFail();
-		});
-	};
 
 	/**
 	 *

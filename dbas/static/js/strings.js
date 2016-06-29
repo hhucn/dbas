@@ -12,7 +12,8 @@ var mainpage = location.origin + '/'; //get_hostname(window.location.href);
  * @private
  */
 _t = function(id){
-	var this_id, value = 'unknown identifier';
+	var this_id;
+	var value = 'unknown identifier';
 	$('#' + languageDropdownId).children().each(function(){
 		if ($(this).hasClass('active')){
 			this_id = $(this).children().first().attr('id');
@@ -34,8 +35,11 @@ _t = function(id){
  * @private
  */
 _t_discussion = function(id){
-	var lang = $('#issue_info').attr('data-discussion-language'),
-		value = 'unknown identifier';
+	if ($('#issue_info').length == 0){
+		return _t(id);
+	}
+	var lang = $('#issue_info').attr('data-discussion-language');
+	var value = 'unknown identifier';
 	if (lang.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){		value = dbas_en[id];
 	} else if (lang.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){	value = dbas_de[id];
 	} else {                                                    		value = 'unknown value';
@@ -196,6 +200,7 @@ var number 											= 'number';
 var notificationWasSend                             = 'notificationWasSend';
 var opinionBarometer                                = 'opinionBarometer';
 var options                                         = 'options';
+var ohsnap                                          = 'ohsnap';
 var report 											= 'report';
 var reportTitle										= 'reportTitle';
 var passwordSubmit 									= 'passwordSubmit';
@@ -229,6 +234,8 @@ var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
 var to 											    = 'to';
+var textCountMessage1   						    = 'textCountMessage1';
+var textCountMessage2   						    = 'textCountMessage2';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
@@ -367,6 +374,7 @@ var dbas_en = {
 	'note': 'Note',
 	'opinionBarometer': 'Opinion Barometer',
 	'options': 'Options',
+	'ohsnap': 'Oh snap!',
 	'passwordSubmit': 'Change Password',
 	'registered': 'Registered',
 	'restartOnError': 'Please try to reload this page or restart the discussion when the error stays',
@@ -403,6 +411,8 @@ var dbas_en = {
 	'to': 'To',
 	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
+	'textCountMessage1': 'Only',
+	'textCountMessage2': 'signs remaining',
 	'usersWithSameOpinion': 'Users with same opinion',
 	'valid': 'Valid',
 	'veryweak': 'very weak',
@@ -525,6 +535,7 @@ var dbas_de = {
 	'note': 'Hinweis',
 	'opinionBarometer': 'Meinungsbarometer',
 	'options': 'Optionen',
+	'ohsnap': 'Verdammt!',
 	'passwordSubmit': 'Passwort ändern',
 	'report': 'Melden',
 	'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',
@@ -561,6 +572,8 @@ var dbas_de = {
 	'timestamp': 'Zeit',
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'typeofVote': 'Zustimmung/Ablehnung',
+	'textCountMessage1': 'Nur',
+	'textCountMessage2': 'Zeichen verbleibend',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
 	'vote': 'Stimme',
