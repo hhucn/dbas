@@ -9,10 +9,11 @@ before_script:
   - python setup.py develop
   - initialize_discussion_sql docker.ini
   - initialize_news_sql docker.ini
+  - locale-gen de_DE.UTF-8
 
 test:
   stage: test
   script:
     # - flake8 .
-    - mv docker.ini development.ini
+    - cp docker.ini development.ini
     - nosetests --with-coverage --cover-package=api
