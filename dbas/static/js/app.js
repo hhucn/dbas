@@ -1,4 +1,4 @@
-/*global $, jQuery, alert, addActiveLinksInNavBar, removeActiveLinksInNavBar*/
+/*global $, jQuery, alert*/
 
 /**
  * @author Tobias Krauthoff
@@ -177,8 +177,8 @@ function setPiwikOptOutLink(lang){
  *
  */
 function setEasterEggs(){
-	$('#roundhousekick').click(function(){ ajaxRoundhouseKick(); });
-	//$('#yomamma').click(function(){ ajaxMama(); });
+	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
+	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
 
 	if (window.location.href == mainpage) {
 		/* christmas only
@@ -217,6 +217,15 @@ function setEasterEggs(){
 		});
 		*/
 	}
+
+	$('#dbas-logo').click(function(){
+		var counter = parseInt($(this).attr('data-counter'));
+		counter += 1;
+		if (counter == 5){
+			$(this).attr('src', mainpage + 'static/images/dabas.png');
+		}
+		$(this).attr('data-counter', counter);
+	});
 }
 
 /**
@@ -264,18 +273,19 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonLogin).show().click(function() {
-		ajaxLogin()
-	}).keypress(function(e) { if (e.which == 13) { ajaxRegistration() } });
+		new AjaxMainHandler().ajaxLogin()
+	}).keypress(function(e) { if (e.which == 13) { new AjaxMainHandler().ajaxRegistration() } });
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
-		if ($('#' + popupLoginForgotPasswordBody).is(':visible')){
-			$('#' + popupLoginForgotPasswordBody).fadeOut();
+		var body = $('#' + popupLoginForgotPasswordBody);
+		if (body.is(':visible')){
+			body.fadeOut();
 			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 			$('#' + popupLoginFailed).fadeOut();
 			$('#' + popupLoginSuccess).fadeOut();
 			$('#' + popupLoginInfo).fadeOut();
 		} else {
-			$('#' + popupLoginForgotPasswordBody).fadeIn();
+			body.fadeIn();
 			$('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
 		}
 	});
@@ -324,7 +334,7 @@ function prepareLoginRegistrationPopup(){
 
 		if (text == '' ){
 			$('#' + popupLoginWarningMessage).hide();
-			ajaxRegistration();
+			new AjaxMainHandler().ajaxRegistration();
 		} else {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
 			$('#' + popupLoginWarningMessageText).text(text);
@@ -333,245 +343,75 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	// bind enter key
-	$('#' + loginUserId).keypress(function(e) {							if (e.which == 13) {	ajaxLogin()			}	});
-	$('#' + loginPwId).keypress(function(e) {							if (e.which == 13) {	ajaxLogin()			}	});
-	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which == 13) {	ajaxRegistration()	}	});
-	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which == 13) {	ajaxRegistration()	}	});
-	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which == 13) {	ajaxRegistration()	}	});
-	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which == 13) {	ajaxRegistration()	}	});
-	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which == 13) {	ajaxRegistration()	}	});
+	$('#' + loginUserId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin()			}	});
+	$('#' + loginPwId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin()			}	});
+	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
+	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
+	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
+	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
+	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
 
 	$('#' + popupLoginButtonRequest).click(function() {
-		ajaxPasswordRequest();
+		new AjaxMainHandler().ajaxPasswordRequest();
 	});
 }
 
-// *********************
-//	AJAX
-// *********************
-
 /**
- * Sends a request for language change
- * @param new_lang is the shortcut for the language
+ * Sets an text watcher for the given element. After every input the attribute 'data-min-length' will be checked
+ * and maybe a text is shown
+ * @param element
  */
-function ajaxSwitchDisplayLanguage (new_lang){
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	$.ajax({
-		url: 'ajax_switch_language',
-		type: 'POST',
-		data: { lang: new_lang},
-		dataType: 'json',
-		async: true,
-		headers: {
-			'X-CSRF-Token': csrfToken
-		}
-	}).done(function ajaxSwitchDisplayLanguageDone() {
-		location.reload(true);
-		setPiwikOptOutLink(new_lang);
-	}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
-		if (xhr.status == 400) {
-			alert(_t(requestFailedBadToken));
-		} else if (xhr.status == 500) {
-			alert(_t(requestFailedInternalError));
+function setTextWatcherForMinLength(element){
+	var text = element.val().trim();
+	var offset = parseInt(element.attr('data-min-length') - text.length);
+	var id = element.attr('id') + '-text-counter';
+	var msg = _t_discussion(textCountMessage1) + ' ' + offset + ' ' + _t_discussion(textCountMessage2);
+	var field = $('#' + id);
+	if (offset > 0) {
+		if (field.length > 0) {
+			field.text(msg);
 		} else {
-			alert(_t(languageCouldNotBeSwitched));
+			$('<span>').text(msg).attr('id', id).addClass('text-counter-input').insertBefore(element);
 		}
-	});
+	} else {
+		if (field.length > 0) {
+			field.remove();
+		}
+	}
 }
 
 /**
- *
+ * Sets data for the global sucess field
+ * @param heading text
+ * @param body text
  */
-function ajaxLogin (){
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	var user = $('#' + loginUserId).val(),
-		password = $('#' + loginPwId).val(),
-		url = window.location.href,
-		keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
-
-	$.ajax({
-		url: 'ajax_user_login',
-		type: 'POST',
-		data: {
-			user: user,
-			password: password,
-			url: url,
-			keep_login: keep_login
-		},
-		dataType: 'html',
-		async: true,
-		headers: {
-			'X-CSRF-Token': csrfToken
-		}
-	}).done(function ajaxLoginDone(data) {
-		callbackIfDoneForLogin(data);
-	}).fail(function ajaxLoginFail(xhr) {
-		if (xhr.status == 200) {
-			location.reload(true);
-		} else if (xhr.status == 302) {
-			location.href = xhr.getResponseHeader('Location');
-		} else if (xhr.status == 400) {
-			$('#' + popupLoginFailed).show();
-			$('#' + popupLoginFailed + '-message').text(_t(requestFailedBadToken));
-		} else if (xhr.status == 500) {
-			$('#' + popupLoginFailed).show();
-			$('#' + popupLoginFailed + '-message').text(_t(requestFailedInternalError));
-		} else {
-			$('#' + popupLoginFailed).show();
-			$('#' + popupLoginFailed + '-message').text(_t(requestFailed));
-		}
-	}).always(function ajaxLoginAlways(){
-		$('#' + loginPwId).val('');
+function setGlobalErrorHandler(heading, body){
+	$('#' + requestFailedContainer).fadeIn();
+	$('#' + requestFailedContainerClose).click(function(){
+		$('#' + requestFailedContainer).fadeOut();
 	});
+	$('#' + requestFailedContainerHeading).text(heading);
+	$('#' + requestFailedContainerMessage).text(body);
+	new Helper().delay(function(){
+		$('#' + requestFailedContainer).fadeOut();
+	}, 5000);
 }
 
 /**
- *
+ * Sets data for the global sucess field
+ * @param heading text
+ * @param body text
  */
-function ajaxLogout (){
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	$.ajax({
-		url: 'ajax_user_logout',
-		type: 'POST',
-		dataType: 'json',
-		async: true,
-		headers: {
-			'X-CSRF-Token': csrfToken
-		}
-	}).done(function ajaxLogoutDone(data) {
-		location.reload();
-	}).fail(function ajaxLogoutFail(xhr) {
-		if (xhr.status == 200) {
-			if (window.location.href.indexOf('settings') != 0){
-				window.location.href = mainpage;
-			} else {
-				location.reload(); // TODO page will not be reloaded properly
-			}
-		} else if (xhr.status == 403) {
-			window.location.href = mainpage;
-		} else {
-			location.reload();
-		}
+function setGlobalSuccessHandler(heading, body){
+	$('#' + requestSuccessContainer).fadeIn();
+	$('#' + requestSuccessContainerClose).click(function(){
+		$('#' + requestSuccessContainer).fadeOut();
 	});
-}
-
-/**
- *
- */
-function ajaxRegistration (){
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	var firstname = $('#userfirstname-input').val(),
-		lastname = $('#userlastname-input').val(),
-		nickname = $('#nick-input').val(),
-		email = $('#email-input').val(),
-		password = $('#' + popupLoginPasswordInputId).val(),
-		passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
-		spamanswer = $('#popup-login-spamanswer-input').val(),
-		gender = '';
-
-	if ($('#' + popupLoginInlineRadioGenderN).is(':checked')) gender = 'n';
-	if ($('#' + popupLoginInlineRadioGenderM).is(':checked')) gender = 'm';
-	if ($('#' + popupLoginInlineRadioGenderF).is(':checked')) gender = 'f';
-
-	$.ajax({
-		url: 'ajax_user_registration',
-		type: 'POST',
-		data: { firstname: firstname,
-				lastname: lastname,
-				nickname: nickname,
-				gender: gender,
-				email: email,
-				password: password,
-				passwordconfirm: passwordconfirm,
-				spamanswer: spamanswer,
-				lang: getLanguage()},
-		dataType: 'json',
-		async: true,
-		headers: {
-			'X-CSRF-Token': csrfToken
-		}
-	}).done(function ajaxRegistrationDone(data) {
-		callbackIfDoneForRegistration(data);
-	}).fail(function ajaxRegistrationFail(xhr) {
-		$('#' + popupLoginRegistrationFailed).show();
-		if (xhr.status == 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
-		} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
-		} else {                		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
-		}
-	}).always(function ajaxLoginAlways(){
-		$('#' + popupLoginPasswordInputId).val('');
-		$('#' + popupLoginPasswordconfirmInputId).val('');
-	});
-}
-
-/**
- *
- */
-function ajaxPasswordRequest (){
-	var email = $('#password-request-email-input').val();
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	$.ajax({
-		url: 'ajax_user_password_request',
-		type: 'POST',
-		data: { email: email, lang: getLanguage()},
-		dataType: 'json',
-		async: true,
-		headers: {
-			'X-CSRF-Token': csrfToken
-		}
-	}).done(function ajaxPasswordRequestDone(data) {
-		callbackIfDoneForPasswordRequest(data);
-	}).fail(function ajaxPasswordRequestFail(xhr) {
-		$('#' + popupLoginRegistrationFailed).show();
-		if (xhr.status == 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
-		} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
-		} else {            			$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
-		}
-	});
-}
-
-/**
- * Get-Request for an roundhouse kick
- */
-function ajaxRoundhouseKick(){
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	$.ajax({
-		url: 'additional_service',
-		type: 'GET',
-		data: {type:'chuck'},
-		global: false,
-		async: true,
-		headers: {
-			'X-CSRF-Token': csrfToken
-		}
-	}).done(function ajaxRoundhouseKickDone(data) {
-		if (data.type == 'success'){
-			displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,
-				'<h5>' + data.value.joke + '</h5>\n\n' +
-				'<span style="float:right;">powered by <a href="http://www.icndb.com/" target="_blank">http://www.icndb.com/</a></span>');
-
-		}
-	});
-}
-
-/**
- * Get your mama
- */
-function ajaxMama(){
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	$.ajax({
-		url: 'additional_service',
-		type: 'GET',
-		data: {type:'mama'},
-		global: false,
-		async: true,
-		headers: {
-			'X-CSRF-Token': csrfToken
-		}
-	}).done(function ajaxMamaDone(data) {
-		displayConfirmationDialogWithoutCancelAndFunction('Yo Mamma',  '<h4>' + data.joke + '</h4>\n\n<span' +
-				' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
-	});
+	$('#' + requestSuccessContainerHeading).text(heading);
+	$('#' + requestSuccessContainerMessage).text(body);
+	new Helper().delay(function(){
+		$('#' + requestSuccessContainer).fadeOut();
+	}, 5000);
 }
 
 // *********************
@@ -664,7 +504,6 @@ function callbackIfDoneForPasswordRequest(data){
 // *********************
 //	MAIN
 // *********************
-
 $(document).ready(function () {
 	'use strict';
 	var path = window.location.href, lang = $('#hidden_language').val();
@@ -685,13 +524,13 @@ $(document).ready(function () {
 	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// language switch
-	$('#' + translationLinkDe).click(function(){ ajaxSwitchDisplayLanguage('de') });
-	$('#' + translationLinkEn).click(function(){ ajaxSwitchDisplayLanguage('en') });
-	$('#' + translationLinkDe + ' img').click(function(){ ajaxSwitchDisplayLanguage('de') });
-	$('#' + translationLinkEn + ' img').click(function(){ ajaxSwitchDisplayLanguage('en') });
+	$('#' + translationLinkDe).click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
+	$('#' + translationLinkEn).click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
+	$('#' + translationLinkDe + ' img').click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
+	$('#' + translationLinkEn + ' img').click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
 	$('#' + logoutLinkId).click(function(e){
 		e.preventDefault();
-		ajaxLogout();
+		new AjaxMainHandler().ajaxLogout();
 	});
 
 	// gui preperation
@@ -704,26 +543,34 @@ $(document).ready(function () {
 
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
-		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
-		// TODO: SEXY GLOBAL AJAX ERROR HANDLING
-		//ajaxError: function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
-		//	$('#request_failed_container').fadeIn();
-		//	new Helper().delay(function(){
-		//		$('#request_failed_container').fadeOut();
-		//	}, 3000);
-		//}
+		ajaxStart: function ajaxStartFct() {
+			setTimeout("$('body').addClass('loading')", 0);
+		},
+		ajaxStop: function ajaxStopFct() {
+			setTimeout("$('body').removeClass('loading')", 0);
+		}
 	});
 	//$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
     //    alert("There was an ajax error!");
 	//});
 
-	if ($('#session_expired_container').length == 1)
+	// add minimal text length field
+	$('input[data-min-length]').each(function(){
+		$(this).keyup(function() { setTextWatcherForMinLength($(this)); });
+		$(this).focusin(function() { setTextWatcherForMinLength($(this)); });
+	});
+	$('textarea[data-min-length]').each(function(){
+		$(this).keyup(function() { setTextWatcherForMinLength($(this)); });
+		$(this).focusin(function() { setTextWatcherForMinLength($(this)); });
+	});
+
+	// session expired popup
+	if ($('#' + sessionExpiredContainer).length == 1)
 		new Helper().delay(function(){
-			$('#session_expired_container').fadeOut();
+			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
 
-	// testring
+	// testing with gremlins
 	//var horde = gremlins.createHorde()
 	//	.gremlin(gremlins.species.formFiller())
 	//	.gremlin(gremlins.species.clicker().clickTypes(['click']))

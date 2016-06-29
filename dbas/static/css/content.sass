@@ -1,13 +1,3 @@
-$accent-color: #006ab3
-$blue: #2196f3
-$bubble-space: #f3f3f3
-$user-bubble: #C5E1A5
-$sytem-bubble: #CFD8DC
-$info-bubble: #FFF9C4
-$now-bubble: #BBDEFB
-$error-color: #be0a26
-$success-color: #97bf0d
-
 #navbar-left
   visibility: hidden
 
@@ -49,7 +39,7 @@ $success-color: #97bf0d
 #discussions-space ul
   li
     &:hover
-      color: $blue
+      color: $primary-color
     input
       margin-right: 5px
     width: 100%
@@ -93,7 +83,7 @@ $success-color: #97bf0d
 
 #add-pro-textarea:hover, #add-con-textarea:hover
   text-decoration: underline
-  color: $accent-color
+  color: $primary-color
 
 /* link color of 'add a textfield'
 
@@ -110,6 +100,9 @@ $success-color: #97bf0d
 
 #island-view-container-space ul
   list-style-type: circle
+  margin-bottom: 0
+  max-width: 80%
+  display: inline-block
 
 #discussion-failure-row
   padding-top: 25px
@@ -119,7 +112,7 @@ $success-color: #97bf0d
 
 #navigation-minimap-container
   position: fixed
-  color: $accent-color
+  color: $primary-color
   top: 50px
   right: 0
 
@@ -150,13 +143,12 @@ $success-color: #97bf0d
 .share-icon
   float: left
 
+.icon-add-premise, .icon-rem-premise
+  height: 25px
+
 .icon-rem-premise
-  height: 30px
   display: none
   padding-right: 0.5em
-
-.icon-add-premise
-  height: 30px
 
 #opinion-barometer-img
   width: 80px
@@ -222,6 +214,13 @@ $success-color: #97bf0d
       height: 1.3em
       display: inline-block
       vertical-align: middle
+
+.text-counter-input
+  color: $info-color
+  text-align: left
+  float: left
+  font-style: italic
+  padding-right: 0.5em
 
 @media (max-width: 767px)
   #discussions-space ul

@@ -5,7 +5,7 @@ Methods for validating input params given via url or ajax
 """
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Statement, Premise, PremiseGroup
+from .database.discussion_model import Argument, Statement, Premise
 from .logger import logger
 from sqlalchemy import and_
 
@@ -94,3 +94,57 @@ class Validator:
         else:
             logger('Validator', 'check_reaction', 'else-case')
             return False
+
+    @staticmethod
+    def check_belonging_of_statement(issue_uid, statement_uid):
+        """
+        Check whether current Statement.uid belongs to the given Issue
+
+        :param issue_uid: Issue.uid
+        :param statement_uid: Statement.uid
+        :return:
+        """
+        db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
+                                                                        Statement.issue_uid == issue_uid)).first()
+        return True if db_statement else False
+
+    @staticmethod
+    def check_belonging_of_argument(issue_uid, argument_uid):
+        """
+        Check whether current Argument.uid belongs to the given Issue
+
+        :param issue_uid: Issue.uid
+        :param argument_uid: Argument.uid
+        :return: Boolean
+        """
+        db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == argument_uid,
+                                                                      Argument.issue_uid == issue_uid)).first()
+        return True if db_argument else False
+
+    @staticmethod
+    def check_belonging_of_premisegroups(issue_uid, premisegroups):
+        """
+        Check whether all Groups in Premisgroups belongs to the given Issue
+
+        :param issue_uid: Issue.uid
+        :param premisegroups: [PremiseGroup.uid]
+        :return: Boolean
+        """
+        for group_id in premisegroups:
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
+            for premise in db_premises:
+                if premise.issue_uid != issue_uid:
+                    return False
+        return True
+
+    @staticmethod
+    def is_position(statement_uid):
+        """
+        True if current statement is a position
+
+        :param statement_uid: Statement.uid
+        :return: Boolean
+        """
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+        return True if db_statement.is_startpoint else False
+
