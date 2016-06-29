@@ -4,12 +4,12 @@ services:
   - hhucn/docker-dbas-postgres
 
 before_script:
+  - locale-gen de_DE.UTF-8
   - pip install -U pip
   - pip install -r requirements.txt
   - python setup.py develop
   - initialize_discussion_sql docker.ini
   - initialize_news_sql docker.ini
-  - locale-gen de_DE.UTF-8
 
 test:
   stage: test
