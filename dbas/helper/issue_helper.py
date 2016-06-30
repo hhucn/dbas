@@ -181,7 +181,7 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     issue_dict['stat_count']        = get_number_of_statements(issue.uid)
     issue_dict['date']              = sql_timestamp_pretty_print(issue.date, lang)
     issue_dict['author']            = issue.users.public_nickname
-    issue_dict['public_url']        = application_url + '/user/' + str(issue.users.public_nickname)
+    issue_dict['author_url']        = application_url + '/user/' + str(issue.users.public_nickname)
     issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
     return issue_dict
 
