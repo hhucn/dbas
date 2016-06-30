@@ -223,6 +223,9 @@ function setEasterEggs(){
 		counter += 1;
 		if (counter == 5){
 			$(this).attr('src', mainpage + 'static/images/dabas.png');
+			$('body').find('span').each(function(){
+				$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
+			});
 		}
 		$(this).attr('data-counter', counter);
 	});
