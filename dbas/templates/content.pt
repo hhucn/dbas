@@ -44,7 +44,7 @@
 
 		<div class="container colored-container" id="discussion-container">
 			<div class="row">
-				<div class="col-md-11" style="text-align: justify;">
+				<div class="col-md-10" style="text-align: justify;">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -111,6 +111,18 @@
 					    <span class="sidebar-icon-bar"></span>
 					    <span class="sidebar-icon-bar"></span>
 				    </div>
+					<ul id="discussion-sidebar">
+                        <li>Share</li>
+                        <li>Edit</li>
+                        <li>Report</li>
+                        <li>Barometer</li>
+                        <li>Island View</li>
+                        <li>Expert View</li>
+                        <li>Exit</li>
+					</ul>
+                </div>
+
+				<div class="col-md-1">
 					<ul id="discussion-sidebar">
                         <li>
 						    <a id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" tal:attributes="title extras.buttons.share_url"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_share.png')}"/></a>
