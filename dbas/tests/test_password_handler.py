@@ -13,5 +13,5 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class PasswordHandlerTests(unittest.TestCase):
 
     def test_get_rnd_passwd(self):
-        self.assertEqual(len(password_handler.get_rnd_passwd()), 12);
+        self.assertEqual(len(password_handler.get_rnd_passwd()), 10)
 
