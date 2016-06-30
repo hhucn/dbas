@@ -44,7 +44,7 @@
 
 		<div class="container colored-container" id="discussion-container">
 			<div class="row" >
-				<div class="col-md-11" style="text-align: justify;">
+				<div class="col-md-10" style="text-align: justify;">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -105,24 +105,6 @@
 					</div>
 				</div>
 
-				<div class="col-md-0" style="display: none">
-                    <div class="sidebar-icon-toggle">
-					    <span class="sidebar-icon-bar right"></span>
-					    <span class="sidebar-icon-bar right"></span>
-					    <span class="sidebar-icon-bar right"></span>
-				    </div>
-					<ul id="discussion-icon-sidebar" class="left list-group">
-                        <li class="list-group-item"><i class="fa fa-share" aria-hidden="true"></i>Share</li>
-                        <li class="list-group-item"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</li>
-                        <li class="list-group-item"><i class="fa fa-flag" aria-hidden="true"></i>Report</li>
-                        <li class="list-group-item">Extras</li>
-                        <li class="list-group-item"><i class="fa fa-bar-chart" aria-hidden="true"></i>Barometer</li>
-                        <li class="list-group-item"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Island</li>
-                        <li class="list-group-item"><i class="fa fa-map-o" aria-hidden="true"></i>Expert</li>
-                        <li class="list-group-item"><i class="fa fa-sign-out" aria-hidden="true"></i>Exit</li>
-					</ul>
-                </div>
-
 				<div class="col-md-1">
 					<ul id="discussion-sidebar">
                         <li>
@@ -153,7 +135,25 @@
 						</li>
 					</ul>
 				</div>
+
+				<div class="col-md-1">
+                    <div class="sidebar-icon-toggle">
+					    <span class="sidebar-icon-bar right"></span>
+					    <span class="sidebar-icon-bar right"></span>
+					    <span class="sidebar-icon-bar right"></span>
+				    </div>
+					<ul id="discussion-icon-sidebar" class="left list-group">
+                        <li class="list-group-item"><i class="fa fa-share" aria-hidden="true"></i>Share</li>
+                        <li class="list-group-item"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</li>
+                        <li class="list-group-item"><i class="fa fa-flag" aria-hidden="true"></i>Report</li>
+                        <li class="list-group-item"><i class="fa fa-bar-chart" aria-hidden="true"></i>Barometer</li>
+                        <li class="list-group-item"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Island</li>
+                        <li class="list-group-item"><i class="fa fa-map-o" aria-hidden="true"></i>Expert</li>
+                        <li class="list-group-item"><i class="fa fa-sign-out" aria-hidden="true"></i>Exit</li>
+					</ul>
+                </div>
 			</div>
+
 			<div class="row" style="display: none;">
                 <div class="col-md-12 center">
                     <img class="glyphicon-local navigation-icon" id="navigation-back" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_back"/>
