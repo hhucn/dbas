@@ -228,9 +228,9 @@ class Dbas(object):
         statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
-        if not Validator.check_for_integer(statement_id, True) \
-                or not Validator.check_belonging_of_statement(issue, statement_id) \
-                or not Validator.is_position(statement_id):
+        if not for_api and (not Validator.check_for_integer(statement_id, True)
+                            or not Validator.check_belonging_of_statement(issue, statement_id)
+                            or not Validator.is_position(statement_id)):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
         disc_ui_locales = get_discussion_language(self.request, issue)
@@ -301,7 +301,7 @@ class Dbas(object):
         supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
         relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
-        if not Validator.check_for_integer(statement_or_arg_id, True):
+        if not for_api and not Validator.check_for_integer(statement_or_arg_id, True):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
         issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
@@ -314,8 +314,8 @@ class Dbas(object):
         if [c for c in ('t', 'f') if c in mode] and relation == '':
             logger('discussion_justify', 'def', 'justify statement')
             # justifying statement
-            if not get_text_for_statement_uid(statement_or_arg_id) \
-                or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
+            if not for_api and (not get_text_for_statement_uid(statement_or_arg_id)
+                                or not Validator.check_belonging_of_statement(issue, statement_or_arg_id)):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
             VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
@@ -332,7 +332,7 @@ class Dbas(object):
 
         elif 'd' in mode and relation == '':
             logger('discussion_justify', 'def', 'dont know statement')
-            if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
+            if not for_api and not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
             # dont know
@@ -349,7 +349,7 @@ class Dbas(object):
 
         elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
             logger('discussion_justify', 'def', 'justify argument')
-            if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
+            if not for_api and not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
             # justifying argument
@@ -406,9 +406,9 @@ class Dbas(object):
         history         = params['history'] if 'history' in params else ''
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
-        if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack)\
-                or not Validator.check_belonging_of_argument(issue, arg_id_user)\
-                or not Validator.check_belonging_of_argument(issue, arg_id_sys):
+        if not for_api and (not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack)
+                or not Validator.check_belonging_of_argument(issue, arg_id_user)
+                or not Validator.check_belonging_of_argument(issue, arg_id_sys)):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         supportive           = tmp_argument.is_supportive
@@ -521,7 +521,7 @@ class Dbas(object):
         disc_ui_locales = get_discussion_language(self.request, issue)
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
-        if not Validator.check_belonging_of_premisegroups(issue, pgroup_ids):
+        if not for_api and not Validator.check_belonging_of_premisegroups(issue, pgroup_ids):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         session_expired = UserHandler.update_last_action(transaction, nickname)
