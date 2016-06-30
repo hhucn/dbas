@@ -21,3 +21,4 @@ flake8:
   script:
     - pip install --quiet flake8
     - flake8 .
+  allow_failure: true
