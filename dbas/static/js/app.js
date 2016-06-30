@@ -226,6 +226,7 @@ function setEasterEggs(){
 			$('body').find('span').each(function(){
 				$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
 			});
+			$('.popup_author_img').attr('src', mainpage + 'static/images/dolan.png').css('width', '150%');
 		}
 		$(this).attr('data-counter', counter);
 	});
