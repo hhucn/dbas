@@ -107,14 +107,15 @@
 
 				<div class="col-md-1">
                     <div class="sidebar-icon-toggle">
-					    <span class="sidebar-icon-bar"></span>
-					    <span class="sidebar-icon-bar"></span>
-					    <span class="sidebar-icon-bar"></span>
+					    <span class="sidebar-icon-bar right"></span>
+					    <span class="sidebar-icon-bar right"></span>
+					    <span class="sidebar-icon-bar right"></span>
 				    </div>
 					<ul id="discussion-sidebar">
                         <li>Share</li>
                         <li>Edit</li>
                         <li>Report</li>
+                        <li>Extras</li>
                         <li>Barometer</li>
                         <li>Island View</li>
                         <li>Expert View</li>
