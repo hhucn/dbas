@@ -151,13 +151,11 @@ class LibTests(unittest.TestCase):
 
     def test_resolve_issue_uid_to_slug(self):
         # id for issue
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=1), 'town-has-to-cut-spending');
-
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=4), 'unterstützung-der-sekretariate');
-
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=1), 'town-has-to-cut-spending')
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=4), 'unterstutzung-der-sekretariate')
 
         # id for no issue
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=0), None);
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=0), None)
 
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=22222222), None);
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=22222222), None)
 
