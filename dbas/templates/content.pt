@@ -66,7 +66,7 @@
                              <div tal:condition="bubble.is_user" class="line-wrapper-r">
                                  <p class="triangle-r" tal:attributes="id bubble.id">
                                      <!--<img class="triangle-gravatar-r" tal:attributes="src extras.users_avatar">-->
-                                     <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="bottom">
+                                     <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.lets_go_back" data-toggle="tooltip" data-placement="bottom">
                                          <span>${structure:bubble.message}</span>
                                      </a>
                                      <br>
@@ -76,7 +76,7 @@
                              <div tal:condition="bubble.is_system" class="line-wrapper-l">
                                  <p class="triangle-l" tal:attributes="id bubble.id">
                                      <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
-                                     <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.go_back" data-toggle="tooltip" data-placement="bottom">
+                                     <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.lets_go_back" data-toggle="tooltip" data-placement="bottom">
                                              ${structure:bubble.message}
                                      </a>
                                  </p>
@@ -106,6 +106,11 @@
 				</div>
 
 				<div class="col-md-1">
+                    <div class="sidebar-icon-toggle">
+					    <span class="sidebar-icon-bar"></span>
+					    <span class="sidebar-icon-bar"></span>
+					    <span class="sidebar-icon-bar"></span>
+				    </div>
 					<ul id="discussion-sidebar">
                         <li>
 						    <a id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" tal:attributes="title extras.buttons.share_url"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_share.png')}"/></a>
@@ -116,7 +121,6 @@
 						<li tal:condition="extras.is_reportable" >
 							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.report; title extras.title.report_title" />
 						</li>
-                        <!--<li><img tal:condition="extras.is_questionable" id="question-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_qmark.png')}" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.question_title" /></li>-->
 						<li tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
 							<div id="discussion-sidebar-style-menu">
 								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="bottom" tal:attributes="title extras.title.more_title"/>
@@ -137,20 +141,12 @@
 					</ul>
 				</div>
 			</div>
-
-			<div class="row" id="discussion-failure-row" style="display:none">
-				<div class="col-md-3"></div>
-				<div class="col-md-6">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$(this).parent().hide();">
-						<span aria-hidden="true" style="color: white;">&times;</span>
-					</button>
-					<div class="alert alert-danger" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-						<span id="discussion-failure-msg"></span>
-					</div>
-					<div class="col-md-3"></div>
-				</div>
-			</div>
+			<div class="row" style="display: none;">
+                <div class="col-md-12 center">
+                    <img class="glyphicon-local navigation-icon" id="navigation-back" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_back"/>
+                    <img class="glyphicon-local navigation-icon" id="navigation-forward" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_forward"/>
+                </div>
+            </div>
 		</div>
 
 		<div class="container colored-container" id="island-view-container" style="display:none" tal:condition="extras.show_display_style">

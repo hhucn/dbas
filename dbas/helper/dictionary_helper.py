@@ -305,8 +305,10 @@ class DictionaryHelper(object):
                                        'tight_node_view': _tn_dis.get(_tn_dis.tightView),
                                        'show_content': _tn_dis.get(_tn_dis.showContent),
                                        'hide_content': _tn_dis.get(_tn_dis.hideContent),
-                                       'go_back': _tn_dis.get(_tn_dis.letsGoBack),
+                                       'lets_go_back': _tn_dis.get(_tn_dis.letsGoBack),
                                        'snapshot_graph': _tn_dis.get(_tn_dis.snapshotGraph),
+                                       'go_back': _tn_dis.get(_tn_dis.goBack),
+                                       'go_forward': _tn_dis.get(_tn_dis.goForward),
                                        'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
 
     def add_title_text(self, return_dict):

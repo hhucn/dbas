@@ -288,6 +288,8 @@ class GermanDict:
         de_lang[_self.goodPointTakeMeBackButtonText] = 'Ich stimme zu, dass ist ein gutes Argument. Geh einen Schritt zurück.'
         de_lang[_self.group_uid] = 'Gruppe'
         de_lang[_self.goBackToTheDiscussion] = 'Geh zur Diskussion'
+        de_lang[_self.goBack] = 'Klicken, um zurückzugehen'
+        de_lang[_self.goForward] = 'Klicken, um weiterzugehen'
         de_lang[_self.haveALookAt] = 'Hey, schau dir mal das an: '
         de_lang[_self.hidePasswordRequest] = 'Verstecke die Passwort-Anfrage'
         de_lang[_self.hideGenerator] = 'Verstecke Generator'

@@ -229,6 +229,8 @@ class Translator(object):
         self.goodPointTakeMeBackButtonText = 'goodPointTakeMeBackButtonText'
         self.group_uid = 'group_uid'
         self.goBackToTheDiscussion = 'goBackToTheDiscussion'
+        self.goBack = 'goBack'
+        self.goForward = 'goForward'
         self.haveALookAt = 'haveALookAt'
         self.hidePasswordRequest = 'hidePasswordRequest'
         self.hideGenerator = 'hideGenerator'
