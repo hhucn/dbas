@@ -143,7 +143,8 @@ class Dbas(object):
         if session_expired:
             return self.user_logout(True)
 
-        if len(matchdict['slug']) > 1:
+        count_of_slugs = len(matchdict['slug']) if 'slug' in matchdict else 0
+        if count_of_slugs > 1:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
         if for_api and api_data:
