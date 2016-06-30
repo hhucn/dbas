@@ -14,20 +14,6 @@
                     <span id="total_out_counter" class="lead" style="margin-bottom: 1em;"> ${structure:extras.notifications.total_out} </span>
                     <span class="lead" style="margin-bottom: 1em;" i18n:translate="inTheOutbox">in the outbox.</span>
 
-                    <div id="error-space" class="alert alert-danger alert-dismissible" style="display: none; margin-bottom: 1em;">
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<span id="error-description"></span>
-					</div>
-
-                    <div id="success-space" class="alert alert-success alert-dismissible" style="display: none; margin-bottom: 1em;">
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<span id="success-description"></span>
-					</div>
-
                     <div class="container-three-divs">
 						<div class="flex-div">
                             <ul class="nav nav-tabs">
@@ -109,7 +95,7 @@
 		</div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/ajaxhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/ajaxhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-interactionhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-guihandler.js')}"></script>
 

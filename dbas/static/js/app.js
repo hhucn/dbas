@@ -221,8 +221,12 @@ function setEasterEggs(){
 	$('#dbas-logo').click(function(){
 		var counter = parseInt($(this).attr('data-counter'));
 		counter += 1;
-		if (counter == 5){
+		if (counter == 7){
 			$(this).attr('src', mainpage + 'static/images/dabas.png');
+			$('body').find('span').each(function(){
+				$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
+			});
+			$('.popup_author_img').attr('src', mainpage + 'static/images/dolan.png').css('width', '150%');
 		}
 		$(this).attr('data-counter', counter);
 	});

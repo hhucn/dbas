@@ -186,7 +186,7 @@
                 -->
 
 		    	<div class="row">
-		    		<div class="col-md-12">
+		    		<div class="col-md-6">
                         <div class="bs-callout bs-callout-danger">
                             <h4>
                                 <span class="text-danger">&#10008;</span>
@@ -202,10 +202,8 @@
                             </div>
                         </div>
 		    		</div>
-		    	</div>
 
-		    	<div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="bs-callout bs-callout-success">
                             <h4>
                                 <span class="text-success">&#10004;</span>
@@ -224,7 +222,7 @@
 		    	</div>
 
 		    	<div class="row">
-		    		<div class="col-md-12">
+		    		<div class="col-md-6">
                         <div class="bs-callout bs-callout-info">
                             <h4>
                                 <span class="text-info">&#10134</span>
@@ -240,10 +238,8 @@
                             </div>
 		    			</div>
 		    		</div>
-		    	</div>
 
-		    	<div class="row">
-		    		<div class="col-md-12">
+		    		<div class="col-md-6">
                         <div class="bs-callout bs-callout-info">
                             <h4>
                                 <span class="text-info">&#10134;</span>

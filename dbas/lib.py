@@ -296,7 +296,7 @@ def get_text_for_conclusion(argument, lang, start_with_intro=False, rearrange_in
     :return: String
     """
     if argument.argument_uid:
-        return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro,rearrange_intro=rearrange_intro)
+        return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro, rearrange_intro=rearrange_intro)
     else:
         return get_text_for_statement_uid(argument.conclusion_uid)
 
@@ -312,3 +312,19 @@ def resolve_issue_uid_to_slug(uid):
     """
     issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
     return issue.get_slug() if issue else None
+
+
+def get_all_attacking_arg_uids_from_history(history):
+    """
+    Returns all arguments of the history, which attacked the user
+
+    :param history: String
+    :return: [Arguments.uid]
+    """
+    splitted_history = history.split('-')
+    uids = []
+    for part in splitted_history:
+        if 'reaction' in part:
+            tmp = part.replace('/', 'X', 2).find('/') + 1
+            uids.append(part[tmp])
+    return uids
