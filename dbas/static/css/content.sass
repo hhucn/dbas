@@ -104,9 +104,6 @@
   max-width: 80%
   display: inline-block
 
-#discussion-failure-row
-  padding-top: 25px
-
 #list-all-users, #list-all-attacks
   margin-bottom: 15px
 
@@ -215,12 +212,45 @@
       display: inline-block
       vertical-align: middle
 
+.navigation-icon
+  width: 35px
+
+#navigation-back
+  margin-right: 0.5em
+  background: url(../images/glyphicons_free/glyphicons/glyphicons-225-chevron-left.png) no-repeat 12px 5px
+
+#navigation-forward
+  margin-left: 0.5em
+  background: url(../images/glyphicons_free/glyphicons/glyphicons-224-chevron-right.png) no-repeat 12px 5px
+
+.inactive-navigation-icon
+  -webkit-filter: invert(80%) /* Chrome, Safari, Opera */
+  filter: invert(80%)
+  cursor: not-allowed
+  &:hover
+    -webkit-filter: invert(80%)
+
 .text-counter-input
   color: $info-color
   text-align: left
   float: left
   font-style: italic
   padding-right: 0.5em
+
+.sidebar-icon-toggle
+  float: right
+  margin-bottom: 1em
+  &:hover span
+    background-color: $hhu-blue-color
+
+.sidebar-icon-bar
+  display: block
+  width: 22px
+  height: 2px
+  border-radius: 1px
+  color: $primary-color
+  background-color: $primary-color
+  margin-top: 4px
 
 @media (max-width: 767px)
   #discussions-space ul

@@ -218,9 +218,20 @@ function Main () {
 			}
 		});
 
-		$('#' + contactSubmitButtonId).click(function(e){
+		$('#' + contactSubmitButtonId).click(function(){
 			setTimeout("$('body').addClass('loading')", 0);
 		});
+
+
+		$('#' + navigationBackIcon).click(function(){
+			if (!$(this).hasClass('inactive-navigation-icon'))
+				history.back();
+		});
+		$('#' + navigationForwardIcon).click(function(){
+			if (!$(this).hasClass('inactive-navigation-icon'))
+				history.forward();
+		});
+
 	};
 
 	/**
@@ -290,6 +301,12 @@ function Main () {
 		});
 
 		new Main().setNavigationSidebar(window.innerWidth);
+
+		if (history.length > 1){
+			$('#' + navigationBackIcon).removeClass('inactive-navigation-icon');
+		} else {
+			$('#' + navigationBackIcon).addClass('inactive-navigation-icon').attr('title', '');
+		}
 	};
 
 	/**
