@@ -110,6 +110,10 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
                                                             lang='de'), ('', []))
 
+        # negative uid
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=-1,
+                                                            lang='de'), ('', []))
+
         # language is empty string
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
                                                             lang=''), ('', []))
@@ -126,6 +130,9 @@ class LibTests(unittest.TestCase):
 
         # id for statement, which ends with '!'
         self.assertEqual(lib.get_text_for_statement_uid(uid=30), 'It is important, that pets are small and fluffy')
+
+        # negative uid
+        self.assertEqual(lib.get_text_for_statement_uid(uid=-30), None)
 
     def test_get_text_for_conclusion(self):
         argument1 = Argument(premisegroup=1, issupportive=True, author=1, conclusion=1, issue=1)
@@ -156,6 +163,6 @@ class LibTests(unittest.TestCase):
 
         # id for no issue
         self.assertEqual(lib.resolve_issue_uid_to_slug(uid=0), None)
-
         self.assertEqual(lib.resolve_issue_uid_to_slug(uid=22222222), None)
-
+        #negative uid
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=-4), None)
