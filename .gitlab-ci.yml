@@ -4,8 +4,8 @@ services:
   - hhucn/docker-dbas-postgres
 
 before_script:
-  - pip install -U pip
-  - pip install -r requirements.txt
+  - pip install -Uq pip
+  - pip install -rq requirements.txt
   - python setup.py develop
   - initialize_discussion_sql docker.ini
   - initialize_news_sql docker.ini
