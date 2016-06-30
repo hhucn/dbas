@@ -13,6 +13,7 @@ from cryptacular.bcrypt import BCRYPTPasswordManager
 def get_rnd_passwd():
     """
     Generates a password with the length of 10 out of ([a-z][A-Z][+-*/#!*?])+
+
     :return: new secure password
     """
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
