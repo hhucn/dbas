@@ -514,8 +514,8 @@ class EnglischDict:
         en_lang[_self.youAgreeWith] = 'You agree with'
         en_lang[_self.youDisagreeWith] = 'You disagree with'
         en_lang[_self.youSaidThat] = 'You said that'
-        en_lang[_self.youUsedThisEarlier] = 'You used this earlier.'
-        en_lang[_self.youRejectedThisEarlier] = 'You rejected this earlier.'
+        en_lang[_self.youUsedThisEarlier] = 'You used this earlier'
+        en_lang[_self.youRejectedThisEarlier] = 'You rejected this earlier'
         en_lang[_self.youHaveMuchStrongerArgumentForAccepting] = 'You have a much stronger argument for accepting'
         en_lang[_self.youHaveMuchStrongerArgumentForRejecting] = 'You have a much stronger argument for rejecting'
 
