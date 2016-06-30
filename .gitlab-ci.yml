@@ -17,7 +17,7 @@ test:
     - nosetests --with-coverage --cover-package=dbas
 
 flake8:
-  stage: style
+  stage: test
   script:
     - pip install --quiet flake8
     - flake8 .
