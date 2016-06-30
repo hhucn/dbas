@@ -256,9 +256,9 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxSendNewPremisesForArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPremisesArgument(data);
 		}).fail(function ajaxSendNewPremisesForArgumentFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 6). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			//new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 6). '
+			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -286,9 +286,9 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxSendNewStartPremiseDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
 		}).fail(function ajaxSendNewStartPremiseFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 7). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			//new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 7). '
+			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -312,9 +312,9 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxSendStartStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
-			new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 2). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			//new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 2). '
+			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -343,11 +343,11 @@ function AjaxDiscussionHandler() {
 			callbackFunctionOnDone(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			$('#popup-add-topic-error-text').text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			$('#popup-add-topic-error').show();
+			$('#' + addTopicPopupErrorText).text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). '
+				 + _t(doNotHesitateToContact) + '. ');
+			$('#' + addTopicPopupContainer).show();
 			new Helper().delay(function(){
-				$('#popup-add-topic-error').hide();
+				$('#' + addTopicPopupContainer).hide();
 			}, 2500);
 		});
 	};
@@ -376,7 +376,7 @@ function AjaxDiscussionHandler() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
 			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+				 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -406,7 +406,7 @@ function AjaxDiscussionHandler() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
 			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 13). '
-				 + _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
+				 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -431,7 +431,9 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetShortenUrlDone(data) {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data, long_url);
 		}).fail(function ajaxGetShortenUrl() {
-			$('#' + popupUrlSharingInputId).val(long_url);
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			new GuiHandler().hideAndClearUrlSharingPopup();
+			//$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	};
 
@@ -455,8 +457,9 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 8). '
-				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			//new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 8). '
+			//	 + _t_discussion(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -489,8 +492,9 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 10). '
-				 + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			//new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 10). '
+			//	 + _t_discussion(doNotHesitateToContact) + '. ');
 		});
 
 	};
@@ -554,10 +558,11 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
 			new GuiHandler().hideDiscussionError();
 		}).fail(function ajaxGetAllUsersFail() {
-			new Helper().delay(function ajaxGetAllUsersFailDelay() {
-				new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
-						+ _t(doNotHesitateToContact) + '. ' + _t(restartOnError) + '.');
-			}, 350);
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			//new Helper().delay(function ajaxGetAllUsersFailDelay() {
+			//	new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
+			//			+ _t(doNotHesitateToContact) + '. ');
+			//}, 350);
 		});
 		callback.focus();
 	};
@@ -580,7 +585,7 @@ function AjaxUserHandler(){
 		}).done(function getPublicUserDataDone(data) {
 			new User().callbackDone(data);
 		}).fail(function getPublicUserDataFail() {
-			new User().callbackFail();
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
 }
@@ -602,7 +607,7 @@ function AjaxNewsHandler(){
 		}).done(function ajaxGetNewsDone(data) {
 			new News().callbackIfDoneForGettingNews(data);
 		}).fail(function ajaxGetNewsFail() {
-			$('#' + newsBodyId).append("<h4>" + internalError + "</h4>");
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
 
@@ -875,8 +880,7 @@ function AjaxNotificationHandler(){
 		}).done(function sendAjaxForReadMessageDone(data) {
 			var parsedData = $.parseJSON(data);
 			if (parsedData.error.length > 0) {
-				$('#error-space').fadeIn();
-				$('#error-description').text(parsedData.error);
+				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 			} else {
 				var titletext = $(_this).text().replace(_t(neww).toLocaleUpperCase(), '').trim();
 				var spanEl = $('<span>').addClass('text-primary').text(titletext);
@@ -885,8 +889,7 @@ function AjaxNotificationHandler(){
 				new Notifications().setNewBadgeCounter(parsedData.unread_messages);
 			}
 		}).fail(function sendAjaxForReadMessageFail() {
-			$('#error-space').fadeIn();
-			$('#error-description').text('Requested failed');
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
 
@@ -912,15 +915,12 @@ function AjaxNotificationHandler(){
 				new Notifications().setNewBadgeCounter(parsedData.unread_messages);
 				$('#total_in_counter').text(parsedData.total_in_messages);
 				$('#total_out_counter').text(parsedData.total_out_messages);
-				$('#success-space').fadeIn();
-				$('#success-description').text(parsedData.success);
+				setGlobalSuccessHandler('', parsedData.success);
 			} else {
-				$('#error-space').fadeIn();
-				$('#error-description').text(parsedData.error);
+				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 			}
 		}).fail(function sendAjaxForDeleteMessageFail() {
-			$('#error-space').fadeIn();
-			$('#error-description').text('Requested failed');
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
 
@@ -1012,7 +1012,7 @@ function AjaxGraphHandler(){
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
 		}).fail(function () {
-			new GuiHandler().showDiscussionError(_t(internalError));
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
 }
