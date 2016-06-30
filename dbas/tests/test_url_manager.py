@@ -127,6 +127,10 @@ class UrlManagerTests(unittest.TestCase):
         # Verify that, if 'as_location_href' is 'False' and 'statement_uid' is empty, '{discussion_url}/{slug}/attitude/' is returned.
         self.assertEqual(response_empty_string_false, 'application_url/discuss/cat-or-dog/attitude/')
 
+        response_negative_uid_true = url.get_url_for_statement_attitude(as_location_href=True,
+                                                                         statement_uid=-123)
+        self.assertEqual(response_negative_uid_true, 'location.href="application_url/discuss/cat-or-dog/attitude/-123"')
+
     def test_get_url_for_justifying_statement(self):
         url = self._makeOne(application_url='application_url',
                             slug='cat-or-dog')
