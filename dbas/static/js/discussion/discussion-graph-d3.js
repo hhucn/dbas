@@ -24,7 +24,7 @@ function DiscussionGraph() {
 			alert('do something');
 		} catch (err) {
 			new DiscussionGraph().setDefaultViewParams(false, null, s);
-			new GuiHandler().showDiscussionError(_t(internalError));
+			setGlobalErrorHandler(_t(ohsnap), _t(internalError));
 		}
 	}
 }

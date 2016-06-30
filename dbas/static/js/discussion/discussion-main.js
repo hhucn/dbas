@@ -252,6 +252,9 @@ function Main () {
 					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premise, '');
 				}
 			}, 200);
+			setTextWatcherForMaxLength($(this));
+		}).focusin(function () {
+			setTextWatcherForMaxLength($(this));
 		});
 
 		// gui for the fuzzy search (premises)
@@ -260,6 +263,9 @@ function Main () {
 				var escapedText = new Helper().escapeHtml($('#' + addPremiseContainerMainInputId).val());
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 			}, 200);
+			setTextWatcherForMaxLength($(this));
+		}).focusin(function () {
+			setTextWatcherForMaxLength($(this));
 		});
 
 		// gui for editing statements
@@ -272,6 +278,9 @@ function Main () {
 				$('#' + popupEditStatementWarning).hide();
 				$('#' + popupEditStatementWarningMessage).text('');
 			}, 200);
+			setTextWatcherForMaxLength($(this));
+		}).focusin(function () {
+			setTextWatcherForMaxLength($(this));
 		});
 	};
 
