@@ -319,7 +319,7 @@ function InteractionHandler() {
 				}
 			}, 300);
 		} else {
-			new GuiHandler().showDiscussionError(parsedData.error);
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		}
 	};
 

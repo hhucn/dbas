@@ -24,7 +24,7 @@ function DiscussionGraph() {
 			s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
 		} catch (err){
 			new DiscussionGraph().setDefaultViewParams(false, null, null);
-			new GuiHandler().showDiscussionError(_t(internalError));
+			setGlobalErrorHandler(_t(ohsnap), _t(internalError));
 			return;
 		}
 
@@ -129,7 +129,7 @@ function DiscussionGraph() {
 				return this.getSigmaGraph(jsonData);
 			} catch (err){
 				new DiscussionGraph().setDefaultViewParams(false, null, sigma);
-				new GuiHandler().showDiscussionError(_t(internalError));
+				setGlobalErrorHandler(_t(ohsnap), _t(internalError));
 			}
 		} else {
 			$('#'+ graphViewContainerSpaceId).empty();

@@ -368,14 +368,42 @@ function prepareLoginRegistrationPopup(){
 function setTextWatcherForMinLength(element){
 	var text = element.val().trim();
 	var offset = parseInt(element.attr('data-min-length') - text.length);
-	var id = element.attr('id') + '-text-counter';
-	var msg = _t_discussion(textCountMessage1) + ' ' + offset + ' ' + _t_discussion(textCountMessage2);
+	var id = element.attr('id') + '-text-min-counter';
+	var msg = _t_discussion(textMinCountMessage1) + ' ' + offset + ' ' + _t_discussion(textMinCountMessage2);
 	var field = $('#' + id);
 	if (offset > 0) {
 		if (field.length > 0) {
+			console.log("a1");
 			field.text(msg);
 		} else {
-			$('<span>').text(msg).attr('id', id).addClass('text-counter-input').insertBefore(element);
+			console.log("a2");
+			$('<span>').text(msg).attr('id', id).addClass('text-min-counter-input').insertBefore(element);
+		}
+	} else {
+		if (field.length > 0) {
+			console.log("a3");
+			field.remove();
+		}
+		console.log("a4");
+	}
+}
+
+/**
+ * Sets an text watcher for the given element. After every input the attribute 'data-min-length' will be checked
+ * and maybe a text is shown
+ * @param element
+ */
+function setTextWatcherForMaxLength(element){
+	var text = element.val().trim();
+	var offset = parseInt(element.attr('data-max-length') - text.length);
+	var id = element.attr('id') + '-text-max-counter';
+	var msg = _t_discussion(textMaxCountMessage);
+	var field = $('#' + id);
+	if (offset < 0) {
+		if (field.length > 0) {
+			field.text(msg);
+		} else {
+			$('<span>').text(msg).attr('id', id).addClass('text-max-counter-input').insertBefore(element);
 		}
 	} else {
 		if (field.length > 0) {

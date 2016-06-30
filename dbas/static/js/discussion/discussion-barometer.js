@@ -263,7 +263,6 @@ function DiscussionBarometer(){
 	 * Callback if the ajax request failed
 	 */
 	this.callbackIfFailForGetDictionary = function(){
-		new GuiHandler().showDiscussionError(_t_discussion(requestFailed)
-			+ ' (' + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
+		setGlobalErrorHandler(_t(ohsnap), _t_discussion(requestFailed));
 	};
 }

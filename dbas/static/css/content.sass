@@ -230,12 +230,17 @@
   &:hover
     -webkit-filter: invert(80%)
 
-.text-counter-input
-  color: $info-color
+.text-min-counter-input, .text-max-counter-input
   text-align: left
   float: left
   font-style: italic
   padding-right: 0.5em
+
+.text-min-counter-input
+  color: $info-color
+
+.text-max-counter-input
+  color: $error-color
 
 .sidebar-icon-toggle
   float: right

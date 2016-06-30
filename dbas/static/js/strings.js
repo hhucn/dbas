@@ -234,8 +234,9 @@ var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
 var to 											    = 'to';
-var textCountMessage1   						    = 'textCountMessage1';
-var textCountMessage2   						    = 'textCountMessage2';
+var textMinCountMessage1   						    = 'textMinCountMessage1';
+var textMinCountMessage2   						    = 'textMinCountMessage2';
+var textMaxCountMessage   						    = 'textMaxCountMessage';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
@@ -411,8 +412,9 @@ var dbas_en = {
 	'to': 'To',
 	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
-	'textCountMessage1': 'Only',
-	'textCountMessage2': 'signs remaining',
+	'textMinCountMessage1': 'Only',
+	'textMinCountMessage2': 'signs remaining',
+	'textMaxCountMessage': 'Caution, your input is very long!',
 	'usersWithSameOpinion': 'Users with same opinion',
 	'valid': 'Valid',
 	'veryweak': 'very weak',
@@ -572,8 +574,9 @@ var dbas_de = {
 	'timestamp': 'Zeit',
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'typeofVote': 'Zustimmung/Ablehnung',
-	'textCountMessage1': 'Nur',
-	'textCountMessage2': 'Zeichen verbleibend',
+	'textMinCountMessage1': 'Nur',
+	'textMinCountMessage2': 'Zeichen verbleibend',
+	'textMaxCountMessage': 'Achtung, die Eingabe ist sehr lang!',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
 	'vote': 'Stimme',
