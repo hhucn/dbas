@@ -1,6 +1,7 @@
+//https://codepen.io/designcouch/pen/Atyop
 #hamburger
   width: 22px
-  height: 45px
+  height: 20px
   position: relative
   -webkit-transform: rotate(0deg)
   -moz-transform: rotate(0deg)
@@ -35,33 +36,33 @@
   transition: .25s ease-in-out
 
 
-#hamburger span:nth-child(1) 
+#hamburger span:nth-child(1)
   top: 0
 
-#hamburger span:nth-child(2),#hamburger span:nth-child(3) 
+#hamburger span:nth-child(2),#hamburger span:nth-child(3)
   top: 6px
 
-#hamburger span:nth-child(4) 
+#hamburger span:nth-child(4)
   top: 12px
 
-#hamburger.open span:nth-child(1) 
+#hamburger.open span:nth-child(1)
   top: 6px
   width: 0
   left: 50%
 
-#hamburger.open span:nth-child(2) 
+#hamburger.open span:nth-child(2)
   -webkit-transform: rotate(45deg)
   -moz-transform: rotate(45deg)
   -o-transform: rotate(45deg)
   transform: rotate(45deg)
 
-#hamburger.open span:nth-child(3) 
+#hamburger.open span:nth-child(3)
   -webkit-transform: rotate(-45deg)
   -moz-transform: rotate(-45deg)
   -o-transform: rotate(-45deg)
   transform: rotate(-45deg)
 
-#hamburger.open span:nth-child(4) 
+#hamburger.open span:nth-child(4)
   top: 18px
-  width: 0%
+  width: 0
   left: 50%

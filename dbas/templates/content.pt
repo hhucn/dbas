@@ -43,8 +43,14 @@
 		</div>
 
 		<div class="container colored-container" id="discussion-container">
+            <div id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
 			<div class="row" >
-				<div class="col-md-11" style="text-align: justify;">
+				<div class="col-md-12" style="text-align: justify; max-width: 98%" id="dialog-wrapper">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -142,19 +148,13 @@
 					    <span class="sidebar-icon-bar right"></span>
 					    <span class="sidebar-icon-bar right"></span>
 				    </div>
-                    <div id="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-					<ul id="discussion-icon-sidebar" class="left">
+					<ul id="discussion-icon-sidebar" class="left" style="display: none">
                         <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.share_url" id="share-url"><i class="fa fa-share" aria-hidden="true"></i>Share</li>
                         <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement" id="edit-statement"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</li>
-                        <li data-toggle="tooltip" data-placement="left" tal:attributes="value extras.title.report_title" id="report-button"><i class="fa fa-flag" aria-hidden="true"></i>Report</li>
+                        <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.report_title" id="report-button"><i class="fa fa-flag" aria-hidden="true"></i>Report</li>
                         <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" id="opinion-barometer-img"><i class="fa fa-bar-chart" aria-hidden="true"></i>Barometer</li>
-                        <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" id="display-style-icon-island-img" ><i class="fa fa-graduation-cap" aria-hidden="true"></i>Island</li>
-                        <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" id="display-style-icon-expert-img" ><i class="fa fa-map-o" aria-hidden="true"></i>Expert</li>
+                        <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" id="display-style-icon-island-img"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Island</li>
+                        <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" id="display-style-icon-expert-img"><i class="fa fa-map-o" aria-hidden="true"></i>Expert</li>
                         <li data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.finish_title" onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true"></i>Exit</li>
 					</ul>
                 </div>

@@ -232,9 +232,23 @@ function Main () {
 				history.forward();
 		});
 
+		// fading menu
 		$('#hamburger').click(function(){
 			$(this).toggleClass('open');
+
+			if ($('#discussion-icon-sidebar').is(':visible')) {
+				$('#discussion-icon-sidebar').toggle("slide");
+				new Helper().delay(function(){
+					$('#dialog-wrapper').addClass('col-md-12').removeClass('col-md-11');
+				}, 500);
+			} else {
+				$('#dialog-wrapper').addClass('col-md-11').removeClass('col-md-12');
+				new Helper().delay(function(){
+					$('#discussion-icon-sidebar').toggle("slide");
+				}, 500);
+			}
 		});
+
 	};
 
 	/**
