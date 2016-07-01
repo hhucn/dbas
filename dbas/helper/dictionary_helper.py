@@ -127,9 +127,9 @@ class DictionaryHelper(object):
             return_dict['is_reportable']                 = is_reportable
             return_dict['is_admin']                         = _uh.is_user_in_group(authenticated_userid, 'admins')
             return_dict['is_author']                     = _uh.is_user_in_group(authenticated_userid, 'authors')
-            return_dict['show_bar_icon']                 = show_bar_icon  # TODO SET THIS FOR BAROMETER
-            return_dict['show_display_style']            = show_display_styles  # TODO SET THIS FOR ISLAND
-            return_dict['show_expert_icon']              = show_expert_icon # and False
+            return_dict['show_bar_icon']                 = show_bar_icon
+            return_dict['show_display_style']            = show_display_styles
+            return_dict['show_expert_icon']              = show_expert_icon
             return_dict['close_premise_container']         = True
             return_dict['close_statement_container']     = True
             return_dict['date']                             = arrow.utcnow().format('DD-MM-YYYY')

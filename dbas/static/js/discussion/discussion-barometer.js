@@ -98,7 +98,7 @@ function DiscussionBarometer(){
 	        obj = JSON.parse(data);
 			console.log(obj);
         } catch(e) {
-	        // TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
+	        setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
 			alert('parsing-json: ' + e);
 	        return;
         }

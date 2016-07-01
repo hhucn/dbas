@@ -6,6 +6,7 @@
 function GuiHandler() {
 	'use strict';
 	var interactionHandler;
+	var maxHeightOfBubbleSpace = 300;
 
 	/**
 	 *
@@ -179,8 +180,8 @@ function GuiHandler() {
 
 		start = nowBubble.length == 0 ? 'bottom' : nowBubble;
 		if (height > maxHeight) {
-			if (maxHeight < 300){//} && new Helper().isMobileAgent() ) {
-				maxHeight = 300;
+			if (maxHeight < maxHeightOfBubbleSpace){//} && new Helper().isMobileAgent() ) {
+				maxHeight = maxHeightOfBubbleSpace;
 			}
 			speechBubbles.slimscroll({
 				position: 'right',

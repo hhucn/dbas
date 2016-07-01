@@ -1362,7 +1362,6 @@ class Dbas(object):
                     if settings_value:
                         db_user.set_public_nickname(db_user.nickname)
                     elif db_user.nickname == db_user.public_nickname:
-                        # TODO: there are only 52245 different nicks
                         UserHandler.refresh_public_nickname(db_user)
                     public_nick = db_user.public_nickname
                 else:
@@ -1557,8 +1556,6 @@ class Dbas(object):
                                                                                              supportive, issue, nickname,
                                                                                              for_api, mainpage, lang)
 
-            # TODO Issue 88 notify user
-
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
 
@@ -1615,8 +1612,6 @@ class Dbas(object):
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
-
-            # TODO Issue 88 notify user
 
             if url == -1:
                 return json.dumps(return_dict, True)
