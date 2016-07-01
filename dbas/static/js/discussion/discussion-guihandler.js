@@ -149,7 +149,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageInactive = function(imageElement){
-		imageElement.addClass('inactive-image').removeClass('icon-badge').css('cursor','not-allowed');
+		imageElement.addClass('inactive-image').css('cursor','not-allowed');//.removeClass('icon-badge');
 	};
 
 	/**
@@ -157,7 +157,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageActive = function(imageElement){
-		imageElement.removeClass('inactive-image').addClass('icon-badge').css('cursor', 'pointer');
+		imageElement.removeClass('inactive-image').css('cursor', 'pointer');//.addClass('icon-badge');
 	};
 
 	/**

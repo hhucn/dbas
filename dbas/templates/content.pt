@@ -105,7 +105,7 @@
 					</div>
 				</div>
 
-				<div class="col-md-1">
+				<div class="col-md-1" tal:condition="1==2">
 					<ul id="discussion-sidebar">
                         <li>
 						    <a id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" tal:attributes="title extras.buttons.share_url"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_share.png')}"/></a>
@@ -122,7 +122,7 @@
 
 								<ul id="site-navigation">
 									<li tal:condition="extras.show_bar_icon"><img id="opinion-barometer-img" class="display-style-menu-icon icon-badge" alt="icon-bars" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" /></li>
-									<!--
+                                    <!--
                                     <li tal:condition="extras.show_display_style"><img id="display-style-icon-guided-img" class="display-style-menu-icon icon-badge" alt="icon-guided" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" /></li>
 									-->
                                     <li tal:condition="extras.show_display_style"><img id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" /></li>
@@ -136,22 +136,23 @@
 					</ul>
 				</div>
 
-				<div class="col-md-1">
+				<div class="col-md-2">
                     <div class="sidebar-icon-toggle">
 					    <span class="sidebar-icon-bar right"></span>
 					    <span class="sidebar-icon-bar right"></span>
 					    <span class="sidebar-icon-bar right"></span>
 				    </div>
 					<ul id="discussion-icon-sidebar" class="left list-group">
-                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.share_url"><i class="fa fa-share" aria-hidden="true"></i>Share</li>
-                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</li>
-                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report"><i class="fa fa-flag" aria-hidden="true"></i>Report</li>
-                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer"><i class="fa fa-bar-chart" aria-hidden="true"></i>Barometer</li>
-                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Island</li>
-                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view"><i class="fa fa-map-o" aria-hidden="true"></i>Expert</li>
-                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view"><i class="fa fa-sign-out" aria-hidden="true"></i>Exit</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.share_url" id="share-url"><i class="fa fa-share" aria-hidden="true"></i>Share</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement" id="edit-statement"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.title.report_title" id="report-button"><i class="fa fa-flag" aria-hidden="true"></i>Report</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" id="opinion-barometer-img"><i class="fa fa-bar-chart" aria-hidden="true"></i>Barometer</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" id="display-style-icon-island-img" ><i class="fa fa-graduation-cap" aria-hidden="true"></i>Island</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" id="display-style-icon-expert-img" ><i class="fa fa-map-o" aria-hidden="true"></i>Expert</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.finish_title" onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true"></i>Exit</li>
 					</ul>
                 </div>
+
 			</div>
 
 			<div class="row" style="display: none;">
