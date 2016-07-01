@@ -14,10 +14,22 @@
   padding-right: 10px
 
 #custom-bootstrap-menu.navbar-default .navbar-nav > li > a
+  color: #000
   &:hover, &:focus
-    color: #2196f3
-    /*font-weight: 400;
+    color: $primary-color
     background-color: $bubble-space
+
+.navbar-right .dropdown-menu a
+  span
+    color: #000
+  &:hover span
+    color: $primary-color
+  i
+    color: #000
+  &:hover i
+    color: $primary-color
+  .badge
+    color: #fff
 
 .navbar-transparent
   background-color: transparent
@@ -57,10 +69,6 @@
     .fa
       font-size: 16px
       margin-right: 0.5em
-    a
-      &:hover
-        text-decoration: none
-        color: #2196f3
 
 #navbar-right
   .fa

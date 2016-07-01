@@ -514,7 +514,7 @@ class GermanDict:
         de_lang[_self.welcomeMessage] = 'Willkommen im neuen Dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!'
         de_lang[_self.youAreInterestedIn] = 'Sie interessieren Sich für'
         de_lang[_self.youAgreeWith] = 'Ich bin der Meinung, dass'
-        de_lang[_self.youDisagreeWith] = 'Ich wiedersprechen, dass'
+        de_lang[_self.youDisagreeWith] = 'Ich widerspreche, dass'
         de_lang[_self.youSaidThat] = 'Sie haben gesagt, dass'
         de_lang[_self.youUsedThisEarlier] = 'Sie haben diese Aussage schon benutzt.'
         de_lang[_self.youRejectedThisEarlier] = 'Sie haben diese Aussage schon abgelehnt.'
