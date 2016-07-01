@@ -11,7 +11,7 @@ import dbas.helper.notification_helper as NotificationHelper
 import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User
+from dbas.database.discussion_model import Argument, User, Language
 from dbas.helper.query_helper import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
@@ -265,8 +265,10 @@ class DictionaryHelper(object):
         logger('DictionaryHelper', 'add_language_options_for_extra_dict', 'def')
         lang_is_en = (self.system_lang != 'de')
         lang_is_de = (self.system_lang == 'de')
+        dblang = DBDiscussionSession.query(Language).filter_by(ui_locales=self.system_lang).first()
         extras_dict.update({
-            'lang': self.system_lang,
+            'ui_locales': self.system_lang,
+            'lang': dblang.name,
             'lang_is_de': lang_is_de,
             'lang_is_en': lang_is_en,
             'link_de_class': ('active' if lang_is_de else ''),

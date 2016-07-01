@@ -143,13 +143,13 @@
 					    <span class="sidebar-icon-bar right"></span>
 				    </div>
 					<ul id="discussion-icon-sidebar" class="left list-group">
-                        <li class="list-group-item"><i class="fa fa-share" aria-hidden="true"></i>Share</li>
-                        <li class="list-group-item"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</li>
-                        <li class="list-group-item"><i class="fa fa-flag" aria-hidden="true"></i>Report</li>
-                        <li class="list-group-item"><i class="fa fa-bar-chart" aria-hidden="true"></i>Barometer</li>
-                        <li class="list-group-item"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Island</li>
-                        <li class="list-group-item"><i class="fa fa-map-o" aria-hidden="true"></i>Expert</li>
-                        <li class="list-group-item"><i class="fa fa-sign-out" aria-hidden="true"></i>Exit</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.share_url"><i class="fa fa-share" aria-hidden="true"></i>Share</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.buttons.edit_statement"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="value extras.buttons.report"><i class="fa fa-flag" aria-hidden="true"></i>Report</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer"><i class="fa fa-bar-chart" aria-hidden="true"></i>Barometer</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Island</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view"><i class="fa fa-map-o" aria-hidden="true"></i>Expert</li>
+                        <li class="list-group-item" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view"><i class="fa fa-sign-out" aria-hidden="true"></i>Exit</li>
 					</ul>
                 </div>
 			</div>
