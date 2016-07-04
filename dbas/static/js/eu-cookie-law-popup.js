@@ -118,13 +118,13 @@ $.fn.euCookieLawPopup = (function() {
 			    ' eupopup-container-' + _self.params.popupPosition +
 			    (_self.params.compactStyle ? ' eupopup-style-compact' : '') +
 				' eupopup-color-' + _self.params.colorStyle + '">' +
-				'<div class="eupopup-head">' + _self.params.popupTitle + '</div>' +
-				'<div class="eupopup-body">' + _self.params.popupText + '</div>' +
+				'<div class="eupopup-head"><span>' + _self.params.popupTitle + '</span></div>' +
+				'<div class="eupopup-body"><span>' + _self.params.popupText + '</span></div>' +
 				'<div class="eupopup-buttons">' +
-					'<a href="#" class="eupopup-button eupopup-button_1">' + _self.params.buttonContinueTitle + '</a>' +
+					'<a href="#" class="eupopup-button eupopup-button_1"><span>' + _self.params.buttonContinueTitle + '</span></a>' +
 					'<a href="' + _self.params.cookiePolicyUrl + '"' +
 						(_self.params.buttonLearnmoreOpenInNewWindow ? ' target=_blank ' : '') +
-						' class="eupopup-button eupopup-button_2">' + _self.params.buttonLearnmoreTitle + '</a>' +
+						' class="eupopup-button eupopup-button_2"><span>' + _self.params.buttonLearnmoreTitle + '</span></a>' +
 					'<div class="clearfix"></div>' +
 				'</div>' +
 				//'<a href="#" class="eupopup-closebutton">x</a>' +
