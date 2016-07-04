@@ -269,7 +269,7 @@ function Main () {
 			}
 		});
 
-		$('#feedback-switcher').change(function () {
+		$('#feedback-switcher').change(function () { // TODO #122
 			if ($('#discussions-space-list').is(':visible')){
 				$('#discussions-space-list').hide();
 				$('#discussion-space-answer-buttons').show();
@@ -363,14 +363,16 @@ function Main () {
 			$('#' + navigationBackIcon).addClass('inactive-navigation-icon').attr('title', '');
 		}
 
-		// remove html chars
+		// remove html chars  // TODO #122
 		$('#discussion-space-answer-buttons').find('a').each(function(){
 			var title = $(this).attr('title');
+			var href = $(this).attr('href');
 			while (title.indexOf('<strong>') != -1)
 				title = title.replace('<strong>', '');
 			while (title.indexOf('</strong>') != -1)
 				title = title.replace('</strong>', '');
 			$(this).attr('title', title);
+			$(this).attr('href', href.replace('location.href="', '').replace('"', ''));
 		});
 	};
 
