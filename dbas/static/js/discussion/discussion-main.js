@@ -269,6 +269,15 @@ function Main () {
 			}
 		});
 
+		$('#feedback-switcher').change(function () {
+			if ($('#discussions-space-list').is(':visible')){
+				$('#discussions-space-list').hide();
+				$('#discussion-space-answer-buttons').show();
+			} else {
+				$('#discussion-space-answer-buttons').hide();
+				$('#discussions-space-list').show();
+			}
+		});
 	};
 
 	/**
@@ -353,6 +362,16 @@ function Main () {
 		} else {
 			$('#' + navigationBackIcon).addClass('inactive-navigation-icon').attr('title', '');
 		}
+
+		// remove html chars
+		$('#discussion-space-answer-buttons').find('a').each(function(){
+			var title = $(this).attr('title');
+			while (title.indexOf('<strong>') != -1)
+				title = title.replace('<strong>', '');
+			while (title.indexOf('</strong>') != -1)
+				title = title.replace('</strong>', '');
+			$(this).attr('title', title);
+		});
 	};
 
 	/**
