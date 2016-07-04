@@ -357,12 +357,6 @@ function Main () {
 
 		new Main().setNavigationSidebar(window.innerWidth);
 
-		if (history.length > 1){
-			$('#' + navigationBackIcon).removeClass('inactive-navigation-icon');
-		} else {
-			$('#' + navigationBackIcon).addClass('inactive-navigation-icon').attr('title', '');
-		}
-
 		// remove html chars  // TODO #122
 		$('#discussion-space-answer-buttons').find('a').each(function(){
 			var title = $(this).attr('title');
