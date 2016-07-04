@@ -235,16 +235,36 @@ function Main () {
 		// fading menu
 		$('#hamburger').click(function(){
 			$(this).toggleClass('open');
+			var wrapper = $('#dialog-wrapper');
+			var width = wrapper.width();
+			var sidebar = $('#discussion-icon-sidebar');
+			var hamburger = $('#hamburger');
+			var hamburgerw = $('#hamburger-wrapper');
+			var discussion = $('#' + discussionContainerId);
 
-			if ($('#discussion-icon-sidebar').is(':visible')) {
-				$('#discussion-icon-sidebar').toggle("slide");
+			if (sidebar.is(':visible')) {
+				sidebar.toggle('slide');
+				hamburger.css('margin-right', '0.5em')
+					.css('background-color', '');
+				hamburgerw.css('background-color', '');
+				discussion.css('max-height', '');
+				hamburgerw.css('height', '');
 				new Helper().delay(function(){
-					$('#dialog-wrapper').addClass('col-md-12').removeClass('col-md-11');
+					wrapper.width(width + sidebar.outerWidth());
+					//$('#dialog-wrapper').addClass('col-md-12').removeClass('col-md-10');
 				}, 500);
 			} else {
-				$('#dialog-wrapper').addClass('col-md-11').removeClass('col-md-12');
+				//$('#dialog-wrapper').addClass('col-md-10').removeClass('col-md-12');
+				wrapper.width(width - sidebar.outerWidth());
+				discussion.css('max-height', discussion.outerHeight() + 'px');
 				new Helper().delay(function(){
-					$('#discussion-icon-sidebar').toggle("slide");
+					sidebar.toggle('slide');
+					hamburger.css('margin-right', '80px')
+						.css('margin-left', 'auto')
+						.css('background-color', sidebar.css('background-color'));
+					hamburgerw.css('background-color', $('#dialog-speech-bubbles-space')
+						.css('background-color'));
+					hamburgerw.css('height', discussion.outerHeight() + 'px');
 				}, 500);
 			}
 		});
