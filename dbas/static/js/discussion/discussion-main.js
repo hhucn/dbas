@@ -251,10 +251,8 @@ function Main () {
 				hamburgerw.css('height', '');
 				new Helper().delay(function(){
 					wrapper.width(width + sidebar.outerWidth());
-					//$('#dialog-wrapper').addClass('col-md-12').removeClass('col-md-10');
-				}, 500);
+				}, 300);
 			} else {
-				//$('#dialog-wrapper').addClass('col-md-10').removeClass('col-md-12');
 				wrapper.width(width - sidebar.outerWidth());
 				discussion.css('max-height', discussion.outerHeight() + 'px');
 				new Helper().delay(function(){
@@ -265,7 +263,7 @@ function Main () {
 					hamburgerw.css('background-color', $('#dialog-speech-bubbles-space')
 						.css('background-color'));
 					hamburgerw.css('height', discussion.outerHeight() + 'px');
-				}, 500);
+				}, 200);
 			}
 		});
 
