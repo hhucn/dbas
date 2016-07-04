@@ -149,8 +149,8 @@
                     <li id="edit-statement" tal:condition="True or extras.is_editable"><i class="fa fa-pencil" aria-hidden="true"></i>${extras.buttons.edit_statement}</li>
                     <li id="report-button" tal:condition="True or extras.is_reportable"><i class="fa fa-flag" aria-hidden="true"></i>${extras.title.report_title}</li>
                     <li id="opinion-barometer-img" tal:condition="True or extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true"></i>${extras.title.barometer}</li>
-                    <li id="display-style-icon-island-img" tal:condition="True or extras.show_display_style"><i class="fa fa-graduation-cap" aria-hidden="true"></i>${extras.title.island_view}</li>
-                    <li id="display-style-icon-expert-img" tal:condition="True or extras.show_expert_icon"><i class="fa fa-map-o" aria-hidden="true"></i>${extras.title.expert_view}</li>
+                    <li id="display-style-icon-island-img" tal:condition="True or extras.show_display_style"><i class="fa fa-map-o" aria-hidden="true"></i>${extras.title.island_view}</li>
+                    <li id="display-style-icon-expert-img" tal:condition="True or extras.show_expert_icon"><i class="fa fa-graduation-cap" aria-hidden="true"></i>${extras.title.expert_view}</li>
                     <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true"></i>${extras.title.finish_title}</li>
 				</ul>
                 </div>

@@ -259,7 +259,7 @@ function Main () {
 				discussion.css('max-height', discussion.outerHeight() + 'px');
 				new Helper().delay(function(){
 					sidebar.toggle('slide');
-					hamburger.css('margin-right', '80px')
+					hamburger.css('margin-right', (hamburgerw.width() - hamburger.width())/2 + 'px')
 						.css('margin-left', 'auto')
 						.css('background-color', sidebar.css('background-color'));
 					hamburgerw.css('background-color', $('#dialog-speech-bubbles-space')
