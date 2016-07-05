@@ -257,16 +257,16 @@ function Main () {
 						.css('height', discussion.outerHeight() + 'px');
 					tack.fadeIn();
 				}, 200);
+				new Helper().delay(function(){
+					new Main().checkHeightForTack();
+				}, 700);
 			}
 		});
 
 		// action for tacking the sidebar
 		$('#' + sidebarTackWrapperId).click(function() {
-			var tack = $('#' + sidebarTackId);
 			if (localStorage.getItem(tacked_sidebar) == 'true') {
-				tack.css('-ms-transform', 'rotate(0deg)')
-					.css('-webkit-transform', 'rotate(0deg)')
-					.css('transform', 'rotate(0deg)');
+				new Main().rotateTack('0');
 				localStorage.setItem(tacked_sidebar, 'false');
 				$(this).attr('data-original-title', _t_discussion(pinNavigation));
 
@@ -275,9 +275,7 @@ function Main () {
 					$('#' + sidebarHamburgerIconId).click();
 				}
 			} else {
-				tack.css('-ms-transform', 'rotate(90deg)')
-					.css('-webkit-transform', 'rotate(90deg)')
-					.css('transform', 'rotate(90deg)');
+				new Main().rotateTack('90');
 				localStorage.setItem(tacked_sidebar, 'true');
 				$(this).attr('data-original-title', _t_discussion(unpinNavigation));
 			}
@@ -383,16 +381,10 @@ function Main () {
 			var sidebarw = $('#sidebar-wrapper');
 			var discussion = $('#' + discussionContainerId);
 			var tack = $('#' + sidebarTackWrapperId);
+			var main = new Main();
 
-			$('#' + sidebarTackId).css('-ms-transform', 'rotate(90deg)')
-				.css('-webkit-transform', 'rotate(90deg)')
-				.css('transform', 'rotate(90deg)');
-
-			// open menu
-			wrapperAndBurger.css('-webkit-transition', 'all 0s ease')
-				.css('-moz-transition', 'all 0s ease')
-				.css('-o-transition', 'all 0s ease')
-				.css('transition', 'all 0s ease');
+			main.rotateTack('90');
+			main.setAnimationSpeed(wrapperAndBurger, '0.0');
 
 			hamburger.addClass('open');
 
@@ -406,15 +398,38 @@ function Main () {
 				.css('height', discussion.outerHeight() + 'px');
 			tack.fadeIn();
 
-			wrapperAndBurger.css('-webkit-transition', 'all 0.5s ease')
-				.css('-moz-transition', 'all 0.5s ease')
-				.css('-o-transition', 'all 0.5s ease')
-				.css('transition', 'all 0.5s ease');
+			main.setAnimationSpeed(wrapperAndBurger, '0.5');
 
 			tack.attr('data-original-title', _t_discussion(unpinNavigation));
 		} else {
 			$('#' + sidebarTackWrapperId).attr('data-original-title', _t_discussion(pinNavigation));
 		}
+		new Main().checkHeightForTack();
+	};
+
+	this.checkHeightForTack= function() {
+		var wrapper = $('#' + sidebarTackWrapperId);
+		//if (Math.abs($('#discussion-icon-sidebar').height() - $('#sidebar-wrapper').height()) < 45){
+		if ($('#discussion-icon-sidebar').height() < 250){
+			wrapper.css('bottom', '')
+				.css('top', '0')
+				.css('width', '30%')
+				.css('right', '0');
+		}
+
+	};
+
+	this.rotateTack = function(degree){
+		$('#' + sidebarTackId).css('-ms-transform', 'rotate(' + degree + 'deg)')
+			.css('-webkit-transform', 'rotate(' + degree + 'deg)')
+			.css('transform', 'rotate(' + degree + 'deg)');
+	};
+
+	this.setAnimationSpeed = function(element, speed){
+		element.css('-webkit-transition', 'all ' + speed + 's ease')
+			.css('-moz-transition', 'all ' + speed + 's ease')
+			.css('-o-transition', 'all ' + speed + 's ease')
+			.css('transition', 'all ' + speed + 's ease');
 	};
 
 	/**
