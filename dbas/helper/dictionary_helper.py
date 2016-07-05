@@ -76,7 +76,7 @@ class DictionaryHelper(object):
         """
         return self.prepare_extras_dict('', False, False, False, False, False, nickname, append_notifications=append_notifications, request=request)
 
-    def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles,
+    def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_island_icon,
                             show_expert_icon, authenticated_userid, argument_id=0, application_url='', for_api=False,
                             append_notifications=False, request=None):
         """
@@ -86,7 +86,7 @@ class DictionaryHelper(object):
         :param is_editable: Boolean
         :param is_reportable: Boolean
         :param show_bar_icon: Boolean
-        :param show_display_styles: Boolean
+        :param show_island_icon: Boolean
         :param show_expert_icon: Boolean
         :param authenticated_userid: User.nickname
         :param argument_id: Argument.uid
@@ -128,7 +128,7 @@ class DictionaryHelper(object):
             return_dict['is_admin']                         = _uh.is_user_in_group(authenticated_userid, 'admins')
             return_dict['is_author']                     = _uh.is_user_in_group(authenticated_userid, 'authors')
             return_dict['show_bar_icon']                 = show_bar_icon
-            return_dict['show_display_style']            = show_display_styles
+            return_dict['show_island_icon']              = show_island_icon
             return_dict['show_expert_icon']              = show_expert_icon
             return_dict['close_premise_container']         = True
             return_dict['close_statement_container']     = True
@@ -150,7 +150,7 @@ class DictionaryHelper(object):
             return_dict['notifications'] = message_dict
 
             # add everything for the island view
-            if return_dict['show_display_style']:
+            if return_dict['show_island_icon']:
                 # does an argumente exists?
                 db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
                 if db_argument:
@@ -170,10 +170,10 @@ class DictionaryHelper(object):
                                                                                                   for_island_view=True))
                     return_dict['island'] = island_dict
                 else:
-                    return_dict['is_editable']          = False
-                    return_dict['is_reportable']      = False
-                    return_dict['show_bar_icon']      = False
-                    return_dict['show_display_style'] = False
+                    return_dict['is_editable']      = False
+                    return_dict['is_reportable']    = False
+                    return_dict['show_bar_icon']    = False
+                    return_dict['show_island_icon'] = False
         return return_dict
 
     def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
