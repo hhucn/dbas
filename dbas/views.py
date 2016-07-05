@@ -406,9 +406,10 @@ class Dbas(object):
         history         = params['history'] if 'history' in params else ''
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
-        if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack)\
-                or not Validator.check_belonging_of_argument(issue, arg_id_user)\
-                or not Validator.check_belonging_of_argument(issue, arg_id_sys):
+        valid_reaction = Validator.check_reaction(arg_id_user, arg_id_sys, attack)
+        if not tmp_argument or not valid_reaction\
+                or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_user)\
+                or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_sys):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         supportive           = tmp_argument.is_supportive

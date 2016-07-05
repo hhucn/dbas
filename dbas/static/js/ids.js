@@ -250,6 +250,7 @@ var sessionExpiredContainer                     = 'session_expired_container';
 var sidebarEditButtonId                         = 'edit-statement';
 var sidebarReportButtonId                       = 'report-button';
 var sidebarMoreButtonId                         = 'more-statement';
+var sidebarHamburgerIconId                      = 'hamburger';
 var sidebarTackId                               = 'tack-sidebar';
 var sidebarTackWrapperId                        = 'tack-sidebar-wrapper';
 var switchLangIndicatorEnId						= 'switch-lang-indicator-en';
