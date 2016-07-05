@@ -158,7 +158,7 @@
                         <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
 				    </ul>
 
-                    <div id="tack-sidebar-wrapper" data-toggle="tooltip" data-placement="bottom">
+                    <div id="tack-sidebar-wrapper" data-toggle="tooltip" data-placement="bottom" style="display: none;">
                         <i id="tack-sidebar" class="fa fa-thumb-tack" aria-hidden="true"></i>
                     </div>
                 </div>
