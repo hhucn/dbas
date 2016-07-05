@@ -99,6 +99,7 @@
                                 </span>
 							</li>
 						</ul>
+                        <!--
                         <div id="discussion-space-answer-buttons" class="center" tal:condition="extras.show_island_icon">
                             <a tal:attributes="id items[0].id; href items[0].url; title items[0].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_attack.svg')}"></a>
                             <a tal:attributes="id items[1].id; href items[1].url; title items[1].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_support.svg')}"></a>
@@ -107,6 +108,7 @@
                             <a tal:condition="items[4].id == 'item_no_opinion'" tal:attributes="id items[4].id; href items[4].url; title items[4].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_dontknow.svg')}"></a>
                             <a href="javascript:window.history.back();" data-toggle="tooltip" data-placement="top" tal:attributes="title extras.buttons.go_back"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_back.svg')}"></a>
                         </div>
+                        -->
 					</div>
 				</div>
 
@@ -138,7 +140,7 @@
 					</ul>
 				</div>
 
-                <div id="sidebar-wrapper">
+                <div id="sidebar-wrapper" class="pull-right">
                     <div id="hamburger">
                         <span></span>
                         <span></span>
@@ -146,13 +148,13 @@
                         <span></span>
                     </div>
 
-				    <ul id="discussion-icon-sidebar" class="left" style="display: none">
+				    <ul id="discussion-icon-sidebar" class="pull-right left" style="display: none">
                         <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
-                        <li id="edit-statement" tal:condition="True or extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
-                        <li id="report-button" tal:condition="True or extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
-                        <li id="opinion-barometer-img" tal:condition="True or extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
-                        <li id="display-style-icon-island-img" tal:condition="True or extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
-                        <li id="display-style-icon-expert-img" tal:condition="True or extras.show_expert_icon"><i class="fa fa-graduation-cap" aria-hidden="true" tal:attributes="titel extras.title.expert_view"></i><span class="sidebar-element">${extras.title.expert_view}</span></li>
+                        <li id="edit-statement" tal:condition="extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
+                        <li id="report-button" tal:condition="extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
+                        <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
+                        <li id="display-style-icon-island-img" tal:condition="extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
+                        <li id="display-style-icon-expert-img" tal:condition="extras.show_expert_icon"><i class="fa fa-graduation-cap" aria-hidden="true" tal:attributes="titel extras.title.expert_view"></i><span class="sidebar-element">${extras.title.expert_view}</span></li>
                         <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
 				    </ul>
 

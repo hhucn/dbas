@@ -258,9 +258,6 @@ function Main () {
 						.css('height', discussion.outerHeight() + 'px');
 					tack.fadeIn();
 				}, 200);
-				new Helper().delay(function(){
-					new Main().checkHeightForTack();
-				}, 700);
 			}
 		});
 
@@ -405,22 +402,6 @@ function Main () {
 		} else {
 			$('#' + sidebarTackWrapperId).attr('data-original-title', _t_discussion(pinNavigation));
 		}
-		new Main().checkHeightForTack();
-	};
-
-	/**
-	 * Check the height of the sidebar and maybe moves the tack elements
-	 */
-	this.checkHeightForTack= function() {
-		var wrapper = $('#' + sidebarTackWrapperId);
-		//if (Math.abs($('#discussion-icon-sidebar').height() - $('#sidebar-wrapper').height()) < 45){
-		if ($('#discussion-icon-sidebar').height() < 250){
-			wrapper.css('bottom', '')
-				.css('top', '0')
-				.css('width', '30%')
-				.css('right', '0');
-		}
-
 	};
 
 	/**
