@@ -7,6 +7,7 @@
 
 function Main () {
 	var tacked_sidebar = 'tacked_sidebar';
+
 	/**
 	 * Sets all click functions
 	 * @param guiHandler
@@ -407,6 +408,9 @@ function Main () {
 		new Main().checkHeightForTack();
 	};
 
+	/**
+	 * Check the height of the sidebar and maybe moves the tack elements
+	 */
 	this.checkHeightForTack= function() {
 		var wrapper = $('#' + sidebarTackWrapperId);
 		//if (Math.abs($('#discussion-icon-sidebar').height() - $('#sidebar-wrapper').height()) < 45){
@@ -419,12 +423,21 @@ function Main () {
 
 	};
 
+	/**
+	 * Roates the little pin icon in the sidebar
+	 * @param degree
+	 */
 	this.rotateTack = function(degree){
 		$('#' + sidebarTackId).css('-ms-transform', 'rotate(' + degree + 'deg)')
 			.css('-webkit-transform', 'rotate(' + degree + 'deg)')
 			.css('transform', 'rotate(' + degree + 'deg)');
 	};
 
+	/**
+	 * Sets an animation speed for a specific element
+	 * @param element
+	 * @param speed
+	 */
 	this.setAnimationSpeed = function(element, speed){
 		element.css('-webkit-transition', 'all ' + speed + 's ease')
 			.css('-moz-transition', 'all ' + speed + 's ease')
