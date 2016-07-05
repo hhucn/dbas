@@ -143,8 +143,8 @@ class DictionaryHelper(object):
             inbox = NotificationHelper.get_box_for(authenticated_userid, self.system_lang, application_url, True)
             outbox = NotificationHelper.get_box_for(authenticated_userid, self.system_lang, application_url, False)
             if append_notifications:
-                message_dict['inbox']     = inbox
-                message_dict['outbox']     = outbox
+                message_dict['inbox']    = inbox
+                message_dict['outbox']   = outbox
             message_dict['total_in']     = len(inbox)
             message_dict['total_out']    = len(outbox)
             return_dict['notifications'] = message_dict
