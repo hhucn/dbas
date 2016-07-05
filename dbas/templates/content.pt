@@ -124,16 +124,16 @@
 						<li tal:condition="extras.is_reportable" >
 							<img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.report; title extras.title.report_title" />
 						</li>
-						<li tal:condition="extras.show_display_style or extras.show_bar_icon or extras.show_expert_icon">
+						<li tal:condition="extras.show_island_icon or extras.show_bar_icon or extras.show_expert_icon">
 							<div id="discussion-sidebar-style-menu">
 								<img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="bottom" tal:attributes="title extras.title.more_title"/>
 
 								<ul id="site-navigation">
 									<li tal:condition="extras.show_bar_icon"><img id="opinion-barometer-img" class="display-style-menu-icon icon-badge" alt="icon-bars" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" /></li>
                                     <!--
-                                    <li tal:condition="extras.show_display_style"><img id="display-style-icon-guided-img" class="display-style-menu-icon icon-badge" alt="icon-guided" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" /></li>
+                                    <li tal:condition="extras.show_island_icon"><img id="display-style-icon-guided-img" class="display-style-menu-icon icon-badge" alt="icon-guided" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.guided_view" src="${request.static_url('dbas:static/images/icon_guided.png')}" title="" /></li>
 									-->
-                                    <li tal:condition="extras.show_display_style"><img id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" /></li>
+                                    <li tal:condition="extras.show_island_icon"><img id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" /></li>
 									<li tal:condition="extras.show_expert_icon"><img id="display-style-icon-expert-img" class="display-style-menu-icon icon-badge" alt="icon-expert" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" /></li>
 								</ul>
 							</div>
@@ -157,7 +157,7 @@
                     <li id="edit-statement" tal:condition="True or extras.is_editable"><i class="fa fa-pencil" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
                     <li id="report-button" tal:condition="True or extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
                     <li id="opinion-barometer-img" tal:condition="True or extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
-                    <li id="display-style-icon-island-img" tal:condition="True or extras.show_display_style"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
+                    <li id="display-style-icon-island-img" tal:condition="True or extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
                     <li id="display-style-icon-expert-img" tal:condition="True or extras.show_expert_icon"><i class="fa fa-graduation-cap" aria-hidden="true" tal:attributes="titel extras.title.expert_view"></i><span class="sidebar-element">${extras.title.expert_view}</span></li>
                     <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
 				</ul>
@@ -173,7 +173,7 @@
             </div>
 		</div>
 
-		<div class="container colored-container" id="island-view-container" style="display:none" tal:condition="extras.show_display_style">
+		<div class="container colored-container" id="island-view-container" style="display:none" tal:condition="extras.show_island_icon">
 			<button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
@@ -352,7 +352,7 @@
 			</div>
 		</div>
 
-		<div class="container colored-container" id="display-control-container" tal:condition="extras.show_display_style" style="display:none">
+		<div class="container colored-container" id="display-control-container" tal:condition="extras.show_island_icon" style="display:none">
 			<div class="row">
 				<h4 i18n:translate="change_style">Change display style</h4>
 				<div class="col-md-4">
