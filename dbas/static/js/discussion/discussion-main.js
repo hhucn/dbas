@@ -6,6 +6,7 @@
 
 
 function Main () {
+	var tacked_sidebar = 'tacked_sidebar';
 	/**
 	 * Sets all click functions
 	 * @param guiHandler
@@ -239,16 +240,18 @@ function Main () {
 			var width = wrapper.width();
 			var sidebar = $('#discussion-icon-sidebar');
 			var hamburger = $('#hamburger');
-			var hamburgerw = $('#hamburger-wrapper');
+			var sidebarw = $('#sidebar-wrapper');
 			var discussion = $('#' + discussionContainerId);
+			var tack = $('#' + sidebarTackWrapperId);
 
 			if (sidebar.is(':visible')) {
+				tack.fadeOut();
 				sidebar.toggle('slide');
 				hamburger.css('margin-right', '0.5em')
 					.css('background-color', '');
-				hamburgerw.css('background-color', '');
 				discussion.css('max-height', '');
-				hamburgerw.css('height', '');
+				sidebarw.css('background-color', '')
+					.css('height', '');
 				new Helper().delay(function(){
 					wrapper.width(width + sidebar.outerWidth());
 				}, 300);
@@ -257,13 +260,36 @@ function Main () {
 				discussion.css('max-height', discussion.outerHeight() + 'px');
 				new Helper().delay(function(){
 					sidebar.toggle('slide');
-					hamburger.css('margin-right', (hamburgerw.width() - hamburger.width())/2 + 'px')
+					hamburger.css('margin-right', (sidebarw.width() - hamburger.width())/2 + 'px')
 						.css('margin-left', 'auto')
 						.css('background-color', sidebar.css('background-color'));
-					hamburgerw.css('background-color', $('#dialog-speech-bubbles-space')
-						.css('background-color'));
-					hamburgerw.css('height', discussion.outerHeight() + 'px');
+					sidebarw.css('background-color', $('#dialog-speech-bubbles-space').css('background-color'))
+						.css('height', discussion.outerHeight() + 'px');
+					tack.fadeIn();
 				}, 200);
+			}
+		});
+
+		// action for tacking the sidebar
+		$('#' + sidebarTackWrapperId).click(function() {
+			var tack = $('#' + sidebarTackId);
+			if (localStorage.getItem(tacked_sidebar) == 'true') {
+				tack.css('-ms-transform', 'rotate(0deg)')
+					.css('-webkit-transform', 'rotate(0deg)')
+					.css('transform', 'rotate(0deg)');
+				localStorage.setItem(tacked_sidebar, 'false');
+				$(this).attr('data-original-title', _t_discussion(pinNavigation));
+
+				// hide sidebar if it is visible
+				if ($('#discussion-icon-sidebar').is(':visible')) {
+					$('#hamburger').click();
+				}
+			} else {
+				tack.css('-ms-transform', 'rotate(90deg)')
+					.css('-webkit-transform', 'rotate(90deg)')
+					.css('transform', 'rotate(90deg)');
+				localStorage.setItem(tacked_sidebar, 'true');
+				$(this).attr('data-original-title', _t_discussion(unpinNavigation));
 			}
 		});
 
@@ -366,6 +392,50 @@ function Main () {
 			$(this).attr('title', title);
 			$(this).attr('href', href.replace('location.href="', '').replace('"', ''));
 		});
+
+		// read local storage for pinning the bar / set title
+		if (localStorage.getItem(tacked_sidebar) == 'true') {
+			var wrapperAndBurger = $('#dialog-wrapper, #hamburger');
+			var wrapper = $('#dialog-wrapper');
+			var width = wrapper.width();
+			var sidebar = $('#discussion-icon-sidebar');
+			var hamburger = $('#hamburger');
+			var sidebarw = $('#sidebar-wrapper');
+			var discussion = $('#' + discussionContainerId);
+			var tack = $('#' + sidebarTackWrapperId);
+
+
+			$('#' + sidebarTackId).css('-ms-transform', 'rotate(90deg)')
+				.css('-webkit-transform', 'rotate(90deg)')
+				.css('transform', 'rotate(90deg)');
+
+			// open menu
+			wrapperAndBurger.css('-webkit-transition', 'all 0s ease')
+				.css('-moz-transition', 'all 0s ease')
+				.css('-o-transition', 'all 0s ease')
+				.css('transition', 'all 0s ease');
+
+			hamburger.addClass('open');
+
+			wrapper.width(width - sidebar.outerWidth());
+			discussion.css('max-height', discussion.outerHeight() + 'px');
+			sidebar.show();
+			hamburger.css('margin-right', (sidebarw.width() - hamburger.width())/2 + 'px')
+				.css('margin-left', 'auto')
+				.css('background-color', sidebar.css('background-color'));
+			sidebarw.css('background-color', $('#dialog-speech-bubbles-space').css('background-color'))
+				.css('height', discussion.outerHeight() + 'px');
+			tack.fadeIn();
+
+			wrapperAndBurger.css('-webkit-transition', 'all 0.5s ease')
+				.css('-moz-transition', 'all 0.5s ease')
+				.css('-o-transition', 'all 0.5s ease')
+				.css('transition', 'all 0.5s ease');
+
+			tack.attr('data-original-title', _t_discussion(unpinNavigation));
+		} else {
+			$('#' + sidebarTackWrapperId).attr('data-original-title', _t_discussion(pinNavigation));
+		}
 	};
 
 	/**

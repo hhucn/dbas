@@ -141,23 +141,27 @@
 					</ul>
 				</div>
 
-                <div id="hamburger-wrapper">
-                <div id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+                <div id="sidebar-wrapper">
+                    <div id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
 
-				<ul id="discussion-icon-sidebar" class="left" style="display: none">
-                    <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
-                    <li id="edit-statement" tal:condition="True or extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
-                    <li id="report-button" tal:condition="True or extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
-                    <li id="opinion-barometer-img" tal:condition="True or extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
-                    <li id="display-style-icon-island-img" tal:condition="True or extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
-                    <li id="display-style-icon-expert-img" tal:condition="True or extras.show_expert_icon"><i class="fa fa-graduation-cap" aria-hidden="true" tal:attributes="titel extras.title.expert_view"></i><span class="sidebar-element">${extras.title.expert_view}</span></li>
-                    <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
-				</ul>
+				    <ul id="discussion-icon-sidebar" class="left" style="display: none">
+                        <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
+                        <li id="edit-statement" tal:condition="True or extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
+                        <li id="report-button" tal:condition="True or extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
+                        <li id="opinion-barometer-img" tal:condition="True or extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
+                        <li id="display-style-icon-island-img" tal:condition="True or extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
+                        <li id="display-style-icon-expert-img" tal:condition="True or extras.show_expert_icon"><i class="fa fa-graduation-cap" aria-hidden="true" tal:attributes="titel extras.title.expert_view"></i><span class="sidebar-element">${extras.title.expert_view}</span></li>
+                        <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
+				    </ul>
+
+                    <div id="tack-sidebar-wrapper" data-toggle="tooltip" data-placement="bottom">
+                        <i id="tack-sidebar" class="fa fa-thumb-tack" aria-hidden="true"></i>
+                    </div>
                 </div>
 
 			</div>

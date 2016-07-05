@@ -204,6 +204,7 @@ var ohsnap                                          = 'ohsnap';
 var report 											= 'report';
 var reportTitle										= 'reportTitle';
 var passwordSubmit 									= 'passwordSubmit';
+var pinNavigation 									= 'pinNavigation';
 var registered 										= 'registered';
 var requestTrack 									= 'requestTrack';
 var refreshTrack 									= 'refreshTrack';
@@ -240,6 +241,7 @@ var textMaxCountMessage   						    = 'textMaxCountMessage';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
+var unpinNavigation 								= 'unpinNavigation';
 var veryweak 										= 'veryweak';
 var valid    										= 'valid';
 var vote                                            = 'vote';
@@ -377,6 +379,7 @@ var dbas_en = {
 	'options': 'Options',
 	'ohsnap': 'Oh snap!',
 	'passwordSubmit': 'Change Password',
+	'pinNavigation': 'Pin Navigation',
 	'registered': 'Registered',
 	'restartOnError': 'Please try to reload this page or restart the discussion when the error stays',
 	'report': 'Report',
@@ -416,6 +419,7 @@ var dbas_en = {
 	'textMinCountMessage2': 'signs remaining!',
 	'textMaxCountMessage': 'Caution, your input is very long!',
 	'usersWithSameOpinion': 'Users with same opinion',
+	'unpinNavigation': 'Unpin Navigation',
 	'valid': 'Valid',
 	'veryweak': 'very weak',
 	'vote': 'vote',
@@ -539,6 +543,7 @@ var dbas_de = {
 	'options': 'Optionen',
 	'ohsnap': 'Verdammt!',
 	'passwordSubmit': 'Passwort ändern',
+	'pinNavigation': 'Navigation anheften',
 	'report': 'Melden',
 	'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',
 	'registered': 'Registriert',
@@ -573,6 +578,7 @@ var dbas_de = {
 	'to': 'An',
 	'timestamp': 'Zeit',
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
+	'unpinNavigation': 'Navigation lösen',
 	'typeofVote': 'Zustimmung/Ablehnung',
 	'textMinCountMessage1': 'Nur',
 	'textMinCountMessage2': 'Zeichen verbleibend!',
