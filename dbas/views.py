@@ -43,7 +43,7 @@ from .strings import Translator
 from .url_manager import UrlManager
 
 name = 'D-BAS'
-version = '0.5.15'
+version = '0.5.16'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
