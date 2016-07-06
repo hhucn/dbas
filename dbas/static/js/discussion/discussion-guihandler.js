@@ -106,7 +106,6 @@ function GuiHandler() {
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
 		$('#' + headerContainerId).show();
-		$('#' + breadcrumbContainerId).show();
 	};
 
 	/**
@@ -131,7 +130,6 @@ function GuiHandler() {
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
 		$('#' + headerContainerId).hide();
-		$('#' + breadcrumbContainerId).hide();
 		$('#' + addPremiseContainerId).hide();
 
 		// text

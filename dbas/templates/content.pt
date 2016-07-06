@@ -41,8 +41,7 @@
 		</div>
 
 		<div class="container colored-container" id="discussion-container">
-			<div class="row" >
-				<div class="col-md-12" style="text-align: justify; max-width: 95%" id="dialog-wrapper">
+				<div id="dialog-wrapper" class="pull-left">
 
 					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -163,9 +162,7 @@
                     </div>
                 </div>
 
-			</div>
-
-			<div class="row" style="display: none;">
+			<div style="display: none;">
                 <div class="col-md-12 center">
                     <img class="glyphicon-local navigation-icon" id="navigation-back" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_back"/>
                     <img class="glyphicon-local navigation-icon" id="navigation-forward" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_forward"/>
