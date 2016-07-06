@@ -137,10 +137,7 @@ class OpinionHandler:
             all_users = []
             db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
             if not db_statement:
-                statement_dict['uid']       = None
-                statement_dict['text']      = None
-                statement_dict['message']   = None
-                statement_dict['users']     = None
+                statement_dict = {'uid': None, 'text': None, 'message': None, 'users': None}
 
             statement_dict['uid'] = str(uid)
             text = get_text_for_statement_uid(uid)
@@ -195,10 +192,7 @@ class OpinionHandler:
             db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
             if not db_premises:
-                statement_dict['uid']       = None
-                statement_dict['text']      = None
-                statement_dict['message']   = None
-                statement_dict['users']     = None
+                statement_dict = {'uid': None, 'text': None, 'message': None, 'users': None}
 
             statement_dict['uid'] = str(uid)
             text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
@@ -249,10 +243,7 @@ class OpinionHandler:
 
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
         if not db_argument:
-            opinions['uid']       = None
-            opinions['text']      = None
-            opinions['message']   = None
-            opinions['users']     = None
+            opinions = {'uid': None, 'text': None, 'message': None, 'users': None}
 
         opinions['uid'] = str(argument_uid)
         text = get_text_for_argument_uid(argument_uid, self.lang)
@@ -292,12 +283,7 @@ class OpinionHandler:
         ret_dict = dict()
 
         if not db_statement:
-            ret_dict['text'] = None
-            ret_dict['agree'] = None
-            ret_dict['disagree'] = None
-            ret_dict['agree_users'] = []
-            ret_dict['disagree_users'] = []
-            ret_dict['title'] = title[0:1].upper() + title[1:]
+            ret_dict = {'text': None, 'agree': None, 'disagree': None, 'agree_users': [], 'disagree_users': [], 'title': title[0:1].upper() + title[1:]}
 
         text = get_text_for_statement_uid(statement_uid)
         ret_dict['text'] = text[0:1].upper() + text[1:]

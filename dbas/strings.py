@@ -11,7 +11,6 @@ from .strings_en import EnglischDict
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Statement, Premise, VoteStatement
-from .logger import logger
 
 
 class Translator(object):
@@ -314,6 +313,7 @@ class Translator(object):
         self.mailSettingsTitle = 'mailSettingsTitle'
         self.moreAbout = 'moreAbout'
         self.minLength = 'minLength'
+        self.myArgument = 'myArgument'
         self.nickIsTaken = 'nickIsTaken'
         self.nicknameIs = 'nicknameIs'
         self.newPwdEmtpy = 'newPwdEmtpy'
@@ -382,6 +382,7 @@ class Translator(object):
         self.premise = 'premise'
         self.preferedLangTitle = 'preferedLangTitle'
         self.phone = 'phone'
+        self.position = 'position'
         self.pwdNotEqual = 'pwdNotEqual'
         self.pwdsSame = 'pwdsSame'
         self.pwdChanged = 'pwdChanged'
@@ -452,6 +453,7 @@ class Translator(object):
         self.thinkWeShould = 'thinkWeShould'
         self.thisConfrontationIs = 'thisConfrontationIs'
         self.thisIsACopyOfMail = 'thisIsACopyOfMail'
+        self.theirArgument = 'theirArgument'
         self.textversionChangedTopic = 'textversionChangedTopic'
         self.textversionChangedContent = 'textversionChangedContent'
         self.to = 'to'
@@ -547,6 +549,7 @@ class TextGenerator(object):
     """
     Generates text for D-BAS
     """
+    tag_type = 'span'
 
     def __init__(self, lang):
         """
@@ -577,10 +580,10 @@ class TextGenerator(object):
         if conclusion[-1] == '.':
             conclusion = premise[:-1]
 
-        confrontation = '<strong>' + confrontation[0:1].upper() + confrontation[1:] + '</strong>'
+        confrontation = confrontation[0:1].upper() + confrontation[1:]
 
-        premise = '<strong>' + premise[0:1].lower() + premise[1:] + '</strong>'
-        conclusion = '<strong>' + conclusion[0:1].lower() + conclusion[1:] + '</strong>'
+        premise = premise[0:1].lower() + premise[1:]
+        conclusion = conclusion[0:1].lower() + conclusion[1:]
 
         # different cases
         ret_text = ''
@@ -588,9 +591,8 @@ class TextGenerator(object):
             ret_text = _t.get(_t.itIsFalse) + ' ' + premise
         if attack_type == 'support':
             ret_text = _t.get(_t.itIsTrue) if is_supportive else _t.get(_t.itIsFalse)
-            ret_text += ' <strong>' + conclusion + ' '
+            ret_text += ' ' + conclusion + ' '
             ret_text += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
-            ret_text += '</strong>'
         if attack_type == 'undercut':
             ret_text = confrontation + ', ' + _t.get(_t.butIDoNotBelieveCounterFor) + ' ' + conclusion
         if attack_type == 'overbid':
@@ -642,32 +644,32 @@ class TextGenerator(object):
 
         # different cases
         if attack_type == 'undermine':
-            user_msg = f + ' <strong>' + premise + '</strong>.'
+            user_msg = f + ' ' + premise + '.'
 
         if attack_type == 'support':
             user_msg = t if is_supportive else f
-            user_msg += ' <strong>' + conclusion + ' '
+            user_msg += ' ' + conclusion + ' '
             user_msg += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
-            user_msg += '</strong>.'
+            user_msg += '.'
 
         if attack_type == 'undercut':
-            user_msg = r + '<strong>' + premise + '</strong>, '
+            user_msg = r + premise + ', '
             user_msg += _t.get(_t.butIDoNotBelieveCounterFor) if is_supportive else _t.get(_t.butIDoNotBelieveArgumentFor)
-            user_msg += ' <strong>' + conclusion + '</strong>.'
+            user_msg += ' ' + conclusion + '.'
 
         if attack_type == 'overbid':
-            user_msg = r + '<strong>' + premise + '</strong>, '
+            user_msg = r + premise + ', '
             user_msg += _t.get(_t.andIDoBelieveCounterFor) if is_supportive else _t.get(_t.andIDoBelieveArgument)
-            user_msg += ' <strong>' + conclusion + '</strong>. '
+            user_msg += ' ' + conclusion + '. '
             user_msg += _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)
-            user_msg += ' <strong>' + conclusion + '</strong>.'
+            user_msg += ' ' + conclusion + '.'
 
         if attack_type == 'rebut':
-            user_msg = r + '<strong>' + premise + '</strong>, '
+            user_msg = r + premise + ', '
             user_msg += _t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)
-            user_msg += ' <strong>' + conclusion + '</strong>. '
+            user_msg += ' ' + conclusion + '. '
             user_msg += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting)
-            user_msg += ' <strong>' + conclusion + '</strong>.'
+            user_msg += ' ' + conclusion + '.'
 
         # is logged in?
         if is_logged_in:
@@ -675,13 +677,11 @@ class TextGenerator(object):
 
         return user_msg, system_msg
 
-    def get_relation_text_dict(self, premises, conclusion, start_lower_case, with_no_opinion_text, is_attacking,
-                               is_dont_know=False, first_conclusion=None, for_island_view=False):
+    def get_relation_text_dict(self, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False,
+                               first_conclusion=None, for_island_view=False):
         """
         Text of the different reaction types for an given argument
 
-        :param premises: String
-        :param conclusion: String
         :param start_lower_case: Boolean
         :param with_no_opinion_text: Boolean
         :param is_attacking: Boolean
@@ -693,19 +693,16 @@ class TextGenerator(object):
         _t = Translator(self.lang)
         ret_dict = dict()
 
-        if conclusion[-1] == '.':
-            conclusion = conclusion[:-1]
         if first_conclusion:
             if first_conclusion[-1] == '.':
                 first_conclusion = first_conclusion[:-1]
 
-        premise = ''
-        if type(premises) is dict:
-            for p in premises:
-                premise += premises[p]['text'] + _t.get(_t.aand)
-            premise = premise[0:-4]
-        else:
-            premise = premises
+        premise = _t.get(_t.theirArgument)
+        conclusion = _t.get(_t.myArgument)
+
+        # adding tags
+        premise = '<' + self.tag_type + ' data-class="attack">' + premise + '</' + self.tag_type + '>'
+        conclusion = '<' + self.tag_type + ' data-class="argument">' + conclusion + '</' + self.tag_type + '>'
 
         w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:]
         r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:]
@@ -713,27 +710,29 @@ class TextGenerator(object):
         w += ', ' + _t.get(_t.itIsFalse)[0:1].lower() + _t.get(_t.itIsFalse)[1:] + ' ' if self.lang == 'de' else ', '
         r += ', ' + _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ' ' if self.lang == 'de' else ', '
 
-        ret_dict['undermine_text'] = w + (_t.get(_t.itIsFalse) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.'
+        ret_dict['undermine_text'] = w + (_t.get(_t.itIsFalse) if self.lang != 'de' else '')
+        ret_dict['undermine_text'] += ' ' + premise + '.'
 
-        ret_dict['support_text'] = r + (_t.get(_t.itIsTrue) if self.lang != 'de' else '') + ' <strong>' + premise + '</strong>.'
+        ret_dict['support_text'] = r + (_t.get(_t.itIsTrue) if self.lang != 'de' else '')
+        ret_dict['support_text'] += ' ' + premise + '.'
 
         tmp = _t.get(_t.butIDoNotBelieveCounterFor) if is_attacking else _t.get(_t.butIDoNotBelieveArgumentFor)
-        ret_dict['undercut_text'] = r + '<strong>' + premise + '</strong>, '
+        ret_dict['undercut_text'] = r + '' + premise + ', '
         ret_dict['undercut_text'] += (_t.get(_t.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)
-        ret_dict['undercut_text'] += ' <strong>' + conclusion + '</strong>' + '.'
+        ret_dict['undercut_text'] += ' ' + conclusion + '.'
 
-        ret_dict['overbid_text'] = r + '<strong>' + premise + '</strong>, '
+        ret_dict['overbid_text'] = r + premise + ', '
         ret_dict['overbid_text'] += (_t.get(_t.andIDoBelieveArgument) if is_dont_know else _t.get(_t.andIDoBelieveCounterFor))
-        ret_dict['overbid_text'] += ' <strong>' + conclusion + '</strong>. '
+        ret_dict['overbid_text'] += ' ' + conclusion + '. '
         ret_dict['overbid_text'] += (_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting))
-        ret_dict['overbid_text'] += ' <strong>' + conclusion + '</strong>.'
+        ret_dict['overbid_text'] += ' ' + conclusion + '.'
 
-        ret_dict['rebut_text'] = r + '<strong>' + premise + '</strong> '
+        ret_dict['rebut_text'] = r + '' + premise + ' '
         ret_dict['rebut_text'] += (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument))
-        ret_dict['rebut_text'] += ' <strong>' + conclusion + '</strong>. '
+        ret_dict['rebut_text'] += ' ' + conclusion + '. '
         ret_dict['rebut_text'] += (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))
-        ret_dict['rebut_text'] += ' <strong>' + (first_conclusion if first_conclusion else conclusion) + '</strong>.'
-        # + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '</strong>.'
+        ret_dict['rebut_text'] += ' <' + self.tag_type + ' data-class="position">' + (first_conclusion if first_conclusion else conclusion) + '</' + self.tag_type + '>.'
+        # + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '.'
 
         if for_island_view and self.lang == 'de':
             ret_dict['undermine_text'] = ret_dict['undermine_text'][:-1] + ', ' + _t.get(_t.because).lower()
@@ -749,7 +748,7 @@ class TextGenerator(object):
         return ret_dict
 
     def get_text_for_confrontation(self, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
-                                   reply_for_argument, user_is_attacking, user_arg, sys_arg):
+                                   reply_for_argument, user_is_attacking, user_arg, sys_arg, color_html=True):
         """
         Text for the confrontation of the system
 
@@ -763,18 +762,23 @@ class TextGenerator(object):
         :param user_is_attacking: Boolean
         :param user_arg: Argument
         :param sys_arg: Argument
+        :param color_html: Boolean
         :return: String
         """
         _t = Translator(self.lang)
 
         #  build some confrontation text
-        if self.lang == 'de':
-            confrontation = '<strong>' + confrontation + '</strong>'
-        else:
-            confrontation = '<strong>' + confrontation[0:1].lower() + confrontation[1:] + '</strong>'
-            premise = premise[0:1].lower() + premise[1:]
-            sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
-            conclusion = conclusion[0:1].lower() + conclusion[1:]
+        if self.lang != 'de':
+            confrontation   = confrontation[0:1].lower() + confrontation[1:]
+            premise         = premise[0:1].lower() + premise[1:]
+            sys_conclusion  = sys_conclusion[0:1].lower() + sys_conclusion[1:]
+            conclusion      = conclusion[0:1].lower() + conclusion[1:]
+
+        # adding tags
+        if color_html:
+            confrontation = '<' + self.tag_type + ' data-class="attack">' + confrontation + '</' + self.tag_type + '>'
+            conclusion = '<' + self.tag_type + ' data-class="argument">' + conclusion + '</' + self.tag_type + '>'
+            premise = '<' + self.tag_type + ' data-class="position">' + premise + '</' + self.tag_type + '>'
 
         confrontation_text = ''
         db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
@@ -782,9 +786,9 @@ class TextGenerator(object):
 
         # build some confrontation text
         if attack == 'undermine':
-            confrontation_text = _t.get(_t.otherParticipantsThinkThat) + ' <strong>' + premise + ' '
+            confrontation_text = _t.get(_t.otherParticipantsThinkThat) + ' ' + premise + ' '
             confrontation_text += _t.get(_t.hold) if sys_arg.is_supportive else _t.get(_t.doesNotHold)
-            confrontation_text += '</strong>, ' + _t.get(_t.because).lower() + ' ' + confrontation
+            confrontation_text += ', ' + _t.get(_t.because).lower() + ' ' + confrontation
 
         elif attack == 'rebut':
             #
@@ -799,23 +803,23 @@ class TextGenerator(object):
                     confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
                 else:
                     confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
-                confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' ' + _t.get(_t.theySay)
+                confrontation_text += ' ' + conclusion + '.' + ' ' + _t.get(_t.theySay)
                 confrontation_text += ' ' if self.lang == 'de' else ': '
                 confrontation_text += confrontation
             else:  # reply for premise group
                 confrontation_text = _t.get(_t.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(_t.otherParticipantsDontHaveOpinion)
-                confrontation_text += ' <strong>' + premise + '</strong>, '
+                confrontation_text += ' ' + premise + ', '
                 confrontation_text += _t.get(_t.strongerStatementForAccepting) if user_is_attacking else _t.get(_t.strongerStatementForRecjecting)
-                confrontation_text += ' <strong>' + conclusion + '</strong>.' + ' '
+                confrontation_text += ' ' + conclusion + '.' + ' '
                 confrontation_text += _t.get(_t.theySay)
                 confrontation_text += ' ' if self.lang == 'de' else ': '
                 confrontation_text += confrontation
 
         elif attack == 'undercut':
             confrontation_text = _t.get(_t.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(_t.otherParticipantsDontHaveOpinion)
-            confrontation_text += ' <strong>' + premise + '</strong>, '
+            confrontation_text += ' ' + premise + ', '
             confrontation_text += (_t.get(_t.butTheyDoNotBelieveArgument) if supportive else _t.get(_t.butTheyDoNotBelieveCounter))
-            confrontation_text += ' <strong>' + conclusion + '</strong>'
+            confrontation_text += ' ' + conclusion
             if self.lang == 'de':
                 confrontation_text += '. ' + _t.get(_t.theyThink)
             else:
@@ -859,12 +863,12 @@ class TextGenerator(object):
 
         w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:]
         r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:]
-        counter_justi = ' <strong>' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() + ' ' + premise + '</strong>'
+        counter_justi = ' ' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() + ' ' + premise
 
-        ret_dict['undermine_text'] = w + ', <strong>' + premise + '</strong>.'
-        ret_dict['undercut_text'] = r + ', <strong>' + conclusion + '</strong>, ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + counter_justi + '.'
-        ret_dict['rebut_text'] = r + ', <strong>' + premise + '</strong> ' + _t.get(_t.iAcceptArgument) + ' <strong>' + conclusion + '</strong>. '\
-                                 + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' <strong>' + conclusion + '</strong>.'
-        ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': <strong>' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() \
-                                      + ' ' + premise + '</strong>. ' + _t.get(_t.goStepBack) + '.'
+        ret_dict['undermine_text'] = w + ', ' + premise + '.'
+        ret_dict['undercut_text'] = r + ', ' + conclusion + ', ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + counter_justi + '.'
+        ret_dict['rebut_text'] = r + ', ' + premise + ' ' + _t.get(_t.iAcceptArgument) + ' ' + conclusion + '. '\
+                                 + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' ' + conclusion + '.'
+        ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': ' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() \
+                                      + ' ' + premise + '. ' + _t.get(_t.goStepBack) + '.'
         return ret_dict
