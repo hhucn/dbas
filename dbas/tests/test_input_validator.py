@@ -70,8 +70,8 @@ class InputValidatorTests(unittest.TestCase):
                                                  is_history=False)
         self.assertEqual(undermine_true, True)
 
-        undermine_uid_array_false = reaction.check_reaction(attacked_arg_uid=[1,2,3],
-                                                            attacking_arg_uid=[1,2,3],
+        undermine_uid_array_false = reaction.check_reaction(attacked_arg_uid=[1, 2, 3],
+                                                            attacking_arg_uid=[1, 2, 3],
                                                             relation='undermine',
                                                             is_history=False)
         self.assertEqual(undermine_uid_array_false, False)
