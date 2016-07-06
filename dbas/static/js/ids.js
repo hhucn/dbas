@@ -24,7 +24,6 @@ var addStatementErrorContainer 					= 'add-statement-error-container';
 var addStatementErrorMsg 						= 'add-statement-error-msg';
 var addPremiseErrorContainer 					= 'add-premise-error-container';
 var addPremiseErrorMsg 						    = 'add-premise-error-msg';
-var breadcrumbContainerId                       = 'breadcrumb-container';
 var contactSubmitButtonId						= 'contact-submit';
 var closeStatementContainerId 					= 'close-statement-container';
 var closePremiseContainerId 					= 'close-premise-container';

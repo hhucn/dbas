@@ -8,13 +8,13 @@
 					&copy; 2016 Krauthoff&#160;&#160;&#160;
 				</li>
 				<li>
-					<a href="${request.application_url}/imprint"><i class="fa fa-list" aria-hidden="true"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a>
+					<a href="${request.application_url}/imprint"><i class="fa fa-copyright" aria-hidden="true"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a>
 				</li>
 				<li>
 					<a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author"><i class="fa fa-user" aria-hidden="true"></i><span i18n:translate="author">Author</span></a>
 				</li>
 				<li>
-					<a id="link_popup_license" href="" data-toggle="modal" data-target="#popup_license"><i class="fa fa-globe" aria-hidden="true"></i><span i18n:translate="license">license</span></a>
+					<a id="link_popup_license" href="" data-toggle="modal" data-target="#popup_license"><i class="fa fa-list" aria-hidden="true"></i><span i18n:translate="license">license</span></a>
 				</li>
 
 				<li id="contact-link">
