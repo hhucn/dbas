@@ -29,12 +29,3 @@ class OpinionHandlerTests(unittest.TestCase):
         self.assertEqual(opinion.nickname, 'nickname')
 
         self.assertEqual(opinion.mainpage, 'url')
-
-    def test_get_user_and_opinions_for_argument(self):
-        opinion = self._makeOne(lang='de',
-                                nickname='nickname',
-                                mainpage='url')
-
-        DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
-
