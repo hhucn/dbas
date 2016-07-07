@@ -402,6 +402,25 @@ function Main () {
 		} else {
 			$('#' + sidebarTackWrapperId).attr('data-original-title', _t_discussion(pinNavigation));
 		}
+
+		// hover effects on text elements
+		var data = 'data-argumentation-type';
+		$('#' + discussionSpaceListId).find('span[' + data + '!=""]').each(function(){
+			var attr = $(this).attr(data);
+			$(this).hover(
+				function(){
+					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
+						.css('font-weight', '600')
+						.css('font-size', '15px')
+						.css('letter-spacing', '2px');
+				}, function(){
+					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
+						.css('font-weight', '400')
+						.css('font-size', '14px')
+						.css('letter-spacing', '0px');
+				}
+			);
+		});
 	};
 
 	/**
