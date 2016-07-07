@@ -282,7 +282,7 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
             <br>
-			<!--<h4 id="graph-view-container-header" class="center"></h4>-->
+			<!- -<h4 id="graph-view-container-header" class="center"></h4>-->
             <div class="col-md-11" id="graph-view-container-space" style="width: auto; height:95%; float: left;"></div>
 
 			<div class="col-md-1">
@@ -380,18 +380,8 @@
 
 		<script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-barometer.js')}"></script>
 
-		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-graph-sigma.js')}"></script>
-		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.min.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.parsers.json.min.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.plugins.dragNodes.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.renderers.edgeLabels.min.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/worker.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/supervisor.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.layout.forceAtlas2.min.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.canvas.edges.dotted.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.canvas.edgehovers.dotted.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.canvas.nodes.border.js')}"></script>
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/sigma/sigma.plugins.neighborhoods.js')}"></script>
+		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-graph-d3.js')}"></script>
+		<script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/d3.min.js')}"></script>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/chart.min.js')}"></script>
 
