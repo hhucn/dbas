@@ -714,7 +714,7 @@
                         </li>
                         -->
                     </ul>
-                    <div class="alert alert-danger" id="popup-add-topic-error" style="margin-top: 1em; display: none;">
+                    <div class="alert alert-danger hidden" id="popup-add-topic-error" style="margin-top: 1em">
                         <strong id="popup-add-topic-error-text"></strong>
                     </div>
                 </div>

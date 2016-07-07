@@ -6,6 +6,8 @@
 
 
 function Main () {
+	var tacked_sidebar = 'tacked_sidebar';
+
 	/**
 	 * Sets all click functions
 	 * @param guiHandler
@@ -222,33 +224,25 @@ function Main () {
 			setTimeout("$('body').addClass('loading')", 0);
 		});
 
-
-		$('#' + navigationBackIcon).click(function(){
-			if (!$(this).hasClass('inactive-navigation-icon'))
-				history.back();
-		});
-		$('#' + navigationForwardIcon).click(function(){
-			if (!$(this).hasClass('inactive-navigation-icon'))
-				history.forward();
-		});
-
-		// fading menu
-		$('#hamburger').click(function(){
+		// sliding menu
+		$('#' + sidebarHamburgerIconId).click(function(){
 			$(this).toggleClass('open');
 			var wrapper = $('#dialog-wrapper');
 			var width = wrapper.width();
 			var sidebar = $('#discussion-icon-sidebar');
-			var hamburger = $('#hamburger');
-			var hamburgerw = $('#hamburger-wrapper');
+			var hamburger = $('#' + sidebarHamburgerIconId);
+			var sidebarw = $('#sidebar-wrapper');
 			var discussion = $('#' + discussionContainerId);
+			var tack = $('#' + sidebarTackWrapperId);
 
 			if (sidebar.is(':visible')) {
+				tack.fadeOut();
 				sidebar.toggle('slide');
 				hamburger.css('margin-right', '0.5em')
 					.css('background-color', '');
-				hamburgerw.css('background-color', '');
 				discussion.css('max-height', '');
-				hamburgerw.css('height', '');
+				sidebarw.css('background-color', '')
+					.css('height', '');
 				new Helper().delay(function(){
 					wrapper.width(width + sidebar.outerWidth());
 				}, 300);
@@ -257,23 +251,31 @@ function Main () {
 				discussion.css('max-height', discussion.outerHeight() + 'px');
 				new Helper().delay(function(){
 					sidebar.toggle('slide');
-					hamburger.css('margin-right', (hamburgerw.width() - hamburger.width())/2 + 'px')
+					hamburger.css('margin-right', (sidebarw.width() - hamburger.width())/2 + 'px')
 						.css('margin-left', 'auto')
 						.css('background-color', sidebar.css('background-color'));
-					hamburgerw.css('background-color', $('#dialog-speech-bubbles-space')
-						.css('background-color'));
-					hamburgerw.css('height', discussion.outerHeight() + 'px');
+					sidebarw.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
+						.css('height', discussion.outerHeight() + 'px');
+					tack.fadeIn();
 				}, 200);
 			}
 		});
 
-		$('#feedback-switcher').change(function () { // TODO #122
-			if ($('#discussions-space-list').is(':visible')){
-				$('#discussions-space-list').hide();
-				$('#discussion-space-answer-buttons').show();
+		// action for tacking the sidebar
+		$('#' + sidebarTackWrapperId).click(function() {
+			if (localStorage.getItem(tacked_sidebar) == 'true') {
+				new Main().rotateTack('0');
+				localStorage.setItem(tacked_sidebar, 'false');
+				$(this).attr('data-original-title', _t_discussion(pinNavigation));
+
+				// hide sidebar if it is visible
+				if ($('#discussion-icon-sidebar').is(':visible')) {
+					$('#' + sidebarHamburgerIconId).click();
+				}
 			} else {
-				$('#discussion-space-answer-buttons').hide();
-				$('#discussions-space-list').show();
+				new Main().rotateTack('90');
+				localStorage.setItem(tacked_sidebar, 'true');
+				$(this).attr('data-original-title', _t_discussion(unpinNavigation));
 			}
 		});
 	};
@@ -366,6 +368,62 @@ function Main () {
 			$(this).attr('title', title);
 			$(this).attr('href', href.replace('location.href="', '').replace('"', ''));
 		});
+
+		// read local storage for pinning the bar / set title
+		if (localStorage.getItem(tacked_sidebar) == 'true') {
+			var wrapperAndBurger = $('#dialog-wrapper, #hamburger');
+			var wrapper = $('#dialog-wrapper');
+			var width = wrapper.width();
+			var sidebar = $('#discussion-icon-sidebar');
+			var hamburger = $('#' + sidebarHamburgerIconId);
+			var sidebarw = $('#sidebar-wrapper');
+			var discussion = $('#' + discussionContainerId);
+			var tack = $('#' + sidebarTackWrapperId);
+			var main = new Main();
+
+			main.rotateTack('90');
+			main.setAnimationSpeed(wrapperAndBurger, '0.0');
+
+			hamburger.addClass('open');
+
+			wrapper.width(width - sidebar.outerWidth());
+			discussion.css('max-height', discussion.outerHeight() + 'px');
+			sidebar.show();
+			hamburger.css('margin-right', (sidebarw.width() - hamburger.width())/2 + 'px')
+				.css('margin-left', 'auto')
+				.css('background-color', sidebar.css('background-color'));
+			sidebarw.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
+				.css('height', discussion.outerHeight() + 'px');
+			tack.fadeIn();
+
+			main.setAnimationSpeed(wrapperAndBurger, '0.5');
+
+			tack.attr('data-original-title', _t_discussion(unpinNavigation));
+		} else {
+			$('#' + sidebarTackWrapperId).attr('data-original-title', _t_discussion(pinNavigation));
+		}
+	};
+
+	/**
+	 * Roates the little pin icon in the sidebar
+	 * @param degree
+	 */
+	this.rotateTack = function(degree){
+		$('#' + sidebarTackId).css('-ms-transform', 'rotate(' + degree + 'deg)')
+			.css('-webkit-transform', 'rotate(' + degree + 'deg)')
+			.css('transform', 'rotate(' + degree + 'deg)');
+	};
+
+	/**
+	 * Sets an animation speed for a specific element
+	 * @param element
+	 * @param speed
+	 */
+	this.setAnimationSpeed = function(element, speed){
+		element.css('-webkit-transition', 'all ' + speed + 's ease')
+			.css('-moz-transition', 'all ' + speed + 's ease')
+			.css('-o-transition', 'all ' + speed + 's ease')
+			.css('transition', 'all ' + speed + 's ease');
 	};
 
 	/**
@@ -454,9 +512,6 @@ function Main () {
 			$('#discussion-sidebar-style-menu').append(element);
 		});
 
-		// slimscroll for breadcrumbs
-		this.setDiscussionWindowHeights();
-
 		// relation buttons
 		if (false && window.location.href.indexOf('/reaction/') != -1) {
 			var cl = 'icon-badge',
@@ -514,23 +569,6 @@ function Main () {
 		}).on('shown.bs.modal', function () {
 			$('#' + loginUserId).focus();
 		});
-	};
-
-	/**
-	 *
-	 */
-	this.setDiscussionWindowHeights = function () {
-		var body = $('body'),
-			baseFontSize = parseInt(body.css('font-size').replace('px', ''));
-		if ($('#' + breadcrumbContainerId).height() > 6 * baseFontSize) {
-			$('#' + breadcrumbContainerId + ' .col-md-12').slimScroll({
-				position: 'right',
-				height: 5 * baseFontSize + 'px',
-				railVisible: true,
-				alwaysVisible: false,
-				start: 'bottom'
-			});
-		}
 	};
 
 	/**
@@ -687,8 +725,6 @@ $(document).ready(function mainDocumentReady() {
 		$('#island-view-undercut-button').attr('onclick', $('#item_undercut').attr('onclick'));
 		$('#island-view-rebut-button').attr('onclick', $('#item_rebut').attr('onclick'));
 	}
-
-	// window.addEventListener('resize', setDiscussionWindowHeights());
 
 	$(document).delegate('.open', 'click', function(event){
 		$(this).addClass('oppenned');
