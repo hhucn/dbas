@@ -40,7 +40,6 @@ coverage.xml
 *.bak
 pull*.sh
 dbas/static/minimize.sh
-dbas/static/css/main.css
 
 # Pycharm
 .idea/
