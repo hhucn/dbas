@@ -92,12 +92,12 @@
             </div>
             <div class="row">
 				<div class="col-md-12">
-					<div id="settings-alert" class="alert alert-dismissible alert-danger" style="display: none;">
+					<div id="settings-alert" class="alert alert-dismissible alert-danger hidden">
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
 						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 						<span id="settings-alert-message" i18n:translate="settings_not_set">Settings could not be set. Please try again later.</span>
 					</div>
-					<div id="settings-success" class="alert alert-dismissible alert-success" style="display: none;">
+					<div id="settings-success" class="alert alert-dismissible alert-success hidden">
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
 						<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 						<span id="settings-success-message" i18n:translate="settings_set">Settings were set successfully.</span>
@@ -133,7 +133,7 @@
 								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
 							</div>
 
-							<div id="settings-password-extras" style="display: none;">
+							<div id="settings-password-extras" class="hidden">
 								<div id="settings-password-meter" class="veryweak"></div>
 								<h5 id="settings-password-strength" i18n:translate="strength">Strength</h5>
 								<a id="settings-password-info-link" href="" data-toggle="modal" data-toggle="tooltip" data-placement="bottom" data-target="#popup_password_info" title="Show Password Information">
@@ -199,13 +199,13 @@
 			</div>
 			
 			<div class="col-md-12">
-				<div id="statistics-alert" class="alert alert-dismissible alert-danger" style="display: none;">
+				<div id="statistics-alert" class="alert alert-dismissible alert-danger hidden">
 					<button type="button" class="close" data-dismiss="alert">&times;</button>
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 					<span id="statistics-alert-message" i18n:translate="statistics_not_deleted">Statistics could not be deleted.</span>
 
 				</div>
-				<div id="statistics-success" class="alert alert-dismissible alert-success" style="display: none;">
+				<div id="statistics-success" class="alert alert-dismissible alert-success hidden">
 					<button type="button" class="close" data-dismiss="alert">&times;</button>
 					<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 					<span id="statistics-success-message" i18n:translate="statistics_deletet">Statistics were set successfully deleted.</span>
@@ -225,7 +225,7 @@
 						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.delete_history" />
 					</div>
 
-					<div id="history-table-success" class="alert alert-success" role="alert" style="display: none;">
+					<div id="history-table-success" class="alert alert-success hidden" role="alert">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -234,7 +234,7 @@
 						<span id="history-success-msg"></span>
 					</div>
 
-					<div id="history-table-failure" class="alert alert-danger" role="alert" style="display: none; padding: 1em;">
+					<div id="history-table-failure" class="alert alert-danger hidden" role="alert" style="padding: 1em;">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
