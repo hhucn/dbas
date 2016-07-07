@@ -43,14 +43,14 @@
 		<div class="container colored-container" id="discussion-container">
 				<div id="dialog-wrapper" class="pull-left">
 
-					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
+					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						<span id="discussion-error-description"></span>
 					</div>
 
-					<div id="discussion-success-description-space" class="alert alert-success alert-dismissible" style="display: none;">
+					<div id="discussion-success-description-space" class="alert alert-success alert-dismissible hidden">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -147,7 +147,7 @@
                         <span></span>
                     </div>
 
-				    <ul id="discussion-icon-sidebar" class="pull-right left" style="display: none">
+				    <ul id="discussion-icon-sidebar" class="pull-right left">
                         <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
                         <li id="edit-statement" tal:condition="extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
                         <li id="report-button" tal:condition="extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
@@ -157,12 +157,12 @@
                         <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
 				    </ul>
 
-                    <div id="tack-sidebar-wrapper" data-toggle="tooltip" data-placement="bottom" style="display: none;">
+                    <div id="tack-sidebar-wrapper" data-toggle="tooltip" data-placement="bottom">
                         <i id="tack-sidebar" class="fa fa-thumb-tack" aria-hidden="true"></i>
                     </div>
                 </div>
 
-			<div style="display: none;">
+			<div class="hidden">
                 <div class="col-md-12 center">
                     <img class="glyphicon-local navigation-icon" id="navigation-back" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_back"/>
                     <img class="glyphicon-local navigation-icon" id="navigation-forward" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_forward"/>
