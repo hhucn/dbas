@@ -357,18 +357,6 @@ function Main () {
 
 		new Main().setNavigationSidebar(window.innerWidth);
 
-		// remove html chars  // TODO #122
-		$('#discussion-space-answer-buttons').find('a').each(function(){
-			var title = $(this).attr('title');
-			var href = $(this).attr('href');
-			while (title.indexOf('<strong>') != -1)
-				title = title.replace('<strong>', '');
-			while (title.indexOf('</strong>') != -1)
-				title = title.replace('</strong>', '');
-			$(this).attr('title', title);
-			$(this).attr('href', href.replace('location.href="', '').replace('"', ''));
-		});
-
 		// read local storage for pinning the bar / set title
 		if (localStorage.getItem(tacked_sidebar) == 'true') {
 			var wrapperAndBurger = $('#dialog-wrapper, #hamburger');
