@@ -332,7 +332,8 @@ class Dbas(object):
 
         elif 'd' in mode and relation == '':
             logger('discussion_justify', 'def', 'dont know statement')
-            if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
+            if not Validator.check_belonging_of_argument(issue, statement_or_arg_id) and \
+                    not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
             # dont know
