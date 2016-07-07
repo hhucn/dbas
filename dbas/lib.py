@@ -160,22 +160,19 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
-    # TODO: Tidy up
-    sb_tmp = ''
-    if not attack_type == 'dont_know':
-        if colored_position:
-            sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
-        else:
-            sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
-    else:
-        sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
-        sb_tmp = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
-
-    se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
-
     if lang != 'de':
         # conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
         premises = premises[0:1].lower() + premises[1:]  # pretty print
+
+    sb_tmp = ''
+    se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
+    if not attack_type == 'dont_know':
+        sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
+        if colored_position:
+            sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
+    else:
+        sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
+        sb_tmp = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
 
     color_premise = attack_type == 'undermine'
     color_everything = attack_type == 'undercut'
