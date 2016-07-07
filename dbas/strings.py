@@ -72,6 +72,7 @@ class Translator(object):
         self.addArgumentsTitle = 'addArgumentsTitle'
         self.acceptItTitle = 'acceptItTitle'
         self.acceptIt = 'acceptIt'
+        self.accepting = 'accepting'
         self.attack = 'attack'
         self.accountWasAdded = 'accountWasAdded'
         self.accountRegistration = 'accountRegistration'
@@ -92,8 +93,10 @@ class Translator(object):
         self.butOtherParticipantsDontHaveArgument = 'butOtherParticipantsDontHaveArgument'
         self.butOtherParticipantsDontHaveCounterArgument = 'butOtherParticipantsDontHaveCounterArgument'
         self.butIDoNotBelieveCounterFor = 'butIDoNotBelieveCounterFor'
+        self.butIDoNotBelieveArgumentFor = 'butIDoNotBelieveArgumentFor'
+        self.butIDoNotBelieveCounter = 'butIDoNotBelieveCounter'
+        self.butIDoNotBelieveArgument = 'butIDoNotBelieveArgument'
         self.butIDoNotBelieveReasonForReject = 'butIDoNotBelieveReasonForReject'
-        self.butIDoNotBelieveArgumentFor = 'butIDoNotBelieveArgument'
         self.butTheyDoNotBelieveCounter = 'butTheyDoNotBelieveCounter'
         self.butTheyDoNotBelieveArgument = 'butTheyDoNotBelieveArgument'
         self.because = 'because'
@@ -162,14 +165,13 @@ class Translator(object):
         self.discussionInfoTooltip3sg = 'discussionInfoTooltip3sg'
         self.discussionInfoTooltip3pl = 'discussionInfoTooltip3pl'
         self.doesNotHold = 'doesNotHold'
-        self.doesNotHoldBecause = 'doesNotHoldBecause'
+        self.isNotRight = 'isNotRight'
         self.doesJustify = 'doesJustify'
         self.doesNotJustify = 'doesNotJustify'
         self.deleteTrack = 'deleteTrack'
         self.deleteHistory = 'deleteHistory'
         self.doYouWantToEnterYourStatements = 'doYouWantToEnterYourStatements'
         self.doNotHesitateToContact = 'doNotHesitateToContact'
-        self.doesNotHoldBecause = 'doesNotHoldBecause'
         self.dbasPwdRequest = 'dbasPwdRequest'
         self.defaultView = 'defaultView'
         self.earlierYouArguedThat = 'earlierYouArguedThat'
@@ -195,7 +197,7 @@ class Translator(object):
         self.editTitle = 'editTitle'
         self.editIssueViewChangelog = 'editIssueViewChangelog'
         self.editInfoHere = 'editInfoHere'
-        self.editTitleHere ='editTitleHere'
+        self.editTitleHere = 'editTitleHere'
         self.emptyName = 'emptyName'
         self.emptyEmail = 'emptyEmail'
         self.emtpyContent = 'emtpyContent'
@@ -234,9 +236,10 @@ class Translator(object):
         self.hidePasswordRequest = 'hidePasswordRequest'
         self.hideGenerator = 'hideGenerator'
         self.hold = 'holds'
-        self.howeverIHaveMuchStrongerArgumentRejecting = 'howeverIHaveMuchStrongerArgumentRejecting'
+        self.howeverIHaveMuchStrongerArgumentRejectingThat = 'howeverIHaveMuchStrongerArgumentRejectingThat'
+        self.howeverIHaveMuchStrongerArgumentAcceptingThat = 'howeverIHaveMuchStrongerArgumentAcceptingThat'
+        self.howeverIHaveMuchStrongerArgument = 'howeverIHaveMuchStrongerArgument'
         self.howeverIHaveEvenStrongerArgumentRejecting = 'howeverIHaveEvenStrongerArgumentRejecting'
-        self.howeverIHaveMuchStrongerArgumentAccepting = 'howeverIHaveMuchStrongerArgumentAccepting'
         self.howeverIHaveEvenStrongerArgumentAccepting = 'howeverIHaveEvenStrongerArgumentAccepting'
         self.hideContent = 'hideContent'
         self.islandViewFor = 'islandViewFor'
@@ -248,10 +251,14 @@ class Translator(object):
         self.issueList = 'issueList'
         self.islandViewHeaderText = 'islandViewHeaderText'
         self.irrelevant = 'irrelevant'
-        self.itIsTrue = 'itIsTrue'
-        self.itIsFalse = 'itIsFalse'
-        self.itTrueIs = 'itTrueIs'
-        self.itFalseIs = 'itFalseIs'
+        self.itIsTrueThat = 'itIsTrueThat'
+        self.itIsTrue1 = 'itIsTrue1'
+        self.itIsTrue2 = 'itIsTrue2'
+        self.itIsFalseThat = 'itIsFalseThat'
+        self.itIsFalse1 = 'itIsFalse1'
+        self.itIsFalse2 = 'itIsFalse2'
+        self.itTrueIsThat = 'itTrueIsThat'
+        self.itFalseIsThat = 'itFalseIsThat'
         self.islandView = 'islandView'
         self.isFalse = 'isFalse'
         self.isTrue = 'isTrue'
@@ -262,6 +269,8 @@ class Translator(object):
         self.islandViewTitle = 'islandViewTitle'
         self.iAcceptCounter = 'iAcceptCounter'
         self.iAcceptArgument = 'iAcceptArgument'
+        self.iAcceptCounterThat = 'iAcceptCounterThat'
+        self.iAcceptArgumentThat = 'iAcceptArgumentThat'
         self.iAgreeWithInColor = 'iAgreeWithInColor'
         self.iAgreeWith = 'iAgreeWith'
         self.iDisagreeWithInColor = 'iDisagreeWithInColor'
@@ -354,6 +363,7 @@ class Translator(object):
         self.unfortunatelyOnlyOneItem = 'unfortunatelyOnlyOneItem'
         self.on = 'on'
         self.off = 'off'
+        self.opinion = 'opinion'
         self.onlyOneItem = 'onlyOneItem'
         self.onlyOneItemWithLink = 'onlyOneItemWithLink'
         self.otherParticipantsConvincedYouThat = 'otherParticipantsConvincedYouThat'
@@ -382,7 +392,8 @@ class Translator(object):
         self.premise = 'premise'
         self.preferedLangTitle = 'preferedLangTitle'
         self.phone = 'phone'
-        self.position = 'position'
+        self.myPosition = 'myPosition'
+        self.theirPosition = 'theirPosition'
         self.pwdNotEqual = 'pwdNotEqual'
         self.pwdsSame = 'pwdsSame'
         self.pwdChanged = 'pwdChanged'
@@ -409,6 +420,7 @@ class Translator(object):
         self.restartOnError = 'restartOnError'
         self.recipientNotFound = 'recipientNotFound'
         self.reactionFor = 'reactionFor'
+        self.rejecting = 'rejecting'
         self.questionTitle = 'questionTitle'
         self.selectStatement = 'selectStatement'
         self.showAllUsers = 'showAllUsers'
@@ -428,6 +440,7 @@ class Translator(object):
         self.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion = 'soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion'
         self.shortenedBy = 'shortenedBy'
         self.shareUrl = 'shareUrl'
+        self.statement = 'statement'
         self.showMeAnotherArgument = 'showMeAnotherArgument'
         self.switchDiscussion = 'switchDiscussion'
         self.switchDiscussionTitle = 'switchDiscussionTitle'
@@ -435,7 +448,7 @@ class Translator(object):
         self.switchDiscussionText2 = 'switchDiscussionText2'
         self.switchLanguage = 'switchLanguage'
         self.supportPosition = 'supportPosition'
-        self.statement = 'statement'
+        self.myStatement = 'myStatement'
         self.sureThat = 'sureThat'
         self.surname = 'surname'
         self.showMeAnArgumentFor = 'showMeAnArgumentFor'
@@ -454,6 +467,7 @@ class Translator(object):
         self.thisConfrontationIs = 'thisConfrontationIs'
         self.thisIsACopyOfMail = 'thisIsACopyOfMail'
         self.theirArgument = 'theirArgument'
+        self.thisArgument = 'thisArgument'
         self.textversionChangedTopic = 'textversionChangedTopic'
         self.textversionChangedContent = 'textversionChangedContent'
         self.to = 'to'
@@ -588,9 +602,9 @@ class TextGenerator(object):
         # different cases
         ret_text = ''
         if attack_type == 'undermine':
-            ret_text = _t.get(_t.itIsFalse) + ' ' + premise
+            ret_text = _t.get(_t.itIsFalseThat) + ' ' + premise
         if attack_type == 'support':
-            ret_text = _t.get(_t.itIsTrue) if is_supportive else _t.get(_t.itIsFalse)
+            ret_text = _t.get(_t.itIsTrueThat) if is_supportive else _t.get(_t.itIsFalseThat)
             ret_text += ' ' + conclusion + ' '
             ret_text += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
         if attack_type == 'undercut':
@@ -600,7 +614,7 @@ class TextGenerator(object):
         #  + '.' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
         if attack_type == 'rebut':
             ret_text = confrontation + ' ' \
-                       + (_t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)) \
+                       + (_t.get(_t.iAcceptCounterThat) if is_supportive else _t.get(_t.iAcceptArgumentThat)) \
                        + ' ' + conclusion
 
         return ret_text + ', '  + _t.get(_t.because).lower() + '...'
@@ -635,12 +649,12 @@ class TextGenerator(object):
         # pretty print
         #  w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:] + ', '
         r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:] + ', '
-        f = (_t.get(_t.itIsFalse)[0:1].lower() if start_lower_case else _t.get(_t.itIsFalse)[0:1].upper()) + _t.get(_t.itIsFalse)[1:]
-        t = (_t.get(_t.itIsTrue)[0:1].lower() if start_lower_case else _t.get(_t.itIsTrue)[0:1].upper()) + _t.get(_t.itIsTrue)[1:]
+        f = (_t.get(_t.itIsFalseThat)[0:1].lower() if start_lower_case else _t.get(_t.itIsFalseThat)[0:1].upper()) + _t.get(_t.itIsFalseThat)[1:]
+        t = (_t.get(_t.itIsTrueThat)[0:1].lower() if start_lower_case else _t.get(_t.itIsTrueThat)[0:1].upper()) + _t.get(_t.itIsTrueThat)[1:]
 
         if self.lang == 'de':
-            r += _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ' '
-            f = _t.get(_t.wrong) + ', ' + _t.get(_t.itIsFalse)[0:1].lower() + _t.get(_t.itIsFalse)[1:] + ' '
+            r += _t.get(_t.itIsTrueThat)[0:1].lower() + _t.get(_t.itIsTrueThat)[1:] + ' '
+            f = _t.get(_t.wrong) + ', ' + _t.get(_t.itIsFalseThat)[0:1].lower() + _t.get(_t.itIsFalseThat)[1:] + ' '
 
         # different cases
         if attack_type == 'undermine':
@@ -666,9 +680,9 @@ class TextGenerator(object):
 
         if attack_type == 'rebut':
             user_msg = r + premise + ', '
-            user_msg += _t.get(_t.iAcceptCounter) if is_supportive else _t.get(_t.iAcceptArgument)
+            user_msg += _t.get(_t.iAcceptCounterThat) if is_supportive else _t.get(_t.iAcceptArgumentThat)
             user_msg += ' ' + conclusion + '. '
-            user_msg += _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAccepting)
+            user_msg += _t.get(_t.howeverIHaveMuchStrongerArgumentRejectingThat) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAcceptingThat)
             user_msg += ' ' + conclusion + '.'
 
         # is logged in?
@@ -678,7 +692,7 @@ class TextGenerator(object):
         return user_msg, system_msg
 
     def get_relation_text_dict(self, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False,
-                               first_conclusion=None, for_island_view=False):
+                               first_conclusion=None, for_island_view=False, attack_type=None):
         """
         Text of the different reaction types for an given argument
 
@@ -693,45 +707,59 @@ class TextGenerator(object):
         _t = Translator(self.lang)
         ret_dict = dict()
 
-        if first_conclusion:
-            if first_conclusion[-1] == '.':
-                first_conclusion = first_conclusion[:-1]
+        if first_conclusion and first_conclusion[-1] == '.':
+            first_conclusion = first_conclusion[:-1]
 
-        premise = _t.get(_t.theirArgument)
-        conclusion = _t.get(_t.myArgument)
+        if not is_dont_know:
+            premise = _t.get(_t.theirArgument)
+            if attack_type == 'undermine' or attack_type == 'rebut':
+                conclusion = _t.get(_t.theirPosition)
+            else:
+                conclusion = _t.get(_t.myArgument)
+        else:
+            premise = _t.get(_t.thisArgument)
+            conclusion = _t.get(_t.opinion)
 
         # adding tags
-        premise = '<' + self.tag_type + ' data-class="attack">' + premise + '</' + self.tag_type + '>'
-        conclusion = '<' + self.tag_type + ' data-class="argument">' + conclusion + '</' + self.tag_type + '>'
+        start_attack = '<' + self.tag_type + ' data-argumentation-type="attack">'
+        if attack_type == 'rebut':
+            start_argument = '<' + self.tag_type + ' data-argumentation-type="attack">'
+        else:
+            start_argument = '<' + self.tag_type + ' data-argumentation-type="argument">'
+        start_position = '<' + self.tag_type + ' data-argumentation-type="position">'
+        end_tag = '</' + self.tag_type + '>'
+        premise = start_attack + premise + end_tag
+        conclusion = start_argument + conclusion + end_tag
 
         w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:]
         r = (_t.get(_t.right)[0:1].lower() if start_lower_case else _t.get(_t.right)[0:1].upper()) + _t.get(_t.right)[1:]
 
-        w += ', ' + _t.get(_t.itIsFalse)[0:1].lower() + _t.get(_t.itIsFalse)[1:] + ' ' if self.lang == 'de' else ', '
-        r += ', ' + _t.get(_t.itIsTrue)[0:1].lower() + _t.get(_t.itIsTrue)[1:] + ' ' if self.lang == 'de' else ', '
+        w += ', ' + _t.get(_t.itIsFalse1) + ' '
+        r += ', ' + _t.get(_t.itIsTrue1) + ' '
 
-        ret_dict['undermine_text'] = w + (_t.get(_t.itIsFalse) if self.lang != 'de' else '')
-        ret_dict['undermine_text'] += ' ' + premise + '.'
+        ret_dict['undermine_text'] = w + premise + ' ' + _t.get(_t.itIsFalse2) + '.'
 
-        ret_dict['support_text'] = r + (_t.get(_t.itIsTrue) if self.lang != 'de' else '')
-        ret_dict['support_text'] += ' ' + premise + '.'
+        ret_dict['support_text'] = r + premise + _t.get(_t.itIsTrue2) + '.'
 
-        tmp = _t.get(_t.butIDoNotBelieveCounterFor) if is_attacking else _t.get(_t.butIDoNotBelieveArgumentFor)
-        ret_dict['undercut_text'] = r + '' + premise + ', '
+        tmp = _t.get(_t.butIDoNotBelieveCounter) if is_attacking else _t.get(_t.butIDoNotBelieveArgument)
+        ret_dict['undercut_text'] = r + premise + _t.get(_t.itIsTrue2) + ', '
         ret_dict['undercut_text'] += (_t.get(_t.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)
-        ret_dict['undercut_text'] += ' ' + conclusion + '.'
+        ret_dict['undercut_text'] += ' ' + conclusion + (' ist.' if self.lang == 'de' else '.')
 
-        ret_dict['overbid_text'] = r + premise + ', '
+        ret_dict['overbid_text'] = r + premise + _t.get(_t.itIsTrue2) + ', '
         ret_dict['overbid_text'] += (_t.get(_t.andIDoBelieveArgument) if is_dont_know else _t.get(_t.andIDoBelieveCounterFor))
         ret_dict['overbid_text'] += ' ' + conclusion + '. '
         ret_dict['overbid_text'] += (_t.get(_t.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting))
         ret_dict['overbid_text'] += ' ' + conclusion + '.'
 
-        ret_dict['rebut_text'] = r + '' + premise + ' '
+        ret_dict['rebut_text'] = r + premise + _t.get(_t.itIsTrue2) + ' '
         ret_dict['rebut_text'] += (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument))
-        ret_dict['rebut_text'] += ' ' + conclusion + '. '
-        ret_dict['rebut_text'] += (_t.get(_t.howeverIHaveMuchStrongerArgumentAccepting) if is_attacking else _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting))
-        ret_dict['rebut_text'] += ' <' + self.tag_type + ' data-class="position">' + (first_conclusion if first_conclusion else conclusion) + '</' + self.tag_type + '>.'
+        ret_dict['rebut_text'] += ' ' + conclusion + (' ist. ' if self.lang == 'de' else '. ')
+        ret_dict['rebut_text'] += _t.get(_t.howeverIHaveMuchStrongerArgument) + ' '
+        ret_dict['rebut_text'] += start_argument if is_dont_know else start_position
+        ret_dict['rebut_text'] += _t.get(_t.rejecting if is_dont_know else _t.accepting)
+        # ret_dict['rebut_text'] += _t.get(_t.accepting if is_attacking else _t.rejecting)
+        ret_dict['rebut_text'] += ' ' + (first_conclusion if first_conclusion else conclusion) + end_tag + '.'
         # + (_t.get(_t.doesNotHold) if is_attacking else _t.get(_t.hold)) + '.'
 
         if for_island_view and self.lang == 'de':
@@ -775,10 +803,18 @@ class TextGenerator(object):
             conclusion      = conclusion[0:1].lower() + conclusion[1:]
 
         # adding tags
+        start_attack = ('<' + self.tag_type + ' data-argumentation-type="attack">') if color_html else ''
+        start_argument = ('<' + self.tag_type + ' data-argumentation-type="argument">') if color_html else ''
+        start_position = ('<' + self.tag_type + ' data-argumentation-type="position">') if color_html else ''
+        end_tag = '</' + self.tag_type + '>'
         if color_html:
-            confrontation = '<' + self.tag_type + ' data-class="attack">' + confrontation + '</' + self.tag_type + '>'
-            conclusion = '<' + self.tag_type + ' data-class="argument">' + conclusion + '</' + self.tag_type + '>'
-            premise = '<' + self.tag_type + ' data-class="position">' + premise + '</' + self.tag_type + '>'
+            confrontation = start_attack + confrontation + end_tag
+            conclusion = start_argument + conclusion + end_tag
+            if attack == 'undermine':
+                premise = start_argument + premise + end_tag
+                sys_conclusion = start_argument + sys_conclusion + end_tag
+            elif attack == 'undercut':
+                sys_conclusion = start_argument + sys_conclusion + end_tag
 
         confrontation_text = ''
         db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
@@ -787,12 +823,12 @@ class TextGenerator(object):
         # build some confrontation text
         if attack == 'undermine':
             confrontation_text = _t.get(_t.otherParticipantsThinkThat) + ' ' + premise + ' '
+            confrontation_text += start_position if attack != 'undermine' else start_argument
             confrontation_text += _t.get(_t.hold) if sys_arg.is_supportive else _t.get(_t.doesNotHold)
+            confrontation_text += end_tag
             confrontation_text += ', ' + _t.get(_t.because).lower() + ' ' + confrontation
 
         elif attack == 'rebut':
-            #
-
             # distinguish between reply for argument and reply for premise group
             if reply_for_argument:  # reply for argument
                 # changing arguments for better understanding
@@ -867,8 +903,8 @@ class TextGenerator(object):
 
         ret_dict['undermine_text'] = w + ', ' + premise + '.'
         ret_dict['undercut_text'] = r + ', ' + conclusion + ', ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + counter_justi + '.'
-        ret_dict['rebut_text'] = r + ', ' + premise + ' ' + _t.get(_t.iAcceptArgument) + ' ' + conclusion + '. '\
-                                 + _t.get(_t.howeverIHaveMuchStrongerArgumentRejecting) + ' ' + conclusion + '.'
+        ret_dict['rebut_text'] = r + ', ' + premise + ' ' + _t.get(_t.iAcceptArgumentThat) + ' ' + conclusion + '. '\
+                                 + _t.get(_t.howeverIHaveMuchStrongerArgumentRejectingThat) + ' ' + conclusion + '.'
         ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': ' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() \
                                       + ' ' + premise + '. ' + _t.get(_t.goStepBack) + '.'
         return ret_dict

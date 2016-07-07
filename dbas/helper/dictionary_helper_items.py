@@ -247,9 +247,6 @@ class ItemDictHelper(object):
         if not db_argument:
             return statements_array
 
-        conclusion   = get_text_for_conclusion(db_argument, self.lang)
-        premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
-
         rel_dict     = _tg.get_relation_text_dict(False, False, False, is_dont_know=True)
         mode         = 't' if is_supportive else 't'
         counter_mode = 'f' if is_supportive else 't'
@@ -289,14 +286,10 @@ class ItemDictHelper(object):
         statements_array = []
         if not db_sys_argument or not db_user_argument:
             return statements_array
-        # getting the real conclusion: if the arguments conclusion is an argument, we will get the conclusion of the last argument
-        db_tmp_argument = db_sys_argument
-        while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
-            db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
 
-        rel_dict         = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=_tn.get(_tn.position))
+        rel_dict         = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=_tn.get(_tn.myPosition), attack_type=attack)
         mode             = 't' if is_supportive else 'f'
-        _um                 = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        _um              = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         _rh              = RecommenderSystem
 
         # based in the relation, we will fetch different url's for the items
