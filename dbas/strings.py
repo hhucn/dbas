@@ -432,8 +432,12 @@ class Translator(object):
         self.statementIndexInfo = 'statementIndexInfo'
         self.strength = 'strength'
         self.strong = 'strong'
-        self.strongerStatementForAccepting = 'strongerStatementForAccepting'
-        self.strongerStatementForRecjecting = 'strongerStatementForRecjecting'
+        self.strongerStatementForAccepting1 = 'strongerStatementForAccepting1'
+        self.strongerStatementForAccepting2 = 'strongerStatementForAccepting2'
+        self.strongerStatementForAccepting3 = 'strongerStatementForAccepting3'
+        self.strongerStatementForRecjecting1 = 'strongerStatementForRecjecting1'
+        self.strongerStatementForRecjecting2 = 'strongerStatementForRecjecting2'
+        self.strongerStatementForRecjecting3 = 'strongerStatementForRecjecting3'
         self.soYouEnteredMultipleReasons = 'soYouEnteredMultipleReasons'
         self.soYourOpinionIsThat = 'soYourOpinionIsThat'
         self.soYouWantToArgueAgainst = 'soYouWantToArgueAgainst'
@@ -722,10 +726,7 @@ class TextGenerator(object):
 
         # adding tags
         start_attack = '<' + self.tag_type + ' data-argumentation-type="attack">'
-        if attack_type == 'rebut':
-            start_argument = '<' + self.tag_type + ' data-argumentation-type="attack">'
-        else:
-            start_argument = '<' + self.tag_type + ' data-argumentation-type="argument">'
+        start_argument = '<' + self.tag_type + ' data-argumentation-type="argument">'
         start_position = '<' + self.tag_type + ' data-argumentation-type="position">'
         end_tag = '</' + self.tag_type + '>'
         premise = start_attack + premise + end_tag
@@ -845,7 +846,12 @@ class TextGenerator(object):
             else:  # reply for premise group
                 confrontation_text = _t.get(_t.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(_t.otherParticipantsDontHaveOpinion)
                 confrontation_text += ' ' + premise + ', '
-                confrontation_text += _t.get(_t.strongerStatementForAccepting) if user_is_attacking else _t.get(_t.strongerStatementForRecjecting)
+                tmp = _t.get(_t.strongerStatementForAccepting1 if user_is_attacking else _t.strongerStatementForRecjecting1)
+                tmp += start_argument
+                tmp += _t.get(_t.strongerStatementForAccepting2 if user_is_attacking else _t.strongerStatementForRecjecting2)
+                tmp += end_tag
+                tmp += _t.get(_t.strongerStatementForAccepting1 if user_is_attacking else _t.strongerStatementForRecjecting3)
+                confrontation_text += tmp
                 confrontation_text += ' ' + conclusion + '.' + ' '
                 confrontation_text += _t.get(_t.theySay)
                 confrontation_text += ' ' if self.lang == 'de' else ': '
