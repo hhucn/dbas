@@ -23,7 +23,7 @@
 - i18n / l10n for Chameleon
 
 ## 0.3.0 (2015-07-23)
-- New datastructure
+- New data structure
 
 ## 0.3.1 (2015-09-01)
 - Unique url's
@@ -75,10 +75,10 @@
 ## 0.3.15 (2015-11-13)
 - Report Button
 - Toggle start button
-- Second way of bootstraping: argumentation against initial given position
+- Second way of bootstrapping: argumentation against initial given position
 
 ## 0.4.1 (2015-11-16)
-- Improving bootstraping: It is now a two-step process!
+- Improving bootstrapping: It is now a two-step process!
 
 ## 0.4.2 (2015-11-23)
 - Bug fixes
@@ -125,7 +125,7 @@
 
 ## 0.5.4 (2016-02-24)
 - Improvements for the settings page
-- Bugfixes
+- Bug fixes
 
 ## 0.5.5 (2016-03-02)
 - SpeechBubbles instead of text
@@ -145,7 +145,7 @@
 - Lot of fixes for COMMA16
 
 ## 0.5.10 (2016-04-26)
-- Bugfixes
+- Bug fixes
 - History management via url parameter
 
 ## 0.5.11 (2016-04-27)
@@ -156,9 +156,9 @@
 - Revised discussion finished page
 
 ## 0.5.12 (2016-05-04)
-- Seperated site and discussion language
+- Separated site and discussion language
 - Checking CSRF tokens automatically
-- Updated island view and the opinon barometer
+- Updated island view and the opinion barometer
 
 ## 0.5.13 (2016-05-09)
 - Many fixes for the german language
@@ -169,7 +169,7 @@
 - Docker integration
 
 ## 0.5.15 (2016-06-28)
-- Island wiew
+- Island view
 
 ## 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation

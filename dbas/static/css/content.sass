@@ -1,3 +1,6 @@
+.hidden
+  display: none
+
 #navbar-left
   visibility: hidden
 
@@ -164,13 +167,6 @@
   margin-left: 0.5em
   background: url(../images/glyphicons_free/glyphicons/glyphicons-224-chevron-right.png) no-repeat 12px 5px
 
-.inactive-navigation-icon
-  -webkit-filter: invert(80%) /* Chrome, Safari, Opera */
-  filter: invert(80%)
-  cursor: not-allowed
-  &:hover
-    -webkit-filter: invert(80%)
-
 .text-min-counter-input, .text-max-counter-input
   text-align: left
   float: left
@@ -183,6 +179,20 @@
 .text-max-counter-input
   color: $error-color
 
+.cn
+  display: flex
+  justify-content: center
+
+.inner
+  align-self: center
+
+#issue-info
+  font-size: 22px
+
+#dialog-wrapper
+  text-align: justify
+  width: 95%
+
 @media (max-width: 767px)
   #pro-position-column, #con-position-column
     float: none
@@ -191,6 +201,12 @@
     padding-left: 0
   #discussions-space label
     max-width: 90%
+  .cn
+    display: inline
+    justify-content: center
+
+  #dialog-wrapper
+    width: 90%
 
 @media (max-width: 992px)
   #issue-dropdown

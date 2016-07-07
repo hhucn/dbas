@@ -1,3 +1,9 @@
+#sidebar-wrapper
+  position: relative
+  padding-top: 10px
+  right: -14px
+  top: -14px
+
 .display-style-menu-icon
   opacity: 0
 
@@ -29,7 +35,7 @@
   list-style-type: none
   position: relative
   min-width: 180px
-  float: right
+  display: none
   ul
     list-style-type: none
   li
@@ -38,7 +44,7 @@
     min-height: 35px
     cursor: hand
     &:hover
-      background-color: $sytem-bubble
+      background-color: $system-bubble
       color: $primary-color
   i.fa
     margin-right: 0.5em
@@ -56,9 +62,6 @@
   ul
     list-style-type: none
 
-.navigation-icon
-  width: 35px
-
 .sidebar-icon-toggle
   margin-bottom: 1em
   &:hover span
@@ -74,6 +77,16 @@
 
 #opinion-barometer-img
   width: 80px
+
+#tack-sidebar-wrapper
+  display: none
+  position: absolute
+  bottom: 0
+  text-align: center
+  margin: 0.5em 0 0.5em 0
+  width: 100%
+  &:hover
+    color: $primary-color
 
 @media (max-width: 767px)
   #discussions-space ul

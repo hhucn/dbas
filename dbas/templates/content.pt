@@ -2,16 +2,14 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<div class="container colored-container" id="header-container">
-			<div class="row">
-				<div class="col-md-7 center">
+			<div class="row cn">
+				<div class="col-md-8 center">
 					<span>${structure:issues.intro}</span>:<br>
 					<span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
+                    <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>
 				</div>
-				<div class="col-md-1 center text-center">
-                    <img style="width: 30px; margin-bottom: 0.5em;" class="icon-badge" src="${request.static_url('dbas:static/images/icon_info.png')}" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"/>
-				</div>
-				<div class="col-md-2 center text-center">
-					<div class="dropdown center">
+				<div class="col-md-2 center inner">
+					<div class="dropdown">
 						<button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
 							<span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
 						</button>
@@ -34,7 +32,7 @@
 						</ul>
 					</div>
                  </div>
-                <div class="col-md-2 center text-center">
+                <div class="col-md-2 center inner">
 					<button id="discussion-restart-btn" class="btn btn-primary btn-sm" data-dismiss="modal" type="button" onclick="" tal:attributes="onclick extras.restart_url">
 						<span i18n:translate="restart_discussion">Restart</span>&#160;&#160;<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
 					</button>
@@ -43,17 +41,16 @@
 		</div>
 
 		<div class="container colored-container" id="discussion-container">
-			<div class="row" >
-				<div class="col-md-12" style="text-align: justify; max-width: 95%" id="dialog-wrapper">
+				<div id="dialog-wrapper" class="pull-left">
 
-					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible" style="display: none;">
+					<div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						<span id="discussion-error-description"></span>
 					</div>
 
-					<div id="discussion-success-description-space" class="alert alert-success alert-dismissible" style="display: none;">
+					<div id="discussion-success-description-space" class="alert alert-success alert-dismissible hidden">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -101,7 +98,8 @@
                                 </span>
 							</li>
 						</ul>
-                        <div id="discussion-space-answer-buttons" class="center" tal:condition="items[0].id == 'item_undermine'" style="display: none;">
+                        <!--
+                        <div id="discussion-space-answer-buttons" class="center" tal:condition="extras.show_island_icon">
                             <a tal:attributes="id items[0].id; href items[0].url; title items[0].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_attack.svg')}"></a>
                             <a tal:attributes="id items[1].id; href items[1].url; title items[1].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_support.svg')}"></a>
                             <a tal:attributes="id items[2].id; href items[2].url; title items[2].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_undercut.svg')}"></a>
@@ -109,7 +107,7 @@
                             <a tal:condition="items[4].id == 'item_no_opinion'" tal:attributes="id items[4].id; href items[4].url; title items[4].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_dontknow.svg')}"></a>
                             <a href="javascript:window.history.back();" data-toggle="tooltip" data-placement="top" tal:attributes="title extras.buttons.go_back"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_back.svg')}"></a>
                         </div>
-                        <input id="feedback-switcher" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="primary" data-offstyle="danger" data-on="Buttons" data-off="Text">
+                        -->
 					</div>
 				</div>
 
@@ -141,28 +139,30 @@
 					</ul>
 				</div>
 
-                <div id="hamburger-wrapper">
-                <div id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <div id="sidebar-wrapper" class="pull-right">
+                    <div id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+				    <ul id="discussion-icon-sidebar" class="pull-right left">
+                        <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
+                        <li id="edit-statement" tal:condition="extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
+                        <li id="report-button" tal:condition="extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
+                        <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
+                        <li id="display-style-icon-island-img" tal:condition="extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
+                        <li id="display-style-icon-expert-img" tal:condition="extras.show_expert_icon"><i class="fa fa-graduation-cap" aria-hidden="true" tal:attributes="titel extras.title.expert_view"></i><span class="sidebar-element">${extras.title.expert_view}</span></li>
+                        <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
+				    </ul>
+
+                    <div id="tack-sidebar-wrapper" data-toggle="tooltip" data-placement="bottom">
+                        <i id="tack-sidebar" class="fa fa-thumb-tack" aria-hidden="true"></i>
+                    </div>
                 </div>
 
-				<ul id="discussion-icon-sidebar" class="left" style="display: none">
-                    <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
-                    <li id="edit-statement" tal:condition="True or extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
-                    <li id="report-button" tal:condition="True or extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
-                    <li id="opinion-barometer-img" tal:condition="True or extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
-                    <li id="display-style-icon-island-img" tal:condition="True or extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
-                    <li id="display-style-icon-expert-img" tal:condition="True or extras.show_expert_icon"><i class="fa fa-graduation-cap" aria-hidden="true" tal:attributes="titel extras.title.expert_view"></i><span class="sidebar-element">${extras.title.expert_view}</span></li>
-                    <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
-				</ul>
-                </div>
-
-			</div>
-
-			<div class="row" style="display: none;">
+			<div class="hidden">
                 <div class="col-md-12 center">
                     <img class="glyphicon-local navigation-icon" id="navigation-back" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_back"/>
                     <img class="glyphicon-local navigation-icon" id="navigation-forward" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_forward"/>
@@ -181,98 +181,77 @@
 				</div>
 			</div>
 
-                <!--!
-		    	<div class="row">
-		    		<div class="col-md-12">
-		    			<div class="panel panel-default">
-		    				<div class="panel-heading">
-                                <span class="text-danger">&#10008;</span>
-                                <span class="lead">${structure:extras.island.undermine_text}</span>
-		    				</div>
-		    				<div class="panel-body">
-		    					<ul>
-		    						<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
-		    							<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
-		    						</li>
-		    					</ul>
-		    		            <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-		    				</div>
-		    			</div>
+		    <div class="row">
+		    	<div class="col-md-6">
+                       <div class="bs-callout bs-callout-danger">
+                           <h4>
+                               <span class="text-danger">&#10008;</span>
+                               <span class="lead">${structure:extras.island.undermine_text}</span>
+                           </h4>
+                           <div>
+		    				<ul>
+		    					<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
+		    						<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
+		    					</li>
+		    				</ul>
+		    	            <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+                           </div>
+                       </div>
+		    	</div>
+
+                   <div class="col-md-6">
+                       <div class="bs-callout bs-callout-success">
+                           <h4>
+                               <span class="text-success">&#10004;</span>
+                               <span class="lead">${structure:extras.island.support_text}</span>
+                           </h4>
+                           <div>
+		    				<ul>
+		    					<li tal:repeat="support extras.island.support" tal:attributes="id support.id">
+		    						<label tal:attributes="for support.id">${structure:support.text}</label>
+		    					</li>
+		    				</ul>
+		    	            <button id="island-view-support-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+                           </div>
 		    		</div>
 		    	</div>
-                -->
+		    </div>
 
-		    	<div class="row">
-		    		<div class="col-md-6">
-                        <div class="bs-callout bs-callout-danger">
-                            <h4>
-                                <span class="text-danger">&#10008;</span>
-                                <span class="lead">${structure:extras.island.undermine_text}</span>
-                            </h4>
-                            <div>
-		    					<ul>
-		    						<li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
-		    							<label tal:attributes="for undermine.id">${structure:undermine.text}</label>
-		    						</li>
-		    					</ul>
-		    		            <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-                            </div>
-                        </div>
-		    		</div>
-
-                    <div class="col-md-6">
-                        <div class="bs-callout bs-callout-success">
-                            <h4>
-                                <span class="text-success">&#10004;</span>
-                                <span class="lead">${structure:extras.island.support_text}</span>
-                            </h4>
-                            <div>
-		    					<ul>
-		    						<li tal:repeat="support extras.island.support" tal:attributes="id support.id">
-		    							<label tal:attributes="for support.id">${structure:support.text}</label>
-		    						</li>
-		    					</ul>
-		    		            <button id="island-view-support-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-                            </div>
-		    			</div>
+		    <div class="row">
+		    	<div class="col-md-6">
+                       <div class="bs-callout bs-callout-info">
+                           <h4>
+                               <span class="text-info">&#10134</span>
+                               <span class="lead">${structure:extras.island.undercut_text}</span>
+                           </h4>
+                           <div>
+		    				<ul>
+		    					<li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
+		    						<label tal:attributes="for undercut.id">${structure:undercut.text}</label>
+		    					</li>
+		    				</ul>
+		    	            <button id="island-view-undercut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+                           </div>
 		    		</div>
 		    	</div>
 
-		    	<div class="row">
-		    		<div class="col-md-6">
-                        <div class="bs-callout bs-callout-info">
-                            <h4>
-                                <span class="text-info">&#10134</span>
-                                <span class="lead">${structure:extras.island.undercut_text}</span>
-                            </h4>
-                            <div>
-		    					<ul>
-		    						<li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
-		    							<label tal:attributes="for undercut.id">${structure:undercut.text}</label>
-		    						</li>
-		    					</ul>
-		    		            <button id="island-view-undercut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-                            </div>
-		    			</div>
-		    		</div>
-
-		    		<div class="col-md-6">
-                        <div class="bs-callout bs-callout-info">
-                            <h4>
-                                <span class="text-info">&#10134;</span>
-                                <span class="lead">${structure:extras.island.rebut_text}</span>
-                            </h4>
-                            <div>
-		    					<ul>
-		    						<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
-		    							<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
-		    						</li>
-		    					</ul>
-		    		            <button id="island-view-rebut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
-                            </div>
-		    			</div>
+		    	<div class="col-md-6">
+                       <div class="bs-callout bs-callout-info">
+                           <h4>
+                               <span class="text-info">&#10134;</span>
+                               <span class="lead">${structure:extras.island.rebut_text}</span>
+                           </h4>
+                           <div>
+		    				<ul>
+		    					<li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
+		    						<label tal:attributes="for rebut.id">${structure:rebut.text}</label>
+		    					</li>
+		    				</ul>
+		    	            <button id="island-view-rebut-button" type="button" class="btn btn-primary" data-dismiss="modal" style="float: right;">${extras.buttons.resume_here}</button>
+                           </div>
 		    		</div>
 		    	</div>
+		    </div>
 
 		    </div>
 		</div>
