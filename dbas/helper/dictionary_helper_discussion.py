@@ -117,7 +117,7 @@ class DiscussionDictHelper(object):
         because                = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 
         if self.lang == 'de':
-            intro           = _tn.get(_tn.itIsTrue if is_supportive else _tn.itIsFalse)
+            intro           = _tn.get(_tn.itIsTrueThat if is_supportive else _tn.itIsFalseThat)
             add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
         else:
             add_premise_text = text + ' ' + _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea)
@@ -228,7 +228,7 @@ class DiscussionDictHelper(object):
         save_statement_url = 'ajax_set_new_start_statement'
 
         if uid != 0:
-            text            = get_text_for_argument_uid(uid, self.lang, rearrange_intro=True)
+            text            = get_text_for_argument_uid(uid, self.lang, rearrange_intro=True, attack_type='dont_know')
             text            = text.replace(_tn.get(_tn.because).lower(), _tn.get(_tn.because).lower())
             sys_text        = _tn.get(_tn.otherParticipantsThinkThat) + ' ' + text[0:1].lower() + text[1:]  + '. '
 
@@ -274,8 +274,10 @@ class DiscussionDictHelper(object):
             confr, tmp       = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid, self.lang)
             sys_conclusion   = get_text_for_conclusion(db_confrontation, self.lang)
             if attack == 'undermine':
-                premise = get_text_for_statement_uid(db_confrontation.conclusion_uid) if db_confrontation.conclusion_uid != 0 \
-                    else get_text_for_argument_uid(db_confrontation.argument_uid, self.lang, True)
+                if db_confrontation.conclusion_uid != 0:
+                    premise = get_text_for_statement_uid(db_confrontation.conclusion_uid)
+                else:
+                    premise = get_text_for_argument_uid(db_confrontation.argument_uid, self.lang, True, colored_position=True, attack_type=attack)
 
             # did the user changed his opinion?
             history = HistoryHelper.get_splitted_history(history)
@@ -285,7 +287,8 @@ class DiscussionDictHelper(object):
             db_statement        = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
             reply_for_argument  = not (db_statement and db_statement.is_startpoint)
             current_argument    = get_text_for_argument_uid(uid, self.lang, with_html_tag=True, colored_position=True,
-                                                            user_changed_opinion=user_changed_opinion)
+                                                            user_changed_opinion=user_changed_opinion, attack_type=attack)
+
             user_is_attacking   = not db_argument.is_supportive
 
             current_argument = current_argument[0:1].upper() + current_argument[1:]
