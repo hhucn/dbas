@@ -160,6 +160,7 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
+    # TODO: Tidy up
     sb_tmp = ''
     if not attack_type == 'dont_know':
         if colored_position:
@@ -194,7 +195,7 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
             intro = _t.get(_t.itTrueIsThat) if db_argument.is_supportive else _t.get(_t.itFalseIsThat)
         else:
             intro = _t.get(_t.itIsTrueThat) if db_argument.is_supportive else _t.get(_t.itIsFalseThat)
-        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion + ' ' + _t.get(_t.because).lower() + premises
+        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion + ' ' + _t.get(_t.because).lower() + ' ' + premises
     else:
         if not color_everything:
             tmp = ' ' + _t.get(_t.isNotRight).lower() + ', ' + _t.get(_t.because).lower() + ' '
