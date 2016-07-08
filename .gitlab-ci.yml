@@ -21,4 +21,5 @@ test:
     - initialize_discussion_sql docker.ini
     - initialize_news_sql docker.ini
     - cp docker.ini development.ini
-    - nosetests --with-coverage --cover-package=dbas
+    - make nosetests
+    #- nosetests --with-coverage --cover-package=dbas
