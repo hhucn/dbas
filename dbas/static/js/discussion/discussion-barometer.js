@@ -98,7 +98,7 @@ function DiscussionBarometer(){
 	        obj = JSON.parse(data);
 			console.log(obj);
         } catch(e) {
-	        // TODO: Um die Anzeige einer Fehlermeldung kümmern wir uns später.
+	        setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
 			alert('parsing-json: ' + e);
 	        return;
         }
@@ -263,7 +263,6 @@ function DiscussionBarometer(){
 	 * Callback if the ajax request failed
 	 */
 	this.callbackIfFailForGetDictionary = function(){
-		new GuiHandler().showDiscussionError(_t_discussion(requestFailed)
-			+ ' (' + _t_discussion(doNotHesitateToContact) + '. ' + _t_discussion(restartOnError) + '.');
+		setGlobalErrorHandler(_t(ohsnap), _t_discussion(requestFailed));
 	};
 }

@@ -38,19 +38,19 @@ moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry'
             'Pissed off', 'Pleased', 'Predatory', 'Quixotic', 'Rapturous', 'Recumbent', 'Refreshed', 'Rejected',
             'Rejuvenated', 'Relaxed', 'Relieved', 'Restless', 'Rushed', 'Sad', 'Satisfied', 'Shocked', 'Sick',
             'Silly', 'Sleepy', 'Smart', 'Stressed', 'Surprised', 'Sympathetic', 'Thankful', 'Tired', 'Touched',
-            'Uncomfortable', 'Weird']
+            'Uncomfortable', 'Weird', 'Sexy', 'Aggressive']
 
 # https://en.wikipedia.org/wiki/List_of_animal_names
 animallist = ['Aardvark', 'Albatross', 'Alligator', 'Alpaca', 'Ant', 'Anteater', 'Antelope', 'Ape', 'Armadillo',
               'Badger', 'Barracuda', 'Bat', 'Bear', 'Beaver', 'Bee', 'Bird', 'Bison', 'Boar', 'Buffalo', 'Butterfly',
               'Camel', 'Caribou', 'Cassowary', 'Cat', 'Caterpillar', 'Cattle', 'Chamois', 'Cheetah', 'Chicken',
               'Chimpanzee', 'Chinchilla', 'Chough', 'Coati', 'Cobra', 'Cockroach', 'Cod', 'Cormorant', 'Coyote',
-              'Crab', 'Crane', 'Crocodile', 'Crow', 'CurlewDeer', 'Dinosaur', 'Dog', 'Dolphin', 'Donkey', 'Dotterel',
+              'Crab', 'Crane', 'Crocodile', 'Crow', 'Curlew', 'Deer', 'Dinosaur', 'Dog', 'Dolphin', 'Donkey', 'Dotterel',
               'Dove', 'Dragonfly', 'Duck', 'Dugong', 'Dunlin Eagle', 'Echidna', 'Eel', 'Eland', 'Elephant',
               'Elephant Seal', 'Elk', 'Emu Falcon', 'Ferret', 'Finch', 'Fish', 'Flamingo', 'Fly', 'Fox', 'FrogGaur',
               'Gazelle', 'Gerbil', 'Giant Panda', 'Giraffe', 'Gnat', 'Gnu', 'Goat', 'Goldfinch', 'Goosander', 'Goose',
               'Gorilla', 'Goshawk', 'Grasshopper', 'Grouse', 'Guanaco', 'Guinea Pig', 'Gull Hamster', 'Hare', 'Hawk',
-              'Hedgehog', 'Heron', 'Herring', 'Hippopotamus', 'Hornet', 'Horse', 'Hummingbird', 'HyenaIbex',
+              'Hedgehog', 'Heron', 'Herring', 'Hippopotamus', 'Hornet', 'Horse', 'Hummingbird', 'Hyena', 'Ibex',
               'IbisJackal', 'Jaguar', 'Jay', 'Jellyfish Kangaroo', 'Kinkajou', 'Koala', 'Komodo Dragon', 'Kouprey',
               'Kudu Lapwing', 'Lark', 'Lemur', 'Leopard', 'Lion', 'Llama', 'Lobster', 'Locust', 'Loris', 'Louse',
               'Lyrebird Magpie', 'Mallard', 'Mammoth', 'Manatee', 'Mandrill', 'Mink', 'Mole', 'Mongoose', 'Monkey',
@@ -61,7 +61,7 @@ animallist = ['Aardvark', 'Albatross', 'Alligator', 'Alpaca', 'Ant', 'Anteater',
               'Sandpiper', 'Sardine', 'Sea Lion', 'Sea Urchin', 'Seahorse', 'Seal', 'Shark', 'Sheep', 'Shrew', 'Skunk',
               'Sloth', 'Snail', 'Snake ', 'Spider', 'Squirrel', 'Starling', 'Swan Tapir', 'Tarsier', 'Termite', 'Tiger',
               'Toad', 'Turkey', 'Turtle', 'Walrus', 'Wasp', 'Water Buffalo', 'Weasel', 'Whale', 'Wolf', 'Wolverine',
-              'Wombat', 'Yak', 'Zebra']
+              'Wombat', 'Yak', 'Zebra', 'Baboon', 'Eagle']
 
 # http://www.manythings.org/vocabulary/lists/l/words.php?f=ogden-picturable
 thingslist = ['Angle', 'Ant', 'Apple', 'Arch', 'Arm', 'Army', 'Baby', 'Bag', 'Ball', 'Band', 'Basin', 'Basket',

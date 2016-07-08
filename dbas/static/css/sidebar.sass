@@ -1,0 +1,102 @@
+#sidebar-wrapper
+  position: relative
+  padding-top: 10px
+  right: -14px
+  top: -14px
+
+.display-style-menu-icon
+  opacity: 0
+
+#discussion-sidebar img, #discussion-sidebar-style-menu img, #display-style-menu-icon
+  width: 50px
+  margin-bottom: 0.5em
+
+#discussion-sidebar img:hover
+  width: 60px
+  cursor: pointer
+
+#discussion-sidebar-style-menu
+  img:hover
+    width: 60px
+    cursor: pointer
+  &:hover .display-style-menu-icon
+    opacity: 1
+    transition: opacity .45s ease-in-out
+    -moz-transition: opacity .45s ease-in-out
+    -webkit-transition: opacity .45s ease-in-out
+
+#site-navigation
+  padding-left: 0
+  .tooltip
+    width: 150px
+
+#discussion-icon-sidebar
+  padding-left: 0
+  list-style-type: none
+  position: relative
+  min-width: 180px
+  display: none
+  ul
+    list-style-type: none
+  li
+    padding: 5px 0 5px 15px
+    width: 100%
+    min-height: 35px
+    cursor: hand
+    &:hover
+      background-color: $system-bubble
+      color: $primary-color
+  i.fa
+    margin-right: 0.5em
+
+#dialog-wrapper
+  -webkit-transition: all 0.5s ease
+  -moz-transition: all 0.5s ease
+  -o-transition: all 0.5s ease
+  transition: all 0.5s ease
+
+#discussion-sidebar
+  list-style-type: none
+  text-align: right
+  padding-left: 0
+  ul
+    list-style-type: none
+
+.sidebar-icon-toggle
+  margin-bottom: 1em
+  &:hover span
+    background-color: $primary-color
+
+.sidebar-icon-bar
+  display: block
+  width: 22px
+  height: 3px
+  border-radius: 1px
+  background-color: #000
+  margin-top: 4px
+
+#opinion-barometer-img
+  width: 80px
+
+#tack-sidebar-wrapper
+  display: none
+  position: absolute
+  bottom: 0
+  text-align: center
+  margin: 0.5em 0 0.5em 0
+  width: 100%
+  &:hover
+    color: $primary-color
+
+@media (max-width: 767px)
+  #discussions-space ul
+    display: block
+    li
+      display: block
+
+@media (max-width: 991px)
+  .sidebar-element
+    display: none
+
+  #discussion-icon-sidebar
+    min-width: 40px

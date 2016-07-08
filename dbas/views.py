@@ -43,7 +43,7 @@ from .strings import Translator
 from .url_manager import UrlManager
 
 name = 'D-BAS'
-version = '0.5.15'
+version = '0.5.16'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -143,7 +143,8 @@ class Dbas(object):
         if session_expired:
             return self.user_logout(True)
 
-        if len(matchdict['slug']) > 1:
+        count_of_slugs = len(matchdict['slug']) if 'slug' in matchdict and isinstance(matchdict['slug'], ()) else 1
+        if count_of_slugs > 1:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
         if for_api and api_data:
@@ -228,8 +229,8 @@ class Dbas(object):
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
         if not Validator.check_for_integer(statement_id, True) \
-                or not Validator.check_belonging_of_statement(issue, statement_id) \
-                or not Validator.is_position(statement_id):
+            or not Validator.check_belonging_of_statement(issue, statement_id) \
+            or not Validator.is_position(statement_id):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
         disc_ui_locales = get_discussion_language(self.request, issue)
@@ -313,8 +314,8 @@ class Dbas(object):
         if [c for c in ('t', 'f') if c in mode] and relation == '':
             logger('discussion_justify', 'def', 'justify statement')
             # justifying statement
-            if not get_text_for_statement_uid(statement_or_arg_id) \
-                or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
+            if not get_text_for_statement_uid(statement_or_arg_id)\
+                                or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
             VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
@@ -331,7 +332,8 @@ class Dbas(object):
 
         elif 'd' in mode and relation == '':
             logger('discussion_justify', 'def', 'dont know statement')
-            if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
+            if not Validator.check_belonging_of_argument(issue, statement_or_arg_id) and \
+                    not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
             # dont know
@@ -405,9 +407,10 @@ class Dbas(object):
         history         = params['history'] if 'history' in params else ''
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
-        if not tmp_argument or not Validator.check_reaction(arg_id_user, arg_id_sys, attack)\
-                or not Validator.check_belonging_of_argument(issue, arg_id_user)\
-                or not Validator.check_belonging_of_argument(issue, arg_id_sys):
+        valid_reaction = Validator.check_reaction(arg_id_user, arg_id_sys, attack)
+        if not tmp_argument or not valid_reaction\
+                or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_user)\
+                or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_sys):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         supportive           = tmp_argument.is_supportive
@@ -1361,7 +1364,6 @@ class Dbas(object):
                     if settings_value:
                         db_user.set_public_nickname(db_user.nickname)
                     elif db_user.nickname == db_user.public_nickname:
-                        # TODO: there are only 52245 different nicks
                         UserHandler.refresh_public_nickname(db_user)
                     public_nick = db_user.public_nickname
                 else:
@@ -1556,8 +1558,6 @@ class Dbas(object):
                                                                                              supportive, issue, nickname,
                                                                                              for_api, mainpage, lang)
 
-            # TODO Issue 88 notify user
-
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
 
@@ -1614,8 +1614,6 @@ class Dbas(object):
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
-
-            # TODO Issue 88 notify user
 
             if url == -1:
                 return json.dumps(return_dict, True)

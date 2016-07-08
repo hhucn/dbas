@@ -6,19 +6,19 @@ services:
 before_script:
   - pip install --quiet -U pip
 
-test:
-  stage: test
-  script:
-    - pip install --quiet -r requirements.txt
-    - python setup.py develop
-    - initialize_discussion_sql docker.ini
-    - initialize_news_sql docker.ini
-    - cp docker.ini development.ini
-    - nosetests --with-coverage --cover-package=dbas
-
 flake8:
   stage: test
   script:
     - pip install --quiet flake8
     - flake8 .
   allow_failure: true
+
+test:
+  stage: test
+  script:
+    - pip install --quiet -r requirements.txt
+    - python setup.py --quiet develop
+    - initialize_discussion_sql docker.ini
+    - initialize_news_sql docker.ini
+    - cp docker.ini development.ini
+    - nosetests --with-coverage --cover-package=dbas

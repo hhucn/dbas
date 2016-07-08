@@ -1,5 +1,5 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout" tal:attributes="xml:lang extras.lang">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout" tal:attributes="xml:lang extras.ui_locales">
 
 <head>
 	<meta charset="utf-8">
@@ -11,6 +11,7 @@
 	<title>${project} - ${title}</title>
 	<!-- Bootstrap core CSS -->
     <link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
+    <link type="text/css" href="${request.static_url('dbas:static/fontawesome/css/font-awesome.min.css')}" rel="stylesheet">
 </head>
 
 <body>
@@ -22,6 +23,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery-2.2.3.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-3.3.6.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap-toggle.min.js')}"></script>
+
 	<!--
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ads.js')}"></script>
 	-->

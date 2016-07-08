@@ -556,7 +556,6 @@ function AjaxDiscussionHandler() {
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
-			new GuiHandler().hideDiscussionError();
 		}).fail(function ajaxGetAllUsersFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			//new Helper().delay(function ajaxGetAllUsersFailDelay() {
