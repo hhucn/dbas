@@ -11,7 +11,7 @@ import dbas.helper.notification_helper as NotificationHelper
 import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User
+from dbas.database.discussion_model import Argument, User, Language
 from dbas.helper.query_helper import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
@@ -76,7 +76,7 @@ class DictionaryHelper(object):
         """
         return self.prepare_extras_dict('', False, False, False, False, False, nickname, append_notifications=append_notifications, request=request)
 
-    def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_display_styles,
+    def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_island_icon,
                             show_expert_icon, authenticated_userid, argument_id=0, application_url='', for_api=False,
                             append_notifications=False, request=None):
         """
@@ -86,7 +86,7 @@ class DictionaryHelper(object):
         :param is_editable: Boolean
         :param is_reportable: Boolean
         :param show_bar_icon: Boolean
-        :param show_display_styles: Boolean
+        :param show_island_icon: Boolean
         :param show_expert_icon: Boolean
         :param authenticated_userid: User.nickname
         :param argument_id: Argument.uid
@@ -127,9 +127,9 @@ class DictionaryHelper(object):
             return_dict['is_reportable']                 = is_reportable
             return_dict['is_admin']                         = _uh.is_user_in_group(authenticated_userid, 'admins')
             return_dict['is_author']                     = _uh.is_user_in_group(authenticated_userid, 'authors')
-            return_dict['show_bar_icon']                 = show_bar_icon  # TODO SET THIS FOR BAROMETER
-            return_dict['show_display_style']            = show_display_styles  # TODO SET THIS FOR ISLAND
-            return_dict['show_expert_icon']              = show_expert_icon # and False
+            return_dict['show_bar_icon']                 = show_bar_icon
+            return_dict['show_island_icon']              = show_island_icon
+            return_dict['show_expert_icon']              = show_expert_icon
             return_dict['close_premise_container']         = True
             return_dict['close_statement_container']     = True
             return_dict['date']                             = arrow.utcnow().format('DD-MM-YYYY')
@@ -143,14 +143,14 @@ class DictionaryHelper(object):
             inbox = NotificationHelper.get_box_for(authenticated_userid, self.system_lang, application_url, True)
             outbox = NotificationHelper.get_box_for(authenticated_userid, self.system_lang, application_url, False)
             if append_notifications:
-                message_dict['inbox']     = inbox
-                message_dict['outbox']     = outbox
+                message_dict['inbox']    = inbox
+                message_dict['outbox']   = outbox
             message_dict['total_in']     = len(inbox)
             message_dict['total_out']    = len(outbox)
             return_dict['notifications'] = message_dict
 
             # add everything for the island view
-            if return_dict['show_display_style']:
+            if return_dict['show_island_icon']:
                 # does an argumente exists?
                 db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
                 if db_argument:
@@ -170,10 +170,10 @@ class DictionaryHelper(object):
                                                                                                   for_island_view=True))
                     return_dict['island'] = island_dict
                 else:
-                    return_dict['is_editable']          = False
-                    return_dict['is_reportable']      = False
-                    return_dict['show_bar_icon']      = False
-                    return_dict['show_display_style'] = False
+                    return_dict['is_editable']      = False
+                    return_dict['is_reportable']    = False
+                    return_dict['show_bar_icon']    = False
+                    return_dict['show_island_icon'] = False
         return return_dict
 
     def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
@@ -265,8 +265,10 @@ class DictionaryHelper(object):
         logger('DictionaryHelper', 'add_language_options_for_extra_dict', 'def')
         lang_is_en = (self.system_lang != 'de')
         lang_is_de = (self.system_lang == 'de')
+        dblang = DBDiscussionSession.query(Language).filter_by(ui_locales=self.system_lang).first()
         extras_dict.update({
-            'lang': self.system_lang,
+            'ui_locales': self.system_lang,
+            'lang': dblang.name,
             'lang_is_de': lang_is_de,
             'lang_is_en': lang_is_en,
             'link_de_class': ('active' if lang_is_de else ''),
@@ -305,8 +307,10 @@ class DictionaryHelper(object):
                                        'tight_node_view': _tn_dis.get(_tn_dis.tightView),
                                        'show_content': _tn_dis.get(_tn_dis.showContent),
                                        'hide_content': _tn_dis.get(_tn_dis.hideContent),
-                                       'go_back': _tn_dis.get(_tn_dis.letsGoBack),
+                                       'lets_go_back': _tn_dis.get(_tn_dis.letsGoBack),
                                        'snapshot_graph': _tn_dis.get(_tn_dis.snapshotGraph),
+                                       'go_back': _tn_dis.get(_tn_dis.goBack),
+                                       'go_forward': _tn_dis.get(_tn_dis.goForward),
                                        'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
 
     def add_title_text(self, return_dict):
@@ -345,9 +349,9 @@ class DictionaryHelper(object):
             'please_enter_topic': _tn_sys.get(_tn_sys.pleaseEnterTopic),
             'please_enter_shorttext_for_topic': _tn_sys.get(_tn_sys.pleaseEnterShorttextForTopic),
             'please_select_language_for_topic': _tn_sys.get(_tn_sys.pleaseSelectLanguageForTopic),
-			'edit_issue_view_changelog': _tn_dis.get(_tn_dis.editIssueViewChangelog),
-			'edit_title_here': _tn_dis.get(_tn_dis.editTitleHere),
-			'edit_info_here': _tn_dis.get(_tn_dis.editInfoHere),
+            'edit_issue_view_changelog': _tn_dis.get(_tn_dis.editIssueViewChangelog),
+            'edit_title_here': _tn_dis.get(_tn_dis.editTitleHere),
+            'edit_info_here': _tn_dis.get(_tn_dis.editInfoHere),
             'edit_statement_view_changelog': _tn_dis.get(_tn_dis.editStatementViewChangelog),
             'edit_statement_here': _tn_dis.get(_tn_dis.editStatementHere),
             'sys_save': _tn_sys.get(_tn_sys.save),

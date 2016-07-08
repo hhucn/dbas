@@ -1,16 +1,11 @@
+.hidden
+  display: none
+
 #navbar-left
   visibility: hidden
 
 .btn-discussion
   margin: 10px
-
-.center
-  margin-left: auto
-  margin-right: auto
-  text-align: center
-
-#header-container .tooltip
-  width: 150px
 
 #discussions-space
   margin-top: 25px
@@ -90,11 +85,6 @@
 #pro-textareas li a:hover, #con-textareas li a:hover
   color: #fff
 
-/* link color for the 'dropdown'
-
-#add-pro-position, #add-con-position
-  background: url(../images/glyphicons_free/glyphicons/glyphicons-433-plus.png) center no-repeat 12px 10px
-
 #island-view-container-h4, #island-view-container-header-h4
   text-align: center
 
@@ -104,17 +94,8 @@
   max-width: 80%
   display: inline-block
 
-#discussion-failure-row
-  padding-top: 25px
-
 #list-all-users, #list-all-attacks
   margin-bottom: 15px
-
-#navigation-minimap-container
-  position: fixed
-  color: $primary-color
-  top: 50px
-  right: 0
 
 #popup-edit-statement-body
   padding-left: 10px
@@ -150,45 +131,8 @@
   display: none
   padding-right: 0.5em
 
-#opinion-barometer-img
-  width: 80px
-
 .hidden-discussion-information, .hidden-information
   visibility: hidden
-
-.display-style-menu-icon
-  opacity: 0
-
-#discussion-sidebar img, #discussion-sidebar-style-menu img, #display-style-menu-icon
-  width: 50px
-  margin-bottom: 0.5em
-
-#discussion-sidebar img:hover
-  width: 60px
-  cursor: pointer
-
-#discussion-sidebar-style-menu
-  img:hover
-    width: 60px
-    cursor: pointer
-  &:hover .display-style-menu-icon
-    opacity: 1
-    transition: opacity .45s ease-in-out
-    -moz-transition: opacity .45s ease-in-out
-    -webkit-transition: opacity .45s ease-in-out
-
-#site-navigation
-  padding-left: 0
-  .tooltip
-    width: 150px
-
-#discussion-sidebar
-  list-style-type: none
-  text-align: right
-  padding-left: 0
-  ul
-    list-style-type: none
-
 #site-navigation ul
   list-style-type: none
 
@@ -215,21 +159,54 @@
       display: inline-block
       vertical-align: middle
 
-.text-counter-input
-  color: $info-color
+#navigation-back
+  margin-right: 0.5em
+  background: url(../images/glyphicons_free/glyphicons/glyphicons-225-chevron-left.png) no-repeat 12px 5px
+
+#navigation-forward
+  margin-left: 0.5em
+  background: url(../images/glyphicons_free/glyphicons/glyphicons-224-chevron-right.png) no-repeat 12px 5px
+
+.text-min-counter-input, .text-max-counter-input
   text-align: left
   float: left
   font-style: italic
   padding-right: 0.5em
 
+.text-min-counter-input
+  color: $info-color
+
+.text-max-counter-input
+  color: $error-color
+
+.cn
+  display: flex
+  justify-content: center
+
+.inner
+  align-self: center
+
+#issue-info
+  font-size: 22px
+
+#dialog-wrapper
+  text-align: justify
+  width: 95%
+
 @media (max-width: 767px)
-  #discussions-space ul
-    display: block
-    li
-      display: block
   #pro-position-column, #con-position-column
     float: none
     width: 95%
+  #discussions-space-list
+    padding-left: 0
+  #discussions-space label
+    max-width: 90%
+  .cn
+    display: inline
+    justify-content: center
+
+  #dialog-wrapper
+    width: 90%
 
 @media (max-width: 992px)
   #issue-dropdown

@@ -128,7 +128,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     _t = Translator(lang)
     tooltip = _t.get(_t.discussionInfoTooltip1) + ' ' + date + ' ' +\
               _t.get(_t.discussionInfoTooltip2) + ' ' + str(stat_count) + ' ' +\
-              (_t.get(_t.discussionInfoTooltip3pl) if stat_count > 1 else _t.get(_t.discussionInfoTooltip3sg))
+              (_t.get(_t.discussionInfoTooltip3sg if stat_count == 1 else _t.discussionInfoTooltip3pl))
 
     return {'slug': slug,
             'info': info,
@@ -181,7 +181,7 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     issue_dict['stat_count']        = get_number_of_statements(issue.uid)
     issue_dict['date']              = sql_timestamp_pretty_print(issue.date, lang)
     issue_dict['author']            = issue.users.public_nickname
-    issue_dict['public_url']        = application_url + '/user/' + str(issue.users.public_nickname)
+    issue_dict['author_url']        = application_url + '/user/' + str(issue.users.public_nickname)
     issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
     return issue_dict
 

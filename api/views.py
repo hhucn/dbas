@@ -235,18 +235,6 @@ def discussion_attitude(request):
     return Dbas(request).discussion_attitude(for_api=True, api_data=api_data)
 
 
-# @issues.get(validators=validate_login)
-# def issue_selector(request):
-# 	"""
-# 	Return data from DBas discussion_attitude page.
-#
-# 	:param request: request
-# 	:return: Dbas(request).discussion_attitude(True)
-# 	"""
-# 	api_data = prepare_user_information(request)
-# 	return Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
-
-
 @zinit.get(validators=validate_login)
 def discussion_init(request):
     """

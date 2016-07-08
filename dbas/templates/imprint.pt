@@ -60,7 +60,6 @@
 					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
 					<ul>
 						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
-						<li>Some fonts are from <a target="_blank" href="http://www.fontsquirrel.com/">Font Squirrel</a></li>
 						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a></li>
 						<li><a target="_blank" href="https://bootswatch.com/paper/">Paper Theme for Bootstrap</a></li>
 						<li>
@@ -105,6 +104,11 @@
 
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
+
+					<span class="project lead">0.5.16 (2016-07-05)</span>
+					<ul>
+						<li>Improved sidebar</li>
+					</ul>
 
 					<span class="project lead">0.5.15 (2016-06-28)</span>
 					<ul>

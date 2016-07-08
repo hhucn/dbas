@@ -8,18 +8,18 @@ from dbas.logger import logger
 
 
 def init(config):
-	config.scan("graph.views")
+    config.scan("graph.views")
 
 
 def main(global_config, **settings):
-	config = Configurator(settings=settings)
-	init(config)
-	return config.make_wsgi_app()
+    config = Configurator(settings=settings)
+    init(config)
+    return config.make_wsgi_app()
 
 
 def includeme(config):
-	init(config)
+    init(config)
 
 
 if __name__ == "__main__":
-	logger("i", "want", "in too")
+    logger("i", "want", "in too")

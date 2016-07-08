@@ -28,7 +28,7 @@
 				<br>
 				<p class="lead">
 					<span i18n:translate="work_based_on">This work is part of the graduate school on</span> <a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.
-					<span i18n:translate="funded_by">It is funded by the</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaeres-forschungsumfeld-schaffen/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
+					<span i18n:translate="funded_by">It is funded by the</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
 				</p>
 				<ul class="list-logos center">
 					<li>

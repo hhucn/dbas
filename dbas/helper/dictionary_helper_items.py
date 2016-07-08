@@ -9,7 +9,7 @@ import dbas.recommender_system as RecommenderSystem
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
-from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
+from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, get_all_attacking_arg_uids_from_history
 from dbas.logger import logger
 from dbas.strings import Translator, TextGenerator
 from dbas.url_manager import UrlManager
@@ -200,7 +200,6 @@ class ItemDictHelper(object):
 
         if db_arguments:
             for argument in db_arguments:
-                from dbas.lib import get_text_for_argument_uid
                 # get alles premises in this group
                 db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
                 premises_array = []
@@ -210,8 +209,10 @@ class ItemDictHelper(object):
 
                 # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
                 is_undermine = 'undermine' if attack_type == 'undermine' else None
+                attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
                 arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.issue_uid, self.lang,
-                                                                               special_case=is_undermine)
+                                                                               last_attack=is_undermine, 
+                                                                               restriction_on_arg_uids=attacking_arg_uids)
 
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
                 statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
@@ -282,7 +283,6 @@ class ItemDictHelper(object):
         """
         logger('DictionaryHelper', 'prepare_item_dict_for_reaction', 'def')
         _tg  = TextGenerator(self.lang)
-        _tn  = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
         db_sys_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_sys).first()
@@ -299,10 +299,10 @@ class ItemDictHelper(object):
             db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
         first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
 
+        conclusion         = conclusion[0:1].lower() + conclusion[1:]
         if self.lang != 'de':
-            conclusion         = conclusion[0:1].lower() + conclusion[1:]
             first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-            premise             = premise[0:1].lower() + premise[1:]
+            premise          = premise[0:1].lower() + premise[1:]
 
         rel_dict         = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
         mode             = 't' if is_supportive else 'f'
@@ -321,7 +321,9 @@ class ItemDictHelper(object):
 
             # special case, when the user selectes the support, because this does not need to be justified!
             if relation == 'support':
-                arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, self.issue_uid, self.lang)
+                attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+                arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, self.issue_uid, self.lang,
+                                                                     restriction_on_arg_uids=attacking_arg_uids)
                 if sys_attack == 'rebut' and attack == 'undercut':
                     # case: system makes an undercut and the user supports this
                     # new attack can be an rebut, so another undercut for the users argument
@@ -369,9 +371,11 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
         # last item is the change attack button or step back, if we have bno other attack
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+        attacking_arg_uids.append(argument_uid_sys)
         arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.issue_uid, self.lang,
                                                              restriction_on_attacks=attack,
-                                                             restriction_on_arg_uid=argument_uid_sys)
+                                                             restriction_on_arg_uids=attacking_arg_uids)
 
         if new_attack == 'no_other_attack' or new_attack.startswith('end'):
             relation = 'step_back'
@@ -418,7 +422,9 @@ class ItemDictHelper(object):
                                                                           Argument.is_supportive == is_supportive)).first()
             if not db_argument:
                 return None
-            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang)
+            attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang, 
+                                                                           restriction_on_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
             statements_array.append(self.__create_statement_dict(str(db_argument.uid), premise_array, 'choose', url))

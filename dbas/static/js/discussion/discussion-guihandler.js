@@ -6,6 +6,7 @@
 function GuiHandler() {
 	'use strict';
 	var interactionHandler;
+	var maxHeightOfBubbleSpace = 300;
 
 	/**
 	 *
@@ -105,7 +106,6 @@ function GuiHandler() {
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
 		$('#' + headerContainerId).show();
-		$('#' + breadcrumbContainerId).show();
 	};
 
 	/**
@@ -130,9 +130,7 @@ function GuiHandler() {
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
 		$('#' + headerContainerId).hide();
-		$('#' + breadcrumbContainerId).hide();
 		$('#' + addPremiseContainerId).hide();
-		new GuiHandler().hideDiscussionError();
 
 		// text
 		$('#' + graphViewContainerHeaderId).html($('#issue_info').html());
@@ -150,7 +148,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageInactive = function(imageElement){
-		imageElement.addClass('inactive-image').removeClass('icon-badge').css('cursor','not-allowed');
+		imageElement.addClass('inactive-image').css('cursor','not-allowed');//.removeClass('icon-badge');
 	};
 
 	/**
@@ -158,7 +156,7 @@ function GuiHandler() {
 	 * @param imageElement <img>-Element
 	 */
 	this.setImageActive = function(imageElement){
-		imageElement.removeClass('inactive-image').addClass('icon-badge').css('cursor', 'pointer');
+		imageElement.removeClass('inactive-image').css('cursor', 'pointer');//.addClass('icon-badge');
 	};
 
 	/**
@@ -180,8 +178,8 @@ function GuiHandler() {
 
 		start = nowBubble.length == 0 ? 'bottom' : nowBubble;
 		if (height > maxHeight) {
-			if (maxHeight < 300){//} && new Helper().isMobileAgent() ) {
-				maxHeight = 300;
+			if (maxHeight < maxHeightOfBubbleSpace){//} && new Helper().isMobileAgent() ) {
+				maxHeight = maxHeightOfBubbleSpace;
 			}
 			speechBubbles.slimscroll({
 				position: 'right',
@@ -482,23 +480,6 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Shows an error on discussion space as well as a retry button and sets a link for the contact page
-	 * @param error_msg message of the error
-	 */
-	this.showDiscussionError = function (error_msg) {
-		$('#' + discussionFailureRowId).fadeIn('slow');
-		$('#' + discussionFailureMsgId).html(error_msg);
-		$('#' + contactOnErrorId).click(function(){
-			var line1 = 'Report ' + new Helper().getTodayAsDate(),
-				line2 = 'URL: ' + window.location.href,
-				line3 = _t(fillLine).toUpperCase(),
-				params = {'content': line1 + '\n' + line2 + '\n' + line3,
-				'name': $('#header_user').parent().text().replace(/\s/g,'')};
-			new Helper().redirectInNewTabForContact(params);
-		})
-	};
-
-	/**
 	 * Opens the edit statements popup
 	 */
 	this.showEditStatementsPopup = function () {
@@ -712,13 +693,6 @@ function GuiHandler() {
 	this.hideSuccessDescription = function(){
 		$('#' + discussionSuccessDescriptionId).html('');
 		$('#' + discussionSuccessDescriptionSpaceId).hide();
-	};
-
-	/**
-	 * Hides the error field
-	 */
-	this.hideDiscussionError = function () {
-		$('#' + discussionFailureRowId).hide();
 	};
 
 	/**
