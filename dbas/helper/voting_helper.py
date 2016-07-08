@@ -12,7 +12,7 @@ import dbas.user_management as UserHandler
 
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, Premise, VoteArgument, VoteStatement, User
+from dbas.database.discussion_model import Argument, Statement, Premise, VoteArgument, VoteStatement, User, StatementSeenBy, ArgumentSeenBy
 from dbas.logger import logger
 
 
@@ -35,6 +35,9 @@ def add_vote_for_argument(argument_uid, user, transaction):
     # set vote for the argument (relation), its premisegroup and conclusion
     __vote_argument(db_argument, db_user, True)
     __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
+
+    # user has seen this argument
+    __argument_seen_by_user(db_user.uid, argument_uid)
 
     if db_argument.argument_uid is None:
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
@@ -87,11 +90,15 @@ def add_vote_for_statement(statement_uid, user, supportive, transaction):
     :param transaction: Transaction
     :return: Boolean
     """
+    logger('VotingHelper', 'add_vote_for_statement', 'increasing statement ' + str(statement_uid) + ' vote')
+
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     if db_user:
         __vote_statement(db_statement, db_user, supportive)
-        transaction.commit()
+
+    __statement_seen_by_user(db_user.uid, statement_uid)
+    transaction.commit()
 
 
 def clear_votes_of_user(transaction, user):
@@ -108,6 +115,8 @@ def clear_votes_of_user(transaction, user):
 
     DBDiscussionSession.query(VoteArgument).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(VoteStatement).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(StatementSeenBy).filter_by(user_uid=db_user.uid).delete()
+    DBDiscussionSession.query(ArgumentSeenBy).filter_by(user_uid=db_user.uid).delete()
     DBDiscussionSession.flush()
     transaction.commit()
     return True
@@ -217,3 +226,35 @@ def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
     for premise in db_premises:
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
         __vote_statement(db_statement, user, is_up_vote)
+
+
+def __argument_seen_by_user(user_uid, argument_uid):
+    """
+    Adds an reference for an seen argument
+
+    :param user_uid:
+    :param argument_uid:
+    :return:
+    """
+    db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter(and_(ArgumentSeenBy.argument_uid == argument_uid,
+                                                                       ArgumentSeenBy.user_uid == user_uid)).first()
+    if not db_seen_by:
+        new_entry = ArgumentSeenBy(argument_uid=argument_uid, user_uid=user_uid)
+        DBDiscussionSession.add(new_entry)
+        DBDiscussionSession.flush()
+
+
+def __statement_seen_by_user(user_uid, statement_uid):
+    """
+    Adds an reference for an seen statement
+
+    :param user_uid:
+    :param argument_uid:
+    :return:
+    """
+    db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter(and_(StatementSeenBy.statement_uid == statement_uid,
+                                                                        StatementSeenBy.user_uid == user_uid)).first()
+    if not db_seen_by:
+        new_entry = StatementSeenBy(statement_uid=statement_uid, user_uid=user_uid)
+        DBDiscussionSession.add(new_entry)
+        DBDiscussionSession.flush()
