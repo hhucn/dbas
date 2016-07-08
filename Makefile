@@ -32,3 +32,10 @@ all:
 clean:
 	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
 	sudo -u postgres bash -c "psql -c \"drop database news;\""
+
+nosetests:
+	LOG=$(nosetests_with_coverage.log)
+	nosetests --with-coverage --cover-package=dbas !> $LOG
+	cat $LOG
+	grep TOTAL $LOG | awk '{ print "TOTAL: "$4; }'
+	rm $LOG
