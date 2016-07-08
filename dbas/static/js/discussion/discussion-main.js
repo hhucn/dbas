@@ -410,14 +410,16 @@ function Main () {
 			$(this).hover(
 				function(){
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
-						.css('font-weight', '600')
-						.css('font-size', '15px')
-						.css('letter-spacing', '2px');
+						.css('background-color', '#ffe0b2')
+						.css('font-weight', '500')
+						.css('border-radius', '5px 5px 5px 5px');
 				}, function(){
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
+						.css('background-color', '')
 						.css('font-weight', '400')
 						.css('font-size', '14px')
-						.css('letter-spacing', '0px');
+						.css('letter-spacing', '0px')
+						.css('border-radius', '0 0 0 0');
 				}
 			);
 		});
