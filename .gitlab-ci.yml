@@ -17,8 +17,8 @@ test:
   stage: test
   script:
     - pip install --quiet -r requirements.txt
-    - python setup.py develop
+    - python setup.py --quiet develop
     - initialize_discussion_sql docker.ini
     - initialize_news_sql docker.ini
     - cp docker.ini development.ini
-    - nosetests --with-coverage --cover-package=dbas
+    - make nosetests
