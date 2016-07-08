@@ -50,7 +50,7 @@ class QueryHelper:
         return_dict['author']           = db_author.public_nickname
         return_dict['timestamp']        = sql_timestamp_pretty_print(db_argument.timestamp, lang)
         text                            = get_text_for_argument_uid(uid, lang)
-        return_dict['text']             = '<strong>' + text[0:1].upper() + text[1:] + '.</strong>'
+        return_dict['text']             = text[0:1].upper() + text[1:] + '.'
 
         supporters = []
         gravatars = dict()
