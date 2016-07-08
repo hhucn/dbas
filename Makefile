@@ -34,8 +34,7 @@ clean:
 	sudo -u postgres bash -c "psql -c \"drop database news;\""
 
 nosetests:
-	LOG=$(nosetests_with_coverage.log)
-	nosetests --with-coverage --cover-package=dbas !> $LOG
-	cat $LOG
-	grep TOTAL $LOG | awk '{ print "TOTAL: "$4; }'
-	rm $LOG
+	-nosetests -s --with-coverage --cover-package=dbas > nosetests_temp_output.log 2>&1
+	cat nosetests_temp_output.log
+	grep TOTAL nosetests_temp_output.log | awk '{ print "TOTAL: "$$4; }'
+	rm nosetests_temp_output.log
