@@ -172,7 +172,7 @@ function Main () {
 
 		// opinion barometer
 		$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
-			new DiscussionBarometer().showBarometer()
+			new DiscussionBarometer().showBarometer();
 		});
 
 		// issues
