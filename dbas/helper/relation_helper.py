@@ -219,8 +219,7 @@ class RelationHelper(object):
             return new_argument, False
 
     @staticmethod
-    def set_new_rebut(transaction, premisegroup_uid, current_argument
-                      , db_user, issue):
+    def set_new_rebut(transaction, premisegroup_uid, current_argument, db_user, issue):
         """
         Inserts a new rebut with the given parameters.
 
