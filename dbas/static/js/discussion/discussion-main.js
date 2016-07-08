@@ -407,19 +407,22 @@ function Main () {
 		var data = 'data-argumentation-type';
 		$('#' + discussionSpaceListId).find('span[' + data + '!=""]').each(function(){
 			var attr = $(this).attr(data);
+			var tmp = $('<span>').addClass(attr + '-highlighter');
+			tmp.appendTo(document.body);
+			var old_color = $(this).css('color');
+			var new_color = tmp.css('color');
+			tmp.remove();
 			$(this).hover(
 				function(){
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
-						.css('background-color', '#ffe0b2')
-						.css('font-weight', '500')
-						.css('border-radius', '5px 5px 5px 5px');
+						.css('color', new_color)
+						.css('background-color', '#edf3e6')
+						.css('border-radius', '2px');
 				}, function(){
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
+						.css('color', old_color)
 						.css('background-color', '')
-						.css('font-weight', '400')
-						.css('font-size', '14px')
-						.css('letter-spacing', '0px')
-						.css('border-radius', '0 0 0 0');
+						.css('border-radius', '0');
 				}
 			);
 		});
