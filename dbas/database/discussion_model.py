@@ -275,6 +275,38 @@ class StatementReferences(DiscussionBase):
         self.issue_uid = issue_uid
 
 
+class StatementSeenBy(DiscussionBase):
+    """
+    List of users, which have seen a statement
+    """
+    __tablename__ = 'statement_seen_by'
+    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+    user_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+    users = relationship('User', foreign_keys=[user_uid])
+
+    def __init__(self, statement_uid, user_uid):
+        self.statement_uid = statement_uid
+        self.user_uid = user_uid
+
+
+class ArgumentSeenBy(DiscussionBase):
+    """
+    List of users, which have seen a argument
+    """
+    __tablename__ = 'argument_seen_by'
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'), primary_key=True)
+    user_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
+    users = relationship('User', foreign_keys=[user_uid])
+
+    def __init__(self, argument_uid, user_uid):
+        self.argument_uid = argument_uid
+        self.user_uid = user_uid
+
+
 class TextVersion(DiscussionBase):
     """
     TextVersions-table with several columns.

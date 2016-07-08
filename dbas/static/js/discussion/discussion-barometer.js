@@ -66,18 +66,18 @@ function DiscussionBarometer(){
 		if (url.indexOf('/attitude/') != -1){
 			adress = 'attitude';
 			uid = splitted[splitted.length-1];
-			new DiscussionBarometer().ajaxRequest(uid, adress);
+			new AjaxGraphHandler().getUserGraphData(uid, adress);
 		} else if (url.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
 			adress = 'justify';
 			$('#discussions-space-list li:not(:last-child) input').each(function(){
 				uid_array.push($(this).attr('id').substr(5));
 			});
-			new DiscussionBarometer().ajaxRequest(uid_array, adress);
+			new AjaxGraphHandler().getUserGraphData(uid_array, adress);
 		} else if (url.indexOf('/reaction/') != -1){
 			adress = 'argument';
 			uid_array.push(splitted[splitted.length-3]);
 			uid_array.push(splitted[splitted.length-1]);
-			new DiscussionBarometer().ajaxRequest(uid_array, adress);
+			new AjaxGraphHandler().getUserGraphData(uid_array, adress);
 		} else {
 			adress = 'position';
 			$('#discussions-space-list li:not(:last-child) label').each(function(){
