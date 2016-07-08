@@ -849,10 +849,14 @@ class TextGenerator(object):
                 tmp = _t.get(_t.strongerStatementForAccepting1 if user_is_attacking else _t.strongerStatementForRecjecting1)
                 tmp += start_argument
                 tmp += _t.get(_t.strongerStatementForAccepting2 if user_is_attacking else _t.strongerStatementForRecjecting2)
-                tmp += end_tag
-                tmp += _t.get(_t.strongerStatementForAccepting1 if user_is_attacking else _t.strongerStatementForRecjecting3)
+                if (_t.get(_t.strongerStatementForAccepting3 if user_is_attacking else _t.strongerStatementForRecjecting3)) == '':
+                    tmp += ' '
+                    conclusion = conclusion[len(start_argument):]
+                else:
+                    tmp += end_tag
+                    tmp += _t.get(_t.strongerStatementForAccepting3 if user_is_attacking else _t.strongerStatementForRecjecting3) + ' '
                 confrontation_text += tmp
-                confrontation_text += ' ' + conclusion + '.' + ' '
+                confrontation_text += conclusion + '.' + ' '
                 confrontation_text += _t.get(_t.theySay)
                 confrontation_text += ' ' if self.lang == 'de' else ': '
                 confrontation_text += confrontation
