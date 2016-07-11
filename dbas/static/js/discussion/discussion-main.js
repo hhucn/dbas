@@ -246,6 +246,7 @@ function Main () {
 				new Helper().delay(function(){
 					wrapper.width(width + sidebar.outerWidth());
 				}, 300);
+				localStorage.setItem(tacked_sidebar, 'false');
 			} else {
 				wrapper.width(width - sidebar.outerWidth());
 				discussion.css('max-height', discussion.outerHeight() + 'px');
