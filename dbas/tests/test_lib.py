@@ -128,6 +128,6 @@ class LibTests(unittest.TestCase):
         correct_history = "/attitude/60-/justify/60/t-/reaction/52/rebut/53"
         broken_history = "/attitude/60/justify/60/t/broooken/52/rebut/53"
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(correct_history), ["r"], "Missing element")
-        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(broken_history), [], "Should math nothing")
+        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(broken_history), [], "Should match nothing")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
 
