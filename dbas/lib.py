@@ -320,11 +320,15 @@ def get_all_attacking_arg_uids_from_history(history):
 
     :param history: String
     :return: [Arguments.uid]
+    :rtype: list
     """
-    splitted_history = history.split('-')
-    uids = []
-    for part in splitted_history:
-        if 'reaction' in part:
-            tmp = part.replace('/', 'X', 2).find('/') + 1
-            uids.append(part[tmp])
-    return uids
+    try:
+        splitted_history = history.split('-')
+        uids = []
+        for part in splitted_history:
+            if 'reaction' in part:
+                tmp = part.replace('/', 'X', 2).find('/') + 1
+                uids.append(part[tmp])
+        return uids
+    except AttributeError:
+        return []
