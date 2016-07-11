@@ -36,7 +36,13 @@ class ItemDictHelper(object):
         self.issue_uid = issue_uid
         self.application_url = application_url
         self.for_api = for_api
-        self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
+        logger('xx', 'xx', path)
+        logger('xx', 'xx', path)
+        logger('xx', 'xx', path)
+        if for_api:
+            self.path = path[len('/api/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
+        else:
+            self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
         if len(history) > 0:
             self.path = history + '-' + self.path
 
@@ -79,7 +85,7 @@ class ItemDictHelper(object):
         :param statement_uid: Statement.uid
         :return:
         """
-        logger('DictionaryHelper', 'prepare_item_dict_for_attitude', 'def')
+        logger('ItemDictHelper', 'prepare_item_dict_for_attitude', 'def')
         _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
@@ -110,7 +116,7 @@ class ItemDictHelper(object):
         :param is_supportive: Boolean
         :return:
         """
-        logger('DictionaryHelper', 'prepare_item_dict_for_justify_statement', 'def')
+        logger('ItemDictHelper', 'prepare_item_dict_for_justify_statement', 'def')
         statements_array = []
         _tn = Translator(self.lang)
         _rh = RecommenderSystem
@@ -159,7 +165,7 @@ class ItemDictHelper(object):
         :param logged_in: Boolean or String
         :return:
         """
-        logger('DictionaryHelper', 'prepare_item_dict_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
+        logger('ItemDictHelper', 'prepare_item_dict_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
         statements_array = []
         _tn = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
@@ -237,7 +243,7 @@ class ItemDictHelper(object):
         :param is_supportive: Boolean
         :return:
         """
-        logger('DictionaryHelper', 'prepare_item_dict_for_dont_know_reaction', 'def')
+        logger('ItemDictHelper', 'prepare_item_dict_for_dont_know_reaction', 'def')
         _tg = TextGenerator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -281,7 +287,7 @@ class ItemDictHelper(object):
         :param attack: String
         :return:
         """
-        logger('DictionaryHelper', 'prepare_item_dict_for_reaction', 'def')
+        logger('ItemDictHelper', 'prepare_item_dict_for_reaction', 'def')
         _tg  = TextGenerator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
@@ -397,7 +403,7 @@ class ItemDictHelper(object):
         :param is_supportive: Boolean
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'def')
+        logger('ItemDictHelper', 'prepare_item_dict_for_choosing', 'def')
         statements_array = []
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -412,7 +418,7 @@ class ItemDictHelper(object):
                 premise_array.append({'title': text, 'id': premise.statement_uid})
 
             # get attack for each premise, so the urls will be unique
-            logger('DictionaryHelper', 'prepare_item_dict_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
+            logger('ItemDictHelper', 'prepare_item_dict_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
                    ', conclusion_uid: ' + str(conclusion) +
                    ', argument_uid: ' + str(argument) +
                    ', is_supportive: ' + str(is_supportive))
