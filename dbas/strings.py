@@ -742,7 +742,8 @@ class TextGenerator(object):
 
         ret_dict['support_text'] = r + premise + _t.get(_t.itIsTrue2) + '.'
 
-        tmp = _t.get(_t.butIDoNotBelieveCounter) if is_attacking else _t.get(_t.butIDoNotBelieveArgument)
+        # tmp = _t.get(_t.butIDoNotBelieveCounter) if is_attacking else _t.get(_t.butIDoNotBelieveArgument)
+        tmp = _t.get(_t.butIDoNotBelieveArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(_t.butIDoNotBelieveCounter)
         ret_dict['undercut_text'] = r + premise + _t.get(_t.itIsTrue2) + ', '
         ret_dict['undercut_text'] += (_t.get(_t.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)
         ret_dict['undercut_text'] += ' ' + conclusion + (' ist.' if self.lang == 'de' else '.')
@@ -754,7 +755,8 @@ class TextGenerator(object):
         ret_dict['overbid_text'] += ' ' + conclusion + '.'
 
         ret_dict['rebut_text'] = r + premise + _t.get(_t.itIsTrue2) + ' '
-        ret_dict['rebut_text'] += (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument))
+        # ret_dict['rebut_text'] += (_t.get(_t.iAcceptCounter) if is_attacking else _t.get(_t.iAcceptArgument))
+        ret_dict['rebut_text'] += _t.get(_t.iAcceptArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(_t.iAcceptCounter)
         ret_dict['rebut_text'] += ' ' + conclusion + (' ist. ' if self.lang == 'de' else '. ')
         ret_dict['rebut_text'] += _t.get(_t.howeverIHaveMuchStrongerArgument) + ' '
         ret_dict['rebut_text'] += start_argument if is_dont_know else start_position
