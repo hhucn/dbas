@@ -36,9 +36,6 @@ class ItemDictHelper(object):
         self.issue_uid = issue_uid
         self.application_url = application_url
         self.for_api = for_api
-        logger('xx', 'xx', path)
-        logger('xx', 'xx', path)
-        logger('xx', 'xx', path)
         if for_api:
             self.path = path[len('/api/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
         else:
