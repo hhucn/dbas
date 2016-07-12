@@ -89,14 +89,33 @@ function DiscussionGraph() {
     		.links(edges)
 			.nodes(jsonData.nodes)
     		.start();
-		
+
+		// Per-type markers for links
+	    var marker = svg.append("defs").selectAll('marker')
+            .data(edges)
+            .enter()
+                .append("svg:marker")
+                .attr("id", function(d) {return "marker_" + d.color})
+                .attr("refX", 10)
+                .attr("refY", 2.2)
+                .attr("markerWidth", 10)
+                .attr("markerHeight", 10)
+                .attr("orient", "auto")
+			    .append("path")
+                    .attr("d", "M0,0 V4 L5,2 Z10")
+                    .attr("fill", function(d) {
+			            return d.color;
+				    });
+
 		// links between nodes
 		var link = svg.selectAll(".link")
     		.data(edges)
 			// SVG lines
     		.enter().append("line")
+      			.attr("class", "link")
 			    .style("stroke", function(d) { return d.color; })
-      			.attr("class", "link");
+				.style("stroke-width", '2px')
+				.attr("marker-end", function(d) {return "url(#marker_" + d.color + ")"});
 
 		// node: SVG circle
    		var node = svg.selectAll(".node")
