@@ -310,7 +310,6 @@ def get_references(request):
     host, path = parse_host_and_path(request)
     if host and path:
         refs = []
-        log.debug("[API/Reference] Returning references for %s%s" % (host, path))
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
             for ref in refs_db:
