@@ -416,7 +416,7 @@ var dbas_en = {
 	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
 	'textMinCountMessage1': 'Only',
-	'textMinCountMessage2': 'signs remaining!',
+	'textMinCountMessage2': 'characters remaining!',
 	'textMaxCountMessage': 'Caution, your input is very long!',
 	'usersWithSameOpinion': 'Users with same opinion',
 	'unpinNavigation': 'Unpin Navigation',

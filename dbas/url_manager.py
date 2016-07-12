@@ -32,7 +32,7 @@ class UrlManager(object):
         :param history: String
         :return: None
         """
-        logger('UrlManager', '__init__', 'application_url: ' + application_url + ', slug: ' + slug + ', for_api: ' + str(for_api))
+        logger('UrlManager', '__init__', 'application_url: ' + application_url + ', slug: ' + slug + ', for_api: ' + str(for_api) + ', history: ' + str(history))
         self.url = application_url + ('' if application_url.endswith('/') else '/')
         self.discussion_url = self.url + 'discuss/'
         self.api_url = 'api/'
