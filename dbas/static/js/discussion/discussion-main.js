@@ -246,7 +246,7 @@ function Main () {
 				new Helper().delay(function(){
 					wrapper.width(width + sidebar.outerWidth());
 				}, 300);
-				localStorage.setItem(tacked_sidebar, 'false');
+				_this.setLocalStorage(tacked_sidebar, 'false');
 			} else {
 				wrapper.width(width - sidebar.outerWidth());
 				discussion.css('max-height', discussion.outerHeight() + 'px');
@@ -263,10 +263,13 @@ function Main () {
 		});
 
 		// action for tacking the sidebar
+		var _this = this;
 		$('#' + sidebarTackWrapperId).click(function() {
-			if (localStorage.getItem(tacked_sidebar) == 'true') {
-				new Main().rotateTack('0');
-				localStorage.setItem(tacked_sidebar, 'false');
+		var shouldShowSidebar = _this.getLocalStorage(tacked_sidebar) == 'true';
+			if (shouldShowSidebar) {
+				_this.rotateTack('0');
+				_this.setLocalStorage(tacked_sidebar, 'false');
+
 				$(this).attr('data-original-title', _t_discussion(pinNavigation));
 
 				// hide sidebar if it is visible
@@ -275,7 +278,7 @@ function Main () {
 				}
 			} else {
 				new Main().rotateTack('90');
-				localStorage.setItem(tacked_sidebar, 'true');
+				_this.setLocalStorage(tacked_sidebar, 'true');
 				$(this).attr('data-original-title', _t_discussion(unpinNavigation));
 			}
 		});
@@ -359,7 +362,8 @@ function Main () {
 		new Main().setNavigationSidebar(window.innerWidth);
 
 		// read local storage for pinning the bar / set title
-		if (localStorage.getItem(tacked_sidebar) == 'true') {
+		var shouldShowSidebar = this.getLocalStorage(tacked_sidebar) == 'true';
+		if (shouldShowSidebar) {
 			var wrapperAndBurger = $('#dialog-wrapper, #hamburger');
 			var wrapper = $('#dialog-wrapper');
 			var width = wrapper.width();
@@ -676,6 +680,25 @@ function Main () {
 					}
 				}
 			});
+		}
+	};
+
+	this.setLocalStorage = function (key, value){
+		try {
+			localStorage.setItem(key, value);
+			return true;
+		} catch(err){
+			console.log('Error while set item in local storage.');
+			return false;
+		}
+	};
+
+	this.getLocalStorage = function (key){
+		try {
+			return localStorage.getItem(key);
+		} catch(err){
+			console.log('Error while get item in local storage.');
+			return undefined;
 		}
 	};
 }
