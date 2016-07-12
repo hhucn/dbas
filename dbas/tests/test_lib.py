@@ -121,6 +121,13 @@ class LibTests(unittest.TestCase):
         # id for no issue
         self.assertEqual(lib.resolve_issue_uid_to_slug(uid=0), None)
         self.assertEqual(lib.resolve_issue_uid_to_slug(uid=22222222), None)
-
-        # negative uid
         self.assertEqual(lib.resolve_issue_uid_to_slug(uid=-4), None)
+
+    def test_get_all_attacking_arg_uids_from_history(self):
+        none_history = None
+        correct_history = "/attitude/60-/justify/60/t-/reaction/52/rebut/53"
+        broken_history = "/attitude/60/justify/60/t/broooken/52/rebut/53"
+        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(correct_history), ["r"], "Missing element")
+        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(broken_history), [], "Should match nothing")
+        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
+
