@@ -37,7 +37,8 @@ def add_vote_for_argument(argument_uid, user, transaction):
     __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
 
     # user has seen this argument
-    __argument_seen_by_user(db_user.uid, argument_uid)
+    if db_user:
+        __argument_seen_by_user(db_user.uid, argument_uid)
 
     if db_argument.argument_uid is None:
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
@@ -96,8 +97,8 @@ def add_vote_for_statement(statement_uid, user, supportive, transaction):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     if db_user:
         __vote_statement(db_statement, db_user, supportive)
+        __statement_seen_by_user(db_user.uid, statement_uid)
 
-    __statement_seen_by_user(db_user.uid, statement_uid)
     transaction.commit()
 
 
