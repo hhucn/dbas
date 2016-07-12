@@ -202,6 +202,7 @@ var requestSuccessContainer                     = 'request_success_container';
 var requestSuccessContainerClose                = 'request_success_container_close';
 var requestSuccessContainerHeading              = 'request_success_container_heading';
 var requestSuccessContainerMessage              = 'request_success_container_message';
+var reviewLinkId 								= 'review-link';
 var translationLink 							= 'link-trans-';
 var translationLinkDe 							= 'link-trans-de';
 var translationLinkEn 							= 'link-trans-en';
