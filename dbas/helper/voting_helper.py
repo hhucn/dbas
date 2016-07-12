@@ -1,8 +1,8 @@
 """
 Class for handling votes of each user.
 
-Functions for setting votes of users. They set votes by clicking the statments in D-BAS.
-We are not deleting oppositve votes for detecting opinion changes!
+Functions for setting votes of users. They set votes by clicking the statements in D-BAS.
+We are not deleting opposite votes for detecting opinion changes!
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -18,7 +18,7 @@ from dbas.logger import logger
 
 def add_vote_for_argument(argument_uid, user, transaction):
     """
-    Increses the votes of a given argument.
+    Increases the votes of a given argument.
 
     :param argument_uid: id of the argument
     :param user: self.request.authenticated_userid
@@ -69,7 +69,7 @@ def add_vote_for_argument(argument_uid, user, transaction):
                 __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
                 __vote_statement(db_conclusion_conclusion, db_user, True)
 
-    # votes redundance will be handled in the accept and decline methods!
+    # vote redundancy will be handled in the accept and decline methods!
 
     # return count of votes for this argument
     db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == db_argument.uid,
@@ -96,9 +96,9 @@ def add_vote_for_statement(statement_uid, user, supportive, transaction):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     if db_user:
         __vote_statement(db_statement, db_user, supportive)
-
-    __statement_seen_by_user(db_user.uid, statement_uid)
-    transaction.commit()
+        __statement_seen_by_user(db_user.uid, statement_uid)
+        transaction.commit()
+    return False
 
 
 def clear_votes_of_user(transaction, user):
