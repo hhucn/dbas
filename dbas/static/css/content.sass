@@ -1,6 +1,32 @@
 .hidden
   display: none
 
+span[data-argumentation-type^="argument"],
+span[data-argumentation-type^="attack"],
+span[data-argumentation-type^="position"]
+  -webkit-transition: all 0.25s ease
+  -moz-transition: all 0.25s ease
+  -o-transition: all 0.25s ease
+  transition: all 0.25s ease
+
+span[data-argumentation-type^="argument"]
+  color: $my-argument-color
+
+span[data-argumentation-type^="attack"]
+  color: $attack-argument-color
+
+span[data-argumentation-type^="position"]
+  color: $my-position-color
+
+.argument-highlighter
+  color: $my-argument-light-color
+
+.attack-highlighter
+  color: $attack-argument-light-color
+
+.position-highlighter
+  color: $my-position-light-color
+
 #navbar-left
   visibility: hidden
 
