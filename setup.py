@@ -34,6 +34,7 @@ requires = [
     'validate_email',
     'db-psycopg2',
     'pyramid_redis_sessions',
+    'autobahn[twisted]>=0.9.1'
 ]
 
 setup(name='dbas',
