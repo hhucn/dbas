@@ -598,7 +598,8 @@ class Notification(DiscussionBase):
     read = Column(Boolean, nullable=False)
     is_inbox = Column(Boolean, nullable=False)
 
-    users = relationship('User', foreign_keys=[from_author_uid, to_author_uid])
+    from_users = relationship('User', foreign_keys=[from_author_uid])
+    to_users = relationship('User', foreign_keys=[to_author_uid])
 
     def __init__(self, from_author_uid, to_author_uid, topic, content, is_inbox=True, read=False):
         self.from_author_uid = from_author_uid
