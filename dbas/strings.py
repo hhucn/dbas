@@ -940,7 +940,7 @@ class TextGenerator(object):
                 tmp += ' '
                 conclusion = conclusion[len(start_argument):]
             else:
-                tmp += end_tag
+                tmp += end_tag + ' '
                 tmp += _t.get(_t.strongerStatementForAccepting3 if user_is_attacking else _t.strongerStatementForRecjecting3) + ' '
             confrontation_text += tmp
             confrontation_text += conclusion + '.' + ' '
