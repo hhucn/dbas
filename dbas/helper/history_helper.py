@@ -153,9 +153,10 @@ def __justify_statement_step(step, nickname, lang, url):
     text    = get_text_for_statement_uid(uid)
     if lang != 'de':
         text    = text[0:1].upper() + text[1:]
-    bubbsle_user = create_speechbubble_dict(is_user=True, message=intro + '<strong>' + text + '</strong>',
-                                                          omit_url=False, statement_uid=uid, is_supportive=is_supportive,
-                                                          nickname=nickname, lang=lang, url=url)
+
+    msg = intro + '<' + TextGenerator.tag_type + '>' + text + '</' + TextGenerator.tag_type + '>'
+    bubbsle_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
+                                            is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
     return [bubbsle_user]
 
 
@@ -174,8 +175,8 @@ def __dont_know_step(step, nickname, lang, url):
 
     _tn         = Translator(lang)
     text     = get_text_for_argument_uid(uid, lang)
-    text     = text.replace(_tn.get(_tn.because).lower(), '</strong>' + _tn.get(_tn.because).lower() + '<strong>')
-    sys_text = _tn.get(_tn.otherParticipantsThinkThat) + ' <strong>' + text[0:1].lower() + text[1:]  + '</strong>. '
+    text     = text.replace(_tn.get(_tn.because).lower(), '</' + TextGenerator.tag_type + '>' + _tn.get(_tn.because).lower() + '<' + TextGenerator.tag_type + '>')
+    sys_text = _tn.get(_tn.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>' + text[0:1].lower() + text[1:]  + '</' + TextGenerator.tag_type + '>. '
     return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url, is_supportive=True)]
 
 
@@ -203,8 +204,8 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     last_relation   = splitted_history[-1].split('/')[2]
 
     user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
-    current_argument     = get_text_for_argument_uid(uid, lang, with_strong_html_tag=True, user_changed_opinion=user_changed_opinion)
-    db_argument             = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    current_argument     = get_text_for_argument_uid(uid, lang, user_changed_opinion=user_changed_opinion)
+    db_argument          = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
     db_confrontation     = DBDiscussionSession.query(Argument).filter_by(uid=additional_uid).first()
     db_statement         = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
 
@@ -221,23 +222,22 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
 
     _tn = Translator(lang)
     user_text = (_tn.get(_tn.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
-    user_text += '<strong>'
+    user_text += '<' + TextGenerator.tag_type + '>'
     user_text += current_argument if current_argument != '' else premise
-    user_text += '</strong>.'
+    user_text += '</' + TextGenerator.tag_type + '>.'
     sys_text = TextGenerator(lang).get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive,
                                                               attack, confr, reply_for_argument, user_is_attacking,
-                                                              db_argument, db_confrontation)
+                                                              db_argument, db_confrontation, color_html=False)
 
     bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=False,
-                                                         argument_uid=uid, is_supportive=is_supportive,
-                                                         nickname=nickname, lang=lang, url=url)
+                                           argument_uid=uid, is_supportive=is_supportive,
+                                           nickname=nickname, lang=lang, url=url)
     if attack == 'end':
         bubble_syst  = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True,
-                                                              nickname=nickname, lang=lang)
+                                                nickname=nickname, lang=lang)
     else:
         bubble_syst  = create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(additional_uid),
-                                                              message=sys_text, omit_url=True, nickname=nickname,
-                                                              lang=lang)
+                                                message=sys_text, omit_url=True, nickname=nickname, lang=lang)
     return [bubble_user, bubble_syst]
 
 

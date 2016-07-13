@@ -395,6 +395,30 @@ function Main () {
 		} else {
 			$('#' + sidebarTackWrapperId).attr('data-original-title', _t_discussion(pinNavigation));
 		}
+
+		// hover effects on text elements
+		var data = 'data-argumentation-type';
+		$('#' + discussionSpaceListId).find('span[' + data + '!=""]').each(function(){
+			var attr = $(this).attr(data);
+			var tmp = $('<span>').addClass(attr + '-highlighter');
+			tmp.appendTo(document.body);
+			var old_color = $(this).css('color');
+			var new_color = tmp.css('color');
+			tmp.remove();
+			$(this).hover(
+				function(){
+					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
+						.css('color', new_color)
+						.css('background-color', '#edf3e6')
+						.css('border-radius', '2px');
+				}, function(){
+					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
+						.css('color', old_color)
+						.css('background-color', '')
+						.css('border-radius', '0');
+				}
+			);
+		});
 	};
 
 	/**
