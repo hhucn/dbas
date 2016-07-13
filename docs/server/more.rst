@@ -9,3 +9,4 @@ Redis is used as backend for beaker management, therefore every tempate is cache
 WebSockets
 ==========
 Information about websockets with nginx http://nginx.org/en/docs/http/websocket.html
+Autobahn with Twisted
