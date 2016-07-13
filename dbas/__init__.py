@@ -11,6 +11,7 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
+# from pyramid_redis_sessions import session_factory_from_settings
 
 from dbas.security import groupfinder
 
@@ -82,6 +83,7 @@ def main(global_config, **settings):
     config.add_route('main_notification',       '/notifications')
     config.add_route('main_news',               '/news')
     config.add_route('main_imprint',            '/imprint')
+    config.add_route('main_review',             '/review')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login',                             '{url:.*}ajax_user_login')

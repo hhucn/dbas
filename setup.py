@@ -32,7 +32,8 @@ requires = [
     'pyshorteners',
     'python-slugify',
     'validate_email',
-    'db-psycopg2'
+    'db-psycopg2',
+    'pyramid_redis_sessions',
 ]
 
 setup(name='dbas',
