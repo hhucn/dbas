@@ -11,7 +11,7 @@ from html import escape
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
-from .strings import Translator
+from .strings import Translator, TextGenerator
 
 
 def escape_string(text):
@@ -101,18 +101,21 @@ def python_datetime_pretty_print(ts, lang):
     return datetime.strptime(str(ts), '%Y-%m-%d').strftime(formatter)
 
 
-def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_intro=False, first_arg_by_user=False,
-                              user_changed_opinion=False, rearrange_intro=False):
+def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
+                              user_changed_opinion=False, rearrange_intro=False, colored_position=False,
+                              attack_type=None):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
     :param uid: Integer
     :param lang: String
-    :param with_strong_html_tag: Boolean
+    :param with_html_tag: Boolean
     :param start_with_intro: Boolean
     :param first_arg_by_user: Boolean
     :param user_changed_opinion: Boolean
     :param rearrange_intro: Boolean
+    :param colored_position: Boolean
+    :param attack_type: Boolean
     :return: String
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -121,11 +124,6 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
         return None
 
     _t = Translator(lang)
-    sb = '<strong>' if with_strong_html_tag else ''
-    se = '</strong>' if with_strong_html_tag else ''
-    because = (se + ', ') if lang == 'de' else (' ' + se)
-    because += _t.get(_t.because).lower() + ' ' + sb
-    doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHoldBecause).lower() + ' ' + sb
 
     # getting all argument id
     arg_array = [db_argument.uid]
@@ -135,58 +133,89 @@ def get_text_for_argument_uid(uid, lang, with_strong_html_tag=False, start_with_
 
     if len(arg_array) == 1:
         # build one argument only
-        return __build_single_argument(arg_array[0], lang, rearrange_intro, sb, se, start_with_intro, because, doesnt_hold_because, _t)
+        return __build_single_argument(arg_array[0], lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t)
 
     else:
         # get all pgroups and at last, the conclusion
-        return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, se, sb, start_with_intro, because, doesnt_hold_because, _t)
+        sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
+        se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
+        doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHold).lower() + ' ' + _t.get(_t.because).lower() + ' ' + sb
+        return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
 
 
-def __build_single_argument(uid, lang, rearrange_intro, sb, se, start_with_intro, because, doesnt_hold_because, _t):
+def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t):
     """
 
     :param uid:
     :param lang:
     :param rearrange_intro:
-    :param sb:
-    :param se:
-    :param start_with_intro:
+    :param with_html_tag:
+    :param colored_position:
+    :param attack_type:
     :param because:
-    :param doesnt_hold_because:
     :param _t:
     :return:
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+
     if lang != 'de':
-        conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
+        # conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
         premises = premises[0:1].lower() + premises[1:]  # pretty print
-    ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
+
+    sb_tmp = ''
+    se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
+    if not attack_type == 'dont_know':
+        sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
+        if colored_position:
+            sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
+    else:
+        sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
+        sb_tmp = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
+
+    color_everything = attack_type == 'undercut'
+    if not color_everything:
+        if not attack_type == 'dont_know':
+            if attack_type == 'undermine':
+                premises = sb + premises + se
+            else:
+                conclusion = sb + conclusion + se
+        else:
+            se = '</' + TextGenerator.tag_type + '>'
+            premises = sb + premises + se
+            conclusion = sb_tmp + conclusion + se
 
     if lang == 'de':
         if rearrange_intro:
-            intro = _t.get(_t.itTrueIs) if db_argument.is_supportive else _t.get(_t.itFalseIs)
+            intro = _t.get(_t.itTrueIsThat) if db_argument.is_supportive else _t.get(_t.itFalseIsThat)
         else:
-            intro = _t.get(_t.itIsTrue) if db_argument.is_supportive else _t.get(_t.itIsFalse)
-        ret_value += se + intro[0:1].upper() + intro[1:] + ' ' + sb + conclusion + because + premises
+            intro = _t.get(_t.itIsTrueThat) if db_argument.is_supportive else _t.get(_t.itIsFalseThat)
+        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion + ' ' + _t.get(_t.because).lower() + ' ' + premises
     else:
-        ret_value += conclusion + (because if db_argument.is_supportive else doesnt_hold_because) + premises
+        if not color_everything:
+            tmp = ' ' + _t.get(_t.isNotRight).lower() + ', ' + _t.get(_t.because).lower() + ' '
+        else:
+            tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
+        ret_value = conclusion + ' '
+        ret_value += _t.get(_t.because).lower() if db_argument.is_supportive else tmp
+        ret_value += ' ' + premises
 
-    return ret_value
+    if color_everything:
+        return sb + ret_value + se
+    else:
+        return ret_value
 
 
-def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, se, sb, start_with_intro, because, doesnt_hold_because, _t):
+def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t):
     """
 
     :param arg_array:
     :param lang:
     :param first_arg_by_user:
     :param user_changed_opinion:
-    :param se:
-    :param sb:
+    :param with_html_tag:
     :param start_with_intro:
-    :param because:
     :param doesnt_hold_because:
     :param _t:
     :return:
@@ -203,6 +232,11 @@ def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opi
         supportive.append(db_argument.is_supportive)
     uid = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid
     conclusion = get_text_for_statement_uid(uid)
+
+    sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
+    se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
+    because = (se + ', ') if lang == 'de' else (' ' + se)
+    because += _t.get(_t.because).lower() + ' ' + sb
 
     if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
         ret_value = se
@@ -234,7 +268,7 @@ def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opi
         # ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
         users_opinion = not users_opinion
 
-    ret_value = ret_value.replace('.</strong>', '</strong>.').replace('. </strong>', '</strong>. ')
+    ret_value = ret_value.replace('.</' + TextGenerator.tag_type + '>', '</' + TextGenerator.tag_type + '>.').replace('. </' + TextGenerator.tag_type + '>', '</' + TextGenerator.tag_type + '>. ')
     return ret_value[:-1]  # cut off punctuation
 
 
