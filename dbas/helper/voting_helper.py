@@ -99,6 +99,8 @@ def add_vote_for_statement(statement_uid, user, supportive, transaction):
         __vote_statement(db_statement, db_user, supportive)
         __statement_seen_by_user(db_user.uid, statement_uid)
         transaction.commit()
+        return True
+
     return False
 
 
