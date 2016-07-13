@@ -263,6 +263,7 @@ var urlContent 							= 'discuss';
 var urlSettings 						= 'settings';
 var urlImprint 							= 'imprint';
 var urlLogout 							= 'logout';
+var urlReview                           = 'review';
 
 
 var dbas_en = {

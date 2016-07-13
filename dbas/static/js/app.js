@@ -550,6 +550,7 @@ $(document).ready(function () {
 	else if (path.indexOf(urlLogin) != -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf(urlNews) != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
 	else if (path.indexOf(urlContent) != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlReview) != -1){ 	setLinkActive('#' + reviewLinkId);	$('#' + navbarLeft).hide(); }
 	else if (path.indexOf(urlSettings) != -1 ||
 			 path.indexOf(urlImprint) != -1 ||
 			 path.indexOf(urlLogout) != -1){										$('#' + navbarLeft).hide(); }
