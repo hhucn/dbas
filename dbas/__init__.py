@@ -69,6 +69,7 @@ def main(global_config, **settings):
     config.include('graph', route_prefix='/graph')
     config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
+    config.include('websocket', route_prefix='/ws')
 
     # includings for the config
     config.include('pyramid_chameleon')
