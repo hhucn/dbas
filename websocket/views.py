@@ -8,9 +8,9 @@ import json
 from cornice import Service
 from dbas.logger import logger
 
-from socketio.namespace import BaseNamespace
-from socketio import socketio_manage
-from socketio.mixins import BroadcastMixin
+#from socketio.namespace import BaseNamespace
+#from socketio import socketio_manage
+#from socketio.mixins import BroadcastMixin
 
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
