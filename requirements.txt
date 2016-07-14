@@ -16,6 +16,7 @@ docutils==0.12
 flake8==2.6.0
 gevent>=1.1rc5
 gevent-websocket>=0.9.5
+gevent-socketio>=0.3.6
 html5lib==0.9999999
 lingua==4.9
 mako==1.0.3
