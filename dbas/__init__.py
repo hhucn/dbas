@@ -76,8 +76,11 @@ def main(global_config, **settings):
     config.include('pyramid_mailer')
     config.include('pyramid_beaker')
 
-    # adding all routes
-    config.add_static_view('static', 'static', cache_max_age=3600)
+    # adding all static folders
+    config.add_static_view(name='dbas', path='dabs:static/', cache_max_age=3600)
+    config.add_static_view(name='ws_static', path='websocket:static/', cache_max_age=3600)
+
+    # adding routes
     config.add_route('main_page',               '/')
     config.add_route('main_contact',            '/contact')
     config.add_route('main_settings',           '/settings')
