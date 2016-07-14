@@ -34,7 +34,8 @@ requires = [
     'validate_email',
     'db-psycopg2',
     'pyramid_redis_sessions',
-    'autobahn[twisted]>=0.9.1'
+    'gevent-socketio',
+    'gevent-websocket',
 ]
 
 setup(name='dbas',
@@ -46,7 +47,7 @@ setup(name='dbas',
           "Framework :: Pyramid",
           "Topic :: Internet :: WWW/HTTP",
           "Topic :: Internet :: WWW/HTTP :: WSGI :: NGINX :: Application",
-          ],
+      ],
       author='Tobias Krauthoff',
       author_email='krauthoff@cs.uni-duesseldorf.de',
       url='https://dbas.cs.uni-duesseldorf.de',
