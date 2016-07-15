@@ -11,11 +11,7 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-<<<<<<< HEAD
-=======
-# from pyramid_redis_sessions import session_factory_from_settings
 from pyramid.static import QueryStringConstantCacheBuster
->>>>>>> master
 
 from dbas.security import groupfinder
 
@@ -81,19 +77,20 @@ def main(global_config, **settings):
     config.include('pyramid_mailer')
     config.include('pyramid_beaker')
 
-    config.add_static_view(name='static', path='static', cache_max_age=3600)
+    config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
     # adding routes
-    config.add_route('main_page',               '/')
-    config.add_route('main_contact',            '/contact')
-    config.add_route('main_settings',           '/settings')
-    config.add_route('main_notification',       '/notifications')
-    config.add_route('main_news',               '/news')
-    config.add_route('main_imprint',            '/imprint')
-    config.add_route('main_review',             '/review')
+    config.add_route('main_page', '/')
+    config.add_route('main_contact', '/contact')
+    config.add_route('main_settings', '/settings')
+    config.add_route('main_notification', '/notifications')
+    config.add_route('main_news', '/news')
+    config.add_route('main_imprint', '/imprint')
+    config.add_route('main_review', '/review')
+    config.add_route('main_user', '/user')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
