@@ -76,8 +76,8 @@ def main(global_config, **settings):
     config.include('pyramid_beaker')
 
     # adding all static folders
-    config.add_static_view(name='dbas', path='dabs:static/', cache_max_age=3600)
-    config.add_static_view(name='ws_static', path='websocket:static/', cache_max_age=3600)
+    config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
 
     # adding routes
     config.add_route('main_page', '/')
