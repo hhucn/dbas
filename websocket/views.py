@@ -4,12 +4,8 @@ Introducing websockets.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
-
 from dbas.views import Dbas
 from dbas.views import project_name
-
-from autobahn.twisted.websocket import WebSocketServerProtocol
 
 from cornice import Service
 from dbas.logger import logger
@@ -57,14 +53,3 @@ def socketio(request):
         'extras': extras_dict,
         'value': ':('
     }
-
-
-class MyServerProtocol(WebSocketServerProtocol):
-
-    def onMessage(self, payload, isBinary):
-        s = payload.decode('utf8')
-        logger('MyServerProtocol', 'onMessage', 'received ' + str(s))
-        obj = json.loads(payload.decode('utf8'))
-
-        payload = s.encode('utf8')
-        self.sendMessage(payload, isBinary=False)
