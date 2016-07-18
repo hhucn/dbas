@@ -17,14 +17,16 @@ from webob import Response, exc
 # Other
 # =============================================================================
 
-def as_json(dictionary):
+def as_json(convert):
     """
-    Convert dictionary to json string.
+    Convert input to json string.
 
-    :param dictionary: dict which should be converted
+    :param convert: dict which should be converted
     :return: json string
     """
-    return json.dumps(dictionary, True)
+    if convert:
+        return json.dumps(convert, True)
+    return json.dumps({"status": "error", "message": "Could not convert data to JSON"})
 
 
 def logger():
