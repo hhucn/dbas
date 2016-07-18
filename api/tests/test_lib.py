@@ -4,7 +4,7 @@ Unit tests for lib.py
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
 """
 
-from api.lib import flatten, merge_dicts
+from api.lib import flatten, merge_dicts, as_json
 
 
 def test_flatten():
@@ -32,3 +32,11 @@ def test_merge_dicts():
     assert merge_dicts(a, a) == a
     assert merge_dicts(a, None) is None
     assert merge_dicts(a, b) == c
+
+
+def test_as_json():
+    correct = {"foo": "bar"}
+    broken_input = as_json(None)
+    assert as_json(correct) == '{"foo": "bar"}'
+    assert "status" in broken_input and "error" in broken_input
+    assert as_json(1) == "1"
