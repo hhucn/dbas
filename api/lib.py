@@ -17,6 +17,16 @@ from webob import Response, exc
 # Other
 # =============================================================================
 
+def as_json(dictionary):
+    """
+    Convert dictionary to json string.
+
+    :param dictionary: dict which should be converted
+    :return: json string
+    """
+    return json.dumps(dictionary, True)
+
+
 def logger():
     """
     Create a logger.
