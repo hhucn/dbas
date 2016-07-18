@@ -7,8 +7,7 @@ services:
     command: /bin/bash docker_init.sh
     volumes:
       - .:/code
-# Uncomment these lines if you want to run a standalone D-BAS instance
-#    ports:
-#      - "80:80"
+    ports:
+      - "4284:4284"
     links:
       - db:hhucn__docker-dbas-postgres
