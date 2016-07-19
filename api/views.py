@@ -15,7 +15,7 @@ from cornice import Service
 from dbas.views import Dbas
 
 from .extractor import extract_author_information, extract_issue_information, extract_reference_information
-from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts
+from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, as_json
 from .login import validate_credentials, validate_login
 from .references import store_reference, url_to_statement, get_references_for_url, get_complete_reference
 
@@ -310,18 +310,17 @@ def get_references(request):
     host, path = parse_host_and_path(request)
     if host and path:
         refs = []
-        log.debug("[API/Reference] Returning references for %s%s" % (host, path))
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
             for ref in refs_db:
                 url = url_to_statement(ref.issue_uid, ref.statement_uid)
                 refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
-            return {"references": refs}
+            return as_json({"references": refs})
         else:
             log.error("[API/Reference] Returned no references: Database error")
-            return {"status": "error", "message": "Could not retrieve references"}
+            return as_json({"status": "error", "message": "Could not retrieve references"})
     log.error("[API/Reference] Could not parse host and / or path")
-    return {"status": "error", "message": "Could not parse your origin"}
+    return as_json({"status": "error", "message": "Could not parse your origin"})
 
 
 @reference_usages.get()
@@ -346,7 +345,7 @@ def get_reference_usages(request):
                      "statement": {"uid": db_ref.statement_uid,
                                    "url": statement_url,
                                    "text": db_textversion.content}})
-        return json.dumps(refs, True)
+        return as_json(refs)
 
     log.error("[API/GET Reference Usages] Error when trying to find matching reference for id " + ref_uid)
     return {"status": "error", "message": "Reference could not be found"}
@@ -416,7 +415,7 @@ def find_statements_fn(request):
         statement_uid = statement["statement_uid"]
         statement["url"] = url_to_statement(api_data["issue"], statement_uid)
         return_dict["values"].append(statement)
-    return json.dumps(return_dict, True)
+    return as_json(return_dict)
 
 
 # =============================================================================
@@ -435,7 +434,7 @@ def get_statement_url(request):
     statement_uid = request.matchdict["statement_uid"]
     agree = request.matchdict["agree"]
     return_dict = {"url": url_to_statement(issue_uid, statement_uid, agree)}
-    return json.dumps(return_dict, True)
+    return as_json(return_dict)
 
 
 # =============================================================================

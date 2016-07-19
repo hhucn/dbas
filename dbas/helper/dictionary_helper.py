@@ -159,13 +159,11 @@ class DictionaryHelper(object):
                     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
                     premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.discussion_lang)
                     conclusion = get_text_for_conclusion(db_argument, self.discussion_lang)
-                    island_dict['heading'] = get_text_for_argument_uid(argument_id, self.discussion_lang, True)
+                    island_dict['heading'] = get_text_for_argument_uid(argument_id, self.discussion_lang)
 
                     island_dict['premise'] = premise[0:1].lower() + premise[1:]
                     island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]
-                    island_dict.update(TextGenerator(self.discussion_lang).get_relation_text_dict(island_dict['premise'],
-                                                                                                  island_dict['conclusion'],
-                                                                                                  False, False,
+                    island_dict.update(TextGenerator(self.discussion_lang).get_relation_text_dict(False, False,
                                                                                                   not db_argument.is_supportive,
                                                                                                   for_island_view=True))
                     return_dict['island'] = island_dict
@@ -223,7 +221,7 @@ class DictionaryHelper(object):
 
         elif at_dont_know:
             discussion_dict['mode'] = 'dont_know'
-            sys_text  = _tn.get(_tn.firstOneInformationText) + ' <strong>' + current_premise + '</strong>, '
+            sys_text  = _tn.get(_tn.firstOneInformationText) + ' <em>' + current_premise + '</em>, '
             sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
             mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
             discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=self.system_lang))
@@ -232,7 +230,7 @@ class DictionaryHelper(object):
         elif at_justify:
             discussion_dict['mode'] = 'justify'
             current_premise = current_premise[0:1].lower() + current_premise[1:]
-            mid_text = _tn.get(_tn.firstPremiseText1) + ' <strong>' + current_premise + '</strong>'
+            mid_text = _tn.get(_tn.firstPremiseText1) + ' <em>' + current_premise + '</em>'
 
             if not supportive:
                 mid_text += ' ' + _tn.get(_tn.doesNotHold)

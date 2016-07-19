@@ -11,18 +11,18 @@ while true; do
     echo "$(date) - db is ready, starting server"
 
     printf "\n# Deploying D-BAS...\n"
-    python setup.py develop
+    python setup.py --quiet develop
 
     printf "\n# Seeding discussion database...\n"
-    initialize_discussion_sql docker.ini
+    initialize_discussion_sql docker.ini > /dev/null 2>&1
 
     printf "\n# Seeding news database...\n"
-    initialize_news_sql docker.ini
+    initialize_news_sql docker.ini > /dev/null 2>&1
 
     ip=`ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1`
 
     printf "\n###################################################"
-    printf "\n# Connect to this client via http://$ip/ "
+    printf "\n# Connect to this client via http://$ip:4284/ "
     printf "\n###################################################\n"
 
     printf "\n# Starting integrated web server -- for development use only!\n"
