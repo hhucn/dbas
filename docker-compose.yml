@@ -8,6 +8,6 @@ services:
     volumes:
       - .:/code
     ports:
-      - "80:80"
+      - "4284:4284"
     links:
       - db:hhucn__docker-dbas-postgres

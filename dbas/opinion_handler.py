@@ -82,10 +82,7 @@ class OpinionHandler:
 
         first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
         first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-        conclusion       = conclusion[0:1].lower() + conclusion[1:]
-        premise          = premise[0:1].lower() + premise[1:]
-        relation_text    = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive,
-                                                      first_conclusion=first_conclusion)
+        relation_text    = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
 
         # getting votes for every reaction
         for relation in tmp_dict:
@@ -314,12 +311,7 @@ class OpinionHandler:
         ret_dict = dict()
 
         if not db_statement:
-            ret_dict['text'] = None
-            ret_dict['agree'] = None
-            ret_dict['disagree'] = None
-            ret_dict['agree_users'] = []
-            ret_dict['disagree_users'] = []
-            ret_dict['title'] = title[0:1].upper() + title[1:]
+            ret_dict = {'text': None, 'agree': None, 'disagree': None, 'agree_users': [], 'disagree_users': [], 'title': title[0:1].upper() + title[1:]}
 
         text = get_text_for_statement_uid(statement_uid)
         ret_dict['text'] = text[0:1].upper() + text[1:]

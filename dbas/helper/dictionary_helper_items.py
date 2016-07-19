@@ -36,9 +36,6 @@ class ItemDictHelper(object):
         self.issue_uid = issue_uid
         self.application_url = application_url
         self.for_api = for_api
-        logger('xx', 'xx', path)
-        logger('xx', 'xx', path)
-        logger('xx', 'xx', path)
         if for_api:
             self.path = path[len('/api/' + DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first().get_slug()):]
         else:
@@ -253,12 +250,7 @@ class ItemDictHelper(object):
         if not db_argument:
             return statements_array
 
-        conclusion   = get_text_for_conclusion(db_argument, self.lang)
-        premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
-        if self.lang != 'de':
-            conclusion   = conclusion[0:1].lower() + conclusion[1:]
-            premise         = premise[0:1].lower() + premise[1:]
-        rel_dict     = _tg.get_relation_text_dict(premise, conclusion, False, False, False, is_dont_know=True)
+        rel_dict     = _tg.get_relation_text_dict(False, False, False, is_dont_know=True)
         mode         = 't' if is_supportive else 't'
         counter_mode = 'f' if is_supportive else 't'
 
@@ -289,6 +281,7 @@ class ItemDictHelper(object):
         """
         logger('ItemDictHelper', 'prepare_item_dict_for_reaction', 'def')
         _tg  = TextGenerator(self.lang)
+        _tn  = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
         db_sys_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_sys).first()
@@ -297,22 +290,9 @@ class ItemDictHelper(object):
         if not db_sys_argument or not db_user_argument:
             return statements_array
 
-        conclusion   = get_text_for_conclusion(db_sys_argument, self.lang, rearrange_intro=True)
-        premise, tmp = get_text_for_premisesgroup_uid(db_sys_argument.premisesgroup_uid, self.lang)
-        # getting the real conclusion: if the arguments conclusion is an argument, we will get the conclusion of the last argument
-        db_tmp_argument = db_sys_argument
-        while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
-            db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
-        first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
-
-        conclusion         = conclusion[0:1].lower() + conclusion[1:]
-        if self.lang != 'de':
-            first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-            premise          = premise[0:1].lower() + premise[1:]
-
-        rel_dict         = _tg.get_relation_text_dict(premise, conclusion, False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
+        rel_dict         = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=_tn.get(_tn.myPosition), attack_type=attack)
         mode             = 't' if is_supportive else 'f'
-        _um                 = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        _um              = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         _rh              = RecommenderSystem
 
         # based in the relation, we will fetch different url's for the items

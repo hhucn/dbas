@@ -887,6 +887,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        _tn = Translator(ui_locales)
         if session_expired:
             return self.user_logout(True)
 
@@ -897,7 +898,34 @@ class Dbas(object):
         return {
             'layout': self.base_layout(),
             'language': str(ui_locales),
-            'title': 'Imprint',
+            'title': _tn.get(_tn.imprint),
+            'project': project_name,
+            'extras': extras_dict
+        }
+
+    # review
+    @view_config(route_name='main_review', renderer='templates/review.pt', permission='everybody')
+    def main_review(self):
+        """
+        View configuration for the imprint.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('main_review', 'def', 'main')
+        ui_locales = get_language(self.request, get_current_registry())
+        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        _tn = Translator(ui_locales)
+        if session_expired:
+            return self.user_logout(True)
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': _tn.get(_tn.review),
             'project': project_name,
             'extras': extras_dict
         }
