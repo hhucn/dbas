@@ -38,7 +38,7 @@ class OpinionHandlerTests(unittest.TestCase):
 
         # correct argument uids
         response_correct_id = opinion.get_user_and_opinions_for_argument(argument_uids=[1, 1])
-        is_correct = test_structure(self, response_correct_id)
+        is_correct = verify_structure(self, response_correct_id)
         self.assertTrue(is_correct)
 
         # uids for no argument
@@ -66,7 +66,7 @@ class OpinionHandlerTests(unittest.TestCase):
         self.assertTrue('nickname' in response['opinions'][0]['users'][0])
 
 
-def test_structure(self, response):
+def verify_structure(self, response):
     # test structure of dictionary
 
     # test structure of ...
@@ -86,7 +86,7 @@ def test_structure(self, response):
     self.assertTrue('seen_by' in response['opinions']['rebut'])
 
     # ... value of key 'users' in {'opinions': {'attack_type': {'users': ...}}}
-    self.assertTrue('nickname' in response['opinions']['rebut']['users'][0])
+    self.assertTrue('nickname' in response['opinions']['rebut']['users'][1])
     self.assertTrue('public_profile_url' in response['opinions']['undercut']['users'][0])
     self.assertTrue('avatar_url' in response['opinions']['support']['users'][0])
     self.assertTrue('vote_timestamp' in response['opinions']['undermine']['users'][0])
