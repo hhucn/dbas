@@ -20,5 +20,6 @@ test:
     - python setup.py --quiet develop
     - initialize_discussion_sql docker.ini > /dev/null 2>&1
     - initialize_news_sql docker.ini > /dev/null 2>&1
+    - init_discussion_testvotes docker.ini > /dev/null 2>&1
     - cp docker.ini development.ini
     - make nosetests
