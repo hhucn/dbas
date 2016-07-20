@@ -54,10 +54,21 @@ class OpinionHandlerTests(unittest.TestCase):
         # correct statement id
         response_correct_id_supportive_true = opinion.get_user_with_same_opinion_for_statements(statement_uids=[1, 1],
                                                                                                 is_supportive=True)
-        self.assertTrue(verify_structure_of_statement_dictionary(self, response_correct_id_supportive_true))
+        self.assertTrue(verify_structure_of_statement_and_premisgroup_dictionary(self, response_correct_id_supportive_true))
         response_correct_id_supportive_false = opinion.get_user_with_same_opinion_for_statements(statement_uids=[2, 3],
                                                                                                  is_supportive=False)
-        self.assertTrue(verify_structure_of_statement_dictionary(self, response_correct_id_supportive_false))
+        self.assertTrue(verify_structure_of_statement_and_premisgroup_dictionary(self, response_correct_id_supportive_false))
+
+    def test_get_user_with_same_opinion_for_premisegroups(self):
+        opinion = self._makeOne(lang='de',
+                                nickname='nickname',
+                                mainpage='url')
+
+        # correct premisegroup id
+        response_correct_id = opinion.get_user_with_same_opinion_for_premisegroups(argument_uids=[1, 2])
+        self.assertTrue(verify_structure_of_statement_and_premisgroup_dictionary(self, response_correct_id))
+        response_correct_id2 = opinion.get_user_with_same_opinion_for_premisegroups(argument_uids=[61, 62])
+        self.assertTrue(verify_structure_of_statement_and_premisgroup_dictionary(self, response_correct_id2))
 
 
 def verify_structure_of_argument_dictionary(self, response):
@@ -91,7 +102,7 @@ def verify_structure_of_argument_dictionary(self, response):
 
     return True
 
-def verify_structure_of_statement_dictionary(self, response):
+def verify_structure_of_statement_and_premisgroup_dictionary(self, response):
     self.assertTrue('opinions' in response)
     self.assertTrue('title' in response)
 
