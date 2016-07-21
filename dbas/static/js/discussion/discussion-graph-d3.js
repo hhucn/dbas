@@ -54,7 +54,8 @@ function DiscussionGraph() {
 	};
 
 	/**
-	 *
+	 * Create a graph.
+	 * 
 	 * @param jsonData
 	 */
 	this.getD3Graph = function(jsonData){
@@ -71,7 +72,7 @@ function DiscussionGraph() {
 		// create force layout object and define properties
 		var force = d3.layout.force()
     		.gravity(0.07)
-    		.charge(-200)
+    		.charge(-300)
     		.linkDistance(80)
     		.size([width, height]);
 
@@ -88,7 +89,7 @@ function DiscussionGraph() {
 		force
     		.links(edges)
 			.nodes(jsonData.nodes)
-    		.start();
+            .on("tick", forceTick);
 
 		// Per-type markers for links
 	    var marker = svg.append("defs").selectAll('marker')
@@ -110,14 +111,14 @@ function DiscussionGraph() {
 		// links between nodes
 		var link = svg.selectAll(".link")
     		.data(edges)
-			// SVG lines
+			// svg lines
     		.enter().append("line")
       			.attr("class", "link")
 			    .style("stroke", function(d) { return d.color; })
 				.style("stroke-width", '2px')
 				.attr("marker-end", function(d) {return "url(#marker_" + d.color + ")"});
 
-		// node: SVG circle
+		// node: svg circle
    		var node = svg.selectAll(".node")
         	.data(force.nodes())
         	.enter().append("g")
@@ -142,26 +143,30 @@ function DiscussionGraph() {
                 .attr("dy", "1.2em")
                 .attr("x", '0')
                 .attr("text-anchor", "middle")
-                .attr("class", "tspan");
+                .attr("class", "tspan")
       		});
 
+        force.start();
+
 		// update force layout calculations
-  		force.on("tick", function() {
+  		function forceTick() {
+            // update position of edges
     		link
-				// transform x, y
         		.attr("x1", function(d) { return d.source.x; })
         		.attr("y1", function(d) { return d.source.y; })
         		.attr("x2", function(d) { return d.target.x; })
         		.attr("y2", function(d) { return d.target.y; });
 
+            // update position of nodes
 			circle
         		.attr("cx", function(d) { return d.x; })
         		.attr("cy", function(d) { return d.y; });
 
+            // update position of label
 			label
 				.attr("transform", function (d) {
         			return "translate(" + d.x + "," + (d.y - 50) + ")";
     			});
-  		});
+  		}
 	}
 }
