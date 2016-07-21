@@ -231,4 +231,3 @@ class InputValidatorTests(unittest.TestCase):
                                                              relation='',
                                                              is_history=False)
         self.assertEqual(no_relation_uid_none_false, False)
-
