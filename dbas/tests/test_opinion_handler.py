@@ -57,6 +57,13 @@ class OpinionHandlerTests(unittest.TestCase):
         response_correct_id2 = opinion.get_user_with_same_opinion_for_argument(argument_uid=62)
         self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id2))
 
+    def test_get_user_with_opinions_for_attitude(self):
+        # correct statement id
+        response_correct_id = opinion.get_user_with_opinions_for_attitude(statement_uid=1)
+        self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id))
+        response_correct_id2 = opinion.get_user_with_opinions_for_attitude(statement_uid=76)
+        self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id2))
+
 
 def verify_structure_of_argument_dictionary(self, response):
     # test structure of dictionary
@@ -89,6 +96,7 @@ def verify_structure_of_argument_dictionary(self, response):
 
     return True
 
+
 def verify_structure_of_statement_premisgroup_argument_dictionary(self, response):
     self.assertTrue('opinions' in response)
     self.assertTrue('title' in response)
@@ -104,7 +112,13 @@ def verify_structure_of_statement_premisgroup_argument_dictionary(self, response
     # ... value of key 'users' in 'opinions'
     self.assertTrue('nickname' in response['opinions'][0]['users'][0])
 
+    # wrong structure
+    self.assertTrue('' not in response)
+    self.assertTrue('uid' not in response)
+    self.assertTrue(None not in response)
+
     return True
+
 
 def verify_structure_of_user_dictionary_for_argument(self, response):
     self.assertTrue('opinions' in response)
@@ -116,5 +130,30 @@ def verify_structure_of_user_dictionary_for_argument(self, response):
     self.assertTrue('text' in response['opinions'])
     self.assertTrue('message' in response['opinions'])
     self.assertTrue('users' in response['opinions'])
+
+    # wrong structure
+    self.assertTrue('' not in response)
+    self.assertTrue('uid' not in response)
+    self.assertTrue(None not in response)
+
+    return True
+
+
+def verify_structure_of_attitude_dictionary(self, response):
+    # correct structure
+    self.assertTrue('text' in response)
+    self.assertTrue('agree' in response)
+    self.assertTrue('disagree' in response)
+    self.assertTrue('agree_users' in response)
+    self.assertTrue('agree_text' in response)
+    self.assertTrue('disagree_users' in response)
+    self.assertTrue('disagree_text' in response)
+    self.assertTrue('title' in response)
+    self.assertTrue('seen_by' in response)
+
+    # wrong structure
+    self.assertTrue('' not in response)
+    self.assertTrue('text ' not in response)
+    self.assertTrue(None not in response)
 
     return True
