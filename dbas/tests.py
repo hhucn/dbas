@@ -90,7 +90,7 @@ class DBASTestCase(unittest.TestCase):
 
         :return:
         """
-        print("DBASTestCase: setUpClass")
+        # print("DBASTestCase: setUpClass")
         cls.engine = engine_from_config(settings, prefix='sqlalchemy-discussion.')
         cls.Session = sessionmaker()
 
@@ -99,7 +99,7 @@ class DBASTestCase(unittest.TestCase):
 
         :return:
         """
-        print("DBASTestCase: setUp")
+        # print("DBASTestCase: setUp")
         # self.engine = engine_from_config(settings, prefix='sqlalchemy-discussion.')
         # self.Session = sessionmaker()
         # connection = self.engine.connect()
