@@ -61,6 +61,7 @@ def set_news(transaction, title, text, user, lang):
 def get_news(ui_locales):
     """
     Returns all news in a dictionary, sorted by date
+
     :return: dict()
     """
     logger('QueryHelper', 'get_news', 'main')
