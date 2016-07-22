@@ -49,11 +49,6 @@ class OpinionHandlerTests(unittest.TestCase):
                                                                                                  is_supportive=False)
         self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supportive_false))
 
-        # unknown statement id
-        response_unknown_id_supportive_true = opinion.get_user_with_same_opinion_for_statements(statement_uids=[0, 0],
-                                                                                                is_supportive=True)
-        self.assertEqual(self, response_unknown_id_supportive_true)
-
     def test_get_user_with_same_opinion_for_premisegroups(self):
         # correct premisegroup id
         response_correct_id = opinion.get_user_with_same_opinion_for_premisegroups(argument_uids=[1, 2])
@@ -67,6 +62,12 @@ class OpinionHandlerTests(unittest.TestCase):
         self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id))
         response_correct_id2 = opinion.get_user_with_same_opinion_for_argument(argument_uid=62)
         self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id2))
+
+        # wrong id
+        response_wrong_id = opinion.get_user_with_same_opinion_for_argument(argument_uid=0)
+        self.assertEqual(response_wrong_id, None)
+        response_wrong_id2 = opinion.get_user_with_same_opinion_for_argument(argument_uid=None)
+        self.assertEqual(response_wrong_id2, None)
 
     def test_get_user_with_opinions_for_attitude(self):
         # correct statement id
