@@ -34,6 +34,12 @@ class OpinionHandlerTests(unittest.TestCase):
         response_wrong_id = opinion.get_user_and_opinions_for_argument(argument_uids=[0, 0])
         self.assertTrue('Internal Error' in response_wrong_id['title'])
 
+        # none id
+        response_single_id = opinion.get_user_and_opinions_for_argument(argument_uids=1)
+        self.assertEqual(response_single_id, None)
+        response_none_id = opinion.get_user_and_opinions_for_argument(argument_uids=None)
+        self.assertEqual(response_none_id, None)
+
     def test_get_user_with_same_opinion_for_statements(self):
         # correct statement id
         response_correct_id_supportive_true = opinion.get_user_with_same_opinion_for_statements(statement_uids=[1, 1],
@@ -42,6 +48,11 @@ class OpinionHandlerTests(unittest.TestCase):
         response_correct_id_supportive_false = opinion.get_user_with_same_opinion_for_statements(statement_uids=[2, 3],
                                                                                                  is_supportive=False)
         self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supportive_false))
+
+        # unknown statement id
+        response_unknown_id_supportive_true = opinion.get_user_with_same_opinion_for_statements(statement_uids=[0, 0],
+                                                                                                is_supportive=True)
+        self.assertEqual(self, response_unknown_id_supportive_true)
 
     def test_get_user_with_same_opinion_for_premisegroups(self):
         # correct premisegroup id
@@ -63,6 +74,12 @@ class OpinionHandlerTests(unittest.TestCase):
         self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id))
         response_correct_id2 = opinion.get_user_with_opinions_for_attitude(statement_uid=76)
         self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id2))
+
+        # wrong id
+        response_wrong_id = opinion.get_user_with_opinions_for_attitude(statement_uid=0)
+        self.assertEqual(response_wrong_id, None)
+        response_wrong_id2 = opinion.get_user_with_opinions_for_attitude(statement_uid=None)
+        self.assertEqual(response_wrong_id2, None)
 
 
 def verify_structure_of_argument_dictionary(self, response):

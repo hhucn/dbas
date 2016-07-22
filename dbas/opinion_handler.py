@@ -53,10 +53,7 @@ class OpinionHandler:
         regex = re.compile('</?(strong|em)>')  # replacing html tags
         _t = Translator(self.lang)
         _tg = TextGenerator(self.lang)
-        try:
-            db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
-        except TypeError:
-            return None;
+        db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
         db_syst_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
 
         # sanity check
@@ -306,16 +303,12 @@ class OpinionHandler:
         :param statement_uid: Statement.uid
         :return:
         """
-        #try:
+
         logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
         _t = Translator(self.lang)
         text = get_text_for_statement_uid(statement_uid)
-        try:
-            title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
-        except TypeError:
-            return None
-
+        title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
         ret_dict = dict()
 
         if not db_statement:
@@ -329,9 +322,12 @@ class OpinionHandler:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
         db_user_uid = db_user.uid if db_user else 0
 
-        db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,VoteStatement.is_up_vote == True,
-                                                                            VoteStatement.is_valid == True,
-                                                                            VoteStatement.author_uid != db_user_uid)).all()
+        db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(
+            and_(VoteStatement.statement_uid == statement_uid,
+                 VoteStatement.is_up_vote == True,
+                 VoteStatement.is_valid == True,
+                 VoteStatement.author_uid != db_user_uid)).all()
+
 
         db_con_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
                                                                             VoteStatement.is_up_vote == False,
