@@ -4,6 +4,7 @@ Provides functions for te internal messaging system
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import requests
 import dbas.user_management as UserHandler
 import dbas.helper.email_helper as EmailHelper
 
@@ -11,6 +12,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Notification, Settings, Language
 from dbas.lib import sql_timestamp_pretty_print, escape_string
 from dbas.strings import Translator, TextGenerator
+from dbas.logger import logger
+
 from sqlalchemy import and_
 
 
@@ -30,8 +33,6 @@ def send_edit_text_notification(textversion, path, request):
     last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
     settings_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first()
     settings_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first()
-
-    from dbas.logger import logger
 
     if settings_root_author.should_send_mails is True:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, path, request)
@@ -54,12 +55,32 @@ def send_edit_text_notification(textversion, path, request):
 
     # send notifications
     if settings_root_author.should_send_notifications:
-        notification1  = Notification(from_author_uid=new_author, to_author_uid=root_author, topic=topic, content=content, is_inbox=True)
-        DBDiscussionSession.add(notification1)
+        if 'iosocketid' in request.session and len(request.session['iosocketid']) > 0:
+            socketid = request.session['iosocketid']
+            msg = 'asd'
+            resp = requests.get('localhost:9999/ws/publish//ws/publish/' + socketid + '/' + msg)
+        else:
+            logger('NotificationHelper', 'send_edit_text_notification', 'no socket id for root author', error=True)
 
     if last_author != root_author and settings_last_author.should_send_notifications:
-        notification2  = Notification(from_author_uid=new_author, to_author_uid=last_author, topic=topic, content=content, is_inbox=True)
-        DBDiscussionSession.add(notification2)
+        if 'iosocketid' in request.session and len(request.session['iosocketid']) > 0:
+            socketid = request.session['iosocketid']
+            msg = 'asd'
+            resp = requests.get('localhost:9999/ws/publish/' + socketid + '/' + msg)
+        else:
+            logger('NotificationHelper', 'send_edit_text_notification', 'no socket id for last author', error=True)
+
+    notification1  = Notification(from_author_uid=new_author,
+                                  to_author_uid=root_author,
+                                  topic=topic,
+                                  content=content,
+                                  is_inbox=True)
+    notification2  = Notification(from_author_uid=new_author,
+                                  to_author_uid=last_author,
+                                  topic=topic,
+                                  content=content,
+                                  is_inbox=True)
+    DBDiscussionSession.add_all([notification1, notification2])
 
     DBDiscussionSession.flush()
 
