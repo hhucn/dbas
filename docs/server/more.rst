@@ -9,4 +9,4 @@ Redis is used as backend for beaker management, therefore every tempate is cache
 WebSockets
 ==========
 Information about websockets with nginx http://nginx.org/en/docs/http/websocket.html
-Autobahn with Asyncio http://autobahn.ws/python/websocket/programming.html
+Socket.io http://socket.io/

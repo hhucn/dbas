@@ -13,9 +13,9 @@ from dbas.lib import get_language
 from pyramid.threadlocal import get_current_registry
 from dbas.helper.dictionary_helper import DictionaryHelper
 
-#
+# =============================================================================
 # CORS configuration
-#
+# =============================================================================
 cors_policy = dict(enabled=True,
                    headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
                    origins=('*',),
@@ -27,7 +27,7 @@ cors_policy = dict(enabled=True,
 
 test_data = Service(name='test',
                     path='/test',
-                    renderer='templates/test.pt',
+                    renderer='templates/main.pt',
                     description="Test Dump",
                     permission='everybody',  # or permission='use'
                     cors_policy=cors_policy)
@@ -38,7 +38,7 @@ test_data = Service(name='test',
 # =============================================================================
 
 @test_data.get()
-def socketio(request):
+def some_function(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Websocket', 'socketio', 'main')
 
