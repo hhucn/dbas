@@ -32,6 +32,18 @@ test_data = Service(name='test',
                     permission='everybody',  # or permission='use'
                     cors_policy=cors_policy)
 
+subscribe = Service(name='subscribe',
+                    path='/subscribe',
+                    description="Subscribe for notifications",
+                    permission='use',
+                    cors_policy=cors_policy)
+
+unsubscribe = Service(name='unsubscribe',
+                      path='/unsubscribe',
+                      description="Subscribe for notifications",
+                      permission='use',
+                      cors_policy=cors_policy)
+
 
 # =============================================================================
 # WEBSOCKET REQUESTS
@@ -53,3 +65,41 @@ def some_function(request):
         'extras': extras_dict,
         'value': ':('
     }
+
+
+@subscribe.get()
+def subscribe_function(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Websocket', 'subscribe_function', 'main')
+
+    nickname = request.authenticated_userid
+
+    try:
+        socketid = request.params['socketid']
+    except KeyError as e:
+        socketid = 'empty'
+        logger('set_user_settings', 'error', repr(e))
+
+    logger('Websocket', 'subscribe_function', 'nickname ' + nickname)
+    logger('Websocket', 'subscribe_function', 'socketid ' + socketid)
+
+    return {'nickname': nickname, 'socketid': socketid}
+
+
+@unsubscribe.get()
+def unsubscribe_function(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Websocket', 'unsubscribe_function', 'main')
+
+    nickname = request.authenticated_userid
+
+    try:
+        socketid = request.params['socketid']
+    except KeyError as e:
+        socketid = 'empty'
+        logger('set_user_settings', 'error', repr(e))
+
+    logger('Websocket', 'unsubscribe_function', 'nickname ' + nickname)
+    logger('Websocket', 'unsubscribe_function', 'socketid ' + socketid)
+
+    return {'nickname': nickname, 'socketid': socketid}

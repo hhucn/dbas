@@ -5,7 +5,7 @@
             <h4>Testing:</h4>
             <h6>${value}</h6>
         </div>
-        <script type="text/javascript" src="${request.static_url('websocket:static/js/socket.io.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}"></script>
 
 	</tal:block>
 </tal:block>

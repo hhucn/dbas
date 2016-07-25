@@ -95,7 +95,8 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-helper.js')}"></script>
     <script type="text/javascript" src="${request.static_url('dbas:static/js/ajaxhandler.js')}"></script>
     <script type="text/javascript" src="${request.static_url('dbas:static/js/dolan.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('dbas:static/js/socket-1.4.5.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/socket.io-1.4.5.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}"></script>
 	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/gremlins.min.js')}"></script>-->
 
 	<!-- Piwik -->
