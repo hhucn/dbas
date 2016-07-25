@@ -19,6 +19,9 @@ while true; do
     printf "\n# Seeding news database...\n"
     initialize_news_sql docker.ini > /dev/null 2>&1
 
+    printf "\n# Seeding dummy votes...\n"
+    init_discussion_testvotes docker.ini > /dev/null 2>&1
+
     ip=`ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1`
 
     printf "\n###################################################"

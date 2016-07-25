@@ -20,13 +20,15 @@ dark_green = '#689F38'
 dark_blue = '#1976D2'
 
 
-def get_sigma_data(issue):
+def get_d3_data(issue):
     """
+    Given an issue, create an dictionary and return it
 
-    :param issue:
-    :return:
+    :param issue: 
+    :return: dictionary
     """
-    logger('GraphLib', 'get_sigma_data', 'main')
+    logger('GraphLib', 'get_d3_data', 'main')
+
     x = 0
     y = 0
     node_size = 6
@@ -39,6 +41,9 @@ def get_sigma_data(issue):
     edges_array = []
     extras_dict = {}
     db_issue = DBDiscussionSession.query(Issue).filter_by(uid=issue).first()
+
+    logger('GraphLib', 'get_d3_data', 'issue: ' + db_issue.info)
+
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
     db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
@@ -113,29 +118,12 @@ def get_sigma_data(issue):
                                     edge_type)
         edges_array.append(edge_dict)
 
-    # sigma only needs the nodes and edges dict!
-    # extras will be used for click events
-    sigma_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
-    return sigma_dict
-
-
-def get_d3_data(issue):
-    """
-    
-    :param issue: 
-    :return: 
-    """
-    d3_dict = {}
-    logger('GraphLib', 'get_d3_data', 'main')
-
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=issue).first()
-    logger('GraphLib', 'get_d3_data', 'issue: ' + db_issue.info)
-
+    d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
     return d3_dict
 
-
-def __get_node_dict(uid, label, color, size, x, y, borderSize=0):
+def __get_node_dict(uid, label, color, size, x, y):
     """
+    Create dictionary for nodes
 
     :param uid:
     :param label:
@@ -143,22 +131,18 @@ def __get_node_dict(uid, label, color, size, x, y, borderSize=0):
     :param size:
     :param x:
     :param y:
-    :param borderSize:
     :return:
     """
     return {'id': uid,
             'label': label,
             'color': color,
-            'hover_color': dark_grey if color == green else dark_blue,
-            'borderColor': color,
-            'borderSize': borderSize,
             'size': size,
             'x': x,
             'y': y}
 
-
 def __get_edge_dict(uid, source, target, color, size, edge_type):
     """
+    Create dictionary for edges
 
     :param uid:
     :param source:
@@ -172,10 +156,8 @@ def __get_edge_dict(uid, source, target, color, size, edge_type):
             'source': source,
             'target': target,
             'color': color,
-            'hover_color': dark_green if color == green else dark_red,
             'size': size,
             'type': edge_type}
-
 
 def __get_extras_dict(statement):
     """

@@ -128,7 +128,7 @@ class UrlManagerTests(unittest.TestCase):
         self.assertEqual(response_empty_string_false, 'application_url/discuss/cat-or-dog/attitude/')
 
         response_negative_uid_true = url.get_url_for_statement_attitude(as_location_href=True,
-                                                                         statement_uid=-123)
+                                                                        statement_uid=-123)
         self.assertEqual(response_negative_uid_true, 'location.href="application_url/discuss/cat-or-dog/attitude/-123"')
 
     def test_get_url_for_justifying_statement(self):
@@ -143,7 +143,7 @@ class UrlManagerTests(unittest.TestCase):
         self.assertEqual(response_string_true, 'location.href="application_url/discuss/cat-or-dog/justify/123/t"')
 
         response_empty_string_false = url.get_url_for_justifying_statement(as_location_href=False,
-                                                                           statement_uid = '',
+                                                                           statement_uid='',
                                                                            mode='')
         # Verify that, if 'as_location_href' is 'False', 'statement_uid' and 'mode' are empty,
         # '{discussion_url}/{slug}/justify//' is returned.
@@ -199,7 +199,7 @@ class UrlManagerTests(unittest.TestCase):
                                                               is_argument=True,
                                                               is_supportive=True,
                                                               statement_or_argument_id=20,
-                                                              pgroup_id_list=[1,2,3])
+                                                              pgroup_id_list=[1, 2, 3])
         # Verify that, if 'as_location_href', 'is_argument', 'is_supportive' are 'True' and length of array 'pgroup_id_list' is greater than 0,
         # the url 'location.href="{discussion-url}/{slug}/choose/{is_argument}/{is_supportive}/{statement_or_argument_id}"'
         # and the elements of array 'pgroup_id_list' are put together, separated with backslash, and are attached in url.
