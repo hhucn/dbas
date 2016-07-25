@@ -53,7 +53,10 @@ class OpinionHandler:
         regex = re.compile('</?(strong|em)>')  # replacing html tags
         _t = Translator(self.lang)
         _tg = TextGenerator(self.lang)
-        db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
+        try:
+            db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
+        except TypeError:
+            return None;
         db_syst_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
 
         # sanity check
@@ -150,7 +153,10 @@ class OpinionHandler:
 
             statement_dict['uid'] = str(uid)
             text = get_text_for_statement_uid(uid)
-            statement_dict['text'] = text[0:1].upper() + text[1:]
+            try:
+                statement_dict['text'] = text[0:1].upper() + text[1:]
+            except TypeError:
+                return None;
 
             if is_supportive is not None:
                 is_supportive = True if str(is_supportive) == 'True' else False
@@ -254,7 +260,10 @@ class OpinionHandler:
         :param argument_uid: Argument.uid
         :return: {'users':[{self.nickname1.avatar_url, self.nickname1.vote_timestamp}*]}
         """
-        logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid) + ' ' + get_text_for_argument_uid(argument_uid, 'de'))
+        try:
+            logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid) + ' ' + get_text_for_argument_uid(argument_uid, 'de'))
+        except TypeError:
+            return None;
         db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
         db_user_uid = db_user.uid if db_user else 0
 
@@ -303,11 +312,15 @@ class OpinionHandler:
         :param statement_uid: Statement.uid
         :return:
         """
+
         logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
         _t = Translator(self.lang)
         text = get_text_for_statement_uid(statement_uid)
-        title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
+        try:
+            title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
+        except TypeError:
+            return None;
         ret_dict = dict()
 
         if not db_statement:
@@ -321,10 +334,12 @@ class OpinionHandler:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
         db_user_uid = db_user.uid if db_user else 0
 
-        db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                                            VoteStatement.is_up_vote == True,
-                                                                            VoteStatement.is_valid == True,
-                                                                            VoteStatement.author_uid != db_user_uid)).all()
+        db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(
+            and_(VoteStatement.statement_uid == statement_uid,
+                 VoteStatement.is_up_vote == True,
+                 VoteStatement.is_valid == True,
+                 VoteStatement.author_uid != db_user_uid)).all()
+
 
         db_con_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
                                                                             VoteStatement.is_up_vote == False,
