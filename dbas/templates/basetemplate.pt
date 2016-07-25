@@ -62,6 +62,12 @@
         <button type="button" class="close" aria-label="Close"><span id="request_success_container_close" aria-hidden="true">×</span> </button>
 	</div>
 
+	<div class="blocked request_success center alert-info" id="request_info_container" style="display:none;">
+		<span id="request_info_container_heading"></span>
+        <span id="request_info_container_message" style="padding-left: 0.5em; "></span>
+        <button type="button" class="close" aria-label="Close"><span id="request_info_container_close" aria-hidden="true">×</span> </button>
+	</div>
+
 	<div id="additional-wrapper">
 		<div id="wrapper-header">
 			<div metal:use-macro="load: snippet-header.pt"></div>

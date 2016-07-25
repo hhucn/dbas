@@ -706,7 +706,13 @@ function Main () {
 			});
 		}
 	};
-
+	
+	/**
+	 *
+	 * @param key
+	 * @param value
+	 * @returns {boolean}
+	 */
 	this.setLocalStorage = function (key, value){
 		try {
 			localStorage.setItem(key, value);
@@ -716,7 +722,12 @@ function Main () {
 			return false;
 		}
 	};
-
+	
+	/**
+	 *
+	 * @param key
+	 * @returns {undefined}
+	 */
 	this.getLocalStorage = function (key){
 		try {
 			return localStorage.getItem(key);
