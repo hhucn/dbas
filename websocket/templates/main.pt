@@ -2,7 +2,7 @@
 	<tal:block metal:fill-slot="content_page">
 
         <div class="center">
-            <h4>Testing socket.io</h4>
+            <h4>Testing:</h4>
             <h6>${value}</h6>
         </div>
         <script type="text/javascript" src="${request.static_url('websocket:static/js/socket.io.js')}"></script>
