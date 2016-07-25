@@ -2,19 +2,16 @@ $(document).ready(function() {
 
 	var socket = io.connect('ws://localhost:9999');
 
-	//$('form').submit(function(){
-	//	socket.emit('chat_message', $('#m').val());
-	//	$('#m').val('');
-	//	return false;
-	//});
-
 	socket.on('publish', function(msg){
 		console.log('publish ' + msg);
 	});
 
 	socket.on('subscribe', function(socket_id){
-		console.log('subscribe ' + socket_id);
 		subscribe(socket_id);
+	});
+	
+	$(window).bind('beforeunload',function(){
+		unsubscribe();
 	});
 });
 
@@ -37,14 +34,11 @@ function subscribe(socketid){
 	});
 }
 
-function unsubscribe(socketid){
+function unsubscribe(){
 	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	$.ajax({
 		url: mainpage + 'ws/unsubscribe',
 		method: 'GET',
-		data: {
-			socketid: socketid
-		},
 		dataType: 'json',
 		headers: {
 			'X-CSRF-Token': csrfToken

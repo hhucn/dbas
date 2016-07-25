@@ -76,14 +76,19 @@ def subscribe_function(request):
 
     try:
         socketid = request.params['socketid']
+        success = True
+        request.session['iosocketid'] = socketid
     except KeyError as e:
         socketid = 'empty'
-        logger('set_user_settings', 'error', repr(e))
+        success = False
+        logger('Websocket', 'error', repr(e))
 
     logger('Websocket', 'subscribe_function', 'nickname ' + nickname)
     logger('Websocket', 'subscribe_function', 'socketid ' + socketid)
 
-    return {'nickname': nickname, 'socketid': socketid}
+    return {'nickname': nickname,
+            'socketid': socketid,
+            'success': success}
 
 
 @unsubscribe.get()
@@ -93,13 +98,13 @@ def unsubscribe_function(request):
 
     nickname = request.authenticated_userid
 
-    try:
-        socketid = request.params['socketid']
-    except KeyError as e:
-        socketid = 'empty'
-        logger('set_user_settings', 'error', repr(e))
+    if 'iosocketid' in request.session and len(request.session['iosocketid']) > 0:
+        request.session['iosocketid'] = ''
+        success = True
+    else:
+        success = False
 
     logger('Websocket', 'unsubscribe_function', 'nickname ' + nickname)
-    logger('Websocket', 'unsubscribe_function', 'socketid ' + socketid)
 
-    return {'nickname': nickname, 'socketid': socketid}
+    return {'nickname': nickname,
+            'success': success}
