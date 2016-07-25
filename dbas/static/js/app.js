@@ -422,8 +422,8 @@ function setGlobalErrorHandler(heading, body){
 	$('#' + requestFailedContainerClose).click(function(){
 		$('#' + requestFailedContainer).fadeOut();
 	});
-	$('#' + requestFailedContainerHeading).text(heading);
-	$('#' + requestFailedContainerMessage).text(body);
+	$('#' + requestFailedContainerHeading).html(heading);
+	$('#' + requestFailedContainerMessage).html(body);
 	new Helper().delay(function(){
 		$('#' + requestFailedContainer).fadeOut();
 	}, 5000);
@@ -439,10 +439,27 @@ function setGlobalSuccessHandler(heading, body){
 	$('#' + requestSuccessContainerClose).click(function(){
 		$('#' + requestSuccessContainer).fadeOut();
 	});
-	$('#' + requestSuccessContainerHeading).text(heading);
-	$('#' + requestSuccessContainerMessage).text(body);
+	$('#' + requestSuccessContainerHeading).html(heading);
+	$('#' + requestSuccessContainerMessage).html(body);
 	new Helper().delay(function(){
 		$('#' + requestSuccessContainer).fadeOut();
+	}, 5000);
+}
+
+/**
+ * Sets data for the global sucess field
+ * @param heading text
+ * @param body text
+ */
+function setGlobalSuccessHandler(heading, body){
+	$('#' + requestInfoContainer).fadeIn();
+	$('#' + requestInfoContainerClose).click(function(){
+		$('#' + requestInfoContainer).fadeOut();
+	});
+	$('#' + requestInfoContainerHeading).html(heading);
+	$('#' + requestInfoContainerMessage).html(body);
+	new Helper().delay(function(){
+		$('#' + requestInfoContainer).fadeOut();
 	}, 5000);
 }
 
