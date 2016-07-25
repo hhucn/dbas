@@ -171,5 +171,15 @@
 ## 0.5.15 (2016-06-28)
 - Island view
 
+## 0.5.16 (2016-07-05)
+- Improved sidebar
+
+## 0.5.17 (2016-07-12)
+- Color coding for feedback mechanisms
+
+## 0.6.0 (2016-07-xx)
+- Publish / Subscribe
+
 ## 0.6.0 (unreleased)
 - Improved recommendation of the next confrontation
+
