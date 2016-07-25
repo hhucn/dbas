@@ -1,10 +1,9 @@
-// Tobias Krauthoff
+// Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 
 // npm install socket.io
 // npm install --save express
 
-var port = 3000;
-var time = 10000;
+var port = 9999;
 var clients = {};
 
 var express = require('express');
@@ -18,23 +17,17 @@ server.listen(port);
 var io = require('socket.io').listen(server);
 
 app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
+//    res.sendFile(__dirname + '/index.html');
+    res.writeHead(200);
+    res.end();
 });
 
 io.sockets.on('connection', function(socket){
-    logMessage('user ' + socket.id + ' connected');
-    sendStatusMessage(socket, 'chat_message', 'user ' + socket.id + ' connected');
     addClient(socket);
+    socket.emit('subscribe', socket.id);
 
     socket.on('disconnect', function(){
         removeClient(socket);
-        logMessage('user ' + socket.id + ' disconnected');
-        sendStatusMessage(socket, 'chat_message', 'user ' + socket.id + ' disconnected');
-    });
-
-    socket.on('chat_message', function(msg){
-        logMessage('emitting message: ' + msg);
-        sendMessage(socket, 'chat_message', msg);
     });
 });
 
@@ -61,11 +54,13 @@ logMessage = function(msg){
     console.log(time + ' ' + msg);
 };
 
+// Add client to dictionary
 addClient = function(socket){
     clients[socket.id] = socket;
     logMessage('Added ' + socket.id + ' into dict');
 };
 
+// Remove client from dictionary
 removeClient = function(socket){
     delete clients[socket.id];
     logMessage('Removed ' + socket.id + ' into dict');
