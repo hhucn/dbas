@@ -57,12 +57,12 @@ def send_edit_text_notification(textversion, path, request):
     if settings_root_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio(settings_last_author.socketid, _t_user.get(_t_user.newNotification), 'notification')
+        __send_request_to_socketio('edittext', settings_last_author.socketid, _t_user.get(_t_user.newNotification), path)
 
     if last_author != root_author and settings_last_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio(settings_last_author.socketid, _t_user.get(_t_user.newNotification), 'notification')
+        __send_request_to_socketio('edittext', settings_last_author.socketid, _t_user.get(_t_user.newNotification), path)
 
     notification1  = Notification(from_author_uid=new_author,
                                   to_author_uid=root_author,
@@ -119,7 +119,7 @@ def send_notification(from_user, to_user, topic, content, transaction):
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio(db_settings.socketid, _t_user.get(_t_user.newNotification), 'notification')
+        __send_request_to_socketio('notification', db_settings.socketid, _t_user.get(_t_user.newNotification))
 
     db_inserted_notification = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == from_user.uid,
                                                                                    Notification.to_author_uid == to_user.uid,
@@ -194,13 +194,25 @@ def get_box_for(user, lang, mainpage, is_inbox):
     return message_array[::-1]
 
 
-def __send_request_to_socketio(socketid, message, type):
+def __send_request_to_socketio(type, socketid=None, message=None, url=None):
     """
+    Sends an request to the socket io server
 
-    :param socketid:
-    :param message:
-    :param type:
-    :return:
+    :param type: String
+    :param socketid: String
+    :param message: String
+    :param url: String
+    :return: Status code of the request
     """
-    resp = requests.get('http://localhost:5001/publish/' + type + '?socket_id=' + socketid[2:] + '&msg=' + message)
-    logger('NotificationHelper', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + '(msg=' + message + ')')
+    params = '?type=' + type + '&'
+    if socketid:
+        params += 'socket_id=' + socketid[2:] + '&'
+    if message:
+        params += 'msg=' + message + '&'
+    if url:
+        params += 'url=' + url + '&'
+
+    resp = requests.get('http://localhost:5001/publish' + params[:-1])
+    logger('NotificationHelper', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + '(msg=' + str(message) + ')')
+
+    return resp.status_code
