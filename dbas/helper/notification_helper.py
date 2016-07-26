@@ -4,6 +4,7 @@ Provides functions for te internal messaging system
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import requests
 import dbas.user_management as UserHandler
 import dbas.helper.email_helper as EmailHelper
 
@@ -11,6 +12,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Notification, Settings, Language
 from dbas.lib import sql_timestamp_pretty_print, escape_string
 from dbas.strings import Translator, TextGenerator
+from dbas.logger import logger
+
 from sqlalchemy import and_
 
 
@@ -30,8 +33,6 @@ def send_edit_text_notification(textversion, path, request):
     last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
     settings_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first()
     settings_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first()
-
-    from dbas.logger import logger
 
     if settings_root_author.should_send_mails is True:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, path, request)
@@ -54,12 +55,26 @@ def send_edit_text_notification(textversion, path, request):
 
     # send notifications
     if settings_root_author.should_send_notifications:
-        notification1  = Notification(from_author_uid=new_author, to_author_uid=root_author, topic=topic, content=content, is_inbox=True)
-        DBDiscussionSession.add(notification1)
+        user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
+        _t_user = Translator(user_lang)
+        __send_request_to_socketio(settings_last_author.socketid, _t_user.get(_t_user.newNotification), 'notification')
 
     if last_author != root_author and settings_last_author.should_send_notifications:
-        notification2  = Notification(from_author_uid=new_author, to_author_uid=last_author, topic=topic, content=content, is_inbox=True)
-        DBDiscussionSession.add(notification2)
+        user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
+        _t_user = Translator(user_lang)
+        __send_request_to_socketio(settings_last_author.socketid, _t_user.get(_t_user.newNotification), 'notification')
+
+    notification1  = Notification(from_author_uid=new_author,
+                                  to_author_uid=root_author,
+                                  topic=topic,
+                                  content=content,
+                                  is_inbox=True)
+    notification2  = Notification(from_author_uid=new_author,
+                                  to_author_uid=last_author,
+                                  topic=topic,
+                                  content=content,
+                                  is_inbox=True)
+    DBDiscussionSession.add_all([notification1, notification2])
 
     DBDiscussionSession.flush()
 
@@ -99,6 +114,12 @@ def send_notification(from_user, to_user, topic, content, transaction):
     DBDiscussionSession.add_all([notification_in, notification_out])
     DBDiscussionSession.flush()
     transaction.commit()
+
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=to_user.uid).first()
+    if db_settings.should_send_notifications:
+        user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first().ui_locales
+        _t_user = Translator(user_lang)
+        __send_request_to_socketio(db_settings.socketid, _t_user.get(_t_user.newNotification), 'notification')
 
     db_inserted_notification = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == from_user.uid,
                                                                                    Notification.to_author_uid == to_user.uid,
@@ -171,3 +192,15 @@ def get_box_for(user, lang, mainpage, is_inbox):
         message_array.append(tmp_dict)
 
     return message_array[::-1]
+
+
+def __send_request_to_socketio(socketid, message, type):
+    """
+
+    :param socketid:
+    :param message:
+    :param type:
+    :return:
+    """
+    resp = requests.get('http://localhost:5001/publish/' + type + '?socket_id=' + socketid[2:] + '&msg=' + message)
+    logger('NotificationHelper', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + '(msg=' + message + ')')
