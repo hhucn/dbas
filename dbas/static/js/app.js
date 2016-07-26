@@ -430,7 +430,7 @@ function setGlobalErrorHandler(heading, body){
 }
 
 /**
- * Sets data for the global sucess field
+ * Sets data for the global success field
  * @param heading text
  * @param body text
  */
@@ -447,11 +447,11 @@ function setGlobalSuccessHandler(heading, body){
 }
 
 /**
- * Sets data for the global sucess field
+ * Sets data for the global info field
  * @param heading text
  * @param body text
  */
-function setGlobalSuccessHandler(heading, body){
+function setGlobalInfoHandler(heading, body){
 	$('#' + requestInfoContainer).fadeIn();
 	$('#' + requestInfoContainerClose).click(function(){
 		$('#' + requestInfoContainer).fadeOut();
@@ -461,6 +461,7 @@ function setGlobalSuccessHandler(heading, body){
 	new Helper().delay(function(){
 		$('#' + requestInfoContainer).fadeOut();
 	}, 5000);
+	alert(body);
 }
 
 // *********************
