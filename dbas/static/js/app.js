@@ -461,7 +461,6 @@ function setGlobalInfoHandler(heading, body){
 	new Helper().delay(function(){
 		$('#' + requestInfoContainer).fadeOut();
 	}, 5000);
-	alert(body);
 }
 
 // *********************
