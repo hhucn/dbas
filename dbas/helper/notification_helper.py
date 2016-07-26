@@ -55,20 +55,14 @@ def send_edit_text_notification(textversion, path, request):
 
     # send notifications
     if settings_root_author.should_send_notifications:
-        if 'iosocketid' in request.session and len(request.session['iosocketid']) > 0:
-            socketid = request.session['iosocketid']
-            msg = 'asd'
-            resp = requests.get('localhost:9999/ws/publish//ws/publish/' + socketid + '/' + msg)
-        else:
-            logger('NotificationHelper', 'send_edit_text_notification', 'no socket id for root author', error=True)
+        user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
+        _t_user = Translator(user_lang)
+        __send_request_to_socketio(settings_last_author.socketid, _t_user.get(_t_user.newNotification), 'notification')
 
     if last_author != root_author and settings_last_author.should_send_notifications:
-        if 'iosocketid' in request.session and len(request.session['iosocketid']) > 0:
-            socketid = request.session['iosocketid']
-            msg = 'asd'
-            resp = requests.get('localhost:9999/ws/publish/' + socketid + '/' + msg)
-        else:
-            logger('NotificationHelper', 'send_edit_text_notification', 'no socket id for last author', error=True)
+        user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
+        _t_user = Translator(user_lang)
+        __send_request_to_socketio(settings_last_author.socketid, _t_user.get(_t_user.newNotification), 'notification')
 
     notification1  = Notification(from_author_uid=new_author,
                                   to_author_uid=root_author,
@@ -120,6 +114,12 @@ def send_notification(from_user, to_user, topic, content, transaction):
     DBDiscussionSession.add_all([notification_in, notification_out])
     DBDiscussionSession.flush()
     transaction.commit()
+
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=to_user.uid).first()
+    if db_settings.should_send_notifications:
+        user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first().ui_locales
+        _t_user = Translator(user_lang)
+        __send_request_to_socketio(db_settings.socketid, _t_user.get(_t_user.newNotification), 'notification')
 
     db_inserted_notification = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == from_user.uid,
                                                                                    Notification.to_author_uid == to_user.uid,
@@ -192,3 +192,15 @@ def get_box_for(user, lang, mainpage, is_inbox):
         message_array.append(tmp_dict)
 
     return message_array[::-1]
+
+
+def __send_request_to_socketio(socketid, message, type):
+    """
+
+    :param socketid:
+    :param message:
+    :param type:
+    :return:
+    """
+    resp = requests.get('http://localhost:9999/publish/' + type + '?socket_id=' + socketid[2:] + '&msg=' + message)
+    logger('NotificationHelper', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + '(msg=' + message + ')')
