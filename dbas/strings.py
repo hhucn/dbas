@@ -335,6 +335,8 @@ class Translator(object):
         self.notification = 'notification'
         self.notificationDeleted = 'notificationDeleted'
         self.next = 'next'
+        self.newNotification = 'newNotification'
+        self.newMention = 'newMention'
         self.newPremisesRadioButtonText = 'newPremisesRadioButtonText'
         self.newPremisesRadioButtonTextAsFirstOne = 'newPremisesRadioButtonTextAsFirstOne'
         self.newStatementsRadioButtonTextAsFirstOne = 'newStatementsRadioButtonTextAsFirstOne'
