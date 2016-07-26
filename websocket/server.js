@@ -8,6 +8,7 @@ var clients = {};
 
 var express = require('express');
 var app = express();
+var url = require('url');
 
 var http = require('http');
 var https = require('https');
@@ -16,9 +17,16 @@ var server = http.createServer(app);
 server.listen(port);
 var io = require('socket.io').listen(server);
 
-app.get('/', function(req, res){
-//    res.sendFile(__dirname + '/index.html');
-    res.writeHead(200);
+
+app.get('/publish/notification', function(req, res){
+    var params = getDictOfParams(req['url']);
+    try {
+        clients[params['socket_id']].emit('publish', {'msg': params['msg'].replace('%20', ' '), 'type': 'notifications'});
+        res.writeHead(200);
+    } catch (e) {
+        logMessage('  No socket for socket_id ' + params['socket_id']);
+        res.writeHead(400);
+    }
     res.end();
 });
 
@@ -31,24 +39,7 @@ io.sockets.on('connection', function(socket){
     });
 });
 
-sendMessage = function(socket, key, msg){
-    var time = new Date().today() + ' ' + new Date().timeNow();
-    var span_time = '<span class="time">(' + time + ')</span> ';
-    var span_id = '<span class="id">' + socket.id + '</span>: ';
-    var span_msg = '<span class="msg">' + msg + '</span>';
-    for (var socket_id in clients) {
-        clients[socket_id].emit(key, span_time + span_id + span_msg);
-    }
-};
-
-sendStatusMessage = function(socket, key, msg){
-    var time = new Date().today() + ' ' + new Date().timeNow();
-    var span= '<span class="status">(' + time + ') ' +  msg + '</span>';
-    for (var socket_id in clients) {
-        clients[socket_id].emit(key, span);
-    }
-};
-
+// Console logger
 logMessage = function(msg){
     var time = new Date().today() + ' ' + new Date().timeNow();
     console.log(time + ' ' + msg);
@@ -63,7 +54,24 @@ addClient = function(socket){
 // Remove client from dictionary
 removeClient = function(socket){
     delete clients[socket.id];
-    logMessage('Removed ' + socket.id + ' into dict');
+    logMessage('Removed ' + socket.id + ' from dict');
+};
+
+// Parses url
+getDictOfParams = function(url){
+    logMessage(url);
+    var param = url.substr(url.indexOf('?')+1);
+    var params = param.split('&');
+    var dict = {};
+    var split = '';
+    params.forEach(function(entry) {
+        split = entry.split('=');
+        if (split[0] == 'socket_id')
+            split[1] = '/#' + split[1];
+        dict[split[0]] = split[1];
+        logMessage('  ' + split[0] + ': ' + split[1]);
+    });
+    return dict;
 };
 
 // For todays date;

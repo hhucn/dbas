@@ -2,8 +2,12 @@ $(document).ready(function() {
 
 	var socket = io.connect('ws://localhost:9999');
 
-	socket.on('publish', function(msg){
-		console.log('publish ' + msg);
+	socket.on('publish', function(data){
+		if (data.type == 'notifications'){
+			var alink = '<a href="' + mainpage + data.type + '">' + data.msg + '</a>';
+			setGlobalInfoHandler('Huray!', alink);
+		}
+		console.log('publish ' + data.type + ' ' + data.msg);
 	});
 
 	socket.on('subscribe', function(socket_id){
@@ -17,6 +21,7 @@ $(document).ready(function() {
 
 function subscribe(socketid){
 	var csrfToken = $('#' + hiddenCSRFTokenId).val();
+	console.log('subscribe start');
 	$.ajax({
 		url: mainpage + 'ws/subscribe',
 		method: 'GET',
@@ -36,6 +41,7 @@ function subscribe(socketid){
 
 function unsubscribe(){
 	var csrfToken = $('#' + hiddenCSRFTokenId).val();
+	console.log('unsubscribe start');
 	$.ajax({
 		url: mainpage + 'ws/unsubscribe',
 		method: 'GET',

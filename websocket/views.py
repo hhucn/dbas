@@ -13,6 +13,8 @@ from dbas.lib import get_language
 from pyramid.threadlocal import get_current_registry
 from dbas.helper.dictionary_helper import DictionaryHelper
 
+from dbas.database.discussion_model import DBDiscussionSession, User, Settings
+
 # =============================================================================
 # CORS configuration
 # =============================================================================
@@ -73,14 +75,19 @@ def subscribe_function(request):
     logger('Websocket', 'subscribe_function', 'main')
 
     nickname = request.authenticated_userid
+    success = False
 
     try:
         socketid = request.params['socketid']
-        success = True
-        request.session['iosocketid'] = socketid
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if db_user:
+            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+            if db_settings:
+                db_settings.set_socketid(socketid)
+                success = True
+
     except KeyError as e:
         socketid = 'empty'
-        success = False
         logger('Websocket', 'error', repr(e))
 
     logger('Websocket', 'subscribe_function', 'nickname ' + nickname)
@@ -97,12 +104,15 @@ def unsubscribe_function(request):
     logger('Websocket', 'unsubscribe_function', 'main')
 
     nickname = request.authenticated_userid
+    success = False
 
     if 'iosocketid' in request.session and len(request.session['iosocketid']) > 0:
-        request.session['iosocketid'] = ''
-        success = True
-    else:
-        success = False
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if db_user:
+            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+            if db_settings:
+                db_settings.set_socketid('')
+                success = True
 
     logger('Websocket', 'unsubscribe_function', 'nickname ' + nickname)
 
