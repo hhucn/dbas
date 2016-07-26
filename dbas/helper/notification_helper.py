@@ -202,5 +202,5 @@ def __send_request_to_socketio(socketid, message, type):
     :param type:
     :return:
     """
-    resp = requests.get('http://localhost:9999/publish/' + type + '?socket_id=' + socketid[2:] + '&msg=' + message)
+    resp = requests.get('http://localhost:5001/publish/' + type + '?socket_id=' + socketid[2:] + '&msg=' + message)
     logger('NotificationHelper', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + '(msg=' + message + ')')

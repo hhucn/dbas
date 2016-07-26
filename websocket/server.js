@@ -1,9 +1,7 @@
+// Node.JS server with socket.io plugin for bidirectional event-based communcation
 // Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 
-// npm install socket.io
-// npm install --save express
-
-var port = 9999;
+var port = 5001;
 var clients = {};
 
 var express = require('express');
@@ -17,7 +15,39 @@ var server = http.createServer(app);
 server.listen(port);
 var io = require('socket.io').listen(server);
 
+// route for notifications
+app.get('/publish/notification', function(req, res){
+    var params = getDictOfParams(req['url']);
+    try {
+        clients[params['socket_id']].emit('publish', {
+        	'msg': params['msg'].replace('%20', ' '),
+	        'type': 'notifications'});
+        res.writeHead(200);
+    } catch (e) {
+        logMessage('  No socket for socket_id ' + params['socket_id']);
+        res.writeHead(400);
+    }
+    res.end();
+});
 
+// route for mention
+app.get('/publish/mention', function(req, res) {
+	var params = getDictOfParams(req['url']);
+	try {
+		clients[params['socket_id']].emit('publish', {
+			'msg': params['msg'].replace('%20', ' '),
+			'type': 'mention',
+			'url': params['url']
+		});
+		res.writeHead(200);
+	} catch (e) {
+		logMessage('  No socket for socket_id ' + params['socket_id']);
+		res.writeHead(400);
+	}
+	res.end();
+});
+
+// route for notifications
 app.get('/publish/notification', function(req, res){
     var params = getDictOfParams(req['url']);
     try {
@@ -30,6 +60,7 @@ app.get('/publish/notification', function(req, res){
     res.end();
 });
 
+// Event on connection
 io.sockets.on('connection', function(socket){
     addClient(socket);
     socket.emit('subscribe', socket.id);
