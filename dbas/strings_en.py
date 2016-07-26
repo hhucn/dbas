@@ -376,6 +376,8 @@ class EnglischDict:
         en_lang[_self.myArgument] = 'my argument'
         en_lang[_self.next] = 'Next Entry'
         en_lang[_self.now] = 'Now'
+        en_lang[_self.newNotification] = 'You got a new notification.'
+        en_lang[_self.newMention] = 'You are mentioned in a contribution.'
         en_lang[_self.newPremiseRadioButtonText] = 'None of the above! Let me state my own reason!'
         en_lang[_self.newPremisesRadioButtonText] = 'None of the above! Let me state my own reason(s)!'
         en_lang[_self.newPremiseRadioButtonTextAsFirstOne] = 'Let me state my own reason!'

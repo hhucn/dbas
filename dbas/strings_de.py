@@ -375,6 +375,8 @@ class GermanDict:
         de_lang[_self.medium] = 'mittel'
         de_lang[_self.minLength] = 'Mindestlänge'
         de_lang[_self.myArgument] = 'mein Argument'
+        de_lang[_self.newNotification] = 'Sie haben eine neue Benachrichtigung.'
+        de_lang[_self.newMention] = 'Sie wurden in einem Beitrag erwähnt.'
         de_lang[_self.newPremisesRadioButtonText] = 'Nichts von all dem. Ich habe neue Gründe!'
         de_lang[_self.newPremisesRadioButtonTextAsFirstOne] = 'Ja, ich möchte neue Gründe angeben!'
         de_lang[_self.newStatementsRadioButtonTextAsFirstOne] = 'Ja, ich möchte neue Aussagen angeben!'
