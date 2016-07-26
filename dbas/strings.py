@@ -479,6 +479,7 @@ class Translator(object):
         self.textversionChangedTopic = 'textversionChangedTopic'
         self.textversionChangedContent = 'textversionChangedContent'
         self.to = 'to'
+        self.textChange = 'textChange'
         self.track = 'track'
         self.history = 'history'
         self.topicString = 'topicString'

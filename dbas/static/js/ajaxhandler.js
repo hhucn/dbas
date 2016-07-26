@@ -393,7 +393,8 @@ function AjaxDiscussionHandler() {
 			method: 'POST',
 			data: {
 				uid: uid,
-				text: corrected_text
+				text: corrected_text,
+				url: window.location.href
 			},
 			dataType: 'json',
 			async: true,

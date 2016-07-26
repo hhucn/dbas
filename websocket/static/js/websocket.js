@@ -15,7 +15,7 @@ $(document).ready(function() {
 			alink = '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>';
 			setGlobalInfoHandler('Huray!', alink);
 			
-		} else if (data.type == 'edit_text') {
+		} else if (data.type == 'edittext') {
 			alink = '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>';
 			setGlobalInfoHandler('Ooh!', alink);
 			
@@ -60,8 +60,9 @@ function subscribe(socketid){
 		headers: {
 			'X-CSRF-Token': csrfToken
 		}
-	}).done(function () {
-		console.log('subscribe done');
+	}).done(function (data) {
+		var parsedData = $.parseJSON(data);
+		console.log('subscribe done (socket.io id: ' + parsedData.socketid + ')');
 	}).fail(function () {
 		console.log('subscribe fail');
 	});

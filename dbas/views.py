@@ -1671,9 +1671,10 @@ class Dbas(object):
 
         try:
             uid = self.request.params['uid']
+            url = self.request.params['url']
             corrected_text = escape_string(self.request.params['text'])
             return_dict = QueryHelper.correct_statement(transaction, self.request.authenticated_userid, uid,
-                                                        corrected_text, mainpage + self.request.path, self.request)
+                                                        corrected_text, url, self.request)
             if return_dict == -1:
                 return_dict = dict()
                 return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
