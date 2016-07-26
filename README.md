@@ -32,32 +32,30 @@ Then follow these steps:
 
 1. Create virtualenv with python3:
 
-        mkvirtualenv "--python=$(which python3)" dbas
-    
 2. Install all requirements:
-
-        pip install -r requirements.txt
 
 3. Develop application:
 
-        python setup.py develop
-
 4. Install PostgreSQL and configure it:
-
-        apt-get install libpq-dev python-dev postgresql
 
 6. Create database:
 
-        make init
-        make all
-
 7. Start development web server:
 
+        mkvirtualenv "--python=$(which python3)" dbas
+        pip install -r requirements.txt
+        python setup.py develop
+        apt-get install libpq-dev python-dev postgresql
+        make init
+        make all
         pserve development.ini --reload
 
 or all in one step:
 
     docker-compose up
+
+
+If you want to use notifications with socket.io, please install [D-BAS Notifications](https://gitlab.cs.uni-duesseldorf.de/project/dbas-notifications).
 
 ## Testing
 
