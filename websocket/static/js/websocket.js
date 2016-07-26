@@ -27,7 +27,7 @@ $(document).ready(function() {
 	
 	// delete subscription on page unload events
 	$(window).bind('beforeunload',function(){
-		socket.emit('disconnect', socket.id);
+		socket.emit('remove_name', $('#header_nickname').text());
 	});
 });
 
