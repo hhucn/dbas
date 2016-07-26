@@ -61,12 +61,12 @@ def send_edit_text_notification(textversion, path, request):
     if settings_root_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('edittext', settings_root_author.socketid, _t_user.get(_t_user.textChange), path)
+        __send_request_to_socketio('edittext', settings_root_author.nickname, _t_user.get(_t_user.textChange), path)
 
     if last_author != root_author and last_author != new_author and settings_last_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('edittext', settings_last_author.socketid, _t_user.get(_t_user.textChange), path)
+        __send_request_to_socketio('edittext', settings_last_author.nickname, _t_user.get(_t_user.textChange), path)
 
     notification1  = Notification(from_author_uid=new_author,
                                   to_author_uid=root_author,
@@ -123,7 +123,7 @@ def send_notification(from_user, to_user, topic, content, transaction):
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('notification', db_settings.socketid, _t_user.get(_t_user.newNotification))
+        __send_request_to_socketio('notification', db_settings.nickname, _t_user.get(_t_user.newNotification))
 
     db_inserted_notification = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == from_user.uid,
                                                                                    Notification.to_author_uid == to_user.uid,
@@ -198,19 +198,17 @@ def get_box_for(user, lang, mainpage, is_inbox):
     return message_array[::-1]
 
 
-def __send_request_to_socketio(type, socketid=None, message=None, url=None):
+def __send_request_to_socketio(type, nickname, message=None, url=None):
     """
     Sends an request to the socket io server
 
     :param type: String
-    :param socketid: String
+    :param nickname: String
     :param message: String
     :param url: String
     :return: Status code of the request
     """
-    params = '?type=' + type + '&'
-    if socketid:
-        params += 'socket_id=' + socketid[2:] + '&'
+    params = '?type=' + type + '&nickname' + nickname + '&'
     if message:
         params += 'msg=' + message + '&'
     if url:

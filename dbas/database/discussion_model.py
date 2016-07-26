@@ -174,13 +174,12 @@ class Settings(DiscussionBase):
     should_show_public_nickname = Column(Boolean, nullable=False)
     last_topic_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
     lang_uid = Column(Integer, ForeignKey('languages.uid'))
-    socketid = Column(Text, nullable=False)
 
     users = relationship('User', foreign_keys=[author_uid])
     issues = relationship('Issue', foreign_keys=[last_topic_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
 
-    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=1, socketid=''):
+    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=1):
         """
         Initializes a row in current settings-table
         """
@@ -190,7 +189,6 @@ class Settings(DiscussionBase):
         self.should_show_public_nickname = should_show_public_nickname
         self.last_topic_uid = 1
         self.lang_uid = lang_uid
-        self.socketid = socketid
 
     def set_send_mails(self, send_mails):
         self.should_send_mails = send_mails
@@ -206,9 +204,6 @@ class Settings(DiscussionBase):
 
     def set_lang_uid(self, lang_uid):
         self.lang_uid = lang_uid
-
-    def set_socketid(self, socketid):
-        self.socketid = socketid
 
 
 class Statement(DiscussionBase):

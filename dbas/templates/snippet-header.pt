@@ -62,7 +62,7 @@
 							<i class="fa fa-male" aria-hidden="true" id="header_user" tal:condition="extras.is_user_male"></i>
 							<i class="fa fa-female" aria-hidden="true" id="header_user" tal:condition="extras.is_user_female"></i>
 							<i class="fa fa-user" aria-hidden="true" id="header_user" tal:condition="extras.is_user_neutral"></i>
-                                ${extras.users_name}
+                            <span id="header_nickname">${extras.users_name}</span>
                             <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
 							<span class="caret"></span>
 						</a>
