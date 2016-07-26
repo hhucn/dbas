@@ -35,18 +35,6 @@ test_data = Service(name='test',
                     permission='everybody',  # or permission='use'
                     cors_policy=cors_policy)
 
-subscribe = Service(name='subscribe',
-                    path='/subscribe',
-                    description="Subscribe for notifications",
-                    permission='use',
-                    cors_policy=cors_policy)
-
-unsubscribe = Service(name='unsubscribe',
-                      path='/unsubscribe',
-                      description="Subscribe for notifications",
-                      permission='use',
-                      cors_policy=cors_policy)
-
 
 # =============================================================================
 # WEBSOCKET REQUESTS
@@ -68,60 +56,3 @@ def some_function(request):
         'extras': extras_dict,
         'value': ':('
     }
-
-
-@subscribe.get()
-def subscribe_function(request):
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Websocket', 'subscribe_function', 'main')
-
-    nickname = request.authenticated_userid
-    success = False
-
-    try:
-        socketid = request.params['socketid']
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        if db_user:
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-            if db_settings:
-                db_settings.set_socketid(socketid)
-                success = True
-
-    except KeyError as e:
-        socketid = 'empty'
-        logger('Websocket', 'error', repr(e))
-
-    logger('Websocket', 'subscribe_function', 'nickname ' + nickname)
-    logger('Websocket', 'subscribe_function', 'socketid ' + socketid)
-
-    return_dict = {'nickname': nickname,
-                   'socketid': socketid,
-                   'success': success}
-    logger('Websocket', 'subscribe_function', 'done')
-
-    return json.dumps(return_dict, True)
-
-
-@unsubscribe.get()
-def unsubscribe_function(request):
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Websocket', 'unsubscribe_function', 'main')
-
-    nickname = request.authenticated_userid
-    success = False
-
-    if 'iosocketid' in request.session and len(request.session['iosocketid']) > 0:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        if db_user:
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-            if db_settings:
-                db_settings.set_socketid('')
-                success = True
-
-    logger('Websocket', 'unsubscribe_function', 'nickname ' + nickname)
-
-    return_dict = {'nickname': nickname,
-                   'success': success}
-    logger('Websocket', 'unsubscribe_function', 'done')
-
-    return json.dumps(return_dict, True)
