@@ -3,6 +3,7 @@ Introducing websockets.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import json
 
 from dbas.views import Dbas
 from dbas.views import project_name
@@ -93,9 +94,12 @@ def subscribe_function(request):
     logger('Websocket', 'subscribe_function', 'nickname ' + nickname)
     logger('Websocket', 'subscribe_function', 'socketid ' + socketid)
 
-    return {'nickname': nickname,
-            'socketid': socketid,
-            'success': success}
+    return_dict = {'nickname': nickname,
+                   'socketid': socketid,
+                   'success': success}
+    logger('Websocket', 'subscribe_function', 'done')
+
+    return json.dumps(return_dict, True)
 
 
 @unsubscribe.get()
@@ -116,5 +120,8 @@ def unsubscribe_function(request):
 
     logger('Websocket', 'unsubscribe_function', 'nickname ' + nickname)
 
-    return {'nickname': nickname,
-            'success': success}
+    return_dict = {'nickname': nickname,
+                   'success': success}
+    logger('Websocket', 'unsubscribe_function', 'done')
+
+    return json.dumps(return_dict, True)

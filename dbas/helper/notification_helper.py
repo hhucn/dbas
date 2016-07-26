@@ -34,20 +34,24 @@ def send_edit_text_notification(textversion, path, request):
     settings_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first()
     settings_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first()
 
-    if settings_root_author.should_send_mails is True:
-        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, path, request)
-
-    if new_author != last_author and settings_last_author.should_send_mails is True:
-        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, path, request)
-
-    # check for different authors
-    if root_author == new_author:
-        return None
-
     # create content
     db_editor = DBDiscussionSession.query(User).filter_by(uid=new_author).first()
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_editor.uid).first()
     db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
+
+    logger('NotificationHelper', 'send_edit_text_notification', 'root author: ' + str(oem.author_uid))
+    logger('NotificationHelper', 'send_edit_text_notification', 'last author: ' + str(last_author))
+    logger('NotificationHelper', 'send_edit_text_notification', 'current author: ' + str(new_author))
+
+    if settings_root_author.should_send_mails is True:
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, request)
+
+    if new_author != last_author and settings_last_author.should_send_mails is True:
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, db_editor, path, request)
+
+    # check for different authors
+    if root_author == new_author:
+        return None
 
     _t = Translator(db_language.ui_locales)
     topic = _t.get(_t.textversionChangedTopic)
@@ -57,12 +61,12 @@ def send_edit_text_notification(textversion, path, request):
     if settings_root_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('edittext', settings_last_author.socketid, _t_user.get(_t_user.newNotification), path)
+        __send_request_to_socketio('edittext', settings_root_author.socketid, _t_user.get(_t_user.textChange), path)
 
-    if last_author != root_author and settings_last_author.should_send_notifications:
+    if last_author != root_author and last_author != new_author and settings_last_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('edittext', settings_last_author.socketid, _t_user.get(_t_user.newNotification), path)
+        __send_request_to_socketio('edittext', settings_last_author.socketid, _t_user.get(_t_user.textChange), path)
 
     notification1  = Notification(from_author_uid=new_author,
                                   to_author_uid=root_author,

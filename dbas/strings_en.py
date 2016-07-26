@@ -503,6 +503,7 @@ class EnglischDict:
         en_lang[_self.thisConfrontationIs] = 'This confrontation is a'
         en_lang[_self.theirArgument] = 'their argument'
         en_lang[_self.thisArgument] = 'this argument'
+        en_lang[_self.textChange] = 'Some statement of yours was edited.'
         en_lang[_self.veryweak] = 'very weak'
         en_lang[_self.wantToStateNewPosition] = 'If you want to state a new position, please click here to log in.'
         en_lang[_self.weak] = 'weak'

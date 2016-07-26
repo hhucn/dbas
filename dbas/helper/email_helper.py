@@ -36,12 +36,13 @@ def send_mail_due_to_new_argument(current_user, url, request):
     return send_mail(request, subject, body, recipient, db_language.ui_locales)
 
 
-def send_mail_due_to_edit_text(statement_uid, previous_author, url, request):
+def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, url, request):
     """
     Will send an email to the author of the statement.
 
     :param statement_uid: Statement.uid
     :param previous_author: User
+    :param current_author: User
     :param url: current url
     :param request: self.request
     :return: duple with boolean for sent message, message-string
@@ -51,12 +52,14 @@ def send_mail_due_to_edit_text(statement_uid, previous_author, url, request):
     db_textversion_new = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.uid).first()
 
     db_previous_author = DBDiscussionSession.query(User).filter_by(uid=previous_author).first() if isinstance(previous_author, int) else previous_author
+    db_current_author = DBDiscussionSession.query(User).filter_by(uid=current_author).first() if isinstance(current_author, int) else current_author
+
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_previous_author.uid).first()
     db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
     _t = Translator(db_language.ui_locales)
     subject = _t.get(_t.textversionChangedTopic)
-    body = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_previous_author.public_nickname,
+    body = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_current_author.public_nickname,
                                                         db_textversion_old.content, db_textversion_new.content, url, False)
     recipient = db_previous_author.email
 

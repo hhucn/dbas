@@ -492,6 +492,7 @@ class GermanDict:
         de_lang[_self.therefore] = 'Daher'
         de_lang[_self.thinkWeShould] = 'Ich denke, wir sollten '
         de_lang[_self.thisConfrontationIs] = 'Dieser Angriff ist ein'
+        de_lang[_self.textChange] = 'Eine Ihrer Aussagen wurde editiert.'
         de_lang[_self.track] = 'Spur'
         de_lang[_self.textversionChangedTopic] = 'Aussage wurde geändert'
         de_lang[_self.textversionChangedContent] = 'Ihr Text wurde geändert von'
