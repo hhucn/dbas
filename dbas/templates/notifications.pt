@@ -33,7 +33,7 @@
 					            <div class="panel panel-default" tal:repeat="msg extras.notifications.inbox" style="margin-bottom: 1em;" tal:attributes="id msg.id">
 					        	    <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a class="accordion-toggle panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
+                                            <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
                                                 <span tal:condition="not:msg.read" class="label label-info" i18n:translate="new">NEW</span>
                                                 <span class="text-primary" tal:condition="msg.read">${structure:msg.topic}</span>
                                                 <strong class="text-primary" tal:condition="not:msg.read">${msg.topic}</strong>
@@ -64,7 +64,7 @@
 					            <div class="panel panel-default" tal:repeat="msg extras.notifications.outbox" style="margin-bottom: 1em;" tal:attributes="id msg.id">
 					        	    <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a class="accordion-toggle panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
+                                            <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
                                                 <span class="text-primary notification-title" tal:condition="msg.read">${structure:msg.topic}</span>
                                             </a>
                                             <span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" data-toggle="tooltip" data-placement="bottom" title="Delete"></span>
