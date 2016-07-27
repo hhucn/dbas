@@ -43,6 +43,9 @@ def send_edit_text_notification(textversion, path, request):
     logger('NotificationHelper', 'send_edit_text_notification', 'last author: ' + str(last_author))
     logger('NotificationHelper', 'send_edit_text_notification', 'current author: ' + str(new_author))
 
+    # add some information
+    path += '?edited_statement=' + textversion.statement_uid
+
     if settings_root_author.should_send_mails is True:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, request)
 
@@ -56,9 +59,6 @@ def send_edit_text_notification(textversion, path, request):
     _t = Translator(db_language.ui_locales)
     topic = _t.get(_t.textversionChangedTopic)
     content = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
-
-    # add soem information
-    path += '?edited_statement=' + textversion.statement_uid
 
     # send notifications
     if settings_root_author.should_send_notifications:
