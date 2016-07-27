@@ -848,9 +848,12 @@ class TextGenerator(object):
         content = _t.get(_t.textversionChangedContent) + ' ' + nickname
         content += nl + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + original + nl
         content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + edited + nl
+        content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
         if for_html:
-            content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
             content += '<a href="' + path + '">' + path + '</a>'
+        else:
+            content += path
+            
         return content
 
     def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
