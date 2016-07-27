@@ -57,11 +57,15 @@ def send_edit_text_notification(textversion, path, request):
     topic = _t.get(_t.textversionChangedTopic)
     content = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
+    # add soem information
+    path += '?edited_statement=' + textversion.statement_uid
+
     # send notifications
     if settings_root_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('edittext', oem.nickname, _t_user.get(_t_user.textChange), path)
+        db_root_author = DBDiscussionSession.query(User).filter_by(uid=root_author).first()
+        __send_request_to_socketio('edittext', db_root_author.nickname, _t_user.get(_t_user.textChange), path)
 
     if last_author != root_author and last_author != new_author and settings_last_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales

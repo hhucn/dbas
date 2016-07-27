@@ -586,6 +586,13 @@ function Main () {
 		}).on('shown.bs.modal', function () {
 			$('#' + loginUserId).focus();
 		});
+		
+		// highlight edited statement
+		var pos = window.location.href.indexOf('edited_statement=');
+		if (pos != -1){
+			var id = window.location.href.substr(pos + 'edited_statement='.length);
+			$('#' + id).css('background-color', '#FFF9C4');
+		}
 	};
 
 	/**
