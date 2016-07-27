@@ -1,3 +1,8 @@
+/**
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
+ */
+
 "use strict";
 
 function dolan_translate(dictionary, inputText) {
