@@ -61,12 +61,13 @@ def send_edit_text_notification(textversion, path, request):
     if settings_root_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('edittext', settings_root_author.nickname, _t_user.get(_t_user.textChange), path)
+        __send_request_to_socketio('edittext', oem.nickname, _t_user.get(_t_user.textChange), path)
 
     if last_author != root_author and last_author != new_author and settings_last_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('edittext', settings_last_author.nickname, _t_user.get(_t_user.textChange), path)
+        db_last_author = DBDiscussionSession.query(User).filter_by(uid=last_author).first()
+        __send_request_to_socketio('edittext', db_last_author.nickname, _t_user.get(_t_user.textChange), path)
 
     notification1  = Notification(from_author_uid=new_author,
                                   to_author_uid=root_author,
@@ -123,7 +124,7 @@ def send_notification(from_user, to_user, topic, content, transaction):
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('notification', db_settings.nickname, _t_user.get(_t_user.newNotification))
+        __send_request_to_socketio('notification', to_user.nickname, _t_user.get(_t_user.newNotification))
 
     db_inserted_notification = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == from_user.uid,
                                                                                    Notification.to_author_uid == to_user.uid,
@@ -208,7 +209,7 @@ def __send_request_to_socketio(type, nickname, message=None, url=None):
     :param url: String
     :return: Status code of the request
     """
-    params = '?type=' + type + '&nickname' + nickname + '&'
+    params = '?type=' + type + '&nickname=' + nickname + '&'
     if message:
         params += 'msg=' + message + '&'
     if url:
