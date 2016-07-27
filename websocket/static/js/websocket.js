@@ -4,6 +4,7 @@ $(document).ready(function() {
 
 	socket.on('publish', function(data){
 		var alink = '';
+		
 		if (data.type == 'notifications'){
 			alink = '<a target="_blank" href="' + mainpage + data.type + '">' + data.msg + '</a>';
 			setGlobalInfoHandler('Huray!', alink);
@@ -23,6 +24,13 @@ $(document).ready(function() {
 			setGlobalInfoHandler('Huray!', data.msg);
 		}
 		console.log('publish ' + data.type + ' ' + data.msg);
+	});
+	
+	socket.on('testid', function(id){
+		var field = $('#socketio_id');
+		
+		if (field)
+			field.text(id);
 	});
 	
 	// delete subscription on page unload events
