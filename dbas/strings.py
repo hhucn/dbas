@@ -853,7 +853,7 @@ class TextGenerator(object):
             content += '<a href="' + path + '">' + path + '</a>'
         else:
             content += path
-            
+
         return content
 
     def __get_text_dict_for_attacks_only(self, premises, conclusion, start_lower_case):
