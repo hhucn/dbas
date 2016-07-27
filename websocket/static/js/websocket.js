@@ -33,6 +33,25 @@ $(document).ready(function() {
 			field.text(id);
 	});
 	
+	socket.on('test', function(data) {
+		if (data.type == 'success') {
+			console.log('test success');
+			setGlobalSuccessHandler('TEST', data.msg);
+		} else if (data.type == 'warning') {
+			console.log('test warning');
+			setGlobalErrorHandler('TEST', data.msg);
+		} else if (data.type == 'info') {
+			console.log('test info');
+			setGlobalInfoHandler('TEST', data.msg);
+		} else {
+			console.log('unknown test type');
+		}
+	});
+	
+	$('#test_success_btn,#test_danger_btn,#test_info_btn').click(function(){
+		socket.emit('test', $(this).attr('data-type'));
+	});
+	
 	// delete subscription on page unload events
 	$(window).bind('beforeunload',function(){
 		socket.emit('remove_name', $('#header_nickname').text());
