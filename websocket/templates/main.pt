@@ -5,6 +5,10 @@
             <div class="center">
                 <h4>Your current socket.io token is:</h4>
                 <h6 id="socketio_id"></h6>
+
+            <button id="test_success_btn" data-type="success" type="submit" class="btn btn-success">Test success</button>
+            <button id="test_danger_btn" data-type="danger" type="submit" class="btn btn-danger">Test danger</button>
+            <button id="test_info_btn" data-type="info" type="submit" class="btn btn-info">Test info</button>
             </div>
         </div>
 
