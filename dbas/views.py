@@ -30,7 +30,7 @@ import dbas.recommender_system as RecommenderSystem
 import dbas.string_matcher as FuzzyStringMatcher
 import dbas.user_management as UserHandler
 from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Notification, Settings, Language
+from .database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
 from .helper.dictionary_helper import DictionaryHelper
 from .helper.dictionary_helper_discussion import DiscussionDictHelper
 from .helper.dictionary_helper_items import ItemDictHelper
@@ -1704,7 +1704,7 @@ class Dbas(object):
         _t = Translator(ui_locales)
 
         try:
-            DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).first().set_read(True)
+            DBDiscussionSession.query(Message).filter_by(uid=self.request.params['id']).first().set_read(True)
             transaction.commit()
             return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
             return_dict['error'] = ''
@@ -1731,7 +1731,7 @@ class Dbas(object):
         _t = Translator(ui_locales)
 
         try:
-            DBDiscussionSession.query(Notification).filter_by(uid=self.request.params['id']).delete()
+            DBDiscussionSession.query(Message).filter_by(uid=self.request.params['id']).delete()
             transaction.commit()
             return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
             return_dict['total_in_messages'] = str(len(NotificationHelper.get_box_for(self.request.authenticated_userid, ui_locales, mainpage, True)))
