@@ -17,8 +17,8 @@ from math import trunc
 from dbas.logger import logger
 from sqlalchemy import engine_from_config, and_
 from pyramid.paster import get_appsettings, setup_logging
-from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue,\
-    Notification, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy
+from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
+    Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy
 from dbas.database.news_model import News
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 
@@ -359,7 +359,7 @@ def drop_discussion_database(session):
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(VoteStatement).delete()) + ' in VoteStatement')
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(ArgumentSeenBy).delete()) + ' in VoteArgument')
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementSeenBy).delete()) + ' in VoteStatement')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Notification).delete()) + ' in Notification')
+    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Message).delete()) + ' in Message')
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementReferences).delete()) + ' in StatementReferences')
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Argument).delete()) + ' in Argument')
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Premise).delete()) + ' in Premise')
@@ -515,11 +515,11 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
     UserHandler.refresh_public_nickname(usert22)
 
     # Adding welcome notifications
-    notification0 = Notification(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification1 = Notification(from_author_uid=user1.uid, to_author_uid=user3.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification2 = Notification(from_author_uid=user1.uid, to_author_uid=user4.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification3 = Notification(from_author_uid=user1.uid, to_author_uid=user5.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification4 = Notification(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+    notification0 = Message(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+    notification1 = Message(from_author_uid=user1.uid, to_author_uid=user3.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+    notification2 = Message(from_author_uid=user1.uid, to_author_uid=user4.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+    notification3 = Message(from_author_uid=user1.uid, to_author_uid=user5.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+    notification4 = Message(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
     session.add_all([notification0, notification1, notification2, notification3, notification4])
     session.flush()
 

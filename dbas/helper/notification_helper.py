@@ -9,7 +9,7 @@ import dbas.user_management as UserHandler
 import dbas.helper.email_helper as EmailHelper
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Notification, Settings, Language
+from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language
 from dbas.lib import sql_timestamp_pretty_print, escape_string
 from dbas.strings import Translator, TextGenerator
 from dbas.logger import logger
@@ -73,16 +73,16 @@ def send_edit_text_notification(textversion, path, request):
         db_last_author = DBDiscussionSession.query(User).filter_by(uid=last_author).first()
         __send_request_to_socketio('edittext', db_last_author.nickname, _t_user.get(_t_user.textChange), path)
 
-    notification1  = Notification(from_author_uid=new_author,
-                                  to_author_uid=root_author,
-                                  topic=topic,
-                                  content=content,
-                                  is_inbox=True)
-    notification2  = Notification(from_author_uid=new_author,
-                                  to_author_uid=last_author,
-                                  topic=topic,
-                                  content=content,
-                                  is_inbox=True)
+    notification1  = Message(from_author_uid=new_author,
+                             to_author_uid=root_author,
+                             topic=topic,
+                             content=content,
+                             is_inbox=True)
+    notification2  = Message(from_author_uid=new_author,
+                             to_author_uid=last_author,
+                             topic=topic,
+                             content=content,
+                             is_inbox=True)
     DBDiscussionSession.add_all([notification1, notification2])
 
     DBDiscussionSession.flush()
@@ -100,7 +100,7 @@ def send_welcome_notification(transaction, user, lang='en'):
     _tn = Translator(lang)
     topic = _tn.get(_tn.welcome)
     content = _tn.get(_tn.welcomeMessage)
-    notification = Notification(from_author_uid=1, to_author_uid=user, topic=topic, content=content, is_inbox=True)
+    notification = Message(from_author_uid=1, to_author_uid=user, topic=topic, content=content, is_inbox=True)
     DBDiscussionSession.add(notification)
     DBDiscussionSession.flush()
     transaction.commit()
@@ -118,8 +118,8 @@ def send_notification(from_user, to_user, topic, content, transaction):
     :return:
     """
     content = escape_string(content)
-    notification_in  = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=True)
-    notification_out = Notification(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=False, read=True)
+    notification_in  = Message(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=True)
+    notification_out = Message(from_author_uid=from_user.uid, to_author_uid=to_user.uid, topic=topic, content=content, is_inbox=False, read=True)
     DBDiscussionSession.add_all([notification_in, notification_out])
     DBDiscussionSession.flush()
     transaction.commit()
@@ -130,11 +130,11 @@ def send_notification(from_user, to_user, topic, content, transaction):
         _t_user = Translator(user_lang)
         __send_request_to_socketio('notification', to_user.nickname, _t_user.get(_t_user.newNotification))
 
-    db_inserted_notification = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == from_user.uid,
-                                                                                   Notification.to_author_uid == to_user.uid,
-                                                                                   Notification.topic == topic,
-                                                                                   Notification.content == content,
-                                                                                   Notification.is_inbox == True)).order_by(Notification.uid.desc()).first()
+    db_inserted_notification = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == from_user.uid,
+                                                                              Message.to_author_uid == to_user.uid,
+                                                                              Message.topic == topic,
+                                                                              Message.content == content,
+                                                                              Message.is_inbox == True)).order_by(Message.uid.desc()).first()
 
     return db_inserted_notification
 
@@ -148,9 +148,9 @@ def count_of_new_notifications(user):
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
     if db_user:
-        return len(DBDiscussionSession.query(Notification).filter(and_(Notification.to_author_uid == db_user.uid,
-                                                                       Notification.read == False,
-                                                                       Notification.is_inbox == True)).all())
+        return len(DBDiscussionSession.query(Message).filter(and_(Message.to_author_uid == db_user.uid,
+                                                                  Message.read == False,
+                                                                  Message.is_inbox == True)).all())
     else:
         return 0
 
@@ -170,11 +170,11 @@ def get_box_for(user, lang, mainpage, is_inbox):
         return []
 
     if is_inbox:
-        db_messages = DBDiscussionSession.query(Notification).filter(and_(Notification.to_author_uid == db_user.uid,
-                                                                          Notification.is_inbox == is_inbox)).all()
+        db_messages = DBDiscussionSession.query(Message).filter(and_(Message.to_author_uid == db_user.uid,
+                                                                     Message.is_inbox == is_inbox)).all()
     else:
-        db_messages = DBDiscussionSession.query(Notification).filter(and_(Notification.from_author_uid == db_user.uid,
-                                                                          Notification.is_inbox == is_inbox)).all()
+        db_messages = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == db_user.uid,
+                                                                     Message.is_inbox == is_inbox)).all()
 
     message_array = []
     for message in db_messages:
