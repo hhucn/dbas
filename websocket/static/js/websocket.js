@@ -25,12 +25,13 @@ $(document).ready(function() {
  * Connects the sockets and enables publishing
  */
 function doConnect(){
-	socket = io.connect('ws://localhost:5001', {query: 'nickname=' + $('#header_nickname').text()});
+	socket = io.connect('localhost:5001', {query: 'nickname=' + $('#header_nickname').text()});
 	
 	socket.on('publish', function(data){
 		doPublish(data)
 	});
 	
+	console.log('Socket.io connected.');
 	enableTesting();
 }
 
