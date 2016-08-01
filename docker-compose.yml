@@ -11,3 +11,4 @@ services:
       - "4284:4284"
     links:
       - db:hhucn__docker-dbas-postgres
+    tmpfs: /tmp
