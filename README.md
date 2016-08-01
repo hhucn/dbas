@@ -1,5 +1,7 @@
 # D-BAS
 
+[![build status](https://gitlab.cs.uni-duesseldorf.de/project/dbas/badges/master/build.svg)](https://gitlab.cs.uni-duesseldorf.de/project/dbas/commits/master)
+
 D-BAS is a novel approach to online argumentation. It avoids the 
 pitfalls of  unstructured systems such as asynchronous threaded 
 discussions and it is usable by any participant without training while 
