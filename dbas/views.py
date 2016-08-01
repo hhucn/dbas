@@ -9,6 +9,10 @@ import time
 
 import requests
 import transaction
+
+import os
+from subprocess import call
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.security import remember, forget
@@ -87,6 +91,28 @@ class Dbas(object):
         nickname = api_data["nickname"] if api_data and for_api else self.request.authenticated_userid
         session_id = api_data["session_id"] if api_data and for_api else self.request.session.id
         return nickname, session_id
+
+    @view_config(route_name='webhook_sass', renderer='json', require_csrf=False)
+    def webhook(request):
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('Websocket', 'webhook', 'main ' + str(os.path.realpath(__file__)))
+
+        subfile = 'views.py'
+        path = str(os.path.realpath(__file__))[:-len(subfile)]
+
+        logger('Websocket', 'webhook', 'compiling sass from ' + path)
+        try:
+            logger('Websocket', 'webhook', 'Execute: sass ' + path + 'static/css/main.sass ' + path + 'static/css/main.css --style compressed --no-cache')
+            ret_val = call(
+                ['sass', path + 'static/css/main.sass', path + 'static/css/main.css', '--style', 'compressed', '--no-cache'])
+            logger('Websocket', 'webhook', 'compiling done: ' + str(ret_val))
+        except Exception:
+            ret_val = 1
+            logger('Websocket', 'webhook', 'compiling failed')
+
+        return_dict = {'success': 1 if ret_val == 0 else 0}
+
+        return json.dumps(return_dict, True)
 
     # main page
     @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
