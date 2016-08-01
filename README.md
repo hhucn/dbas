@@ -52,8 +52,9 @@ Then follow these steps:
         make all
         pserve development.ini --reload
 
-or all in one step:
+or using Docker containers:
 
+    docker-compose build
     docker-compose up
 
 
