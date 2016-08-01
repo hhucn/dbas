@@ -22,7 +22,10 @@ from dbas.helper.dictionary_helper import DictionaryHelper
 cors_policy = dict(enabled=True,
                    headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
                    origins=('*',),
-                   max_age=42)
+                   max_age=42,
+                   require_csrf=False)
+
+cors_policy_no_csrf = cors_policy.update(require_csrf=False)
 
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
@@ -39,7 +42,7 @@ trigger = Service(name='webhook',
                   path='/deploy/aqh5lart',
                   description="Webhook",
                   permission='everybody',  # or permission='use'
-                  cors_policy=cors_policy)
+                  cors_policy=cors_policy_no_csrf)
 
 
 # =============================================================================
