@@ -9,6 +9,7 @@ import time
 
 import requests
 import transaction
+import pyramid.httpexceptions as exc
 
 import os
 from subprocess import call
@@ -97,10 +98,14 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('Websocket', 'webhook', 'main ' + str(os.path.realpath(__file__)))
 
-        for u in self.request.params:
-            logger('Websocket p', u, self.request.params[u])
-        for u in self.request.matchdict:
-            logger('Websocket m', u, self.request.params[u])
+        try:
+            token = self.request.params['secret_token']
+            if token != 'SoMeR34Lb42T0K3N':
+                logger('Websocket', 'webhook', 'access denied')
+                raise exc.HTTPForbidden()
+        except Exception:
+                logger('Websocket', 'webhook', 'access denied')
+                raise exc.HTTPForbidden()
 
         subfile = 'views.py'
         path = str(os.path.realpath(__file__))[:-len(subfile)]
