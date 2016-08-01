@@ -45,5 +45,9 @@ dbas/static/minimize.sh
 .idea/
 data/
 
+# Deployment
+*main.css
+*main.css.map
+
 # Splinter
 C:\\nppdf32Log\\debuglog.txt
