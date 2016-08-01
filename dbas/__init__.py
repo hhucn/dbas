@@ -92,6 +92,9 @@ def main(global_config, **settings):
     config.add_route('main_review', '/review')
     config.add_route('main_user', '/user')
 
+    # webhook
+    config.add_route('webhook_sass', '/deploy/aqh5lart')
+
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
     config.add_route('ajax_user_logout', '{url:.*}ajax_user_logout')

@@ -3,10 +3,6 @@ Introducing websockets.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import json
-import os
-from subprocess import call
-
 from dbas.views import Dbas
 from dbas.views import project_name
 
@@ -22,10 +18,7 @@ from dbas.helper.dictionary_helper import DictionaryHelper
 cors_policy = dict(enabled=True,
                    headers=('Origin', 'X-Requested-With', 'Content-Type', 'Accept'),
                    origins=('*',),
-                   max_age=42,
-                   require_csrf=False)
-
-cors_policy_no_csrf = cors_policy.update(require_csrf=False)
+                   max_age=42)
 
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
@@ -37,12 +30,6 @@ test_data = Service(name='test',
                     description="Test Dump",
                     permission='everybody',  # or permission='use'
                     cors_policy=cors_policy)
-
-trigger = Service(name='webhook',
-                  path='/deploy/aqh5lart',
-                  description="Webhook",
-                  permission='everybody',  # or permission='use'
-                  cors_policy=cors_policy_no_csrf)
 
 
 # =============================================================================
@@ -65,24 +52,3 @@ def some_function(request):
         'extras': extras_dict,
         'value': ':('
     }
-
-@trigger.get()
-def webhook(request):
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Websocket', 'webhook', 'main ' + str(os.path.realpath(__file__)))
-
-    subfile = 'websocket/views.py'
-    path = str(os.path.realpath(__file__))[:-len(subfile)]
-
-    logger('Websocket', 'webhook', 'compiling sass from ' + path)
-    try:
-        logger('Websocket', 'webhook', 'Execute: sass ' + path + 'dbas/static/css/main.sass ' + path + 'dbas/static/css/main.css --style compressed --no-cache')
-        ret_val = call(['sass', path + 'dbas/static/css/main.sass', path + 'dbas/static/css/main.css', '--style', 'compressed', '--no-cache'])
-        logger('Websocket', 'webhook', 'compiling done: ' + str(ret_val))
-    except Exception:
-        ret_val = 1
-        logger('Websocket', 'webhook', 'compiling failed')
-
-    return_dict = {'success': 1 if ret_val == 0 else 0}
-
-    return json.dumps(return_dict, True)
