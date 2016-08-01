@@ -93,14 +93,14 @@ class Dbas(object):
         return nickname, session_id
 
     @view_config(route_name='webhook_sass', renderer='json', require_csrf=False)
-    def webhook(request):
+    def webhook(self):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('Websocket', 'webhook', 'main ' + str(os.path.realpath(__file__)))
 
-        for u in request.params:
-            logger('Websocket p', u, request.params[u])
-        for u in request.matchdict:
-            logger('Websocket m', u, request.params[u])
+        for u in self.request.params:
+            logger('Websocket p', u, self.request.params[u])
+        for u in self.request.matchdict:
+            logger('Websocket m', u, self.request.params[u])
 
         subfile = 'views.py'
         path = str(os.path.realpath(__file__))[:-len(subfile)]
