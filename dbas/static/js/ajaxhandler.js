@@ -449,7 +449,7 @@ function AjaxDiscussionHandler() {
 			method: 'POST',
 			data: {
 				uid: uid,
-				lang: $('#issue-info').attr('data-discussion-language')
+				lang: $('#issue-info').data('discussion-language')
 			},
 			dataType: 'json',
 			headers: {
@@ -484,7 +484,7 @@ function AjaxDiscussionHandler() {
 				uids: uid,
 				is_position: is_position,
 				is_supporti: is_supportive,
-				lang: $('#issue_info').attr('data-discussion-language')
+				lang: $('#issue_info').data('discussion-language')
 			},
 			dataType: 'json',
 			headers: {
@@ -984,7 +984,7 @@ function AjaxGraphHandler(){
 			case 'position':
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'true', uids: JSON.stringify(uid)};
 		}
-		dataString['lang'] = $('#issue_info').attr('data-discussion-language');
+		dataString['lang'] = $('#issue_info').data('discussion-language');
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			type: 'GET',

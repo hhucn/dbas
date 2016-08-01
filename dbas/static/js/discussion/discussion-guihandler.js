@@ -34,7 +34,7 @@ function GuiHandler() {
 				.attr('class', 'form-control')
 				.attr('autocomplete', 'off')
 				.attr('placeholder', '...')
-				.attr('data-min-length', '10')
+				.data('min-length', '10')
 				.keyup(function() { setTextWatcherForMinLength($(this)); })
 				.focusin(function() { setTextWatcherForMinLength($(this)); });
 		var imgm = $('<img>')

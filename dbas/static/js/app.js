@@ -183,8 +183,8 @@ function setEasterEggs(){
 	if (window.location.href == mainpage) {
 		/* christmas only
         var div = $('<div>'),
-        christmas = $('<input>').attr('type','checkbox').attr('data-toggle','toggle').attr('data-onstyle','primary').bootstrapToggle('off'),
-        silvester = $('<input>').attr('type','checkbox').attr('data-toggle','toggle').attr('data-onstyle','primary').bootstrapToggle('off'),
+        christmas = $('<input>').attr('type','checkbox').data('toggle','toggle').data('onstyle','primary').bootstrapToggle('off'),
+        silvester = $('<input>').attr('type','checkbox').data('toggle','toggle').data('onstyle','primary').bootstrapToggle('off'),
         spanChristmas = $('<span>').text('Christmas'),
         spanSilvester = $('<span>').text('Silvester');
         christmas.attr('style','margin-left: 5px;');
@@ -219,7 +219,7 @@ function setEasterEggs(){
 	}
 
 	$('#dbas-logo').click(function(){
-		var counter = parseInt($(this).attr('data-counter'));
+		var counter = parseInt($(this).data('counter'));
 		counter += 1;
 		if (counter == 7){
 			$(this).attr('src', mainpage + 'static/images/dabas.png');
@@ -228,7 +228,7 @@ function setEasterEggs(){
 			});
 			$('.popup_author_img').attr('src', mainpage + 'static/images/dolan.png').css('width', '150%');
 		}
-		$(this).attr('data-counter', counter);
+		$(this).data('counter', counter);
 	});
 }
 
@@ -367,7 +367,7 @@ function prepareLoginRegistrationPopup(){
  */
 function setTextWatcherForMinLength(element){
 	var text = element.val().trim();
-	var offset = parseInt(element.attr('data-min-length') - text.length);
+	var offset = parseInt(element.data('min-length') - text.length);
 	var id = element.attr('id') + '-text-min-counter';
 	var msg = _t_discussion(textMinCountMessage1) + ' ' + offset + ' ' + _t_discussion(textMinCountMessage2);
 	var field = $('#' + id);
@@ -395,7 +395,7 @@ function setTextWatcherForMinLength(element){
  */
 function setTextWatcherForMaxLength(element){
 	var text = element.val().trim();
-	var offset = parseInt(element.attr('data-max-length') - text.length);
+	var offset = parseInt(element.data('max-length') - text.length);
 	var id = element.attr('id') + '-text-max-counter';
 	var msg = _t_discussion(textMaxCountMessage);
 	var field = $('#' + id);

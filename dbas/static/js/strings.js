@@ -38,7 +38,7 @@ _t_discussion = function(id){
 	if ($('#issue_info').length == 0){
 		return _t(id);
 	}
-	var lang = $('#issue_info').attr('data-discussion-language');
+	var lang = $('#issue_info').data('discussion-language');
 	var value = 'unknown identifier';
 	if (lang.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){		value = dbas_en[id];
 	} else if (lang.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){	value = dbas_de[id];
@@ -70,7 +70,7 @@ getLanguage = function(){
  * @returns {string} language tag
  */
 getDiscussionLanguage = function(){
-	var lang = $('#issue_info').attr('data-discussion-language'),
+	var lang = $('#issue_info').data('discussion-language'),
 		value = 'unknown identifier';
 	if (lang.indexOf('en') != -1){  		value = 'en';
 	} else if (lang.indexOf('de') != -1){	value = 'de';

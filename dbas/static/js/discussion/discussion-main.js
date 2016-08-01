@@ -103,12 +103,12 @@ function Main () {
 		$('#' + popupUrlSharingLongUrlButtonID).click(function () {
 			var input_field = $('#' + popupUrlSharingInputId);
 
-			if ($(this).attr('data-is-short-url') == '0') {
-				input_field.val(input_field.attr('data-short-url'));
-				$(this).attr('data-is-short-url', '1').text(_t_discussion(fetchLongUrl));
+			if ($(this).data('is-short-url') == '0') {
+				input_field.val(input_field.data('short-url'));
+				$(this).data('is-short-url', '1').text(_t_discussion(fetchLongUrl));
 			} else {
 				input_field.val(window.location);
-				$(this).attr('data-is-short-url', '0').text(_t_discussion(fetchShortUrl));
+				$(this).data('is-short-url', '0').text(_t_discussion(fetchShortUrl));
 			}
 		});
 
@@ -207,12 +207,12 @@ function Main () {
 
 		// user info click
 		$('.triangle-r-info').each(function () {
-			if ($(this).attr('data-votecount') > 0) {
+			if ($(this).data('votecount') > 0) {
 				$(this).click(function () {
-					var data_type = $(this).attr('data-type'),
-						data_argument_uid = $(this).attr('data-argument-uid'),
-						data_statement_uid = $(this).attr('data-statement-uid'),
-						data_is_supportive = $(this).attr('data-is-supportive');
+					var data_type = $(this).data('type'),
+						data_argument_uid = $(this).data('argument-uid'),
+						data_statement_uid = $(this).data('statement-uid'),
+						data_is_supportive = $(this).data('is-supportive');
 					new AjaxDiscussionHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid, data_is_supportive);
 				});
 			} else {
@@ -270,7 +270,7 @@ function Main () {
 				_this.rotateTack('0');
 				_this.setLocalStorage(tacked_sidebar, 'false');
 
-				$(this).attr('data-original-title', _t_discussion(pinNavigation));
+				$(this).data('original-title', _t_discussion(pinNavigation));
 
 				// hide sidebar if it is visible
 				if ($('#discussion-icon-sidebar').is(':visible')) {
@@ -279,7 +279,7 @@ function Main () {
 			} else {
 				new Main().rotateTack('90');
 				_this.setLocalStorage(tacked_sidebar, 'true');
-				$(this).attr('data-original-title', _t_discussion(unpinNavigation));
+				$(this).data('original-title', _t_discussion(unpinNavigation));
 			}
 		});
 	};
@@ -391,9 +391,9 @@ function Main () {
 
 			main.setAnimationSpeed(wrapperAndBurger, '0.5');
 
-			tack.attr('data-original-title', _t_discussion(unpinNavigation));
+			tack.data('original-title', _t_discussion(unpinNavigation));
 		} else {
-			$('#' + sidebarTackWrapperId).attr('data-original-title', _t_discussion(pinNavigation));
+			$('#' + sidebarTackWrapperId).data('original-title', _t_discussion(pinNavigation));
 		}
 
 		// hover effects on text elements
@@ -451,15 +451,15 @@ function Main () {
 		if (windowInnerWidth < 992) {
 			$('#discussion-sidebar').addClass('list-inline').css('text-align', 'left');
 			$('#site-navigation').addClass('list-inline').css('text-align', 'left').find('img').each(function () {
-				$(this).attr('data-placement', 'bottom');
+				$(this).data('placement', 'bottom');
 			});
 		} else {
 			$('#discussion-sidebar').removeClass('list-inline').css('text-align', 'right');
 			$('#site-navigation').removeClass('list-inline').css('text-align', 'right').find('img').each(function () {
-				$(this).attr('data-placement', 'left');
+				$(this).data('placement', 'left');
 			});
 		}
-		$('#' + sidebarMoreButtonId).attr('data-placement', windowInnerWidth < 992 ? 'top' : 'left');
+		$('#' + sidebarMoreButtonId).data('placement', windowInnerWidth < 992 ? 'top' : 'left');
 	};
 
 	/**

@@ -415,7 +415,7 @@ $(function () {
 
 	$.each($('#settings-language-dropdown').find('a'), function(){
 		$(this).click(function(){
-			new AjaxSettingsHandler().setNotifcationLanguage($(this).attr('data-ui-locales'));
+			new AjaxSettingsHandler().setNotifcationLanguage($(this).data('ui-locales'));
 		});
 	});
 
@@ -430,6 +430,6 @@ $(function () {
 	 */
 	$(document).ready(function settingsDocumentReady() {
 		$.each($('#current-lang-images').find('img'), function(){ $(this).hide()});
-		$('#indicator-' + $('#current-lang-images').attr('data-lang')).show();
+		$('#indicator-' + $('#current-lang-images').data('lang')).show();
 	});
 });
