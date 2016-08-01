@@ -97,6 +97,11 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('Websocket', 'webhook', 'main ' + str(os.path.realpath(__file__)))
 
+        for u in request.params:
+            logger('Websocket p', u, request.params[u])
+        for u in request.matchdict:
+            logger('Websocket m', u, request.params[u])
+
         subfile = 'views.py'
         path = str(os.path.realpath(__file__))[:-len(subfile)]
 
