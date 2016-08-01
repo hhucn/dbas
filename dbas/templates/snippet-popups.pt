@@ -494,41 +494,6 @@
     	</div>
     </div>
 
-    <!-- HOW TO WRITE POPUP -->
-    <div class="modal fade" id="popup-write-text" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-write-text-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="how-to-write-text-header">How to write text</h4>
-    			</div>
-    			<div id="popup-write-text-body">
-    				<span i18n:translate="how-to-write-text-header-body">Writing good is a necessary skill for using D-BAS, unless you do not want to persuade other participants. Hereafter a few rules are listed, what should be noted, and what should not.</span>
-    				<br>
-    				<br>
-    				<b class="text-success" i18n:translate="dos">Do's:</b>
-    				<ul id="how-to-write-text-do-list">
-    					<li i18n:translate="how-to-write-text-short">Write short!</li>
-    					<li i18n:translate="how-to-write-text-one-point">Only one statement per field!</li>
-    				</ul>
-    				<!--
-    				<br>
-    				<b class="text-danger" i18n:translate="donts">Don'ts:</b>
-    				<ul id="how-to-write-text-dont-list">
-    					<li i18n:translate="how-to-write-text-complicated">Complicated and nested sentences!</li>
-    					<li i18n:translate="how-to-write-text-multiple-points">More than one statement/argument/point per field!</li>
-    					<li i18n:translate="how-to-write-text-negations">Do never ever use negations! Every negation will be set extra! This is highly important!</li>
-    				</ul>
-    				-->
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-default btn-primary" id="popup-write-text-okay-button" i18n:translate="Okay">Okay</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
     <!-- HOW TO SET PREMISSEGROUPS POPUP -->
     <div class="modal fade" id="popup-set-premisegroups" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog">
