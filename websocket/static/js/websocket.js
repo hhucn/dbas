@@ -4,6 +4,7 @@
  */
 
 var socket = undefined;
+const port = 5001;
 
 $(document).ready(function() {
 	
@@ -25,12 +26,10 @@ $(document).ready(function() {
  * Connects the sockets and enables publishing
  */
 function doConnect(){
-	console.log(mainpage);
+	// switch between a local (http) and a global (https) mode
+	const address = mainpage.indexOf('localhost') != -1 ? 'http://localhost:' : 'https://dbas.cs.uni-duesseldorf.de:';
 	const dict = {query: 'nickname=' + $('#header_nickname').text()};
-	if (mainpage.indexOf('localhost') != -1)
-		socket = io.connect('http://localhost:5001', dict);
-	else
-		socket = io.connect('https://localhost:5001', dict);
+	socket = io.connect(address + port, dict);
 	
 	socket.on('publish', function(data){
 		doPublish(data)
@@ -45,14 +44,10 @@ function doConnect(){
  * @param data dict
  */
 function doPublish(data){
-	if (data.type == 'notifications'){
-		doNotification(data);
-	} else if (data.type == 'mention') {
-		doMention(data);
-	} else if (data.type == 'edittext') {
-		doEditText(data);
-	} else {
-		setGlobalInfoHandler('Huray!', data.msg);
+	if (data.type == 'notifications'){		doNotification(data);
+	} else if (data.type == 'mention') {	doMention(data);
+	} else if (data.type == 'edittext') {	doEditText(data);
+	} else {		                        setGlobalInfoHandler('Huray!', data.msg);
 	}
 	console.log('publish ' + data.type + ' ' + data.msg);
 }
