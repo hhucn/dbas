@@ -27,8 +27,12 @@ $(document).ready(function() {
  */
 function doConnect(){
 	// switch between a local (http) and a global (https) mode
-	const address = mainpage.indexOf('localhost') != -1 ? 'http://localhost:' : 'https://dbas.cs.uni-duesseldorf.de:';
-	const dict = {query: 'nickname=' + $('#header_nickname').text()};
+	var dict = {query: 'nickname=' + $('#header_nickname').text(), secure: true};
+	var address =  'http://localhost:';
+	if (mainpage.indexOf('localhost') == -1) {
+		address = 'https://dbas.cs.uni-duesseldorf.de:';
+		dict.push({secure: true});
+	}
 	socket = io.connect(address + port, dict);
 	
 	socket.on('publish', function(data){
