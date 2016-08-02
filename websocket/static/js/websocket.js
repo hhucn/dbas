@@ -11,7 +11,7 @@ $(document).ready(function() {
 	try {
 		doConnect();
 	} catch (e) {
-		console.log('Error on connect.');
+		console.log('Error on connect: ' + e.message);
 	}
 	
 	// delete subscription on page unload events
