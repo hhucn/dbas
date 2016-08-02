@@ -31,7 +31,7 @@ function doConnect(){
 	var address =  'http://localhost:';
 	if (mainpage.indexOf('localhost') == -1) {
 		address = 'https://dbas.cs.uni-duesseldorf.de:';
-		dict.push({secure: true});
+		dict['secure'] = true;
 	}
 	socket = io.connect(address + port, dict);
 	
