@@ -25,7 +25,12 @@ $(document).ready(function() {
  * Connects the sockets and enables publishing
  */
 function doConnect(){
-	socket = io.connect('localhost:5001', {query: 'nickname=' + $('#header_nickname').text()});
+	console.log(mainpage);
+	const dict = {query: 'nickname=' + $('#header_nickname').text()};
+	if (mainpage.indexOf('localhost') != -1)
+		socket = io.connect('http://localhost:5001', dict);
+	else
+		socket = io.connect('https://localhost:5001', dict);
 	
 	socket.on('publish', function(data){
 		doPublish(data)
