@@ -51,7 +51,10 @@ function doPublish(data){
 	if (data.type == 'notifications'){		doNotification(data);
 	} else if (data.type == 'mention') {	doMention(data);
 	} else if (data.type == 'edittext') {	doEditText(data);
-	} else {		                        setGlobalInfoHandler('Huray!', data.msg);
+	} else if (data.type == 'success') {	setGlobalSuccessHandler('Huray!', data.msg);
+	} else if (data.type == 'warning') {	setGlobalErrorHandler('Uhh', data.msg);
+	} else if (data.type == 'info') {	    setGlobalInfoHandler('Ooh', data.msg);
+	} else {		                        setGlobalInfoHandler('Mhhh!', data.msg);
 	}
 	console.log('publish ' + data.type + ' ' + data.msg);
 }
@@ -98,17 +101,10 @@ function incrementCounter(element){
  */
 function enableTesting(){
 	socket.on('test', function(data) {
-		if (data.type == 'success') {
-			console.log('test success');
-			setGlobalSuccessHandler('TEST', data.msg);
-		} else if (data.type == 'warning') {
-			console.log('test warning');
-			setGlobalErrorHandler('TEST', data.msg);
-		} else if (data.type == 'info') {
-			console.log('test info');
-			setGlobalInfoHandler('TEST', data.msg);
-		} else {
-			console.log('unknown test type');
+		if (data.type == 'success') {			console.log('test success');		setGlobalSuccessHandler('TEST', data.msg);
+		} else if (data.type == 'warning') {	console.log('test warning');		setGlobalErrorHandler('TEST', data.msg);
+		} else if (data.type == 'info') {		console.log('test info');			setGlobalInfoHandler('TEST', data.msg);
+		} else {                    			console.log('unknown test type');
 		}
 	});
 	

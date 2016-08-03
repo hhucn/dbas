@@ -4,7 +4,6 @@ Provides functions for te internal messaging system
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import requests
 import dbas.user_management as UserHandler
 import dbas.helper.email_helper as EmailHelper
 
@@ -12,7 +11,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language
 from dbas.lib import sql_timestamp_pretty_print, escape_string
 from dbas.strings import Translator, TextGenerator
-from dbas.logger import logger
+
+from websocket.lib import send_request_to_socketio
 
 from sqlalchemy import and_
 
@@ -39,9 +39,9 @@ def send_edit_text_notification(textversion, path, request):
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_editor.uid).first()
     db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
-    logger('NotificationHelper', 'send_edit_text_notification', 'root author: ' + str(oem.author_uid))
-    logger('NotificationHelper', 'send_edit_text_notification', 'last author: ' + str(last_author))
-    logger('NotificationHelper', 'send_edit_text_notification', 'current author: ' + str(new_author))
+    # logger('NotificationHelper', 'send_edit_text_notification', 'root author: ' + str(oem.author_uid))
+    # logger('NotificationHelper', 'send_edit_text_notification', 'last author: ' + str(last_author))
+    # logger('NotificationHelper', 'send_edit_text_notification', 'current author: ' + str(new_author))
 
     # add some information
     path += '?edited_statement=' + textversion.statement_uid
@@ -65,13 +65,13 @@ def send_edit_text_notification(textversion, path, request):
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
         db_root_author = DBDiscussionSession.query(User).filter_by(uid=root_author).first()
-        __send_request_to_socketio('edittext', db_root_author.nickname, _t_user.get(_t_user.textChange), path)
+        send_request_to_socketio('edittext', db_root_author.nickname, _t_user.get(_t_user.textChange), path)
 
     if last_author != root_author and last_author != new_author and settings_last_author.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
         db_last_author = DBDiscussionSession.query(User).filter_by(uid=last_author).first()
-        __send_request_to_socketio('edittext', db_last_author.nickname, _t_user.get(_t_user.textChange), path)
+        send_request_to_socketio('edittext', db_last_author.nickname, _t_user.get(_t_user.textChange), path)
 
     notification1  = Message(from_author_uid=new_author,
                              to_author_uid=root_author,
@@ -128,7 +128,7 @@ def send_notification(from_user, to_user, topic, content, transaction):
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        __send_request_to_socketio('notification', to_user.nickname, _t_user.get(_t_user.newNotification))
+        send_request_to_socketio('notification', to_user.nickname, _t_user.get(_t_user.newNotification))
 
     db_inserted_notification = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == from_user.uid,
                                                                               Message.to_author_uid == to_user.uid,
@@ -201,25 +201,3 @@ def get_box_for(user, lang, mainpage, is_inbox):
         message_array.append(tmp_dict)
 
     return message_array[::-1]
-
-
-def __send_request_to_socketio(type, nickname, message=None, url=None):
-    """
-    Sends an request to the socket io server
-
-    :param type: String
-    :param nickname: String
-    :param message: String
-    :param url: String
-    :return: Status code of the request
-    """
-    params = '?type=' + type + '&nickname=' + nickname + '&'
-    if message:
-        params += 'msg=' + message + '&'
-    if url:
-        params += 'url=' + url + '&'
-
-    resp = requests.get('http://localhost:5001/publish' + params[:-1])
-    logger('NotificationHelper', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + '(msg=' + str(message) + ')')
-
-    return resp.status_code
