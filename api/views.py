@@ -327,7 +327,6 @@ def get_references(request):
 def get_reference_usages(request):
     """
     Return a JSON object containing all information about the stored reference and its usages.
-    Currently, this might be the same as get_references, but this will change in the future.
 
     :param request:
     :return: JSON with all information about the stored reference
