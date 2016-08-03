@@ -121,6 +121,7 @@ def get_d3_data(issue):
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
     return d3_dict
 
+
 def __get_node_dict(uid, label, color, size, x, y):
     """
     Create dictionary for nodes
@@ -140,6 +141,7 @@ def __get_node_dict(uid, label, color, size, x, y):
             'x': x,
             'y': y}
 
+
 def __get_edge_dict(uid, source, target, color, size, edge_type):
     """
     Create dictionary for edges
@@ -158,6 +160,7 @@ def __get_edge_dict(uid, source, target, color, size, edge_type):
             'color': color,
             'size': size,
             'type': edge_type}
+
 
 def __get_extras_dict(statement):
     """
