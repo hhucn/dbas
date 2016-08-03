@@ -578,7 +578,7 @@ function AjaxUserHandler(){
 		$.ajax({
 			url: 'ajax_get_public_user_data',
 			method: 'GET',
-			data:{'nickname': $('#public_nick').text()},
+			data:{ 'nickname': $('#public_nick').text() },
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }

@@ -247,6 +247,7 @@ class Translator(object):
         self.internalFailureWhileDeletingTrack = 'internalFailureWhileDeletingTrack'
         self.internalFailureWhileDeletingHistory = 'internalFailureWhileDeletingHistory'
         self.internalError = 'internalError'
+        self.internalKeyError = 'internalKeyError'
         self.inputEmpty = 'inputEmpty'
         self.informationForExperts = 'informationForExperts'
         self.issueList = 'issueList'

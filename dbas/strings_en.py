@@ -315,6 +315,7 @@ class EnglischDict:
         en_lang[_self.internalFailureWhileDeletingTrack] = 'Internal failure, please try again or did you have deleted your track recently?'
         en_lang[_self.internalFailureWhileDeletingHistory] = 'Internal failure, please try again or did you have deleted your history recently?'
         en_lang[_self.internalError] = '<strong>Internal Error:</strong> Maybe the server is offline.'
+        en_lang[_self.internalKeyError] = 'Internal error while reading input data.'
         en_lang[_self.issueList] = 'Topics'
         en_lang[_self.islandViewHeaderText] = 'These are all arguments for: '
         en_lang[_self.islandView] = 'Island View'

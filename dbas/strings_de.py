@@ -306,6 +306,7 @@ class GermanDict:
         de_lang[_self.internalFailureWhileDeletingTrack] = 'Interner Fehler, bitte versuchen Sie es später erneut.'
         de_lang[_self.internalFailureWhileDeletingHistory] = 'Interner Fehler, bitte versuchen Sie es später erneut.'
         de_lang[_self.internalError] = '<strong>Interner Fehler:</strong> Wahrscheinlich ist der Server nicht erreichbar. Bitte laden Sie die Seite erneut!.'
+        de_lang[_self.internalKeyError] = 'Interner Fehler beim verarbeiten von Daten.'
         de_lang[_self.inputEmpty] = 'Ihre Eingabe ist leer!'
         de_lang[_self.informationForExperts] = 'Infos für Experten'
         de_lang[_self.issueList] = 'Themen'
