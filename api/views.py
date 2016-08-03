@@ -348,7 +348,7 @@ def get_reference_usages(request):
         return as_json(refs)
 
     log.error("[API/GET Reference Usages] Error when trying to find matching reference for id " + ref_uid)
-    return {"status": "error", "message": "Reference could not be found"}
+    return as_json({"status": "error", "message": "Reference could not be found"})
 
 
 # =============================================================================
