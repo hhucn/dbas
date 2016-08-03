@@ -150,14 +150,14 @@ def is_user_in_group(nickname, groupname):
     return db_user and db_user.groups.name == groupname
 
 
-def is_user_admin(user):
+def is_user_admin(nickname):
     """
     Check, if the given uid has admin rights or is admin
 
-    :param user: current user name
+    :param nickname: current user name
     :return: true, if user is admin, false otherwise
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).join(Group).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
     logger('UserHandler', 'is_user_admin', 'main')
     return db_user and db_user.groups.name == 'admins'
 
@@ -271,19 +271,19 @@ def get_public_information_data(nickname, lang):
     return return_dict
 
 
-def is_user_author(user):
+def is_user_author(nickname):
     """
     Check, if the given uid has admin rights or is admin
 
-    :param user: current user name
+    :param nickname: current user name
     :return: true, if user is admin, false otherwise
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
     db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
     logger('UserHandler', 'is_user_author', 'main')
     if db_user:
-        if db_author_group.uid == db_admin_group.uid or db_user.group_uid == db_admin_group.uid:
+        if db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid:
             return True
 
     return False

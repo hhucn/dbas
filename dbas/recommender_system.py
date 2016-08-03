@@ -153,7 +153,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
     left_attacks    = list(set(list_of_all_attacks) - set(attack_list))
     attack_found    = False
     is_supportive   = False
-    no_new_attacks  = False
+    is_attack_in_history  = False
     _rh = RelationHelper(argument_uid, lang)
 
     logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'argument_uid: Argument.uid ' + str(argument_uid) +
@@ -166,26 +166,29 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
     while len(attack_list) > 0:
         attack = random.choice(attack_list)
         attack_list.remove(attack)
-        key = 'undermine' if attack == 1 \
-            else ('rebut' if attack == 5
-                  else 'undercut')
 
-        # special case when undermining an undermine
-        if attack == 1 and last_attack == 'undermine':
-            is_supportive = True
+        if attack == 1:
+            key = 'undermine'
+            return_array = _rh.get_undermines_for_argument_uid(is_supportive)
+            # special case when undermining an undermine
+            is_supportive = last_attack == 'undermine'
 
-        return_array = _rh.get_undermines_for_argument_uid(is_supportive) if attack == 1 \
-            else (_rh.get_rebuts_for_argument_uid() if attack == 5
-                  else _rh.get_undercuts_for_argument_uid())
+        elif attack == 5:
+            key = 'rebut'
+            return_array = _rh.get_rebuts_for_argument_uid()
+
+        else:
+            key = 'undercut'
+            return_array = _rh.get_undercuts_for_argument_uid()
 
         if return_array and len(return_array) != 0:
+            # check if the step is already in history
             new_attack_step = str(argument_uid) + '/' + str(key) + '/' + str(return_array[0]['id'])
-            no_new_attacks = new_attack_step in str(history)
+            is_attack_in_history = new_attack_step in str(history)
 
-            if str(restriction_on_attacks[0]) != str(key)\
-                    and str(restriction_on_attacks[1]) != str(key)\
-                    and return_array[0]['id'] not in restriction_on_argument_uids\
-                    and new_attack_step not in str(history):  # no duplicated attacks
+            if str(key) not in restriction_on_attacks \
+                    and return_array[0]['id'] not in restriction_on_argument_uids \
+                    and not is_attack_in_history:  # no duplicated attacks
                 logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found for key: ' + key)
                 attack_found = True
                 break
@@ -198,18 +201,18 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
 
     if len(left_attacks) > 0 and not attack_found:
         logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
-        return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, left_attacks,
-                                                                                         left_attacks, lang,
-                                                                                         restriction_on_attacks,
-                                                                                         restriction_on_argument_uids,
-                                                                                         last_attack, history)
+        return_array, key, is_attack_in_history = __get_attack_for_argument_by_random_in_range(argument_uid, left_attacks,
+                                                                                               left_attacks, lang,
+                                                                                               restriction_on_attacks,
+                                                                                               restriction_on_argument_uids,
+                                                                                               last_attack, history)
     else:
         if len(left_attacks) == 0:
             logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'no attacks left for redoing')
         if attack_found:
             logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found')
 
-    return return_array, key, no_new_attacks
+    return return_array, key, is_attack_in_history
 
 
 def __get_best_argument(argument_list):

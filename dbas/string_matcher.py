@@ -5,6 +5,7 @@ Provides methods for comparing strings.
 """
 
 import difflib
+from itertools import islice
 
 from collections import OrderedDict
 from sqlalchemy import and_
@@ -37,7 +38,7 @@ def get_strings_for_start(value, issue, is_startpoint):
     for statement in db_statements:
         db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
         if value.lower() in db_textversion.content.lower():
-            dist = __get_distance__(value, db_textversion.content)
+            dist = get_distance(value, db_textversion.content)
             return_array.append({'index': 0,
                                  'distance': dist,
                                  'text': db_textversion.content,
@@ -69,7 +70,7 @@ def get_strings_for_edits(value, statement_uid):
     index = 1
     for textversion in db_textversions:
         if value.lower() in textversion.content.lower():
-            dist = __get_distance__(value, textversion.content)
+            dist = get_distance(value, textversion.content)
             return_array.append({'index': 0,
                                  'distance': dist,
                                  'text': textversion.content,
@@ -99,7 +100,7 @@ def get_strings_for_reasons(value, issue):
     for statement in db_statements:
         db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
         if value.lower() in db_textversion.content.lower():
-            dist = __get_distance__(value, db_textversion.content)
+            dist = get_distance(value, db_textversion.content)
             return_array.append({'index': 0,
                                  'distance': dist,
                                  'text': db_textversion.content,
@@ -125,7 +126,7 @@ def get_strings_for_issues(value):
     return_array = []
 
     for index, issue in enumerate(db_issues):
-        dist = __get_distance__(value, issue.title)
+        dist = get_distance(value, issue.title)
         return_array.append({'index': 0,
                              'distance': dist,
                              'text': issue.title})
@@ -140,37 +141,27 @@ def get_strings_for_issues(value):
 
 def get_strings_for_search(value):
     """
-    Returns all statements which have a substring of the given value as well as the arguments, where the statements are used
+    Returns all statements which have a substring of the given value
 
     :param value: String
     :return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
     """
-    return_dict = OrderedDict()
+    tmp_dict = OrderedDict()
     db_statements = DBDiscussionSession.query(Statement).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
     for statement in db_statements:
-        arg_set = []
-        dist = -1
         if value.lower() in statement.textversions.content.lower():
             # get distance between input value and saved value
-            dist = __get_distance__(value, statement.textversions.content.lower())
-            # get all premise groups with this statement
-            group_set = []
-            db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement.uid).all()
-            for premise in db_premises:
-                if premise.premisesgroup_uid not in group_set:
-                    group_set.append(premise.premisesgroup_uid)
-                    # get all arguments with this premisegroup
-                    db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
-                    for argument in db_arguments:
-                        arg_set.append(argument.uid)
-        return_dict[str(statement.uid)] = {'text': statement.textversions.content,
-                                           'distance': dist,
-                                           'arguments': arg_set}
+            dist = get_distance(value, statement.textversions.content.lower())
+            tmp_dict[str(statement.uid)] = {'text': statement.textversions.content,
+                                            'distance': dist,
+                                            'statement': statement.uid}
 
-    # logger('FuzzyStringMatcher', 'get_strings_for_search', 'string: ' + value +
-    #        ', dictionary length: ' + str(len(return_dict.keys())), debug=True)
-
-    return return_dict[:list_length]
+    tmp_dict = __sort_dict(tmp_dict)
+    return_index = list(islice(tmp_dict, list_length))
+    return_dict = OrderedDict()
+    for index in return_index:
+        return_dict[index] = tmp_dict[index]
+    return return_dict
 
 
 def get_strings_for_public_nickname(value, nickname):
@@ -189,7 +180,7 @@ def get_strings_for_public_nickname(value, nickname):
                 and user.nickname != nickname\
                 and user.nickname != 'admin'\
                 and user.nickname != 'anonymous':
-            dist = __get_distance__(value, user.public_nickname)
+            dist = get_distance(value, user.public_nickname)
             return_array.append({'index': 0,
                                  'distance': dist,
                                  'text': user.public_nickname,
@@ -215,41 +206,37 @@ def __sort_array(list):
     return return_list
 
 
-# def __sort_dict(dictionary):
-#     """
-#
-#     :return:
-#     """
-#     dictionary = OrderedDict(sorted(dictionary.items()))
-#
-#     return_dict = OrderedDict()
-#     for i in list(dictionary.keys())[0:return_count]:
-#         return_dict[i] = dictionary[i]
-#
-#     if mechanism == 'SequenceMatcher':  # sort descending
-#         return_dict = OrderedDict(sorted(dictionary.items(), key=lambda kv: kv[0], reverse=True))
-#     else:  # sort ascending
-#         return_dict = OrderedDict()
-#         for i in list(dictionary.keys())[0:return_count]:
-#             return_dict[i] = dictionary[i]
-#
-#     return return_dict
+def __sort_dict(dictionary):
+    """
+    :return:
+    """
+    dictionary = OrderedDict(sorted(dictionary.items()))
+    return_dict = OrderedDict()
+    for i in list(dictionary.keys())[0:return_count]:
+        return_dict[i] = dictionary[i]
+    if mechanism == 'SequenceMatcher':  # sort descending
+        return_dict = OrderedDict(sorted(dictionary.items(), key=lambda kv: kv[0], reverse=True))
+    else:  # sort ascending
+        return_dict = OrderedDict()
+        for i in list(dictionary.keys())[0:return_count]:
+            return_dict[i] = dictionary[i]
+    return return_dict
 
 
-def __get_distance__(string_a, string_b):
+def get_distance(string_a, string_b):
     """
 
     :param string_a:
     :param string_b:
     :return:
     """
-    # logger('FuzzyStringMatcher', '__get_distance__', string_a + ' - ' + string_b)
+    # logger('FuzzyStringMatcher', 'get_distance', string_a + ' - ' + string_b)
     if mechanism == 'Levensthein':
         dist = distance(string_a.lower(), string_b.lower())
-        #  logger('FuzzyStringMatcher', '__get_distance__', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())
+        #  logger('FuzzyStringMatcher', 'get_distance', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())
     else:
         matcher = difflib.SequenceMatcher(lambda x: x == " ", string_a.lower(), string_b.lower())
         dist = str(round(matcher.ratio() * 100, 1))[:-2]
-        # logger('FuzzyStringMatcher', '__get_distance__', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + string_a.lower() + ' in: ' +  string_b.lower())
+        # logger('FuzzyStringMatcher', 'get_distance', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + string_a.lower() + ' in: ' +  string_b.lower())
 
     return str(dist).zfill(max_count_zeros)
