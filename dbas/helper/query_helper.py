@@ -116,7 +116,7 @@ class QueryHelper:
         elif len(new_argument_uids) == 1:
             new_argument_uid = random.choice(new_argument_uids)
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
-            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, issue, lang, restriction_on_arg_uids=attacking_arg_uids)
+            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
             if arg_id_sys == 0:
                 attack = 'end'
             url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
@@ -193,7 +193,7 @@ class QueryHelper:
         elif len(new_argument_uids) == 1:
             new_argument_uid = random.choice(new_argument_uids)
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
-            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, issue, lang, restriction_on_arg_uids=attacking_arg_uids)
+            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
             if arg_id_sys == 0:
                 attack = 'end'
             url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)

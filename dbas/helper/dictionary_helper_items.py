@@ -132,7 +132,7 @@ class ItemDictHelper(object):
                     premise_array.append({'title': text, 'id': premise.statement_uid})
 
                 # get attack for each premise, so the urls will be unique
-                arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.issue_uid, self.lang, history=self.path)
+                arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.lang, history=self.path)
                 already_used = 'reaction/' + str(argument.uid) + '/' in self.path
                 additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
                 statements_array.append(self.__create_statement_dict(str(argument.uid),
@@ -213,8 +213,7 @@ class ItemDictHelper(object):
                 # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
                 is_undermine = 'undermine' if attack_type == 'undermine' else None
                 attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-                arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.issue_uid, self.lang,
-                                                                               last_attack=is_undermine, 
+                arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang, last_attack=is_undermine,
                                                                                restriction_on_arg_uids=attacking_arg_uids)
 
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
@@ -258,7 +257,7 @@ class ItemDictHelper(object):
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
             if relation == 'support':
-                arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.issue_uid, self.lang)
+                arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.lang)
                 url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
 
             else:
@@ -308,7 +307,7 @@ class ItemDictHelper(object):
             # special case, when the user selectes the support, because this does not need to be justified!
             if relation == 'support':
                 attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-                arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, self.issue_uid, self.lang,
+                arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, self.lang,
                                                                      restriction_on_arg_uids=attacking_arg_uids)
                 if sys_attack == 'rebut' and attack == 'undercut':
                     # case: system makes an undercut and the user supports this
@@ -359,7 +358,7 @@ class ItemDictHelper(object):
         # last item is the change attack button or step back, if we have bno other attack
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
         attacking_arg_uids.append(argument_uid_sys)
-        arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.issue_uid, self.lang,
+        arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.lang,
                                                              restriction_on_attacks=attack,
                                                              restriction_on_arg_uids=attacking_arg_uids)
 
@@ -409,7 +408,7 @@ class ItemDictHelper(object):
             if not db_argument:
                 return None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.issue_uid, self.lang, 
+            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.lang,
                                                                            restriction_on_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
