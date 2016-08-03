@@ -17,7 +17,7 @@ $(document).ready(function() {
 	// delete subscription on page unload events
 	$(window).bind('beforeunload',function(){
 		if (socket)
-			socket.emit('remove_name', $('#header_nickname').text());
+			socket.emit('remove_name', $('#' + headerNicknameId).text());
 	});
 	
 });
@@ -27,7 +27,7 @@ $(document).ready(function() {
  */
 function doConnect(){
 	// switch between a local (http) and a global (https) mode
-	var dict = {query: 'nickname=' + $('#header_nickname').text(), secure: true};
+	var dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
 	var address =  'http://localhost:';
 	if (mainpage.indexOf('localhost') == -1) {
 		address = 'https://dbas.cs.uni-duesseldorf.de:';
@@ -66,8 +66,8 @@ function doPublish(data){
 function doNotification(data){
 	var alink = '<a target="_blank" href="' + mainpage + data.type + '">' + data.msg + '</a>';
 	setGlobalInfoHandler('Huray!', alink);
-	incrementCounter($('#header_badge_count_notifications'));
-	incrementCounter($('#menu_badge_count_notifications'));
+	incrementCounter($('#' + headerBadgeCountNotificationsId));
+	incrementCounter($('#' + menuBadgeCountNotificationsId));
 }
 
 /**
