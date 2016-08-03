@@ -93,7 +93,7 @@ class Dbas(object):
         session_id = api_data["session_id"] if api_data and for_api else self.request.session.id
         return nickname, session_id
 
-    @view_config(route_name='webhook_sass', renderer='json', require_csrf=False)
+    @view_config(route_name='webhook_sass_compiling', renderer='json', require_csrf=False)
     def webhook(self):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('Websocket', 'webhook', 'main ' + str(os.path.realpath(__file__)))
@@ -1181,7 +1181,7 @@ class Dbas(object):
                     )
 
         except KeyError as e:
-            error = _tn.get(_tn.internalError)
+            error = _tn.get(_tn.internalKeyError)
             logger('user_login', 'error', repr(e))
 
         return_dict = {'error': error}
@@ -1314,7 +1314,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('user_registration', 'error', repr(e))
-            error = _t.get(_t.internalError)
+            error = _t.get(_t.internalKeyError)
 
         # get anti-spam-question
         spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
@@ -1381,7 +1381,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('user_password_request', 'error', repr(e))
-            error = _t.get(_t.internalError)
+            error = _t.get(_t.internalKeyError)
 
         return_dict['success'] = str(success)
         return_dict['error']   = str(error)
@@ -1439,7 +1439,7 @@ class Dbas(object):
             else:
                 error = _tn.get(_tn.checkNickname)
         except KeyError as e:
-            error = _tn.get(_tn.internalError)
+            error = _tn.get(_tn.internalKeyError)
             public_nick = ''
             public_page_url = ''
             gravatar_url = ''
@@ -1480,7 +1480,7 @@ class Dbas(object):
             else:
                 error = _tn.get(_tn.checkNickname)
         except KeyError as e:
-            error = _tn.get(_tn.internalError)
+            error = _tn.get(_tn.internalKeyError)
             ui_locales = ''
             current_lang = ''
             logger('set_user_settings', 'error', repr(e))
@@ -1526,7 +1526,7 @@ class Dbas(object):
                     gravatar = UserHandler.get_public_profile_picture(db_recipient, 20)
 
         except KeyError:
-            error = _tn.get(_tn.internalError)
+            error = _tn.get(_tn.internalKeyError)
 
         return_dict = {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
         return json.dumps(return_dict, True)
@@ -1746,7 +1746,7 @@ class Dbas(object):
             return_dict['error'] = ''
         except KeyError as e:
             logger('set_message_read', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalError)
+            return_dict['error'] = _t.get(_t.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -1776,7 +1776,7 @@ class Dbas(object):
             return_dict['success'] = _t.get(_t.messageDeleted)
         except KeyError as e:
             logger('set_message_read', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalError)
+            return_dict['error'] = _t.get(_t.internalKeyError)
             return_dict['success'] = ''
 
         return json.dumps(return_dict, True)
@@ -1887,7 +1887,7 @@ class Dbas(object):
         except KeyError as e:
             logger('get_shortened_url', 'error', repr(e))
             _tn = Translator(get_discussion_language(self.request))
-            return_dict['error'] = _tn.get(_tn.internalError)
+            return_dict['error'] = _tn.get(_tn.internalKeyError)
         except ReadTimeout as e:
             logger('get_shortened_url', 'read timeout error', repr(e))
             _tn = Translator(get_discussion_language(self.request))
@@ -1931,7 +1931,7 @@ class Dbas(object):
                 return_dict['error'] = ''
         except KeyError as e:
             logger('get_infos_about_argument', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalError)
+            return_dict['error'] = _t.get(_t.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -1979,7 +1979,7 @@ class Dbas(object):
             return_dict['error'] = ''
         except KeyError as e:
             logger('get_users_with_same_opinion', 'error', repr(e))
-            return_dict['error'] = _tn.get(_tn.internalError)
+            return_dict['error'] = _tn.get(_tn.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -1995,10 +1995,11 @@ class Dbas(object):
         try:
             nickname = self.request.params['nickname']
             return_dict = UserHandler.get_public_information_data(nickname, ui_locales)
+            return_dict['error'] = ''
 
         except KeyError as e:
-            logger('get_users_with_same_opinion', 'error', repr(e))
-            return_dict['error'] = _tn.get(_tn.internalError)
+            logger('get_public_user_data', 'error', repr(e))
+            return_dict['error'] = _tn.get(_tn.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -2050,7 +2051,7 @@ class Dbas(object):
             return_dict = dict()
             logger('send_news', 'error', repr(e))
             _tn = Translator(get_language(self.request, get_current_registry()))
-            return_dict['error'] = _tn.get(_tn.internalError)
+            return_dict['error'] = _tn.get(_tn.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -2094,7 +2095,7 @@ class Dbas(object):
                 return_dict = {'error': _tn.get(_tn.internalError)}
 
         except KeyError as e:
-            return_dict = {'error': _tn.get(_tn.internalError)}
+            return_dict = {'error': _tn.get(_tn.internalKeyError)}
             logger('fuzzy_search', 'error', repr(e))
 
         if for_api:

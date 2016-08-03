@@ -50,6 +50,10 @@ function User() {
 	 */
 	this.callbackDone = function(jsonData){
 		var parsedData = $.parseJSON(jsonData);
+		if (parsedData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			return;
+		}
 		this.createChart(parsedData, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
 		this.createChart(parsedData, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
 		this.createChart(parsedData, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
