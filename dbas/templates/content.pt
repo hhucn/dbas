@@ -110,33 +110,6 @@
                 </div>
             </div>
 
-            <div class="col-md-1" tal:condition="1==2">
-                <ul id="discussion-sidebar">
-                       <li>
-                        <a id="share-url" data-toggle="tooltip" data-placement="bottom" title="Share your url" tal:attributes="title extras.buttons.share_url"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_share.png')}"/></a>
-                       </li>
-                    <li tal:condition="extras.is_editable">
-                        <img id="edit-statement" class="icon-badge" alt="icon-pencil" src="${request.static_url('dbas:static/images/icon_pencil.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.edit_statement; value extras.buttons.edit_statement" />
-                    </li>
-                    <li tal:condition="extras.is_reportable" >
-                        <img id="report-button" class="icon-badge" alt="icon-report" src="${request.static_url('dbas:static/images/icon_report.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.report; title extras.title.report_title" />
-                    </li>
-                    <li tal:condition="extras.show_island_icon or extras.show_bar_icon or extras.show_expert_icon">
-                        <div id="discussion-sidebar-style-menu">
-                            <img id="more-statement" class="icon-badge" src="${request.static_url('dbas:static/images/icon_simple.png')}" title="" data-popover="true" data-html="true" data-placement="bottom" tal:attributes="title extras.title.more_title"/>
-                            <ul id="site-navigation">
-                                <li tal:condition="extras.show_bar_icon"><img id="opinion-barometer-img" class="display-style-menu-icon icon-badge" alt="icon-bars" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.barometer" src="${request.static_url('dbas:static/images/icon_bars.png')}" title="" /></li>
-                                   <li tal:condition="extras.show_island_icon"><img id="display-style-icon-island-img" class="display-style-menu-icon icon-badge" alt="icon-island" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.island_view" src="${request.static_url('dbas:static/images/icon_island.png')}" title="" /></li>
-                                <li tal:condition="extras.show_expert_icon"><img id="display-style-icon-expert-img" class="display-style-menu-icon icon-badge" alt="icon-expert" data-toggle="tooltip" data-placement="left" tal:attributes="title extras.title.expert_view" src="${request.static_url('dbas:static/images/icon_expert.png')}" title="" /></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                           <img onclick="window.location='/discuss/finish'" id="finish-button" class="icon-badge" alt="icon-finish" src="${request.static_url('dbas:static/images/icon_finish.png')}" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.title.finish_title" />
-                    </li>
-                </ul>
-            </div>
-
             <div id="sidebar-wrapper" class="pull-right">
                 <div id="hamburger">
                     <span></span>
@@ -258,10 +231,7 @@
             <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <br>
-            <!--
             <h4 id="graph-view-container-header" class="center"></h4>
-            -->
             <div class="col-md-11" id="graph-view-container-space" style="width: auto; height:95%; float: left;"></div>
 
             <div class="col-md-1">
