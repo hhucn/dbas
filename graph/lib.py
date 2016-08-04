@@ -49,12 +49,12 @@ def get_d3_data(issue):
     db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
 
     # issue
-    node_dict = __get_node_dict('issue',
-                                db_issue.info,
-                                blue,
-                                issue_size,
-                                x,
-                                y)
+    node_dict = __get_node_dict(id='issue',
+                                label=db_issue.info,
+                                color=blue,
+                                size=issue_size,
+                                x=x,
+                                y=y)
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
@@ -63,70 +63,89 @@ def get_d3_data(issue):
     for statement in db_statements:
         text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
         text = text.content if text else 'None'
-        node_dict = __get_node_dict('statement_' + str(statement.uid),
-                                    text,
-                                    blue if statement.is_startpoint else grey,
-                                    position_size if statement.is_startpoint else node_size,
-                                    x,
-                                    y)
-        extras_dict[str(statement.uid)] = __get_extras_dict(statement)
+        node_dict = __get_node_dict(id='statement_' + str(statement.uid),
+                                    label=text,
+                                    color=blue if statement.is_startpoint else grey,
+                                    size=position_size if statement.is_startpoint else node_size,
+                                    x=x,
+                                    y=y)
+        extras_dict[node_dict['id']] = node_dict
         x = (x + 1) % 10
         y += (1 if x == 0 else 0)
         nodes_array.append(node_dict)
         if statement.is_startpoint:
-            edge_dict = __get_edge_dict('edge_' + str(statement.uid) + '_issue',
-                                        'statement_' + str(statement.uid),
-                                        'issue',
-                                        grey,
-                                        edge_size,
-                                        edge_type)
+            edge_dict = __get_edge_dict(id='edge_' + str(statement.uid) + '_issue',
+                                        source='statement_' + str(statement.uid),
+                                        target='issue',
+                                        color=grey,
+                                        size=edge_size,
+                                        edge_type=edge_type)
             edges_array.append(edge_dict)
 
     # for each argument edges will be added as well as the premises
     for argument in db_arguments:
-        counter = 0
+        counter = 1
         # add invisible point in the middle of the edge (to enable pgroups and undercuts)
-        node_dict = __get_node_dict('argument_' + str(argument.uid),
-                                    '',
-                                    green if argument.is_supportive else red,
-                                    0.5,
-                                    x,
-                                    y)
+        node_dict = __get_node_dict(id='argument_' + str(argument.uid),
+                                    label='',
+                                    color=green if argument.is_supportive else red,
+                                    size=0.5,
+                                    x=x,
+                                    y=y)
         x = (x + 1) % 10
         y += (1 if x == 0 else 0)
         nodes_array.append(node_dict)
 
-        # edge from premisegroup to the middle point
+        # we have an argument with:
+        # 1) with one premise and no undercut is done on this argument
+        # 2) with at least two premises  one conclusion or an undercut is done on this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
-        for premise in db_premises:
-            edge_dict = __get_edge_dict('edge_' + str(argument.uid) + '_' + str(counter),
-                                        'statement_' + str(premise.statement_uid),
-                                        'argument_' + str(argument.uid),
-                                        green if argument.is_supportive else red,
-                                        edge_size,
-                                        '')
-            edges_array.append(edge_dict)
-            counter += 1
+        db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
 
-        # edge from the middle point to the conclusion/argument
-        target = 'statement_' + str(argument.conclusion_uid) if argument.conclusion_uid is not None else 'argument_' + str(argument.argument_uid)
-        edge_dict = __get_edge_dict('edge_' + str(argument.uid) + '_' + str(counter),
-                                    'argument_' + str(argument.uid),
-                                    target,
-                                    green if argument.is_supportive else red,
-                                    edge_size,
-                                    edge_type)
-        edges_array.append(edge_dict)
+        # target of the edge (case 1) or last edge (case 2)
+        if argument.conclusion_uid is not None:
+            target = 'statement_' + str(argument.conclusion_uid)
+        else:
+            target = 'argument_' + str(argument.argument_uid)
+
+        if len(db_premises) == 1 and len(db_undercuts) == 0:
+            edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
+                                        source='statement_' + str(db_premises[0].statement_uid),
+                                        target=target,
+                                        color=green if argument.is_supportive else red,
+                                        size=edge_size,
+                                        edge_type='')
+            edges_array.append(edge_dict)
+        else:
+            # edge from premisegroup to the middle point
+            for premise in db_premises:
+                edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
+                                            source='statement_' + str(premise.statement_uid),
+                                            target='argument_' + str(argument.uid),
+                                            color=green if argument.is_supportive else red,
+                                            size=edge_size,
+                                            edge_type='')
+                edges_array.append(edge_dict)
+                counter += 1
+
+            # edge from the middle point to the conclusion/argument
+            edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_0',
+                                        source='argument_' + str(argument.uid),
+                                        target=target,
+                                        color=green if argument.is_supportive else red,
+                                        size=edge_size,
+                                        edge_type=edge_type)
+            edges_array.append(edge_dict)
 
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
     return d3_dict
 
 
-def __get_node_dict(uid, label, color, size, x, y):
+def __get_node_dict(id, label, color, size, x, y):
     """
     Create dictionary for nodes
 
-    :param uid:
+    :param id:
     :param label:
     :param color:
     :param size:
@@ -134,7 +153,7 @@ def __get_node_dict(uid, label, color, size, x, y):
     :param y:
     :return:
     """
-    return {'id': uid,
+    return {'id': id,
             'label': label,
             'color': color,
             'size': size,
@@ -142,11 +161,11 @@ def __get_node_dict(uid, label, color, size, x, y):
             'y': y}
 
 
-def __get_edge_dict(uid, source, target, color, size, edge_type):
+def __get_edge_dict(id, source, target, color, size, edge_type):
     """
     Create dictionary for edges
 
-    :param uid:
+    :param id:
     :param source:
     :param target:
     :param color:
@@ -154,7 +173,7 @@ def __get_edge_dict(uid, source, target, color, size, edge_type):
     :param edge_type:
     :return:
     """
-    return {'id': uid,
+    return {'id': id,
             'source': source,
             'target': target,
             'color': color,
