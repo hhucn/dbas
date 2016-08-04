@@ -67,12 +67,14 @@ function DiscussionGraph() {
 		// container for visualization
 		var svg = d3.select('#' + graphViewContainerSpaceId).append("svg")
     		.attr("width", width)
-    		.attr("height", height);
+    		.attr("height", height)
+			.call(d3.behavior.zoom().on("zoom", this.redraw))
+			.append('g');
 
 		// create force layout object and define properties
 		var force = d3.layout.force()
     		.gravity(0.07)
-    		.charge(-300)
+    		.charge(-200)
     		.linkDistance(80)
     		.size([width, height]);
 
@@ -82,8 +84,8 @@ function DiscussionGraph() {
     		// get source and target nodes
     		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
         		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
-    		// add edge and color to array
-    		edges.push({source: sourceNode, target: targetNode, color: e.color});
+    		// add edge, color and size to array
+    		edges.push({source: sourceNode, target: targetNode, color: e.color, size: e.size});
 		});
 
 		force
@@ -97,13 +99,13 @@ function DiscussionGraph() {
             .enter()
                 .append("svg:marker")
                 .attr("id", function(d) {return "marker_" + d.color})
-                .attr("refX", 10)
+			    .attr("refX", 7)
                 .attr("refY", 2.2)
                 .attr("markerWidth", 10)
                 .attr("markerHeight", 10)
                 .attr("orient", "auto")
 			    .append("path")
-                    .attr("d", "M0,0 V4 L5,2 Z10")
+			        .attr("d", "M0,0 V4 L5,2 Z15")
                     .attr("fill", function(d) {
 			            return d.color;
 				    });
@@ -116,6 +118,9 @@ function DiscussionGraph() {
       			.attr("class", "link")
 			    .style("stroke", function(d) { return d.color; })
 				.style("stroke-width", '2px')
+                .attr("size" , function (d) {
+                    return d.size;
+                })
 				.attr("marker-end", function(d) {return "url(#marker_" + d.color + ")"});
 
 		// node: svg circle
@@ -134,17 +139,23 @@ function DiscussionGraph() {
 				return d.color;
 			});
 
-		var helper = new Helper();
-
-        var label = node.append("text").each(function (d) {
-   	        var node_text = helper.cutTextOnChar(d.label, 50, ' ');
-       		d3.select(this).append("tspan")
-                .text(node_text)
-                .attr("dy", "1.2em")
-                .attr("x", '0')
-                .attr("text-anchor", "middle")
-                .attr("class", "tspan")
-      		});
+		var label = node.append("text").each(function (d) {
+            var node_text = d.label.split(" ");
+            for (var i = 0; i < node_text.length; i++) {
+                if((i % 4) == 0){
+                    d3.select(this).append("tspan")
+					.text(node_text[i])
+                    .attr("dy", i ? '1.0em' : '0')
+                    .attr("x", '0')
+                    .attr("text-anchor", "middle")
+                    .attr("class", "tspan" + i);
+                }
+                else{
+                    d3.select(this).append("tspan")
+                    .text(' ' + node_text[i]);
+                }
+            }
+		});
 
         force.start();
 
