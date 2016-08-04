@@ -92,12 +92,21 @@ function DiscussionGraph() {
 
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 
-	    var marker = svg.append("defs").selectAll('marker')
-            .data(edges)
+        var marker = svg.append("defs").selectAll('marker').data(edges)
             .enter()
                 .append("svg:marker")
-                .attr("id", function(d) {return "marker_" + d.color})
-			    .attr("refX", 7)
+                .attr("id", function(d) {return "marker_" + d.target.color + d.color})
+			    .attr("refX", function(d){
+				    if(d.target.label == ''){
+						return 4;
+					}
+					else if(d.target.size == 8){
+						return 8;
+					}
+					else{
+						return 7;
+					}
+				})
                 .attr("refY", 2.2)
                 .attr("markerWidth", 10)
                 .attr("markerHeight", 10)
@@ -119,7 +128,7 @@ function DiscussionGraph() {
                 .attr("size" , function (d) {
                     return d.size;
                 })
-				.attr("marker-end", function(d) {return "url(#marker_" + d.color + ")"});
+				.attr("marker-end", function(d) {return "url(#marker_" + d.target.color + d.color + ")"});
 
 		// node: svg circle
    		var node = svg.selectAll(".node")
