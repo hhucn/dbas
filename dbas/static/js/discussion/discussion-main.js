@@ -6,8 +6,6 @@
 
 
 function Main () {
-	var tacked_sidebar = 'tacked_sidebar';
-
 	/**
 	 * Sets all click functions
 	 * @param guiHandler
@@ -223,65 +221,108 @@ function Main () {
 		$('#' + contactSubmitButtonId).click(function(){
 			setTimeout("$('body').addClass('loading')", 0);
 		});
-
+	};
+	
+	/**
+	 *
+	 */
+	this.setSidebarClicks = function(wrapper, sidebar, hamburger, sidebarwrapper, maincontainer, tack, tackwrapper, localStorageId, offset){
 		// sliding menu
-		$('#' + sidebarHamburgerIconId).click(function(){
+		var helper = new Helper();
+		$(hamburger).click(function(){
 			$(this).toggleClass('open');
-			var wrapper = $('#dialog-wrapper');
 			var width = wrapper.width();
-			var sidebar = $('#discussion-icon-sidebar');
-			var hamburger = $('#' + sidebarHamburgerIconId);
-			var sidebarw = $('#sidebar-wrapper');
-			var discussion = $('#' + discussionContainerId);
-			var tack = $('#' + sidebarTackWrapperId);
 
 			if (sidebar.is(':visible')) {
-				tack.fadeOut();
+				tackwrapper.fadeOut();
 				sidebar.toggle('slide');
 				hamburger.css('margin-right', '0.5em')
 					.css('background-color', '');
-				discussion.css('max-height', '');
-				sidebarw.css('background-color', '')
+				maincontainer.css('max-height', '');
+				sidebarwrapper.css('background-color', '')
 					.css('height', '');
-				new Helper().delay(function(){
+				helper.delay(function(){
 					wrapper.width(width + sidebar.outerWidth());
 				}, 300);
-				_this.setLocalStorage(tacked_sidebar, 'false');
+				helper.setLocalStorage(localStorageId, 'false');
 			} else {
 				wrapper.width(width - sidebar.outerWidth());
-				discussion.css('max-height', discussion.outerHeight() + 'px');
-				new Helper().delay(function(){
+				maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
+				helper.delay(function(){
 					sidebar.toggle('slide');
-					hamburger.css('margin-right', (sidebarw.width() - hamburger.width())/2 + 'px')
+					hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width())/2 + 'px')
 						.css('margin-left', 'auto')
 						.css('background-color', sidebar.css('background-color'));
-					sidebarw.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
-						.css('height', discussion.outerHeight() + 'px');
-					tack.fadeIn();
+					sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
+						.css('height', maincontainer.outerHeight() - offset + 'px');
+					tackwrapper.fadeIn();
 				}, 200);
 			}
 		});
 
 		// action for tacking the sidebar
-		var _this = this;
-		$('#' + sidebarTackWrapperId).click(function() {
-		var shouldShowSidebar = _this.getLocalStorage(tacked_sidebar) == 'true';
+		var _this = new Main();
+		tackwrapper.click(function() {
+		var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
 				_this.rotateTack('0');
-				_this.setLocalStorage(tacked_sidebar, 'false');
+				helper.setLocalStorage(localStorageId, 'false');
 
-				$(this).data('original-title', _t_discussion(pinNavigation));
+				tack.data('title', _t_discussion(pinNavigation));
 
 				// hide sidebar if it is visible
-				if ($('#discussion-icon-sidebar').is(':visible')) {
-					$('#' + sidebarHamburgerIconId).click();
+				if (sidebar.is(':visible')) {
+					hamburger.click();
 				}
 			} else {
-				new Main().rotateTack('90');
-				_this.setLocalStorage(tacked_sidebar, 'true');
-				$(this).data('original-title', _t_discussion(unpinNavigation));
+				_this.rotateTack('90');
+				helper.setLocalStorage(localStorageId, 'true');
+				tack.data('title', _t_discussion(unpinNavigation));
 			}
 		});
+		
+	};
+	
+	/**
+	 *
+	 * @param wrapper - wrapper id of the other stuff in the same container
+	 * @param sidebar - sidebar id of the elements
+	 * @param hamburger - hamburger icon id
+	 * @param sidebarwrapper - wrapper id of the sidebar
+	 * @param maincontainer - container id of all elements in current field
+	 * @param tackwrapper - tack id of the sidebar
+	 * @param localStorageId - id of the parameter in the local storage
+	 */
+	this.setSidebarStyle= function(wrapper, sidebar, hamburger, sidebarwrapper, maincontainer, tackwrapper, localStorageId){
+		// read local storage for pinning the bar / set title
+		var shouldShowSidebar = new Helper().getLocalStorage(localStorageId) == 'true';
+		if (shouldShowSidebar) {
+			var width = wrapper.width();
+			var main = new Main();
+
+			main.rotateTack('90');
+			main.setAnimationSpeed(wrapper, '0.0');
+			main.setAnimationSpeed(hamburger, '0.0');
+
+			hamburger.addClass('open');
+
+			wrapper.width(width - sidebar.outerWidth());
+			maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
+			sidebar.show();
+			hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width())/2 + 'px')
+				.css('margin-left', 'auto')
+				.css('background-color', sidebar.css('background-color'));
+			sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
+				.css('height', maincontainer.outerHeight() + 'px');
+			tackwrapper.fadeIn();
+
+			main.setAnimationSpeed(wrapper, '0.5');
+			main.setAnimationSpeed(hamburger, '0.5');
+
+			tackwrapper.data('title', _t_discussion(unpinNavigation));
+		} else {
+			tackwrapper.data('title', _t_discussion(pinNavigation));
+		}
 	};
 
 	/**
@@ -359,43 +400,6 @@ function Main () {
 			$(this).select();
 		});
 
-		new Main().setNavigationSidebar(window.innerWidth);
-
-		// read local storage for pinning the bar / set title
-		var shouldShowSidebar = this.getLocalStorage(tacked_sidebar) == 'true';
-		if (shouldShowSidebar) {
-			var wrapperAndBurger = $('#dialog-wrapper, #hamburger');
-			var wrapper = $('#dialog-wrapper');
-			var width = wrapper.width();
-			var sidebar = $('#discussion-icon-sidebar');
-			var hamburger = $('#' + sidebarHamburgerIconId);
-			var sidebarw = $('#sidebar-wrapper');
-			var discussion = $('#' + discussionContainerId);
-			var tack = $('#' + sidebarTackWrapperId);
-			var main = new Main();
-
-			main.rotateTack('90');
-			main.setAnimationSpeed(wrapperAndBurger, '0.0');
-
-			hamburger.addClass('open');
-
-			wrapper.width(width - sidebar.outerWidth());
-			discussion.css('max-height', discussion.outerHeight() + 'px');
-			sidebar.show();
-			hamburger.css('margin-right', (sidebarw.width() - hamburger.width())/2 + 'px')
-				.css('margin-left', 'auto')
-				.css('background-color', sidebar.css('background-color'));
-			sidebarw.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
-				.css('height', discussion.outerHeight() + 'px');
-			tack.fadeIn();
-
-			main.setAnimationSpeed(wrapperAndBurger, '0.5');
-
-			tack.data('original-title', _t_discussion(unpinNavigation));
-		} else {
-			$('#' + sidebarTackWrapperId).data('original-title', _t_discussion(pinNavigation));
-		}
-
 		// hover effects on text elements
 		var data = 'data-argumentation-type';
 		$('#' + discussionSpaceListId).find('span[' + data + '!=""]').each(function(){
@@ -444,25 +448,6 @@ function Main () {
 	};
 
 	/**
-	 * Resizes the sidebar, whether bootstrap collapsed or not
-	 * @param windowInnerWidth
-	 */
-	this.setNavigationSidebar = function (windowInnerWidth) {
-		if (windowInnerWidth < 992) {
-			$('#discussion-sidebar').addClass('list-inline').css('text-align', 'left');
-			$('#site-navigation').addClass('list-inline').css('text-align', 'left').find('img').each(function () {
-				$(this).data('placement', 'bottom');
-			});
-		} else {
-			$('#discussion-sidebar').removeClass('list-inline').css('text-align', 'right');
-			$('#site-navigation').removeClass('list-inline').css('text-align', 'right').find('img').each(function () {
-				$(this).data('placement', 'left');
-			});
-		}
-		$('#' + sidebarMoreButtonId).data('placement', windowInnerWidth < 992 ? 'top' : 'left');
-	};
-
-	/**
 	 *
 	 */
 	this.setWindowOptions = function () {
@@ -483,7 +468,6 @@ function Main () {
 		});
 
 		$(window).resize(function () {
-			new Main().setNavigationSidebar(window.innerWidth);
 			new GuiHandler().setMaxHeightForBubbleSpace();
 		});
 	};
@@ -492,43 +476,6 @@ function Main () {
 	 *
 	 */
 	this.setGuiOptions = function () {
-		// set do not hide on hover popup
-		var originalLeave = $.fn.popover.Constructor.prototype.leave,
-			body = $('body');
-		// http://jsfiddle.net/WojtekKruszewski/Zf3m7/22/
-		$.fn.popover.Constructor.prototype.leave = function (obj) {
-			var self = obj instanceof this.constructor ?
-				obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type);
-			var container, timeout;
-
-			originalLeave.call(this, obj);
-
-			if (obj.currentTarget) {
-				container = $(obj.currentTarget).siblings('.popover');
-				timeout = self.timeout;
-				container.one('mouseenter', function () {
-					//We entered the actual popover – call off the dogs
-					clearTimeout(timeout);
-					// Let's monitor popover content instead
-					container.one('mouseleave', function () {
-						$.fn.popover.Constructor.prototype.leave.call(self, self);
-					});
-				})
-			}
-		};
-		$('#site-navigation').hide();
-		body.popover({
-			selector: '[data-popover]',
-			trigger: 'click hover',
-			delay: {show: 50, hide: 50}
-		}).on('inserted.bs.popover', function () {
-			var element = $('#site-navigation').detach().show();
-			$('#discussion-sidebar-style-menu').find('.popover-content').append(element);
-		}).on('hide.bs.popover', function () {
-			var element = $('#site-navigation').detach().hide();
-			$('#discussion-sidebar-style-menu').append(element);
-		});
-
 		// relation buttons
 		if (false && window.location.href.indexOf('/reaction/') != -1) {
 			var cl = 'icon-badge',
@@ -713,50 +660,46 @@ function Main () {
 			});
 		}
 	};
-	
-	/**
-	 *
-	 * @param key
-	 * @param value
-	 * @returns {boolean}
-	 */
-	this.setLocalStorage = function (key, value){
-		try {
-			localStorage.setItem(key, value);
-			return true;
-		} catch(err){
-			console.log('Error while set item in local storage.');
-			return false;
-		}
-	};
-	
-	/**
-	 *
-	 * @param key
-	 * @returns {undefined}
-	 */
-	this.getLocalStorage = function (key){
-		try {
-			return localStorage.getItem(key);
-		} catch(err){
-			console.log('Error while get item in local storage.');
-			return undefined;
-		}
-	};
 }
 
 /**
  * main function
  */
 $(document).ready(function mainDocumentReady() {
-	var guiHandler = new GuiHandler(),
-		ajaxHandler = new AjaxDiscussionHandler(),
-		interactionHandler = new InteractionHandler(),
-		tmp,
-		main = new Main();
-
+	var tacked_sidebar = 'tacked_sidebar';
+	var guiHandler = new GuiHandler();
+	var ajaxHandler = new AjaxDiscussionHandler();
+	var interactionHandler = new InteractionHandler();
+	var main = new Main();
+	var tmp;
+	var dialogWrapper = $('#' + dialogWrapperId);
+	var discussionSidebar = $('#' + discussionSidebarId);
+	var sidebarHamburgerIcon = $('#' + sidebarHamburgerIconId);
+	var sidebarWrapper = $('#' + sidebarWrapperId);
+	var discussionContainer = $('#' + discussionContainerId);
+	var sidebarTackWrapper = $('#' + sidebarTackWrapperId);
+	
 	guiHandler.setHandler(interactionHandler);
 	main.setStyleOptions(guiHandler);
+	main.setSidebarStyle(
+		dialogWrapper,
+		discussionSidebar,
+		sidebarHamburgerIcon,
+		sidebarWrapper,
+		discussionContainer,
+		sidebarTackWrapper,
+		tacked_sidebar);
+	main.setSidebarClicks(
+		dialogWrapper,
+		discussionSidebar,
+		sidebarHamburgerIcon,
+		sidebarWrapper,
+		discussionContainer,
+		$('#' + sidebarTackId),
+		sidebarTackWrapper,
+		tacked_sidebar,
+		0);
+	// sidebar of the graphview is set in GuiHandler:setDisplayStyleAsGraphView()
 	main.setClickFunctions(guiHandler, ajaxHandler);
 	main.setKeyUpFunctions(guiHandler, ajaxHandler);
 	main.setWindowOptions();
@@ -768,7 +711,7 @@ $(document).ready(function mainDocumentReady() {
 	// some extras
 	// get restart url and cut the quotes
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
-	tmp = tmp.substr(1, tmp.length-2);
+	tmp = tmp.substr(1, tmp.length - 2);
 	$('#' + discussionEndRestart).attr('href', tmp);
 
 	//
