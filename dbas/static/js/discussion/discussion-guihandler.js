@@ -124,6 +124,16 @@ function GuiHandler() {
 	 * Full view, full interaction range for the graph
 	 */
 	this.setDisplayStyleAsGraphView = function () {
+		var graphViewContainerSpace = $('#' + graphViewContainerSpaceId);
+		var discussionGraphSidebar = $('#' + discussionSidebarGraphId);
+		var sidebarHamburgerIcon = $('#' + sidebarHamburgerGraphIconId);
+		var sidebarGraphWrapper = $('#' + sidebarGraphWrapperId);
+		var graphViewContainer = $('#' + graphViewContainerId);
+		var sidebarGraphTackWrapper = $('#' + sidebarTackGraphWrapperId);
+		var main = new Main();
+		var tacked_sidebar = 'tacked_graph_sidebar';
+		var header = $('#graph-view-container-header');
+		
 		this.setImageActive($('#' + displayStyleIconGuidedId));
 		this.setImageActive($('#' + displayStyleIconIslandId));
 		this.setImageInactive($('#' + displayStyleIconExpertId));
@@ -137,10 +147,28 @@ function GuiHandler() {
 
 		// height
 		var innerHeight = new Helper().getMaxSizeOfGraphViewContainer();
-		$('#' + graphViewContainerId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
-		innerHeight -= $('#graph-view-container-header').outerHeight(true) + 20;
-		$('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em;');
+		graphViewContainer.attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
+		innerHeight -= header.outerHeight(true) + 20;
+		graphViewContainerSpace.attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 95%');
 		new DiscussionGraph().showGraph();
+		main.setSidebarStyle(
+			graphViewContainerSpace,
+			discussionGraphSidebar,
+			sidebarHamburgerIcon,
+			sidebarGraphWrapper,
+			graphViewContainer,
+			sidebarGraphTackWrapper,
+			tacked_sidebar);
+		main.setSidebarClicks(
+			graphViewContainerSpace,
+			discussionGraphSidebar,
+			sidebarHamburgerIcon,
+			sidebarGraphWrapper,
+			graphViewContainer,
+			$('#' + sidebarTackGraphId),
+			sidebarGraphTackWrapper,
+			tacked_sidebar,
+			header.outerHeight(true));
 	};
 
 	/**
