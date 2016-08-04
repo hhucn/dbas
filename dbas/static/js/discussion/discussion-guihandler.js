@@ -124,7 +124,7 @@ function GuiHandler() {
 	 * Full view, full interaction range for the graph
 	 */
 	this.setDisplayStyleAsGraphView = function () {
-		var graphViewContainerSpace = $('#' + graphViewContainerSpaceId);
+		var graphWrapper = $('#' + graphWrapperId);
 		var discussionGraphSidebar = $('#' + discussionSidebarGraphId);
 		var sidebarHamburgerIcon = $('#' + sidebarHamburgerGraphIconId);
 		var sidebarGraphWrapper = $('#' + sidebarGraphWrapperId);
@@ -149,10 +149,10 @@ function GuiHandler() {
 		var innerHeight = new Helper().getMaxSizeOfGraphViewContainer();
 		graphViewContainer.attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
 		innerHeight -= header.outerHeight(true) + 20;
-		graphViewContainerSpace.attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 95%');
+		$('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 95%');
 		new DiscussionGraph().showGraph();
 		main.setSidebarStyle(
-			graphViewContainerSpace,
+			graphWrapper,
 			discussionGraphSidebar,
 			sidebarHamburgerIcon,
 			sidebarGraphWrapper,
@@ -160,15 +160,14 @@ function GuiHandler() {
 			sidebarGraphTackWrapper,
 			tacked_sidebar);
 		main.setSidebarClicks(
-			graphViewContainerSpace,
+			graphWrapper,
 			discussionGraphSidebar,
 			sidebarHamburgerIcon,
 			sidebarGraphWrapper,
 			graphViewContainer,
 			$('#' + sidebarTackGraphId),
 			sidebarGraphTackWrapper,
-			tacked_sidebar,
-			header.outerHeight(true));
+			tacked_sidebar);
 	};
 
 	/**

@@ -228,11 +228,13 @@
         </div>
 
         <div class="colored-container" id="graph-view-container" style="display:none">
-            <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <h4 id="graph-view-container-header" class="center"></h4>
-            <div id="graph-view-container-space" class="pull-left" style="height:95%;">
+            <div id="graph-wrapper" class="pull-left">
+                <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 id="graph-view-container-header" class="center"></h4>
+                <div id="graph-view-container-space" style="height:95%;">
+                </div>
             </div>
 
             <div id="sidebar-graph-wrapper" class="pull-right">
