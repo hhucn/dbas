@@ -67,6 +67,7 @@ var generatePasswordBodyId 						= 'generate-password-body';
 var graphViewContainerId 						= 'graph-view-container';
 var graphViewContainerHeaderId 					= 'graph-view-container-header';
 var graphViewContainerSpaceId 					= 'graph-view-container-space';
+var graphWrapperId                              = 'graph-wrapper';
 var headerContainerId                           = 'header-container';
 var hiddenCSRFTokenId 							= 'hidden_csrf_token';
 var historyTableSuccessId 						= 'history-table-success';
