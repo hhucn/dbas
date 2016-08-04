@@ -25,7 +25,7 @@ function DiscussionGraph() {
 			new DiscussionGraph().setDefaultViewParams(false, null, s);
 			setGlobalErrorHandler(_t(ohsnap), _t(internalError));
 		}
-	}
+	};
 
 	/**
 	 *
