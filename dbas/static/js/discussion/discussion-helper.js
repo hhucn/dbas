@@ -217,7 +217,11 @@ function Helper() {
 		}
 		f.submit().remove();
 	};
-
+	
+	/**
+	 *
+	 * @returns {*}
+	 */
 	this.getMaxSizeOfGraphViewContainer = function(){
 		var header, footer, innerHeight;
 		header = $('#' + customBootstrapMenuId);
@@ -229,7 +233,11 @@ function Helper() {
 		innerHeight -= this.getPaddingOfElement(footer);
 		return innerHeight;
 	};
-
+	
+	/**
+	 *
+	 * @returns {number}
+	 */
 	this.getMaxSizeOfDiscussionViewContainer = function(){
 		var bar, innerHeight, list;
 		bar = $('#header-container');
@@ -241,13 +249,52 @@ function Helper() {
 		innerHeight -= this.getPaddingOfElement(list);
 		return innerHeight - 10;
 	};
-
+	
+	/**
+	 *
+	 * @param element
+	 * @returns {number}
+	 */
 	this.getPaddingOfElement = function (element){
 		return parseInt(element.css('padding-top').replace('px','')) + parseInt(element.css('padding-bottom').replace('px',''))
 	};
-
+	
+	/**
+	 *
+	 * @returns {boolean}
+	 */
 	this.isMobileAgent = function(){
 		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+	};
+	
+	/**
+	 *
+	 * @param key
+	 * @param value
+	 * @returns {boolean}
+	 */
+	this.setLocalStorage = function (key, value){
+		try {
+			localStorage.setItem(key, value);
+			return true;
+		} catch(err){
+			console.log('Error while set item in local storage.');
+			return false;
+		}
+	};
+	
+	/**
+	 *
+	 * @param key
+	 * @returns {undefined}
+	 */
+	this.getLocalStorage = function (key){
+		try {
+			return localStorage.getItem(key);
+		} catch(err){
+			console.log('Error while get item in local storage.');
+			return undefined;
+		}
 	};
 
 	/**

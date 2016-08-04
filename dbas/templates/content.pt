@@ -118,7 +118,7 @@
                     <span></span>
                 </div>
 
-                <ul id="discussion-icon-sidebar" class="pull-right left">
+                <ul id="discussion-sidebar">
                     <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
                     <li id="edit-statement" tal:condition="extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
                     <li id="report-button" tal:condition="extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
@@ -232,17 +232,29 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <h4 id="graph-view-container-header" class="center"></h4>
-            <div class="col-md-11" id="graph-view-container-space" style="width: auto; height:95%; float: left;"></div>
+            <div id="graph-view-container-space" class="pull-left" style="height:95%;">
+            </div>
 
-            <div class="col-md-1">
-                <ul id="discussion-sidebar">
-                    <li><a id="start-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.default_view"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_default.png')}"/></a></li>
-                    <li><a id="show-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.show_content"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_text.png')}"/></a></li>
-                    <li><a id="hide-content" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.hide_content" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_notext.png')}"/></a></li>
-                    <li><a id="wide-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.wide_node_view"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_wide.png')}"/></a></li>
-                    <li><a id="tight-view" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.tight_node_view" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_tight.png')}"/></a></li>
-                    <li><a id="snapshot-graph" data-toggle="tooltip" data-placement="bottom" tal:attributes="title extras.buttons.snapshot_graph" style="display:none;"><img class="icon-badge" src="${request.static_url('dbas:static/images/icon_snapshot_graph.png')}"/></a></li>
+            <div id="sidebar-graph-wrapper" class="pull-right">
+                <div id="hamburger-graph">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <ul id="discussion-sidebar-graph">
+                    <li id="start-view"><i class="fa fa-play" aria-hidden="true" tal:attributes="titel extras.buttons.default_view"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
+                    <li id="show-content"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_content"></i><span class="sidebar-element">${extras.buttons.show_content}</span></li>
+                    <li id="hide-content"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_content"></i><span class="sidebar-element">${extras.buttons.hide_content}</span></li>
+                    <li id="wide-view"><i class="fa fa-plus" aria-hidden="true" tal:attributes="titel extras.buttons.wide_node_view"></i><span class="sidebar-element">${extras.buttons.wide_node_view}</span></li>
+                    <li id="tight-view"><i class="fa fa-minus" aria-hidden="true" tal:attributes="titel extras.buttons.tight_node_view"></i><span class="sidebar-element">${extras.buttons.tight_node_view}</span></li>
+                    <li id="snapshot-graph" ><i class="fa fa-camera" aria-hidden="true" tal:attributes="titel extras.buttons.snapshot_graph"></i><span class="sidebar-element">${extras.buttons.snapshot_graph}</span></li>
                 </ul>
+
+                <div id="tack-sidebar-graph-wrapper" data-toggle="tooltip" data-placement="bottom">
+                    <i id="tack-sidebar-graph" class="fa fa-thumb-tack" aria-hidden="true"></i>
+                </div>
             </div>
         </div>
 

@@ -39,17 +39,19 @@ function DiscussionGraph() {
 		$('#wide-view').show();
 		$('#tight-view').hide();
 
-		$('#' + graphViewContainerSpaceId).empty();
+		var container = $('#' + graphViewContainerSpaceId);
+		container.empty();
 
 		if (startD3){
 			try {
 				return this.getD3Graph(jsonData);
 			} catch (err){
 				new DiscussionGraph().setDefaultViewParams(false, null, d3);
-				new GuiHandler().showDiscussionError(_t(internalError));
+				setGlobalErrorHandler('Oh Snap!', _t(internalError));
+				console.log('D3: ' + err.message);
 			}
 		} else {
-			$('#'+ graphViewContainerSpaceId).empty();
+			container.empty();
 		}
 	};
 
@@ -59,10 +61,11 @@ function DiscussionGraph() {
 	 * @param jsonData
 	 */
 	this.getD3Graph = function(jsonData){
-		$('#' + graphViewContainerSpaceId).empty();
-
-		var width = 1500,
-   			height = 600;
+		var container = $('#' + graphViewContainerSpaceId);
+		container.empty();
+			
+		var width = container.width();
+		var height = container.outerHeight();
 
 		// container for visualization
 		var svg = d3.select('#' + graphViewContainerSpaceId).append("svg")
@@ -86,10 +89,7 @@ function DiscussionGraph() {
     		edges.push({source: sourceNode, target: targetNode, color: e.color});
 		});
 
-		force
-    		.links(edges)
-			.nodes(jsonData.nodes)
-            .on("tick", forceTick);
+		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 
 		// Per-type markers for links
 	    var marker = svg.append("defs").selectAll('marker')
