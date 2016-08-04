@@ -166,7 +166,8 @@ function GuiHandler() {
 			graphViewContainer,
 			$('#' + sidebarTackGraphId),
 			sidebarGraphTackWrapper,
-			tacked_sidebar);
+			tacked_sidebar,
+			$('#graph-view-container-header').outerHeight(true));
 	};
 
 	/**

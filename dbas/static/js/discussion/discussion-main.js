@@ -226,7 +226,7 @@ function Main () {
 	/**
 	 *
 	 */
-	this.setSidebarClicks = function(wrapper, sidebar, hamburger, sidebarwrapper, maincontainer, tack, tackwrapper, localStorageId){
+	this.setSidebarClicks = function(wrapper, sidebar, hamburger, sidebarwrapper, maincontainer, tack, tackwrapper, localStorageId, offset){
 		// sliding menu
 		var helper = new Helper();
 		$(hamburger).click(function(){
@@ -254,7 +254,7 @@ function Main () {
 						.css('margin-left', 'auto')
 						.css('background-color', sidebar.css('background-color'));
 					sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
-						.css('height', maincontainer.outerHeight() + 'px');
+						.css('height', maincontainer.outerHeight() - offset + 'px');
 					tackwrapper.fadeIn();
 				}, 200);
 			}
@@ -697,7 +697,8 @@ $(document).ready(function mainDocumentReady() {
 		discussionContainer,
 		$('#' + sidebarTackId),
 		sidebarTackWrapper,
-		tacked_sidebar);
+		tacked_sidebar,
+		0);
 	// sidebar of the graphview is set in GuiHandler:setDisplayStyleAsGraphView()
 	main.setClickFunctions(guiHandler, ajaxHandler);
 	main.setKeyUpFunctions(guiHandler, ajaxHandler);
