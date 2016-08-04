@@ -71,13 +71,12 @@ function DiscussionGraph() {
 		var svg = d3.select('#' + graphViewContainerSpaceId).append("svg")
     		.attr("width", width)
     		.attr("height", height)
-			.call(d3.behavior.zoom().on("zoom", this.redraw))
 			.append('g');
 
 		// create force layout object and define properties
 		var force = d3.layout.force()
     		.gravity(0.07)
-    		.charge(-200)
+    		.charge(-150)
     		.linkDistance(80)
     		.size([width, height]);
 
@@ -93,7 +92,6 @@ function DiscussionGraph() {
 
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 
-		// Per-type markers for links
 	    var marker = svg.append("defs").selectAll('marker')
             .data(edges)
             .enter()
@@ -139,7 +137,8 @@ function DiscussionGraph() {
 				return d.color;
 			});
 
-		var label = node.append("text").each(function (d) {
+		var label = node
+			.append("text").each(function (d) {
             var node_text = d.label.split(" ");
             for (var i = 0; i < node_text.length; i++) {
                 if((i % 4) == 0){
@@ -178,6 +177,6 @@ function DiscussionGraph() {
 				.attr("transform", function (d) {
         			return "translate(" + d.x + "," + (d.y - 50) + ")";
     			});
-  		}
+ 		}
 	}
 }
