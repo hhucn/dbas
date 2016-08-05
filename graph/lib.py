@@ -69,7 +69,6 @@ def get_d3_data(issue):
                                     size=position_size if statement.is_startpoint else node_size,
                                     x=x,
                                     y=y)
-        logger('XXX', 'statement_', str(statement.uid))
         extras_dict[node_dict['id']] = node_dict
         x = (x + 1) % 10
         y += (1 if x == 0 else 0)
@@ -102,8 +101,6 @@ def get_d3_data(issue):
         # 2) with at least two premises  one conclusion or an undercut is done on this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
-        for p in db_premises:
-            logger('XXX', 'Premise', str(p.statement_uid))
 
         # target of the edge (case 1) or last edge (case 2)
         if argument.conclusion_uid is not None:
@@ -118,7 +115,6 @@ def get_d3_data(issue):
                                         color=green if argument.is_supportive else red,
                                         size=edge_size,
                                         edge_type='')
-            logger('XXX', 'Edge from', 'statement_' + str(db_premises[0].statement_uid))
             edges_array.append(edge_dict)
         else:
             # edge from premisegroup to the middle point
@@ -129,7 +125,6 @@ def get_d3_data(issue):
                                             color=green if argument.is_supportive else red,
                                             size=edge_size,
                                             edge_type='')
-                logger('XXX', 'Edge from', 'statement_' + str(premise.statement_uid))
                 edges_array.append(edge_dict)
                 counter += 1
 

@@ -112,7 +112,7 @@ class User(DiscussionBase):
     registered = Column(ArrowType, default=get_now())
     token = Column(Text, nullable=True)
     token_timestamp = Column(ArrowType, nullable=True)
-    keep_logged_in = Column(Boolean, nullable=False) # TODO: move this into settings
+    keep_logged_in = Column(Boolean, nullable=False)  # TODO: move this into settings
 
     groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
