@@ -126,7 +126,6 @@ function GuiHandler() {
 	this.setDisplayStyleAsGraphView = function () {
 		var graphWrapper = $('#' + graphWrapperId);
 		var discussionGraphSidebar = $('#' + discussionSidebarGraphId);
-		var sidebarHamburgerIcon = $('#' + sidebarHamburgerGraphIconId);
 		var sidebarGraphWrapper = $('#' + sidebarGraphWrapperId);
 		var graphViewContainer = $('#' + graphViewContainerId);
 		var sidebarGraphTackWrapper = $('#' + sidebarTackGraphWrapperId);
@@ -154,7 +153,6 @@ function GuiHandler() {
 		main.setSidebarStyle(
 			graphWrapper,
 			discussionGraphSidebar,
-			sidebarHamburgerIcon,
 			sidebarGraphWrapper,
 			graphViewContainer,
 			sidebarGraphTackWrapper,
@@ -162,7 +160,6 @@ function GuiHandler() {
 		main.setSidebarClicks(
 			graphWrapper,
 			discussionGraphSidebar,
-			sidebarHamburgerIcon,
 			sidebarGraphWrapper,
 			graphViewContainer,
 			$('#' + sidebarTackGraphId),
