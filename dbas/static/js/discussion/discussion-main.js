@@ -224,14 +224,14 @@ function Main () {
 	};
 	
 	/**
-	 *
-	 * @param wrapper
-	 * @param sidebarwrapper
-	 * @param maincontainer
-	 * @param localStorageId
+	 * Sets click functions for the elements in the sidebar
+	 * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
+	 * @param localStorageId - id of the parameter in the local storage
 	 */
-	this.setSidebarClicks = function(wrapper, sidebarwrapper, maincontainer, localStorageId){
+	this.setSidebarClicks = function(maincontainer, localStorageId){
 		var helper = new Helper();
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		var wrapper = maincontainer.find('.' + contentWrapperClass);
 		var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
 		var tack = sidebarwrapper.find('.' + sidebarTackClass);
@@ -292,15 +292,15 @@ function Main () {
 	};
 	
 	/**
-	 *
-	 * @param wrapper - wrapper id of the other stuff in the same container
-	 * @param sidebarwrapper - wrapper id of the sidebar
-	 * @param maincontainer - container id of all elements in current field
+	 * Sets style options for the elements in the sidebar
+	 * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
-	this.setSidebarStyle= function(wrapper, sidebarwrapper, maincontainer, localStorageId){
+	this.setSidebarStyle= function(maincontainer, localStorageId){
 		// read local storage for pinning the bar / set title
 		var shouldShowSidebar = new Helper().getLocalStorage(localStorageId) == 'true';
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		var wrapper = maincontainer.find('.' + contentWrapperClass);
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
 		var tack = sidebarwrapper.find('.' + sidebarTackClass);
 		var sidebar = sidebarwrapper.find('.' + sidebarClass);
@@ -682,22 +682,12 @@ $(document).ready(function mainDocumentReady() {
 	var interactionHandler = new InteractionHandler();
 	var main = new Main();
 	var tmp;
-	var dialogWrapper = $('#' + dialogWrapperId);
-	var sidebarWrapper = $('#' + sidebarWrapperId);
 	var discussionContainer = $('#' + discussionContainerId);
 	
 	guiHandler.setHandler(interactionHandler);
 	main.setStyleOptions(guiHandler);
-	main.setSidebarStyle(
-		dialogWrapper,
-		sidebarWrapper,
-		discussionContainer,
-		tacked_sidebar);
-	main.setSidebarClicks(
-		dialogWrapper,
-		sidebarWrapper,
-		discussionContainer,
-		tacked_sidebar);
+	main.setSidebarStyle(discussionContainer, tacked_sidebar);
+	main.setSidebarClicks(discussionContainer, tacked_sidebar);
 	// sidebar of the graphview is set in GuiHandler:setDisplayStyleAsGraphView()
 	main.setClickFunctions(guiHandler, ajaxHandler);
 	main.setKeyUpFunctions(guiHandler, ajaxHandler);

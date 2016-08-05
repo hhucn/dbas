@@ -41,7 +41,7 @@
         </div>
 
         <div class="container colored-container" id="discussion-container">
-            <div id="dialog-wrapper" class="pull-left">
+            <div id="dialog-wrapper" class="content-wrapper pull-left">
 
                 <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -110,7 +110,7 @@
                 </div>
             </div>
 
-            <div id="sidebar-wrapper" class="pull-right">
+            <div class="pull-right sidebar-wrapper">
                 <div class="hamburger">
                     <span></span>
                     <span></span>
@@ -228,7 +228,7 @@
         </div>
 
         <div class="colored-container" id="graph-view-container" style="display:none">
-            <div id="graph-wrapper" class="pull-left">
+            <div class="pull-left content-wrapper">
                 <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -237,7 +237,7 @@
                 </div>
             </div>
 
-            <div id="sidebar-graph-wrapper" class="pull-right">
+            <div class="pull-right sidebar-wrapper">
                 <div class="hamburger">
                     <span></span>
                     <span></span>
