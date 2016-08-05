@@ -125,7 +125,6 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsGraphView = function () {
 		var graphWrapper = $('#' + graphWrapperId);
-		var discussionGraphSidebar = $('#' + discussionSidebarGraphId);
 		var sidebarGraphWrapper = $('#' + sidebarGraphWrapperId);
 		var graphViewContainer = $('#' + graphViewContainerId);
 		var main = new Main();
@@ -151,13 +150,11 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 		main.setSidebarStyle(
 			graphWrapper,
-			discussionGraphSidebar,
 			sidebarGraphWrapper,
 			graphViewContainer,
 			tacked_sidebar);
 		main.setSidebarClicks(
 			graphWrapper,
-			discussionGraphSidebar,
 			sidebarGraphWrapper,
 			graphViewContainer,
 			tacked_sidebar);

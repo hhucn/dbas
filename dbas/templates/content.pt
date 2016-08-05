@@ -118,7 +118,7 @@
                     <span></span>
                 </div>
 
-                <ul id="discussion-sidebar">
+                <ul class="sidebar">
                     <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
                     <li id="edit-statement" tal:condition="extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
                     <li id="report-button" tal:condition="extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
@@ -245,7 +245,7 @@
                     <span></span>
                 </div>
 
-                <ul id="discussion-sidebar-graph">
+                <ul class="sidebar">
                     <li id="start-view"><i class="fa fa-play" aria-hidden="true" tal:attributes="titel extras.buttons.default_view"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
                     <li id="show-content"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_content"></i><span class="sidebar-element">${extras.buttons.show_content}</span></li>
                     <li id="hide-content"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_content"></i><span class="sidebar-element">${extras.buttons.hide_content}</span></li>
