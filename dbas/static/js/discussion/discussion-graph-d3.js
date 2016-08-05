@@ -20,6 +20,7 @@ function DiscussionGraph() {
 	this.callbackIfDoneForDiscussionGraph = function (data) {
 		var jsonData = $.parseJSON(data);
 		try {
+		try {
 			s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
 		} catch (err) {
 			new DiscussionGraph().setDefaultViewParams(false, null, s);
@@ -94,28 +95,28 @@ function DiscussionGraph() {
 
         var marker = svg.append("defs").selectAll('marker').data(edges)
             .enter()
-                .append("svg:marker")
-                .attr("id", function(d) {return "marker_" + d.target.color + d.color})
-			    .attr("refX", function(d){
-				    if(d.target.label == ''){
-						return 4;
-					}
-					else if(d.target.size == 8){
-						return 8;
-					}
-					else{
-						return 7;
-					}
-				})
-                .attr("refY", 2.2)
-                .attr("markerWidth", 10)
-                .attr("markerHeight", 10)
-                .attr("orient", "auto")
-			    .append("path")
-			        .attr("d", "M0,0 V4 L5,2 Z15")
-                    .attr("fill", function(d) {
-			            return d.color;
-				    });
+            .append("svg:marker")
+            .attr("id", function(d) {return "marker_" + d.target.color + d.color})
+			.attr("refX", function(d){
+			    if(d.target.label == ''){
+					return 4;
+				}
+				else if(d.target.size == 8){
+					return 8;
+				}
+				else{
+					return 7;
+				}
+			})
+            .attr("refY", 2.2)
+            .attr("markerWidth", 10)
+            .attr("markerHeight", 10)
+            .attr("orient", "auto")
+			.append("path")
+			.attr("d", "M0,0 V4 L5,2 Z15")
+            .attr("fill", function(d) {
+			    return d.color;
+			});
 
 		// links between nodes
 		var link = svg.selectAll(".link")
