@@ -184,6 +184,12 @@ function DiscussionGraph() {
             }
 		});
 
+		// show all labels of click
+		var show = $('#' + 'show-content');
+		document.getElementById('show-content').onclick = function () {
+		    label.style("display", "inline");
+		}
+
         force.start();
 
 		// update force layout calculations
@@ -206,17 +212,5 @@ function DiscussionGraph() {
         			return "translate(" + d.x + "," + (d.y - 50) + ")";
     			});
  		}
-	}
-
-	/**
-	 * Show all labels of graph.
-	 *
-	 * @param label: text of nodes
-	 */
-	this.showLabels = function(label){
-		var show = $('#' + 'show-content');
-		document.getElementById('show-content').onclick = function () {
-		    label.style("display", "inline");
-		}
 	}
 }
