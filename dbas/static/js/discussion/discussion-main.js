@@ -225,11 +225,18 @@ function Main () {
 	
 	/**
 	 *
+	 * @param wrapper
+	 * @param sidebar
+	 * @param sidebarwrapper
+	 * @param maincontainer
+	 * @param localStorageId
 	 */
-	this.setSidebarClicks = function(wrapper, sidebar, sidebarwrapper, maincontainer, tack, tackwrapper, localStorageId){
-		// sliding menu
+	this.setSidebarClicks = function(wrapper, sidebar, sidebarwrapper, maincontainer, localStorageId){
 		var helper = new Helper();
 		var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
+		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
+		var tack = sidebarwrapper.find('.' + sidebarTackClass);
+		
 		$(hamburger).click(function(){
 			$(this).toggleClass('open');
 			var width = wrapper.width();
@@ -266,7 +273,7 @@ function Main () {
 		tackwrapper.click(function() {
 		var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
-				_this.rotateTack('0');
+				_this.rotateElement(tack, '0');
 				helper.setLocalStorage(localStorageId, 'false');
 
 				tack.data('title', _t_discussion(pinNavigation));
@@ -276,7 +283,7 @@ function Main () {
 					hamburger.click();
 				}
 			} else {
-				_this.rotateTack('90');
+				_this.rotateElement(tack, '90');
 				helper.setLocalStorage(localStorageId, 'true');
 				tack.data('title', _t_discussion(unpinNavigation));
 			}
@@ -290,18 +297,19 @@ function Main () {
 	 * @param sidebar - sidebar id of the elements
 	 * @param sidebarwrapper - wrapper id of the sidebar
 	 * @param maincontainer - container id of all elements in current field
-	 * @param tackwrapper - tack id of the sidebar
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
-	this.setSidebarStyle= function(wrapper, sidebar, sidebarwrapper, maincontainer, tackwrapper, localStorageId){
+	this.setSidebarStyle= function(wrapper, sidebar, sidebarwrapper, maincontainer, localStorageId){
 		// read local storage for pinning the bar / set title
 		var shouldShowSidebar = new Helper().getLocalStorage(localStorageId) == 'true';
+		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
+		var tack = sidebarwrapper.find('.' + sidebarTackClass);
 		if (shouldShowSidebar) {
 			var width = wrapper.width();
 			var main = new Main();
 			var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 
-			main.rotateTack('90');
+			main.rotateElement(tack, '90');
 			main.setAnimationSpeed(wrapper, '0.0');
 			main.setAnimationSpeed(hamburger, '0.0');
 
@@ -428,10 +436,11 @@ function Main () {
 
 	/**
 	 * Roates the little pin icon in the sidebar
+	 * @param element
 	 * @param degree
 	 */
-	this.rotateTack = function(degree){
-		$('#' + sidebarTackId).css('-ms-transform', 'rotate(' + degree + 'deg)')
+	this.rotateElement = function(element, degree){
+		element.css('-ms-transform', 'rotate(' + degree + 'deg)')
 			.css('-webkit-transform', 'rotate(' + degree + 'deg)')
 			.css('transform', 'rotate(' + degree + 'deg)');
 	};
@@ -677,7 +686,6 @@ $(document).ready(function mainDocumentReady() {
 	var discussionSidebar = $('#' + discussionSidebarId);
 	var sidebarWrapper = $('#' + sidebarWrapperId);
 	var discussionContainer = $('#' + discussionContainerId);
-	var sidebarTackWrapper = $('#' + sidebarTackWrapperId);
 	
 	guiHandler.setHandler(interactionHandler);
 	main.setStyleOptions(guiHandler);
@@ -686,15 +694,12 @@ $(document).ready(function mainDocumentReady() {
 		discussionSidebar,
 		sidebarWrapper,
 		discussionContainer,
-		sidebarTackWrapper,
 		tacked_sidebar);
 	main.setSidebarClicks(
 		dialogWrapper,
 		discussionSidebar,
 		sidebarWrapper,
 		discussionContainer,
-		$('#' + sidebarTackId),
-		sidebarTackWrapper,
 		tacked_sidebar);
 	// sidebar of the graphview is set in GuiHandler:setDisplayStyleAsGraphView()
 	main.setClickFunctions(guiHandler, ajaxHandler);
