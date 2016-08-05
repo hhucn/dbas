@@ -58,6 +58,7 @@ def get_d3_data(issue):
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
+    all_node_ids = ['issue']
 
     # for each statement a node will be added
     for statement in db_statements:
@@ -70,6 +71,7 @@ def get_d3_data(issue):
                                     x=x,
                                     y=y)
         extras_dict[node_dict['id']] = node_dict
+        all_node_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
         y += (1 if x == 0 else 0)
         nodes_array.append(node_dict)
@@ -92,6 +94,7 @@ def get_d3_data(issue):
                                     size=0.5,
                                     x=x,
                                     y=y)
+        all_node_ids.append('argument_' + str(argument.uid))
         x = (x + 1) % 10
         y += (1 if x == 0 else 0)
         nodes_array.append(node_dict)
@@ -136,6 +139,14 @@ def get_d3_data(issue):
                                         size=edge_size,
                                         edge_type=edge_type)
             edges_array.append(edge_dict)
+
+    error = False
+    for edge in edges_array:
+        error = error or (edge['source'] not in all_node_ids) or (edge['target'] not in all_node_ids)
+    if error:
+        logger('GraphLib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
+    else:
+        logger('GraphLib', 'get_d3_data', 'All nodes are connected well')
 
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
     return d3_dict
