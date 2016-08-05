@@ -269,7 +269,6 @@ function Main () {
 		});
 
 		// action for tacking the sidebar
-		var _this = new Main();
 		tackwrapper.click(function() {
 		var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
@@ -307,7 +306,6 @@ function Main () {
 		var helper = new Helper();
 		if (shouldShowSidebar) {
 			var width = wrapper.width();
-			var main = new Main();
 			var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 
 			helper.rotateElement(tack, '90');
@@ -536,8 +534,9 @@ function Main () {
 	 * @param interactionHandler
 	 */
 	this.setInputExtraOptions = function (guiHandler, interactionHandler) {
-		var input = $('#' + discussionSpaceListId).find('li:last-child input'),
-			text = [], splits, conclusion, supportive, arg, relation;
+		var spaceList = $('#' + discussionSpaceListId);
+		var input = spaceList.find('li:last-child input');
+		var text = [], splits, conclusion, supportive, arg, relation;
 		splits = window.location.href.split('?');
 		splits = splits[0].split('/');
 		var sendStartStatement = function () {
@@ -593,7 +592,7 @@ function Main () {
 		});
 
 		// hide one line options
-		var children = $('#' + discussionSpaceListId).find('input');
+		var children = spaceList.find('input');
 		if (children.length == 1 && (
 			children.eq(0).attr('id').indexOf('start_statement') != -1 ||
 			children.eq(0).attr('id').indexOf('start_premise') != -1 ||
