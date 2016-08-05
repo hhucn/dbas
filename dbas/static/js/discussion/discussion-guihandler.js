@@ -128,7 +128,6 @@ function GuiHandler() {
 		var discussionGraphSidebar = $('#' + discussionSidebarGraphId);
 		var sidebarGraphWrapper = $('#' + sidebarGraphWrapperId);
 		var graphViewContainer = $('#' + graphViewContainerId);
-		var sidebarGraphTackWrapper = $('#' + sidebarTackGraphWrapperId);
 		var main = new Main();
 		var tacked_sidebar = 'tacked_graph_sidebar';
 		var header = $('#graph-view-container-header');
@@ -155,15 +154,12 @@ function GuiHandler() {
 			discussionGraphSidebar,
 			sidebarGraphWrapper,
 			graphViewContainer,
-			sidebarGraphTackWrapper,
 			tacked_sidebar);
 		main.setSidebarClicks(
 			graphWrapper,
 			discussionGraphSidebar,
 			sidebarGraphWrapper,
 			graphViewContainer,
-			$('#' + sidebarTackGraphId),
-			sidebarGraphTackWrapper,
 			tacked_sidebar);
 	};
 
