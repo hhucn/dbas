@@ -226,16 +226,16 @@ function Main () {
 	/**
 	 *
 	 * @param wrapper
-	 * @param sidebar
 	 * @param sidebarwrapper
 	 * @param maincontainer
 	 * @param localStorageId
 	 */
-	this.setSidebarClicks = function(wrapper, sidebar, sidebarwrapper, maincontainer, localStorageId){
+	this.setSidebarClicks = function(wrapper, sidebarwrapper, maincontainer, localStorageId){
 		var helper = new Helper();
 		var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
 		var tack = sidebarwrapper.find('.' + sidebarTackClass);
+		var sidebar = sidebarwrapper.find('.' + sidebarClass);
 		
 		$(hamburger).click(function(){
 			$(this).toggleClass('open');
@@ -294,16 +294,16 @@ function Main () {
 	/**
 	 *
 	 * @param wrapper - wrapper id of the other stuff in the same container
-	 * @param sidebar - sidebar id of the elements
 	 * @param sidebarwrapper - wrapper id of the sidebar
 	 * @param maincontainer - container id of all elements in current field
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
-	this.setSidebarStyle= function(wrapper, sidebar, sidebarwrapper, maincontainer, localStorageId){
+	this.setSidebarStyle= function(wrapper, sidebarwrapper, maincontainer, localStorageId){
 		// read local storage for pinning the bar / set title
 		var shouldShowSidebar = new Helper().getLocalStorage(localStorageId) == 'true';
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
 		var tack = sidebarwrapper.find('.' + sidebarTackClass);
+		var sidebar = sidebarwrapper.find('.' + sidebarClass);
 		if (shouldShowSidebar) {
 			var width = wrapper.width();
 			var main = new Main();
@@ -683,7 +683,6 @@ $(document).ready(function mainDocumentReady() {
 	var main = new Main();
 	var tmp;
 	var dialogWrapper = $('#' + dialogWrapperId);
-	var discussionSidebar = $('#' + discussionSidebarId);
 	var sidebarWrapper = $('#' + sidebarWrapperId);
 	var discussionContainer = $('#' + discussionContainerId);
 	
@@ -691,13 +690,11 @@ $(document).ready(function mainDocumentReady() {
 	main.setStyleOptions(guiHandler);
 	main.setSidebarStyle(
 		dialogWrapper,
-		discussionSidebar,
 		sidebarWrapper,
 		discussionContainer,
 		tacked_sidebar);
 	main.setSidebarClicks(
 		dialogWrapper,
-		discussionSidebar,
 		sidebarWrapper,
 		discussionContainer,
 		tacked_sidebar);
