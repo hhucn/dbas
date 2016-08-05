@@ -72,7 +72,8 @@ function DiscussionGraph() {
 		var svg = d3.select('#' + graphViewContainerSpaceId).append("svg")
     		.attr("width", width)
     		.attr("height", height)
-			.append('g');
+			.append('g')
+			.attr("class", "zoom");
 
 		// create force layout object and define properties
 		var force = d3.layout.force()
@@ -80,6 +81,22 @@ function DiscussionGraph() {
     		.charge(-150)
     		.linkDistance(80)
     		.size([width, height]);
+
+		// zoom and pan
+		var zoom = d3.behavior.zoom().on("zoom", zoomed);
+		d3.select("svg").call(zoom);
+
+        function zoomed() {
+            d3.select("g.zoom")
+            .attr("transform", "translate(" + zoom.translate() + ")"
+			+ " scale(" + zoom.scale() + ")")
+        }
+
+		// enable drag functionality, pan functionality overrides drag
+        var drag = force.drag()
+			.on("dragstart", function(d){
+				d3.event.sourceEvent.stopPropagation();
+			});
 
 		var edges = [];
 
@@ -113,7 +130,7 @@ function DiscussionGraph() {
             .attr("markerHeight", 10)
             .attr("orient", "auto")
 			.append("svg:path")
-			.attr("d", "M 0,0 V 4 L5,2 Z")
+			.attr("d", "M 0,0 V 4 L 5,2 Z")
             .attr("fill", function(d) {
 			    return d.color;
 			});
@@ -136,7 +153,7 @@ function DiscussionGraph() {
         	.data(force.nodes())
         	.enter().append("g")
             	.attr("class", "node")
-            	.call(force.drag);
+            	.call(drag);
 
 		// define properties for nodes
     	var circle = node.append("circle")
@@ -147,6 +164,7 @@ function DiscussionGraph() {
 				return d.color;
 			});
 
+		// wrap text
 		var label = node
 			.append("text").each(function (d) {
             var node_text = d.label.split(" ");
