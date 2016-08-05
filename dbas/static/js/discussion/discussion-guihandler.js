@@ -124,12 +124,7 @@ function GuiHandler() {
 	 * Full view, full interaction range for the graph
 	 */
 	this.setDisplayStyleAsGraphView = function () {
-		var graphWrapper = $('#' + graphWrapperId);
-		var discussionGraphSidebar = $('#' + discussionSidebarGraphId);
-		var sidebarHamburgerIcon = $('#' + sidebarHamburgerGraphIconId);
-		var sidebarGraphWrapper = $('#' + sidebarGraphWrapperId);
 		var graphViewContainer = $('#' + graphViewContainerId);
-		var sidebarGraphTackWrapper = $('#' + sidebarTackGraphWrapperId);
 		var main = new Main();
 		var tacked_sidebar = 'tacked_graph_sidebar';
 		var header = $('#graph-view-container-header');
@@ -151,23 +146,8 @@ function GuiHandler() {
 		innerHeight -= header.outerHeight(true) + 20;
 		$('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 95%');
 		new DiscussionGraph().showGraph();
-		main.setSidebarStyle(
-			graphWrapper,
-			discussionGraphSidebar,
-			sidebarHamburgerIcon,
-			sidebarGraphWrapper,
-			graphViewContainer,
-			sidebarGraphTackWrapper,
-			tacked_sidebar);
-		main.setSidebarClicks(
-			graphWrapper,
-			discussionGraphSidebar,
-			sidebarHamburgerIcon,
-			sidebarGraphWrapper,
-			graphViewContainer,
-			$('#' + sidebarTackGraphId),
-			sidebarGraphTackWrapper,
-			tacked_sidebar);
+		main.setSidebarStyle(graphViewContainer, tacked_sidebar);
+		main.setSidebarClicks(graphViewContainer, tacked_sidebar);
 	};
 
 	/**

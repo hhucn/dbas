@@ -41,7 +41,7 @@
         </div>
 
         <div class="container colored-container" id="discussion-container">
-            <div id="dialog-wrapper" class="pull-left">
+            <div id="dialog-wrapper" class="content-wrapper pull-left">
 
                 <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -110,15 +110,15 @@
                 </div>
             </div>
 
-            <div id="sidebar-wrapper" class="pull-right">
-                <div id="hamburger">
+            <div class="pull-right sidebar-wrapper">
+                <div class="hamburger">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
 
-                <ul id="discussion-sidebar">
+                <ul class="sidebar">
                     <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
                     <li id="edit-statement" tal:condition="extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
                     <li id="report-button" tal:condition="extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
@@ -128,8 +128,8 @@
                     <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
                 </ul>
 
-                <div id="tack-sidebar-wrapper" data-toggle="tooltip" data-placement="bottom">
-                    <i id="tack-sidebar" class="fa fa-thumb-tack" aria-hidden="true"></i>
+                <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
+                    <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
                 </div>
             </div>
 
@@ -228,7 +228,7 @@
         </div>
 
         <div class="colored-container" id="graph-view-container" style="display:none">
-            <div id="graph-wrapper" class="pull-left">
+            <div class="pull-left content-wrapper">
                 <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -237,15 +237,15 @@
                 </div>
             </div>
 
-            <div id="sidebar-graph-wrapper" class="pull-right">
-                <div id="hamburger-graph">
+            <div class="pull-right sidebar-wrapper">
+                <div class="hamburger">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
 
-                <ul id="discussion-sidebar-graph">
+                <ul class="sidebar">
                     <li id="start-view"><i class="fa fa-play" aria-hidden="true" tal:attributes="titel extras.buttons.default_view"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
                     <li id="show-content"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_content"></i><span class="sidebar-element">${extras.buttons.show_content}</span></li>
                     <li id="hide-content"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_content"></i><span class="sidebar-element">${extras.buttons.hide_content}</span></li>
@@ -254,8 +254,8 @@
                     <li id="snapshot-graph" ><i class="fa fa-camera" aria-hidden="true" tal:attributes="titel extras.buttons.snapshot_graph"></i><span class="sidebar-element">${extras.buttons.snapshot_graph}</span></li>
                 </ul>
 
-                <div id="tack-sidebar-graph-wrapper" data-toggle="tooltip" data-placement="bottom">
-                    <i id="tack-sidebar-graph" class="fa fa-thumb-tack" aria-hidden="true"></i>
+                <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
+                    <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
