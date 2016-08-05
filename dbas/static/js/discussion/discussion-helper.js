@@ -298,6 +298,29 @@ function Helper() {
 	};
 
 	/**
+	 * Roates the little pin icon in the sidebar
+	 * @param element
+	 * @param degree
+	 */
+	this.rotateElement = function(element, degree){
+		element.css('-ms-transform', 'rotate(' + degree + 'deg)')
+			.css('-webkit-transform', 'rotate(' + degree + 'deg)')
+			.css('transform', 'rotate(' + degree + 'deg)');
+	};
+
+	/**
+	 * Sets an animation speed for a specific element
+	 * @param element
+	 * @param speed
+	 */
+	this.setAnimationSpeed = function(element, speed){
+		element.css('-webkit-transition', 'all ' + speed + 's ease')
+			.css('-moz-transition', 'all ' + speed + 's ease')
+			.css('-o-transition', 'all ' + speed + 's ease')
+			.css('transition', 'all ' + speed + 's ease');
+	};
+
+	/**
 	 * Delays a specific function
 	 */
 	this.delay = function(){

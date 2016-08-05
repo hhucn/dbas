@@ -224,11 +224,19 @@ function Main () {
 	};
 	
 	/**
-	 *
+	 * Sets click functions for the elements in the sidebar
+	 * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
+	 * @param localStorageId - id of the parameter in the local storage
 	 */
-	this.setSidebarClicks = function(wrapper, sidebar, hamburger, sidebarwrapper, maincontainer, tack, tackwrapper, localStorageId){
-		// sliding menu
+	this.setSidebarClicks = function(maincontainer, localStorageId){
 		var helper = new Helper();
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		var wrapper = maincontainer.find('.' + contentWrapperClass);
+		var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
+		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
+		var tack = sidebarwrapper.find('.' + sidebarTackClass);
+		var sidebar = sidebarwrapper.find('.' + sidebarClass);
+		
 		$(hamburger).click(function(){
 			$(this).toggleClass('open');
 			var width = wrapper.width();
@@ -261,11 +269,10 @@ function Main () {
 		});
 
 		// action for tacking the sidebar
-		var _this = new Main();
 		tackwrapper.click(function() {
 		var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
-				_this.rotateTack('0');
+				helper.rotateElement(tack, '0');
 				helper.setLocalStorage(localStorageId, 'false');
 
 				tack.data('title', _t_discussion(pinNavigation));
@@ -275,7 +282,7 @@ function Main () {
 					hamburger.click();
 				}
 			} else {
-				_this.rotateTack('90');
+				helper.rotateElement(tack, '90');
 				helper.setLocalStorage(localStorageId, 'true');
 				tack.data('title', _t_discussion(unpinNavigation));
 			}
@@ -284,25 +291,26 @@ function Main () {
 	};
 	
 	/**
-	 *
-	 * @param wrapper - wrapper id of the other stuff in the same container
-	 * @param sidebar - sidebar id of the elements
-	 * @param hamburger - hamburger icon id
-	 * @param sidebarwrapper - wrapper id of the sidebar
-	 * @param maincontainer - container id of all elements in current field
-	 * @param tackwrapper - tack id of the sidebar
+	 * Sets style options for the elements in the sidebar
+	 * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
-	this.setSidebarStyle= function(wrapper, sidebar, hamburger, sidebarwrapper, maincontainer, tackwrapper, localStorageId){
+	this.setSidebarStyle= function(maincontainer, localStorageId){
 		// read local storage for pinning the bar / set title
 		var shouldShowSidebar = new Helper().getLocalStorage(localStorageId) == 'true';
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		var wrapper = maincontainer.find('.' + contentWrapperClass);
+		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
+		var tack = sidebarwrapper.find('.' + sidebarTackClass);
+		var sidebar = sidebarwrapper.find('.' + sidebarClass);
+		var helper = new Helper();
 		if (shouldShowSidebar) {
 			var width = wrapper.width();
-			var main = new Main();
+			var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 
-			main.rotateTack('90');
-			main.setAnimationSpeed(wrapper, '0.0');
-			main.setAnimationSpeed(hamburger, '0.0');
+			helper.rotateElement(tack, '90');
+			helper.setAnimationSpeed(wrapper, '0.0');
+			helper.setAnimationSpeed(hamburger, '0.0');
 
 			hamburger.addClass('open');
 
@@ -316,8 +324,8 @@ function Main () {
 				.css('height', maincontainer.outerHeight() + 'px');
 			tackwrapper.fadeIn();
 
-			main.setAnimationSpeed(wrapper, '0.5');
-			main.setAnimationSpeed(hamburger, '0.5');
+			helper.setAnimationSpeed(wrapper, '0.5');
+			helper.setAnimationSpeed(hamburger, '0.5');
 
 			tackwrapper.data('title', _t_discussion(unpinNavigation));
 		} else {
@@ -426,28 +434,6 @@ function Main () {
 	};
 
 	/**
-	 * Roates the little pin icon in the sidebar
-	 * @param degree
-	 */
-	this.rotateTack = function(degree){
-		$('#' + sidebarTackId).css('-ms-transform', 'rotate(' + degree + 'deg)')
-			.css('-webkit-transform', 'rotate(' + degree + 'deg)')
-			.css('transform', 'rotate(' + degree + 'deg)');
-	};
-
-	/**
-	 * Sets an animation speed for a specific element
-	 * @param element
-	 * @param speed
-	 */
-	this.setAnimationSpeed = function(element, speed){
-		element.css('-webkit-transition', 'all ' + speed + 's ease')
-			.css('-moz-transition', 'all ' + speed + 's ease')
-			.css('-o-transition', 'all ' + speed + 's ease')
-			.css('transition', 'all ' + speed + 's ease');
-	};
-
-	/**
 	 *
 	 */
 	this.setWindowOptions = function () {
@@ -548,8 +534,9 @@ function Main () {
 	 * @param interactionHandler
 	 */
 	this.setInputExtraOptions = function (guiHandler, interactionHandler) {
-		var input = $('#' + discussionSpaceListId).find('li:last-child input'),
-			text = [], splits, conclusion, supportive, arg, relation;
+		var spaceList = $('#' + discussionSpaceListId);
+		var input = spaceList.find('li:last-child input');
+		var text = [], splits, conclusion, supportive, arg, relation;
 		splits = window.location.href.split('?');
 		splits = splits[0].split('/');
 		var sendStartStatement = function () {
@@ -605,7 +592,7 @@ function Main () {
 		});
 
 		// hide one line options
-		var children = $('#' + discussionSpaceListId).find('input');
+		var children = spaceList.find('input');
 		if (children.length == 1 && (
 			children.eq(0).attr('id').indexOf('start_statement') != -1 ||
 			children.eq(0).attr('id').indexOf('start_premise') != -1 ||
@@ -672,32 +659,12 @@ $(document).ready(function mainDocumentReady() {
 	var interactionHandler = new InteractionHandler();
 	var main = new Main();
 	var tmp;
-	var dialogWrapper = $('#' + dialogWrapperId);
-	var discussionSidebar = $('#' + discussionSidebarId);
-	var sidebarHamburgerIcon = $('#' + sidebarHamburgerIconId);
-	var sidebarWrapper = $('#' + sidebarWrapperId);
 	var discussionContainer = $('#' + discussionContainerId);
-	var sidebarTackWrapper = $('#' + sidebarTackWrapperId);
 	
 	guiHandler.setHandler(interactionHandler);
 	main.setStyleOptions(guiHandler);
-	main.setSidebarStyle(
-		dialogWrapper,
-		discussionSidebar,
-		sidebarHamburgerIcon,
-		sidebarWrapper,
-		discussionContainer,
-		sidebarTackWrapper,
-		tacked_sidebar);
-	main.setSidebarClicks(
-		dialogWrapper,
-		discussionSidebar,
-		sidebarHamburgerIcon,
-		sidebarWrapper,
-		discussionContainer,
-		$('#' + sidebarTackId),
-		sidebarTackWrapper,
-		tacked_sidebar);
+	main.setSidebarStyle(discussionContainer, tacked_sidebar);
+	main.setSidebarClicks(discussionContainer, tacked_sidebar);
 	// sidebar of the graphview is set in GuiHandler:setDisplayStyleAsGraphView()
 	main.setClickFunctions(guiHandler, ajaxHandler);
 	main.setKeyUpFunctions(guiHandler, ajaxHandler);

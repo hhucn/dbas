@@ -1,4 +1,4 @@
-#sidebar-wrapper, #sidebar-graph-wrapper
+.sidebar-wrapper
   position: relative
   padding-top: 10px
   right: -14px
@@ -9,7 +9,7 @@
   .tooltip
     width: 150px
 
-#discussion-sidebar, #discussion-sidebar-graph
+.sidebar
   text-align: left
   padding-left: 0
   list-style-type: none
@@ -29,13 +29,13 @@
   i.fa
     margin-right: 0.5em
 
-#dialog-wrapper, #graph-wrapper
+.context-wrapper
   -webkit-transition: all 0.5s ease
   -moz-transition: all 0.5s ease
   -o-transition: all 0.5s ease
   transition: all 0.5s ease
 
-#tack-sidebar-wrapper, #tack-sidebar-graph-wrapper
+.tack-wrapper
   display: none
   position: absolute
   bottom: 0
@@ -55,5 +55,5 @@
   .sidebar-element
     display: none
 
-  #discussion-sidebar, #discussion-sidebar-graph
+  .sidebar-wrapper .sidebar, .sidebar
     min-width: 40px
