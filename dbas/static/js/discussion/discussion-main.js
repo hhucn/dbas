@@ -273,7 +273,7 @@ function Main () {
 		tackwrapper.click(function() {
 		var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
-				_this.rotateElement(tack, '0');
+				helper.rotateElement(tack, '0');
 				helper.setLocalStorage(localStorageId, 'false');
 
 				tack.data('title', _t_discussion(pinNavigation));
@@ -283,7 +283,7 @@ function Main () {
 					hamburger.click();
 				}
 			} else {
-				_this.rotateElement(tack, '90');
+				helper.rotateElement(tack, '90');
 				helper.setLocalStorage(localStorageId, 'true');
 				tack.data('title', _t_discussion(unpinNavigation));
 			}
@@ -304,14 +304,15 @@ function Main () {
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
 		var tack = sidebarwrapper.find('.' + sidebarTackClass);
 		var sidebar = sidebarwrapper.find('.' + sidebarClass);
+		var helper = new Helper();
 		if (shouldShowSidebar) {
 			var width = wrapper.width();
 			var main = new Main();
 			var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 
-			main.rotateElement(tack, '90');
-			main.setAnimationSpeed(wrapper, '0.0');
-			main.setAnimationSpeed(hamburger, '0.0');
+			helper.rotateElement(tack, '90');
+			helper.setAnimationSpeed(wrapper, '0.0');
+			helper.setAnimationSpeed(hamburger, '0.0');
 
 			hamburger.addClass('open');
 
@@ -325,8 +326,8 @@ function Main () {
 				.css('height', maincontainer.outerHeight() + 'px');
 			tackwrapper.fadeIn();
 
-			main.setAnimationSpeed(wrapper, '0.5');
-			main.setAnimationSpeed(hamburger, '0.5');
+			helper.setAnimationSpeed(wrapper, '0.5');
+			helper.setAnimationSpeed(hamburger, '0.5');
 
 			tackwrapper.data('title', _t_discussion(unpinNavigation));
 		} else {
@@ -432,29 +433,6 @@ function Main () {
 				}
 			);
 		});
-	};
-
-	/**
-	 * Roates the little pin icon in the sidebar
-	 * @param element
-	 * @param degree
-	 */
-	this.rotateElement = function(element, degree){
-		element.css('-ms-transform', 'rotate(' + degree + 'deg)')
-			.css('-webkit-transform', 'rotate(' + degree + 'deg)')
-			.css('transform', 'rotate(' + degree + 'deg)');
-	};
-
-	/**
-	 * Sets an animation speed for a specific element
-	 * @param element
-	 * @param speed
-	 */
-	this.setAnimationSpeed = function(element, speed){
-		element.css('-webkit-transition', 'all ' + speed + 's ease')
-			.css('-moz-transition', 'all ' + speed + 's ease')
-			.css('-o-transition', 'all ' + speed + 's ease')
-			.css('transition', 'all ' + speed + 's ease');
 	};
 
 	/**
