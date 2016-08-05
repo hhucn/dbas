@@ -140,20 +140,20 @@ function DiscussionGraph() {
     		.data(edges)
 			// svg lines
     		.enter().append("line")
-      			.attr("class", "link")
-			    .style("stroke", function(d) { return d.color; })
-				.style("stroke-width", '2px')
-                .attr("size" , function (d) {
-                    return d.size;
-                })
-				.attr("marker-end", function(d) {return "url(#marker_" + d.target.color + d.color + ")"});
+      		.attr("class", "link")
+			.style("stroke", function(d) { return d.color; })
+			.style("stroke-width", '2px')
+            .attr("size" , function (d) {
+                return d.size;
+            })
+			.attr("marker-end", function(d) {return "url(#marker_" + d.target.color + d.color + ")"});
 
 		// node: svg circle
    		var node = svg.selectAll(".node")
         	.data(force.nodes())
         	.enter().append("g")
-            	.attr("class", "node")
-            	.call(drag);
+            .attr("class", "node")
+            .call(drag);
 
 		// define properties for nodes
     	var circle = node.append("circle")
@@ -206,5 +206,17 @@ function DiscussionGraph() {
         			return "translate(" + d.x + "," + (d.y - 50) + ")";
     			});
  		}
+	}
+
+	/**
+	 * Show all labels of graph.
+	 *
+	 * @param label: text of nodes
+	 */
+	this.showLabels = function(label){
+		var show = $('#' + 'show-content');
+		document.getElementById('show-content').onclick = function () {
+		    label.style("display", "inline");
+		}
 	}
 }
