@@ -73,7 +73,7 @@ class OpinionHandlerTests(unittest.TestCase):
         # correct statement id
         response_correct_id = opinion.get_user_with_opinions_for_attitude(statement_uid=1)
         self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id))
-        response_correct_id2 = opinion.get_user_with_opinions_for_attitude(statement_uid=76)
+        response_correct_id2 = opinion.get_user_with_opinions_for_attitude(statement_uid=74)
         self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id2))
 
         # wrong id
