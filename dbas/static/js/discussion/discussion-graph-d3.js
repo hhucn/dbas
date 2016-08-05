@@ -19,7 +19,7 @@ function DiscussionGraph() {
 	 */
 	this.callbackIfDoneForDiscussionGraph = function (data) {
 		var jsonData = $.parseJSON(data);
-		try {
+		//try {
 		try {
 			s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
 		} catch (err) {
@@ -112,8 +112,8 @@ function DiscussionGraph() {
             .attr("markerWidth", 10)
             .attr("markerHeight", 10)
             .attr("orient", "auto")
-			.append("path")
-			.attr("d", "M0,0 V4 L5,2 Z15")
+			.append("svg:path")
+			.attr("d", "M 0,0 V 4 L5,2 Z")
             .attr("fill", function(d) {
 			    return d.color;
 			});
