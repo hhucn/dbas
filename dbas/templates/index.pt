@@ -30,25 +30,11 @@
 					<span i18n:translate="work_based_on">This work is part of the graduate school on</span> <a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.
 					<span i18n:translate="funded_by">It is funded by the</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
 				</p>
-				<ul class="list-logos center">
-					<li>
-						<a id="logo_hhu_link" href="http://www.hhu.de/" data-toggle="tooltip" data-placement="bottom" title="Heinrich-Heine-University Duesseldorf" target="_blank">
-							<img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo" />
-						</a>
-					</li>
-					<li>
-						<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" data-toggle="tooltip" data-placement="bottom" title="Graduate School on Online-Participation" target="_blank">
-							<img id="logo_kolleg" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo" />
-							<img id="logo_kolleg_s" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}" alt="graduation school logo" />
-						</a>
-					</li>
-					<li>
-						<a id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" data-toggle="tooltip" data-placement="bottom" title="Fachhochschule für öffentliche Verwaltung NRW" target="_blank">
-							<img id="logo_fhoev" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" alt="fhoev logo" />
-							<img id="logo_fhoev_s" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}" alt="fhoev logo" />
-						</a>
-					</li>
-				</ul>
+				<div class="list-logos center">
+						<a id="logo_hhu_link" href="http://www.hhu.de/" target="_blank"><img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}" alt="hhu logo" /></a>
+						<a id="logo_kolleg_link" href="http://www.fortschrittskolleg.de/" target="_blank"><img id="logo_kolleg" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}" alt="graduation school logo" /><img id="logo_kolleg_s" class="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}" alt="graduation school logo" /></a>
+						<a id="logo_fhoev_link" href="https://www.fhoev.nrw.de/" target="_blank"><img id="logo_fhoev" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" alt="fhoev logo" /><img id="logo_fhoev_s" class="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}" alt="fhoev logo" /></a>
+				</div>
 			</div>
 		</div>
 
