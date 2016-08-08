@@ -410,7 +410,8 @@ function Main () {
 
 		// hover effects on text elements
 		var data = 'data-argumentation-type';
-		$('#' + discussionSpaceListId).find('span[' + data + '!=""]').each(function(){
+		var list = $('#' + discussionSpaceListId);
+		list.find('span[' + data + '!=""]').each(function(){
 			var attr = $(this).attr(data);
 			var tmp = $('<span>').addClass(attr + '-highlighter');
 			tmp.appendTo(document.body);
@@ -431,6 +432,15 @@ function Main () {
 				}
 			);
 		});
+		
+		// hover on radio buttons
+		list.children().each(function(){
+			$(this).hover(function(){
+				$(this).find('input').prop('checked', true);
+			}, function(){
+				$(this).find('input').prop('checked', false);
+			})
+		})
 	};
 
 	/**
