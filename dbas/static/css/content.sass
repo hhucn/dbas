@@ -35,17 +35,22 @@ span[data-argumentation-type^="position"]
 
 #discussions-space
   margin-top: 25px
+
+#discussions-space-list
+  display: inline-block
+  li
+    width: 100%
+    vertical-align: middle
+    font-weight: 400
+    list-style: none
+    padding-bottom: 10px
+    //&:hover
+    //  color: $primary-color
+    input
+      margin-right: 5px
   label
     max-width: 95%
-  ul
-    display: inline-block
-    li
-      list-style: none
-      padding-bottom: 10px
-
-#discussions-avoidance-space ul li
-  list-style: none
-  padding-bottom: 10px
+  width: 100%
 
 .error-description
   color: $error-color
@@ -56,17 +61,6 @@ span[data-argumentation-type^="position"]
   color: $success-color
   font-size: 15px
   font-weight: 600
-
-#discussions-space ul
-  li
-    //&:hover
-    //  color: $primary-color
-    input
-      margin-right: 5px
-    width: 100%
-    vertical-align: middle
-    font-weight: 400
-  width: 100%
 
 #insert_statement_form
   text-align: center
