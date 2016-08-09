@@ -58,7 +58,7 @@
 					</li>
 
 					<li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left">
-						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user">
+						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
 							<i class="fa fa-male" aria-hidden="true" id="header_user" tal:condition="extras.is_user_male"></i>
 							<i class="fa fa-female" aria-hidden="true" id="header_user" tal:condition="extras.is_user_female"></i>
 							<i class="fa fa-user" aria-hidden="true" id="header_user" tal:condition="extras.is_user_neutral"></i>
@@ -66,7 +66,7 @@
                             <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu" aria-labelledby="user-menu-dropdown">
 							<li>
 								<a href="${request.application_url}/settings" data-toggle="tooltip" data-placement="right">
 									<i class="fa fa-cogs" aria-hidden="true"></i><span i18n:translate="settings">Settings</span>
@@ -98,7 +98,7 @@
 						</a>
 					</li>
 
-					<li class="dropdown" data-toggle="tooltip" data-placement="left">
+					<li class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#language">
 							<img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" tal:condition="extras.lang_is_en">
 							<img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" tal:condition="extras.lang_is_de">
