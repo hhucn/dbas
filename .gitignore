@@ -39,7 +39,6 @@ coverage.xml
 #*.sh
 *.bak
 pull*.sh
-dbas/static/minimize.sh
 
 # Pycharm
 .idea/
