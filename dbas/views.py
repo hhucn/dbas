@@ -94,33 +94,63 @@ class Dbas(object):
         return nickname, session_id
 
     @view_config(route_name='webhook_sass_compiling', renderer='json', require_csrf=False)
-    def webhook(self):
+    def webhook_sass(self):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('Websocket', 'webhook', 'main ' + str(os.path.realpath(__file__)))
+        logger('Webhook', 'sass', 'main ' + str(os.path.realpath(__file__)))
 
         try:
             token = self.request.params['secret_token']
             if token != 'SoMeR34Lb42T0K3N':
-                logger('Websocket', 'webhook', 'access denied')
+                logger('Webhook', 'sass', 'access denied')
                 raise exc.HTTPForbidden()
         except Exception:
-                logger('Websocket', 'webhook', 'access denied')
+                logger('Webhook', 'sass', 'access denied')
                 raise exc.HTTPForbidden()
 
         subfile = 'views.py'
         path = str(os.path.realpath(__file__))[:-len(subfile)]
 
-        logger('Websocket', 'webhook', 'compiling sass from ' + path)
+        logger('Webhook', 'sass', 'compiling sass from ' + path)
         try:
-            logger('Websocket', 'webhook', 'Execute: sass ' + path + 'static/css/main.sass ' + path + 'static/css/main.css --style compressed --no-cache')
+            logger('Webhook', 'sass', 'Execute: sass ' + path + 'static/css/main.sass ' + path + 'static/css/main.css --style compressed --no-cache')
             ret_val = call(
                 ['sass', path + 'static/css/main.sass', path + 'static/css/main.css', '--style', 'compressed', '--no-cache'])
-            logger('Websocket', 'webhook', 'compiling done: ' + str(ret_val))
-        except Exception:
+            logger('Webhook', 'sass', 'compiling done: ' + str(ret_val))
+        except Exception as e:
             ret_val = 1
-            logger('Websocket', 'webhook', 'compiling failed')
+            logger('Webhook', 'sass', 'compiling failed: ' + str(e))
 
-        return_dict = {'success': 1 if ret_val == 0 else 0}
+        return_dict = {'success': 1 if ret_val == 0 else 0, 'error': + ret_val}
+
+        return json.dumps(return_dict, True)
+
+    @view_config(route_name='webhook_js_compiling', renderer='json', require_csrf=False)
+    def webhook_js(self):
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('Webhook', 'js', 'main')
+
+        try:
+            token = self.request.params['secret_token']
+            if token != 'kIKsj3Nsk2kand53Bla':
+                logger('Webhook', 'js', 'access denied')
+                raise exc.HTTPForbidden()
+        except Exception:
+                logger('Webhook', 'js', 'access denied')
+                raise exc.HTTPForbidden()
+
+        subfile = 'views.py'
+        path = str(os.path.realpath(__file__))[:-len(subfile)]
+
+        logger('Webhook', 'js', 'minify js')
+        try:
+            logger('Webhook', 'js', 'Execute: ' + path + 'static/minimize.sh')
+            ret_val = call([path + 'static/minimize.sh'])
+            logger('Webhook', 'js', 'minify done: ' + str(ret_val))
+        except Exception as e:
+            ret_val = 1
+            logger('Webhook', 'js', 'minify failed: ' + str(e))
+
+        return_dict = {'success': 1 if ret_val == 0 else 0, 'error': + ret_val}
 
         return json.dumps(return_dict, True)
 

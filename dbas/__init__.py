@@ -93,6 +93,7 @@ def main(global_config, **settings):
 
     # webhook
     config.add_route('webhook_sass_compiling', '/deploy/aqh5lart')
+    config.add_route('webhook_js_compiling', '/deploy/ldn29sm3')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
