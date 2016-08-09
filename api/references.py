@@ -5,6 +5,7 @@ Handle references from other websites, prepare, store and load them into D-BAS.
 """
 
 import transaction
+from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
 from dbas.lib import resolve_issue_uid_to_slug
@@ -95,6 +96,31 @@ def get_complete_reference(ref_id=None):
         issue = DBDiscussionSession.query(Issue).filter_by(uid=reference.issue_uid).first()
         textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=reference.statement_uid).first()
         return reference, user, issue, textversion
+
+
+def get_all_references_by_reference_text(ref_text=None):
+    """
+    Query database for all occurrences of a given reference text. Prepare list with information about
+    used issue, author and a url to the statement.
+
+    :param ref_text: Reference text
+    :return: list of used references
+    """
+    if ref_text:
+        refs = list()
+        matched = DBDiscussionSession.query(StatementReferences).filter_by(reference=ref_text).all()
+        for reference in matched:
+            user = DBDiscussionSession.query(User).filter_by(uid=reference.author_uid).first()
+            issue = DBDiscussionSession.query(Issue).filter_by(uid=reference.issue_uid).first()
+            textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=reference.statement_uid).first()
+            statement_url = url_to_statement(issue.uid, reference.statement_uid)
+            refs.append({"reference": extract_reference_information(reference),
+                         "author": extract_author_information(user),
+                         "issue": extract_issue_information(issue),
+                         "statement": {"uid": reference.statement_uid,
+                                       "url": statement_url,
+                                       "text": textversion.content}})
+        return refs
 
 
 def get_references_for_url(host=None, path=None):

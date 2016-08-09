@@ -14,10 +14,9 @@ import json
 from cornice import Service
 from dbas.views import Dbas
 
-from .extractor import extract_author_information, extract_issue_information, extract_reference_information
 from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, as_json
 from .login import validate_credentials, validate_login
-from .references import store_reference, url_to_statement, get_references_for_url, get_complete_reference
+from .references import store_reference, url_to_statement, get_references_for_url, get_all_references_by_reference_text, get_reference_by_id
 
 log = logger()
 
@@ -333,19 +332,9 @@ def get_reference_usages(request):
     :rtype: list
     """
     ref_uid = request.matchdict["ref_uid"]
-    db_ref, db_user, db_issue, db_textversion = get_complete_reference(ref_uid)
-
-    if db_ref and db_user and db_issue and db_textversion:
-        statement_url = url_to_statement(db_issue.uid, db_ref.statement_uid)
-        refs = list()
-        refs.append({"reference": extract_reference_information(db_ref),
-                     "author": extract_author_information(db_user),
-                     "issue": extract_issue_information(db_issue),
-                     "statement": {"uid": db_ref.statement_uid,
-                                   "url": statement_url,
-                                   "text": db_textversion.content}})
-        return as_json(refs)
-
+    db_ref = get_reference_by_id(ref_uid)
+    if db_ref:
+        return as_json(get_all_references_by_reference_text(db_ref.reference))
     log.error("[API/GET Reference Usages] Error when trying to find matching reference for id " + ref_uid)
     return as_json({"status": "error", "message": "Reference could not be found"})
 
