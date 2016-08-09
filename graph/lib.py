@@ -11,9 +11,10 @@ from dbas.user_management import get_public_profile_picture
 
 
 grey = '#9E9E9E'
+yellow = '#FFC107'
 red = '#F44336'
-green = '#8BC34A'
-blue = '#2196F3'
+green = '#64DD17'
+blue = '#3D5AFE'
 dark_grey = '#616161'
 dark_red = '#D32F2F'
 dark_green = '#689F38'
@@ -66,7 +67,7 @@ def get_d3_data(issue):
         text = text.content if text else 'None'
         node_dict = __get_node_dict(id='statement_' + str(statement.uid),
                                     label=text,
-                                    color=blue if statement.is_startpoint else grey,
+                                    color=blue if statement.is_startpoint else yellow,
                                     size=position_size if statement.is_startpoint else node_size,
                                     x=x,
                                     y=y)
@@ -79,7 +80,7 @@ def get_d3_data(issue):
             edge_dict = __get_edge_dict(id='edge_' + str(statement.uid) + '_issue',
                                         source='statement_' + str(statement.uid),
                                         target='issue',
-                                        color=grey,
+                                        color='black',
                                         size=edge_size,
                                         edge_type=edge_type)
             edges_array.append(edge_dict)
@@ -91,7 +92,7 @@ def get_d3_data(issue):
         node_dict = __get_node_dict(id='argument_' + str(argument.uid),
                                     label='',
                                     color=green if argument.is_supportive else red,
-                                    size=0.5,
+                                    size= 0,
                                     x=x,
                                     y=y)
         all_node_ids.append('argument_' + str(argument.uid))

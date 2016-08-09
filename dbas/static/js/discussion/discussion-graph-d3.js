@@ -77,8 +77,8 @@ function DiscussionGraph() {
 		// create force layout object and define properties
 		var force = d3.layout.force()
     		.gravity(0.07)
-    		.charge(-150)
-    		.linkDistance(80)
+    		.charge(-180)
+    		.linkDistance(90)
     		.size([width, height]);
 
 		// zoom and pan
