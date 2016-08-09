@@ -588,7 +588,7 @@ $(document).ready(function () {
 
 	// activate tooltips
 	$(function () {
-		$("body").tooltip({ selector: '[data-toggle=tooltip]' });
+		$('body').tooltip({ selector: '[data-toggle=tooltip]' });
     });
 
 	// ajax loading animation

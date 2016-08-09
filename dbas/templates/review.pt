@@ -2,8 +2,15 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<div class="container first-container center">
-			<div class="row">
+			<div class="row center">
 				<h4>Comming soon!</h4>
+                <!--
+                <ul>
+                    <li>Edits</li>
+                    <li>Deletes</li>
+                    <li>c</li>
+                </ul>
+                -->
 			</div>
 		</div>
 

@@ -460,8 +460,8 @@ function Main () {
 		// some hack
 		$('#navbar-left').empty();
 
-		$(window).load(function windowLoad() {
-		});
+		//$(window).load(function windowLoad() {
+		//});
 
 		$(window).resize(function () {
 			new GuiHandler().setMaxHeightForBubbleSpace();
