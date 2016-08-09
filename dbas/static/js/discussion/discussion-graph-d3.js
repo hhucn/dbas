@@ -113,17 +113,11 @@ function DiscussionGraph() {
         var marker = svg.append("defs").selectAll('marker').data(edges)
             .enter()
             .append("svg:marker")
-            .attr("id", function(d) {return "marker_" + d.target.color + d.color})
+            .attr("id", function(d) { return "marker_" + d.target.color + d.color })
 			.attr("refX", function(d){
-			    if(d.target.label == ''){
-					return 4;
-				}
-				else if(d.target.size == 8){
-					return 8;
-				}
-				else{
-					return 7;
-				}
+			    if(d.target.label == ''){ return 4; }
+				else if(d.target.size == 8){ return 8; }
+				else{ return 7; }
 			})
             .attr("refY", 2.2)
             .attr("markerWidth", 10)
@@ -136,17 +130,15 @@ function DiscussionGraph() {
 			});
 
 		// links between nodes
-		var link = svg.selectAll(".link")
+		var link = svg.selectAll(".path")
     		.data(edges)
 			// svg lines
     		.enter().append("line")
+			.style("fill", "white")
       		.attr("class", "link")
 			.style("stroke", function(d) { return d.color; })
 			.style("stroke-width", '2px')
-            .attr("size" , function (d) {
-                return d.size;
-            })
-			.attr("marker-end", function(d) {return "url(#marker_" + d.target.color + d.color + ")"});
+			.attr("marker-end", function(d) { return "url(#marker_" + d.target.color + d.color + ")" });
 
 		// node: svg circle
    		var node = svg.selectAll(".node")
@@ -184,11 +176,19 @@ function DiscussionGraph() {
             }
 		});
 
-		// show all labels of click
-		var show = $('#' + 'show-content');
-		document.getElementById('show-content').onclick = function () {
-		    label.style("display", "inline");
-		}
+		// show content
+		$('#show-content').click(function() {
+			label.style("display", "inline");
+			$('#show-content').hide();
+			$('#hide-content').show();
+		});
+
+		// hide content
+		$('#hide-content').click(function() {
+			label.style("display", "none");
+			$('#show-content').show();
+			$('#hide-content').hide();
+		});
 
         force.start();
 
