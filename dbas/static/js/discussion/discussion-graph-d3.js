@@ -19,7 +19,6 @@ function DiscussionGraph() {
 	 */
 	this.callbackIfDoneForDiscussionGraph = function (data) {
 		var jsonData = $.parseJSON(data);
-		//try {
 		try {
 			s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
 		} catch (err) {

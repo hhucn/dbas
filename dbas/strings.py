@@ -831,13 +831,18 @@ class TextGenerator(object):
 
         # build some confrontation text
         if attack == 'undermine':
-            confrontation_text = self.__get_confrontation_text_for_undermine(premise, _t, start_position, start_argument, attack, sys_arg, end_tag, confrontation)
-
-        elif attack == 'rebut':
-            confrontation_text = self.__get_confrontation_text_for_rebut(reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion, confrontation, premise, conclusion, start_argument, end_tag, db_votes)
+            confrontation_text = self.__get_confrontation_text_for_undermine(premise, _t, start_position, start_argument,
+                                                                             attack, sys_arg, end_tag, confrontation)
 
         elif attack == 'undercut':
-            confrontation_text = self.__get_confrontation_text_for_undercut(db_votes, _t, premise, conclusion, confrontation, supportive)
+            confrontation_text = self.__get_confrontation_text_for_undercut(db_votes, _t, premise, conclusion,
+                                                                            confrontation, supportive)
+
+        elif attack == 'rebut':
+            confrontation_text = self.__get_confrontation_text_for_rebut(reply_for_argument, user_arg, user_is_attacking,
+                                                                         _t, sys_conclusion, confrontation, premise,
+                                                                         conclusion, start_argument, end_tag, db_votes,
+                                                                         [color_html, start_argument])
 
         sys_text = confrontation_text + '.<br><br>' + _t.get(_t.whatDoYouThinkAboutThat) + '?'
         return sys_text
@@ -888,7 +893,8 @@ class TextGenerator(object):
                                       + ' ' + premise + '. ' + _t.get(_t.goStepBack) + '.'
         return ret_dict
 
-    def __get_confrontation_text_for_undermine(self, premise, _t, start_position, start_argument, attack, sys_arg, end_tag, confrontation):
+    def __get_confrontation_text_for_undermine(self, premise, _t, start_position, start_argument, attack, sys_arg,
+                                               end_tag, confrontation):
         """
 
         :param premise:
@@ -908,21 +914,25 @@ class TextGenerator(object):
         confrontation_text += ', ' + _t.get(_t.because).lower() + ' ' + confrontation
         return confrontation_text
 
-    def __get_confrontation_text_for_rebut(self, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion, confrontation, premise, conclusion, start_argument, end_tag, db_votes):
+    def __get_confrontation_text_for_rebut(self, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion,
+                                           confrontation, premise, conclusion, start_argument, end_tag, db_votes,
+                                           color_html=[False, '']):
         """
+        Builds the string for a rebut of the system.
 
-        :param reply_for_argument:
-        :param user_arg:
-        :param user_is_attacking:
-        :param _t:
-        :param sys_conclusion:
-        :param confrontation:
-        :param premise:
-        :param conclusion:
-        :param start_argument:
-        :param end_tag:
-        :param db_votes:
-        :return:
+        :param reply_for_argument: Boolean
+        :param user_arg: Argument
+        :param user_is_attacking: Boolean
+        :param _t: Translator
+        :param sys_conclusion: String
+        :param confrontation: String
+        :param premise: String
+        :param conclusion: String
+        :param start_argument: String
+        :param end_tag: String
+        :param db_votes: Votes
+        :param color_html: [Boolean, String]
+        :return: String
         """
         # distinguish between reply for argument and reply for premise group
         if reply_for_argument:  # reply for argument
@@ -930,11 +940,13 @@ class TextGenerator(object):
             if not user_arg.is_supportive:
                 user_is_attacking = not user_is_attacking
                 conclusion = sys_conclusion
+
+            confrontation_text = color_html[1] if color_html[0] else ''
             if user_is_attacking:
-                confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
+                confrontation_text += _t.get(_t.otherUsersClaimStrongerArgumentRejecting)
             else:
-                confrontation_text = _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
-            confrontation_text += ' ' + conclusion + '.' + ' ' + _t.get(_t.theySay)
+                confrontation_text += _t.get(_t.otherUsersClaimStrongerArgumentAccepting)
+            confrontation_text += ' ' + conclusion + (end_tag if color_html[0] else '') + '.' + ' ' + _t.get(_t.theySay)
             confrontation_text += ' ' if self.lang == 'de' else ': '
             confrontation_text += confrontation
         else:  # reply for premise group
