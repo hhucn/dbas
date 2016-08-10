@@ -989,7 +989,7 @@ class Dbas(object):
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 
-        review_dict = ReviewHelper.get_review_array(mainpage)
+        review_dict = ReviewHelper.get_review_array(mainpage, _tn)
 
         return {
             'layout': self.base_layout(),
