@@ -88,6 +88,13 @@ def get_d3_data(issue):
     # for each argument edges will be added as well as the premises
     for argument in db_arguments:
         counter = 1
+        # add invisible point in the middle of the edge (to enable pgroups and undercuts)
+        node_dict = __get_node_dict(id='argument_' + str(argument.uid),
+                                    label='',
+                                    color=green if argument.is_supportive else red,
+                                    size=0.5,
+                                    x=x,
+                                    y=y)
         x = (x + 1) % 10
         y += (1 if x == 0 else 0)
         nodes_array.append(node_dict)
