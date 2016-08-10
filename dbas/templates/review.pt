@@ -3,13 +3,13 @@
 
 		<div class="container colored-container">
 			<div class="row center" id="review-table-wrapper">
-				<h3>Comming soon!</h3>
+				<h3>Comming soon: Review</h3>
                 <table class="table table-condensed" border="0" id="review-table">
                     <thead>
                         <tr class="review-table-row">
-                            <td i18n:translate="open_tasks">Open Tasks</td>
+                            <td i18n:translate="open_tasks" class="center">Open Tasks</td>
                             <td i18n:translate="topic">Topic</td>
-                            <td i18n:translate="recent_reviews">Recent Reviews</td>
+                            <td i18n:translate="recent_reviews" class="center">Recent Reviews</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -19,15 +19,13 @@
                                 <strong tal:condition="task.is_allowed">${structure:task.task_count}</strong>
                             </td>
                             <td>
-                                <div class="forbidden" tal:condition="not:task.is_allowed">${task.task_name}</div>
-                                <div tal:condition="task.is_allowed"><a href="">${task.task_name}</a></div>
+                                <div class="forbidden" tal:condition="not:task.is_allowed"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></div>
+                                <div tal:condition="task.is_allowed"><a href=""><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></a></div>
                                 <div tal:condition="task.is_allowed"><small>${task.is_allowed_text}</small></div>
                                 <div tal:condition="not:task.is_allowed"><small>${task.is_not_allowed_text}</small></div>
                             </td>
                             <td class="center">
-                                <a tal:repeat="user task.last_reviews" i18n:attributes="title user.name; href user.url">${user.name}
-                                    <img tal:attributes="src user.img_src">
-                                </a>
+                                <a tal:repeat="user task.last_reviews" tal:attributes="title user.name; href user.url" target="_blank"><img tal:attributes="src user.img_src"></a>
                             </td>
                         </tr>
                     </tbody>
