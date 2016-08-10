@@ -174,12 +174,15 @@
 ## 0.5.16 (2016-07-05)
 - Improved sidebar
 
-## 0.5.17 (2016-07-12)
+## 0.5.17 (2016-06-12)
 - Color coding for feedback mechanisms
 
-## 0.6.0 (2016-07-xx)
+## 0.6.0 (2016-07-02)
 - Publish / Subscribe
 
-## 0.6.0 (unreleased)
+## 0.6.0 (2016-07-xx)
+- Review-Mechanisms
+
+## 0.x.0 (unreleased)
 - Improved recommendation of the next confrontation
 
