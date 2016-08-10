@@ -21,18 +21,21 @@ def get_review_array(mainpage, translator):
     """
     review_dict = []
 
-    review_dict.append(__get_edit_dict(mainpage))
-    review_dict.append(__get_delete_dict(mainpage))
-    review_dict.append(__get_flag_dict(mainpage))
+    review_dict.append(__get_edit_dict(mainpage, translator))
+    review_dict.append(__get_delete_dict(mainpage, translator))
+    review_dict.append(__get_flag_dict(mainpage, translator))
+    review_dict.append(__get_random_dict(mainpage, translator))
+    review_dict.append(__get_duplicate_dict(mainpage, translator))
 
     return review_dict
 
 
-def __get_edit_dict(mainpage):
+def __get_edit_dict(mainpage, translator):
     """
     Prepares dictionary for the edit section.
 
     :param mainpage: URL
+    :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Edits',
@@ -47,11 +50,12 @@ def __get_edit_dict(mainpage):
     return tmp_dict
 
 
-def __get_delete_dict(mainpage):
+def __get_delete_dict(mainpage, translator):
     """
     Prepares dictionary for the delete section.
 
     :param mainpage: URL
+    :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Deletes',
@@ -66,20 +70,61 @@ def __get_delete_dict(mainpage):
     return tmp_dict
 
 
-def __get_flag_dict(mainpage):
+def __get_flag_dict(mainpage, translator):
     """
     Prepares dictionary for the flag section.
 
     :param mainpage: URL
+    :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Flags',
                 'url': mainpage + '/review/flags',
                 'icon': 'fa fa-flag',
                 'task_count': 8,
-                'is_allowed': True,
+                'is_allowed': False,
                 'is_allowed_text': 'Visit the review queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least 150 reputation to review edits.',
+                'last_reviews': __get_users_array(mainpage)
+                }
+    return tmp_dict
+
+
+def __get_random_dict(mainpage, translator):
+    """
+    Prepares dictionary for the random section.
+
+    :param mainpage: URL
+    :param translator: Translator
+    :return: Dict()
+    """
+    tmp_dict = {'task_name': 'Random',
+                'url': mainpage + '/review/random',
+                'icon': 'fa fa-random',
+                'task_count': '-',
+                'is_allowed': True,
+                'is_allowed_text': 'Visit the random queue for D-BAS.',
+                'is_not_allowed_text': 'You need at least 50 reputation to review random statements.',
+                'last_reviews': __get_users_array(mainpage)
+                }
+    return tmp_dict
+
+
+def __get_duplicate_dict(mainpage, translator):
+    """
+    Prepares dictionary for the duplicate section.
+
+    :param mainpage: URL
+    :param translator: Translator
+    :return: Dict()
+    """
+    tmp_dict = {'task_name': 'Duplicates',
+                'url': mainpage + '/review/duplicate',
+                'icon': 'fa fa-files-o',
+                'task_count': '-',
+                'is_allowed': True,
+                'is_allowed_text': 'Visit the duplicate queue for D-BAS.',
+                'is_not_allowed_text': 'You need at least 10 reputation to review duplicated statements.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
