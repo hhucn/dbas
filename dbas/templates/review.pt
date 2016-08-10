@@ -2,49 +2,32 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<div class="container colored-container">
-			<div class="row center" style="width: 70%;">
-				<h4>Comming soon!</h4>
+			<div class="row center" id="review-table-wrapper">
+				<h3>Comming soon!</h3>
                 <table class="table table-condensed" border="0" id="review-table">
-                    <!--
                     <thead>
                         <tr class="review-table-row">
-                            <td>Tasks</td>
-                            <td>Topic</td>
-                            <td>Recent Reviews</td>
+                            <td i18n:translate="open_tasks">Open Tasks</td>
+                            <td i18n:translate="topic">Topic</td>
+                            <td i18n:translate="recent_reviews">Recent Reviews</td>
                         </tr>
                     </thead>
-                    -->
                     <tbody>
-                        <tr class="review-table-row">
-                            <td class="forbidden center">
-                                <strong>4</strong>
+                        <tr class="review-table-row" tal:repeat="task review">
+                            <td class="center">
+                                <strong class="forbidden" tal:condition="not:task.is_allowed">${structure:task.task_count}</strong>
+                                <strong tal:condition="task.is_allowed">${structure:task.task_count}</strong>
                             </td>
                             <td>
-                                <div class="forbidden">Edits</div>
-                                <div><small>You need at least 100 reputation to review edits.</small></div>
+                                <div class="forbidden" tal:condition="not:task.is_allowed">${task.task_name}</div>
+                                <div tal:condition="task.is_allowed"><a href="">${task.task_name}</a></div>
+                                <div tal:condition="task.is_allowed"><small>${task.is_allowed_text}</small></div>
+                                <div tal:condition="not:task.is_allowed"><small>${task.is_not_allowed_text}</small></div>
                             </td>
-                            <td>
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98f00ba04e9800998ecf8427e?d=wavatar&amp;s=40">
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98e00b204e9870998ecf8427e?d=wavatar&amp;s=40">
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b104e9800f98ecf8427e?d=wavatar&amp;s=40">
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b1e4e8320123ecf8427e?d=wavatar&amp;s=40">
-                                <img src="https://secure.gravatar.com/avatar/d41g8cd98f00b20429800998ecf8427e?d=wavatar&amp;s=40">
-                            </td>
-                        </tr>
-                        <tr class="review-table-row">
-                            <td class="forbidden center">
-                                <strong>2</strong>
-                            </td>
-                            <td>
-                                <div><a href="#">Deletes</a></div>
-                                <div><small>Visit the delete queue for D-BAS.</small></div>
-                            </td>
-                            <td>
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=wavatar&amp;s=40">
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98e00b204e9800998ecf8427e?d=wavatar&amp;s=40">
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b104e9800998ecf8427e?d=wavatar&amp;s=40">
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b104e8320998ecf8427e?d=wavatar&amp;s=40">
-                                <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b20429800998ecf8427e?d=wavatar&amp;s=40">
+                            <td class="center">
+                                <a tal:repeat="user task.last_reviews" i18n:attributes="title user.name; href user.url">
+                                    <img tal:attributes="src user.img_src">
+                                </a>
                             </td>
                         </tr>
                     </tbody>
