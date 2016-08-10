@@ -25,7 +25,7 @@
                                 <div tal:condition="not:task.is_allowed"><small>${task.is_not_allowed_text}</small></div>
                             </td>
                             <td class="center">
-                                <a tal:repeat="user task.last_reviews" i18n:attributes="title user.name; href user.url">
+                                <a tal:repeat="user task.last_reviews" i18n:attributes="title user.name; href user.url">${user.name}
                                     <img tal:attributes="src user.img_src">
                                 </a>
                             </td>
