@@ -117,7 +117,7 @@ def get_d3_data(issue):
                                         target=target,
                                         color=green if argument.is_supportive else red,
                                         size=edge_size,
-                                        edge_type='')
+                                        edge_type=edge_type)
             edges_array.append(edge_dict)
         else:
             # edge from premisegroup to the middle point
