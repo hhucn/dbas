@@ -28,6 +28,7 @@ import dbas.helper.email_helper as EmailHelper
 import dbas.helper.history_helper as HistoryHelper
 import dbas.helper.issue_helper as IssueHelper
 import dbas.helper.notification_helper as NotificationHelper
+import dbas.helper.review_helper as ReviewHelper
 import dbas.helper.voting_helper as VotingHelper
 import dbas.news_handler as NewsHandler
 import dbas.password_handler as PasswordHandler
@@ -988,12 +989,15 @@ class Dbas(object):
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 
+        review_dict = ReviewHelper.get_review_array(mainpage)
+
         return {
             'layout': self.base_layout(),
             'language': str(ui_locales),
             'title': _tn.get(_tn.review),
             'project': project_name,
-            'extras': extras_dict
+            'extras': extras_dict,
+            'review': review_dict
         }
 
     # 404 page
