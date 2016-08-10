@@ -70,14 +70,32 @@ function DiscussionGraph() {
 		// container for visualization
 		var svg = d3.select('#' + graphViewContainerSpaceId).append("svg")
     		.attr("width", width)
-    		.attr("height", height);
+    		.attr("height", height)
+			.append('g')
+			.attr("class", "zoom");
 
 		// create force layout object and define properties
 		var force = d3.layout.force()
     		.gravity(0.07)
-    		.charge(-300)
-    		.linkDistance(80)
+    		.charge(-180)
+    		.linkDistance(90)
     		.size([width, height]);
+
+		// zoom and pan
+		var zoom = d3.behavior.zoom().on("zoom", zoomed);
+		d3.select("svg").call(zoom);
+
+        function zoomed() {
+            d3.select("g.zoom")
+            .attr("transform", "translate(" + zoom.translate() + ")"
+			+ " scale(" + zoom.scale() + ")")
+        }
+
+		// enable drag functionality, pan functionality overrides drag
+        var drag = force.drag()
+			.on("dragstart", function(d){
+				d3.event.sourceEvent.stopPropagation();
+			});
 
 		var edges = [];
 
@@ -85,45 +103,48 @@ function DiscussionGraph() {
     		// get source and target nodes
     		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
         		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
-    		// add edge and color to array
-    		edges.push({source: sourceNode, target: targetNode, color: e.color});
+    		// add edge, color and size to array
+    		edges.push({source: sourceNode, target: targetNode, color: e.color, size: e.size});
 		});
 
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 
-		// Per-type markers for links
-	    var marker = svg.append("defs").selectAll('marker')
-            .data(edges)
+        var marker = svg.append("defs").selectAll('marker').data(edges)
             .enter()
             .append("svg:marker")
-            .attr("id", function(d) {return "marker_" + d.color})
-            .attr("refX", 10)
+            .attr("id", function(d) { return "marker_" + d.target.color + d.color })
+			.attr("refX", function(d){
+			    if(d.target.label == ''){ return 4; }
+				else if(d.target.size == 8){ return 8; }
+				else{ return 7; }
+			})
             .attr("refY", 2.2)
             .attr("markerWidth", 10)
             .attr("markerHeight", 10)
             .attr("orient", "auto")
-			.append("path")
-		    .attr("d", "M0,0 V4 L5,2 Z10")
+			.append("svg:path")
+			.attr("d", "M 0,0 V 4 L 5,2 Z")
             .attr("fill", function(d) {
-            	return d.color;
-            });
+			    return d.color;
+			});
 
 		// links between nodes
-		var link = svg.selectAll(".link")
+		var link = svg.selectAll(".path")
     		.data(edges)
 			// svg lines
     		.enter().append("line")
-      			.attr("class", "link")
-			    .style("stroke", function(d) { return d.color; })
-				.style("stroke-width", '2px')
-				.attr("marker-end", function(d) {return "url(#marker_" + d.color + ")"});
+			.style("fill", "white")
+      		.attr("class", "link")
+			.style("stroke", function(d) { return d.color; })
+			.style("stroke-width", '2px')
+			.attr("marker-end", function(d) { return "url(#marker_" + d.target.color + d.color + ")" });
 
 		// node: svg circle
    		var node = svg.selectAll(".node")
         	.data(force.nodes())
         	.enter().append("g")
-            	.attr("class", "node")
-            	.call(force.drag);
+            .attr("class", "node")
+            .call(drag);
 
 		// define properties for nodes
     	var circle = node.append("circle")
@@ -134,17 +155,39 @@ function DiscussionGraph() {
 				return d.color;
 			});
 
-		var helper = new Helper();
+		// wrap text
+		var label = node
+			.append("text").each(function (d) {
+            var node_text = d.label.split(" ");
+            for (var i = 0; i < node_text.length; i++) {
+                if((i % 4) == 0){
+                    d3.select(this).append("tspan")
+					.text(node_text[i])
+                    .attr("dy", i ? '1.0em' : '0')
+                    .attr("x", '0')
+                    .attr("text-anchor", "middle")
+                    .attr("class", "tspan" + i);
+                }
+                else{
+                    d3.select(this).append("tspan")
+                    .text(' ' + node_text[i]);
+                }
+            }
+		});
 
-        var label = node.append("text").each(function (d) {
-   	        var node_text = helper.cutTextOnChar(d.label, 50, ' ');
-       		d3.select(this).append("tspan")
-                .text(node_text)
-                .attr("dy", "1.2em")
-                .attr("x", '0')
-                .attr("text-anchor", "middle")
-                .attr("class", "tspan")
-      		});
+		// show content
+		$('#show-content').click(function() {
+			label.style("display", "inline");
+			$('#show-content').hide();
+			$('#hide-content').show();
+		});
+
+		// hide content
+		$('#hide-content').click(function() {
+			label.style("display", "none");
+			$('#show-content').show();
+			$('#hide-content').hide();
+		});
 
         force.start();
 
@@ -167,6 +210,6 @@ function DiscussionGraph() {
 				.attr("transform", function (d) {
         			return "translate(" + d.x + "," + (d.y - 50) + ")";
     			});
-  		}
+ 		}
 	}
 }
