@@ -8,7 +8,7 @@ import dbas.user_management as UserHandler
 import dbas.helper.email_helper as EmailHelper
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Statement
+from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument
 from dbas.lib import sql_timestamp_pretty_print, escape_string
 from dbas.strings import Translator, TextGenerator
 
@@ -109,26 +109,26 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
     db_current_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     db_root_author_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_root_author.uid).first()
     db_last_editor_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_last_editor.uid).first()
-    user_lang1 = DBDiscussionSession.query(Language).filter_by(uid=db_root_author_settings.lang_uid).first().ui_locales
-    user_lang2 = DBDiscussionSession.query(Language).filter_by(uid=db_last_editor_settings.lang_uid).first().ui_locales
+    root_lang = DBDiscussionSession.query(Language).filter_by(uid=db_root_author_settings.lang_uid).first().ui_locales
+    editor_lang = DBDiscussionSession.query(Language).filter_by(uid=db_last_editor_settings.lang_uid).first().ui_locales
+    _t_editor = Translator(editor_lang)
+    _t_root = Translator(root_lang)
 
     # send mail to main author
     if db_root_author_settings.should_send_mails is True and db_current_user != db_root_author:
-        EmailHelper.send_mail_due_to_added_text(user_lang1, url, db_root_author, request)
+        EmailHelper.send_mail_due_to_added_text(root_lang, url, db_root_author, request)
 
     # send mail to last author
     if db_last_editor_settings.should_send_mails is True and db_last_editor != db_root_author and db_last_editor != db_current_user:
-        EmailHelper.send_mail_due_to_added_text(user_lang2, url, db_last_editor, request)
+        EmailHelper.send_mail_due_to_added_text(editor_lang, url, db_last_editor, request)
 
     # send notification via websocket to main author
     if db_root_author_settings.should_send_notifications is True and db_root_author != db_current_user:
-        _t_user = Translator(user_lang1)
-        send_request_to_socketio('addtext', db_root_author.nickname, _t_user.get(_t_user.statementAdded), url)
+        send_request_to_socketio('addtext', db_root_author.nickname, _t_root.get(_t_root.statementAdded), url)
 
     # send notification via websocket to last author
     if db_last_editor_settings.should_send_notifications is True and db_last_editor != db_root_author and db_last_editor != db_current_user:
-        _t_user = Translator(user_lang2)
-        send_request_to_socketio('addtext', db_last_editor.nickname, _t_user.get(_t_user.statementAdded), url)
+        send_request_to_socketio('addtext', db_last_editor.nickname, _t_editor.get(_t_editor.statementAdded), url)
 
     # find admin
     db_admin = DBDiscussionSession.query(User).filter(and_(User.firstname == 'admin',
@@ -138,13 +138,11 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
                                                            )).first()
 
     # get topic and content for messages to both authors
-    _t1 = Translator(user_lang1)
-    topic1 = _t1.get(_t1.statementAdded)
-    content1 = TextGenerator.get_text_for_add_text_message(user_lang1, url, True)
+    topic1 = _t_root.get(_t_root.statementAdded)
+    content1 = TextGenerator.get_text_for_add_text_message(root_lang, url, True)
 
-    _t2 = Translator(user_lang2)
-    topic2 = _t2.get(_t2.statementAdded)
-    content2 = TextGenerator.get_text_for_add_text_message(user_lang2, url, True)
+    topic2 = _t_editor.get(_t_editor.statementAdded)
+    content2 = TextGenerator.get_text_for_add_text_message(editor_lang, url, True)
 
     if db_root_author != db_current_user:
         DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
@@ -159,6 +157,54 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
                                         content=content2,
                                         is_inbox=True))
     DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def send_add_argument_notification(url, argument_uid, user, request, transaction):
+    """
+
+    :param url:
+    :param argument_uid:
+    :param user:
+    :param request:
+    :param transaction:
+    :return:
+    """
+    # getting current argument, arguments author, current user and some settings
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+    db_author = DBDiscussionSession.query(User).fitler_by(uid=db_argument.author_uid).first()
+    db_current_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    if db_author == db_current_user:
+        return None
+
+    db_author_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_author.uid).first()
+    user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_author_settings.lang_uid).first().ui_locales
+
+    # send notification via websocket to last author
+    if db_author_settings.should_send_notifications is True:
+        _t_user = Translator(user_lang)
+        send_request_to_socketio('addtext', db_author.nickname, _t_user.get(_t_user.statementAdded), url)
+
+    # send mail to last author
+    if db_author_settings.should_send_mails:
+        EmailHelper.send_mail_due_to_added_text(user_lang, url, db_author, request)
+
+    # find admin
+    db_admin = DBDiscussionSession.query(User).filter(and_(User.firstname == 'admin',
+                                                           User.surname == 'admin',
+                                                           User.nickname == 'admin',
+                                                           User.public_nickname == 'admin',
+                                                           )).first()
+
+    _t = Translator(user)
+    topic = _t.get(_t.statementAdded)
+    content = TextGenerator.get_text_for_add_text_message(user_lang, url, True)
+
+    DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
+                                    to_author_uid=db_author.uid,
+                                    topic=topic,
+                                    content=content,
+                                    is_inbox=True))
     transaction.commit()
 
 
