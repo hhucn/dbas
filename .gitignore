@@ -46,6 +46,9 @@ data/
 # Deployment
 dbas/static/css/main.css
 dbas/static/css/main.css.map
+dbas/static/js/compiled/dbas.min.js
+dbas/static/js/compiled/main.min.js
+dbas/static/js/compiled/main_discussion.min.js
 
 # Splinter
 C:\\nppdf32Log\\debuglog.txt
