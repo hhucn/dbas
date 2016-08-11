@@ -98,18 +98,19 @@ class QueryHelper:
         new_argument_uids = []
         new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
         for group in premisegroups:  # premise groups is a list of lists
-            new_argument_uid, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
-            if new_argument_uid == -1:  # break on error
+            new_argument, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
+            if new_argument.uid == -1:  # break on error
                 error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
                 return -1, None, error
 
-            new_argument_uids.append(new_argument_uid)
+            new_argument_uids.append(new_argument.uid)
             if for_api:
                 new_statement_uids.append(statement_uids)
 
         # #arguments=0: empty input
         # #arguments=1: deliver new url
         # #arguments>1: deliver url where the user has to choose between her inputs
+        _um = UrlManager(mainpage, slug, for_api)
         if len(new_argument_uids) == 0:
             error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 
@@ -119,7 +120,7 @@ class QueryHelper:
             arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
             if arg_id_sys == 0:
                 attack = 'end'
-            url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+            url = _um.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
             if history:
                 url += '?history=' + history
 
@@ -127,9 +128,13 @@ class QueryHelper:
             pgroups = []
             for arg_uid in new_argument_uids:
                 pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
-            url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
+            url = _um.get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
             if history:
                 url += '?history=' + history
+
+        if len(new_argument_uids) > 0:
+            url = _um.get_url_for_justifying_statement(False, conclusion_id, history[-1:])
+            NotificationHelper.send_add_text_notification(url, conclusion_id, request)
 
         return url, new_statement_uids, error
 
@@ -528,10 +533,10 @@ class QueryHelper:
         new_premisegroup_uid = QueryHelper.__set_statements_as_new_premisegroup(statements, user, issue)
 
         # third, insert the argument
-        new_argument_uid = QueryHelper.__create_argument_by_uids(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
+        new_argument = QueryHelper.__create_argument_by_uids(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
 
         transaction.commit()
-        return new_argument_uid, statement_uids
+        return new_argument, statement_uids
 
     @staticmethod
     def __create_argument_by_uids(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
@@ -575,7 +580,7 @@ class QueryHelper:
         transaction.commit()
         if new_argument:
             logger('QueryHelper', '__create_argument_by_uids', 'argument was inserted')
-            return new_argument.uid
+            return new_argument
         else:
             logger('QueryHelper', '__create_argument_by_uids', 'argument was not inserted')
             return None

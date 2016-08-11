@@ -436,16 +436,16 @@ function Main () {
 		// hover on radio buttons
 		list.find('input').each(function(){
 			$(this).hover(function(){
-				$(this).prop('checked', true);console.log('a');
+				$(this).prop('checked', true);
 			}, function(){
-				$(this).prop('checked', false);console.log('b');
+				$(this).prop('checked', false);
 			})
 		});
 		list.find('label').each(function(){
 			$(this).hover(function(){
-				$(this).prev().prop('checked', true);console.log('a');
+				$(this).prev().prop('checked', true);
 			}, function(){
-				$(this).prev().prop('checked', false);console.log('b');
+				$(this).prev().prop('checked', false);
 			})
 		});
 	};

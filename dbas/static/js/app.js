@@ -373,18 +373,14 @@ function setTextWatcherForMinLength(element){
 	var field = $('#' + id);
 	if (offset > 0) {
 		if (field.length > 0) {
-			console.log("a1");
 			field.text(msg);
 		} else {
-			console.log("a2");
 			$('<span>').text(msg).attr('id', id).addClass('text-min-counter-input').insertBefore(element);
 		}
 	} else {
 		if (field.length > 0) {
-			console.log("a3");
 			field.remove();
 		}
-		console.log("a4");
 	}
 }
 

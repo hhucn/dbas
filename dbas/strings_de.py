@@ -482,6 +482,8 @@ class GermanDict:
         de_lang[_self.switchLanguage] = 'Sprache ändern'
         de_lang[_self.supportPosition] = 'Position unterstützen'
         de_lang[_self.statement] = 'Aussage'
+        de_lang[_self.statementAdded] = 'Aussage wurde hinzugefügt'
+        de_lang[_self.statementAddedMessageContent] = 'Hey, jemand hat seine Meineung zu Deiner Aussage hinzugefügt!'
         de_lang[_self.statementIndex] = 'Aussagen Index - Letzte 30 Tage'
         de_lang[_self.statementIndexInfo] = 'Anzahl an hinzugefügten Aussagen'
         de_lang[_self.sureThat] = 'Ich bin sehr sicher, dass '

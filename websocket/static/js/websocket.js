@@ -51,6 +51,7 @@ function doPublish(data){
 	if (data.type == 'notifications'){		doNotification(data);
 	} else if (data.type == 'mention') {	doMention(data);
 	} else if (data.type == 'edittext') {	doEditText(data);
+	} else if (data.type == 'addtext') {	doAddText(data);
 	} else if (data.type == 'success') {	setGlobalSuccessHandler('Huray!', data.msg);
 	} else if (data.type == 'warning') {	setGlobalErrorHandler('Uhh', data.msg);
 	} else if (data.type == 'info') {	    setGlobalInfoHandler('Ooh', data.msg);
@@ -75,8 +76,7 @@ function doNotification(data){
  * @param data dict
  */
 function doMention(data){
-	var alink = '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>';
-	setGlobalInfoHandler('Huray!', alink);
+	setGlobalInfoHandler('Huray!', '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>');
 }
 
 /**
@@ -84,8 +84,15 @@ function doMention(data){
  * @param data dict
  */
 function doEditText(data){
-	var alink = '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>';
-	setGlobalInfoHandler('Ooh!', alink);
+	setGlobalInfoHandler('Ooh!', '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>');
+}
+
+/**
+ * Displays info popup line for add text notifications
+ * @param data dict
+ */
+function doAddText(data){
+	setGlobalInfoHandler('Ahh!', '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>');
 }
 
 /**
