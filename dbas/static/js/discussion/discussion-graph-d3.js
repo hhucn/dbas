@@ -84,10 +84,6 @@ function DiscussionGraph() {
     		.size([width, height]);
 
 		$(window).resize(function () {
-			console.log("huhu");
-			console.log(container.width());
-			console.log(container.height());
-			// attribut neu setzen
 			container.find('svg').attr("width", container.width()).attr("height", container.height());
 			force.size([container.width(), container.height()]);
 		});
@@ -100,10 +96,6 @@ function DiscussionGraph() {
             d3.select("g.zoom")
             .attr("transform", "translate(" + zoom.translate() + ")"
 			+ " scale(" + zoom.scale() + ")");
-            /*trans = d3.event.translate;
-            scale = d3.event.scale;
-            svg.selectAll("*:not(.text)").attr("transform", "translate(" + trans + ")" + " scale(" + zoom.scale() + ")");*/
-
         }
 
 		// enable drag functionality, pan functionality overrides drag
@@ -124,6 +116,7 @@ function DiscussionGraph() {
 
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 
+		// arrows for edges
         var marker = svg.append("defs").selectAll('marker').data(edges)
             .enter()
             .append("svg:marker")
@@ -170,8 +163,8 @@ function DiscussionGraph() {
 				return d.color;
 			});
 
-		// border
-
+		// background of labels
+		var rect = node.append("rect");
 
 		// wrap text
 		var label = node.append("text").each(function (d) {
@@ -180,47 +173,32 @@ function DiscussionGraph() {
                 if((i % 4) == 0){
                     d3.select(this).append("tspan")
 					.text(node_text[i])
-                    .attr("dy", i ? '1.0em' : '0')
+                    .attr("dy", i ? '1.2em' : '0')
                     .attr("x", '0')
-                    .attr("text-anchor", "middle")
-                    .attr("class", "tspan" + i)
-					.attr("visibility", "visible");
+                    .attr("text-anchor", "middle");
                 }
                 else{
                     d3.select(this).append("tspan")
-                    .text(' ' + node_text[i])
-					.attr("visibility", "visible");
+                    .text(' ' + node_text[i]);
 				}
             }
+			d3.select(this).attr("id", d.id);
 		});
 
-
-		var rect = node.append("rect")
-			.attr("width", "20%")
-			.attr("height", "15%")
-			.attr("y", '-20')
-			.attr("x", '-130');
-
-		/*var rect = label
-			.append("svg:rect")
-        //    .attr("x", d3.select(this).node().getBoundingClientRect().left + 10)
-          //  .attr("y", d3.select(this).node().getBoundingClientRect().top - 10)
-            .attr("width", "100")
-            .attr("height", "20")
-            .attr("rx", "5")
-            .attr("ry", "5")
-            .attr("visibility", "visible");*/
-
-
-		var text = d3.select("text");
-        var bbox = text.node().getBBox();
-        var padding = 2;
-        /*var rect = svg.append("rect", "text")
-			.attr("x", bbox.x - padding)
-            .attr("y", bbox.y - padding)
-            .attr("width", bbox.width + (padding*2))
-            .attr("height", bbox.height + (padding*2))
-            .style("fill", "red");*/
+		// set properties for rect
+		rect.each(function (d) {
+		    var width = $("#" + d.id).width()+10,
+			    height = $("#" + d.id).height()+10;
+			if(d.size == 0){
+				width = 0;
+				height = 0;
+			}
+			d3.select(this)
+			.attr("width", width)
+			.attr("height", height)
+			.attr("y", -17)
+			.attr("x", -width/2);
+		});
 
 		// show content
 		$('#show-content').click(function() {
@@ -249,6 +227,12 @@ function DiscussionGraph() {
         		.attr("x2", function(d) { return d.target.x; })
         		.attr("y2", function(d) { return d.target.y; });
 
+			// update position of rect
+			rect
+				.attr("transform", function (d) {
+					return "translate(" + d.x + "," + (d.y - 50) + ")";
+    			});
+
             // update position of nodes
 			circle
         		.attr("cx", function(d) { return d.x; })
@@ -257,15 +241,7 @@ function DiscussionGraph() {
             // update position of label
 			label
 				.attr("transform", function (d) {
-					console.log(d.height);
-        			return "translate(" + d.x + "," + (d.y - 50) + ")";
-    			});
-
-			// update position of rect
-			rect
-				.attr("transform", function (d) {
-					console.log(d.height);
-					return "translate(" + d.x + "," + (d.y - 50) + ")";
+       			    return "translate(" + d.x + "," + (d.y - 50) + ")";
     			});
 		}
 	}
