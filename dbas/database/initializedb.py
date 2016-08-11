@@ -337,10 +337,17 @@ def setup_news_db(session):
                   date=arrow.get('2016-07-05'),
                   author='Tobias Krauthoff',
                   news='Today we released a new text-based sidebar for a better experience. Have fun!')
+    news50 = News(title='COMMA16',
+                  date=arrow.get('2016-08-11'),
+                  author='Tobias Krauthoff',
+                  news='I regret that i have neglected the news section, but this is in your interest. In the meantime '
+                       'we are working on an graph view for our argumentation model, a review section for statements '
+                       'and we are improving the ways how we act with each kind of user input. Stay tuned!')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
-                  news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49]
+                  news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
+                  news50]
     session.add_all(news_array[::-1])
     session.flush()
 
