@@ -132,6 +132,7 @@ class QueryHelper:
             if history:
                 url += '?history=' + history
 
+        # send notifications and mails
         if len(new_argument_uids) > 0:
             url = _um.get_url_for_justifying_statement(False, conclusion_id, history[-1:])
             NotificationHelper.send_add_text_notification(url, conclusion_id, user, request, transaction)
@@ -164,7 +165,6 @@ class QueryHelper:
         _tn = Translator(lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
         error = ''
-        url = ''
         history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
         supportive = attack_type == 'support' or attack_type == 'overbid'
 
@@ -172,11 +172,11 @@ class QueryHelper:
         # all new arguments are collected in a list
         new_argument_uids = []
         for group in premisegroups:  # premise groups is a list of lists
-            new_argument_uid = QueryHelper.__insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
-            if new_argument_uid == -1:  # break on error
+            new_argument = QueryHelper.__insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
+            if not isinstance(new_argument, Argument):  # break on error
                 error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
                 return -1, None, error
-            new_argument_uids.append(new_argument_uid)
+            new_argument_uids.append(new_argument.uid)
 
         statement_uids = []
         if for_api:
@@ -192,6 +192,7 @@ class QueryHelper:
         # #arguments=0: empty input
         # #arguments=1: deliver new url
         # #arguments>1: deliver url where the user has to choose between her inputs
+        _um = url = UrlManager(mainpage, slug, for_api)
         if len(new_argument_uids) == 0:
             error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 
@@ -201,7 +202,7 @@ class QueryHelper:
             arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
             if arg_id_sys == 0:
                 attack = 'end'
-            url = UrlManager(mainpage, slug, for_api).get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+            url = _um.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
             if history:
                 url += '?history=' + history
         else:
@@ -214,13 +215,13 @@ class QueryHelper:
             if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
                 db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).first()
                 db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
-                url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
+                url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
                 if history:
                     url += '?history=' + history
 
             # relation to the arguments relation
             elif attack_type == 'undercut' or attack_type == 'overbid':
-                url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
+                url = _um.get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
                 if history:
                     url += '?history=' + history
 
@@ -232,6 +233,10 @@ class QueryHelper:
                 url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
                 if history:
                     url += '?history=' + history
+
+        # send notifications and mails
+        if len(new_argument_uids) > 0:
+            NotificationHelper.send_add_text_notification(url, arg_id, user, request, transaction)
 
         return url, statement_uids, error
 
@@ -424,7 +429,7 @@ class QueryHelper:
         elif current_attack == 'rebut':
             new_argument, duplicate = _rh.set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
 
-        return new_argument.uid
+        return new_argument
 
     @staticmethod
     def __set_statement(transaction, statement, user, is_start, issue):
