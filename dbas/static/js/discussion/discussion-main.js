@@ -19,13 +19,13 @@ function Main () {
 				$('#' + sendNewPremiseId).val(_t(saveMyStatements));
 			});
 		});
-
+		
 		/*
 		 $('.icon-rem-premise').each(function() {
 		 // set in GuiHandler
 		 });
 		 */
-
+		
 		// admin list all users button
 		$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 			if ($(this).val() === _t(showAllUsers)) {
@@ -36,7 +36,7 @@ function Main () {
 				$(this).val(_t(showAllUsers));
 			}
 		});
-
+		
 		// admin list all attacks button
 		$('#' + listAllArgumentId).click(function listAllUsersAttacksId() {
 			if ($(this).val() === _t(showAllAttacks)) {
@@ -45,37 +45,37 @@ function Main () {
 				$('#' + adminsSpaceForArgumentsId).empty();
 			}
 		});
-
+		
 		// hiding the argument container, when the X button is clicked
 		$('#' + closeStatementContainerId).click(function closeStatementContainerId() {
 			$('#' + addStatementContainerId).hide();
 			$('#' + addStatementErrorContainer).hide();
 			$('#' + discussionSpaceId + ' li:last-child input').attr('checked', false).prop('checked', false).enable = true;
 		});
-
+		
 		// hides container
 		$('#' + closePremiseContainerId).click(function closeStatementContainerId() {
 			$('#' + addPremiseContainerId).hide();
 			$('#' + addPremiseErrorContainer).hide();
 			$('#' + discussionSpaceId + ' li:last-child input').attr('checked', false).prop('checked', false).enable = true;
 		});
-
+		
 		// hiding the island view, when the X button is clicked
 		$('#' + closeIslandViewContainerId).click(function () {
 			guiHandler.resetChangeDisplayStyleBox();
 			$('#li_' + addReasonButtonId).attr('checked', true).prop('checked', true);
 		});
-
+		
 		// hiding the island view, when the X button is clicked
 		$('#' + closeGraphViewContainerId).click(function () {
 			guiHandler.resetChangeDisplayStyleBox();
 		});
-
+		
 		// open edit statement
 		$('#' + editStatementButtonId).click(function () {
 			guiHandler.showEditStatementsPopup();
 		});
-
+		
 		// close popups
 		$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId() {
 			guiHandler.hideandClearEditStatementsPopup();
@@ -89,18 +89,18 @@ function Main () {
 		$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId() {
 			guiHandler.hideAndClearUrlSharingPopup();
 		});
-
+		
 		// share url for argument blogging
 		$('#' + shareUrlId).click(function shareurlClick() {
 			guiHandler.showUrlSharingPopup();
 		});
-
+		
 		/**
 		 * Switch between shortened and long url
 		 */
 		$('#' + popupUrlSharingLongUrlButtonID).click(function () {
 			var input_field = $('#' + popupUrlSharingInputId);
-
+			
 			if ($(this).data('is-short-url') == '0') {
 				input_field.val(input_field.data('short-url'));
 				$(this).data('is-short-url', '1').text(_t_discussion(fetchLongUrl));
@@ -109,28 +109,28 @@ function Main () {
 				$(this).data('is-short-url', '0').text(_t_discussion(fetchShortUrl));
 			}
 		});
-
+		
 		/**
 		 * Sharing shortened url with mail
 		 */
 		$('#' + shareUrlButtonMail).click(function shareUrlButtonMail() {
 			new Sharing().emailShare('user@example.com', _t(interestingOnDBAS), _t(haveALookAt) + ' ' + $('#' + popupUrlSharingInputId).val());
 		});
-
+		
 		/**
 		 * Sharing shortened url on twitter
 		 */
 		$('#' + shareUrlButtonTwitter).click(function shareUrlButtonTwitter() {
 			new Sharing().twitterShare($('#' + popupUrlSharingInputId).val(), '');
 		});
-
+		
 		/**
 		 * Sharing shortened url on google
 		 */
 		$('#' + shareUrlButtonGoogle).click(function shareUrlButtonGoogle() {
 			new Sharing().googlePlusShare($('#' + popupUrlSharingInputId).val());
 		});
-
+		
 		/**
 		 * Sharing shortened url on facebook
 		 */
@@ -139,7 +139,7 @@ function Main () {
 			new Sharing().facebookShare(val, "FB Sharing", _t(haveALookAt) + ' ' + val,
 				mainpage + "static/images/logo.png");
 		});
-
+		
 		guiHandler.setDisplayStyleAsDiscussion();
 		$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct() {
 			guiHandler.setDisplayStyleAsDiscussion();
@@ -150,7 +150,7 @@ function Main () {
 		$('#' + displayStyleIconExpertId).click(function displayStyleIconExpertFct() {
 			guiHandler.setDisplayStyleAsGraphView();
 		});
-
+		
 		/**
 		 * Handling report button
 		 */
@@ -163,16 +163,16 @@ function Main () {
 					'content': line1 + '\n' + line2 + '\n' + line3,
 					'name': $('#header_user').parent().text().replace(/\s/g, '')
 				};
-
+			
 			new Helper().redirectInNewTabForContact(params);
-
+			
 		});
-
+		
 		// opinion barometer
 		$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
 			new DiscussionBarometer().showBarometer();
 		});
-
+		
 		// issues
 		$('#' + issueDropdownListID + ' .enabled').each(function () {
 			if ($(this).children().length > 0) {
@@ -188,21 +188,21 @@ function Main () {
 			}
 		});
 		$('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click');
-
+		
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		$('.triangle-l').click(function () {
-			if ($(this).attr('id').indexOf(questionBubbleId) != -1){
+			if ($(this).attr('id').indexOf(questionBubbleId) != -1) {
 				var uid = $(this).attr('id').replace(questionBubbleId + '-', '');
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			}
 		});
-
+		
 		// adding issues
 		$('#' + addTopicButtonId).click(function () {
 			guiHandler.showAddTopicPopup(new InteractionHandler().callbackIfDoneForSendNewIssue);
 		});
-
+		
 		// user info click
 		$('.triangle-r-info').each(function () {
 			if ($(this).data('votecount') > 0) {
@@ -217,8 +217,8 @@ function Main () {
 				$(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
 			}
 		});
-
-		$('#' + contactSubmitButtonId).click(function(){
+		
+		$('#' + contactSubmitButtonId).click(function () {
 			setTimeout("$('body').addClass('loading')", 0);
 		});
 	};
@@ -228,7 +228,7 @@ function Main () {
 	 * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
-	this.setSidebarClicks = function(maincontainer, localStorageId){
+	this.setSidebarClicks = function (maincontainer, localStorageId) {
 		var helper = new Helper();
 		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
 		var wrapper = maincontainer.find('.' + contentWrapperClass);
@@ -237,10 +237,10 @@ function Main () {
 		var tack = sidebarwrapper.find('.' + sidebarTackClass);
 		var sidebar = sidebarwrapper.find('.' + sidebarClass);
 		
-		$(hamburger).click(function(){
+		$(hamburger).click(function () {
 			$(this).toggleClass('open');
 			var width = wrapper.width();
-
+			
 			if (sidebar.is(':visible')) {
 				tackwrapper.fadeOut();
 				sidebar.toggle('slide');
@@ -249,16 +249,16 @@ function Main () {
 				maincontainer.css('max-height', '');
 				sidebarwrapper.css('background-color', '')
 					.css('height', '');
-				helper.delay(function(){
+				helper.delay(function () {
 					wrapper.width(width + sidebar.outerWidth());
 				}, 300);
 				helper.setLocalStorage(localStorageId, 'false');
 			} else {
 				wrapper.width(width - sidebar.outerWidth());
 				maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
-				helper.delay(function(){
+				helper.delay(function () {
 					sidebar.toggle('slide');
-					hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width())/2 + 'px')
+					hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
 						.css('margin-left', 'auto')
 						.css('background-color', sidebar.css('background-color'));
 					sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
@@ -267,16 +267,16 @@ function Main () {
 				}, 200);
 			}
 		});
-
+		
 		// action for tacking the sidebar
-		tackwrapper.click(function() {
-		var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
+		tackwrapper.click(function () {
+			var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
 				helper.rotateElement(tack, '0');
 				helper.setLocalStorage(localStorageId, 'false');
-
+				
 				tack.data('title', _t_discussion(pinNavigation));
-
+				
 				// hide sidebar if it is visible
 				if (sidebar.is(':visible')) {
 					hamburger.click();
@@ -295,7 +295,7 @@ function Main () {
 	 * @param maincontainer - main container which contains the content on the left and the sidebar on the rigt
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
-	this.setSidebarStyle= function(maincontainer, localStorageId){
+	this.setSidebarStyle = function (maincontainer, localStorageId) {
 		// read local storage for pinning the bar / set title
 		var shouldShowSidebar = new Helper().getLocalStorage(localStorageId) == 'true';
 		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
@@ -307,32 +307,32 @@ function Main () {
 		if (shouldShowSidebar) {
 			var width = wrapper.width();
 			var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
-
+			
 			helper.rotateElement(tack, '90');
 			helper.setAnimationSpeed(wrapper, '0.0');
 			helper.setAnimationSpeed(hamburger, '0.0');
-
+			
 			hamburger.addClass('open');
-
+			
 			wrapper.width(width - sidebar.outerWidth());
 			maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
 			sidebar.show();
-			hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width())/2 + 'px')
+			hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
 				.css('margin-left', 'auto')
 				.css('background-color', sidebar.css('background-color'));
 			sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
 				.css('height', maincontainer.outerHeight() + 'px');
 			tackwrapper.fadeIn();
-
+			
 			helper.setAnimationSpeed(wrapper, '0.5');
 			helper.setAnimationSpeed(hamburger, '0.5');
-
+			
 			tackwrapper.data('title', _t_discussion(unpinNavigation));
 		} else {
 			tackwrapper.data('title', _t_discussion(pinNavigation));
 		}
 	};
-
+	
 	/**
 	 * Sets all keyUp functions
 	 * @param guiHandler
@@ -355,7 +355,7 @@ function Main () {
 		}).focusin(function () {
 			setTextWatcherForMaxLength($(this));
 		});
-
+		
 		// gui for the fuzzy search (premises)
 		$('#' + addPremiseContainerMainInputId).keyup(function () {
 			new Helper().delay(function () {
@@ -366,7 +366,7 @@ function Main () {
 		}).focusin(function () {
 			setTextWatcherForMaxLength($(this));
 		});
-
+		
 		// gui for editing statements
 		$('#' + popupEditStatementTextareaId).keyup(function popupEditStatementTextareaKeyUp() {
 			new Helper().delay(function () {
@@ -382,17 +382,17 @@ function Main () {
 			setTextWatcherForMaxLength($(this));
 		});
 	};
-
+	
 	/**
 	 *
 	 * @param guiHandler
 	 */
 	this.setStyleOptions = function (guiHandler) {
 		guiHandler.setMaxHeightForBubbleSpace();
-
+		
 		guiHandler.hideSuccessDescription();
 		guiHandler.hideErrorDescription();
-
+		
 		// align buttons
 		// var restart, issues, restartWidth, issueWidth;
 		// restart = $('#discussion-restart-btn');
@@ -401,17 +401,17 @@ function Main () {
 		// issueWidth = issues.outerWidth();
 		// restart.attr('style', restartWidth<issueWidth ? 'width: ' + issueWidth + 'px;' : '');
 		// issues.attr('style', restartWidth>issueWidth ? 'width: ' + restartWidth + 'px;' : '');
-
+		
 		// focus text of input elements
 		// $('input[type='text']'').on("click", function () {
 		$('#' + popupUrlSharingInputId).on("click", function () {
 			$(this).select();
 		});
-
+		
 		// hover effects on text elements
 		var data = 'data-argumentation-type';
 		var list = $('#' + discussionSpaceListId);
-		list.find('span[' + data + '!=""]').each(function(){
+		list.find('span[' + data + '!=""]').each(function () {
 			var attr = $(this).attr(data);
 			var tmp = $('<span>').addClass(attr + '-highlighter');
 			tmp.appendTo(document.body);
@@ -419,12 +419,12 @@ function Main () {
 			var new_color = tmp.css('color');
 			tmp.remove();
 			$(this).hover(
-				function(){
+				function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css('color', new_color)
 						.css('background-color', '#edf3e6')
 						.css('border-radius', '2px');
-				}, function(){
+				}, function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css('color', old_color)
 						.css('background-color', '')
@@ -434,15 +434,22 @@ function Main () {
 		});
 		
 		// hover on radio buttons
-		list.children().each(function(){
+		list.find('input').each(function(){
 			$(this).hover(function(){
-				$(this).find('input').prop('checked', true);
+				$(this).prop('checked', true);console.log('a');
 			}, function(){
-				$(this).find('input').prop('checked', false);
+				$(this).prop('checked', false);console.log('b');
 			})
-		})
+		});
+		list.find('label').each(function(){
+			$(this).hover(function(){
+				$(this).prev().prop('checked', true);console.log('a');
+			}, function(){
+				$(this).prev().prop('checked', false);console.log('b');
+			})
+		});
 	};
-
+	
 	/**
 	 *
 	 */
@@ -456,18 +463,18 @@ function Main () {
 				setTimeout("$('body').removeClass('loading')", 0);
 			}
 		});
-
+		
 		// some hack
 		$('#navbar-left').empty();
-
+		
 		//$(window).load(function windowLoad() {
 		//});
-
+		
 		$(window).resize(function () {
 			new GuiHandler().setMaxHeightForBubbleSpace();
 		});
 	};
-
+	
 	/**
 	 *
 	 */
@@ -520,8 +527,8 @@ function Main () {
 			item_rebut.hide().next().prepend(rebut);
 			item_no_opinion.hide().next().prepend(no_opinion);
 		}
-
-
+		
+		
 		$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
 			var login_item = $('#' + discussionSpaceListId).find('#item_login');
 			if (login_item.length > 0)
@@ -532,12 +539,15 @@ function Main () {
 		
 		// highlight edited statement
 		var pos = window.location.href.indexOf('edited_statement=');
-		if (pos != -1){
-			var id = window.location.href.substr(pos + 'edited_statement='.length);
-			$('#' + id).css('background-color', '#FFF9C4');
+		if (pos != -1) {
+			var ids = window.location.href.substr(pos + 'edited_statement='.length);
+			var splitted = ids.split(',');
+			$.each(splitted, function (index, value) {
+				$('#' + value).css('background-color', '#FFF9C4');
+			});
 		}
 	};
-
+	
 	/**
 	 *
 	 * @param guiHandler
@@ -575,17 +585,17 @@ function Main () {
 			relation = splits[splits.length - 1 - add];
 			interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
 		};
-
+		
 		if (window.location.href.indexOf('/r/') != -1) {
 			$('#' + discussionSpaceId + ' label').each(function () {
 				$(this).css('width', '95%');
 			})
 		}
-
+		
 		$('#' + discussionSpaceId + ' input').each(function () {
 			$(this).attr('checked', false).prop('checked', false);
 		});
-
+		
 		$('#' + sendNewStatementId).off("click").click(function () {
 			if ($(this).attr('name').indexOf('start') != -1) {
 				sendStartStatement();
@@ -600,7 +610,7 @@ function Main () {
 				sendArgumentsPremise();
 			}
 		});
-
+		
 		// hide one line options
 		var children = spaceList.find('input');
 		if (children.length == 1 && (
@@ -610,49 +620,41 @@ function Main () {
 			(children.eq(0).attr('id').indexOf('login') != -1) && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
 			children.eq(0).attr('checked', true).prop('checked', true).parent().hide();
 		}
-
+		
 		// TODO CLEAR DESIGN
 		// options for the extra buttons, where the user can add input!
-		if (input.attr('id') && (
-			input.attr('id').indexOf('start_statement') != -1 ||
-			input.attr('id').indexOf('start_premise') != -1 ||
-			input.attr('id').indexOf('justify_premise') != -1 ||
-			input.attr('id').indexOf('login') != -1)
-		) {
+		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
+		
+		if ($.inArray(input.attr('id'), ids)) {
 			input.attr('onclick', '');
-			input.change(function () {
-				if (input.prop('checked')) {
-					// new position at start
-					if (input.attr('id').indexOf('start_statement') != -1) {
-						// guiHandler.showHowToWriteTextPopup();
-						guiHandler.showAddPositionContainer();
-						$('#' + sendNewStatementId).off("click").click(function () {
-							sendStartStatement();
-						});
-					}
-
-					// new premise for the start
-					else if (input.attr('id').indexOf('start_premise') != -1) {
-						// guiHandler.showHowToWriteTextPopup();
-						guiHandler.showAddPremiseContainer();
-						$('#' + sendNewPremiseId).off("click").click(function () {
-							sendStartPremise();
-						});
-					}
-
-					// new premise while judging
-					else if (input.attr('id').indexOf('justify_premise') != -1) {
-						// guiHandler.showHowToWriteTextPopup();
-						guiHandler.showAddPremiseContainer();
-						$('#' + sendNewPremiseId).off("click").click(function () {
-							sendArgumentsPremise();
-						});
-					}
-
-					// login
-					else if (input.attr('id').indexOf('login') != -1) {
-						$('#' + popupLogin).modal('show');
-					}
+			input.click(function () {
+				// new position at start
+				if (input.attr('id').indexOf('start_statement') != -1) {
+					// guiHandler.showHowToWriteTextPopup();
+					guiHandler.showAddPositionContainer();
+					$('#' + sendNewStatementId).off("click").click(function () {
+						sendStartStatement();
+					});
+				}
+				// new premise for the start
+				else if (input.attr('id').indexOf('start_premise') != -1) {
+					// guiHandler.showHowToWriteTextPopup();
+					guiHandler.showAddPremiseContainer();
+					$('#' + sendNewPremiseId).off("click").click(function () {
+						sendStartPremise();
+					});
+				}
+				// new premise while judging
+				else if (input.attr('id').indexOf('justify_premise') != -1) {
+					// guiHandler.showHowToWriteTextPopup();
+					guiHandler.showAddPremiseContainer();
+					$('#' + sendNewPremiseId).off("click").click(function () {
+						sendArgumentsPremise();
+					});
+				}
+				// login
+				else if (input.attr('id').indexOf('login') != -1) {
+					$('#' + popupLogin).modal('show');
 				}
 			});
 		}
