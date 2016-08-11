@@ -36,7 +36,6 @@ coverage.xml
 
 # Misc
 .python-version
-#*.sh
 *.bak
 pull*.sh
 
