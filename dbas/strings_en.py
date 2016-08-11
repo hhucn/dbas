@@ -481,7 +481,7 @@ class EnglischDict:
         en_lang[_self.switchDiscussionText2] = 'and the discussion will be restarted.'
         en_lang[_self.switchLanguage] = 'Switch Language'
         en_lang[_self.statement] = 'Statement'
-        en_lang[_self.statementAdded] = 'Aussage wurde hinzugefügt'
+        en_lang[_self.statementAdded] = 'Statement was added'
         en_lang[_self.statementAddedMessageContent] = 'Hey, someone has added his/her opinion regarding your argument!'
         en_lang[_self.statementIndex] = 'Statement Index - Last 30 Days'
         en_lang[_self.statementIndexInfo] = 'Count of added Statements'

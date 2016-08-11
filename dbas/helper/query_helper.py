@@ -14,6 +14,7 @@ from sqlalchemy import and_, func
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
 from dbas.helper.relation_helper import RelationHelper
+from dbas.input_validator import Validator
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history
 from dbas.logger import logger
 from dbas.strings import Translator
@@ -197,7 +198,7 @@ class QueryHelper:
             error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
 
         elif len(new_argument_uids) == 1:
-            new_argument_uid = random.choice(new_argument_uids)
+            new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
             arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
             if arg_id_sys == 0:
@@ -236,7 +237,12 @@ class QueryHelper:
 
         # send notifications and mails
         if len(new_argument_uids) > 0:
-            NotificationHelper.send_add_text_notification(url, arg_id, user, request, transaction)
+            new_uid = new_argument_uids[0] if len(new_argument_uids) == 1 else random.choice(new_argument_uids)   # TODO eliminate random
+            attack = Validator.get_relation_between_arguments(arg_id, new_uid)
+
+            tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
+
+            NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, request, transaction)
 
         return url, statement_uids, error
 

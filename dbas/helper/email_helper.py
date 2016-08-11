@@ -47,7 +47,7 @@ def send_mail_due_to_added_text(lang, url, recipient, request):
     :return: duple with boolean for sent message, message-string
     """
     _t = Translator(lang)
-    subject = _t.get(_t.textversionChangedTopic)
+    subject = _t.get(_t.statementAdded)
     body = TextGenerator.get_text_for_add_text_message(lang, url, False)
 
     return send_mail(request, subject, body, recipient.email, lang)
