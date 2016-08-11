@@ -145,7 +145,7 @@ class Dbas(object):
         logger('Webhook', 'js', 'minify js')
         try:
             logger('Webhook', 'js', 'Execute: ' + path + 'static/minify.sh')
-            ret_val = call([path + 'static/minimize.sh'])
+            ret_val = call([path + 'static/minify.sh'])
             logger('Webhook', 'js', 'minify done: ' + str(ret_val))
         except Exception as e:
             ret_val = 1
