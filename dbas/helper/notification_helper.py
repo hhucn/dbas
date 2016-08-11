@@ -16,6 +16,7 @@ from websocket.lib import send_request_to_socketio
 
 from sqlalchemy import and_
 
+
 def send_edit_text_notification(textversion, path, request):
     """
     Sends an notification to the root-author and last author, when their text was edited.
@@ -160,19 +161,20 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
     transaction.commit()
 
 
-def send_add_argument_notification(url, argument_uid, user, request, transaction):
+def send_add_argument_notification(url, attacked_argument_uid, user, request, transaction):
     """
 
     :param url:
-    :param argument_uid:
+    :param attacked_argument_uid:
+    :param new_argument_uid:
     :param user:
     :param request:
     :param transaction:
     :return:
     """
     # getting current argument, arguments author, current user and some settings
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-    db_author = DBDiscussionSession.query(User).fitler_by(uid=db_argument.author_uid).first()
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=attacked_argument_uid).first()
+    db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
     db_current_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     if db_author == db_current_user:
         return None
