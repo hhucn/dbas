@@ -99,7 +99,7 @@ class QueryHelper:
         new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
         for group in premisegroups:  # premise groups is a list of lists
             new_argument, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
-            if new_argument.uid == -1:  # break on error
+            if not isinstance(new_argument, Argument):  # break on error
                 error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
                 return -1, None, error
 
@@ -134,7 +134,7 @@ class QueryHelper:
 
         if len(new_argument_uids) > 0:
             url = _um.get_url_for_justifying_statement(False, conclusion_id, history[-1:])
-            NotificationHelper.send_add_text_notification(url, conclusion_id, request)
+            NotificationHelper.send_add_text_notification(url, conclusion_id, request, transaction)
 
         return url, new_statement_uids, error
 

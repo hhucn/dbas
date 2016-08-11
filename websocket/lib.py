@@ -26,6 +26,6 @@ def send_request_to_socketio(type, nickname, message=None, url=None):
         params += 'url=' + url + '&'
 
     resp = requests.get('http://localhost:5001/publish' + params[:-1])
-    logger('Websocket.lib', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + '(msg=' + str(message) + ')')
+    logger('Websocket.lib', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')
 
     return resp.status_code

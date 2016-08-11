@@ -93,6 +93,8 @@ function doEditText(data){
  */
 function doAddText(data){
 	setGlobalInfoHandler('Ahh!', '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>');
+	incrementCounter($('#' + headerBadgeCountNotificationsId));
+	incrementCounter($('#' + menuBadgeCountNotificationsId));
 }
 
 /**
