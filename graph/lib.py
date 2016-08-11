@@ -10,7 +10,7 @@ from dbas.database.discussion_model import Argument, Statement, TextVersion, Pre
 from dbas.user_management import get_public_profile_picture
 
 
-grey = '#9E9E9E'
+grey = '#424242'
 yellow = '#FFC107'
 red = '#F44336'
 green = '#64DD17'
@@ -80,7 +80,7 @@ def get_d3_data(issue):
             edge_dict = __get_edge_dict(id='edge_' + str(statement.uid) + '_issue',
                                         source='statement_' + str(statement.uid),
                                         target='issue',
-                                        color='black',
+                                        color=grey,
                                         size=edge_size,
                                         edge_type=edge_type)
             edges_array.append(edge_dict)

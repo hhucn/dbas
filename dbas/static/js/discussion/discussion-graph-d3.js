@@ -76,19 +76,34 @@ function DiscussionGraph() {
 
 		// create force layout object and define properties
 		var force = d3.layout.force()
+			// pull nodes toward layout center
     		.gravity(0.07)
+			// nodes push each other away
     		.charge(-180)
     		.linkDistance(90)
     		.size([width, height]);
 
+		$(window).resize(function () {
+			console.log("huhu");
+			console.log(container.width());
+			console.log(container.height());
+			// attribut neu setzen
+			container.find('svg').attr("width", container.width()).attr("height", container.height());
+			force.size([container.width(), container.height()]);
+		});
+
 		// zoom and pan
-		var zoom = d3.behavior.zoom().on("zoom", zoomed);
+		var zoom = d3.behavior.zoom().on("zoom", redraw);
 		d3.select("svg").call(zoom);
 
-        function zoomed() {
+        function redraw() {
             d3.select("g.zoom")
             .attr("transform", "translate(" + zoom.translate() + ")"
-			+ " scale(" + zoom.scale() + ")")
+			+ " scale(" + zoom.scale() + ")");
+            /*trans = d3.event.translate;
+            scale = d3.event.scale;
+            svg.selectAll("*:not(.text)").attr("transform", "translate(" + trans + ")" + " scale(" + zoom.scale() + ")");*/
+
         }
 
 		// enable drag functionality, pan functionality overrides drag
@@ -155,9 +170,11 @@ function DiscussionGraph() {
 				return d.color;
 			});
 
+		// border
+
+
 		// wrap text
-		var label = node
-			.append("text").each(function (d) {
+		var label = node.append("text").each(function (d) {
             var node_text = d.label.split(" ");
             for (var i = 0; i < node_text.length; i++) {
                 if((i % 4) == 0){
@@ -166,18 +183,49 @@ function DiscussionGraph() {
                     .attr("dy", i ? '1.0em' : '0')
                     .attr("x", '0')
                     .attr("text-anchor", "middle")
-                    .attr("class", "tspan" + i);
+                    .attr("class", "tspan" + i)
+					.attr("visibility", "visible");
                 }
                 else{
                     d3.select(this).append("tspan")
-                    .text(' ' + node_text[i]);
-                }
+                    .text(' ' + node_text[i])
+					.attr("visibility", "visible");
+				}
             }
 		});
+
+
+		var rect = node.append("rect")
+			.attr("width", "20%")
+			.attr("height", "15%")
+			.attr("y", '-20')
+			.attr("x", '-130');
+
+		/*var rect = label
+			.append("svg:rect")
+        //    .attr("x", d3.select(this).node().getBoundingClientRect().left + 10)
+          //  .attr("y", d3.select(this).node().getBoundingClientRect().top - 10)
+            .attr("width", "100")
+            .attr("height", "20")
+            .attr("rx", "5")
+            .attr("ry", "5")
+            .attr("visibility", "visible");*/
+
+
+		var text = d3.select("text");
+        var bbox = text.node().getBBox();
+        var padding = 2;
+        /*var rect = svg.append("rect", "text")
+			.attr("x", bbox.x - padding)
+            .attr("y", bbox.y - padding)
+            .attr("width", bbox.width + (padding*2))
+            .attr("height", bbox.height + (padding*2))
+            .style("fill", "red");*/
 
 		// show content
 		$('#show-content').click(function() {
 			label.style("display", "inline");
+			rect.style("display", "inline");
 			$('#show-content').hide();
 			$('#hide-content').show();
 		});
@@ -185,6 +233,7 @@ function DiscussionGraph() {
 		// hide content
 		$('#hide-content').click(function() {
 			label.style("display", "none");
+			rect.style("display", "none");
 			$('#show-content').show();
 			$('#hide-content').hide();
 		});
@@ -208,8 +257,16 @@ function DiscussionGraph() {
             // update position of label
 			label
 				.attr("transform", function (d) {
+					console.log(d.height);
         			return "translate(" + d.x + "," + (d.y - 50) + ")";
     			});
- 		}
+
+			// update position of rect
+			rect
+				.attr("transform", function (d) {
+					console.log(d.height);
+					return "translate(" + d.x + "," + (d.y - 50) + ")";
+    			});
+		}
 	}
 }
