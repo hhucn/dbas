@@ -450,6 +450,8 @@ class Translator(object):
         self.shortenedBy = 'shortenedBy'
         self.shareUrl = 'shareUrl'
         self.statement = 'statement'
+        self.statementAdded = 'statementAdded'
+        self.statementAddedMessageContent = 'statementAddedMessageContent'
         self.showMeAnotherArgument = 'showMeAnotherArgument'
         self.switchDiscussion = 'switchDiscussion'
         self.switchDiscussionTitle = 'switchDiscussionTitle'
@@ -848,7 +850,17 @@ class TextGenerator(object):
         return sys_text
 
     @staticmethod
-    def get_text_for_edit_text_message(lang, nickname, original, edited, path, for_html=True):
+    def get_text_for_edit_text_message(lang, nickname, original, edited, url, for_html=True):
+        """
+
+        :param lang:
+        :param nickname:
+        :param original:
+        :param edited:
+        :param url:
+        :param for_html:
+        :return:
+        """
         nl = '<br>' if for_html else '\n'
         _t = Translator(lang)
         content = _t.get(_t.textversionChangedContent) + ' ' + nickname
@@ -856,9 +868,29 @@ class TextGenerator(object):
         content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + edited + nl
         content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
         if for_html:
-            content += '<a href="' + path + '">' + path + '</a>'
+            content += '<a href="' + url + '">' + url + '</a>'
         else:
-            content += path
+            content += url
+
+        return content
+
+    @staticmethod
+    def get_text_for_add_text_message(lang, url, for_html=True):
+        """
+
+        :param lang:
+        :param url:
+        :param for_html:
+        :return:
+        """
+        nl = '<br>' if for_html else '\n'
+        _t = Translator(lang)
+        content = _t.get(_t.statementAddedMessageContent) + nl
+        content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
+        if for_html:
+            content += '<a href="' + url + '">' + url + '</a>'
+        else:
+            content += url
 
         return content
 

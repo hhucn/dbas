@@ -36,6 +36,23 @@ def send_mail_due_to_new_argument(current_user, url, request):
     return send_mail(request, subject, body, recipient, db_language.ui_locales)
 
 
+def send_mail_due_to_added_text(lang, url, recipient, request):
+    """
+    Will send an email to the recipient
+
+    :param lang: ui_locales
+    :param url: current url
+    :param recipient: User
+    :param request: self.request
+    :return: duple with boolean for sent message, message-string
+    """
+    _t = Translator(lang)
+    subject = _t.get(_t.textversionChangedTopic)
+    body = TextGenerator.get_text_for_add_text_message(lang, url, False)
+
+    return send_mail(request, subject, body, recipient.email, lang)
+
+
 def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, url, request):
     """
     Will send an email to the author of the statement.
