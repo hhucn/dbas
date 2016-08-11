@@ -91,39 +91,42 @@ def send_edit_text_notification(textversion, path, request):
     DBDiscussionSession.flush()
 
 
-def send_add_text_notification(url, conclusion_id, request, transaction):
+def send_add_text_notification(url, conclusion_id, user, request, transaction):
     """
+    Send notifications and mails to related users.
 
-    :param url:
-    :param conclusion_id:
-    :param request:
-    :param transaction:
-    :return:
+    :param url: current url
+    :param conclusion_id: Statement.uid
+    :param user: current users nickname
+    :param request: self.request
+    :param transaction: transaction
+    :return: None
     """
     # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()
     db_root_author = DBDiscussionSession.query(User).filter_by(uid=db_textversions[0].author_uid).first()
     db_last_editor = DBDiscussionSession.query(User).filter_by(uid=db_textversions[-1].author_uid).first()
+    db_current_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     db_root_author_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_root_author.uid).first()
     db_last_editor_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_last_editor.uid).first()
     user_lang1 = DBDiscussionSession.query(Language).filter_by(uid=db_root_author_settings.lang_uid).first().ui_locales
     user_lang2 = DBDiscussionSession.query(Language).filter_by(uid=db_last_editor_settings.lang_uid).first().ui_locales
 
     # send mail to main author
-    if db_root_author_settings.should_send_mails is True:
+    if db_root_author_settings.should_send_mails is True and db_current_user != db_root_author:
         EmailHelper.send_mail_due_to_added_text(user_lang1, url, db_root_author, request)
 
     # send mail to last author
-    if db_last_editor_settings.should_send_mails is True and db_root_author != db_last_editor:
+    if db_last_editor_settings.should_send_mails is True and db_last_editor != db_root_author and db_last_editor != db_current_user:
         EmailHelper.send_mail_due_to_added_text(user_lang2, url, db_last_editor, request)
 
     # send notification via websocket to main author
-    if db_root_author_settings.should_send_notifications is True:
+    if db_root_author_settings.should_send_notifications is True and db_root_author != db_current_user:
         _t_user = Translator(user_lang1)
         send_request_to_socketio('addtext', db_root_author.nickname, _t_user.get(_t_user.statementAdded), url)
 
     # send notification via websocket to last author
-    if db_last_editor_settings.should_send_notifications is True and db_root_author != db_last_editor:
+    if db_last_editor_settings.should_send_notifications is True and db_last_editor != db_root_author and db_last_editor != db_current_user:
         _t_user = Translator(user_lang2)
         send_request_to_socketio('addtext', db_last_editor.nickname, _t_user.get(_t_user.statementAdded), url)
 
@@ -143,12 +146,13 @@ def send_add_text_notification(url, conclusion_id, request, transaction):
     topic2 = _t2.get(_t2.statementAdded)
     content2 = TextGenerator.get_text_for_add_text_message(user_lang2, url, True)
 
-    DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
-                                    to_author_uid=db_root_author.uid,
-                                    topic=topic1,
-                                    content=content1,
-                                    is_inbox=True))
-    if db_root_author != db_last_editor:
+    if db_root_author != db_current_user:
+        DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
+                                        to_author_uid=db_root_author.uid,
+                                        topic=topic1,
+                                        content=content1,
+                                        is_inbox=True))
+    if db_root_author != db_last_editor and db_current_user != db_last_editor:
         DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
                                         to_author_uid=db_last_editor.uid,
                                         topic=topic2,
