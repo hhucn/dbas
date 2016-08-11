@@ -459,7 +459,7 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
     # adding settings
     settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
     settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+    settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
     settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
     settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
     settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
