@@ -451,7 +451,9 @@ class Translator(object):
         self.shareUrl = 'shareUrl'
         self.statement = 'statement'
         self.statementAdded = 'statementAdded'
+        self.argumentAdded = 'argumentAdded'
         self.statementAddedMessageContent = 'statementAddedMessageContent'
+        self.argumentAddedMessageContent = 'argumentAddedMessageContent'
         self.showMeAnotherArgument = 'showMeAnotherArgument'
         self.switchDiscussion = 'switchDiscussion'
         self.switchDiscussionTitle = 'switchDiscussionTitle'
@@ -876,6 +878,26 @@ class TextGenerator(object):
 
     @staticmethod
     def get_text_for_add_text_message(lang, url, for_html=True):
+        """
+
+        :param lang:
+        :param url:
+        :param for_html:
+        :return:
+        """
+        nl = '<br>' if for_html else '\n'
+        _t = Translator(lang)
+        content = _t.get(_t.statementAddedMessageContent) + nl
+        content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
+        if for_html:
+            content += '<a href="' + url + '">' + url + '</a>'
+        else:
+            content += url
+
+        return content
+
+    @staticmethod
+    def get_text_for_add_argument_message(lang, url, for_html=True):
         """
 
         :param lang:

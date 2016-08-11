@@ -185,7 +185,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request, tr
     # send notification via websocket to last author
     if db_author_settings.should_send_notifications is True:
         _t_user = Translator(user_lang)
-        send_request_to_socketio('addtext', db_author.nickname, _t_user.get(_t_user.statementAdded), url)
+        send_request_to_socketio('addtext', db_author.nickname, _t_user.get(_t_user.argumentAdded), url)
 
     # send mail to last author
     if db_author_settings.should_send_mails:
@@ -199,8 +199,8 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request, tr
                                                            )).first()
 
     _t = Translator(user)
-    topic = _t.get(_t.statementAdded)
-    content = TextGenerator.get_text_for_add_text_message(user_lang, url, True)
+    topic = _t.get(_t.argumentAdded)
+    content = TextGenerator.get_text_for_add_argument_message(user_lang, url, True)
 
     DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
                                     to_author_uid=db_author.uid,
