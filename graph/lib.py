@@ -92,7 +92,7 @@ def get_d3_data(issue):
         node_dict = __get_node_dict(id='argument_' + str(argument.uid),
                                     label='',
                                     color=green if argument.is_supportive else red,
-                                    size=0.5,
+                                    size=0,
                                     x=x,
                                     y=y)
         x = (x + 1) % 10
