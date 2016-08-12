@@ -1554,7 +1554,7 @@ class Dbas(object):
                 if not db_author:
                     error = _tn.get(_tn.notLoggedIn)
                 else:
-                    db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, transaction)
+                    db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, mainpage, transaction)
                     uid = db_notification.uid
                     ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
                     gravatar = UserHandler.get_public_profile_picture(db_recipient, 20)
