@@ -5,10 +5,13 @@ Provides helping function for the review page.
 """
 
 import random
+from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 
 import dbas.user_management as UserManager
+
+pages = ['edits', 'deletes', 'flags', 'random', 'duplicates']
 
 
 def get_review_array(mainpage, translator):
@@ -28,6 +31,22 @@ def get_review_array(mainpage, translator):
     review_dict.append(__get_duplicate_dict(mainpage, translator))
 
     return review_dict
+
+
+def get_subpage_for(subpage_name, nickname):
+    """
+
+    :param subpage_name:
+    :param nickname:
+    :return:
+    """
+    logger('ReviewHelper', 'get_subpage_for', subpage_name)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
+    if subpage_name in pages and subpage_name not in ['deletes', 'flags']:
+        return subpage_name
+
+    return None
 
 
 def __get_edit_dict(mainpage, translator):
@@ -119,7 +138,7 @@ def __get_duplicate_dict(mainpage, translator):
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Duplicates',
-                'url': mainpage + '/review/duplicate',
+                'url': mainpage + '/review/duplicates',
                 'icon': 'fa fa-files-o',
                 'task_count': '-',
                 'is_allowed': True,

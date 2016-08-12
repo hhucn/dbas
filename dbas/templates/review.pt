@@ -31,7 +31,7 @@
                             </td>
                             <td>
                                 <div class="forbidden" tal:condition="not:task.is_allowed"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></div>
-                                <div tal:condition="task.is_allowed"><a href=""><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></a></div>
+                                <div tal:condition="task.is_allowed"><a tal:attributes="href task.url"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></a></div>
                                 <div tal:condition="task.is_allowed"><small>${task.is_allowed_text}</small></div>
                                 <div tal:condition="not:task.is_allowed"><small>${task.is_not_allowed_text}</small></div>
                             </td>
