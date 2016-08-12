@@ -29,6 +29,7 @@ def get_review_array(mainpage, translator):
     review_dict.append(__get_flag_dict(mainpage, translator))
     review_dict.append(__get_random_dict(mainpage, translator))
     review_dict.append(__get_duplicate_dict(mainpage, translator))
+    review_dict.append(__get_freshest_dict(mainpage, translator))
 
     return review_dict
 
@@ -144,6 +145,26 @@ def __get_duplicate_dict(mainpage, translator):
                 'is_allowed': True,
                 'is_allowed_text': 'Visit the duplicate queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least 10 reputation to review duplicated statements.',
+                'last_reviews': __get_users_array(mainpage)
+                }
+    return tmp_dict
+
+
+def __get_freshest_dict(mainpage, translator):
+    """
+    Prepares dictionary for the freshest section.
+
+    :param mainpage: URL
+    :param translator: Translator
+    :return: Dict()
+    """
+    tmp_dict = {'task_name': 'First Posts',
+                'url': mainpage + '/review/first',
+                'icon': 'fa fa-level-up',
+                'task_count': '3',
+                'is_allowed': False,
+                'is_allowed_text': 'Visit the newest statements queue for D-BAS.',
+                'is_not_allowed_text': 'You need at least 75 reputation to review newest statements.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
