@@ -64,7 +64,7 @@ def __get_delete_dict(mainpage, translator):
                 'task_count': 4,
                 'is_allowed': False,
                 'is_allowed_text': 'Visit the delete queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least 200 reputation to review edits.',
+                'is_not_allowed_text': 'You need at least 200 reputation to review deletes.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict

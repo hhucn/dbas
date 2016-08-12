@@ -3,7 +3,18 @@
 
 		<div class="container colored-container">
 			<div class="row center" id="review-table-wrapper">
-				<h3>Comming soon: Review</h3>
+                <div class="center" style="max-width: 800px;">
+                    <div class="bs-callout bs-callout-primary">
+                        <h5><strong i18n:translate="help_to_improve">Help improve the dialog</strong></h5>
+                        <span i18n:translate="dbas_is_moderated_by">D-BAS is moderated by you. Help your discussion members learn to argue and raise the quality of argumenty by:</span>
+                        <ul class="left">
+                            <li i18n:translate="evaluation_new_statements">Evaluation new statements</li>
+                            <li i18n:translate="reviewing_suspicious_statements">Reviewing suspicious statements</li>
+                            <li i18n:translate="voting_to_close ">Voting to close or reopen statements</li>
+                        </ul>
+                        <span><strong i18n:translate="choose_task">Choose a task to get started.</strong></span>
+                    </div>
+                </div>
                 <table class="table table-condensed" border="0" id="review-table">
                     <thead>
                         <tr class="review-table-row">
