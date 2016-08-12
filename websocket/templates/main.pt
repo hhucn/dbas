@@ -6,9 +6,14 @@
                 <h4>Your current socket.io token is:</h4>
                 <h6 id="socketio_id"></h6>
 
-            <button id="test_success_btn" data-type="success" type="submit" class="btn btn-success">Test success</button>
-            <button id="test_danger_btn" data-type="danger" type="submit" class="btn btn-danger">Test danger</button>
-            <button id="test_info_btn" data-type="info" type="submit" class="btn btn-info">Test info</button>
+                <input id="test-input" type="text" class="center form-control" placeholder="..." value="Test input text" style="width: 15em;">
+                <br>
+                <button id="test_success_btn" data-type="success" type="submit" class="btn btn-success">Test success</button>
+                <button id="test_danger_btn" data-type="danger" type="submit" class="btn btn-danger">Test danger</button>
+                <button id="test_info_btn" data-type="info" type="submit" class="btn btn-info">Test info</button>
+                <br>
+                <br>
+                <small>Every text is send to the server,<br>which respons with an communication!</small>
             </div>
         </div>
 
