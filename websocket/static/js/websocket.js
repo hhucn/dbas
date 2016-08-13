@@ -8,6 +8,7 @@ const port = 5001;
 
 $(document).ready(function() {
 	
+	// try to connect
 	try {
 		doConnect();
 	} catch (e) {
@@ -48,53 +49,48 @@ function doConnect(){
  * @param data dict
  */
 function doPublish(data){
-	if (data.type == 'notifications'){		doNotification(data);
-	} else if (data.type == 'mention') {	doMention(data);
-	} else if (data.type == 'edittext') {	doEditText(data);
-	} else if (data.type == 'addtext') {	doAddText(data);
-	} else if (data.type == 'success') {	setGlobalSuccessHandler('Huray!', data.msg);
-	} else if (data.type == 'warning') {	setGlobalErrorHandler('Uhh', data.msg);
-	} else if (data.type == 'info') {	    setGlobalInfoHandler('Ooh', data.msg);
-	} else {		                        setGlobalInfoHandler('Mhhh!', data.msg);
+	if (data.type == 'success') {	        handleMessage(data, 'Huray!', doSuccess);
+	} else if (data.type == 'warning') {	handleMessage(data, 'Uhh!', doWarning);
+	} else if (data.type == 'info') {	    handleMessage(data, 'Ooh!', doInfo);
+	} else {                                setGlobalInfoHandler('Mhhh!', data.msg);
 	}
 	console.log('publish ' + data.type + ' ' + data.msg);
 }
 
-/**
- * Displays info popup line for notification
- * @param data dict
- */
-function doNotification(data){
-	var alink = '<a target="_blank" href="' + mainpage + data.type + '">' + data.msg + '</a>';
-	setGlobalInfoHandler('Huray!', alink);
-	incrementCounter($('#' + headerBadgeCountNotificationsId));
-	incrementCounter($('#' + menuBadgeCountNotificationsId));
+function handleMessage(data, intro, func){
+	var msg = 'url' in data ? '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>' : data.msg;
+	func(intro, msg);
+	if ('increase_counter' in data) {
+		incrementCounter($('#' + headerBadgeCountNotificationsId));
+		incrementCounter($('#' + menuBadgeCountNotificationsId));
+	}
 }
 
 /**
- * Displays info popup line for mention
- * @param data dict
+ * Calls setGlobalSuccessHandler with given params
+ * @param intro String
+ * @param msg String
  */
-function doMention(data){
-	setGlobalInfoHandler('Huray!', '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>');
+function doSuccess(intro, msg){
+	setGlobalSuccessHandler(intro, msg);
 }
 
 /**
- * Displays info popup line for edit text notifications
- * @param data dict
+ * Calls setGlobalErrorHandler with given params
+ * @param intro String
+ * @param msg String
  */
-function doEditText(data){
-	setGlobalInfoHandler('Ooh!', '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>');
+function doWarning(intro, msg){
+	setGlobalErrorHandler(intro, msg);
 }
 
 /**
- * Displays info popup line for add text notifications
- * @param data dict
+ * Calls setGlobalInfoHandler with given params
+ * @param intro String
+ * @param msg String
  */
-function doAddText(data){
-	setGlobalInfoHandler('Ahh!', '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>');
-	incrementCounter($('#' + headerBadgeCountNotificationsId));
-	incrementCounter($('#' + menuBadgeCountNotificationsId));
+function doInfo(intro, msg){
+	setGlobalInfoHandler(intro, msg);
 }
 
 /**
@@ -110,13 +106,14 @@ function incrementCounter(element){
  */
 function enableTesting(){
 	socket.on('test', function(data) {
-		if (data.type == 'success') {			console.log('test success');		setGlobalSuccessHandler('TEST', data.msg);
-		} else if (data.type == 'warning') {	console.log('test warning');		setGlobalErrorHandler('TEST', data.msg);
-		} else if (data.type == 'info') {		console.log('test info');			setGlobalInfoHandler('TEST', data.msg);
-		} else {                    			console.log('unknown test type');
+		if (data.type == 'success') {	        handleMessage(data, 'TEST!', doSuccess);
+		} else if (data.type == 'warning') {	handleMessage(data, 'TEST!', doWarning);
+		} else if (data.type == 'info') {	    handleMessage(data, 'TEST!', doInfo);
+		} else {                                console.log('unknown test type');
 		}
 	});
 	
+	// getting socket id from server
 	socket.on('testid', function(id){
 		var field = $('#socketio_id');
 		
@@ -125,6 +122,6 @@ function enableTesting(){
 	});
 	
 	$('#test_success_btn,#test_danger_btn,#test_info_btn').click(function(){
-		socket.emit('test', $(this).attr('data-type'));
+		socket.emit('test', $(this).attr('data-type'), $('#test-input').val());
 	});
 }

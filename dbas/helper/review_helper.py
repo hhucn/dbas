@@ -5,10 +5,13 @@ Provides helping function for the review page.
 """
 
 import random
+from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 
 import dbas.user_management as UserManager
+
+pages = ['edits', 'deletes', 'flags', 'random', 'duplicates']
 
 
 def get_review_array(mainpage, translator):
@@ -26,8 +29,25 @@ def get_review_array(mainpage, translator):
     review_dict.append(__get_flag_dict(mainpage, translator))
     review_dict.append(__get_random_dict(mainpage, translator))
     review_dict.append(__get_duplicate_dict(mainpage, translator))
+    review_dict.append(__get_freshest_dict(mainpage, translator))
 
     return review_dict
+
+
+def get_subpage_for(subpage_name, nickname):
+    """
+
+    :param subpage_name:
+    :param nickname:
+    :return:
+    """
+    logger('ReviewHelper', 'get_subpage_for', subpage_name)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
+    if subpage_name in pages and subpage_name not in ['deletes', 'flags']:
+        return subpage_name
+
+    return None
 
 
 def __get_edit_dict(mainpage, translator):
@@ -64,7 +84,7 @@ def __get_delete_dict(mainpage, translator):
                 'task_count': 4,
                 'is_allowed': False,
                 'is_allowed_text': 'Visit the delete queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least 200 reputation to review edits.',
+                'is_not_allowed_text': 'You need at least 200 reputation to review deletes.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
@@ -119,12 +139,32 @@ def __get_duplicate_dict(mainpage, translator):
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Duplicates',
-                'url': mainpage + '/review/duplicate',
+                'url': mainpage + '/review/duplicates',
                 'icon': 'fa fa-files-o',
                 'task_count': '-',
                 'is_allowed': True,
                 'is_allowed_text': 'Visit the duplicate queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least 10 reputation to review duplicated statements.',
+                'last_reviews': __get_users_array(mainpage)
+                }
+    return tmp_dict
+
+
+def __get_freshest_dict(mainpage, translator):
+    """
+    Prepares dictionary for the freshest section.
+
+    :param mainpage: URL
+    :param translator: Translator
+    :return: Dict()
+    """
+    tmp_dict = {'task_name': 'First Posts',
+                'url': mainpage + '/review/first',
+                'icon': 'fa fa-level-up',
+                'task_count': '3',
+                'is_allowed': False,
+                'is_allowed_text': 'Visit the newest statements queue for D-BAS.',
+                'is_not_allowed_text': 'You need at least 75 reputation to review newest statements.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
