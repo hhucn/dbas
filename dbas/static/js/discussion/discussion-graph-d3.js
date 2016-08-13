@@ -79,7 +79,7 @@ function DiscussionGraph() {
 			// pull nodes toward layout center
     		.gravity(0.07)
 			// nodes push each other away
-    		.charge(-180)
+			.charge(-180)
     		.linkDistance(90)
     		.size([width, height]);
 
@@ -110,14 +110,21 @@ function DiscussionGraph() {
     		// get source and target nodes
     		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
         		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
-    		// add edge, color and size to array
-    		edges.push({source: sourceNode, target: targetNode, color: e.color, size: e.size});
+    		// add edge, color and type to array
+    		edges.push({source: sourceNode, target: targetNode, color: e.color, type: e.type});
 		});
 
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-
+		
+		// select edges with type of arrow 
+		var edgesTypeArrow = [];
+		edges.forEach(function(d){
+			if(d.type == 'arrow'){
+			    return edgesTypeArrow.push(d);
+			}
+		});
 		// arrows for edges
-        var marker = svg.append("defs").selectAll('marker').data(edges)
+        var marker = svg.append("defs").selectAll('marker').data(edgesTypeArrow)
             .enter()
             .append("svg:marker")
             .attr("id", function(d) { return "marker_" + d.target.color + d.color })
@@ -141,10 +148,8 @@ function DiscussionGraph() {
     		.data(edges)
 			// svg lines
     		.enter().append("line")
-			.style("fill", "white")
       		.attr("class", "link")
 			.style("stroke", function(d) { return d.color; })
-			.style("stroke-width", '2px')
 			.attr("marker-end", function(d) { return "url(#marker_" + d.target.color + d.color + ")" });
 
 		// node: svg circle
