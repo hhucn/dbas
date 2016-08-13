@@ -145,7 +145,7 @@ class Dbas(object):
         logger('Webhook', 'js', 'minify js')
         try:
             logger('Webhook', 'js', 'Execute: ' + path + 'static/minify.sh')
-            ret_val = call([path + 'static/minimize.sh'])
+            ret_val = call([path + 'static/minify.sh'])
             logger('Webhook', 'js', 'minify done: ' + str(ret_val))
         except Exception as e:
             ret_val = 1
@@ -971,10 +971,10 @@ class Dbas(object):
         }
 
     # review
-    @view_config(route_name='main_review', renderer='templates/review.pt', permission='everybody')
+    @view_config(route_name='main_review', renderer='templates/review.pt', permission='use')
     def main_review(self):
         """
-        View configuration for the imprint.
+        View configuration for the review index.
 
         :return: dictionary with title and project name as well as a value, weather the user is logged in
         """
@@ -998,6 +998,40 @@ class Dbas(object):
             'project': project_name,
             'extras': extras_dict,
             'review': review_dict
+        }
+
+    # review
+    @view_config(route_name='main_review_content', renderer='templates/review_content.pt', permission='use')
+    def main_review_content(self):
+        """
+        View configuration for the review content.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('main_review_content', 'def', 'main')
+        ui_locales = get_language(self.request, get_current_registry())
+        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        _tn = Translator(ui_locales)
+        if session_expired:
+            return self.user_logout(True)
+
+        subpage_name = self.request.matchdict['topic']
+        subpage = ReviewHelper.get_subpage_for(subpage_name, self.request.authenticated_userid)
+        enough_reputation = True if subpage is not None else False
+        logger('x', 'x', str(subpage))
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': _tn.get(_tn.review),
+            'project': project_name,
+            'extras': extras_dict,
+            'subpage': {'name': subpage,
+                        'enough_reputation': enough_reputation}
         }
 
     # 404 page
@@ -1554,7 +1588,7 @@ class Dbas(object):
                 if not db_author:
                     error = _tn.get(_tn.notLoggedIn)
                 else:
-                    db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, transaction)
+                    db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, mainpage, transaction)
                     uid = db_notification.uid
                     ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
                     gravatar = UserHandler.get_public_profile_picture(db_recipient, 20)
