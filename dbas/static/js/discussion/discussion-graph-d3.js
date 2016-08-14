@@ -205,6 +205,59 @@ function DiscussionGraph() {
 			.attr("x", -width/2);
 		});
 
+		// labels and colors for legend
+		var legendLabelCircle = ["Issue", "Position", "Statement"];
+		var legendLabelRect = ["Support", "Attack", "Rebut"];
+
+        var legendColorCircle = ["#3D5AFE", "#3D5AFE", "#FFC107"];
+		var legendColorRect = ["#64DD17", "#F44336", "#424242"];
+
+		// set properties for legend
+		d3.svg.legend = function() {
+            function legend(selection) {
+				// symbols for nodes
+                selection.selectAll(".circle")
+                .data(legendLabelCircle)
+                .enter()
+                .append("circle")
+				.attr("fill", function (d,i) {return legendColorCircle[i]})
+                .attr("r", function (d,i) {
+	                if(i == 0) { return 8; }
+                    else { return 6; }
+				})
+				.attr("cy", function (d,i) {return i*40});
+
+				// symbols for edges
+				selection.selectAll(".rect")
+                .data(legendLabelRect)
+                .enter()
+                .append("rect")
+				.attr("fill", function (d,i) {return legendColorRect[i]})
+                .attr("width", 15)
+				.attr("height", 5)
+				.attr("x", -7)
+				.attr("y", function (d,i) {return i*40+118});
+
+				// labels for symbols
+                selection.selectAll(".text")
+                .data(legendLabelCircle.concat(legendLabelRect))
+                .enter()
+                .append("text")
+                .text(function(d) {return d;})
+				.attr("x", 20)
+				.attr("y", function (d,i) {return i*40+5});
+
+				return this;
+            }
+            return legend;
+        };
+
+		// create legend
+        var legend = d3.svg.legend();
+        d3.select("svg").append("g")
+            .attr("transform", "translate(30, 290)")
+            .call(legend);
+
 		// show content
 		$('#show-content').click(function() {
 			label.style("display", "inline");
