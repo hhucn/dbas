@@ -9,10 +9,6 @@ import time
 
 import requests
 import transaction
-import pyramid.httpexceptions as exc
-
-import os
-from subprocess import call
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
@@ -28,7 +24,6 @@ import dbas.helper.email_helper as EmailHelper
 import dbas.helper.history_helper as HistoryHelper
 import dbas.helper.issue_helper as IssueHelper
 import dbas.helper.notification_helper as NotificationHelper
-import dbas.helper.review_helper as ReviewHelper
 import dbas.helper.voting_helper as VotingHelper
 import dbas.news_handler as NewsHandler
 import dbas.password_handler as PasswordHandler
@@ -93,67 +88,6 @@ class Dbas(object):
         nickname = api_data["nickname"] if api_data and for_api else self.request.authenticated_userid
         session_id = api_data["session_id"] if api_data and for_api else self.request.session.id
         return nickname, session_id
-
-    @view_config(route_name='webhook_sass_compiling', renderer='json', require_csrf=False)
-    def webhook_sass(self):
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('Webhook', 'sass', 'main ' + str(os.path.realpath(__file__)))
-
-        try:
-            token = self.request.params['secret_token']
-            if token != 'SoMeR34Lb42T0K3N':
-                logger('Webhook', 'sass', 'access denied')
-                raise exc.HTTPForbidden()
-        except Exception:
-                logger('Webhook', 'sass', 'access denied')
-                raise exc.HTTPForbidden()
-
-        subfile = 'views.py'
-        path = str(os.path.realpath(__file__))[:-len(subfile)]
-
-        logger('Webhook', 'sass', 'compiling sass from ' + path)
-        try:
-            logger('Webhook', 'sass', 'Execute: sass ' + path + 'static/css/main.sass ' + path + 'static/css/main.css --style compressed --no-cache')
-            ret_val = call(
-                ['sass', path + 'static/css/main.sass', path + 'static/css/main.css', '--style', 'compressed', '--no-cache'])
-            logger('Webhook', 'sass', 'compiling done: ' + str(ret_val))
-        except Exception as e:
-            ret_val = 1
-            logger('Webhook', 'sass', 'compiling failed: ' + str(e))
-
-        return_dict = {'success': 1 if ret_val == 0 else 0, 'error': + ret_val}
-
-        return json.dumps(return_dict, True)
-
-    @view_config(route_name='webhook_js_compiling', renderer='json', require_csrf=False)
-    def webhook_js(self):
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('Webhook', 'js', 'main')
-
-        try:
-            token = self.request.params['secret_token']
-            if token != 'kIKsj3Nsk2kand53Bla':
-                logger('Webhook', 'js', 'access denied')
-                raise exc.HTTPForbidden()
-        except Exception:
-                logger('Webhook', 'js', 'access denied')
-                raise exc.HTTPForbidden()
-
-        subfile = 'views.py'
-        path = str(os.path.realpath(__file__))[:-len(subfile)]
-
-        logger('Webhook', 'js', 'minify js')
-        try:
-            logger('Webhook', 'js', 'Execute: ' + path + 'static/minify.sh')
-            ret_val = call([path + 'static/minify.sh'])
-            logger('Webhook', 'js', 'minify done: ' + str(ret_val))
-        except Exception as e:
-            ret_val = 1
-            logger('Webhook', 'js', 'minify failed: ' + str(e))
-
-        return_dict = {'success': 1 if ret_val == 0 else 0, 'error': + ret_val}
-
-        return json.dumps(return_dict, True)
 
     # main page
     @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
@@ -968,70 +902,6 @@ class Dbas(object):
             'title': _tn.get(_tn.imprint),
             'project': project_name,
             'extras': extras_dict
-        }
-
-    # review
-    @view_config(route_name='main_review', renderer='templates/review.pt', permission='use')
-    def main_review(self):
-        """
-        View configuration for the review index.
-
-        :return: dictionary with title and project name as well as a value, weather the user is logged in
-        """
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('main_review', 'def', 'main')
-        ui_locales = get_language(self.request, get_current_registry())
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        _tn = Translator(ui_locales)
-        if session_expired:
-            return self.user_logout(True)
-
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-
-        review_dict = ReviewHelper.get_review_array(mainpage, _tn)
-
-        return {
-            'layout': self.base_layout(),
-            'language': str(ui_locales),
-            'title': _tn.get(_tn.review),
-            'project': project_name,
-            'extras': extras_dict,
-            'review': review_dict
-        }
-
-    # review
-    @view_config(route_name='main_review_content', renderer='templates/review_content.pt', permission='use')
-    def main_review_content(self):
-        """
-        View configuration for the review content.
-
-        :return: dictionary with title and project name as well as a value, weather the user is logged in
-        """
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('main_review_content', 'def', 'main')
-        ui_locales = get_language(self.request, get_current_registry())
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        _tn = Translator(ui_locales)
-        if session_expired:
-            return self.user_logout(True)
-
-        subpage_name = self.request.matchdict['topic']
-        subpage = ReviewHelper.get_subpage_for(subpage_name, self.request.authenticated_userid)
-        enough_reputation = True if subpage is not None else False
-        logger('x', 'x', str(subpage))
-
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-
-        return {
-            'layout': self.base_layout(),
-            'language': str(ui_locales),
-            'title': _tn.get(_tn.review),
-            'project': project_name,
-            'extras': extras_dict,
-            'subpage': {'name': subpage,
-                        'enough_reputation': enough_reputation}
         }
 
     # 404 page

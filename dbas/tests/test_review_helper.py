@@ -1,11 +1,10 @@
 import unittest
-import dbas.helper.review_helper as ReviewHelper
 
-from sqlalchemy import engine_from_config
-
+import review.review_helper as ReviewHelper
 from dbas import DBDiscussionSession
 from dbas.helper.tests_helper import add_settings_to_appconfig
 from dbas.strings import Translator
+from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
 

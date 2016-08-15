@@ -71,6 +71,8 @@ def main(global_config, **settings):
     config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/ws')
+    config.include('review', route_prefix='/review')
+    config.include('webhook', route_prefix='/deploy')
 
     # includings for the config
     config.include('pyramid_chameleon')
@@ -91,10 +93,6 @@ def main(global_config, **settings):
     config.add_route('main_imprint', '/imprint')
     config.add_route('main_review', '/review')
     config.add_route('main_review_content', '/review/{topic}')
-
-    # webhook
-    config.add_route('webhook_sass_compiling', '/deploy/aqh5lart')
-    config.add_route('webhook_js_compiling', '/deploy/ldn29sm3')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
