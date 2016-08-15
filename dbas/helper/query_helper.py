@@ -135,7 +135,7 @@ class QueryHelper:
 
         # send notifications and mails
         if len(new_argument_uids) > 0:
-            url = _um.get_url_for_justifying_statement(False, conclusion_id, history[-1:])
+            url = _um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
             NotificationHelper.send_add_text_notification(url, conclusion_id, user, request, transaction)
 
         return url, new_statement_uids, error
