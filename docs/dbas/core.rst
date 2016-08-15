@@ -9,13 +9,6 @@ Description
     :members:
 
 
-E-Mail
-======
-
-.. automodule:: dbas.email
-    :members:
-
-
 Input Validator
 ===============
 
@@ -116,6 +109,13 @@ Dictionary Helper for Item
 ==========================
 
 .. automodule:: dbas.helper.dictionary_helper_items
+    :members:
+
+
+E-Mail
+======
+
+.. automodule:: dbas.helper.email_helper
     :members:
 
 

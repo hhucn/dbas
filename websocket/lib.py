@@ -9,17 +9,20 @@ import requests
 from dbas.logger import logger
 
 
-def send_request_to_socketio(type, nickname, message=None, url=None, increase_counter=False):
+def send_request_to_socketio(nickname, type, message='', url=None, increase_counter=False):
     """
     Sends an request to the socket io server
 
-    :param type: String (success, warning, info))
+    :param type: String (success, warning, info)
     :param nickname: User.nickname
     :param message: String
     :param url: String
     :param increase_counter: Boolean
     :return: Status code of the request
     """
+    if type not in ['success', 'warning', 'info']:
+        type = 'info'
+
     params = '?type=' + type + '&nickname=' + nickname + '&'
     if message:
         params += 'msg=' + message + '&'
