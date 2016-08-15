@@ -7,11 +7,11 @@ Webhooks for git to deploy SASS und CSS.
 Description
 ===========
 
-.. automodule:: webhooks
+.. automodule:: webhook
     :members:
 
 Views
 =====
 
-.. automodule:: webhooks.views
+.. automodule:: webhook.views
     :members:
