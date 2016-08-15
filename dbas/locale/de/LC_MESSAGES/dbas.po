@@ -1065,7 +1065,7 @@ msgstr ""
 #. Default: contact us (click here)
 #: dbas/templates/finish.pt:9
 msgid "contact_us"
-msgstr "kontaktieren Sie uns bitte (hier klicken)"
+msgstr "kontaktieren Sie uns bitte"
 
 #. Default: Todays Summary
 #: dbas/templates/finish.pt:19
