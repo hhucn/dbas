@@ -188,6 +188,9 @@ function DiscussionGraph() {
 				}
             }
 			d3.select(this).attr("id", d.id);
+			// set position of label
+			var height = $("#" + d.id).height();
+			d3.select(this).attr("y", -height+45);
 		});
 
 		// set properties for rect
@@ -201,7 +204,7 @@ function DiscussionGraph() {
 			d3.select(this)
 			.attr("width", width)
 			.attr("height", height)
-			.attr("y", -17)
+			.attr("y", -height+38)
 			.attr("x", -width/2);
 		});
 
