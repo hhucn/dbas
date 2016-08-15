@@ -283,7 +283,7 @@ class QueryHelper:
             DBDiscussionSession.add(textversion)
             DBDiscussionSession.flush()
 
-            NotificationHelper.send_edit_text_notification(textversion, path, request)
+        NotificationHelper.send_edit_text_notification(db_user, textversion, path, request)
 
         db_statement.set_textversion(textversion.uid)
         transaction.commit()
