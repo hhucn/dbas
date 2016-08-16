@@ -14,22 +14,23 @@ import dbas.user_management as UserManager
 pages = ['edits', 'deletes', 'flags', 'random', 'duplicates']
 
 
-def get_review_array(mainpage, translator):
+def get_review_array(mainpage, issue, translator):
     """
     Prepares dictionary for the edit section.
 
     :param mainpage: URL
+    :param issue: current issue
     :param translator: Translator
     :return: Array
     """
     review_dict = []
 
-    review_dict.append(__get_edit_dict(mainpage, translator))
-    review_dict.append(__get_delete_dict(mainpage, translator))
-    review_dict.append(__get_flag_dict(mainpage, translator))
-    review_dict.append(__get_random_dict(mainpage, translator))
-    review_dict.append(__get_duplicate_dict(mainpage, translator))
-    review_dict.append(__get_freshest_dict(mainpage, translator))
+    review_dict.append(__get_edit_dict(mainpage, issue, translator))
+    review_dict.append(__get_delete_dict(mainpage, issue, translator))
+    review_dict.append(__get_flag_dict(mainpage, issue, translator))
+    review_dict.append(__get_random_dict(mainpage, issue, translator))
+    review_dict.append(__get_duplicate_dict(mainpage, issue, translator))
+    review_dict.append(__get_freshest_dict(mainpage, issue, translator))
 
     return review_dict
 
@@ -50,16 +51,17 @@ def get_subpage_for(subpage_name, nickname):
     return None
 
 
-def __get_edit_dict(mainpage, translator):
+def __get_edit_dict(mainpage, issue, translator):
     """
     Prepares dictionary for the edit section.
 
     :param mainpage: URL
+    :param issue: current issue
     :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Edits',
-                'url': mainpage + '/review/edits',
+                'url': mainpage + '/review/edits/' + issue,
                 'icon': 'fa fa-eraser',
                 'task_count': 2,
                 'is_allowed': True,
@@ -70,16 +72,17 @@ def __get_edit_dict(mainpage, translator):
     return tmp_dict
 
 
-def __get_delete_dict(mainpage, translator):
+def __get_delete_dict(mainpage, issue, translator):
     """
     Prepares dictionary for the delete section.
 
     :param mainpage: URL
+    :param issue: current issue
     :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Deletes',
-                'url': mainpage + '/review/deletes',
+                'url': mainpage + '/review/deletes/' + issue,
                 'icon': 'fa fa-trash-o',
                 'task_count': 4,
                 'is_allowed': False,
@@ -90,16 +93,17 @@ def __get_delete_dict(mainpage, translator):
     return tmp_dict
 
 
-def __get_flag_dict(mainpage, translator):
+def __get_flag_dict(mainpage, issue, translator):
     """
     Prepares dictionary for the flag section.
 
     :param mainpage: URL
+    :param issue: current issue
     :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Flags',
-                'url': mainpage + '/review/flags',
+                'url': mainpage + '/review/flags/' + issue,
                 'icon': 'fa fa-flag',
                 'task_count': 8,
                 'is_allowed': False,
@@ -110,16 +114,17 @@ def __get_flag_dict(mainpage, translator):
     return tmp_dict
 
 
-def __get_random_dict(mainpage, translator):
+def __get_random_dict(mainpage, issue, translator):
     """
     Prepares dictionary for the random section.
 
     :param mainpage: URL
+    :param issue: current issue
     :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Random',
-                'url': mainpage + '/review/random',
+                'url': mainpage + '/review/random/' + issue,
                 'icon': 'fa fa-random',
                 'task_count': '-',
                 'is_allowed': True,
@@ -130,16 +135,17 @@ def __get_random_dict(mainpage, translator):
     return tmp_dict
 
 
-def __get_duplicate_dict(mainpage, translator):
+def __get_duplicate_dict(mainpage, issue, translator):
     """
     Prepares dictionary for the duplicate section.
 
     :param mainpage: URL
+    :param issue: current issue
     :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'Duplicates',
-                'url': mainpage + '/review/duplicates',
+                'url': mainpage + '/review/duplicates/' + issue,
                 'icon': 'fa fa-files-o',
                 'task_count': '-',
                 'is_allowed': True,
@@ -150,16 +156,17 @@ def __get_duplicate_dict(mainpage, translator):
     return tmp_dict
 
 
-def __get_freshest_dict(mainpage, translator):
+def __get_freshest_dict(mainpage, issue, translator):
     """
     Prepares dictionary for the freshest section.
 
     :param mainpage: URL
+    :param issue: current issue
     :param translator: Translator
     :return: Dict()
     """
     tmp_dict = {'task_name': 'First Posts',
-                'url': mainpage + '/review/first',
+                'url': mainpage + '/review/first/' + issue,
                 'icon': 'fa fa-level-up',
                 'task_count': '3',
                 'is_allowed': False,

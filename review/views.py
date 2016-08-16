@@ -7,8 +7,9 @@ import review.review_helper as ReviewHelper
 import transaction
 import dbas.helper.issue_helper as IssueHelper
 import dbas.helper.history_helper as HistoryHelper
-import dbas.user_management as UserHandler
 
+import dbas.user_management as UserHandler
+from slugify import slugify
 from cornice import Service
 from dbas.views import project_name
 from pyramid.threadlocal import get_current_registry
@@ -32,7 +33,7 @@ cors_policy = dict(enabled=True,
 # =============================================================================
 
 content = Service(name='review_content',
-                  path='/{slug}/{queue}',
+                  path='/{queue}/{slug}',
                   renderer='templates/review_content.pt',
                   description="Review Queue",
                   permission='use',
@@ -70,15 +71,19 @@ def main_review(request):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
     extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
-    review_dict     = ReviewHelper.get_review_array(mainpage, _tn)
 
     try:
-        issue = request.matchdict['slug'] if len(request.matchdict['slug']) == 1 else request.matchdict['slug'][0]
+        slug = request.matchdict['slug'][0]
+        issue = IssueHelper.get_title_for_slug(slug)
+        if not issue:
+            issue = issue_dict['title']
     except KeyError and IndexError:
         issue = issue_dict['title']
 
     if len(issue) == 0:
         issue = issue_dict['title']
+
+    review_dict = ReviewHelper.get_review_array(mainpage, slugify(issue), _tn)
 
     return {
         'layout': Dbas.base_layout(),
@@ -109,6 +114,7 @@ def main_review_content(request):
         return Dbas(request).user_logout(True)
 
     subpage_name = request.matchdict['queue']
+    issue = IssueHelper.get_title_for_slug(request.matchdict['slug'])
     subpage = ReviewHelper.get_subpage_for(subpage_name, request.authenticated_userid)
     enough_reputation = True if subpage is not None else False
 
@@ -120,6 +126,7 @@ def main_review_content(request):
         'title': _tn.get(_tn.review),
         'project': project_name,
         'extras': extras_dict,
-        'subpage': {'name': subpage,
+        'subpage': {'queue': subpage,
+                    'issue': issue,
                     'enough_reputation': enough_reputation}
     }
