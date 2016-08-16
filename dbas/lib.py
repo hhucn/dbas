@@ -64,8 +64,8 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 
     :param ts: timestamp (arrow) as string
     :param lang: language
-    :param lang: humanize: Boolean
-    :param lang: with_exact_time: Boolean
+    :param humanize: Boolean
+    :param with_exact_time: Boolean
     :return:
     """
     ts = ts.replace(hours=-2)
