@@ -118,7 +118,8 @@ class UrlManager(object):
         """
         Returns url for getting the reaction regarding an argument of the user or the API-version
 
-        :param as_location_href: Boolean
+        :param as_location_href: Set to True if you want to change the location using 'location.href'
+        :type as_location_href: boolean
         :param argument_uid: Argument.uid
         :param mode: 't' on supportive, 'f' otherwise
         :param confrontation_argument: Argument.uid
