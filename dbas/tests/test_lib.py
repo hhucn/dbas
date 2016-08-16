@@ -139,4 +139,4 @@ class LibTests(unittest.TestCase):
 
         self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 4)
         self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)
-        self.assertEqual(lib.get_all_arguments_by_statement(80), None)
+        self.assertEqual(len(lib.get_all_arguments_by_statement(-1)), 0)
