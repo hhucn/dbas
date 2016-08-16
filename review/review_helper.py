@@ -11,7 +11,13 @@ from dbas.database.discussion_model import User
 
 import dbas.user_management as UserManager
 
-pages = ['edits', 'deletes', 'flags', 'random', 'duplicates']
+pages = ['edits', 'deletes', 'flags', 'random', 'duplicates', 'freshest']
+reputation = {'edits': 100,
+              'deletes': 200,
+              'flags': 150,
+              'random': 50,
+              'duplicates': 10,
+              'freshest': 75}
 
 
 def get_review_array(mainpage, issue, translator):
@@ -60,13 +66,14 @@ def __get_edit_dict(mainpage, issue, translator):
     :param translator: Translator
     :return: Dict()
     """
+    key = 'edits'
     tmp_dict = {'task_name': 'Edits',
-                'url': mainpage + '/review/edits/' + issue,
+                'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-eraser',
                 'task_count': 2,
                 'is_allowed': True,
                 'is_allowed_text': 'Visit the edit queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least 100 reputation to review edits.',
+                'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review edits.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
@@ -81,13 +88,14 @@ def __get_delete_dict(mainpage, issue, translator):
     :param translator: Translator
     :return: Dict()
     """
+    key = 'deletes'
     tmp_dict = {'task_name': 'Deletes',
-                'url': mainpage + '/review/deletes/' + issue,
+                'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-trash-o',
                 'task_count': 4,
                 'is_allowed': False,
                 'is_allowed_text': 'Visit the delete queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least 200 reputation to review deletes.',
+                'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review deletes.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
@@ -102,13 +110,14 @@ def __get_flag_dict(mainpage, issue, translator):
     :param translator: Translator
     :return: Dict()
     """
+    key = 'flags'
     tmp_dict = {'task_name': 'Flags',
-                'url': mainpage + '/review/flags/' + issue,
+                'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-flag',
                 'task_count': 8,
                 'is_allowed': False,
                 'is_allowed_text': 'Visit the review queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least 150 reputation to review edits.',
+                'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review edits.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
@@ -123,13 +132,14 @@ def __get_random_dict(mainpage, issue, translator):
     :param translator: Translator
     :return: Dict()
     """
+    key = 'random'
     tmp_dict = {'task_name': 'Random',
-                'url': mainpage + '/review/random/' + issue,
+                'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-random',
                 'task_count': '-',
                 'is_allowed': True,
                 'is_allowed_text': 'Visit the random queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least 50 reputation to review random statements.',
+                'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review random statements.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
@@ -144,13 +154,14 @@ def __get_duplicate_dict(mainpage, issue, translator):
     :param translator: Translator
     :return: Dict()
     """
+    key = 'duplicates'
     tmp_dict = {'task_name': 'Duplicates',
-                'url': mainpage + '/review/duplicates/' + issue,
+                'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-files-o',
                 'task_count': '-',
                 'is_allowed': True,
                 'is_allowed_text': 'Visit the duplicate queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least 10 reputation to review duplicated statements.',
+                'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review duplicated statements.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
@@ -165,13 +176,14 @@ def __get_freshest_dict(mainpage, issue, translator):
     :param translator: Translator
     :return: Dict()
     """
+    key = 'freshest'
     tmp_dict = {'task_name': 'First Posts',
-                'url': mainpage + '/review/first/' + issue,
+                'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-level-up',
                 'task_count': '3',
                 'is_allowed': False,
                 'is_allowed_text': 'Visit the newest statements queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least 75 reputation to review newest statements.',
+                'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review freshest statements.',
                 'last_reviews': __get_users_array(mainpage)
                 }
     return tmp_dict
