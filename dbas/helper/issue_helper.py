@@ -223,3 +223,16 @@ def get_issue_id(request):
     request.session['issue'] = 1 if str(issue) is 'undefined' else issue
 
     return issue
+
+
+def get_title_for_slug(slug):
+    """
+
+    :param slug:
+    :return:
+    """
+    db_issues = DBDiscussionSession.query(Issue).all()
+    for issue in db_issues:
+        if str(slugify(issue.title)) == str(slug):
+            return issue.title
+    return None
