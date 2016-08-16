@@ -162,7 +162,7 @@ def get_all_arguments_by_statement(uid):
         if db_arguments:
             return_array.append(db_arguments)
 
-    return return_array
+    return return_array if len(return_array) > 0 else None
 
 
 def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t):
