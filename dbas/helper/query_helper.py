@@ -111,27 +111,18 @@ class QueryHelper:
         # #arguments=0: empty input
         # #arguments=1: deliver new url
         # #arguments>1: deliver url where the user has to choose between her inputs
-        _um = UrlManager(mainpage, slug, for_api)
+        _um = UrlManager(mainpage, slug, for_api, history)
         if len(new_argument_uids) == 0:
-            error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
+            error = QueryHelper.__get_error_for_empty_argument_list(_tn)
 
         elif len(new_argument_uids) == 1:
-            new_argument_uid = random.choice(new_argument_uids)
-            attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
-            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
-            if arg_id_sys == 0:
-                attack = 'end'
-            url = _um.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-            if history:
-                url += '?history=' + history
+            url = QueryHelper.__get_url_for_new_argument(new_argument_uids, history, lang, _um)
 
         else:
             pgroups = []
             for arg_uid in new_argument_uids:
                 pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
             url = _um.get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
-            if history:
-                url += '?history=' + history
 
         # send notifications and mails
         if len(new_argument_uids) > 0:
@@ -177,6 +168,7 @@ class QueryHelper:
             if not isinstance(new_argument, Argument):  # break on error
                 error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
                 return -1, None, error
+
             new_argument_uids.append(new_argument.uid)
 
         statement_uids = []
@@ -193,19 +185,13 @@ class QueryHelper:
         # #arguments=0: empty input
         # #arguments=1: deliver new url
         # #arguments>1: deliver url where the user has to choose between her inputs
-        _um = url = UrlManager(mainpage, slug, for_api)
+        _um = url = UrlManager(mainpage, slug, for_api, history)
         if len(new_argument_uids) == 0:
-            error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
+            error = QueryHelper.__get_error_for_empty_argument_list(_tn)
 
         elif len(new_argument_uids) == 1:
-            new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
-            attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
-            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
-            if arg_id_sys == 0:
-                attack = 'end'
-            url = _um.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
-            if history:
-                url += '?history=' + history
+            url = QueryHelper.__get_url_for_new_argument(new_argument_uids, history, lang, _um)
+
         else:
             pgroups = []
             for uid in new_argument_uids:
@@ -217,14 +203,10 @@ class QueryHelper:
                 db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).first()
                 db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
                 url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
-                if history:
-                    url += '?history=' + history
 
             # relation to the arguments relation
             elif attack_type == 'undercut' or attack_type == 'overbid':
                 url = _um.get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
-                if history:
-                    url += '?history=' + history
 
             # relation to the arguments conclusion
             elif attack_type == 'rebut':
@@ -232,8 +214,6 @@ class QueryHelper:
                 is_argument = current_argument.conclusion_uid is not None
                 uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
                 url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
-                if history:
-                    url += '?history=' + history
 
         # send notifications and mails
         if len(new_argument_uids) > 0:
@@ -245,6 +225,25 @@ class QueryHelper:
             NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, request, transaction)
 
         return url, statement_uids, error
+
+    @staticmethod
+    def __get_error_for_empty_argument_list(_tn):
+        """
+
+        :param _tn:
+        :return:
+        """
+        return _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
+
+    @staticmethod
+    def __get_url_for_new_argument(new_argument_uids, history, lang, urlmanager):
+        new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
+        arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
+        if arg_id_sys == 0:
+            attack = 'end'
+        url = urlmanager.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+        return url
 
     @staticmethod
     def correct_statement(transaction, user, uid, corrected_text, path, request):

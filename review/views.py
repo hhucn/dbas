@@ -5,9 +5,11 @@ Introducing websockets.
 """
 import review.review_helper as ReviewHelper
 import transaction
+import dbas.helper.issue_helper as IssueHelper
 import dbas.helper.history_helper as HistoryHelper
-import dbas.user_management as UserHandler
 
+import dbas.user_management as UserHandler
+from slugify import slugify
 from cornice import Service
 from dbas.views import project_name
 from pyramid.threadlocal import get_current_registry
@@ -15,7 +17,7 @@ from dbas.helper.dictionary_helper import DictionaryHelper
 from dbas.lib import get_language
 from dbas.logger import logger
 from dbas.strings import Translator
-from dbas.views import mainpage, Dbas
+from dbas.views import mainpage, Dbas, get_discussion_language
 
 # =============================================================================
 # CORS configuration
@@ -30,19 +32,19 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
-index = Service(name='review_index',
-                path='/',
-                renderer='templates/review.pt',
-                description="Review Index",
-                permission='use',
-                cors_policy=cors_policy)
-
 content = Service(name='review_content',
-                  path='/{queue}',
+                  path='/{queue}/{slug}',
                   renderer='templates/review_content.pt',
                   description="Review Queue",
                   permission='use',
                   cors_policy=cors_policy)
+
+index = Service(name='review_index',
+                path='/*slug',
+                renderer='templates/review.pt',
+                description="Review Index",
+                permission='use',
+                cors_policy=cors_policy)
 
 
 # =============================================================================
@@ -57,7 +59,7 @@ def main_review(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Review', 'main_review', 'main')
+    logger('Review', 'main_review', 'main ' + str(request.matchdict))
     ui_locales = get_language(request, get_current_registry())
     session_expired = UserHandler.update_last_action(transaction, request.authenticated_userid)
     HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
@@ -65,9 +67,23 @@ def main_review(request):
     if session_expired:
         return Dbas(request).user_logout(True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
+    issue           = IssueHelper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
+    extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
 
-    review_dict = ReviewHelper.get_review_array(mainpage, _tn)
+    try:
+        slug = request.matchdict['slug'][0]
+        issue = IssueHelper.get_title_for_slug(slug)
+        if not issue:
+            issue = issue_dict['title']
+    except KeyError and IndexError:
+        issue = issue_dict['title']
+
+    if len(issue) == 0:
+        issue = issue_dict['title']
+
+    review_dict = ReviewHelper.get_review_array(mainpage, slugify(issue), _tn)
 
     return {
         'layout': Dbas.base_layout(),
@@ -75,7 +91,9 @@ def main_review(request):
         'title': _tn.get(_tn.review),
         'project': project_name,
         'extras': extras_dict,
-        'review': review_dict
+        'review': review_dict,
+        'issues': issue_dict,
+        'current_issue_title': issue
     }
 
 
@@ -96,6 +114,7 @@ def main_review_content(request):
         return Dbas(request).user_logout(True)
 
     subpage_name = request.matchdict['queue']
+    issue = IssueHelper.get_title_for_slug(request.matchdict['slug'])
     subpage = ReviewHelper.get_subpage_for(subpage_name, request.authenticated_userid)
     enough_reputation = True if subpage is not None else False
 
@@ -107,6 +126,7 @@ def main_review_content(request):
         'title': _tn.get(_tn.review),
         'project': project_name,
         'extras': extras_dict,
-        'subpage': {'name': subpage,
+        'subpage': {'queue': subpage,
+                    'issue': issue,
                     'enough_reputation': enough_reputation}
     }

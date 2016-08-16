@@ -15,7 +15,7 @@ class ReviewHelperTest(unittest.TestCase):
 
     def test_get_review_array(self):
         _tn = Translator('en')
-        array = ReviewHelper.get_review_array('page', _tn)
+        array = ReviewHelper.get_review_array('page', 'cat-or-dog', _tn)
 
         for d in array:
             self.assertTrue('task_name' in d)
