@@ -13,6 +13,7 @@ import json
 
 from cornice import Service
 from dbas.views import Dbas
+from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement
 
 from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, as_json
 from .login import validate_credentials, validate_login
@@ -102,6 +103,15 @@ statement_url_service = Service(name="statement_url",
                                 path="/get/statement/url/{issue_uid}/{statement_uid}/{agree}",
                                 description="Get URL to a statement inside the discussion for direct jumping to it",
                                 cors_policy=cors_policy)
+
+#
+# Build text-blocks
+#
+text_for_argument = Service(name="argument_text_block",
+                            path="/get/argument/texts/{lang}/{statement_uid}",
+                            description="Get textblock for argument as seen in the bubbles",
+                            cors_policy=cors_policy)
+
 
 #
 # Other Services
@@ -407,8 +417,29 @@ def find_statements_fn(request):
 
 
 # =============================================================================
+# TEXT BLOCKS - create text-blocks as seen in the bubbles
+# =============================================================================
+
+@text_for_argument.get()
+def get_text_for_argument(request):
+    statement = int(request.matchdict["statement_uid"])
+    lang = request.matchdict["lang"]
+
+    args = get_all_arguments_by_statement(statement)
+
+    results = list()
+
+    for argument in args:
+        results.append({"id": argument.uid,
+                        "text": get_text_for_argument_uid(argument.uid, lang)})
+
+    return as_json(results)
+
+
+# =============================================================================
 # GET INFORMATION - several functions to get information from the database
 # =============================================================================
+
 @statement_url_service.get()
 def get_statement_url(request):
     """
