@@ -64,8 +64,8 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 
     :param ts: timestamp (arrow) as string
     :param lang: language
-    :param lang: humanize: Boolean
-    :param lang: with_exact_time: Boolean
+    :param humanize: Boolean
+    :param with_exact_time: Boolean
     :return:
     """
     ts = ts.replace(hours=-2)
@@ -141,6 +141,28 @@ def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=F
         se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
         doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHold).lower() + ' ' + _t.get(_t.because).lower() + ' ' + sb
         return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
+
+
+def get_all_arguments_by_statement(uid):
+    """
+    Returns a list of all arguments where the statement is a conclusion or member of the premisegroup
+
+    :param uid: Statement.uid
+    :return: [Arguments]
+    """
+    return_array = []
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).all()
+    if db_arguments:
+        return_array = db_arguments
+
+    db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=uid).all()
+
+    for premise in db_premises:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
+        if db_arguments:
+            return_array.append(db_arguments)
+
+    return return_array if len(return_array) > 0 else None
 
 
 def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t):

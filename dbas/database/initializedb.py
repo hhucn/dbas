@@ -1197,7 +1197,6 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument17.conclusions_argument(argument1.uid)
     argument21.conclusions_argument(argument2.uid)
     argument24.conclusions_argument(argument10.uid)
-    argument26.conclusions_argument(argument11.uid)
     argument31.conclusions_argument(argument14.uid)
     argument102.conclusions_argument(argument101.uid)
     argument106.conclusions_argument(argument105.uid)
