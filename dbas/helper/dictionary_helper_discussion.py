@@ -65,11 +65,12 @@ class DiscussionDictHelper(object):
         _tn                    = Translator(self.lang)
         add_premise_text    = ''
         save_statement_url  = 'ajax_set_new_start_statement'
-        statement_text      = get_text_for_statement_uid(uid)
+        statement_text      = get_text_for_statement_uid(uid, True)
         if not statement_text:
             return None
         if self.lang != 'de':
-            statement_text = statement_text[0:1].lower() + statement_text[1:]
+            l = len('<' + TextGenerator.tag_type + ' data-argumentation-type="position">')
+            statement_text = statement_text[0:l+1].lower() + statement_text[l+1:]
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ' ' + statement_text + '?'
