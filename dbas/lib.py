@@ -154,6 +154,9 @@ def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=F
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_argument.argument_uid).first()
         arg_array.append(db_argument.uid)
 
+    if attack_type == 'jump':
+        return __build_argument_for_jump(arg_array, lang, with_html_tag)
+
     if len(arg_array) == 1:
         # build one argument only
         return __build_single_argument(arg_array[0], lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t)
@@ -164,6 +167,50 @@ def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=F
         se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
         doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHold).lower() + ' ' + _t.get(_t.because).lower() + ' ' + sb
         return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
+
+
+def __build_argument_for_jump(arg_array, lang, with_html_tag):
+    """
+
+    :param arg_array:
+    :param lang:
+    :param colored_position:
+    :param with_html_tag:
+    :return:
+    """
+    tag_premise = ('<' + TextGenerator.tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
+    tag_conclusion = ('<' + TextGenerator.tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
+    tag_end = ('</' + TextGenerator.tag_type + '>') if with_html_tag else ''
+    _t = Translator(lang)
+
+    if len(arg_array) == 1:
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+        conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+
+        if lang == 'de':
+            intro = _t.get(_t.rebut1) if db_argument.is_supportive else _t.get(_t.overbid1)
+            ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end
+            ret_value += ' ' + _t.get(_t.because).lower() + ' ' + tag_premise + premises + tag_end
+        else:
+            ret_value = tag_conclusion + conclusion + ' ' + (_t.get(_t.isNotRight).lower() if not db_argument.is_supportive else '') + tag_end
+            ret_value += _t.get(_t.because).lower()
+            ret_value += ' ' + tag_premise + premises + tag_end
+
+    else:
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[1]).first()
+        conclusions_premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+        conclusions_conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+
+        ret_value = tag_conclusion + conclusions_premises + ' '
+        ret_value += _t.get(_t.isNotAGoodIdea) + ' '
+        ret_value += _t.get(_t.forText) + ' ' + conclusions_conclusion + tag_end + ' '
+        ret_value += _t.get(_t.because).lower() + ' ' + tag_premise + premises + tag_end
+
+    return ret_value
 
 
 def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t):
@@ -189,7 +236,7 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
 
     sb_tmp = ''
     se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
-    if not attack_type == 'dont_know':
+    if attack_type not in ['dont_know', 'jump']:
         sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
         if colored_position:
             sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
@@ -199,7 +246,7 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
 
     # color_everything = attack_type == 'undercut' and False
     # if not color_everything:
-    if not attack_type == 'dont_know':
+    if attack_type not in ['dont_know', 'jump']:
         if attack_type == 'undermine':
             premises = sb + premises + se
         else:

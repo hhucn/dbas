@@ -337,7 +337,7 @@ class DiscussionDictHelper(object):
         _tn                    = Translator(self.lang)
         add_premise_text    = ''
         save_statement_url  = ''
-        argument_text       = get_text_for_argument_uid(uid, self.lang, colored_position=True, with_html_tag=True, attack_type='dont_know')
+        argument_text       = get_text_for_argument_uid(uid, self.lang, colored_position=True, with_html_tag=True, attack_type='jump')
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ': ' + argument_text + '?'

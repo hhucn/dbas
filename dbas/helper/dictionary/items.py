@@ -430,36 +430,49 @@ class ItemDictHelper(object):
         _t = Translator(self.lang)
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 
-        sb_premi = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
-        sb_concl = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
-        se = '</' + TextGenerator.tag_type + '> '
-        p = _t.get(_t.reason).lower()
-        c = _t.get(_t.statement).lower()
-        t = _t.get(_t.this).lower()
-        r = _t.get(_t.right) + ', ' + t + ' '
-        w = _t.get(_t.wrong) + ', ' + t + ' '
-        u = _t.get(_t.isTrue)
-        f = _t.get(_t.isFalse)
-        a = (_t.get(_t.argument).lower() if self.lang != 'de' else _t.get(_t.argument)) + ' '
+        tag_premise = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
+        tag_conclusion = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
+        tag_end = '</' + TextGenerator.tag_type + '>'
+        premise = _t.get(_t.reason).lower() if self.lang != 'de' else _t.get(_t.reason)
+        conclusion = _t.get(_t.statement).lower() if self.lang != 'de' else _t.get(_t.statement)
+        this = _t.get(_t.this).lower()
+        right = _t.get(_t.right) + ', ' + this + ' '
+        wrong = _t.get(_t.wrong) + ', ' + this + ' '
+        holds = ' ' + _t.get(_t.holds)
+        hold = ' ' + _t.get(_t.hold) + '.'
+        does_not_hold = ' ' + _t.get(_t.doesNotHold)
+        but = _t.get(_t.butIDoNotBelieveArgumentFor)
+        aand = ' ' + _t.get(_t.aand) + ' '
 
         arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(arg_uid, self.lang)
 
-        text0 = r + a + u
-        text1 = r + sb_concl + c + se + u + '.'
-        text2 = w + sb_concl + c + se + f + '.'
-        text3 = r + sb_premi + p + se + u + '.'
-        text4 = w + sb_premi + p + se + f + '.'
-        text5 = r + sb_premi + p + se + u + ' ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + t + ' ' + sb_concl + c + se + '.'
+        text0 = right + tag_conclusion + conclusion + tag_end + holds + '.'
+        text1 = wrong + tag_conclusion + conclusion + tag_end + does_not_hold + '.'
+        text2 = right + tag_premise + premise + tag_end + holds + '.'
+        text3 = wrong + tag_premise + premise + tag_end + does_not_hold + '.'
+        text4 = right + tag_premise + premise + tag_end + holds + ' ' + but + ' ' + this + ' ' + tag_conclusion + conclusion + tag_end + '.'
+        text5 = _t.get(_t.right) + ', ' + tag_conclusion + conclusion + tag_end + aand + tag_premise + premise + tag_end + hold
+
+        if db_argument.conclusion_uid is None:
+            url0 = _um.get_url_for_reaction_on_argument(True, arg_uid, sys_attack, arg_id_sys)  # TODO UNDERCUT AS CONCLUSION
+            url1 = _um.get_url_for_justifying_argument(True, arg_uid, 'f', 'undermine')  # TODO UNDERCUT AS CONCLUSION
+        else:
+            url0 = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 't')  # TODO UNDERCUT AS CONCLUSION
+            url1 = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 'f')  # TODO UNDERCUT AS CONCLUSION
+        url2 = _um.get_url_for_justifying_statement(True, db_premises[0].statement_uid, 't')  # TODO PREMISEGROUPS
+        url3 = _um.get_url_for_justifying_statement(True, db_premises[0].statement_uid, 'f')  # TODO PREMISEGROUPS
+        url4 = _um.get_url_for_justifying_argument(True, arg_uid, 'undercut', 't')
+        url5 = _um.get_url_for_reaction_on_argument(True, arg_uid, sys_attack, arg_id_sys)
 
         answers = list()
-        answers.append({'text': text0, 'url': _um.get_url_for_reaction_on_argument(True, arg_uid, sys_attack, arg_id_sys)})
-        answers.append({'text': text1, 'url': _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 't')})  # TODO UNDERCUT AS CONCLUSION
-        answers.append({'text': text2, 'url': _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 'f')})  # TODO UNDERCUT AS CONCLUSION
-        answers.append({'text': text3, 'url': _um.get_url_for_justifying_statement(True, db_premises.statement_uid, 't')})  # TODO PREMISEGROUPS
-        answers.append({'text': text4, 'url': _um.get_url_for_justifying_statement(True, db_premises.statement_uid, 'f')})  # TODO PREMISEGROUPS
-        answers.append({'text': text5, 'url': _um.get_url_for_justifying_argument(True, arg_uid, 'undercut', 't')})
+        answers.append({'text': text0, 'url': url0})
+        answers.append({'text': text1, 'url': url1})
+        answers.append({'text': text2, 'url': url2})
+        answers.append({'text': text3, 'url': url3})
+        answers.append({'text': text4, 'url': url4})
+        answers.append({'text': text5, 'url': url5})
 
         return_array = []
         return_array.append(self.__create_answer_dict('jump0', [{'title': answers[0]['text'], 'id': 0}], 'jump', answers[0]['url']))
