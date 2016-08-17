@@ -340,7 +340,6 @@ class OpinionHandler:
                  VoteStatement.is_valid == True,
                  VoteStatement.author_uid != db_user_uid)).all()
 
-
         db_con_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
                                                                             VoteStatement.is_up_vote == False,
                                                                             VoteStatement.is_valid == True,
