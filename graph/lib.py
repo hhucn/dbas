@@ -50,12 +50,7 @@ def get_d3_data(issue):
     db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
 
     # issue
-    node_dict = __get_node_dict(id='issue',
-                                label=db_issue.info,
-                                color=blue,
-                                size=issue_size,
-                                x=x,
-                                y=y)
+    node_dict = __get_node_dict(id='issue', label=db_issue.info, color=blue, size=issue_size, x=x, y=y)
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
@@ -96,8 +91,9 @@ def get_d3_data(issue):
                                     x=x,
                                     y=y)
         x = (x + 1) % 10
-        y += (1 if x == 0 else 0)
+        y += 1 if x == 0 else 0
         nodes_array.append(node_dict)
+        all_node_ids.append('argument_' + str(argument.uid))
 
         # we have an argument with:
         # 1) with one premise and no undercut is done on this argument
@@ -119,6 +115,7 @@ def get_d3_data(issue):
                                         size=edge_size,
                                         edge_type=edge_type)
             edges_array.append(edge_dict)
+
         else:
             # edge from premisegroup to the middle point
             for premise in db_premises:
@@ -142,7 +139,7 @@ def get_d3_data(issue):
 
     error = False
     for edge in edges_array:
-        error = error or (edge['source'] not in all_node_ids) or (edge['target'] not in all_node_ids)
+        error = error or edge['source'] not in all_node_ids or edge['target'] not in all_node_ids
     if error:
         logger('GraphLib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
     else:
