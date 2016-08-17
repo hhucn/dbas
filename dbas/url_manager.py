@@ -162,7 +162,10 @@ class UrlManager(object):
         :param url: String
         :return: Valid URL
         """
-        history = ('?history=' + self.history) if len(self.history) > 1 else ''
+        if self.history and len(self.history) > 1:
+            history = '?history=' + self.history
+        else:
+            history = ''
         if self.for_api:
             return self.api_url + url + history
         else:
