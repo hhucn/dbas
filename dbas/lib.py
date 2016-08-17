@@ -197,17 +197,18 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
         sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
         sb_tmp = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
 
-    color_everything = attack_type == 'undercut'
-    if not color_everything:
-        if not attack_type == 'dont_know':
-            if attack_type == 'undermine':
-                premises = sb + premises + se
-            else:
-                conclusion = sb + conclusion + se
-        else:
-            se = '</' + TextGenerator.tag_type + '>'
+    # color_everything = attack_type == 'undercut' and False
+    # if not color_everything:
+    if not attack_type == 'dont_know':
+        if attack_type == 'undermine':
             premises = sb + premises + se
-            conclusion = sb_tmp + conclusion + se
+        else:
+            conclusion = sb + conclusion + se
+    else:
+        se = '</' + TextGenerator.tag_type + '>'
+        premises = sb + premises + se
+        conclusion = sb_tmp + conclusion + se
+    # if not color_everything:
 
     if lang == 'de':
         if rearrange_intro:
@@ -215,10 +216,10 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
         else:
             intro = _t.get(_t.itIsTrueThat) if db_argument.is_supportive else _t.get(_t.itIsFalseThat)
 
-        if color_everything:
-            ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
-        else:
-            ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion
+        # if color_everything:
+        #     ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
+        # else:
+        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion
         ret_value += ' ' + _t.get(_t.because).lower() + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
@@ -226,10 +227,10 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
         ret_value += _t.get(_t.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
-    if color_everything:
-        return sb + ret_value + se
-    else:
-        return ret_value
+    # if color_everything:
+    #     return sb + ret_value + se
+    # else:
+    return ret_value
 
 
 def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t):
