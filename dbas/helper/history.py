@@ -112,11 +112,11 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
             if bubbles:
                 bubble_array += bubbles
 
-        elif 'attitude/' in step:
-            logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
-            bubbles = __attitude_step(step, nickname, lang, url)
-            if bubbles:
-                bubble_array += bubbles
+        # elif 'attitude/' in step:
+        #    logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
+        #    bubbles = __attitude_step(step, nickname, lang, url)
+        #    if bubbles:
+        #        bubble_array += bubbles
 
         else:
             logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
@@ -153,7 +153,7 @@ def __justify_statement_step(step, nickname, lang, url):
     msg = intro + '<' + TextGenerator.tag_type + '>' + text + '</' + TextGenerator.tag_type + '>'
     bubbsle_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
                                             is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
-    return None  # [bubbsle_user]
+    return [bubbsle_user]
 
 
 def __attitude_step(step, nickname, lang, url):
