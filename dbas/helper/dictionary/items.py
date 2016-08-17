@@ -437,20 +437,21 @@ class ItemDictHelper(object):
         se = '</' + TextGenerator.tag_type + '> '
         p = _t.get(_t.reason).lower()
         c = _t.get(_t.statement).lower()
-        t = _t.get(_t.this).lower() + ' '
-        r = _t.get(_t.right) + ', ' + t
-        w = _t.get(_t.wrong) + ', ' + t
+        t = _t.get(_t.this).lower()
+        r = _t.get(_t.right) + ', ' + t + ' '
+        w = _t.get(_t.wrong) + ', ' + t + ' '
         u = _t.get(_t.isTrue)
         f = _t.get(_t.isFalse)
+        a = (_t.get(_t.argument).lower() if self.lang != 'de' else _t.get(_t.argument)) + ' '
 
         arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(arg_uid, self.lang)
 
-        text0 = r + _t.get(_t.argument) + ' ' + u
+        text0 = r + a + u
         text1 = r + sb_concl + c + se + u + '.'
         text2 = w + sb_concl + c + se + f + '.'
         text3 = r + sb_premi + p + se + u + '.'
         text4 = w + sb_premi + p + se + f + '.'
-        text5 = r + sb_premi + p + se + u + ' ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + t + ' ' + sb_concl + c + se
+        text5 = r + sb_premi + p + se + u + ' ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + t + ' ' + sb_concl + c + se + '.'
 
         answers = list()
         answers.append({'text': text0, 'url': _um.get_url_for_reaction_on_argument(True, arg_uid, sys_attack, arg_id_sys)})
