@@ -213,12 +213,14 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
             intro = _t.get(_t.itTrueIsThat) if db_argument.is_supportive else _t.get(_t.itFalseIsThat)
         else:
             intro = _t.get(_t.itIsTrueThat) if db_argument.is_supportive else _t.get(_t.itIsFalseThat)
-        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion + ' ' + _t.get(_t.because).lower() + ' ' + premises
-    else:
-        if not color_everything:
-            tmp = ' ' + _t.get(_t.isNotRight).lower() + ', ' + _t.get(_t.because).lower() + ' '
+
+        if color_everything:
+            ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
         else:
-            tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
+            ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion
+        ret_value += ' ' + _t.get(_t.because).lower() + ' ' + premises
+    else:
+        tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
         ret_value = conclusion + ' '
         ret_value += _t.get(_t.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
@@ -316,11 +318,12 @@ def get_text_for_premisesgroup_uid(uid, lang):
     return text[5:], uids
 
 
-def get_text_for_statement_uid(uid):
+def get_text_for_statement_uid(uid, colored_position=False):
     """
     Returns text of statement with given uid
 
     :param uid: Statement.uid
+    :param colored_position: Boolean
     :return: String
     """
     try:
@@ -331,12 +334,15 @@ def get_text_for_statement_uid(uid):
 
             db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
                 uid=db_statement.textversion_uid).first()
-            tmp = db_textversion.content
+            content = db_textversion.content
 
-            while tmp.endswith(('.', '?', '!')):
-                tmp = tmp[:-1]
+            while content.endswith(('.', '?', '!')):
+                content = content[:-1]
 
-            return tmp
+            sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if colored_position else ''
+            se = '</' + TextGenerator.tag_type + '>' if colored_position else ''
+            return sb + content + se
+
     except (ValueError, TypeError):
         return None
 
