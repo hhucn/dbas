@@ -578,10 +578,15 @@ class Dbas(object):
         logger('discussion_jump', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_jump', 'def', 'main, self.request.params: ' + str(params))
 
-        slug                 = matchdict['slug'] if 'slug' in matchdict else ''
-        arg_uid              = matchdict['arg_id'] if 'arg_id' in matchdict else ''
-        history              = params['history'] if 'history' in params else ''
         nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+        history = params['history'] if 'history' in params else ''
+
+        if for_api and api_data:
+            slug = api_data["slug"]
+            arg_uid = api_data["arg_uid"]
+        else:
+            slug                 = matchdict['slug'] if 'slug' in matchdict else ''
+            arg_uid              = matchdict['arg_id'] if 'arg_id' in matchdict else ''
 
         session_expired = UserHandler.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
