@@ -110,15 +110,11 @@ def get_all_arguments_by_statement(uid):
     :return: [Arguments]
     """
     return_array = []
-    print("get_all_arguments_by_statement")
-    print("uid: %s" % uid)
     db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).all()
-    print("db_arguments: %s " % db_arguments)
     if db_arguments:
         return_array = db_arguments
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=uid).all()
-    print("db_premises: %s " % db_premises)
 
     for premise in db_premises:
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
@@ -171,6 +167,27 @@ def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=F
         se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
         doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHold).lower() + ' ' + _t.get(_t.because).lower() + ' ' + sb
         return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
+
+
+def get_all_arguments_with_text_by_statement_id(statement_uid, lang="en"):
+    """
+    Given a statement_uid, it returns all arguments, which use this statement and adds
+    the corresponding text to it, which normally appears in the bubbles. The resulting
+    text depends on the provided language.
+
+    :param statement_uid: Id to a statement, which should be analyzed
+    :param lang: Set language, e.g. "de"
+    :type lang: str
+    :return: list of dictionaries containing some properties of these arguments
+    :rtype: list
+    """
+    arguments = get_all_arguments_by_statement(statement_uid)
+    results = list()
+    if arguments:
+        for argument in arguments:
+            results.append({"id": argument.uid,
+                            "text": get_text_for_argument_uid(argument.uid, lang)})
+        return results
 
 
 def __build_argument_for_jump(arg_array, lang, with_html_tag):
