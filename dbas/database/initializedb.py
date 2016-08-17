@@ -5,22 +5,21 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import os
+import random
+import sys
+from math import trunc
 
 import arrow
-import os
-import sys
+import dbas.handler.password as passwordHandler
 import transaction
-import random
-import dbas.password_handler as passwordHandler
-
-from math import trunc
-from dbas.logger import logger
-from sqlalchemy import engine_from_config, and_
-from pyramid.paster import get_appsettings, setup_logging
+from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy
 from dbas.database.news_model import News
-from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
+from dbas.logger import logger
+from pyramid.paster import get_appsettings, setup_logging
+from sqlalchemy import engine_from_config, and_
 
 
 def usage(argv):

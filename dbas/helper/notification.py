@@ -5,12 +5,13 @@ Provides functions for te internal messaging system
 """
 
 import dbas.user_management as UserHandler
-import dbas.helper.email_helper as EmailHelper
+import dbas.helper.email as EmailHelper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument
 from dbas.lib import sql_timestamp_pretty_print, escape_string
-from dbas.strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 
 from websocket.lib import send_request_to_socketio
 

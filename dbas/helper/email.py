@@ -9,11 +9,12 @@ import smtplib
 from socket import error as socket_error
 from dbas.database import DBDiscussionSession
 
-from dbas.database.discussion_model import User, TextVersion, Argument, Settings, Language, Statement
+from dbas.database.discussion_model import User, TextVersion, Settings, Language, Statement
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from dbas.logger import logger
-from dbas.strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 
 
 def send_mail_due_to_new_argument(current_user, url, request):

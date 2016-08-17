@@ -3,14 +3,13 @@ Introducing websockets.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from cornice import Service
+from dbas.lib import get_language
+from dbas.logger import logger
 from dbas.views import Dbas
 from dbas.views import project_name
-
-from cornice import Service
-from dbas.logger import logger
-from dbas.lib import get_language
+from dbas.helper.dictionary.main import DictionaryHelper
 from pyramid.threadlocal import get_current_registry
-from dbas.helper.dictionary_helper import DictionaryHelper
 
 # =============================================================================
 # CORS configuration

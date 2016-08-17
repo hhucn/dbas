@@ -7,7 +7,17 @@ Core component of DBAS.
 import json
 import time
 
+import dbas.helper.email as EmailHelper
+import dbas.helper.history as HistoryHelper
+import dbas.helper.issue as IssueHelper
+import dbas.helper.notification as NotificationHelper
+import dbas.helper.voting as VotingHelper
+import dbas.recommender_system as RecommenderSystem
+import dbas.user_management as UserHandler
+import dbas.handler.news as NewsHandler
+import dbas.handler.password as PasswordHandler
 import requests
+import dbas.strings.matcher as FuzzyStringMatcher
 import transaction
 
 from pyramid.httpexceptions import HTTPFound
@@ -20,28 +30,18 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from validate_email import validate_email
 
-import dbas.helper.email_helper as EmailHelper
-import dbas.helper.history_helper as HistoryHelper
-import dbas.helper.issue_helper as IssueHelper
-import dbas.helper.notification_helper as NotificationHelper
-import dbas.helper.voting_helper as VotingHelper
-import dbas.news_handler as NewsHandler
-import dbas.password_handler as PasswordHandler
-import dbas.recommender_system as RecommenderSystem
-import dbas.string_matcher as FuzzyStringMatcher
-import dbas.user_management as UserHandler
-from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
-from .helper.dictionary_helper import DictionaryHelper
-from .helper.dictionary_helper_discussion import DiscussionDictHelper
-from .helper.dictionary_helper_items import ItemDictHelper
-from .helper.query_helper import QueryHelper
-from .input_validator import Validator
-from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
-from .logger import logger
-from .opinion_handler import OpinionHandler
-from .strings import Translator
-from .url_manager import UrlManager
+from dbas.handler.opinion import OpinionHandler
+from dbas.helper.dictionary.discussion import DiscussionDictHelper
+from dbas.helper.dictionary.items import ItemDictHelper
+from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.helper.query import QueryHelper
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
+from dbas.input_validator import Validator
+from dbas.lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
+from dbas.logger import logger
+from dbas.strings.translator import Translator
+from dbas.url_manager import UrlManager
 
 name = 'D-BAS'
 version = '0.6.0'

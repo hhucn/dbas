@@ -4,23 +4,20 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-
-import arrow
-import random
 import hashlib
-import dbas.password_handler as PasswordHandler
-
+import random
+from datetime import date, timedelta, datetime
 from urllib import parse
 
+import arrow
+import dbas.handler.password as PasswordHandler
 from sqlalchemy import and_
-from datetime import date, timedelta, datetime
+
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
 from .lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid
 from .logger import logger
-
-from .strings import Translator
-
+from dbas.strings.translator import Translator
 
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',

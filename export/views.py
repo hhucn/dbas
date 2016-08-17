@@ -5,7 +5,7 @@ Introducing an export manager.
 """
 
 import json
-import dbas.helper.issue_helper as IssueHelper
+import dbas.helper.issue as IssueHelper
 
 from cornice import Service
 from pyramid.threadlocal import get_current_registry
