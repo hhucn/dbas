@@ -110,11 +110,15 @@ def get_all_arguments_by_statement(uid):
     :return: [Arguments]
     """
     return_array = []
+    print("get_all_arguments_by_statement")
+    print("uid: %s" % uid)
     db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).all()
+    print("db_arguments: %s " % db_arguments)
     if db_arguments:
         return_array = db_arguments
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=uid).all()
+    print("db_premises: %s " % db_premises)
 
     for premise in db_premises:
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
@@ -222,7 +226,6 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
     :param with_html_tag:
     :param colored_position:
     :param attack_type:
-    :param because:
     :param _t:
     :return:
     """
