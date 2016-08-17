@@ -4,7 +4,7 @@ Testing the tests_helper!
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
 """
 
-from dbas.helper.tests_helper import add_settings_to_appconfig
+from dbas.helper.tests import add_settings_to_appconfig
 
 
 def test_settings_to_appconfig():

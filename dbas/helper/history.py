@@ -6,12 +6,12 @@ Provides helping function for creating the history as bubbles.
 
 import time
 from sqlalchemy import and_
-from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
-get_text_for_conclusion, sql_timestamp_pretty_print
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History, Settings
-from dbas.strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 from dbas.input_validator import Validator
 
 
@@ -106,24 +106,20 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
                 if bubbles:
                     bubble_array += bubbles
 
-            # elif 'd' in mode and relation == '':
-
-            # elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
-
         elif 'reaction/' in step:
             logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
             bubbles = __reaction_step(step, nickname, lang, splitted_history, url)
             if bubbles:
                 bubble_array += bubbles
 
-        #  elif '/choose/' in step:
-        #  logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': ' + step)
+        # elif 'attitude/' in step:
+        #    logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
+        #    bubbles = __attitude_step(step, nickname, lang, url)
+        #    if bubbles:
+        #        bubble_array += bubbles
 
         else:
             logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
-
-        # for bubble in bubble_array:
-        #     logger('HistoryHelper', 'create_bubbles_from_history', 'Created: ' + str(bubble['message']) + '; URL: ' + str(bubble['url']))
 
     return bubble_array
 
@@ -158,6 +154,28 @@ def __justify_statement_step(step, nickname, lang, url):
     bubbsle_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
                                             is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
     return [bubbsle_user]
+
+
+def __attitude_step(step, nickname, lang, url):
+    """
+    Creates bubbles for the attitude-keyword for an statement.
+
+    :param step: String
+    :param nickname: User.nickname
+    :param lang: ui_locales
+    :param url: String
+    :return: [dict()]
+    """
+    logger('HistoryHelper', '__attitude_step', 'def')
+    steps   = step.split('/')
+    uid     = int(steps[1])
+    text    = get_text_for_statement_uid(uid)
+    if lang != 'de':
+        text    = text[0:1].upper() + text[1:]
+    bubble = create_speechbubble_dict(is_user=True, message=text, omit_url=False, statement_uid=uid, nickname=nickname,
+                                      lang=lang, url=url)
+
+    return [bubble]
 
 
 def __dont_know_step(step, nickname, lang, url):

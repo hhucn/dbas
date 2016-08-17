@@ -11,7 +11,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement
 from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
-from dbas.strings import Translator
+from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
 
@@ -172,11 +172,13 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     :param lang: ui_locales
     :return: dict()
     """
+    _um = UrlManager(application_url, issue.get_slug(), for_api)
     issue_dict = dict()
     issue_dict['uid']               = str(issue.uid)
     issue_dict['slug']              = issue.get_slug()
     issue_dict['title']             = issue.title
-    issue_dict['url']               = UrlManager(application_url, issue.get_slug(), for_api).get_slug_url(False) if str(uid) != str(issue.uid) else ''
+    issue_dict['url']               = _um.get_slug_url(False) if str(uid) != str(issue.uid) else ''
+    issue_dict['review_url']        = _um.get_review_url(False) if str(uid) != str(issue.uid) else ''
     issue_dict['info']              = issue.info
     issue_dict['stat_count']        = get_number_of_statements(issue.uid)
     issue_dict['date']              = sql_timestamp_pretty_print(issue.date, lang)
@@ -221,3 +223,16 @@ def get_issue_id(request):
     request.session['issue'] = 1 if str(issue) is 'undefined' else issue
 
     return issue
+
+
+def get_title_for_slug(slug):
+    """
+
+    :param slug:
+    :return:
+    """
+    db_issues = DBDiscussionSession.query(Issue).all()
+    for issue in db_issues:
+        if str(slugify(issue.title)) == str(slug):
+            return issue.title
+    return None

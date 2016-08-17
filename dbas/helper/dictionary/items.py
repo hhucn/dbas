@@ -9,9 +9,10 @@ import dbas.recommender_system as RecommenderSystem
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
-from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, get_all_attacking_arg_uids_from_history
+from dbas.lib import get_text_for_statement_uid, get_text_for_conclusion, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history
 from dbas.logger import logger
-from dbas.strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 from dbas.url_manager import UrlManager
 
 
@@ -43,7 +44,7 @@ class ItemDictHelper(object):
         if len(history) > 0:
             self.path = history + '-' + self.path
 
-    def prepare_item_dict_for_start(self, logged_in):
+    def get_array_for_start(self, logged_in):
         """
         Prepares the dict with all items for the first step in discussion, where the user chooses a position.
 
@@ -60,18 +61,18 @@ class ItemDictHelper(object):
 
         if db_statements:
             for statement in db_statements:
-                statements_array.append(self.__create_statement_dict(statement.uid,
-                                                                     [{'title': get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
+                statements_array.append(self.__create_answer_dict(statement.uid,
+                                                                  [{'title': get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
                                                                      'start',
-                                                                     _um.get_url_for_statement_attitude(True, statement.uid)))
+                                                                  _um.get_url_for_statement_attitude(True, statement.uid)))
             _tn = Translator(self.lang)
             if logged_in:
-                statements_array.append(self.__create_statement_dict('start_statement',
-                                                                     [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
+                statements_array.append(self.__create_answer_dict('start_statement',
+                                                                  [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
                                                                      'start',
                                                                      'add'))
             else:
-                statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.wantToStateNewPosition)}], 'justify', 'login'))
+                statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.wantToStateNewPosition)}], 'justify', 'login'))
 
         return statements_array
 
@@ -86,25 +87,25 @@ class ItemDictHelper(object):
         _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-        text = get_text_for_statement_uid(statement_uid)
+        # text = get_text_for_statement_uid(statement_uid)
         statements_array = []
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-        colon = ' ' if self.lang == 'de' else ': '
-        titleT = _tn.get(_tn.iAgreeWithInColor) + colon + text
-        titleF = _tn.get(_tn.iDisagreeWithInColor) + colon + text
-        titleD = _tn.get(_tn.iHaveNoOpinionYetInColor) + colon + text
+        # colon = ' ' if self.lang == 'de' else ': '
+        titleT = _tn.get(_tn.iAgreeWithInColor)  # + colon + text
+        titleF = _tn.get(_tn.iDisagreeWithInColor)  # + colon + text
+        titleD = _tn.get(_tn.iHaveNoOpinionYetInColor)  # + colon + text
         urlT = _um.get_url_for_justifying_statement(True, statement_uid, 't')
         urlF = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
         urlD = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
-        statements_array.append(self.__create_statement_dict('agree', [{'title': titleT, 'id': 'agree'}], 'agree', urlT))
-        statements_array.append(self.__create_statement_dict('disagree', [{'title': titleF, 'id': 'disagree'}], 'disagree', urlF))
-        statements_array.append(self.__create_statement_dict('dontknow', [{'title': titleD, 'id': 'dontknow'}], 'dontknow', urlD))
+        statements_array.append(self.__create_answer_dict('agree', [{'title': titleT, 'id': 'agree'}], 'agree', urlT))
+        statements_array.append(self.__create_answer_dict('disagree', [{'title': titleF, 'id': 'disagree'}], 'disagree', urlF))
+        statements_array.append(self.__create_answer_dict('dontknow', [{'title': titleD, 'id': 'dontknow'}], 'dontknow', urlD))
 
         return statements_array
 
-    def prepare_item_dict_for_justify_statement(self, statement_uid, nickname, is_supportive):
+    def get_array_for_justify_statement(self, statement_uid, nickname, is_supportive):
         """
         Prepares the dict with all items for the third step in discussion, where the user justifies his position.
 
@@ -113,7 +114,7 @@ class ItemDictHelper(object):
         :param is_supportive: Boolean
         :return:
         """
-        logger('ItemDictHelper', 'prepare_item_dict_for_justify_statement', 'def')
+        logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')
         statements_array = []
         _tn = Translator(self.lang)
         _rh = RecommenderSystem
@@ -135,25 +136,25 @@ class ItemDictHelper(object):
                 arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.lang, history=self.path)
                 already_used = 'reaction/' + str(argument.uid) + '/' in self.path
                 additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
-                statements_array.append(self.__create_statement_dict(str(argument.uid),
-                                                                     premise_array,
+                statements_array.append(self.__create_answer_dict(str(argument.uid),
+                                                                  premise_array,
                                                                      'justify',
-                                                                     _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
-                                                                     already_used=already_used,
-                                                                     already_used_text=additional_text))
+                                                                  _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
+                                                                  already_used=already_used,
+                                                                  already_used_text=additional_text))
 
         if nickname:
-            statements_array.append(self.__create_statement_dict('start_premise',
-                                                                 [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
+            statements_array.append(self.__create_answer_dict('start_premise',
+                                                              [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
                                                                   'justify',
                                                                   'add'))
         else:
             # elif len(statements_array) == 1:
-            statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
+            statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
         return statements_array
 
-    def prepare_item_dict_for_justify_argument(self, argument_uid, attack_type, logged_in):
+    def get_array_for_justify_argument(self, argument_uid, attack_type, logged_in):
         """
         Prepares the dict with all items for a step in discussion, where the user justifies his attack she has done.
 
@@ -162,7 +163,7 @@ class ItemDictHelper(object):
         :param logged_in: Boolean or String
         :return:
         """
-        logger('ItemDictHelper', 'prepare_item_dict_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
+        logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
         statements_array = []
         _tn = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
@@ -217,21 +218,21 @@ class ItemDictHelper(object):
                                                                                restriction_on_arg_uids=attacking_arg_uids)
 
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-                statements_array.append(self.__create_statement_dict(argument.uid, premises_array, 'justify', url))
+                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url))
 
         if logged_in:
             if len(statements_array) == 0:
                 text = _tn.get(_tn.newPremisesRadioButtonTextAsFirstOne)
             else:
                 text = _tn.get(_tn.newPremiseRadioButtonText)
-            statements_array.append(self.__create_statement_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
+            statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
         else:
             # elif len(statements_array) == 1:
-            statements_array.append(self.__create_statement_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
+            statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
         return statements_array
 
-    def prepare_item_dict_for_dont_know_reaction(self, argument_uid, is_supportive):
+    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive):
         """
         Prepares the dict with all items for the third step, where an suppotive argument will be presented.
 
@@ -239,7 +240,7 @@ class ItemDictHelper(object):
         :param is_supportive: Boolean
         :return:
         """
-        logger('ItemDictHelper', 'prepare_item_dict_for_dont_know_reaction', 'def')
+        logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
         _tg = TextGenerator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -264,11 +265,11 @@ class ItemDictHelper(object):
                 current_mode = mode if relation == 'overbid' else counter_mode
                 url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, relation)
 
-            statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+            statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
         return statements_array
 
-    def prepare_item_dict_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack):
+    def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack):
         """
         Prepares the dict with all items for the argumentation window.
 
@@ -278,7 +279,7 @@ class ItemDictHelper(object):
         :param attack: String
         :return:
         """
-        logger('ItemDictHelper', 'prepare_item_dict_for_reaction', 'def')
+        logger('ItemDictHelper', 'get_array_for_reaction', 'def')
         _tg  = TextGenerator(self.lang)
         _tn  = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
@@ -353,7 +354,7 @@ class ItemDictHelper(object):
             # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
             # additionalText = (' (<em>' + _tn.get(_tn.youUsedThisEarlier) + '<em>)') if newStepInUrl in url[url.index('?'):] else ''
 
-            statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+            statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
         # last item is the change attack button or step back, if we have bno other attack
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
@@ -368,11 +369,11 @@ class ItemDictHelper(object):
         else:
             relation = 'no_opinion'
             url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
-        statements_array.append(self.__create_statement_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+        statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
         return statements_array
 
-    def prepare_item_dict_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive):
+    def get_array_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive):
         """
         Prepares the dict with all items for the choosing an premise, when the user inserted more than one new premise.
 
@@ -382,7 +383,7 @@ class ItemDictHelper(object):
         :param is_supportive: Boolean
         :return: dict()
         """
-        logger('ItemDictHelper', 'prepare_item_dict_for_choosing', 'def')
+        logger('ItemDictHelper', 'get_array_for_choosing', 'def')
         statements_array = []
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -397,7 +398,7 @@ class ItemDictHelper(object):
                 premise_array.append({'title': text, 'id': premise.statement_uid})
 
             # get attack for each premise, so the urls will be unique
-            logger('ItemDictHelper', 'prepare_item_dict_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
+            logger('ItemDictHelper', 'get_array_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
                    ', conclusion_uid: ' + str(conclusion) +
                    ', argument_uid: ' + str(argument) +
                    ', is_supportive: ' + str(is_supportive))
@@ -412,19 +413,69 @@ class ItemDictHelper(object):
                                                                            restriction_on_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
-            statements_array.append(self.__create_statement_dict(str(db_argument.uid), premise_array, 'choose', url))
+            statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url))
         # url = 'back' if self.for_api else 'window.history.go(-1)'
         # text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
-        # statements_array.append(self.__create_statement_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
+        # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
         return statements_array
 
+    def get_array_for_jump(self, arg_uid, slug):
+        """
+
+        :param arg_uid:
+        :param lang:
+        :return:
+        """
+
+        _t = Translator(self.lang)
+        _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
+
+        sb_premi = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
+        sb_concl = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
+        se = '</' + TextGenerator.tag_type + '> '
+        p = _t.get(_t.reason).lower()
+        c = _t.get(_t.statement).lower()
+        t = _t.get(_t.this).lower() + ' '
+        r = _t.get(_t.right) + ', ' + t
+        w = _t.get(_t.wrong) + ', ' + t
+        u = _t.get(_t.isTrue)
+        f = _t.get(_t.isFalse)
+
+        arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(arg_uid, self.lang)
+
+        text0 = r + _t.get(_t.argument) + ' ' + u
+        text1 = r + sb_concl + c + se + u + '.'
+        text2 = w + sb_concl + c + se + f + '.'
+        text3 = r + sb_premi + p + se + u + '.'
+        text4 = w + sb_premi + p + se + f + '.'
+        text5 = r + sb_premi + p + se + u + ' ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + t + ' ' + sb_concl + c + se
+
+        answers = list()
+        answers.append({'text': text0, 'url': _um.get_url_for_reaction_on_argument(True, arg_uid, sys_attack, arg_id_sys)})
+        answers.append({'text': text1, 'url': _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 't')})  # TODO UNDERCUT AS CONCLUSION
+        answers.append({'text': text2, 'url': _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 'f')})  # TODO UNDERCUT AS CONCLUSION
+        answers.append({'text': text3, 'url': _um.get_url_for_justifying_statement(True, db_premises.statement_uid, 't')})  # TODO PREMISEGROUPS
+        answers.append({'text': text4, 'url': _um.get_url_for_justifying_statement(True, db_premises.statement_uid, 'f')})  # TODO PREMISEGROUPS
+        answers.append({'text': text5, 'url': _um.get_url_for_justifying_argument(True, arg_uid, 'undercut', 't')})
+
+        return_array = []
+        return_array.append(self.__create_answer_dict('jump0', [{'title': answers[0]['text'], 'id': 0}], 'jump', answers[0]['url']))
+        return_array.append(self.__create_answer_dict('jump1', [{'title': answers[1]['text'], 'id': 0}], 'jump', answers[1]['url']))
+        return_array.append(self.__create_answer_dict('jump2', [{'title': answers[2]['text'], 'id': 0}], 'jump', answers[2]['url']))
+        return_array.append(self.__create_answer_dict('jump3', [{'title': answers[3]['text'], 'id': 0}], 'jump', answers[3]['url']))
+        return_array.append(self.__create_answer_dict('jump4', [{'title': answers[4]['text'], 'id': 0}], 'jump', answers[4]['url']))
+        return_array.append(self.__create_answer_dict('jump5', [{'title': answers[5]['text'], 'id': 0}], 'jump', answers[5]['url']))
+        return return_array
+
     @staticmethod
-    def __create_statement_dict(uid, premises, attitude, url, already_used=False, already_used_text=''):
+    def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text=''):
         """
         Return dictionary
         
         :param uid: Integer
-        :param premises: String
+        :param premises: Array of dict with title and id
         :param attitude: String
         :param url: String
         :param already_used: Boolean

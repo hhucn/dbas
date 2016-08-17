@@ -2,7 +2,7 @@ import unittest
 
 from sqlalchemy import engine_from_config
 from dbas import lib, DBDiscussionSession
-from dbas.helper.tests_helper import add_settings_to_appconfig
+from dbas.helper.tests import add_settings_to_appconfig
 from datetime import date
 from dbas.database.discussion_model import Argument
 
@@ -139,4 +139,4 @@ class LibTests(unittest.TestCase):
 
         self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 4)
         self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)
-        self.assertEqual(len(lib.get_all_arguments_by_statement(-1)), 0)
+        self.assertEqual(lib.get_all_arguments_by_statement(-1), None)
