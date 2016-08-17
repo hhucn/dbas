@@ -6,12 +6,12 @@ Provides helping function for creating the history as bubbles.
 
 import time
 from sqlalchemy import and_
-from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
-get_text_for_conclusion, sql_timestamp_pretty_print
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History, Settings
-from dbas.strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 from dbas.input_validator import Validator
 
 

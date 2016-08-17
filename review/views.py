@@ -3,21 +3,20 @@ Introducing websockets.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import dbas.helper.history as HistoryHelper
+import dbas.helper.issue as IssueHelper
+import dbas.user_management as UserHandler
 import review.review_helper as ReviewHelper
 import transaction
-import dbas.helper.issue_helper as IssueHelper
-import dbas.helper.history_helper as HistoryHelper
-
-import dbas.user_management as UserHandler
-from slugify import slugify
 from cornice import Service
-from dbas.views import project_name
-from pyramid.threadlocal import get_current_registry
-from dbas.helper.dictionary_helper import DictionaryHelper
 from dbas.lib import get_language
 from dbas.logger import logger
-from dbas.strings import Translator
+from dbas.strings.translator import Translator
 from dbas.views import mainpage, Dbas, get_discussion_language
+from dbas.views import project_name
+from dbas.helper.dictionary.main import DictionaryHelper
+from pyramid.threadlocal import get_current_registry
+from slugify import slugify
 
 # =============================================================================
 # CORS configuration

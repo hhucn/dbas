@@ -11,7 +11,8 @@ from html import escape
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
-from .strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 
 
 def escape_string(text):
