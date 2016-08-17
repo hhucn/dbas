@@ -429,11 +429,19 @@ def find_statements_fn(request):
 
 @jump_to_argument.get()
 def fn_jump_to_argument(request):
+    """
+    Given a slug, arg_uid and a nickname, jump directly to an argument to get
+    provoke user interaction.
+
+    :param request:
+    :return: Argument with a list of possible interactions
+    """
     slug = request.matchdict["slug"]
     arg_uid = int(request.matchdict["arg_uid"])
-    nickname = int(request.matchdict["nickname"])
+    nickname = None
+    session_id = None
 
-    api_data = {"slug": slug, "arg_uid": arg_uid, "nickname": nickname}
+    api_data = {"slug": slug, "arg_uid": arg_uid, "nickname": nickname, "session_id": session_id}
     return as_json(Dbas(request).discussion_jump(for_api=True, api_data=api_data))
 
 
