@@ -3,13 +3,14 @@ Provides helping function for dictionaries, which are used in discussions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-import dbas.helper.history_helper as HistoryHelper
+import dbas.helper.history as HistoryHelper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
-from dbas.strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 from dbas.url_manager import UrlManager
 
 
@@ -37,13 +38,13 @@ class DiscussionDictHelper(object):
         self.mainpage = mainpage
         self.slug = slug
 
-    def prepare_discussion_dict_for_start(self):
+    def get_dict_for_start(self):
         """
         Prepares the discussion dict with all bubbles for the first step in discussion, where the user chooses a position.
         
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_discussion_dict_for_start', 'at_start')
+        logger('DictionaryHelper', 'get_dict_for_start', 'at_start')
         _tn                    = Translator(self.lang)
         add_premise_text    = _tn.get(_tn.whatIsYourIdea)
         intro               = _tn.get(_tn.initialPositionInterest)
@@ -54,22 +55,23 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-    def prepare_discussion_dict_for_attitude(self, uid):
+    def get_dict_for_attitude(self, uid):
         """
         Prepares the discussion dict with all bubbles for the second step in discussion, where the user chooses her attitude.
         
         :param uid: Argument.uid
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_discussion_dict_for_attitude', 'at_attitude')
+        logger('DictionaryHelper', 'get_dict_for_attitude', 'at_attitude')
         _tn                    = Translator(self.lang)
         add_premise_text    = ''
         save_statement_url  = 'ajax_set_new_start_statement'
-        statement_text      = get_text_for_statement_uid(uid)
+        statement_text      = get_text_for_statement_uid(uid, True)
         if not statement_text:
             return None
         if self.lang != 'de':
-            statement_text = statement_text[0:1].lower() + statement_text[1:]
+            l = len('<' + TextGenerator.tag_type + ' data-argumentation-type="position">')
+            statement_text = statement_text[0:l+1].lower() + statement_text[l+1:]
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ' ' + statement_text + '?'
@@ -83,7 +85,7 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-    def prepare_discussion_dict_for_justify_statement(self, uid, application_url, slug, is_supportive, count_of_items, nickname):
+    def get_dict_for_justify_statement(self, uid, application_url, slug, is_supportive, count_of_items, nickname):
         """
         Prepares the discussion dict with all bubbles for the third step in discussion, where the user justifies his position.
 
@@ -95,7 +97,7 @@ class DiscussionDictHelper(object):
         :param nickname: User.nickname
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_discussion_dict_for_justify_statement', 'at_justify')
+        logger('DictionaryHelper', 'get_dict_for_justify_statement', 'at_justify')
         _tn                    = Translator(self.lang)
 
         bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
@@ -155,7 +157,7 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
-    def prepare_discussion_dict_for_justify_argument(self, uid, is_supportive, attack):
+    def get_dict_for_justify_argument(self, uid, is_supportive, attack):
         """
         Prepares the discussion dict with all bubbles for a step in discussion, where the user justifies his attack she has done.
         
@@ -164,7 +166,7 @@ class DiscussionDictHelper(object):
         :param attack: String (undermine, support, undercut, rebut, ...)
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_discussion_dict', 'prepare_discussion_dict_for_justify_argument')
+        logger('DictionaryHelper', 'prepare_discussion_dict', 'get_dict_for_justify_argument')
         _tn                   = Translator(self.lang)
         _tg                = TextGenerator(self.lang)
         bubbles_array      = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
@@ -214,14 +216,14 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
 
-    def prepare_discussion_dict_for_dont_know_reaction(self, uid):
+    def get_dict_for_dont_know_reaction(self, uid):
         """
         Prepares the discussion dict with all bubbles for the third step, where an suppotive argument will be presented.
 
         :param uid: Argument.uid
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_discussion_dict_for_dont_know_reaction', 'at_dont_know')
+        logger('DictionaryHelper', 'get_dict_for_dont_know_reaction', 'at_dont_know')
         _tn               = Translator(self.lang)
         bubbles_array  = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
         add_premise_text = ''
@@ -237,7 +239,7 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-    def prepare_discussion_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history):
+    def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history):
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
@@ -248,7 +250,7 @@ class DiscussionDictHelper(object):
         :param history: History
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_discussion_dict_for_argumentation', 'at_argumentation')
+        logger('DictionaryHelper', 'get_dict_for_argumentation', 'at_argumentation')
         _tn                    = Translator(self.lang)
         bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
         add_premise_text    = ''
@@ -324,7 +326,28 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-    def prepare_discussion_dict_for_choosing(self, uid, is_uid_argument, is_supportive):
+    def get_dict_for_jump(self, uid):
+        """
+        Prepares the discussion dict with all bubbles for the jump step
+
+        :param uid: Argument.uid
+        :return: dict()
+        """
+        logger('DictionaryHelper', 'get_dict_for_jump', 'at_attitude')
+        _tn                    = Translator(self.lang)
+        add_premise_text    = ''
+        save_statement_url  = ''
+        argument_text       = get_text_for_argument_uid(uid, self.lang, colored_position=True, with_html_tag=True, attack_type='dont_know')
+
+        text = _tn.get(_tn.whatDoYouThinkAbout)
+        text += ': ' + argument_text + '?'
+        bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+
+        bubbles_array = [bubble]
+
+        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+
+    def get_dict_for_choosing(self, uid, is_uid_argument, is_supportive):
         """
         Prepares the discussion dict with all bubbles for the choosing an premise, when the user inserted more than one new premise.
 

@@ -11,7 +11,8 @@ from html import escape
 
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
-from .strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 
 
 def escape_string(text):
@@ -64,8 +65,8 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 
     :param ts: timestamp (arrow) as string
     :param lang: language
-    :param lang: humanize: Boolean
-    :param lang: with_exact_time: Boolean
+    :param humanize: Boolean
+    :param with_exact_time: Boolean
     :return:
     """
     ts = ts.replace(hours=-2)
@@ -99,6 +100,28 @@ def python_datetime_pretty_print(ts, lang):
             locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
 
     return datetime.strptime(str(ts), '%Y-%m-%d').strftime(formatter)
+
+
+def get_all_arguments_by_statement(uid):
+    """
+    Returns a list of all arguments where the statement is a conclusion or member of the premisegroup
+
+    :param uid: Statement.uid
+    :return: [Arguments]
+    """
+    return_array = []
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).all()
+    if db_arguments:
+        return_array = db_arguments
+
+    db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=uid).all()
+
+    for premise in db_premises:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
+        if db_arguments:
+            return_array.append(db_arguments)
+
+    return return_array if len(return_array) > 0 else None
 
 
 def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
@@ -143,28 +166,6 @@ def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=F
         return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
 
 
-def get_all_arguments_by_statement(uid):
-    """
-    Returns a list of all arguments where the statement is a conclusion or member of the premisegroup
-
-    :param uid: Statement.uid
-    :return: [Arguments]
-    """
-    return_array = []
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).all()
-    if db_arguments:
-        return_array = db_arguments
-
-    db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=uid).all()
-
-    for premise in db_premises:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
-        if db_arguments:
-            return_array.append(db_arguments)
-
-    return return_array
-
-
 def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t):
     """
 
@@ -196,37 +197,40 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
         sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
         sb_tmp = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
 
-    color_everything = attack_type == 'undercut'
-    if not color_everything:
-        if not attack_type == 'dont_know':
-            if attack_type == 'undermine':
-                premises = sb + premises + se
-            else:
-                conclusion = sb + conclusion + se
-        else:
-            se = '</' + TextGenerator.tag_type + '>'
+    # color_everything = attack_type == 'undercut' and False
+    # if not color_everything:
+    if not attack_type == 'dont_know':
+        if attack_type == 'undermine':
             premises = sb + premises + se
-            conclusion = sb_tmp + conclusion + se
+        else:
+            conclusion = sb + conclusion + se
+    else:
+        se = '</' + TextGenerator.tag_type + '>'
+        premises = sb + premises + se
+        conclusion = sb_tmp + conclusion + se
+    # if not color_everything:
 
     if lang == 'de':
         if rearrange_intro:
             intro = _t.get(_t.itTrueIsThat) if db_argument.is_supportive else _t.get(_t.itFalseIsThat)
         else:
             intro = _t.get(_t.itIsTrueThat) if db_argument.is_supportive else _t.get(_t.itIsFalseThat)
-        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion + ' ' + _t.get(_t.because).lower() + ' ' + premises
+
+        # if color_everything:
+        #     ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
+        # else:
+        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion
+        ret_value += ' ' + _t.get(_t.because).lower() + ' ' + premises
     else:
-        if not color_everything:
-            tmp = ' ' + _t.get(_t.isNotRight).lower() + ', ' + _t.get(_t.because).lower() + ' '
-        else:
-            tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
+        tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
         ret_value = conclusion + ' '
         ret_value += _t.get(_t.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
-    if color_everything:
-        return sb + ret_value + se
-    else:
-        return ret_value
+    # if color_everything:
+    #     return sb + ret_value + se
+    # else:
+    return ret_value
 
 
 def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t):
@@ -316,11 +320,12 @@ def get_text_for_premisesgroup_uid(uid, lang):
     return text[5:], uids
 
 
-def get_text_for_statement_uid(uid):
+def get_text_for_statement_uid(uid, colored_position=False):
     """
     Returns text of statement with given uid
 
     :param uid: Statement.uid
+    :param colored_position: Boolean
     :return: String
     """
     try:
@@ -331,12 +336,15 @@ def get_text_for_statement_uid(uid):
 
             db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
                 uid=db_statement.textversion_uid).first()
-            tmp = db_textversion.content
+            content = db_textversion.content
 
-            while tmp.endswith(('.', '?', '!')):
-                tmp = tmp[:-1]
+            while content.endswith(('.', '?', '!')):
+                content = content[:-1]
 
-            return tmp
+            sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if colored_position else ''
+            se = '</' + TextGenerator.tag_type + '>' if colored_position else ''
+            return sb + content + se
+
     except (ValueError, TypeError):
         return None
 

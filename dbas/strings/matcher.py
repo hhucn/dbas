@@ -11,9 +11,9 @@ from collections import OrderedDict
 from sqlalchemy import and_
 from Levenshtein import distance
 
-from .database import DBDiscussionSession
-from .database.discussion_model import Statement, User, TextVersion, Issue, Premise, Argument
-from .user_management import get_public_profile_picture
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Statement, User, TextVersion, Issue
+from dbas.user_management import get_public_profile_picture
 
 list_length = 5
 max_count_zeros = 5

@@ -8,7 +8,7 @@ import random
 
 from sqlalchemy import and_
 
-from dbas.helper.relation_helper import RelationHelper
+from dbas.helper.relation import RelationHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, VoteArgument
 from dbas.logger import logger

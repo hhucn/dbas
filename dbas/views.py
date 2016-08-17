@@ -7,7 +7,17 @@ Core component of DBAS.
 import json
 import time
 
+import dbas.helper.email as EmailHelper
+import dbas.helper.history as HistoryHelper
+import dbas.helper.issue as IssueHelper
+import dbas.helper.notification as NotificationHelper
+import dbas.helper.voting as VotingHelper
+import dbas.recommender_system as RecommenderSystem
+import dbas.user_management as UserHandler
+import dbas.handler.news as NewsHandler
+import dbas.handler.password as PasswordHandler
 import requests
+import dbas.strings.matcher as FuzzyStringMatcher
 import transaction
 
 from pyramid.httpexceptions import HTTPFound
@@ -20,28 +30,18 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from validate_email import validate_email
 
-import dbas.helper.email_helper as EmailHelper
-import dbas.helper.history_helper as HistoryHelper
-import dbas.helper.issue_helper as IssueHelper
-import dbas.helper.notification_helper as NotificationHelper
-import dbas.helper.voting_helper as VotingHelper
-import dbas.news_handler as NewsHandler
-import dbas.password_handler as PasswordHandler
-import dbas.recommender_system as RecommenderSystem
-import dbas.string_matcher as FuzzyStringMatcher
-import dbas.user_management as UserHandler
-from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
-from .helper.dictionary_helper import DictionaryHelper
-from .helper.dictionary_helper_discussion import DiscussionDictHelper
-from .helper.dictionary_helper_items import ItemDictHelper
-from .helper.query_helper import QueryHelper
-from .input_validator import Validator
-from .lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
-from .logger import logger
-from .opinion_handler import OpinionHandler
-from .strings import Translator
-from .url_manager import UrlManager
+from dbas.handler.opinion import OpinionHandler
+from dbas.helper.dictionary.discussion import DiscussionDictHelper
+from dbas.helper.dictionary.items import ItemDictHelper
+from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.helper.query import QueryHelper
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
+from dbas.input_validator import Validator
+from dbas.lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
+from dbas.logger import logger
+from dbas.strings.translator import Translator
+from dbas.url_manager import UrlManager
 
 name = 'D-BAS'
 version = '0.6.0'
@@ -170,11 +170,11 @@ class Dbas(object):
 
         disc_ui_locales = get_discussion_language(self.request, issue)
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
-        item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).prepare_item_dict_for_start(logged_in)
+        item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).get_array_for_start(logged_in)
         HistoryHelper.save_issue_uid(transaction, issue, nickname)
 
         discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
-            .prepare_discussion_dict_for_start()
+            .get_dict_for_start()
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
                                                                                             False, True, nickname,
                                                                                             application_url=mainpage,
@@ -238,7 +238,7 @@ class Dbas(object):
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
         discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
-            .prepare_discussion_dict_for_attitude(statement_id)
+            .get_dict_for_attitude(statement_id)
         if not discussion_dict:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
 
@@ -321,8 +321,8 @@ class Dbas(object):
 
             VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 
-            item_dict       = _idh.prepare_item_dict_for_justify_statement(statement_or_arg_id, nickname, supportive)
-            discussion_dict = _ddh.prepare_discussion_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict), nickname)
+            item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
+            discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict), nickname)
             extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
                                                       application_url=mainpage, for_api=for_api, request=self.request)
             # is the discussion at the end?
@@ -339,8 +339,8 @@ class Dbas(object):
 
             # dont know
             argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
-            discussion_dict = _ddh.prepare_discussion_dict_for_dont_know_reaction(argument_uid)
-            item_dict       = _idh.prepare_item_dict_for_dont_know_reaction(argument_uid, supportive)
+            discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
+            item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive)
             extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
                                                       argument_id=argument_uid, application_url=mainpage, for_api=for_api,
                                                       request=self.request)
@@ -356,8 +356,8 @@ class Dbas(object):
 
             # justifying argument
             # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-            item_dict       = _idh.prepare_item_dict_for_justify_argument(statement_or_arg_id, relation, logged_in)
-            discussion_dict = _ddh.prepare_discussion_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
+            item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in)
+            discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
             extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
                                                       argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api,
                                                       request=self.request)
@@ -434,9 +434,9 @@ class Dbas(object):
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
         _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-        discussion_dict = _ddh.prepare_discussion_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
-        item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
-            .prepare_item_dict_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
+        _idh            = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
+        discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
+        item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True, True,
                                                                                             True, nickname,
                                                                                             argument_id=arg_id_sys,
@@ -534,12 +534,73 @@ class Dbas(object):
             return self.user_logout(True)
 
         discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
-            .prepare_discussion_dict_for_choosing(uid, is_argument, is_supportive)
+            .get_dict_for_choosing(uid, is_argument, is_supportive)
         item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
-            .prepare_item_dict_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
+            .get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
         if not item_dict:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
+        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
+                                                                                            True, True, nickname,
+                                                                                            application_url=mainpage,
+                                                                                            for_api=for_api,
+                                                                                            request=self.request)
+
+        return_dict = dict()
+        return_dict['issues'] = issue_dict
+        return_dict['discussion'] = discussion_dict
+        return_dict['items'] = item_dict
+        return_dict['extras'] = extras_dict
+
+        if for_api:
+            return return_dict
+        else:
+            return_dict['layout'] = self.base_layout()
+            return_dict['language'] = str(ui_locales)
+            return_dict['title'] = issue_dict['title']
+            return_dict['project'] = project_name
+            return return_dict
+
+    # jump page
+    @view_config(route_name='discussion_jump', renderer='templates/content.pt', permission='everybody')
+    def discussion_jump(self, for_api=False, api_data=None):
+        """
+        View configuration for the jump view.
+
+        :param for_api: Boolean
+        :param api_data:
+        :return: dictionary
+        """
+        # '/discuss/{slug}/jump/{arg_id}'
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        matchdict = self.request.matchdict
+        params = self.request.params
+        logger('discussion_jump', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('discussion_jump', 'def', 'main, self.request.params: ' + str(params))
+
+        slug                 = matchdict['slug'] if 'slug' in matchdict else ''
+        arg_uid              = matchdict['arg_id'] if 'arg_id' in matchdict else ''
+        history              = params['history'] if 'history' in params else ''
+        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+
+        session_expired = UserHandler.update_last_action(transaction, nickname)
+        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
+        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
+        if session_expired:
+            return self.user_logout(True)
+
+        ui_locales      = get_language(self.request, get_current_registry())
+        issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+        disc_ui_locales = get_discussion_language(self.request, issue)
+        issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+
+        if not Validator.check_belonging_of_argument(issue, arg_uid):
+            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+
+        _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
+        _idh            = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
+        discussion_dict = _ddh.get_dict_for_jump(arg_uid)
+        item_dict       = _idh.get_array_for_jump(arg_uid, slug)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
                                                                                             True, True, nickname,
                                                                                             application_url=mainpage,

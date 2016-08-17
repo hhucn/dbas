@@ -5,23 +5,21 @@ All kind of tests
 """
 
 import unittest
-import dbas.password_handler as PasswordHandler
 
+import dbas.handler.password as PasswordHandler
 from admin.views import main_admin
-
-from webtest import TestApp
-from dbas.views import Dbas
 from dbas import main
 from dbas.database import DBDiscussionSession, initializedb
 from dbas.database.discussion_model import Group, User
-from dbas.helper.tests_helper import add_settings_to_appconfig
+from dbas.helper.tests import add_settings_to_appconfig
+from dbas.views import Dbas
 from mock import Mock
 from pyramid import testing
 from pyramid_mailer.mailer import DummyMailer
 from pyramid_mailer.message import Message
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
-
+from webtest import TestApp
 
 settings = add_settings_to_appconfig()
 
