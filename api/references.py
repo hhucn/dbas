@@ -8,7 +8,7 @@ import transaction
 from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
-from dbas.lib import resolve_issue_uid_to_slug
+from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_by_statement, get_text_for_argument_uid
 from dbas.url_manager import UrlManager
 
 from .lib import escape_html, logger
@@ -110,6 +110,15 @@ def get_all_references_by_reference_text(ref_text=None):
         refs = list()
         matched = DBDiscussionSession.query(StatementReferences).filter_by(reference=ref_text).all()
         for reference in matched:
+            print("reference.statement_uid")
+            print(reference.statement_uid)
+            arguments = get_all_arguments_by_statement(reference.statement_uid)
+            results = list()
+            if arguments:
+                for argument in arguments:
+                    results.append({"id": argument.uid,
+                                    "text": get_text_for_argument_uid(argument.uid, "de")})
+
             user = DBDiscussionSession.query(User).filter_by(uid=reference.author_uid).first()
             issue = DBDiscussionSession.query(Issue).filter_by(uid=reference.issue_uid).first()
             textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=reference.statement_uid).first()
@@ -117,6 +126,7 @@ def get_all_references_by_reference_text(ref_text=None):
             refs.append({"reference": extract_reference_information(reference),
                          "author": extract_author_information(user),
                          "issue": extract_issue_information(issue),
+                         "arguments": results,
                          "statement": {"uid": reference.statement_uid,
                                        "url": statement_url,
                                        "text": textversion.content}})

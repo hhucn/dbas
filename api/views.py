@@ -424,7 +424,7 @@ def find_statements_fn(request):
 
 
 # =============================================================================
-# TEXT BLOCKS - create text-blocks as seen in the bubbles
+# JUMPING - jump to specific position in the discussion
 # =============================================================================
 
 @jump_to_argument.get()
