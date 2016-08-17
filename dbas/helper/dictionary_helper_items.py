@@ -86,15 +86,15 @@ class ItemDictHelper(object):
         _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-        text = get_text_for_statement_uid(statement_uid)
+        # text = get_text_for_statement_uid(statement_uid)
         statements_array = []
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-        colon = ' ' if self.lang == 'de' else ': '
-        titleT = _tn.get(_tn.iAgreeWithInColor) + colon + text
-        titleF = _tn.get(_tn.iDisagreeWithInColor) + colon + text
-        titleD = _tn.get(_tn.iHaveNoOpinionYetInColor) + colon + text
+        # colon = ' ' if self.lang == 'de' else ': '
+        titleT = _tn.get(_tn.iAgreeWithInColor)  # + colon + text
+        titleF = _tn.get(_tn.iDisagreeWithInColor)  # + colon + text
+        titleD = _tn.get(_tn.iHaveNoOpinionYetInColor)  # + colon + text
         urlT = _um.get_url_for_justifying_statement(True, statement_uid, 't')
         urlF = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
         urlD = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
