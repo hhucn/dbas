@@ -31,7 +31,10 @@ def send_request_to_socketio(nickname, type, message='', url=None, increase_coun
     if increase_counter:
         params += 'increase_counter=True&'
 
-    resp = requests.get('http://localhost:5001/publish' + params[:-1])
+    try:
+        resp = requests.get('http://localhost:5001/publish' + params[:-1])
+    except:
+        return None
     logger('Websocket.lib', 'send_edit_text_notification', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')
 
     return resp.status_code
