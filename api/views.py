@@ -112,6 +112,13 @@ text_for_argument = Service(name="argument_text_block",
                             description="Get textblock for argument as seen in the bubbles",
                             cors_policy=cors_policy)
 
+#
+# Jump into the discussion
+#
+jump_to_argument = Service(name="jump_to_argument",
+                           path="/{slug}/jump/{arg_uid}",
+                           description="Jump to an argument",
+                           cors_policy=cors_policy)
 
 #
 # Other Services
@@ -217,7 +224,7 @@ def discussion_reaction(request):
     :return: Dbas(request).discussion_reaction(True)
     """
     api_data = prepare_user_information(request)
-    return Dbas(request).discussion_reaction(for_api=True, api_data=api_data)
+    return as_json(Dbas(request).discussion_reaction(for_api=True, api_data=api_data))
 
 
 @justify.get(validators=validate_login)
@@ -229,7 +236,7 @@ def discussion_justify(request):
     :return: Dbas(request).discussion_justify(True)
     """
     api_data = prepare_user_information(request)
-    return Dbas(request).discussion_justify(for_api=True, api_data=api_data)
+    return as_json(Dbas(request).discussion_justify(for_api=True, api_data=api_data))
 
 
 @attitude.get(validators=validate_login)
@@ -241,7 +248,7 @@ def discussion_attitude(request):
     :return: Dbas(request).discussion_attitude(True)
     """
     api_data = prepare_user_information(request)
-    return Dbas(request).discussion_attitude(for_api=True, api_data=api_data)
+    return as_json(Dbas(request).discussion_attitude(for_api=True, api_data=api_data))
 
 
 @zinit.get(validators=validate_login)
@@ -253,7 +260,7 @@ def discussion_init(request):
     :return: Dbas(request).discussion_init(True)
     """
     api_data = prepare_user_information(request)
-    return Dbas(request).discussion_init(for_api=True, api_data=api_data)
+    return as_json(Dbas(request).discussion_init(for_api=True, api_data=api_data))
 
 
 @zinit_blank.get(validators=validate_login)
@@ -265,7 +272,7 @@ def discussion_init(request):
     :return: Dbas(request).discussion_init(True)
     """
     api_data = prepare_user_information(request)
-    return Dbas(request).discussion_init(for_api=True, api_data=api_data)
+    return as_json(Dbas(request).discussion_init(for_api=True, api_data=api_data))
 
 
 #
@@ -279,7 +286,7 @@ def add_start_statement(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_statement))
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -290,7 +297,7 @@ def add_start_premise(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_premise))
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
@@ -301,7 +308,7 @@ def add_justify_premise(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument))
 
 
 # =============================================================================
@@ -382,7 +389,7 @@ def user_login(request):
         token = user['token']
 
     return_dict = {'token': '%s-%s' % (user['nickname'], token)}
-    return append_csrf_to_dict(request, return_dict)
+    return as_json(append_csrf_to_dict(request, return_dict))
 
 
 # =============================================================================
@@ -414,6 +421,20 @@ def find_statements_fn(request):
         statement["url"] = url_to_statement(api_data["issue"], statement_uid)
         return_dict["values"].append(statement)
     return as_json(return_dict)
+
+
+# =============================================================================
+# TEXT BLOCKS - create text-blocks as seen in the bubbles
+# =============================================================================
+
+@jump_to_argument.get()
+def fn_jump_to_argument(request):
+    slug = request.matchdict["slug"]
+    arg_uid = int(request.matchdict["arg_uid"])
+    nickname = int(request.matchdict["nickname"])
+
+    api_data = {"slug": slug, "arg_uid": arg_uid, "nickname": nickname}
+    return as_json(Dbas(request).discussion_jump(for_api=True, api_data=api_data))
 
 
 # =============================================================================
