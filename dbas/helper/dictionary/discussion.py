@@ -326,6 +326,27 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
+    def get_dict_for_jump(self, uid):
+        """
+        Prepares the discussion dict with all bubbles for the jump step
+
+        :param uid: Argument.uid
+        :return: dict()
+        """
+        logger('DictionaryHelper', 'get_dict_for_jump', 'at_attitude')
+        _tn                    = Translator(self.lang)
+        add_premise_text    = ''
+        save_statement_url  = ''
+        argument_text       = get_text_for_argument_uid(uid, self.lang, colored_position=True, with_html_tag=True, attack_type='dont_know')
+
+        text = _tn.get(_tn.whatDoYouThinkAbout)
+        text += ': ' + argument_text + '?'
+        bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+
+        bubbles_array = [bubble]
+
+        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+
     def get_dict_for_choosing(self, uid, is_uid_argument, is_supportive):
         """
         Prepares the discussion dict with all bubbles for the choosing an premise, when the user inserted more than one new premise.
