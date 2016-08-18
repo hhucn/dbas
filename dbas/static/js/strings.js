@@ -235,9 +235,11 @@ var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
 var to 											    = 'to';
-var textMinCountMessage1   						    = 'textMinCountMessage1';
-var textMinCountMessage2   						    = 'textMinCountMessage2';
-var textMaxCountMessage   						    = 'textMaxCountMessage';
+var textMinCountMessageBegin1                       = 'textMinCountMessageBegin1';
+var textMinCountMessageBegin2                       = 'textMinCountMessageBegin2';
+var textMinCountMessageDuringTyping                 = 'textMinCountMessageDuringTyping';
+var textMaxCountMessage                             = 'textMaxCountMessage';
+var textMaxCountMessageError                        = 'textMaxCountMessageError';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
@@ -416,9 +418,11 @@ var dbas_en = {
 	'to': 'To',
 	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
-	'textMinCountMessage1': 'For the minimum length only',
-	'textMinCountMessage2': 'characters remaining!',
-	'textMaxCountMessage': 'Caution, your input is very long!',
+	'textMinCountMessageBegin1': 'Enter at least',
+	'textMinCountMessageBegin2': 'characters',
+	'textMinCountMessageDuringTyping': 'more to go ...',
+	'textMaxCountMessage': 'characters left',
+	'textMaxCountMessageError': 'Please shorten!',
 	'usersWithSameOpinion': 'Users with same opinion',
 	'unpinNavigation': 'Unpin Navigation',
 	'valid': 'Valid',
@@ -581,9 +585,11 @@ var dbas_de = {
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'unpinNavigation': 'Navigation lösen',
 	'typeofVote': 'Zustimmung/Ablehnung',
-	'textMinCountMessage1': 'Nur noch',
-	'textMinCountMessage2': 'Zeichen für die Mindestlänge!',
-	'textMaxCountMessage': 'Achtung, die Eingabe ist sehr lang!',
+	'textMinCountMessageBegin1': 'Geben Sie mindestens',
+	'textMinCountMessageBegin2': 'Zeichen ein',
+	'textMinCountMessageDuringTyping': 'Zeichen noch ...',
+	'textMaxCountMessage': 'Zeichen verbleibend',
+	'textMaxCountMessageError': 'Bitte kürzen!',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
 	'vote': 'Stimme',
