@@ -169,7 +169,7 @@ def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=F
         return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
 
 
-def get_all_arguments_with_text_by_statement_id(statement_uid, lang="en"):
+def get_all_arguments_with_text_by_statement_id(statement_uid, lang="de"):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
