@@ -35,8 +35,8 @@ def get_d3_data(issue):
     node_size = 6
     position_size = 6
     issue_size = 8
-    edge_size = 2
-    edge_size_on_virtuell_nodes = 1
+    edge_size = 90
+    edge_size_on_virtuell_nodes = 45
     edge_type = 'arrow'
 
     nodes_array = []
