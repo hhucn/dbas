@@ -185,7 +185,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid, lang="en"):
     results = list()
     if arguments:
         for argument in arguments:
-            results.append({"id": argument.uid,
+            results.append({"uid": argument.uid,
                             "text": get_text_for_argument_uid(argument.uid, lang)})
         return results
 
@@ -195,7 +195,6 @@ def __build_argument_for_jump(arg_array, lang, with_html_tag):
 
     :param arg_array:
     :param lang:
-    :param colored_position:
     :param with_html_tag:
     :return:
     """
