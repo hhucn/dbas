@@ -77,16 +77,13 @@ function DiscussionGraph() {
 		// create force layout object and define properties
 		var force = d3.layout.force()
 			// pull nodes toward layout center
-    		.gravity(0.07)
+    		.gravity(0.11)
 			// nodes push each other away
-			.charge(-180)
+			.charge(-350)
     		.linkDistance(90)
     		.size([width, height]);
 
-		$(window).resize(function () {
-			container.find('svg').attr("width", container.width()).attr("height", container.height());
-			force.size([container.width(), container.height()]);
-		});
+
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
@@ -96,6 +93,10 @@ function DiscussionGraph() {
             d3.select("g.zoom")
             .attr("transform", "translate(" + zoom.translate() + ")"
 			+ " scale(" + zoom.scale() + ")");
+
+            /*trans = d3.event.translate;
+            scale = d3.event.scale;
+            svg.selectAll("*:not(.text)").attr("transform", "translate(" + trans + ")" + " scale(" + zoom.scale() + ")");*/
         }
 
 		// enable drag functionality, pan functionality overrides drag
@@ -111,23 +112,24 @@ function DiscussionGraph() {
     		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
         		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
     		// add edge, color and type to array
-    		edges.push({source: sourceNode, target: targetNode, color: e.color, type: e.type});
+    		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type});
 		});
 
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-		
+
 		// select edges with type of arrow 
 		var edgesTypeArrow = [];
 		edges.forEach(function(d){
-			if(d.type == 'arrow'){
+			if(d.edge_type == 'arrow'){
 			    return edgesTypeArrow.push(d);
 			}
 		});
+
 		// arrows for edges
         var marker = svg.append("defs").selectAll('marker').data(edgesTypeArrow)
             .enter()
             .append("svg:marker")
-            .attr("id", function(d) { return "marker_" + d.target.color + d.color })
+            .attr("id", function(d) { return "marker_" + d.edge_type + d.color + d.target.color})
 			.attr("refX", function(d){
 			    if(d.target.label == ''){ return 4; }
 				else if(d.target.size == 8){ return 8; }
@@ -150,7 +152,7 @@ function DiscussionGraph() {
     		.enter().append("line")
       		.attr("class", "link")
 			.style("stroke", function(d) { return d.color; })
-			.attr("marker-end", function(d) { return "url(#marker_" + d.target.color + d.color + ")" });
+			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.color + d.target.color + ")" });
 
 		// node: svg circle
    		var node = svg.selectAll(".node")
@@ -279,31 +281,40 @@ function DiscussionGraph() {
 
         force.start();
 
+		resize();
+		d3.select(window).on("resize", resize);
+
 		// update force layout calculations
-  		function forceTick() {
-            // update position of edges
-    		link
-        		.attr("x1", function(d) { return d.source.x; })
-        		.attr("y1", function(d) { return d.source.y; })
-        		.attr("x2", function(d) { return d.target.x; })
-        		.attr("y2", function(d) { return d.target.y; });
+		function forceTick() {
+		// update position of edges
+		link
+            .attr("x1", function(d) { return d.source.x; })
+        	.attr("y1", function(d) { return d.source.y; })
+        	.attr("x2", function(d) { return d.target.x; })
+        	.attr("y2", function(d) { return d.target.y; });
 
-			// update position of rect
-			rect
-				.attr("transform", function (d) {
-					return "translate(" + d.x + "," + (d.y - 50) + ")";
-    			});
+		// update position of rect
+		rect
+			.attr("transform", function (d) {
+				return "translate(" + d.x + "," + (d.y - 50) + ")";
+    		});
 
-            // update position of nodes
-			circle
-        		.attr("cx", function(d) { return d.x; })
-        		.attr("cy", function(d) { return d.y; });
+        // update position of nodes
+		circle
+       		.attr("cx", function(d) { return d.x; })
+       		.attr("cy", function(d) { return d.y; });
 
-            // update position of label
-			label
-				.attr("transform", function (d) {
-       			    return "translate(" + d.x + "," + (d.y - 50) + ")";
-    			});
+        // update position of label
+		label
+			.attr("transform", function (d) {
+  			    return "translate(" + d.x + "," + (d.y - 50) + ")";
+   			});
 		}
-	}
+
+		function resize() {
+			var width = container.width(), height = container.outerHeight();
+			svg.attr("width", width).attr("height", height);
+			force.size([width, height]).resume();
+		}
+	};
 }
