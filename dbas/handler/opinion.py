@@ -78,8 +78,6 @@ class OpinionHandler:
         }
 
         # getting the text of all reactions
-        conclusion      = get_text_for_conclusion(db_syst_argument, self.lang)
-        premise, tmp    = get_text_for_premisesgroup_uid(db_syst_argument.premisesgroup_uid, self.lang)
         db_tmp_argument = db_syst_argument
         while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
             db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
@@ -220,7 +218,7 @@ class OpinionHandler:
                 statement_dict['seen_by']   = None
 
             statement_dict['uid'] = str(uid)
-            text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.lang)
+            text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
             statement_dict['text'] = text[0:1].upper() + text[1:]
 
             db_votes = []

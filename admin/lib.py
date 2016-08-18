@@ -34,7 +34,7 @@ def get_overview_of_arguments(user='', lang=''):
 
         if len(db_arguments) > 0:
             for argument in db_arguments:
-                text = get_text_for_argument_uid(argument.uid, lang)
+                text = get_text_for_argument_uid(argument.uid)
                 tmp_dict = dict()
                 tmp_dict['uid'] = str(argument.uid)
                 tmp_dict['text'] = text[0:1].upper() + text[1:]

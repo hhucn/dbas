@@ -15,7 +15,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
 from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
-from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history
+from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history, get_lang_for_argument
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -29,16 +29,16 @@ class QueryHelper:
     """
 
     @staticmethod
-    def get_infos_about_argument(uid, lang, mainpage):
+    def get_infos_about_argument(uid, mainpage):
         """
         Returns several infos about the argument.
 
         :param uid: Argument.uid
-        :param lang: ui_locales
         :param mainpage: url
         :return: dict()
         """
         return_dict = dict()
+        lang = get_lang_for_argument(uid)
         db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
                                                                        VoteArgument.is_valid == True,
                                                                        VoteStatement.is_up_vote == True)).all()
@@ -50,7 +50,7 @@ class QueryHelper:
         return_dict['vote_count']       = str(len(db_votes))
         return_dict['author']           = db_author.public_nickname
         return_dict['timestamp']        = sql_timestamp_pretty_print(db_argument.timestamp, lang)
-        text                            = get_text_for_argument_uid(uid, lang)
+        text                            = get_text_for_argument_uid(uid)
         return_dict['text']             = text[0:1].upper() + text[1:] + '.'
 
         supporters = []
@@ -321,16 +321,16 @@ class QueryHelper:
         return statements
 
     @staticmethod
-    def get_every_attack_for_island_view(arg_uid, lang):
+    def get_every_attack_for_island_view(arg_uid):
         """
         Select and returns every argument with an relation to the given Argument.uid
 
         :param arg_uid: Argument.uid
-        :param lang: ui_locales
         :return: dict()
         """
         logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
         return_dict = {}
+        lang = get_lang_for_argument(arg_uid)
         _t = Translator(lang)
         _rh = RelationHelper(arg_uid, lang)
 
@@ -490,12 +490,11 @@ class QueryHelper:
         return new_statement, False
 
     @staticmethod
-    def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive, lang):
+    def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive):
         """
 
         :param argument_uid: Argument.uid
         :param is_supportive: Boolean
-        :param lang: ui_locales
         :return:
         """
         return_array = []
@@ -514,7 +513,7 @@ class QueryHelper:
                 given_relations.add(relation.premisesgroup_uid)
                 tmp_dict = dict()
                 tmp_dict['id'] = relation.uid
-                tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid, lang)
+                tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid)
                 return_array.append(tmp_dict)
                 index += 1
         return return_array
