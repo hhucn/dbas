@@ -459,7 +459,7 @@ def get_text_for_argument(request):
     results = list()
 
     for argument in args:
-        results.append({"id": argument.uid,
+        results.append({"uid": argument.uid,
                         "text": get_text_for_argument_uid(argument.uid, lang)})
 
     return as_json(results)
