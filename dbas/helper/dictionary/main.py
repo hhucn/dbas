@@ -6,16 +6,17 @@ Provides helping function for dictionaries.
 
 import random
 import arrow
-import dbas.helper.history_helper as HistoryHelper
-import dbas.helper.notification_helper as NotificationHelper
+import dbas.helper.history as HistoryHelper
+import dbas.helper.notification as NotificationHelper
 import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language
-from dbas.helper.query_helper import QueryHelper
+from dbas.helper.query import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
-from dbas.strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 from dbas.url_manager import UrlManager
 
 

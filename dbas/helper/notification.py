@@ -5,22 +5,24 @@ Provides functions for te internal messaging system
 """
 
 import dbas.user_management as UserHandler
-import dbas.helper.email_helper as EmailHelper
+import dbas.helper.email as EmailHelper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument
 from dbas.lib import sql_timestamp_pretty_print, escape_string
-from dbas.strings import Translator, TextGenerator
+from dbas.strings.translator import Translator
+from dbas.strings.text_generator import TextGenerator
 
 from websocket.lib import send_request_to_socketio
 
 from sqlalchemy import and_
 
 
-def send_edit_text_notification(textversion, path, request):
+def send_edit_text_notification(db_user, textversion, path, request):
     """
     Sends an notification to the root-author and last author, when their text was edited.
 
+    :param db_user: Current User
     :param textversion: new Textversion
     :param path: curren path
     :param request: curren request
@@ -44,12 +46,12 @@ def send_edit_text_notification(textversion, path, request):
     # logger('NotificationHelper', 'send_edit_text_notification', 'current author: ' + str(new_author))
 
     # add some information for highlights
-    path += '?edited_statement=' + textversion.statement_uid
+    path += '?edited_statement=' + str(textversion.statement_uid)
 
-    if settings_root_author.should_send_mails is True:
+    if settings_root_author.should_send_mails is True and root_author != db_user.uid:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, request)
 
-    if new_author != last_author and settings_last_author.should_send_mails is True:
+    if new_author != last_author and settings_last_author.should_send_mails is True and new_author != db_user.uid:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, db_editor, path, request)
 
     # check for different authors
@@ -59,12 +61,12 @@ def send_edit_text_notification(textversion, path, request):
     # send notifications
     user_lang1 = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
     user_lang2 = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
-    if settings_root_author.should_send_notifications:
+    if settings_root_author.should_send_notifications and root_author != db_user.uid:
         _t_user = Translator(user_lang1)
         db_root_author = DBDiscussionSession.query(User).filter_by(uid=root_author).first()
         send_request_to_socketio('info', db_root_author.nickname, _t_user.get(_t_user.textChange), path, increase_counter=True)
 
-    if last_author != root_author and last_author != new_author and settings_last_author.should_send_notifications:
+    if last_author != root_author and last_author != new_author and last_author != db_user.uid and settings_last_author.should_send_notifications:
         _t_user = Translator(user_lang2)
         db_last_author = DBDiscussionSession.query(User).filter_by(uid=last_author).first()
         send_request_to_socketio('info', db_last_author.nickname, _t_user.get(_t_user.textChange), path, increase_counter=True)
@@ -77,19 +79,22 @@ def send_edit_text_notification(textversion, path, request):
     topic2 = _t2.get(_t2.textversionChangedTopic)
     content2 = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
-    notification1  = Message(from_author_uid=new_author,
-                             to_author_uid=root_author,
-                             topic=topic1,
-                             content=content1,
-                             is_inbox=True)
-    notification2  = Message(from_author_uid=new_author,
-                             to_author_uid=last_author,
-                             topic=topic2,
-                             content=content2,
-                             is_inbox=True)
-    DBDiscussionSession.add_all([notification1, notification2])
-
-    DBDiscussionSession.flush()
+    notifications = []
+    if new_author != root_author:
+        notifications.append(Message(from_author_uid=new_author,
+                                     to_author_uid=root_author,
+                                     topic=topic1,
+                                     content=content1,
+                                     is_inbox=True))
+    if new_author != last_author:
+        notifications.append(Message(from_author_uid=new_author,
+                                     to_author_uid=last_author,
+                                     topic=topic2,
+                                     content=content2,
+                                     is_inbox=True))
+    if len(notifications) > 0:
+        DBDiscussionSession.add_all(notifications)
+        DBDiscussionSession.flush()
 
 
 def send_add_text_notification(url, conclusion_id, user, request, transaction):

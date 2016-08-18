@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config
 
 from dbas import user_management, DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.helper.tests_helper import add_settings_to_appconfig
+from dbas.helper.tests import add_settings_to_appconfig
 
 settings = add_settings_to_appconfig()
 
