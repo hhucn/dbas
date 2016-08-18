@@ -16,7 +16,8 @@ def extract_issue_information(db_issue):
     if db_issue:
         return {"uid": db_issue.uid,
                 "title": db_issue.title,
-                "info": db_issue.info}
+                "info": db_issue.info,
+                "slug": db_issue.get_slug()}
 
 
 def extract_author_information(db_user):

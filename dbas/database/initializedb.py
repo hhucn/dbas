@@ -749,6 +749,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion209 = TextVersion(content="die Umweltbelastung durch Batterien immernoch viel geringer als durch Verbrennungsmotoren ist.", author=user.uid)
     textversion210 = TextVersion(content="in der Stadt Fahrr&auml;der und oeffentliche Verkehrsmittel besser sind.", author=user.uid)
     textversion211 = TextVersion(content="man gezielt 'tanken' kann, genauso wie bei einem herk&ouml;mmlichen KFZ.", author=user.uid)
+    textversion212 = TextVersion(content="E-Autos das autonome Fahren vorantreiben.", author=5)
+    textversion213 = TextVersion(content="Tesla mutig bestehende Techniken einsetzt und zeigt was sie können.", author=5)
     textversion301 = TextVersion(content="durch rücksichtsvolle Verhaltensanpassungen der wissenschaftlichen Mitarbeitenden der Arbeitsaufwand der Sekretärinnen gesenkt werden könnte", author=user.uid)
     textversion302 = TextVersion(content="wir Standard-Formulare, wie Urlaubsanträge, selbst faxen können", author=user.uid)
     textversion303 = TextVersion(content="etliche Abläufe durch ein besseres Zusammenarbeiten optimiert werden können. Dies sollte auch schriftlich als Anleitungen festgehalten werden, damit neue Angestellt einen leichten Einstieg finden", author=user.uid)
@@ -769,6 +771,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([textversion118, textversion119, textversion120, textversion121, textversion122, textversion123])
     session.add_all([textversion200, textversion201, textversion202, textversion203, textversion204, textversion205])
     session.add_all([textversion206, textversion207, textversion208, textversion209, textversion210, textversion211])
+    session.add_all([textversion212, textversion213])
     session.add_all([textversion301, textversion302, textversion303, textversion304, textversion305, textversion306])
     session.add_all([textversion307])
     session.flush()
@@ -848,6 +851,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     statement209 = Statement(textversion=textversion209.uid, is_position=False, issue=issue4.uid)
     statement210 = Statement(textversion=textversion210.uid, is_position=False, issue=issue4.uid)
     statement211 = Statement(textversion=textversion211.uid, is_position=False, issue=issue4.uid)
+    statement212 = Statement(textversion=textversion212.uid, is_position=True, issue=issue4.uid)
+    statement213 = Statement(textversion=textversion213.uid, is_position=False, issue=issue4.uid)
     statement301 = Statement(textversion=textversion301.uid, is_position=True, issue=issue5.uid)
     statement302 = Statement(textversion=textversion302.uid, is_position=True, issue=issue5.uid)
     statement303 = Statement(textversion=textversion303.uid, is_position=False, issue=issue5.uid)
@@ -866,10 +871,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([statement116, statement117, statement118, statement119, statement120, statement121, statement122])
     session.add_all([statement123])
     session.add_all([statement200, statement201, statement202, statement203, statement204, statement205, statement206])
-    session.add_all([statement207, statement208, statement209, statement210, statement211])
+    session.add_all([statement207, statement208, statement209, statement210, statement211, statement212, statement213])
     session.add_all([statement301, statement302, statement303, statement304, statement305, statement306, statement307])
-
-    session.flush()
 
     session.flush()
 
@@ -943,6 +946,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion209.set_statement(statement209.uid)
     textversion210.set_statement(statement210.uid)
     textversion211.set_statement(statement211.uid)
+    textversion212.set_statement(statement212.uid)
+    textversion213.set_statement(statement213.uid)
     textversion301.set_statement(statement301.uid)
     textversion302.set_statement(statement302.uid)
     textversion303.set_statement(statement303.uid)
@@ -1009,6 +1014,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     premisegroup209 = PremiseGroup(author=user.uid)
     premisegroup210 = PremiseGroup(author=user.uid)
     premisegroup211 = PremiseGroup(author=user.uid)
+    premisegroup213 = PremiseGroup(author=5)
     premisegroup303 = PremiseGroup(author=user.uid)
     premisegroup304 = PremiseGroup(author=user.uid)
     premisegroup305 = PremiseGroup(author=user.uid)
@@ -1025,7 +1031,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([premisegroup115, premisegroup116, premisegroup117, premisegroup118, premisegroup119])
     session.add_all([premisegroup120, premisegroup121, premisegroup122, premisegroup123])
     session.add_all([premisegroup203, premisegroup204, premisegroup205, premisegroup206, premisegroup207])
-    session.add_all([premisegroup208, premisegroup209, premisegroup210, premisegroup211])
+    session.add_all([premisegroup208, premisegroup209, premisegroup210, premisegroup211, premisegroup213])
     session.add_all([premisegroup303, premisegroup304, premisegroup305, premisegroup306, premisegroup307])
     session.flush()
 
@@ -1087,6 +1093,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     premise209 = Premise(premisesgroup=premisegroup209.uid, statement=statement209.uid, is_negated=False, author=user.uid, issue=issue4.uid)
     premise210 = Premise(premisesgroup=premisegroup210.uid, statement=statement210.uid, is_negated=False, author=user.uid, issue=issue4.uid)
     premise211 = Premise(premisesgroup=premisegroup211.uid, statement=statement211.uid, is_negated=False, author=user.uid, issue=issue4.uid)
+    premise213 = Premise(premisesgroup=premisegroup213.uid, statement=statement213.uid, is_negated=False, author=5, issue=issue4.uid)
     premise303 = Premise(premisesgroup=premisegroup303.uid, statement=statement303.uid, is_negated=False, author=user.uid, issue=issue5.uid)
     premise304 = Premise(premisesgroup=premisegroup304.uid, statement=statement304.uid, is_negated=False, author=user.uid, issue=issue5.uid)
     premise305 = Premise(premisesgroup=premisegroup305.uid, statement=statement305.uid, is_negated=False, author=user.uid, issue=issue5.uid)
@@ -1101,7 +1108,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([premise113, premise114, premise115, premise116, premise117, premise118, premise119, premise120])
     session.add_all([premise121, premise122, premise123])
     session.add_all([premise203, premise204, premise205, premise206, premise207, premise208, premise209, premise210])
-    session.add_all([premise211])
+    session.add_all([premise211, premise213])
     session.add_all([premise303, premise304, premise305, premise306, premise307])
     session.flush()
 
@@ -1168,6 +1175,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument207 = Argument(premisegroup=premisegroup209.uid, issupportive=False, author=user.uid, issue=issue4.uid)
     argument208 = Argument(premisegroup=premisegroup210.uid, issupportive=False, author=user.uid, issue=issue4.uid)
     argument209 = Argument(premisegroup=premisegroup211.uid, issupportive=False, author=user.uid, issue=issue4.uid)
+    argument210 = Argument(premisegroup=premisegroup213.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement212.uid)
     ####
     argument303 = Argument(premisegroup=premisegroup303.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
     argument304 = Argument(premisegroup=premisegroup304.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
@@ -1184,7 +1192,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([argument108, argument109, argument110, argument112, argument113, argument114, argument111])
     session.add_all([argument115, argument116, argument117, argument118, argument119])
     session.add_all([argument201, argument202, argument203, argument204, argument205, argument206, argument207])
-    session.add_all([argument208, argument209])
+    session.add_all([argument208, argument209, argument210])
     session.add_all([argument303, argument304, argument305, argument306, argument307])
     session.flush()
 
@@ -1207,4 +1215,15 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument207.conclusions_argument(argument202.uid)
     argument208.conclusions_argument(argument204.uid)
     argument209.conclusions_argument(argument205.uid)
+    session.flush()
+
+    # Add references
+    reference200 = StatementReferences(reference="Ein Radar überwacht den Abstand, eine Frontkamera erkennt Fahrspuren und andere Verkehrsteilnehmer, und je sechs Ultraschallsensoren vorne und hinten helfen beim Einparken und messen während der Fahrt Distanzen im Zentimeterbereich.",
+                                       host="localhost:3449",
+                                       path="/devcards/index.html",
+                                       author_uid=5,
+                                       statement_uid=statement213.uid,
+                                       issue_uid=issue4.uid)
+    reference201 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist", host="localhost:3449", path="/", author_uid=5, statement_uid=statement213.uid, issue_uid=issue4.uid)
+    session.add_all([reference200, reference201])
     session.flush()
