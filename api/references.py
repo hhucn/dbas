@@ -8,7 +8,8 @@ import transaction
 from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
 from dbas import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
-from dbas.lib import resolve_issue_uid_to_slug
+from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_by_statement, get_text_for_argument_uid, \
+    get_all_arguments_with_text_by_statement_id
 from dbas.url_manager import UrlManager
 
 from .lib import escape_html, logger
@@ -117,6 +118,8 @@ def get_all_references_by_reference_text(ref_text=None):
             refs.append({"reference": extract_reference_information(reference),
                          "author": extract_author_information(user),
                          "issue": extract_issue_information(issue),
+                         # TODO: correctly set language
+                         "arguments": get_all_arguments_with_text_by_statement_id(reference.statement_uid),
                          "statement": {"uid": reference.statement_uid,
                                        "url": statement_url,
                                        "text": textversion.content}})
