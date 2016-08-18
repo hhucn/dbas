@@ -15,6 +15,9 @@ from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 
 
+fallback_lang = 'en'
+
+
 def escape_string(text):
     """
     Escapes all html special chars.
@@ -124,14 +127,13 @@ def get_all_arguments_by_statement(uid):
     return return_array if len(return_array) > 0 else None
 
 
-def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
+def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
                               attack_type=None):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
     :param uid: Integer
-    :param lang: String
     :param with_html_tag: Boolean
     :param start_with_intro: Boolean
     :param first_arg_by_user: Boolean
@@ -142,6 +144,7 @@ def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=F
     :return: String
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    lang = get_lang_for_argument(uid)
     # catch error
     if not db_argument:
         return None
@@ -155,29 +158,27 @@ def get_text_for_argument_uid(uid, lang, with_html_tag=False, start_with_intro=F
         arg_array.append(db_argument.uid)
 
     if attack_type == 'jump':
-        return __build_argument_for_jump(arg_array, lang, with_html_tag)
+        return __build_argument_for_jump(arg_array, with_html_tag)
 
     if len(arg_array) == 1:
         # build one argument only
-        return __build_single_argument(arg_array[0], lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t)
+        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t)
 
     else:
         # get all pgroups and at last, the conclusion
         sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
         se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
         doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHold).lower() + ' ' + _t.get(_t.because).lower() + ' ' + sb
-        return __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
+        return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
 
 
-def get_all_arguments_with_text_by_statement_id(statement_uid, lang="en"):
+def get_all_arguments_with_text_by_statement_id(statement_uid):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
     text depends on the provided language.
 
     :param statement_uid: Id to a statement, which should be analyzed
-    :param lang: Set language, e.g. "de"
-    :type lang: str
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
@@ -186,15 +187,14 @@ def get_all_arguments_with_text_by_statement_id(statement_uid, lang="en"):
     if arguments:
         for argument in arguments:
             results.append({"id": argument.uid,
-                            "text": get_text_for_argument_uid(argument.uid, lang)})
+                            "text": get_text_for_argument_uid(argument.uid)})
         return results
 
 
-def __build_argument_for_jump(arg_array, lang, with_html_tag):
+def __build_argument_for_jump(arg_array, with_html_tag):
     """
 
     :param arg_array:
-    :param lang:
     :param colored_position:
     :param with_html_tag:
     :return:
@@ -202,11 +202,12 @@ def __build_argument_for_jump(arg_array, lang, with_html_tag):
     tag_premise = ('<' + TextGenerator.tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
     tag_conclusion = ('<' + TextGenerator.tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_end = ('</' + TextGenerator.tag_type + '>') if with_html_tag else ''
+    lang = get_lang_for_argument(arg_array[0])
     _t = Translator(lang)
 
     if len(arg_array) == 1:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
-        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
         if lang == 'de':
@@ -220,11 +221,11 @@ def __build_argument_for_jump(arg_array, lang, with_html_tag):
 
     else:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[1]).first()
-        conclusions_premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+        conclusions_premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusions_conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
-        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 
         ret_value = tag_conclusion + conclusions_premises + ' '
         ret_value += _t.get(_t.doesNotJustify) + ' '
@@ -234,11 +235,10 @@ def __build_argument_for_jump(arg_array, lang, with_html_tag):
     return ret_value
 
 
-def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_position, attack_type, _t):
+def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t):
     """
 
     :param uid:
-    :param lang:
     :param rearrange_intro:
     :param with_html_tag:
     :param colored_position:
@@ -247,8 +247,9 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
     :return:
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-    premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+    premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+    lang = get_lang_for_argument(uid)
 
     if lang != 'de':
         # conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
@@ -300,7 +301,7 @@ def __build_single_argument(uid, lang, rearrange_intro, with_html_tag, colored_p
     return ret_value
 
 
-def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t):
+def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t):
     """
 
     :param arg_array:
@@ -318,9 +319,10 @@ def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opi
     pgroups = []
     supportive = []
     arg_array = arg_array[::-1]
+    lang = get_lang_for_argument(arg_array[0])
     for uid in arg_array:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-        text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
+        text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         pgroups.append((text[0:1].lower() + text[1:])if lang != 'de' else text)
         supportive.append(db_argument.is_supportive)
     uid = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid
@@ -365,19 +367,19 @@ def __build_nested_argument(arg_array, lang, first_arg_by_user, user_changed_opi
     return ret_value[:-1]  # cut off punctuation
 
 
-def get_text_for_premisesgroup_uid(uid, lang):
+def get_text_for_premisesgroup_uid(uid):
     """
     Returns joined text of the premise group and the premise ids
 
     :param uid: premisesgroup_uid
-    :param lang: ui_locales
     :return: text, uids
     """
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
     text = ''
     uids = []
-    _t = Translator(lang)
     for premise in db_premises:
+        lang = get_lang_for_statement(premise.statements.uid)
+        _t = Translator(lang)
         tmp = get_text_for_statement_uid(premise.statements.uid)
         if lang != 'de':
             tmp[0:1].lower() + tmp[1:]
@@ -416,7 +418,7 @@ def get_text_for_statement_uid(uid, colored_position=False):
         return None
 
 
-def get_text_for_conclusion(argument, lang, start_with_intro=False, rearrange_intro=False):
+def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=False):
     """
     Check the arguments conclusion whether it is an statement or an argument and returns the text
 
@@ -427,7 +429,7 @@ def get_text_for_conclusion(argument, lang, start_with_intro=False, rearrange_in
     :return: String
     """
     if argument.argument_uid:
-        return get_text_for_argument_uid(argument.argument_uid, lang, start_with_intro, rearrange_intro=rearrange_intro)
+        return get_text_for_argument_uid(argument.argument_uid, start_with_intro, rearrange_intro=rearrange_intro)
     else:
         return get_text_for_statement_uid(argument.conclusion_uid)
 
@@ -463,3 +465,49 @@ def get_all_attacking_arg_uids_from_history(history):
         return uids
     except AttributeError:
         return []
+
+
+def get_lang_for_argument(uid):
+    """
+    Return ui_locales code, if the argument exists, otherwise 'en' as fallback
+
+    :param uid: id of the argument
+    :return: ui_locales code for the discussion with the given argument
+    """
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    if not db_argument:
+        return fallback_lang
+
+    return get_lang_for_issue(db_argument.issue_uid)
+
+
+def get_lang_for_statement(uid):
+    """
+    Return ui_locales code, if the statement exists, otherwise 'en' as fallback
+
+    :param uid: id of the statement
+    :return: ui_locales code for the discussion with the given statement
+    """
+    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+    if not db_statement:
+        return fallback_lang
+
+    return get_lang_for_issue(db_statement.issue_uid)
+
+
+def get_lang_for_issue(uid):
+    """
+    Return ui_locales code, if the issue exists, otherwise 'en' as fallback
+
+    :param uid: id of the issue
+    :return: ui_locales code for the discussion with the given issue
+    """
+    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
+    if not db_issue:
+        return fallback_lang
+
+    db_lang = DBDiscussionSession.query(Language).filter_by(uid=db_issue.lang_uid).first()
+    if not db_lang:
+        return fallback_lang
+
+    return db_lang.ui_locales

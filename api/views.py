@@ -452,7 +452,6 @@ def fn_jump_to_argument(request):
 @text_for_argument.get()
 def get_text_for_argument(request):
     statement = int(request.matchdict["statement_uid"])
-    lang = request.matchdict["lang"]
 
     args = get_all_arguments_by_statement(statement)
 
@@ -460,7 +459,7 @@ def get_text_for_argument(request):
 
     for argument in args:
         results.append({"id": argument.uid,
-                        "text": get_text_for_argument_uid(argument.uid, lang)})
+                        "text": get_text_for_argument_uid(argument.uid)})
 
     return as_json(results)
 
