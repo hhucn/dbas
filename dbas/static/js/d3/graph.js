@@ -76,14 +76,14 @@ function DiscussionGraph() {
 
 		// create force layout object and define properties
 		var force = d3.layout.force()
+			.size([width, height])
 			// pull nodes toward layout center
     		.gravity(0.11)
 			// nodes push each other away
 			.charge(-350)
-    		.linkDistance(90)
-    		.size([width, height]);
-
-
+    		.linkDistance(function (d) {
+				return d.size;
+			});
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
@@ -112,7 +112,7 @@ function DiscussionGraph() {
     		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
         		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
     		// add edge, color and type to array
-    		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type});
+    		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size});
 		});
 
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
