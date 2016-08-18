@@ -189,7 +189,7 @@ def __get_edge_dict(id, source, target, color, size, edge_type):
             'target': target,
             'color': color,
             'size': size,
-            'type': edge_type}
+            'edge_type': edge_type}
 
 
 def __get_extras_dict(statement):
