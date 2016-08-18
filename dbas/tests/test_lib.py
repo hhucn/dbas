@@ -2,7 +2,7 @@ import unittest
 
 from sqlalchemy import engine_from_config
 from dbas import lib, DBDiscussionSession
-from dbas.helper.tests_helper import add_settings_to_appconfig
+from dbas.helper.tests import add_settings_to_appconfig
 from datetime import date
 from dbas.database.discussion_model import Argument
 
@@ -130,3 +130,13 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(correct_history), ["r"], "Missing element")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(broken_history), [], "Should match nothing")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
+
+    def test_get_all_arguments_by_statement(self):
+        argument_list = lib.get_all_arguments_by_statement(1)
+        self.assertEqual(len(argument_list), 4)
+        for argument in argument_list:
+            self.assertTrue(argument.uid in [1, 2, 10, 11])
+
+        self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 4)
+        self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)
+        self.assertEqual(lib.get_all_arguments_by_statement(-1), None)

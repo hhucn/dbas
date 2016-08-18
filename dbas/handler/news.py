@@ -6,13 +6,12 @@ Provides helping function round about the news.
 
 import arrow
 import collections
-from datetime import datetime
 
-from .database import DBDiscussionSession, DBNewsSession
-from .database.discussion_model import User
-from .database.news_model import News
-from .logger import logger
-from .lib import sql_timestamp_pretty_print
+from dbas.database import DBDiscussionSession, DBNewsSession
+from dbas.database.discussion_model import User
+from dbas.database.news_model import News
+from dbas.logger import logger
+from dbas.lib import sql_timestamp_pretty_print
 
 
 def set_news(transaction, title, text, user, lang):

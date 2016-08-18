@@ -10,7 +10,6 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User
 from dbas.lib import get_text_for_premisesgroup_uid
-from dbas.logger import logger
 
 
 class RelationHelper(object):

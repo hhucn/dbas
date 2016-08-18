@@ -5,22 +5,21 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import os
+import random
+import sys
+from math import trunc
 
 import arrow
-import os
-import sys
+import dbas.handler.password as passwordHandler
 import transaction
-import random
-import dbas.password_handler as passwordHandler
-
-from math import trunc
-from dbas.logger import logger
-from sqlalchemy import engine_from_config, and_
-from pyramid.paster import get_appsettings, setup_logging
+from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy
 from dbas.database.news_model import News
-from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
+from dbas.logger import logger
+from pyramid.paster import get_appsettings, setup_logging
+from sqlalchemy import engine_from_config, and_
 
 
 def usage(argv):
@@ -717,7 +716,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     # textversion35 = TextVersion(content="Several pets are nice to have and you do not have to take much care of them, for example turtles or cats, which are living outside.", author=user.uid)
     textversion36 = TextVersion(content="It is much work to take care of both animals.", author=user.uid)
     textversion101 = TextVersion(content="The city should reduce the number of street festivals.", author=user.uid)
-    textversion102 = TextVersion(content="We should shut down university park.", author=user.uid)
+    textversion102 = TextVersion(content="We should shut down University Park.", author=user.uid)
     textversion103 = TextVersion(content="We should close public swimming pools.", author=user.uid)
     textversion105 = TextVersion(content="Reducing the number of street festivals can save up to $50.000 a year.", author=user.uid)
     textversion106 = TextVersion(content="Every street festival is funded by large companies.", author=user.uid)
@@ -726,8 +725,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion109 = TextVersion(content="Street festivals attract many people, which will increase the citys income.", author=user.uid)
     textversion110 = TextVersion(content="Spending of the city for these festivals are higher than the earnings.", author=user.uid)
     textversion111 = TextVersion(content="Money does not solve problems of our society.", author=user.uid)
-    textversion112 = TextVersion(content="Criminals use university park to sell drugs.", author=user.uid)
-    textversion113 = TextVersion(content="Shutting down university park will save $100.000 a year.", author=user.uid)
+    textversion112 = TextVersion(content="Criminals use University Park to sell drugs.", author=user.uid)
+    textversion113 = TextVersion(content="Shutting down University Park will save $100.000 a year.", author=user.uid)
     textversion114 = TextVersion(content="We should not give in to criminals.", author=user.uid)
     textversion115 = TextVersion(content="The number of police patrols has been increased recently.", author=user.uid)
     textversion116 = TextVersion(content="This is the only park in our city.", author=user.uid)
@@ -1197,7 +1196,6 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument17.conclusions_argument(argument1.uid)
     argument21.conclusions_argument(argument2.uid)
     argument24.conclusions_argument(argument10.uid)
-    argument26.conclusions_argument(argument11.uid)
     argument31.conclusions_argument(argument14.uid)
     argument102.conclusions_argument(argument101.uid)
     argument106.conclusions_argument(argument105.uid)

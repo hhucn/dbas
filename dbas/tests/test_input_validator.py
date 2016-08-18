@@ -2,7 +2,7 @@ import unittest
 
 from sqlalchemy import engine_from_config
 from dbas import DBDiscussionSession
-from dbas.helper.tests_helper import add_settings_to_appconfig
+from dbas.helper.tests import add_settings_to_appconfig
 
 
 settings = add_settings_to_appconfig()

@@ -1,11 +1,10 @@
 import unittest
-import dbas.helper.review_helper as ReviewHelper
 
-from sqlalchemy import engine_from_config
-
+import review.review_helper as ReviewHelper
 from dbas import DBDiscussionSession
-from dbas.helper.tests_helper import add_settings_to_appconfig
-from dbas.strings import Translator
+from dbas.helper.tests import add_settings_to_appconfig
+from dbas.strings.translator import Translator
+from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
 
@@ -16,7 +15,7 @@ class ReviewHelperTest(unittest.TestCase):
 
     def test_get_review_array(self):
         _tn = Translator('en')
-        array = ReviewHelper.get_review_array('page', _tn)
+        array = ReviewHelper.get_review_array('page', 'cat-or-dog', _tn)
 
         for d in array:
             self.assertTrue('task_name' in d)

@@ -1,9 +1,9 @@
 import unittest
 
+from dbas import DBDiscussionSession
+from dbas.helper.tests import add_settings_to_appconfig
+from dbas.handler import password
 from sqlalchemy import engine_from_config
-
-from dbas import password_handler, DBDiscussionSession
-from dbas.helper.tests_helper import add_settings_to_appconfig
 
 settings = add_settings_to_appconfig()
 
@@ -13,8 +13,8 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class PasswordHandlerTests(unittest.TestCase):
 
     def test_get_rnd_passwd(self):
-        self.assertEqual(len(password_handler.get_rnd_passwd()), 10)
+        self.assertEqual(len(password.get_rnd_passwd()), 10)
 
         # Test, whether 2 passwords are equal.
-        is_equal = password_handler.get_rnd_passwd() is password_handler.get_rnd_passwd()
+        is_equal = password.get_rnd_passwd() is password.get_rnd_passwd()
         self.assertFalse(is_equal)
