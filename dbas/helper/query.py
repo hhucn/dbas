@@ -5,7 +5,7 @@ Provides helping function for database querys.
 """
 
 import random
-import dbas.helper.notification_helper as NotificationHelper
+import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
 import dbas.user_management as UserHandler
 
@@ -13,11 +13,11 @@ from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
-from dbas.helper.relation_helper import RelationHelper
+from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history
 from dbas.logger import logger
-from dbas.strings import Translator
+from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
 statement_min_length = 10
