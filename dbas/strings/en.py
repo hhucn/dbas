@@ -154,7 +154,7 @@ class EnglischDict:
         en_lang[_self.attackedWith] = 'You\'ve attacked with'
         en_lang[_self.agreeBecause] = 'I agree because '
         en_lang[_self.andIDoBelieveCounterFor] = 'and I do believe that this is a counter-argument for'
-        en_lang[_self.andIDoBelieveArgument] = 'and I do believe that this is a argument for'
+        en_lang[_self.andIDoBelieveArgument] = 'and I do believe that this is an argument for'
         en_lang[_self.attitudeFor] = 'Attitudes for'
         en_lang[_self.breadcrumbsStart] = 'Start'
         en_lang[_self.breadcrumbsChoose] = 'Multiple reasons for'

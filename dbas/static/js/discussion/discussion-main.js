@@ -572,7 +572,8 @@ function Main () {
 		// TODO CLEAR DESIGN
 		// options for the extra buttons, where the user can add input!
 		
-		if ($.inArray(input.attr('id'), ids) != -1) {
+		id = input.attr('id').indexOf('item_' == 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
+		if ($.inArray(id, ids) != -1) {
 			input.attr('onclick', '');
 			input.click(function () {
 				// new position at start
