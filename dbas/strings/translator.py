@@ -471,6 +471,7 @@ class Translator(object):
         self.snapshotGraph = 'snapshotGraph'
         self.support = 'support'
         self.support1 = 'support1'
+        self.assertion = 'assertion'
         self.tightView = 'tightView'
         self.textAreaReasonHintText = 'textAreaReasonHintText'
         self.theCounterArgument = 'theCounterArgument'

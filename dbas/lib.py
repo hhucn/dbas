@@ -206,8 +206,8 @@ def __build_argument_for_jump(arg_array, lang, with_html_tag):
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
 
         ret_value = tag_conclusion + conclusions_premises + ' '
-        ret_value += _t.get(_t.isNotAGoodIdea) + ' '
-        ret_value += _t.get(_t.forText) + ' ' + conclusions_conclusion + tag_end + ' '
+        ret_value += _t.get(_t.doesNotJustify) + ' '
+        ret_value += conclusions_conclusion + tag_end + ' '
         ret_value += _t.get(_t.because).lower() + ' ' + tag_premise + premises + tag_end
 
     return ret_value

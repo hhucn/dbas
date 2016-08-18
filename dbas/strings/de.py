@@ -32,6 +32,7 @@ class GermanDict:
         de_lang[_self.setPremisegroupsIntro2] = ' benutzt. Daher existieren mehrere mögliche Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen:'
 
         de_lang[_self.attack] = 'Sie lehnen ab, dass'
+        de_lang[_self.assertion] = 'Behauptung'
         de_lang[_self.support] = 'Sie akzeptieren'
         de_lang[_self.premise] = 'Prämisse'
         de_lang[_self.because] = 'weil'
