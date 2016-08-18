@@ -405,6 +405,7 @@ class GermanDict:
         de_lang[_self.note] = 'Hinweis'
         de_lang[_self.now] = 'Jetzt'
         de_lang[_self.no_entry] = 'Kein Eintrag'
+        de_lang[_self.no_arguments] = 'Keine Argumente für diese Meinung'
         de_lang[_self.noRights] = 'Sie haben nicht genügend Rechte!'
         de_lang[_self.notLoggedIn] = 'Sie sind nicht angemeldet!'
         de_lang[_self.on] = 'An'
