@@ -66,6 +66,7 @@ class Dbas(object):
         self.request = request
         global mainpage
         mainpage = request.application_url
+
         try:
             self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
         except Exception:
