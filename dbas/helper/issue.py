@@ -11,7 +11,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement
 from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
-from dbas.strings import Translator
+from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
 

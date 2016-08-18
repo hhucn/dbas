@@ -479,56 +479,6 @@ function Main () {
 	 *
 	 */
 	this.setGuiOptions = function () {
-		// relation buttons
-		if (false && window.location.href.indexOf('/reaction/') != -1) {
-			var cl = 'icon-badge',
-				style = 'height: 30px; width:30px; margin-right: 0.5em;',
-				src = mainpage + 'static/images/icon_discussion_',
-				item_undermine = $('#item_undermine'),
-				item_support = $('#item_support'),
-				item_undercut = $('#item_undercut'),
-				item_overbid = $('#item_overbid'),
-				item_rebut = $('#item_rebut'),
-				item_no_opinion = $('#item_no_opinion'),
-				undermine = $('<img>').addClass(cl).attr({
-					'style': style,
-					'src': src + 'undermine.png',
-					'onclick': item_undermine.attr('onclick')
-				}),
-				support = $('<img>').addClass(cl).attr({
-					'style': style,
-					'src': src + 'support.png',
-					'onclick': item_support.attr('onclick')
-				}),
-				undercut = $('<img>').addClass(cl).attr({
-					'style': style,
-					'src': src + 'undercut.png',
-					'onclick': item_undercut.attr('onclick')
-				}),
-				overbid = $('<img>').addClass(cl).attr({
-					'style': style,
-					'src': src + 'overbid.png',
-					'onclick': item_overbid.attr('onclick')
-				}),
-				rebut = $('<img>').addClass(cl).attr({
-					'style': style,
-					'src': src + 'rebut.png',
-					'onclick': item_rebut.attr('onclick')
-				}),
-				no_opinion = $('<img>').addClass(cl).attr({
-					'style': style,
-					'src': src + 'no_opinion.png',
-					'onclick': item_no_opinion.attr('onclick')
-				});
-			item_undermine.hide().next().prepend(undermine);
-			item_support.hide().next().prepend(support);
-			item_undercut.hide().next().prepend(undercut);
-			item_overbid.hide().next().prepend(overbid);
-			item_rebut.hide().next().prepend(rebut);
-			item_no_opinion.hide().next().prepend(no_opinion);
-		}
-		
-		
 		$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
 			var login_item = $('#' + discussionSpaceListId).find('#item_login');
 			if (login_item.length > 0)
@@ -613,19 +563,16 @@ function Main () {
 		
 		// hide one line options
 		var children = spaceList.find('input');
-		if (children.length == 1 && (
-			children.eq(0).attr('id').indexOf('start_statement') != -1 ||
-			children.eq(0).attr('id').indexOf('start_premise') != -1 ||
-			children.eq(0).attr('id').indexOf('justify_premise') != -1 ||
-			(children.eq(0).attr('id').indexOf('login') != -1) && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
+		var id = children.eq(0).attr('id');
+		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
+		if (children.length == 1 && ($.inArray(id, ids) != -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
 			children.eq(0).attr('checked', true).prop('checked', true).parent().hide();
 		}
 		
 		// TODO CLEAR DESIGN
 		// options for the extra buttons, where the user can add input!
-		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
 		
-		if ($.inArray(input.attr('id'), ids)) {
+		if ($.inArray(input.attr('id'), ids) != -1) {
 			input.attr('onclick', '');
 			input.click(function () {
 				// new position at start

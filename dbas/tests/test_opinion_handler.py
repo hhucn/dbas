@@ -1,11 +1,9 @@
 import unittest
 
-from sqlalchemy import engine_from_config
-
 from dbas import DBDiscussionSession
-from dbas.helper.tests_helper import add_settings_to_appconfig
-
-from dbas.opinion_handler import OpinionHandler
+from dbas.helper.tests import add_settings_to_appconfig
+from dbas.handler.opinion import OpinionHandler
+from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
 
