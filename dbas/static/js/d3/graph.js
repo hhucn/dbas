@@ -71,6 +71,7 @@ function DiscussionGraph() {
 		var svg = d3.select('#' + graphViewContainerSpaceId).append("svg")
     		.attr("width", width)
     		.attr("height", height)
+			.attr("id", "graph-svg")
 			.append('g')
 			.attr("class", "zoom");
 
@@ -212,10 +213,10 @@ function DiscussionGraph() {
 
 		// labels and colors for legend
 		var legendLabelCircle = ["Issue", "Position", "Statement"];
-		var legendLabelRect = ["Support", "Attack", "Rebut"];
+		var legendLabelRect = ["Support", "Attack"];
 
         var legendColorCircle = ["#3D5AFE", "#3D5AFE", "#FFC107"];
-		var legendColorRect = ["#64DD17", "#F44336", "#424242"];
+		var legendColorRect = ["#64DD17", "#F44336"];
 
 		// set properties for legend
 		d3.svg.legend = function() {
@@ -260,7 +261,7 @@ function DiscussionGraph() {
 		// create legend
         var legend = d3.svg.legend();
         d3.select("svg").append("g")
-            .attr("transform", "translate(30, 290)")
+            .attr("transform", "translate(30, 330)")
             .call(legend);
 
 		// show content
@@ -281,40 +282,42 @@ function DiscussionGraph() {
 
         force.start();
 
-		resize();
+		//resize();
 		d3.select(window).on("resize", resize);
 
 		// update force layout calculations
 		function forceTick() {
-		// update position of edges
-		link
-            .attr("x1", function(d) { return d.source.x; })
-        	.attr("y1", function(d) { return d.source.y; })
-        	.attr("x2", function(d) { return d.target.x; })
-        	.attr("y2", function(d) { return d.target.y; });
+		    // update position of edges
+			link
+                .attr("x1", function(d) { return d.source.x; })
+        	    .attr("y1", function(d) { return d.source.y; })
+        	    .attr("x2", function(d) { return d.target.x; })
+        	    .attr("y2", function(d) { return d.target.y; });
 
-		// update position of rect
-		rect
-			.attr("transform", function (d) {
-				return "translate(" + d.x + "," + (d.y - 50) + ")";
-    		});
+		    // update position of rect
+		    rect
+			    .attr("transform", function (d) {
+				    return "translate(" + d.x + "," + (d.y - 50) + ")";
+    		    });
 
-        // update position of nodes
-		circle
-       		.attr("cx", function(d) { return d.x; })
-       		.attr("cy", function(d) { return d.y; });
+            // update position of nodes
+		    circle
+       		    .attr("cx", function(d) { return d.x; })
+       		    .attr("cy", function(d) { return d.y; });
 
-        // update position of label
-		label
-			.attr("transform", function (d) {
-  			    return "translate(" + d.x + "," + (d.y - 50) + ")";
-   			});
+            // update position of label
+		    label
+			    .attr("transform", function (d) {
+  			        return "translate(" + d.x + "," + (d.y - 50) + ")";
+   			    });
 		}
 
 		function resize() {
-			var width = container.width(), height = container.outerHeight();
-			svg.attr("width", width).attr("height", height);
-			force.size([width, height]).resume();
+			$('#graph-svg').width(container.width());
+			// Height of space between header and bottom of container
+			$('#graph-svg').height(container.outerHeight()-$('#graph-view-container-header').height() + 20);
+
+   		    force.size([container.width(), container.outerHeight()]).resume();
 		}
 	};
 }
