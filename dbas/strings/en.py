@@ -257,7 +257,7 @@ class EnglischDict:
         en_lang[_self.emailWasSent] = 'An mail was sent to the given address.'
         en_lang[_self.emailWasNotSent] = 'Your message could not be send due to a system error!'
         en_lang[_self.emailUnknown] = 'The given mail address is unknown.'
-        en_lang[_self.emailBodyText] = 'This is an automatically generated mail by the D-BAS System.\nFor contact please write an mail to krauthoff@cs.uni-duesseldorf.de\nThis system is part of a doctoral thesis and currently in an alpha-phase.'
+        en_lang[_self.emailBodyText] = 'This is an automatically generated mail by D-BAS https://dbas.cs.uni-duesseldorf.de/.\nFor contact please write an mail to krauthoff@cs.uni-duesseldorf.de\nThis system is part of a doctoral thesis and currently in an alpha-phase.'
         en_lang[_self.emailWasSent] = 'E-Mail was sent.'
         en_lang[_self.emailWasNotSent] = 'E-Mail was not sent.'
         en_lang[_self.emailArgumentAddTitle] = 'D-BAS Information about an Argument'

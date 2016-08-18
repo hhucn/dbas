@@ -112,6 +112,7 @@ class QueryHelper:
         # #arguments=1: deliver new url
         # #arguments>1: deliver url where the user has to choose between her inputs
         _um = UrlManager(mainpage, slug, for_api, history)
+        _main_um = UrlManager(mainpage, slug, False, history)
         if len(new_argument_uids) == 0:
             error = QueryHelper.__get_error_for_empty_argument_list(_tn)
 
@@ -126,8 +127,8 @@ class QueryHelper:
 
         # send notifications and mails
         if len(new_argument_uids) > 0:
-            url = _um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
-            NotificationHelper.send_add_text_notification(url, conclusion_id, user, request, transaction)
+            email_url = _main_um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
+            NotificationHelper.send_add_text_notification(email_url, conclusion_id, user, request, transaction)
 
         return url, new_statement_uids, error
 
@@ -246,7 +247,7 @@ class QueryHelper:
         return url
 
     @staticmethod
-    def correct_statement(transaction, user, uid, corrected_text, path, request):
+    def correct_statement(transaction, user, uid, corrected_text, url, request):
         """
         Corrects a statement
 
@@ -254,7 +255,7 @@ class QueryHelper:
         :param user: User.nickname requesting user
         :param uid: requested statement uid
         :param corrected_text: new text
-        :param path: current path
+        :param url: current url
         :param request: current request
         :return: True
         """
@@ -282,7 +283,7 @@ class QueryHelper:
             DBDiscussionSession.add(textversion)
             DBDiscussionSession.flush()
 
-        NotificationHelper.send_edit_text_notification(db_user, textversion, path, request)
+        NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
 
         db_statement.set_textversion(textversion.uid)
         transaction.commit()

@@ -194,7 +194,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request, tr
 
     # send mail to last author
     if db_author_settings.should_send_mails:
-        EmailHelper.send_mail_due_to_added_text(user_lang, url, db_author, request)
+        EmailHelper.send_mail_due_to_added_text(user_lang, main_url, db_author, request)
 
     # find admin
     db_admin = DBDiscussionSession.query(User).filter(and_(User.firstname == 'admin',

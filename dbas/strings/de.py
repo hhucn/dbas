@@ -257,7 +257,7 @@ class GermanDict:
         de_lang[_self.emailWasSent] = 'Eine E-Mail wurde zu der genannten Adresse gesendet.'
         de_lang[_self.emailWasNotSent] = 'Ihre E-Mail konnte nicht gesendet werden!'
         de_lang[_self.emailUnknown] = 'Die Adresse ist nicht gültig.'
-        de_lang[_self.emailBodyText] = 'Dies ist eine automatisch generierte E-Mail von D-BAS.\nBei Rückfragen können Sie gerne eine E-Mail an krauthoff@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Promotion und noch in der Testphase.'
+        de_lang[_self.emailBodyText] = 'Dies ist eine automatisch generierte E-Mail von D-BAS https://dbas.cs.uni-duesseldorf.de/.\nBei Rückfragen können Sie gerne eine E-Mail an krauthoff@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Promotion und noch in der Testphase.'
         de_lang[_self.emailWasSent] = 'E-Mail wurde gesendet.'
         de_lang[_self.emailWasNotSent] = 'E-Mail wurde nicht gesendet.'
         de_lang[_self.emailArgumentAddTitle] = 'D-BAS Infos zum Argument'

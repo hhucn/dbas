@@ -8,7 +8,6 @@ import smtplib
 
 from socket import error as socket_error
 from dbas.database import DBDiscussionSession
-
 from dbas.database.discussion_model import User, TextVersion, Settings, Language, Statement
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
