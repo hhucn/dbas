@@ -339,11 +339,12 @@ class QueryHelper:
         # overbid = _rh.get_overbids_for_argument_uid()
         rebut = _rh.get_rebuts_for_argument_uid()
 
-        undermine = undermine if undermine else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-        support = support if support else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-        undercut = undercut if undercut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-        # overbid = overbid if overbid else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-        rebut = rebut if rebut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+        no_entry_text = _t.get(_t.no_arguments) + '. ' + _t.get(_t.voteCountTextMayBeFirst)
+        undermine = undermine if undermine else [{'id': 0, 'text': no_entry_text}]
+        support = support if support else [{'id': 0, 'text': no_entry_text}]
+        undercut = undercut if undercut else [{'id': 0, 'text': no_entry_text}]
+        # overbid = overbid if overbid else [{'id': 0, 'text': no_entry_text}]
+        rebut = rebut if rebut else [{'id': 0, 'text': no_entry_text}]
 
         return_dict.update({'undermine': undermine})
         return_dict.update({'support': support})

@@ -360,6 +360,7 @@ class Translator(object):
         self.number = 'number'
         self.note = 'note'
         self.no_entry = 'no_entry'
+        self.no_arguments = 'no_arguments'
         self.noRights = 'noRights'
         self.notLoggedIn = 'notLoggedIn'
         self.unfortunatelyOnlyOneItem = 'unfortunatelyOnlyOneItem'

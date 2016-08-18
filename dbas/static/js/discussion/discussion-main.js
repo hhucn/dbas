@@ -250,7 +250,7 @@ function Main () {
 				sidebarwrapper.css('background-color', '')
 					.css('height', '');
 				helper.delay(function () {
-					wrapper.width(width + sidebar.outerWidth());
+					wrapper.width('');//width + sidebar.outerWidth());
 				}, 300);
 				helper.setLocalStorage(localStorageId, 'false');
 			} else {

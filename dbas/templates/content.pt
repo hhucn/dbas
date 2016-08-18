@@ -148,7 +148,7 @@
             <div class="row" id="island-view-container-space">
             <div class="row">
                 <div class="col-md-11 text-center">
-                    <h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading"><strong>${structure:extras.island.heading}</strong></span></h4>
+                    <h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading">${structure:extras.island.heading}</span></h4>
                 </div>
             </div>
 

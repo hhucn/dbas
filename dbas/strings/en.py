@@ -404,6 +404,7 @@ class EnglischDict:
         en_lang[_self.number] = 'No'
         en_lang[_self.note] = 'Note'
         en_lang[_self.no_entry] = 'No entry'
+        en_lang[_self.no_arguments] = 'No arguments for this opinion'
         en_lang[_self.noRights] = 'You have no rights for this action!'
         en_lang[_self.notLoggedIn] = 'You are not logged in.'
         en_lang[_self.on] = 'On'
