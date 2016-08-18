@@ -221,7 +221,7 @@ class TextGenerator(object):
 
         return ret_dict
 
-    def get_jumping_text_dict(self):
+    def get_jumping_text_list(self):
         """
 
         :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
