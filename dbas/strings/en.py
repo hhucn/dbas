@@ -148,6 +148,7 @@ class EnglischDict:
         en_lang[_self.argument] = 'Argument'
         en_lang[_self.attackPosition] = 'attack Position'
         en_lang[_self.at] = 'at'
+        en_lang[_self.assertion] = 'assertion'
         en_lang[_self.accepting] = 'accepting'
         en_lang[_self.attackedBy] = 'You were attacked by'
         en_lang[_self.attackedWith] = 'You\'ve attacked with'

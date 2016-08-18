@@ -78,7 +78,7 @@ class UrlManager(object):
         """
         Returns url for reviewing a discussions
 
-        :param as_location_href: Boolean
+        :param as_location_href: True, if the url should be embedded in location.href="<URL>"
         :return: review_url/slug
         """
         url = self.slug
@@ -88,7 +88,7 @@ class UrlManager(object):
         """
         Returns url for getting statement attitude of the user or the API-version
 
-        :param as_location_href: Boolean
+        :param as_location_href: True, if the url should be embedded in location.href="<URL>"
         :param statement_uid: Statement.uid
         :return: discussion_url/slug/attitude/statement_uid
         """
@@ -99,7 +99,7 @@ class UrlManager(object):
         """
         Returns url for getting statement justification of the user or the API-version
 
-        :param as_location_href:
+        :param as_location_href: True, if the url should be embedded in location.href="<URL>"
         :type as_location_href: Boolean
         :param statement_uid: Statement.uid
         :param mode:
@@ -113,7 +113,7 @@ class UrlManager(object):
         """
         Returns url for justifying an argument of the user or the API-version
 
-        :param as_location_href: Boolean
+        :param as_location_href: True, if the url should be embedded in location.href="<URL>"
         :param argument_uid: Argument.uid
         :param mode: String
         :param attitude: String
@@ -129,7 +129,7 @@ class UrlManager(object):
         """
         Returns url for getting the reaction regarding an argument of the user or the API-version
 
-        :param as_location_href: Boolean
+        :param as_location_href: True, if the url should be embedded in location.href="<URL>"
         :param argument_uid: Argument.uid
         :param mode: 't' on supportive, 'f' otherwise
         :param confrontation_argument: Argument.uid
@@ -141,7 +141,7 @@ class UrlManager(object):
     def get_url_for_choosing_premisegroup(self, as_location_href, is_argument, is_supportive, statement_or_argument_id, pgroup_id_list):
         """
 
-        :param as_location_href: Boolean
+        :param as_location_href: True, if the url should be embedded in location.href="<URL>"
         :param is_argument: Boolean
         :param is_supportive: Boolean
         :param statement_or_argument_id: Statement.uid or Argument.uid
@@ -157,7 +157,7 @@ class UrlManager(object):
     def __return_discussion_url(self, as_location_href, url):
         """
 
-        :param as_location_href: Boolean
+        :param as_location_href: True, if the url should be embedded in location.href="<URL>"
         :param url: String
         :return: Valid URL
         """
@@ -172,7 +172,7 @@ class UrlManager(object):
     def __return_review_url(self, as_location_href, url):
         """
 
-        :param as_location_href: Boolean
+        :param as_location_href: True, if the url should be embedded in location.href="<URL>"
         :param url: String
         :return: Valid URL
         """
