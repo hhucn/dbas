@@ -419,11 +419,12 @@ class ItemDictHelper(object):
         # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
         return statements_array
 
-    def get_array_for_jump(self, arg_uid, slug):
+    def get_array_for_jump(self, arg_uid, slug, for_api):
         """
 
         :param arg_uid:
-        :param lang:
+        :param slug:
+        :param for_api:
         :return:
         """
 
@@ -431,23 +432,22 @@ class ItemDictHelper(object):
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
 
         # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
-        item_text = TextGenerator(self.lang).get_jumping_text_dict()
+        item_text = TextGenerator(self.lang).get_jumping_text_list()
 
         # which part of the argument should be attacked ?
         base = db_argument.argument_uid if db_argument.conclusion_uid is None else arg_uid
         arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(base, self.lang)
 
         if db_argument.conclusion_uid is None:  # conclusion is an argument
-            url0 = _um.get_url_for_reaction_on_argument(True, db_argument.argument_uid, sys_attack, arg_id_sys)
-            url1 = _um.get_url_for_justifying_argument(True, db_argument.argument_uid, 'f', 'undercut')
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.argument_uid, sys_attack, arg_id_sys)
+            url1 = _um.get_url_for_justifying_argument(not for_api, db_argument.argument_uid, 'f', 'undercut')
         else:
-            url0 = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 't')
-            url1 = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 'f')
-        url2 = _um.get_url_for_reaction_on_argument(True, arg_uid, sys_attack, arg_id_sys)
-
-        url3 = _um.get_url_for_justifying_argument(True, arg_uid, 't', 'undermine')
-        url4 = _um.get_url_for_justifying_argument(True, arg_uid, 't', 'undercut')  # TODO@JUMP: undercutting an undercut? Currently forbidden
-        url5 = _um.get_url_for_reaction_on_argument(True, arg_uid, sys_attack, arg_id_sys)
+            url0 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
+            url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
+        url2 = _um.get_url_for_reaction_on_argument(not for_api, arg_uid, sys_attack, arg_id_sys)
+        url3 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undermine')
+        url4 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undercut')  # TODO@JUMP: undercutting an undercut? Currently forbidden
+        url5 = _um.get_url_for_reaction_on_argument(not for_api, arg_uid, sys_attack, arg_id_sys)
 
         answers = list()
         answers.append({'text': item_text[0], 'url': url0})
@@ -459,9 +459,10 @@ class ItemDictHelper(object):
 
         return_array = []
         for no in range(0, 6):
-            if db_argument.conclusion_uid is not None or no != 4:
-                return_array.append(
-                    self.__create_answer_dict('jump' + str(no), [{'title': answers[no]['text'], 'id': 0}], 'jump', answers[no]['url']))
+            if db_argument.conclusion_uid is None and no == 4:
+                continue
+            return_array.append(
+                self.__create_answer_dict('jump' + str(no), [{'title': answers[no]['text'], 'id': 0}], 'jump', answers[no]['url']))
 
         return return_array
 

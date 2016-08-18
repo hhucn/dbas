@@ -605,7 +605,7 @@ class Dbas(object):
         _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
         _idh            = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
         discussion_dict = _ddh.get_dict_for_jump(arg_uid)
-        item_dict       = _idh.get_array_for_jump(arg_uid, slug)
+        item_dict       = _idh.get_array_for_jump(arg_uid, slug, for_api)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
                                                                                             True, True, nickname,
                                                                                             application_url=mainpage,
