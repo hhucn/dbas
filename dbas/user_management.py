@@ -168,6 +168,7 @@ def get_profile_picture(user, size=80):
     :return: String
     """
     email = (user.email).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
     # logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
