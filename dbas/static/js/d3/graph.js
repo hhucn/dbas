@@ -36,8 +36,8 @@ function DiscussionGraph() {
 	this.setDefaultViewParams = function (startD3, jsonData, d3) {
 		$('#hide-content').hide();
 		$('#show-content').show();
-		$('#wide-view').show();
-		$('#tight-view').hide();
+		$('#show-positions').show();
+		$('#hide-positions').hide();
 
 		var container = $('#' + graphViewContainerSpaceId);
 		container.empty();
@@ -190,16 +190,16 @@ function DiscussionGraph() {
                     .text(' ' + node_text[i]);
 				}
             }
-			d3.select(this).attr("id", d.id);
+			d3.select(this).attr("id", 'label-' + d.id);
 			// set position of label
-			var height = $("#" + d.id).height();
+			var height = $("#label-" + d.id).height();
 			d3.select(this).attr("y", -height+45);
 		});
 
 		// set properties for rect
 		rect.each(function (d) {
-		    var width = $("#" + d.id).width()+10,
-			    height = $("#" + d.id).height()+10;
+		    var width = $("#label-" + d.id).width()+10,
+			    height = $("#label-" + d.id).height()+10;
 			if(d.size == 0){
 				width = 0;
 				height = 0;
@@ -208,7 +208,8 @@ function DiscussionGraph() {
 			.attr("width", width)
 			.attr("height", height)
 			.attr("y", -height+38)
-			.attr("x", -width/2);
+			.attr("x", -width/2)
+			.attr("id", 'rect-' + d.id);
 		});
 
 		// labels and colors for legend
@@ -279,10 +280,35 @@ function DiscussionGraph() {
 			$('#show-content').show();
 			$('#hide-content').hide();
 		});
+		
+		// show positions
+		$('#show-positions').click(function() {
+			// select positions
+			d3.selectAll(".node").each(function(d) {
+				if(d.color == '#3D5AFE' && d.size == '6') {
+					d3.select('#label-' + d.id).style("display", "inline");
+					d3.select("#rect-" + d.id).style("display", "inline");
+				}
+			});
+			$('#show-positions').hide();
+			$('#hide-positions').show();
+		});
+		
+		// hide positions
+		$('#hide-positions').click(function() {
+			// select positions
+			d3.selectAll(".node").each(function(d) {
+				if(d.color == '#3D5AFE' && d.size == '6') {
+					d3.select('#label-' + d.id).style("display", "none");
+					d3.select("#rect-" + d.id).style("display", "none");
+				}
+			});
+			$('#show-positions').show();
+			$('#hide-positions').hide();
+		});
 
         force.start();
 
-		//resize();
 		d3.select(window).on("resize", resize);
 
 		// update force layout calculations
