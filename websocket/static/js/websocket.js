@@ -108,7 +108,6 @@ function doInfo(intro, msg){
  * @param data
  */
 function doRecentReview(data){
-	console.log(window.location.href);
 	if (window.location.href.indexOf('review') == -1)
 		return;
 	
@@ -117,9 +116,9 @@ function doRecentReview(data){
 		// TODO ANIMATION
 		$('#' + data.queue + ' a:last-child').remove();
 		var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
-		var img = $('<img>').attr('src', data.img_url);
+		var img = $('<img>').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
 		link.append(img);
-		queue.prepend(link)
+		queue.prepend(link);
 	}
 	alert(data.queue);
 }

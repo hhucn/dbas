@@ -39,7 +39,7 @@ content = Service(name='review_content',
                   cors_policy=cors_policy)
 
 reputation = Service(name='review_reputation',
-                     path='/*slug',
+                     path='/reputation',
                      renderer='templates/review_reputation.pt',
                      description="Review Reputation",
                      permission='use',
