@@ -34,23 +34,23 @@ cors_policy = dict(enabled=True,
 content = Service(name='review_content',
                   path='/{queue}/{slug}',
                   renderer='templates/review_content.pt',
-                  description="Review Queue",
+                  description='Review Queue',
                   permission='use',
                   cors_policy=cors_policy)
 
 reputation = Service(name='review_reputation',
                      path='/reputation',
                      renderer='templates/review_reputation.pt',
-                     description="Review Reputation",
+                     description='Review Reputation',
                      permission='use',
                      cors_policy=cors_policy)
 
-index = Service(name='review_index',
-                path='*slug',
-                renderer='templates/review.pt',
-                description="Review Index",
-                permission='use',
-                cors_policy=cors_policy)
+zindex = Service(name='review_index',
+                 path='*slug',
+                 renderer='templates/review.pt',
+                 description='Review Index',
+                 permission='use',
+                 cors_policy=cors_policy)
 
 
 # =============================================================================
@@ -120,7 +120,7 @@ def main_review_reputation(request):
     }
 
 
-@index.get()
+@zindex.get()
 def main_review(request):
     """
     View configuration for the review index.
