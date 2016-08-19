@@ -3,7 +3,8 @@
 
 		<div class="container colored-container">
 			<div class="row center" id="review-wrapper">
-                <div class="center" style="max-width: 800px;">
+                <div class="col-md-9">
+                    <div class="center" style="max-width: 800px;">
                     <div class="bs-callout bs-callout-primary">
                         <h5><strong i18n:translate="help_to_improve">Help improve the dialog</strong></h5>
                         <span i18n:translate="dbas_is_moderated_by">D-BAS is moderated by you. Help your discussion members learn to argue and raise the quality of argumenty by:</span>
@@ -15,11 +16,9 @@
                         <span><strong i18n:translate="choose_task">Choose a task to get started.</strong></span>
                     </div>
                 </div>
-			</div>
-
-			<div class="row center" id="review-wrapper">
-                <div class="left">
-                    <div class="dropdown" style="float: left;">
+                </div>
+                <div class="col-md-3 left">
+                    <div class="dropdown" style="margin: 10px;">
                         <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
                             <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
                         </button>
@@ -31,12 +30,20 @@
                             </li>
                         </ul>
                     </div>
-                    <strong style="float: right;"><span i18n:translate="current_issue">Current issue</span>: ${structure:current_issue_title}</strong>
+                    <br>
+                    <div>
+                        <h6><span i18n:translate="current_issue">Current issue</span>: ${structure:current_issue_title}</h6>
+                    </div>
+                    <br>
+                    <div>
+                        <h6><span>Your current reputation count is: </span><a href="${request.application_url}/review/reputation">${reputation_count}</a></h6>
+                    </div>
 			    </div>
             </div>
 
 			<div class="row center" id="review-wrapper">
-                <table class="table table-condensed" border="0" id="review-table">
+                <div class="col-md-12">
+                    <table class="table table-condensed" border="0" id="review-table">
                     <thead>
                         <tr class="review-table-row">
                             <td i18n:translate="open_tasks" class="center">Open Tasks</td>
@@ -62,6 +69,7 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
 			</div>
 		</div>
 
