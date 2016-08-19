@@ -2000,7 +2000,7 @@ class Dbas(object):
         try:
             nickname = self.request.params['nickname']
             return_dict = UserHandler.get_public_information_data(nickname, ui_locales)
-            return_dict['error'] = ''
+            return_dict['error'] = '' if len(return_dict) != 0 else _tn.get(_tn.internalKeyError)
 
         except KeyError as e:
             logger('get_public_user_data', 'error', repr(e))
