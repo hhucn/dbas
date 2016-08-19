@@ -189,4 +189,4 @@ class UrlManager(object):
         """
         prefix = 'location.href="' if as_location_href else ''
         suffix = '"' if as_location_href else ''
-        return prefix + self.discussion_url + url + suffix
+        return prefix + self.review_url + url + suffix
