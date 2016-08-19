@@ -118,7 +118,6 @@ def get_all_references_by_reference_text(ref_text=None):
             refs.append({"reference": extract_reference_information(reference),
                          "author": extract_author_information(user),
                          "issue": extract_issue_information(issue),
-                         # TODO: correctly set language
                          "arguments": get_all_arguments_with_text_by_statement_id(reference.statement_uid),
                          "statement": {"uid": reference.statement_uid,
                                        "url": statement_url,
