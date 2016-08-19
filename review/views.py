@@ -46,7 +46,7 @@ reputation = Service(name='review_reputation',
                      cors_policy=cors_policy)
 
 index = Service(name='review_index',
-                path='/*slug',
+                path='*slug',
                 renderer='templates/review.pt',
                 description="Review Index",
                 permission='use',
@@ -56,53 +56,6 @@ index = Service(name='review_index',
 # =============================================================================
 # WEBSOCKET REQUESTS
 # =============================================================================
-
-@index.get()
-def main_review(request):
-    """
-    View configuration for the review index.
-
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Review', 'main_review', 'main ' + str(request.matchdict))
-    ui_locales = get_language(request, get_current_registry())
-    session_expired = UserHandler.update_last_action(transaction, request.authenticated_userid)
-    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
-    _tn = Translator(ui_locales)
-    if session_expired:
-        return Dbas(request).user_logout(True)
-
-    issue           = IssueHelper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
-    extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
-
-    try:
-        slug = request.matchdict['slug'][0]
-        issue = IssueHelper.get_title_for_slug(slug)
-        if not issue:
-            issue = issue_dict['title']
-    except KeyError and IndexError:
-        issue = issue_dict['title']
-
-    if len(issue) == 0:
-        issue = issue_dict['title']
-
-    review_dict = ReviewHelper.get_review_array(mainpage, slugify(issue), _tn)
-
-    return {
-        'layout': Dbas.base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_tn.review),
-        'project': project_name,
-        'extras': extras_dict,
-        'review': review_dict,
-        'issues': issue_dict,
-        'current_issue_title': issue,
-        'reputation_count': 4
-    }
-
 
 @content.get()
 def main_review_content(request):
@@ -163,5 +116,52 @@ def main_review_reputation(request):
         'title': _tn.get(_tn.review),
         'project': project_name,
         'extras': extras_dict,
+        'reputation_count': 4
+    }
+
+
+@index.get()
+def main_review(request):
+    """
+    View configuration for the review index.
+
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Review', 'main_review', 'main ' + str(request.matchdict))
+    ui_locales = get_language(request, get_current_registry())
+    session_expired = UserHandler.update_last_action(transaction, request.authenticated_userid)
+    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    _tn = Translator(ui_locales)
+    if session_expired:
+        return Dbas(request).user_logout(True)
+
+    issue           = IssueHelper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
+    extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
+
+    try:
+        slug = request.matchdict['slug'][0]
+        issue = IssueHelper.get_title_for_slug(slug)
+        if not issue:
+            issue = issue_dict['title']
+    except KeyError and IndexError:
+        issue = issue_dict['title']
+
+    if len(issue) == 0:
+        issue = issue_dict['title']
+
+    review_dict = ReviewHelper.get_review_array(mainpage, slugify(issue), _tn)
+
+    return {
+        'layout': Dbas.base_layout(),
+        'language': str(ui_locales),
+        'title': _tn.get(_tn.review),
+        'project': project_name,
+        'extras': extras_dict,
+        'review': review_dict,
+        'issues': issue_dict,
+        'current_issue_title': issue,
         'reputation_count': 4
     }
