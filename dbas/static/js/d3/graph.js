@@ -63,28 +63,13 @@ function DiscussionGraph() {
 	this.getD3Graph = function(jsonData){
 		var container = $('#' + graphViewContainerSpaceId);
 		container.empty();
-			
+
 		var width = container.width();
 		var height = container.outerHeight();
 
-		// container for visualization
-		var svg = d3.select('#' + graphViewContainerSpaceId).append("svg")
-    		.attr("width", width)
-    		.attr("height", height)
-			.attr("id", "graph-svg")
-			.append('g')
-			.attr("class", "zoom");
+		var svg = getSvg(width, height);
 
-		// create force layout object and define properties
-		var force = d3.layout.force()
-			.size([width, height])
-			// pull nodes toward layout center
-    		.gravity(0.11)
-			// nodes push each other away
-			.charge(-350)
-    		.linkDistance(function (d) {
-				return d.size;
-			});
+		var force = getForce(width, height);
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
@@ -94,28 +79,17 @@ function DiscussionGraph() {
             d3.select("g.zoom")
             .attr("transform", "translate(" + zoom.translate() + ")"
 			+ " scale(" + zoom.scale() + ")");
-
-            /*trans = d3.event.translate;
-            scale = d3.event.scale;
-            svg.selectAll("*:not(.text)").attr("transform", "translate(" + trans + ")" + " scale(" + zoom.scale() + ")");*/
         }
 
-		// enable drag functionality, pan functionality overrides drag
+		// enable drag functionality, because pan functionality overrides drag
         var drag = force.drag()
 			.on("dragstart", function(d){
 				d3.event.sourceEvent.stopPropagation();
 			});
 
-		var edges = [];
+		var edges = createEdgeDict(jsonData);
 
-		jsonData.edges.forEach(function(e) {
-    		// get source and target nodes
-    		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
-        		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
-    		// add edge, color and type to array
-    		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size});
-		});
-
+		// create arrays of links, nodes and move layout forward one step
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 
 		// select edges with type of arrow 
@@ -346,4 +320,57 @@ function DiscussionGraph() {
    		    force.size([container.width(), container.outerHeight()]).resume();
 		}
 	};
+
+	function getSvg(width, height){
+		/**
+		 * Create svg-element.
+		 *
+		 * @param width: width of container, which contains graph
+		 * @param height: height of container
+		 * @return scalable vector graphic
+		 */
+		return d3.select('#' + graphViewContainerSpaceId).append("svg")
+    		.attr({width: width, height: height, id: "graph-svg"})
+			.append('g')
+			.attr("class", "zoom");
+	}
+
+	function getForce(width, height){
+		/**
+		 * Create force-directed network diagram and define properties.
+		 *
+		 * @param width: width of container, which contains graph
+		 * @param height: height of container
+		 * @return force layout
+		 */
+		return d3.layout.force()
+			.size([width, height])
+			// pull nodes toward layout center
+    		.gravity(0.11)
+			// nodes push each other away
+			.charge(-350)
+    		.linkDistance(function (d) {
+				return d.size;
+			});
+	}
+
+	function createEdgeDict(jsonData) {
+		/**
+		 * Create dictionary for edges
+		 *
+		 * @param jsonData: dict with data for nodes and edges
+		 * @return edges: array, which contains dicts for edges
+         */
+		var edges = [];
+
+		jsonData.edges.forEach(function(e) {
+    		// get source and target nodes
+    		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
+        		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
+    		// add edge, color and type to array
+    		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size});
+		});
+
+		return edges;
+	}
 }
