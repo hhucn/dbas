@@ -521,7 +521,7 @@ class GermanDict:
         de_lang[_self.wrong] = 'Nein'
         de_lang[_self.wouldYourShareArgument] = 'Können Sie einen Grund angeben?'
         de_lang[_self.wrongURL] = 'Ihre URL scheint falsch zu sein.'
-        de_lang[_self.whatDoYouThinkAbout] = 'Was halten Sie davon, dass '
+        de_lang[_self.whatDoYouThinkAbout] = 'Was halten Sie davon, dass'
         de_lang[_self.whatDoYouThinkAboutThat] = 'Was denken Sie darüber'
         de_lang[_self.whatIsYourIdea] = 'Ich denke / meine, dass ...'
         de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für die Aussage'
