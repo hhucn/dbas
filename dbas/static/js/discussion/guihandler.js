@@ -458,7 +458,8 @@ function GuiHandler() {
 			// make all tokens bold
 			uneditted_value = val.text;
 			// replacement from http://stackoverflow.com/a/280805/2648872
-			text = val.text.replace( new RegExp( "(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "</b>$1<b>" );
+			text = val.text.replace( new RegExp( "(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "</strong>$1<strong>" );
+			text = '<strong>' + text;
 
 			button = $('<button>')
 				.attr('type', 'button')

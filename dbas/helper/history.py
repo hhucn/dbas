@@ -191,8 +191,8 @@ def __dont_know_step(step, nickname, lang, url):
     steps    = step.split('/')
     uid      = int(steps[1])
 
-    _tn         = Translator(lang)
-    text     = get_text_for_argument_uid(uid, lang)
+    _tn      = Translator(lang)
+    text     = get_text_for_argument_uid(uid)
     text     = text.replace(_tn.get(_tn.because).lower(), '</' + TextGenerator.tag_type + '>' + _tn.get(_tn.because).lower() + '<' + TextGenerator.tag_type + '>')
     sys_text = _tn.get(_tn.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>' + text[0:1].lower() + text[1:]  + '</' + TextGenerator.tag_type + '>. '
     return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url, is_supportive=True)]
@@ -222,15 +222,15 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     last_relation   = splitted_history[-1].split('/')[2]
 
     user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
-    current_argument     = get_text_for_argument_uid(uid, lang, user_changed_opinion=user_changed_opinion)
+    current_argument     = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion)
     db_argument          = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
     db_confrontation     = DBDiscussionSession.query(Argument).filter_by(uid=additional_uid).first()
     db_statement         = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
 
-    premise, tmp         = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, lang)
-    conclusion           = get_text_for_conclusion(db_argument, lang)
-    sys_conclusion       = get_text_for_conclusion(db_confrontation, lang)
-    confr, tmp           = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid, lang)
+    premise, tmp         = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+    conclusion           = get_text_for_conclusion(db_argument)
+    sys_conclusion       = get_text_for_conclusion(db_confrontation)
+    confr, tmp           = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
     reply_for_argument   = not (db_statement and db_statement.is_startpoint)
     user_is_attacking    = not db_argument.is_supportive
 

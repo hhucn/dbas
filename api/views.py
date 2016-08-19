@@ -424,7 +424,7 @@ def find_statements_fn(request):
 
 
 # =============================================================================
-# TEXT BLOCKS - create text-blocks as seen in the bubbles
+# JUMPING - jump to specific position in the discussion
 # =============================================================================
 
 @jump_to_argument.get()
@@ -452,15 +452,14 @@ def fn_jump_to_argument(request):
 @text_for_argument.get()
 def get_text_for_argument(request):
     statement = int(request.matchdict["statement_uid"])
-    lang = request.matchdict["lang"]
 
     args = get_all_arguments_by_statement(statement)
 
     results = list()
 
     for argument in args:
-        results.append({"id": argument.uid,
-                        "text": get_text_for_argument_uid(argument.uid, lang)})
+        results.append({"uid": argument.uid,
+                        "text": get_text_for_argument_uid(argument.uid)})
 
     return as_json(results)
 

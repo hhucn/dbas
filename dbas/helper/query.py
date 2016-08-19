@@ -15,7 +15,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
 from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
-from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history
+from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history, get_lang_for_argument
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -29,16 +29,16 @@ class QueryHelper:
     """
 
     @staticmethod
-    def get_infos_about_argument(uid, lang, mainpage):
+    def get_infos_about_argument(uid, mainpage):
         """
         Returns several infos about the argument.
 
         :param uid: Argument.uid
-        :param lang: ui_locales
         :param mainpage: url
         :return: dict()
         """
         return_dict = dict()
+        lang = get_lang_for_argument(uid)
         db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
                                                                        VoteArgument.is_valid == True,
                                                                        VoteStatement.is_up_vote == True)).all()
@@ -50,7 +50,7 @@ class QueryHelper:
         return_dict['vote_count']       = str(len(db_votes))
         return_dict['author']           = db_author.public_nickname
         return_dict['timestamp']        = sql_timestamp_pretty_print(db_argument.timestamp, lang)
-        text                            = get_text_for_argument_uid(uid, lang)
+        text                            = get_text_for_argument_uid(uid)
         return_dict['text']             = text[0:1].upper() + text[1:] + '.'
 
         supporters = []
@@ -112,6 +112,7 @@ class QueryHelper:
         # #arguments=1: deliver new url
         # #arguments>1: deliver url where the user has to choose between her inputs
         _um = UrlManager(mainpage, slug, for_api, history)
+        _main_um = UrlManager(mainpage, slug, False, history)
         if len(new_argument_uids) == 0:
             error = QueryHelper.__get_error_for_empty_argument_list(_tn)
 
@@ -126,8 +127,8 @@ class QueryHelper:
 
         # send notifications and mails
         if len(new_argument_uids) > 0:
-            url = _um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
-            NotificationHelper.send_add_text_notification(url, conclusion_id, user, request, transaction)
+            email_url = _main_um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
+            NotificationHelper.send_add_text_notification(email_url, conclusion_id, user, request, transaction)
 
         return url, new_statement_uids, error
 
@@ -246,7 +247,7 @@ class QueryHelper:
         return url
 
     @staticmethod
-    def correct_statement(transaction, user, uid, corrected_text, path, request):
+    def correct_statement(transaction, user, uid, corrected_text, url, request):
         """
         Corrects a statement
 
@@ -254,7 +255,7 @@ class QueryHelper:
         :param user: User.nickname requesting user
         :param uid: requested statement uid
         :param corrected_text: new text
-        :param path: current path
+        :param url: current url
         :param request: current request
         :return: True
         """
@@ -282,7 +283,7 @@ class QueryHelper:
             DBDiscussionSession.add(textversion)
             DBDiscussionSession.flush()
 
-        NotificationHelper.send_edit_text_notification(db_user, textversion, path, request)
+        NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
 
         db_statement.set_textversion(textversion.uid)
         transaction.commit()
@@ -320,16 +321,16 @@ class QueryHelper:
         return statements
 
     @staticmethod
-    def get_every_attack_for_island_view(arg_uid, lang):
+    def get_every_attack_for_island_view(arg_uid):
         """
         Select and returns every argument with an relation to the given Argument.uid
 
         :param arg_uid: Argument.uid
-        :param lang: ui_locales
         :return: dict()
         """
         logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
         return_dict = {}
+        lang = get_lang_for_argument(arg_uid)
         _t = Translator(lang)
         _rh = RelationHelper(arg_uid, lang)
 
@@ -339,11 +340,12 @@ class QueryHelper:
         # overbid = _rh.get_overbids_for_argument_uid()
         rebut = _rh.get_rebuts_for_argument_uid()
 
-        undermine = undermine if undermine else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-        support = support if support else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-        undercut = undercut if undercut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-        # overbid = overbid if overbid else [{'id': 0, 'text': _t.get(_t.no_entry)}]
-        rebut = rebut if rebut else [{'id': 0, 'text': _t.get(_t.no_entry)}]
+        no_entry_text = _t.get(_t.no_arguments) + '. ' + _t.get(_t.voteCountTextMayBeFirst)
+        undermine = undermine if undermine else [{'id': 0, 'text': no_entry_text}]
+        support = support if support else [{'id': 0, 'text': no_entry_text}]
+        undercut = undercut if undercut else [{'id': 0, 'text': no_entry_text}]
+        # overbid = overbid if overbid else [{'id': 0, 'text': no_entry_text}]
+        rebut = rebut if rebut else [{'id': 0, 'text': no_entry_text}]
 
         return_dict.update({'undermine': undermine})
         return_dict.update({'support': support})
@@ -488,12 +490,11 @@ class QueryHelper:
         return new_statement, False
 
     @staticmethod
-    def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive, lang):
+    def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive):
         """
 
         :param argument_uid: Argument.uid
         :param is_supportive: Boolean
-        :param lang: ui_locales
         :return:
         """
         return_array = []
@@ -512,7 +513,7 @@ class QueryHelper:
                 given_relations.add(relation.premisesgroup_uid)
                 tmp_dict = dict()
                 tmp_dict['id'] = relation.uid
-                tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid, lang)
+                tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid)
                 return_array.append(tmp_dict)
                 index += 1
         return return_array

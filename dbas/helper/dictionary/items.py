@@ -419,54 +419,51 @@ class ItemDictHelper(object):
         # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
         return statements_array
 
-    def get_array_for_jump(self, arg_uid, slug):
+    def get_array_for_jump(self, arg_uid, slug, for_api):
         """
 
         :param arg_uid:
-        :param lang:
+        :param slug:
+        :param for_api:
         :return:
         """
 
-        _t = Translator(self.lang)
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
 
-        sb_premi = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
-        sb_concl = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
-        se = '</' + TextGenerator.tag_type + '> '
-        p = _t.get(_t.reason).lower()
-        c = _t.get(_t.statement).lower()
-        t = _t.get(_t.this).lower() + ' '
-        r = _t.get(_t.right) + ', ' + t
-        w = _t.get(_t.wrong) + ', ' + t
-        u = _t.get(_t.isTrue)
-        f = _t.get(_t.isFalse)
+        # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
+        item_text = TextGenerator(self.lang).get_jumping_text_list()
 
-        arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(arg_uid, self.lang)
+        # which part of the argument should be attacked ?
+        base = db_argument.argument_uid if db_argument.conclusion_uid is None else arg_uid
+        arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(base, self.lang)
 
-        text0 = r + _t.get(_t.argument) + ' ' + u
-        text1 = r + sb_concl + c + se + u + '.'
-        text2 = w + sb_concl + c + se + f + '.'
-        text3 = r + sb_premi + p + se + u + '.'
-        text4 = w + sb_premi + p + se + f + '.'
-        text5 = r + sb_premi + p + se + u + ' ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + t + ' ' + sb_concl + c + se
+        if db_argument.conclusion_uid is None:  # conclusion is an argument
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.argument_uid, sys_attack, arg_id_sys)
+            url1 = _um.get_url_for_justifying_argument(not for_api, db_argument.argument_uid, 'f', 'undercut')
+        else:
+            url0 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
+            url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
+        url2 = _um.get_url_for_reaction_on_argument(not for_api, arg_uid, sys_attack, arg_id_sys)
+        url3 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undermine')
+        url4 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undercut')  # TODO@JUMP: undercutting an undercut? Currently forbidden
+        url5 = _um.get_url_for_reaction_on_argument(not for_api, arg_uid, sys_attack, arg_id_sys)
 
         answers = list()
-        answers.append({'text': text0, 'url': _um.get_url_for_reaction_on_argument(True, arg_uid, sys_attack, arg_id_sys)})
-        answers.append({'text': text1, 'url': _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 't')})  # TODO UNDERCUT AS CONCLUSION
-        answers.append({'text': text2, 'url': _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, 'f')})  # TODO UNDERCUT AS CONCLUSION
-        answers.append({'text': text3, 'url': _um.get_url_for_justifying_statement(True, db_premises.statement_uid, 't')})  # TODO PREMISEGROUPS
-        answers.append({'text': text4, 'url': _um.get_url_for_justifying_statement(True, db_premises.statement_uid, 'f')})  # TODO PREMISEGROUPS
-        answers.append({'text': text5, 'url': _um.get_url_for_justifying_argument(True, arg_uid, 'undercut', 't')})
+        answers.append({'text': item_text[0], 'url': url0})
+        answers.append({'text': item_text[1], 'url': url1})
+        answers.append({'text': item_text[2], 'url': url2})
+        answers.append({'text': item_text[3], 'url': url3})
+        answers.append({'text': item_text[4], 'url': url4})
+        answers.append({'text': item_text[5], 'url': url5})
 
         return_array = []
-        return_array.append(self.__create_answer_dict('jump0', [{'title': answers[0]['text'], 'id': 0}], 'jump', answers[0]['url']))
-        return_array.append(self.__create_answer_dict('jump1', [{'title': answers[1]['text'], 'id': 0}], 'jump', answers[1]['url']))
-        return_array.append(self.__create_answer_dict('jump2', [{'title': answers[2]['text'], 'id': 0}], 'jump', answers[2]['url']))
-        return_array.append(self.__create_answer_dict('jump3', [{'title': answers[3]['text'], 'id': 0}], 'jump', answers[3]['url']))
-        return_array.append(self.__create_answer_dict('jump4', [{'title': answers[4]['text'], 'id': 0}], 'jump', answers[4]['url']))
-        return_array.append(self.__create_answer_dict('jump5', [{'title': answers[5]['text'], 'id': 0}], 'jump', answers[5]['url']))
+        for no in range(0, 6):
+            if db_argument.conclusion_uid is None and no == 4:
+                continue
+            return_array.append(
+                self.__create_answer_dict('jump' + str(no), [{'title': answers[no]['text'], 'id': 0}], 'jump', answers[no]['url']))
+
         return return_array
 
     @staticmethod

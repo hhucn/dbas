@@ -360,6 +360,46 @@ function prepareLoginRegistrationPopup(){
 	});
 }
 
+function setTextWatcherInputLength(element){
+	var minlength = element.data('min-length');
+	var maxlength = element.data('max-length');
+	var id = element.attr('id') + '-text-counter';
+	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + minlength + ' ' + _t_discussion(textMinCountMessageBegin2);
+	var field = $('<span>').text(msg).attr('id', id).addClass('text-min-counter-input');
+	field.insertBefore(element);
+	
+	element.keyup(function(){
+		var text = element.val().trim();
+		var currentlength = text.length;
+		
+		if (currentlength == 0){
+			field.removeClass('text-counter-input');
+			field.addClass('text-min-counter-input');
+			field.removeClass('text-max-counter-input');
+			field.text(msg)
+		} else if (currentlength < minlength) {
+			field.addClass('text-counter-input');
+			field.removeClass('text-max-counter-input');
+			field.removeClass('text-max-counter-input');
+			field.text((minlength - currentlength) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
+		} else {
+				field.removeClass('text-min-counter-input');
+			if (currentlength * 2 > maxlength){
+				field.removeClass('text-counter-input');
+				field.addClass('text-max-counter-input');
+			} else {
+				field.addClass('text-counter-input');
+				field.removeClass('text-max-counter-input');
+			}
+			var left = maxlength < currentlength ? 0 : maxlength - currentlength;
+			field.text(left + ' ' + _t_discussion(textMaxCountMessage));
+			if (maxlength <= currentlength)
+				field.text(field.text() + ' ' + _t_discussion(textMaxCountMessageError));
+				// element.val(element.val().substr(0, maxlength));
+		}
+	});
+}
+
 /**
  * Sets an text watcher for the given element. After every input the attribute 'data-min-length' will be checked
  * and maybe a text is shown
@@ -367,7 +407,8 @@ function prepareLoginRegistrationPopup(){
  */
 function setTextWatcherForMinLength(element){
 	var text = element.val().trim();
-	var offset = parseInt(element.data('min-length') - text.length);
+	var minlength = element.data('min-length');
+	var offset = parseInt(minlength - text.length);
 	var id = element.attr('id') + '-text-min-counter';
 	var msg = _t_discussion(textMinCountMessage1) + ' ' + offset + ' ' + _t_discussion(textMinCountMessage2);
 	var field = $('#' + id);
@@ -379,6 +420,7 @@ function setTextWatcherForMinLength(element){
 		}
 	} else {
 		if (field.length > 0) {
+			field.text(_t_discussion(textMinCountMessageBegin1) + ' ' + minlength + ' ' + _t_discussion(textMinCountMessageBegin2));
 			field.remove();
 		}
 	}
@@ -391,7 +433,8 @@ function setTextWatcherForMinLength(element){
  */
 function setTextWatcherForMaxLength(element){
 	var text = element.val().trim();
-	var offset = parseInt(element.data('max-length') - text.length);
+	var maxlength = element.data('max-length');
+	var offset = parseInt(maxlength - text.length);
 	var id = element.attr('id') + '-text-max-counter';
 	var msg = _t_discussion(textMaxCountMessage);
 	var field = $('#' + id);
@@ -602,12 +645,10 @@ $(document).ready(function () {
 
 	// add minimal text length field
 	$('input[data-min-length]').each(function(){
-		$(this).keyup(function() { setTextWatcherForMinLength($(this)); });
-		$(this).focusin(function() { setTextWatcherForMinLength($(this)); });
+		setTextWatcherInputLength($(this));
 	});
 	$('textarea[data-min-length]').each(function(){
-		$(this).keyup(function() { setTextWatcherForMinLength($(this)); });
-		$(this).focusin(function() { setTextWatcherForMinLength($(this)); });
+		setTextWatcherInputLength($(this));
 	});
 
 	// session expired popup
