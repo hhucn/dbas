@@ -1,3 +1,62 @@
+#. Default: Help improve the dialog
+#: templates/review.pt:9
+msgid "help_to_improve"
+msgstr "Hilf, den Dialog zu verbessern"
+
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: templates/review.pt:10
+msgid "dbas_is_moderated_by"
+msgstr ""
+"D-BAS wird durch dich moderierst. Hilf weiteren Mitgliedern bei der Diskussionen und "
+"verbessere die Qualität der Argumente:"
+
+#. Default: Evaluate new statements
+#: templates/review.pt:12
+msgid "evaluate_new_statements"
+msgstr "Werte neue Aussagen"
+
+#. Default: Reviewing suspicious statements
+#: templates/review.pt:13
+msgid "reviewing_suspicious_statements"
+msgstr "Überprüfe verdächtige Aussagen"
+
+#. Default: Voting to close or reopen statements
+#: templates/review.pt:14
+msgid "voting_to_close "
+msgstr "Stimme ab, ob Aussagen ungültig sind"
+
+#. Default: Choose a task to get started.
+#: templates/review.pt:16
+msgid "choose_task"
+msgstr "Wähle eine Aufgabe und leg los."
+
+#. Default: Switch Topic
+#: templates/review.pt:23
+msgid "switch_topic"
+msgstr "Thema wechseln"
+
+#. Default: Current issue
+#: templates/review.pt:35
+msgid "current_issue"
+msgstr "Aktuelles Thema"
+
+#. Default: Open Tasks
+#: templates/review.pt:49
+msgid "open_tasks"
+msgstr "Offene Aufgaben"
+
+#. Default: Topic
+#: templates/review.pt:50
+msgid "topic"
+msgstr "Thema"
+
+#. Default: Recent Reviews
+#: templates/review.pt:51
+msgid "recent_reviews"
+msgstr "Letzte Gutachter"
+
+
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de

@@ -1,0 +1,75 @@
+#
+# Englisch translations for PACKAGE package
+# This file is distributed under the same license as the PACKAGE package.
+# Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2016-08-19 09:49+0200\n"
+"PO-Revision-Date: 2016-08-19 09:59+0200\n"
+"Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.10\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Default: Help improve the dialog
+#: templates/review.pt:9
+msgid "help_to_improve"
+msgstr "Help improve the dialog"
+
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: templates/review.pt:10
+msgid "dbas_is_moderated_by"
+msgstr ""
+"D-BAS is moderated by you. Help your discussion members learn to argue and "
+"raise the quality of argumenty by:"
+
+#. Default: Evaluate new statements
+#: templates/review.pt:12
+msgid "evaluate_new_statements"
+msgstr "Evaluate new statements"
+
+#. Default: Reviewing suspicious statements
+#: templates/review.pt:13
+msgid "reviewing_suspicious_statements"
+msgstr "Reviewing suspicious statements"
+
+#. Default: Voting to close or reopen statements
+#: templates/review.pt:14
+msgid "voting_to_close"
+msgstr "Voting to close or reopen statements"
+
+#. Default: Choose a task to get started.
+#: templates/review.pt:16
+msgid "choose_task"
+msgstr "Choose a task to get started."
+
+#. Default: Switch Topic
+#: templates/review.pt:23
+msgid "switch_topic"
+msgstr "Switch Topic"
+
+#. Default: Current issue
+#: templates/review.pt:35
+msgid "current_issue"
+msgstr "Current issue"
+
+#. Default: Open Tasks
+#: templates/review.pt:49
+msgid "open_tasks"
+msgstr "Open Tasks"
+
+#. Default: Topic
+#: templates/review.pt:50
+msgid "topic"
+msgstr "Topic"
+
+#. Default: Recent Reviews
+#: templates/review.pt:51
+msgid "recent_reviews"
+msgstr "Recent Reviews"

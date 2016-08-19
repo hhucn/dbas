@@ -1,0 +1,73 @@
+#
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2016-08-19 09:49+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Generated-By: Lingua 4.9\n"
+
+#. Default: Help improve the dialog
+#: ././templates/review.pt:9
+msgid "help_to_improve"
+msgstr ""
+
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: ././templates/review.pt:10
+msgid "dbas_is_moderated_by"
+msgstr ""
+
+#. Default: Evaluate new statements
+#: ././templates/review.pt:12
+msgid "evaluate_new_statements"
+msgstr ""
+
+#. Default: Reviewing suspicious statements
+#: ././templates/review.pt:13
+msgid "reviewing_suspicious_statements"
+msgstr ""
+
+#. Default: Voting to close or reopen statements
+#: ././templates/review.pt:14
+msgid "voting_to_close"
+msgstr ""
+
+#. Default: Choose a task to get started.
+#: ././templates/review.pt:16
+msgid "choose_task"
+msgstr ""
+
+#. Default: Switch Topic
+#: ././templates/review.pt:23
+msgid "switch_topic"
+msgstr ""
+
+#. Default: Current issue
+#: ././templates/review.pt:35
+msgid "current_issue"
+msgstr ""
+
+#. Default: Open Tasks
+#: ././templates/review.pt:49
+msgid "open_tasks"
+msgstr ""
+
+#. Default: Topic
+#: ././templates/review.pt:50
+msgid "topic"
+msgstr ""
+
+#. Default: Recent Reviews
+#: ././templates/review.pt:51
+msgid "recent_reviews"
+msgstr ""
