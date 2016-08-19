@@ -202,8 +202,24 @@ def get_public_information_data(nickname, lang):
     :return: dict()
     """
     return_dict = dict()
-    db_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-    if not db_user:
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+
+    db_settings = None
+    current_user = None
+
+    if db_user:
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    elif db_public_user:
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
+
+    if db_settings:
+        if db_settings.should_show_public_nickname and db_user:
+            current_user = db_user
+        elif not db_settings.should_show_public_nickname and db_public_user:
+            current_user = db_public_user
+
+    if current_user is None:
         return return_dict
 
     _tn = Translator(lang)
@@ -394,11 +410,11 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     return arg_votes, stat_votes
 
 
-def get_textversions_of_user(nickname, lang, timestamp_after=None, timestamp_before=None):
+def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timestamp_before=None):
     """
     Returns all textversions, were the user was author
 
-    :param nickname: User.public_nickname
+    :param public_nickname: User.public_nickname
     :param lang: ui_locales
     :param timestamp_after: Arrow or None
     :param timestamp_before: Arrow or None
@@ -407,7 +423,7 @@ def get_textversions_of_user(nickname, lang, timestamp_after=None, timestamp_bef
     statement_array = []
     edit_array = []
 
-    db_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(public_nickname=public_nickname).first()
 
     if not db_user:
         return statement_array, edit_array
@@ -480,8 +496,9 @@ def get_information_of(db_user, lang):
     :param lang: ui_locales
     :return:
     """
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
     ret_dict = dict()
-    ret_dict['public_nick'] = db_user.public_nickname
+    ret_dict['public_nick'] = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
     ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)
     ret_dict['last_login']  = sql_timestamp_pretty_print(db_user.last_login, lang)
     ret_dict['registered']  = sql_timestamp_pretty_print(db_user.registered, lang)

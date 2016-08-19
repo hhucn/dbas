@@ -67,6 +67,7 @@ def __get_edit_dict(mainpage, issue, translator):
     """
     key = 'edits'
     tmp_dict = {'task_name': 'Edits',
+                'id': 'edits',
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-eraser',
                 'task_count': 2,
@@ -89,6 +90,7 @@ def __get_delete_dict(mainpage, issue, translator):
     """
     key = 'deletes'
     tmp_dict = {'task_name': 'Deletes',
+                'id': 'deletes',
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-trash-o',
                 'task_count': 4,
@@ -111,6 +113,7 @@ def __get_flag_dict(mainpage, issue, translator):
     """
     key = 'flags'
     tmp_dict = {'task_name': 'Flags',
+                'id': 'flags',
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-flag',
                 'task_count': 8,
@@ -133,6 +136,7 @@ def __get_random_dict(mainpage, issue, translator):
     """
     key = 'random'
     tmp_dict = {'task_name': 'Random',
+                'id': 'random',
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-random',
                 'task_count': '-',
@@ -155,6 +159,7 @@ def __get_duplicate_dict(mainpage, issue, translator):
     """
     key = 'duplicates'
     tmp_dict = {'task_name': 'Duplicates',
+                'id': 'duplicates',
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-files-o',
                 'task_count': '-',
@@ -177,6 +182,7 @@ def __get_freshest_dict(mainpage, issue, translator):
     """
     key = 'freshest'
     tmp_dict = {'task_name': 'First Posts',
+                'id': 'firstposts',
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-level-up',
                 'task_count': '3',
