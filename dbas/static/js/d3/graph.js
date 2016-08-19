@@ -213,8 +213,8 @@ function DiscussionGraph() {
 		});
 
 		// labels and colors for legend
-		var legendLabelCircle = ["Issue", "Position", "Statement"];
-		var legendLabelRect = ["Support", "Attack"];
+		var legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")];
+		var legendLabelRect = [_t_discussion("support"), _t_discussion("attack")];
 
         var legendColorCircle = ["#3D5AFE", "#3D5AFE", "#FFC107"];
 		var legendColorRect = ["#64DD17", "#F44336"];
