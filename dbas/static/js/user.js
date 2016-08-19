@@ -70,7 +70,6 @@ function User() {
 	 */
 	this.createChart = function(parsedData, space, id, count){
 		var chart, data, div_legend;
-
 		space.append('<canvas id="' + id + '" width="500" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 		data = {
 			labels : parsedData['labels' + (count+1)],

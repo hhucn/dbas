@@ -37,7 +37,11 @@ function doConnect(){
 	socket = io.connect(address + port, dict);
 	
 	socket.on('publish', function(data){
-		doPublish(data)
+		doPublish(data);
+	});
+	
+	socket.on('recent_review', function(data){
+		doRecentReview(data);
 	});
 	
 	console.log('Socket.io connected.');
@@ -57,6 +61,12 @@ function doPublish(data){
 	console.log('publish ' + data.type + ' ' + data.msg);
 }
 
+/**
+ *
+ * @param data
+ * @param intro
+ * @param func
+ */
 function handleMessage(data, intro, func){
 	var msg = 'url' in data ? '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>' : data.msg;
 	func(intro, msg);
@@ -91,6 +101,26 @@ function doWarning(intro, msg){
  */
 function doInfo(intro, msg){
 	setGlobalInfoHandler(intro, msg);
+}
+
+/**
+ *
+ * @param data
+ */
+function doRecentReview(data){
+	if (window.location.href.indexOf('review') == -1)
+		return;
+	
+	var queue = $('#' + data.queue);
+	if (queue.length != 0){
+		// TODO ANIMATION
+		$('#' + data.queue + ' a:last-child').remove();
+		var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
+		var img = $('<img>').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
+		link.append(img);
+		queue.prepend(link);
+	}
+	alert(data.queue);
 }
 
 /**

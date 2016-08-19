@@ -432,7 +432,7 @@ class ItemDictHelper(object):
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
 
         # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
-        item_text = TextGenerator(self.lang).get_jumping_text_list()
+        item_text = TextGenerator(self.lang).get_jump_to_argument_text_list()
 
         # which part of the argument should be attacked ?
         base = db_argument.argument_uid if db_argument.conclusion_uid is None else arg_uid

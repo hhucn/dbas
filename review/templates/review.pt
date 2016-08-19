@@ -1,42 +1,49 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout" i18n:domain="review" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
 		<div class="container colored-container">
 			<div class="row center" id="review-wrapper">
-                <div class="center" style="max-width: 800px;">
+                <div class="col-md-9">
+                    <div class="center" style="max-width: 800px;">
                     <div class="bs-callout bs-callout-primary">
                         <h5><strong i18n:translate="help_to_improve">Help improve the dialog</strong></h5>
                         <span i18n:translate="dbas_is_moderated_by">D-BAS is moderated by you. Help your discussion members learn to argue and raise the quality of argumenty by:</span>
                         <ul class="left">
-                            <li i18n:translate="evaluation_new_statements">Evaluation new statements</li>
+                            <li i18n:translate="evaluate_new_statements">Evaluate new statements</li>
                             <li i18n:translate="reviewing_suspicious_statements">Reviewing suspicious statements</li>
-                            <li i18n:translate="voting_to_close ">Voting to close or reopen statements</li>
+                            <li i18n:translate="voting_to_close">Voting to close or reopen statements</li>
                         </ul>
                         <span><strong i18n:translate="choose_task">Choose a task to get started.</strong></span>
                     </div>
                 </div>
-			</div>
-
-			<div class="row center" id="review-wrapper">
-                <div class="left">
-                    <div class="dropdown" style="float: left;">
+                </div>
+                <div class="col-md-3 left">
+                    <div class="dropdown" style="margin: 10px;">
                         <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
-                            <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
+                            <span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
-                            <li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
+                            <li tal:repeat="issue issues.all"><!-- tal:attributes="class issue.enabled">-->
                                 <a href="#" tal:attributes="href issue.review_url; value issue.title">
                                 <div class="row">${structure:issue.title}</div>
                                 </a>
                             </li>
                         </ul>
                     </div>
-                    <strong style="float: right;"><span i18n:translate="current_issue">Current issue</span>: ${structure:current_issue_title}</strong>
+                    <br>
+                    <div>
+                        <h6><span i18n:translate="current_issue">Current issue</span>: ${structure:current_issue_title}</h6>
+                    </div>
+                    <br>
+                    <div>
+                        <h6><span>Your current reputation count is: </span><a href="${request.application_url}/review/reputation">${reputation_count}</a></h6>
+                    </div>
 			    </div>
             </div>
 
 			<div class="row center" id="review-wrapper">
-                <table class="table table-condensed" border="0" id="review-table">
+                <div class="col-md-12">
+                    <table class="table table-condensed" border="0" id="review-table">
                     <thead>
                         <tr class="review-table-row">
                             <td i18n:translate="open_tasks" class="center">Open Tasks</td>
@@ -56,12 +63,13 @@
                                 <div tal:condition="task.is_allowed" style="line-height: normal;"><small>${task.is_allowed_text}</small></div>
                                 <div tal:condition="not:task.is_allowed" style="line-height: normal;"><small>${task.is_not_allowed_text}</small></div>
                             </td>
-                            <td class="center">
+                            <td class="center" tal:attributes="id task.id">
                                 <a tal:repeat="user task.last_reviews" tal:attributes="title user.name; href user.url" target="_blank"><img tal:attributes="src user.img_src"></a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                </div>
 			</div>
 		</div>
 

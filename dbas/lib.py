@@ -186,7 +186,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     results = list()
     if arguments:
         for argument in arguments:
-            results.append({"id": argument.uid,
+            results.append({"uid": argument.uid,
                             "text": get_text_for_argument_uid(argument.uid)})
         return results
 

@@ -6,9 +6,9 @@
 #         ./i18n.sh
 
 # configuration
-DOMAIN="dbas"
-SEARCH_PATH="dbas/"
-LOCALES_PATH="dbas/locale"
+DOMAIN="review"
+SEARCH_PATH="./"
+LOCALES_PATH="./locale"
 # end configuration
 
 # create locales folder if not exists

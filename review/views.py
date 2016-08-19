@@ -34,23 +34,93 @@ cors_policy = dict(enabled=True,
 content = Service(name='review_content',
                   path='/{queue}/{slug}',
                   renderer='templates/review_content.pt',
-                  description="Review Queue",
+                  description='Review Queue',
                   permission='use',
                   cors_policy=cors_policy)
 
-index = Service(name='review_index',
-                path='/*slug',
-                renderer='templates/review.pt',
-                description="Review Index",
-                permission='use',
-                cors_policy=cors_policy)
+reputation = Service(name='review_reputation',
+                     path='/reputation',
+                     renderer='templates/review_reputation.pt',
+                     description='Review Reputation',
+                     permission='use',
+                     cors_policy=cors_policy)
+
+zindex = Service(name='review_index',
+                 path='*slug',
+                 renderer='templates/review.pt',
+                 description='Review Index',
+                 permission='use',
+                 cors_policy=cors_policy)
 
 
 # =============================================================================
 # WEBSOCKET REQUESTS
 # =============================================================================
 
-@index.get()
+@content.get()
+def main_review_content(request):
+    """
+    View configuration for the review content.
+
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Review', 'main_review_content', 'main')
+    ui_locales = get_language(request, get_current_registry())
+    session_expired = UserHandler.update_last_action(transaction, request.authenticated_userid)
+    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    _tn = Translator(ui_locales)
+    if session_expired:
+        return Dbas(request).user_logout(True)
+
+    subpage_name = request.matchdict['queue']
+    issue = IssueHelper.get_title_for_slug(request.matchdict['slug'])
+    subpage = ReviewHelper.get_subpage_for(subpage_name, request.authenticated_userid)
+    enough_reputation = True if subpage is not None else False
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
+
+    return {
+        'layout': Dbas.base_layout(),
+        'language': str(ui_locales),
+        'title': _tn.get(_tn.review),
+        'project': project_name,
+        'extras': extras_dict,
+        'subpage': {'queue': subpage,
+                    'issue': issue,
+                    'enough_reputation': enough_reputation}
+    }
+
+
+@reputation.get()
+def main_review_reputation(request):
+    """
+    View configuration for the review reputation.
+
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Review', 'main_review_reputation', 'main')
+    ui_locales = get_language(request, get_current_registry())
+    session_expired = UserHandler.update_last_action(transaction, request.authenticated_userid)
+    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    _tn = Translator(ui_locales)
+    if session_expired:
+        return Dbas(request).user_logout(True)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
+
+    return {
+        'layout': Dbas.base_layout(),
+        'language': str(ui_locales),
+        'title': _tn.get(_tn.review),
+        'project': project_name,
+        'extras': extras_dict,
+        'reputation_count': 4
+    }
+
+
+@zindex.get()
 def main_review(request):
     """
     View configuration for the review index.
@@ -92,40 +162,6 @@ def main_review(request):
         'extras': extras_dict,
         'review': review_dict,
         'issues': issue_dict,
-        'current_issue_title': issue
-    }
-
-
-@content.get()
-def main_review_content(request):
-    """
-    View configuration for the review content.
-
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Review', 'main_review_content', 'main')
-    ui_locales = get_language(request, get_current_registry())
-    session_expired = UserHandler.update_last_action(transaction, request.authenticated_userid)
-    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
-    _tn = Translator(ui_locales)
-    if session_expired:
-        return Dbas(request).user_logout(True)
-
-    subpage_name = request.matchdict['queue']
-    issue = IssueHelper.get_title_for_slug(request.matchdict['slug'])
-    subpage = ReviewHelper.get_subpage_for(subpage_name, request.authenticated_userid)
-    enough_reputation = True if subpage is not None else False
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
-
-    return {
-        'layout': Dbas.base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_tn.review),
-        'project': project_name,
-        'extras': extras_dict,
-        'subpage': {'queue': subpage,
-                    'issue': issue,
-                    'enough_reputation': enough_reputation}
+        'current_issue_title': issue,
+        'reputation_count': 4
     }
