@@ -111,13 +111,14 @@ class DictionaryHelper(object):
         return_dict = dict()
         return_dict['spamquestion']                  = spamquestion
         return_dict['spamanswer']                    = ''
-        return_dict['restart_url']                     = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
+        return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
         return_dict['logged_in']                     = is_logged_in
-        return_dict['nickname']                         = nickname
-        return_dict['users_name']                     = str(authenticated_userid)
+        return_dict['nickname']                      = nickname
+        return_dict['users_name']                    = str(authenticated_userid)
         return_dict['add_premise_container_style']   = 'display: none'
         return_dict['add_statement_container_style'] = 'display: none'
-        return_dict['users_avatar']                  = _uh.get_public_profile_picture(db_user)
+        return_dict['users_avatar']                  = _uh.get_profile_picture(db_user)
+        return_dict['users_avatar_small']            = _uh.get_profile_picture(db_user, 25)
         return_dict['is_user_male']                  = db_user.gender == 'm' if db_user else False
         return_dict['is_user_female']                = db_user.gender == 'f' if db_user else False
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']

@@ -23,7 +23,7 @@
                             <span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
-                            <li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
+                            <li tal:repeat="issue issues.all"><!-- tal:attributes="class issue.enabled">-->
                                 <a href="#" tal:attributes="href issue.review_url; value issue.title">
                                 <div class="row">${structure:issue.title}</div>
                                 </a>

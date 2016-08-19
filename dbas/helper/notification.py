@@ -17,6 +17,8 @@ from websocket.lib import send_request_for_popup_to_socketio
 
 from sqlalchemy import and_
 
+# TODO: IMRPOVE TEXT (what happend, which text was added, ...)
+
 
 def send_edit_text_notification(db_user, textversion, path, request):
     """
