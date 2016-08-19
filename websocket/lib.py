@@ -41,19 +41,21 @@ def send_request_for_popup_to_socketio(nickname, type, message='', url=None, inc
     return resp.status_code
 
 
-def send_request_for_recent_review_to_socketio(reviewer_url, reviewer_image_url):
+def send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue):
     """
     NOT IMPLEMENTED IN SOCKET IO
 
-    :param reviewer_url:
+    :param reviewer_name:
     :param reviewer_image_url:
+    :param queue
     :return: Status code of the request
     """
-    params = '?user_url=' + reviewer_url + '?image_url=' + reviewer_image_url
+    params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
+
     try:
         resp = requests.get('http://localhost:5001/recent_review' + params)
     except:
         return None
-    logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')
+    logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code))
 
     return resp.status_code
