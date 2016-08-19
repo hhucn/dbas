@@ -95,8 +95,8 @@ class GermanDict:
         de_lang['*'] = 'mal'
         de_lang['/'] = 'durch'
         de_lang[_self.defaultView] = 'Standardansicht'
-        de_lang[_self.wideView] = 'Knoten trennen'
-        de_lang[_self.tightView] = 'Kanten strecken'
+        de_lang[_self.showPositions] = 'Positionen einblenden'
+        de_lang[_self.hidePositions] = 'Positionen ausblenden'
         de_lang[_self.showContent] = 'Inhalt einblenden'
         de_lang[_self.hideContent] = 'Inhalt ausblenden'
 

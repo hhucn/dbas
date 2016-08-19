@@ -94,8 +94,8 @@ class EnglischDict:
         en_lang['*'] = 'times'
         en_lang['/'] = 'divided by'
         en_lang[_self.defaultView] = 'Default View'
-        en_lang[_self.wideView] = 'Separate Nodes'
-        en_lang[_self.tightView] = 'Stretch Nodes'
+        en_lang[_self.showPositions] = 'Show Positions'
+        en_lang[_self.hidePositions] = 'Hide Positions'
         en_lang[_self.showContent] = 'Show Content'
         en_lang[_self.hideContent] = 'Hide Content'
 
