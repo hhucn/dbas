@@ -221,6 +221,36 @@ class TextGenerator(object):
 
         return ret_dict
 
+    def get_jumping_text_list(self):
+        """
+
+        :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
+        """
+        _t = Translator(self.lang)
+        tag_premise = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
+        tag_conclusion = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
+        tag_end = '</' + TextGenerator.tag_type + '>'
+        premise = _t.get(_t.reason).lower() if self.lang != 'de' else _t.get(_t.reason)
+        conclusion = _t.get(_t.assertion).lower() if self.lang != 'de' else _t.get(_t.assertion)
+        this = _t.get(_t.this).lower()
+        right = _t.get(_t.right) + ', ' + this + ' '
+        wrong = _t.get(_t.wrong) + ', ' + this + ' '
+        holds = ' ' + _t.get(_t.holds)
+        hold = ' ' + _t.get(_t.hold) + '.'
+        does_not_hold = ' ' + _t.get(_t.doesNotHold)
+        but = _t.get(_t.butIDoNotBelieveArgumentFor)
+        aand = ' ' + _t.get(_t.aand) + ' '
+
+        answers = list()
+        answers.append(right + tag_conclusion + conclusion + tag_end + holds + '.')
+        answers.append(wrong + tag_conclusion + conclusion + tag_end + does_not_hold + '.')
+        answers.append(right + tag_premise + premise + tag_end + holds + '.')
+        answers.append(wrong + tag_premise + premise + tag_end + does_not_hold + '.')
+        answers.append(right + tag_premise + premise + tag_end + holds + ' ' + but + ' ' + this + ' ' + tag_conclusion + conclusion + tag_end + '.')
+        answers.append(_t.get(_t.right) + ', ' + tag_conclusion + conclusion + tag_end + aand + tag_premise + premise + tag_end + hold)
+
+        return answers
+
     def get_text_for_confrontation(self, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
                                    reply_for_argument, user_is_attacking, user_arg, sys_arg, color_html=True):
         """

@@ -148,7 +148,7 @@
             <div class="row" id="island-view-container-space">
             <div class="row">
                 <div class="col-md-11 text-center">
-                    <h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading"><strong>${structure:extras.island.heading}</strong></span></h4>
+                    <h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading">${structure:extras.island.heading}</span></h4>
                 </div>
             </div>
 
@@ -275,7 +275,7 @@
                     <span id="add-statement-error-msg"></span>
                 </div>
                 <div id="add-statement-container-body">
-                    <input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="..." value="" data-min-length="10"  data-max-length="140">
+                    <input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="..." value="" data-min-length="10"  data-max-length="160">
                 </div>
                 <div class="list-group" id="proposal-statement-list-group"></div>
                 <input id="send-new-statement" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
@@ -299,7 +299,7 @@
                 <div id="add-premise-container-body">
                     <div class="container-three-divs" style="padding-bottom: 2em;">
                         <div class="flex-div">
-                            <input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="..." value="" data-min-length="10" data-max-length="140">
+                            <input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="..." value="" data-min-length="10" data-max-length="160">
                         </div>
                         <div><img class="icon-badge icon-rem-premise" src="${request.static_url('dbas:static/images/icon_minus1.png')}" tal:attributes="title extras.title.rem_statement_row_title"/><img class="icon-badge icon-add-premise" src="${request.static_url('dbas:static/images/icon_plus1.png')}" tal:attributes="title extras.title.add_statement_row_title"/></div>
                     </div>
@@ -333,14 +333,14 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-guihandler.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-interactionhandler.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-helper.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-main.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/main.js')}"></script>
 
-        <script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-barometer.js')}"></script>
+        <script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/barometer.js')}"></script>
 
-        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/discussion-graph-d3.js')}"></script>
+        <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}"></script>
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/d3.min.js')}"></script>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>

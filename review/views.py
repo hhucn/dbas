@@ -38,6 +38,13 @@ content = Service(name='review_content',
                   permission='use',
                   cors_policy=cors_policy)
 
+reputation = Service(name='review_reputation',
+                     path='/*slug',
+                     renderer='templates/review_reputation.pt',
+                     description="Review Reputation",
+                     permission='use',
+                     cors_policy=cors_policy)
+
 index = Service(name='review_index',
                 path='/*slug',
                 renderer='templates/review.pt',
@@ -92,7 +99,8 @@ def main_review(request):
         'extras': extras_dict,
         'review': review_dict,
         'issues': issue_dict,
-        'current_issue_title': issue
+        'current_issue_title': issue,
+        'reputation_count': 4
     }
 
 
@@ -128,4 +136,32 @@ def main_review_content(request):
         'subpage': {'queue': subpage,
                     'issue': issue,
                     'enough_reputation': enough_reputation}
+    }
+
+
+@reputation.get()
+def main_review_reputation(request):
+    """
+    View configuration for the review reputation.
+
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Review', 'main_review_reputation', 'main')
+    ui_locales = get_language(request, get_current_registry())
+    session_expired = UserHandler.update_last_action(transaction, request.authenticated_userid)
+    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    _tn = Translator(ui_locales)
+    if session_expired:
+        return Dbas(request).user_logout(True)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
+
+    return {
+        'layout': Dbas.base_layout(),
+        'language': str(ui_locales),
+        'title': _tn.get(_tn.review),
+        'project': project_name,
+        'extras': extras_dict,
+        'reputation_count': 4
     }

@@ -29,16 +29,15 @@ def get_review_array(mainpage, issue, translator):
     :param translator: Translator
     :return: Array
     """
-    review_dict = []
+    review_list = list()
+    review_list.append(__get_edit_dict(mainpage, issue, translator))
+    review_list.append(__get_delete_dict(mainpage, issue, translator))
+    review_list.append(__get_flag_dict(mainpage, issue, translator))
+    review_list.append(__get_random_dict(mainpage, issue, translator))
+    review_list.append(__get_duplicate_dict(mainpage, issue, translator))
+    review_list.append(__get_freshest_dict(mainpage, issue, translator))
 
-    review_dict.append(__get_edit_dict(mainpage, issue, translator))
-    review_dict.append(__get_delete_dict(mainpage, issue, translator))
-    review_dict.append(__get_flag_dict(mainpage, issue, translator))
-    review_dict.append(__get_random_dict(mainpage, issue, translator))
-    review_dict.append(__get_duplicate_dict(mainpage, issue, translator))
-    review_dict.append(__get_freshest_dict(mainpage, issue, translator))
-
-    return review_dict
+    return review_list
 
 
 def get_subpage_for(subpage_name, nickname):

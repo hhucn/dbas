@@ -45,35 +45,23 @@ class LibTests(unittest.TestCase):
 
     def test_get_text_for_premisesgroup_uid(self):
         # premise, which is in db_premises and premise_group contains only one premise
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1,
-                                                            lang='de'), ('Cats are very independent', ['4']))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1), ('Cats are very independent', ['4']))
 
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1,
-                                                            lang='en'), ('Cats are very independent', ['4']))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1), ('Cats are very independent', ['4']))
 
         # premise_group with more than one premises
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
-                                                            lang='de'), ('Cats are fluffy und Cats are small', ['14', '15']))
+        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=11), ('Cats are fluffy und Cats are small', ['14', '15']))
 
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
-                                                            lang='en'), ('Cats are fluffy and Cats are small', ['14', '15']))
-
-        # unknown language
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11,
-                                                            lang='fr'),
-                         ('own language: fr Cats are fluffy unknown language: fr Cats are small', ['14', '15']))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11), ('Cats are fluffy and Cats are small', ['14', '15']))
 
         # premise, which is not in db_premises
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
-                                                            lang='de'), ('', []))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), ('', []))
 
         # negative uid
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=-1,
-                                                            lang='de'), ('', []))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=-1), ('', []))
 
         # language is empty string
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0,
-                                                            lang=''), ('', []))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), ('', []))
 
     def test_get_text_for_statement_uid(self):
         # id for no statement
@@ -95,21 +83,18 @@ class LibTests(unittest.TestCase):
         argument1 = Argument(premisegroup=1, issupportive=True, author=1, conclusion=1, issue=1)
         # 'argument' is an argument
         self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
-                                                     lang='de',
                                                      start_with_intro=False,
                                                      rearrange_intro=False), 'We should get a cat')
 
         argument2 = Argument(premisegroup=1, issupportive=False, author=1, issue=1)
         # 'argument' is a statement
         self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
-                                                     lang='en',
                                                      start_with_intro=True,
                                                      rearrange_intro=True), None)
 
         # unknown conclusion id
         argument3 = Argument(premisegroup=0, issupportive=True, author=0, conclusion=0, issue=0)
         self.assertEqual(lib.get_text_for_conclusion(argument=argument3,
-                                                     lang='de',
                                                      start_with_intro=False,
                                                      rearrange_intro=True), None)
 

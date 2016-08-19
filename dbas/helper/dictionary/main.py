@@ -155,12 +155,12 @@ class DictionaryHelper(object):
                 # does an argumente exists?
                 db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
                 if db_argument:
-                    island_dict = QueryHelper.get_every_attack_for_island_view(argument_id, self.discussion_lang)
+                    island_dict = QueryHelper.get_every_attack_for_island_view(argument_id)
 
                     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
-                    premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid, self.discussion_lang)
-                    conclusion = get_text_for_conclusion(db_argument, self.discussion_lang)
-                    island_dict['heading'] = get_text_for_argument_uid(argument_id, self.discussion_lang)
+                    premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+                    conclusion = get_text_for_conclusion(db_argument)
+                    island_dict['heading'] = get_text_for_argument_uid(argument_id)
 
                     island_dict['premise'] = premise[0:1].lower() + premise[1:]
                     island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]

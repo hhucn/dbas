@@ -87,7 +87,6 @@ def main_admin(request):
 def get_argument_overview(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'get_argument_overview', 'main')
-    ui_locales = get_language(request, get_current_registry())
-    return_dict = get_overview_of_arguments(request.authenticated_userid, ui_locales)
+    return_dict = get_overview_of_arguments(request.authenticated_userid)
 
     return json.dumps(return_dict, True)

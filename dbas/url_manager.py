@@ -78,7 +78,8 @@ class UrlManager(object):
         """
         Returns url for reviewing a discussions
 
-        :param as_location_href: Boolean
+        :param as_location_href: Set to True if you want to change the location using 'location.href'
+        :type as_location_href: boolean
         :return: review_url/slug
         """
         url = self.slug
@@ -88,7 +89,8 @@ class UrlManager(object):
         """
         Returns url for getting statement attitude of the user or the API-version
 
-        :param as_location_href: Boolean
+        :param as_location_href: Set to True if you want to change the location using 'location.href'
+        :type as_location_href: boolean
         :param statement_uid: Statement.uid
         :return: discussion_url/slug/attitude/statement_uid
         """
@@ -99,7 +101,8 @@ class UrlManager(object):
         """
         Returns url for getting statement justification of the user or the API-version
 
-        :param as_location_href:
+        :param as_location_href: Set to True if you want to change the location using 'location.href'
+        :type as_location_href: boolean
         :type as_location_href: Boolean
         :param statement_uid: Statement.uid
         :param mode:
@@ -113,7 +116,8 @@ class UrlManager(object):
         """
         Returns url for justifying an argument of the user or the API-version
 
-        :param as_location_href: Boolean
+        :param as_location_href: Set to True if you want to change the location using 'location.href'
+        :type as_location_href: boolean
         :param argument_uid: Argument.uid
         :param mode: String
         :param attitude: String
@@ -142,7 +146,8 @@ class UrlManager(object):
     def get_url_for_choosing_premisegroup(self, as_location_href, is_argument, is_supportive, statement_or_argument_id, pgroup_id_list):
         """
 
-        :param as_location_href: Boolean
+        :param as_location_href: Set to True if you want to change the location using 'location.href'
+        :type as_location_href: boolean
         :param is_argument: Boolean
         :param is_supportive: Boolean
         :param statement_or_argument_id: Statement.uid or Argument.uid
@@ -158,11 +163,15 @@ class UrlManager(object):
     def __return_discussion_url(self, as_location_href, url):
         """
 
-        :param as_location_href: Boolean
+        :param as_location_href: Set to True if you want to change the location using 'location.href'
+        :type as_location_href: boolean
         :param url: String
         :return: Valid URL
         """
-        history = ('?history=' + self.history) if len(self.history) > 1 else ''
+        if self.history and len(self.history) > 1:
+            history = '?history=' + self.history
+        else:
+            history = ''
         if self.for_api:
             return self.api_url + url + history
         else:
@@ -173,7 +182,8 @@ class UrlManager(object):
     def __return_review_url(self, as_location_href, url):
         """
 
-        :param as_location_href: Boolean
+        :param as_location_href: Set to True if you want to change the location using 'location.href'
+        :type as_location_href: boolean
         :param url: String
         :return: Valid URL
         """

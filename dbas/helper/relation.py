@@ -48,7 +48,7 @@ class RelationHelper(object):
         if len(premises_as_statements_uid) == 0:
             return []
 
-        return self.__get_undermines_for_premises(premises_as_statements_uid, self.lang, is_supportive)
+        return self.__get_undermines_for_premises(premises_as_statements_uid, is_supportive)
 
     def get_overbids_for_argument_uid(self):
         """
@@ -57,7 +57,7 @@ class RelationHelper(object):
         :return: array with dict() with id (of argumet) and text.
         """
         # logger('RelationHelper', 'get_overbids_for_argument_uid', 'main')
-        return self.__get_attack_or_support_for_justification_of_argument_uid(self.argument_uid, True, self.lang)
+        return self.__get_attack_or_support_for_justification_of_argument_uid(self.argument_uid, True)
 
     def get_undercuts_for_argument_uid(self):
         """
@@ -66,7 +66,7 @@ class RelationHelper(object):
         :return: array with dict() with id (of argumet) and text.
         """
         # logger('RelationHelper', 'get_undercuts_for_argument_uid', 'main ' + str(self.argument_uid))
-        return self.__get_attack_or_support_for_justification_of_argument_uid(self.argument_uid, False, self.lang)
+        return self.__get_attack_or_support_for_justification_of_argument_uid(self.argument_uid, False)
 
     def get_rebuts_for_argument_uid(self):
         """
@@ -79,16 +79,15 @@ class RelationHelper(object):
         if not db_argument:
             return None
         if db_argument.conclusion_uid is not None:
-            return self.__get_rebuts_for_arguments_conclusion_uid(db_argument, self.lang)
+            return self.__get_rebuts_for_arguments_conclusion_uid(db_argument)
         else:
             return self.get_undercuts_for_argument_uid()
 
     @staticmethod
-    def __get_rebuts_for_arguments_conclusion_uid(db_argument, lang):
+    def __get_rebuts_for_arguments_conclusion_uid(db_argument):
         """
 
         :param db_argument:
-        :param lang: ui_locales
         :return:
         """
         return_array = []
@@ -105,7 +104,7 @@ class RelationHelper(object):
                 given_rebuts.add(rebut.premisesgroup_uid)
                 tmp_dict = dict()
                 tmp_dict['id'] = rebut.uid
-                text, trash = get_text_for_premisesgroup_uid(rebut.premisesgroup_uid, lang)
+                text, trash = get_text_for_premisesgroup_uid(rebut.premisesgroup_uid)
                 tmp_dict['text'] = text[0:1].upper() + text[1:]
                 return_array.append(tmp_dict)
                 index += 1
@@ -136,7 +135,7 @@ class RelationHelper(object):
                 if support.premisesgroup_uid not in given_supports:
                     tmp_dict = dict()
                     tmp_dict['id'] = support.uid
-                    tmp_dict['text'], trash = get_text_for_premisesgroup_uid(support.premisesgroup_uid, self.lang)
+                    tmp_dict['text'], trash = get_text_for_premisesgroup_uid(support.premisesgroup_uid)
                     return_array.append(tmp_dict)
                     index += 1
                     given_supports.add(support.premisesgroup_uid)
@@ -324,13 +323,12 @@ class RelationHelper(object):
             return None
 
     @staticmethod
-    def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive, lang):
+    def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive):
         """
         Querys all
 
         :param argument_uid: Argument.uid
         :param is_supportive: Boolean
-        :param lang: ui_locales
         :return: [{id, text}] or 0
         """
         return_array = []
@@ -349,18 +347,17 @@ class RelationHelper(object):
                 given_relations.add(relation.premisesgroup_uid)
                 tmp_dict = dict()
                 tmp_dict['id'] = relation.uid
-                tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid, lang)
+                tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid)
                 return_array.append(tmp_dict)
                 index += 1
         return return_array
 
     @staticmethod
-    def __get_undermines_for_premises(premises_as_statements_uid, lang, is_supportive=False):
+    def __get_undermines_for_premises(premises_as_statements_uid, is_supportive=False):
         """
         Querys all undermines for the given statements
 
         :param premises_as_statements_uid:
-        :param lang: ui_locales
         :param is_supportive
         :return: [{id, text}]
         """
@@ -376,7 +373,7 @@ class RelationHelper(object):
                     given_undermines.add(undermine.premisesgroup_uid)
                     tmp_dict = dict()
                     tmp_dict['id'] = undermine.uid
-                    tmp_dict['text'], uids = get_text_for_premisesgroup_uid(undermine.premisesgroup_uid, lang)
+                    tmp_dict['text'], uids = get_text_for_premisesgroup_uid(undermine.premisesgroup_uid)
                     return_array.append(tmp_dict)
                     index += 1
         return return_array
