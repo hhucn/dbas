@@ -13,7 +13,8 @@ import json
 
 from cornice import Service
 from dbas.views import Dbas
-from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement
+from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, \
+    get_all_arguments_with_text_by_statement_id, resolve_issue_uid_to_slug
 
 from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, as_json
 from .login import validate_credentials, validate_login
@@ -411,14 +412,17 @@ def find_statements_fn(request):
     api_data["value"] = request.matchdict["value"]
     results = Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
 
+    issue_uid = api_data["issue"]
+
     return_dict = dict()
     return_dict["distance_name"] = results["distance_name"]
-    return_dict["issue"] = api_data["issue"]
     return_dict["values"] = []
 
     for statement in results["values"]:
         statement_uid = statement["statement_uid"]
-        statement["url"] = url_to_statement(api_data["issue"], statement_uid)
+        statement["issue"] = {"uid": issue_uid, "slug": resolve_issue_uid_to_slug(issue_uid)}
+        statement["url"] = url_to_statement(api_data["issue"], statement_uid)  # TODO I think I do not use this any more
+        statement["arguments"] = get_all_arguments_with_text_by_statement_id(statement_uid)
         return_dict["values"].append(statement)
     return as_json(return_dict)
 
