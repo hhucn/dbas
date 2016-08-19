@@ -286,7 +286,7 @@ def add_start_statement(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_statement))
+    return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -297,7 +297,7 @@ def add_start_premise(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_premise))
+    return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
@@ -308,7 +308,7 @@ def add_justify_premise(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument))
+    return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
 
 
 # =============================================================================
