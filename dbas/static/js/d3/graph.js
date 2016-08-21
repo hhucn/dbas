@@ -112,7 +112,7 @@ function DiscussionGraph() {
         var legend = d3.svg.legend();
 		// set position of legend
         d3.select("svg").append("g")
-            .attr("transform", "translate(30, 330)")
+            .attr("transform", "translate(30, 280)")
             .call(legend);
 
 		// buttons of sidebar
@@ -122,7 +122,7 @@ function DiscussionGraph() {
 		hidePositions();
 
         force.start();
-
+		
 		// update force layout calculations
 		function forceTick() {
 		    // update position of edges
@@ -141,6 +141,16 @@ function DiscussionGraph() {
 		    label.attr("transform", function (d) {
   			        return "translate(" + d.x + "," + (d.y - 50) + ")";});
 		}
+
+		//////////////////////////////////////////////////////////////////////////////
+		// highlight nodes and edges
+		circle.on("click", function()
+		{
+			var circleId = this.id;
+            showPartOfGraph(edges, circleId);
+			showEdgesWithTwoLinks(edges, circleId);
+
+		});
 	};
 
 	function getSvg(width, height){
@@ -189,8 +199,8 @@ function DiscussionGraph() {
     		// get source and target nodes
     		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
         		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
-    		// add edge, color and type to array
-    		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size});
+    		// add edge, color, type and idto array
+    		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size, id: e.id});
 		});
 
 		return edges;
@@ -214,7 +224,7 @@ function DiscussionGraph() {
 
 	function createArrows(svg, edgesTypeArrow) {
 		/**
-		 * Create arrows for edges
+		 * Create arrows for edges.
 		 *
 		 * @param svg
 		 * @param edgesTypeArrow
@@ -222,15 +232,16 @@ function DiscussionGraph() {
          */
 		return svg.append("defs").selectAll('marker').data(edgesTypeArrow)
             .enter().append("svg:marker")
-            .attr({id: function(d) { return "marker_" + d.edge_type + d.color + d.target.color},
+            .attr({id: function(d) { return "marker_" + d.edge_type + d.id },
 			       refX: function(d){
 			                 if(d.target.label == ''){ return 4; }
 				             else if(d.target.size == 8){ return 8; }
 				             else{ return 7; }}, refY: 2.2,
                    markerWidth: 10, markerHeight: 10,
                    orient: "auto"})
+			.attr("fill", function(d) { return d.color; })
 			.append("svg:path")
-			.attr({d: "M 0,0 V 4 L 5,2 Z", fill: function(d) { return d.color; }});
+			.attr("d", "M 0,0 V 4 L 5,2 Z");
 	}
 
 	function createLinks(svg, edges, marker) {
@@ -248,8 +259,9 @@ function DiscussionGraph() {
     		.enter().append("line")
       		.attr("class", "link")
 			.style("stroke", function(d) { return d.color; })
+			.attr("id", function(d) { return d.id; })
 			// assign marker to line
-			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.color + d.target.color + ")" });
+			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.id + ")" });
 	}
 
 	function enableDrag(force){
@@ -290,7 +302,9 @@ function DiscussionGraph() {
 		 */
 		return node.append("circle")
       		.attr({r: function(d){ return d.size; },
-				   fill: function(d){ return d.color; }});
+				   fill: function(d){ return d.color},
+				   id: function (d) { return d.id;}
+			});
 	}
 
 	function createLabel(node){
@@ -373,6 +387,7 @@ function DiscussionGraph() {
 		selection.selectAll(".circle")
         .data(legendLabelCircle)
         .enter().append("circle")
+		.attr("id", 1)
 		.attr({fill: function (d,i) {return legendColorCircle[i]},
                r: function (d,i) {
 	               if(i == 0) { return 8; }
@@ -475,5 +490,67 @@ function DiscussionGraph() {
 		});
 	}
 
+    function showPartOfGraph(edges, circleId) {
+		edges.forEach(function(d){
+			if(d.source.id === circleId || d.target.id === circleId){
+				// edges
+                d3.select('#' + d.id).style('stroke', d.color);
+				// nodes
+				d3.select('#' + d.source.id).attr('fill', d.source.color);
+				d3.select('#' + d.target.id).attr('fill', d.target.color);
+				// arrows
+				d3.select("#marker_" + d.edge_type + d.id).attr('fill', d.color);
+			}
+			else{
+				// edges
+                d3.select('#' + d.id).style('stroke', '#E0E0E0');
+				// nodes
+				d3.select('#' + d.source.id).attr('fill', '#E0E0E0');
+				// arrows
+				d3.select("#marker_" + d.edge_type + d.id).attr('fill', '#E0E0E0');
+			}
+		});
+	}
 
+	function showEdgesWithTwoLinks(edges, circleId){
+		var edge;
+		edges.forEach(function(d) {
+			if(d.source.id === circleId || d.target.id === circleId){
+				if (d.source.label === '' || d.target.label === ''){
+				    if(d.id.charAt(d.id.length-1) === '0') {
+					    var idOfNextEdge = (d.id.substring(0, d.id.length - 1) + '1');
+						edges.forEach(function (selected) {
+							if(selected.id === idOfNextEdge){
+								edge = selected;
+							}
+						});
+						if(edge != null){
+							// edge
+							d3.select('#' + idOfNextEdge).style('stroke', d.color);
+						    // node
+				            d3.select('#' + edge.source.id).attr('fill', edge.source.color);
+							// arrow
+					        d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
+						}
+					}
+					else if(d.id.charAt(d.id.length-1) === '1') {
+						var idOfNextEdge = (d.id.substring(0, d.id.length - 1) + '0');
+						edges.forEach(function (selected) {
+							if(selected.id === idOfNextEdge){
+								edge = selected;
+							}
+						});
+						if(edge != null) {
+							//edge
+							d3.select('#' + idOfNextEdge).style('stroke', d.color);
+							//node
+							d3.select('#' + edge.target.id).attr('fill', edge.target.color);
+							// arrow
+							d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
+						}
+					}
+				}
+			}
+		});
+	}
 }
