@@ -64,260 +64,82 @@ function DiscussionGraph() {
 		var container = $('#' + graphViewContainerSpaceId);
 		container.empty();
 
-		var width = container.width();
-		var height = container.outerHeight();
+		var width = container.width(), height = container.outerHeight();
 
 		var svg = getSvg(width, height);
-
 		var force = getForce(width, height);
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
 		d3.select("svg").call(zoom);
-
         function redraw() {
             d3.select("g.zoom")
             .attr("transform", "translate(" + zoom.translate() + ")"
 			+ " scale(" + zoom.scale() + ")");
         }
+		var drag = enableDrag(force);
 
-		// enable drag functionality, because pan functionality overrides drag
-        var drag = force.drag()
-			.on("dragstart", function(d){
-				d3.event.sourceEvent.stopPropagation();
-			});
+		// resize graph on window event
+		d3.select(window).on("resize", resize);
+		function resize() {
+			$('#graph-svg').width(container.width());
+			// height of space between header and bottom of container
+			$('#graph-svg').height(container.outerHeight()-$('#graph-view-container-header').height() + 20);
+			force.size([container.width(), container.outerHeight()]).resume();
+		}
 
+		// edge
 		var edges = createEdgeDict(jsonData);
-
 		// create arrays of links, nodes and move layout forward one step
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
+		var edgesTypeArrow = createArrowDict(edges);
+        var marker = createArrows(svg, edgesTypeArrow);
+		var link = createLinks(svg, edges, marker);
 
-		// select edges with type of arrow 
-		var edgesTypeArrow = [];
-		edges.forEach(function(d){
-			if(d.edge_type == 'arrow'){
-			    return edgesTypeArrow.push(d);
-			}
-		});
+		// node
+   		var node = createNodes(svg, force, drag);
+    	var circle = setNodeProperties(node);
 
-		// arrows for edges
-        var marker = svg.append("defs").selectAll('marker').data(edgesTypeArrow)
-            .enter()
-            .append("svg:marker")
-            .attr("id", function(d) { return "marker_" + d.edge_type + d.color + d.target.color})
-			.attr("refX", function(d){
-			    if(d.target.label == ''){ return 4; }
-				else if(d.target.size == 8){ return 8; }
-				else{ return 7; }
-			})
-            .attr("refY", 2.2)
-            .attr("markerWidth", 10)
-            .attr("markerHeight", 10)
-            .attr("orient", "auto")
-			.append("svg:path")
-			.attr("d", "M 0,0 V 4 L 5,2 Z")
-            .attr("fill", function(d) {
-			    return d.color;
-			});
-
-		// links between nodes
-		var link = svg.selectAll(".path")
-    		.data(edges)
-			// svg lines
-    		.enter().append("line")
-      		.attr("class", "link")
-			.style("stroke", function(d) { return d.color; })
-			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.color + d.target.color + ")" });
-
-		// node: svg circle
-   		var node = svg.selectAll(".node")
-        	.data(force.nodes())
-        	.enter().append("g")
-            .attr("class", "node")
-            .call(drag);
-
-		// define properties for nodes
-    	var circle = node.append("circle")
-      		.attr("r", function(d){
-				return d.size;
-            })
-			.attr("fill", function(d){
-				return d.color;
-			});
-
-		// background of labels
+		// tooltip
+		// rect as background of label
 		var rect = node.append("rect");
+		var label = createLabel(node);
+		setRectProperties(rect/*, label*/);
 
-		// wrap text
-		var label = node.append("text").each(function (d) {
-            var node_text = d.label.split(" ");
-            for (var i = 0; i < node_text.length; i++) {
-                if((i % 4) == 0){
-                    d3.select(this).append("tspan")
-					.text(node_text[i])
-                    .attr("dy", i ? '1.2em' : '0')
-                    .attr("x", '0')
-                    .attr("text-anchor", "middle");
-                }
-                else{
-                    d3.select(this).append("tspan")
-                    .text(' ' + node_text[i]);
-				}
-            }
-			d3.select(this).attr("id", 'label-' + d.id);
-			// set position of label
-			var height = $("#label-" + d.id).height();
-			d3.select(this).attr("y", -height+45);
-		});
-
-		// set properties for rect
-		rect.each(function (d) {
-		    var width = $("#label-" + d.id).width()+10,
-			    height = $("#label-" + d.id).height()+10;
-			if(d.size == 0){
-				width = 0;
-				height = 0;
-			}
-			d3.select(this)
-			.attr("width", width)
-			.attr("height", height)
-			.attr("y", -height+38)
-			.attr("x", -width/2)
-			.attr("id", 'rect-' + d.id);
-		});
-
-		// labels and colors for legend
-		var legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")];
-		var legendLabelRect = [_t_discussion("support"), _t_discussion("attack")];
-
-        var legendColorCircle = ["#3D5AFE", "#3D5AFE", "#FFC107"];
-		var legendColorRect = ["#64DD17", "#F44336"];
-
-		// set properties for legend
-		d3.svg.legend = function() {
-            function legend(selection) {
-				// symbols for nodes
-                selection.selectAll(".circle")
-                .data(legendLabelCircle)
-                .enter()
-                .append("circle")
-				.attr("fill", function (d,i) {return legendColorCircle[i]})
-                .attr("r", function (d,i) {
-	                if(i == 0) { return 8; }
-                    else { return 6; }
-				})
-				.attr("cy", function (d,i) {return i*40});
-
-				// symbols for edges
-				selection.selectAll(".rect")
-                .data(legendLabelRect)
-                .enter()
-                .append("rect")
-				.attr("fill", function (d,i) {return legendColorRect[i]})
-                .attr("width", 15)
-				.attr("height", 5)
-				.attr("x", -7)
-				.attr("y", function (d,i) {return i*40+118});
-
-				// labels for symbols
-                selection.selectAll(".text")
-                .data(legendLabelCircle.concat(legendLabelRect))
-                .enter()
-                .append("text")
-                .text(function(d) {return d;})
-				.attr("x", 20)
-				.attr("y", function (d,i) {return i*40+5});
-
-				return this;
-            }
-            return legend;
-        };
-
-		// create legend
+		// legend
+        createLegend();
+		// call updated legend
         var legend = d3.svg.legend();
+		// set position of legend
         d3.select("svg").append("g")
             .attr("transform", "translate(30, 330)")
             .call(legend);
 
-		// show content
-		$('#show-content').click(function() {
-			label.style("display", "inline");
-			rect.style("display", "inline");
-			$('#show-content').hide();
-			$('#hide-content').show();
-		});
-
-		// hide content
-		$('#hide-content').click(function() {
-			label.style("display", "none");
-			rect.style("display", "none");
-			$('#show-content').show();
-			$('#hide-content').hide();
-		});
-		
-		// show positions
-		$('#show-positions').click(function() {
-			// select positions
-			d3.selectAll(".node").each(function(d) {
-				if(d.color == '#3D5AFE' && d.size == '6') {
-					d3.select('#label-' + d.id).style("display", "inline");
-					d3.select("#rect-" + d.id).style("display", "inline");
-				}
-			});
-			$('#show-positions').hide();
-			$('#hide-positions').show();
-		});
-		
-		// hide positions
-		$('#hide-positions').click(function() {
-			// select positions
-			d3.selectAll(".node").each(function(d) {
-				if(d.color == '#3D5AFE' && d.size == '6') {
-					d3.select('#label-' + d.id).style("display", "none");
-					d3.select("#rect-" + d.id).style("display", "none");
-				}
-			});
-			$('#show-positions').show();
-			$('#hide-positions').hide();
-		});
+		// buttons of sidebar
+        showContent(label, rect);
+		hideContent(label, rect);
+		showPositions();
+		hidePositions();
 
         force.start();
-
-		d3.select(window).on("resize", resize);
 
 		// update force layout calculations
 		function forceTick() {
 		    // update position of edges
-			link
-                .attr("x1", function(d) { return d.source.x; })
-        	    .attr("y1", function(d) { return d.source.y; })
-        	    .attr("x2", function(d) { return d.target.x; })
-        	    .attr("y2", function(d) { return d.target.y; });
+			link.attr({x1: function(d) { return d.source.x; }, y1: function(d) { return d.source.y; },
+        	           x2: function(d) { return d.target.x; }, y2: function(d) { return d.target.y; }});
 
 		    // update position of rect
-		    rect
-			    .attr("transform", function (d) {
-				    return "translate(" + d.x + "," + (d.y - 50) + ")";
-    		    });
+		    rect.attr("transform", function (d) {
+				    return "translate(" + d.x + "," + (d.y - 50) + ")";});
 
             // update position of nodes
-		    circle
-       		    .attr("cx", function(d) { return d.x; })
-       		    .attr("cy", function(d) { return d.y; });
+		    circle.attr({cx: function(d) { return d.x; },
+       		             cy: function(d) { return d.y; }});
 
             // update position of label
-		    label
-			    .attr("transform", function (d) {
-  			        return "translate(" + d.x + "," + (d.y - 50) + ")";
-   			    });
-		}
-
-		function resize() {
-			$('#graph-svg').width(container.width());
-			// Height of space between header and bottom of container
-			$('#graph-svg').height(container.outerHeight()-$('#graph-view-container-header').height() + 20);
-
-   		    force.size([container.width(), container.outerHeight()]).resume();
+		    label.attr("transform", function (d) {
+  			        return "translate(" + d.x + "," + (d.y - 50) + ")";});
 		}
 	};
 
@@ -356,7 +178,7 @@ function DiscussionGraph() {
 
 	function createEdgeDict(jsonData) {
 		/**
-		 * Create dictionary for edges
+		 * Create dictionary for edges.
 		 *
 		 * @param jsonData: dict with data for nodes and edges
 		 * @return edges: array, which contains dicts for edges
@@ -373,4 +195,285 @@ function DiscussionGraph() {
 
 		return edges;
 	}
+
+	function createArrowDict(edges){
+		/**
+		 * Select edges with type of arrow.
+		 *
+		 * @param edges: edges of graph
+		 * @return edgesTypeArrow: array, which contains edges of type arrow
+         */
+		var edgesTypeArrow = [];
+		edges.forEach(function(d){
+			if(d.edge_type == 'arrow'){
+			    return edgesTypeArrow.push(d);
+			}
+		});
+		return edgesTypeArrow;
+	}
+
+	function createArrows(svg, edgesTypeArrow) {
+		/**
+		 * Create arrows for edges
+		 *
+		 * @param svg
+		 * @param edgesTypeArrow
+		 * @return marker: arrow
+         */
+		return svg.append("defs").selectAll('marker').data(edgesTypeArrow)
+            .enter().append("svg:marker")
+            .attr({id: function(d) { return "marker_" + d.edge_type + d.color + d.target.color},
+			       refX: function(d){
+			                 if(d.target.label == ''){ return 4; }
+				             else if(d.target.size == 8){ return 8; }
+				             else{ return 7; }}, refY: 2.2,
+                   markerWidth: 10, markerHeight: 10,
+                   orient: "auto"})
+			.append("svg:path")
+			.attr({d: "M 0,0 V 4 L 5,2 Z", fill: function(d) { return d.color; }});
+	}
+
+	function createLinks(svg, edges, marker) {
+		/**
+		 * Create links between nodes.
+		 *
+		 * @param svg
+		 * @param marker: arrow
+		 * @param edges
+		 * @return links
+		 */
+		return svg.selectAll(".path")
+    		.data(edges)
+			// svg lines
+    		.enter().append("line")
+      		.attr("class", "link")
+			.style("stroke", function(d) { return d.color; })
+			// assign marker to line
+			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.color + d.target.color + ")" });
+	}
+
+	function enableDrag(force){
+		/**
+		 * Enable drag functionality, because pan functionality overrides drag.
+		 *
+		 * @param force
+		 * @return drag functionality
+		 */
+		return force.drag()
+			.on("dragstart", function(d){
+				d3.event.sourceEvent.stopPropagation();
+			});
+	}
+
+	function createNodes(svg, force, drag) {
+		/**
+		 * Create node as svg circle and enable drag functionality.
+		 *
+		 * @param svg
+		 * @param force
+		 * @param drag
+		 * @return nodes
+		 */
+		return svg.selectAll(".node")
+        	.data(force.nodes())
+        	.enter().append("g")
+            .attr("class", "node")
+            .call(drag);
+	}
+
+	function setNodeProperties(node){
+		/**
+		 * Define properties for nodes.
+         *
+		 * @param node
+		 * @return circle
+		 */
+		return node.append("circle")
+      		.attr({r: function(d){ return d.size; },
+				   fill: function(d){ return d.color; }});
+	}
+
+	function createLabel(node){
+		/**
+		 * Wrap text.
+		 *
+		 * @param node
+		 * @return label
+		 */
+		return node.append("text").each(function (d) {
+            var node_text = d.label.split(" ");
+            for (var i = 0; i < node_text.length; i++) {
+                if((i % 4) == 0){
+                    d3.select(this).append("tspan")
+					.text(node_text[i])
+                    .attr({dy: i ? '1.2em' : '0', x: '0',
+                           "text-anchor": "middle"});
+                }
+                else{
+                    d3.select(this).append("tspan").text(' ' + node_text[i]);
+				}
+            }
+			d3.select(this).attr("id", 'label-' + d.id);
+			// set position of label
+			var height = $("#label-" + d.id).height();
+			d3.select(this).attr("y", -height+45);
+		});
+	}
+
+	function setRectProperties(rect){
+		/**
+		 * Set properties for rect.
+		 *
+		 * @param rect: background of label
+ 		 */
+		rect.each(function (d) {
+		    var width = $("#label-" + d.id).width()+10,
+			    height = $("#label-" + d.id).height()+10;
+			if(d.size == 0){
+				width = 0;
+				height = 0;
+			}
+			d3.select(this)
+			.attr({width: width, height: height,
+			       y: -height+38, x: -width/2,
+			       id: 'rect-' + d.id});
+		});
+	}
+
+	function createLegend(){
+		/**
+		 * Create legend and update legend.
+		 */
+		// labels and colors for legend
+		var legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")],
+		    legendLabelRect = [_t_discussion("support"), _t_discussion("attack")],
+            legendColorCircle = ["#3D5AFE", "#3D5AFE", "#FFC107"],
+		    legendColorRect = ["#64DD17", "#F44336"];
+
+		// set properties for legend
+		return d3.svg.legend = function() {
+            function legend(selection) {
+                createNodeSymbols(selection, legendLabelCircle, legendColorCircle);
+                createEdgeSymbols(selection, legendLabelRect, legendColorRect);
+                createLabelsForSymbols(selection, legendLabelCircle, legendLabelRect);
+				return this;
+            }
+            return legend;
+        };
+	}
+
+	function createNodeSymbols(selection, legendLabelCircle, legendColorCircle) {
+		/**
+		 * Create symbols for nodes.
+		 *
+		 * @param selection
+		 * @param legendLabelCircle: array with labels for circle
+		 * @param legendColorCircle: array with colors
+		 */
+		selection.selectAll(".circle")
+        .data(legendLabelCircle)
+        .enter().append("circle")
+		.attr({fill: function (d,i) {return legendColorCircle[i]},
+               r: function (d,i) {
+	               if(i == 0) { return 8; }
+				   else { return 6; }},
+			   cy: function (d,i) {return i*40}});
+	}
+
+	function createEdgeSymbols(selection, legendLabelRect, legendColorRect) {
+		/**
+		 * Create symbols for edges.
+		 *
+		 * @param selection
+		 * @param legendLabelRect: array with labels for rect
+		 * @param legendColorRect: array with colors
+		 */
+		selection.selectAll(".rect")
+		.data(legendLabelRect)
+        .enter().append("rect")
+		.attr({fill: function (d,i) {return legendColorRect[i]},
+               width: 15, height: 5,
+			   x: -7, y: function (d,i) {return i*40+118}});
+	}
+
+	function createLabelsForSymbols(selection, legendLabelCircle, legendLabelRect) {
+		/**
+		 * Create labels for symbols.
+		 *
+		 * @param selection
+		 * @param legendLabelCircle: array with labels for circle
+		 * @param legendLabelRect: array with labels for rect
+		 */
+		selection.selectAll(".text")
+		.data(legendLabelCircle.concat(legendLabelRect))
+        .enter().append("text")
+        .text(function(d) {return d;})
+		.attr({x: 20, y: function (d,i) {return i*40+5}});
+	}
+
+	function showContent (label, rect){
+        /**
+	     * Show all labels of graph.
+		 *
+		 * @param label
+		 * @param rect
+		 */
+		$('#show-content').click(function() {
+			label.style("display", "inline");
+			rect.style("display", "inline");
+			$('#show-content').hide();
+			$('#hide-content').show();
+		});
+	}
+
+	function hideContent(label, rect) {
+        /**
+	     * Hide all labels of graph.
+		 *
+		 * @param label
+		 * @param rect
+		 */
+		$('#hide-content').click(function() {
+			label.style("display", "none");
+			rect.style("display", "none");
+			$('#show-content').show();
+			$('#hide-content').hide();
+		});
+	}
+
+	function showPositions() {
+        /**
+	     * Show labels for positions.
+		 */
+		$('#show-positions').click(function() {
+			// select positions
+			d3.selectAll(".node").each(function(d) {
+				if(d.color == '#3D5AFE' && d.size == '6') {
+					d3.select('#label-' + d.id).style("display", "inline");
+					d3.select("#rect-" + d.id).style("display", "inline");
+				}
+			});
+			$('#show-positions').hide();
+			$('#hide-positions').show();
+		});
+	}
+
+	function hidePositions() {
+        /**
+	     * Hide labels for positions.
+		 */
+		$('#hide-positions').click(function() {
+			// select positions
+			d3.selectAll(".node").each(function(d) {
+				if(d.color == '#3D5AFE' && d.size == '6') {
+					d3.select('#label-' + d.id).style("display", "none");
+					d3.select("#rect-" + d.id).style("display", "none");
+				}
+			});
+			$('#show-positions').show();
+			$('#hide-positions').hide();
+		});
+	}
+
+
 }
