@@ -45,6 +45,8 @@ reputation = Service(name='review_reputation',
                      permission='use',
                      cors_policy=cors_policy)
 
+# services are sorted alphabetically, so index has to be
+# after reputation, because of the *slug
 zindex = Service(name='review_index',
                  path='*slug',
                  renderer='templates/review.pt',
