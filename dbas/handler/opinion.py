@@ -135,6 +135,7 @@ class OpinionHandler:
                                   'message': message,
                                   'text': regex.sub('', relation_text[relation + '_text'].replace('<strong>', '')),
                                   'seen_by': seen_by}
+        return ret_dict
 
     def get_user_with_same_opinion_for_statements(self, statement_uids, is_supportive):
         """
