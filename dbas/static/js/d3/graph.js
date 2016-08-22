@@ -146,6 +146,9 @@ function DiscussionGraph() {
   			        return "translate(" + d.x + "," + (d.y - 50) + ")";});
 		}
 
+		moveToBack(circle, svg);
+
+
 		//////////////////////////////////////////////////////////////////////////////
 		// highlight nodes and edges
 		circle.on("click", function()
@@ -503,6 +506,24 @@ function DiscussionGraph() {
 				d3.select('#label-' + d.id).style("display", style);
 				d3.select("#rect-" + d.id).style("display", style);
 			}
+		});
+	}
+
+	/**
+	 * Hide nodes on mouse event.
+	 *
+	 * @param circle
+	 * @param svg
+	 */
+	function moveToBack(circle, svg){
+		circle.on("mouseover", function(d) {
+		    svg.selectAll('.node')
+            .sort(function(a, b) {
+            if (a.id === d.id) { return 1; }
+			else {
+			    if (b.id === d.id) { return -1; }
+			    else { return 0; }
+            }})
 		});
 	}
 
