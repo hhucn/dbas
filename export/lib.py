@@ -124,7 +124,7 @@ def __get_all_premisegroups(argument_prgoup_set):
             tmp_dict['uid']                 = premisegroup.uid
             tmp_dict['author_uid']          = premisegroup.author_uid
             premisegroup_dict[str(index)]   = tmp_dict
-    return premisegroup_dict
+    return premisegroup_dict, premisegroup_uid_set
 
 
 def __get_all_premises(issue, premisegroup_uid_set, lang):
