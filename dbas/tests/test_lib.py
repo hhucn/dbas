@@ -1,7 +1,8 @@
 import unittest
 
 from sqlalchemy import engine_from_config
-from dbas import lib, DBDiscussionSession
+from dbas import lib
+from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from datetime import date
 from dbas.database.discussion_model import Argument
