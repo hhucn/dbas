@@ -60,9 +60,9 @@ class TextGenerator(object):
             ret_text = confrontation + ', ' + _t.get(_t.andIDoBelieveCounterFor) + ' ' + conclusion
         #  + '.' + _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
         if attack_type == 'rebut':
-            ret_text = confrontation + ' ' \
-                       + (_t.get(_t.iAcceptCounterThat) if is_supportive else _t.get(_t.iAcceptArgumentThat)) \
-                       + ' ' + conclusion
+            ret_text = confrontation + ' '
+            ret_text += (_t.get(_t.iAcceptCounterThat) if is_supportive else _t.get(_t.iAcceptArgumentThat))
+            ret_text += ' ' + conclusion
 
         return ret_text + ', '  + _t.get(_t.because).lower() + '...'
 
@@ -91,7 +91,7 @@ class TextGenerator(object):
             premise = premise[:-1]
 
         if conclusion[-1] == '.':
-            conclusion = premise[:-1]
+            conclusion = conclusion[:-1]
 
         # pretty print
         #  w = (_t.get(_t.wrong)[0:1].lower() if start_lower_case else _t.get(_t.wrong)[0:1].upper()) + _t.get(_t.wrong)[1:] + ', '
@@ -404,10 +404,10 @@ class TextGenerator(object):
 
         ret_dict['undermine_text'] = w + ', ' + premise + '.'
         ret_dict['undercut_text'] = r + ', ' + conclusion + ', ' + _t.get(_t.butIDoNotBelieveArgumentFor) + ' ' + counter_justi + '.'
-        ret_dict['rebut_text'] = r + ', ' + premise + ' ' + _t.get(_t.iAcceptArgumentThat) + ' ' + conclusion + '. '\
-                                 + _t.get(_t.howeverIHaveMuchStrongerArgumentRejectingThat) + ' ' + conclusion + '.'
-        ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': ' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase() \
-                                      + ' ' + premise + '. ' + _t.get(_t.goStepBack) + '.'
+        ret_dict['rebut_text'] = r + ', ' + premise + ' ' + _t.get(_t.iAcceptArgumentThat) + ' ' + conclusion + '. '
+        ret_dict['rebut_text'] += _t.get(_t.howeverIHaveMuchStrongerArgumentRejectingThat) + ' ' + conclusion + '.'
+        ret_dict['no_opinion_text'] = _t.get(_t.iNoOpinion) + ': ' + conclusion + ', ' + _t.get(_t.because).toLocaleLowerCase()
+        ret_dict['no_opinion_text'] += ' ' + premise + '. ' + _t.get(_t.goStepBack) + '.'
         return ret_dict
 
     def __get_confrontation_text_for_undermine(self, premise, _t, start_position, start_argument, attack, sys_arg,

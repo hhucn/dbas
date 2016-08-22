@@ -9,7 +9,7 @@ import json
 import dbas.helper.history as HistoryHelper
 import dbas.user_management as UserHandler
 import transaction
-from admin.lib import get_overview_of_arguments, get_all_users, get_all_issues,get_all_statements, get_all_premisegroups , get_dashboard_infos
+from admin.lib import get_overview_of_arguments, get_all_users, get_all_issues, get_all_statements, get_all_premisegroups, get_dashboard_infos
 from cornice import Service
 from dbas.lib import get_language
 from dbas.logger import logger
@@ -73,10 +73,10 @@ def main_admin(request):
         'extras': extras_dict,
         'users': users,
         'issues': issues,
-		'statements': statements,
-		'premisegroups': premisegroups,
+        'statements': statements,
+        'premisegroups': premisegroups,
         'dashboard': dashboard
-     }
+    }
 
 
 # =============================================================================

@@ -25,7 +25,6 @@ from datetime import datetime
 sys.path.insert(0, os.path.abspath('..'))
 
 try:
-    import pyramid
     from dbas.views import version as short_v
     from dbas.views import full_version as long_v
     import sphinx_rtd_theme
@@ -34,7 +33,6 @@ except ImportError:
         # Find dbas-virtualenv and include it to the path. Then load modules for autodocs
         path_to_virtualenv = os.environ['VIRTUAL_ENV'] + '/lib/python' + sys.version[:3] + '/site-packages'
         sys.path.append(path_to_virtualenv)
-        import pyramid
         from dbas.views import version as short_v
         from dbas.views import full_version as long_v
         import sphinx_rtd_theme

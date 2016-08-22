@@ -41,7 +41,7 @@ class DiscussionDictHelper(object):
     def get_dict_for_start(self):
         """
         Prepares the discussion dict with all bubbles for the first step in discussion, where the user chooses a position.
-        
+
         :return: dict()
         """
         logger('DictionaryHelper', 'get_dict_for_start', 'at_start')
@@ -58,7 +58,7 @@ class DiscussionDictHelper(object):
     def get_dict_for_attitude(self, uid):
         """
         Prepares the discussion dict with all bubbles for the second step in discussion, where the user chooses her attitude.
-        
+
         :param uid: Argument.uid
         :return: dict()
         """
@@ -71,7 +71,7 @@ class DiscussionDictHelper(object):
             return None
         if self.lang != 'de':
             l = len('<' + TextGenerator.tag_type + ' data-argumentation-type="position">')
-            statement_text = statement_text[0:l+1].lower() + statement_text[l+1:]
+            statement_text = statement_text[0:l + 1].lower() + statement_text[l + 1:]
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ' ' + statement_text + '?'
@@ -160,7 +160,7 @@ class DiscussionDictHelper(object):
     def get_dict_for_justify_argument(self, uid, is_supportive, attack):
         """
         Prepares the discussion dict with all bubbles for a step in discussion, where the user justifies his attack she has done.
-        
+
         :param uid: Argument.uid
         :param is_supportive: Boolean
         :param attack: String (undermine, support, undercut, rebut, ...)

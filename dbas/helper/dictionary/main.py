@@ -41,7 +41,7 @@ class DictionaryHelper(object):
         """
         Creates a random subdictionary with given count out of the given ordered_dict.
         With a count of <2 the dictionary itself will be returned.
-        
+
         :param ordered_dict: dictionary for the function
         :param count: count of entries for the new dictionary
         :return: dictionary

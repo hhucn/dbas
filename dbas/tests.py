@@ -536,9 +536,9 @@ class FunctionalEMailTests(IntegrationTestDBAS):
         self.testapp.get('/contact', status=200)
         mailer = DummyMailer()
         mailer.send_immediately_sendmail(Message(subject='hello world',
-                                                    sender='krauthoff@cs.uni-duesseldorf.de',
-                                                    recipients=['krauthoff@cs.uni-duesseldorf.de'],
-                                                    body='dummybody'))
+                                                 sender='krauthoff@cs.uni-duesseldorf.de',
+                                                 recipients=['krauthoff@cs.uni-duesseldorf.de'],
+                                                 body='dummybody'))
         self.assertEqual(len(mailer.outbox), 1)
         self.assertEqual(mailer.outbox[0].subject, 'hello world')
 
@@ -547,7 +547,7 @@ class FunctionalEMailTests(IntegrationTestDBAS):
 
 
 # checks for the database
-#class FunctionalDatabaseTests(IntegrationTestDBDiscussionSession):
+# class FunctionalDatabaseTests(IntegrationTestDBDiscussionSession):
 #
 #    def setUp(self):
 #        super(FunctionalDatabaseTests, self).setUp()

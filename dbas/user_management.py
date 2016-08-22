@@ -13,10 +13,12 @@ import arrow
 import dbas.handler.password as PasswordHandler
 from sqlalchemy import and_
 
-from .database import DBDiscussionSession
-from .database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
-from .lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid
-from .logger import logger
+from dbas.helper import email as EmailHelper
+from dbas.helper import notification as NotificationHelper
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
+from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid
+from dbas.logger import logger
 from dbas.strings.translator import Translator
 
 # from https://moodlist.net/
@@ -604,3 +606,59 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
             success = True
 
     return message, error, success
+
+
+def create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales, transaction):
+    """
+
+    :param request:
+    :param firstname:
+    :param lastname:
+    :param email:
+    :param nickname:
+    :param password:
+    :param gender:
+    :param db_group_uid:
+    :param ui_locales:
+    :param transaction:
+    :return:
+    """
+    success = ''
+    info = ''
+
+    _t = Translator(ui_locales)
+    # creating a new user with hashed password
+    logger('UserManagement', 'create_new_user', 'Adding user')
+    hashed_password = PasswordHandler.get_hashed_password(password)
+    newuser = User(firstname=firstname,
+                   surname=lastname,
+                   email=email,
+                   nickname=nickname,
+                   password=hashed_password,
+                   gender=gender,
+                   group=db_group_uid)
+    DBDiscussionSession.add(newuser)
+    transaction.commit()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    settings = Settings(author_uid=db_user.uid, send_mails=True, send_notifications=True,
+                        should_show_public_nickname=True)
+    DBDiscussionSession.add(settings)
+    transaction.commit()
+
+    # sanity check, whether the user exists
+    checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if checknewuser:
+        logger('UserManagement', 'create_new_user', 'New data was added with uid ' + str(checknewuser.uid))
+        success = _t.get(_t.accountWasAdded)
+
+        # sending an email
+        subject = _t.get(_t.accountRegistration)
+        body = _t.get(_t.accountWasRegistered)
+        EmailHelper.send_mail(request, subject, body, email, ui_locales)
+        NotificationHelper.send_welcome_notification(transaction, checknewuser.uid)
+
+    else:
+        logger('UserManagement', 'create_new_user', 'New data was not added')
+        info = _t.get(_t.accoutErrorTryLateOrContant)
+
+    return success, info
