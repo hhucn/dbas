@@ -135,7 +135,32 @@ function incrementCounter(element){
  * Enables testing for the main page
  */
 function enableTesting(){
-	socket.on('test', function(data) {
+	socket.on('connect', function() {
+		var field = $('#socketStatus');
+		if (field)
+			field.text('Connected!');
+	});
+
+    socket.on('disconnect', function() {
+		var field = $('#socketStatus');
+		if (field)
+			field.text('Disconnected!');
+    });
+
+    socket.on('pong', function(ms){
+    	var testCount = $('#testCount');
+		var latency = $('#latency');
+		if (latency)
+			latency.text(ms + 'ms');
+	    if (testCount)
+			testCount.text(parseInt(testCount.text()) + 1);
+    });
+	
+	setInterval(function(){
+        socket.emit('ping', {});
+	}, 100);
+	
+	socket.on('push_test', function(data) {
 		if (data.type == 'success') {	        handleMessage(data, 'TEST!', doSuccess);
 		} else if (data.type == 'warning') {	handleMessage(data, 'TEST!', doWarning);
 		} else if (data.type == 'info') {	    handleMessage(data, 'TEST!', doInfo);
@@ -144,14 +169,14 @@ function enableTesting(){
 	});
 	
 	// getting socket id from server
-	socket.on('testid', function(id){
-		var field = $('#socketio_id');
+	socket.on('push_socketid', function(id){
+		var field = $('#socketioId');
 		
 		if (field)
 			field.text(id);
 	});
 	
 	$('#test_success_btn,#test_danger_btn,#test_info_btn').click(function(){
-		socket.emit('test', $(this).attr('data-type'), $('#test-input').val());
+		socket.emit('push_test', $(this).attr('data-type'), $('#test-input').val());
 	});
 }

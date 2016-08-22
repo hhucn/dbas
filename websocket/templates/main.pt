@@ -2,18 +2,21 @@
 	<tal:block metal:fill-slot="content_page">
 
         <div class="container colored-container">
-            <div class="center">
-                <h4>Your current socket.io token is:</h4>
-                <h6 id="socketio_id"></h6>
+            <div class="col-md-6">
+                <input id="test-input" type="text" class="form-control" placeholder="..." value="Test input text" style="width: 100%;"><br>
+                <button id="test_success_btn" data-type="success" type="submit" class="btn btn-success" style="width: 25%; margin: 0.5em;">Success</button>
+                <button id="test_danger_btn" data-type="danger" type="submit" class="btn btn-danger" style="width: 25%; margin: 0.5em;">Danger</button>
+                <button id="test_info_btn" data-type="info" type="submit" class="btn btn-info" style="width: 25%; margin: 0.5em;">Info</button>
+            </div>
+            <div class="col-md-4" id="socket_data">
+                <p>Socket ID: <strong id="socketioId"></strong></p>
+                <p>Socket Status: <strong id="socketStatus"></strong></p>
+                <p>Number of socket calls: <strong id="testCount">0</strong></p>
+                <p>Socket latency: <strong id="latency">-</strong></p>
+            </div>
 
-                <input id="test-input" type="text" class="center form-control" placeholder="..." value="Test input text" style="width: 15em;">
-                <br>
-                <button id="test_success_btn" data-type="success" type="submit" class="btn btn-success">Test success</button>
-                <button id="test_danger_btn" data-type="danger" type="submit" class="btn btn-danger">Test danger</button>
-                <button id="test_info_btn" data-type="info" type="submit" class="btn btn-info">Test info</button>
-                <br>
-                <br>
-                <small>Every text is send to the server,<br>which respons with an communication!</small>
+            <div class="col-md-2">
+                <small>Every text is send to the server, which respons with an communication!</small>
             </div>
         </div>
 
