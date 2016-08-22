@@ -35,6 +35,10 @@ clean:
 
 nosetests:
 	nosetests -s --with-coverage --cover-package=dbas
+	nosetests -s --with-coverage --cover-package=api
+	nosetests -s --with-coverage --cover-package=review
+	nosetests -s --with-coverage --cover-package=graph
+	nosetests -s --with-coverage --cover-package=export
 	# -nosetests -s --with-coverage --cover-package=dbas > nosetests_temp_output.log 2>&1
 	# cat nosetests_temp_output.log
 	# grep TOTAL nosetests_temp_output.log | awk '{ print "TOTAL: "$$4; }'

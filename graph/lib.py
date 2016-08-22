@@ -43,6 +43,8 @@ def get_d3_data(issue):
     edges_array = []
     extras_dict = {}
     db_issue = DBDiscussionSession.query(Issue).filter_by(uid=issue).first()
+    if not db_issue:
+        return {}
 
     logger('GraphLib', 'get_d3_data', 'issue: ' + db_issue.info)
 
