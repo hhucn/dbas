@@ -1,10 +1,12 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Teresa Uebber, Tobias Krauthoff
+ * @email teresa.uebber@hhu.de, krauthoff@cs.uni-duesseldorf.de
  */
 
 function DiscussionGraph() {
     var s;
+	var isPositionVisible = false;
+	var isContentVisible = false;
 	/**
 	 * Displays a graph of current discussion
 	 */
@@ -82,9 +84,10 @@ function DiscussionGraph() {
 		// resize graph on window event
 		d3.select(window).on("resize", resize);
 		function resize() {
-			$('#graph-svg').width(container.width());
+			var graphsvg = $('#graph-svg');
+			graphsvg.width(container.width());
 			// height of space between header and bottom of container
-			$('#graph-svg').height(container.outerHeight()-$('#graph-view-container-header').height() + 20);
+			graphsvg.height(container.outerHeight()-$('#graph-view-container-header').height() + 20);
 			force.size([container.width(), container.outerHeight()]).resume();
 		}
 
@@ -341,8 +344,9 @@ function DiscussionGraph() {
 		 * @param rect: background of label
  		 */
 		rect.each(function (d) {
-		    var width = $("#label-" + d.id).width()+10,
-			    height = $("#label-" + d.id).height()+10;
+			var element = $("#label-" + d.id);
+		    var width = element.width() + 10;
+			var height = element.height() + 10;
 			if(d.size == 0){
 				width = 0;
 				height = 0;
@@ -438,6 +442,10 @@ function DiscussionGraph() {
 			rect.style("display", "inline");
 			$('#show-content').hide();
 			$('#hide-content').show();
+			// also show content of positions
+			$('#show-positions').hide();
+			$('#hide-positions').show();
+			isContentVisible = true;
 		});
 	}
 
@@ -453,6 +461,10 @@ function DiscussionGraph() {
 			rect.style("display", "none");
 			$('#show-content').show();
 			$('#hide-content').hide();
+			isContentVisible = false;
+			if (isPositionVisible){
+				setDisplayStyleOfNodes('inline');
+			}
 		});
 	}
 
@@ -462,14 +474,10 @@ function DiscussionGraph() {
 		 */
 		$('#show-positions').click(function() {
 			// select positions
-			d3.selectAll(".node").each(function(d) {
-				if(d.color == '#3D5AFE' && d.size == '6') {
-					d3.select('#label-' + d.id).style("display", "inline");
-					d3.select("#rect-" + d.id).style("display", "inline");
-				}
-			});
+			setDisplayStyleOfNodes('inline');
 			$('#show-positions').hide();
 			$('#hide-positions').show();
+			isPositionVisible = true;
 		});
 	}
 
@@ -479,14 +487,19 @@ function DiscussionGraph() {
 		 */
 		$('#hide-positions').click(function() {
 			// select positions
-			d3.selectAll(".node").each(function(d) {
-				if(d.color == '#3D5AFE' && d.size == '6') {
-					d3.select('#label-' + d.id).style("display", "none");
-					d3.select("#rect-" + d.id).style("display", "none");
-				}
-			});
+			setDisplayStyleOfNodes('none');
 			$('#show-positions').show();
 			$('#hide-positions').hide();
+			isPositionVisible = false;
+		});
+	}
+
+	function setDisplayStyleOfNodes(style) {
+		d3.selectAll(".node").each(function(d) {
+			if(d.color == '#3D5AFE' && d.size == '6') {
+				d3.select('#label-' + d.id).style("display", style);
+				d3.select("#rect-" + d.id).style("display", style);
+			}
 		});
 	}
 
@@ -514,11 +527,12 @@ function DiscussionGraph() {
 
 	function showEdgesWithTwoLinks(edges, circleId){
 		var edge;
+		var idOfNextEdge;
 		edges.forEach(function(d) {
 			if(d.source.id === circleId || d.target.id === circleId){
 				if (d.source.label === '' || d.target.label === ''){
 				    if(d.id.charAt(d.id.length-1) === '0') {
-					    var idOfNextEdge = (d.id.substring(0, d.id.length - 1) + '1');
+					    idOfNextEdge = (d.id.substring(0, d.id.length - 1) + '1');
 						edges.forEach(function (selected) {
 							if(selected.id === idOfNextEdge){
 								edge = selected;
@@ -534,7 +548,7 @@ function DiscussionGraph() {
 						}
 					}
 					else if(d.id.charAt(d.id.length-1) === '1') {
-						var idOfNextEdge = (d.id.substring(0, d.id.length - 1) + '0');
+						idOfNextEdge = (d.id.substring(0, d.id.length - 1) + '0');
 						edges.forEach(function (selected) {
 							if(selected.id === idOfNextEdge){
 								edge = selected;
