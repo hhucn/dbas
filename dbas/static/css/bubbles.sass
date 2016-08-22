@@ -46,7 +46,7 @@
   float: right
   text-align: left
   background: $user-bubble
-  margin: 0 2em 1em auto
+  margin: 0 1em 1em auto
 
 .triangle-m, .triangle-m-info
   padding: 1px
@@ -115,3 +115,14 @@
 
 .triangle-r-info:hover
   cursor: help
+
+
+@media (max-width: 767px)
+  .line-wrapper-l > a, .line-wrapper-r > a, .line-wrapper-l > p, .line-wrapper-r > p
+    max-width: 90%
+
+  .triangle-l
+    margin: 0 auto 1em 0
+
+  .triangle-r
+    margin: 0 0 1em auto
