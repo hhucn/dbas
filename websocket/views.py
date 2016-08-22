@@ -46,8 +46,7 @@ def debug_function(request):
     return {
         'layout': Dbas.base_layout(),
         'language': str(ui_locales),
-        'title': 'Admin',
+        'title': 'Debug Socket.IO Connection',
         'project': project_name,
-        'extras': extras_dict,
-        'value': ':('
+        'extras': extras_dict
     }

@@ -9,8 +9,8 @@
                 <button id="test_info_btn" data-type="info" type="submit" class="btn btn-info" style="width: 25%; margin: 0.5em;">Info</button>
             </div>
             <div class="col-md-4" id="socket_data">
-                <p>Socket ID: <strong id="socketioId"></strong></p>
-                <p>Socket Status: <strong id="socketStatus"></strong></p>
+                <p>Socket ID: <strong id="socketioId">-</strong></p>
+                <p>Socket Status: <strong id="socketStatus">Disconnected!</strong></p>
                 <p>Number of socket calls: <strong id="testCount">0</strong></p>
                 <p>Socket latency: <strong id="latency">-</strong></p>
             </div>
