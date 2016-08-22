@@ -231,8 +231,8 @@ class Dbas(object):
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
         if not Validator.check_for_integer(statement_id, True) \
-            or not Validator.check_belonging_of_statement(issue, statement_id) \
-            or not Validator.is_position(statement_id):
+                or not Validator.check_belonging_of_statement(issue, statement_id) \
+                or not Validator.is_position(statement_id):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
         disc_ui_locales = get_discussion_language(self.request, issue)
@@ -317,7 +317,7 @@ class Dbas(object):
             logger('discussion_justify', 'def', 'justify statement')
             # justifying statement
             if not get_text_for_statement_uid(statement_or_arg_id)\
-                                or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
+                    or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
 
             VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
@@ -696,10 +696,10 @@ class Dbas(object):
 
             else:
                 subject = _t.get(_t.contact) + ' D-BAS'
-                body = _t.get(_t.name) + ': ' + username + '\n'\
-                       + _t.get(_t.mail) + ': ' + email + '\n'\
-                       + _t.get(_t.phone) + ': ' + phone + '\n'\
-                       + _t.get(_t.message) + ':\n' + content
+                body = _t.get(_t.name) + ': ' + username + '\n'
+                body += _t.get(_t.mail) + ': ' + email + '\n'
+                body += _t.get(_t.phone) + ': ' + phone + '\n'
+                body += _t.get(_t.message) + ':\n' + content
                 EmailHelper.send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
                 body = '* ' + _t.get(_t.thisIsACopyOfMail).upper() + ' *\n\n' + body
                 subject = '[D-BAS INFO] ' + subject
@@ -1284,38 +1284,8 @@ class Dbas(object):
                     info = _t.get(_t.errorTryLateOrContant)
                     logger('user_registration', 'main', 'Error occured')
                 else:
-                    # creating a new user with hashed password
-                    logger('user_registration', 'main', 'Adding user')
-                    hashed_password = PasswordHandler.get_hashed_password(password)
-                    newuser = User(firstname=firstname,
-                                   surname=lastname,
-                                   email=email,
-                                   nickname=nickname,
-                                   password=hashed_password,
-                                   gender=gender,
-                                   group=db_group.uid)
-                    DBDiscussionSession.add(newuser)
-                    transaction.commit()
-                    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-                    settings = Settings(author_uid=db_user.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-                    DBDiscussionSession.add(settings)
-                    transaction.commit()
-
-                    # sanity check, whether the user exists
-                    checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-                    if checknewuser:
-                        logger('user_registration', 'main', 'New data was added with uid ' + str(checknewuser.uid))
-                        success = _t.get(_t.accountWasAdded)
-
-                        # sending an email
-                        subject = _t.get(_t.accountRegistration)
-                        body = _t.get(_t.accountWasRegistered)
-                        EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
-                        NotificationHelper.send_welcome_notification(transaction, checknewuser.uid)
-
-                    else:
-                        logger('user_registration', 'main', 'New data was not added')
-                        info = _t.get(_t.accoutErrorTryLateOrContant)
+                    success, info = UserHandler.create_new_user(self.request, firstname, lastname, email, nickname,
+                                                                password, gender, db_group.uid, ui_locales, transaction)
 
         except KeyError as e:
             logger('user_registration', 'error', repr(e))
@@ -2067,6 +2037,7 @@ class Dbas(object):
         ajax interface for fuzzy string search
 
         :param for_api: boolean
+        :param api_data: data
         :return: json-set with all matched strings
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')

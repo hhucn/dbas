@@ -3,7 +3,8 @@ import transaction
 
 from sqlalchemy import engine_from_config
 
-from dbas import user_management, DBDiscussionSession
+from dbas import user_management
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.helper.tests import add_settings_to_appconfig
 

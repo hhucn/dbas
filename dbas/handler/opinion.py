@@ -12,7 +12,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy
 from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
-    get_text_for_premisesgroup_uid, get_text_for_conclusion
+    get_text_for_premisesgroup_uid
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -22,14 +22,14 @@ class OpinionHandler:
     """
     Provides function for getting users with the same opinons as the user
     """
-    
+
     def __init__(self, lang, nickname, mainpage):
         """
-        
+
         :param self.lang: ui_locales ui_locales
         :param self.nickname: self.nickname
         :param self.mainpage: URL
-        :return: 
+        :return: None
         """
         self.lang = lang
         self.nickname = nickname
@@ -57,7 +57,7 @@ class OpinionHandler:
         try:
             db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
         except TypeError:
-            return None;
+            return None
         db_syst_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
 
         # sanity check
@@ -70,7 +70,7 @@ class OpinionHandler:
 
         # getting uids of all reactions
         _rh = RelationHelper(argument_uids[0], self.lang)
-        tmp_dict = {
+        reaction_dict = {
             'undermine': _rh.get_undermines_for_argument_uid(),
             'support': _rh.get_supports_for_argument_uid(),
             'undercut': _rh.get_undercuts_for_argument_uid(),
@@ -87,14 +87,29 @@ class OpinionHandler:
         relation_text    = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
 
         # getting votes for every reaction
-        for relation in tmp_dict:
+        ret_dict = self.__get_votes_for_reactions(reaction_dict, ret_dict, relation_text, db_user_uid, _t, regex)
+
+        return {'opinions': ret_dict, 'title': title[0:1].upper() + title[1:]}
+
+    def __get_votes_for_reactions(self, reaction_dict, ret_dict, relation_text, db_user_uid, _t, regex):
+        """
+
+        :param reaction_dict:
+        :param ret_dict:
+        :param relation_text:
+        :param db_user_uid:
+        :param _t:
+        :param regex:
+        :return:
+        """
+        for relation in reaction_dict:
             relation_dict   = dict()
             all_users       = []
             message         = ''
             seen_by         = 0
 
-            if tmp_dict[relation]:
-                for uid in tmp_dict[relation]:
+            if reaction_dict[relation]:
+                for uid in reaction_dict[relation]:
                     db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
                                                                                    VoteArgument.is_up_vote == True,
                                                                                    VoteArgument.is_valid == True,
@@ -105,7 +120,7 @@ class OpinionHandler:
                         users_dict = self.create_users_dict(voted_user, vote.timestamp)
                         all_users.append(users_dict)
                     relation_dict['users'] = all_users
-    
+
                     if len(db_votes) == 0:
                         message = _t.get(_t.voteCountTextMayBeFirst) + '.'
                     elif len(db_votes) == 1:
@@ -120,8 +135,7 @@ class OpinionHandler:
                                   'message': message,
                                   'text': regex.sub('', relation_text[relation + '_text'].replace('<strong>', '')),
                                   'seen_by': seen_by}
-
-        return {'opinions': ret_dict, 'title': title[0:1].upper() + title[1:]}
+        return ret_dict
 
     def get_user_with_same_opinion_for_statements(self, statement_uids, is_supportive):
         """
@@ -155,7 +169,7 @@ class OpinionHandler:
             try:
                 statement_dict['text'] = text[0:1].upper() + text[1:]
             except TypeError:
-                return None;
+                return None
 
             if is_supportive is not None:
                 is_supportive = True if str(is_supportive) == 'True' else False
@@ -262,7 +276,7 @@ class OpinionHandler:
         try:
             logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid) + ' ' + get_text_for_argument_uid(argument_uid, 'de'))
         except TypeError:
-            return None;
+            return None
         db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
         db_user_uid = db_user.uid if db_user else 0
 
@@ -319,7 +333,8 @@ class OpinionHandler:
         try:
             title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
         except TypeError:
-            return None;
+            return None
+
         ret_dict = dict()
 
         if not db_statement:

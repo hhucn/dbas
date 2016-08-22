@@ -12,7 +12,7 @@ import os
 from datetime import datetime
 
 import transaction
-from dbas import DBDiscussionSession
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import Dbas
 

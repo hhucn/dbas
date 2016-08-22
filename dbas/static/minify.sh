@@ -18,7 +18,7 @@ paths=($path"/js/*.js"
 appends=($path"/js/compiled/main.min.js"
          $path"/js/compiled/main_discussion.min.js"
          $path"/js/socketio/socket.io-1.4.5.js"
-         $path"/js/jquery/jquery.slimscroll-1.3.7.min.js"
+         $path"/js/jquery/jquery.slimscroll-1.3.8.min.js"
          $path"/js/jquery/jquery-2.2.3.min.js"
          $path"/js/bootstrap/bootstrap-3.3.6.min.js"
          $path"/js/bootstrap/bootstrap-toggle.min.js")

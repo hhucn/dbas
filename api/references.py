@@ -6,7 +6,7 @@ Handle references from other websites, prepare, store and load them into D-BAS.
 
 import transaction
 from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
-from dbas import DBDiscussionSession
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
 from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_by_statement, get_text_for_argument_uid, \
     get_all_arguments_with_text_by_statement_id

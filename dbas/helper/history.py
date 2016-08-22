@@ -55,7 +55,7 @@ def get_saved_issue(nickname):
 def get_splitted_history(history):
     """
     Splits history by specific keyword and removes leading '/'
-    
+
     :param history: String
     :return: [String]
     """
@@ -70,8 +70,8 @@ def get_splitted_history(history):
 def create_bubbles_from_history(history, nickname='', lang='', application_url='', slug=''):
     """
     Creates the bubbles for every history step
-    
-    :param history: String 
+
+    :param history: String
     :param nickname: User.nickname
     :param lang: ui_locales
     :param application_url: String
