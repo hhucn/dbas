@@ -114,8 +114,9 @@ function DiscussionGraph() {
 		// call updated legend
         var legend = d3.svg.legend();
 		// set position of legend
+		var legendHeight = height - 200;
         d3.select("svg").append("g")
-            .attr("transform", "translate(30, 280)")
+            .attr("transform", "translate(30, " + legendHeight + ")")
             .call(legend);
 
 		// buttons of sidebar
@@ -150,34 +151,34 @@ function DiscussionGraph() {
 		circle.on("click", function()
 		{
 			var circleId = this.id;
-            showPartOfGraph(edges, circleId);
+            showPartOfGraph(edges, force, circleId);
 			showEdgesWithTwoLinks(edges, circleId);
 
 		});
 	};
 
+    /**
+	 * Create svg-element.
+	 *
+	 * @param width: width of container, which contains graph
+     * @param height: height of container
+	 * @return scalable vector graphic
+     */
 	function getSvg(width, height){
-		/**
-		 * Create svg-element.
-		 *
-		 * @param width: width of container, which contains graph
-		 * @param height: height of container
-		 * @return scalable vector graphic
-		 */
 		return d3.select('#' + graphViewContainerSpaceId).append("svg")
     		.attr({width: width, height: height, id: "graph-svg"})
 			.append('g')
 			.attr("class", "zoom");
 	}
 
+	/**
+	 * Create force-directed network diagram and define properties.
+	 *
+	 * @param width: width of container, which contains graph
+	 * @param height: height of container
+	 * @return force layout
+	 */
 	function getForce(width, height){
-		/**
-		 * Create force-directed network diagram and define properties.
-		 *
-		 * @param width: width of container, which contains graph
-		 * @param height: height of container
-		 * @return force layout
-		 */
 		return d3.layout.force()
 			.size([width, height])
 			// pull nodes toward layout center
@@ -189,33 +190,32 @@ function DiscussionGraph() {
 			});
 	}
 
+	/**
+	 * Create dictionary for edges.
+	 *
+	 * @param jsonData: dict with data for nodes and edges
+	 * @return edges: array, which contains dicts for edges
+     */
 	function createEdgeDict(jsonData) {
-		/**
-		 * Create dictionary for edges.
-		 *
-		 * @param jsonData: dict with data for nodes and edges
-		 * @return edges: array, which contains dicts for edges
-         */
 		var edges = [];
-
 		jsonData.edges.forEach(function(e) {
     		// get source and target nodes
     		var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
         		targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
-    		// add edge, color, type and idto array
+    		// add edge, color, type, size and id to array
     		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size, id: e.id});
 		});
 
 		return edges;
 	}
 
+	/**
+	 * Select edges with type of arrow.
+	 *
+	 * @param edges: edges of graph
+	 * @return edgesTypeArrow: array, which contains edges of type arrow
+	 */
 	function createArrowDict(edges){
-		/**
-		 * Select edges with type of arrow.
-		 *
-		 * @param edges: edges of graph
-		 * @return edgesTypeArrow: array, which contains edges of type arrow
-         */
 		var edgesTypeArrow = [];
 		edges.forEach(function(d){
 			if(d.edge_type == 'arrow'){
@@ -225,14 +225,14 @@ function DiscussionGraph() {
 		return edgesTypeArrow;
 	}
 
+	/**
+	 * Create arrows for edges.
+	 *
+	 * @param svg
+	 * @param edgesTypeArrow
+	 * @return marker: arrow
+     */
 	function createArrows(svg, edgesTypeArrow) {
-		/**
-		 * Create arrows for edges.
-		 *
-		 * @param svg
-		 * @param edgesTypeArrow
-		 * @return marker: arrow
-         */
 		return svg.append("defs").selectAll('marker').data(edgesTypeArrow)
             .enter().append("svg:marker")
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id },
@@ -247,15 +247,15 @@ function DiscussionGraph() {
 			.attr("d", "M 0,0 V 4 L 5,2 Z");
 	}
 
+	/**
+	 * Create links between nodes.
+	 *
+	 * @param svg
+	 * @param marker: arrow
+	 * @param edges
+	 * @return links
+	 */
 	function createLinks(svg, edges, marker) {
-		/**
-		 * Create links between nodes.
-		 *
-		 * @param svg
-		 * @param marker: arrow
-		 * @param edges
-		 * @return links
-		 */
 		return svg.selectAll(".path")
     		.data(edges)
 			// svg lines
@@ -267,28 +267,28 @@ function DiscussionGraph() {
 			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.id + ")" });
 	}
 
+	/**
+	 * Enable drag functionality, because pan functionality overrides drag.
+	 *
+	 * @param force
+	 * @return drag functionality
+	 */
 	function enableDrag(force){
-		/**
-		 * Enable drag functionality, because pan functionality overrides drag.
-		 *
-		 * @param force
-		 * @return drag functionality
-		 */
 		return force.drag()
 			.on("dragstart", function(d){
 				d3.event.sourceEvent.stopPropagation();
 			});
 	}
 
+	/**
+	 * Create node as svg circle and enable drag functionality.
+	 *
+	 * @param svg
+	 * @param force
+	 * @param drag
+	 * @return nodes
+	 */
 	function createNodes(svg, force, drag) {
-		/**
-		 * Create node as svg circle and enable drag functionality.
-		 *
-		 * @param svg
-		 * @param force
-		 * @param drag
-		 * @return nodes
-		 */
 		return svg.selectAll(".node")
         	.data(force.nodes())
         	.enter().append("g")
@@ -296,13 +296,13 @@ function DiscussionGraph() {
             .call(drag);
 	}
 
+	/**
+	 * Define properties for nodes.
+     *
+	 * @param node
+	 * @return circle
+	 */
 	function setNodeProperties(node){
-		/**
-		 * Define properties for nodes.
-         *
-		 * @param node
-		 * @return circle
-		 */
 		return node.append("circle")
       		.attr({r: function(d){ return d.size; },
 				   fill: function(d){ return d.color},
@@ -310,13 +310,13 @@ function DiscussionGraph() {
 			});
 	}
 
+	/**
+	 * Wrap text.
+	 *
+	 * @param node
+	 * @return label
+	 */
 	function createLabel(node){
-		/**
-		 * Wrap text.
-		 *
-		 * @param node
-		 * @return label
-		 */
 		return node.append("text").each(function (d) {
             var node_text = d.label.split(" ");
             for (var i = 0; i < node_text.length; i++) {
@@ -337,12 +337,12 @@ function DiscussionGraph() {
 		});
 	}
 
+	/**
+	 * Set properties for rect.
+	 *
+	 * @param rect: background of label
+ 	 */
 	function setRectProperties(rect){
-		/**
-		 * Set properties for rect.
-		 *
-		 * @param rect: background of label
- 		 */
 		rect.each(function (d) {
 			var element = $("#label-" + d.id);
 		    var width = element.width() + 10;
@@ -358,10 +358,10 @@ function DiscussionGraph() {
 		});
 	}
 
+	/**
+	 * Create legend and update legend.
+	 */
 	function createLegend(){
-		/**
-		 * Create legend and update legend.
-		 */
 		// labels and colors for legend
 		var legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")],
 		    legendLabelRect = [_t_discussion("support"), _t_discussion("attack")],
@@ -380,14 +380,14 @@ function DiscussionGraph() {
         };
 	}
 
+	/**
+	 * Create symbols for nodes.
+	 *
+	 * @param selection
+	 * @param legendLabelCircle: array with labels for circle
+	 * @param legendColorCircle: array with colors
+	 */
 	function createNodeSymbols(selection, legendLabelCircle, legendColorCircle) {
-		/**
-		 * Create symbols for nodes.
-		 *
-		 * @param selection
-		 * @param legendLabelCircle: array with labels for circle
-		 * @param legendColorCircle: array with colors
-		 */
 		selection.selectAll(".circle")
         .data(legendLabelCircle)
         .enter().append("circle")
@@ -399,14 +399,14 @@ function DiscussionGraph() {
 			   cy: function (d,i) {return i*40}});
 	}
 
+	/**
+	 * Create symbols for edges.
+	 *
+	 * @param selection
+	 * @param legendLabelRect: array with labels for rect
+	 * @param legendColorRect: array with colors
+	 */
 	function createEdgeSymbols(selection, legendLabelRect, legendColorRect) {
-		/**
-		 * Create symbols for edges.
-		 *
-		 * @param selection
-		 * @param legendLabelRect: array with labels for rect
-		 * @param legendColorRect: array with colors
-		 */
 		selection.selectAll(".rect")
 		.data(legendLabelRect)
         .enter().append("rect")
@@ -415,14 +415,14 @@ function DiscussionGraph() {
 			   x: -7, y: function (d,i) {return i*40+118}});
 	}
 
+	/**
+	 * Create labels for symbols.
+	 *
+	 * @param selection
+	 * @param legendLabelCircle: array with labels for circle
+	 * @param legendLabelRect: array with labels for rect
+	 */
 	function createLabelsForSymbols(selection, legendLabelCircle, legendLabelRect) {
-		/**
-		 * Create labels for symbols.
-		 *
-		 * @param selection
-		 * @param legendLabelCircle: array with labels for circle
-		 * @param legendLabelRect: array with labels for rect
-		 */
 		selection.selectAll(".text")
 		.data(legendLabelCircle.concat(legendLabelRect))
         .enter().append("text")
@@ -430,13 +430,13 @@ function DiscussionGraph() {
 		.attr({x: 20, y: function (d,i) {return i*40+5}});
 	}
 
+	/**
+	 * Show all labels of graph.
+	 *
+	 * @param label
+	 * @param rect
+	 */
 	function showContent (label, rect){
-        /**
-	     * Show all labels of graph.
-		 *
-		 * @param label
-		 * @param rect
-		 */
 		$('#show-content').click(function() {
 			label.style("display", "inline");
 			rect.style("display", "inline");
@@ -449,13 +449,13 @@ function DiscussionGraph() {
 		});
 	}
 
+	/**
+	 * Hide all labels of graph.
+	 *
+	 * @param label
+	 * @param rect
+	 */
 	function hideContent(label, rect) {
-        /**
-	     * Hide all labels of graph.
-		 *
-		 * @param label
-		 * @param rect
-		 */
 		$('#hide-content').click(function() {
 			label.style("display", "none");
 			rect.style("display", "none");
@@ -471,10 +471,10 @@ function DiscussionGraph() {
 		});
 	}
 
+	/**
+	 * Show labels for positions.
+	 */
 	function showPositions() {
-        /**
-	     * Show labels for positions.
-		 */
 		$('#show-positions').click(function() {
 			// select positions
 			setDisplayStyleOfNodes('inline');
@@ -484,10 +484,10 @@ function DiscussionGraph() {
 		});
 	}
 
+	/**
+	 * Hide labels for positions.
+	 */
 	function hidePositions() {
-        /**
-	     * Hide labels for positions.
-		 */
 		$('#hide-positions').click(function() {
 			// select positions
 			setDisplayStyleOfNodes('none');
@@ -506,16 +506,24 @@ function DiscussionGraph() {
 		});
 	}
 
-    function showPartOfGraph(edges, circleId) {
+    function showPartOfGraph(edges, force, circleId) {
 		edges.forEach(function(d){
 			if(d.source.id === circleId || d.target.id === circleId){
 				// edges
                 d3.select('#' + d.id).style('stroke', d.color);
 				// nodes
 				d3.select('#' + d.source.id).attr('fill', d.source.color);
-				d3.select('#' + d.target.id).attr('fill', d.target.color);
+				force.nodes().forEach(function (selected) {
+				    if((selected.id === 'issue' && d.target.id != circleId)){
+                        // color for issue, if issue is not selected
+   				        d3.select('#' + selected.id).attr('fill', '#E0E0E0');
+				    }
+					else{
+				        d3.select('#' + d.target.id).attr('fill', d.target.color);
+				    }
 				// arrows
 				d3.select("#marker_" + d.edge_type + d.id).attr('fill', d.color);
+			});
 			}
 			else{
 				// edges
