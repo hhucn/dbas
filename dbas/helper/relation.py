@@ -37,9 +37,9 @@ class RelationHelper(object):
         """
         # logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(self.argument_uid))
         db_attacked_argument = DBDiscussionSession.query(Argument).filter_by(uid=self.argument_uid).first()
-        db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(
-                premisesgroup_uid=db_attacked_argument.premisesgroup_uid).order_by(
-                Premise.premisesgroup_uid.desc()).all()
+        db_attacked_premises = DBDiscussionSession.query(Premise)\
+            .filter_by(premisesgroup_uid=db_attacked_argument.premisesgroup_uid)\
+            .order_by(Premise.premisesgroup_uid.desc()).all()
 
         premises_as_statements_uid = set()
         for premise in db_attacked_premises:

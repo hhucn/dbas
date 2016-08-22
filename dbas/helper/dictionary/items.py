@@ -9,7 +9,7 @@ import dbas.recommender_system as RecommenderSystem
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
-from dbas.lib import get_text_for_statement_uid, get_text_for_conclusion, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history
+from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -63,14 +63,14 @@ class ItemDictHelper(object):
             for statement in db_statements:
                 statements_array.append(self.__create_answer_dict(statement.uid,
                                                                   [{'title': get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
-                                                                     'start',
+                                                                  'start',
                                                                   _um.get_url_for_statement_attitude(True, statement.uid)))
             _tn = Translator(self.lang)
             if logged_in:
                 statements_array.append(self.__create_answer_dict('start_statement',
                                                                   [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
-                                                                     'start',
-                                                                     'add'))
+                                                                  'start',
+                                                                  'add'))
             else:
                 statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.wantToStateNewPosition)}], 'justify', 'login'))
 
@@ -138,7 +138,7 @@ class ItemDictHelper(object):
                 additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
                 statements_array.append(self.__create_answer_dict(str(argument.uid),
                                                                   premise_array,
-                                                                     'justify',
+                                                                  'justify',
                                                                   _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
                                                                   already_used=already_used,
                                                                   already_used_text=additional_text))
@@ -146,8 +146,8 @@ class ItemDictHelper(object):
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
                                                               [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
-                                                                  'justify',
-                                                                  'add'))
+                                                              'justify',
+                                                              'add'))
         else:
             # elif len(statements_array) == 1:
             statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
@@ -470,7 +470,7 @@ class ItemDictHelper(object):
     def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text=''):
         """
         Return dictionary
-        
+
         :param uid: Integer
         :param premises: Array of dict with title and id
         :param attitude: String

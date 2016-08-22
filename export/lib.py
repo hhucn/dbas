@@ -27,6 +27,33 @@ def get_dump(issue, lang):
     ret_dict['issue'] = {'title': db_issue.title, 'info': db_issue.info}
 
     # getting all users
+    ret_dict['user'] = __get_all_users()
+
+    # getting all statements
+    ret_dict['statement'], statement_uid_set = __get_all_statements(issue)
+
+    # getting all textversions
+    ret_dict['textversion'] = __get_all_textversions(statement_uid_set, lang)
+
+    # getting all arguments
+    ret_dict['argument'], argument_uid_set, argument_prgoup_set = __get_all_arguments(issue, lang)
+
+    # getting all premisegroups
+    ret_dict['premisegroup'], premisegroup_uid_set = __get_all_premisegroups(argument_prgoup_set)
+
+    # getting all premises
+    ret_dict['premise'] = __get_all_premises(issue, premisegroup_uid_set, lang)
+
+    # getting all votes
+    ret_dict['vote_argument'] = __get_all_votearguments(argument_uid_set)
+
+    # getting all votes
+    ret_dict['vote_statement'] = __get_all_votestatements(statement_uid_set)
+
+    return ret_dict
+
+
+def __get_all_users():
     db_users = DBDiscussionSession.query(User).all()
     user_dict = dict()
     for index, user in enumerate(db_users):
@@ -34,9 +61,10 @@ def get_dump(issue, lang):
         tmp_dict['uid']         = user.uid
         tmp_dict['nickname']    = user.nickname
         user_dict[str(index)]   = tmp_dict
-    ret_dict['user'] = user_dict
+    return user_dict
 
-    # getting all statements
+
+def __get_all_statements(issue):
     db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
     statement_uid_set = set()
     statement_dict = dict()
@@ -47,9 +75,10 @@ def get_dump(issue, lang):
         tmp_dict['textversion_uid'] = statement.textversion_uid
         tmp_dict['is_startpoint']   = statement.is_startpoint
         statement_dict[str(index)]  = tmp_dict
-    ret_dict['statement'] = statement_dict
+    return statement_dict, statement_uid_set
 
-    # getting all textversions
+
+def __get_all_textversions(statement_uid_set, lang):
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     textversion_dict = dict()
     for index, textversion in enumerate(db_textversions):
@@ -61,9 +90,10 @@ def get_dump(issue, lang):
             tmp_dict['author_uid']       = textversion.author_uid
             tmp_dict['timestamp']        = sql_timestamp_pretty_print(textversion.timestamp, lang)
             textversion_dict[str(index)] = tmp_dict
-    ret_dict['textversion'] = textversion_dict
+    return textversion_dict
 
-    # getting all arguments
+
+def __get_all_arguments(issue, lang):
     db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
     argument_dict = dict()
     argument_uid_set = set()
@@ -80,9 +110,10 @@ def get_dump(issue, lang):
         tmp_dict['author_uid']          = argument.author_uid
         tmp_dict['timestamp']           = sql_timestamp_pretty_print(argument.timestamp, lang)
         argument_dict[str(index)]       = tmp_dict
-    ret_dict['argument'] = argument_dict
+    return argument_dict, argument_uid_set, argument_prgoup_set
 
-    # getting all premisegroups
+
+def __get_all_premisegroups(argument_prgoup_set):
     db_premisegroups = DBDiscussionSession.query(PremiseGroup).all()
     premisegroup_dict = dict()
     premisegroup_uid_set = set()
@@ -93,9 +124,10 @@ def get_dump(issue, lang):
             tmp_dict['uid']                 = premisegroup.uid
             tmp_dict['author_uid']          = premisegroup.author_uid
             premisegroup_dict[str(index)]   = tmp_dict
-    ret_dict['premisegroup'] = premisegroup_dict
+    return premisegroup_dict
 
-    # getting all premises
+
+def __get_all_premises(issue, premisegroup_uid_set, lang):
     db_premises = DBDiscussionSession.query(Premise).filter_by(issue_uid=issue).all()
     premise_dict = dict()
     for index, premise in enumerate(db_premises):
@@ -107,9 +139,10 @@ def get_dump(issue, lang):
             tmp_dict['author_uid']        = premise.author_uid
             tmp_dict['timestamp']         = sql_timestamp_pretty_print(premise.timestamp, lang)
             premise_dict[str(index)]      = tmp_dict
-    ret_dict['premise'] = premise_dict
+    return premise_dict
 
-    # getting all votes
+
+def __get_all_votearguments(argument_uid_set):
     db_votes = DBDiscussionSession.query(VoteArgument).all()
     vote_dict = dict()
     for index, vote in enumerate(db_votes):
@@ -121,9 +154,10 @@ def get_dump(issue, lang):
             tmp_dict['is_up_vote']   = vote.is_up_vote
             tmp_dict['is_valid']     = vote.is_valid
             vote_dict[str(index)]    = tmp_dict
-    ret_dict['vote_argument'] = vote_dict
+    return vote_dict
 
-    # getting all votes
+
+def __get_all_votestatements(statement_uid_set):
     db_votes = DBDiscussionSession.query(VoteStatement).all()
     vote_dict = dict()
     for index, vote in enumerate(db_votes):
@@ -135,6 +169,4 @@ def get_dump(issue, lang):
             tmp_dict['is_up_vote']    = vote.is_up_vote
             tmp_dict['is_valid']      = vote.is_valid
             vote_dict[str(index)]     = tmp_dict
-    ret_dict['vote_statement'] = vote_dict
-
-    return ret_dict
+    return vote_dict
