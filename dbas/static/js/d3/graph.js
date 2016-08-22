@@ -464,6 +464,9 @@ function DiscussionGraph() {
 			isContentVisible = false;
 			if (isPositionVisible){
 				setDisplayStyleOfNodes('inline');
+			} else {
+			$('#show-positions').show();
+			$('#hide-positions').hide();
 			}
 		});
 	}
