@@ -25,7 +25,7 @@ def get_d3_data(issue):
     """
     Given an issue, create an dictionary and return it
 
-    :param issue: 
+    :param issue: Current uid of issue
     :return: dictionary
     """
     logger('GraphLib', 'get_d3_data', 'main')

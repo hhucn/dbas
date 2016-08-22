@@ -23,22 +23,22 @@ cors_policy = dict(enabled=True,
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
-test_data = Service(name='test',
-                    path='/test',
-                    renderer='templates/main.pt',
-                    description="Test Dump",
-                    permission='everybody',  # or permission='use'
-                    cors_policy=cors_policy)
+debug_data = Service(name='debug',
+                     path='/debug',
+                     renderer='templates/main.pt',
+                     description="Debug Data",
+                     permission='everybody',  # or permission='use'
+                     cors_policy=cors_policy)
 
 
 # =============================================================================
 # WEBSOCKET REQUESTS
 # =============================================================================
 
-@test_data.get()
-def some_function(request):
+@debug_data.get()
+def debug_function(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Websocket', 'socketio', 'main')
+    logger('Websocket', 'socketio', 'debug_function')
 
     ui_locales = get_language(request, get_current_registry())
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
@@ -46,8 +46,7 @@ def some_function(request):
     return {
         'layout': Dbas.base_layout(),
         'language': str(ui_locales),
-        'title': 'Admin',
+        'title': 'Debug Socket.IO Connection',
         'project': project_name,
-        'extras': extras_dict,
-        'value': ':('
+        'extras': extras_dict
     }

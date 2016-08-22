@@ -48,7 +48,7 @@ def get_subpage_for(subpage_name, nickname):
     :return:
     """
     logger('ReviewHelper', 'get_subpage_for', subpage_name)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    # db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     if subpage_name in pages and subpage_name not in ['deletes', 'flags']:
         return subpage_name

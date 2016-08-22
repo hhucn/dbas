@@ -90,49 +90,52 @@ def get_all_users(user, lang, mainpage):
 
     return return_array
 
+
 def get_all_issues(user, lang, mainpage):
-	"""
+    """
     Bla
 
-	:param issue:
-	:param lang:
-	:return:
-	"""
-	is_admin = UserHandler.is_user_in_group(user, 'admins')
-	logger('AdminLib', 'get_all_issues', 'is_admin ' + str(is_admin))
-	return_array = []
-	if not is_admin:
-		return return_array
+    :param issue:
+    :param lang:
+    :return:
+    """
+    is_admin = UserHandler.is_user_in_group(user, 'admins')
+    logger('AdminLib', 'get_all_issues', 'is_admin ' + str(is_admin))
+    return_array = []
+    if not is_admin:
+        return return_array
 
-	_uh = UserHandler
-	db_issues = DBDiscussionSession.query(Issue)\
-		.join(User)\
-		.order_by(Issue.uid.asc()).all()
-	for issue in db_issues:
-		tmp_dict = dict()
-		tmp_dict['uid'] = str(issue.uid)
-		tmp_dict['title'] = issue.get_slug()
-		tmp_dict['info'] = issue.info
-		tmp_dict['date'] = sql_timestamp_pretty_print(issue.date, lang, humanize=False, with_exact_time=True)
-		tmp_dict['author'] = issue.users.public_nickname
-		tmp_dict['public_url'] = mainpage + '/user/' + str(issue.users.public_nickname)
-		return_array.append(tmp_dict)
+    db_issues = DBDiscussionSession.query(Issue)\
+        .join(User)\
+        .order_by(Issue.uid.asc()).all()
+    for issue in db_issues:
+        tmp_dict = dict()
+        tmp_dict['uid'] = str(issue.uid)
+        tmp_dict['title'] = issue.get_slug()
+        tmp_dict['info'] = issue.info
+        tmp_dict['date'] = sql_timestamp_pretty_print(issue.date, lang, humanize=False, with_exact_time=True)
+        tmp_dict['author'] = issue.users.public_nickname
+        tmp_dict['public_url'] = mainpage + '/user/' + str(issue.users.public_nickname)
+        return_array.append(tmp_dict)
 
-	return return_array
+    return return_array
+
 
 def get_all_statements(user, lang, mainpage):
-	"""
+    """
         Bla
 
         :return:
         """
+
 
 def get_all_premisegroups(user, lang, mainpage):
-	"""
+    """
         Bla
 
         :return:
         """
+
 
 def get_dashboard_infos():
     """
