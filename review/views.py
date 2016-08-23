@@ -112,7 +112,7 @@ def main_review_reputation(request):
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
 
-    reputation_dict = ReviewHelper.get_reputation_history()
+    reputation_dict = ReviewHelper.get_reputation_history(request.authenticated_userid)
 
     return {
         'layout': Dbas.base_layout(),
@@ -167,5 +167,5 @@ def main_review(request):
         'review': review_dict,
         'issues': issue_dict,
         'current_issue_title': issue,
-        'reputation_count': 4
+        'reputation_count': 7
     }

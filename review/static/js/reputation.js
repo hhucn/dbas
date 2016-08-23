@@ -19,15 +19,18 @@ $(document).ready(function mainDocumentReady() {
 	var collectedAbsoluteData = collected[1];
 	var collectedRelativeData = collected[2];
 	
-	createChart(collectedLabels, 'Collected Absolute', collectedAbsoluteData, $('#reputation_absolute_graph_summary'), '#absolute_graph_summary', 0);
-	createChart(collectedLabels, 'Collected Relative', collectedRelativeData, $('#reputation_relative_graph_summary'), '#relative_graph_summary', 1);
-	
-	createChart(labels, 'Absolute', absoluteData, $('#reputation_absolute_graph'), '#absolute_graph', 2);
-	createChart(labels, 'Relative', relativeData, $('#reputation_relative_graph'), '#relative_graph', 3);
+	createChart('Summarized Absolute',collectedLabels,  collectedAbsoluteData, $('#reputation_absolute_graph_summary'), '#absolute_graph_summary', 0);
+	createChart('Summarized Relative',collectedLabels,  collectedRelativeData, $('#reputation_relative_graph_summary'), '#relative_graph_summary', 1);
+	createChart('Absolute View', labels, absoluteData, $('#reputation_absolute_graph'), '#absolute_graph', 2);
+	createChart('Relative View', labels, relativeData, $('#reputation_relative_graph'), '#relative_graph', 3);
 	setLegendCSS();
 	
 });
 
+/**
+ * Returns all lables out of the reputation table
+ * @returns {Array}
+ */
 function collectLabels(){
 	var labels = [];
 	$.each($('#reputation_table').find('.rep_date'), function(){
@@ -36,6 +39,10 @@ function collectLabels(){
 	return labels;
 }
 
+/**
+ * Returns all points out of the reputation table (cummulative)
+ * @returns {number[]}
+ */
 function collectAbsoluteDataset() {
 	var data = [0];
 	$.each($('#reputation_table').find('.points'), function (index) {
@@ -45,23 +52,32 @@ function collectAbsoluteDataset() {
 	return data;
 }
 
+/**
+ * Returns all points out of the reputation table
+ * @returns {Array}
+ */
 function collectRelativeDataset(){
 	var data = [];
 	$.each($('#reputation_table').find('.points'), function(){
 		data.push(parseInt($(this).text()));
 	});
-	console.log(data);
 	return data;
 }
 
+/**
+ * Summarizes data by duplicated labels
+ * @param labels array with labels
+ * @param absoluteDataset array with values
+ * @param relativeDataset array with values
+ * @returns {*[]} labels, absoluteDataset, relativeDataset
+ */
 function collectDates(labels, absoluteDataset, relativeDataset){
 	var newLables = [];
 	var newAbsolute = [];
 	var newRelative = [];
 	$.each(labels, function(index){
-		console.log(labels[index] + ' ' + newLables[newLables.length - 1] + ' ' + (labels[index] == newLables[newLables.length - 1]));
 		if (labels[index] == newLables[newLables.length - 1]){
-			newAbsolute[newAbsolute.length - 1] = newAbsolute[newAbsolute.length - 1]+ absoluteDataset[index];
+			newAbsolute[newAbsolute.length - 1] = newAbsolute[newAbsolute.length - 1] + relativeDataset[index];
 			newRelative[newRelative.length - 1] = newRelative[newRelative.length - 1] + relativeDataset[index];
 		} else {
 			newLables.push(labels[index]);
@@ -76,7 +92,17 @@ function collectDates(labels, absoluteDataset, relativeDataset){
 	return [newLables, newAbsolute, newRelative];
 }
 
-function createChart (labels, label, displaydata, space, id, count){
+/**
+ * Creates and line chart
+ *
+ * @param label of the line
+ * @param labels for the x-axis
+ * @param displaydata for the y-axis
+ * @param space where the graph will be embedded
+ * @param id for the canvas of the graph (with #)
+ * @param count int for the color array
+ */
+function createChart (label, labels, displaydata, space, id, count){
 	space.append('<canvas id="' + id + '" width="' + space.width() + 'px" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 	var data = {
 		labels : labels,
@@ -98,6 +124,9 @@ function createChart (labels, label, displaydata, space, id, count){
 	space.prepend(div_legend);
 }
 
+/**
+ * Beautifies CSS attributes of .chart-legend
+ */
 function setLegendCSS () {
 	var legend = $('.chart-legend');
 
@@ -113,4 +142,4 @@ function setLegendCSS () {
 		'padding': '0.2em',
 		'color': 'white'
 	}).addClass('lead');
-};
+}

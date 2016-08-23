@@ -218,17 +218,17 @@ def get_reputation_history(nickname):
         return dict()
 
     ret_dict = dict()
-    ret_dict['count'] = 4
+    ret_dict['count'] = 7
 
     rep_list = list()
-    rep_list.append({'date': '20.08.2016', 'action': 'first click in a discussion', 'points_data': '<span class="success-description points">1</span>', 'points': 1})
-    rep_list.append({'date': '21.08.2016', 'action': 'first switch of the discussions topic', 'points_data': '<span class="success-description points">1</span>', 'points': 1})
-    rep_list.append({'date': '21.08.2016', 'action': 'edited a statement successfully', 'points_data': '<span class="success-description points">3</span>', 'points': 3})
-    rep_list.append({'date': '22.08.2016', 'action': 'edited a statement vainly', 'points_data': '<span class="error-description points">-1</span>', 'points': -1})
-    rep_list.append({'date': '22.08.2016', 'action': 'edited a statement vainly', 'points_data': '<span class="error-description points">-1</span>', 'points': -1})
-    rep_list.append({'date': '22.08.2016', 'action': 'mark a statement as spam successfully', 'points_data': '<span class="success-description points">3</span>', 'points': 3})
-    rep_list.append({'date': '23.08.2016', 'action': 'voted for a deletion successfully', 'points_data': '<span class="success-description points">2</span>', 'points': 2})
-    rep_list.append({'date': '23.08.2016', 'action': 'voted for a deletion vainly', 'points_data': '<span class="error-description points">-1</span>', 'points': -1})
+    rep_list.append({'date': '20.08.2016', 'points_data': '<span class="success-description points">1</span>', 'action': 'first click in a discussion', 'points': 1})
+    rep_list.append({'date': '21.08.2016', 'points_data': '<span class="success-description points">1</span>', 'action': 'first switch of the discussions topic', 'points': 1})
+    rep_list.append({'date': '21.08.2016', 'points_data': '<span class="success-description points">3</span>', 'action': 'edited a statement successfully', 'points': 3})
+    rep_list.append({'date': '22.08.2016', 'points_data': '<span class="error-description points">-1</span>',  'action': 'edited a statement vainly',  'points': -1})
+    rep_list.append({'date': '22.08.2016', 'points_data': '<span class="error-description points">-1</span>',  'action': 'edited a statement vainly',  'points': -1})
+    rep_list.append({'date': '22.08.2016', 'points_data': '<span class="success-description points">3</span>', 'action': 'mark a statement as spam successfully', 'points': 3})
+    rep_list.append({'date': '23.08.2016', 'points_data': '<span class="success-description points">2</span>', 'action': 'voted for a deletion successfully', 'points': 2})
+    rep_list.append({'date': '23.08.2016', 'points_data': '<span class="error-description points">-1</span>',  'action': 'voted for a deletion vainly',  'points': -1})
 
     ret_dict['history'] = rep_list
 
