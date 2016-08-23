@@ -21,6 +21,8 @@ from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, g
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 
+from review.review_helper import get_reputation_history
+
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',
             'Apologetic', 'Ashamed', 'Awake', 'Bewildered', 'Bitchy', 'Bittersweet', 'Blah', 'Blank', 'Blissful',
@@ -268,6 +270,8 @@ def get_public_information_data(nickname, lang):
     return_dict['data2'] = data_decision_30
     return_dict['data3'] = data_statement_30
     return_dict['data4'] = data_edit_30
+
+    # history = get_reputation_history(nickname)  # TODO REPUTATION CHART
 
     return return_dict
 

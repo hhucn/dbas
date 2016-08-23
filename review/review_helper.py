@@ -9,8 +9,7 @@ from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-
-import dbas.user_management as UserManager
+from dbas import user_management as UserManager
 
 pages = ['edits', 'deletes', 'flags', 'random', 'duplicates', 'freshest']
 reputation = {'edits': 100,
@@ -49,7 +48,9 @@ def get_subpage_for(subpage_name, nickname):
     :return:
     """
     logger('ReviewHelper', 'get_subpage_for', subpage_name)
-    # db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return None
 
     if subpage_name in pages and subpage_name not in ['deletes', 'flags']:
         return subpage_name
@@ -220,14 +221,14 @@ def get_reputation_history(nickname):
     ret_dict['count'] = 4
 
     rep_list = list()
-    rep_list.append({'date': '20.08.2016', 'action': 'first click in a discussion', 'points_data': '<span class="success-description points">1</span>'})
-    rep_list.append({'date': '21.08.2016', 'action': 'first switch of the discussions topic', 'points_data': '<span class="success-description points">1</span>'})
-    rep_list.append({'date': '21.08.2016', 'action': 'edited a statement successfully', 'points_data': '<span class="success-description points">3</span>'})
-    rep_list.append({'date': '22.08.2016', 'action': 'edited a statement vainly', 'points_data': '<span class="error-description points">-1</span>'})
-    rep_list.append({'date': '22.08.2016', 'action': 'edited a statement vainly', 'points_data': '<span class="error-description points">-1</span>'})
-    rep_list.append({'date': '22.08.2016', 'action': 'mark a statement as spam successfully', 'points_data': '<span class="success-description points">3</span>'})
-    rep_list.append({'date': '23.08.2016', 'action': 'voted for a deletion successfully', 'points_data': '<span class="success-description points">2</span>'})
-    rep_list.append({'date': '23.08.2016', 'action': 'voted for a deletion vainly', 'points_data': '<span class="error-description points">-1</span>'})
+    rep_list.append({'date': '20.08.2016', 'action': 'first click in a discussion', 'points_data': '<span class="success-description points">1</span>', 'points': 1})
+    rep_list.append({'date': '21.08.2016', 'action': 'first switch of the discussions topic', 'points_data': '<span class="success-description points">1</span>', 'points': 1})
+    rep_list.append({'date': '21.08.2016', 'action': 'edited a statement successfully', 'points_data': '<span class="success-description points">3</span>', 'points': 3})
+    rep_list.append({'date': '22.08.2016', 'action': 'edited a statement vainly', 'points_data': '<span class="error-description points">-1</span>', 'points': -1})
+    rep_list.append({'date': '22.08.2016', 'action': 'edited a statement vainly', 'points_data': '<span class="error-description points">-1</span>', 'points': -1})
+    rep_list.append({'date': '22.08.2016', 'action': 'mark a statement as spam successfully', 'points_data': '<span class="success-description points">3</span>', 'points': 3})
+    rep_list.append({'date': '23.08.2016', 'action': 'voted for a deletion successfully', 'points_data': '<span class="success-description points">2</span>', 'points': 2})
+    rep_list.append({'date': '23.08.2016', 'action': 'voted for a deletion vainly', 'points_data': '<span class="error-description points">-1</span>', 'points': -1})
 
     ret_dict['history'] = rep_list
 
