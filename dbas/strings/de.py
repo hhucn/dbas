@@ -344,7 +344,7 @@ class GermanDict:
         de_lang[_self.iDisagreeWithInColor] = 'Ich <span class=\'text-danger\'>lehne es ab</span>'
         de_lang[_self.iDoNotKnow] = 'Ich weiß es nicht, dass'
         de_lang[_self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>'
-        de_lang[_self.iDoNotBelieve] = 'Ich glaube nicht, dass die XXX eine gute Begründung für YYY ist.'
+        de_lang[_self.iDoNotBelieve] = 'Ich glaube nicht, dass die XXX eine gute Begründung für die YYY ist.'
         de_lang[_self.iHaveNoOpinionYet] = 'Ich weiß es nicht, dass'
         de_lang[_self.iHaveNoOpinion] = 'Ich weiß es nicht'
         de_lang[_self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>. Zeige mir eine Aussage für das Argument'
