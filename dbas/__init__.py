@@ -81,8 +81,10 @@ def main(global_config, **settings):
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
+    config.add_static_view(name='rv', path='review:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
+    config.add_cache_buster('review:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
     # adding routes
     config.add_route('main_page', '/')

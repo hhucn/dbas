@@ -5,6 +5,7 @@ Provides helping function for the review page.
 """
 
 import random
+from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
@@ -204,3 +205,30 @@ def __get_users_array(mainpage):
         tmp_dict['name'] = db_user.public_nickname
         users_array.append(tmp_dict)
     return users_array
+
+
+def get_reputation_history(nickname):
+    """
+
+    :return:
+    """
+    current_user = get_user_by_private_or_public_nickname(nickname)
+    if not current_user:
+        return dict()
+
+    ret_dict = dict()
+    ret_dict['count'] = 4
+
+    rep_list = list()
+    rep_list.append({'date': '20.08.2016', 'action': 'first click in a discussion', 'points_data': '<span class="success-description points">1</span>'})
+    rep_list.append({'date': '21.08.2016', 'action': 'first switch of the discussions topic', 'points_data': '<span class="success-description points">1</span>'})
+    rep_list.append({'date': '21.08.2016', 'action': 'edited a statement successfully', 'points_data': '<span class="success-description points">3</span>'})
+    rep_list.append({'date': '22.08.2016', 'action': 'edited a statement vainly', 'points_data': '<span class="error-description points">-1</span>'})
+    rep_list.append({'date': '22.08.2016', 'action': 'edited a statement vainly', 'points_data': '<span class="error-description points">-1</span>'})
+    rep_list.append({'date': '22.08.2016', 'action': 'mark a statement as spam successfully', 'points_data': '<span class="success-description points">3</span>'})
+    rep_list.append({'date': '23.08.2016', 'action': 'voted for a deletion successfully', 'points_data': '<span class="success-description points">2</span>'})
+    rep_list.append({'date': '23.08.2016', 'action': 'voted for a deletion vainly', 'points_data': '<span class="error-description points">-1</span>'})
+
+    ret_dict['history'] = rep_list
+
+    return ret_dict

@@ -10,7 +10,7 @@ from datetime import datetime
 from html import escape
 
 from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
+from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 
@@ -511,3 +511,30 @@ def get_lang_for_issue(uid):
         return fallback_lang
 
     return db_lang.ui_locales
+
+
+def get_user_by_private_or_public_nickname(nickname):
+    """
+    Gets the user by his (public) nickname, based on the option, whether his nickname is public or not
+
+    :param nickname: Nickname of the user
+    :return: Current user or None
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+
+    db_settings = None
+    current_user = None
+
+    if db_user:
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    elif db_public_user:
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
+
+    if db_settings:
+        if db_settings.should_show_public_nickname and db_user:
+            current_user = db_user
+        elif not db_settings.should_show_public_nickname and db_public_user:
+            current_user = db_public_user
+
+    return current_user

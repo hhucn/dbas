@@ -38,7 +38,7 @@ from dbas.helper.query import QueryHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
 from dbas.input_validator import Validator
-from dbas.lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
+from dbas.lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language, get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -790,11 +790,11 @@ class Dbas(object):
             'change_error': error,
             'change_success': success,
             'message': message,
-            'db_firstname': db_user.firstname if db_user else 'unknown',
-            'db_surname': db_user.surname if db_user else 'unknown',
-            'db_nickname': db_user.nickname if db_user else 'unknown',
+            'db_firstname': db_user.firstname,
+            'db_surname': db_user.surname,
+            'db_nickname': db_user.nickname,
             'db_public_nickname': public_nick,
-            'db_mail': db_user.email if db_user else 'unknown',
+            'db_mail': db_user.email,
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
             'edits_done': edits,
@@ -808,7 +808,7 @@ class Dbas(object):
             'title_notifications': _tn.get(_tn.notificationSettingsTitle),
             'title_public_nick': _tn.get(_tn.publicNickTitle),
             'title_prefered_lang': _tn.get(_tn.preferedLangTitle),
-            'public_page_url': mainpage + '/user/' + public_nick,
+            'public_page_url': mainpage + '/user/' + (db_user.nickname if db_settings.should_show_public_nickname else public_nick),
             'on': _tn.get(_tn.on),
             'off': _tn.get(_tn.off),
             'current_lang': db_language.name if db_language else '?',
@@ -897,23 +897,8 @@ class Dbas(object):
         nickname = matchdict['nickname'] if 'nickname' in matchdict else ''
         nickname = nickname.replace('%20', ' ')
         logger('main_user', 'def', 'nickname: ' + str(nickname))
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
 
-        db_settings = None
-        current_user = None
-
-        if db_user:
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-        elif db_public_user:
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
-
-        if db_settings:
-            if db_settings.should_show_public_nickname and db_user:
-                current_user = db_user
-            elif not db_settings.should_show_public_nickname and db_public_user:
-                current_user = db_public_user
-
+        current_user = get_user_by_private_or_public_nickname(nickname)
         if current_user is None:
             return HTTPFound(location=UrlManager(mainpage).get_404([self.request.path[1:]]))
 
