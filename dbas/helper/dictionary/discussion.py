@@ -335,8 +335,6 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'get_dict_for_jump', 'at_attitude')
         _tn                    = Translator(self.lang)
-        add_premise_text    = ''
-        save_statement_url  = ''
         argument_text       = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
@@ -345,7 +343,34 @@ class DiscussionDictHelper(object):
 
         bubbles_array = [bubble]
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
+
+    def get_dict_for_jump_decision(self, uid):
+        """
+        Prepares the discussion dict with all bubbles for the jump decision step
+
+        :param uid: Argument.uid
+        :return: dict()
+        """
+        logger('DictionaryHelper', 'get_dict_for_jump_decision', 'at_attitude')
+        _tn                    = Translator(self.lang)
+
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        tag_premise = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
+        tag_conclusion = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
+        tag_end = '</' + TextGenerator.tag_type + '>'
+        premise, trash = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        premise = tag_premise + premise + tag_end
+        conclusion = tag_conclusion + get_text_for_conclusion(db_argument) + tag_end
+        aand = ' ' + _tn.get(_tn.aand) + ' '
+
+        text = _tn.get(_tn.whatDoYouThinkAbout)
+        text += ' ' + premise + aand + conclusion + '?'
+        bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+
+        bubbles_array = [bubble]
+
+        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
 
     def get_dict_for_choosing(self, uid, is_uid_argument, is_supportive):
         """
