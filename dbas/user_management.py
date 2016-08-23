@@ -17,7 +17,7 @@ from dbas.helper import email as EmailHelper
 from dbas.helper import notification as NotificationHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
-from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid
+from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid, get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 
@@ -205,22 +205,7 @@ def get_public_information_data(nickname, lang):
     :return: dict()
     """
     return_dict = dict()
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-
-    db_settings = None
-    current_user = None
-
-    if db_user:
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-    elif db_public_user:
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
-
-    if db_settings:
-        if db_settings.should_show_public_nickname and db_user:
-            current_user = db_user
-        elif not db_settings.should_show_public_nickname and db_public_user:
-            current_user = db_public_user
+    current_user = get_user_by_private_or_public_nickname(nickname)
 
     if current_user is None:
         return return_dict

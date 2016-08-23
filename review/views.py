@@ -112,13 +112,15 @@ def main_review_reputation(request):
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
 
+    reputation_dict = ReviewHelper.get_reputation_history()
+
     return {
         'layout': Dbas.base_layout(),
         'language': str(ui_locales),
         'title': _tn.get(_tn.review),
         'project': project_name,
         'extras': extras_dict,
-        'reputation_count': 4
+        'reputation': reputation_dict
     }
 
 
