@@ -8,7 +8,7 @@ var fillColorSet = ['rgba(200,230,201,0.4)', 'rgba(255,205,210,0.4)', 'rgba(187,
 var strokeColorSet = ['#4CAF50', '#F44336', '#2196F3', '#795548']; // 500
 var pointStrokeColorSet = ['#2E7D32', '#C62828', '#1565C0', '#4E342E']; // 800
 
-$(document).ready(function mainDocumentReady() {
+$(document).ready(function () {
 	
 	var labels = collectLabels();
 	var absoluteData = collectAbsoluteDataset();
