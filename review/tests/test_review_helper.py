@@ -26,3 +26,20 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('is_allowed_text' in d)
             self.assertTrue('is_not_allowed_text' in d)
             self.assertTrue('last_reviews' in d)
+
+    def test_get_subpage_for(self):
+        self.assertIsNone(ReviewHelper.get_subpage_for('test', 'some nick'))
+        self.assertIsNone(ReviewHelper.get_subpage_for('test', 'Tobias'))
+        self.assertIsNone(ReviewHelper.get_subpage_for('edits', 'some nick'))
+        self.assertIsNotNone(ReviewHelper.get_subpage_for('edits', 'Tobias'))
+
+    def test_get_reputation_history(self):
+        self.assertEqual(len(ReviewHelper.get_reputation_history('Bla')), 0)
+        history = ReviewHelper.get_reputation_history('Tobias')
+        self.assertTrue(len(history) > 0)
+        self.assertTrue('count' in history)
+        self.assertTrue('history' in history)
+        for h in history['history']:
+            self.assertTrue('date' in h)
+            self.assertTrue('action' in h)
+            self.assertTrue('points' in h)
