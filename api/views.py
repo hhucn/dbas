@@ -116,11 +116,15 @@ text_for_argument = Service(name="argument_text_block",
 #
 # Jump into the discussion
 #
-jump_to_argument = Service(name="jump_to_argument",
-                           path="/{slug}/jump/{arg_uid}",
-                           description="Jump to an argument",
-                           cors_policy=cors_policy)
+jump_to_zargument = Service(name="jump_to_argument",  # Need this 'z' to call this after the other jumps
+                            path="/{slug}/jump/{arg_uid}",
+                            description="Jump to an argument",
+                            cors_policy=cors_policy)
 
+jump_to_decision = Service(name="jump_to_decision",
+                           path="/{slug}/jump/decision/{arg_uid}",
+                           description="Persuade the user to make a decision",
+                           cors_policy=cors_policy)
 #
 # Other Services
 #
@@ -431,7 +435,21 @@ def find_statements_fn(request):
 # JUMPING - jump to specific position in the discussion
 # =============================================================================
 
-@jump_to_argument.get()
+def jump_preparation(request):
+    """
+    Prepare api_data and extract all relevant information from the request.
+
+    :param request:
+    :return:
+    """
+    slug = request.matchdict["slug"]
+    arg_uid = int(request.matchdict["arg_uid"])
+    nickname = None
+    session_id = None
+    return {"slug": slug, "arg_uid": arg_uid, "nickname": nickname, "session_id": session_id}
+
+
+@jump_to_zargument.get()
 def fn_jump_to_argument(request):
     """
     Given a slug, arg_uid and a nickname, jump directly to an argument to get
@@ -440,13 +458,20 @@ def fn_jump_to_argument(request):
     :param request:
     :return: Argument with a list of possible interactions
     """
-    slug = request.matchdict["slug"]
-    arg_uid = int(request.matchdict["arg_uid"])
-    nickname = None
-    session_id = None
-
-    api_data = {"slug": slug, "arg_uid": arg_uid, "nickname": nickname, "session_id": session_id}
+    api_data = jump_preparation(request)
     return as_json(Dbas(request).discussion_jump(for_api=True, api_data=api_data))
+
+
+@jump_to_decision.get()
+def fn_jump_to_decision(request):
+    """
+    Persuade a user to make a decision when she previously marked both parts of the argument as invalid.
+
+    :param request:
+    :return: Argument with a list of possible interactions
+    """
+    api_data = jump_preparation(request)
+    return as_json(Dbas(request).discussion_jump_decision(for_api=True, api_data=api_data))
 
 
 # =============================================================================
