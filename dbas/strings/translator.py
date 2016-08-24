@@ -293,6 +293,7 @@ class Translator(object):
         self.interestingOnDBAS = 'interestingOnDBAS'
         self.informationForStatements = 'informationForStatements'
         self.invalidEmail = 'invalidEmail'
+        self.jumpAnswer0 = 'jumpAnswer0'
         self.jumpAnswer1 = 'jumpAnswer1'
         self.jumpAnswer2 = 'jumpAnswer2'
         self.jumpAnswer3 = 'jumpAnswer3'
