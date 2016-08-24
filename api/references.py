@@ -54,8 +54,9 @@ def prepare_single_reference(ref):
     :return: dictionary with some prepared fields of a reference
     :rtype: dict
     """
-    url = url_to_statement(ref.issue_uid, ref.statement_uid)
-    return {"uid": ref.uid, "text": ref.reference, "url": url}
+    if ref:
+        url = url_to_statement(ref.issue_uid, ref.statement_uid)
+        return {"uid": ref.uid, "text": ref.reference, "url": url}
 
 
 def store_reference(api_data, statement_uid=None):
