@@ -18,7 +18,8 @@ from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, 
 
 from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, as_json
 from .login import validate_credentials, validate_login
-from .references import store_reference, url_to_statement, get_references_for_url, get_all_references_by_reference_text, get_reference_by_id
+from .references import store_reference, url_to_statement, get_references_for_url, get_all_references_by_reference_text, get_reference_by_id, \
+    prepare_single_reference
 
 log = logger()
 
@@ -334,8 +335,7 @@ def get_references(request):
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
             for ref in refs_db:
-                url = url_to_statement(ref.issue_uid, ref.statement_uid)
-                refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
+                refs.append(prepare_single_reference(ref))
             return as_json({"references": refs})
         else:
             log.error("[API/Reference] Returned no references: Database error")
