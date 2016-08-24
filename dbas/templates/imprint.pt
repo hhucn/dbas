@@ -105,9 +105,14 @@
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
-					<span class="project lead">0.7.0 (2016-07-xx)</span>
+					<span class="project lead">0.7.0 (2016-09-xx)</span>
 					<ul>
-						<li>Review-Mechanisms</li>
+						<li>New bootstraping</li>
+					</ul>
+
+					<span class="project lead">0.6.1 (2016-08-24)</span>
+					<ul>
+						<li>Publish / Subscribe</li>
 					</ul>
 
 					<span class="project lead">0.6.0 (2016-07-02)</span>
@@ -115,7 +120,7 @@
 						<li>Publish / Subscribe</li>
 					</ul>
 
-					<span class="project lead">0.5.16 (2016-06-12)</span>
+					<span class="project lead">0.5.17 (2016-06-12)</span>
 					<ul>
 						<li>Color coding for feedback mechanisms</li>
 					</ul>
