@@ -338,8 +338,8 @@ class DiscussionDictHelper(object):
         :return: dict()
         """
         logger('DictionaryHelper', 'get_dict_for_jump', 'at_attitude')
-        _tn                    = Translator(self.lang)
-        argument_text       = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
+        _tn = Translator(self.lang)
+        argument_text  = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ': ' + argument_text + '?'

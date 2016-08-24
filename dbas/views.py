@@ -127,10 +127,7 @@ class Dbas(object):
         logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_init', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
-        session_expired = UserHandler.update_last_action(transaction, nickname)
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, '')
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -206,7 +203,7 @@ class Dbas(object):
         logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_attitude', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, params, self.request)
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -268,17 +265,11 @@ class Dbas(object):
         logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_justify', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
-        history              = params['history'] if 'history' in params else ''
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
-
-        _uh = UserHandler
-        session_expired = _uh.update_last_action(transaction, nickname)
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
-        logged_in = _uh.is_user_logged_in(nickname)
+        logged_in = UserHandler.is_user_logged_in(nickname)
 
         ui_locales = get_language(self.request, get_current_registry())
 
@@ -391,7 +382,6 @@ class Dbas(object):
         attack          = matchdict['mode'] if 'mode' in matchdict else ''
         arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
         tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
-        history         = params['history'] if 'history' in params else ''
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
         valid_reaction = Validator.check_reaction(arg_id_user, arg_id_sys, attack)
@@ -400,11 +390,8 @@ class Dbas(object):
                 or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_sys):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-        supportive           = tmp_argument.is_supportive
-        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
-        session_expired      = UserHandler.update_last_action(transaction, nickname)
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
+        supportive = tmp_argument.is_supportive
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -499,8 +486,6 @@ class Dbas(object):
         is_supportive   = matchdict['supportive'] if 'supportive' in matchdict else ''
         uid             = matchdict['id'] if 'id' in matchdict else ''
         pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
-        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
-        history         = params['history'] if 'history' in params else ''
 
         is_argument = True if is_argument is 't' else False
         is_supportive = True if is_supportive is 't' else False
@@ -513,9 +498,7 @@ class Dbas(object):
         if not Validator.check_belonging_of_premisegroups(issue, pgroup_ids):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-        session_expired = UserHandler.update_last_action(transaction, nickname)
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
