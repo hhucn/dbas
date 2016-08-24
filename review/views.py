@@ -156,7 +156,7 @@ def main_review(request):
     if len(issue) == 0:
         issue = issue_dict['title']
 
-    review_dict = ReviewHelper.get_review_array(mainpage, slugify(issue), _tn)
+    review_dict = ReviewHelper.get_review_array(mainpage, slugify(issue), _tn, request.authenticated_userid)
 
     return {
         'layout': Dbas.base_layout(),
@@ -165,7 +165,8 @@ def main_review(request):
         'project': project_name,
         'extras': extras_dict,
         'review': review_dict,
+        'reputation_list': ReviewHelper.get_reputation_list(),
         'issues': issue_dict,
         'current_issue_title': issue,
-        'reputation_count': 7
+        'reputation_count': ReviewHelper.get_reputation_of(request.authenticated_userid)
     }
