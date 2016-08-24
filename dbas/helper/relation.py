@@ -351,6 +351,7 @@ class RelationHelper(object):
                 tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid)
                 return_array.append(tmp_dict)
                 index += 1
+
         return return_array
 
     @staticmethod
