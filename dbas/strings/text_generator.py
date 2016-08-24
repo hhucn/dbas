@@ -115,7 +115,7 @@ class TextGenerator(object):
 
         if attack_type == 'undercut':
             user_msg = r + premise + ', '
-            user_msg += _t.get(_t.butIDoNotBelieveCounterFor) if is_supportive else _t.get(_t.butIDoNotBelieveArgumentFor)
+            user_msg += _t.get(_t.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_t.butIDoNotBelieveCounterFor)
             user_msg += ' ' + conclusion + '.'
 
         if attack_type == 'overbid':

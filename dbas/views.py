@@ -35,6 +35,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
+from dbas.helper.views import main_function_for_jump, preperation_for_view, get_nickname_and_session
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
 from dbas.input_validator import Validator
@@ -77,18 +78,6 @@ class Dbas(object):
         renderer = get_renderer('templates/basetemplate.pt')
         layout = renderer.implementation().macros['layout']
         return layout
-
-    def get_nickname_and_session(self, for_api=None, api_data=None):
-        """
-        Given data from api, return nickname and session_id.
-
-        :param for_api:
-        :param api_data:
-        :return:
-        """
-        nickname = api_data["nickname"] if api_data and for_api else self.request.authenticated_userid
-        session_id = api_data["session_id"] if api_data and for_api else self.request.session.id
-        return nickname, session_id
 
     # main page
     @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
@@ -138,7 +127,7 @@ class Dbas(object):
         logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_init', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
         session_expired = UserHandler.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
         HistoryHelper.save_history_in_cookie(self.request, self.request.path, '')
@@ -217,11 +206,7 @@ class Dbas(object):
         logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_attitude', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-        session_expired = UserHandler.update_last_action(transaction, nickname)
-        history         = params['history'] if 'history' in params else ''
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, params, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -283,7 +268,7 @@ class Dbas(object):
         logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_justify', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
         history              = params['history'] if 'history' in params else ''
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
         HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
@@ -416,7 +401,7 @@ class Dbas(object):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         supportive           = tmp_argument.is_supportive
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
         session_expired      = UserHandler.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
         HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
@@ -514,7 +499,7 @@ class Dbas(object):
         is_supportive   = matchdict['supportive'] if 'supportive' in matchdict else ''
         uid             = matchdict['id'] if 'id' in matchdict else ''
         pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
         history         = params['history'] if 'history' in params else ''
 
         is_argument = True if is_argument is 't' else False
@@ -578,7 +563,7 @@ class Dbas(object):
         params = self.request.params
         logger('discussion_jump', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_jump', 'def', 'main, self.request.params: ' + str(params))
-        return self.__main_function_for_jump(for_api, api_data, False)
+        return main_function_for_jump(self.request, for_api, api_data, False, mainpage, self.base_layout(), project_name, self.user_logout)
 
     # jump decision page
     @view_config(route_name='discussion_jump_decision', renderer='templates/content.pt', permission='everybody')
@@ -596,75 +581,7 @@ class Dbas(object):
         params = self.request.params
         logger('discussion_jump_decision', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_jump_decision', 'def', 'main, self.request.params: ' + str(params))
-        return self.__main_function_for_jump(for_api, api_data, True)
-
-    def __main_function_for_jump(self, for_api, api_data, is_decision):
-        """
-
-        :param for_api:
-        :param api_data:
-        :param is_decision:
-        :return:
-        """
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
-        params = self.request.params
-        logger('__main_function_for_jump', 'def', 'main, self.request.matchdict: ' + str(matchdict))
-        logger('__main_function_for_jump', 'def', 'main, self.request.params: ' + str(params))
-
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-        history = params['history'] if 'history' in params else ''
-
-        if for_api and api_data:
-            slug = api_data["slug"]
-            arg_uid = api_data["arg_uid"]
-        else:
-            slug = matchdict['slug'] if 'slug' in matchdict else ''
-            arg_uid = matchdict['arg_id'] if 'arg_id' in matchdict else ''
-
-        session_expired = UserHandler.update_last_action(transaction, nickname)
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
-        if session_expired:
-            return self.user_logout(True)
-
-        ui_locales = get_language(self.request, get_current_registry())
-        issue = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(
-            self.request)
-        disc_ui_locales = get_discussion_language(self.request, issue)
-        issue_dict = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
-
-        if not Validator.check_belonging_of_argument(issue, arg_uid):
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
-
-        _ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-        _idh = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
-        if is_decision:
-            discussion_dict = _ddh.get_dict_for_jump_decision(arg_uid)
-            item_dict = _idh.get_array_for_jump_decision(arg_uid, slug, for_api)
-        else:
-            discussion_dict = _ddh.get_dict_for_jump(arg_uid)
-            item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
-        extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
-                                                                                        True, True, nickname,
-                                                                                        application_url=mainpage,
-                                                                                        for_api=for_api,
-                                                                                        request=self.request)
-
-        return_dict = dict()
-        return_dict['issues'] = issue_dict
-        return_dict['discussion'] = discussion_dict
-        return_dict['items'] = item_dict
-        return_dict['extras'] = extras_dict
-
-        if for_api:
-            return return_dict
-        else:
-            return_dict['layout'] = self.base_layout()
-            return_dict['language'] = str(ui_locales)
-            return_dict['title'] = issue_dict['title']
-            return_dict['project'] = project_name
-            return return_dict
+        return main_function_for_jump(self.request, for_api, api_data, True, mainpage, self.base_layout(), project_name, self.user_logout)
 
     # contact page
     @view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody', require_csrf=False)
@@ -2087,7 +2004,7 @@ class Dbas(object):
             elif mode == '4':  # getting text
                 return_dict = FuzzyStringMatcher.get_strings_for_search(value)
             elif mode == '5':  # getting public nicknames
-                nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+                nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
                 return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_public_nickname(value, nickname)
             else:
                 logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))

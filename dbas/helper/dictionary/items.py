@@ -215,8 +215,9 @@ class ItemDictHelper(object):
                 # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
                 is_undermine = 'undermine' if attack_type == 'undermine' else None
                 attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+
                 arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang, last_attack=is_undermine,
-                                                                               restriction_on_arg_uids=attacking_arg_uids)
+                                                                               restriction_on_arg_uids=attacking_arg_uids, history=self.path)
 
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
                 statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url))
@@ -322,7 +323,6 @@ class ItemDictHelper(object):
 
             # easy cases
             elif relation == 'undermine' or relation == 'undercut':
-
                 url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
             elif relation == 'overbid':
@@ -338,7 +338,13 @@ class ItemDictHelper(object):
                 # rebutting an undercut will be a overbid for the initial argument
                 elif attack == 'undercut':
                     # url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
-                    url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+                    if db_user_argument.argument_uid is None:
+                        url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+                    else:
+                        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_user_argument.premisesgroup_uid).all()
+                        db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: ELIMINATE RANDOM
+                        url = _um.get_url_for_justifying_statement(True, db_premise.statement_uid, mode)
+
                 # rebutting an rebut will be a justify for the initial argument
                 elif attack == 'rebut':
                     current_user_argument = db_user_argument
