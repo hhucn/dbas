@@ -223,7 +223,7 @@ class DiscussionDictHelper(object):
 
     def get_dict_for_dont_know_reaction(self, uid):
         """
-        Prepares the discussion dict with all bubbles for the third step, where an suppotive argument will be presented.
+        Prepares the discussion dict with all bubbles for the third step, where an supportive argument will be presented.
 
         :param uid: Argument.uid
         :return: dict()
