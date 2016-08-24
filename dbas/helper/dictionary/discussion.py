@@ -98,7 +98,7 @@ class DiscussionDictHelper(object):
         :return: dict()
         """
         logger('DictionaryHelper', 'get_dict_for_justify_statement', 'at_justify')
-        _tn                    = Translator(self.lang)
+        _tn = Translator(self.lang)
 
         bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
         save_statement_url  = 'ajax_set_new_start_statement'
@@ -121,16 +121,16 @@ class DiscussionDictHelper(object):
         because = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 
         if self.lang == 'de':
-            intro           = _tn.get(_tn.itIsTrueThat if is_supportive else _tn.itIsFalseThat)
+            intro = _tn.get(_tn.itIsTrueThat if is_supportive else _tn.itIsFalseThat)
             add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
         else:
             add_premise_text = text + ' ' + _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea)
-        add_premise_text    += ', '  + _tn.get(_tn.because).lower() + '...'
+        add_premise_text += ', '  + _tn.get(_tn.because).lower() + '...'
 
         if self.lang == 'de':
-            intro   = _tn.get(_tn.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
+            intro = _tn.get(_tn.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
         else:
-            intro   = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
+            intro = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
 
         splitted_history = self.history.split('-')
         if len(splitted_history) > 0:
@@ -178,7 +178,7 @@ class DiscussionDictHelper(object):
         if not db_argument:
             return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-        confr           = get_text_for_argument_uid(uid)
+        confr          = get_text_for_argument_uid(uid)
         premise, tmp   = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion     = get_text_for_conclusion(db_argument)
 
@@ -229,14 +229,14 @@ class DiscussionDictHelper(object):
         :return: dict()
         """
         logger('DictionaryHelper', 'get_dict_for_dont_know_reaction', 'at_dont_know')
-        _tn               = Translator(self.lang)
-        bubbles_array  = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
+        _tn = Translator(self.lang)
+        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
         add_premise_text = ''
         save_statement_url = 'ajax_set_new_start_statement'
 
         if uid != 0:
             text            = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know')
-            sys_text        = _tn.get(_tn.otherParticipantsThinkThat) + ' ' + text[0:1].lower() + text[1:]  + '. '
+            sys_text        = _tn.get(_tn.otherParticipantsThinkThat) + ' ' + text[0:1].lower() + text[1:] + '. '
 
             bubble_sys = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?')
             bubbles_array.append(bubble_sys)
@@ -338,8 +338,8 @@ class DiscussionDictHelper(object):
         :return: dict()
         """
         logger('DictionaryHelper', 'get_dict_for_jump', 'at_attitude')
-        _tn                    = Translator(self.lang)
-        argument_text       = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
+        _tn = Translator(self.lang)
+        argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ': ' + argument_text + '?'
@@ -357,7 +357,7 @@ class DiscussionDictHelper(object):
         :return: dict()
         """
         logger('DictionaryHelper', 'get_dict_for_jump_decision', 'at_attitude')
-        _tn                    = Translator(self.lang)
+        _tn = Translator(self.lang)
 
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
         tag_premise = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
@@ -385,8 +385,8 @@ class DiscussionDictHelper(object):
         :param is_supportive: Boolean
         :return:
         """
-        _tn               = Translator(self.lang)
-        bubbles_array  = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
+        _tn = Translator(self.lang)
+        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
         add_premise_text = ''
         save_statement_url = 'ajax_set_new_start_statement'
 
