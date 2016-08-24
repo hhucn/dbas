@@ -78,6 +78,7 @@ class RelationHelper(object):
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(self.argument_uid)).first()
         if not db_argument:
             return None
+
         if db_argument.conclusion_uid is not None:
             return self.__get_rebuts_for_arguments_conclusion_uid(db_argument)
         else:

@@ -215,8 +215,9 @@ class ItemDictHelper(object):
                 # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
                 is_undermine = 'undermine' if attack_type == 'undermine' else None
                 attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+
                 arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang, last_attack=is_undermine,
-                                                                               restriction_on_arg_uids=attacking_arg_uids)
+                                                                               restriction_on_arg_uids=attacking_arg_uids, history=self.path)
 
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
                 statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url))
