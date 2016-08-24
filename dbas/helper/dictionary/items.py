@@ -323,7 +323,6 @@ class ItemDictHelper(object):
 
             # easy cases
             elif relation == 'undermine' or relation == 'undercut':
-
                 url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
             elif relation == 'overbid':
@@ -339,7 +338,13 @@ class ItemDictHelper(object):
                 # rebutting an undercut will be a overbid for the initial argument
                 elif attack == 'undercut':
                     # url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
-                    url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+                    if db_user_argument.argument_uid is None:
+                        url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+                    else:
+                        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_user_argument.premisesgroup_uid).all()
+                        db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: ELIMINATE RANDOM
+                        url = _um.get_url_for_justifying_statement(True, db_premise.statement_uid, mode)
+
                 # rebutting an rebut will be a justify for the initial argument
                 elif attack == 'rebut':
                     current_user_argument = db_user_argument
