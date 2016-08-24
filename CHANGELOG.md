@@ -180,7 +180,10 @@
 ## 0.6.0 (2016-07-02)
 - Publish / Subscribe
 
-## 0.6.0 (2016-07-xx)
+## 0.6.1 (2016-08-24)
+- New bootstraping
+
+## 0.7.0 (2016-09-xx)
 - Review-Mechanisms
 
 ## 0.x.0 (unreleased)

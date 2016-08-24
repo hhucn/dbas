@@ -221,7 +221,7 @@ class TextGenerator(object):
 
         return ret_dict
 
-    def get_jump_to_argument_text_list(self, is_decision):
+    def get_jump_to_argument_text_list(self):
         """
 
         :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
@@ -232,26 +232,12 @@ class TextGenerator(object):
         tag_end = '</' + TextGenerator.tag_type + '>'
         premise = tag_premise + (_t.get(_t.reason).lower() if self.lang != 'de' else _t.get(_t.reason)) + tag_end
         conclusion = tag_conclusion + (_t.get(_t.assertion).lower() if self.lang != 'de' else _t.get(_t.assertion)) + tag_end
-        the = _t.get(_t.the_die) + ' '
-        right = _t.get(_t.right) + ', ' + _t.get(_t.this).lower() + ' '
-        wrong = _t.get(_t.wrong) + ', ' + the + ' '
-        false = ' ' + _t.get(_t.isFalse) + '.'
-        holdsBut = ' ' + _t.get(_t.holds) + ', ' + _t.get(_t.but) + ' '
-        hold = ' ' + _t.get(_t.hold) + '.'
-        aand = ' ' + _t.get(_t.aand) + ' '
-        andor = ' ' + _t.get(_t.andor) + ' '
-        iDoNotBelieve = _t.get(_t.iDoNotBelieve).replace('XXX', premise).replace('YYY', conclusion)
 
         answers = list()
-        if is_decision:
-            answers.append(wrong + premise + false)
-            answers.append(wrong + conclusion + false)
-            answers.append(wrong + iDoNotBelieve)
-        else:
-            answers.append(_t.get(_t.right) + ', ' + the + conclusion + aand + premise + hold)
-            answers.append(right + conclusion + holdsBut + the + premise + false)
-            answers.append(right + premise + holdsBut + the + conclusion + false)
-            answers.append(wrong + premise + andor + the + conclusion + false)
+        answers.append(_t.get(_t.jumpAnswer1).replace('XXX', conclusion).replace('YYY', premise))
+        answers.append(_t.get(_t.jumpAnswer2).replace('XXX', conclusion).replace('YYY', premise))
+        answers.append(_t.get(_t.jumpAnswer3).replace('XXX', conclusion).replace('YYY', premise))
+        answers.append(_t.get(_t.jumpAnswer4).replace('XXX', conclusion).replace('YYY', premise))
 
         return answers
 
