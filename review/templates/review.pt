@@ -84,16 +84,90 @@
                 <div class="left row">
                     <div class="col-md-12" style="margin-top: 1em;">
                         <h4 i18n:translate="what_is_reputation">What is reputation? How do I earn (and lose) it?</h4>
-                        <span>some text</span>
+                        <h6>COPIED FROM STACKOVERFLOW: WILL BE EDITED</h6>
+                        <span>Reputation is a rough measurement of how much the community trusts you;</span>
+                        <span>it is earned by convincing your peers that you know what you’re talking about.</span>
+                        <span>Basic use of the site, including asking questions, answering, and suggesting edits, does not require any reputation at all.</span>
+                        <span>But the more reputation you earn, the more privileges you gain.</span>
+                        <br>
+                        <br>
+                        <strong>You gain reputation when:</strong>
+                        <ul>
+                            <li>
+                                <span>question is voted up</span>:
+                                <span class="success-description">+5</span>
+                            </li>
+                            <li>
+                                <span>answer is voted up</span>:
+                                <span class="success-description">+10</span>
+                            </li>
+                            <li>
+                                <span>answer is marked “accepted”</span>:
+                                <span class="success-description">+15 (+2 to acceptor)</span>
+                            </li>
+                            <li>
+                                <span>suggested edit is accepted</span>:
+                                <span class="success-description">+2 (up to +1000 total per user)</span>
+                            </li>
+                            <li>
+                                <span>bounty awarded to your answer</span>:
+                                <span class="success-description">+ full bounty amount</span>
+                            </li>
+                            <li>
+                                <span>example you contributed to is voted up</span>:
+                                <span class="success-description">+5</span>
+                            </li>
+                            <li>
+                                <span>proposed change is approved</span>:
+                                <span class="success-description">+2</span>
+                            </li>
+                            <li>
+                                <span>first time an answer that cites documentation you contributed to is upvoted</span>:
+                                <span class="success-description">+5</span>
+                            </li>
+                        </ul>
+                        <strong>You lose reputation when:</strong>
+                        <ul>
+                            <li>
+                                <span>your question is voted down</span>:
+                                <span class="error-description">−2</span>
+                            </li>
+                            <li>
+                                <span>your answer is voted down</span>:
+                                <span class="error-description">−2</span>
+                            </li>
+                            <li>
+                                <span>you vote down an answer</span>:
+                                <span class="error-description">−1</span>
+                            </li>
+                            <li>
+                                <span>one of your posts receives 6 spam or offensive flags</span>:
+                                <span class="error-description">−100</span>
+                            </li>
+                        </ul>
                     </div>
                     <div class="col-md-12" style="margin-top: 1em;">
                         <h4 i18n:translate="privileges">Privileges</h4>
-                        <span>some text</span>
+                        <h6>COPIED FROM STACKOVERFLOW: WILL BE EDITED</h6>
+                        <span>Privileges control what you can do on Stack Overflow. Gain more privileges by increasing your reputation (points you receive from your fellow users for posting helpful questions and answers).</span>
+                        <br>
+                        <br>
+                        <table class="table table-condensed" border="0">
+                            <tbody>
+                                <tr class="review-table-row" tal:repeat="rep reputation_list">
+                                    <td>${rep.points}</td>
+                                    <td><i class="" aria-hidden="true" tal:attributes="class rep.icon"></i></td>
+                                    <td>${rep.text}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                    <!--
                     <div class="col-md-12" style="margin-top: 1em;">
                         <h4 i18n:translate="badges">Badges</h4>
                         <span>some text</span>
                     </div>
+                    -->
                 </div>
             </div>
         </div>

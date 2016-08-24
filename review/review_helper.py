@@ -12,30 +12,31 @@ from dbas.database.discussion_model import User
 from dbas import user_management as UserManager
 
 pages = ['edits', 'deletes', 'flags', 'random', 'duplicates', 'freshest']
-reputation = {'edits': 100,
-              'deletes': 200,
+reputation = {'deletes': 200,
               'flags': 150,
+              'freshest': 75,
               'random': 50,
-              'duplicates': 10,
-              'freshest': 75}
+              'edits': 25,
+              'duplicates': 10}
 
 
-def get_review_array(mainpage, issue, translator):
+def get_review_array(mainpage, issue, translator, nickname):
     """
     Prepares dictionary for the edit section.
 
     :param mainpage: URL
     :param issue: current issue
     :param translator: Translator
+    :param nickname: Users nickname
     :return: Array
     """
     review_list = list()
-    review_list.append(__get_edit_dict(mainpage, issue, translator))
-    review_list.append(__get_delete_dict(mainpage, issue, translator))
-    review_list.append(__get_flag_dict(mainpage, issue, translator))
-    review_list.append(__get_random_dict(mainpage, issue, translator))
-    review_list.append(__get_duplicate_dict(mainpage, issue, translator))
-    review_list.append(__get_freshest_dict(mainpage, issue, translator))
+    review_list.append(__get_edit_dict(mainpage, issue, translator, nickname))
+    review_list.append(__get_delete_dict(mainpage, issue, translator, nickname))
+    review_list.append(__get_flag_dict(mainpage, issue, translator, nickname))
+    review_list.append(__get_random_dict(mainpage, issue, translator, nickname))
+    review_list.append(__get_duplicate_dict(mainpage, issue, translator, nickname))
+    review_list.append(__get_freshest_dict(mainpage, issue, translator, nickname))
 
     return review_list
 
@@ -58,13 +59,14 @@ def get_subpage_for(subpage_name, nickname):
     return None
 
 
-def __get_edit_dict(mainpage, issue, translator):
+def __get_edit_dict(mainpage, issue, translator, nickname):
     """
     Prepares dictionary for the edit section.
 
     :param mainpage: URL
     :param issue: current issue
     :param translator: Translator
+    :param nickname: Users nickname
     :return: Dict()
     """
     key = 'edits'
@@ -73,7 +75,7 @@ def __get_edit_dict(mainpage, issue, translator):
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-eraser',
                 'task_count': 2,
-                'is_allowed': True,
+                'is_allowed': get_reputation_of(nickname) >= reputation[key],
                 'is_allowed_text': 'Visit the edit queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review edits.',
                 'last_reviews': __get_users_array(mainpage)
@@ -81,13 +83,14 @@ def __get_edit_dict(mainpage, issue, translator):
     return tmp_dict
 
 
-def __get_delete_dict(mainpage, issue, translator):
+def __get_delete_dict(mainpage, issue, translator, nickname):
     """
     Prepares dictionary for the delete section.
 
     :param mainpage: URL
     :param issue: current issue
     :param translator: Translator
+    :param nickname: Users nickname
     :return: Dict()
     """
     key = 'deletes'
@@ -96,7 +99,7 @@ def __get_delete_dict(mainpage, issue, translator):
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-trash-o',
                 'task_count': 4,
-                'is_allowed': False,
+                'is_allowed': get_reputation_of(nickname) >= reputation[key],
                 'is_allowed_text': 'Visit the delete queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review deletes.',
                 'last_reviews': __get_users_array(mainpage)
@@ -104,13 +107,14 @@ def __get_delete_dict(mainpage, issue, translator):
     return tmp_dict
 
 
-def __get_flag_dict(mainpage, issue, translator):
+def __get_flag_dict(mainpage, issue, translator, nickname):
     """
     Prepares dictionary for the flag section.
 
     :param mainpage: URL
     :param issue: current issue
     :param translator: Translator
+    :param nickname: Users nickname
     :return: Dict()
     """
     key = 'flags'
@@ -119,7 +123,7 @@ def __get_flag_dict(mainpage, issue, translator):
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-flag',
                 'task_count': 8,
-                'is_allowed': False,
+                'is_allowed': get_reputation_of(nickname) >= reputation[key],
                 'is_allowed_text': 'Visit the review queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review edits.',
                 'last_reviews': __get_users_array(mainpage)
@@ -127,13 +131,14 @@ def __get_flag_dict(mainpage, issue, translator):
     return tmp_dict
 
 
-def __get_random_dict(mainpage, issue, translator):
+def __get_random_dict(mainpage, issue, translator, nickname):
     """
     Prepares dictionary for the random section.
 
     :param mainpage: URL
     :param issue: current issue
     :param translator: Translator
+    :param nickname: Users nickname
     :return: Dict()
     """
     key = 'random'
@@ -142,7 +147,7 @@ def __get_random_dict(mainpage, issue, translator):
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-random',
                 'task_count': '-',
-                'is_allowed': True,
+                'is_allowed': get_reputation_of(nickname) >= reputation[key],
                 'is_allowed_text': 'Visit the random queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review random statements.',
                 'last_reviews': __get_users_array(mainpage)
@@ -150,13 +155,14 @@ def __get_random_dict(mainpage, issue, translator):
     return tmp_dict
 
 
-def __get_duplicate_dict(mainpage, issue, translator):
+def __get_duplicate_dict(mainpage, issue, translator, nickname):
     """
     Prepares dictionary for the duplicate section.
 
     :param mainpage: URL
     :param issue: current issue
     :param translator: Translator
+    :param nickname: Users nickname
     :return: Dict()
     """
     key = 'duplicates'
@@ -165,7 +171,7 @@ def __get_duplicate_dict(mainpage, issue, translator):
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-files-o',
                 'task_count': '-',
-                'is_allowed': True,
+                'is_allowed': get_reputation_of(nickname) >= reputation[key],
                 'is_allowed_text': 'Visit the duplicate queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review duplicated statements.',
                 'last_reviews': __get_users_array(mainpage)
@@ -173,13 +179,14 @@ def __get_duplicate_dict(mainpage, issue, translator):
     return tmp_dict
 
 
-def __get_freshest_dict(mainpage, issue, translator):
+def __get_freshest_dict(mainpage, issue, translator, nickname):
     """
     Prepares dictionary for the freshest section.
 
     :param mainpage: URL
     :param issue: current issue
     :param translator: Translator
+    :param nickname: Users nickname
     :return: Dict()
     """
     key = 'freshest'
@@ -188,7 +195,7 @@ def __get_freshest_dict(mainpage, issue, translator):
                 'url': mainpage + '/review/' + key + '/' + issue,
                 'icon': 'fa fa-level-up',
                 'task_count': '3',
-                'is_allowed': False,
+                'is_allowed': get_reputation_of(nickname) >= reputation[key],
                 'is_allowed_text': 'Visit the newest statements queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review freshest statements.',
                 'last_reviews': __get_users_array(mainpage)
@@ -218,7 +225,7 @@ def get_reputation_history(nickname):
         return dict()
 
     ret_dict = dict()
-    ret_dict['count'] = 7
+    ret_dict['count'] = get_reputation_of(nickname)
 
     rep_list = list()
     rep_list.append({'date': '20.08.2016', 'points_data': '<span class="success-description points">1</span>', 'action': 'first click in a discussion', 'points': 1})
@@ -233,3 +240,32 @@ def get_reputation_history(nickname):
     ret_dict['history'] = rep_list
 
     return ret_dict
+
+
+def get_reputation_list():
+    """
+
+    :return:
+    """
+    reputations = list()
+    reputations.append({'points': 1000, 'icon': 'fa fa-arrow-down', 'text': 'Some text'})
+    reputations.append({'points': 750, 'icon': 'fa fa-arrow-up', 'text': 'Some text'})
+    reputations.append({'points': 500, 'icon': 'fa fa-hand-o-up', 'text': 'Some text'})
+    reputations.append({'points': 250, 'icon': 'fa fa-hand-o-down', 'text': 'Review a statement with many contra-arguments'})
+    reputations.append({'points': 200, 'icon': 'fa fa-times', 'text': 'Decide, whether it is spam or not'})
+    reputations.append({'points': 100, 'icon': 'fa fa-trash', 'text': 'Decision about statement, which should be deleted'})
+    reputations.append({'points': 50, 'icon': 'fa fa-pencil-square-o', 'text': 'Review edited statements'})
+    return reputations
+
+
+def get_reputation_of(nickname):
+    """
+
+    :param nickname:
+    :return:
+    """
+    DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not DBDiscussionSession:
+        return 0
+
+    return 70
