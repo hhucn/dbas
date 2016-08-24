@@ -5,10 +5,12 @@ Provides helping function for the review page.
 """
 
 import random
+from slugify import slugify
+
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
+from dbas.database.discussion_model import User, Issue
 from dbas import user_management as UserManager
 
 pages = ['edits', 'deletes', 'flags', 'random', 'duplicates', 'freshest']
@@ -20,23 +22,34 @@ reputation = {'deletes': 200,
               'duplicates': 10}
 
 
-def get_review_array(mainpage, issue, translator, nickname):
+def get_review_array(mainpage, slug, translator, nickname):
     """
     Prepares dictionary for the edit section.
 
     :param mainpage: URL
-    :param issue: current issue
+    :param slug: current issue
     :param translator: Translator
     :param nickname: Users nickname
     :return: Array
     """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return None
+
+    db_issues = DBDiscussionSession.query(Issue).all()
+    slugs = list()
+    for issue in db_issues:
+        slugs.append(str(slugify(issue.title)))
+    if slug not in slugs:
+        return None
+
     review_list = list()
-    review_list.append(__get_edit_dict(mainpage, issue, translator, nickname))
-    review_list.append(__get_delete_dict(mainpage, issue, translator, nickname))
-    review_list.append(__get_flag_dict(mainpage, issue, translator, nickname))
-    review_list.append(__get_random_dict(mainpage, issue, translator, nickname))
-    review_list.append(__get_duplicate_dict(mainpage, issue, translator, nickname))
-    review_list.append(__get_freshest_dict(mainpage, issue, translator, nickname))
+    review_list.append(__get_edit_dict(mainpage, slug, translator, nickname))
+    review_list.append(__get_delete_dict(mainpage, slug, translator, nickname))
+    review_list.append(__get_flag_dict(mainpage, slug, translator, nickname))
+    review_list.append(__get_random_dict(mainpage, slug, translator, nickname))
+    review_list.append(__get_duplicate_dict(mainpage, slug, translator, nickname))
+    review_list.append(__get_freshest_dict(mainpage, slug, translator, nickname))
 
     return review_list
 
