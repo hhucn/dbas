@@ -196,8 +196,12 @@ def prepare_data_assign_reference(request, func):
             statement_uids = flatten(statement_uids)
             if type(statement_uids) is int:
                 statement_uids = [statement_uids]
-            list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
-        return return_dict_json
+            refs_db = list(map(lambda statement: store_reference(api_data, statement), statement_uids))
+            refs = list()  # Convert all references
+            for ref in refs_db:
+                refs.append(prepare_single_reference(ref))
+            return_dict["references"] = refs
+        return return_dict
     else:
         raise HTTP204()
 
@@ -292,7 +296,7 @@ def add_start_statement(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_statement))
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -303,7 +307,7 @@ def add_start_premise(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_premise))
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
@@ -314,7 +318,7 @@ def add_justify_premise(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument))
 
 
 # =============================================================================
