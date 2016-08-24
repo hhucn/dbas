@@ -45,3 +45,14 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('date' in h)
             self.assertTrue('action' in h)
             self.assertTrue('points' in h)
+
+    def test_get_reputation_list(self):
+        some_list = ReviewHelper.get_reputation_list()
+        for element in some_list:
+            self.assertTrue('points' in element)
+            self.assertTrue('icon' in element)
+            self.assertTrue('text' in element)
+
+    def test_get_reputation_of(self):
+        self.assertTrue(ReviewHelper.get_reputation_of('Tobias') != 0)
+        self.assertTrue(ReviewHelper.get_reputation_of('Tobiass') == 0)
