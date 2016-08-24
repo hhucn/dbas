@@ -103,27 +103,28 @@ class DiscussionDictHelper(object):
         bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
         save_statement_url  = 'ajax_set_new_start_statement'
         text                = get_text_for_statement_uid(uid)
-        if self.lang != 'de':
-            text            = text[0:1].upper() + text[1:]
         if not text:
             return None
 
-        question            = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' '
-        question            += text[0:1].lower() + text[1:] if self.lang != 'de' else text
+        tag_start = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">'
+        tag_end = '</' + TextGenerator.tag_type + '>'
+        question = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' '
+        question += tag_start
+        question += text[0:1].lower() if self.lang != 'de' else text[0:1].upper()
+        question += text[1:]
 
         if self.lang == 'de':
-            question        += ', ' + (_tn.get(_tn.isTrue if is_supportive else _tn.isNotAGoodIdea)) + '?'
+            question += ', ' + (_tn.get(_tn.isTrue if is_supportive else _tn.isNotAGoodIdea)) + '?'
         else:
-            question        += ' ' + _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
-
-        because                = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
+            question += ' ' + _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
+        question += tag_end
+        because = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 
         if self.lang == 'de':
             intro           = _tn.get(_tn.itIsTrueThat if is_supportive else _tn.itIsFalseThat)
             add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
         else:
             add_premise_text = text + ' ' + _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea)
-
         add_premise_text    += ', '  + _tn.get(_tn.because).lower() + '...'
 
         if self.lang == 'de':
@@ -200,7 +201,11 @@ class DiscussionDictHelper(object):
             add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
                                                                        db_argument.is_supportive)
 
-        sys_msg  = _tn.get(_tn.whatIsYourMostImportantReasonFor) + ': ' + user_msg[:-1] + '?<br>' + _tn.get(_tn.because) + '...'
+        start = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">'
+        end = '</' + TextGenerator.tag_type + '>'
+        user_msg = start + user_msg[:-1] + end
+
+        sys_msg  = _tn.get(_tn.whatIsYourMostImportantReasonFor) + ': ' + user_msg + '?<br>' + _tn.get(_tn.because) + '...'
         # bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() + user_msg[1:], omit_url=True, lang=self.lang)
 
         bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now), omit_url=True, lang=self.lang))
@@ -231,7 +236,6 @@ class DiscussionDictHelper(object):
 
         if uid != 0:
             text            = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know')
-            text            = text.replace(_tn.get(_tn.because).lower(), _tn.get(_tn.because).lower())
             sys_text        = _tn.get(_tn.otherParticipantsThinkThat) + ' ' + text[0:1].lower() + text[1:]  + '. '
 
             bubble_sys = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?')
