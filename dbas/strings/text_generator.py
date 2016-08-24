@@ -234,10 +234,12 @@ class TextGenerator(object):
         conclusion = tag_conclusion + (_t.get(_t.assertion).lower() if self.lang != 'de' else _t.get(_t.assertion)) + tag_end
 
         answers = list()
-        answers.append(_t.get(_t.jumpAnswer1).replace('XXX', conclusion).replace('YYY', premise))
-        answers.append(_t.get(_t.jumpAnswer2).replace('XXX', conclusion).replace('YYY', premise))
-        answers.append(_t.get(_t.jumpAnswer3).replace('XXX', conclusion).replace('YYY', premise))
-        answers.append(_t.get(_t.jumpAnswer4).replace('XXX', conclusion).replace('YYY', premise))
+
+        answers.append(_t.get(_t.jumpAnswer0).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
+        answers.append(_t.get(_t.jumpAnswer1).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
+        answers.append(_t.get(_t.jumpAnswer2).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
+        answers.append(_t.get(_t.jumpAnswer3).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
+        answers.append(_t.get(_t.jumpAnswer4).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
 
         return answers
 
