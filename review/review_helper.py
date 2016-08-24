@@ -277,8 +277,8 @@ def get_reputation_of(nickname):
     :param nickname:
     :return:
     """
-    DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not DBDiscussionSession:
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
         return 0
 
     return 70
