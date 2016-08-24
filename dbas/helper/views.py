@@ -28,10 +28,18 @@ def get_nickname_and_session(request, for_api=None, api_data=None):
     return nickname, session_id
 
 
-def preperation_for_view(for_api, api_data, params, request):
+def preperation_for_view(for_api, api_data, request):
+    """
+    Does some elementary things like: getting nickname, sessioniod and history. Additionally boolean, if the sesseion is expired
+
+    :param for_api: True, if the values are for the api
+    :param api_data: Array with api data
+    :param request: Current request
+    :return: nickname, session_id, session_expired, history
+    """
     nickname, session_id = get_nickname_and_session(request, for_api, api_data)
     session_expired = UserHandler.update_last_action(transaction, nickname)
-    history         = params['history'] if 'history' in params else ''
+    history         = request.params['history'] if 'history' in request.params else ''
     HistoryHelper.save_path_in_database(nickname, request.path, transaction)
     HistoryHelper.save_history_in_cookie(request, request.path, history)
     return nickname, session_id, session_expired, history
