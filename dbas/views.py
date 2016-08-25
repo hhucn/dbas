@@ -619,27 +619,15 @@ class Dbas(object):
         if session_expired:
             return self.user_logout(True)
 
-        ui_locales = get_language(self.request, get_current_registry())
-        _tn = Translator(ui_locales)
-
+        ui_locales  = get_language(self.request, get_current_registry())
         old_pw      = ''
         new_pw      = ''
         confirm_pw  = ''
         message     = ''
         error       = False
         success     = False
-
         db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
-        db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None
-
         _uh         = UserHandler
-        edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
-        statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
-        arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else 0, 0
-        public_nick = db_user.public_nickname if db_user else str(self.request.authenticated_userid)
-        db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first() if db_user else None
-        group       = db_group.name if db_group else '-'
 
         if db_user and 'form.passwordchange.submitted' in self.request.params:
             old_pw = escape_string(self.request.params['passwordold'])
@@ -648,41 +636,9 @@ class Dbas(object):
 
             message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
-        # get gravater profile picture
-        gravatar_public_url = _uh.get_public_profile_picture(db_user)
-
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-        settings_dict = {
-            'passwordold': '' if success else old_pw,
-            'password': '' if success else new_pw,
-            'passwordconfirm': '' if success else confirm_pw,
-            'change_error': error,
-            'change_success': success,
-            'message': message,
-            'db_firstname': db_user.firstname if db_user else '',
-            'db_surname': db_user.surname if db_user else '',
-            'db_nickname': db_user.nickname if db_user else '',
-            'db_public_nickname': public_nick,
-            'db_mail': db_user.email if db_user else '',
-            'db_group': group,
-            'avatar_public_url': gravatar_public_url,
-            'edits_done': edits,
-            'statemens_posted': statements,
-            'discussion_arg_votes': arg_vote,
-            'discussion_stat_votes': stat_vote,
-            'send_mails': db_settings.should_send_mails if db_settings else False,
-            'send_notifications': db_settings.should_send_notifications if db_settings else False,
-            'public_nick': db_settings.should_show_public_nickname if db_settings else True,
-            'title_mails': _tn.get(_tn.mailSettingsTitle),
-            'title_notifications': _tn.get(_tn.notificationSettingsTitle),
-            'title_public_nick': _tn.get(_tn.publicNickTitle),
-            'title_prefered_lang': _tn.get(_tn.preferedLangTitle),
-            'public_page_url': (mainpage + '/user/' + (db_user.nickname if db_settings.should_show_public_nickname else public_nick)) if db_user else '',
-            'on': _tn.get(_tn.on),
-            'off': _tn.get(_tn.off),
-            'current_lang': db_language.name if db_language else '?',
-            'current_ui_locales': db_language.ui_locales if db_language else '?'
-        }
+        _dh = DictionaryHelper(ui_locales)
+        extras_dict = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        settings_dict = _dh.preprate_settings_dict(self.request, success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage)
 
         return {
             'layout': self.base_layout(),

@@ -11,7 +11,7 @@ import dbas.helper.notification as NotificationHelper
 import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Language
+from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.helper.query import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
@@ -175,6 +175,66 @@ class DictionaryHelper(object):
                     return_dict['show_bar_icon']    = False
                     return_dict['show_island_icon'] = False
         return return_dict
+
+    def preprate_settings_dict(self, request, success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage):
+        """
+
+        :param request:
+        :param success:
+        :param old_pw:
+        :param new_pw:
+        :param confirm_pw:
+        :param error:
+        :param message:
+        :param db_user:
+        :param ui_locales:
+        :param mainpage:
+        :return:
+        """
+        _uh         = UserHandler
+        _tn         = Translator(self.system_lang)
+        edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
+        statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
+        arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else 0, 0
+        public_nick = db_user.public_nickname if db_user else str(request.authenticated_userid)
+        db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first() if db_user else None
+        group       = db_group.name if db_group else '-'
+        gravatar_public_url = _uh.get_public_profile_picture(db_user)
+
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
+        db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None
+
+        return {
+            'passwordold': '' if success else old_pw,
+            'password': '' if success else new_pw,
+            'passwordconfirm': '' if success else confirm_pw,
+            'change_error': error,
+            'change_success': success,
+            'message': message,
+            'db_firstname': db_user.firstname if db_user else '',
+            'db_surname': db_user.surname if db_user else '',
+            'db_nickname': db_user.nickname if db_user else '',
+            'db_public_nickname': public_nick,
+            'db_mail': db_user.email if db_user else '',
+            'db_group': group,
+            'avatar_public_url': gravatar_public_url,
+            'edits_done': edits,
+            'statemens_posted': statements,
+            'discussion_arg_votes': arg_vote,
+            'discussion_stat_votes': stat_vote,
+            'send_mails': db_settings.should_send_mails if db_settings else False,
+            'send_notifications': db_settings.should_send_notifications if db_settings else False,
+            'public_nick': db_settings.should_show_public_nickname if db_settings else True,
+            'title_mails': _tn.get(_tn.mailSettingsTitle),
+            'title_notifications': _tn.get(_tn.notificationSettingsTitle),
+            'title_public_nick': _tn.get(_tn.publicNickTitle),
+            'title_prefered_lang': _tn.get(_tn.preferedLangTitle),
+            'public_page_url': (mainpage + '/user/' + (db_user.nickname if db_settings.should_show_public_nickname else public_nick)) if db_user else '',
+            'on': _tn.get(_tn.on),
+            'off': _tn.get(_tn.off),
+            'current_lang': db_language.name if db_language else '?',
+            'current_ui_locales': db_language.ui_locales if db_language else '?'
+        }
 
     def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
                                 at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False,):
