@@ -34,7 +34,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
-from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user
+from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
 from dbas.input_validator import Validator
@@ -580,7 +580,7 @@ class Dbas(object):
         spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
 
         if 'form.contact.submitted' in self.request.params:
-            contact_error, message, sendmessage = try_to_register_new_user(self.request, username, email, phone, content, ui_locales, spamanswer)
+            contact_error, message, sendmessage = try_to_register_new_user_via_form(self.request, username, email, phone, content, ui_locales, spamanswer)
 
         spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
         key = 'contact-antispamanswer'
@@ -1049,53 +1049,7 @@ class Dbas(object):
 
         # getting params
         try:
-            params          = self.request.params
-            firstname       = escape_string(params['firstname'])
-            lastname        = escape_string(params['lastname'])
-            nickname        = escape_string(params['nickname'])
-            email           = escape_string(params['email'])
-            gender          = escape_string(params['gender'])
-            password        = escape_string(params['password'])
-            passwordconfirm = escape_string(params['passwordconfirm'])
-            spamanswer      = escape_string(params['spamanswer'])
-
-            # database queries mail verification
-            db_nick1 = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-            db_nick2 = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-            db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
-            is_mail_valid = validate_email(email, check_mx=True)
-
-            # are the password equal?
-            if not password == passwordconfirm:
-                logger('user_registration', 'main', 'Passwords are not equal')
-                info = _t.get(_t.pwdNotEqual)
-            # is the nick already taken?
-            elif db_nick1 or db_nick2:
-                logger('user_registration', 'main', 'Nickname \'' + nickname + '\' is taken')
-                info = _t.get(_t.nickIsTaken)
-            # is the email already taken?
-            elif db_mail:
-                logger('user_registration', 'main', 'E-Mail \'' + email + '\' is taken')
-                info = _t.get(_t.mailIsTaken)
-            # is the email valid?
-            elif not is_mail_valid:
-                logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
-                info = _t.get(_t.mailNotValid)
-            # is anti-spam correct?
-            elif str(spamanswer) != str(self.request.session['antispamanswer']):
-                logger('user_registration', 'main', 'Anti-Spam answer \'' + str(spamanswer) + '\' is not equal ' + str(self.request.session['antispamanswer']))
-                info = _t.get(_t.maliciousAntiSpam)
-            else:
-                # getting the authors group
-                db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
-
-                # does the group exists?
-                if not db_group:
-                    info = _t.get(_t.errorTryLateOrContant)
-                    logger('user_registration', 'main', 'Error occured')
-                else:
-                    success, info = UserHandler.create_new_user(self.request, firstname, lastname, email, nickname,
-                                                                password, gender, db_group.uid, ui_locales, transaction)
+            success, info = try_to_register_new_user_via_ajax(self.request, ui_locales)
 
         except KeyError as e:
             logger('user_registration', 'error', repr(e))
