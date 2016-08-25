@@ -108,16 +108,17 @@ class DiscussionDictHelper(object):
 
         tag_start = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">'
         tag_end = '</' + TextGenerator.tag_type + '>'
-        question = _tn.get(_tn.whatIsYourMostImportantReasonWhy) + ' '
-        question += tag_start
+        if self.lang == 'de':
+            question = _tn.get(_tn.whatIsYourMostImportantReasonWhyFor if is_supportive else _tn.whatIsYourMostImportantReasonWhyAgainst)
+        else:
+            question = _tn.get(_tn.whatIsYourMostImportantReasonWhyFor)
+        question += ' ' + tag_start
         question += text[0:1].lower() if self.lang != 'de' else text[0:1].upper()
         question += text[1:]
 
-        if self.lang == 'de':
-            question += ', ' + (_tn.get(_tn.isTrue if is_supportive else _tn.isNotAGoodIdea)) + '?'
-        else:
-            question += ' ' + _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea) + '?'
-        question += tag_end
+        if self.lang != 'de':
+            question += ' ' + _tn.get(_tn.holds if is_supportive else _tn.isNotAGoodIdea)
+        question += '?' + tag_end
         because = _tn.get(_tn.because)[0:1].upper() + _tn.get(_tn.because)[1:].lower() + '...'
 
         if self.lang == 'de':

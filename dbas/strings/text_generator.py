@@ -235,11 +235,11 @@ class TextGenerator(object):
 
         answers = list()
 
-        answers.append(_t.get(_t.jumpAnswer0).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
-        answers.append(_t.get(_t.jumpAnswer1).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
-        answers.append(_t.get(_t.jumpAnswer2).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
-        answers.append(_t.get(_t.jumpAnswer3).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
-        answers.append(_t.get(_t.jumpAnswer4).replace('XXCONCLUSIONXX', conclusion).replace('YYPREMISEYY', premise))
+        answers.append(_t.get(_t.jumpAnswer0).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+        answers.append(_t.get(_t.jumpAnswer1).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+        answers.append(_t.get(_t.jumpAnswer2).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+        answers.append(_t.get(_t.jumpAnswer3).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+        answers.append(_t.get(_t.jumpAnswer4).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
 
         return answers
 
