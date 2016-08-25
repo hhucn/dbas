@@ -4,8 +4,10 @@ Helper for D-BAS Views
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Group
 from dbas.logger import logger
-from dbas.lib import get_text_for_statement_uid, get_discussion_language
+from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -179,7 +181,7 @@ def __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, 
     return ddh, idh, dh
 
 
-def try_to_register_new_user(request, username, email, phone, content, ui_locales, spamanswer):
+def try_to_register_new_user_via_form(request, username, email, phone, content, ui_locales, spamanswer):
     """
 
     :param request:
@@ -202,30 +204,30 @@ def try_to_register_new_user(request, username, email, phone, content, ui_locale
     antispamanswer = request.session[key] if key in request.session else ''
     spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
 
-    logger('ViewHelper', 'try_to_register_new_user', 'validating email')
+    logger('ViewHelper', 'try_to_register_new_user_via_form', 'validating email')
     is_mail_valid = validate_email(email, check_mx=True)
 
     # check for empty username
     if not username:
-        logger('ViewHelper', 'try_to_register_new_user', 'username empty')
+        logger('ViewHelper', 'try_to_register_new_user_via_form', 'username empty')
         contact_error = True
         message = _t.get(_t.emptyName)
 
     # check for non valid mail
     elif not is_mail_valid:
-        logger('ViewHelper', 'try_to_register_new_user', 'mail is not valid')
+        logger('ViewHelper', 'try_to_register_new_user_via_form', 'mail is not valid')
         contact_error = True
         message = _t.get(_t.invalidEmail)
 
     # check for empty content
     elif not content:
-        logger('main_contact', 'try_to_register_new_user', 'content is empty')
+        logger('main_contact', 'try_to_register_new_user_via_form', 'content is empty')
         contact_error = True
         message = _t.get(_t.emtpyContent)
 
     # check for empty spam
     elif str(spamanswer) != str(spamsolution):
-        logger('ViewHelper', 'try_to_register_new_user', 'empty or wrong anti-spam answer' + ', given answer ' +
+        logger('ViewHelper', 'try_to_register_new_user_via_form', 'empty or wrong anti-spam answer' + ', given answer ' +
                str(spamanswer) + ', right answer ' + str(antispamanswer))
         contact_error = True
         message = _t.get(_t.maliciousAntiSpam)
@@ -243,3 +245,63 @@ def try_to_register_new_user(request, username, email, phone, content, ui_locale
         contact_error = not send_message
 
     return contact_error, message, send_message
+
+
+def try_to_register_new_user_via_ajax(request, ui_locales):
+    """
+
+    :param request:
+    :param ui_locales:
+    :return:
+    """
+    success = ''
+    _t = Translator(ui_locales)
+    params = request.params
+    firstname = escape_string(params['firstname'] if 'firstname' in params else '')
+    lastname = escape_string(params['lastname'] if 'lastname' in params else '')
+    nickname = escape_string(params['nickname'] if 'nickname' in params else '')
+    email = escape_string(params['email'] if 'email' in params else '')
+    gender = escape_string(params['gender'] if 'gender' in params else '')
+    password = escape_string(params['password'] if 'password' in params else '')
+    passwordconfirm = escape_string(params['passwordconfirm'] if 'passwordconfirm' in params else '')
+    spamanswer = escape_string(params['spamanswer'] if 'spamanswer' in params else '')
+
+    # database queries mail verification
+    db_nick1 = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_nick2 = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+    db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
+    is_mail_valid = validate_email(email, check_mx=True)
+
+    # are the password equal?
+    if not password == passwordconfirm:
+        logger('ViewHelper', 'user_registration', 'Passwords are not equal')
+        info = _t.get(_t.pwdNotEqual)
+    # is the nick already taken?
+    elif db_nick1 or db_nick2:
+        logger('ViewHelper', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
+        info = _t.get(_t.nickIsTaken)
+    # is the email already taken?
+    elif db_mail:
+        logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is taken')
+        info = _t.get(_t.mailIsTaken)
+    # is the email valid?
+    elif not is_mail_valid:
+        logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
+        info = _t.get(_t.mailNotValid)
+    # is anti-spam correct?
+    elif str(spamanswer) != str(request.session['antispamanswer']):
+        logger('ViewHelper', 'user_registration', 'Anti-Spam answer \'' + str(spamanswer) + '\' is not equal ' + str(
+            request.session['antispamanswer']))
+        info = _t.get(_t.maliciousAntiSpam)
+    else:
+        # getting the authors group
+        db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
+
+        # does the group exists?
+        if not db_group:
+            info = _t.get(_t.errorTryLateOrContant)
+            logger('ViewHelper', 'user_registration', 'Error occured')
+        else:
+            success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname,
+                                                        password, gender, db_group.uid, ui_locales, transaction)
+    return success, info
