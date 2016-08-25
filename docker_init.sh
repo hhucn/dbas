@@ -13,6 +13,10 @@ while true; do
     printf "\n# Deploying D-BAS...\n"
     python setup.py --quiet develop
 
+    printf "\n# Compiling SASS files...\n"
+    sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
+    rm -r .sass-cache
+
     printf "\n# Seeding discussion database...\n"
     initialize_discussion_sql docker.ini > /dev/null 2>&1
 
@@ -21,12 +25,6 @@ while true; do
 
     printf "\n# Seeding dummy votes...\n"
     init_discussion_testvotes docker.ini > /dev/null 2>&1
-
-    ip=`ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1`
-
-    printf "\n###################################################"
-    printf "\n# Connect to this client via http://$ip:4284/ "
-    printf "\n###################################################\n"
 
     printf "\n# Starting integrated web server -- for development use only!\n"
     pserve docker.ini --reload

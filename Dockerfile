@@ -1,12 +1,18 @@
 FROM python:3.5
 MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
-RUN mkdir /code
+# Add sources for nodejs
+# RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN apt-get update -qq
+RUN apt-get install -yqq rubygems && \
+    (yes | gem install sass) && \
+    mkdir /code
+
 WORKDIR /code
 
 ADD requirements.txt /code/
-RUN pip install -U pip
-RUN pip install -r requirements.txt
+RUN pip install -U pip && \
+    pip install -r requirements.txt
 
 ADD . /code/
 
