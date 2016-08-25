@@ -358,7 +358,7 @@ class GermanDict:
         de_lang[_self.jumpAnswer0] = 'Ja, ich halte die XXCONCLUSIONXX für richtig und finde die YYPREMISEYY gut.'
         de_lang[_self.jumpAnswer1] = 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber habe eine bessere YYPREMISEYY.'
         de_lang[_self.jumpAnswer2] = 'Nein, ich halte die XXCONCLUSIONXX für falsch.'
-        de_lang[_self.jumpAnswer3] = 'Nein, ich halte die YYPREMISEYY für falsch.'
+        de_lang[_self.jumpAnswer3] = 'Nein, ich halte die YYPREMISEYY für inhaltlich falsch.'
         de_lang[_self.jumpAnswer4] = 'Die YYPREMISEYY unterstützt nicht die XXCONCLUSIONXX.'
         de_lang[_self.keyword] = 'Schlüsselwort'
         de_lang[_self.keywordStart] = 'Start'
