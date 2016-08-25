@@ -5,7 +5,7 @@ Helper for D-BAS Views
 """
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group
+from dbas.database.discussion_model import User, Group, Settings, Language
 from dbas.logger import logger
 from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
@@ -19,6 +19,7 @@ import dbas.helper.email as EmailHelper
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.user_management as UserHandler
+import dbas.handler.password as PasswordHandler
 import dbas.helper.voting as VotingHelper
 import transaction
 
@@ -305,3 +306,48 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
             success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname,
                                                         password, gender, db_group.uid, ui_locales, transaction)
     return success, info
+
+
+def request_password(request, ui_locales):
+    """
+
+    :param request:
+    :param ui_locales:
+    :return:
+    """
+    success = ''
+    error = ''
+    info = ''
+
+    _t = Translator(ui_locales)
+    email = escape_string(request.params['email'] if 'email' in request.params else '')
+    db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
+
+    # does the user exists?
+    if db_user:
+        # get password and hashed password
+        pwd = PasswordHandler.get_rnd_passwd()
+        hashedpwd = PasswordHandler.get_hashed_password(pwd)
+
+        # set the hashed one
+        db_user.password = hashedpwd
+        DBDiscussionSession.add(db_user)
+        transaction.commit()
+
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+        db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
+
+        body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
+        body += _t.get(_t.newPwdIs) + pwd
+        subject = _t.get(_t.dbasPwdRequest)
+        reg_success, message = EmailHelper.send_mail(request, subject, body, email, db_language.ui_locales)
+
+        if reg_success:
+            success = message
+        else:
+            error = message
+    else:
+        logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
+        info = _t.get(_t.emailUnknown)
+
+    return success, error, info

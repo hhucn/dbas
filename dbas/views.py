@@ -7,14 +7,12 @@ Core component of DBAS.
 import json
 import time
 
-import dbas.helper.email as EmailHelper
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.helper.notification as NotificationHelper
 import dbas.helper.voting as VotingHelper
 import dbas.user_management as UserHandler
 import dbas.handler.news as NewsHandler
-import dbas.handler.password as PasswordHandler
 import requests
 import dbas.strings.matcher as FuzzyStringMatcher
 import transaction
@@ -27,14 +25,13 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
-from validate_email import validate_email
 
 from dbas.handler.opinion import OpinionHandler
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
-from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax
+from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax, request_password
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
 from dbas.input_validator import Validator
@@ -1079,7 +1076,6 @@ class Dbas(object):
         logger('user_password_request', 'def', 'main, self.request.params: ' + str(self.request.params))
 
         success = ''
-        error = ''
         info = ''
         return_dict = dict()
         ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
@@ -1088,35 +1084,7 @@ class Dbas(object):
         _t = Translator(ui_locales)
 
         try:
-            email = escape_string(self.request.params['email'])
-            db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
-
-            # does the user exists?
-            if db_user:
-                # get password and hashed password
-                pwd = PasswordHandler.get_rnd_passwd()
-                hashedpwd = PasswordHandler.get_hashed_password(pwd)
-
-                # set the hashed one
-                db_user.password = hashedpwd
-                DBDiscussionSession.add(db_user)
-                transaction.commit()
-
-                db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-                db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
-
-                body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
-                body += _t.get(_t.newPwdIs) + pwd
-                subject = _t.get(_t.dbasPwdRequest)
-                reg_success, message = EmailHelper.send_mail(self.request, subject, body, email, db_language.ui_locales)
-
-                if reg_success:
-                    success = message
-                else:
-                    error = message
-            else:
-                logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
-                info = _t.get(_t.emailUnknown)
+            success, error, info = request_password(self.request, ui_locales)
 
         except KeyError as e:
             logger('user_password_request', 'error', repr(e))
