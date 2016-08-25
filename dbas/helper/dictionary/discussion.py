@@ -147,8 +147,7 @@ class DiscussionDictHelper(object):
                                                                nickname=nickname, lang=self.lang)
 
         bubbles_array.append(select_bubble)
-        bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now),
-                                                                    omit_url=True, lang=self.lang))
+        self.__append_now_bubble(bubbles_array)
         bubbles_array.append(question_bubble)
 
         if not self.nickname and count_of_items == 1:
@@ -208,7 +207,7 @@ class DiscussionDictHelper(object):
         sys_msg  = _tn.get(_tn.whatIsYourMostImportantReasonFor) + ': ' + user_msg + '?<br>' + _tn.get(_tn.because) + '...'
         # bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() + user_msg[1:], omit_url=True, lang=self.lang)
 
-        bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now), omit_url=True, lang=self.lang))
+        self.__append_now_bubble(bubbles_array)
         bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang))
 
         # if save_crumb:
@@ -321,7 +320,7 @@ class DiscussionDictHelper(object):
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
             bubbles_array.remove(bubbles_array[-1])
 
-        bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now), lang=self.lang))
+        self.__append_now_bubble(bubbles_array)
         bubbles_array.append(bubble_user)
         bubbles_array.append(bubble_sys)
 
@@ -401,3 +400,8 @@ class DiscussionDictHelper(object):
         bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_user=True, uid='question-bubble', message=text, omit_url=True, lang=self.lang))
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+
+    def __append_now_bubble(self, bubbles_array):
+        if len(bubbles_array) > 0:
+            _tn = Translator(self.lang)
+            bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now), lang=self.lang, omit_url=True))
