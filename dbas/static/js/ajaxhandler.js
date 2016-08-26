@@ -249,14 +249,16 @@ function AjaxMainHandler(){
 			}
 		}).done(function ajaxFlagArgumentDone(data) {
 			var parsedData = $.parseJSON(data);
-			if (parsedData['error'].length == 0){
-				setGlobalSuccessHandler('', _t_discussion(thxForFlagText))
+			if (parsedData['error'].length != 0){
+				setGlobalErrorHandler('', parsedData['error']);
+			} else if (parsedData['info'].length != 0) {
+				setGlobalInfoHandler('', parsedData['info'])
 			} else {
-				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData['error']);
+				setGlobalSuccessHandler('', parsedData['success'])
 			}
 			
 		}).fail(function ajaxFlagArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			setGlobalErrorHandler('', _t_discussion(requestFailed));
 		});
 	}
 }

@@ -13,8 +13,9 @@ import dbas.helper.notification as NotificationHelper
 import dbas.helper.voting as VotingHelper
 import dbas.user_management as UserHandler
 import dbas.handler.news as NewsHandler
-import requests
 import dbas.strings.matcher as FuzzyStringMatcher
+import review.review_helper as ReviewHelper
+import requests
 import transaction
 
 from pyramid.httpexceptions import HTTPFound
@@ -1825,18 +1826,21 @@ class Dbas(object):
 
         try:
             uid = self.request.params['uid']
-            reason = self.request.params['uid']
+            reason = self.request.params['reason']
+            nickname = self.request.authenticated_userid
             if not Validator.check_for_integer(uid):
                 return_dict['error'] = _t.get(_t.internalError)
             elif reason not in ['offtopic', 'spam', 'harmful']:
                 return_dict['error'] = _t.get(_t.internalError)
+            else:
 
-            return_dict['error'] = ''
+                some_arg, success, info, error = ReviewHelper.flag_argument(uid, reason, nickname, _t)
 
-            # error if user reports an argument twice
-            # notification to the author of the flagged argument
+                return_dict['success'] = success
+                return_dict['info'] = info
+                return_dict['error'] = error
         except KeyError as e:
-            logger('get_infos_about_argument', 'error', repr(e))
+            logger('flag_argument', 'error', repr(e))
             return_dict['error'] = _t.get(_t.internalKeyError)
 
         return json.dumps(return_dict, True)
