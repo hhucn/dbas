@@ -268,6 +268,13 @@ def get_reputation_list():
     reputations.append({'points': 200, 'icon': 'fa fa-times', 'text': 'Decide, whether it is spam or not'})
     reputations.append({'points': 100, 'icon': 'fa fa-trash', 'text': 'Decision about statement, which should be deleted'})
     reputations.append({'points': 50, 'icon': 'fa fa-pencil-square-o', 'text': 'Review edited statements'})
+    reputations.append({'points': 15, 'icon': '', 'text': 'Stackoverflow: Users with 15 rep can flag posts.'})
+    reputations.append({'points': 500, 'icon': '', 'text': 'Stackoverflow: Users with 500 rep can review posts from new users.'})
+    reputations.append({'points': 2000, 'icon': '', 'text': 'Stackoverflow: Users with 2000 rep can edit any question or answer in the system.'})
+    reputations.append({'points': 3000, 'icon': '', 'text': 'Stackoverflow: Users with 3000 rep can cast close and open votes.'})
+    reputations.append({'points': 10000, 'icon': '', 'text': 'Stackoverflow: Users with 10000 rep can cast delete and undelete votes on questions, and have access to a moderation dashboard.'})
+    reputations.append({'points': 15000, 'icon': '', 'text': 'Stackoverflow: Users with 15000 rep can protect posts.'})
+    reputations.append({'points': 20000, 'icon': '', 'text': 'Stackoverflow: Users with 20000 rep can cast delete votes on negatively voted answers.'})
     return reputations
 
 
