@@ -227,6 +227,38 @@ function AjaxMainHandler(){
 					' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
 		});
 	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param reason
+	 */
+	this.ajaxFlagArgument = function(uid, reason){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_flag_argument',
+			type: 'GET',
+			data: {
+				uid: uid,
+				reason: reason
+			},
+			global: false,
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxFlagArgumentDone(data) {
+			var parsedData = $.parseJSON(data);
+			if (parsedData['error'].length == 0){
+				setGlobalSuccessHandler('', _t_discussion(thxForFlagText))
+			} else {
+				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData['error']);
+			}
+			
+		}).fail(function ajaxFlagArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	}
 }
 
 function AjaxDiscussionHandler() {

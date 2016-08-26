@@ -244,6 +244,7 @@ var textMaxCountMessage                             = 'textMaxCountMessage';
 var textMaxCountMessageError                        = 'textMaxCountMessageError';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
+var thxForFlagText                                  = 'thxForFlagText'
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
 var unpinNavigation 								= 'unpinNavigation';
 var veryweak 										= 'veryweak';
@@ -425,6 +426,7 @@ var dbas_en = {
 	'to': 'To',
 	'timestamp': 'Timestamp',
 	'typeofVote': 'Agree / Disagree',
+	'thxForFlagText': 'Thanks for reporting, we will have a look at it!',
 	'textMinCountMessageBegin1': 'Enter at least',
 	'textMinCountMessageBegin2': 'characters',
 	'textMinCountMessageDuringTyping': 'more to go ...',
@@ -597,6 +599,7 @@ var dbas_de = {
 	'usersWithSameOpinion': 'Benutzer mit derselben Meinung',
 	'unpinNavigation': 'Navigation lösen',
 	'typeofVote': 'Zustimmung/Ablehnung',
+	'thxForFlagText': 'Danke für Ihre Meldung, wir kümmern uns drum!',
 	'textMinCountMessageBegin1': 'Geben Sie mindestens',
 	'textMinCountMessageBegin2': 'Zeichen ein',
 	'textMinCountMessageDuringTyping': 'Zeichen noch ...',

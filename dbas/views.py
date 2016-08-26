@@ -1810,6 +1810,31 @@ class Dbas(object):
             return return_dict
         return json.dumps(return_dict, True)
 
+    # ajax - for flagging arguments
+    @view_config(route_name='ajax_flag_argument', renderer='json')
+    def flag_argument(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('flag_argument', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+
+        try:
+            uid = self.request.params['uid']
+            reason = self.request.params['uid']
+            return_dict['error'] = ''
+
+            # error if user reports an argument twice
+        except KeyError as e:
+            logger('get_infos_about_argument', 'error', repr(e))
+            return_dict['error'] = _t.get(_t.internalKeyError)
+
+        return json.dumps(return_dict, True)
+
     # ajax - for additional service
     @view_config(route_name='ajax_additional_service', renderer='json')
     def additional_service(self):

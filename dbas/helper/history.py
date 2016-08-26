@@ -4,15 +4,14 @@ Provides helping function for creating the history as bubbles.
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import time
-from sqlalchemy import and_
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, Statement, User, History, Settings
+from dbas.input_validator import Validator
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import VoteArgument, VoteStatement, Argument, Statement, User, History, Settings
-from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
-from dbas.input_validator import Validator
+from dbas.strings.translator import Translator
+from dbas.lib import create_speechbubble_dict
 
 
 def save_issue_uid(transaction, issue_uid, nickname):
@@ -257,76 +256,6 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
         bubble_syst  = create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(additional_uid),
                                                 message=sys_text, omit_url=True, nickname=nickname, lang=lang)
     return [bubble_user, bubble_syst]
-
-
-def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, uid='', url='',
-                             message='', omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
-                             nickname='anonymous', lang='en'):
-    """
-    Creates an dictionary which includes every information needed for a bubble.
-
-    :param is_user: Boolean
-    :param is_system: Boolean
-    :param is_status: Boolean
-    :param is_info: Boolean
-    :param uid: Argument.uid
-    :param url: URL
-    :param message: String
-    :param omit_url: Boolean
-    :param argument_uid: Argument.uid
-    :param statement_uid: Statement.uid
-    :param is_supportive: Boolean
-    :param nickname: String
-    :param lang: String
-    :return: dict()
-    """
-    speech = dict()
-    speech['is_user']            = is_user
-    speech['is_system']          = is_system
-    speech['is_status']          = is_status
-    speech['is_info']            = is_info
-    speech['id']                 = uid if len(str(uid)) > 0 else str(time.time())
-    # speech['url']                = url if len(str(url)) > 0 else 'None'
-    speech['url']                = url if len(str(url)) > 0 else 'None'
-    speech['message']            = message
-    speech['omit_url']           = omit_url
-    speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'
-    speech['data_argument_uid']  = str(argument_uid)
-    speech['data_statement_uid'] = str(statement_uid)
-    speech['data_is_supportive'] = str(is_supportive)
-    db_votecounts                = None
-
-    if is_supportive is None:
-        is_supportive = False
-
-    if not nickname:
-        nickname = 'anonymous'
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
-
-    if argument_uid:
-        db_votecounts = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                                            VoteArgument.is_up_vote == is_supportive,
-                                                                            VoteArgument.is_valid == True,
-                                                                            VoteArgument.author_uid != db_user.uid)).all()
-    elif statement_uid:
-        db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                                             VoteStatement.is_up_vote == is_supportive,
-                                                                             VoteStatement.is_valid == True,
-                                                                             VoteStatement.author_uid != db_user.uid)).all()
-    _t = Translator(lang)
-    votecounts = len(db_votecounts) if db_votecounts else 0
-
-    if votecounts == 0:
-        speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
-    elif votecounts == 1:
-        speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
-    else:
-        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
-    speech['votecounts'] = votecounts
-
-    return speech
 
 
 def save_history_in_cookie(request, path, history):

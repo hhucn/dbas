@@ -569,7 +569,21 @@ function GuiHandler() {
 			$('#popup-add-topic').modal('hide');
 		});
 	};
-
+	
+	/**
+	 *
+	 * @param uid
+	 */
+	this.showFlagArgumentPopup = function(uid){
+		var popup = $('#popup-flag-argument');
+		popup.modal('show');
+		$('#popup-flag-argument-send').click(function () {
+			var reason = popup.find('input:checked').attr('value');
+			new AjaxMainHandler().ajaxFlagArgument(uid, reason);
+			popup.find('input').prop( "checked", false );
+		});
+	};
+	
      /**
 	 * Opens the edit issues popup
 	 */

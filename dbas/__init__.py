@@ -127,6 +127,7 @@ def main(global_config, **settings):
     config.add_route('ajax_send_news', 'ajax_send_news')
     config.add_route('ajax_notification_read', 'ajax_notification_read')
     config.add_route('ajax_notification_delete', 'ajax_notification_delete')
+    config.add_route('ajax_flag_argument', '{stuff:.*}ajax_flag_argument')
     config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit

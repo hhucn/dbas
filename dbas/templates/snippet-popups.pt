@@ -690,6 +690,7 @@
     		</div>
     	</div>
     </div>
+
     <!-- EDIT Issues -->
     <div class="modal fade bs-example-modal-lg" id="popup-edit-issue" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog modal-lg">
@@ -723,6 +724,34 @@
     			<div class="modal-footer">
     				<button type="button" class="btn btn-success" id="popup-edit-issue-submit">${structure:extras.tag.submit}</button>
     				<button type="button" class="btn btn-danger" id="popup-edit-issue-close-button">${structure:extras.tag.close}</button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- FLAG ARGUMENTS -->
+    <div class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mark-reason">Please mark a reason</h4>
+    			</div>
+    			<div class="modal-body">
+                    <form>
+                      <fieldset>
+                        <input type="radio" id="off" value="offtopic" name="flag_argument">
+                        <label for="off"> <span i18n:translate="statement-offtopic">This statement is offtopic.</span><br><small>Content of the statement is useful, but does not belong to this discussion.</small></label><br>
+                        <input type="radio" id="sp" value="spam" name="flag_argument">
+                        <label for="sp"> <span i18n:translate="statement-spam">It is not relevant at all.</span><br><small>This statement is not important for any discussion on D-BAS.</small></label><br>
+                        <input type="radio" id="bad" value="harmful" name="flag_argument">
+                        <label for="bad"> <span i18n:translate="statement-harmful">This statement is harmful or abusive.</span><br><small>Content is inappropriate, harmful or abusive.</small></label>
+                      </fieldset>
+                    </form>
+    			</div>
+    			<div class="modal-footer">
+    				<button id="popup-flag-argument-send" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="send" disabled="disabled">Send</button>
     			</div>
     		</div>
     	</div>
