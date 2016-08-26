@@ -635,7 +635,7 @@ class Dbas(object):
 
         _dh = DictionaryHelper(ui_locales)
         extras_dict = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-        settings_dict = _dh.preprate_settings_dict(self.request, success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage)
+        settings_dict = _dh.preprate_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage)
 
         return {
             'layout': self.base_layout(),
@@ -1141,8 +1141,8 @@ class Dbas(object):
                     error = _tn.get(_tn.keyword)
 
                 transaction.commit()
-                public_page_url = mainpage + '/user/' + public_nick
-                gravatar_url = UserHandler.get_public_profile_picture(db_user, 80)
+                public_page_url = mainpage + '/user/' + (db_user.nickname if settings_value else public_nick)
+                gravatar_url = UserHandler.get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
             else:
                 error = _tn.get(_tn.checkNickname)
         except KeyError as e:
@@ -1230,7 +1230,7 @@ class Dbas(object):
                     db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, mainpage, transaction)
                     uid = db_notification.uid
                     ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-                    gravatar = UserHandler.get_public_profile_picture(db_recipient, 20)
+                    gravatar = UserHandler.get_profile_picture(db_recipient, 20)
 
         except KeyError:
             error = _tn.get(_tn.internalKeyError)
@@ -1826,6 +1826,11 @@ class Dbas(object):
         try:
             uid = self.request.params['uid']
             reason = self.request.params['uid']
+            if not Validator.check_for_integer(uid):
+                return_dict['error'] = _t.get(_t.internalError)
+            elif reason not in ['offtopic', 'spam', 'harmful']:
+                return_dict['error'] = _t.get(_t.internalError)
+
             return_dict['error'] = ''
 
             # error if user reports an argument twice

@@ -162,6 +162,10 @@ class User(DiscussionBase):
     def should_hold_the_login(self, keep_logged_in):
         self.keep_logged_in = keep_logged_in
 
+    def get_global_nickname(self):
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=self.uid).first()
+        return self.nickname if db_settings.should_show_public_nickname else self.public_nickname
+
 
 class Settings(DiscussionBase):
     """

@@ -221,9 +221,9 @@ def __get_users_array(mainpage):
     for x in range(5):
         tmp_dict = {}
         db_user = DBDiscussionSession.query(User).filter_by(uid=random.randint(3, 38)).first()
-        tmp_dict['img_src'] = UserManager.get_public_profile_picture(db_user, 40)
-        tmp_dict['url'] = mainpage + '/user/' + db_user.public_nickname
-        tmp_dict['name'] = db_user.public_nickname
+        tmp_dict['img_src'] = UserManager.get_profile_picture(db_user, 40)
+        tmp_dict['url'] = mainpage + '/user/' + db_user.get_global_nickname()
+        tmp_dict['name'] = db_user.get_global_nickname()
         users_array.append(tmp_dict)
     return users_array
 

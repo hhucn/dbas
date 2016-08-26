@@ -501,6 +501,7 @@ class EnglischDict:
         en_lang[_self.switchLanguage] = 'Switch Language'
         en_lang[_self.statement] = 'Statement'
         en_lang[_self.statementAdded] = 'Statement was added'
+        en_lang[_self.statementIsAbout] = 'Statement ist about added'
         en_lang[_self.argumentAdded] = 'Argument was added'
         en_lang[_self.statementAddedMessageContent] = 'Hey, someone has added his/her opinion regarding your argument!'
         en_lang[_self.argumentAddedMessageContent] = 'Hey, someone has added his/her argument regarding your argument!'

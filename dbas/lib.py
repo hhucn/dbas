@@ -165,7 +165,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
 
     if len(arg_array) == 1:
         # build one argument only
-        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t)
+        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro)
 
     else:
         # get all pgroups and at last, the conclusion
@@ -238,7 +238,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     return ret_value
 
 
-def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t):
+def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro):
     """
 
     :param uid:
@@ -247,6 +247,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param colored_position:
     :param attack_type:
     :param _t:
+    :param start_with_intro:
     :return:
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -290,8 +291,13 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         # if color_everything:
         #     ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
         # else:
-        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion
-        ret_value += ' ' + _t.get(_t.because).lower() + ' ' + premises
+        if start_with_intro:
+            ret_value = intro[0:1].upper() + intro[1:] + ' '
+        else:
+            ret_value = _t.get(_t.statementIsAbout) if lang == 'de' else ''
+        ret_value += conclusion
+        ret_value += ', ' if lang == 'de' else ' '
+        ret_value += _t.get(_t.because).lower() + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
         ret_value = conclusion + ' '

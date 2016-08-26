@@ -500,6 +500,7 @@ class GermanDict:
         de_lang[_self.supportsNot] = 'unterstützt nicht'
         de_lang[_self.isupport] = 'ich halte'
         de_lang[_self.statement] = 'Aussage'
+        de_lang[_self.statementIsAbout] = 'Die Aussage ist die, dass'
         de_lang[_self.statementAdded] = 'Aussage wurde hinzugefügt'
         de_lang[_self.argumentAdded] = 'Argument wurde hinzugefügt'
         de_lang[_self.statementAddedMessageContent] = 'Hey, jemand hat seine Meinung zu Deiner Aussage hinzugefügt!'

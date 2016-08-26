@@ -446,6 +446,7 @@ class Translator(object):
         self.showAllArgumentsTitle = 'showAllArgumentsTitle'
         self.showAllUsersTitle = 'showAllUsersTitle'
         self.saveMyStatement = 'saveMyStatement'
+        self.statementIsAbout = 'statementIsAbout'
         self.statementIndex = 'statementIndex'
         self.statementIndexInfo = 'statementIndexInfo'
         self.strength = 'strength'
