@@ -294,7 +294,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         if start_with_intro:
             ret_value = intro[0:1].upper() + intro[1:] + ' '
         else:
-            ret_value = _t.get(_t.statementIsAbout) if lang == 'de' else ''
+            ret_value = (_t.get(_t.statementIsAbout) + ' ') if lang == 'de' else ''
         ret_value += conclusion
         ret_value += ', ' if lang == 'de' else ' '
         ret_value += _t.get(_t.because).lower() + ' ' + premises
