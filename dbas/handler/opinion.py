@@ -391,7 +391,7 @@ class OpinionHandler:
         :param timestamp: SQL Timestamp
         :return: dict()
         """
-        db_settings = DBDiscussionSession.query(Settings).filter_by(uid=db_user.uid).first()
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
         name = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
         return {'nickname': name,
                 'public_profile_url': self.mainpage + '/user/' + name,

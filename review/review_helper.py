@@ -10,7 +10,7 @@ from slugify import slugify
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue
+from dbas.database.discussion_model import User, Issue, Argument
 from dbas import user_management as UserManager
 
 pages = ['edits', 'deletes', 'flags', 'random', 'duplicates', 'freshest']
@@ -289,3 +289,40 @@ def get_reputation_of(nickname):
         return 0
 
     return 70
+
+
+def flag_argument(uid, reason, nickname, translator):
+    """
+
+    :param uid:
+    :param reason:
+    :param nickname:
+    :param translator:
+    :return:
+    """
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_argument or not db_user:
+        return -1, translator.get(translator.internalKeyError)
+
+    ret_value = 0
+    ret_success = ''
+    ret_info = ''
+    ret_error = ''
+
+    # error if user reports an argument twice
+    # notification to the author of the flagged argument
+
+    if reason == 'offtopic':
+        ret_value = 1
+        ret_success = translator.get(translator.thxForFlagText)
+
+    elif reason == 'spam':
+        ret_value = 2
+        ret_info = translator.get(translator.alreadyFlagged)
+
+    elif reason == 'harmful':
+        ret_value = 3
+        ret_error = translator.get(translator.internalKeyError)
+
+    return ret_value, ret_success, ret_info, ret_error

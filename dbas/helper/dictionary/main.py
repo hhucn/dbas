@@ -194,7 +194,7 @@ class DictionaryHelper(object):
         edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
         statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
         arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else 0, 0
-        public_nick = db_user.get_global_nickname()
+        public_nick = db_user.get_global_nickname() if db_user else ''
         db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first() if db_user else None
         group       = db_group.name if db_group else '-'
         gravatar_public_url = _uh.get_public_profile_picture(db_user)
