@@ -227,11 +227,6 @@ function Main () {
 			setTimeout("$('body').addClass('loading')", 0);
 		});
 		
-		// functions for flagging arguments
-		$('#popup-flag-argument').find('input').change(function(){
-			$('#popup-flag-argument-send').prop("disabled", false);
-		});
-		
 	};
 	
 	/**
@@ -436,20 +431,8 @@ function Main () {
 		});
 		
 		// hover on radio buttons
-		list.find('input').each(function(){
-			$(this).hover(function(){
-				$(this).prop('checked', true);
-			}, function(){
-				$(this).prop('checked', false);
-			})
-		});
-		list.find('label').each(function(){
-			$(this).hover(function(){
-				$(this).prev().prop('checked', true);
-			}, function(){
-				$(this).prev().prop('checked', false);
-			})
-		});
+		guiHandler.hoverInputListOf($('#popup-flag-argument'));
+		guiHandler.hoverInputListOf(list);
 	};
 	
 	/**

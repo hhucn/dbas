@@ -1829,6 +1829,7 @@ class Dbas(object):
             return_dict['error'] = ''
 
             # error if user reports an argument twice
+            # notification to the author of the flagged argument
         except KeyError as e:
             logger('get_infos_about_argument', 'error', repr(e))
             return_dict['error'] = _t.get(_t.internalKeyError)

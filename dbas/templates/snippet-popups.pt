@@ -750,9 +750,6 @@
                       </fieldset>
                     </form>
     			</div>
-    			<div class="modal-footer">
-    				<button id="popup-flag-argument-send" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="send" disabled="disabled">Send</button>
-    			</div>
     		</div>
     	</div>
     </div>
