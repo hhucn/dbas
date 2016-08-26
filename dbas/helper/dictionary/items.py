@@ -437,8 +437,8 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-        db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: FIX RANDOM FOR PGROUP
+        # db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+        # db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: FIX RANDOM FOR PGROUP
 
         # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
         item_text = TextGenerator(self.lang).get_jump_to_argument_text_list()
@@ -454,14 +454,14 @@ class ItemDictHelper(object):
         else:
             url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
             url2 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
-        url3 = _um.get_url_for_justifying_statement(not for_api, db_premise.statement_uid, 'f')
+        # url3 = _um.get_url_for_justifying_statement(not for_api, db_premise.statement_uid, 'f')
         url4 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undercut')
 
         answers = list()
         answers.append({'text': item_text[0], 'url': url0})
         answers.append({'text': item_text[1], 'url': url1})
         answers.append({'text': item_text[2], 'url': url2})
-        answers.append({'text': item_text[3], 'url': url3})
+        # answers.append({'text': item_text[3], 'url': url3})
         answers.append({'text': item_text[4], 'url': url4})
 
         return_array = []
