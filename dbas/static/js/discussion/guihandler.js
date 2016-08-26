@@ -577,10 +577,11 @@ function GuiHandler() {
 	this.showFlagArgumentPopup = function(uid){
 		var popup = $('#popup-flag-argument');
 		popup.modal('show');
-		$('#popup-flag-argument-send').click(function () {
-			var reason = popup.find('input:checked').attr('value');
+		popup.find('input').click(function () {
+			var reason = $(this).attr('value');
 			new AjaxMainHandler().ajaxFlagArgument(uid, reason);
-			popup.find('input').prop( "checked", false );
+			popup.find('input').prop( 'checked', false );
+			popup.modal('hide');
 		});
 	};
 	
@@ -780,4 +781,25 @@ function GuiHandler() {
 		div.append(strong).append(span);
 		return div;
 	};
+	
+	/**
+	 *
+	 * @param list
+	 */
+	this.hoverInputListOf = function(list){
+		list.find('input').each(function(){
+			$(this).hover(function(){
+				$(this).prop('checked', true);
+			}, function(){
+				$(this).prop('checked', false);
+			})
+		});
+		list.find('label').each(function(){
+			$(this).hover(function(){
+				$(this).prev().prop('checked', true);
+			}, function(){
+				$(this).prev().prop('checked', false);
+			})
+		});
+	}
 }

@@ -75,7 +75,7 @@
                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
                                     <span class="triangle-content">${structure:bubble.message}</span>
                                     <br>
-                                    <span class="triangle-flag" tal:condition="bubble.is_flaggable">
+                                    <span class="triangle-flag pull-right" tal:condition="bubble.is_flaggable and extras.logged_in">
                                         <i class="fa fa-flag" aria-hidden="true"></i>
                                     </span>
                                 </p>
