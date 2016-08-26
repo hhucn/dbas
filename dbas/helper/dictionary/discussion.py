@@ -7,7 +7,7 @@ import dbas.helper.history as HistoryHelper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement
-from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -50,7 +50,7 @@ class DiscussionDictHelper(object):
         intro               = _tn.get(_tn.initialPositionInterest)
         save_statement_url  = 'ajax_set_new_start_premise'
 
-        start_bubble = HistoryHelper.create_speechbubble_dict(is_system=True, uid='start', message=intro, omit_url=True, lang=self.lang)
+        start_bubble = create_speechbubble_dict(is_system=True, uid='start', message=intro, omit_url=True, lang=self.lang)
         bubbles_array = [start_bubble]
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
@@ -76,7 +76,7 @@ class DiscussionDictHelper(object):
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ' ' + statement_text + '?'
         # select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, '', '', _tn.get(_tn.youAreInterestedIn) + ': <strong>' + statement_text + '</strong>', lang=self.lang)
-        bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+        bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
 
         # if save_crumb:
         #     bubbles_array.append(select_bubble)
@@ -140,21 +140,21 @@ class DiscussionDictHelper(object):
                 intro += ': '
 
         url = UrlManager(application_url, slug).get_slug_url(False)
-        question_bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True, lang=self.lang)
+        question_bubble = create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True, lang=self.lang)
         if not text.endswith(('.', '?', '!')):
             text += '.'
-        select_bubble = HistoryHelper.create_speechbubble_dict(is_user=True, url=url, message=intro + text,
-                                                               omit_url=False, statement_uid=uid, is_supportive=is_supportive,
-                                                               nickname=nickname, lang=self.lang)
+        select_bubble = create_speechbubble_dict(is_user=True, url=url, message=intro + text, omit_url=False,
+                                                 statement_uid=uid, is_supportive=is_supportive, nickname=nickname,
+                                                 lang=self.lang)
 
         bubbles_array.append(select_bubble)
         self.__append_now_bubble(bubbles_array)
         bubbles_array.append(question_bubble)
 
         if not self.nickname and count_of_items == 1:
-            bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_info=True, uid='now',
-                                                                        message=_tn.get(_tn.voteCountTextFirst) + '. ' + _tn.get(_tn.onlyOneItemWithLink),
-                                                                        omit_url=True, lang=self.lang))
+            bubbles_array.append(create_speechbubble_dict(is_info=True, uid='now',
+                                                          message=_tn.get(_tn.voteCountTextFirst) + '. ' + _tn.get(_tn.onlyOneItemWithLink),
+                                                          omit_url=True, lang=self.lang))
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
@@ -209,7 +209,8 @@ class DiscussionDictHelper(object):
         # bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() + user_msg[1:], omit_url=True, lang=self.lang)
 
         self.__append_now_bubble(bubbles_array)
-        bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang))
+        bubbles_array.append(
+            create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang))
 
         # if save_crumb:
         #     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -238,7 +239,7 @@ class DiscussionDictHelper(object):
             text            = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know')
             sys_text        = _tn.get(_tn.otherParticipantsThinkThat) + ' ' + text[0:1].lower() + text[1:] + '. '
 
-            bubble_sys = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?')
+            bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?')
             bubbles_array.append(bubble_sys)
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
@@ -308,14 +309,14 @@ class DiscussionDictHelper(object):
             sys_text = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive, attack, confr,
                                                       reply_for_argument, user_is_attacking, db_argument, db_confrontation)
 
-        bubble_user = HistoryHelper.create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
-                                                             is_supportive=is_supportive, lang=self.lang, nickname=self.nickname)
+        bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
+                                               is_supportive=is_supportive, lang=self.lang, nickname=self.nickname)
         if attack.startswith('end'):
-            bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, lang=self.lang)
-            bubble_mid  = HistoryHelper.create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
+            bubble_sys  = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, lang=self.lang)
+            bubble_mid  = create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
         else:
             uid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
-            bubble_sys  = HistoryHelper.create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True, lang=self.lang)
+            bubble_sys  = create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True, lang=self.lang, is_flaggable=True)
 
         # dirty fixes
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
@@ -343,7 +344,7 @@ class DiscussionDictHelper(object):
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ': ' + argument_text + '?'
-        bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+        bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
 
         bubbles_array = [bubble]
 
@@ -370,7 +371,7 @@ class DiscussionDictHelper(object):
 
         text = _tn.get(_tn.whatDoYouThinkAbout)
         text += ' ' + premise + aand + conclusion + '?'
-        bubble = HistoryHelper.create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+        bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
 
         bubbles_array = [bubble]
 
@@ -397,12 +398,15 @@ class DiscussionDictHelper(object):
         text += get_text_for_argument_uid(uid) if is_uid_argument else get_text_for_statement_uid(uid)
         text += '?<br>' + _tn.get(_tn.because) + '...'
 
-        bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message='Now', omit_url=True, lang=self.lang))
-        bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_user=True, uid='question-bubble', message=text, omit_url=True, lang=self.lang))
+        bubbles_array.append(
+            create_speechbubble_dict(is_status=True, uid='now', message='Now', omit_url=True, lang=self.lang))
+        bubbles_array.append(
+            create_speechbubble_dict(is_user=True, uid='question-bubble', message=text, omit_url=True, lang=self.lang))
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
     def __append_now_bubble(self, bubbles_array):
         if len(bubbles_array) > 0:
             _tn = Translator(self.lang)
-            bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now), lang=self.lang, omit_url=True))
+            bubbles_array.append(
+                create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_tn.now), lang=self.lang, omit_url=True))

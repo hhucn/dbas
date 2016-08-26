@@ -191,11 +191,16 @@ function Main () {
 		
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
-		$('.triangle-l').click(function () {
-			if ($(this).attr('id').indexOf(questionBubbleId) != -1) {
-				var uid = $(this).attr('id').replace(questionBubbleId + '-', '');
+		var trianglel = $('.triangle-l');
+		trianglel.find('.triangle-content').click(function () {
+			if ($(this).parent().attr('id').indexOf(questionBubbleId) != -1) {
+				var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			}
+		});
+		trianglel.find('.triangle-flag').click(function () {
+				var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			guiHandler.showFlagArgumentPopup(uid);
 		});
 		
 		// adding issues
@@ -221,6 +226,12 @@ function Main () {
 		$('#' + contactSubmitButtonId).click(function () {
 			setTimeout("$('body').addClass('loading')", 0);
 		});
+		
+		// functions for flagging arguments
+		$('#popup-flag-argument').find('input').change(function(){
+			$('#popup-flag-argument-send').prop("disabled", false);
+		});
+		
 	};
 	
 	/**
