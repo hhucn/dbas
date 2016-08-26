@@ -21,8 +21,6 @@ from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, g
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 
-from review.review_helper import get_reputation_history
-
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',
             'Apologetic', 'Ashamed', 'Awake', 'Bewildered', 'Bitchy', 'Bittersweet', 'Blah', 'Blank', 'Blissful',
@@ -163,7 +161,7 @@ def is_user_admin(nickname):
     return db_user and db_user.groups.name == 'admins'
 
 
-def get_profile_picture(user, size=80):
+def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
 
@@ -171,11 +169,14 @@ def get_profile_picture(user, size=80):
     :param size: Integer, default 80
     :return: String
     """
-    email = (user.email).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
+    additional_id = '' if db_settings.should_show_public_nickname else 'x'
+    if ignore_privacy_settings:
+        additional_id = ''
+    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
-    # logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
     return gravatar_url
 
 
@@ -195,7 +196,6 @@ def get_public_profile_picture(user, size=80):
     email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
-    # logger('UserHandler', 'get_public_profile_picture', 'url: ' + gravatar_url)
     return gravatar_url
 
 
@@ -246,10 +246,10 @@ def get_public_information_data(nickname, lang):
         labels_statement_30.append(ts)
         labels_edit_30.append(ts)
 
-        db_votes_statements = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == db_user.uid,
+        db_votes_statements = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == current_user.uid,
                                                                                    VoteStatement.timestamp >= begin,
                                                                                    VoteStatement.timestamp < end)).all()
-        db_votes_arguments = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == db_user.uid,
+        db_votes_arguments = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == current_user.uid,
                                                                                  VoteArgument.timestamp >= begin,
                                                                                  VoteArgument.timestamp < end)).all()
         votes = len(db_votes_arguments) + len(db_votes_statements)
@@ -506,7 +506,7 @@ def get_information_of(db_user, lang):
     ret_dict['edits_done']            = len(edits)
     ret_dict['discussion_arg_votes']  = arg_vote
     ret_dict['discussion_stat_votes'] = stat_vote
-    ret_dict['avatar_url']            = get_public_profile_picture(db_user, 120)
+    ret_dict['avatar_url']            = get_profile_picture(db_user, 120)
 
     return ret_dict
 
