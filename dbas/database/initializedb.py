@@ -15,7 +15,7 @@ import dbas.handler.password as passwordHandler
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy
+    Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy, ReviewDeleteReason
 from dbas.database.news_model import News
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
@@ -45,6 +45,7 @@ def main_discussion(argv=sys.argv):
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user5, user6, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
         setup_discussion_database(DBDiscussionSession, user2, issue1, issue2, issue4, issue5)
+        setup_review_database(DBDiscussionSession)
         transaction.commit()
 
 
@@ -65,6 +66,7 @@ def main_discussion_reload(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        setup_review_database(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
 
@@ -1303,4 +1305,12 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
                                        issue_uid=issue4.uid)
     reference201 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist", host="localhost:3449", path="/", author_uid=5, statement_uid=statement213.uid, issue_uid=issue4.uid)
     session.add_all([reference200, reference201])
+    session.flush()
+
+
+def setup_review_database(session):
+    reason1 = ReviewDeleteReason(reason='offtopic')
+    reason2 = ReviewDeleteReason(reason='spam')
+    reason3 = ReviewDeleteReason(reason='harmful')
+    session.add_all([reason1, reason2, reason3])
     session.flush()
