@@ -305,7 +305,6 @@ def flag_argument(uid, reason, nickname, translator):
     if not db_argument or not db_user:
         return -1, translator.get(translator.internalKeyError)
 
-    ret_value = 0
     ret_success = ''
     ret_info = ''
     ret_error = ''
@@ -320,9 +319,19 @@ def flag_argument(uid, reason, nickname, translator):
     elif reason == 'spam':
         ret_value = 2
         ret_info = translator.get(translator.alreadyFlagged)
+        ret_success = translator.get(translator.thxForFlagText)
 
     elif reason == 'harmful':
         ret_value = 3
+        ret_error = translator.get(translator.internalKeyError)
+        ret_success = translator.get(translator.thxForFlagText)
+
+    elif reason == 'optimization':
+        ret_value = 4
+        ret_success = translator.get(translator.thxForFlagText)
+
+    else:
+        ret_value = -1
         ret_error = translator.get(translator.internalKeyError)
 
     return ret_value, ret_success, ret_info, ret_error

@@ -622,3 +622,164 @@ class Message(DiscussionBase):
         :return: None
         """
         self.read = was_read
+
+
+class ReviewDelete(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'review_deletes'
+    uid = Column(Integer, primary_key=True)
+    detector_uid = Column(Integer, ForeignKey('users.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+    timestamp = Column(ArrowType, default=get_now())
+    is_executed = Column(Boolean, nullable=False)
+    reason_uid = Column(Integer, ForeignKey('review_delete_reasons.uid'), primary_key=True)
+
+    detectors = relationship('User', foreign_keys=[detector_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
+    def __init__(self, detector, statement):
+        """
+
+        :param detector:
+        :param statement:
+        """
+        self.detector_uid = detector
+        self.statement_uid = statement
+        self.timestamp = get_now()
+        self.is_executed = False
+
+
+class ReviewEdit(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'review_edits'
+    uid = Column(Integer, primary_key=True)
+    detector_uid = Column(Integer, ForeignKey('users.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+    timestamp = Column(ArrowType, default=get_now())
+    is_executed = Column(Boolean, nullable=False)
+    tmp_lock = Column(ArrowType, default=get_now(), nullable=True)
+
+    detectors = relationship('User', foreign_keys=[detector_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
+    def __init__(self, detector, statement):
+        """
+
+        :param detector:
+        :param statement:
+        """
+        self.detector_uid = detector
+        self.statement_uid = statement
+        self.timestamp = get_now()
+        self.is_executed = False
+
+
+class ReviewOptimization(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'review_optimizations'
+    uid = Column(Integer, primary_key=True)
+    detector_uid = Column(Integer, ForeignKey('users.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+    timestamp = Column(ArrowType, default=get_now())
+    is_executed = Column(Boolean, nullable=False)
+
+    detectors = relationship('User', foreign_keys=[detector_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
+    def __init__(self, detector, statement):
+        """
+
+        :param detector:
+        :param statement:
+        """
+        self.detector_uid = detector
+        self.statement_uid = statement
+        self.timestamp = get_now()
+        self.is_executed = False
+
+
+class ReviewDeleteReason(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'review_delete_reasons'
+    uid = Column(Integer, primary_key=True)
+    reason = Column(Text, primary_key=True)
+
+    def __init__(self, reason):
+        self.reason = reason
+
+
+class LastReviewerDelete(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'last_reviewer_delete'
+    uid = Column(Integer, primary_key=True)
+    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
+    review_uid = Column(Integer, ForeignKey('review_deletes.uid'))
+    is_okay = Column(Boolean, nullable=False)
+
+    def __init__(self, reviewer, review, is_okay):
+        """
+
+        :param reviewer:
+        :param review:
+        :param is_okay:
+        """
+        self.reviewer_uid = reviewer
+        self.review_uid = review
+        self.is_okay = is_okay
+
+
+class LastReviewerEdit(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'last_reviewer_edit'
+    uid = Column(Integer, primary_key=True)
+    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
+    review_uid = Column(Integer, ForeignKey('review_edits.uid'))
+    is_okay = Column(Boolean, nullable=False)
+
+    def __init__(self, reviewer, review, is_okay):
+        """
+
+        :param reviewer:
+        :param review:
+        :param is_okay:
+        """
+        self.reviewer_uid = reviewer
+        self.review_uid = review
+        self.is_okay = is_okay
+
+
+class LastReviewerOptimization(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'last_reviewer_optimization'
+    uid = Column(Integer, primary_key=True)
+    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
+    review_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
+    is_okay = Column(Boolean, nullable=False)
+    content = Column(Text, nullable=False)
+
+    def __init__(self, reviewer, review, is_okay, content):
+        """
+
+        :param reviewer:
+        :param review:
+        :param is_okay:
+        :param content:
+        """
+        self.reviewer_uid = reviewer
+        self.review_uid = review
+        self.is_okay = is_okay
+        self.content = content
