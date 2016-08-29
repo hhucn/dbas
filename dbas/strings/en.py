@@ -457,7 +457,7 @@ class EnglischDict:
         en_lang[_self.restartOnError] = 'Please try to reload this page or restart the discussion, if reloading does not fix the problem.'
         en_lang[_self.recipientNotFound] = 'Recipient not found!'
         en_lang[_self.report] = 'Report'
-        en_lang[_self.reportTitle] = 'Contact for reporting'
+        en_lang[_self.reportTitle] = 'Report statement'
         en_lang[_self.review] = 'Review'
         en_lang[_self.right] = 'Right'
         en_lang[_self.reason] = 'Reason'

@@ -34,7 +34,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
 from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax, request_password
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, get_user_by_private_or_public_nickname, get_text_for_statement_uid
 from dbas.logger import logger
@@ -1828,9 +1828,12 @@ class Dbas(object):
             uid = self.request.params['uid']
             reason = self.request.params['reason']
             nickname = self.request.authenticated_userid
+
+            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
+
             if not Validator.check_for_integer(uid):
                 return_dict['error'] = _t.get(_t.internalError)
-            elif reason not in ['offtopic', 'spam', 'harmful']:
+            elif not db_reason or reason != 'optimization':
                 return_dict['error'] = _t.get(_t.internalError)
             else:
 
