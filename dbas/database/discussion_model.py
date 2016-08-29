@@ -631,13 +631,14 @@ class ReviewDelete(DiscussionBase):
     __tablename__ = 'review_deletes'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False)
-    reason_uid = Column(Integer, ForeignKey('review_delete_reasons.uid'), primary_key=True)
+    reason_uid = Column(Integer, ForeignKey('review_delete_reasons.uid'))
 
     detectors = relationship('User', foreign_keys=[detector_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
+    reasons = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
     def __init__(self, detector, statement):
         """
@@ -658,7 +659,7 @@ class ReviewEdit(DiscussionBase):
     __tablename__ = 'review_edits'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False)
     tmp_lock = Column(ArrowType, default=get_now(), nullable=True)
@@ -685,7 +686,7 @@ class ReviewOptimization(DiscussionBase):
     __tablename__ = 'review_optimizations'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False)
 
@@ -710,7 +711,7 @@ class ReviewDeleteReason(DiscussionBase):
     """
     __tablename__ = 'review_delete_reasons'
     uid = Column(Integer, primary_key=True)
-    reason = Column(Text, primary_key=True)
+    reason = Column(Text, nullable=False, unique=True)
 
     def __init__(self, reason):
         self.reason = reason
@@ -720,11 +721,14 @@ class LastReviewerDelete(DiscussionBase):
     """
 
     """
-    __tablename__ = 'last_reviewer_delete'
+    __tablename__ = 'last_reviewers_delete'
     uid = Column(Integer, primary_key=True)
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_deletes.uid'))
     is_okay = Column(Boolean, nullable=False)
+
+    reviewer = relationship('User', foreign_keys=[reviewer_uid])
+    review = relationship('ReviewDelete', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, is_okay):
         """
@@ -742,11 +746,14 @@ class LastReviewerEdit(DiscussionBase):
     """
 
     """
-    __tablename__ = 'last_reviewer_edit'
+    __tablename__ = 'last_reviewers_edit'
     uid = Column(Integer, primary_key=True)
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_edits.uid'))
     is_okay = Column(Boolean, nullable=False)
+
+    reviewer = relationship('User', foreign_keys=[reviewer_uid])
+    review = relationship('ReviewEdit', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, is_okay):
         """
@@ -764,12 +771,15 @@ class LastReviewerOptimization(DiscussionBase):
     """
 
     """
-    __tablename__ = 'last_reviewer_optimization'
+    __tablename__ = 'last_reviewers_optimization'
     uid = Column(Integer, primary_key=True)
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
     is_okay = Column(Boolean, nullable=False)
     content = Column(Text, nullable=False)
+
+    reviewer = relationship('User', foreign_keys=[reviewer_uid])
+    review = relationship('ReviewOptimization', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, is_okay, content):
         """
