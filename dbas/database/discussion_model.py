@@ -631,23 +631,24 @@ class ReviewDelete(DiscussionBase):
     __tablename__ = 'review_deletes'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False)
     reason_uid = Column(Integer, ForeignKey('review_delete_reasons.uid'))
 
     detectors = relationship('User', foreign_keys=[detector_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
     reasons = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
-    def __init__(self, detector, statement):
+    def __init__(self, detector, argument, reason):
         """
 
         :param detector:
-        :param statement:
+        :param argument:
         """
         self.detector_uid = detector
-        self.statement_uid = statement
+        self.argument_uid = argument
+        self.reason_uid = reason
         self.timestamp = get_now()
         self.is_executed = False
 
@@ -659,22 +660,22 @@ class ReviewEdit(DiscussionBase):
     __tablename__ = 'review_edits'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False)
     tmp_lock = Column(ArrowType, default=get_now(), nullable=True)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
 
-    def __init__(self, detector, statement):
+    def __init__(self, detector, argument):
         """
 
         :param detector:
-        :param statement:
+        :param argument:
         """
         self.detector_uid = detector
-        self.statement_uid = statement
+        self.argument_uid = argument
         self.timestamp = get_now()
         self.is_executed = False
 
@@ -686,21 +687,21 @@ class ReviewOptimization(DiscussionBase):
     __tablename__ = 'review_optimizations'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
 
-    def __init__(self, detector, statement):
+    def __init__(self, detector, argument):
         """
 
         :param detector:
-        :param statement:
+        :param argument:
         """
         self.detector_uid = detector
-        self.statement_uid = statement
+        self.argument_uid = argument
         self.timestamp = get_now()
         self.is_executed = False
 
