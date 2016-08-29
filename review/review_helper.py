@@ -5,12 +5,11 @@ Provides helping function for the review page.
 """
 
 import random
-from sys import maxsize
 
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization
+from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete
 from dbas import user_management as UserManager
 
 pages = ['deletes', 'optimizations']
@@ -18,7 +17,7 @@ reputation = {'deletes': 50,
               'optimizations': 50}
 
 
-def get_review_array(mainpage, translator, nickname):
+def get_review_queues_array(mainpage, translator, nickname):
     """
     Prepares dictionary for the edit section.
 
@@ -74,9 +73,9 @@ def __get_delete_dict(mainpage, translator, nickname):
                 'icon': 'fa fa-trash-o',
                 'task_count': len(db_reviews),
                 'is_allowed': count >= reputation[key] or all_rights,
-                'is_allowed_text': 'Visit the delete queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review deletes.',
-                'last_reviews': __get_users_array(mainpage)
+                'is_allowed_text': translator.get(translator.visitDeleteQueue),
+                'is_not_allowed_text': translator.get(translator.visitDeleteQueueLimitation).replace('XX', str(reputation[key])),
+                'last_reviews': __get_users_array(mainpage)  # __get_last_reviewer_of_(LastReviewerDelete, mainpage)  # TODO USE THIS
                 }
     return tmp_dict
 
@@ -93,17 +92,40 @@ def __get_optimization_dict(mainpage, translator, nickname):
     db_reviews = DBDiscussionSession.query(ReviewOptimization).filter_by(is_executed=False).all()
     key = 'optimizations'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'Flags',
+    tmp_dict = {'task_name': 'Optimizations',
                 'id': 'flags',
                 'url': mainpage + '/review/' + key,
                 'icon': 'fa fa-flag',
                 'task_count': len(db_reviews),
                 'is_allowed': count >= reputation[key] or all_rights,
-                'is_allowed_text': 'Visit the optimization queue for D-BAS.',
-                'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review optimizations.',
-                'last_reviews': __get_users_array(mainpage)
+                'is_allowed_text': translator.get(translator.visitOptimizationQueue),
+                'is_not_allowed_text': translator.get(translator.visitOptimizationQueueLimitation).replace('XX', str(reputation[key])),
+                'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, mainpage)
                 }
     return tmp_dict
+
+
+def __get_last_reviewer_of(type, mainpage):
+    """
+
+    :param mainpage:
+    :return:
+    """
+    users_array = list()
+    db_reviews = DBDiscussionSession.query(type).order_by(type.uid.desc()).all()
+    limit = 5 if len(db_reviews) > 5 else len(db_reviews)
+    for x in range(limit):
+        db_review = db_reviews[x]
+        db_user = DBDiscussionSession.query(User).filter_by(uid=db_review.reviewer_uid).first()
+        if db_user:
+            tmp_dict = dict()
+            tmp_dict['img_src'] = UserManager.get_profile_picture(db_user, 40)
+            tmp_dict['url'] = mainpage + '/user/' + db_user.get_global_nickname()
+            tmp_dict['name'] = db_user.get_global_nickname()
+            users_array.append(tmp_dict)
+        else:
+            limit += 1 if len(db_reviews) > limit else 0
+    return users_array
 
 
 def __get_users_array(mainpage):

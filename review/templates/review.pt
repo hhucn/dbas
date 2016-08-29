@@ -58,8 +58,9 @@
                                         <div tal:condition="task.is_allowed" style="line-height: normal;"><small>${task.is_allowed_text}</small></div>
                                         <div tal:condition="not:task.is_allowed" style="line-height: normal;"><small>${task.is_not_allowed_text}</small></div>
                                     </td>
-                                    <td class="center" tal:attributes="id task.id">
-                                        <a tal:repeat="user task.last_reviews" tal:attributes="title user.name; href user.url" target="_blank"><img tal:attributes="src user.img_src"></a>
+                                    <td class="center" tal:attributes="id task.id" tal:switch="len(task.last_reviews)>0">
+                                        <a tal:case="True" tal:repeat="user task.last_reviews" tal:attributes="title user.name; href user.url" target="_blank"><img tal:attributes="src user.img_src"></a>
+                                        <span tal:case="False" i18n:translate="None">None</span>
                                     </td>
                                 </tr>
                             </tbody>

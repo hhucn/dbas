@@ -1833,7 +1833,7 @@ class Dbas(object):
 
             if not Validator.check_for_integer(argument_uid):
                 return_dict['error'] = _t.get(_t.internalError)
-            elif not db_reason or reason != 'optimization':
+            elif not (len(db_reason) > 0 or reason == 'optimization'):
                 return_dict['error'] = _t.get(_t.internalError)
             else:
 

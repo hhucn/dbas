@@ -32,7 +32,7 @@ cors_policy = dict(enabled=True,
 # =============================================================================
 
 content = Service(name='review_content',
-                  path='/{queue}/{slug}',
+                  path='/{queue}',
                   renderer='templates/review_content.pt',
                   description='Review Queue',
                   permission='use',
@@ -76,7 +76,6 @@ def main_review_content(request):
         return Dbas(request).user_logout(True)
 
     subpage_name = request.matchdict['queue']
-    issue = IssueHelper.get_title_for_slug(request.matchdict['slug'])
     subpage = ReviewHelper.get_subpage_for(subpage_name, request.authenticated_userid)
     enough_reputation = True if subpage is not None else False
 
@@ -89,7 +88,6 @@ def main_review_content(request):
         'project': project_name,
         'extras': extras_dict,
         'subpage': {'queue': subpage,
-                    'issue': issue,
                     'enough_reputation': enough_reputation}
     }
 
@@ -146,7 +144,7 @@ def main_review(request):
     issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
     extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname, request)
 
-    review_dict = ReviewHelper.get_review_array(mainpage, _tn, nickname)
+    review_dict = ReviewHelper.get_review_queues_array(mainpage, _tn, nickname)
     count, all_rights = ReviewHelper.get_reputation_of(nickname)
 
     return {
