@@ -49,7 +49,7 @@ def get_subpage_for(subpage_name, nickname):
     if not db_user:
         return None
 
-    if subpage_name in pages and subpage_name not in ['deletes', 'optimization']:
+    if subpage_name in pages:
         return subpage_name
 
     return None
