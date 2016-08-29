@@ -9,9 +9,9 @@
             </ul>
 
 			<div id="queues" class="center review-wrapper">
-                <div class="row">
-                    <div class="col-md-9">
-                        <div class="center" style="max-width: 800px;">
+                <div class="row center">
+                    <div class="col-md-8">
+                        <div style="max-width: 800px;">
                         <div class="bs-callout bs-callout-primary">
                             <h5><strong i18n:translate="help_to_improve">Help improve the dialog</strong></h5>
                             <span i18n:translate="dbas_is_moderated_by">D-BAS is moderated by you. Help your discussion members learn to argue and raise the quality of argumenty by:</span>
@@ -24,28 +24,11 @@
                         </div>
                     </div>
                     </div>
-                    <div class="col-md-3 left">
-                        <div class="dropdown" style="margin: 10px;">
-                            <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
-                                <span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
-                                <li tal:repeat="issue issues.all"><!-- tal:attributes="class issue.enabled">-->
-                                    <a href="#" tal:attributes="href issue.review_url; value issue.title">
-                                    <div class="row">${structure:issue.title}</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <br>
-                        <div>
-                            <h6><span i18n:translate="current_issue">Current issue</span>: ${structure:current_issue_title}</h6>
-                        </div>
-                        <br>
-                        <div>
-                            <h6><span>Your current reputation count is: </span><a href="${request.application_url}/review/reputation">${reputation_count}</a></h6>
-                        </div>
-			        </div>
+                </div>
+			    <div class="row">
+                    <div class="col-md-12">
+                        <h6><span>Your current reputation count is: </span><a href="${request.application_url}/review/reputation">${reputation_count}</a></h6>
+                    </div>
                 </div>
 
 			    <div class="row">

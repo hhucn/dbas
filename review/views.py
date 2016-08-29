@@ -145,18 +145,7 @@ def main_review(request):
     issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
     extras_dict     = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
 
-    try:
-        slug = request.matchdict['slug'][0]
-        issue = IssueHelper.get_title_for_slug(slug)
-        if not issue:
-            issue = issue_dict['title']
-    except KeyError and IndexError:
-        issue = issue_dict['title']
-
-    if len(issue) == 0:
-        issue = issue_dict['title']
-
-    review_dict = ReviewHelper.get_review_array(mainpage, slugify(issue), _tn, request.authenticated_userid)
+    review_dict = ReviewHelper.get_review_array(mainpage, _tn, request.authenticated_userid)
 
     return {
         'layout': Dbas.base_layout(),
@@ -167,6 +156,5 @@ def main_review(request):
         'review': review_dict,
         'reputation_list': ReviewHelper.get_reputation_list(),
         'issues': issue_dict,
-        'current_issue_title': issue,
         'reputation_count': ReviewHelper.get_reputation_of(request.authenticated_userid)
     }
