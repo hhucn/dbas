@@ -334,11 +334,11 @@ def setup_news_db(session):
                   author='Tobias Krauthoff',
                   news='We are happy to announce, that our paper for the COMMA16 was accepted. In the meantime many little '
                        'improvements as well as first user tests were done.')
-    news49 = News(title='COMMA16',
+    news49 = News(title='Sidebar',
                   date=arrow.get('2016-07-05'),
                   author='Tobias Krauthoff',
                   news='Today we released a new text-based sidebar for a better experience. Have fun!')
-    news50 = News(title='COMMA16',
+    news50 = News(title='Review Process',
                   date=arrow.get('2016-08-11'),
                   author='Tobias Krauthoff',
                   news='I regret that i have neglected the news section, but this is in your interest. In the meantime '
