@@ -14,7 +14,7 @@ import dbas.helper.voting as VotingHelper
 import dbas.user_management as UserHandler
 import dbas.handler.news as NewsHandler
 import dbas.strings.matcher as FuzzyStringMatcher
-import review.review_helper as ReviewHelper
+import review.flag_helper as FlagHelper
 import requests
 import transaction
 
@@ -1825,19 +1825,19 @@ class Dbas(object):
         return_dict = dict()
 
         try:
-            uid = self.request.params['uid']
+            argument_uid = self.request.params['argument_uid']
             reason = self.request.params['reason']
             nickname = self.request.authenticated_userid
 
             db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
 
-            if not Validator.check_for_integer(uid):
+            if not Validator.check_for_integer(argument_uid):
                 return_dict['error'] = _t.get(_t.internalError)
             elif not db_reason or reason != 'optimization':
                 return_dict['error'] = _t.get(_t.internalError)
             else:
 
-                some_arg, success, info, error = ReviewHelper.flag_argument(uid, reason, nickname, _t)
+                success, info, error = FlagHelper.flag_argument(argument_uid, reason, nickname, _t, transaction)
 
                 return_dict['success'] = success
                 return_dict['info'] = info
