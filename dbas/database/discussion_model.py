@@ -752,11 +752,12 @@ class LastReviewerEdit(DiscussionBase):
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_edits.uid'))
     is_okay = Column(Boolean, nullable=False)
+    content = Column(Text, nullable=False)
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewEdit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer, review, is_okay, content):
         """
 
         :param reviewer:
@@ -766,6 +767,7 @@ class LastReviewerEdit(DiscussionBase):
         self.reviewer_uid = reviewer
         self.review_uid = review
         self.is_okay = is_okay
+        self.content = content
 
 
 class LastReviewerOptimization(DiscussionBase):
@@ -777,12 +779,11 @@ class LastReviewerOptimization(DiscussionBase):
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
     is_okay = Column(Boolean, nullable=False)
-    content = Column(Text, nullable=False)
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewOptimization', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay, content):
+    def __init__(self, reviewer, review, is_okay):
         """
 
         :param reviewer:
@@ -793,4 +794,3 @@ class LastReviewerOptimization(DiscussionBase):
         self.reviewer_uid = reviewer
         self.review_uid = review
         self.is_okay = is_okay
-        self.content = content

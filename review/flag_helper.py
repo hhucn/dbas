@@ -3,7 +3,6 @@ Provides helping function for flagging arguments.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from dbas.logger import logger
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
@@ -102,7 +101,6 @@ def __is_argument_flagged_for_delete_by_user(argument_uid, user_uid, is_executed
     """
 
     :param argument_uid:
-    :param reason_uid:
     :param user_uid:
     :param is_executed:
     :return:
