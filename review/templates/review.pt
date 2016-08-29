@@ -9,25 +9,30 @@
             </ul>
 
 			<div id="queues" class="center review-wrapper">
-                <div class="row center">
-                    <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8 col-md-offset-2">
                         <div style="max-width: 800px;">
-                        <div class="bs-callout bs-callout-primary">
-                            <h5><strong i18n:translate="help_to_improve">Help improve the dialog</strong></h5>
-                            <span i18n:translate="dbas_is_moderated_by">D-BAS is moderated by you. Help your discussion members learn to argue and raise the quality of argumenty by:</span>
-                            <ul class="left">
-                                <li i18n:translate="evaluate_new_statements">Evaluate new statements</li>
-                                <li i18n:translate="reviewing_suspicious_statements">Reviewing suspicious statements</li>
-                                <li i18n:translate="voting_to_close">Voting to close or reopen statements</li>
-                            </ul>
-                            <span><strong i18n:translate="choose_task">Choose a task to get started.</strong></span>
+                            <div class="bs-callout bs-callout-primary">
+                                <h5><strong i18n:translate="help_to_improve">Help improve the dialog</strong></h5>
+                                <span i18n:translate="dbas_is_moderated_by">D-BAS is moderated by you. Help your discussion members learn to argue and raise the quality of argumenty by:</span>
+                                <ul class="left">
+                                    <li i18n:translate="evaluate_new_statements">Evaluate new statements</li>
+                                    <li i18n:translate="reviewing_suspicious_statements">Reviewing suspicious statements</li>
+                                    <li i18n:translate="voting_to_close">Voting to close or reopen statements</li>
+                                </ul>
+                                <span><strong i18n:translate="choose_task">Choose a task to get started.</strong></span>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
 			    <div class="row">
                     <div class="col-md-12">
-                        <h6><span>Your current reputation count is: </span><a href="${request.application_url}/review/reputation">${reputation_count}</a></h6>
+                        <h6 tal:condition="not: reputation.has_all_rights">
+                            <span i18n:translate="current_reputation_os"> Your current reputation count is:</span> <a href="${request.application_url}/review/reputation">${reputation.count}</a>
+                        </h6>
+                        <h6 tal:condition="reputation.has_all_rights">
+                            <span i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</span>
+                        </h6>
                     </div>
                 </div>
 
