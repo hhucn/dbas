@@ -15,10 +15,9 @@ class ReviewHelperTest(unittest.TestCase):
 
     def test_get_review_array(self):
         _tn = Translator('en')
-        self.assertIsNone(ReviewHelper.get_review_queues_array('page', 'cat-or-dog', _tn, 'Pikachu'))
-        self.assertIsNone(ReviewHelper.get_review_queues_array('page', 'cat-or-cat', _tn, 'Pikachu'))
+        self.assertIsNone(ReviewHelper.get_review_queues_array('page', _tn, 'Pikachu'))
 
-        array = ReviewHelper.get_review_queues_array('page', 'cat-or-dog', _tn, 'Tobias')
+        array = ReviewHelper.get_review_queues_array('page', _tn, 'Tobias')
         for d in array:
             self.assertTrue('task_name' in d)
             self.assertTrue('url' in d)
@@ -33,7 +32,9 @@ class ReviewHelperTest(unittest.TestCase):
         self.assertIsNone(ReviewHelper.get_subpage_for('test', 'some nick'))
         self.assertIsNone(ReviewHelper.get_subpage_for('test', 'Tobias'))
         self.assertIsNone(ReviewHelper.get_subpage_for('edits', 'some nick'))
-        self.assertIsNotNone(ReviewHelper.get_subpage_for('edits', 'Tobias'))
+        from review.review_helper import pages
+        for page in pages:
+            self.assertIsNotNone(ReviewHelper.get_subpage_for(page, 'Tobias'))
 
     def test_get_reputation_history(self):
         self.assertEqual(len(ReviewHelper.get_reputation_history('Bla')), 0)
@@ -54,5 +55,10 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('text' in element)
 
     def test_get_reputation_of(self):
-        self.assertTrue(ReviewHelper.get_reputation_of('Tobias') != 0)
-        self.assertTrue(ReviewHelper.get_reputation_of('Tobiass') == 0)
+        count, has_all_rights = ReviewHelper.get_reputation_of('Tobias')
+        self.assertTrue(count == 0)
+        self.assertTrue(has_all_rights)
+
+        count, has_all_rights = ReviewHelper.get_reputation_of('Tobiass')
+        self.assertTrue(count == 0)
+        self.assertFalse(has_all_rights)
