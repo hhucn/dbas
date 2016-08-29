@@ -10,7 +10,7 @@ from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete
-from dbas import user_management as UserManager
+from dbas import user_management as _user_manager
 
 pages = ['deletes', 'optimizations']
 reputation = {'deletes': 50,
@@ -75,7 +75,7 @@ def __get_delete_dict(mainpage, translator, nickname):
                 'is_allowed': count >= reputation[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitDeleteQueue),
                 'is_not_allowed_text': translator.get(translator.visitDeleteQueueLimitation).replace('XX', str(reputation[key])),
-                'last_reviews': __get_users_array(mainpage)  # __get_last_reviewer_of_(LastReviewerDelete, mainpage)  # TODO USE THIS
+                'last_reviews': __get_last_reviewer_of(LastReviewerDelete, mainpage)
                 }
     return tmp_dict
 
@@ -105,21 +105,22 @@ def __get_optimization_dict(mainpage, translator, nickname):
     return tmp_dict
 
 
-def __get_last_reviewer_of(type, mainpage):
+def __get_last_reviewer_of(reviewer_type, mainpage):
     """
 
+    :param reviewer_type:
     :param mainpage:
     :return:
     """
     users_array = list()
-    db_reviews = DBDiscussionSession.query(type).order_by(type.uid.desc()).all()
+    db_reviews = DBDiscussionSession.query(reviewer_type).order_by(reviewer_type.uid.desc()).all()
     limit = 5 if len(db_reviews) > 5 else len(db_reviews)
     for x in range(limit):
         db_review = db_reviews[x]
         db_user = DBDiscussionSession.query(User).filter_by(uid=db_review.reviewer_uid).first()
         if db_user:
             tmp_dict = dict()
-            tmp_dict['img_src'] = UserManager.get_profile_picture(db_user, 40)
+            tmp_dict['img_src'] = _user_manager.get_profile_picture(db_user, 40)
             tmp_dict['url'] = mainpage + '/user/' + db_user.get_global_nickname()
             tmp_dict['name'] = db_user.get_global_nickname()
             users_array.append(tmp_dict)
@@ -133,7 +134,7 @@ def __get_users_array(mainpage):
     for x in range(5):
         tmp_dict = {}
         db_user = DBDiscussionSession.query(User).filter_by(uid=random.randint(3, 38)).first()
-        tmp_dict['img_src'] = UserManager.get_profile_picture(db_user, 40)
+        tmp_dict['img_src'] = _user_manager.get_profile_picture(db_user, 40)
         tmp_dict['url'] = mainpage + '/user/' + db_user.get_global_nickname()
         tmp_dict['name'] = db_user.get_global_nickname()
         users_array.append(tmp_dict)
@@ -198,7 +199,7 @@ def get_reputation_of(nickname):
     :param nickname:
     :return:
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    # db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     count = 0
 
-    return count, UserManager.is_user_author(nickname)
+    return count, _user_manager.is_user_author(nickname)

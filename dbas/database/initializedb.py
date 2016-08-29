@@ -15,7 +15,8 @@ import dbas.handler.password as passwordHandler
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy, ReviewDeleteReason
+    Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
+    ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization
 from dbas.database.news_model import News
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
@@ -1313,4 +1314,24 @@ def setup_review_database(session):
     reason2 = ReviewDeleteReason(reason='spam')
     reason3 = ReviewDeleteReason(reason='harmful')
     session.add_all([reason1, reason2, reason3])
+    session.flush()
+
+    review1 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
+    review2 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
+    review3 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
+    review4 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
+    review5 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
+    review6 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
+    review7 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
+    session.add_all([review1, review2, review3, review4, review5, review6, review7])
+    session.flush()
+
+    reviewer1 = LastReviewerOptimization(random.randint(10, 20), review1.uid, True)
+    reviewer2 = LastReviewerOptimization(random.randint(10, 20), review2.uid, True)
+    reviewer3 = LastReviewerOptimization(random.randint(10, 20), review3.uid, False)
+    reviewer4 = LastReviewerDelete(random.randint(10, 20), review4.uid, True)
+    reviewer5 = LastReviewerDelete(random.randint(10, 20), review5.uid, False)
+    reviewer6 = LastReviewerDelete(random.randint(10, 20), review6.uid, True)
+    reviewer7 = LastReviewerDelete(random.randint(10, 20), review7.uid, False)
+    session.add_all([reviewer1, reviewer2, reviewer3, reviewer4, reviewer5, reviewer6, reviewer7])
     session.flush()
