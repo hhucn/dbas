@@ -5,6 +5,7 @@ Provides helping function for the review page.
 """
 
 import random
+from sys import maxsize
 
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
@@ -66,12 +67,13 @@ def __get_delete_dict(mainpage, translator, nickname):
     """
     db_reviews = DBDiscussionSession.query(ReviewDelete).filter_by(is_executed=False).all()
     key = 'deletes'
+    count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'Deletes',
                 'id': 'deletes',
                 'url': mainpage + '/review/' + key,
                 'icon': 'fa fa-trash-o',
                 'task_count': len(db_reviews),
-                'is_allowed': get_reputation_of(nickname) >= reputation[key],
+                'is_allowed': count >= reputation[key] or all_rights,
                 'is_allowed_text': 'Visit the delete queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review deletes.',
                 'last_reviews': __get_users_array(mainpage)
@@ -90,12 +92,13 @@ def __get_optimization_dict(mainpage, translator, nickname):
     """
     db_reviews = DBDiscussionSession.query(ReviewOptimization).filter_by(is_executed=False).all()
     key = 'optimizations'
+    count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'Flags',
                 'id': 'flags',
                 'url': mainpage + '/review/' + key,
                 'icon': 'fa fa-flag',
                 'task_count': len(db_reviews),
-                'is_allowed': get_reputation_of(nickname) >= reputation[key],
+                'is_allowed': count >= reputation[key] or all_rights,
                 'is_allowed_text': 'Visit the optimization queue for D-BAS.',
                 'is_not_allowed_text': 'You need at least ' + str(reputation[key]) + ' reputation to review optimizations.',
                 'last_reviews': __get_users_array(mainpage)
@@ -125,7 +128,9 @@ def get_reputation_history(nickname):
         return dict()
 
     ret_dict = dict()
-    ret_dict['count'] = get_reputation_of(nickname)
+    count, all_rights = get_reputation_of(nickname)
+    ret_dict['count'] = count
+    ret_dict['all_rights'] = all_rights
 
     rep_list = list()
     rep_list.append({'date': '20.08.2016', 'points_data': '<span class="success-description points">1</span>', 'action': 'first click in a discussion', 'points': 1})
@@ -172,7 +177,6 @@ def get_reputation_of(nickname):
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return 0
+    count = 0
 
-    return 70
+    return count, UserManager.is_user_author(nickname)

@@ -2,6 +2,7 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<div class="container colored-container">
+            <h4 tal:condition="reputation.all_rights" i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</h4>
             <h4>Reputation count: ${reputation.count}</h4>
             <div class="row">
                 <div class="col-md-12" id="reputation_table">

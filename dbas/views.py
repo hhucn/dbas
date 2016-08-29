@@ -11,7 +11,7 @@ import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.helper.notification as NotificationHelper
 import dbas.helper.voting as VotingHelper
-import dbas.user_management as UserHandler
+import dbas.user_management as UserManager
 import dbas.handler.news as NewsHandler
 import dbas.strings.matcher as FuzzyStringMatcher
 import review.flag_helper as FlagHelper
@@ -87,7 +87,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('main_page', 'def', 'main, self.request.params: ' + str(self.request.params))
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
         if session_expired:
             return self.user_logout(True)
@@ -400,13 +400,13 @@ class Dbas(object):
         logger('discussion_finish', 'def', 'main, self.request.params: ' + str(params))
         ui_locales      = get_language(self.request, get_current_registry())
         nickname        = self.request.authenticated_userid
-        session_expired = UserHandler.update_last_action(transaction, nickname)
+        session_expired = UserManager.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
         if session_expired:
             return self.user_logout(True)
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname, self.request)
-        summary_dict = UserHandler.get_summary_of_today(nickname)
+        summary_dict = UserManager.get_summary_of_today(nickname)
 
         return {
             'layout': self.base_layout(),
@@ -511,7 +511,7 @@ class Dbas(object):
             slug = matchdict['slug'] if 'slug' in matchdict else ''
             arg_uid = matchdict['arg_id'] if 'arg_id' in matchdict else ''
 
-        session_expired = UserHandler.update_last_action(transaction, nickname)
+        session_expired = UserManager.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
         HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
         if session_expired:
@@ -560,7 +560,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
         if session_expired:
             return self.user_logout(True)
@@ -580,7 +580,7 @@ class Dbas(object):
         if 'form.contact.submitted' in self.request.params:
             contact_error, message, sendmessage = try_to_register_new_user_via_form(self.request, username, email, phone, content, ui_locales, spamanswer)
 
-        spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
+        spamquestion, answer = UserManager.get_random_anti_spam_question(ui_locales)
         key = 'contact-antispamanswer'
         self.request.session[key] = answer
 
@@ -612,7 +612,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
         if session_expired:
             return self.user_logout(True)
@@ -625,7 +625,7 @@ class Dbas(object):
         error       = False
         success     = False
         db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-        _uh         = UserHandler
+        _uh         = UserManager
 
         if db_user and 'form.passwordchange.submitted' in self.request.params:
             old_pw = escape_string(self.request.params['passwordold'])
@@ -658,7 +658,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('main_notifications', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
 
         if session_expired:
@@ -684,13 +684,13 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('main_news', 'def', 'main')
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
         if session_expired:
             return self.user_logout(True)
 
         ui_locales = get_language(self.request, get_current_registry())
-        is_author = UserHandler.is_user_author(self.request.authenticated_userid)
+        is_author = UserManager.is_user_author(self.request.authenticated_userid)
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 
@@ -725,7 +725,7 @@ class Dbas(object):
         if current_user is None:
             return HTTPFound(location=UrlManager(mainpage).get_404([self.request.path[1:]]))
 
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
         if session_expired:
             return self.user_logout(True)
@@ -733,7 +733,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 
-        user_dict = UserHandler.get_information_of(current_user, ui_locales)
+        user_dict = UserManager.get_information_of(current_user, ui_locales)
 
         db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
         can_send_notification = False
@@ -761,7 +761,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('main_imprint', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
         _tn = Translator(ui_locales)
         if session_expired:
@@ -788,7 +788,7 @@ class Dbas(object):
         :return: dictionary with title and project name as well as a value, weather the user is logged in
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request' +
                ', path: ' + self.request.path +
                ', view name: ' + self.request.view_name +
@@ -830,7 +830,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_user_history', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
         return_list = HistoryHelper.get_history_from_database(self.request.authenticated_userid, ui_locales)
@@ -844,10 +844,10 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_all_posted_statements', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        return_array, tmp = UserHandler.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
+        return_array, tmp = UserManager.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
         return json.dumps(return_array, True)
 
     # ajax - getting all text edits
@@ -858,10 +858,10 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_all_edits', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        tmp, return_array = UserHandler.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
+        tmp, return_array = UserManager.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
         return json.dumps(return_array, True)
 
     # ajax - getting all votes for arguments
@@ -872,10 +872,10 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_all_argument_votes', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, True, ui_locales)
+        return_array = UserManager.get_votes_of_user(self.request.authenticated_userid, True, ui_locales)
         return json.dumps(return_array, True)
 
     # ajax - getting all votes for statements
@@ -886,10 +886,10 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_all_statement_votes', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, False, ui_locales)
+        return_array = UserManager.get_votes_of_user(self.request.authenticated_userid, False, ui_locales)
         return json.dumps(return_array, True)
 
     # ajax - deleting complete history of the user
@@ -901,7 +901,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('delete_user_history', 'def', 'main')
         HistoryHelper.delete_history_in_database(self.request.authenticated_userid, transaction)
@@ -919,7 +919,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('delete_statistics', 'def', 'main')
 
@@ -1054,7 +1054,7 @@ class Dbas(object):
             error = _t.get(_t.internalKeyError)
 
         # get anti-spam-question
-        spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
+        spamquestion, answer = UserManager.get_random_anti_spam_question(ui_locales)
         # save answer in session
         self.request.session['antispamanswer'] = answer
 
@@ -1136,14 +1136,14 @@ class Dbas(object):
                     if settings_value:
                         db_user.set_public_nickname(db_user.nickname)
                     elif db_user.nickname == db_user.public_nickname:
-                        UserHandler.refresh_public_nickname(db_user)
+                        UserManager.refresh_public_nickname(db_user)
                     public_nick = db_user.public_nickname
                 else:
                     error = _tn.get(_tn.keyword)
 
                 transaction.commit()
                 public_page_url = mainpage + '/user/' + (db_user.nickname if settings_value else public_nick)
-                gravatar_url = UserHandler.get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
+                gravatar_url = UserManager.get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
             else:
                 error = _tn.get(_tn.checkNickname)
         except KeyError as e:
@@ -1231,7 +1231,7 @@ class Dbas(object):
                     db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, mainpage, transaction)
                     uid = db_notification.uid
                     ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-                    gravatar = UserHandler.get_profile_picture(db_recipient, 20)
+                    gravatar = UserManager.get_profile_picture(db_recipient, 20)
 
         except KeyError:
             error = _tn.get(_tn.internalKeyError)
@@ -1277,7 +1277,7 @@ class Dbas(object):
                 slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
             # escaping will be done in QueryHelper().set_statement(...)
-            UserHandler.update_last_action(transaction, nickname)
+            UserManager.update_last_action(transaction, nickname)
             new_statement = QueryHelper.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
             if new_statement == -1:
                 return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': 10)'
@@ -1322,7 +1322,7 @@ class Dbas(object):
                 supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 
             # escaping will be done in QueryHelper().set_statement(...)
-            UserHandler.update_last_action(transaction, nickname)
+            UserManager.update_last_action(transaction, nickname)
 
             _qh = QueryHelper
             url, statement_uids, error = _qh.process_input_of_start_premises_and_receive_url(self.request, transaction,
@@ -1382,7 +1382,7 @@ class Dbas(object):
                                                                                                      premisegroups, issue,
                                                                                                      nickname, for_api,
                                                                                                      mainpage, lang)
-            UserHandler.update_last_action(transaction, nickname)
+            UserManager.update_last_action(transaction, nickname)
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
@@ -1409,7 +1409,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         _tn = Translator(get_language(self.request, get_current_registry()))
 
@@ -1440,7 +1440,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('set_notification_read', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
@@ -1467,7 +1467,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('set_notification_delete', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
@@ -1493,7 +1493,7 @@ class Dbas(object):
     @view_config(route_name='ajax_set_new_issue', renderer='json')
     def set_new_issue(self):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('set_new_issue', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
@@ -1530,7 +1530,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('get_logfile_for_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         return_dict = dict()
         ui_locales = get_language(self.request, get_current_registry())
@@ -1559,7 +1559,7 @@ class Dbas(object):
         :return: dictionary with shortend url
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('get_shortened_url', 'def', 'main')
 
@@ -1702,7 +1702,7 @@ class Dbas(object):
         return_dict = dict()
         try:
             nickname = self.request.params['nickname']
-            return_dict = UserHandler.get_public_information_data(nickname, ui_locales)
+            return_dict = UserManager.get_public_information_data(nickname, ui_locales)
             return_dict['error'] = '' if len(return_dict) != 0 else _tn.get(_tn.internalKeyError)
 
         except KeyError as e:
@@ -1725,7 +1725,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('switch_language', 'def', 'main, self.request.params: ' + str(self.request.params))
 
         return_dict = dict()
