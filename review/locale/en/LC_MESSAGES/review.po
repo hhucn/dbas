@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-08-19 09:49+0200\n"
+"POT-Creation-Date: 2016-08-29 22:22+0200\n"
 "PO-Revision-Date: 2016-08-19 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -16,60 +16,106 @@ msgstr ""
 "Generated-By: Lingua 3.10\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. Default: Queues
+#: templates/review.pt:7
+msgid "queues"
+msgstr "Queues"
+
+#. Default: How To
+#: templates/review.pt:8
+msgid "howto"
+msgstr "How To"
+
 #. Default: Help improve the dialog
-#: templates/review.pt:9
+#: templates/review.pt:16
 msgid "help_to_improve"
 msgstr "Help improve the dialog"
 
 #. Default: D-BAS is moderated by you. Help your discussion members learn to
 #. argue and raise the quality of argumenty by:
-#: templates/review.pt:10
+#: templates/review.pt:17
 msgid "dbas_is_moderated_by"
 msgstr ""
 "D-BAS is moderated by you. Help your discussion members learn to argue and "
 "raise the quality of argumenty by:"
 
 #. Default: Evaluate new statements
-#: templates/review.pt:12
+#: templates/review.pt:19
 msgid "evaluate_new_statements"
 msgstr "Evaluate new statements"
 
 #. Default: Reviewing suspicious statements
-#: templates/review.pt:13
+#: templates/review.pt:20
 msgid "reviewing_suspicious_statements"
 msgstr "Reviewing suspicious statements"
 
 #. Default: Voting to close or reopen statements
-#: templates/review.pt:14
+#: templates/review.pt:21
 msgid "voting_to_close"
 msgstr "Voting to close or reopen statements"
 
 #. Default: Choose a task to get started.
-#: templates/review.pt:16
+#: templates/review.pt:23
 msgid "choose_task"
 msgstr "Choose a task to get started."
 
-#. Default: Switch Topic
-#: templates/review.pt:23
-msgid "switch_topic"
-msgstr "Switch Topic"
+#. Default: Your current reputation count is:
+#: templates/review.pt:31
+msgid "current_reputation_os"
+msgstr "Your current reputation count is:"
 
-#. Default: Current issue
-#: templates/review.pt:35
-msgid "current_issue"
-msgstr "Current issue"
+#. Default: Based on your user group, you have all rights!
+#: templates/review.pt:34 templates/review_reputation.pt:5
+msgid "unlimited_right_based_on_group"
+msgstr "Based on your user group, you have all rights!"
 
 #. Default: Open Tasks
-#: templates/review.pt:49
+#: templates/review.pt:44
 msgid "open_tasks"
 msgstr "Open Tasks"
 
 #. Default: Topic
-#: templates/review.pt:50
+#: templates/review.pt:45
 msgid "topic"
 msgstr "Topic"
 
 #. Default: Recent Reviews
-#: templates/review.pt:51
+#: templates/review.pt:46
 msgid "recent_reviews"
 msgstr "Recent Reviews"
+
+#. Default: None
+#: templates/review.pt:63
+msgid "None"
+msgstr "None"
+
+#. Default: What is reputation? How do I earn (and lose) it?
+#: templates/review.pt:75
+msgid "what_is_reputation"
+msgstr "What is reputation? How do I earn (and lose) it?"
+
+#. Default: Privileges
+#: templates/review.pt:139
+msgid "privileges"
+msgstr "Privileges"
+
+#. Default: Date
+#: templates/review_reputation.pt:12
+msgid "date"
+msgstr "Date"
+
+#. Default: Action
+#: templates/review_reputation.pt:13
+msgid "action"
+msgstr "Action"
+
+#. Default: Reputation
+#: templates/review_reputation.pt:14
+msgid "reputation"
+msgstr "Reputation"
+
+#~ msgid "switch_topic"
+#~ msgstr "Switch Topic"
+
+#~ msgid "current_issue"
+#~ msgstr "Current issue"
