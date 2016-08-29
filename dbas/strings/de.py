@@ -454,7 +454,7 @@ class GermanDict:
         de_lang[_self.report] = 'Melden'
         de_lang[_self.review] = 'Prüfung'
         de_lang[_self.reason] = 'Begründung'
-        de_lang[_self.reportTitle] = 'Verstoß melden'
+        de_lang[_self.reportTitle] = 'Beitrag melden'
         de_lang[_self.remStatementRow] = 'Entfernt diese Reihe.'
         de_lang[_self.registered] = 'Registriert'
         de_lang[_self.right] = 'Ja'

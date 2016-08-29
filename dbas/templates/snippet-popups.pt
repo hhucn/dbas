@@ -741,6 +741,8 @@
     			<div class="modal-body">
                     <form>
                       <fieldset>
+                        <input type="radio" id="opt" value="optimization" name="flag_argument">
+                        <label for="opt"> <span i18n:translate="statement-optimization">The text needs and correcture.</span><br><small>This statement is right, but needs correcture for his spelling/grammar..</small></label><br>
                         <input type="radio" id="off" value="offtopic" name="flag_argument">
                         <label for="off"> <span i18n:translate="statement-offtopic">This statement is offtopic.</span><br><small>Content of the statement is useful, but does not belong to this discussion.</small></label><br>
                         <input type="radio" id="sp" value="spam" name="flag_argument">
