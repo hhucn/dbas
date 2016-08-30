@@ -80,6 +80,7 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
                                      'reason': reason}
 
     if text is None and reason is None and stats is None:
+        arguments_to_review = False
         return None, user_has_access, arguments_to_review
 
     return ret_dict, True, arguments_to_review
