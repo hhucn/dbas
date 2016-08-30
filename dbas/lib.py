@@ -359,7 +359,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
             if user_changed_opinion:
                 ret_value += _t.get(_t.otherParticipantsConvincedYouThat)
             else:
-                ret_value += '.' + _t.get(_t.butYouCounteredWith)
+                ret_value += _t.get(_t.butYouCounteredWith)
         else:
             ret_value += _t.get(_t.otherUsersHaveCounterArgument)
 
@@ -373,7 +373,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
         # ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
         users_opinion = not users_opinion
 
-    return ret_value.replace(' .', '. ')
+    return ret_value
 
 
 def get_text_for_premisesgroup_uid(uid):

@@ -6,27 +6,31 @@
 			<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
 		</div>
 
+		<div class="container colored-container" tal:condition="subpage.has_access and subpage.no_arguments_to_review">
+            <h5>No arguments to review in this queue!</h5>
+		</div>
+
 		<div class="container colored-container" tal:condition="subpage.has_access">
             <div class="row">
                 <div class="col-md-offset-1 col-md-6">
                     <h6>${subpage.elements.reviewed_argument.reason}</h6>
                 </div>
-                <div class="col-md-4">
-                    <a href="#" class="btn btn-info pull-right" style="margin-left: 0.5em; width: 7em;">Skip</a>
-                    <a href="#" class="btn btn-danger pull-right" style="margin-left: 0.5em; width: 7em;">Not Okay</a>
-                    <a href="#" class="btn btn-success pull-right" style="margin-left: 0.5em; width: 7em;">Okay</a>
+                <div class="col-md-offset-1 col-md-4">
+                    <a href="#" class="btn btn-info btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Skip</a>
+                    <a href="#" class="btn btn-danger btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Not Okay</a>
+                    <a href="#" class="btn btn-success btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Okay</a>
                 </div>
             </div>
             <br>
             <div class="row">
                 <div class="col-md-offset-1 col-md-6">
-                    <p class="lead well well-sm">
-                        <i class="fa fa-quote-left" aria-hidden="true"></i>
-                            ${structure:subpage.elements.reviewed_argument.text}
-                        <i class="fa fa-quote-right" aria-hidden="true"></i>
-                    </p>
+                    <div class="well well-sm center" style="text-align: justify;">
+                        <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                        <span class="lead">${structure:subpage.elements.reviewed_argument.text}</span>
+                        <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                    </div>
                 </div>
-                <div class="col-md-offset-1 col-md-3">
+                <div class="col-md-offset-2 col-md-3">
                     <table class="table table-condensed pull-right" border="0" style="font-size: 14px;">
                         <tbody>
                             <tr>

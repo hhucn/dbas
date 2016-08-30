@@ -1,6 +1,6 @@
 import unittest
 
-import review.helper.pager_manager as ReviewHelper
+import review.helper.page_manager as ReviewHelper
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.translator import Translator
@@ -29,12 +29,19 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('last_reviews' in d)
 
     def test_get_subpage_for(self):
-        self.assertIsNone(ReviewHelper.get_subpage_elements_for('test', 'some nick'))
-        self.assertIsNone(ReviewHelper.get_subpage_elements_for('test', 'Tobias'))
-        self.assertIsNone(ReviewHelper.get_subpage_elements_for('edits', 'some nick'))
-        from review.helper.pager_manager import pages
+        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('test', 'some nick', Translator('en'))
+        self.assertIsNone(elements)
+
+        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('test', 'Tobias', Translator('en'))
+        self.assertIsNone(elements)
+
+        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('edits', 'some nick', Translator('en'))
+        self.assertIsNone(elements)
+
+        from review.helper.page_manager import pages
         for page in pages:
-            self.assertIsNotNone(ReviewHelper.get_subpage_elements_for(page, 'Tobias'))
+            elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(page, 'Tobias', Translator('en'))
+            self.assertIsNotNone(elements)
 
     def test_get_reputation_history(self):
         self.assertEqual(len(ReviewHelper.get_reputation_history('Bla')), 0)
