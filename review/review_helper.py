@@ -5,11 +5,13 @@ Provides helping function for the review page.
 """
 
 import random
+from sqlalchemy import and_
 
-from dbas.lib import get_user_by_private_or_public_nickname
+from dbas.lib import get_user_by_private_or_public_nickname, get_text_for_argument_uid, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete
+from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete, ReviewDeleteReason, Argument, ArgumentSeenBy
+from dbas.helper.relation import RelationHelper
 from dbas import user_management as _user_manager
 
 pages = ['deletes', 'optimizations']
@@ -37,22 +39,46 @@ def get_review_queues_array(mainpage, translator, nickname):
     return review_list
 
 
-def get_subpage_for(subpage_name, nickname):
+def get_subpage_elements_for(subpage_name, nickname, translator):
     """
 
     :param subpage_name:
     :param nickname:
     :return:
     """
-    logger('ReviewHelper', 'get_subpage_for', subpage_name)
+    logger('ReviewHelper', 'get_subpage_elements_for', subpage_name)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return None
+    user_has_access = False
 
-    if subpage_name in pages:
-        return subpage_name
+    # does the subpage exists
+    if subpage_name not in pages:
+        return None, user_has_access
 
-    return None
+    rep_count, all_rights = get_reputation_of(nickname)
+    user_has_access = rep_count >= reputation[subpage_name] or all_rights
+    # does the user exists and does he has the rights for this queue?
+    if not db_user or not user_has_access:
+        return None, user_has_access
+
+    ret_dict = dict()
+    ret_dict['page_name'] = subpage_name
+
+    # get a random argument for reviewing
+    text = translator.get(translator.internalError)
+    reason = ''
+    stats = {'viewed': 0, 'attacks': 0, 'supports': 0}
+
+    if subpage_name == 'deletes':
+        text, reason, stats = __get_subpage_for_deletes(db_user, translator)
+
+    elif subpage_name == 'optimizations':
+        text, reason, stats = __get_subpage_for_optimization(db_user, translator)
+
+    ret_dict['reviewed_argument'] = {'stats': stats,
+                                     'text': text,
+                                     'reason': reason}
+
+    return ret_dict, True
 
 
 def __get_delete_dict(mainpage, translator, nickname):
@@ -64,7 +90,13 @@ def __get_delete_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    db_reviews = DBDiscussionSession.query(ReviewDelete).filter_by(is_executed=False).all()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user:
+        db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
+                                                                         ReviewDelete.detector_uid != db_user.uid)).all()
+    else:
+        db_reviews = DBDiscussionSession.query(ReviewDelete).filter_by(is_executed=False).all()
+
     key = 'deletes'
     count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'Deletes',
@@ -89,7 +121,13 @@ def __get_optimization_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    db_reviews = DBDiscussionSession.query(ReviewOptimization).filter_by(is_executed=False).all()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user:
+        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
+                                                                               ReviewOptimization.detector_uid != db_user.uid)).all()
+    else:
+        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter_by(is_executed=False).all()
+
     key = 'optimizations'
     count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'Optimizations',
@@ -141,6 +179,79 @@ def __get_users_array(mainpage):
     return users_array
 
 
+def __get_subpage_for_deletes(db_user, translator):
+    """
+
+    :param db_user:
+    :param translator:
+    :return:
+    """
+    db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
+                                                                     ReviewDelete.detector_uid != db_user.uid)).all()
+    rnd_review = db_reviews[random.randint(0, len(db_reviews)-1)]
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+    text = get_text_for_argument_uid(db_argument.uid)
+    db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=rnd_review.reason_uid).first()
+
+    stats = __get_stats_for_argument(db_argument.uid)
+    stats['reported'] = sql_timestamp_pretty_print(rnd_review.timestamp, translator.get_lang())
+
+    reason = ''
+    if db_reason.reason == 'offtopic':
+        reason = translator.get(translator.argumentFlaggedBecauseOfftopic)
+    if db_reason.reason == 'spam':
+        reason = translator.get(translator.argumentFlaggedBecauseSpam)
+    if db_reason.reason == 'harmful':
+        reason = translator.get(translator.argumentFlaggedBecauseHarmful)
+
+    return text, reason, stats
+
+
+def __get_subpage_for_optimization(db_user, translator):
+    """
+
+    :param db_user:
+    :param translator:
+    :return:
+    """
+    db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
+                                                                           ReviewOptimization.detector_uid != db_user.uid)).all()
+
+    rnd_review = db_reviews[random.randint(0, len(db_reviews)-1)]
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+    text = get_text_for_argument_uid(db_argument.uid)
+    reason = translator.get(translator.argumentFlaggedBecauseOptimization)
+
+    stats = __get_stats_for_argument(db_argument.uid)
+    stats['reported'] = sql_timestamp_pretty_print(rnd_review.timestamp, translator.get_lang())
+
+    return text, reason, stats
+
+
+def __get_stats_for_argument(argument_uid):
+    """
+
+    :param argument_uid:
+    :return:
+    """
+    viewed = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument_uid).all())
+
+    _rh = RelationHelper(argument_uid)
+    undermines = _rh.get_undermines_for_argument_uid()
+    undercuts = _rh.get_undercuts_for_argument_uid()
+    rebuts = _rh.get_rebuts_for_argument_uid()
+    supports = _rh.get_supports_for_argument_uid()
+
+    len_undermines = len(undermines) if undermines else 0
+    len_undercuts = len(undercuts) if undercuts else 0
+    len_rebuts = len(rebuts) if rebuts else 0
+    len_supports = len(supports) if supports else 0
+
+    attacks = len_undermines + len_undercuts + len_rebuts
+
+    return {'viewed': viewed, 'attacks': attacks, 'supports': len_supports}
+
+
 def get_reputation_history(nickname):
     """
 
@@ -183,13 +294,6 @@ def get_reputation_list():
     reputations.append({'points': 200, 'icon': 'fa fa-times', 'text': 'Decide, whether it is spam or not'})
     reputations.append({'points': 100, 'icon': 'fa fa-trash', 'text': 'Decision about statement, which should be deleted'})
     reputations.append({'points': 50, 'icon': 'fa fa-pencil-square-o', 'text': 'Review edited statements'})
-    reputations.append({'points': 15, 'icon': '', 'text': 'Stackoverflow: Users with 15 rep can flag posts.'})
-    reputations.append({'points': 500, 'icon': '', 'text': 'Stackoverflow: Users with 500 rep can review posts from new users.'})
-    reputations.append({'points': 2000, 'icon': '', 'text': 'Stackoverflow: Users with 2000 rep can edit any question or answer in the system.'})
-    reputations.append({'points': 3000, 'icon': '', 'text': 'Stackoverflow: Users with 3000 rep can cast close and open votes.'})
-    reputations.append({'points': 10000, 'icon': '', 'text': 'Stackoverflow: Users with 10000 rep can cast delete and undelete votes on questions, and have access to a moderation dashboard.'})
-    reputations.append({'points': 15000, 'icon': '', 'text': 'Stackoverflow: Users with 15000 rep can protect posts.'})
-    reputations.append({'points': 20000, 'icon': '', 'text': 'Stackoverflow: Users with 20000 rep can cast delete votes on negatively voted answers.'})
     return reputations
 
 

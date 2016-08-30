@@ -29,12 +29,12 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('last_reviews' in d)
 
     def test_get_subpage_for(self):
-        self.assertIsNone(ReviewHelper.get_subpage_for('test', 'some nick'))
-        self.assertIsNone(ReviewHelper.get_subpage_for('test', 'Tobias'))
-        self.assertIsNone(ReviewHelper.get_subpage_for('edits', 'some nick'))
+        self.assertIsNone(ReviewHelper.get_subpage_elements_for('test', 'some nick'))
+        self.assertIsNone(ReviewHelper.get_subpage_elements_for('test', 'Tobias'))
+        self.assertIsNone(ReviewHelper.get_subpage_elements_for('edits', 'some nick'))
         from review.review_helper import pages
         for page in pages:
-            self.assertIsNotNone(ReviewHelper.get_subpage_for(page, 'Tobias'))
+            self.assertIsNotNone(ReviewHelper.get_subpage_elements_for(page, 'Tobias'))
 
     def test_get_reputation_history(self):
         self.assertEqual(len(ReviewHelper.get_reputation_history('Bla')), 0)

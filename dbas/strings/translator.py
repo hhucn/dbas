@@ -51,6 +51,10 @@ class Translator(object):
         self.argumentContainerTextIfConclusion = 'argumentContainerTextIfConclusion'
         self.argueAgainstPositionToggleButton = 'argueAgainstPositionToggleButton'
         self.argueForPositionToggleButton = 'argueForPositionToggleButton'
+        self.argumentFlaggedBecauseOfftopic = 'argumentFlaggedBecauseOfftopic'
+        self.argumentFlaggedBecauseSpam = 'argumentFlaggedBecauseSpam'
+        self.argumentFlaggedBecauseHarmful = 'argumentFlaggedBecauseHarmful'
+        self.argumentFlaggedBecauseOptimization = 'argumentFlaggedBecauseOptimization'
         self.alternatively = 'alternatively'
         self.alreadyFlaggedByOthers = 'alreadyFlaggedByOthers'
         self.alreadyFlaggedByYou = 'alreadyFlaggedByYou'
@@ -603,3 +607,11 @@ class Translator(object):
 
         else:
             return 'unknown language: ' + str(self.lang)
+
+    def get_lang(self):
+        """
+        Return ui locales code
+
+        :return:
+        """
+        return self.lang
