@@ -1,6 +1,6 @@
 import unittest
 
-import review.helper.page_manager as ReviewHelper
+import dbas.review.helper.page_manager as ReviewHelper
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.translator import Translator
@@ -29,7 +29,7 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('last_reviews' in d)
 
     def test_get_subpage_for(self):
-        from review.helper.page_manager import pages
+        from dbas.review.helper.page_manager import pages
 
         ret_dict = ReviewHelper.get_subpage_elements_for('some page', 'some nick', Translator('en'))
         self.assertIsNone(ret_dict['elements'])

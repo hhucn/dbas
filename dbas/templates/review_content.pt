@@ -15,10 +15,15 @@
                 <div class="col-md-offset-1 col-md-6">
                     <h6>${subpage.elements.reviewed_argument.reason}</h6>
                 </div>
-                <div class="col-md-offset-1 col-md-4">
-                    <a href="#" class="btn btn-info btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Skip it</a>
-                    <a href="#" class="btn btn-danger btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Delete it</a>
-                    <a href="#" class="btn btn-success btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">It's Okay</a>
+                <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_delete">
+                    <a href="#" class="review-button-delete btn btn-info btn-sm pull-right">Skip it</a>
+                    <a href="#" class="review-button-delete btn btn-danger btn-sm pull-right">Delete it</a>
+                    <a href="#" class="review-button-delete btn btn-success btn-sm pull-right">It's Okay</a>
+                </div>
+                <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_optimize">
+                    <a href="#" class="review-button-optimize btn btn-info btn-sm pull-right">Skip it</a>
+                    <a href="#" class="review-button-optimize btn btn-danger btn-sm pull-right">Don't correct</a>
+                    <a href="#" class="review-button-optimize btn btn-success btn-sm pull-right">Let me correct it</a>
                 </div>
             </div>
             <br>
