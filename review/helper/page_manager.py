@@ -49,17 +49,17 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
     logger('ReviewHelper', 'get_subpage_elements_for', subpage_name)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     user_has_access = False
-    arguments_to_review = True
+    no_arguments_to_review = False
 
     # does the subpage exists
     if subpage_name not in pages:
-        return None, user_has_access, arguments_to_review
+        return{'elements': None, 'has_access': user_has_access, 'no_arguments_to_review': no_arguments_to_review}
 
     rep_count, all_rights = get_reputation_of(nickname)
     user_has_access = rep_count >= reputation[subpage_name] or all_rights
     # does the user exists and does he has the rights for this queue?
     if not db_user or not user_has_access:
-        return None, user_has_access, arguments_to_review
+        return{'elements': None, 'has_access': user_has_access, 'no_arguments_to_review': no_arguments_to_review}
 
     ret_dict = dict()
     ret_dict['page_name'] = subpage_name
@@ -80,10 +80,10 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
                                      'reason': reason}
 
     if text is None and reason is None and stats is None:
-        arguments_to_review = False
-        return None, user_has_access, arguments_to_review
+        no_arguments_to_review = True
+        return{'elements': None, 'has_access': user_has_access, 'no_arguments_to_review': no_arguments_to_review}
 
-    return ret_dict, True, arguments_to_review
+    return {'elements': ret_dict, 'has_access': True, 'no_arguments_to_review': no_arguments_to_review}
 
 
 def __get_delete_dict(mainpage, translator, nickname):

@@ -16,9 +16,9 @@
                     <h6>${subpage.elements.reviewed_argument.reason}</h6>
                 </div>
                 <div class="col-md-offset-1 col-md-4">
-                    <a href="#" class="btn btn-info btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Skip</a>
-                    <a href="#" class="btn btn-danger btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Not Okay</a>
-                    <a href="#" class="btn btn-success btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Okay</a>
+                    <a href="#" class="btn btn-info btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Skip it</a>
+                    <a href="#" class="btn btn-danger btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">Delete it</a>
+                    <a href="#" class="btn btn-success btn-sm pull-right" style="margin-left: 0.5em; width: 7em;">It's Okay</a>
                 </div>
             </div>
             <br>
