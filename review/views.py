@@ -6,18 +6,17 @@ Introducing websockets.
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.user_management as UserManager
-import review.review_helper as ReviewHelper
+import review.helper.pager_manager as ReviewHelper
 import transaction
-
 from cornice import Service
-from pyramid.httpexceptions import HTTPFound
+from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.lib import get_language
 from dbas.logger import logger
 from dbas.strings.translator import Translator
+from dbas.url_manager import UrlManager
 from dbas.views import mainpage, Dbas, get_discussion_language
 from dbas.views import project_name
-from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.url_manager import UrlManager
+from pyramid.httpexceptions import HTTPFound
 from pyramid.threadlocal import get_current_registry
 
 # =============================================================================

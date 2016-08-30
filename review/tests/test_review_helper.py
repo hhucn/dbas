@@ -1,6 +1,6 @@
 import unittest
 
-import review.review_helper as ReviewHelper
+import review.helper.pager_manager as ReviewHelper
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.translator import Translator
@@ -32,7 +32,7 @@ class ReviewHelperTest(unittest.TestCase):
         self.assertIsNone(ReviewHelper.get_subpage_elements_for('test', 'some nick'))
         self.assertIsNone(ReviewHelper.get_subpage_elements_for('test', 'Tobias'))
         self.assertIsNone(ReviewHelper.get_subpage_elements_for('edits', 'some nick'))
-        from review.review_helper import pages
+        from review.helper.pager_manager import pages
         for page in pages:
             self.assertIsNotNone(ReviewHelper.get_subpage_elements_for(page, 'Tobias'))
 
