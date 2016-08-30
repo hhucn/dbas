@@ -29,19 +29,33 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('last_reviews' in d)
 
     def test_get_subpage_for(self):
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('test', 'some nick', Translator('en'))
-        self.assertIsNone(elements)
-
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('test', 'Tobias', Translator('en'))
-        self.assertIsNone(elements)
-
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('edits', 'some nick', Translator('en'))
-        self.assertIsNone(elements)
-
         from review.helper.page_manager import pages
+
+        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('some page', 'some nick', Translator('en'))
+        self.assertIsNone(elements)
+        self.assertFalse(user_has_access)
+        self.assertTrue(arguments_to_review)
+
+        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('some page', 'Tobias', Translator('en'))
+        self.assertIsNone(elements)
+        self.assertFalse(user_has_access)
+        self.assertTrue(arguments_to_review)
+
+        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(pages[0], 'Tobias', Translator('en'))
+        self.assertIsNotNone(elements)
+        self.assertTrue(user_has_access)
+        self.assertTrue(arguments_to_review)
+
+        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(pages[0], 'some nick', Translator('en'))
+        self.assertIsNone(elements)
+        self.assertFalse(user_has_access)
+        self.assertTrue(arguments_to_review)
+
         for page in pages:
             elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(page, 'Tobias', Translator('en'))
             self.assertIsNotNone(elements)
+            self.assertTrue(user_has_access)
+            self.assertTrue(arguments_to_review)
 
     def test_get_reputation_history(self):
         self.assertEqual(len(ReviewHelper.get_reputation_history('Bla')), 0)
