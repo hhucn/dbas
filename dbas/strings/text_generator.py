@@ -224,7 +224,7 @@ class TextGenerator(object):
     def get_jump_to_argument_text_list(self):
         """
 
-        :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
+        :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not lead to the conclusion, both hold]
         """
         _t = Translator(self.lang)
         tag_premise = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
@@ -239,7 +239,6 @@ class TextGenerator(object):
         answers.append(_t.get(_t.jumpAnswer1).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
         answers.append(_t.get(_t.jumpAnswer2).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
         answers.append(_t.get(_t.jumpAnswer3).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
-        answers.append(_t.get(_t.jumpAnswer4).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
 
         return answers
 
