@@ -83,8 +83,8 @@ def main_review_content(request):
         return Dbas(request).user_logout(True)
 
     subpage_name = request.matchdict['queue']
-    elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(subpage_name, request.authenticated_userid, _tn)
-    if not elements:
+    subpage_dict = ReviewHelper.get_subpage_elements_for(subpage_name, request.authenticated_userid, _tn)
+    if not subpage_dict['elements']:
         return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([request.path[1:]]))
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
@@ -95,11 +95,7 @@ def main_review_content(request):
         'title': _tn.get(_tn.review),
         'project': project_name,
         'extras': extras_dict,
-        'subpage': {
-            'elements': elements,
-            'has_access': user_has_access,
-            'no_arguments_to_review': not arguments_to_review
-                    }
+        'subpage': subpage_dict
     }
 
 

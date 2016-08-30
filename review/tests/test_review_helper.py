@@ -31,31 +31,31 @@ class ReviewHelperTest(unittest.TestCase):
     def test_get_subpage_for(self):
         from review.helper.page_manager import pages
 
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('some page', 'some nick', Translator('en'))
-        self.assertIsNone(elements)
-        self.assertFalse(user_has_access)
-        self.assertTrue(arguments_to_review)
+        ret_dict = ReviewHelper.get_subpage_elements_for('some page', 'some nick', Translator('en'))
+        self.assertIsNone(ret_dict['elements'])
+        self.assertFalse(ret_dict['has_access'])
+        self.assertFalse(ret_dict['no_arguments_to_review'])
 
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('some page', 'Tobias', Translator('en'))
-        self.assertIsNone(elements)
-        self.assertFalse(user_has_access)
-        self.assertTrue(arguments_to_review)
+        ret_dict = ReviewHelper.get_subpage_elements_for('some page', 'Tobias', Translator('en'))
+        self.assertIsNone(ret_dict['elements'])
+        self.assertFalse(ret_dict['has_access'])
+        self.assertFalse(ret_dict['no_arguments_to_review'])
 
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(pages[0], 'Tobias', Translator('en'))
-        self.assertIsNotNone(elements)
-        self.assertTrue(user_has_access)
-        self.assertTrue(arguments_to_review)
+        ret_dict = ReviewHelper.get_subpage_elements_for(pages[0], 'Tobias', Translator('en'))
+        self.assertIsNotNone(ret_dict['elements'])
+        self.assertTrue(ret_dict['has_access'])
+        self.assertFalse(ret_dict['no_arguments_to_review'])
 
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(pages[0], 'some nick', Translator('en'))
-        self.assertIsNone(elements)
-        self.assertFalse(user_has_access)
-        self.assertTrue(arguments_to_review)
+        ret_dict = ReviewHelper.get_subpage_elements_for(pages[0], 'some nick', Translator('en'))
+        self.assertIsNone(ret_dict['elements'])
+        self.assertFalse(ret_dict['has_access'])
+        self.assertFalse(ret_dict['no_arguments_to_review'])
 
         for page in pages:
-            elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(page, 'Tobias', Translator('en'))
-            self.assertIsNotNone(elements)
-            self.assertTrue(user_has_access)
-            self.assertTrue(arguments_to_review)
+            ret_dict = ReviewHelper.get_subpage_elements_for(page, 'Tobias', Translator('en'))
+            self.assertIsNotNone(ret_dict['elements'])
+            self.assertTrue(ret_dict['has_access'])
+            self.assertFalse(ret_dict['no_arguments_to_review'])
 
     def test_get_reputation_history(self):
         self.assertEqual(len(ReviewHelper.get_reputation_history('Bla')), 0)
