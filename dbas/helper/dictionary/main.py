@@ -66,15 +66,14 @@ class DictionaryHelper(object):
 
         return return_dict
 
-    def prepare_extras_dict_for_normal_page(self, nickname, request, append_notifications=False):
+    def prepare_extras_dict_for_normal_page(self, request, append_notifications=False):
         """
         Calls self.prepare_extras_dict('', False, False, False, False, False, nickname)
-        :param nickname: Users.nickname
         :param request: Request
         :param append_notifications: Boolean
         :return: dict()
         """
-        return self.prepare_extras_dict('', False, False, False, False, False, nickname, append_notifications=append_notifications, request=request)
+        return self.prepare_extras_dict('', False, False, False, False, False, request.authenticated_userid, append_notifications=append_notifications, request=request)
 
     def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_island_icon,
                             show_expert_icon, authenticated_userid, argument_id=0, application_url='', for_api=False,
