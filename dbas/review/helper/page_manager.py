@@ -46,20 +46,21 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
     :param nickname:
     :return:
     """
-    logger('ReviewHelper', 'get_subpage_elements_for', subpage_name)
+    logger('ReviewPagerHelper', 'get_subpage_elements_for', subpage_name)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     user_has_access = False
     no_arguments_to_review = False
+    button_set = {'is_delete': False, 'is_optimize': False}
 
     # does the subpage exists
     if subpage_name not in pages:
-        return{'elements': None, 'has_access': user_has_access, 'no_arguments_to_review': no_arguments_to_review}
+        return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     rep_count, all_rights = get_reputation_of(nickname)
     user_has_access = rep_count >= reputation[subpage_name] or all_rights
     # does the user exists and does he has the rights for this queue?
     if not db_user or not user_has_access:
-        return{'elements': None, 'has_access': user_has_access, 'no_arguments_to_review': no_arguments_to_review}
+        return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     ret_dict = dict()
     ret_dict['page_name'] = subpage_name
@@ -71,9 +72,11 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
 
     if subpage_name == 'deletes':
         text, reason, stats = __get_subpage_for_deletes(db_user, translator)
+        button_set['is_delete'] = True
 
     elif subpage_name == 'optimizations':
         text, reason, stats = __get_subpage_for_optimization(db_user, translator)
+        button_set['is_optimize'] = True
 
     ret_dict['reviewed_argument'] = {'stats': stats,
                                      'text': text,
@@ -83,7 +86,22 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
         no_arguments_to_review = True
         return{'elements': None, 'has_access': user_has_access, 'no_arguments_to_review': no_arguments_to_review}
 
-    return {'elements': ret_dict, 'has_access': True, 'no_arguments_to_review': no_arguments_to_review}
+    return __get_subpage_dict(ret_dict, True, no_arguments_to_review, button_set)
+
+
+def __get_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set):
+    """
+
+    :param ret_dict:
+    :param has_access:
+    :param no_arguments_to_review:
+    :param button_set:
+    :return:
+    """
+    return {'elements': ret_dict,
+            'has_access': has_access,
+            'no_arguments_to_review': no_arguments_to_review,
+            'button_set': button_set}
 
 
 def __get_delete_dict(mainpage, translator, nickname):
