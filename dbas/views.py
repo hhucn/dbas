@@ -7,17 +7,29 @@ Core component of DBAS.
 import json
 import time
 
+import dbas.handler.news as NewsHandler
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.helper.notification as NotificationHelper
 import dbas.helper.voting as VotingHelper
-import dbas.user_management as UserManager
-import dbas.handler.news as NewsHandler
 import dbas.strings.matcher as FuzzyStringMatcher
-import review.flag_helper as FlagHelper
+import dbas.user_management as UserManager
 import requests
+import review.helper.flag_handler as FlagHelper
 import transaction
-
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
+from dbas.handler.opinion import OpinionHandler
+from dbas.helper.dictionary.discussion import DiscussionDictHelper
+from dbas.helper.dictionary.items import ItemDictHelper
+from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.helper.query import QueryHelper
+from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax, request_password
+from dbas.input_validator import Validator
+from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, get_user_by_private_or_public_nickname, get_text_for_statement_uid
+from dbas.logger import logger
+from dbas.strings.translator import Translator
+from dbas.url_manager import UrlManager
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.security import remember, forget
@@ -26,20 +38,6 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
-
-from dbas.handler.opinion import OpinionHandler
-from dbas.helper.dictionary.discussion import DiscussionDictHelper
-from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.query import QueryHelper
-from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax, request_password
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
-from dbas.input_validator import Validator
-from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, get_user_by_private_or_public_nickname, get_text_for_statement_uid
-from dbas.logger import logger
-from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
 
 name = 'D-BAS'
 version = '0.6.1'
