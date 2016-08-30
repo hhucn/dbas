@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-08-19 09:43+0200\n"
+"POT-Creation-Date: 2016-08-30 11:01+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -128,27 +128,27 @@ msgid "login"
 msgstr "Log In"
 
 #. Default: Settings
-#: templates/snippet-header.pt:72 templates/settings.pt:41
+#: templates/snippet-header.pt:75 templates/settings.pt:41
 msgid "settings"
 msgstr "Settings"
 
 #. Default: Notifications
-#: templates/snippet-header.pt:79
+#: templates/snippet-header.pt:82
 msgid "notifications"
 msgstr "Notifications"
 
 #. Default: Admin
-#: templates/snippet-header.pt:84
+#: templates/snippet-header.pt:87
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet-header.pt:89
+#: templates/snippet-header.pt:92
 msgid "logout"
 msgstr "Logout"
 
 #. Default: Review
-#: templates/snippet-header.pt:97
+#: templates/snippet-header.pt:100
 msgid "review"
 msgstr "Review"
 
@@ -783,6 +783,31 @@ msgstr "Send News"
 msgid "send_notification"
 msgstr "Send Notifcation"
 
+#. Default: Please mark a reason
+#: templates/snippet-popups.pt:739
+msgid "mark-reason"
+msgstr "Please mark a reason"
+
+#. Default: The text needs and correcture.
+#: templates/snippet-popups.pt:745
+msgid "statement-optimization"
+msgstr "Send Notifcation"
+
+#. Default: This statement is offtopic.
+#: templates/snippet-popups.pt:747
+msgid "statement-offtopic"
+msgstr "Statements"
+
+#. Default: It is not relevant at all.
+#: templates/snippet-popups.pt:749
+msgid "statement-spam"
+msgstr "Statements"
+
+#. Default: This statement is harmful or abusive.
+#: templates/snippet-popups.pt:751
+msgid "statement-harmful"
+msgstr "Statements"
+
 #. Default: Personal Information
 #: templates/settings.pt:7
 msgid "personal_information"
@@ -1141,22 +1166,22 @@ msgid "restart_discussion"
 msgstr "Restart"
 
 #. Default: Change display style
-#: templates/content.pt:314
+#: templates/content.pt:316
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: Dialog View
-#: templates/content.pt:317
+#: templates/content.pt:319
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Island View
-#: templates/content.pt:323
+#: templates/content.pt:325
 msgid "island_view"
 msgstr "Island View"
 
 #. Default: Complete View
-#: templates/content.pt:329
+#: templates/content.pt:331
 msgid "complete_view"
 msgstr "Complete View"
 
@@ -1195,9 +1220,6 @@ msgstr "Complete View"
 
 #~ msgid "issues"
 #~ msgstr "Issues"
-
-#~ msgid "statements"
-#~ msgstr "Statements"
 
 #~ msgid "premisegroups"
 #~ msgstr "Premisegroups"

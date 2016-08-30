@@ -10,12 +10,14 @@ import review.review_helper as ReviewHelper
 import transaction
 
 from cornice import Service
+from pyramid.httpexceptions import HTTPFound
 from dbas.lib import get_language
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.views import mainpage, Dbas, get_discussion_language
 from dbas.views import project_name
 from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.url_manager import UrlManager
 from pyramid.threadlocal import get_current_registry
 
 # =============================================================================
@@ -38,7 +40,7 @@ content = Service(name='review_content',
                   permission='use',
                   cors_policy=cors_policy)
 
-reputation = Service(name='review_reputation',
+areputation = Service(name='review_reputation',
                      path='/reputation',
                      renderer='templates/review_reputation.pt',
                      description='Review Reputation',
@@ -53,6 +55,12 @@ zindex = Service(name='review_index',
                  description='Review Index',
                  permission='use',
                  cors_policy=cors_policy)
+
+switch_language = Service(name='lang',
+                          path='ajax_switch_language',
+                          description='Switch Language',
+                          permission='use',
+                          cors_policy=cors_policy)
 
 
 # =============================================================================
@@ -76,8 +84,9 @@ def main_review_content(request):
         return Dbas(request).user_logout(True)
 
     subpage_name = request.matchdict['queue']
-    subpage = ReviewHelper.get_subpage_for(subpage_name, request.authenticated_userid)
-    enough_reputation = True if subpage is not None else False
+    elements, user_has_access = ReviewHelper.get_subpage_elements_for(subpage_name, request.authenticated_userid, _tn)
+    if not elements:
+        return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([request.path[1:]]))
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
 
@@ -87,12 +96,14 @@ def main_review_content(request):
         'title': _tn.get(_tn.review),
         'project': project_name,
         'extras': extras_dict,
-        'subpage': {'queue': subpage,
-                    'enough_reputation': enough_reputation}
+        'subpage': {
+            'elements': elements,
+            'has_access': user_has_access
+                    }
     }
 
 
-@reputation.get()
+@areputation.get()
 def main_review_reputation(request):
     """
     View configuration for the review reputation.
@@ -131,7 +142,7 @@ def main_review(request):
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Review', 'main_review', 'main ' + str(request.matchdict))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales      = get_language(request, get_current_registry())
     nickname        = request.authenticated_userid
     session_expired = UserManager.update_last_action(transaction, nickname)
     HistoryHelper.save_path_in_database(nickname, request.path, transaction)
