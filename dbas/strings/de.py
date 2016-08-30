@@ -362,7 +362,11 @@ class GermanDict:
         de_lang[_self.interestingOnDBAS] = 'Interessante Diskussion in D-BAS'
         de_lang[_self.informationForStatements] = 'Informationen zu den Aussagen'
         de_lang[_self.jumpAnswer0] = 'Ja, ich halte die XXCONCLUSIONXX für richtig und finde die XXPREMISEXX gut.'
+<<<<<<< HEAD
         de_lang[_self.jumpAnswer1] = 'Ja, ich halte die XXCONCLUSIONXX für richtig aber ich möchte meine eigene XXPREMISEXX angeben.<div class="text-muted">[Das fühlt sich noch nicht richtig an]</div>'
+=======
+        de_lang[_self.jumpAnswer1] = 'Ja, ich halte die XXCONCLUSIONXX für richtig und möchte meine eigene XXPREMISEXX angeben.<div class="text-muted">[Das fühlt sich noch nicht richtig an]</div>'
+>>>>>>> b8d22ef... Update texts for jumping
         de_lang[_self.jumpAnswer2] = 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber sie wird nicht von der XXPREMISEXX unterstützt.<div class="text-muted">[Undercut]</div>'
         de_lang[_self.jumpAnswer3] = 'Nein, ich halte die XXCONCLUSIONXX für falsch.'
         de_lang[_self.keyword] = 'Schlüsselwort'
