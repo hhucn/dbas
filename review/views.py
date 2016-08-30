@@ -6,7 +6,7 @@ Introducing websockets.
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.user_management as UserManager
-import review.helper.pager_manager as ReviewHelper
+import review.helper.page_manager as ReviewHelper
 import transaction
 from cornice import Service
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -83,7 +83,7 @@ def main_review_content(request):
         return Dbas(request).user_logout(True)
 
     subpage_name = request.matchdict['queue']
-    elements, user_has_access = ReviewHelper.get_subpage_elements_for(subpage_name, request.authenticated_userid, _tn)
+    elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(subpage_name, request.authenticated_userid, _tn)
     if not elements:
         return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([request.path[1:]]))
 
@@ -97,7 +97,8 @@ def main_review_content(request):
         'extras': extras_dict,
         'subpage': {
             'elements': elements,
-            'has_access': user_has_access
+            'has_access': user_has_access,
+            'no_arguments_to_review': not arguments_to_review
                     }
     }
 

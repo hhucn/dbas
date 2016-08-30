@@ -49,16 +49,17 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
     logger('ReviewHelper', 'get_subpage_elements_for', subpage_name)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     user_has_access = False
+    arguments_to_review = True
 
     # does the subpage exists
     if subpage_name not in pages:
-        return None, user_has_access
+        return None, user_has_access, arguments_to_review
 
     rep_count, all_rights = get_reputation_of(nickname)
     user_has_access = rep_count >= reputation[subpage_name] or all_rights
     # does the user exists and does he has the rights for this queue?
     if not db_user or not user_has_access:
-        return None, user_has_access
+        return None, user_has_access, arguments_to_review
 
     ret_dict = dict()
     ret_dict['page_name'] = subpage_name
@@ -66,7 +67,7 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
     # get a random argument for reviewing
     text = translator.get(translator.internalError)
     reason = ''
-    stats = {'viewed': 0, 'attacks': 0, 'supports': 0}
+    stats = ''
 
     if subpage_name == 'deletes':
         text, reason, stats = __get_subpage_for_deletes(db_user, translator)
@@ -78,7 +79,10 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
                                      'text': text,
                                      'reason': reason}
 
-    return ret_dict, True
+    if text is None and reason is None and stats is None:
+        return None, user_has_access, arguments_to_review
+
+    return ret_dict, True, arguments_to_review
 
 
 def __get_delete_dict(mainpage, translator, nickname):
@@ -90,12 +94,7 @@ def __get_delete_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user:
-        db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
-                                                                         ReviewDelete.detector_uid != db_user.uid)).all()
-    else:
-        db_reviews = DBDiscussionSession.query(ReviewDelete).filter_by(is_executed=False).all()
+    task_count = __get_review_count_for(ReviewDelete, nickname)
 
     key = 'deletes'
     count, all_rights = get_reputation_of(nickname)
@@ -103,7 +102,7 @@ def __get_delete_dict(mainpage, translator, nickname):
                 'id': 'deletes',
                 'url': mainpage + '/review/' + key,
                 'icon': 'fa fa-trash-o',
-                'task_count': len(db_reviews),
+                'task_count': task_count,
                 'is_allowed': count >= reputation[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitDeleteQueue),
                 'is_not_allowed_text': translator.get(translator.visitDeleteQueueLimitation).replace('XX', str(reputation[key])),
@@ -121,12 +120,7 @@ def __get_optimization_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user:
-        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
-                                                                               ReviewOptimization.detector_uid != db_user.uid)).all()
-    else:
-        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter_by(is_executed=False).all()
+    task_count = __get_review_count_for(ReviewOptimization, nickname)
 
     key = 'optimizations'
     count, all_rights = get_reputation_of(nickname)
@@ -134,13 +128,29 @@ def __get_optimization_dict(mainpage, translator, nickname):
                 'id': 'flags',
                 'url': mainpage + '/review/' + key,
                 'icon': 'fa fa-flag',
-                'task_count': len(db_reviews),
+                'task_count': task_count,
                 'is_allowed': count >= reputation[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitOptimizationQueue),
                 'is_not_allowed_text': translator.get(translator.visitOptimizationQueueLimitation).replace('XX', str(reputation[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, mainpage)
                 }
     return tmp_dict
+
+
+def __get_review_count_for(review_type, nickname):
+    """
+
+    :param review_type:
+    :param nickname:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user:
+        db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
+                                                                        review_type.detector_uid != db_user.uid)).all()
+    else:
+        db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
+    return len(db_reviews)
 
 
 def __get_last_reviewer_of(reviewer_type, mainpage):
@@ -188,6 +198,10 @@ def __get_subpage_for_deletes(db_user, translator):
     """
     db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
                                                                      ReviewDelete.detector_uid != db_user.uid)).all()
+
+    if not db_reviews:
+        return None, None, None
+
     rnd_review = db_reviews[random.randint(0, len(db_reviews)-1)]
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
     text = get_text_for_argument_uid(db_argument.uid)
@@ -216,6 +230,9 @@ def __get_subpage_for_optimization(db_user, translator):
     """
     db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
                                                                            ReviewOptimization.detector_uid != db_user.uid)).all()
+
+    if not db_reviews:
+        return None, None, None
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews)-1)]
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
