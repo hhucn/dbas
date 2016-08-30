@@ -58,6 +58,7 @@
                     </table>
                 </div>
             </div>
+            <small class="text-muted pull-right">ID: ${subpage.elements.reviewed_argument.stats.id}</small>
         </div>
 
 	</tal:block>

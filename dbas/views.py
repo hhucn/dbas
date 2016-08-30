@@ -96,7 +96,7 @@ class Dbas(object):
         session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
         ui_locales      = get_language(self.request, get_current_registry())
         _dh             = DictionaryHelper(ui_locales, ui_locales)
-        extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request)
         _dh.add_language_options_for_extra_dict(extras_dict)
 
         return {
@@ -142,7 +142,7 @@ class Dbas(object):
         key = 'contact-antispamanswer'
         self.request.session[key] = answer
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
         return {
             'layout': self.base_layout(),
             'language': str(ui_locales),
@@ -193,7 +193,7 @@ class Dbas(object):
             message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
         _dh = DictionaryHelper(ui_locales)
-        extras_dict = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = _dh.prepare_extras_dict_for_normal_page(self.request)
         settings_dict = _dh.preprate_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage)
 
         return {
@@ -222,7 +222,7 @@ class Dbas(object):
         if session_expired:
             return self.user_logout(True)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request, append_notifications=True)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request, append_notifications=True)
 
         return {
             'layout': self.base_layout(),
@@ -289,7 +289,7 @@ class Dbas(object):
             return self.user_logout(True)
 
         ui_locales = get_language(self.request, get_current_registry())
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         user_dict = UserManager.get_information_of(current_user, ui_locales)
 
@@ -325,7 +325,7 @@ class Dbas(object):
         if session_expired:
             return self.user_logout(True)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
         import pkg_resources
         extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
@@ -360,7 +360,7 @@ class Dbas(object):
         self.request.response.status = 404
         ui_locales = get_language(self.request, get_current_registry())
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         # return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
@@ -374,13 +374,10 @@ class Dbas(object):
             'param_error': param_error
         }
 
+
 # ####################################
 # DISCUSSION                         #
 # ####################################
-
-    # ####################################
-    # DISCUSSION                         #
-    # ####################################
 
     # content page
     @view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
@@ -680,7 +677,7 @@ class Dbas(object):
         if session_expired:
             return self.user_logout(True)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
         summary_dict = UserManager.get_summary_of_today(nickname)
 
         return {
@@ -829,6 +826,11 @@ class Dbas(object):
 # REVIEW                             #
 # ####################################
 
+
+# ####################################
+# REVIEW                             #
+# ####################################
+
     # index page for reviews
     @view_config(route_name='review_index', renderer='templates/review.pt', permission='use')
     def main_review(self):
@@ -850,7 +852,7 @@ class Dbas(object):
         issue = IssueHelper.get_issue_id(self.request)
         disc_ui_locales = get_discussion_language(self.request, issue)
         issue_dict = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname, self.request) # TODO fic this
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         review_dict = ReviewPagerHelper.get_review_queues_array(mainpage, _tn, nickname)
         count, all_rights = ReviewPagerHelper.get_reputation_of(nickname)
@@ -886,12 +888,11 @@ class Dbas(object):
             return Dbas(self.request).user_logout(True)
 
         subpage_name = self.request.matchdict['queue']
-        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(subpage_name, self.request.authenticated_userid, _tn)
+        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn)
         if not subpage_dict['elements']:
             return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid,
-                                                                                       self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
             'layout': Dbas.base_layout(),
@@ -919,7 +920,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         reputation_dict = ReviewPagerHelper.get_reputation_history(self.request.authenticated_userid)
 
@@ -931,6 +932,7 @@ class Dbas(object):
             'extras': extras_dict,
             'reputation': reputation_dict
         }
+
 
 # ####################################
 # ADDTIONAL AJAX STUFF # USER THINGS #

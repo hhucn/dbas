@@ -39,11 +39,13 @@ def get_review_queues_array(mainpage, translator, nickname):
     return review_list
 
 
-def get_subpage_elements_for(subpage_name, nickname, translator):
+def get_subpage_elements_for(request, subpage_name, nickname, translator):
     """
 
+    :param request:
     :param subpage_name:
     :param nickname:
+    :param translator:
     :return:
     """
     logger('ReviewPagerHelper', 'get_subpage_elements_for', subpage_name)
@@ -71,11 +73,11 @@ def get_subpage_elements_for(subpage_name, nickname, translator):
     stats = ''
 
     if subpage_name == 'deletes':
-        text, reason, stats = __get_subpage_for_deletes(db_user, translator)
+        text, reason, stats = __get_subpage_for_deletes(request, db_user, translator)
         button_set['is_delete'] = True
 
     elif subpage_name == 'optimizations':
-        text, reason, stats = __get_subpage_for_optimization(db_user, translator)
+        text, reason, stats = __get_subpage_for_optimization(request, db_user, translator)
         button_set['is_optimize'] = True
 
     ret_dict['reviewed_argument'] = {'stats': stats,
@@ -208,16 +210,24 @@ def __get_users_array(mainpage):
     return users_array
 
 
-def __get_subpage_for_deletes(db_user, translator):
+def __get_subpage_for_deletes(request, db_user, translator):
     """
 
+    :param request:
     :param db_user:
     :param translator:
     :return:
     """
+    # only get arguments, which the user has not seen yet
+    already_seen = request.session['already_seen_deletes'] if 'already_seen_deletes' in request.session else list()
     db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
-                                                                     ReviewDelete.detector_uid != db_user.uid)).all()
-
+                                                                     ReviewDelete.detector_uid != db_user.uid,
+                                                                     ReviewDelete.uid not in already_seen)).all()
+    # maybe there are not argument or the user has seen everything, try again
+    if not db_reviews:
+        already_seen = list()
+        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
+                                                                               ReviewOptimization.detector_uid != db_user.uid)).all()
     if not db_reviews:
         return None, None, None
 
@@ -228,6 +238,7 @@ def __get_subpage_for_deletes(db_user, translator):
 
     stats = __get_stats_for_argument(db_argument.uid)
     stats['reported'] = sql_timestamp_pretty_print(rnd_review.timestamp, translator.get_lang())
+    stats['id'] = str(rnd_review.uid)
 
     reason = ''
     if db_reason.reason == 'offtopic':
@@ -237,18 +248,30 @@ def __get_subpage_for_deletes(db_user, translator):
     if db_reason.reason == 'harmful':
         reason = translator.get(translator.argumentFlaggedBecauseHarmful)
 
+    already_seen.append(rnd_review.uid)
+    request.session['already_seen_deletes'] = already_seen
+
     return text, reason, stats
 
 
-def __get_subpage_for_optimization(db_user, translator):
+def __get_subpage_for_optimization(request, db_user, translator):
     """
 
+    :param request:
     :param db_user:
     :param translator:
     :return:
     """
+    # only get arguments, which the user has not seen yet
+    already_seen = request.session['already_seen_optimization'] if 'already_seen_optimization' in request.session else list()
     db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
-                                                                           ReviewOptimization.detector_uid != db_user.uid)).all()
+                                                                           ReviewOptimization.detector_uid != db_user.uid,
+                                                                           ReviewOptimization.uid not in already_seen)).all()
+    # maybe there are not argument or the user has seen everything, try again
+    if not db_reviews:
+        already_seen = list()
+        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
+                                                                               ReviewOptimization.detector_uid != db_user.uid)).all()
 
     if not db_reviews:
         return None, None, None
@@ -260,6 +283,10 @@ def __get_subpage_for_optimization(db_user, translator):
 
     stats = __get_stats_for_argument(db_argument.uid)
     stats['reported'] = sql_timestamp_pretty_print(rnd_review.timestamp, translator.get_lang())
+    stats['id'] = str(rnd_review.uid)
+
+    already_seen.append(rnd_review.uid)
+    request.session['already_seen_optimization'] = already_seen
 
     return text, reason, stats
 
