@@ -26,14 +26,14 @@ Logger
 News Handler
 ============
 
-.. automodule:: dbas.news_handler
+.. automodule:: dbas.handler.news
     :members:
 
 
 Opinion Handler
 ===============
 
-.. automodule:: dbas.opinion_handler
+.. automodule:: dbas.handler.opinion
     :members:
 
 
@@ -54,14 +54,21 @@ Security
 String Matcher
 ==============
 
-.. automodule:: dbas.string_matcher
+.. automodule:: dbas.strings.matcher
     :members:
 
 
-Strings
-=======
+I18N
+====
 
-.. automodule:: dbas.strings
+.. automodule:: dbas.strings.matcher
+    :members:
+
+
+Text-Generator
+==============
+
+.. automodule:: dbas.string.text_generator
     :members:
 
 
@@ -94,68 +101,68 @@ Helper
 Dictionary Helper
 =================
 
-.. automodule:: dbas.helper.dictionary_helper
+.. automodule:: dbas.helper.dictionary.main
     :members:
 
 
 Dictionary Helper for Discussion
 ================================
 
-.. automodule:: dbas.helper.dictionary_helper_discussion
+.. automodule:: dbas.helper.dictionary.discussion
     :members:
 
 
 Dictionary Helper for Item
 ==========================
 
-.. automodule:: dbas.helper.dictionary_helper_items
+.. automodule:: dbas.helper.dictionary.main
     :members:
 
 
 E-Mail
 ======
 
-.. automodule:: dbas.helper.email_helper
+.. automodule:: dbas.helper.email
     :members:
 
 
 Helper for Issues
 =================
 
-.. automodule:: dbas.helper.issue_helper
+.. automodule:: dbas.helper.issue
     :members:
 
 
 Helper for History
 ==================
 
-.. automodule:: dbas.helper.history_helper
+.. automodule:: dbas.helper.history
     :members:
 
 
 Notification Helper
 ===================
 
-.. automodule:: dbas.helper.notification_helper
+.. automodule:: dbas.helper.notification
     :members:
 
 
 Query Helper
 ============
 
-.. automodule:: dbas.helper.query_helper
+.. automodule:: dbas.helper.query
     :members:
 
 
 Relation Helper
 ===============
 
-.. automodule:: dbas.helper.relation_helper
+.. automodule:: dbas.helper.relation
     :members:
 
 
 Voting Helper
 =============
 
-.. automodule:: dbas.helper.voting_helper
+.. automodule:: dbas.helper.voting
     :members:

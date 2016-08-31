@@ -17,7 +17,7 @@ from dbas.helper import email as EmailHelper
 from dbas.helper import notification as NotificationHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
-from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid
+from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid, get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 
@@ -161,7 +161,7 @@ def is_user_admin(nickname):
     return db_user and db_user.groups.name == 'admins'
 
 
-def get_profile_picture(user, size=80):
+def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
 
@@ -169,11 +169,14 @@ def get_profile_picture(user, size=80):
     :param size: Integer, default 80
     :return: String
     """
-    email = (user.email).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
+    additional_id = '' if db_settings.should_show_public_nickname else 'x'
+    if ignore_privacy_settings:
+        additional_id = ''
+    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
 
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
-    # logger('UserHandler', 'get_profile_picture', 'url: ' + gravatar_url)
     return gravatar_url
 
 
@@ -193,7 +196,6 @@ def get_public_profile_picture(user, size=80):
     email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
-    # logger('UserHandler', 'get_public_profile_picture', 'url: ' + gravatar_url)
     return gravatar_url
 
 
@@ -205,22 +207,7 @@ def get_public_information_data(nickname, lang):
     :return: dict()
     """
     return_dict = dict()
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-
-    db_settings = None
-    current_user = None
-
-    if db_user:
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-    elif db_public_user:
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
-
-    if db_settings:
-        if db_settings.should_show_public_nickname and db_user:
-            current_user = db_user
-        elif not db_settings.should_show_public_nickname and db_public_user:
-            current_user = db_public_user
+    current_user = get_user_by_private_or_public_nickname(nickname)
 
     if current_user is None:
         return return_dict
@@ -259,10 +246,10 @@ def get_public_information_data(nickname, lang):
         labels_statement_30.append(ts)
         labels_edit_30.append(ts)
 
-        db_votes_statements = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == db_user.uid,
+        db_votes_statements = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == current_user.uid,
                                                                                    VoteStatement.timestamp >= begin,
                                                                                    VoteStatement.timestamp < end)).all()
-        db_votes_arguments = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == db_user.uid,
+        db_votes_arguments = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == current_user.uid,
                                                                                  VoteArgument.timestamp >= begin,
                                                                                  VoteArgument.timestamp < end)).all()
         votes = len(db_votes_arguments) + len(db_votes_statements)
@@ -283,6 +270,8 @@ def get_public_information_data(nickname, lang):
     return_dict['data2'] = data_decision_30
     return_dict['data3'] = data_statement_30
     return_dict['data4'] = data_edit_30
+
+    # history = get_reputation_history(nickname)  # TODO REPUTATION CHART
 
     return return_dict
 
@@ -517,7 +506,7 @@ def get_information_of(db_user, lang):
     ret_dict['edits_done']            = len(edits)
     ret_dict['discussion_arg_votes']  = arg_vote
     ret_dict['discussion_stat_votes'] = stat_vote
-    ret_dict['avatar_url']            = get_public_profile_picture(db_user, 120)
+    ret_dict['avatar_url']            = get_profile_picture(db_user, 120)
 
     return ret_dict
 

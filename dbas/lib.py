@@ -4,13 +4,16 @@ Common, pure functions used by the D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import time
 
 import locale
 from datetime import datetime
 from html import escape
 
-from .database import DBDiscussionSession
-from .database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language
+from sqlalchemy import and_
+
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 
@@ -162,7 +165,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
 
     if len(arg_array) == 1:
         # build one argument only
-        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t)
+        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro)
 
     else:
         # get all pgroups and at last, the conclusion
@@ -235,7 +238,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     return ret_value
 
 
-def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t):
+def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro):
     """
 
     :param uid:
@@ -244,6 +247,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param colored_position:
     :param attack_type:
     :param _t:
+    :param start_with_intro:
     :return:
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -287,8 +291,13 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         # if color_everything:
         #     ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
         # else:
-        ret_value = intro[0:1].upper() + intro[1:] + ' ' + conclusion
-        ret_value += ' ' + _t.get(_t.because).lower() + ' ' + premises
+        if start_with_intro:
+            ret_value = intro[0:1].upper() + intro[1:] + ' '
+        else:
+            ret_value = (_t.get(_t.statementIsAbout) + ' ') if lang == 'de' else ''
+        ret_value += conclusion
+        ret_value += ', ' if lang == 'de' else ' '
+        ret_value += _t.get(_t.because).lower() + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
         ret_value = conclusion + ' '
@@ -328,26 +337,24 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     uid = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid
     conclusion = get_text_for_statement_uid(uid)
 
-    sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
+    sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
     se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
-    because = (se + ', ') if lang == 'de' else (' ' + se)
-    because += _t.get(_t.because).lower() + ' ' + sb
+    because = ', ' if lang == 'de' else ' '
+    because += _t.get(_t.because).lower() + ' '
 
     if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
-        ret_value = se
-        ret_value += _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat)
-        ret_value += sb + ' '
+        ret_value = _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat) + ' '
         users_opinion = True  # user after system
         if lang != 'de':
             conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
     else:  # user starts
-        ret_value = (se + _t.get(_t.soYourOpinionIsThat) + ': ' + sb) if start_with_intro else ''
+        ret_value = (_t.get(_t.soYourOpinionIsThat) + ': ') if start_with_intro else ''
         users_opinion = False  # system after user
-        conclusion = conclusion[0:1].upper() + conclusion[1:]  # pretty print
+        conclusion = se + conclusion[0:1].upper() + conclusion[1:]  # pretty print
     ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
 
     for i in range(1, len(pgroups)):
-        ret_value += ' ' + se
+        ret_value += ' '
         if users_opinion:
             if user_changed_opinion:
                 ret_value += _t.get(_t.otherParticipantsConvincedYouThat)
@@ -355,16 +362,18 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
                 ret_value += _t.get(_t.butYouCounteredWith)
         else:
             ret_value += _t.get(_t.otherUsersHaveCounterArgument)
-        ret_value += sb + ' ' + pgroups[i] + '.'
 
+        if i == len(pgroups) - 1:
+            ret_value += ' ' + sb + pgroups[i] + se
+        else:
+            ret_value += ' ' + pgroups[i]
         # if user_changed_opinion:
         # ret_value += ' ' + se + _t.get(_t.butThenYouCounteredWith) + sb + ' ' + pgroups[i] + '.'
         # else:
         # ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
         users_opinion = not users_opinion
 
-    ret_value = ret_value.replace('.</' + TextGenerator.tag_type + '>', '</' + TextGenerator.tag_type + '>.').replace('. </' + TextGenerator.tag_type + '>', '</' + TextGenerator.tag_type + '>. ')
-    return ret_value[:-1]  # cut off punctuation
+    return ret_value
 
 
 def get_text_for_premisesgroup_uid(uid):
@@ -511,3 +520,102 @@ def get_lang_for_issue(uid):
         return fallback_lang
 
     return db_lang.ui_locales
+
+
+def get_user_by_private_or_public_nickname(nickname):
+    """
+    Gets the user by his (public) nickname, based on the option, whether his nickname is public or not
+
+    :param nickname: Nickname of the user
+    :return: Current user or None
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+
+    db_settings = None
+    current_user = None
+
+    if db_user:
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    elif db_public_user:
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
+
+    if db_settings:
+        if db_settings.should_show_public_nickname and db_user:
+            current_user = db_user
+        elif not db_settings.should_show_public_nickname and db_public_user:
+            current_user = db_public_user
+
+    return current_user
+
+
+def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flaggable=False, uid='', url='',
+                             message='', omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
+                             nickname='anonymous', lang='en'):
+    """
+    Creates an dictionary which includes every information needed for a bubble.
+
+    :param is_user: Boolean
+    :param is_system: Boolean
+    :param is_status: Boolean
+    :param is_info: Boolean
+    :param is_flaggable: Boolean
+    :param uid: Argument.uid
+    :param url: URL
+    :param message: String
+    :param omit_url: Boolean
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param is_supportive: Boolean
+    :param nickname: String
+    :param lang: String
+    :return: dict()
+    """
+    speech = dict()
+    speech['is_user']            = is_user
+    speech['is_system']          = is_system
+    speech['is_status']          = is_status
+    speech['is_info']            = is_info
+    speech['is_flaggable']       = is_flaggable
+    speech['id']                 = uid if len(str(uid)) > 0 else str(time.time())
+    # speech['url']                = url if len(str(url)) > 0 else 'None'
+    speech['url']                = url if len(str(url)) > 0 else 'None'
+    speech['message']            = message
+    speech['omit_url']           = omit_url
+    speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'
+    speech['data_argument_uid']  = str(argument_uid)
+    speech['data_statement_uid'] = str(statement_uid)
+    speech['data_is_supportive'] = str(is_supportive)
+    db_votecounts                = None
+
+    if is_supportive is None:
+        is_supportive = False
+
+    if not nickname:
+        nickname = 'anonymous'
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
+
+    if argument_uid:
+        db_votecounts = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
+                                                                            VoteArgument.is_up_vote == is_supportive,
+                                                                            VoteArgument.is_valid == True,
+                                                                            VoteArgument.author_uid != db_user.uid)).all()
+    elif statement_uid:
+        db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
+                                                                             VoteStatement.is_up_vote == is_supportive,
+                                                                             VoteStatement.is_valid == True,
+                                                                             VoteStatement.author_uid != db_user.uid)).all()
+    _t = Translator(lang)
+    votecounts = len(db_votecounts) if db_votecounts else 0
+
+    if votecounts == 0:
+        speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
+    elif votecounts == 1:
+        speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
+    else:
+        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+    speech['votecounts'] = votecounts
+
+    return speech

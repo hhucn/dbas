@@ -18,7 +18,8 @@ from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, 
 
 from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, as_json
 from .login import validate_credentials, validate_login
-from .references import store_reference, url_to_statement, get_references_for_url, get_all_references_by_reference_text, get_reference_by_id
+from .references import store_reference, url_to_statement, get_references_for_url, get_all_references_by_reference_text, get_reference_by_id, \
+    prepare_single_reference
 
 log = logger()
 
@@ -116,11 +117,15 @@ text_for_argument = Service(name="argument_text_block",
 #
 # Jump into the discussion
 #
-jump_to_argument = Service(name="jump_to_argument",
-                           path="/{slug}/jump/{arg_uid}",
-                           description="Jump to an argument",
-                           cors_policy=cors_policy)
+jump_to_zargument = Service(name="jump_to_argument",  # Need this 'z' to call this after the other jumps
+                            path="/{slug}/jump/{arg_uid}",
+                            description="Jump to an argument",
+                            cors_policy=cors_policy)
 
+jump_to_decision = Service(name="jump_to_decision",
+                           path="/{slug}/jump/decision/{arg_uid}",
+                           description="Persuade the user to make a decision",
+                           cors_policy=cors_policy)
 #
 # Other Services
 #
@@ -191,8 +196,12 @@ def prepare_data_assign_reference(request, func):
             statement_uids = flatten(statement_uids)
             if type(statement_uids) is int:
                 statement_uids = [statement_uids]
-            list(map(lambda statement: store_reference(api_data, statement), statement_uids))  # need list() to execute the functions
-        return return_dict_json
+            refs_db = list(map(lambda statement: store_reference(api_data, statement), statement_uids))
+            refs = list()  # Convert all references
+            for ref in refs_db:
+                refs.append(prepare_single_reference(ref))
+            return_dict["references"] = refs
+        return return_dict
     else:
         raise HTTP204()
 
@@ -287,7 +296,7 @@ def add_start_statement(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_start_statement)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_statement))
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -298,7 +307,7 @@ def add_start_premise(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_start_premise)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_premise))
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
@@ -309,7 +318,7 @@ def add_justify_premise(request):
     :param request:
     :return:
     """
-    return prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument)
+    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument))
 
 
 # =============================================================================
@@ -330,8 +339,7 @@ def get_references(request):
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
             for ref in refs_db:
-                url = url_to_statement(ref.issue_uid, ref.statement_uid)
-                refs.append({"uid": ref.uid, "text": ref.reference, "url": url})
+                refs.append(prepare_single_reference(ref))
             return as_json({"references": refs})
         else:
             log.error("[API/Reference] Returned no references: Database error")
@@ -431,7 +439,21 @@ def find_statements_fn(request):
 # JUMPING - jump to specific position in the discussion
 # =============================================================================
 
-@jump_to_argument.get()
+def jump_preparation(request):
+    """
+    Prepare api_data and extract all relevant information from the request.
+
+    :param request:
+    :return:
+    """
+    slug = request.matchdict["slug"]
+    arg_uid = int(request.matchdict["arg_uid"])
+    nickname = None
+    session_id = None
+    return {"slug": slug, "arg_uid": arg_uid, "nickname": nickname, "session_id": session_id}
+
+
+@jump_to_zargument.get()
 def fn_jump_to_argument(request):
     """
     Given a slug, arg_uid and a nickname, jump directly to an argument to get
@@ -440,13 +462,20 @@ def fn_jump_to_argument(request):
     :param request:
     :return: Argument with a list of possible interactions
     """
-    slug = request.matchdict["slug"]
-    arg_uid = int(request.matchdict["arg_uid"])
-    nickname = None
-    session_id = None
-
-    api_data = {"slug": slug, "arg_uid": arg_uid, "nickname": nickname, "session_id": session_id}
+    api_data = jump_preparation(request)
     return as_json(Dbas(request).discussion_jump(for_api=True, api_data=api_data))
+
+
+@jump_to_decision.get()
+def fn_jump_to_decision(request):
+    """
+    Persuade a user to make a decision when she previously marked both parts of the argument as invalid.
+
+    :param request:
+    :return: Argument with a list of possible interactions
+    """
+    api_data = jump_preparation(request)
+    return as_json(Dbas(request).discussion_jump_decision(for_api=True, api_data=api_data))
 
 
 # =============================================================================

@@ -15,7 +15,8 @@ import dbas.handler.password as passwordHandler
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy
+    Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
+    ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason
 from dbas.database.news_model import News
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
@@ -45,6 +46,7 @@ def main_discussion(argv=sys.argv):
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user5, user6, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
         setup_discussion_database(DBDiscussionSession, user2, issue1, issue2, issue4, issue5)
+        setup_review_database(DBDiscussionSession)
         transaction.commit()
 
 
@@ -65,6 +67,7 @@ def main_discussion_reload(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        setup_review_database(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
 
@@ -332,11 +335,11 @@ def setup_news_db(session):
                   author='Tobias Krauthoff',
                   news='We are happy to announce, that our paper for the COMMA16 was accepted. In the meantime many little '
                        'improvements as well as first user tests were done.')
-    news49 = News(title='COMMA16',
+    news49 = News(title='Sidebar',
                   date=arrow.get('2016-07-05'),
                   author='Tobias Krauthoff',
                   news='Today we released a new text-based sidebar for a better experience. Have fun!')
-    news50 = News(title='COMMA16',
+    news50 = News(title='Review Process',
                   date=arrow.get('2016-08-11'),
                   author='Tobias Krauthoff',
                   news='I regret that i have neglected the news section, but this is in your interest. In the meantime '
@@ -456,44 +459,44 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
                     usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27,
                     usert28, usert29, usert30):
     # adding settings
-    settings0 = Settings(author_uid=user0.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settings1 = Settings(author_uid=user1.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settings2 = Settings(author_uid=user2.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
-    settings3 = Settings(author_uid=user3.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settings4 = Settings(author_uid=user4.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settings5 = Settings(author_uid=user5.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settings6 = Settings(author_uid=user6.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst00 = Settings(author_uid=usert00.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst01 = Settings(author_uid=usert01.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst02 = Settings(author_uid=usert02.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst03 = Settings(author_uid=usert03.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst04 = Settings(author_uid=usert04.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst05 = Settings(author_uid=usert05.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst06 = Settings(author_uid=usert06.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst07 = Settings(author_uid=usert07.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst08 = Settings(author_uid=usert08.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst09 = Settings(author_uid=usert09.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst10 = Settings(author_uid=usert10.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst11 = Settings(author_uid=usert11.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst12 = Settings(author_uid=usert12.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst13 = Settings(author_uid=usert13.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst14 = Settings(author_uid=usert14.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst15 = Settings(author_uid=usert15.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst16 = Settings(author_uid=usert16.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst17 = Settings(author_uid=usert17.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst18 = Settings(author_uid=usert18.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst19 = Settings(author_uid=usert19.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst20 = Settings(author_uid=usert20.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst21 = Settings(author_uid=usert21.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst22 = Settings(author_uid=usert22.uid, send_mails=True, send_notifications=True, should_show_public_nickname=False)
-    settingst23 = Settings(author_uid=usert23.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst24 = Settings(author_uid=usert24.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst25 = Settings(author_uid=usert25.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst26 = Settings(author_uid=usert26.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst27 = Settings(author_uid=usert27.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst28 = Settings(author_uid=usert28.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst29 = Settings(author_uid=usert29.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
-    settingst30 = Settings(author_uid=usert30.uid, send_mails=True, send_notifications=True, should_show_public_nickname=True)
+    settings0 = Settings(author_uid=user0.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settings1 = Settings(author_uid=user1.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settings2 = Settings(author_uid=user2.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
+    settings3 = Settings(author_uid=user3.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settings4 = Settings(author_uid=user4.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settings5 = Settings(author_uid=user5.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settings6 = Settings(author_uid=user6.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst00 = Settings(author_uid=usert00.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst01 = Settings(author_uid=usert01.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst02 = Settings(author_uid=usert02.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst03 = Settings(author_uid=usert03.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst04 = Settings(author_uid=usert04.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst05 = Settings(author_uid=usert05.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst06 = Settings(author_uid=usert06.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst07 = Settings(author_uid=usert07.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst08 = Settings(author_uid=usert08.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst09 = Settings(author_uid=usert09.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst10 = Settings(author_uid=usert10.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst11 = Settings(author_uid=usert11.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst12 = Settings(author_uid=usert12.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst13 = Settings(author_uid=usert13.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst14 = Settings(author_uid=usert14.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst15 = Settings(author_uid=usert15.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst16 = Settings(author_uid=usert16.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst17 = Settings(author_uid=usert17.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst18 = Settings(author_uid=usert18.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst19 = Settings(author_uid=usert19.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst20 = Settings(author_uid=usert20.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst21 = Settings(author_uid=usert21.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst22 = Settings(author_uid=usert22.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+    settingst23 = Settings(author_uid=usert23.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst24 = Settings(author_uid=usert24.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst25 = Settings(author_uid=usert25.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst26 = Settings(author_uid=usert26.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst27 = Settings(author_uid=usert27.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst28 = Settings(author_uid=usert28.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst29 = Settings(author_uid=usert29.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settingst30 = Settings(author_uid=usert30.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6])
     session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
     session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
@@ -1303,4 +1306,44 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
                                        issue_uid=issue4.uid)
     reference201 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist", host="localhost:3449", path="/", author_uid=5, statement_uid=statement213.uid, issue_uid=issue4.uid)
     session.add_all([reference200, reference201])
+    session.flush()
+
+
+def setup_review_database(session):
+    reason1 = ReviewDeleteReason(reason='offtopic')
+    reason2 = ReviewDeleteReason(reason='spam')
+    reason3 = ReviewDeleteReason(reason='harmful')
+    session.add_all([reason1, reason2, reason3])
+    session.flush()
+
+    review1 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
+    review2 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
+    review3 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
+    review4 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
+    review5 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
+    review6 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
+    review7 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
+    session.add_all([review1, review2, review3, review4, review5, review6, review7])
+    session.flush()
+
+    reviewer1 = LastReviewerOptimization(random.randint(10, 20), review1.uid, True)
+    reviewer2 = LastReviewerOptimization(random.randint(10, 20), review2.uid, True)
+    reviewer3 = LastReviewerOptimization(random.randint(10, 20), review3.uid, False)
+    reviewer4 = LastReviewerDelete(random.randint(10, 20), review4.uid, True)
+    reviewer5 = LastReviewerDelete(random.randint(10, 20), review5.uid, False)
+    reviewer6 = LastReviewerDelete(random.randint(10, 20), review6.uid, True)
+    reviewer7 = LastReviewerDelete(random.randint(10, 20), review7.uid, False)
+    session.add_all([reviewer1, reviewer2, reviewer3, reviewer4, reviewer5, reviewer6, reviewer7])
+    session.flush()
+
+    reputation1 = ReputationReason(reason='rep_reason_first_position', points=5)
+    reputation2 = ReputationReason(reason='rep_reason_first_justification', points=5)
+    reputation3 = ReputationReason(reason='rep_reason_first_argument_click', points=5)
+    reputation4 = ReputationReason(reason='rep_reason_first_confrontation', points=5)
+    reputation5 = ReputationReason(reason='rep_reason_first_argument', points=5)
+    reputation6 = ReputationReason(reason='rep_reason_success_flag', points=2)
+    reputation7 = ReputationReason(reason='rep_reason_success_edit', points=2)
+    reputation8 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
+    reputation9 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
+    session.add_all([reputation1, reputation2, reputation3, reputation4, reputation5, reputation6, reputation7, reputation8, reputation9])
     session.flush()

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-08-19 09:43+0200\n"
+"POT-Creation-Date: 2016-08-30 11:01+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -130,27 +130,27 @@ msgid "login"
 msgstr "Login"
 
 #. Default: Settings
-#: templates/snippet-header.pt:72 templates/settings.pt:41
+#: templates/snippet-header.pt:75 templates/settings.pt:41
 msgid "settings"
 msgstr "Einstellungen"
 
 #. Default: Notifications
-#: templates/snippet-header.pt:79
+#: templates/snippet-header.pt:82
 msgid "notifications"
 msgstr "Benachrichtigungen"
 
 #. Default: Admin
-#: templates/snippet-header.pt:84
+#: templates/snippet-header.pt:87
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet-header.pt:89
+#: templates/snippet-header.pt:92
 msgid "logout"
 msgstr "Abmelden"
 
 #. Default: Review
-#: templates/snippet-header.pt:97
+#: templates/snippet-header.pt:100
 msgid "review"
 msgstr "Prüfen"
 
@@ -799,6 +799,31 @@ msgstr "News abschicken"
 msgid "send_notification"
 msgstr "Nachricht senden"
 
+#. Default: Please mark a reason
+#: templates/snippet-popups.pt:739
+msgid "mark-reason"
+msgstr "Bitte geben Sie einen Grund an"
+
+#. Default: The text needs and correcture.
+#: templates/snippet-popups.pt:745
+msgid "statement-optimization"
+msgstr "Der Text sollte überarbeitet werden."
+
+#. Default: This statement is offtopic.
+#: templates/snippet-popups.pt:747
+msgid "statement-offtopic"
+msgstr "Die Aussage gehört nicht zum Thema."
+
+#. Default: It is not relevant at all.
+#: templates/snippet-popups.pt:749
+msgid "statement-spam"
+msgstr "Sie ist nicht relevant."
+
+#. Default: This statement is harmful or abusive.
+#: templates/snippet-popups.pt:751
+msgid "statement-harmful"
+msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
+
 #. Default: Personal Information
 #: templates/settings.pt:7
 msgid "personal_information"
@@ -1161,22 +1186,22 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Change display style
-#: templates/content.pt:314
+#: templates/content.pt:316
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: templates/content.pt:317
+#: templates/content.pt:319
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: templates/content.pt:323
+#: templates/content.pt:325
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: templates/content.pt:329
+#: templates/content.pt:331
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
@@ -1215,9 +1240,6 @@ msgstr "Komplette Ansicht"
 
 #~ msgid "issues"
 #~ msgstr "Themen"
-
-#~ msgid "statements"
-#~ msgstr "Aussagen"
 
 #~ msgid "premisegroups"
 #~ msgstr "Aussagengruppen"

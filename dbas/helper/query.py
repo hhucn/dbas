@@ -59,9 +59,10 @@ class QueryHelper:
         _um = UserHandler
         for vote in db_votes:
             db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-            supporters.append(db_user.public_nickname)
-            gravatars[db_user.public_nickname] = _um.get_public_profile_picture(db_user)
-            public_page[db_user.public_nickname] = mainpage + '/user/' + db_user.public_nickname
+            name = db_user.get_global_nickname()
+            supporters.append(name)
+            gravatars[name] = _um.get_profile_picture(db_user)
+            public_page[name] = mainpage + '/user/' + name
 
         return_dict['supporter'] = supporters
         return_dict['gravatars'] = gravatars
@@ -389,9 +390,9 @@ class QueryHelper:
             db_author = DBDiscussionSession.query(User).filter_by(uid=versions.author_uid).first()
             corr_dict = dict()
             corr_dict['uid'] = str(versions.uid)
-            corr_dict['author'] = str(db_author.public_nickname)
-            corr_dict['author_url'] = mainpage + '/user/' + str(db_author.public_nickname)
-            corr_dict['author_gravatar'] = UserHandler.get_public_profile_picture(db_author, 20)
+            corr_dict['author'] = str(db_author.get_global_nickname())
+            corr_dict['author_url'] = mainpage + '/user/' + str(db_author.get_global_nickname())
+            corr_dict['author_gravatar'] = UserHandler.get_profile_picture(db_author, 20)
             corr_dict['date'] = sql_timestamp_pretty_print(versions.timestamp, lang)
             corr_dict['text'] = str(versions.content)
             content_dict[str(index)] = corr_dict

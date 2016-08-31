@@ -71,7 +71,6 @@ def main(global_config, **settings):
     config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/ws')
-    config.include('review', route_prefix='/review')
     config.include('webhook', route_prefix='/deploy')
 
     # includings for the config
@@ -81,6 +80,7 @@ def main(global_config, **settings):
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
+    config.add_static_view(name='rv', path='review:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
@@ -91,8 +91,6 @@ def main(global_config, **settings):
     config.add_route('main_notification', '/notifications')
     config.add_route('main_news', '/news')
     config.add_route('main_imprint', '/imprint')
-    config.add_route('main_review', '/review')
-    config.add_route('main_review_content', '/review/{topic}')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
@@ -126,6 +124,8 @@ def main(global_config, **settings):
     config.add_route('ajax_notification_read', 'ajax_notification_read')
     config.add_route('ajax_notification_delete', 'ajax_notification_delete')
     config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
+    config.add_route('ajax_flag_argument', '{stuff:.*}ajax_flag_argument')
+    config.add_route('ajax_review_delete_argument', '{stuff:.*}ajax_review_delete_argument')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')
@@ -136,6 +136,11 @@ def main(global_config, **settings):
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{arg_id}')
     config.add_route('discussion_finish', '/discuss/finish')
     config.add_route('discussion_init', '/discuss*slug')
+
+    # review section
+    config.add_route('review_index', '/review')
+    config.add_route('review_reputation', '/review/reputation')
+    config.add_route('review_content', '/review/{queue}')
 
     # read the input and start
     config.scan()

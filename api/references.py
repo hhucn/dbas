@@ -8,8 +8,7 @@ import transaction
 from api.extractor import extract_reference_information, extract_author_information, extract_issue_information
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
-from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_by_statement, get_text_for_argument_uid, \
-    get_all_arguments_with_text_by_statement_id
+from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_with_text_by_statement_id
 from dbas.url_manager import UrlManager
 
 from .lib import escape_html, logger
@@ -45,6 +44,21 @@ def url_to_statement(issue_uid, statement_uid, agree=True):
                                                         mode=mode)
 
 
+def prepare_single_reference(ref):
+    """
+    Given a StatementReference database-object extract information and generate a URL for it.
+    Then prepare a dict and return it.
+
+    :param ref: single Reference
+    :type ref: StatementReferences
+    :return: dictionary with some prepared fields of a reference
+    :rtype: dict
+    """
+    if ref:
+        url = url_to_statement(ref.issue_uid, ref.statement_uid)
+        return {"uid": ref.uid, "text": ref.reference, "url": url}
+
+
 def store_reference(api_data, statement_uid=None):
     """
     Validate provided reference and store it in the database.
@@ -74,7 +88,7 @@ def store_reference(api_data, statement_uid=None):
         DBDiscussionSession.add(db_ref)
         DBDiscussionSession.flush()
         transaction.commit()
-        log.debug("[API/Reference] Successfully saved reference for statement.")
+        return db_ref
     except KeyError:
         log.error("[API/Reference] KeyError: could not access field in api_data.")
 
