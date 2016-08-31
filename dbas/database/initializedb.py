@@ -16,7 +16,7 @@ import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
-    ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization
+    ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason
 from dbas.database.news_model import News
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
@@ -1334,4 +1334,16 @@ def setup_review_database(session):
     reviewer6 = LastReviewerDelete(random.randint(10, 20), review6.uid, True)
     reviewer7 = LastReviewerDelete(random.randint(10, 20), review7.uid, False)
     session.add_all([reviewer1, reviewer2, reviewer3, reviewer4, reviewer5, reviewer6, reviewer7])
+    session.flush()
+
+    reputation1 = ReputationReason(reason='rep_reason_first_position', points=5)
+    reputation2 = ReputationReason(reason='rep_reason_first_justification', points=5)
+    reputation3 = ReputationReason(reason='rep_reason_first_argument_click', points=5)
+    reputation4 = ReputationReason(reason='rep_reason_first_confrontation', points=5)
+    reputation5 = ReputationReason(reason='rep_reason_first_argument', points=5)
+    reputation6 = ReputationReason(reason='rep_reason_success_flag', points=2)
+    reputation7 = ReputationReason(reason='rep_reason_success_edit', points=2)
+    reputation8 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
+    reputation9 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
+    session.add_all([reputation1, reputation2, reputation3, reputation4, reputation5, reputation6, reputation7, reputation8, reputation9])
     session.flush()
