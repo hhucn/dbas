@@ -342,13 +342,15 @@ def __get_stats_for_argument(argument_uid):
     return {'viewed': viewed, 'attacks': attacks, 'supports': len_supports}
 
 
-def get_reputation_history(nickname):
+def get_reputation_history(nickname, translator):
     """
 
+    :param nickname:
+    :param translator:
     :return:
     """
-    current_user = get_user_by_private_or_public_nickname(nickname)
-    if not current_user:
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
         return dict()
 
     ret_dict = dict()
@@ -356,15 +358,19 @@ def get_reputation_history(nickname):
     ret_dict['count'] = count
     ret_dict['all_rights'] = all_rights
 
+    db_reputation = DBDiscussionSession.query(ReputationHistory) \
+        .filter_by(reputator_uid=db_user.uid) \
+        .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
+        .all()
+
     rep_list = list()
-    rep_list.append({'date': '20.08.2016', 'points_data': '<span class="success-description points">1</span>', 'action': 'first click in a discussion', 'points': 1})
-    rep_list.append({'date': '21.08.2016', 'points_data': '<span class="success-description points">1</span>', 'action': 'first switch of the discussions topic', 'points': 1})
-    rep_list.append({'date': '21.08.2016', 'points_data': '<span class="success-description points">3</span>', 'action': 'edited a statement successfully', 'points': 3})
-    rep_list.append({'date': '22.08.2016', 'points_data': '<span class="error-description points">-1</span>',  'action': 'edited a statement vainly',  'points': -1})
-    rep_list.append({'date': '22.08.2016', 'points_data': '<span class="error-description points">-1</span>',  'action': 'edited a statement vainly',  'points': -1})
-    rep_list.append({'date': '22.08.2016', 'points_data': '<span class="success-description points">3</span>', 'action': 'mark a statement as spam successfully', 'points': 3})
-    rep_list.append({'date': '23.08.2016', 'points_data': '<span class="success-description points">2</span>', 'action': 'voted for a deletion successfully', 'points': 2})
-    rep_list.append({'date': '23.08.2016', 'points_data': '<span class="error-description points">-1</span>',  'action': 'voted for a deletion vainly',  'points': -1})
+    for rep in db_reputation:
+        date = sql_timestamp_pretty_print(rep.timestamp, translator.get_lang(), humanize=False)
+        points_data = '<span class="success-description points">+' if rep.reputations.points > 0 else '<span class="error-description points">'
+        points_data += str(rep.reputations.points) + '</span'
+        points = rep.reputations.points
+        action = translator.get(rep.reputations.reason)
+        rep_list.append({'date': date, 'points_data': points_data, 'action': action, 'points': points})
 
     ret_dict['history'] = rep_list
 

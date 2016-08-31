@@ -947,7 +947,7 @@ class Dbas(object):
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        reputation_dict = ReviewPagerHelper.get_reputation_history(self.request.authenticated_userid)
+        reputation_dict = ReviewPagerHelper.get_reputation_history(self.request.authenticated_userid, _tn)
 
         return {
             'layout': Dbas.base_layout(),

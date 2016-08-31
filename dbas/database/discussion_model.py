@@ -731,6 +731,7 @@ class LastReviewerDelete(DiscussionBase):
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_deletes.uid'))
     is_okay = Column(Boolean, nullable=False)
+    timestamp = Column(ArrowType, default=get_now())
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewDelete', foreign_keys=[review_uid])
@@ -745,6 +746,7 @@ class LastReviewerDelete(DiscussionBase):
         self.reviewer_uid = reviewer
         self.review_uid = review
         self.is_okay = is_okay
+        self.timestamp = get_now()
 
 
 class LastReviewerEdit(DiscussionBase):
@@ -756,6 +758,7 @@ class LastReviewerEdit(DiscussionBase):
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_edits.uid'))
     is_okay = Column(Boolean, nullable=False)
+    timestamp = Column(ArrowType, default=get_now())
     content = Column(Text, nullable=False)
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
@@ -771,6 +774,7 @@ class LastReviewerEdit(DiscussionBase):
         self.reviewer_uid = reviewer
         self.review_uid = review
         self.is_okay = is_okay
+        self.timestamp = get_now()
         self.content = content
 
 
@@ -783,6 +787,7 @@ class LastReviewerOptimization(DiscussionBase):
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
     is_okay = Column(Boolean, nullable=False)
+    timestamp = Column(ArrowType, default=get_now())
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewOptimization', foreign_keys=[review_uid])
@@ -798,6 +803,7 @@ class LastReviewerOptimization(DiscussionBase):
         self.reviewer_uid = reviewer
         self.review_uid = review
         self.is_okay = is_okay
+        self.timestamp = get_now()
 
 
 class ReputationHistory(DiscussionBase):
@@ -808,17 +814,19 @@ class ReputationHistory(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     reputator_uid = Column(Integer, ForeignKey('users.uid'))
     reputation_uid = Column(Integer, ForeignKey('reputation_reasons.uid'))
+    timestamp = Column(ArrowType, default=get_now())
 
     reputators = relationship('User', foreign_keys=[reputator_uid])
     reputations = relationship('ReputationReason', foreign_keys=[reputation_uid])
 
-    def __init__(self, reputator, reputation):
+    def __init__(self, reputator, reputation, timestamp=get_now()):
         """
 
         :param reputator:
         """
         self.reputator_uid = reputator
         self.reputation_uid = reputation
+        self.timestamp = timestamp
 
 
 class ReputationReason(DiscussionBase):

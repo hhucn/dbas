@@ -214,6 +214,8 @@ var requestFailed 									= 'requestFailed';
 var requestFailedBadToken							= 'requestFailedBadToken';
 var requestFailedInternalError                      = 'requestFailedInternalError';
 var restartOnError									= 'restartOnError';
+var repuationChartSum                               = 'repuationChartSum';
+var repuationChartDay                               = 'repuationChartDay';
 var saveMyStatement                                 = 'saveMyStatement';
 var saveMyStatements                                = 'saveMyStatements';
 var showAllUsers 									= 'showAllUsers';
@@ -399,6 +401,8 @@ var dbas_en = {
 	'requestFailed': 'Request failed, please reload the page.',
 	'requestFailedBadToken': 'Request failed due to bad token, please reload the page.',
 	'requestFailedInternalError': 'Request failed due to bad token, please reload this page. If the reload fails again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
+	'repuationChartSum': 'Summarized Reputation',
+	'repuationChartDay': 'Reputation per Day',
 	'saveMyStatement': 'Save my Statement!',
 	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
@@ -571,6 +575,8 @@ var dbas_de = {
 	'requestFailed': 'Anfrage fehlgeschlagen, bitte laden Sie die Seite erneut.',
 	'requestFailedBadToken': 'Anfrage aufgrund eines falschen Tokens fehlgeschlagen. Bitte laden Sie die Seite neu.',
 	'requestFailedInternalError': 'Anfrage aufgrund eines internen Fehlers fehlgeschlagen. Bitte laden Sie die Seite neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">kontaktieren sie uns bitte (hier klicken)</span>',
+	'repuationChartSum': 'Reputation ingsesamt',
+	'repuationChartDay': 'Reputation pro Tag',
 	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
 	'saveMyStatement': 'Aussage speichern!',
 	'saveMyStatements': 'Ausagen speichern!',
