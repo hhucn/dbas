@@ -1,9 +1,0 @@
-<tal:block metal:use-macro="layout" i18n:domain="review" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
-
-		<div class="container colored-container">
-            <h4>Reputation count: ${reputation_count}</h4>
-		</div>
-
-	</tal:block>
-</tal:block>

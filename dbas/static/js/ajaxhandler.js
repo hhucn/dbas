@@ -227,6 +227,40 @@ function AjaxMainHandler(){
 					' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
 		});
 	};
+	
+	/**
+	 *
+	 * @param argument_uid
+	 * @param reason
+	 */
+	this.ajaxFlagArgument = function(argument_uid, reason){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_flag_argument',
+			type: 'GET',
+			data: {
+				argument_uid: argument_uid,
+				reason: reason
+			},
+			global: false,
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrfToken
+			}
+		}).done(function ajaxFlagArgumentDone(data) {
+			var parsedData = $.parseJSON(data);
+			if (parsedData['error'].length != 0){
+				setGlobalErrorHandler('', parsedData['error']);
+			} else if (parsedData['info'].length != 0) {
+				setGlobalInfoHandler('', parsedData['info'])
+			} else {
+				setGlobalSuccessHandler('', parsedData['success'])
+			}
+			
+		}).fail(function ajaxFlagArgumentFail() {
+			setGlobalErrorHandler('', _t_discussion(requestFailed));
+		});
+	}
 }
 
 function AjaxDiscussionHandler() {
@@ -963,6 +997,7 @@ function AjaxNotificationHandler(){
 }
 
 function AjaxGraphHandler(){
+	
 	/**
 	 * Requests JSON-Object
 	 * @param uid: current id in url
@@ -1015,4 +1050,28 @@ function AjaxGraphHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
+}
+
+function AjaxReviewHandler(){
+	
+	/**
+	 *
+	 * @param should_delete
+	 */
+	this.reviewDeleteArgument = function(should_delete){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_review_delete_argument',
+			method: 'GET',
+			data:{ 'should_delete': should_delete },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function reviewDeleteArgumentDone(data) {
+			new ReviewCallbacks().forReviewDeleteArgument(data);
+		}).fail(function reviewDeleteArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	}
+	
 }

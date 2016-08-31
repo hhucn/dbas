@@ -7,7 +7,7 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue, User, VoteStatement
-from dbas.user_management import get_public_profile_picture
+from dbas.user_management import get_profile_picture
 
 
 grey = '#424242'
@@ -209,14 +209,14 @@ def __get_extras_dict(statement):
                                                                     VoteStatement.is_valid == True)).all()
 
     return_dict = {'text': db_textversion_author.content,
-                   'author': db_author.public_nickname,
-                   'author_gravatar': get_public_profile_picture(db_author, 20),
+                   'author': db_author.get_global_nickname(),
+                   'author_gravatar': get_profile_picture(db_author, 20),
                    'votes': len(db_votes),
                    'was_modified': 'false'}
 
     if db_modifier.uid != db_author.uid:
-        return_dict.update({'modifier': db_modifier.public_nickname,
-                            'modifier_gravatar': get_public_profile_picture(db_modifier, 20),
+        return_dict.update({'modifier': db_modifier.get_global_nickname(),
+                            'modifier_gravatar': get_profile_picture(db_modifier, 20),
                             'was_modified': 'true'})
 
     return return_dict

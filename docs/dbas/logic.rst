@@ -4,12 +4,13 @@ Logic
 
 Description
 ===========
-...
+Argumentation theory is a wide and complicated field. D-BAS should lead inexperienced users through discussion, therefore
+these users are not knowing anyhting about formal argumentation. So we implemented the main intereferences of logic
+argumentation in D-BAS and wrapped them in natural languages.
 
 
 Dialog-Sequence
 ===============
-...
 Let us assume the user states an supportive argument *arg1*: *A --(+)-> B*. Then the system (other users) has three ways to react:
 
 1. *undermine*: The system disagrees, that A is true. He states an attack *arg2i* against the conclusion *D --(-)-> A*
@@ -32,3 +33,5 @@ user    /    system   undermine        undercut          rebut
 
 In the case of the *support* the users opinion is now the systems attack and the next attack will be displayed.
 Otherwise the user has to justify his choose.
+
+*Attention:* The system will never undercut an undercut!

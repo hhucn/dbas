@@ -30,11 +30,15 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
     logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
            str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
 
+    redirected_from_jump = False
+    if history:
+        history = history.split('-')
+        redirected_from_jump = 'jump' in history[-2 if len(history) > 1 else -1]
     # TODO COMMA16 Special Case (forbid: undercuts of undercuts)
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
     is_current_arg_undercut = db_argument.argument_uid is not None
     tmp = restriction_on_attacks if restriction_on_attacks else ''
-    restriction_on_attacks = [tmp, 'undercut' if is_current_arg_undercut else '']
+    restriction_on_attacks = [tmp, 'undercut' if is_current_arg_undercut and not redirected_from_jump else '']
     logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0] +
            ', restriction  2: ' + restriction_on_attacks[1])
 

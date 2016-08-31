@@ -9,7 +9,7 @@ from sqlalchemy import and_
 import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy
+from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings
 from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid
@@ -391,7 +391,9 @@ class OpinionHandler:
         :param timestamp: SQL Timestamp
         :return: dict()
         """
-        return {'nickname': db_user.public_nickname,
-                'public_profile_url': self.mainpage + '/user/' + db_user.public_nickname,
-                'avatar_url': UserHandler.get_public_profile_picture(db_user),
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+        name = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
+        return {'nickname': name,
+                'public_profile_url': self.mainpage + '/user/' + name,
+                'avatar_url': UserHandler.get_profile_picture(db_user),
                 'vote_timestamp': sql_timestamp_pretty_print(timestamp, self.lang)}

@@ -7,18 +7,31 @@ Core component of DBAS.
 import json
 import time
 
-import dbas.helper.email as EmailHelper
+import dbas.handler.news as NewsHandler
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.helper.notification as NotificationHelper
 import dbas.helper.voting as VotingHelper
-import dbas.recommender_system as RecommenderSystem
-import dbas.user_management as UserHandler
-import dbas.handler.news as NewsHandler
-import dbas.handler.password as PasswordHandler
-import requests
 import dbas.strings.matcher as FuzzyStringMatcher
+import dbas.user_management as UserManager
+import dbas.review.helper.page_manager as ReviewPagerHelper
+import dbas.review.helper.flag_handler as ReviewFlagHelper
+import requests
 import transaction
+
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
+from dbas.handler.opinion import OpinionHandler
+from dbas.helper.dictionary.discussion import DiscussionDictHelper
+from dbas.helper.dictionary.items import ItemDictHelper
+from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.helper.query import QueryHelper
+from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax, request_password
+from dbas.input_validator import Validator
+from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, get_user_by_private_or_public_nickname, get_text_for_statement_uid
+from dbas.logger import logger
+from dbas.strings.translator import Translator
+from dbas.url_manager import UrlManager
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
@@ -28,23 +41,9 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
-from validate_email import validate_email
-
-from dbas.handler.opinion import OpinionHandler
-from dbas.helper.dictionary.discussion import DiscussionDictHelper
-from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.query import QueryHelper
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language
-from dbas.input_validator import Validator
-from dbas.lib import get_language, escape_string, get_text_for_statement_uid, sql_timestamp_pretty_print, get_discussion_language
-from dbas.logger import logger
-from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
 
 name = 'D-BAS'
-version = '0.6.0'
+version = '0.6.1'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -78,18 +77,6 @@ class Dbas(object):
         layout = renderer.implementation().macros['layout']
         return layout
 
-    def get_nickname_and_session(self, for_api=None, api_data=None):
-        """
-        Given data from api, return nickname and session_id.
-
-        :param for_api:
-        :param api_data:
-        :return:
-        """
-        nickname = api_data["nickname"] if api_data and for_api else self.request.authenticated_userid
-        session_id = api_data["session_id"] if api_data and for_api else self.request.session.id
-        return nickname, session_id
-
     # main page
     @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
     @forbidden_view_config(renderer='templates/index.pt')
@@ -101,7 +88,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('main_page', 'def', 'main, self.request.params: ' + str(self.request.params))
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
         if session_expired:
             return self.user_logout(True)
@@ -109,7 +96,7 @@ class Dbas(object):
         session_expired = True if 'session_expired' in self.request.params and self.request.params['session_expired'] == 'true' else False
         ui_locales      = get_language(self.request, get_current_registry())
         _dh             = DictionaryHelper(ui_locales, ui_locales)
-        extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict     = _dh.prepare_extras_dict_for_normal_page(self.request)
         _dh.add_language_options_for_extra_dict(extras_dict)
 
         return {
@@ -120,6 +107,277 @@ class Dbas(object):
             'extras': extras_dict,
             'session_expired': session_expired
         }
+
+    # contact page
+    @view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody', require_csrf=False)
+    def main_contact(self):
+        """
+        View configuration for the contact view.
+
+        :return: dictionary with title and project username as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        if session_expired:
+            return self.user_logout(True)
+
+        contact_error = False
+        send_message = False
+        message = ''
+
+        ui_locales = get_language(self.request, get_current_registry())
+
+        username        = escape_string(self.request.params['name'] if 'name' in self.request.params else '')
+        email           = escape_string(self.request.params['mail'] if 'mail' in self.request.params else '')
+        phone           = escape_string(self.request.params['phone'] if 'phone' in self.request.params else '')
+        content         = escape_string(self.request.params['content'] if 'content' in self.request.params else '')
+        spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
+
+        if 'form.contact.submitted' in self.request.params:
+            contact_error, message, sendmessage = try_to_register_new_user_via_form(self.request, username, email, phone, content, ui_locales, spamanswer)
+
+        spamquestion, answer = UserManager.get_random_anti_spam_question(ui_locales)
+        key = 'contact-antispamanswer'
+        self.request.session[key] = answer
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': 'Contact',
+            'project': project_name,
+            'extras': extras_dict,
+            'was_message_send': send_message,
+            'contact_error': contact_error,
+            'message': message,
+            'name': username,
+            'mail': email,
+            'phone': phone,
+            'content': content,
+            'spamanswer': '',
+            'spamquestion': spamquestion
+        }
+
+    # settings page, when logged in
+    @view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
+    def main_settings(self):
+        """
+        View configuration for the content view. Only logged in user can reach this page.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        if session_expired:
+            return self.user_logout(True)
+
+        ui_locales  = get_language(self.request, get_current_registry())
+        old_pw      = ''
+        new_pw      = ''
+        confirm_pw  = ''
+        message     = ''
+        error       = False
+        success     = False
+        db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
+        _uh         = UserManager
+
+        if db_user and 'form.passwordchange.submitted' in self.request.params:
+            old_pw = escape_string(self.request.params['passwordold'])
+            new_pw = escape_string(self.request.params['password'])
+            confirm_pw = escape_string(self.request.params['passwordconfirm'])
+
+            message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
+
+        _dh = DictionaryHelper(ui_locales)
+        extras_dict = _dh.prepare_extras_dict_for_normal_page(self.request)
+        settings_dict = _dh.preprate_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage)
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': 'Settings',
+            'project': project_name,
+            'extras': extras_dict,
+            'settings': settings_dict
+        }
+
+    # message page, when logged in
+    @view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
+    def main_notifications(self):
+        """
+        View configuration for the content view. Only logged in user can reach this page.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('main_notifications', 'def', 'main')
+        ui_locales = get_language(self.request, get_current_registry())
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+
+        if session_expired:
+            return self.user_logout(True)
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request, append_notifications=True)
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': 'Messages',
+            'project': project_name,
+            'extras': extras_dict
+        }
+
+    # news page for everybody
+    @view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
+    def main_news(self):
+        """
+        View configuration for the news.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('main_news', 'def', 'main')
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        if session_expired:
+            return self.user_logout(True)
+
+        ui_locales = get_language(self.request, get_current_registry())
+        is_author = UserManager.is_user_author(self.request.authenticated_userid)
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': 'News',
+            'project': project_name,
+            'extras': extras_dict,
+            'is_author': is_author
+        }
+
+    # public users page for everybody
+    @view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
+    def main_user(self):
+        """
+        View configuration for the public users.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        matchdict = self.request.matchdict
+        params = self.request.params
+        logger('main_user', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('main_user', 'def', 'main, self.request.params: ' + str(params))
+
+        nickname = matchdict['nickname'] if 'nickname' in matchdict else ''
+        nickname = nickname.replace('%20', ' ')
+        logger('main_user', 'def', 'nickname: ' + str(nickname))
+
+        current_user = get_user_by_private_or_public_nickname(nickname)
+        if current_user is None:
+            return HTTPFound(location=UrlManager(mainpage).get_404([self.request.path[1:]]))
+
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        if session_expired:
+            return self.user_logout(True)
+
+        ui_locales = get_language(self.request, get_current_registry())
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
+
+        user_dict = UserManager.get_information_of(current_user, ui_locales)
+
+        db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
+        can_send_notification = False
+        if db_user_of_request:
+            can_send_notification = current_user.uid != db_user_of_request.uid
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': 'User ' + nickname,
+            'project': project_name,
+            'extras': extras_dict,
+            'user': user_dict,
+            'can_send_notification': can_send_notification
+        }
+
+    # imprint
+    @view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody')
+    def main_imprint(self):
+        """
+        View configuration for the imprint.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('main_imprint', 'def', 'main')
+        ui_locales = get_language(self.request, get_current_registry())
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        _tn = Translator(ui_locales)
+        if session_expired:
+            return self.user_logout(True)
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
+        import pkg_resources
+        extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': _tn.get(_tn.imprint),
+            'project': project_name,
+            'extras': extras_dict
+        }
+
+    # 404 page
+    @notfound_view_config(renderer='templates/404.pt')
+    def notfound(self):
+        """
+        View configuration for the 404 page.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request' +
+               ', path: ' + self.request.path +
+               ', view name: ' + self.request.view_name +
+               ', params: ' + str(self.request.params))
+        path = self.request.path
+        if path.startswith('/404/'):
+            path = path[4:]
+
+        param_error = True if 'param_error' in self.request.params and self.request.params['param_error'] == 'true' else False
+
+        self.request.response.status = 404
+        ui_locales = get_language(self.request, get_current_registry())
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
+
+        # return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': 'Error',
+            'project': project_name,
+            'page_notfound_viewname': path,
+            'extras': extras_dict,
+            'param_error': param_error
+        }
+
+
+# ####################################
+# DISCUSSION                         #
+# ####################################
 
     # content page
     @view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
@@ -138,24 +396,13 @@ class Dbas(object):
         logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_init', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-        session_expired = UserHandler.update_last_action(transaction, nickname)
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, '')
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
         count_of_slugs = len(matchdict['slug']) if 'slug' in matchdict and isinstance(matchdict['slug'], ()) else 1
         if count_of_slugs > 1:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
-
-        if for_api and api_data:
-            try:
-                logged_in = api_data["nickname"]
-            except KeyError:
-                logged_in = None
-        else:
-            logged_in = self.request.authenticated_userid
 
         ui_locales = get_language(self.request, get_current_registry())
         if for_api:
@@ -171,16 +418,15 @@ class Dbas(object):
 
         disc_ui_locales = get_discussion_language(self.request, issue)
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
-        item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).get_array_for_start(logged_in)
+        item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).get_array_for_start(nickname)
         HistoryHelper.save_issue_uid(transaction, issue, nickname)
 
         discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
             .get_dict_for_start()
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
-                                                                                            False, True, nickname,
+                                                                                            False, True, self.request,
                                                                                             application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+                                                                                            for_api=for_api)
 
         if len(item_dict) == 0:
             DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
@@ -217,11 +463,7 @@ class Dbas(object):
         logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_attitude', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-        session_expired = UserHandler.update_last_action(transaction, nickname)
-        history         = params['history'] if 'history' in params else ''
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -247,10 +489,9 @@ class Dbas(object):
             .prepare_item_dict_for_attitude(statement_id)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False,
                                                                                             False, True, False, True,
-                                                                                            nickname,
+                                                                                            self.request,
                                                                                             application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+                                                                                            for_api=for_api)
         return_dict = dict()
         return_dict['issues'] = issue_dict
         return_dict['discussion'] = discussion_dict
@@ -283,17 +524,9 @@ class Dbas(object):
         logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_justify', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-        history              = params['history'] if 'history' in params else ''
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
-
-        _uh = UserHandler
-        session_expired = _uh.update_last_action(transaction, nickname)
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
-
-        logged_in = _uh.is_user_logged_in(nickname)
 
         ui_locales = get_language(self.request, get_current_registry())
 
@@ -309,62 +542,29 @@ class Dbas(object):
         issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
         disc_ui_locales     = get_discussion_language(self.request, issue)
         issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
-        _ddh                = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-        _idh                = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
-        _dh                 = DictionaryHelper(ui_locales, disc_ui_locales)
 
         if [c for c in ('t', 'f') if c in mode] and relation == '':
-            logger('discussion_justify', 'def', 'justify statement')
-            # justifying statement
             if not get_text_for_statement_uid(statement_or_arg_id)\
                     or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-
-            VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
-
-            item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
-            discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict), nickname)
-            extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, nickname, mode == 't',
-                                                      application_url=mainpage, for_api=for_api, request=self.request)
-            # is the discussion at the end?
-            if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
-                _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
-                                            current_premise=get_text_for_statement_uid(statement_or_arg_id),
-                                            supportive=supportive)
+            item_dict, discussion_dict, extras_dict = preperation_for_justify_statement(self.request, for_api, api_data,
+                                                                                        mainpage, slug, statement_or_arg_id,
+                                                                                        supportive, mode, ui_locales)
 
         elif 'd' in mode and relation == '':
-            logger('discussion_justify', 'def', 'dont know statement')
             if not Validator.check_belonging_of_argument(issue, statement_or_arg_id) and \
                     not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-
-            # dont know
-            argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
-            discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
-            item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive)
-            extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, nickname,
-                                                      argument_id=argument_uid, application_url=mainpage, for_api=for_api,
-                                                      request=self.request)
-            # is the discussion at the end?
-            if len(item_dict) == 0:
-                _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
-                                            current_premise=get_text_for_statement_uid(statement_or_arg_id))
+            item_dict, discussion_dict, extras_dict = preperation_for_dontknow_statement(self.request, for_api, api_data,
+                                                                                         mainpage, slug, statement_or_arg_id,
+                                                                                         supportive, ui_locales)
 
         elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
-            logger('discussion_justify', 'def', 'justify argument')
             if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-
-            # justifying argument
-            # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-            item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in)
-            discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
-            extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, nickname,
-                                                      argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api,
-                                                      request=self.request)
-            # is the discussion at the end?
-            if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
-                _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
+            item_dict, discussion_dict, extras_dict = preperation_for_justify_argument(self.request, for_api, api_data,
+                                                                                       mainpage, slug, statement_or_arg_id,
+                                                                                       supportive, relation, ui_locales)
         else:
             logger('discussion_justify', 'def', '404')
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -406,7 +606,6 @@ class Dbas(object):
         attack          = matchdict['mode'] if 'mode' in matchdict else ''
         arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
         tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
-        history         = params['history'] if 'history' in params else ''
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
         valid_reaction = Validator.check_reaction(arg_id_user, arg_id_sys, attack)
@@ -415,11 +614,8 @@ class Dbas(object):
                 or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_sys):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-        supportive           = tmp_argument.is_supportive
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-        session_expired      = UserHandler.update_last_action(transaction, nickname)
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
+        supportive = tmp_argument.is_supportive
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -439,11 +635,10 @@ class Dbas(object):
         discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
         item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True, True,
-                                                                                            True, nickname,
+                                                                                            True, self.request,
                                                                                             argument_id=arg_id_sys,
                                                                                             application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+                                                                                            for_api=for_api)
 
         return_dict = dict()
         return_dict['issues'] = issue_dict
@@ -474,13 +669,13 @@ class Dbas(object):
         logger('discussion_finish', 'def', 'main, self.request.params: ' + str(params))
         ui_locales      = get_language(self.request, get_current_registry())
         nickname        = self.request.authenticated_userid
-        session_expired = UserHandler.update_last_action(transaction, nickname)
+        session_expired = UserManager.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
         if session_expired:
             return self.user_logout(True)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(nickname, self.request)
-        summary_dict = UserHandler.get_summary_of_today(nickname)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
+        summary_dict = UserManager.get_summary_of_today(nickname)
 
         return {
             'layout': self.base_layout(),
@@ -514,8 +709,6 @@ class Dbas(object):
         is_supportive   = matchdict['supportive'] if 'supportive' in matchdict else ''
         uid             = matchdict['id'] if 'id' in matchdict else ''
         pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
-        history         = params['history'] if 'history' in params else ''
 
         is_argument = True if is_argument is 't' else False
         is_supportive = True if is_supportive is 't' else False
@@ -528,9 +721,7 @@ class Dbas(object):
         if not Validator.check_belonging_of_premisegroups(issue, pgroup_ids):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-        session_expired = UserHandler.update_last_action(transaction, nickname)
-        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
-        HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
+        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -542,10 +733,9 @@ class Dbas(object):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
-                                                                                            True, True, nickname,
+                                                                                            True, True, self.request,
                                                                                             application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+                                                                                            for_api=for_api)
 
         return_dict = dict()
         return_dict['issues'] = issue_dict
@@ -579,39 +769,38 @@ class Dbas(object):
         logger('discussion_jump', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_jump', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+        nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
         history = params['history'] if 'history' in params else ''
 
         if for_api and api_data:
             slug = api_data["slug"]
             arg_uid = api_data["arg_uid"]
         else:
-            slug                 = matchdict['slug'] if 'slug' in matchdict else ''
-            arg_uid              = matchdict['arg_id'] if 'arg_id' in matchdict else ''
+            slug = matchdict['slug'] if 'slug' in matchdict else ''
+            arg_uid = matchdict['arg_id'] if 'arg_id' in matchdict else ''
 
-        session_expired = UserHandler.update_last_action(transaction, nickname)
+        session_expired = UserManager.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
         HistoryHelper.save_history_in_cookie(self.request, self.request.path, history)
         if session_expired:
             return self.user_logout(True)
 
-        ui_locales      = get_language(self.request, get_current_registry())
-        issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
+        ui_locales = get_language(self.request, get_current_registry())
+        issue = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
         disc_ui_locales = get_discussion_language(self.request, issue)
-        issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+        issue_dict = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
 
         if not Validator.check_belonging_of_argument(issue, arg_uid):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-        _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-        _idh            = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
+        _ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
+        _idh = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
         discussion_dict = _ddh.get_dict_for_jump(arg_uid)
-        item_dict       = _idh.get_array_for_jump(arg_uid, slug, for_api)
-        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
-                                                                                            True, True, nickname,
-                                                                                            application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+        item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
+        extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
+                                                                                        True, True, self.request,
+                                                                                        application_url=mainpage,
+                                                                                        for_api=for_api)
 
         return_dict = dict()
         return_dict['issues'] = issue_dict
@@ -628,384 +817,116 @@ class Dbas(object):
             return_dict['project'] = project_name
             return return_dict
 
-    # contact page
-    @view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody', require_csrf=False)
-    def main_contact(self):
+# ####################################
+# REVIEW                             #
+# ####################################
+
+
+# ####################################
+# REVIEW                             #
+# ####################################
+
+    # index page for reviews
+    @view_config(route_name='review_index', renderer='templates/review.pt', permission='use')
+    def main_review(self):
         """
-        View configuration for the contact view.
-
-        :return: dictionary with title and project username as well as a value, weather the user is logged in
-        """
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('main_contact', 'def', 'main, self.request.params: ' + str(self.request.params))
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        if session_expired:
-            return self.user_logout(True)
-
-        contact_error = False
-        send_message = False
-        message = ''
-
-        ui_locales = get_language(self.request, get_current_registry())
-
-        username        = escape_string(self.request.params['name'] if 'name' in self.request.params else '')
-        email           = escape_string(self.request.params['mail'] if 'mail' in self.request.params else '')
-        phone           = escape_string(self.request.params['phone'] if 'phone' in self.request.params else '')
-        content         = escape_string(self.request.params['content'] if 'content' in self.request.params else '')
-        spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
-
-        try:
-            spamanswer = int(spamanswer) if len(spamanswer) > 0 else '#'
-        except ValueError and TypeError:
-            spamanswer = '#'
-        key = 'contact-antispamanswer'
-        antispamanswer = self.request.session[key] if key in self.request.session else ''
-        spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
-
-        if 'form.contact.submitted' in self.request.params:
-            _t = Translator(ui_locales)
-
-            logger('main_contact', 'form.contact.submitted', 'validating email')
-            is_mail_valid = validate_email(email, check_mx=True)
-
-            # check for empty username
-            if not username:
-                logger('main_contact', 'form.contact.submitted', 'username empty')
-                contact_error = True
-                message = _t.get(_t.emptyName)
-
-            # check for non valid mail
-            elif not is_mail_valid:
-                logger('main_contact', 'form.contact.submitted', 'mail is not valid')
-                contact_error = True
-                message = _t.get(_t.invalidEmail)
-
-            # check for empty content
-            elif not content:
-                logger('main_contact', 'form.contact.submitted', 'content is empty')
-                contact_error = True
-                message = _t.get(_t.emtpyContent)
-
-            # check for empty spam
-            elif str(spamanswer) != str(spamsolution):
-                logger('main_contact', 'form.contact.submitted', 'empty or wrong anti-spam answer' + ', given answer ' +
-                       str(spamanswer) + ', right answer ' + str(antispamanswer))
-                contact_error = True
-                message = _t.get(_t.maliciousAntiSpam)
-
-            else:
-                subject = _t.get(_t.contact) + ' D-BAS'
-                body = _t.get(_t.name) + ': ' + username + '\n'
-                body += _t.get(_t.mail) + ': ' + email + '\n'
-                body += _t.get(_t.phone) + ': ' + phone + '\n'
-                body += _t.get(_t.message) + ':\n' + content
-                EmailHelper.send_mail(self.request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
-                body = '* ' + _t.get(_t.thisIsACopyOfMail).upper() + ' *\n\n' + body
-                subject = '[D-BAS INFO] ' + subject
-                send_message, message = EmailHelper.send_mail(self.request, subject, body, email, ui_locales)
-                contact_error = not send_message
-
-        spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
-        self.request.session[key] = answer
-
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-        return {
-            'layout': self.base_layout(),
-            'language': str(ui_locales),
-            'title': 'Contact',
-            'project': project_name,
-            'extras': extras_dict,
-            'was_message_send': send_message,
-            'contact_error': contact_error,
-            'message': message,
-            'name': username,
-            'mail': email,
-            'phone': phone,
-            'content': content,
-            'spamanswer': '',
-            'spamquestion': spamquestion
-        }
-
-    # settings page, when logged in
-    @view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
-    def main_settings(self):
-        """
-        View configuration for the content view. Only logged in user can reach this page.
+        View configuration for the review index.
 
         :return: dictionary with title and project name as well as a value, weather the user is logged in
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('main_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        if session_expired:
-            return self.user_logout(True)
-
+        logger('main_review', 'main', 'def ' + str(self.request.matchdict))
         ui_locales = get_language(self.request, get_current_registry())
+        nickname = self.request.authenticated_userid
+        session_expired = UserManager.update_last_action(transaction, nickname)
+        HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
         _tn = Translator(ui_locales)
+        if session_expired:
+            return Dbas(self.request).user_logout(True)
 
-        old_pw      = ''
-        new_pw      = ''
-        confirm_pw  = ''
-        message     = ''
-        error       = False
-        success     = False
-        group       = '-'
+        issue = IssueHelper.get_issue_id(self.request)
+        disc_ui_locales = get_discussion_language(self.request, issue)
+        issue_dict = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(self.request.authenticated_userid)).join(Group).first()
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
-        db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None
-
-        _uh         = UserHandler
-        if db_user:
-            edits       = _uh.get_count_of_statements_of_user(db_user, True)
-            statements  = _uh.get_count_of_statements_of_user(db_user, False)
-            arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user)
-            public_nick = db_user.public_nickname
-            db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first()
-            group       = db_group.name if db_group else '-'
-        else:
-            edits       = 0
-            statements  = 0
-            arg_vote    = 0
-            stat_vote   = 0
-            public_nick = str(self.request.authenticated_userid)
-
-        if db_user and 'form.passwordchange.submitted' in self.request.params:
-            old_pw = escape_string(self.request.params['passwordold'])
-            new_pw = escape_string(self.request.params['password'])
-            confirm_pw = escape_string(self.request.params['passwordconfirm'])
-
-            message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
-
-        # get gravater profile picture
-        gravatar_public_url = _uh.get_public_profile_picture(db_user)
-
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-        settings_dict = {
-            'passwordold': '' if success else old_pw,
-            'password': '' if success else new_pw,
-            'passwordconfirm': '' if success else confirm_pw,
-            'change_error': error,
-            'change_success': success,
-            'message': message,
-            'db_firstname': db_user.firstname if db_user else 'unknown',
-            'db_surname': db_user.surname if db_user else 'unknown',
-            'db_nickname': db_user.nickname if db_user else 'unknown',
-            'db_public_nickname': public_nick,
-            'db_mail': db_user.email if db_user else 'unknown',
-            'db_group': group,
-            'avatar_public_url': gravatar_public_url,
-            'edits_done': edits,
-            'statemens_posted': statements,
-            'discussion_arg_votes': arg_vote,
-            'discussion_stat_votes': stat_vote,
-            'send_mails': db_settings.should_send_mails if db_settings else False,
-            'send_notifications': db_settings.should_send_notifications if db_settings else False,
-            'public_nick': db_settings.should_show_public_nickname if db_settings else True,
-            'title_mails': _tn.get(_tn.mailSettingsTitle),
-            'title_notifications': _tn.get(_tn.notificationSettingsTitle),
-            'title_public_nick': _tn.get(_tn.publicNickTitle),
-            'title_prefered_lang': _tn.get(_tn.preferedLangTitle),
-            'public_page_url': mainpage + '/user/' + public_nick,
-            'on': _tn.get(_tn.on),
-            'off': _tn.get(_tn.off),
-            'current_lang': db_language.name if db_language else '?',
-            'current_ui_locales': db_language.ui_locales if db_language else '?'
-        }
+        review_dict = ReviewPagerHelper.get_review_queues_array(mainpage, _tn, nickname)
+        count, all_rights = ReviewPagerHelper.get_reputation_of(nickname)
 
         return {
-            'layout': self.base_layout(),
+            'layout': Dbas.base_layout(),
             'language': str(ui_locales),
-            'title': 'Settings',
+            'title': _tn.get(_tn.review),
             'project': project_name,
             'extras': extras_dict,
-            'settings': settings_dict
+            'review': review_dict,
+            'privilege_list': ReviewPagerHelper.get_privilege_list(_tn),
+            'reputation_list': ReviewPagerHelper.get_reputation_list(_tn),
+            'issues': issue_dict,
+            'reputation': {'count': count,
+                           'has_all_rights': all_rights}
         }
 
-    # message page, when logged in
-    @view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
-    def main_notifications(self):
+    # content page for reviews
+    @view_config(route_name='review_content', renderer='templates/review_content.pt', permission='use')
+    def review_content(self):
         """
-        View configuration for the content view. Only logged in user can reach this page.
+        View configuration for the review content.
 
         :return: dictionary with title and project name as well as a value, weather the user is logged in
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('main_notifications', 'def', 'main')
+        logger('review_content', 'main', 'def ' + str(self.request.matchdict))
         ui_locales = get_language(self.request, get_current_registry())
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-
-        if session_expired:
-            return self.user_logout(True)
-
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request, append_notifications=True)
-
-        return {
-            'layout': self.base_layout(),
-            'language': str(ui_locales),
-            'title': 'Messages',
-            'project': project_name,
-            'extras': extras_dict
-        }
-
-    # news page for everybody
-    @view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
-    def main_news(self):
-        """
-        View configuration for the news.
-
-        :return: dictionary with title and project name as well as a value, weather the user is logged in
-        """
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('main_news', 'def', 'main')
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        if session_expired:
-            return self.user_logout(True)
-
-        ui_locales = get_language(self.request, get_current_registry())
-        is_author = UserHandler.is_user_author(self.request.authenticated_userid)
-
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-
-        return {
-            'layout': self.base_layout(),
-            'language': str(ui_locales),
-            'title': 'News',
-            'project': project_name,
-            'extras': extras_dict,
-            'is_author': is_author
-        }
-
-    # public users page for everybody
-    @view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
-    def main_user(self):
-        """
-        View configuration for the public users.
-
-        :return: dictionary with title and project name as well as a value, weather the user is logged in
-        """
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
-        params = self.request.params
-        logger('main_user', 'def', 'main, self.request.matchdict: ' + str(matchdict))
-        logger('main_user', 'def', 'main, self.request.params: ' + str(params))
-
-        nickname = matchdict['nickname'] if 'nickname' in matchdict else ''
-        nickname = nickname.replace('%20', ' ')
-        logger('main_user', 'def', 'nickname: ' + str(nickname))
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-
-        db_settings = None
-        current_user = None
-
-        if db_user:
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-        elif db_public_user:
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
-
-        if db_settings:
-            if db_settings.should_show_public_nickname and db_user:
-                current_user = db_user
-            elif not db_settings.should_show_public_nickname and db_public_user:
-                current_user = db_public_user
-
-        if current_user is None:
-            return HTTPFound(location=UrlManager(mainpage).get_404([self.request.path[1:]]))
-
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        if session_expired:
-            return self.user_logout(True)
-
-        ui_locales = get_language(self.request, get_current_registry())
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-
-        user_dict = UserHandler.get_information_of(current_user, ui_locales)
-
-        db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
-        can_send_notification = False
-        if db_user_of_request:
-            can_send_notification = current_user.uid != db_user_of_request.uid
-
-        return {
-            'layout': self.base_layout(),
-            'language': str(ui_locales),
-            'title': 'User ' + nickname,
-            'project': project_name,
-            'extras': extras_dict,
-            'user': user_dict,
-            'can_send_notification': can_send_notification
-        }
-
-    # imprint
-    @view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody')
-    def main_imprint(self):
-        """
-        View configuration for the imprint.
-
-        :return: dictionary with title and project name as well as a value, weather the user is logged in
-        """
-        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('main_imprint', 'def', 'main')
-        ui_locales = get_language(self.request, get_current_registry())
-        session_expired = UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
         _tn = Translator(ui_locales)
         if session_expired:
-            return self.user_logout(True)
+            return Dbas(self.request).user_logout(True)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
-        import pkg_resources
-        extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
+        subpage_name = self.request.matchdict['queue']
+        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn)
+        if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
+            return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
-            'layout': self.base_layout(),
+            'layout': Dbas.base_layout(),
             'language': str(ui_locales),
-            'title': _tn.get(_tn.imprint),
+            'title': _tn.get(_tn.review),
             'project': project_name,
-            'extras': extras_dict
+            'extras': extras_dict,
+            'subpage': subpage_dict
         }
 
-    # 404 page
-    @notfound_view_config(renderer='templates/404.pt')
-    def notfound(self):
+    # reputation page for reviews
+    @view_config(route_name='review_reputation', renderer='templates/review_reputation.pt', permission='use')
+    def review_reputation(self):
         """
-        View configuration for the 404 page.
+        View configuration for the review reputation.
 
         :return: dictionary with title and project name as well as a value, weather the user is logged in
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
-        logger('notfound', 'def', 'main in ' + str(self.request.method) + '-request' +
-               ', path: ' + self.request.path +
-               ', view name: ' + self.request.view_name +
-               ', params: ' + str(self.request.params))
-        path = self.request.path
-        if path.startswith('/404/'):
-            path = path[4:]
-
-        param_error = True if 'param_error' in self.request.params and self.request.params['param_error'] == 'true' else False
-
-        self.request.response.status = 404
+        logger('review_reputation', 'main', 'def ' + str(self.request.matchdict))
         ui_locales = get_language(self.request, get_current_registry())
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        _tn = Translator(ui_locales)
+        if session_expired:
+            return Dbas(self.request).user_logout(True)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        # return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
+        reputation_dict = ReviewPagerHelper.get_reputation_history(self.request.authenticated_userid)
 
         return {
-            'layout': self.base_layout(),
+            'layout': Dbas.base_layout(),
             'language': str(ui_locales),
-            'title': 'Error',
+            'title': _tn.get(_tn.review),
             'project': project_name,
-            'page_notfound_viewname': path,
             'extras': extras_dict,
-            'param_error': param_error
+            'reputation': reputation_dict
         }
 
 
@@ -1022,7 +943,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_user_history', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
         return_list = HistoryHelper.get_history_from_database(self.request.authenticated_userid, ui_locales)
@@ -1036,10 +957,10 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_all_posted_statements', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        return_array, tmp = UserHandler.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
+        return_array, tmp = UserManager.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
         return json.dumps(return_array, True)
 
     # ajax - getting all text edits
@@ -1050,10 +971,10 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_all_edits', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        tmp, return_array = UserHandler.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
+        tmp, return_array = UserManager.get_textversions_of_user(self.request.authenticated_userid, ui_locales)
         return json.dumps(return_array, True)
 
     # ajax - getting all votes for arguments
@@ -1064,10 +985,10 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_all_argument_votes', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, True, ui_locales)
+        return_array = UserManager.get_votes_of_user(self.request.authenticated_userid, True, ui_locales)
         return json.dumps(return_array, True)
 
     # ajax - getting all votes for statements
@@ -1078,10 +999,10 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('get_all_statement_votes', 'def', 'main')
         ui_locales = get_language(self.request, get_current_registry())
-        return_array = UserHandler.get_votes_of_user(self.request.authenticated_userid, False, ui_locales)
+        return_array = UserManager.get_votes_of_user(self.request.authenticated_userid, False, ui_locales)
         return json.dumps(return_array, True)
 
     # ajax - deleting complete history of the user
@@ -1093,7 +1014,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('delete_user_history', 'def', 'main')
         HistoryHelper.delete_history_in_database(self.request.authenticated_userid, transaction)
@@ -1111,7 +1032,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('delete_statistics', 'def', 'main')
 
@@ -1239,60 +1160,14 @@ class Dbas(object):
 
         # getting params
         try:
-            params          = self.request.params
-            firstname       = escape_string(params['firstname'])
-            lastname        = escape_string(params['lastname'])
-            nickname        = escape_string(params['nickname'])
-            email           = escape_string(params['email'])
-            gender          = escape_string(params['gender'])
-            password        = escape_string(params['password'])
-            passwordconfirm = escape_string(params['passwordconfirm'])
-            spamanswer      = escape_string(params['spamanswer'])
-
-            # database queries mail verification
-            db_nick1 = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-            db_nick2 = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-            db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
-            is_mail_valid = validate_email(email, check_mx=True)
-
-            # are the password equal?
-            if not password == passwordconfirm:
-                logger('user_registration', 'main', 'Passwords are not equal')
-                info = _t.get(_t.pwdNotEqual)
-            # is the nick already taken?
-            elif db_nick1 or db_nick2:
-                logger('user_registration', 'main', 'Nickname \'' + nickname + '\' is taken')
-                info = _t.get(_t.nickIsTaken)
-            # is the email already taken?
-            elif db_mail:
-                logger('user_registration', 'main', 'E-Mail \'' + email + '\' is taken')
-                info = _t.get(_t.mailIsTaken)
-            # is the email valid?
-            elif not is_mail_valid:
-                logger('user_registration', 'main', 'E-Mail \'' + email + '\' is not valid')
-                info = _t.get(_t.mailNotValid)
-            # is anti-spam correct?
-            elif str(spamanswer) != str(self.request.session['antispamanswer']):
-                logger('user_registration', 'main', 'Anti-Spam answer \'' + str(spamanswer) + '\' is not equal ' + str(self.request.session['antispamanswer']))
-                info = _t.get(_t.maliciousAntiSpam)
-            else:
-                # getting the authors group
-                db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
-
-                # does the group exists?
-                if not db_group:
-                    info = _t.get(_t.errorTryLateOrContant)
-                    logger('user_registration', 'main', 'Error occured')
-                else:
-                    success, info = UserHandler.create_new_user(self.request, firstname, lastname, email, nickname,
-                                                                password, gender, db_group.uid, ui_locales, transaction)
+            success, info = try_to_register_new_user_via_ajax(self.request, ui_locales)
 
         except KeyError as e:
             logger('user_registration', 'error', repr(e))
             error = _t.get(_t.internalKeyError)
 
         # get anti-spam-question
-        spamquestion, answer = UserHandler.get_random_anti_spam_question(ui_locales)
+        spamquestion, answer = UserManager.get_random_anti_spam_question(ui_locales)
         # save answer in session
         self.request.session['antispamanswer'] = answer
 
@@ -1315,7 +1190,6 @@ class Dbas(object):
         logger('user_password_request', 'def', 'main, self.request.params: ' + str(self.request.params))
 
         success = ''
-        error = ''
         info = ''
         return_dict = dict()
         ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
@@ -1324,35 +1198,7 @@ class Dbas(object):
         _t = Translator(ui_locales)
 
         try:
-            email = escape_string(self.request.params['email'])
-            db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
-
-            # does the user exists?
-            if db_user:
-                # get password and hashed password
-                pwd = PasswordHandler.get_rnd_passwd()
-                hashedpwd = PasswordHandler.get_hashed_password(pwd)
-
-                # set the hashed one
-                db_user.password = hashedpwd
-                DBDiscussionSession.add(db_user)
-                transaction.commit()
-
-                db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-                db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
-
-                body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
-                body += _t.get(_t.newPwdIs) + pwd
-                subject = _t.get(_t.dbasPwdRequest)
-                reg_success, message = EmailHelper.send_mail(self.request, subject, body, email, db_language.ui_locales)
-
-                if reg_success:
-                    success = message
-                else:
-                    error = message
-            else:
-                logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
-                info = _t.get(_t.emailUnknown)
+            success, error, info = request_password(self.request, ui_locales)
 
         except KeyError as e:
             logger('user_password_request', 'error', repr(e))
@@ -1403,14 +1249,14 @@ class Dbas(object):
                     if settings_value:
                         db_user.set_public_nickname(db_user.nickname)
                     elif db_user.nickname == db_user.public_nickname:
-                        UserHandler.refresh_public_nickname(db_user)
+                        UserManager.refresh_public_nickname(db_user)
                     public_nick = db_user.public_nickname
                 else:
                     error = _tn.get(_tn.keyword)
 
                 transaction.commit()
-                public_page_url = mainpage + '/user/' + public_nick
-                gravatar_url = UserHandler.get_public_profile_picture(db_user, 80)
+                public_page_url = mainpage + '/user/' + (db_user.nickname if settings_value else public_nick)
+                gravatar_url = UserManager.get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
             else:
                 error = _tn.get(_tn.checkNickname)
         except KeyError as e:
@@ -1498,7 +1344,7 @@ class Dbas(object):
                     db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, mainpage, transaction)
                     uid = db_notification.uid
                     ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-                    gravatar = UserHandler.get_public_profile_picture(db_recipient, 20)
+                    gravatar = UserManager.get_profile_picture(db_recipient, 20)
 
         except KeyError:
             error = _tn.get(_tn.internalKeyError)
@@ -1544,7 +1390,7 @@ class Dbas(object):
                 slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
             # escaping will be done in QueryHelper().set_statement(...)
-            UserHandler.update_last_action(transaction, nickname)
+            UserManager.update_last_action(transaction, nickname)
             new_statement = QueryHelper.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
             if new_statement == -1:
                 return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': 10)'
@@ -1589,7 +1435,7 @@ class Dbas(object):
                 supportive      = True if self.request.params['supportive'].lower() == 'true' else False
 
             # escaping will be done in QueryHelper().set_statement(...)
-            UserHandler.update_last_action(transaction, nickname)
+            UserManager.update_last_action(transaction, nickname)
 
             _qh = QueryHelper
             url, statement_uids, error = _qh.process_input_of_start_premises_and_receive_url(self.request, transaction,
@@ -1649,7 +1495,7 @@ class Dbas(object):
                                                                                                      premisegroups, issue,
                                                                                                      nickname, for_api,
                                                                                                      mainpage, lang)
-            UserHandler.update_last_action(transaction, nickname)
+            UserManager.update_last_action(transaction, nickname)
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
@@ -1676,7 +1522,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         _tn = Translator(get_language(self.request, get_current_registry()))
 
@@ -1707,7 +1553,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('set_notification_read', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
@@ -1734,7 +1580,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('set_notification_delete', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
@@ -1760,7 +1606,7 @@ class Dbas(object):
     @view_config(route_name='ajax_set_new_issue', renderer='json')
     def set_new_issue(self):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('set_new_issue', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
@@ -1797,7 +1643,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('get_logfile_for_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         return_dict = dict()
         ui_locales = get_language(self.request, get_current_registry())
@@ -1826,7 +1672,7 @@ class Dbas(object):
         :return: dictionary with shortend url
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         logger('get_shortened_url', 'def', 'main')
 
@@ -1969,7 +1815,7 @@ class Dbas(object):
         return_dict = dict()
         try:
             nickname = self.request.params['nickname']
-            return_dict = UserHandler.get_public_information_data(nickname, ui_locales)
+            return_dict = UserManager.get_public_information_data(nickname, ui_locales)
             return_dict['error'] = '' if len(return_dict) != 0 else _tn.get(_tn.internalKeyError)
 
         except KeyError as e:
@@ -1992,7 +1838,7 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        UserHandler.update_last_action(transaction, self.request.authenticated_userid)
+        UserManager.update_last_action(transaction, self.request.authenticated_userid)
         logger('switch_language', 'def', 'main, self.request.params: ' + str(self.request.params))
 
         return_dict = dict()
@@ -2064,7 +1910,7 @@ class Dbas(object):
             elif mode == '4':  # getting text
                 return_dict = FuzzyStringMatcher.get_strings_for_search(value)
             elif mode == '5':  # getting public nicknames
-                nickname, session_id = self.get_nickname_and_session(for_api, api_data)
+                nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
                 return_dict['distance_name'], return_dict['values'] = FuzzyStringMatcher.get_strings_for_public_nickname(value, nickname)
             else:
                 logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
@@ -2099,3 +1945,64 @@ class Dbas(object):
             logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
 
         return data.json()
+
+    # ajax - for flagging arguments
+    @view_config(route_name='ajax_flag_argument', renderer='json')
+    def flag_argument(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('flag_argument', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+
+        try:
+            argument_uid = self.request.params['argument_uid']
+            reason = self.request.params['reason']
+            nickname = self.request.authenticated_userid
+
+            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
+
+            if not Validator.check_for_integer(argument_uid):
+                return_dict['error'] = _t.get(_t.internalError)
+            elif not (len(db_reason) > 0 or reason == 'optimization'):
+                return_dict['error'] = _t.get(_t.internalError)
+            else:
+
+                success, info, error = ReviewFlagHelper.flag_argument(argument_uid, reason, nickname, _t, transaction)
+
+                return_dict['success'] = success
+                return_dict['info'] = info
+                return_dict['error'] = error
+        except KeyError as e:
+            logger('flag_argument', 'error', repr(e))
+            return_dict['error'] = _t.get(_t.internalKeyError)
+
+        return json.dumps(return_dict, True)
+
+    # ajax - for feedback on flagged arguments
+    @view_config(route_name='ajax_review_delete_argument', renderer='json')
+    def review_delete_argument(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('review_delete_argument', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+
+        try:
+            should_delete = True if str(self.request.params['should_delete']) == 'true' else False
+            nickname = self.request.authenticated_userid
+
+            return_dict['error'] = ''
+        except KeyError as e:
+            logger('review_delete_argument', 'error', repr(e))
+            return_dict['error'] = _t.get(_t.internalKeyError)
+
+        return json.dumps(return_dict, True)

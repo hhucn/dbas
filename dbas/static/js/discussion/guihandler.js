@@ -569,7 +569,22 @@ function GuiHandler() {
 			$('#popup-add-topic').modal('hide');
 		});
 	};
-
+	
+	/**
+	 *
+	 * @param argument_uid
+	 */
+	this.showFlagArgumentPopup = function(argument_uid){
+		var popup = $('#popup-flag-argument');
+		popup.modal('show');
+		popup.find('input').click(function () {
+			var reason = $(this).attr('value');
+			new AjaxMainHandler().ajaxFlagArgument(argument_uid, reason);
+			popup.find('input').prop( 'checked', false );
+			popup.modal('hide');
+		});
+	};
+	
      /**
 	 * Opens the edit issues popup
 	 */
@@ -766,4 +781,25 @@ function GuiHandler() {
 		div.append(strong).append(span);
 		return div;
 	};
+	
+	/**
+	 *
+	 * @param list
+	 */
+	this.hoverInputListOf = function(list){
+		list.find('input').each(function(){
+			$(this).hover(function(){
+				$(this).prop('checked', true);
+			}, function(){
+				$(this).prop('checked', false);
+			})
+		});
+		list.find('label').each(function(){
+			$(this).hover(function(){
+				$(this).prev().prop('checked', true);
+			}, function(){
+				$(this).prev().prop('checked', false);
+			})
+		});
+	}
 }
