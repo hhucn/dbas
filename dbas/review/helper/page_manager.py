@@ -468,44 +468,52 @@ def get_history(mainpage, nickname, translator):
 
 def __get_executed_reviews_of(mainpage, table_type, last_review_type, lang):
     """
+    Returns array with all relevant information about the last reviews of the given table.
 
-    :param table_type:
-    :param last_review_type:
-    :param lang:
-    :return:
+    :param mainpage: Mainpage of D-BAS
+    :param table_type: Type of the review table
+    :param last_review_type: Type of the last reviewer of the table
+    :param lang: current ui_locales
+    :return: Array with all decision per table
     """
     some_list = list()
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == True).order_by(table_type.uid.desc()).all()
+
     for review in db_reviews:
-        entry = dict()
+        # getting all pro and contra votes for this review
         pro_votes = DBDiscussionSession.query(last_review_type).filter(and_(last_review_type.review_uid == review.uid,
                                                                             last_review_type.is_okay == True)).all()
         con_votes = DBDiscussionSession.query(last_review_type).filter(and_(last_review_type.review_uid == review.uid,
                                                                             last_review_type.is_okay == False)).all()
+        # getting the users which have voted
         pro_list = list()
+        con_list = list()
         for pro in pro_votes:
             pro_list.append(__get_user_dict_for_review(pro.reviewer_uid, mainpage))
-
-        con_list = list()
         for con in con_votes:
             con_list.append(__get_user_dict_for_review(con.reviewer_uid, mainpage))
 
+        # and build up some dict
+        entry = dict()
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, lang)
         entry['votes_pro'] = pro_list
         entry['votes_con'] = con_list
         some_list.append(entry)
+
     return some_list
 
 
-def __get_user_dict_for_review(reviewer_uid, mainpage):
+def __get_user_dict_for_review(user_id, mainpage):
     """
+    Fetches some data of the given user.
 
-    :param reviewer_uid:
-    :return:
+    :param reviewer_uid: User id of the reviewer
+    :param mainpage: Mainpage of D-BAS
+    :return: dcit with gravatar, uerpage and nickname
     """
-    db_user = DBDiscussionSession.query(User).filter_by(uid=reviewer_uid).first()
+    db_user = DBDiscussionSession.query(User).filter_by(uid=user_id).first()
     image_url = _user_manager.get_profile_picture(db_user, 20)
     return {
         'gravatar_url': image_url,
