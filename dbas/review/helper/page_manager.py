@@ -484,30 +484,31 @@ def __get_executed_reviews_of(mainpage, table_type, last_review_type, lang):
                                                                             last_review_type.is_okay == False)).all()
         pro_list = list()
         for pro in pro_votes:
-            db_user = DBDiscussionSession.query(User).filter_by(uid=pro.reviewer_uid).first()
-            image_url = _user_manager.get_profile_picture(db_user, 20)
-            pro_list.append({
-                'gravatar_url': image_url,
-                'nickname': get_public_nickname_based_on_settings(db_user),
-                'userpage_url': mainpage + '/user/' + get_public_nickname_based_on_settings(db_user)
-            })
+            pro_list.append(__get_user_dict_for_review(pro.reviewer_uid, mainpage))
 
         con_list = list()
         for con in con_votes:
-            db_user = DBDiscussionSession.query(User).filter_by(uid=con.reviewer_uid).first()
-            image_url = _user_manager.get_profile_picture(db_user, 20)
-            con_list.append({
-                'gravatar_url': image_url,
-                'nickname': get_public_nickname_based_on_settings(db_user),
-                'userpage_url': mainpage + '/user/' + get_public_nickname_based_on_settings(db_user)
-            })
+            con_list.append(__get_user_dict_for_review(con.reviewer_uid, mainpage))
 
         entry['pro'] = pro_list
         entry['con'] = con_list
-        entry['entry_id'] = str(review.uid)
-        entry['accepted'] = len(pro_votes) > len(con_votes)
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, lang)
         entry['votes_pro'] = pro_list
         entry['votes_con'] = con_list
         some_list.append(entry)
     return some_list
+
+
+def __get_user_dict_for_review(reviewer_uid, mainpage):
+    """
+
+    :param reviewer_uid:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(uid=reviewer_uid).first()
+    image_url = _user_manager.get_profile_picture(db_user, 20)
+    return {
+        'gravatar_url': image_url,
+        'nickname': get_public_nickname_based_on_settings(db_user),
+        'userpage_url': mainpage + '/user/' + get_public_nickname_based_on_settings(db_user)
+    }
