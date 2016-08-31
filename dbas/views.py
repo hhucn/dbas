@@ -859,7 +859,8 @@ class Dbas(object):
             'project': project_name,
             'extras': extras_dict,
             'review': review_dict,
-            'reputation_list': ReviewPagerHelper.get_reputation_list(),
+            'privilege_list': ReviewPagerHelper.get_privilege_list(_tn),
+            'reputation_list': ReviewPagerHelper.get_reputation_list(_tn),
             'issues': issue_dict,
             'reputation': {'count': count,
                            'has_all_rights': all_rights}
@@ -884,7 +885,7 @@ class Dbas(object):
 
         subpage_name = self.request.matchdict['queue']
         subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn)
-        if not subpage_dict['elements']:
+        if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
             return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
