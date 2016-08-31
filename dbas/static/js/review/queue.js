@@ -17,11 +17,11 @@ $(document).ready(function () {
 	var less_about_reason = $('#less_about_reason');
 	var more_about_reason_content = $('#more_about_reason_content');
 	
-	optimization_ack.click(function(){ do_optimization_ack(); });
-	optimization_nack.click(function(){ do_optimization_nack(); });
+	optimization_ack.click(function(){ new Review().doOptimizationAck(); });
+	optimization_nack.click(function(){ new Review().doOptimizationNack(); });
 	optimization_skip.click(function(){ location.reload(); });
-	delete_ack.click(function(){ do_delete_ack(); });
-	delete_nack.click(function(){ do_delete_nack(); });
+	delete_ack.click(function(){ new Review().doDeleteAck(); });
+	delete_nack.click(function(){ new Review().doDeleteNack(); });
 	delete_skip.click(function(){ location.reload(); });
 	
 	more_about_reason.click(function() {
@@ -36,30 +36,52 @@ $(document).ready(function () {
 	});
 });
 
-/**
- *
- */
-function do_optimization_ack(){
-	alert('do_optimization_ack');
+function Review() {
+	/**
+	 *
+	 */
+	this.doOptimizationAck = function() {
+		alert('doOptimizationAck');
+	};
+	
+	/**
+	 *
+	 */
+	this.doOptimizationNack = function() {
+		alert('doOptimizationNack');
+	};
+	
+	/**
+	 *
+	 */
+	this.doDeleteAck = function() {
+		new AjaxReviewHandler().reviewDeleteArgument(true);
+	};
+	
+	/**
+	 *
+	 */
+	this.doDeleteNack = function() {
+		new AjaxReviewHandler().reviewDeleteArgument(false);
+	};
+	
 }
 
-/**
- *
- */
-function do_optimization_nack(){
-	alert('do_optimization_nack');
-}
-
-/**
- *
- */
-function do_delete_ack(){
-	alert('do_delete_ack');
-}
-
-/**
- *
- */
-function do_delete_nack(){
-	alert('do_delete_nack');
+function ReviewCallbacks() {
+	
+	/**
+	 *
+	 * @param jsonData
+	 */
+	this.forReviewDeleteArgument = function(jsonData){
+		var parsedData = $.parseJSON(jsonData);
+		if (parsedData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		} else {
+			// reload, when the user is still in the review page
+			if (window.location.href.indexOf('/review/')) {
+				location.reload();
+			}
+		}
+	}
 }
