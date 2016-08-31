@@ -1,4 +1,6 @@
 import unittest
+
+from dbas.lib import is_user_author
 import transaction
 
 from sqlalchemy import engine_from_config
@@ -47,6 +49,6 @@ class UserManagementTest(unittest.TestCase):
         self.assertFalse(user_management.is_user_admin('Torben'))
 
     def test_is_user_author(self):
-        self.assertTrue(user_management.is_user_author('Tobias'))
-        self.assertTrue(user_management.is_user_author('WeGi'))
-        self.assertFalse(user_management.is_user_author('Torben'))
+        self.assertTrue(is_user_author('Tobias'))
+        self.assertTrue(is_user_author('WeGi'))
+        self.assertFalse(is_user_author('Torben'))

@@ -3,9 +3,8 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
+from dbas.lib import is_user_author
 from slugify import slugify
-import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement
@@ -30,7 +29,7 @@ def set_issue(info, title, lang, nickname, transaction, ui_locales):
     _tn = Translator(ui_locales)
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not UserHandler.is_user_author(nickname):
+    if not is_user_author(nickname):
         return False, _tn.get(_tn.noRights)
 
     if len(info) < 10:

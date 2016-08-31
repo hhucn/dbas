@@ -28,7 +28,7 @@ $(document).ready(function () {
 });
 
 /**
- * Returns all lables out of the reputation table
+ * Returns all lables out of the reputation_borders table
  * @returns {Array}
  */
 function collectLabels(){
@@ -40,7 +40,7 @@ function collectLabels(){
 }
 
 /**
- * Returns all points out of the reputation table (cummulative)
+ * Returns all points out of the reputation_borders table (cummulative)
  * @returns {number[]}
  */
 function collectAbsoluteDataset() {
@@ -53,7 +53,7 @@ function collectAbsoluteDataset() {
 }
 
 /**
- * Returns all points out of the reputation table
+ * Returns all points out of the reputation_borders table
  * @returns {Array}
  */
 function collectRelativeDataset(){
