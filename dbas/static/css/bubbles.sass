@@ -14,9 +14,6 @@
   float: right
   width: 100%
 
-.line-wrapper-l > a > p:hover, .line-wrapper-r > a > p:hover
-  color: $primary-color
-
 .line-wrapper-l > a, .line-wrapper-r > a, .line-wrapper-l > p, .line-wrapper-r > p
   max-width: 55%
 
@@ -103,17 +100,23 @@
   border-radius: 5px
   border: 1px solid rgba(0, 0, 0, 0.7)
 
-[id^=question-bubble-]
-  cursor: help
+.triangle-l .triangle-flag
+  color: dimgray
+  cursor: url($exclamation-sign), auto
+  i
+    margin: 5px
 
-.triangle-l a:hover, .triangle-r a:hover, .triangle-m a:hover, .triangle-m-info a:hover, .triangle-r-info:hover, [id^=question-bubble-]:hover
+.triangle-l .triangle-flag:hover
+  color: $error-color
+
+.triangle-l .triangle-content:hover, .triangle-r a:hover, .triangle-m a:hover, .triangle-m-info a:hover, .triangle-r-info:hover
   color: $primary-color
   text-decoration: none
 
 //.triangle-m-info a, .triangle-m a
 //  text-decoration: underline
 
-.triangle-r-info:hover
+.triangle-r-info:hover, .triangle-l .triangle-content:hover
   cursor: help
 
 

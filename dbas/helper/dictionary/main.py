@@ -6,14 +6,13 @@ Provides helping function for dictionaries.
 
 import random
 import arrow
-import dbas.helper.history as HistoryHelper
 import dbas.helper.notification as NotificationHelper
 import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Language
+from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.helper.query import QueryHelper
-from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion
+from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -67,19 +66,18 @@ class DictionaryHelper(object):
 
         return return_dict
 
-    def prepare_extras_dict_for_normal_page(self, nickname, request, append_notifications=False):
+    def prepare_extras_dict_for_normal_page(self, request, append_notifications=False):
         """
         Calls self.prepare_extras_dict('', False, False, False, False, False, nickname)
-        :param nickname: Users.nickname
         :param request: Request
         :param append_notifications: Boolean
         :return: dict()
         """
-        return self.prepare_extras_dict('', False, False, False, False, False, nickname, append_notifications=append_notifications, request=request)
+        return self.prepare_extras_dict('', False, False, False, False, False, request, append_notifications=append_notifications)
 
     def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_island_icon,
-                            show_expert_icon, authenticated_userid, argument_id=0, application_url='', for_api=False,
-                            append_notifications=False, request=None):
+                            show_expert_icon, request, argument_id=0, application_url='', for_api=False,
+                            append_notifications=False):
         """
         Creates the extras.dict() with many options!
 
@@ -89,18 +87,17 @@ class DictionaryHelper(object):
         :param show_bar_icon: Boolean
         :param show_island_icon: Boolean
         :param show_expert_icon: Boolean
-        :param authenticated_userid: User.nickname
+        :param request: Request
         :param argument_id: Argument.uid
         :param application_url: String
         :param for_api: Boolean
         :param append_notifications: Boolean
-        :param request: Request
         :return: dict()
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def')
         _uh = UserHandler
-        is_logged_in = _uh.is_user_logged_in(authenticated_userid)
-        nickname = authenticated_userid if authenticated_userid else 'anonymous'
+        nickname = request.authenticated_userid if request.authenticated_userid else 'anonymous'
+        is_logged_in = _uh.is_user_logged_in(nickname)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         # get anti-spam-question
@@ -114,7 +111,6 @@ class DictionaryHelper(object):
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = nickname
-        return_dict['users_name']                    = str(authenticated_userid)
         return_dict['add_premise_container_style']   = 'display: none'
         return_dict['add_statement_container_style'] = 'display: none'
         return_dict['users_avatar']                  = _uh.get_profile_picture(db_user)
@@ -127,8 +123,8 @@ class DictionaryHelper(object):
         if not for_api:
             return_dict['is_editable']                   = is_editable and is_logged_in
             return_dict['is_reportable']                 = is_reportable
-            return_dict['is_admin']                         = _uh.is_user_in_group(authenticated_userid, 'admins')
-            return_dict['is_author']                     = _uh.is_user_in_group(authenticated_userid, 'authors')
+            return_dict['is_admin']                      = _uh.is_user_in_group(nickname, 'admins')
+            return_dict['is_author']                     = _uh.is_user_in_group(nickname, 'authors')
             return_dict['show_bar_icon']                 = show_bar_icon
             return_dict['show_island_icon']              = show_island_icon
             return_dict['show_expert_icon']              = show_expert_icon
@@ -140,10 +136,10 @@ class DictionaryHelper(object):
             self.add_tag_text(return_dict)
 
             message_dict = dict()
-            message_dict['new_count']    = NotificationHelper.count_of_new_notifications(authenticated_userid)
+            message_dict['new_count']    = NotificationHelper.count_of_new_notifications(nickname)
             message_dict['has_unread']   = (message_dict['new_count'] > 0)
-            inbox = NotificationHelper.get_box_for(authenticated_userid, self.system_lang, application_url, True)
-            outbox = NotificationHelper.get_box_for(authenticated_userid, self.system_lang, application_url, False)
+            inbox = NotificationHelper.get_box_for(nickname, self.system_lang, application_url, True)
+            outbox = NotificationHelper.get_box_for(nickname, self.system_lang, application_url, False)
             if append_notifications:
                 message_dict['inbox']    = inbox
                 message_dict['outbox']   = outbox
@@ -176,6 +172,65 @@ class DictionaryHelper(object):
                     return_dict['show_island_icon'] = False
         return return_dict
 
+    def preprate_settings_dict(self, success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage):
+        """
+
+        :param success:
+        :param old_pw:
+        :param new_pw:
+        :param confirm_pw:
+        :param error:
+        :param message:
+        :param db_user:
+        :param ui_locales:
+        :param mainpage:
+        :return:
+        """
+        _uh         = UserHandler
+        _tn         = Translator(self.system_lang)
+        edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
+        statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
+        arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else 0, 0
+        public_nick = db_user.get_global_nickname() if db_user else ''
+        db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first() if db_user else None
+        group       = db_group.name if db_group else '-'
+        gravatar_public_url = _uh.get_public_profile_picture(db_user)
+
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
+        db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None
+
+        return {
+            'passwordold': '' if success else old_pw,
+            'password': '' if success else new_pw,
+            'passwordconfirm': '' if success else confirm_pw,
+            'change_error': error,
+            'change_success': success,
+            'message': message,
+            'db_firstname': db_user.firstname if db_user else '',
+            'db_surname': db_user.surname if db_user else '',
+            'db_nickname': db_user.nickname if db_user else '',
+            'db_public_nickname': public_nick,
+            'db_mail': db_user.email if db_user else '',
+            'db_group': group,
+            'avatar_public_url': gravatar_public_url,
+            'edits_done': edits,
+            'statemens_posted': statements,
+            'discussion_arg_votes': arg_vote,
+            'discussion_stat_votes': stat_vote,
+            'send_mails': db_settings.should_send_mails if db_settings else False,
+            'send_notifications': db_settings.should_send_notifications if db_settings else False,
+            'public_nick': db_settings.should_show_public_nickname if db_settings else True,
+            'title_mails': _tn.get(_tn.mailSettingsTitle),
+            'title_notifications': _tn.get(_tn.notificationSettingsTitle),
+            'title_public_nick': _tn.get(_tn.publicNickTitle),
+            'title_prefered_lang': _tn.get(_tn.preferedLangTitle),
+            'public_page_url': (mainpage + '/user/' + (db_user.nickname if db_settings.should_show_public_nickname else public_nick)) if db_user else '',
+            'on': _tn.get(_tn.on),
+            'off': _tn.get(_tn.off),
+            'current_lang': db_language.name if db_language else '?',
+            'current_ui_locales': db_language.ui_locales if db_language else '?'
+        }
+
     def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
                                 at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False,):
         """
@@ -194,13 +249,13 @@ class DictionaryHelper(object):
         """
         logger('DictionaryHelper', 'add_discussion_end_text', 'main')
         _tn = Translator(self.discussion_lang)
-        _hh = HistoryHelper
 
         if at_start:
             discussion_dict['mode'] = 'start'
             user_text = _tn.get(_tn.firstPositionText) + '<br>'
             user_text += _tn.get(_tn.pleaseAddYourSuggestion) if logged_in else (_tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin))
-            discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
+            discussion_dict['bubbles'].append(
+                create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
             if logged_in:
                 extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
                 extras_dict['close_statement_container'] = False
@@ -217,7 +272,8 @@ class DictionaryHelper(object):
             extras_dict['show_display_style'] = False
             if logged_in:
                 mid_text = _tn.get(_tn.firstOneReason)
-                discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
+                discussion_dict['bubbles'].append(
+                    create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
             # else:
             #     mid_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
 
@@ -226,8 +282,10 @@ class DictionaryHelper(object):
             sys_text  = _tn.get(_tn.firstOneInformationText) + ' <em>' + current_premise + '</em>, '
             sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
             mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
-            discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=self.system_lang))
-            discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
+            discussion_dict['bubbles'].append(
+                create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=self.system_lang))
+            discussion_dict['bubbles'].append(
+                create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
 
         elif at_justify:
             discussion_dict['mode'] = 'justify'
@@ -244,7 +302,8 @@ class DictionaryHelper(object):
             else:
                 mid_text += _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
 
-            discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
+            discussion_dict['bubbles'].append(
+                create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
             extras_dict['close_premise_container'] = False
             extras_dict['show_display_style']       = False
             extras_dict['show_bar_icon']           = False
@@ -253,7 +312,8 @@ class DictionaryHelper(object):
 
         else:
             mid_text = _tn.get(_tn.discussionEnd) + ' ' + (_tn.get(_tn.discussionEndLinkText) if logged_in else _tn.get(_tn.feelFreeToLogin))
-            discussion_dict['bubbles'].append(_hh.create_speechbubble_dict(is_info=True, message=mid_text, lang=self.system_lang))
+            discussion_dict['bubbles'].append(
+                create_speechbubble_dict(is_info=True, message=mid_text, lang=self.system_lang))
 
     def add_language_options_for_extra_dict(self, extras_dict):
         """

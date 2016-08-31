@@ -115,7 +115,7 @@ class TextGenerator(object):
 
         if attack_type == 'undercut':
             user_msg = r + premise + ', '
-            user_msg += _t.get(_t.butIDoNotBelieveCounterFor) if is_supportive else _t.get(_t.butIDoNotBelieveArgumentFor)
+            user_msg += _t.get(_t.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_t.butIDoNotBelieveCounterFor)
             user_msg += ' ' + conclusion + '.'
 
         if attack_type == 'overbid':
@@ -230,24 +230,16 @@ class TextGenerator(object):
         tag_premise = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
         tag_conclusion = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
         tag_end = '</' + TextGenerator.tag_type + '>'
-        premise = _t.get(_t.reason).lower() if self.lang != 'de' else _t.get(_t.reason)
-        conclusion = _t.get(_t.assertion).lower() if self.lang != 'de' else _t.get(_t.assertion)
-        this = _t.get(_t.this).lower()
-        right = _t.get(_t.right) + ', ' + this + ' '
-        wrong = _t.get(_t.wrong) + ', ' + this + ' '
-        holds = ' ' + _t.get(_t.holds)
-        hold = ' ' + _t.get(_t.hold) + '.'
-        does_not_hold = ' ' + _t.get(_t.doesNotHold)
-        but = _t.get(_t.butIDoNotBelieveArgumentFor)
-        aand = ' ' + _t.get(_t.aand) + ' '
+        premise = tag_premise + (_t.get(_t.reason).lower() if self.lang != 'de' else _t.get(_t.reason)) + tag_end
+        conclusion = tag_conclusion + (_t.get(_t.assertion).lower() if self.lang != 'de' else _t.get(_t.assertion)) + tag_end
 
         answers = list()
-        answers.append(right + tag_conclusion + conclusion + tag_end + holds + '.')
-        answers.append(wrong + tag_conclusion + conclusion + tag_end + does_not_hold + '.')
-        answers.append(right + tag_premise + premise + tag_end + holds + '.')
-        answers.append(wrong + tag_premise + premise + tag_end + does_not_hold + '.')
-        answers.append(right + tag_premise + premise + tag_end + holds + ' ' + but + ' ' + this + ' ' + tag_conclusion + conclusion + tag_end + '.')
-        answers.append(_t.get(_t.right) + ', ' + tag_conclusion + conclusion + tag_end + aand + tag_premise + premise + tag_end + hold)
+
+        answers.append(_t.get(_t.jumpAnswer0).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+        answers.append(_t.get(_t.jumpAnswer1).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+        answers.append(_t.get(_t.jumpAnswer2).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+        answers.append(_t.get(_t.jumpAnswer3).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+        answers.append(_t.get(_t.jumpAnswer4).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
 
         return answers
 
