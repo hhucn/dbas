@@ -126,6 +126,7 @@ def main(global_config, **settings):
     config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
     config.add_route('ajax_flag_argument', '{stuff:.*}ajax_flag_argument')
     config.add_route('ajax_review_delete_argument', '{stuff:.*}ajax_review_delete_argument')
+    config.add_route('ajax_undo_review', '{stuff:.*}ajax_undo_review')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')
@@ -140,6 +141,7 @@ def main(global_config, **settings):
     # review section
     config.add_route('review_index', '/review')
     config.add_route('review_reputation', '/review/reputation')
+    config.add_route('review_history', '/review/history')
     config.add_route('review_content', '/review/{queue}')
 
     # read the input and start

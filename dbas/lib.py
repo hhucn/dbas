@@ -522,6 +522,16 @@ def get_lang_for_issue(uid):
     return db_lang.ui_locales
 
 
+def get_public_nickname_based_on_settings(user):
+    """
+
+    :param user:
+    :return:
+    """
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
+    return user.nickname if db_settings.should_show_public_nickname else user.public_nickname
+
+
 def get_user_by_private_or_public_nickname(nickname):
     """
     Gets the user by his (public) nickname, based on the option, whether his nickname is public or not

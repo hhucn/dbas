@@ -103,7 +103,7 @@ var allGivenVotes                                   = 'allGivenVotes';
 var author                                          = 'author';
 var avatar                                          = 'avatar';
 var acceptItTitle 									= 'acceptItTitle';
-var contactSubmit									= 'contactSubmit';
+var caution									        = 'caution';
 var correctionsSet 									= 'correctionsSet';
 var because                                         = 'because';
 var changelog                                       = 'changelog';
@@ -233,6 +233,7 @@ var switchDiscussionText1 							= 'switchDiscussionText1';
 var switchDiscussionText2 							= 'switchDiscussionText2';
 var switchDiscussionText3 							= 'switchDiscussionText3';
 var surname 										= 'surname';
+var sureToDeleteReview                              = 'sureToDeleteReview';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
@@ -290,6 +291,7 @@ var dbas_en = {
 	'because': 'because',
 	'countOfArguments': 'Count of arguments',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
+	'caution': 'Caution',
 	'correctionsSet': 'Your correction was set.',
 	'changelog': 'changelog',
 	'checkFirstname': 'Better check your first name, because the input is empty!',
@@ -415,6 +417,7 @@ var dbas_en = {
 	'statisticsNotThere': 'You have no statistics.',
 	'support': 'Support',
 	'surname' : 'Surname',
+	'sureToDeleteReview': 'Are you sure, that you want to revoke this decision? This revoke cannot be undone!',
 	'shortenedBy': 'which was shortened by',
 	'switchDiscussion': 'Change of discussion\'s topic',
 	'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
@@ -458,6 +461,7 @@ var dbas_de = {
 	'author': 'Autor',
 	'because':'weil',
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
+	'caution': 'Achtung',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
 	'changelog': 'Änderungsprotokoll',
@@ -590,6 +594,7 @@ var dbas_de = {
 	'switchDiscussionText3': 'Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
 	'support': 'Unterstützen',
 	'surname': 'Nachname',
+	'sureToDeleteReview': 'Sind Sie sicher, dass sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann nicht rückgangig gemacht werden!',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
 	'to': 'An',
