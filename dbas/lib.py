@@ -4,16 +4,19 @@ Common, pure functions used by the D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+
 import time
 
 import locale
 from datetime import datetime
 from html import escape
 
+from dbas.logger import logger
+
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement
+from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 
@@ -629,3 +632,21 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     speech['votecounts'] = votecounts
 
     return speech
+
+
+def is_user_author(nickname):
+    """
+    Check, if the given uid has admin rights or is admin
+
+    :param nickname: current user name
+    :return: true, if user is admin, false otherwise
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
+    db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
+    logger('UserHandler', 'is_user_author', 'main')
+    if db_user:
+        if db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid:
+            return True
+
+    return False

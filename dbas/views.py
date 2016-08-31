@@ -6,18 +6,21 @@ Core component of DBAS.
 
 import json
 import time
+import requests
+import transaction
 
 import dbas.handler.news as NewsHandler
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.helper.notification as NotificationHelper
 import dbas.helper.voting as VotingHelper
+import dbas.review.helper.flags as ReviewFlagHelper
+import dbas.review.helper.subpage as ReviewPagerHelper
+import dbas.review.helper.queues as ReviewQueueHelper
+import dbas.review.helper.reputation as ReviewReputationHelper
+import dbas.review.helper.history as ReviewHistoryHelper
 import dbas.strings.matcher as FuzzyStringMatcher
 import dbas.user_management as UserManager
-import dbas.review.helper.page_manager as ReviewPagerHelper
-import dbas.review.helper.flag_handler as ReviewFlagHelper
-import requests
-import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
@@ -28,7 +31,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
 from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax, request_password
 from dbas.input_validator import Validator
-from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, get_user_by_private_or_public_nickname, get_text_for_statement_uid
+from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -248,7 +251,7 @@ class Dbas(object):
             return self.user_logout(True)
 
         ui_locales = get_language(self.request, get_current_registry())
-        is_author = UserManager.is_user_author(self.request.authenticated_userid)
+        is_author = is_user_author(self.request.authenticated_userid)
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
 
@@ -849,8 +852,8 @@ class Dbas(object):
         issue_dict = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        review_dict = ReviewPagerHelper.get_review_queues_array(mainpage, _tn, nickname)
-        count, all_rights = ReviewPagerHelper.get_reputation_of(nickname)
+        review_dict = ReviewQueueHelper.get_review_queues_array(mainpage, _tn, nickname)
+        count, all_rights = ReviewReputationHelper.get_reputation_of(nickname)
 
         return {
             'layout': Dbas.base_layout(),
@@ -859,11 +862,11 @@ class Dbas(object):
             'project': project_name,
             'extras': extras_dict,
             'review': review_dict,
-            'privilege_list': ReviewPagerHelper.get_privilege_list(_tn),
-            'reputation_list': ReviewPagerHelper.get_reputation_list(_tn),
+            'privilege_list': ReviewReputationHelper.get_privilege_list(_tn),
+            'reputation_list': ReviewReputationHelper.get_reputation_list(_tn),
             'issues': issue_dict,
-            'reputation': {'count': count,
-                           'has_all_rights': all_rights}
+            'reputation_borders': {'count': count,
+                                   'has_all_rights': all_rights}
         }
 
     # content page for reviews
@@ -916,7 +919,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        history = ReviewPagerHelper.get_history(mainpage, self.request.authenticated_userid, _tn)
+        history = ReviewHistoryHelper.get_history(mainpage, self.request.authenticated_userid, _tn)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
@@ -928,11 +931,11 @@ class Dbas(object):
             'history': history
         }
 
-    # reputation page for reviews
+    # reputation_borders page for reviews
     @view_config(route_name='review_reputation', renderer='templates/review_reputation.pt', permission='use')
     def review_reputation(self):
         """
-        View configuration for the review reputation.
+        View configuration for the review reputation_borders.
 
         :return: dictionary with title and project name as well as a value, weather the user is logged in
         """
@@ -947,7 +950,7 @@ class Dbas(object):
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        reputation_dict = ReviewPagerHelper.get_reputation_history(self.request.authenticated_userid, _tn)
+        reputation_dict = ReviewReputationHelper.get_reputation_history(self.request.authenticated_userid, _tn)
 
         return {
             'layout': Dbas.base_layout(),
@@ -955,7 +958,7 @@ class Dbas(object):
             'title': _tn.get(_tn.review),
             'project': project_name,
             'extras': extras_dict,
-            'reputation': reputation_dict
+            'reputation_borders': reputation_dict
         }
 
 

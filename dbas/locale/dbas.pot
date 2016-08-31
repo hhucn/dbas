@@ -382,7 +382,7 @@ msgstr ""
 msgid "unlimited_right_based_on_group"
 msgstr ""
 
-#. Default: Your current reputation count is:
+#. Default: Your current reputation_borders count is:
 #: ././templates/review.pt:32
 msgid "current_reputation_os"
 msgstr ""
@@ -407,7 +407,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#. Default: What is reputation? How do I earn (and lose) it?
+#. Default: What is reputation_borders? How do I earn (and lose) it?
 #: ././templates/review.pt:73
 msgid "what_is_reputation"
 msgstr ""
@@ -423,17 +423,17 @@ msgstr ""
 msgid "what_is_reputation_earn"
 msgstr ""
 
-#. Default: Basic use of D-BAS, does not require any reputation at all.
+#. Default: Basic use of D-BAS, does not require any reputation_borders at all.
 #: ././templates/review.pt:76
 msgid "what_is_reputation_use"
 msgstr ""
 
-#. Default: You gain reputation when:
+#. Default: You gain reputation_borders when:
 #: ././templates/review.pt:79
 msgid "gain_rep_when"
 msgstr ""
 
-#. Default: You lose reputation when:
+#. Default: You lose reputation_borders when:
 #: ././templates/review.pt:86
 msgid "lose_rep_when"
 msgstr ""
@@ -444,7 +444,7 @@ msgid "privileges"
 msgstr ""
 
 #. Default: Privileges control what you can see in the review queues of D-BAS.
-#. Gain more privileges by increasing your reputation.
+#. Gain more privileges by increasing your reputation_borders.
 #: ././templates/review.pt:96
 msgid "privileges_explanation"
 msgstr ""
@@ -1129,7 +1129,7 @@ msgstr ""
 
 #. Default: Reputation
 #: ././templates/review_reputation.pt:23
-msgid "reputation"
+msgid "reputation_borders"
 msgstr ""
 
 #. Default: (more)
