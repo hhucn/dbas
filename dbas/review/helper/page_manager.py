@@ -10,7 +10,7 @@ from sqlalchemy import and_
 from dbas.lib import get_user_by_private_or_public_nickname, get_text_for_argument_uid, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete, ReviewDeleteReason, Argument, ArgumentSeenBy
+from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete, ReviewDeleteReason, Argument, ArgumentSeenBy, ReputationReason
 from dbas.helper.relation import RelationHelper
 from dbas import user_management as _user_manager
 
@@ -86,7 +86,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
 
     if text is None and reason is None and stats is None:
         no_arguments_to_review = True
-        return{'elements': None, 'has_access': user_has_access, 'no_arguments_to_review': no_arguments_to_review}
+        return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     return __get_subpage_dict(ret_dict, True, no_arguments_to_review, button_set)
 
@@ -344,20 +344,48 @@ def get_reputation_history(nickname):
     return ret_dict
 
 
-def get_reputation_list():
+def get_privilege_list(translator):
     """
 
+    :param translator:
     :return:
     """
+    # todo use translator
+
     reputations = list()
-    reputations.append({'points': 1000, 'icon': 'fa fa-arrow-down', 'text': 'Some text'})
-    reputations.append({'points': 750, 'icon': 'fa fa-arrow-up', 'text': 'Some text'})
-    reputations.append({'points': 500, 'icon': 'fa fa-hand-o-up', 'text': 'Some text'})
-    reputations.append({'points': 250, 'icon': 'fa fa-hand-o-down', 'text': 'Review a statement with many contra-arguments'})
-    reputations.append({'points': 200, 'icon': 'fa fa-times', 'text': 'Decide, whether it is spam or not'})
-    reputations.append({'points': 100, 'icon': 'fa fa-trash', 'text': 'Decision about statement, which should be deleted'})
-    reputations.append({'points': 50, 'icon': 'fa fa-pencil-square-o', 'text': 'Review edited statements'})
+    # reputations.append({'points': 1000, 'icon': 'fa fa-arrow-down', 'text': 'Some text'})
+    # reputations.append({'points': 750, 'icon': 'fa fa-arrow-up', 'text': 'Some text'})
+    # reputations.append({'points': 500, 'icon': 'fa fa-hand-o-up', 'text': 'Some text'})
+    # reputations.append({'points': 250, 'icon': 'fa fa-hand-o-down', 'text': 'Review a statement with many contra-arguments'})
+    # reputations.append({'points': 200, 'icon': 'fa fa-times', 'text': 'Decide, whether it is spam or not'})
+    # reputations.append({'points': 100, 'icon': 'fa fa-trash', 'text': 'Decision about statement, which should be deleted'})
+    reputations.append({'points': 15, 'icon': 'fa fa-pencil-square-o', 'text': translator.get(translator.priv_access_opti_queue)})
+    reputations.append({'points': 15, 'icon': 'fa fa-flag', 'text': translator.get(translator.priv_access_del_queue)})
     return reputations
+
+
+def get_reputation_list(translator):
+    """
+
+    :param translator:
+    :return:
+    """
+    gains = list()
+    looses = list()
+
+    # todo use translator
+
+    db_gains = DBDiscussionSession.query(ReputationReason).filter(ReputationReason.points > 0).all()
+    for gain in db_gains:
+        gains.append({'text': translator.get(gain.reason),
+                      'points': '+' + str(gain.points)})
+
+    db_looses = DBDiscussionSession.query(ReputationReason).filter(ReputationReason.points < 0).all()
+    for loose in db_looses:
+        looses.append({'text': translator.get(loose.reason),
+                       'points': loose.points})
+
+    return {'gains': gains, 'looses': looses}
 
 
 def get_reputation_of(nickname):

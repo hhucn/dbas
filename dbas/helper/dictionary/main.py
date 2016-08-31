@@ -96,7 +96,7 @@ class DictionaryHelper(object):
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def')
         _uh = UserHandler
-        nickname = request.authenticated_userid if 'authenticated_userid' in request else 'anonymous'
+        nickname = request.authenticated_userid if request.authenticated_userid else 'anonymous'
         is_logged_in = _uh.is_user_logged_in(nickname)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 

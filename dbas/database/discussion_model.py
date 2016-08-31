@@ -794,3 +794,40 @@ class LastReviewerOptimization(DiscussionBase):
         self.reviewer_uid = reviewer
         self.review_uid = review
         self.is_okay = is_okay
+
+
+class ReputationHistory(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'reputation_history'
+    uid = Column(Integer, primary_key=True)
+    reputator_uid = Column(Integer, ForeignKey('users.uid'))
+
+    reputators = relationship('User', foreign_keys=[reputator_uid])
+
+    def __init__(self, reputator):
+        """
+
+        :param reputator:
+        """
+        self.reputator_uid = reputator
+
+
+class ReputationReason(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'reputation_reasons'
+    uid = Column(Integer, primary_key=True)
+    reason = Column(Text, nullable=False, unique=True)
+    points = Column(Integer, nullable=False)
+
+    def __init__(self, reason, points):
+        """
+
+        :param reason:
+        :param points:
+        """
+        self.reason = reason
+        self.points = points
