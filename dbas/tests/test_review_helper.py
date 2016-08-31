@@ -1,10 +1,11 @@
 import unittest
 
-import review.helper.page_manager as ReviewHelper
+import dbas.review.helper.page_manager as ReviewHelper
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.translator import Translator
 from sqlalchemy import engine_from_config
+from pyramid import testing
 
 settings = add_settings_to_appconfig()
 
@@ -29,33 +30,34 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('last_reviews' in d)
 
     def test_get_subpage_for(self):
-        from review.helper.page_manager import pages
+        from dbas.review.helper.page_manager import pages
+        request = testing.DummyRequest()
 
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('some page', 'some nick', Translator('en'))
-        self.assertIsNone(elements)
-        self.assertFalse(user_has_access)
-        self.assertTrue(arguments_to_review)
+        ret_dict = ReviewHelper.get_subpage_elements_for(request, 'some page', 'some nick', Translator('en'))
+        self.assertIsNone(ret_dict['elements'])
+        self.assertFalse(ret_dict['has_access'])
+        self.assertFalse(ret_dict['no_arguments_to_review'])
 
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for('some page', 'Tobias', Translator('en'))
-        self.assertIsNone(elements)
-        self.assertFalse(user_has_access)
-        self.assertTrue(arguments_to_review)
+        ret_dict = ReviewHelper.get_subpage_elements_for(request, 'some page', 'Tobias', Translator('en'))
+        self.assertIsNone(ret_dict['elements'])
+        self.assertFalse(ret_dict['has_access'])
+        self.assertFalse(ret_dict['no_arguments_to_review'])
 
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(pages[0], 'Tobias', Translator('en'))
-        self.assertIsNotNone(elements)
-        self.assertTrue(user_has_access)
-        self.assertTrue(arguments_to_review)
+        ret_dict = ReviewHelper.get_subpage_elements_for(request, pages[0], 'Tobias', Translator('en'))
+        self.assertIsNotNone(ret_dict['elements'])
+        self.assertTrue(ret_dict['has_access'])
+        self.assertFalse(ret_dict['no_arguments_to_review'])
 
-        elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(pages[0], 'some nick', Translator('en'))
-        self.assertIsNone(elements)
-        self.assertFalse(user_has_access)
-        self.assertTrue(arguments_to_review)
+        ret_dict = ReviewHelper.get_subpage_elements_for(request, pages[0], 'some nick', Translator('en'))
+        self.assertIsNone(ret_dict['elements'])
+        self.assertFalse(ret_dict['has_access'])
+        self.assertFalse(ret_dict['no_arguments_to_review'])
 
         for page in pages:
-            elements, user_has_access, arguments_to_review = ReviewHelper.get_subpage_elements_for(page, 'Tobias', Translator('en'))
-            self.assertIsNotNone(elements)
-            self.assertTrue(user_has_access)
-            self.assertTrue(arguments_to_review)
+            ret_dict = ReviewHelper.get_subpage_elements_for(request, page, 'Tobias', Translator('en'))
+            self.assertIsNotNone(ret_dict['elements'])
+            self.assertTrue(ret_dict['has_access'])
+            self.assertFalse(ret_dict['no_arguments_to_review'])
 
     def test_get_reputation_history(self):
         self.assertEqual(len(ReviewHelper.get_reputation_history('Bla')), 0)
@@ -69,7 +71,12 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('points' in h)
 
     def test_get_reputation_list(self):
-        some_list = ReviewHelper.get_reputation_list()
+        some_list = ReviewHelper.get_reputation_list(Translator('en'))
+        self.assertTrue('gains' in some_list)
+        self.assertTrue('looses' in some_list)
+
+    def test_get_privilege_list(self):
+        some_list = ReviewHelper.get_privilege_list(Translator('en'))
         for element in some_list:
             self.assertTrue('points' in element)
             self.assertTrue('icon' in element)
