@@ -71,7 +71,14 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertTrue('points' in h)
 
     def test_get_reputation_list(self):
-        some_list = ReviewHelper.get_reputation_list()
+        some_list = ReviewHelper.get_reputation_list(Translator('en'))
+        for element in some_list:
+            self.assertTrue('points' in element)
+            self.assertTrue('icon' in element)
+            self.assertTrue('text' in element)
+
+    def test_get_privilege_list(self):
+        some_list = ReviewHelper.get_privilege_list(Translator('en'))
         for element in some_list:
             self.assertTrue('points' in element)
             self.assertTrue('icon' in element)
