@@ -59,6 +59,11 @@ def flag_argument(argument_uid, reason, nickname, translator, transaction):
             ret_info = translator.get(translator.alreadyFlaggedByYou)
             return ret_success, ret_info, ret_error
 
+        # was this argument flagged already?
+        if __is_argument_flagged_for_delete(argument_uid, is_executed=False) or __is_argument_flagged_for_optimization(argument_uid, is_executed=False):
+            ret_info = translator.get(translator.alreadyFlaggedByOthers)
+            return ret_success, ret_info, ret_error
+
         # flagged for the first time
         __add_optimization_review(argument_uid, db_user.uid, transaction)
         ret_success = translator.get(translator.thxForFlagText)
