@@ -1924,6 +1924,28 @@ class Dbas(object):
             return return_dict
         return json.dumps(return_dict, True)
 
+    # ajax - for additional service
+    @view_config(route_name='ajax_additional_service', renderer='json')
+    def additional_service(self):
+        """
+
+        :return: json-dict()
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('additional_service', 'def', 'main, self.request.params: ' + str(self.request.params))
+
+        rtype = self.request.params['type']
+
+        if rtype == "chuck":
+            data = requests.get('http://api.icndb.com/jokes/random')
+        else:
+            data = requests.get('http://api.yomomma.info/')
+
+        for a in data.json():
+            logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
+
+        return data.json()
+
     # ajax - for flagging arguments
     @view_config(route_name='ajax_flag_argument', renderer='json')
     def flag_argument(self):
@@ -1961,24 +1983,26 @@ class Dbas(object):
 
         return json.dumps(return_dict, True)
 
-    # ajax - for additional service
-    @view_config(route_name='ajax_additional_service', renderer='json')
-    def additional_service(self):
+    # ajax - for feedback on flagged arguments
+    @view_config(route_name='ajax_review_delete_argument', renderer='json')
+    def review_delete_argument(self):
         """
 
-        :return: json-dict()
+        :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('additional_service', 'def', 'main, self.request.params: ' + str(self.request.params))
+        logger('review_delete_argument', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
 
-        rtype = self.request.params['type']
+        try:
+            should_delete = True if str(self.request.params['should_delete']) == 'true' else False
+            nickname = self.request.authenticated_userid
 
-        if rtype == "chuck":
-            data = requests.get('http://api.icndb.com/jokes/random')
-        else:
-            data = requests.get('http://api.yomomma.info/')
+            return_dict['error'] = ''
+        except KeyError as e:
+            logger('review_delete_argument', 'error', repr(e))
+            return_dict['error'] = _t.get(_t.internalKeyError)
 
-        for a in data.json():
-            logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
-
-        return data.json()
+        return json.dumps(return_dict, True)
