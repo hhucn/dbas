@@ -4,6 +4,7 @@
  */
 
 $(document).ready(function () {
+	// buttons
 	var optimization_ack = $('#optimization_ack');
 	var optimization_nack = $('#optimization_nack');
 	var optimization_skip = $('#optimization_skip');
@@ -11,12 +12,27 @@ $(document).ready(function () {
 	var delete_nack = $('#delete_nack');
 	var delete_skip = $('#delete_skip');
 	
-	optimization_skip.click(function(){
-		location.reload();
-	});
+	// text
+	var more_about_reason = $('#more_about_reason');
+	var less_about_reason = $('#less_about_reason');
+	var more_about_reason_content = $('#more_about_reason_content');
 	
-	delete_skip.click(function(){
-		location.reload();
+	optimization_ack.click(function(){ do_optimization_ack(); });
+	optimization_nack.click(function(){ do_optimization_nack(); });
+	optimization_skip.click(function(){ location.reload(); });
+	delete_ack.click(function(){ do_delete_ack(); });
+	delete_nack.click(function(){ do_delete_nack(); });
+	delete_skip.click(function(){ location.reload(); });
+	
+	more_about_reason.click(function() {
+		$(this).hide();
+		less_about_reason.show();
+		more_about_reason_content.show();
+	});
+	less_about_reason.click(function() {
+		$(this).hide();
+		more_about_reason.show();
+		more_about_reason_content.hide();
 	});
 });
 
