@@ -415,9 +415,10 @@ def get_reputation_list(translator):
 
 def get_reputation_of(nickname):
     """
+    Return the total sum of reputation points for the given nickname
 
-    :param nickname:
-    :return:
+    :param nickname: Nickname of the user
+    :return: Integer and Boolean, if the user is author
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     count = 0
