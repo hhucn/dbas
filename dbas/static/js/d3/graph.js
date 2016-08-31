@@ -101,22 +101,22 @@ function DiscussionGraph() {
 
 		// node
    		var node = createNodes(svg, force, drag);
-    	var circle = setNodeProperties(node);
+		var circle = setNodeProperties(node);
 
 		// tooltip
 		// rect as background of label
 		var rect = node.append("rect");
 		var label = createLabel(node);
-		setRectProperties(rect/*, label*/);
+		setRectProperties(rect);
 
 		// legend
         createLegend();
 		// call updated legend
         var legend = d3.svg.legend();
 		// set position of legend
-		var legendHeight = height - 200;
+		var legendHeight = 3*height/5;
         d3.select("svg").append("g")
-            .attr("transform", "translate(30, " + legendHeight + ")")
+            .attr("transform", "translate(20, " + legendHeight + ")")
             .call(legend);
 
 		// buttons of sidebar
@@ -145,6 +145,8 @@ function DiscussionGraph() {
 		    label.attr("transform", function (d) {
   			        return "translate(" + d.x + "," + (d.y - 50) + ")";});
 		}
+
+		svg.order();
 
 		moveToBack(circle, svg);
 
@@ -308,7 +310,7 @@ function DiscussionGraph() {
 	function setNodeProperties(node){
 		return node.append("circle")
       		.attr({r: function(d){ return d.size; },
-				   fill: function(d){ return d.color},
+				   fill: function(d){ return d.color;},
 				   id: function (d) { return d.id;}
 			});
 	}
@@ -395,11 +397,11 @@ function DiscussionGraph() {
         .data(legendLabelCircle)
         .enter().append("circle")
 		.attr("id", 1)
-		.attr({fill: function (d,i) {return legendColorCircle[i]},
+		.attr({fill: function (d,i) {return legendColorCircle[i];},
                r: function (d,i) {
 	               if(i == 0) { return 8; }
 				   else { return 6; }},
-			   cy: function (d,i) {return i*40}});
+			   cy: function (d,i) {return i*40;}});
 	}
 
 	/**
@@ -413,9 +415,9 @@ function DiscussionGraph() {
 		selection.selectAll(".rect")
 		.data(legendLabelRect)
         .enter().append("rect")
-		.attr({fill: function (d,i) {return legendColorRect[i]},
+		.attr({fill: function (d,i) {return legendColorRect[i];},
                width: 15, height: 5,
-			   x: -7, y: function (d,i) {return i*40+118}});
+			   x: -7, y: function (d,i) {return i*40+118;}});
 	}
 
 	/**
