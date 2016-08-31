@@ -60,8 +60,8 @@ class ReviewHelperTest(unittest.TestCase):
             self.assertFalse(ret_dict['no_arguments_to_review'])
 
     def test_get_reputation_history(self):
-        self.assertEqual(len(ReviewHelper.get_reputation_history('Bla')), 0)
-        history = ReviewHelper.get_reputation_history('Tobias')
+        self.assertEqual(len(ReviewHelper.get_reputation_history('Bla', Translator('en'))), 0)
+        history = ReviewHelper.get_reputation_history('Tobias', Translator('en'))
         self.assertTrue(len(history) > 0)
         self.assertTrue('count' in history)
         self.assertTrue('history' in history)
