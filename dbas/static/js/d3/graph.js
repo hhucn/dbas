@@ -156,9 +156,7 @@ function DiscussionGraph() {
 		circle.on("click", function()
 		{
 			var circleId = this.id;
-            showPartOfGraph(edges, force, circleId);
-			showEdgesWithTwoLinks(edges, circleId);
-
+            showPartOfGraph(edges, circleId);
 		});
 	};
 
@@ -529,76 +527,88 @@ function DiscussionGraph() {
 		});
 	}
 
-    function showPartOfGraph(edges, force, circleId) {
+	/**
+	 * Highlight incoming and outgoing edges of selected node.
+	 *
+	 * @param edges: all edges of graph
+	 * @param circleId: id of selected node
+	 */
+    function showPartOfGraph(edges, circleId) {
+		var edgesCircleId = [];
 		edges.forEach(function(d){
 			if(d.source.id === circleId || d.target.id === circleId){
-				// edges
-                d3.select('#' + d.id).style('stroke', d.color);
-				// nodes
-				d3.select('#' + d.source.id).attr('fill', d.source.color);
-				force.nodes().forEach(function (selected) {
-				    if((selected.id === 'issue' && d.target.id != circleId)){
-                        // color for issue, if issue is not selected
-   				        d3.select('#' + selected.id).attr('fill', '#E0E0E0');
-				    }
-					else{
-				        d3.select('#' + d.target.id).attr('fill', d.target.color);
-				    }
-				// arrows
-				d3.select("#marker_" + d.edge_type + d.id).attr('fill', d.color);
-			});
+				edgesCircleId.push(d);
+			}});
+		edges.forEach(function(d){
+			grayingElements(d);
+		});
+		edgesCircleId.forEach(function (d) {
+            highlightElements(d);
+		});
+
+	    // virtual nodes
+		var virtualNodes = [];
+		edgesCircleId.forEach(function (d) {
+			if(d.source.label === ''){
+		        virtualNodes.push(d.source);
 			}
-			else{
-				// edges
-                d3.select('#' + d.id).style('stroke', '#E0E0E0');
-				// nodes
-				d3.select('#' + d.source.id).attr('fill', '#E0E0E0');
-				// arrows
-				d3.select("#marker_" + d.edge_type + d.id).attr('fill', '#E0E0E0');
+			if(d.target.label === ''){
+		        virtualNodes.push(d.target);
 			}
 		});
+
+		highlightElementsVirtualNodes(virtualNodes, edges);
 	}
 
-	function showEdgesWithTwoLinks(edges, circleId){
-		var edge;
-		var idOfNextEdge;
-		edges.forEach(function(d) {
-			if(d.source.id === circleId || d.target.id === circleId){
-				if (d.source.label === '' || d.target.label === ''){
-				    if(d.id.charAt(d.id.length-1) === '0') {
-					    idOfNextEdge = (d.id.substring(0, d.id.length - 1) + '1');
-						edges.forEach(function (selected) {
-							if(selected.id === idOfNextEdge){
-								edge = selected;
-							}
-						});
-						if(edge != null){
-							// edge
-							d3.select('#' + idOfNextEdge).style('stroke', d.color);
-						    // node
-				            d3.select('#' + edge.source.id).attr('fill', edge.source.color);
-							// arrow
-					        d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
-						}
+	/**
+	 * Highlight incoming and outgoing edges of virtual node.
+	 *
+	 * @param virtualNodes
+	 * @param edges
+     */
+	function highlightElementsVirtualNodes(virtualNodes, edges) {
+		var edgesVirtualNodes = [];
+		if (virtualNodes != null) {
+			edges.forEach(function (d) {
+				virtualNodes.forEach(function (e) {
+					if (d.source.id === e.id || d.target.id === e.id) {
+						edgesVirtualNodes.push(d);
 					}
-					else if(d.id.charAt(d.id.length-1) === '1') {
-						idOfNextEdge = (d.id.substring(0, d.id.length - 1) + '0');
-						edges.forEach(function (selected) {
-							if(selected.id === idOfNextEdge){
-								edge = selected;
-							}
-						});
-						if(edge != null) {
-							//edge
-							d3.select('#' + idOfNextEdge).style('stroke', d.color);
-							//node
-							d3.select('#' + edge.target.id).attr('fill', edge.target.color);
-							// arrow
-							d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
-						}
-					}
-				}
-			}
-		});
+				});
+			});
+			edgesVirtualNodes.forEach(function (e) {
+				highlightElements(e);
+			});
+		}
+	}
+
+	/**
+	 * Graying components of graph.
+	 *
+	 * @param edge: edge that should be gray
+     */
+	function grayingElements(edge) {
+		// edges
+        d3.select('#' + edge.id).style('stroke', '#E0E0E0');
+		// nodes
+		d3.select('#' + edge.source.id).attr('fill', '#E0E0E0');
+		d3.select('#' + edge.target.id).attr('fill', '#E0E0E0');
+		// arrows
+		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', '#E0E0E0');
+	}
+
+	/**
+	 * Highlighting components of graph.
+	 *
+	 * @param edge: edge that should be highlighted
+     */
+	function highlightElements(edge){
+		// edges
+		d3.select('#' + edge.id).style('stroke', edge.color);
+		// nodes
+		d3.select('#' + edge.source.id).attr('fill', edge.source.color);
+		d3.select('#' + edge.target.id).attr('fill', edge.target.color);
+		// arrows
+		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
 	}
 }
