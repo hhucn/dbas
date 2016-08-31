@@ -6,6 +6,8 @@
 $(document).ready(function () {
 	var tabs = $('#review-tabs');
 	var id;
+	
+	// action for each tab
 	$.each(tabs.find('a'), function(){
 		$(this).click(function () {
 			id = $(this).attr('href');
@@ -20,6 +22,9 @@ $(document).ready(function () {
 	$(id).show();
 });
 
+/**
+ *
+ */
 function hideAll(){
 	var tabs = $('#review-tabs');
 	var id;
