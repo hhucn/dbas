@@ -1,0 +1,82 @@
+<tal:block metal:use-macro="layout" i18n:domain="review" metal:define-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<div class="container colored-container" tal:condition="not:subpage.has_access">
+            <h5>You have to earn more reputation for this queue!</h5>
+			<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
+		</div>
+
+		<div class="container colored-container" tal:condition="subpage.has_access and subpage.no_arguments_to_review">
+            <h5>No arguments to review in this queue!</h5>
+		</div>
+
+		<div class="container colored-container" tal:condition="subpage.has_access">
+            <div class="row">
+                <div class="col-md-offset-1 col-md-6">
+                    <h6>${structure:subpage.elements.reviewed_argument.reason}
+                        <a id="more_about_reason"  href="#" i18n:translate="wrapped_more">(more)</a>
+                        <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
+                    </h6>
+                    <blockquote id="more_about_reason_content" style="display:none;">
+                        <ul tal:condition="subpage.button_set.is_delete" style="padding-left:  0.5em">
+                            <li><span class="text-success" i18n:translate="its_okay">It's Okay</span> <span i18n:translate="its_okay_explanation">for arguments, which should not be deleted.</span></li>
+                            <li><span class="text-danger" i18n:translate="delete_it">Delete it</span> <span i18n:translate="delete_it_explanation">for arguments, that should be deleted based on the reason above.</span></li>
+                            <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
+                        </ul>
+                        <ul tal:condition="subpage.button_set.is_optimize" style="padding-left: 0.5em">
+                            <li><span class="text-success" i18n:translate="correct_it">Let me correct it</span> <span i18n:translate="correct_it_explanation">, if you have an idea for a better formulation with the same content.</span></li>
+                            <li><span class="text-danger" i18n:translate="its_okay_so">It's okay so</span> <span i18n:translate="its_okay_so_explanation">for arguments, which can be understood as-is</span></li>
+                            <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
+                        </ul>
+                    </blockquote>
+                </div>
+                <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_delete">
+                    <a id="delete_skip" href="#" class="review-button-delete btn btn-info btn-sm pull-right" i18n:translate="skip_it">Skip it</a>
+                    <a id="delete_nack" href="#" class="review-button-delete btn btn-danger btn-sm pull-right" i18n:translate="delete_it">Delete it</a>
+                    <a id="delete_ack" href="#" class="review-button-delete btn btn-success btn-sm pull-right" i18n:translate="its_okay">It's Okay</a>
+                </div>
+                <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_optimize">
+                    <a id="optimization_skip" href="#" class="review-button-optimize btn btn-info btn-sm pull-right" i18n:translate="skip_it">Skip it</a>
+                    <a id="optimization_nack" href="#" class="review-button-optimize btn btn-danger btn-sm pull-right" i18n:translate="its_okay_so">It's okay so</a>
+                    <a id="optimization_ack" href="#" class="review-button-optimize btn btn-success btn-sm pull-right" i18n:translate="correct_it">Let me correct it</a>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-offset-1 col-md-6">
+                    <div class="well well-sm center" style="text-align: justify;">
+                        <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                        <span class="lead" i18n:attributes="data-uid elements.reviewed_argument.stats.id">${structure:subpage.elements.reviewed_argument.text}</span>
+                        <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                    </div>
+                </div>
+                <div class="col-md-offset-2 col-md-3">
+                    <table class="table table-condensed pull-right" border="0" style="font-size: 14px;">
+                        <tbody>
+                            <tr>
+                                <td i18n:translate="reported">Reported</td>
+                                <td>${subpage.elements.reviewed_argument.stats.reported}</td>
+                            </tr>
+                            <tr>
+                                <td i18n:translate="viewed">Viewed</td>
+                                <td>${subpage.elements.reviewed_argument.stats.viewed}</td>
+                            </tr>
+                            <tr>
+                                <td i18n:translate="attacks">Attacks</td>
+                                <td>${subpage.elements.reviewed_argument.stats.attacks}</td>
+                            </tr>
+                            <tr>
+                                <td i18n:translate="supports">Supports</td>
+                                <td>${subpage.elements.reviewed_argument.stats.supports}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <small class="text-muted pull-right">ID: ${subpage.elements.reviewed_argument.stats.id}</small>
+        </div>
+
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}"></script>
+
+	</tal:block>
+</tal:block>

@@ -997,6 +997,7 @@ function AjaxNotificationHandler(){
 }
 
 function AjaxGraphHandler(){
+	
 	/**
 	 * Requests JSON-Object
 	 * @param uid: current id in url
@@ -1049,4 +1050,28 @@ function AjaxGraphHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
+}
+
+function AjaxReviewHandler(){
+	
+	/**
+	 *
+	 * @param should_delete
+	 */
+	this.reviewDeleteArgument = function(should_delete){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_review_delete_argument',
+			method: 'GET',
+			data:{ 'should_delete': should_delete },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function reviewDeleteArgumentDone(data) {
+			new ReviewCallbacks().forReviewDeleteArgument(data);
+		}).fail(function reviewDeleteArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	}
+	
 }
