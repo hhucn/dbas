@@ -51,15 +51,8 @@ Security
     :members:
 
 
-String Matcher
-==============
-
-.. automodule:: dbas.strings.matcher
-    :members:
-
-
-I18N
-====
+String Matcher / i18n
+=====================
 
 .. automodule:: dbas.strings.matcher
     :members:
@@ -68,7 +61,7 @@ I18N
 Text-Generator
 ==============
 
-.. automodule:: dbas.string.text_generator
+.. automodule:: dbas.strings.text_generator
     :members:
 
 
@@ -115,7 +108,7 @@ Dictionary Helper for Discussion
 Dictionary Helper for Item
 ==========================
 
-.. automodule:: dbas.helper.dictionary.main
+.. automodule:: dbas.helper.dictionary.items
     :members:
 
 
@@ -166,3 +159,23 @@ Voting Helper
 
 .. automodule:: dbas.helper.voting
     :members:
+
+
+======
+Review
+======
+
+
+Flag Helper
+===========
+
+.. automodule:: dbas.review.helper.flag_handler
+    :members:
+
+
+Page Manager
+============
+
+.. automodule:: dbas.review.helper.page_manager
+    :members:
+
