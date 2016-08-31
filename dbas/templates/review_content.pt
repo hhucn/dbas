@@ -46,7 +46,7 @@
                 <div class="col-md-offset-1 col-md-6">
                     <div class="well well-sm center" style="text-align: justify;">
                         <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                        <span class="lead">${structure:subpage.elements.reviewed_argument.text}</span>
+                        <span class="lead" i18n:attributes="data-uid elements.reviewed_argument.stats.id">${structure:subpage.elements.reviewed_argument.text}</span>
                         <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                     </div>
                 </div>
