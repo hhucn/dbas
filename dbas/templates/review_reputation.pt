@@ -4,8 +4,8 @@
 		<div class="container colored-container">
             <div class="row">
                 <div class="col-md-8">
-                    <h4>
-                        <span tal:condition="reputation.all_rights" i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</span> 
+                    <h4 class="center">
+                        <span tal:condition="reputation.all_rights" i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</span>
                         <span i18n:translate="reputation_count">Reputation count</span>: ${reputation.count}
                     </h4>
                 </div>
