@@ -424,10 +424,9 @@ class Dbas(object):
         discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
             .get_dict_for_start()
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
-                                                                                            False, True, nickname,
+                                                                                            False, True, self.request,
                                                                                             application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+                                                                                            for_api=for_api)
 
         if len(item_dict) == 0:
             DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
@@ -490,10 +489,9 @@ class Dbas(object):
             .prepare_item_dict_for_attitude(statement_id)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False,
                                                                                             False, True, False, True,
-                                                                                            nickname,
+                                                                                            self.request,
                                                                                             application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+                                                                                            for_api=for_api)
         return_dict = dict()
         return_dict['issues'] = issue_dict
         return_dict['discussion'] = discussion_dict
@@ -637,11 +635,10 @@ class Dbas(object):
         discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
         item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True, True,
-                                                                                            True, nickname,
+                                                                                            True, self.request,
                                                                                             argument_id=arg_id_sys,
                                                                                             application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+                                                                                            for_api=for_api)
 
         return_dict = dict()
         return_dict['issues'] = issue_dict
@@ -736,10 +733,9 @@ class Dbas(object):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
-                                                                                            True, True, nickname,
+                                                                                            True, True, self.request,
                                                                                             application_url=mainpage,
-                                                                                            for_api=for_api,
-                                                                                            request=self.request)
+                                                                                            for_api=for_api)
 
         return_dict = dict()
         return_dict['issues'] = issue_dict
@@ -802,10 +798,9 @@ class Dbas(object):
         discussion_dict = _ddh.get_dict_for_jump(arg_uid)
         item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
         extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
-                                                                                        True, True, nickname,
+                                                                                        True, True, self.request,
                                                                                         application_url=mainpage,
-                                                                                        for_api=for_api,
-                                                                                        request=self.request)
+                                                                                        for_api=for_api)
 
         return_dict = dict()
         return_dict['issues'] = issue_dict

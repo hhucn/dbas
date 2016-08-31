@@ -73,11 +73,11 @@ class DictionaryHelper(object):
         :param append_notifications: Boolean
         :return: dict()
         """
-        return self.prepare_extras_dict('', False, False, False, False, False, request.authenticated_userid, append_notifications=append_notifications, request=request)
+        return self.prepare_extras_dict('', False, False, False, False, False, request, append_notifications=append_notifications)
 
     def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_island_icon,
-                            show_expert_icon, authenticated_userid, argument_id=0, application_url='', for_api=False,
-                            append_notifications=False, request=None):
+                            show_expert_icon, request, argument_id=0, application_url='', for_api=False,
+                            append_notifications=False):
         """
         Creates the extras.dict() with many options!
 
@@ -87,18 +87,17 @@ class DictionaryHelper(object):
         :param show_bar_icon: Boolean
         :param show_island_icon: Boolean
         :param show_expert_icon: Boolean
-        :param authenticated_userid: User.nickname
+        :param request: Request
         :param argument_id: Argument.uid
         :param application_url: String
         :param for_api: Boolean
         :param append_notifications: Boolean
-        :param request: Request
         :return: dict()
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def')
         _uh = UserHandler
-        is_logged_in = _uh.is_user_logged_in(authenticated_userid)
-        nickname = authenticated_userid if authenticated_userid else 'anonymous'
+        nickname = request.authenticated_userid if 'authenticated_userid' in request else 'anonymous'
+        is_logged_in = _uh.is_user_logged_in(nickname)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         # get anti-spam-question
@@ -112,7 +111,6 @@ class DictionaryHelper(object):
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = nickname
-        return_dict['users_name']                    = str(authenticated_userid)
         return_dict['add_premise_container_style']   = 'display: none'
         return_dict['add_statement_container_style'] = 'display: none'
         return_dict['users_avatar']                  = _uh.get_profile_picture(db_user)
@@ -125,8 +123,8 @@ class DictionaryHelper(object):
         if not for_api:
             return_dict['is_editable']                   = is_editable and is_logged_in
             return_dict['is_reportable']                 = is_reportable
-            return_dict['is_admin']                         = _uh.is_user_in_group(authenticated_userid, 'admins')
-            return_dict['is_author']                     = _uh.is_user_in_group(authenticated_userid, 'authors')
+            return_dict['is_admin']                      = _uh.is_user_in_group(nickname, 'admins')
+            return_dict['is_author']                     = _uh.is_user_in_group(nickname, 'authors')
             return_dict['show_bar_icon']                 = show_bar_icon
             return_dict['show_island_icon']              = show_island_icon
             return_dict['show_expert_icon']              = show_expert_icon
@@ -138,10 +136,10 @@ class DictionaryHelper(object):
             self.add_tag_text(return_dict)
 
             message_dict = dict()
-            message_dict['new_count']    = NotificationHelper.count_of_new_notifications(authenticated_userid)
+            message_dict['new_count']    = NotificationHelper.count_of_new_notifications(nickname)
             message_dict['has_unread']   = (message_dict['new_count'] > 0)
-            inbox = NotificationHelper.get_box_for(authenticated_userid, self.system_lang, application_url, True)
-            outbox = NotificationHelper.get_box_for(authenticated_userid, self.system_lang, application_url, False)
+            inbox = NotificationHelper.get_box_for(nickname, self.system_lang, application_url, True)
+            outbox = NotificationHelper.get_box_for(nickname, self.system_lang, application_url, False)
             if append_notifications:
                 message_dict['inbox']    = inbox
                 message_dict['outbox']   = outbox
