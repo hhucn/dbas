@@ -1,12 +1,24 @@
 /**
- * Created by tobias on 31.08.16.
+ * @author Tobias Krauthoff
+ * @email krauthoff@cs.uni-duesseldorf.de
  */
 
 $(document).ready(function () {
 	$('.review-undo').click(function(){
 		var queue = $(this).data('queue');
 		var id = $(this).data('id');
-		
+		new ReviewHistory().showUndoPopup(queue, id);
+	})
+});
+
+function ReviewHistory(){
+	
+	/**
+	 *
+	 * @param queue
+	 * @param id
+	 */
+	this.showUndoPopup = function(queue, id){
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' h4.modal-title').text(_t(caution));
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(_t(sureToDeleteReview));
@@ -17,11 +29,7 @@ $(document).ready(function () {
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		});
-	})
-});
-
-function ReviewHistory(){
-	
+	}
 }
 
 function ReviewHistoryCallbacks(){
