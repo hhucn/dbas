@@ -25,7 +25,7 @@
                         </ul>
                         <ul tal:condition="subpage.button_set.is_optimize" style="padding-left: 0.5em">
                             <li><span class="text-success" i18n:translate="correct_it">Let me correct it</span> <span i18n:translate="correct_it_explanation">, if you have an idea for a better formulation with the same content.</span></li>
-                            <li><span class="text-danger" i18n:translate="its_okay_so">It's okay so</span> <span i18n:translate="its_okay_so_explanation">for arguments, which can be understood as-is</span></li>
+                            <li><span class="text-danger" i18n:translate="its_okay_so">It's okay so</span> <span i18n:translate="its_okay_so_explanation">for arguments, which can be understood as-is.</span></li>
                             <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
                         </ul>
                     </blockquote>

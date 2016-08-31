@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-08-30 11:01+0200\n"
+"POT-Creation-Date: 2016-08-31 18:28+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -399,6 +399,170 @@ msgstr "is generated with Pyramid Web Framework"
 msgid "changes"
 msgstr "Changes in Version"
 
+#. Default: Queues
+#: templates/review.pt:7
+msgid "queues"
+msgstr "Queues"
+
+#. Default: How To
+#: templates/review.pt:8
+msgid "howto"
+msgstr "How To"
+
+#. Default: Help improve the dialog
+#: templates/review.pt:15
+msgid "help_to_improve"
+msgstr "Help improve the dialog"
+
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: templates/review.pt:16
+msgid "dbas_is_moderated_by"
+msgstr ""
+"D-BAS is moderated by you. Help your discussion members learn to argue and "
+"raise the quality of argumenty by:"
+
+#. Default: Evaluate new statements
+#: templates/review.pt:18
+msgid "evaluate_new_statements"
+msgstr "Evaluate new statements"
+
+#. Default: Reviewing suspicious statements
+#: templates/review.pt:19
+msgid "reviewing_suspicious_statements"
+msgstr "Reviewing suspicious statements"
+
+#. Default: Voting to close or reopen statements
+#: templates/review.pt:20
+msgid "voting_to_close"
+msgstr "Voting to close or reopen statements"
+
+#. Default: Choose a task to get started.
+#: templates/review.pt:22
+msgid "choose_task"
+msgstr "Choose a task to get started."
+
+#. Default: Based on your user group, you have all rights!
+#: templates/review.pt:29 templates/review_reputation.pt:8
+msgid "unlimited_right_based_on_group"
+msgstr "Based on your user group, you have all rights!"
+
+#. Default: Your current reputation count is:
+#: templates/review.pt:32
+msgid "current_reputation_os"
+msgstr "The current discussion is about:"
+
+#. Default: Open Tasks
+#: templates/review.pt:42
+msgid "open_tasks"
+msgstr "Open Tasks"
+
+#. Default: Topic
+#: templates/review.pt:43
+msgid "topic"
+msgstr "Topic"
+
+#. Default: Recent Reviews
+#: templates/review.pt:44
+msgid "recent_reviews"
+msgstr "Recent Reviews"
+
+#. Default: None
+#: templates/review.pt:61
+msgid "None"
+msgstr "None"
+
+#. Default: What is reputation? How do I earn (and lose) it?
+#: templates/review.pt:73
+msgid "what_is_reputation"
+msgstr "What is reputation? How do I earn (and lose) it?"
+
+#. Default: Reputation is a rough measurement of how work you are doing for the
+#. discussion and the community;
+#: templates/review.pt:74
+msgid "what_is_reputation_def"
+msgstr ""
+"Reputation is a rough measurement of how work you are doing for the "
+"discussion and the community;"
+
+#. Default: you can earn it by using D-BAS and all of its great functions.
+#: templates/review.pt:75
+msgid "what_is_reputation_earn"
+msgstr "you can earn it by using D-BAS and all of its great functions."
+
+#. Default: Basic use of D-BAS, does not require any reputation at all.
+#: templates/review.pt:76
+msgid "what_is_reputation_use"
+msgstr "Basic use of D-BAS, does not require any reputation at all."
+
+#. Default: You gain reputation when:
+#: templates/review.pt:79
+msgid "gain_rep_when"
+msgstr "You gain reputation when:"
+
+#. Default: You lose reputation when:
+#: templates/review.pt:86
+msgid "lose_rep_when"
+msgstr "You lose reputation when:"
+
+#. Default: Privileges
+#: templates/review.pt:95
+msgid "privileges"
+msgstr "Privileges"
+
+#. Default: Privileges control what you can see in the review queues of D-BAS.
+#. Gain more privileges by increasing your reputation.
+#: templates/review.pt:96
+msgid "privileges_explanation"
+msgstr ""
+"Privileges control what you can see in the review queues of D-BAS. Gain more "
+"privileges by increasing your reputation."
+
+#. Default: The history of votes!
+#: templates/review_history.pt:7
+msgid "history_of_votes"
+msgstr "The history of votes!"
+
+#. Default: No decisions for this queue.
+#: templates/review_history.pt:16
+msgid "no_decision_for_this_queue"
+msgstr "No decisions for this queue."
+
+#. Default: Votes
+#: templates/review_history.pt:21
+msgid "votes"
+msgstr "Votes"
+
+#. Default: Voters Pro
+#: templates/review_history.pt:22
+msgid "voters_pro"
+msgstr "Voters Pro"
+
+#. Default: Voters Con
+#: templates/review_history.pt:23
+msgid "voters_con"
+msgstr "Voters Con"
+
+#. Default: Accepted
+#: templates/review_history.pt:24
+msgid "accepted"
+msgstr "Accepted"
+
+#. Default: Timestamp
+#: templates/review_history.pt:25
+msgid "timestamp"
+msgstr "Timestamp"
+
+#. Default: Action
+#: templates/review_history.pt:26
+msgid "actions"
+msgstr "Action"
+
+#. Default: Undo
+#: templates/review_history.pt:57
+msgid "undo"
+msgstr "Undo"
+
 #. Default: Imprint and Copyrights
 #: templates/snippet-footer.pt:11
 msgid "imprint_copyright"
@@ -769,7 +933,7 @@ msgid "success:"
 msgstr "Success:"
 
 #. Default: Date
-#: templates/snippet-popups.pt:585
+#: templates/snippet-popups.pt:585 templates/review_reputation.pt:21
 msgid "date"
 msgstr "Date"
 
@@ -790,23 +954,23 @@ msgstr "Please mark a reason"
 
 #. Default: The text needs and correcture.
 #: templates/snippet-popups.pt:745
-msgid "statement-optimization"
-msgstr "Send Notifcation"
+msgid "statement_optimization"
+msgstr "The text needs and correcture."
 
 #. Default: This statement is offtopic.
 #: templates/snippet-popups.pt:747
-msgid "statement-offtopic"
-msgstr "Statements"
+msgid "statement_offtopic"
+msgstr "This statement is offtopic."
 
 #. Default: It is not relevant at all.
 #: templates/snippet-popups.pt:749
-msgid "statement-spam"
-msgstr "Statements"
+msgid "statement_spam"
+msgstr "It is not relevant at all."
 
 #. Default: This statement is harmful or abusive.
 #: templates/snippet-popups.pt:751
-msgid "statement-harmful"
-msgstr "Statements"
+msgid "statement_harmful"
+msgstr "This statement is harmful or abusive."
 
 #. Default: Personal Information
 #: templates/settings.pt:7
@@ -1044,6 +1208,103 @@ msgstr "Let's go home!"
 msgid "back_to_the_discussion"
 msgstr "Back to the discussion!"
 
+#. Default: Reputation count
+#: templates/review_reputation.pt:9
+msgid "reputation_count"
+msgstr "Reputation count"
+
+#. Default: Action
+#: templates/review_reputation.pt:22
+msgid "action"
+msgstr "Action"
+
+#. Default: Reputation
+#: templates/review_reputation.pt:23
+msgid "reputation"
+msgstr "Reputation"
+
+#. Default: (more)
+#: templates/review_content.pt:17
+msgid "wrapped_more"
+msgstr "(more)"
+
+#. Default: (less)
+#: templates/review_content.pt:18
+msgid "wrapped_less"
+msgstr "(less)"
+
+#. Default: It's Okay
+#: templates/review_content.pt:22 templates/review_content.pt:36
+msgid "its_okay"
+msgstr "It's Okay"
+
+#. Default: for arguments, which should not be deleted.
+#: templates/review_content.pt:22
+msgid "its_okay_explanation"
+msgstr "for arguments, which should not be deleted."
+
+#. Default: Delete it
+#: templates/review_content.pt:23 templates/review_content.pt:35
+msgid "delete_it"
+msgstr "Delete it"
+
+#. Default: for arguments, that should be deleted based on the reason above.
+#: templates/review_content.pt:23
+msgid "delete_it_explanation"
+msgstr "for arguments, that should be deleted based on the reason above."
+
+#. Default: Skip it
+#: templates/review_content.pt:24 templates/review_content.pt:29
+#: templates/review_content.pt:34 templates/review_content.pt:39
+msgid "skip_it"
+msgstr "Skip it"
+
+#. Default: if you are not sure and want to go to the next argument.
+#: templates/review_content.pt:24 templates/review_content.pt:29
+msgid "skip_it_explanation"
+msgstr "if you are not sure and want to go to the next argument."
+
+#. Default: Let me correct it
+#: templates/review_content.pt:27 templates/review_content.pt:41
+msgid "correct_it"
+msgstr "Let me correct it"
+
+#. Default: , if you have an idea for a better formulation with the same
+#. content.
+#: templates/review_content.pt:27
+msgid "correct_it_explanation"
+msgstr ", if you have an idea for a better formulation with the same"
+
+#. Default: It's okay so
+#: templates/review_content.pt:28 templates/review_content.pt:40
+msgid "its_okay_so"
+msgstr "It's okay so"
+
+#. Default: for arguments, which can be understood as-is.
+#: templates/review_content.pt:28
+msgid "its_okay_so_explanation"
+msgstr "for arguments, which can be understood as-is."
+
+#. Default: Reported
+#: templates/review_content.pt:57
+msgid "reported"
+msgstr "Reported"
+
+#. Default: Viewed
+#: templates/review_content.pt:61
+msgid "viewed"
+msgstr "Viewed"
+
+#. Default: Attacks
+#: templates/review_content.pt:65
+msgid "attacks"
+msgstr "Attacks"
+
+#. Default: Supports
+#: templates/review_content.pt:69
+msgid "supports"
+msgstr "Supports"
+
 #. Default: You have got
 #: templates/notifications.pt:8
 msgid "youHaveGot"
@@ -1230,9 +1491,6 @@ msgstr "Complete View"
 #~ msgid "view_details"
 #~ msgstr "View Details"
 
-#~ msgid "votes!"
-#~ msgstr "Votes!"
-
 #~ msgid "arguments!"
 #~ msgstr "Arguments!"
 
@@ -1259,9 +1517,6 @@ msgstr "Complete View"
 
 #~ msgid "public_avatar"
 #~ msgstr "Public Avatar"
-
-#~ msgid "list_attacks"
-#~ msgstr "List of attacks, clicked by the participants"
 
 #~ msgid "admin_only"
 #~ msgstr "Some additional options for the administrator."
@@ -1304,9 +1559,6 @@ msgstr "Complete View"
 #~ msgid "forgot_input_radio"
 #~ msgstr "You forgot to choose the right interpretation"
 
-#~ msgid "save_my_statement"
-#~ msgstr "Save my Statement!"
-
 #~ msgid "and"
 #~ msgstr "and"
 
@@ -1340,12 +1592,6 @@ msgstr "Complete View"
 #~ msgid "fetchurl"
 #~ msgstr "Fetch long url!"
 
-#~ msgid "current_discussion"
-#~ msgstr "The current discussion is about"
-
-#~ msgid "what_is_your_idea"
-#~ msgstr "What is your idea? What should we do?"
-
 #~ msgid "forward"
 #~ msgstr "forward"
 
@@ -1360,9 +1606,6 @@ msgstr "Complete View"
 
 #~ msgid "total"
 #~ msgstr "total."
-
-#~ msgid "topics"
-#~ msgstr "Topics"
 
 #~ msgid "Because..."
 #~ msgstr "Because..."
@@ -1465,9 +1708,6 @@ msgstr "Complete View"
 #~ "view will present you a list of every connected statement for an specific "
 #~ "statement."
 
-#~ msgid "expert_view"
-#~ msgstr "Expert View"
-
 #~ msgid "expert_view_content"
 #~ msgstr ""
 #~ "So, you think you are an expert? Okay, you can have a view of the "
@@ -1490,9 +1730,6 @@ msgstr "Complete View"
 #~ "for the different needs of our users. In addition, we are developing "
 #~ "Thentos, an identity management system which ensures privacy during "
 #~ "complex participation processes."
-
-#~ msgid "graduation_scool"
-#~ msgstr "Graduation School"
 
 #~ msgid "fk_op"
 #~ msgstr "Online-Participation"
@@ -1542,9 +1779,6 @@ msgstr "Complete View"
 
 #~ msgid "ased"
 #~ msgstr "ased"
-
-#~ msgid "rgumentation"
-#~ msgstr "rgumentation"
 
 #~ msgid "oftware"
 #~ msgstr "oftware"
@@ -1731,9 +1965,6 @@ msgstr "Complete View"
 #~ msgstr ""
 #~ "Do never ever use negations! Every negation will be set extra! This is "
 #~ "highly important!"
-
-#~ msgid "report"
-#~ msgstr "Report"
 
 #~ msgid "insert-argument"
 #~ msgstr "Please insert a new Argument"
