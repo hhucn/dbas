@@ -10,7 +10,8 @@ from sqlalchemy import and_
 from dbas.lib import get_user_by_private_or_public_nickname, get_text_for_argument_uid, sql_timestamp_pretty_print, get_public_nickname_based_on_settings
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete, ReviewDeleteReason, Argument, ArgumentSeenBy, ReputationReason
+from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete, \
+    ReviewDeleteReason, Argument, ArgumentSeenBy, ReputationReason, ReputationHistory
 from dbas.helper.relation import RelationHelper
 from dbas import user_management as _user_manager
 
@@ -418,10 +419,17 @@ def get_reputation_of(nickname):
     :param nickname:
     :return:
     """
-    # db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     count = 0
 
-    # TODO
+    if db_user:
+        db_reputation = DBDiscussionSession.query(ReputationHistory)\
+            .filter_by(reputator_uid=db_user.uid)\
+            .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid)\
+            .all()
+
+        for reputation in db_reputation:
+            count += reputation.reputations.points
 
     return count, _user_manager.is_user_author(nickname)
 
