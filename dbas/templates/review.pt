@@ -69,79 +69,39 @@
 
             <div id="howto" class="center review-wrapper" style="display: none;">
                 <div class="left row">
-                    <div class="col-md-12" style="margin-top: 1em;">
+                    <div class="col-md-offset-2 col-md-8" style="margin-top: 1em;">
                         <h4 i18n:translate="what_is_reputation">What is reputation? How do I earn (and lose) it?</h4>
-                        <span>Reputation is a rough measurement of how work you are doing for the discussion and the community;</span>
-                        <span>you can earn it by it by ???</span>
-                        <span>Basic use of D-BAS, does not require any reputation at all.</span>
+                        <span i18n:translate="what_is_reputation_def">Reputation is a rough measurement of how work you are doing for the discussion and the community;</span>
+                        <span i18n:translate="what_is_reputation_earn">you can earn it by using D-BAS and all of its great functions.</span>
+                        <span i18n:translate="what_is_reputation_use">Basic use of D-BAS, does not require any reputation at all.</span>
                         <br>
                         <br>
-                        <strong>You gain reputation when:</strong>
+                        <strong i18n:translate="gain_rep_when">You gain reputation when:</strong>
                         <ul>
-                            <li>
-                                <span>question is voted up</span>:
-                                <span class="success-description">+5</span>
-                            </li>
-                            <li>
-                                <span>answer is voted up</span>:
-                                <span class="success-description">+10</span>
-                            </li>
-                            <li>
-                                <span>answer is marked “accepted”</span>:
-                                <span class="success-description">+15 (+2 to acceptor)</span>
-                            </li>
-                            <li>
-                                <span>suggested edit is accepted</span>:
-                                <span class="success-description">+2 (up to +1000 total per user)</span>
-                            </li>
-                            <li>
-                                <span>bounty awarded to your answer</span>:
-                                <span class="success-description">+ full bounty amount</span>
-                            </li>
-                            <li>
-                                <span>example you contributed to is voted up</span>:
-                                <span class="success-description">+5</span>
-                            </li>
-                            <li>
-                                <span>proposed change is approved</span>:
-                                <span class="success-description">+2</span>
-                            </li>
-                            <li>
-                                <span>first time an answer that cites documentation you contributed to is upvoted</span>:
-                                <span class="success-description">+5</span>
+                            <li tal:repeat="reputation reputation_list.gains">
+                                <span>${reputation.text}</span>:
+                                <span class="success-description">${reputation.points}</span>
                             </li>
                         </ul>
-                        <strong>You lose reputation when:</strong>
+                        <strong i18n:translate="lose_rep_when">You lose reputation when:</strong>
                         <ul>
-                            <li>
-                                <span>your question is voted down</span>:
-                                <span class="error-description">−2</span>
-                            </li>
-                            <li>
-                                <span>your answer is voted down</span>:
-                                <span class="error-description">−2</span>
-                            </li>
-                            <li>
-                                <span>you vote down an answer</span>:
-                                <span class="error-description">−1</span>
-                            </li>
-                            <li>
-                                <span>one of your posts receives 6 spam or offensive flags</span>:
-                                <span class="error-description">−100</span>
+                            <li tal:repeat="reputation reputation_list.looses">
+                                <span>${reputation.text}</span>:
+                                <span class="error-description">${reputation.points}</span>
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-12" style="margin-top: 1em;">
                         <h4 i18n:translate="privileges">Privileges</h4>
-                        <span>Privileges control what you can see in the review queues of D-BAS. Gain more privileges by increasing your reputation.</span>
+                        <span i18n:translate="privileges_explanation">Privileges control what you can see in the review queues of D-BAS. Gain more privileges by increasing your reputation.</span>
                         <br>
                         <br>
                         <table class="table table-condensed" border="0">
                             <tbody>
-                                <tr class="review-table-row" tal:repeat="rep reputation_list">
-                                    <td>${rep.points}</td>
-                                    <td><i class="" aria-hidden="true" tal:attributes="class rep.icon"></i></td>
-                                    <td>${rep.text}</td>
+                                <tr class="review-table-row" tal:repeat="privilege privilege_list">
+                                    <td>${privilege.points}</td>
+                                    <td><i class="" aria-hidden="true" tal:attributes="class privilege.icon"></i></td>
+                                    <td>${privilege.text}</td>
                                 </tr>
                             </tbody>
                         </table>
