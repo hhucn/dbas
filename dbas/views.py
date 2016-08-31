@@ -899,6 +899,35 @@ class Dbas(object):
             'subpage': subpage_dict
         }
 
+    # history page for reviews
+    @view_config(route_name='review_history', renderer='templates/review_history.pt', permission='use')
+    def review_history(self):
+        """
+        View configuration for the review history.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('review_history', 'main', 'def ' + str(self.request.matchdict))
+        ui_locales = get_language(self.request, get_current_registry())
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        _tn = Translator(ui_locales)
+        if session_expired:
+            return Dbas(self.request).user_logout(True)
+
+        history = ReviewPagerHelper.get_history(mainpage, self.request.authenticated_userid, _tn)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
+
+        return {
+            'layout': Dbas.base_layout(),
+            'language': str(ui_locales),
+            'title': _tn.get(_tn.review_history),
+            'project': project_name,
+            'extras': extras_dict,
+            'history': history
+        }
+
     # reputation page for reviews
     @view_config(route_name='review_reputation', renderer='templates/review_reputation.pt', permission='use')
     def review_reputation(self):
@@ -2003,6 +2032,33 @@ class Dbas(object):
             return_dict['error'] = ''
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
+            return_dict['error'] = _t.get(_t.internalKeyError)
+
+        return json.dumps(return_dict, True)
+
+    # ajax - for undoing reviews
+    @view_config(route_name='ajax_undo_review', renderer='json')
+    def undo_review(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('undo_review', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+
+        try:
+            queue = self.request.params['queue']
+            uid = self.request.params['uid']
+            nickname = self.request.authenticated_userid
+
+            return_dict['info'] = 'TODO: Remove ' + uid + ' in review queue ' + queue
+            return_dict['success'] = ''
+            return_dict['error'] = ''
+        except KeyError as e:
+            logger('undo_review', 'error', repr(e))
             return_dict['error'] = _t.get(_t.internalKeyError)
 
         return json.dumps(return_dict, True)

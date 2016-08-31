@@ -7,7 +7,7 @@ Provides helping function for the review page.
 import random
 from sqlalchemy import and_
 
-from dbas.lib import get_user_by_private_or_public_nickname, get_text_for_argument_uid, sql_timestamp_pretty_print
+from dbas.lib import get_user_by_private_or_public_nickname, get_text_for_argument_uid, sql_timestamp_pretty_print, get_public_nickname_based_on_settings
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, LastReviewerOptimization, LastReviewerDelete, ReviewDeleteReason, Argument, ArgumentSeenBy, ReputationReason
@@ -15,8 +15,9 @@ from dbas.helper.relation import RelationHelper
 from dbas import user_management as _user_manager
 
 pages = ['deletes', 'optimizations']
-reputation = {'deletes': 50,
-              'optimizations': 50}
+reputation = {'deletes': 15,
+              'optimizations': 15,
+              'history': 100}
 
 
 def get_review_queues_array(mainpage, translator, nickname):
@@ -35,6 +36,7 @@ def get_review_queues_array(mainpage, translator, nickname):
     review_list = list()
     review_list.append(__get_delete_dict(mainpage, translator, nickname))
     review_list.append(__get_optimization_dict(mainpage, translator, nickname))
+    review_list.append(__get_history_dict(mainpage, translator, nickname))
 
     return review_list
 
@@ -55,7 +57,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
     button_set = {'is_delete': False, 'is_optimize': False}
 
     # does the subpage exists
-    if subpage_name not in pages:
+    if subpage_name not in pages and subpage_name != 'history':
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     rep_count, all_rights = get_reputation_of(nickname)
@@ -154,6 +156,30 @@ def __get_optimization_dict(mainpage, translator, nickname):
                 'is_allowed_text': translator.get(translator.visitOptimizationQueue),
                 'is_not_allowed_text': translator.get(translator.visitOptimizationQueueLimitation).replace('XX', str(reputation[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, mainpage)
+                }
+    return tmp_dict
+
+
+def __get_history_dict(mainpage, translator, nickname):
+    """
+    Prepares dictionary for the a section.
+
+    :param mainpage: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    key = 'history'
+    count, all_rights = get_reputation_of(nickname)
+    tmp_dict = {'task_name': 'History',
+                'id': 'flags',
+                'url': mainpage + '/review/' + key,
+                'icon': 'fa fa-history',
+                'task_count': '-',
+                'is_allowed': count >= reputation[key] or all_rights,
+                'is_allowed_text': translator.get(translator.visitHistoryQueue),
+                'is_not_allowed_text': translator.get(translator.visitHistoryQueueLimitation).replace('XX', str(reputation[key])),
+                'last_reviews': list()
                 }
     return tmp_dict
 
@@ -350,7 +376,6 @@ def get_privilege_list(translator):
     :param translator:
     :return:
     """
-    # todo use translator
 
     reputations = list()
     # reputations.append({'points': 1000, 'icon': 'fa fa-arrow-down', 'text': 'Some text'})
@@ -359,8 +384,9 @@ def get_privilege_list(translator):
     # reputations.append({'points': 250, 'icon': 'fa fa-hand-o-down', 'text': 'Review a statement with many contra-arguments'})
     # reputations.append({'points': 200, 'icon': 'fa fa-times', 'text': 'Decide, whether it is spam or not'})
     # reputations.append({'points': 100, 'icon': 'fa fa-trash', 'text': 'Decision about statement, which should be deleted'})
-    reputations.append({'points': 15, 'icon': 'fa fa-pencil-square-o', 'text': translator.get(translator.priv_access_opti_queue)})
-    reputations.append({'points': 15, 'icon': 'fa fa-flag', 'text': translator.get(translator.priv_access_del_queue)})
+    reputations.append({'points': reputation['history'], 'icon': 'fa fa-history', 'text': translator.get(translator.priv_history_queue)})
+    reputations.append({'points': reputation['deletes'], 'icon': 'fa fa-pencil-square-o', 'text': translator.get(translator.priv_access_opti_queue)})
+    reputations.append({'points': reputation['optimizations'], 'icon': 'fa fa-flag', 'text': translator.get(translator.priv_access_del_queue)})
     return reputations
 
 
@@ -372,8 +398,6 @@ def get_reputation_list(translator):
     """
     gains = list()
     looses = list()
-
-    # todo use translator
 
     db_gains = DBDiscussionSession.query(ReputationReason).filter(ReputationReason.points > 0).all()
     for gain in db_gains:
@@ -397,4 +421,93 @@ def get_reputation_of(nickname):
     # db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     count = 0
 
+    # TODO
+
     return count, _user_manager.is_user_author(nickname)
+
+
+def __has_access_to_history(nickname):
+    """
+
+    :param nickname:
+    :return:
+    """
+    return _user_manager.is_user_author(nickname) or get_reputation_of(nickname) > reputation['history']
+
+
+def get_history(mainpage, nickname, translator):
+    """
+
+    :param nickname:
+    :return:
+    """
+    ret_dict = dict()
+    ret_dict['has_access'] = __has_access_to_history(nickname)
+
+    deletes_list = __get_executed_reviews_of(mainpage, ReviewDelete, LastReviewerDelete, translator.get_lang())
+    optimizations_list = __get_executed_reviews_of(mainpage, ReviewOptimization, LastReviewerOptimization, translator.get_lang())
+
+    past_decision = [
+        {
+            'title': 'Delete Queue',
+            'icon': 'fa fa-history',
+            'queue': 'deletes',
+            'content': deletes_list,
+        },
+        {
+            'title': 'Optimization Queue',
+            'queue': 'optimizations',
+            'icon': 'fa fa-flag',
+            'content': optimizations_list
+         }
+    ]
+    ret_dict['past_decision'] = past_decision
+
+    return ret_dict
+
+
+def __get_executed_reviews_of(mainpage, table_type, last_review_type, lang):
+    """
+
+    :param table_type:
+    :param last_review_type:
+    :param lang:
+    :return:
+    """
+    some_list = list()
+    db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == True).order_by(table_type.uid.desc()).all()
+    for review in db_reviews:
+        entry = dict()
+        pro_votes = DBDiscussionSession.query(last_review_type).filter(and_(last_review_type.review_uid == review.uid,
+                                                                            last_review_type.is_okay == True)).all()
+        con_votes = DBDiscussionSession.query(last_review_type).filter(and_(last_review_type.review_uid == review.uid,
+                                                                            last_review_type.is_okay == False)).all()
+        pro_list = list()
+        for pro in pro_votes:
+            db_user = DBDiscussionSession.query(User).filter_by(uid=pro.reviewer_uid).first()
+            image_url = _user_manager.get_profile_picture(db_user, 20)
+            pro_list.append({
+                'gravatar_url': image_url,
+                'nickname': get_public_nickname_based_on_settings(db_user),
+                'userpage_url': mainpage + '/user/' + get_public_nickname_based_on_settings(db_user)
+            })
+
+        con_list = list()
+        for con in con_votes:
+            db_user = DBDiscussionSession.query(User).filter_by(uid=con.reviewer_uid).first()
+            image_url = _user_manager.get_profile_picture(db_user, 20)
+            con_list.append({
+                'gravatar_url': image_url,
+                'nickname': get_public_nickname_based_on_settings(db_user),
+                'userpage_url': mainpage + '/user/' + get_public_nickname_based_on_settings(db_user)
+            })
+
+        entry['pro'] = pro_list
+        entry['con'] = con_list
+        entry['entry_id'] = str(review.uid)
+        entry['accepted'] = len(pro_votes) > len(con_votes)
+        entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, lang)
+        entry['votes_pro'] = pro_list
+        entry['votes_con'] = con_list
+        some_list.append(entry)
+    return some_list

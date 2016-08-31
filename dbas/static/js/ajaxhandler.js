@@ -1072,6 +1072,27 @@ function AjaxReviewHandler(){
 		}).fail(function reviewDeleteArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
+	};
+	
+	/**
+	 *
+	 * @param queue
+	 * @param uid
+	 */
+	this.undoReview = function(queue, uid){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_undo_review',
+			method: 'GET',
+			data:{ 'queue': queue, uid: uid },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function reviewDeleteArgumentDone(data) {
+			new ReviewHistoryCallbacks().forUndoReview(data);
+		}).fail(function reviewDeleteArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
 	}
 	
 }

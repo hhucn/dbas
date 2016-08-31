@@ -640,17 +640,19 @@ class ReviewDelete(DiscussionBase):
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     reasons = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
-    def __init__(self, detector, argument, reason):
+    def __init__(self, detector, argument, reason,is_executed=False):
         """
 
         :param detector:
         :param argument:
+        :param reason:
+        :param is_executed:
         """
         self.detector_uid = detector
         self.argument_uid = argument
         self.reason_uid = reason
         self.timestamp = get_now()
-        self.is_executed = False
+        self.is_executed = is_executed
 
 
 class ReviewEdit(DiscussionBase):
@@ -668,16 +670,17 @@ class ReviewEdit(DiscussionBase):
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
 
-    def __init__(self, detector, argument):
+    def __init__(self, detector, argument, is_executed=False):
         """
 
         :param detector:
         :param argument:
+        :param is_executed:
         """
         self.detector_uid = detector
         self.argument_uid = argument
         self.timestamp = get_now()
-        self.is_executed = False
+        self.is_executed = is_executed
 
 
 class ReviewOptimization(DiscussionBase):
@@ -694,16 +697,17 @@ class ReviewOptimization(DiscussionBase):
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
 
-    def __init__(self, detector, argument):
+    def __init__(self, detector, argument, is_executed=False):
         """
 
         :param detector:
         :param argument:
+        :param is_executed:
         """
         self.detector_uid = detector
         self.argument_uid = argument
         self.timestamp = get_now()
-        self.is_executed = False
+        self.is_executed = is_executed
 
 
 class ReviewDeleteReason(DiscussionBase):
@@ -803,15 +807,18 @@ class ReputationHistory(DiscussionBase):
     __tablename__ = 'reputation_history'
     uid = Column(Integer, primary_key=True)
     reputator_uid = Column(Integer, ForeignKey('users.uid'))
+    reputation_uid = Column(Integer, ForeignKey('reputation_reasons.uid'))
 
     reputators = relationship('User', foreign_keys=[reputator_uid])
+    reputations = relationship('ReputationReason', foreign_keys=[reputation_uid])
 
-    def __init__(self, reputator):
+    def __init__(self, reputator, reputation):
         """
 
         :param reputator:
         """
         self.reputator_uid = reputator
+        self.reputation_uid = reputation
 
 
 class ReputationReason(DiscussionBase):

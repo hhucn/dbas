@@ -412,6 +412,7 @@ class Translator(object):
         self.preferedLangTitle = 'preferedLangTitle'
         self.priv_access_opti_queue = 'priv_access_opti_queue'
         self.priv_access_del_queue = 'priv_access_del_queue'
+        self.priv_history_queue = 'priv_history_queue'
         self.phone = 'phone'
         self.myPosition = 'myPosition'
         self.theirPosition = 'theirPosition'
@@ -445,6 +446,7 @@ class Translator(object):
         self.recipientNotFound = 'recipientNotFound'
         self.reactionFor = 'reactionFor'
         self.review = 'review'
+        self.review_history = 'review_history'
         self.rejecting = 'rejecting'
         self.reason = 'reason'
         self.rep_reason_first_argument_click = 'rep_reason_first_argument_click'
@@ -567,11 +569,13 @@ class Translator(object):
         self.urlSharingDescription = 'urlSharingDescription'
         self.userPasswordNotMatch = 'userPasswordNotMatch'
         self.visitDeleteQueue = 'visitDeleteQueue'
-        self.visitOptimizationQueue = 'visitOptimizationQueue'
-        self.visitEditQueue = 'visitEditQueue'
         self.visitDeleteQueueLimitation = 'visitDeleteQueueLimitation'
+        self.visitOptimizationQueue = 'visitOptimizationQueue'
         self.visitOptimizationQueueLimitation = 'visitOptimizationQueueLimitation'
+        self.visitEditQueue = 'visitEditQueue'
         self.visitEditQueueLimitation = 'visitEditQueueLimitation'
+        self.visitHistoryQueue = 'visitHistoryQueue'
+        self.visitHistoryQueueLimitation = 'visitHistoryQueueLimitation'
         self.voteCountTextFirst = 'voteCountTextFirst'
         self.voteCountTextMayBeFirst = 'voteCountTextMayBeFirst'
         self.voteCountTextOneOther = 'voteCountTextOneOther'
@@ -611,10 +615,10 @@ class Translator(object):
             return self.en_dict[sid]
 
         elif self.lang == 'de' and sid not in self.de_dict:
-            return 'unbekannter identifier im deutschen Wörterbuch'
+            return 'unbekannte ID, kein Eintrag im de Wörterbuch'
 
         elif self.lang == 'en' and sid not in self.en_dict:
-            return 'unknown identifier in the englisch dictionary'
+            return 'unknown ID, no entry in en dictionary'
 
         else:
             return 'unknown language: ' + str(self.lang)
