@@ -162,7 +162,6 @@ def __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, 
     """
 
     :param ui_locales:
-    :param disc_ui_locales:
     :param session_id:
     :param nickname:
     :param history:
@@ -170,7 +169,6 @@ def __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, 
     :param slug:
     :param for_api:
     :param request:
-    :param issue:
     :return:
     """
     issue           = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)

@@ -19,6 +19,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
+from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 
 
 fallback_lang = 'en'
@@ -119,14 +120,14 @@ def get_all_arguments_by_statement(uid):
     :return: [Arguments]
     """
     return_array = []
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).all()
+    db_arguments = get_not_disabled_arguments_as_query().filter_by(conclusion_uid=uid).all()
     if db_arguments:
         return_array = db_arguments
 
-    db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=uid).all()
+    db_premises = get_not_disabled_premises_as_query().filter_by(statement_uid=uid).all()
 
     for premise in db_premises:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
+        db_arguments = get_not_disabled_arguments_as_query().filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
         if db_arguments:
             return_array.append(db_arguments)
 
