@@ -7,7 +7,7 @@ Provides helping function for the review page.
 import random
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument, ArgumentSeenBy
+from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument, ArgumentSeenBy, Issue
 from dbas.helper.relation import RelationHelper
 from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print
 from dbas.logger import logger
@@ -49,18 +49,22 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
     text = translator.get(translator.internalError)
     reason = ''
     stats = ''
+    issue = translator.get(translator.internalError)
 
     if subpage_name == 'deletes':
-        text, reason, stats = __get_subpage_for_deletes(request, db_user, translator)
+        subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator)
         button_set['is_delete'] = True
 
     elif subpage_name == 'optimizations':
-        text, reason, stats = __get_subpage_for_optimization(request, db_user, translator)
+        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator)
         button_set['is_optimize'] = True
+    else:
+        subpage_dict = {'stats': stats,
+                        'text': text,
+                        'reason': reason,
+                        'issue': issue}
 
-    ret_dict['reviewed_argument'] = {'stats': stats,
-                                     'text': text,
-                                     'reason': reason}
+    ret_dict['reviewed_argument'] = subpage_dict
 
     if text is None and reason is None and stats is None:
         no_arguments_to_review = True
@@ -84,7 +88,7 @@ def __get_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set)
             'button_set': button_set}
 
 
-def __get_subpage_for_deletes(request, db_user, translator):
+def __get_subpage_dict_for_deletes(request, db_user, translator):
     """
 
     :param request:
@@ -109,6 +113,7 @@ def __get_subpage_for_deletes(request, db_user, translator):
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
     text = get_text_for_argument_uid(db_argument.uid)
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=rnd_review.reason_uid).first()
+    issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
 
     stats = __get_stats_for_argument(db_argument.uid)
     stats['reported'] = sql_timestamp_pretty_print(rnd_review.timestamp, translator.get_lang())
@@ -125,10 +130,13 @@ def __get_subpage_for_deletes(request, db_user, translator):
     already_seen.append(rnd_review.uid)
     request.session['already_seen_deletes'] = already_seen
 
-    return text, reason, stats
+    return {'stats': stats,
+            'text': text,
+            'reason': reason,
+            'issue': issue}
 
 
-def __get_subpage_for_optimization(request, db_user, translator):
+def __get_subpage_dict_for_optimization(request, db_user, translator):
     """
 
     :param request:
@@ -154,6 +162,7 @@ def __get_subpage_for_optimization(request, db_user, translator):
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
     text = get_text_for_argument_uid(db_argument.uid)
     reason = translator.get(translator.argumentFlaggedBecauseOptimization)
+    issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
 
     stats = __get_stats_for_argument(db_argument.uid)
     stats['reported'] = sql_timestamp_pretty_print(rnd_review.timestamp, translator.get_lang())
@@ -162,7 +171,10 @@ def __get_subpage_for_optimization(request, db_user, translator):
     already_seen.append(rnd_review.uid)
     request.session['already_seen_optimization'] = already_seen
 
-    return text, reason, stats
+    return {'stats': stats,
+            'text': text,
+            'reason': reason,
+            'issue': issue}
 
 
 def __get_stats_for_argument(argument_uid):

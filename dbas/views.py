@@ -46,7 +46,7 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 
 name = 'D-BAS'
-version = '0.6.1'
+version = '0.7.0'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
