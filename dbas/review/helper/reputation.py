@@ -88,20 +88,16 @@ def get_reputation_of(nickname):
     return count, is_user_author(nickname)
 
 
-def add_reputation_for(nickname, reason, transaction):
+def add_reputation_for(db_user, reason, transaction):
     """
     Add reputation for the given nickname with the reason only iff the reason can be added. (For example all reputataion
     for 'first' things cannot be given twice.
 
-    :param nickname:
+    :param db_user:
     :param reason:
     :param transaction:
     :return:
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname).first()
-    if not db_user:
-        return False
-
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
     if not db_reason:
         return False

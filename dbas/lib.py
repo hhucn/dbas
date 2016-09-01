@@ -680,3 +680,50 @@ def is_user_author(nickname):
             return True
 
     return False
+
+
+def is_argument_disabled_due_to_disabled_statements(argument):
+    """
+    Returns true if any involved statement is disabled.
+
+    :param argument: Argument
+    :return: Boolean
+    """
+    if argument.conclusion_uid is None:
+        # check conclusion of given arguments conclusion
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+        conclusion = DBDiscussionSession(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+        if conclusion.is_disabled:
+            return True
+        # check premisegroup of given arguments conclusion
+        premises = __get_all_premises_of_argument(db_argument)
+        for premise in premises:
+            if premise.statements.is_disabled:
+                return True
+    else:
+        # check conclusion of given argument
+        conclusion = DBDiscussionSession(Statement).filter_by(uid=argument.conclusion_uid).first()
+        if conclusion.is_disabled:
+            return True
+
+    # check premisegroup of given argument
+    premises = __get_all_premises_of_argument(argument)
+    for premise in premises:
+        if premise.statements.is_disabled:
+            return True
+
+    return False
+
+
+def __get_all_premises_of_argument(argument):
+    """
+    Returns list with all premises of the argument.
+
+    :param argument: Argument
+    :return: list()
+    """
+    ret_list = []
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).join(Statement).all()
+    for premise in db_premises:
+        ret_list.append(premise)
+    return ret_list

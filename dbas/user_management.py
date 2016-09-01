@@ -95,6 +95,7 @@ def update_last_action(transaction, nick):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
     if not db_user:
         return False
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
 
     timeoutInSec = 60 * 60 * 24 * 7
 
@@ -106,7 +107,7 @@ def update_last_action(transaction, nick):
     diff_login = (datetime.now() - last_login_object).seconds
 
     diff = diff_action if diff_action < diff_login else diff_login
-    should_log_out = diff > timeoutInSec and not db_user.keep_logged_in
+    should_log_out = diff > timeoutInSec and not db_settings.keep_logged_in
     db_user.update_last_action()
 
     transaction.commit()
