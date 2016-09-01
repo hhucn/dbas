@@ -11,18 +11,7 @@ settings = add_settings_to_appconfig()
 DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
-class ReviewReputationHelperTEst(unittest.TestCase):
-
-    def test_get_reputation_history(self):
-        self.assertEqual(len(ReviewReputationHelper.get_reputation_history('Bla', Translator('en'))), 0)
-        history = ReviewReputationHelper.get_reputation_history('Tobias', Translator('en'))
-        self.assertTrue(len(history) > 0)
-        self.assertTrue('count' in history)
-        self.assertTrue('history' in history)
-        for h in history['history']:
-            self.assertTrue('date' in h)
-            self.assertTrue('action' in h)
-            self.assertTrue('points' in h)
+class TestReviewReputationHelper(unittest.TestCase):
 
     def test_get_reputation_list(self):
         some_list = ReviewReputationHelper.get_reputation_list(Translator('en'))
