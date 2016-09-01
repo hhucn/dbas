@@ -11,15 +11,15 @@ from urllib import parse
 
 import arrow
 import dbas.handler.password as PasswordHandler
-from sqlalchemy import and_
-
-from dbas.helper import email as EmailHelper
-from dbas.helper import notification as NotificationHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
+from dbas.helper import email as EmailHelper
+from dbas.helper import notification as NotificationHelper
 from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid, get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.strings.translator import Translator
+from dbas.review.helper.reputation import get_reputation_of
+from sqlalchemy import and_
 
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',
@@ -276,24 +276,6 @@ def get_public_information_data(nickname, lang):
     return return_dict
 
 
-def is_user_author(nickname):
-    """
-    Check, if the given uid has admin rights or is admin
-
-    :param nickname: current user name
-    :return: true, if user is admin, false otherwise
-    """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
-    db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
-    logger('UserHandler', 'is_user_author', 'main')
-    if db_user:
-        if db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid:
-            return True
-
-    return False
-
-
 def is_user_logged_in(user):
     """
     Checks if the user is logged in
@@ -501,12 +483,13 @@ def get_information_of(db_user, lang):
 
     arg_vote, stat_vote = get_count_of_votes_of_user(db_user, True)
 
-    statements, edits                 = get_textversions_of_user(db_user.public_nickname, lang)
-    ret_dict['statements_posted']     = len(statements)
-    ret_dict['edits_done']            = len(edits)
-    ret_dict['discussion_arg_votes']  = arg_vote
-    ret_dict['discussion_stat_votes'] = stat_vote
-    ret_dict['avatar_url']            = get_profile_picture(db_user, 120)
+    statements, edits                       = get_textversions_of_user(db_user.public_nickname, lang)
+    ret_dict['statements_posted']           = len(statements)
+    ret_dict['edits_done']                  = len(edits)
+    ret_dict['discussion_arg_votes']        = arg_vote
+    ret_dict['discussion_stat_votes']       = stat_vote
+    ret_dict['avatar_url']                  = get_profile_picture(db_user, 120)
+    ret_dict['discussion_stat_rep'], trash  = get_reputation_of(db_user.nickname)
 
     return ret_dict
 
