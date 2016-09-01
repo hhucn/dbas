@@ -7,7 +7,6 @@
 					<h4>
                         <span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span>
                         <span i18n:translate="public_information_of">Public Information of</span> <em id="public_nick">${user.public_nick}</em>
-                        <small class="label label-default pull-right">${user.group}</small>
                     </h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
@@ -21,6 +20,10 @@
 						<tr>
 							<td><span class="lead" i18n:translate="registered">Registered</span></td>
                             <td>${user.registered}</td>
+						</tr>
+						<tr>
+							<td><span class="lead" i18n:translate="user_group">User group</span></td>
+                            <td>${user.group}</td>
 						</tr>
 					</table>
                     <div>

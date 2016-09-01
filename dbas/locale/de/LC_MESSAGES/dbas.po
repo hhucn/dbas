@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-08-31 18:28+0200\n"
+"POT-Creation-Date: 2016-09-01 09:48+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -459,7 +459,7 @@ msgstr "Wählen Sie eine Aufgaben und los geht's"
 msgid "unlimited_right_based_on_group"
 msgstr "Basierend auf Ihrer Nutzergruppe haben Sie volle Rechte!"
 
-#. Default: Your current reputation_borders count is:
+#. Default: Your current reputation count is:
 #: templates/review.pt:32
 msgid "current_reputation_os"
 msgstr "Ihre aktuelle Reputations-Punktzahl beträgt:"
@@ -484,7 +484,7 @@ msgstr "Letzte Gutachter"
 msgid "None"
 msgstr "Keine"
 
-#. Default: What is reputation_borders? How do I earn (and lose) it?
+#. Default: What is reputation? How do I earn (and lose) it?
 #: templates/review.pt:73
 msgid "what_is_reputation"
 msgstr "Was ist Reputation? Wie bekomme (verliere) ich diese?"
@@ -502,20 +502,20 @@ msgstr ""
 msgid "what_is_reputation_earn"
 msgstr "Sie können mehr Reputation durch die Nutzung von D-BAS verdienen"
 
-#. Default: Basic use of D-BAS, does not require any reputation_borders at all.
+#. Default: Basic use of D-BAS, does not require any reputation at all.
 #: templates/review.pt:76
 msgid "what_is_reputation_use"
 msgstr "Normale Nutzung von D-BAS bedarf keiner Reputation."
 
-#. Default: You gain reputation_borders when:
+#. Default: You gain reputation when:
 #: templates/review.pt:79
 msgid "gain_rep_when"
-msgstr "Sie bekommen Reputation, wenn"
+msgstr "Reputation bekommen"
 
-#. Default: You lose reputation_borders when:
+#. Default: You lose reputation when:
 #: templates/review.pt:86
 msgid "lose_rep_when"
-msgstr "Sie verlieren Reputation, wenn"
+msgstr "Reputation verlieren"
 
 #. Default: Privileges
 #: templates/review.pt:95
@@ -523,7 +523,7 @@ msgid "privileges"
 msgstr "Privilegien"
 
 #. Default: Privileges control what you can see in the review queues of D-BAS.
-#. Gain more privileges by increasing your reputation_borders.
+#. Gain more privileges by increasing your reputation.
 #: templates/review.pt:96
 msgid "privileges_explanation"
 msgstr ""
@@ -1098,27 +1098,27 @@ msgid "strength"
 msgstr "Stärke"
 
 #. Default: Discussion Statistics
-#: templates/settings.pt:158 templates/user.pt:33
+#: templates/settings.pt:158 templates/user.pt:38
 msgid "discussion_stat"
 msgstr "Diskussions-Statistik"
 
 #. Default: Statements posted
-#: templates/settings.pt:162 templates/finish.pt:26 templates/user.pt:36
+#: templates/settings.pt:162 templates/finish.pt:26 templates/user.pt:41
 msgid "statements_posted"
 msgstr "Aussagen hinzugefügt"
 
 #. Default: Edits done
-#: templates/settings.pt:169 templates/finish.pt:30 templates/user.pt:40
+#: templates/settings.pt:169 templates/finish.pt:30 templates/user.pt:45
 msgid "edits_done"
 msgstr "Änderungen"
 
 #. Default: Votes for Arguments
-#: templates/settings.pt:176 templates/finish.pt:34 templates/user.pt:44
+#: templates/settings.pt:176 templates/finish.pt:34 templates/user.pt:49
 msgid "discussion_votes_statements"
 msgstr "Stimmen für Aussagen"
 
 #. Default: Votes for Statements
-#: templates/settings.pt:183 templates/finish.pt:38 templates/user.pt:48
+#: templates/settings.pt:183 templates/finish.pt:38 templates/user.pt:53
 msgid "discussion_votes_arguments"
 msgstr "Stimmen für Argumente"
 
@@ -1239,9 +1239,9 @@ msgid "action"
 msgstr "Aktion"
 
 #. Default: Reputation
-#: templates/review_reputation.pt:23
-msgid "reputation_borders"
-msgstr "Reputation"
+#: templates/review_reputation.pt:23 templates/user.pt:57
+msgid "reputation"
+msgstr "Repuation"
 
 #. Default: (more)
 #: templates/review_content.pt:17
@@ -1409,27 +1409,32 @@ msgid "request_success"
 msgstr "Anfrage wurde erfolgreich verarbeitet."
 
 #. Default: Public Information of
-#: templates/user.pt:8
+#: templates/user.pt:9
 msgid "public_information_of"
 msgstr "Öffentliche Informationen von"
 
 #. Default: Last Action
-#: templates/user.pt:12
+#: templates/user.pt:13
 msgid "last_action"
 msgstr "Letze Aktion"
 
 #. Default: Last Login
-#: templates/user.pt:16
+#: templates/user.pt:17
 msgid "last_login"
 msgstr "Letze Anmeldung"
 
 #. Default: Registered
-#: templates/user.pt:20
+#: templates/user.pt:21
 msgid "registered"
 msgstr "Registierung"
 
+#. Default: User group
+#: templates/user.pt:25
+msgid "user_group"
+msgstr "Benutzergruppe"
+
 #. Default: Profile Picture of
-#: templates/user.pt:28
+#: templates/user.pt:33
 msgid "profile_picture_of"
 msgstr "Profilbild von"
 
@@ -1467,6 +1472,9 @@ msgstr "Insel-Ansicht"
 #: templates/content.pt:331
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "reputation_borders"
+#~ msgstr "Reputation"
 
 #~ msgid "language"
 #~ msgstr "Sprache"
