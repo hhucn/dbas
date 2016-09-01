@@ -160,7 +160,7 @@ class UrlManager(object):
         url = self.slug + '/choose/' + is_arg + '/' + is_sup + '/' + str(statement_or_argument_id) + str(pgroups)
         return self.__return_discussion_url(as_location_href, url)
 
-    def get_url_for_jump_decision(self, as_location_href, argument_uid):
+    def get_url_for_jump(self, as_location_href, argument_uid):
         """
         TODO
 
@@ -168,7 +168,7 @@ class UrlManager(object):
         :type as_location_href: boolean
         :param argument_uid: Argument.uid
         """
-        url = self.slug + '/jump/decision/' + str(argument_uid)
+        url = self.slug + '/jump/' + str(argument_uid)
         return self.__return_discussion_url(as_location_href, url)
 
     def __return_discussion_url(self, as_location_href, url):
