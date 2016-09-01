@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-01 09:48+0200\n"
+"POT-Creation-Date: 2016-09-01 10:37+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -853,7 +853,8 @@ msgid "generate_password"
 msgstr "Password generieren"
 
 #. Default: Anti-Spam (required)
-#: templates/snippet-popups.pt:390
+#. Default: Spam
+#: templates/snippet-popups.pt:390 templates/review_content.pt:27
 msgid "spam"
 msgstr "Anti-Spam"
 
@@ -1253,77 +1254,112 @@ msgstr "(mehr)"
 msgid "wrapped_less"
 msgstr "(weniger)"
 
+#. Default: Off topic
+#: templates/review_content.pt:24
+msgid "off_topic"
+msgstr "Abseits des Themas"
+
+#. Default: are useful in general, but do not belong to the current discussion
+#: templates/review_content.pt:24
+msgid "off_topic_explanation"
+msgstr "wenn die Themen sinnvoll sind, aber nicht themenbezogen"
+
+#. Default: Inappropriate, harmful or abbusive
+#: templates/review_content.pt:25
+msgid "inappropriate_harmful_abbusive"
+msgstr "Nicht angebracht, verletzend oder verachtend"
+
+#. Default: are posts, which are inappropriate, harmful or abbusive
+#: templates/review_content.pt:25
+msgid "inappropriate_harmful_abbusive_explanation"
+msgstr "wenn Beiträge nicht angebracht, verletzend oder verachtend sind"
+
+#. Default: Needs optimization
+#: templates/review_content.pt:26
+msgid "needs_optimization"
+msgstr "Der Text sollte überarbeitet werden"
+
+#. Default: if posts are useful, but need edits in grammar and/or spelling
+#: templates/review_content.pt:26
+msgid "needs_optimization_explanation"
+msgstr "wenn Beiträge rein sprachlich überarbeitet werden sollten"
+
+#. Default: is neither useful nor mappend to a discussions topic
+#: templates/review_content.pt:27
+msgid "spam_explanation"
+msgstr "wenn Beiträge weder sinnvoll noch themenbezogen sind"
+
 #. Default: It's Okay
-#: templates/review_content.pt:22 templates/review_content.pt:36
+#: templates/review_content.pt:35 templates/review_content.pt:49
 msgid "its_okay"
 msgstr "Das ist okay so"
 
 #. Default: for arguments, which should not be deleted.
-#: templates/review_content.pt:22
+#: templates/review_content.pt:35
 msgid "its_okay_explanation"
 msgstr "für Argumente, die nicht gelöscht werden sollen."
 
 #. Default: Delete it
-#: templates/review_content.pt:23 templates/review_content.pt:35
+#: templates/review_content.pt:36 templates/review_content.pt:48
 msgid "delete_it"
 msgstr "Löschen"
 
 #. Default: for arguments, that should be deleted based on the reason above.
-#: templates/review_content.pt:23
+#: templates/review_content.pt:36
 msgid "delete_it_explanation"
 msgstr ""
 "für Argumente, die basierend auf dem genannten Grund, gelöscht werden sollen."
 
 #. Default: Skip it
-#: templates/review_content.pt:24 templates/review_content.pt:29
-#: templates/review_content.pt:34 templates/review_content.pt:39
+#: templates/review_content.pt:37 templates/review_content.pt:42
+#: templates/review_content.pt:47 templates/review_content.pt:52
 msgid "skip_it"
 msgstr "Überspringen"
 
 #. Default: if you are not sure and want to go to the next argument.
-#: templates/review_content.pt:24 templates/review_content.pt:29
+#: templates/review_content.pt:37 templates/review_content.pt:42
 msgid "skip_it_explanation"
 msgstr "wenn Sie unsicher sind und zum Nächsten gehen möchten."
 
 #. Default: Let me correct it
-#: templates/review_content.pt:27 templates/review_content.pt:41
+#: templates/review_content.pt:40 templates/review_content.pt:54
 msgid "correct_it"
 msgstr "Lass' mich eine Verbesserungen angeben"
 
 #. Default: , if you have an idea for a better formulation with the same
 #. content.
-#: templates/review_content.pt:27
+#: templates/review_content.pt:40
 msgid "correct_it_explanation"
 msgstr ""
 ", wenn Sie eine Idee zur besseren Formulierung (aber demselben Inhalt) haben."
 
 #. Default: It's okay so
-#: templates/review_content.pt:28 templates/review_content.pt:40
+#: templates/review_content.pt:41 templates/review_content.pt:53
 msgid "its_okay_so"
 msgstr "Das ist okay so"
 
 #. Default: for arguments, which can be understood as-is.
-#: templates/review_content.pt:28
+#: templates/review_content.pt:41
 msgid "its_okay_so_explanation"
 msgstr "für Argumente, die so gut verständlich sind."
 
 #. Default: Reported
-#: templates/review_content.pt:57
+#: templates/review_content.pt:70
 msgid "reported"
 msgstr "Gemeldet am"
 
 #. Default: Viewed
-#: templates/review_content.pt:61
+#: templates/review_content.pt:74
 msgid "viewed"
 msgstr "Gesehen von"
 
 #. Default: Attacks
-#: templates/review_content.pt:65
+#: templates/review_content.pt:78
 msgid "attacks"
 msgstr "Attackiert von"
 
 #. Default: Supports
-#: templates/review_content.pt:69
+#: templates/review_content.pt:82
 msgid "supports"
 msgstr "Unterstützt von"
 
