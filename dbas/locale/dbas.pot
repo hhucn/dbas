@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-01 09:48+0200\n"
+"POT-Creation-Date: 2016-09-01 10:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -754,7 +754,8 @@ msgid "generate_password"
 msgstr ""
 
 #. Default: Anti-Spam (required)
-#: ././templates/snippet-popups.pt:390
+#. Default: Spam
+#: ././templates/snippet-popups.pt:390 ././templates/review_content.pt:27
 msgid "spam"
 msgstr ""
 
@@ -1142,75 +1143,110 @@ msgstr ""
 msgid "wrapped_less"
 msgstr ""
 
+#. Default: Off topic
+#: ././templates/review_content.pt:24
+msgid "off_topic"
+msgstr ""
+
+#. Default: are useful in general, but do not belong to the current discussion
+#: ././templates/review_content.pt:24
+msgid "off_topic_explanation"
+msgstr ""
+
+#. Default: Inappropriate, harmful or abbusive
+#: ././templates/review_content.pt:25
+msgid "inappropriate_harmful_abbusive"
+msgstr ""
+
+#. Default: are posts, which are inappropriate, harmful or abbusive
+#: ././templates/review_content.pt:25
+msgid "inappropriate_harmful_abbusive_explanation"
+msgstr ""
+
+#. Default: Needs optimization
+#: ././templates/review_content.pt:26
+msgid "needs_optimization"
+msgstr ""
+
+#. Default: if posts are useful, but need edits in grammar and/or spelling
+#: ././templates/review_content.pt:26
+msgid "needs_optimization_explanation"
+msgstr ""
+
+#. Default: is neither useful nor mappend to a discussions topic
+#: ././templates/review_content.pt:27
+msgid "spam_explanation"
+msgstr ""
+
 #. Default: It's Okay
-#: ././templates/review_content.pt:22 ././templates/review_content.pt:36
+#: ././templates/review_content.pt:35 ././templates/review_content.pt:49
 msgid "its_okay"
 msgstr ""
 
 #. Default: for arguments, which should not be deleted.
-#: ././templates/review_content.pt:22
+#: ././templates/review_content.pt:35
 msgid "its_okay_explanation"
 msgstr ""
 
 #. Default: Delete it
-#: ././templates/review_content.pt:23 ././templates/review_content.pt:35
+#: ././templates/review_content.pt:36 ././templates/review_content.pt:48
 msgid "delete_it"
 msgstr ""
 
 #. Default: for arguments, that should be deleted based on the reason above.
-#: ././templates/review_content.pt:23
+#: ././templates/review_content.pt:36
 msgid "delete_it_explanation"
 msgstr ""
 
 #. Default: Skip it
-#: ././templates/review_content.pt:24 ././templates/review_content.pt:29
-#: ././templates/review_content.pt:34 ././templates/review_content.pt:39
+#: ././templates/review_content.pt:37 ././templates/review_content.pt:42
+#: ././templates/review_content.pt:47 ././templates/review_content.pt:52
 msgid "skip_it"
 msgstr ""
 
 #. Default: if you are not sure and want to go to the next argument.
-#: ././templates/review_content.pt:24 ././templates/review_content.pt:29
+#: ././templates/review_content.pt:37 ././templates/review_content.pt:42
 msgid "skip_it_explanation"
 msgstr ""
 
 #. Default: Let me correct it
-#: ././templates/review_content.pt:27 ././templates/review_content.pt:41
+#: ././templates/review_content.pt:40 ././templates/review_content.pt:54
 msgid "correct_it"
 msgstr ""
 
 #. Default: , if you have an idea for a better formulation with the same
 #. content.
-#: ././templates/review_content.pt:27
+#: ././templates/review_content.pt:40
 msgid "correct_it_explanation"
 msgstr ""
 
 #. Default: It's okay so
-#: ././templates/review_content.pt:28 ././templates/review_content.pt:40
+#: ././templates/review_content.pt:41 ././templates/review_content.pt:53
 msgid "its_okay_so"
 msgstr ""
 
 #. Default: for arguments, which can be understood as-is.
-#: ././templates/review_content.pt:28
+#: ././templates/review_content.pt:41
 msgid "its_okay_so_explanation"
 msgstr ""
 
 #. Default: Reported
-#: ././templates/review_content.pt:57
+#: ././templates/review_content.pt:70
 msgid "reported"
 msgstr ""
 
 #. Default: Viewed
-#: ././templates/review_content.pt:61
+#: ././templates/review_content.pt:74
 msgid "viewed"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/review_content.pt:65
+#: ././templates/review_content.pt:78
 msgid "attacks"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/review_content.pt:69
+#: ././templates/review_content.pt:82
 msgid "supports"
 msgstr ""
 
