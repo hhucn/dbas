@@ -81,7 +81,6 @@ class TextGenerator(object):
         :return: string
         """
         _t         = Translator(self.lang)
-        user_msg   = ''
         system_msg = ''
         premise    = premise[0:1].lower() + premise[1:]
         if self.lang != 'de':
@@ -104,39 +103,64 @@ class TextGenerator(object):
             f = _t.get(_t.wrong) + ', ' + _t.get(_t.itIsFalseThat)[0:1].lower() + _t.get(_t.itIsFalseThat)[1:] + ' '
 
         # different cases
-        if attack_type == 'undermine':
-            user_msg = f + ' ' + premise + '.'
-
-        if attack_type == 'support':
-            user_msg = t if is_supportive else f
-            user_msg += ' ' + conclusion + ' '
-            user_msg += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
-            user_msg += '.'
-
-        if attack_type == 'undercut':
-            user_msg = r + premise + ', '
-            user_msg += _t.get(_t.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_t.butIDoNotBelieveCounterFor)
-            user_msg += ' ' + conclusion + '.'
-
-        if attack_type == 'overbid':
-            user_msg = r + premise + ', '
-            user_msg += _t.get(_t.andIDoBelieveCounterFor) if is_supportive else _t.get(_t.andIDoBelieveArgument)
-            user_msg += ' ' + conclusion + '. '
-            user_msg += _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)
-            user_msg += ' ' + conclusion + '.'
-
-        if attack_type == 'rebut':
-            user_msg = r + premise + ', '
-            user_msg += _t.get(_t.iAcceptCounterThat) if is_supportive else _t.get(_t.iAcceptArgumentThat)
-            user_msg += ' ' + conclusion + '. '
-            user_msg += _t.get(_t.howeverIHaveMuchStrongerArgumentRejectingThat) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAcceptingThat)
-            user_msg += ' ' + conclusion + '.'
+        user_msg = self.__get_user_msg_for_users_confrontation_response(attack_type, premise, conclusion, f, t, r, is_supportive, _t)
+        if not user_msg:
+            user_msg = ''
 
         # is logged in?
         if is_logged_in:
             system_msg  = _t.get(_t.canYouGiveAReasonForThat)
 
         return user_msg, system_msg
+
+    def __get_user_msg_for_users_confrontation_response(self, attack_type, premise, conclusion, f, t, r, is_supportive, _t):
+        # different cases
+        if attack_type == 'undermine':
+            return self.__get_user_msg_for_users_undermine_response(premise, f)
+
+        if attack_type == 'support':
+            return self.__get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t)
+
+        if attack_type == 'undercut':
+            return self.__get_user_msg_for_users_undercut_response(premise, conclusion, r, is_supportive, _t)
+
+        if attack_type == 'overbid':
+            return self.__get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t)
+
+        if attack_type == 'rebut':
+            return self.__get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportive, _t)
+
+    def __get_user_msg_for_users_undermine_response(self, premise, f):
+        return f + ' ' + premise + '.'
+
+    def __get_user_msg_for_users_support_response(self, conclusion, t, f, is_supportive, _t):
+        user_msg = t if is_supportive else f
+        user_msg += ' ' + conclusion + ' '
+        user_msg += _t.get(_t.hold) if is_supportive else _t.get(_t.doesNotHold)
+        user_msg += '.'
+        return user_msg
+
+    def __get_user_msg_for_users_undercut_response(self, premise, conclusion, r, is_supportive, _t):
+        user_msg = r + premise + ', '
+        user_msg += _t.get(_t.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_t.butIDoNotBelieveCounterFor)
+        user_msg += ' ' + conclusion + '.'
+        return user_msg
+
+    def __get_user_msg_for_users_overbid_response(self, premise, r, conclusion, is_supportive, _t):
+        user_msg = r + premise + ', '
+        user_msg += _t.get(_t.andIDoBelieveCounterFor) if is_supportive else _t.get(_t.andIDoBelieveArgument)
+        user_msg += ' ' + conclusion + '. '
+        user_msg += _t.get(_t.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(_t.howeverIHaveEvenStrongerArgumentRejecting)
+        user_msg += ' ' + conclusion + '.'
+        return user_msg
+
+    def __get_user_msg_for_users_rebut_response(self, premise, conclusion, r, is_supportive, _t):
+        user_msg = r + premise + ', '
+        user_msg += _t.get(_t.iAcceptCounterThat) if is_supportive else _t.get(_t.iAcceptArgumentThat)
+        user_msg += ' ' + conclusion + '. '
+        user_msg += _t.get(_t.howeverIHaveMuchStrongerArgumentRejectingThat) if is_supportive else _t.get(_t.howeverIHaveMuchStrongerArgumentAcceptingThat)
+        user_msg += ' ' + conclusion + '.'
+        return user_msg
 
     def get_relation_text_dict(self, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False,
                                first_conclusion=None, for_island_view=False, attack_type=None):

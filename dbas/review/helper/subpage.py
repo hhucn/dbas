@@ -105,7 +105,7 @@ def __get_subpage_for_deletes(request, db_user, translator):
     if not db_reviews:
         return None, None, None
 
-    rnd_review = db_reviews[random.randint(0, len(db_reviews)-1)]
+    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
     text = get_text_for_argument_uid(db_argument.uid)
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=rnd_review.reason_uid).first()
@@ -150,7 +150,7 @@ def __get_subpage_for_optimization(request, db_user, translator):
     if not db_reviews:
         return None, None, None
 
-    rnd_review = db_reviews[random.randint(0, len(db_reviews)-1)]
+    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
     text = get_text_for_argument_uid(db_argument.uid)
     reason = translator.get(translator.argumentFlaggedBecauseOptimization)
