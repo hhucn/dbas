@@ -123,10 +123,11 @@ def main(global_config, **settings):
     config.add_route('ajax_send_news', 'ajax_send_news')
     config.add_route('ajax_notification_read', 'ajax_notification_read')
     config.add_route('ajax_notification_delete', 'ajax_notification_delete')
+    config.add_route('ajax_get_arguments_by_statement_uid', 'ajax_get_arguments_by_statement/{uid}')
     config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
-    config.add_route('ajax_flag_argument', '{stuff:.*}ajax_flag_argument')
-    config.add_route('ajax_review_delete_argument', '{stuff:.*}ajax_review_delete_argument')
-    config.add_route('ajax_undo_review', '{stuff:.*}ajax_undo_review')
+    config.add_route('ajax_flag_argument', '{url:.*}ajax_flag_argument')
+    config.add_route('ajax_review_delete_argument', '{url:.*}ajax_review_delete_argument')
+    config.add_route('ajax_undo_review', '{url:.*}ajax_undo_review')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')
