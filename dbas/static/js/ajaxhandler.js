@@ -191,7 +191,7 @@ function AjaxMainHandler(){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'additional_service',
-			type: 'GET',
+			type: 'POST',
 			data: {type:'chuck'},
 			global: false,
 			async: true,
@@ -215,7 +215,7 @@ function AjaxMainHandler(){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'additional_service',
-			type: 'GET',
+			type: 'POST',
 			data: {type:'mama'},
 			global: false,
 			async: true,
@@ -237,7 +237,7 @@ function AjaxMainHandler(){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_flag_argument',
-			type: 'GET',
+			method: 'POST',
 			data: {
 				argument_uid: argument_uid,
 				reason: reason
@@ -1022,7 +1022,7 @@ function AjaxGraphHandler(){
 		dataString['lang'] = $('#issue_info').data('discussion-language');
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
-			type: 'GET',
+			type: 'POST',
 			dataType: 'json',
 			data: dataString,
 			async: true,
@@ -1038,12 +1038,13 @@ function AjaxGraphHandler(){
 	 * Displays a graph of current discussion
 	 */
 	this.getDiscussionGraphData = function (url) {
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: url,
-			type: 'GET',
+			type: 'POST',
 			dataType: 'json',
 			data: {issue: new Helper().getCurrentIssueId()},
-			async: true
+			headers: {'X-CSRF-Token': csrfToken}
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
 		}).fail(function () {

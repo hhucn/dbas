@@ -80,7 +80,10 @@ function ReviewCallbacks() {
 		} else {
 			// reload, when the user is still in the review page
 			if (window.location.href.indexOf('/review/')) {
-				location.reload();
+				if (parsedData.extra_info.length != 0)
+					window.location.href = window.location.href + '?info=' + parsedData.extra_info;
+				else
+					location.reload();
 			}
 		}
 	}
