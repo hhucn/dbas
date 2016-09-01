@@ -97,7 +97,7 @@ class DictionaryHelper(object):
         logger('DictionaryHelper', 'prepare_extras_dict', 'def')
         _uh = UserHandler
         nickname = request.authenticated_userid if request.authenticated_userid else 'anonymous'
-        is_logged_in = _uh.is_user_logged_in(nickname)
+        is_logged_in = False if nickname == 'anonymous' else _uh.is_user_logged_in(nickname)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         # get anti-spam-question
