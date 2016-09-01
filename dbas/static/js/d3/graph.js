@@ -116,10 +116,11 @@ function DiscussionGraph() {
 		// set position of legend
 		var legendHeight = 3*height/5;
         d3.select("svg").append("g")
-            .attr("transform", "translate(20, " + legendHeight + ")")
+            .attr("transform", "translate(30, " + legendHeight + ")")
             .call(legend);
 
 		// buttons of sidebar
+		showDefaultView(jsonData);
         showContent(label, rect);
 		hideContent(label, rect);
 		showPositions();
@@ -433,6 +434,17 @@ function DiscussionGraph() {
         .enter().append("text")
         .text(function(d) {return d;})
 		.attr({x: 20, y: function (d,i) {return i*40+5;}});
+	}
+
+	/**
+	 * Restore initial state of graph.
+	 *
+	 * @param jsonData
+	 */
+	function showDefaultView (jsonData){
+		$('#start-view').click(function() {
+			new DiscussionGraph().setDefaultViewParams(true, jsonData, s);
+		});
 	}
 
 	/**
