@@ -2,9 +2,9 @@
 	<tal:block metal:fill-slot="content_page">
 
 		<div class="container colored-container center">
-            <h5 tal:condition="not:history.has_access">You have to earn more reputation for this queue!</h5>
+            <h4 tal:condition="not:history.has_access">You have to earn more reputation for this queue!</h4>
 			<img tal:condition="not:history.has_access" class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
-            <h5 tal:condition="history.has_access"><i class="fa fa-history" aria-hidden="true"></i> <span i18n:translate="history_of_votes">The history of votes!</span></h5>
+            <h4 tal:condition="history.has_access"><i class="fa fa-history" aria-hidden="true"></i> <span i18n:translate="history_of_votes">The history of votes!</span></h4>
 		</div>
 
 

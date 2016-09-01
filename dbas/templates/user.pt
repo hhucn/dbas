@@ -4,8 +4,10 @@
 		<div class="container colored-container">
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-6">
-					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span>
+					<h4>
+                        <span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span>
                         <span i18n:translate="public_information_of">Public Information of</span> <em id="public_nick">${user.public_nick}</em>
+                        <small class="label label-default pull-right">${user.group}</small>
                     </h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
