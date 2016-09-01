@@ -29,9 +29,13 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
-from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, try_to_register_new_user_via_ajax, request_password
+from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, \
+    preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, \
+    try_to_register_new_user_via_ajax, request_password
 from dbas.input_validator import Validator
-from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author
+from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
+    get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
+    resolve_issue_uid_to_slug, get_slug_by_statement_uid
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -475,7 +479,7 @@ class Dbas(object):
         statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
-        if not Validator.check_for_integer(statement_id, True) \
+        if not Validator.is_integer(statement_id, True) \
                 or not Validator.check_belonging_of_statement(issue, statement_id) \
                 or not Validator.is_position(statement_id):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
@@ -539,7 +543,7 @@ class Dbas(object):
         supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
         relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
-        if not Validator.check_for_integer(statement_or_arg_id, True):
+        if not Validator.is_integer(statement_or_arg_id, True):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
         issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
@@ -1777,7 +1781,7 @@ class Dbas(object):
 
         try:
             uid = self.request.params['uid']
-            if not Validator.check_for_integer(uid):
+            if not Validator.is_integer(uid):
                 return_dict['error'] = _t.get(_t.internalError)
             else:
                 return_dict = QueryHelper.get_infos_about_argument(uid, mainpage)
@@ -1856,6 +1860,29 @@ class Dbas(object):
 
         return json.dumps(return_dict, True)
 
+    @view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
+    def get_arguments_by_statement_uid(self):
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('get_arguments_by_statement_uid', 'def', 'main: ' + str(self.request.matchdict))
+        ui_locales = get_language(self.request, get_current_registry())
+        _tn = Translator(ui_locales)
+
+        return_dict = dict()
+        try:
+            uid = self.request.matchdict['uid']
+            if not Validator.is_integer(uid):
+                return_dict['error'] = _tn.get(_tn.internalKeyError)
+            else:
+                slug = get_slug_by_statement_uid(uid)
+                _um = UrlManager(mainpage, slug)
+                return_dict['arguments'] = get_all_arguments_with_text_and_url_by_statement_id(uid, _um)
+                return_dict['error'] = ''
+
+        except KeyError as e:
+            logger('get_arguments_by_statement_uid', 'error', repr(e))
+            return_dict['error'] = _tn.get(_tn.internalKeyError)
+
+        return json.dumps(return_dict, True)
 
 # ########################################
 # ADDTIONAL AJAX STUFF # ADDITION THINGS #
@@ -1998,7 +2025,7 @@ class Dbas(object):
 
             db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
 
-            if not Validator.check_for_integer(argument_uid):
+            if not Validator.is_integer(argument_uid):
                 return_dict['error'] = _t.get(_t.internalError)
             elif not (len(db_reason) > 0 or reason == 'optimization'):
                 return_dict['error'] = _t.get(_t.internalError)

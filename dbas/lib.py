@@ -197,6 +197,36 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
         return results
 
 
+def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager):
+    """
+    Given a statement_uid, it returns all arguments, which use this statement and adds
+    the corresponding text to it, which normally appears in the bubbles. The resulting
+    text depends on the provided language.
+
+    :param statement_uid: Id to a statement, which should be analyzed
+    :return: list of dictionaries containing some properties of these arguments
+    :rtype: list
+    """
+    arguments = get_all_arguments_by_statement(statement_uid)
+    results = list()
+    if arguments:
+        for argument in arguments:
+            results.append({'uid': argument.uid,
+                            'text': get_text_for_argument_uid(argument.uid),
+                            'url': urlmanager.get_url_for_jump(False, argument.uid)})
+        return results
+
+
+def get_slug_by_statement_uid(uid):
+    """
+
+    :param uid:
+    :return:
+    """
+    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+    return resolve_issue_uid_to_slug(db_statement.issue_uid)
+
+
 def __build_argument_for_jump(arg_array, with_html_tag):
     """
 

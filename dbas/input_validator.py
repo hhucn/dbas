@@ -16,7 +16,7 @@ class Validator:
     """
 
     @staticmethod
-    def check_for_integer(variable, ignore_empty_case=False):
+    def is_integer(variable, ignore_empty_case=False):
         """
         Validates if variable is an integer.
 
@@ -48,7 +48,7 @@ class Validator:
         """
         logger('Validator', 'check_reaction', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
 
-        if not Validator.check_for_integer(attacked_arg_uid) or not Validator.check_for_integer(attacking_arg_uid):
+        if not Validator.is_integer(attacked_arg_uid) or not Validator.is_integer(attacking_arg_uid):
             return False
 
         if relation == 'undermine':
