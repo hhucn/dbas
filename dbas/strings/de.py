@@ -365,6 +365,7 @@ class GermanDict:
         de_lang[_self.jumpAnswer1] = 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber ich möchte meine eigene XXPREMISEXX angeben.'
         de_lang[_self.jumpAnswer2] = 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber sie wird nicht von der XXPREMISEXX unterstützt.'
         de_lang[_self.jumpAnswer3] = 'Nein, ich halte die XXCONCLUSIONXX für falsch.'
+        de_lang[_self.justLookDontTouch] = 'Nur anschauen, nichts anfassen!'
         de_lang[_self.keyword] = 'Schlüsselwort'
         de_lang[_self.keywordStart] = 'Start'
         de_lang[_self.keywordChooseActionForStatement] = 'Einstellung zu'

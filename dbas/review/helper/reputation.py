@@ -11,6 +11,9 @@ from dbas.lib import sql_timestamp_pretty_print, is_user_author
 reputation_borders = {'deletes': 30,
                       'optimizations': 30,
                       'history': 100}
+reputation_icons = {'deletes': 'fa fa-pencil-square-o',
+                    'optimizations': 'fa fa-flag',
+                    'history': 'fa fa-history'}
 
 
 def get_reputation_history(nickname, translator):
@@ -56,15 +59,9 @@ def get_privilege_list(translator):
     """
 
     reputations = list()
-    # reputations.append({'points': 1000, 'icon': 'fa fa-arrow-down', 'text': 'Some text'})
-    # reputations.append({'points': 750, 'icon': 'fa fa-arrow-up', 'text': 'Some text'})
-    # reputations.append({'points': 500, 'icon': 'fa fa-hand-o-up', 'text': 'Some text'})
-    # reputations.append({'points': 250, 'icon': 'fa fa-hand-o-down', 'text': 'Review a statement with many contra-arguments'})
-    # reputations.append({'points': 200, 'icon': 'fa fa-times', 'text': 'Decide, whether it is spam or not'})
-    # reputations.append({'points': 100, 'icon': 'fa fa-trash', 'text': 'Decision about statement, which should be deleted'})
-    reputations.append({'points': reputation_borders['history'], 'icon': 'fa fa-history', 'text': translator.get(translator.priv_history_queue)})
-    reputations.append({'points': reputation_borders['deletes'], 'icon': 'fa fa-pencil-square-o', 'text': translator.get(translator.priv_access_opti_queue)})
-    reputations.append({'points': reputation_borders['optimizations'], 'icon': 'fa fa-flag', 'text': translator.get(translator.priv_access_del_queue)})
+    reputations.append({'points': reputation_borders['history'], 'icon': reputation_icons['history'], 'text': translator.get(translator.priv_history_queue)})
+    reputations.append({'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'], 'text': translator.get(translator.priv_access_opti_queue)})
+    reputations.append({'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'], 'text': translator.get(translator.priv_access_del_queue)})
     return reputations
 
 

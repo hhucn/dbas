@@ -2055,9 +2055,13 @@ class Dbas(object):
         try:
             queue = self.request.params['queue']
             uid = self.request.params['uid']
-            # nickname = self.request.authenticated_userid
+            nickname = self.request.authenticated_userid
 
-            return_dict['info'] = 'TODO: Remove ' + uid + ' in review queue ' + queue
+            if is_user_author(nickname):
+                return_dict['info'] = 'TODO: Remove ' + uid + ' in review queue ' + queue
+            else:
+                return_dict['info'] = _t.get(_t.justLookDontTouch)
+
             return_dict['success'] = ''
             return_dict['error'] = ''
         except KeyError as e:

@@ -365,6 +365,7 @@ class EnglischDict:
         en_lang[_self.jumpAnswer2] = 'Wrong, XXCONCLUSIONXX is false.'
         en_lang[_self.jumpAnswer3] = 'Wrong, XXPREMISEXX is false.'
         en_lang[_self.jumpAnswer4] = 'XXPREMISEXX does not support XXCONCLUSIONXX.'
+        en_lang[_self.justLookDontTouch] = 'Just look, do not touch anything!'
         en_lang[_self.keyword] = 'Keyword'
         en_lang[_self.keywordStart] = 'Start'
         en_lang[_self.keywordChooseActionForStatement] = 'Choosing attitude'
