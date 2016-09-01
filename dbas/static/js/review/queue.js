@@ -34,6 +34,11 @@ $(document).ready(function () {
 		more_about_reason.show();
 		more_about_reason_content.hide();
 	});
+	
+	// some info
+	if ($('#stats-table').data('extra-info') == 'already_seen'){
+		setGlobalInfoHandler('Info', _t(queueCompleteSeen));
+	}
 });
 
 function Review() {
