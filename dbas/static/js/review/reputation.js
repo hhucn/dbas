@@ -19,16 +19,16 @@ $(document).ready(function () {
 	var collectedAbsoluteData = collected[1];
 	var collectedRelativeData = collected[2];
 	
-	createChart('Summarized Absolute',collectedLabels,  collectedAbsoluteData, $('#reputation_absolute_graph_summary'), '#absolute_graph_summary', 0);
-	createChart('Summarized Relative',collectedLabels,  collectedRelativeData, $('#reputation_relative_graph_summary'), '#relative_graph_summary', 1);
-	createChart('Absolute View', labels, absoluteData, $('#reputation_absolute_graph'), '#absolute_graph', 2);
-	createChart('Relative View', labels, relativeData, $('#reputation_relative_graph'), '#relative_graph', 3);
+	createChart(_t('repuationChartSum'),collectedLabels,  collectedAbsoluteData, $('#reputation_absolute_graph_summary'), '#absolute_graph_summary', 0);
+	createChart(_t('repuationChartDay'),collectedLabels,  collectedRelativeData, $('#reputation_relative_graph_summary'), '#relative_graph_summary', 1);
+	// createChart('Absolute View', labels, absoluteData, $('#reputation_absolute_graph'), '#absolute_graph', 2);
+	// createChart('Relative View', labels, relativeData, $('#reputation_relative_graph'), '#relative_graph', 3);
 	setLegendCSS();
 	
 });
 
 /**
- * Returns all lables out of the reputation table
+ * Returns all lables out of the reputation_borders table
  * @returns {Array}
  */
 function collectLabels(){
@@ -40,7 +40,7 @@ function collectLabels(){
 }
 
 /**
- * Returns all points out of the reputation table (cummulative)
+ * Returns all points out of the reputation_borders table (cummulative)
  * @returns {number[]}
  */
 function collectAbsoluteDataset() {
@@ -53,7 +53,7 @@ function collectAbsoluteDataset() {
 }
 
 /**
- * Returns all points out of the reputation table
+ * Returns all points out of the reputation_borders table
  * @returns {Array}
  */
 function collectRelativeDataset(){

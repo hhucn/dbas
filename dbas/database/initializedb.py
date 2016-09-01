@@ -16,7 +16,8 @@ import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
-    ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason
+    ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
+    ReputationHistory
 from dbas.database.news_model import News
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
@@ -1316,24 +1317,43 @@ def setup_review_database(session):
     session.add_all([reason1, reason2, reason3])
     session.flush()
 
-    review1 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
-    review2 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
-    review3 = ReviewOptimization(random.randint(10, 20), random.randint(10, 20))
-    review4 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
-    review5 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
-    review6 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
-    review7 = ReviewDelete(random.randint(10, 20), random.randint(10, 20), random.randint(1, 3))
-    session.add_all([review1, review2, review3, review4, review5, review6, review7])
+    int_start = 6
+    int_end = 30
+
+    review01 = ReviewOptimization(random.randint(int_start, int_end), random.randint(int_start, int_end), is_executed=True)
+    review02 = ReviewOptimization(random.randint(int_start, int_end), random.randint(int_start, int_end), is_executed=True)
+    review03 = ReviewOptimization(random.randint(int_start, int_end), random.randint(int_start, int_end))
+    review04 = ReviewOptimization(random.randint(int_start, int_end), random.randint(int_start, int_end))
+    review05 = ReviewOptimization(random.randint(int_start, int_end), random.randint(int_start, int_end))
+    review06 = ReviewDelete(random.randint(int_start, int_end), random.randint(int_start, int_end), random.randint(1, 3), is_executed=True)
+    review07 = ReviewDelete(random.randint(int_start, int_end), random.randint(int_start, int_end), random.randint(1, 3), is_executed=True)
+    review08 = ReviewDelete(random.randint(int_start, int_end), random.randint(int_start, int_end), random.randint(1, 3), is_executed=True)
+    review09 = ReviewDelete(random.randint(int_start, int_end), random.randint(int_start, int_end), random.randint(1, 3))
+    review10 = ReviewDelete(random.randint(int_start, int_end), random.randint(int_start, int_end), random.randint(1, 3))
+    review11 = ReviewDelete(random.randint(int_start, int_end), random.randint(int_start, int_end), random.randint(1, 3))
+    review12 = ReviewDelete(random.randint(int_start, int_end), random.randint(int_start, int_end), random.randint(1, 3))
+    session.add_all([review01, review02, review03, review04, review05, review06, review07, review08, review09, review10, review11, review12])
     session.flush()
 
-    reviewer1 = LastReviewerOptimization(random.randint(10, 20), review1.uid, True)
-    reviewer2 = LastReviewerOptimization(random.randint(10, 20), review2.uid, True)
-    reviewer3 = LastReviewerOptimization(random.randint(10, 20), review3.uid, False)
-    reviewer4 = LastReviewerDelete(random.randint(10, 20), review4.uid, True)
-    reviewer5 = LastReviewerDelete(random.randint(10, 20), review5.uid, False)
-    reviewer6 = LastReviewerDelete(random.randint(10, 20), review6.uid, True)
-    reviewer7 = LastReviewerDelete(random.randint(10, 20), review7.uid, False)
-    session.add_all([reviewer1, reviewer2, reviewer3, reviewer4, reviewer5, reviewer6, reviewer7])
+    reviewer01 = LastReviewerOptimization(random.randint(int_start, int_end), review01.uid, True)
+    reviewer02 = LastReviewerOptimization(random.randint(int_start, int_end), review01.uid, True)
+    reviewer03 = LastReviewerOptimization(random.randint(int_start, int_end), review01.uid, True)
+    reviewer04 = LastReviewerOptimization(random.randint(int_start, int_end), review01.uid, False)
+    reviewer05 = LastReviewerOptimization(random.randint(int_start, int_end), review02.uid, True)
+    reviewer06 = LastReviewerOptimization(random.randint(int_start, int_end), review02.uid, False)
+    reviewer07 = LastReviewerOptimization(random.randint(int_start, int_end), review02.uid, False)
+    reviewer08 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, True)
+    reviewer09 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, False)
+    reviewer10 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, True)
+    reviewer11 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, True)
+    reviewer12 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, False)
+    reviewer13 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, True)
+    reviewer14 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, False)
+    reviewer15 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, False)
+    reviewer16 = LastReviewerDelete(random.randint(int_start, int_end), review08.uid, False)
+    reviewer17 = LastReviewerDelete(random.randint(int_start, int_end), review08.uid, False)
+    reviewer18 = LastReviewerDelete(random.randint(int_start, int_end), review08.uid, False)
+    session.add_all([reviewer01, reviewer02, reviewer03, reviewer04, reviewer05, reviewer06, reviewer07, reviewer08, reviewer09, reviewer10, reviewer11, reviewer12, reviewer13, reviewer14, reviewer15, reviewer16, reviewer17, reviewer18])
     session.flush()
 
     reputation1 = ReputationReason(reason='rep_reason_first_position', points=5)
@@ -1347,3 +1367,29 @@ def setup_review_database(session):
     reputation9 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
     session.add_all([reputation1, reputation2, reputation3, reputation4, reputation5, reputation6, reputation7, reputation8, reputation9])
     session.flush()
+
+    martin = session.query(User).filter_by(nickname='Martin').first()
+    christian = session.query(User).filter_by(nickname='Christian').first()
+    tobias = session.query(User).filter_by(nickname='Tobias').first()
+
+    today = arrow.utcnow()
+    yesterday = today.replace(days=-1)
+    dayBeforeYesterday = yesterday.replace(days=-1)
+    history01 = ReputationHistory(reputator=martin.uid, reputation=reputation1.uid, timestamp=dayBeforeYesterday)
+    history02 = ReputationHistory(reputator=martin.uid, reputation=reputation2.uid, timestamp=yesterday)
+    history03 = ReputationHistory(reputator=martin.uid, reputation=reputation3.uid, timestamp=today)
+    history04 = ReputationHistory(reputator=martin.uid, reputation=reputation8.uid, timestamp=today)
+    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation3.uid, timestamp=dayBeforeYesterday)
+    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation4.uid, timestamp=dayBeforeYesterday)
+    history07 = ReputationHistory(reputator=christian.uid, reputation=reputation5.uid, timestamp=yesterday)
+    history08 = ReputationHistory(reputator=christian.uid, reputation=reputation6.uid, timestamp=yesterday)
+    history19 = ReputationHistory(reputator=christian.uid, reputation=reputation8.uid, timestamp=today)
+    history10 = ReputationHistory(reputator=christian.uid, reputation=reputation9.uid, timestamp=today)
+    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation4.uid, timestamp=dayBeforeYesterday)
+    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation5.uid, timestamp=dayBeforeYesterday)
+    history13 = ReputationHistory(reputator=tobias.uid, reputation=reputation6.uid, timestamp=yesterday)
+    history14 = ReputationHistory(reputator=tobias.uid, reputation=reputation7.uid, timestamp=yesterday)
+    history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation8.uid, timestamp=today)
+    history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation9.uid, timestamp=today)
+
+    session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history19, history10, history11, history12, history13, history14, history15, history16])

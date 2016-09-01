@@ -1,5 +1,3 @@
-
-
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
@@ -103,7 +101,7 @@ var allGivenVotes                                   = 'allGivenVotes';
 var author                                          = 'author';
 var avatar                                          = 'avatar';
 var acceptItTitle 									= 'acceptItTitle';
-var contactSubmit									= 'contactSubmit';
+var caution									        = 'caution';
 var correctionsSet 									= 'correctionsSet';
 var because                                         = 'because';
 var changelog                                       = 'changelog';
@@ -216,6 +214,8 @@ var requestFailed 									= 'requestFailed';
 var requestFailedBadToken							= 'requestFailedBadToken';
 var requestFailedInternalError                      = 'requestFailedInternalError';
 var restartOnError									= 'restartOnError';
+var repuationChartSum                               = 'repuationChartSum';
+var repuationChartDay                               = 'repuationChartDay';
 var saveMyStatement                                 = 'saveMyStatement';
 var saveMyStatements                                = 'saveMyStatements';
 var showAllUsers 									= 'showAllUsers';
@@ -233,6 +233,7 @@ var switchDiscussionText1 							= 'switchDiscussionText1';
 var switchDiscussionText2 							= 'switchDiscussionText2';
 var switchDiscussionText3 							= 'switchDiscussionText3';
 var surname 										= 'surname';
+var sureToDeleteReview                              = 'sureToDeleteReview';
 var showAllAttacksTitle 							= 'showAllAttacksTitle';
 var showAllUsersTitle 								= 'showAllUsersTitle';
 var text 											= 'text';
@@ -290,6 +291,7 @@ var dbas_en = {
 	'because': 'because',
 	'countOfArguments': 'Count of arguments',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
+	'caution': 'Caution',
 	'correctionsSet': 'Your correction was set.',
 	'changelog': 'changelog',
 	'checkFirstname': 'Better check your first name, because the input is empty!',
@@ -399,6 +401,8 @@ var dbas_en = {
 	'requestFailed': 'Request failed, please reload the page.',
 	'requestFailedBadToken': 'Request failed due to bad token, please reload the page.',
 	'requestFailedInternalError': 'Request failed due to bad token, please reload this page. If the reload fails again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
+	'repuationChartSum': 'Summarized Reputation',
+	'repuationChartDay': 'Reputation per Day',
 	'saveMyStatement': 'Save my Statement!',
 	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
@@ -415,6 +419,7 @@ var dbas_en = {
 	'statisticsNotThere': 'You have no statistics.',
 	'support': 'Support',
 	'surname' : 'Surname',
+	'sureToDeleteReview': 'Are you sure, that you want to revoke this decision? This revoke cannot be undone!',
 	'shortenedBy': 'which was shortened by',
 	'switchDiscussion': 'Change of discussion\'s topic',
 	'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
@@ -458,6 +463,7 @@ var dbas_de = {
 	'author': 'Autor',
 	'because':'weil',
 	'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
+	'caution': 'Achtung',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
 	'changelog': 'Änderungsprotokoll',
@@ -569,6 +575,8 @@ var dbas_de = {
 	'requestFailed': 'Anfrage fehlgeschlagen, bitte laden Sie die Seite erneut.',
 	'requestFailedBadToken': 'Anfrage aufgrund eines falschen Tokens fehlgeschlagen. Bitte laden Sie die Seite neu.',
 	'requestFailedInternalError': 'Anfrage aufgrund eines internen Fehlers fehlgeschlagen. Bitte laden Sie die Seite neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">kontaktieren sie uns bitte (hier klicken)</span>',
+	'repuationChartSum': 'Reputation ingsesamt',
+	'repuationChartDay': 'Reputation pro Tag',
 	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
 	'saveMyStatement': 'Aussage speichern!',
 	'saveMyStatements': 'Ausagen speichern!',
@@ -590,6 +598,7 @@ var dbas_de = {
 	'switchDiscussionText3': 'Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
 	'support': 'Unterstützung',
 	'surname': 'Nachname',
+	'sureToDeleteReview': 'Sind Sie sicher, dass sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann nicht rückgangig gemacht werden!',
 	'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
 	'text': 'Text',
 	'to': 'An',

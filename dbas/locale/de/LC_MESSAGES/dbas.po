@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-08-30 11:01+0200\n"
+"POT-Creation-Date: 2016-08-31 18:28+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -411,6 +411,170 @@ msgstr "erstellt mit dem Pyramid Web Framework"
 msgid "changes"
 msgstr "Änderungen in der Version"
 
+#. Default: Queues
+#: templates/review.pt:7
+msgid "queues"
+msgstr "Schlangen"
+
+#. Default: How To
+#: templates/review.pt:8
+msgid "howto"
+msgstr "How To"
+
+#. Default: Help improve the dialog
+#: templates/review.pt:15
+msgid "help_to_improve"
+msgstr "Helfen Sie, den Dialog zu verbessern"
+
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: templates/review.pt:16
+msgid "dbas_is_moderated_by"
+msgstr ""
+"D-BAS wird durch Sie moderiert. Helfen Sie weiteren Teilnehmern, besser zu "
+"argumenten und heben Sie Diskussionsqualität, indem Sie"
+
+#. Default: Evaluate new statements
+#: templates/review.pt:18
+msgid "evaluate_new_statements"
+msgstr "Neue Aussagen begutachten"
+
+#. Default: Reviewing suspicious statements
+#: templates/review.pt:19
+msgid "reviewing_suspicious_statements"
+msgstr "Verdächtige Aussagen werten"
+
+#. Default: Voting to close or reopen statements
+#: templates/review.pt:20
+msgid "voting_to_close"
+msgstr "Abstimmen, ob Aussagen gelöscht werden sollen"
+
+#. Default: Choose a task to get started.
+#: templates/review.pt:22
+msgid "choose_task"
+msgstr "Wählen Sie eine Aufgaben und los geht's"
+
+#. Default: Based on your user group, you have all rights!
+#: templates/review.pt:29 templates/review_reputation.pt:8
+msgid "unlimited_right_based_on_group"
+msgstr "Basierend auf Ihrer Nutzergruppe haben Sie volle Rechte!"
+
+#. Default: Your current reputation_borders count is:
+#: templates/review.pt:32
+msgid "current_reputation_os"
+msgstr "Ihre aktuelle Reputations-Punktzahl beträgt:"
+
+#. Default: Open Tasks
+#: templates/review.pt:42
+msgid "open_tasks"
+msgstr "Offene Entscheidungen"
+
+#. Default: Topic
+#: templates/review.pt:43
+msgid "topic"
+msgstr "Thema"
+
+#. Default: Recent Reviews
+#: templates/review.pt:44
+msgid "recent_reviews"
+msgstr "Letzte Gutachter"
+
+#. Default: None
+#: templates/review.pt:61
+msgid "None"
+msgstr "Keine"
+
+#. Default: What is reputation_borders? How do I earn (and lose) it?
+#: templates/review.pt:73
+msgid "what_is_reputation"
+msgstr "Was ist Reputation? Wie bekomme (verliere) ich diese?"
+
+#. Default: Reputation is a rough measurement of how work you are doing for the
+#. discussion and the community;
+#: templates/review.pt:74
+msgid "what_is_reputation_def"
+msgstr ""
+"Reputation ist eine grobe Messung, wieviel Arbeit Sie in die Diskussion und "
+"die Communty stecken;"
+
+#. Default: you can earn it by using D-BAS and all of its great functions.
+#: templates/review.pt:75
+msgid "what_is_reputation_earn"
+msgstr "Sie können mehr Reputation durch die Nutzung von D-BAS verdienen"
+
+#. Default: Basic use of D-BAS, does not require any reputation_borders at all.
+#: templates/review.pt:76
+msgid "what_is_reputation_use"
+msgstr "Normale Nutzung von D-BAS bedarf keiner Reputation."
+
+#. Default: You gain reputation_borders when:
+#: templates/review.pt:79
+msgid "gain_rep_when"
+msgstr "Sie bekommen Reputation, wenn"
+
+#. Default: You lose reputation_borders when:
+#: templates/review.pt:86
+msgid "lose_rep_when"
+msgstr "Sie verlieren Reputation, wenn"
+
+#. Default: Privileges
+#: templates/review.pt:95
+msgid "privileges"
+msgstr "Privilegien"
+
+#. Default: Privileges control what you can see in the review queues of D-BAS.
+#. Gain more privileges by increasing your reputation_borders.
+#: templates/review.pt:96
+msgid "privileges_explanation"
+msgstr ""
+"Durch Privilegien erhalten Sie Zugriff auf die Schlangen von D-BAS. Erhalten "
+"Sie mehr Privilegien durch mehr Reputation."
+
+#. Default: The history of votes!
+#: templates/review_history.pt:7
+msgid "history_of_votes"
+msgstr "Die Geschichte der Abstimmungen!"
+
+#. Default: No decisions for this queue.
+#: templates/review_history.pt:16
+msgid "no_decision_for_this_queue"
+msgstr "Keine Abstimmungen in dieser Schlange."
+
+#. Default: Votes
+#: templates/review_history.pt:21
+msgid "votes"
+msgstr "Stimmen"
+
+#. Default: Voters Pro
+#: templates/review_history.pt:22
+msgid "voters_pro"
+msgstr "Stimmen dafür"
+
+#. Default: Voters Con
+#: templates/review_history.pt:23
+msgid "voters_con"
+msgstr "Stimmen dagegen"
+
+#. Default: Accepted
+#: templates/review_history.pt:24
+msgid "accepted"
+msgstr "Akzeptiert"
+
+#. Default: Timestamp
+#: templates/review_history.pt:25
+msgid "timestamp"
+msgstr "Zeitstempel"
+
+#. Default: Action
+#: templates/review_history.pt:26
+msgid "actions"
+msgstr "Aktion"
+
+#. Default: Undo
+#: templates/review_history.pt:57
+msgid "undo"
+msgstr "Rückgängig machen"
+
 #. Default: Imprint and Copyrights
 #: templates/snippet-footer.pt:11
 msgid "imprint_copyright"
@@ -785,7 +949,7 @@ msgid "success:"
 msgstr "Erfolg:"
 
 #. Default: Date
-#: templates/snippet-popups.pt:585
+#: templates/snippet-popups.pt:585 templates/review_reputation.pt:21
 msgid "date"
 msgstr "Datum"
 
@@ -806,22 +970,22 @@ msgstr "Bitte geben Sie einen Grund an"
 
 #. Default: The text needs and correcture.
 #: templates/snippet-popups.pt:745
-msgid "statement-optimization"
+msgid "statement_optimization"
 msgstr "Der Text sollte überarbeitet werden."
 
 #. Default: This statement is offtopic.
 #: templates/snippet-popups.pt:747
-msgid "statement-offtopic"
+msgid "statement_offtopic"
 msgstr "Die Aussage gehört nicht zum Thema."
 
 #. Default: It is not relevant at all.
 #: templates/snippet-popups.pt:749
-msgid "statement-spam"
+msgid "statement_spam"
 msgstr "Sie ist nicht relevant."
 
 #. Default: This statement is harmful or abusive.
 #: templates/snippet-popups.pt:751
-msgid "statement-harmful"
+msgid "statement_harmful"
 msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: Personal Information
@@ -1064,6 +1228,105 @@ msgstr "Zur Startseite!"
 msgid "back_to_the_discussion"
 msgstr "Zurück zur Diskussion!"
 
+#. Default: Reputation count
+#: templates/review_reputation.pt:9
+msgid "reputation_count"
+msgstr "Repuations-Punktzahl"
+
+#. Default: Action
+#: templates/review_reputation.pt:22
+msgid "action"
+msgstr "Aktion"
+
+#. Default: Reputation
+#: templates/review_reputation.pt:23
+msgid "reputation_borders"
+msgstr "Reputation"
+
+#. Default: (more)
+#: templates/review_content.pt:17
+msgid "wrapped_more"
+msgstr "(mehr)"
+
+#. Default: (less)
+#: templates/review_content.pt:18
+msgid "wrapped_less"
+msgstr "(weniger)"
+
+#. Default: It's Okay
+#: templates/review_content.pt:22 templates/review_content.pt:36
+msgid "its_okay"
+msgstr "Das ist okay so"
+
+#. Default: for arguments, which should not be deleted.
+#: templates/review_content.pt:22
+msgid "its_okay_explanation"
+msgstr "für Argumente, die nicht gelöscht werden sollen."
+
+#. Default: Delete it
+#: templates/review_content.pt:23 templates/review_content.pt:35
+msgid "delete_it"
+msgstr "Löschen"
+
+#. Default: for arguments, that should be deleted based on the reason above.
+#: templates/review_content.pt:23
+msgid "delete_it_explanation"
+msgstr ""
+"für Argumente, die basierend auf dem genannten Grund, gelöscht werden sollen."
+
+#. Default: Skip it
+#: templates/review_content.pt:24 templates/review_content.pt:29
+#: templates/review_content.pt:34 templates/review_content.pt:39
+msgid "skip_it"
+msgstr "Überspringen"
+
+#. Default: if you are not sure and want to go to the next argument.
+#: templates/review_content.pt:24 templates/review_content.pt:29
+msgid "skip_it_explanation"
+msgstr "wenn Sie unsicher sind und zum Nächsten gehen möchten."
+
+#. Default: Let me correct it
+#: templates/review_content.pt:27 templates/review_content.pt:41
+msgid "correct_it"
+msgstr "Lass' mich eine Verbesserungen angeben"
+
+#. Default: , if you have an idea for a better formulation with the same
+#. content.
+#: templates/review_content.pt:27
+msgid "correct_it_explanation"
+msgstr ""
+", wenn Sie eine Idee zur besseren Formulierung (aber demselben Inhalt) haben."
+
+#. Default: It's okay so
+#: templates/review_content.pt:28 templates/review_content.pt:40
+msgid "its_okay_so"
+msgstr "Das ist okay so"
+
+#. Default: for arguments, which can be understood as-is.
+#: templates/review_content.pt:28
+msgid "its_okay_so_explanation"
+msgstr "für Argumente, die so gut verständlich sind."
+
+#. Default: Reported
+#: templates/review_content.pt:57
+msgid "reported"
+msgstr "Gemeldet am"
+
+#. Default: Viewed
+#: templates/review_content.pt:61
+msgid "viewed"
+msgstr "Gesehen von"
+
+#. Default: Attacks
+#: templates/review_content.pt:65
+msgid "attacks"
+msgstr "Attackiert von"
+
+#. Default: Supports
+#: templates/review_content.pt:69
+msgid "supports"
+msgstr "Unterstützt von"
+
 #. Default: You have got
 #: templates/notifications.pt:8
 msgid "youHaveGot"
@@ -1250,9 +1513,6 @@ msgstr "Komplette Ansicht"
 #~ msgid "view_details"
 #~ msgstr "Details sehen"
 
-#~ msgid "votes!"
-#~ msgstr "Stimmen!"
-
 #~ msgid "arguments!"
 #~ msgstr "Argumente!"
 
@@ -1279,9 +1539,6 @@ msgstr "Komplette Ansicht"
 
 #~ msgid "public_avatar"
 #~ msgstr "Öffentlicher Avatar"
-
-#~ msgid "list_attacks"
-#~ msgstr "Attacken aufführen"
 
 #~ msgid "admin_only"
 #~ msgstr "Manche Sachen sind nur für den Admin."
@@ -1324,9 +1581,6 @@ msgstr "Komplette Ansicht"
 #~ msgid "forgot_input_radio"
 #~ msgstr "Eingabe vergessen"
 
-#~ msgid "save_my_statement"
-#~ msgstr "Aussage speichern"
-
 #~ msgid "and"
 #~ msgstr "und"
 
@@ -1360,12 +1614,6 @@ msgstr "Komplette Ansicht"
 #~ msgid "fetchurl"
 #~ msgstr "Hol die lange URL"
 
-#~ msgid "current_discussion"
-#~ msgstr "Die aktuelle Diskussion hat folgendes Thema"
-
-#~ msgid "what_is_your_idea"
-#~ msgstr "Was ist Ihre Idee? Was sollten wir machen?"
-
 #~ msgid "forward"
 #~ msgstr "weiterleiten"
 
@@ -1380,9 +1628,6 @@ msgstr "Komplette Ansicht"
 
 #~ msgid "total"
 #~ msgstr "insgesamt."
-
-#~ msgid "topics"
-#~ msgstr "Themen"
 
 #~ msgid "Because..."
 #~ msgstr "Weil..."
@@ -1484,9 +1729,6 @@ msgstr "Komplette Ansicht"
 #~ "eine Insel-Ansicht als weitere Modus. Mit dieser Möglichkeit sehen Sie "
 #~ "alle Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind."
 
-#~ msgid "expert_view"
-#~ msgstr "Experten Ansicht"
-
 #~ msgid "expert_view_content"
 #~ msgstr ""
 #~ "Experten Ansicht: Du bist also ein Experte? Okay, dann darfst du wirklich "
@@ -1504,9 +1746,6 @@ msgstr "Komplette Ansicht"
 #~ msgstr ""
 #~ "Der Praxispartner von Tobias Krauthoff ist Daniel Reichert vom Liquid "
 #~ "Democracy e.V."
-
-#~ msgid "graduation_scool"
-#~ msgstr "Graduierten-Kolleg"
 
 #~ msgid "fk_op"
 #~ msgstr "Online-Partizipation"
@@ -1554,9 +1793,6 @@ msgstr "Komplette Ansicht"
 
 #~ msgid "ased"
 #~ msgstr "asiertem"
-
-#~ msgid "rgumentation"
-#~ msgstr "rgument"
 
 #~ msgid "oftware"
 #~ msgstr "ystem"
@@ -1747,9 +1983,6 @@ msgstr "Komplette Ansicht"
 #~ msgid "how-to-write-text-negations"
 #~ msgstr ""
 #~ "Nutzen Sie niemals Verneinungen! Diese werden später immer extra gesetzt!"
-
-#~ msgid "report"
-#~ msgstr "Melden"
 
 #~ msgid "insert-argument"
 #~ msgstr "Bitte füge ein neues Argument hinzu"

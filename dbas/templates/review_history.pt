@@ -1,0 +1,69 @@
+<tal:block metal:use-macro="layout" i18n:domain="review" metal:define-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<div class="container colored-container center">
+            <h5 tal:condition="not:history.has_access">You have to earn more reputation for this queue!</h5>
+			<img tal:condition="not:history.has_access" class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
+            <h5 tal:condition="history.has_access"><i class="fa fa-history" aria-hidden="true"></i> <span i18n:translate="history_of_votes">The history of votes!</span></h5>
+		</div>
+
+
+		<div class="container colored-container" tal:repeat="past history.past_decision">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <h5><i tal:attributes="class past.icon"></i> ${past.title}</h5>
+                    <div tal:switch="len(past.content)>0">
+                        <p tal:case="False" class="lead" i18n:translate="no_decision_for_this_queue">No decisions for this queue.</p>
+                        <div tal:case="True">
+                            <table class="table table-condensed" border="0">
+                                <thead>
+                                    <tr>
+                                        <td i18n:translate="votes">Votes</td>
+                                        <td i18n:translate="voters_pro" class="center">Voters Pro</td>
+                                        <td i18n:translate="voters_con" class="center">Voters Con</td>
+                                        <td i18n:translate="accepted" class="center">Accepted</td>
+                                        <td i18n:translate="timestamp">Timestamp</td>
+                                        <td i18n:translate="actions">Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr tal:repeat="rep past.content">
+                                        <td class="center">
+                                            <a href="#">
+                                                <span class="text-success">${len(rep.votes_pro)}</span>:
+                                                <span class="text-danger">${len(rep.votes_con)}</span>
+                                            </a>
+                                        </td>
+                                        <td class="center" tal:switch="len(rep.votes_pro) > 0">
+                                            <div tal:case="True" tal:omit-tag="" tal:repeat="pro rep.votes_pro">
+                                                <a tal:attributes="href pro.userpage_url; title pro.nickname">
+                                                    <img tal:attributes="src pro.gravatar_url">
+                                                </a>
+                                            </div>
+                                            <span tal:case="False">-</span>
+                                        </td>
+                                        <td class="center" tal:switch="len(rep.votes_con) > 0">
+                                            <div tal:case="True" tal:omit-tag="" tal:repeat="con rep.votes_con">
+                                                <a tal:attributes="href con.userpage_url; title con.nickname">
+                                                    <img tal:attributes="src con.gravatar_url">
+                                                </a>
+                                            </div>
+                                            <span tal:case="False">-</span>
+                                        </td>
+                                        <td tal:condition="len(rep.votes_pro) > len(rep.votes_con)" class="text-success"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>
+                                        <td tal:condition="len(rep.votes_pro) < len(rep.votes_con)" class="text-danger"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></td>
+                                        <td tal:condition="len(rep.votes_pro) == len(rep.votes_con)" class="text-info"><i class="fa fa-question" aria-hidden="true"></i></td>
+                                        <td>${rep.timestamp}</td>
+                                        <td class="center"><a href="#" class="btn btn-primary btn-sm review-undo" tal:attributes="data-id rep.entry_id; data-queue past.queue"><span i18n:translate="undo">Undo</span></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/history.js')}"></script>
+	</tal:block>
+</tal:block>

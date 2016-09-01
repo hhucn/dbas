@@ -450,54 +450,18 @@ class ItemDictHelper(object):
         url0 = _um.get_url_for_reaction_on_argument(not for_api, arg_uid, sys_attack, arg_id_sys)
         if db_argument.conclusion_uid is None:  # conclusion is an argument
             url1 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.argument_uid, sys_attack, arg_id_sys)
-            url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.argument_uid, 'f', 'undercut')
+            url3 = _um.get_url_for_justifying_argument(not for_api, db_argument.argument_uid, 'f', 'undercut')
         else:
             url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
-            url2 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
+            url3 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
         # url3 = _um.get_url_for_justifying_statement(not for_api, db_premise.statement_uid, 'f')
-        url4 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undercut')
-
-        answers = list()
-        answers.append({'text': item_text[0], 'url': url0})
-        answers.append({'text': item_text[1], 'url': url1})
-        answers.append({'text': item_text[2], 'url': url2})
-        # answers.append({'text': item_text[3], 'url': url3})
-        answers.append({'text': item_text[4], 'url': url4})
-
-        return_array = []
-        for no in range(0, len(answers)):
-            arr = [{'title': answers[no]['text'], 'id': 0}]
-            return_array.append(self.__create_answer_dict('jump' + str(no), arr, 'jump', answers[no]['url']))
-
-        return return_array
-
-    def get_array_for_jump_decision(self, arg_uid, slug, for_api):
-        """
-
-        :param arg_uid:
-        :param slug:
-        :param for_api:
-        :return:
-        """
-
-        _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-        premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO eliminate random
-
-        item_text = TextGenerator(self.lang).get_jump_to_argument_text_list(True)
-
-        url0 = _um.get_url_for_justifying_statement(not for_api, premise.statement_uid, 'f')
-        if db_argument.conclusion_uid is None:  # conclusion is an argument
-            url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.argument_uid, 'f', 'undercut')
-        else:
-            url2 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
         url2 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undercut')
 
         answers = list()
         answers.append({'text': item_text[0], 'url': url0})
         answers.append({'text': item_text[1], 'url': url1})
         answers.append({'text': item_text[2], 'url': url2})
+        answers.append({'text': item_text[3], 'url': url3})
 
         return_array = []
         for no in range(0, len(answers)):
