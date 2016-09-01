@@ -38,7 +38,7 @@ class ReviewReputationHelperTEst(unittest.TestCase):
 
     def test_get_reputation_of(self):
         count, has_all_rights = ReviewReputationHelper.get_reputation_of('Tobias')
-        self.assertTrue(count == 28)
+        self.assertTrue(count > 20)
         self.assertTrue(has_all_rights)
 
         count, has_all_rights = ReviewReputationHelper.get_reputation_of('Tobiass')

@@ -304,6 +304,7 @@ class Translator(object):
         self.jumpAnswer2 = 'jumpAnswer2'
         self.jumpAnswer3 = 'jumpAnswer3'
         self.jumpAnswer4 = 'jumpAnswer4'
+        self.justLookDontTouch = 'justLookDontTouch'
         self.keyword = 'keyword'
         self.keywordStart = 'keywordStart'
         self.keywordChooseActionForStatement = 'keywordChooseActionForStatement'

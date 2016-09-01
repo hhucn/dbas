@@ -9,7 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
     User
 from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings
-from dbas.review.helper.reputation import get_reputation_of, reputation_borders
+from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from sqlalchemy import and_
 
 
@@ -27,12 +27,12 @@ def get_history(mainpage, nickname, translator):
 
     past_decision = [{
         'title': 'Delete Queue',
-        'icon': 'fa fa-history',
+        'icon': reputation_icons['deletes'],
         'queue': 'deletes',
         'content': deletes_list,
     }, {
         'title': 'Optimization Queue',
-        'queue': 'optimizations',
+        'queue': reputation_icons['optimizations'],
         'icon': 'fa fa-flag',
         'content': optimizations_list
     }]

@@ -471,11 +471,13 @@ def get_information_of(db_user, lang):
     :return:
     """
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_group = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first()
     ret_dict = dict()
     ret_dict['public_nick'] = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
     ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)
     ret_dict['last_login']  = sql_timestamp_pretty_print(db_user.last_login, lang)
     ret_dict['registered']  = sql_timestamp_pretty_print(db_user.registered, lang)
+    ret_dict['group']       = db_group.name[0:1].upper() + db_group.name[1:-1]
 
     ret_dict['is_male']     = db_user.gender == 'm'
     ret_dict['is_female']   = db_user.gender == 'f'
