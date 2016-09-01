@@ -25,20 +25,17 @@ def get_history(mainpage, nickname, translator):
     deletes_list = __get_executed_reviews_of(mainpage, ReviewDelete, LastReviewerDelete, translator.get_lang())
     optimizations_list = __get_executed_reviews_of(mainpage, ReviewOptimization, LastReviewerOptimization, translator.get_lang())
 
-    past_decision = [
-        {
-            'title': 'Delete Queue',
-            'icon': 'fa fa-history',
-            'queue': 'deletes',
-            'content': deletes_list,
-        },
-        {
-            'title': 'Optimization Queue',
-            'queue': 'optimizations',
-            'icon': 'fa fa-flag',
-            'content': optimizations_list
-         }
-    ]
+    past_decision = [{
+        'title': 'Delete Queue',
+        'icon': 'fa fa-history',
+        'queue': 'deletes',
+        'content': deletes_list,
+    }, {
+        'title': 'Optimization Queue',
+        'queue': 'optimizations',
+        'icon': 'fa fa-flag',
+        'content': optimizations_list
+    }]
     ret_dict['past_decision'] = past_decision
 
     return ret_dict
@@ -87,7 +84,6 @@ def __get_user_dict_for_review(user_id, mainpage):
     """
     Fetches some data of the given user.
 
-    :param reviewer_uid: User id of the reviewer
     :param mainpage: Mainpage of D-BAS
     :return: dcit with gravatar, uerpage and nickname
     """

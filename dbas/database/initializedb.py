@@ -1316,7 +1316,7 @@ def setup_review_database(session):
     reason3 = ReviewDeleteReason(reason='harmful')
     session.add_all([reason1, reason2, reason3])
     session.flush()
-    
+
     int_start = 6
     int_end = 30
 

@@ -640,7 +640,7 @@ class ReviewDelete(DiscussionBase):
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     reasons = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
-    def __init__(self, detector, argument, reason,is_executed=False):
+    def __init__(self, detector, argument, reason, is_executed=False):
         """
 
         :param detector:
