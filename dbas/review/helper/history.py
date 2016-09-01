@@ -7,13 +7,13 @@ Provides helping function for the managing reputation.
 import dbas.user_management as _user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
-    User
+    User, ReputationHistory, ReputationReason
 from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from sqlalchemy import and_
 
 
-def get_history(mainpage, nickname, translator):
+def get_complete_review_history(mainpage, nickname, translator):
     """
 
     :param nickname:
@@ -37,6 +37,42 @@ def get_history(mainpage, nickname, translator):
         'content': optimizations_list
     }]
     ret_dict['past_decision'] = past_decision
+
+    return ret_dict
+
+
+def get_reputation_history_of(nickname, translator):
+    """
+
+    :param nickname:
+    :param translator:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return dict()
+
+    ret_dict = dict()
+    count, all_rights = get_reputation_of(nickname)
+    ret_dict['count'] = count
+    ret_dict['all_rights'] = all_rights
+
+    db_reputation = DBDiscussionSession.query(ReputationHistory) \
+        .filter_by(reputator_uid=db_user.uid) \
+        .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
+        .order_by(ReputationHistory.uid.asc())\
+        .all()
+
+    rep_list = list()
+    for rep in db_reputation:
+        date = sql_timestamp_pretty_print(rep.timestamp, translator.get_lang(), humanize=False)
+        points_data = '<span class="success-description points">+' if rep.reputations.points > 0 else '<span class="error-description points">'
+        points_data += str(rep.reputations.points) + '</span'
+        points = rep.reputations.points
+        action = translator.get(rep.reputations.reason)
+        rep_list.append({'date': date, 'points_data': points_data, 'action': action, 'points': points})
+
+    ret_dict['history'] = rep_list
 
     return ret_dict
 
@@ -70,6 +106,7 @@ def __get_executed_reviews_of(mainpage, table_type, last_review_type, lang):
 
         # and build up some dict
         entry = dict()
+        entry['entry_id'] = review.uid
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, lang)

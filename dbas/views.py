@@ -919,7 +919,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        history = ReviewHistoryHelper.get_history(mainpage, self.request.authenticated_userid, _tn)
+        history = ReviewHistoryHelper.get_complete_review_history(mainpage, self.request.authenticated_userid, _tn)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
@@ -950,7 +950,7 @@ class Dbas(object):
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        reputation_dict = ReviewReputationHelper.get_reputation_history(self.request.authenticated_userid, _tn)
+        reputation_dict = ReviewHistoryHelper.get_reputation_history_of(self.request.authenticated_userid, _tn)
 
         return {
             'layout': Dbas.base_layout(),

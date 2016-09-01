@@ -16,41 +16,6 @@ reputation_icons = {'deletes': 'fa fa-pencil-square-o',
                     'history': 'fa fa-history'}
 
 
-def get_reputation_history(nickname, translator):
-    """
-
-    :param nickname:
-    :param translator:
-    :return:
-    """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return dict()
-
-    ret_dict = dict()
-    count, all_rights = get_reputation_of(nickname)
-    ret_dict['count'] = count
-    ret_dict['all_rights'] = all_rights
-
-    db_reputation = DBDiscussionSession.query(ReputationHistory) \
-        .filter_by(reputator_uid=db_user.uid) \
-        .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
-        .all()
-
-    rep_list = list()
-    for rep in db_reputation:
-        date = sql_timestamp_pretty_print(rep.timestamp, translator.get_lang(), humanize=False)
-        points_data = '<span class="success-description points">+' if rep.reputations.points > 0 else '<span class="error-description points">'
-        points_data += str(rep.reputations.points) + '</span'
-        points = rep.reputations.points
-        action = translator.get(rep.reputations.reason)
-        rep_list.append({'date': date, 'points_data': points_data, 'action': action, 'points': points})
-
-    ret_dict['history'] = rep_list
-
-    return ret_dict
-
-
 def get_privilege_list(translator):
     """
 
