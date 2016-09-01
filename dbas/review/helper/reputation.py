@@ -8,8 +8,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
 from dbas.lib import sql_timestamp_pretty_print, is_user_author
 
-reputation_borders = {'deletes': 15,
-                      'optimizations': 15,
+reputation_borders = {'deletes': 30,
+                      'optimizations': 30,
                       'history': 100}
 
 

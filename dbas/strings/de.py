@@ -482,6 +482,7 @@ class GermanDict:
         de_lang[_self.rep_reason_first_position] = 'Sie zum ersten mal eine Position eingeben'
         de_lang[_self.rep_reason_first_justification] = 'Sie zum ersten mal eine Begründung eingeben'
         de_lang[_self.rep_reason_first_argument] = 'Sie zum ersten mal ein Argument eingeben'
+        de_lang[_self.rep_reason_new_statement] = 'Für jedes weitere Argument, dass Sie eingeben'
         de_lang[_self.rep_reason_success_flag] = 'Sie zum ersten Mal ein Argument markieren'
         de_lang[_self.rep_reason_success_edit] = 'Sie zum ersten Mal eine Editierung vornehmen'
         de_lang[_self.rep_reason_bad_flag] = 'Sie die Melde-Funktion missbrauchen'

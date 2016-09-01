@@ -865,8 +865,8 @@ class Dbas(object):
             'privilege_list': ReviewReputationHelper.get_privilege_list(_tn),
             'reputation_list': ReviewReputationHelper.get_reputation_list(_tn),
             'issues': issue_dict,
-            'reputation_borders': {'count': count,
-                                   'has_all_rights': all_rights}
+            'reputation': {'count': count,
+                           'has_all_rights': all_rights}
         }
 
     # content page for reviews
@@ -958,7 +958,7 @@ class Dbas(object):
             'title': _tn.get(_tn.review),
             'project': project_name,
             'extras': extras_dict,
-            'reputation_borders': reputation_dict
+            'reputation': reputation_dict
         }
 
 
