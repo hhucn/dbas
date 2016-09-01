@@ -5,12 +5,12 @@
 
 $(document).ready(function () {
 	// buttons
-	var optimization_ack = $('#optimization_ack');
-	var optimization_nack = $('#optimization_nack');
-	var optimization_skip = $('#optimization_skip');
-	var delete_ack = $('#delete_ack');
-	var delete_nack = $('#delete_nack');
-	var delete_skip = $('#delete_skip');
+	var optimization_ack = $('#opti_ack');
+	var optimization_nack = $('#opti_nack');
+	var optimization_skip = $('#opti_skip');
+	var delete_ack = $('#del_ack');
+	var delete_nack = $('#del_nack');
+	var delete_skip = $('#del_skip');
 	
 	// text
 	var more_about_reason = $('#more_about_reason');

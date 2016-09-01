@@ -48,6 +48,7 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
+from websocket.lib import send_request_for_recent_delete_review_to_socketio
 
 name = 'D-BAS'
 version = '0.7.0'
@@ -1118,7 +1119,8 @@ class Dbas(object):
                 error = _tn.get(_tn.userPasswordNotMatch)
             else:
                 logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
-                db_user.should_hold_the_login(keep_login)
+                db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+                db_settings.should_hold_the_login(keep_login)
                 headers = remember(self.request, nickname)
 
                 # update timestamp
@@ -2056,10 +2058,17 @@ class Dbas(object):
         return_dict = dict()
 
         try:
-            # should_delete = True if str(self.request.params['should_delete']) == 'true' else False
-            # nickname = self.request.authenticated_userid
+            should_delete = True if str(self.request.params['should_delete']) == 'true' else False
+            review_uid = self.request.params['review_uid']
+            nickname = self.request.authenticated_userid
+            if not Validator.is_integer(review_uid):
+                return_dict['error'] = _t.get(_t.internalKeyError)
+            else:
+                ReviewQueueHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
+                send_request_for_recent_delete_review_to_socketio(nickname)
 
-            return_dict['error'] = ''
+                return_dict['info'] = str(should_delete) + ' by ' + nickname
+                return_dict['error'] = ''
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
             return_dict['error'] = _t.get(_t.internalKeyError)
