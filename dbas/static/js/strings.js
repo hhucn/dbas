@@ -205,6 +205,7 @@ var report 											= 'report';
 var reportTitle										= 'reportTitle';
 var passwordSubmit 									= 'passwordSubmit';
 var pinNavigation 									= 'pinNavigation';
+var queueCompleteSeen                               = 'queueCompleteSeen';
 var registered 										= 'registered';
 var requestTrack 									= 'requestTrack';
 var refreshTrack 									= 'refreshTrack';
@@ -389,6 +390,7 @@ var dbas_en = {
 	'ohsnap': 'Oh snap!',
 	'passwordSubmit': 'Change Password',
 	'pinNavigation': 'Pin Navigation',
+	'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
 	'position': 'Position',
 	'registered': 'Registered',
 	'restartOnError': 'Please try to reload this page or restart the discussion when the error stays',
@@ -564,6 +566,7 @@ var dbas_de = {
 	'ohsnap': 'Mist!',
 	'passwordSubmit': 'Passwort ändern',
 	'pinNavigation': 'Navigation anheften',
+	'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
 	'position': 'Position',
 	'report': 'Melden',
 	'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',

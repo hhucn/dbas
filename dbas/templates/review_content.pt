@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="col-md-offset-2 col-md-3">
-                    <table class="table table-condensed pull-right" border="0" style="font-size: 14px;">
+                    <table id="stats-table" class="table table-condensed pull-right" border="0" style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_argument.extra_info">
                         <tbody>
                             <tr>
                                 <td i18n:translate="reported">Reported</td>
