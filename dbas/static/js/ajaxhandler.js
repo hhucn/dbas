@@ -1038,13 +1038,12 @@ function AjaxGraphHandler(){
 	 * Displays a graph of current discussion
 	 */
 	this.getDiscussionGraphData = function (url) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		// TODO FIX CSRF
 		$.ajax({
 			url: url,
-			type: 'POST',
+			type: 'GET',
 			dataType: 'json',
-			data: {issue: new Helper().getCurrentIssueId()},
-			headers: {'X-CSRF-Token': csrfToken}
+			data: {issue: new Helper().getCurrentIssueId()}
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
 		}).fail(function () {
