@@ -483,6 +483,7 @@ class EnglischDict:
         en_lang[_self.rep_reason_first_position] = 'You entered a new position for the first time'
         en_lang[_self.rep_reason_first_justification] = 'You entered a new justification for the first time'
         en_lang[_self.rep_reason_first_argument] = 'You entered a new argument for the first time'
+        en_lang[_self.rep_reason_new_statement] = 'For any argument you entered after your first one'
         en_lang[_self.rep_reason_success_flag] = 'You set your first flag'
         en_lang[_self.rep_reason_success_edit] = 'You send your first edit'
         en_lang[_self.rep_reason_bad_flag] = 'You misused the flag function'

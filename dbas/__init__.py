@@ -140,7 +140,7 @@ def main(global_config, **settings):
 
     # review section
     config.add_route('review_index', '/review')
-    config.add_route('review_reputation', '/review/reputation_borders')
+    config.add_route('review_reputation', '/review/reputation')
     config.add_route('review_history', '/review/history')
     config.add_route('review_content', '/review/{queue}')
 
