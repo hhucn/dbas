@@ -206,6 +206,7 @@ var reportTitle										= 'reportTitle';
 var passwordSubmit 									= 'passwordSubmit';
 var pinNavigation 									= 'pinNavigation';
 var queueCompleteSeen                               = 'queueCompleteSeen';
+var revokedArgument                                 = 'revokedArgument';
 var registered 										= 'registered';
 var requestTrack 									= 'requestTrack';
 var refreshTrack 									= 'refreshTrack';
@@ -392,6 +393,7 @@ var dbas_en = {
 	'pinNavigation': 'Pin Navigation',
 	'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
 	'position': 'Position',
+	'revokedArgument': 'revoked argument',
 	'registered': 'Registered',
 	'restartOnError': 'Please try to reload this page or restart the discussion when the error stays',
 	'report': 'Report',
@@ -570,6 +572,7 @@ var dbas_de = {
 	'position': 'Position',
 	'report': 'Melden',
 	'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',
+	'revokedArgument': 'wiederrufenes Argument',
 	'registered': 'Registriert',
 	'requestTrack': 'Track anfragen',
 	'refreshTrack': 'Track neuladen',

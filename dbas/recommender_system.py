@@ -12,6 +12,7 @@ from dbas.helper.relation import RelationHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, VoteArgument
 from dbas.logger import logger
+from dbas.query_wrapper import get_not_disabled_arguments_as_query
 
 
 def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, restriction_on_arg_uids=[], last_attack=None, history=None):
@@ -68,7 +69,6 @@ def get_argument_by_conclusion(statement_uid, is_supportive):
     """
     logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
     db_arguments = get_arguments_by_conclusion(statement_uid, is_supportive)
-    DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive, Argument.conclusion_uid == statement_uid)).all()
 
     if not db_arguments:
         return 0
@@ -85,8 +85,9 @@ def get_arguments_by_conclusion(statement_uid, is_supportive):
     :return: [Argument]
     """
     logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
-    db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
-                                                                   Argument.conclusion_uid == statement_uid)).all()
+    db_arguments = get_not_disabled_arguments_as_query()
+    db_arguments = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
+                                            Argument.conclusion_uid == statement_uid)).all()
 
     if not db_arguments:
         return None

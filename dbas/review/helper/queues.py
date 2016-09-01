@@ -9,7 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, Argument, Premise, Statement
 from dbas.review.helper.reputation import get_reputation_of, add_reputation_for, rep_reason_success_flag,\
-    rep_reason_success_edit, rep_reason_bad_flag, rep_reason_bad_edit
+    rep_reason_bad_flag
 from dbas.review.helper.subpage import reputation_borders
 from sqlalchemy import and_
 
@@ -181,7 +181,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     reached_max = max(count_of_keep, count_of_delete) >= max_votes
     if reached_max:
         if count_of_delete > count_of_keep:  # disable the flagged part
-            __disable_arguments_premise_of_review(db_review)
+            en_or_disable_arguments_and_premise_of_review(db_review, True)
             add_reputation_for(db_user, rep_reason_success_flag, transaction)
         else:  # just close the review
             db_review.set_executed(False)
@@ -192,7 +192,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
         add_reputation_for(db_user, rep_reason_bad_flag, transaction)
 
     if count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
-        __disable_arguments_premise_of_review(db_review)
+        en_or_disable_arguments_and_premise_of_review(db_review, True)
         add_reputation_for(db_user, rep_reason_success_flag, transaction)
 
     # add karma to voter
@@ -206,13 +206,15 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     return None
 
 
-def __disable_arguments_premise_of_review(review):
+def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     """
 
     :param review:
+    :param is_disabled:
     :return:
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=review.argument_uid).first()
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).join(Statement).first()
+    db_argument.set_disable(is_disabled)
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).join(Statement).all()
     for premise in db_premises:
-        premise.statements.set_disable(True)
+        premise.statements.set_disable(is_disabled)

@@ -18,7 +18,7 @@ class TestReviewFlagHelper(unittest.TestCase):
         translator = Translator('en')
         
         bad_arg_id = 0
-        real_arg_id = 1
+        real_arg_id = 4
         bad_reason = 'reason'
         real_reason = 'optimization'
         bad_nick = 'some_nick'
