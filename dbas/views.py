@@ -2029,8 +2029,8 @@ class Dbas(object):
         return_dict = dict()
 
         try:
-            should_delete = True if str(self.request.params['should_delete']) == 'true' else False
-            nickname = self.request.authenticated_userid
+            # should_delete = True if str(self.request.params['should_delete']) == 'true' else False
+            # nickname = self.request.authenticated_userid
 
             return_dict['error'] = ''
         except KeyError as e:
@@ -2055,7 +2055,7 @@ class Dbas(object):
         try:
             queue = self.request.params['queue']
             uid = self.request.params['uid']
-            nickname = self.request.authenticated_userid
+            # nickname = self.request.authenticated_userid
 
             return_dict['info'] = 'TODO: Remove ' + uid + ' in review queue ' + queue
             return_dict['success'] = ''
