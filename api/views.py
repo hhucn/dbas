@@ -456,7 +456,7 @@ def jump_preparation(request):
 @jump_to_zargument.get()
 def fn_jump_to_argument(request):
     """
-    Given a slug, arg_uid and a nickname, jump directly to an argument to get
+    Given a slug, arg_uid and a nickname, jump directly to an argument to
     provoke user interaction.
 
     :param request:
