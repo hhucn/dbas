@@ -7,7 +7,8 @@ $(document).ready(function () {
 	$('.review-undo').click(function(){
 		var queue = $(this).data('queue');
 		var id = $(this).data('id');
-		new ReviewHistory().showUndoPopup(queue, id);
+		var revoked_argument = $('#' + id).attr('title');
+		new ReviewHistory().showUndoPopup(queue, id, revoked_argument);
 	})
 });
 
@@ -17,11 +18,15 @@ function ReviewHistory(){
 	 *
 	 * @param queue
 	 * @param id
+	 * @param revoked_argument
 	 */
-	this.showUndoPopup = function(queue, id){
+	this.showUndoPopup = function(queue, id, revoked_argument){
+		var span = '<span>' + _t(sureToDeleteReview) + '</span>';
+		var blockquote = '<blockquote><p>' + revoked_argument + '</p><small>' + _t(revokedArgument) + '</small>';
+		var icon = '<i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>';
 		$('#' + popupConfirmDialogId).modal('show');
-		$('#' + popupConfirmDialogId + ' h4.modal-title').text(_t(caution));
-		$('#' + popupConfirmDialogId + ' div.modal-body').html(_t(sureToDeleteReview));
+		$('#' + popupConfirmDialogId + ' h4.modal-title').html(icon + ' ' + _t(caution));
+		$('#' + popupConfirmDialogId + ' div.modal-body').html(span + blockquote);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 			new AjaxReviewHandler().undoReview(queue, id)
@@ -37,15 +42,16 @@ function ReviewHistoryCallbacks(){
 	/**
 	 *
 	 * @param jsonData
+	 * @param queue
+	 * @param uid
 	 */
-	this.forUndoReview = function(jsonData){
+	this.forUndoReview = function(jsonData, queue, uid){
 		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-		} else if (parsedData.info.length != 0) {
-			setGlobalInfoHandler('Mhh!', parsedData.info);
 		} else {
 			setGlobalSuccessHandler('Yep!', parsedData.success);
+			$('#' + queue + uid).remove();
 		}
 		
 	}

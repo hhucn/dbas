@@ -2094,12 +2094,12 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                return_dict['info'] = 'TODO: Remove ' + uid + ' in review queue ' + queue
+                success, error = ReviewHistoryHelper.revoke_decision(queue, uid, ui_locales, transaction)
+                return_dict['success'] = success
+                return_dict['error'] = error
             else:
                 return_dict['info'] = _t.get(_t.justLookDontTouch)
 
-            return_dict['success'] = ''
-            return_dict['error'] = ''
         except KeyError as e:
             logger('undo_review', 'error', repr(e))
             return_dict['error'] = _t.get(_t.internalKeyError)

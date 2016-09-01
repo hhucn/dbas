@@ -352,11 +352,12 @@ class TextVersion(DiscussionBase):
     content = Column(Text, nullable=False)
     author_uid = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
+    is_disabled = Column(Boolean, nullable=False)
 
     statements = relationship('Statement', foreign_keys=[statement_uid])
     users = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, content, author, statement_uid=None):
+    def __init__(self, content, author, statement_uid=None, is_disabled=False):
         """
         Initializes a row in current text versions-table
         :param content:
@@ -367,6 +368,7 @@ class TextVersion(DiscussionBase):
         self.author_uid = author
         self.timestamp = get_now()
         self.statement_uid = statement_uid
+        self.is_disabled = is_disabled
 
     def set_statement(self, statement_uid):
         """
@@ -375,6 +377,14 @@ class TextVersion(DiscussionBase):
         :return:
         """
         self.statement_uid = statement_uid
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class PremiseGroup(DiscussionBase):
@@ -410,20 +420,23 @@ class Premise(DiscussionBase):
     author_uid = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
+    is_disabled = Column(Boolean, nullable=False)
 
     premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
     users = relationship('User', foreign_keys=[author_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, premisesgroup, statement, is_negated, author, issue):
+    def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
         """
         Initializes a row in current premises-table
+
         :param premisesgroup:
         :param statement:
         :param is_negated:
         :param author:
         :param issue:
+        :param is_disabled:
         :return:
         """
         self.premisesgroup_uid = premisesgroup
@@ -432,6 +445,15 @@ class Premise(DiscussionBase):
         self.author_uid = author
         self.timestamp = get_now()
         self.issue_uid = issue
+        self.is_disabled = is_disabled
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class Argument(DiscussionBase):
@@ -449,6 +471,7 @@ class Argument(DiscussionBase):
     author_uid = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
+    is_disabled = Column(Boolean, nullable=False)
 
     premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
     statements = relationship('Statement', foreign_keys=[conclusion_uid])
@@ -456,7 +479,7 @@ class Argument(DiscussionBase):
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, premisegroup, issupportive, author, issue, conclusion=None, argument=None):
+    def __init__(self, premisegroup, issupportive, author, issue, conclusion=None, argument=None, is_disabled=False):
         """
         Initializes a row in current argument-table
         :param premisegroup:
@@ -465,6 +488,7 @@ class Argument(DiscussionBase):
         :param issue:
         :param conclusion: Default 0, which will be None
         :param argument: Default 0, which will be None
+        :param: is_disabled
         :return:
         """
         self.premisesgroup_uid = premisegroup
@@ -474,9 +498,18 @@ class Argument(DiscussionBase):
         self.author_uid = author
         self.argument_uid = argument
         self.issue_uid = issue
+        self.is_disabled = is_disabled
 
     def conclusions_argument(self, argument):
         self.argument_uid = None if argument == 0 else argument
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class History(DiscussionBase):
