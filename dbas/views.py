@@ -35,7 +35,7 @@ from dbas.helper.views import preperation_for_view, get_nickname_and_session, pr
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
-    resolve_issue_uid_to_slug, get_slug_by_statement_uid
+    get_slug_by_statement_uid
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager

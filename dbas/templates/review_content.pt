@@ -17,9 +17,23 @@
                         <a id="more_about_reason"  href="#" i18n:translate="wrapped_more">(more)</a>
                         <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
                     </h6>
-                    <blockquote id="more_about_reason_content" style="display:none;">
+                </div>
+                <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_delete">
+                    <a id="delete_skip" href="#" class="review-button-delete btn btn-info btn-sm pull-right" i18n:translate="skip_it">Skip it</a>
+                    <a id="delete_nack" href="#" class="review-button-delete btn btn-danger btn-sm pull-right" i18n:translate="delete_it">Delete it</a>
+                    <a id="delete_ack" href="#" class="review-button-delete btn btn-success btn-sm pull-right" i18n:translate="its_okay">It's Okay</a>
+                </div>
+                <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_optimize">
+                    <a id="optimization_skip" href="#" class="review-button-optimize btn btn-info btn-sm pull-right" i18n:translate="skip_it">Skip it</a>
+                    <a id="optimization_nack" href="#" class="review-button-optimize btn btn-danger btn-sm pull-right" i18n:translate="its_okay_so">It's okay so</a>
+                    <a id="optimization_ack" href="#" class="review-button-optimize btn btn-success btn-sm pull-right" i18n:translate="correct_it">Let me correct it</a>
+                </div>
+            </div>
+            <div class="row" id="more_about_reason_content" style="display:none;">
+                <div class="col-md-7">
+                    <blockquote>
                         <div style="padding-left: 0.5em">
-                            <span>Information for the differen reasons</span>
+                            <span>Information for the different reasons</span>
                             <ul style="padding-left: 0.5em">
                                 <li><strong i18n:translate="off_topic">Off topic</strong> <span i18n:translate="off_topic_explanation">are useful in general, but do not belong to the current discussion</span>.</li>
                                 <li><strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abbusive</strong> <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.</li>
@@ -27,7 +41,10 @@
                                 <li><strong i18n:translate="spam">Spam</strong> <span i18n:translate="spam_explanation">is neither useful nor mappend to a discussions topic</span>.</li>
                             </ul>
                         </div>
-                        <br>
+                    </blockquote>
+                </div>
+                <div class="col-md-5">
+                    <blockquote class="blockquote-reverse" style="text-align: left;">
                         <div>
                             <span>Information for the different buttons</span>
                         </div>
@@ -42,16 +59,6 @@
                             <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
                         </ul>
                     </blockquote>
-                </div>
-                <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_delete">
-                    <a id="delete_skip" href="#" class="review-button-delete btn btn-info btn-sm pull-right" i18n:translate="skip_it">Skip it</a>
-                    <a id="delete_nack" href="#" class="review-button-delete btn btn-danger btn-sm pull-right" i18n:translate="delete_it">Delete it</a>
-                    <a id="delete_ack" href="#" class="review-button-delete btn btn-success btn-sm pull-right" i18n:translate="its_okay">It's Okay</a>
-                </div>
-                <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_optimize">
-                    <a id="optimization_skip" href="#" class="review-button-optimize btn btn-info btn-sm pull-right" i18n:translate="skip_it">Skip it</a>
-                    <a id="optimization_nack" href="#" class="review-button-optimize btn btn-danger btn-sm pull-right" i18n:translate="its_okay_so">It's okay so</a>
-                    <a id="optimization_ack" href="#" class="review-button-optimize btn btn-success btn-sm pull-right" i18n:translate="correct_it">Let me correct it</a>
                 </div>
             </div>
             <br>
