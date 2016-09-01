@@ -183,7 +183,7 @@
 ## 0.6.1 (2016-08-24)
 - New bootstraping
 
-## 0.7.0 (2016-09-xx)
+## 0.7.0 (2016-09-06)
 - Review-Mechanisms
 
 ## 0.x.0 (unreleased)

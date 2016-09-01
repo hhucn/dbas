@@ -346,11 +346,17 @@ def setup_news_db(session):
                   news='I regret that i have neglected the news section, but this is in your interest. In the meantime '
                        'we are working on an graph view for our argumentation model, a review section for statements '
                        'and we are improving the ways how we act with each kind of user input. Stay tuned!')
+    news51 = News(title='Review Process',
+                  date=arrow.get('2016-09-06'),
+                  author='Tobias Krauthoff',
+                  news='Our first version of the review-module is now online. Every confrontativ argument can be '
+                       'flagged regarding a specific reason now. Theses flagged argument will be reviewed by '
+                       'other participants, who have enough reputation. Have a look at the review-section!')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50]
+                  news50, news51]
     session.add_all(news_array[::-1])
     session.flush()
 
