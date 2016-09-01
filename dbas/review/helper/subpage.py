@@ -98,16 +98,29 @@ def __get_subpage_dict_for_deletes(request, db_user, translator):
     """
     # only get arguments, which the user has not seen yet
     already_seen = request.session['already_seen_deletes'] if 'already_seen_deletes' in request.session else list()
+    logger('x', 'x1', str(already_seen))
+    logger('x', 'x1', str(already_seen))
     db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
                                                                      ReviewDelete.detector_uid != db_user.uid,
                                                                      ReviewDelete.uid not in already_seen)).all()
     # maybe there are not argument or the user has seen everything, try again
+    extra_info = ''
+    p = ''
+    for r in db_reviews:
+        p += ' ' + str(r.uid)
+    logger('x', 'x', (str(len(db_reviews)) if db_reviews else '0') + '    ' + p)
     if not db_reviews:
         already_seen = list()
+        logger('x', 'x', 'cleared')
+        extra_info = 'already_seen'
         db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
                                                                                ReviewOptimization.detector_uid != db_user.uid)).all()
     if not db_reviews:
-        return None, None, None
+        return {'stats': None,
+                'text': None,
+                'reason': None,
+                'issue': None,
+                'extra_info': None}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
@@ -128,12 +141,15 @@ def __get_subpage_dict_for_deletes(request, db_user, translator):
         reason = translator.get(translator.argumentFlaggedBecauseHarmful)
 
     already_seen.append(rnd_review.uid)
+    logger('x', 'x2', str(already_seen) + '  ' + str(rnd_review.uid))
+    logger('x', 'x2', str(already_seen) + '  ' + str(rnd_review.uid))
     request.session['already_seen_deletes'] = already_seen
 
     return {'stats': stats,
             'text': text,
             'reason': reason,
-            'issue': issue}
+            'issue': issue,
+            'extra_info': extra_info}
 
 
 def __get_subpage_dict_for_optimization(request, db_user, translator):
@@ -150,13 +166,19 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
                                                                            ReviewOptimization.detector_uid != db_user.uid,
                                                                            ReviewOptimization.uid not in already_seen)).all()
     # maybe there are not argument or the user has seen everything, try again
+    extra_info = ''
     if not db_reviews:
         already_seen = list()
+        extra_info = 'already_seen'
         db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
                                                                                ReviewOptimization.detector_uid != db_user.uid)).all()
 
     if not db_reviews:
-        return None, None, None
+        return {'stats': None,
+                'text': None,
+                'reason': None,
+                'issue': None,
+                'extra_info': None}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
@@ -174,7 +196,8 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
     return {'stats': stats,
             'text': text,
             'reason': reason,
-            'issue': issue}
+            'issue': issue,
+            'extra_info': extra_info}
 
 
 def __get_stats_for_argument(argument_uid):
