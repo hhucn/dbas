@@ -184,7 +184,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     the corresponding text to it, which normally appears in the bubbles. The resulting
     text depends on the provided language.
 
-    :param statement_uid: Id to a statement, which should be analyzed
+    :param statement_uid: uid to a statement, which should be analyzed
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
