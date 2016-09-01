@@ -155,6 +155,8 @@ function DiscussionGraph() {
 		// highlight nodes and edges
 		circle.on("click", function()
 		{
+			// distinguish between click and drag event
+			if(d3.event.defaultPrevented) return;
 			var circleId = this.id;
             showPartOfGraph(edges, circleId);
 		});
@@ -238,7 +240,7 @@ function DiscussionGraph() {
 	function createArrows(svg, edgesTypeArrow) {
 		return svg.append("defs").selectAll('marker').data(edgesTypeArrow)
             .enter().append("svg:marker")
-            .attr({id: function(d) { return "marker_" + d.edge_type + d.id },
+            .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
 			       refX: function(d){
 			                 if(d.target.label == ''){ return 4; }
 				             else if(d.target.size == 8){ return 8; }
@@ -267,7 +269,7 @@ function DiscussionGraph() {
 			.style("stroke", function(d) { return d.color; })
 			.attr("id", function(d) { return d.id; })
 			// assign marker to line
-			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.id + ")" });
+			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.id + ")"; });
 	}
 
 	/**
@@ -308,8 +310,8 @@ function DiscussionGraph() {
 	function setNodeProperties(node){
 		return node.append("circle")
       		.attr({r: function(d){ return d.size; },
-				   fill: function(d){ return d.color;},
-				   id: function (d) { return d.id;}
+				   fill: function(d){ return d.color; },
+				   id: function (d) { return d.id; }
 			});
 	}
 
@@ -430,7 +432,7 @@ function DiscussionGraph() {
 		.data(legendLabelCircle.concat(legendLabelRect))
         .enter().append("text")
         .text(function(d) {return d;})
-		.attr({x: 20, y: function (d,i) {return i*40+5}});
+		.attr({x: 20, y: function (d,i) {return i*40+5;}});
 	}
 
 	/**
@@ -535,6 +537,7 @@ function DiscussionGraph() {
 	 */
     function showPartOfGraph(edges, circleId) {
 		var edgesCircleId = [];
+		// select all incoming and outgoing edges of selected circle
 		edges.forEach(function(d){
 			if(d.source.id === circleId || d.target.id === circleId){
 				edgesCircleId.push(d);
