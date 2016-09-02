@@ -116,6 +116,36 @@
             </div>
         </div>
 
+		<div id="optimization-container" class="container colored-container" tal:condition="not:subpage.no_arguments_to_review" tal:condition="subpage.button_set.is_optimize" style="display: none;">
+            <button id="close-optimization-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="row">
+                <div class="col-md-12">
+                    <span class="text-danger">TODO: Set lock while editing</span>
+                    <p class="lead">Please set your ideas for edits in grammar and/or spelling here:</p>
+
+                    <table class="table table-condensed" border="0">
+                        <thead>
+                            <tr class="review-table-row">
+                                <td i18n:translate="original">Original</td>
+                                <td i18n:translate="your correcture">Your correcture</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr tal:repeat="part subpage.elements.reviewed_argument.parts">
+                                <td style="width: 50%">${part.text}</td>
+                                <td style="width: 50%">
+                                    <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-id part.uid; data-type part.type">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="#" class="btn btn-success pull-right disabled" i18n:translate="send">Send</a>
+        </div>
+
         <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}"></script>
 
 	</tal:block>

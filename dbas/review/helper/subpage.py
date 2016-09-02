@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization
 from dbas.helper.relation import RelationHelper
-from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print
+from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from sqlalchemy import and_
@@ -218,7 +218,8 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
             'text': text,
             'reason': reason,
             'issue': issue,
-            'extra_info': extra_info}
+            'extra_info': extra_info,
+            'parts': __get_text_parts_of_argument(db_argument)}
 
 
 def __get_stats_for_argument(argument_uid):
@@ -243,3 +244,34 @@ def __get_stats_for_argument(argument_uid):
     attacks = len_undermines + len_undercuts + len_rebuts
 
     return {'viewed': viewed, 'attacks': attacks, 'supports': len_supports}
+
+
+def __get_text_parts_of_argument(argument):
+    """
+
+    :param argument:
+    :return:
+    """
+    ret_list = list()
+    premisegroup, trash = get_text_for_premisesgroup_uid(argument.premisesgroup_uid)
+    ret_list.append({'type': 'premisegroup',
+                     'text': premisegroup,
+                     'uid': argument.premisesgroup_uid})
+
+    if argument.argument_uid is None:
+        conclusion = get_text_for_statement_uid(argument.conclusion_uid)
+        ret_list.append({'type': 'statement',
+                         'text': conclusion,
+                         'uid': argument.conclusion_uid})
+    else:
+        db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+        premisegroup, trash = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
+        ret_list.append({'type': 'premisegroup',
+                         'text': premisegroup,
+                         'uid': db_conclusions_argument.premisesgroup_uid})
+        conclusion = get_text_for_statement_uid(db_conclusions_argument.conclusion_uid)
+        ret_list.append({'type': 'statement',
+                         'text': conclusion,
+                         'uid': argument.conclusion_uid})
+
+    return ret_list
