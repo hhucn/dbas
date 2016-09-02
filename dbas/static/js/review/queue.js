@@ -17,12 +17,26 @@ $(document).ready(function () {
 	var less_about_reason = $('#less_about_reason');
 	var more_about_reason_content = $('#more_about_reason_content');
 	
-	optimization_ack.click(function(){ new Review().doOptimizationAck(); });
-	optimization_nack.click(function(){ new Review().doOptimizationNack(); });
-	optimization_skip.click(function(){ location.reload(); });
-	delete_ack.click(function(){ new Review().doDeleteAck(); });
-	delete_nack.click(function(){ new Review().doDeleteNack(); });
-	delete_skip.click(function(){ location.reload(); });
+	optimization_ack.click(function(){
+		new Review().doOptimizationAck();
+	});
+	optimization_nack.click(function(){
+		new Review().doOptimizationNack();
+	});
+	optimization_skip.click(function(){
+		location.reload();
+	});
+	delete_ack.click(function(){
+		var review_uid = $(this).data('id');
+		new Review().doDeleteAck(review_uid);
+	});
+	delete_nack.click(function(){
+		var review_uid = $(this).data('id');
+		new Review().doDeleteNack(review_uid);
+	});
+	delete_skip.click(function(){
+		location.reload();
+	});
 	
 	more_about_reason.click(function() {
 		$(this).hide();
@@ -59,15 +73,15 @@ function Review() {
 	/**
 	 *
 	 */
-	this.doDeleteAck = function() {
-		new AjaxReviewHandler().reviewDeleteArgument(true);
+	this.doDeleteAck = function(review_uid) {
+		new AjaxReviewHandler().reviewDeleteArgument(true, review_uid);
 	};
 	
 	/**
 	 *
 	 */
-	this.doDeleteNack = function() {
-		new AjaxReviewHandler().reviewDeleteArgument(false);
+	this.doDeleteNack = function(review_uid) {
+		new AjaxReviewHandler().reviewDeleteArgument(false, review_uid);
 	};
 	
 }
@@ -85,10 +99,7 @@ function ReviewCallbacks() {
 		} else {
 			// reload, when the user is still in the review page
 			if (window.location.href.indexOf('/review/')) {
-				if (parsedData.extra_info.length != 0)
-					window.location.href = window.location.href + '?info=' + parsedData.extra_info;
-				else
-					location.reload();
+				location.reload();
 			}
 		}
 	}

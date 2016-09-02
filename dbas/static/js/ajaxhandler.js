@@ -1057,13 +1057,14 @@ function AjaxReviewHandler(){
 	/**
 	 *
 	 * @param should_delete
+	 * @param review_uid
 	 */
-	this.reviewDeleteArgument = function(should_delete){
+	this.reviewDeleteArgument = function(should_delete, review_uid){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_delete_argument',
 			method: 'GET',
-			data:{ 'should_delete': should_delete },
+			data:{ 'should_delete': should_delete, 'review_uid': review_uid },
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
