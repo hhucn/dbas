@@ -1,10 +1,22 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container colored-container center">
+		<div class="container colored-container">
             <h4 tal:condition="not:history.has_access">You have to earn more reputation for this queue!</h4>
 			<img tal:condition="not:history.has_access" class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
-            <h4 tal:condition="history.has_access"><i class="fa fa-history" aria-hidden="true"></i> <span i18n:translate="history_of_votes">The history of votes!</span></h4>
+
+            <div class="row" tal:condition="history.has_access">
+                <div class="col-md-12">
+                    <ul class="breadcrumb">
+                        <li><a href="${request.application_url}/review" i18n:attributes="review">Review</a></li>
+                        <li class="active" i18n:attributes="history">History</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4 tal:condition="history.has_access" class="center">
+                <i class="fa fa-history" aria-hidden="true"></i> <span i18n:translate="history_of_votes">The history of votes!</span>
+            </h4>
 		</div>
 
 
