@@ -11,7 +11,7 @@ from dbas.lib import is_user_author
 
 reputation_borders = {'deletes': 30,
                       'optimizations': 30,
-                      'history': 100}
+                      'history': 150}
 
 reputation_icons = {'deletes': 'fa fa-pencil-square-o',
                     'optimizations': 'fa fa-flag',

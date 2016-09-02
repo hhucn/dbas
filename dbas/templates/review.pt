@@ -30,7 +30,7 @@
                             <span i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</span>
                         </h6>
                         <h6>
-                            <span i18n:translate="current_reputation_os"> Your current reputation count is:</span> <a href="${request.application_url}/review/reputation">${reputation.count}</a>
+                            <span i18n:translate="current_reputation_os">Your current reputation count is</span>: <a href="${request.application_url}/review/reputation">${reputation.count}</a>
                         </h6>
                     </div>
                 </div>
@@ -52,10 +52,15 @@
                                         <strong tal:condition="task.is_allowed">${structure:task.task_count}</strong>
                                     </td>
                                     <td>
-                                        <div class="forbidden" tal:condition="not:task.is_allowed"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></div>
-                                        <div tal:condition="task.is_allowed"><a tal:attributes="href task.url"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></a></div>
-                                        <div tal:condition="task.is_allowed" style="line-height: normal;"><small>${task.is_allowed_text}</small></div>
+                                        <div tal:condition="not:task.is_allowed" class="forbidden"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></div>
                                         <div tal:condition="not:task.is_allowed" style="line-height: normal;"><small>${task.is_not_allowed_text}</small></div>
+                                        <div tal:condition="task.is_allowed">
+                                            <div tal:omit-tag="" tal:switch="task.task_count == 0">
+                                                <a tal:case="False" tal:attributes="href task.url"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></a>
+                                                <i tal:case="True" tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i>
+                                            </div>
+                                        </div>
+                                        <div tal:condition="task.is_allowed" style="line-height: normal;"><small>${task.is_allowed_text}</small></div>
                                     </td>
                                     <td class="center" tal:attributes="id task.id" tal:switch="len(task.last_reviews)>0">
                                         <a tal:case="True" tal:repeat="user task.last_reviews" tal:attributes="title user.name; href user.url" target="_blank"><img tal:attributes="src user.img_src"></a>

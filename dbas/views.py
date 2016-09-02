@@ -260,7 +260,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         is_author = is_user_author(self.request.authenticated_userid)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
             'layout': self.base_layout(),

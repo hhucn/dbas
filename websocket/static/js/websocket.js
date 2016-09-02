@@ -113,14 +113,21 @@ function doRecentReview(data){
 	
 	var queue = $('#' + data.queue);
 	if (queue.length != 0){
-		// TODO ANIMATION
-		$('#' + data.queue + ' a:last-child').remove();
-		var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
-		var img = $('<img>').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
-		link.append(img);
-		queue.prepend(link);
+		// just push, if given user is not the last reviwer
+		var last_reviewer = $('#' + data.queue + ' a:first-child');
+		var last_reviewer_name = last_reviewer.attr('title');
+		var last_reviewer_gravatar = last_reviewer.find('img').attr('src');
+		if (last_reviewer_name != data.reviewer_name && last_reviewer_gravatar != data.img_url + '?d=wavatar&s=40') {
+			console.log(data.reviewer_name + ' is a new reviewer');
+			$('#' + data.queue + ' a:last-child').remove();
+			var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
+			var img = $('<img>').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
+			link.append(img);
+			queue.prepend(link);
+		} else {
+			console.log(data.reviewer_name + ' is already in the list');
+		}
 	}
-	alert(data.queue);
 }
 
 /**
