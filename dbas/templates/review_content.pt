@@ -123,7 +123,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <span class="text-danger">TODO: Set lock while editing</span>
-                    <p class="lead">Please set your ideas for edits in grammar and/or spelling here:</p>
+                    <p class="lead">
+                        <span i18n:translate="argument_is_locked">This argument is locked for your edit for the next</span>:
+                        <span id="countdown_timer_min"></span><span class="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
+                        <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
+                    </p>
 
                     <table class="table table-condensed" border="0">
                         <thead>
@@ -143,7 +147,7 @@
                     </table>
                 </div>
             </div>
-            <a href="#" class="btn btn-success pull-right disabled" i18n:translate="send">Send</a>
+            <a id="send-edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send">Send</a>
         </div>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}"></script>

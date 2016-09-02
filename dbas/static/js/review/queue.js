@@ -62,6 +62,10 @@ $(document).ready(function () {
 });
 
 function Review() {
+	var countdown;
+	var _this = this;
+	var countdown_min = 4;
+	var countdown_sec = 59;
 	/**
 	 *
 	 */
@@ -70,11 +74,20 @@ function Review() {
 		var button = $('#opti_ack');
 		container.show();
 		button.addClass('disabled');
+		
 		$('#close-optimization-container').click(function(){
 			container.hide();
 			button.removeClass('disabled');
+			_this.stopCountdown();
 		});
 		
+		button.click(function(){
+			if (!$(this).hasClass('disabled')){
+			_this.stopCountdown();
+				
+			}
+		});
+		_this.startCountdown();
 	};
 	
 	/**
@@ -98,6 +111,40 @@ function Review() {
 		new AjaxReviewHandler().reviewDeleteArgument(false, review_uid);
 	};
 	
+	this.startCountdown = function(){
+		var mm = $('#countdown_timer_min');
+		var ss = $('#countdown_timer_sec');
+		var point = $('#countdown_timer_point');
+		mm.text(countdown_min).removeClass('text-danger');
+		ss.text(countdown_sec).removeClass('text-danger');
+		point.removeClass('text-danger');
+		countdown = new Countdown({
+            seconds: countdown_min * 60 + countdown_sec,  // number of seconds to count down
+            onUpdateStatus: function(sec){
+            	var m = parseInt(sec / 60);
+	            var s = sec - m * 60;
+	            console.log(m + ' ' + (s < 10 ? '0' + s : s));
+            	mm.text(m);
+            	ss.text(s < 10 ? '0' + s : s);
+	            if (sec == 60){
+	            	mm.addClass('text-danger');
+	            	ss.addClass('text-danger');
+		            point.addClass('text-danger');
+	            }
+            }, // callback for each second
+            onCounterEnd: function(){
+            	setGlobalErrorHandler(_t(ohsnap), _t(countdownEnded));
+	            $('#opti_nack').addClass('disabled');
+	            $('#send-edit').addClass('disabled');
+            } // final action
+		});
+		countdown.start();
+	};
+	
+	this.stopCountdown = function(){
+		countdown.stop();
+	}
+	
 }
 
 function ReviewCallbacks() {
@@ -117,4 +164,41 @@ function ReviewCallbacks() {
 			}
 		}
 	}
+}
+
+/**
+ *
+ * @param options
+ * @constructor
+ */
+function Countdown(options) {
+	var timer;
+	var instance = this;
+	var seconds = options.seconds;
+	var updateStatus = options.onUpdateStatus;
+	var counterEnd = options.onCounterEnd;
+	function decrementCounter() {
+		updateStatus(seconds);
+		if (seconds === 0) {
+			counterEnd();
+			instance.stop();
+		}
+		seconds--;
+	}
+	
+	/**
+	 *
+	 */
+	this.start = function () {
+		clearInterval(timer);
+		seconds = options.seconds;
+		timer = setInterval(decrementCounter, 1000);
+	};
+	
+	/**
+	 *
+	 */
+	this.stop = function () {
+		clearInterval(timer);
+	};
 }
