@@ -7,14 +7,10 @@ Provides helping function for the managing reputation.
 import dbas.user_management as _user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
-    LastReviewerOptimization, Argument, Premise, Statement
-from dbas.review.helper.reputation import get_reputation_of, add_reputation_for, rep_reason_success_flag,\
-    rep_reason_bad_flag
+    LastReviewerOptimization
+from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
 from sqlalchemy import and_
-
-max_votes = 5
-min_difference = 3
 
 
 def get_review_queues_array(mainpage, translator, nickname):
@@ -128,8 +124,10 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
         for last_review in db_last_reviews_of_user:
             already_reviewed.append(last_review.review_uid)
         db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
-                                                                        review_type.detector_uid != db_user.uid,
-                                                                        ~review_type.uid.in_(already_reviewed))).all()
+                                                                        review_type.detector_uid != db_user.uid))
+        if len(already_reviewed) > 0:
+            db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
+        db_reviews = db_reviews.all()
     else:
         db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
     return len(db_reviews)
@@ -164,69 +162,3 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
             limit += 1 if len(db_reviews) > limit else 0
         index += 1
     return users_array
-
-
-def add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction):
-    """
-
-    :param nickname:
-    :param should_delete:
-    :param review_uid:
-    :param transaction:
-    :return:
-    """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_review = DBDiscussionSession.query(ReviewDelete).filter_by(uid=review_uid).first()
-    if db_review.is_executed or not db_user:
-        return None
-
-    # get all keep and delete votes
-    db_reviews = DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=review_uid)
-    db_keep_reviews = db_reviews.filter_by(is_okay=True).all()
-    db_delete_reviews = db_reviews.filter_by(is_okay=False).all()
-
-    # get sum of all votes
-    count_of_keep = len(db_keep_reviews) + (1 if not should_delete else 0)
-    count_of_delete = len(db_delete_reviews) + (1 if should_delete else 0)
-
-    # do we reached any limit?
-    reached_max = max(count_of_keep, count_of_delete) >= max_votes
-    if reached_max:
-        if count_of_delete > count_of_keep:  # disable the flagged part
-            en_or_disable_arguments_and_premise_of_review(db_review, True)
-            add_reputation_for(db_user, rep_reason_success_flag, transaction)
-        else:  # just close the review
-            db_review.set_executed(False)
-            add_reputation_for(db_user, rep_reason_bad_flag, transaction)
-
-    if count_of_keep - count_of_delete >= min_difference:  # just close the review
-        db_review.set_executed(False)
-        add_reputation_for(db_user, rep_reason_bad_flag, transaction)
-
-    if count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
-        en_or_disable_arguments_and_premise_of_review(db_review, True)
-        add_reputation_for(db_user, rep_reason_success_flag, transaction)
-
-    # add karma to voter
-
-    # add new vote
-    db_new_review = LastReviewerDelete(db_user.uid, db_review.uid, not should_delete)
-    DBDiscussionSession.add(db_new_review)
-    DBDiscussionSession.flush()
-    transaction.commit()
-
-    return None
-
-
-def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
-    """
-
-    :param review:
-    :param is_disabled:
-    :return:
-    """
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=review.argument_uid).first()
-    db_argument.set_disable(is_disabled)
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).join(Statement).all()
-    for premise in db_premises:
-        premise.statements.set_disable(is_disabled)
