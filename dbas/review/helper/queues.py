@@ -47,7 +47,7 @@ def __get_delete_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    task_count = __get_review_count_for(ReviewDelete, nickname)
+    task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
 
     key = 'deletes'
     count, all_rights = get_reputation_of(nickname)
@@ -73,7 +73,7 @@ def __get_optimization_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    task_count = __get_review_count_for(ReviewOptimization, nickname)
+    task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
 
     key = 'optimizations'
     count, all_rights = get_reputation_of(nickname)
@@ -114,7 +114,7 @@ def __get_history_dict(mainpage, translator, nickname):
     return tmp_dict
 
 
-def __get_review_count_for(review_type, nickname):
+def __get_review_count_for(review_type, last_reviewer_type, nickname):
     """
 
     :param review_type:
@@ -123,8 +123,13 @@ def __get_review_count_for(review_type, nickname):
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
+        db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
+        already_reviewed = []
+        for last_review in db_last_reviews_of_user:
+            already_reviewed.append(last_review.review_uid)
         db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
-                                                                        review_type.detector_uid != db_user.uid)).all()
+                                                                        review_type.detector_uid != db_user.uid,
+                                                                        ~review_type.uid.in_(already_reviewed))).all()
     else:
         db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
     return len(db_reviews)
