@@ -475,7 +475,7 @@ msgstr "None"
 #. Default: What is reputation? How do I earn (and lose) it?
 #: templates/review.pt:73
 msgid "what_is_reputation"
-msgstr "What is reputation_borders? How do I earn (and lose) it?"
+msgstr "What is reputation? How do I earn (and lose) it?"
 
 #. Default: Reputation is a rough measurement of how work you are doing for the
 #. discussion and the community;
@@ -493,17 +493,17 @@ msgstr "you can earn it by using D-BAS and all of its great functions."
 #. Default: Basic use of D-BAS, does not require any reputation at all.
 #: templates/review.pt:76
 msgid "what_is_reputation_use"
-msgstr "Basic use of D-BAS, does not require any reputation_borders at all."
+msgstr "Basic use of D-BAS, does not require any reputation at all."
 
 #. Default: You gain reputation when:
 #: templates/review.pt:79
 msgid "gain_rep_when"
-msgstr "You gain reputation_borders when:"
+msgstr "You gain reputation when:"
 
 #. Default: You lose reputation when:
 #: templates/review.pt:86
 msgid "lose_rep_when"
-msgstr "You lose reputation_borders when:"
+msgstr "You lose reputation when:"
 
 #. Default: Privileges
 #: templates/review.pt:95
@@ -516,7 +516,7 @@ msgstr "Privileges"
 msgid "privileges_explanation"
 msgstr ""
 "Privileges control what you can see in the review queues of D-BAS. Gain more "
-"privileges by increasing your reputation_borders."
+"privileges by increasing your reputation."
 
 #. Default: The history of votes!
 #: templates/review_history.pt:7

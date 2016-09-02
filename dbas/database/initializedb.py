@@ -767,7 +767,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     """
 
     # Adding all textversions
-    textversion0 = TextVersion(content="Cars are fucking stupoid!", author=user.uid)
+    textversion0 = TextVersion(content="Cars are fucking stupid and bloody fuzzy critters!", author=user.uid)
     textversion1 = TextVersion(content="We should get a cat.", author=user.uid)
     textversion2 = TextVersion(content="We should get a dog.", author=user.uid)
     textversion3 = TextVersion(content="We could get both, a cat and a dog.", author=user.uid)
@@ -1381,7 +1381,7 @@ def setup_review_database(session):
     reputation02 = ReputationReason(reason='rep_reason_first_justification', points=10)
     reputation03 = ReputationReason(reason='rep_reason_first_argument_click', points=10)
     reputation04 = ReputationReason(reason='rep_reason_first_confrontation', points=10)
-    reputation05 = ReputationReason(reason='rep_reason_first_argument', points=10)
+    reputation05 = ReputationReason(reason='rep_reason_first_new_argument', points=10)
     reputation06 = ReputationReason(reason='rep_reason_new_statement', points=2)
     reputation07 = ReputationReason(reason='rep_reason_success_flag', points=3)
     reputation08 = ReputationReason(reason='rep_reason_success_edit', points=3)
