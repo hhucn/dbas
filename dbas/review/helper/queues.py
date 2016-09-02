@@ -137,6 +137,7 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
 
 def __get_last_reviewer_of(reviewer_type, mainpage):
     """
+    Returns a list with the last reviewers of the given type. Multiple reviewers are filtered
 
     :param reviewer_type:
     :param mainpage:
