@@ -66,8 +66,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
                         'issue': issue}
 
     ret_dict['reviewed_argument'] = subpage_dict
-
-    if text is None and reason is None and stats is None or text is translator.get(translator.internalError) and reason is '' and stats is '':
+    if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
         no_arguments_to_review = True
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
