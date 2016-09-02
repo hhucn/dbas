@@ -32,6 +32,8 @@ from dbas.helper.query import QueryHelper
 from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, \
     preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, \
     try_to_register_new_user_via_ajax, request_password
+from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification,\
+    rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, rep_reason_new_statement
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
@@ -573,6 +575,8 @@ class Dbas(object):
             item_dict, discussion_dict, extras_dict = preperation_for_justify_argument(self.request, for_api, api_data,
                                                                                        mainpage, slug, statement_or_arg_id,
                                                                                        supportive, relation, ui_locales)
+            # add reputation
+            add_reputation_for(nickname, rep_reason_first_confrontation, transaction)
         else:
             logger('discussion_justify', 'def', '404')
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -631,7 +635,8 @@ class Dbas(object):
         if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
-        # set votings
+        # set votings and reputation
+        add_reputation_for(nickname, rep_reason_first_argument_click, transaction)
         VotingHelper.add_vote_for_argument(arg_id_user, nickname, transaction)
 
         ui_locales      = get_language(self.request, get_current_registry())
@@ -1436,6 +1441,11 @@ class Dbas(object):
                 url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
                 return_dict['url'] = url
                 return_dict['statement_uids'].append(new_statement[0].uid)
+
+                # add reputation
+                if not add_reputation_for(nickname, rep_reason_first_position, transaction):
+                    add_reputation_for(nickname, rep_reason_new_statement, transaction)
+
         except KeyError as e:
             logger('set_new_start_statement', 'error', repr(e))
             return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
@@ -1483,6 +1493,10 @@ class Dbas(object):
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
+
+            # add reputation
+            if not add_reputation_for(nickname, rep_reason_first_justification, transaction):
+                add_reputation_for(nickname, rep_reason_new_statement, transaction)
 
             if url == -1:
                 return json.dumps(return_dict, True)
@@ -1537,6 +1551,10 @@ class Dbas(object):
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
+
+            # add reputation
+            if not add_reputation_for(nickname, rep_reason_first_new_argument, transaction):
+                add_reputation_for(nickname, rep_reason_new_statement, transaction)
 
             if url == -1:
                 return json.dumps(return_dict, True)

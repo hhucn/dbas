@@ -482,7 +482,7 @@ class GermanDict:
         de_lang[_self.rep_reason_first_confrontation] = 'Sie haben ihre erste Konfrontation überlebt'
         de_lang[_self.rep_reason_first_position] = 'Sie haben zum ersten mal eine Position eingeben'
         de_lang[_self.rep_reason_first_justification] = 'Sie haben zum ersten mal eine Begründung eingeben'
-        de_lang[_self.rep_reason_first_argument] = 'Sie haben zum ersten mal ein Argument eingeben'
+        de_lang[_self.rep_reason_first_new_argument] = 'Sie haben zum ersten mal ein Argument eingeben'
         de_lang[_self.rep_reason_new_statement] = 'Für jedes weitere Argument, dass Sie eingeben haben'
         de_lang[_self.rep_reason_success_flag] = 'Sie haben zum ersten Mal ein Argument markieren'
         de_lang[_self.rep_reason_success_edit] = 'Sie haben zum ersten Mal eine Editierung vornehmen'
