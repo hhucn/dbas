@@ -113,11 +113,11 @@ def __get_all_allowed_reviews_for_user(request, session_keword, db_user, review_
                                                                     review_type.detector_uid != db_user.uid))
     # filter the ones, we have already seen
     if len(already_seen) > 0:
-        db_reviews = db_reviews.filter_by(~review_type.uid.in_(already_seen))
+        db_reviews = db_reviews.filter(~review_type.uid.in_(already_seen))
 
     # filter the ones, we have already reviewed
     if len(already_reviewed) > 0:
-        db_reviews = db_reviews.filter_by(~review_type.uid.in_(already_reviewed))
+        db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
 
     return db_reviews.all(), already_seen, already_reviewed, first_time
 
