@@ -12,8 +12,19 @@
 
 		<div class="container colored-container" tal:condition="not:subpage.no_arguments_to_review">
             <div tal:omit-tag=""  tal:condition="subpage.has_access">
+
                 <div class="row">
-                    <div class="col-md-offset col-md-7">
+                    <div class="col-md-12">
+                        <ul class="breadcrumb">
+                            <li><a href="${request.application_url}/review" i18n:attributes="review">Review</a></li>
+                            <li tal:condition="subpage.button_set.is_delete" class="active" i18n:attributes="deletes">Deletes</li>
+                            <li tal:condition="subpage.button_set.is_optimize" class="active" i18n:attributes="optimizations">Optimizations</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-7">
                         <h6>${structure:subpage.elements.reviewed_argument.reason}
                             <a id="more_about_reason"  href="#" i18n:translate="wrapped_more">(more)</a>
                             <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
