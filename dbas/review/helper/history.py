@@ -10,7 +10,7 @@ from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, Rev
     User, ReputationHistory, ReputationReason, ReviewDeleteReason
 from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
-from dbas.review.helper.queues import en_or_disable_arguments_and_premise_of_review
+from dbas.review.helper.main import en_or_disable_arguments_and_premise_of_review
 from sqlalchemy import and_
 from dbas.strings.translator import Translator
 
