@@ -88,6 +88,40 @@ def __get_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set)
             'button_set': button_set}
 
 
+def __get_all_allowed_reviews_for_user(request, session_keword, db_user, review_type, last_reviewer_type):
+    """
+    Returns all reviews from given type, whereby already seen and reviewed reviews are restricted.
+
+    :param request: current request
+    :param session_keword: keyword of 'already_seen' element in request.session
+    :param db_user: current user
+    :param review_type: data table of reviews
+    :param last_reviewer_type: data table of last reviewers
+    :return: all revies, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the user reviews for the first time in this session
+    """
+    # only get arguments, which the user has not seen yet
+    already_seen, first_time = (request.session[session_keword], False) if session_keword in request.session else (list(), True)
+
+    # and not reviewed
+    db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
+    already_reviewed = []
+    for last_review in db_last_reviews_of_user:
+        already_reviewed.append(last_review.review_uid)
+
+    # get all reviews
+    db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
+                                                                    review_type.detector_uid != db_user.uid))
+    # filter the ones, we have already seen
+    if len(already_seen) > 0:
+        db_reviews = db_reviews.filter_by(~review_type.uid.in_(already_seen))
+
+    # filter the ones, we have already reviewed
+    if len(already_reviewed) > 0:
+        db_reviews = db_reviews.filter_by(~review_type.uid.in_(already_reviewed))
+
+    return db_reviews.all(), already_seen, already_reviewed, first_time
+
+
 def __get_subpage_dict_for_deletes(request, db_user, translator):
     """
 
@@ -96,28 +130,10 @@ def __get_subpage_dict_for_deletes(request, db_user, translator):
     :param translator:
     :return:
     """
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_deletes', db_user, ReviewDelete, LastReviewerDelete)
 
-    # only get arguments, which the user has not seen yet
-    already_seen, first_time = (request.session['already_seen_deletes'], False) if 'already_seen_deletes' in request.session else (list(), True)
-
-    # and not reviewed
-    db_last_reviews_of_user = DBDiscussionSession.query(LastReviewerDelete).filter_by(reviewer_uid=db_user.uid).all()
-    already_reviewed = []
-    for last_review in db_last_reviews_of_user:
-        already_reviewed.append(last_review.review_uid)
-    already_seen_and_reviewed = already_seen + already_reviewed
-
-    if len(already_seen_and_reviewed) > 0:
-        db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
-                                                                         ReviewDelete.detector_uid != db_user.uid,
-                                                                         ~ReviewDelete.uid.in_(already_seen_and_reviewed))).all()
-    else:
-        db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
-                                                                         ReviewDelete.detector_uid != db_user.uid,
-                                                                         ~ReviewDelete.uid.in_(already_reviewed))).all()
-
-    # maybe there are not argument or the user has seen everything, try again
     extra_info = ''
+    # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
         already_seen = list()
         extra_info = 'already_seen' if not first_time else ''
@@ -131,7 +147,6 @@ def __get_subpage_dict_for_deletes(request, db_user, translator):
                 'issue': None,
                 'extra_info': None}
 
-    logger('ReviewPagerHelper', '__get_subpage_dict_for_deletes', str(len(db_reviews)) + ' reviews left')
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
     text = get_text_for_argument_uid(db_argument.uid)
@@ -168,28 +183,10 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
     :param translator:
     :return:
     """
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_deletes', db_user, ReviewOptimization, LastReviewerOptimization)
 
-    # only get arguments, which the user has not seen yet
-    already_seen, first_time = (request.session['already_seen_deletes'], False) if 'already_seen_deletes' in request.session else (list(), True)
-
-    # and not reviewed
-    db_last_reviews_of_user = DBDiscussionSession.query(LastReviewerOptimization).filter_by(reviewer_uid=db_user.uid).all()
-    already_reviewed = []
-    for last_review in db_last_reviews_of_user:
-        already_reviewed.append(last_review.review_uid)
-    already_seen_and_reviewed = already_seen + already_reviewed
-
-    if len(already_seen_and_reviewed) > 0:
-        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
-                                                                               ReviewOptimization.detector_uid != db_user.uid,
-                                                                               ~ReviewOptimization.uid.in_(already_seen_and_reviewed))).all()
-    else:
-        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
-                                                                               ReviewOptimization.detector_uid != db_user.uid,
-                                                                               ~ReviewOptimization.uid.in_(already_reviewed))).all()
-
-    # maybe there are not argument or the user has seen everything, try again
     extra_info = ''
+    # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
         already_seen = list()
         extra_info = 'already_seen' if not first_time else ''
