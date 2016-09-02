@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-01 10:37+0200\n"
+"POT-Creation-Date: 2016-09-02 12:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -378,74 +378,74 @@ msgid "choose_task"
 msgstr ""
 
 #. Default: Based on your user group, you have all rights!
-#: ././templates/review.pt:29 ././templates/review_reputation.pt:8
+#: ././templates/review.pt:30 ././templates/review_reputation.pt:8
 msgid "unlimited_right_based_on_group"
 msgstr ""
 
-#. Default: Your current reputation count is:
-#: ././templates/review.pt:32
+#. Default: Your current reputation count is
+#: ././templates/review.pt:33
 msgid "current_reputation_os"
 msgstr ""
 
 #. Default: Open Tasks
-#: ././templates/review.pt:42
+#: ././templates/review.pt:43
 msgid "open_tasks"
 msgstr ""
 
 #. Default: Topic
-#: ././templates/review.pt:43
+#: ././templates/review.pt:44
 msgid "topic"
 msgstr ""
 
 #. Default: Recent Reviews
-#: ././templates/review.pt:44
+#: ././templates/review.pt:45
 msgid "recent_reviews"
 msgstr ""
 
 #. Default: None
-#: ././templates/review.pt:61
+#: ././templates/review.pt:67
 msgid "None"
 msgstr ""
 
 #. Default: What is reputation? How do I earn (and lose) it?
-#: ././templates/review.pt:73
+#: ././templates/review.pt:79
 msgid "what_is_reputation"
 msgstr ""
 
 #. Default: Reputation is a rough measurement of how work you are doing for the
 #. discussion and the community;
-#: ././templates/review.pt:74
+#: ././templates/review.pt:80
 msgid "what_is_reputation_def"
 msgstr ""
 
 #. Default: you can earn it by using D-BAS and all of its great functions.
-#: ././templates/review.pt:75
+#: ././templates/review.pt:81
 msgid "what_is_reputation_earn"
 msgstr ""
 
 #. Default: Basic use of D-BAS, does not require any reputation at all.
-#: ././templates/review.pt:76
+#: ././templates/review.pt:82
 msgid "what_is_reputation_use"
 msgstr ""
 
 #. Default: You gain reputation when:
-#: ././templates/review.pt:79
+#: ././templates/review.pt:85
 msgid "gain_rep_when"
 msgstr ""
 
 #. Default: You lose reputation when:
-#: ././templates/review.pt:86
+#: ././templates/review.pt:94
 msgid "lose_rep_when"
 msgstr ""
 
 #. Default: Privileges
-#: ././templates/review.pt:95
+#: ././templates/review.pt:106
 msgid "privileges"
 msgstr ""
 
 #. Default: Privileges control what you can see in the review queues of D-BAS.
 #. Gain more privileges by increasing your reputation.
-#: ././templates/review.pt:96
+#: ././templates/review.pt:107
 msgid "privileges_explanation"
 msgstr ""
 
@@ -459,38 +459,48 @@ msgstr ""
 msgid "no_decision_for_this_queue"
 msgstr ""
 
-#. Default: Votes
+#. Default: Argument
 #: ././templates/review_history.pt:21
+msgid "argument"
+msgstr ""
+
+#. Default: Reason
+#: ././templates/review_history.pt:22
+msgid "reason"
+msgstr ""
+
+#. Default: Votes
+#: ././templates/review_history.pt:23
 msgid "votes"
 msgstr ""
 
 #. Default: Voters Pro
-#: ././templates/review_history.pt:22
+#: ././templates/review_history.pt:24
 msgid "voters_pro"
 msgstr ""
 
 #. Default: Voters Con
-#: ././templates/review_history.pt:23
+#: ././templates/review_history.pt:25
 msgid "voters_con"
 msgstr ""
 
 #. Default: Accepted
-#: ././templates/review_history.pt:24
+#: ././templates/review_history.pt:26
 msgid "accepted"
 msgstr ""
 
 #. Default: Timestamp
-#: ././templates/review_history.pt:25
+#: ././templates/review_history.pt:27
 msgid "timestamp"
 msgstr ""
 
 #. Default: Action
-#: ././templates/review_history.pt:26
+#: ././templates/review_history.pt:28
 msgid "actions"
 msgstr ""
 
 #. Default: Undo
-#: ././templates/review_history.pt:57
+#: ././templates/review_history.pt:61
 msgid "undo"
 msgstr ""
 
@@ -755,7 +765,7 @@ msgstr ""
 
 #. Default: Anti-Spam (required)
 #. Default: Spam
-#: ././templates/snippet-popups.pt:390 ././templates/review_content.pt:27
+#: ././templates/snippet-popups.pt:390 ././templates/review_content.pt:42
 msgid "spam"
 msgstr ""
 
@@ -845,7 +855,7 @@ msgid "success:"
 msgstr ""
 
 #. Default: Date
-#: ././templates/snippet-popups.pt:585 ././templates/review_reputation.pt:21
+#: ././templates/snippet-popups.pt:585 ././templates/review_reputation.pt:22
 msgid "date"
 msgstr ""
 
@@ -1124,129 +1134,139 @@ msgid "reputation_count"
 msgstr ""
 
 #. Default: Action
-#: ././templates/review_reputation.pt:22
+#: ././templates/review_reputation.pt:23
 msgid "action"
 msgstr ""
 
 #. Default: Reputation
-#: ././templates/review_reputation.pt:23 ././templates/user.pt:57
+#: ././templates/review_reputation.pt:24 ././templates/user.pt:57
 msgid "reputation"
 msgstr ""
 
 #. Default: (more)
-#: ././templates/review_content.pt:17
+#: ././templates/review_content.pt:18
 msgid "wrapped_more"
 msgstr ""
 
 #. Default: (less)
-#: ././templates/review_content.pt:18
+#: ././templates/review_content.pt:19
 msgid "wrapped_less"
 msgstr ""
 
+#. Default: Skip it
+#: ././templates/review_content.pt:23 ././templates/review_content.pt:28
+#: ././templates/review_content.pt:55 ././templates/review_content.pt:60
+msgid "skip_it"
+msgstr ""
+
+#. Default: Delete it
+#: ././templates/review_content.pt:24 ././templates/review_content.pt:54
+msgid "delete_it"
+msgstr ""
+
+#. Default: It's Okay
+#: ././templates/review_content.pt:25 ././templates/review_content.pt:53
+msgid "its_okay"
+msgstr ""
+
+#. Default: It's okay so
+#: ././templates/review_content.pt:29 ././templates/review_content.pt:59
+msgid "its_okay_so"
+msgstr ""
+
+#. Default: Let me correct it
+#: ././templates/review_content.pt:30 ././templates/review_content.pt:58
+msgid "correct_it"
+msgstr ""
+
 #. Default: Off topic
-#: ././templates/review_content.pt:24
+#: ././templates/review_content.pt:39
 msgid "off_topic"
 msgstr ""
 
 #. Default: are useful in general, but do not belong to the current discussion
-#: ././templates/review_content.pt:24
+#: ././templates/review_content.pt:39
 msgid "off_topic_explanation"
 msgstr ""
 
 #. Default: Inappropriate, harmful or abbusive
-#: ././templates/review_content.pt:25
+#: ././templates/review_content.pt:40
 msgid "inappropriate_harmful_abbusive"
 msgstr ""
 
 #. Default: are posts, which are inappropriate, harmful or abbusive
-#: ././templates/review_content.pt:25
+#: ././templates/review_content.pt:40
 msgid "inappropriate_harmful_abbusive_explanation"
 msgstr ""
 
 #. Default: Needs optimization
-#: ././templates/review_content.pt:26
+#: ././templates/review_content.pt:41
 msgid "needs_optimization"
 msgstr ""
 
 #. Default: if posts are useful, but need edits in grammar and/or spelling
-#: ././templates/review_content.pt:26
+#: ././templates/review_content.pt:41
 msgid "needs_optimization_explanation"
 msgstr ""
 
 #. Default: is neither useful nor mappend to a discussions topic
-#: ././templates/review_content.pt:27
+#: ././templates/review_content.pt:42
 msgid "spam_explanation"
 msgstr ""
 
-#. Default: It's Okay
-#: ././templates/review_content.pt:35 ././templates/review_content.pt:49
-msgid "its_okay"
-msgstr ""
-
 #. Default: for arguments, which should not be deleted.
-#: ././templates/review_content.pt:35
+#: ././templates/review_content.pt:53
 msgid "its_okay_explanation"
 msgstr ""
 
-#. Default: Delete it
-#: ././templates/review_content.pt:36 ././templates/review_content.pt:48
-msgid "delete_it"
-msgstr ""
-
 #. Default: for arguments, that should be deleted based on the reason above.
-#: ././templates/review_content.pt:36
+#: ././templates/review_content.pt:54
 msgid "delete_it_explanation"
 msgstr ""
 
-#. Default: Skip it
-#: ././templates/review_content.pt:37 ././templates/review_content.pt:42
-#: ././templates/review_content.pt:47 ././templates/review_content.pt:52
-msgid "skip_it"
-msgstr ""
-
 #. Default: if you are not sure and want to go to the next argument.
-#: ././templates/review_content.pt:37 ././templates/review_content.pt:42
+#: ././templates/review_content.pt:55 ././templates/review_content.pt:60
 msgid "skip_it_explanation"
-msgstr ""
-
-#. Default: Let me correct it
-#: ././templates/review_content.pt:40 ././templates/review_content.pt:54
-msgid "correct_it"
 msgstr ""
 
 #. Default: , if you have an idea for a better formulation with the same
 #. content.
-#: ././templates/review_content.pt:40
+#: ././templates/review_content.pt:58
 msgid "correct_it_explanation"
 msgstr ""
 
-#. Default: It's okay so
-#: ././templates/review_content.pt:41 ././templates/review_content.pt:53
-msgid "its_okay_so"
-msgstr ""
-
 #. Default: for arguments, which can be understood as-is.
-#: ././templates/review_content.pt:41
+#: ././templates/review_content.pt:59
 msgid "its_okay_so_explanation"
 msgstr ""
 
+#. Default: In the discussion about
+#: ././templates/review_content.pt:69
+msgid "in_the_discussion_about"
+msgstr ""
+
+#. Default: following argument was flagged.
+#: ././templates/review_content.pt:71
+msgid "following_argument_was_flagged"
+msgstr ""
+
 #. Default: Reported
-#: ././templates/review_content.pt:70
+#: ././templates/review_content.pt:85
 msgid "reported"
 msgstr ""
 
 #. Default: Viewed
-#: ././templates/review_content.pt:74
+#: ././templates/review_content.pt:89
 msgid "viewed"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/review_content.pt:78
+#: ././templates/review_content.pt:93
 msgid "attacks"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/review_content.pt:82
+#: ././templates/review_content.pt:97
 msgid "supports"
 msgstr ""
 
