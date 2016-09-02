@@ -35,10 +35,11 @@ _t = function(id){
  * @private
  */
 _t_discussion = function(id){
-	if ($('#issue_info').length == 0){
+	var info = $('#issue_info');
+	if (info.length == 0){
 		return _t(id);
 	}
-	var lang = $('#issue_info').data('discussion-language');
+	var lang = info.data('discussion-language');
 	var value = 'unknown identifier';
 	if (lang.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){		value = dbas_en[id];
 	} else if (lang.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){	value = dbas_de[id];
@@ -113,6 +114,7 @@ var checkPassword									= 'checkPassword';
 var checkConfirmation 								= 'checkConfirmation';
 var checkPasswordConfirm							= 'checkPasswordConfirm';
 var countOfArguments                                = 'countOfArguments';
+var countdownEnded                                  = 'countdownEnded';
 var dataRemoved 									= 'dataRemoved';
 var didYouMean										= 'didYouMean';
 var duplicateDialog									= 'duplicateDialog';
@@ -292,6 +294,7 @@ var dbas_en = {
 	'author': 'Author',
 	'because': 'because',
 	'countOfArguments': 'Count of arguments',
+	'countdownEnded': 'Your time is up. Unfortunately you cannot edit anything on this page anymore.',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'caution': 'Caution',
 	'correctionsSet': 'Your correction was set.',
@@ -470,6 +473,7 @@ var dbas_de = {
 	'caution': 'Achtung',
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
+	'countdownEnded': 'Ihre Zeit ist abgelaufen, leider können Sie auf dieser Seite keine Änderungen mehr vornehmen.',
 	'changelog': 'Änderungsprotokoll',
 	'checkFirstname': 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!',
 	'checkLastname': 'Bitte überprüfen Sie Ihren Nachnamen, da die Eingabe leer ist!',
