@@ -144,18 +144,24 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
     """
     users_array = list()
     db_reviews = DBDiscussionSession.query(reviewer_type).order_by(reviewer_type.uid.desc()).all()
-    limit = 5 if len(db_reviews) > 5 else len(db_reviews)
-    for x in range(limit):
-        db_review = db_reviews[x]
+    limit = 5 if len(db_reviews) >= 5 else len(db_reviews)
+    index = 0
+    while index < limit:
+        db_review = db_reviews[index]
         db_user = DBDiscussionSession.query(User).filter_by(uid=db_review.reviewer_uid).first()
         if db_user:
             tmp_dict = dict()
             tmp_dict['img_src'] = _user_manager.get_profile_picture(db_user, 40)
             tmp_dict['url'] = mainpage + '/user/' + db_user.get_global_nickname()
             tmp_dict['name'] = db_user.get_global_nickname()
-            users_array.append(tmp_dict)
+            # skip it, if it is already in
+            if tmp_dict in users_array:
+                limit += 1 if len(db_reviews) > limit else 0
+            else:
+                users_array.append(tmp_dict)
         else:
             limit += 1 if len(db_reviews) > limit else 0
+        index += 1
     return users_array
 
 
