@@ -17,6 +17,7 @@ import dbas.helper.voting as VotingHelper
 import dbas.review.helper.flags as ReviewFlagHelper
 import dbas.review.helper.subpage as ReviewPagerHelper
 import dbas.review.helper.queues as ReviewQueueHelper
+import dbas.review.helper.main as ReviewMainHelper
 import dbas.review.helper.reputation as ReviewReputationHelper
 import dbas.review.helper.history as ReviewHistoryHelper
 import dbas.strings.matcher as FuzzyStringMatcher
@@ -2082,7 +2083,7 @@ class Dbas(object):
             if not Validator.is_integer(review_uid):
                 return_dict['error'] = _t.get(_t.internalKeyError)
             else:
-                ReviewQueueHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
+                ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
                 send_request_for_recent_delete_review_to_socketio(nickname)
 
                 return_dict['info'] = str(should_delete) + ' by ' + nickname
