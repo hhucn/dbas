@@ -20,20 +20,25 @@ $(document).ready(function () {
 	optimization_ack.click(function(){
 		new Review().doOptimizationAck();
 	});
+	
 	optimization_nack.click(function(){
 		new Review().doOptimizationNack();
 	});
+	
 	optimization_skip.click(function(){
 		location.reload();
 	});
+	
 	delete_ack.click(function(){
 		var review_uid = $(this).data('id');
 		new Review().doDeleteAck(review_uid);
 	});
+	
 	delete_nack.click(function(){
 		var review_uid = $(this).data('id');
 		new Review().doDeleteNack(review_uid);
 	});
+	
 	delete_skip.click(function(){
 		location.reload();
 	});
@@ -43,6 +48,7 @@ $(document).ready(function () {
 		less_about_reason.show();
 		more_about_reason_content.show();
 	});
+	
 	less_about_reason.click(function() {
 		$(this).hide();
 		more_about_reason.show();
@@ -60,7 +66,15 @@ function Review() {
 	 *
 	 */
 	this.doOptimizationAck = function() {
-		alert('doOptimizationAck');
+		var container = $('#optimization-container');
+		var button = $('#opti_ack');
+		container.show();
+		button.addClass('disabled');
+		$('#close-optimization-container').click(function(){
+			container.hide();
+			button.removeClass('disabled');
+		});
+		
 	};
 	
 	/**
