@@ -2144,6 +2144,7 @@ class Dbas(object):
 
         try:
             review_uid = self.request.params['review_uid']
+            lock = True if self.request.params['lock'] == 'true' else False
             # TODO LOCK
             # on sucess: nothing
             # on locked: send info
