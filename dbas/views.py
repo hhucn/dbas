@@ -2124,3 +2124,36 @@ class Dbas(object):
             return_dict['error'] = _t.get(_t.internalKeyError)
 
         return json.dumps(return_dict, True)
+
+    # ajax - for undoing reviews
+    @view_config(route_name='ajax_review_lock', renderer='json')
+    def review_lock(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('review_lock', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+
+        info = ''
+        error = ''
+        success = ''
+
+        try:
+            review_uid = self.request.params['review_uid']
+            # TODO LOCK
+            # on sucess: nothing
+            # on locked: send info
+
+        except KeyError as e:
+            logger('review_lock', 'error', repr(e))
+            error = _t.get(_t.internalKeyError)
+
+        return_dict['info'] = info
+        return_dict['error'] = error
+        return_dict['success'] = success
+
+        return json.dumps(return_dict, True)
