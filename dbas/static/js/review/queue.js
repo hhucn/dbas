@@ -18,11 +18,13 @@ $(document).ready(function () {
 	var more_about_reason_content = $('#more_about_reason_content');
 	
 	optimization_ack.click(function(){
-		new Review().doOptimizationAck();
+		var review_uid = $(this).data('id');
+		new Review().doOptimizationAck(review_uid);
 	});
 	
 	optimization_nack.click(function(){
-		new Review().doOptimizationNack();
+		var review_uid = $(this).data('id');
+		new Review().doOptimizationNack(review_uid);
 	});
 	
 	optimization_skip.click(function(){
@@ -69,7 +71,7 @@ function Review() {
 	/**
 	 *
 	 */
-	this.doOptimizationAck = function() {
+	this.doOptimizationAck = function(review_uid) {
 		var container = $('#optimization-container');
 		var button = $('#opti_ack');
 		container.show();
@@ -87,7 +89,8 @@ function Review() {
 				
 			}
 		});
-		_this.startCountdown();
+		//_this.startCountdown();
+		new AjaxReviewHandler().lockOptimizationReview(review_uid, _this)
 	};
 	
 	/**
@@ -123,7 +126,6 @@ function Review() {
             onUpdateStatus: function(sec){
             	var m = parseInt(sec / 60);
 	            var s = sec - m * 60;
-	            console.log(m + ' ' + (s < 10 ? '0' + s : s));
             	mm.text(m);
             	ss.text(s < 10 ? '0' + s : s);
 	            if (sec == 60){
@@ -163,7 +165,24 @@ function ReviewCallbacks() {
 				location.reload();
 			}
 		}
-	}
+	};
+	
+	/**
+	 *
+	 * @param jsonData
+	 * @param review_instance
+	 */
+	this.forReviewLock = function(jsonData, review_instance){
+		var parsedData = $.parseJSON(jsonData);
+		if (parsedData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		} else if (parsedData.info.length != 0) {
+			setGlobalInfoHandler('Mhh', parsedData.info);
+		} else {
+			//setGlobalSuccessHandler('Hurey', parsedData.success);
+			review_instance.startCountdown();
+		}
+	};
 }
 
 /**

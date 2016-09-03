@@ -128,6 +128,7 @@ def main(global_config, **settings):
     config.add_route('ajax_flag_argument', '{url:.*}ajax_flag_argument')
     config.add_route('ajax_review_delete_argument', '{url:.*}ajax_review_delete_argument')
     config.add_route('ajax_undo_review', '{url:.*}ajax_undo_review')
+    config.add_route('ajax_review_lock', '{url:.*}ajax_review_lock')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')
