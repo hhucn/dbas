@@ -112,7 +112,7 @@
                         </table>
                     </div>
                 </div>
-                <small class="text-muted pull-right">ID: ${subpage.elements.reviewed_argument.stats.id}</small>
+                <small id="review-id" class="text-muted pull-right">ID: ${subpage.elements.reviewed_argument.stats.id}</small>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             </button>
             <div class="row">
                 <div class="col-md-12">
-                    <span class="text-danger">TODO: Set lock while editing</span>
+                    <span class="text-danger">TODO: Set lock while editing (and unlock on skip/break/exit!)</span>
                     <p class="lead">
                         <span i18n:translate="argument_is_locked">This argument is locked for your edit for the next</span>:
                         <span id="countdown_timer_min"></span><span class="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.

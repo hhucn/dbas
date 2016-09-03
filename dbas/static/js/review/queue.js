@@ -23,8 +23,7 @@ $(document).ready(function () {
 	});
 	
 	optimization_nack.click(function(){
-		var review_uid = $(this).data('id');
-		new Review().doOptimizationNack(review_uid);
+		new Review().doOptimizationNack();
 	});
 	
 	optimization_skip.click(function(){
@@ -42,7 +41,7 @@ $(document).ready(function () {
 	});
 	
 	delete_skip.click(function(){
-		location.reload();
+		reloadPage(false);
 	});
 	
 	more_about_reason.click(function() {
@@ -61,13 +60,24 @@ $(document).ready(function () {
 	if ($('#stats-table').data('extra-info') == 'already_seen'){
 		setGlobalInfoHandler('Info', _t(queueCompleteSeen));
 	}
+	
+	$(window).bind('beforeunload',function(){
+        new AjaxReviewHandler().lockOptimizationReview($('#review-id').text(), false, undefined);
+	});
 });
+
+function reloadPage(only_unlock_review){
+	new AjaxReviewHandler().lockOptimizationReview($('#review-id').text(), false, undefined);
+	if (! only_unlock_review)
+		location.reload();
+}
 
 function Review() {
 	var countdown;
 	var _this = this;
 	var countdown_min = 4;
 	var countdown_sec = 59;
+	
 	/**
 	 *
 	 */
@@ -90,13 +100,14 @@ function Review() {
 			}
 		});
 		//_this.startCountdown();
-		new AjaxReviewHandler().lockOptimizationReview(review_uid, _this)
+		new AjaxReviewHandler().lockOptimizationReview(review_uid, true, _this);
 	};
 	
 	/**
 	 *
 	 */
 	this.doOptimizationNack = function() {
+		reloadPage(true);
 		alert('doOptimizationNack');
 	};
 	
@@ -162,7 +173,7 @@ function ReviewCallbacks() {
 		} else {
 			// reload, when the user is still in the review page
 			if (window.location.href.indexOf('/review/')) {
-				location.reload();
+				reloadPage(false);
 			}
 		}
 	};
