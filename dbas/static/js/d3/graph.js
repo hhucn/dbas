@@ -30,6 +30,15 @@ function DiscussionGraph() {
 	};
 
 	/**
+	 * 
+	 * @param data
+     */
+	this.callbackIfDoneForGetJumpDataForGraph = function (data){
+		var jsonData = $.parseJSON(data);
+		console.log(jsonData);
+	};
+
+	/**
 	 *
 	 * @param startD3
 	 * @param jsonData
@@ -101,23 +110,30 @@ function DiscussionGraph() {
 
 		// node
    		var node = createNodes(svg, force, drag);
-		var circle = setNodeProperties(node);
+		var circle = setNodeProperties(node).attr("class", "circle");
 
 		// tooltip
 		// rect as background of label
-		var rect = node.append("rect");
-		var label = createLabel(node);
+		var rect = node.append("rect").attr("class", "rect");
+		var label = createLabel(node).attr("class", "label");
 		setRectProperties(rect);
 
 		// legend
         createLegend();
 		// call updated legend
         var legend = d3.svg.legend();
+
+		// background of legend
+		var legendRect = d3.select("svg").append("rect")
+
 		// set position of legend
-		var legendHeight = 3*height/5;
+		var legendPaddingBottom = 3*height/5;
         d3.select("svg").append("g")
-            .attr("transform", "translate(30, " + legendHeight + ")")
+			.attr("id", "graphLegend")
+            .attr("transform", "translate(30, " + legendPaddingBottom + ")")
             .call(legend);
+
+		setLegendRectProperties(legendRect, legendPaddingBottom);
 
 		// buttons of sidebar
 		showDefaultView(jsonData);
@@ -126,8 +142,10 @@ function DiscussionGraph() {
 		showPositions();
 		hidePositions();
 
+		moveToBack(circle);
+
         force.start();
-		
+
 		// update force layout calculations
 		function forceTick() {
 		    // update position of edges
@@ -146,11 +164,6 @@ function DiscussionGraph() {
 		    label.attr("transform", function (d) {
   			        return "translate(" + d.x + "," + (d.y - 50) + ")";});
 		}
-
-		svg.order();
-
-		moveToBack(circle, svg);
-
 
 		//////////////////////////////////////////////////////////////////////////////
 		// highlight nodes and edges
@@ -351,7 +364,7 @@ function DiscussionGraph() {
 	function setRectProperties(rect){
 		rect.each(function (d) {
 			var element = $("#label-" + d.id);
-		    var width = element.width() + 10;
+		    var width = element.width() + 24;
 			var height = element.height() + 10;
 			if(d.size == 0){
 				width = 0;
@@ -359,7 +372,7 @@ function DiscussionGraph() {
 			}
 			d3.select(this)
 			.attr({width: width, height: height,
-			       y: -height+38, x: -width/2,
+			       y: -height+36, x: -width/2,
 			       id: 'rect-' + d.id});
 		});
 	}
@@ -387,6 +400,22 @@ function DiscussionGraph() {
 	}
 
 	/**
+	 * Set properties for rect in background of legend.
+	 *
+	 * @param legendRect: background of legend
+	 * @param legendPaddingBottom
+ 	 */
+	function setLegendRectProperties(legendRect, legendPaddingBottom){
+		var legendBBox = $("#graphLegend")[0].getBBox(),
+		    legendWidth = legendBBox.width, legendHeight = legendBBox.height;
+
+	    legendRect.attr("width", legendWidth + 5)
+			.attr("height", legendHeight + 5)
+			.attr("fill", "white")
+			.attr("transform", "translate(20, " + (legendPaddingBottom-10) + ")");
+	}
+
+	/**
 	 * Create symbols for nodes.
 	 *
 	 * @param selection
@@ -397,7 +426,6 @@ function DiscussionGraph() {
 		selection.selectAll(".circle")
         .data(legendLabelCircle)
         .enter().append("circle")
-		.attr("id", 1)
 		.attr({fill: function (d,i) {return legendColorCircle[i];},
                r: function (d,i) {
 	               if(i == 0) { return 8; }
@@ -527,17 +555,19 @@ function DiscussionGraph() {
 	 * Hide nodes on mouse event.
 	 *
 	 * @param circle
-	 * @param svg
 	 */
-	function moveToBack(circle, svg){
+	function moveToBack(circle){
 		circle.on("mouseover", function(d) {
-		    svg.selectAll('.node')
+		    d3.selectAll('.node')
             .sort(function(a, b) {
-            if (a.id === d.id) { return 1; }
-			else {
-			    if (b.id === d.id) { return -1; }
-			    else { return 0; }
-            }})
+                if (a.id === d.id) {
+				    return 1;
+			    }
+			    else if (b.id === d.id) {
+				    return -1;
+			    }
+			    return 0;
+            })
 		});
 	}
 
