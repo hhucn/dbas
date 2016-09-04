@@ -115,6 +115,7 @@ var checkConfirmation 								= 'checkConfirmation';
 var checkPasswordConfirm							= 'checkPasswordConfirm';
 var countOfArguments                                = 'countOfArguments';
 var countdownEnded                                  = 'countdownEnded';
+var couldNotLock                                    = 'couldNotLock';
 var dataRemoved 									= 'dataRemoved';
 var didYouMean										= 'didYouMean';
 var duplicateDialog									= 'duplicateDialog';
@@ -295,6 +296,7 @@ var dbas_en = {
 	'because': 'because',
 	'countOfArguments': 'Count of arguments',
 	'countdownEnded': 'Your time is up. Unfortunately you cannot edit anything on this page anymore.',
+	'couldNotLock': 'Set could not be locked, please try again!',
 	'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
 	'caution': 'Caution',
 	'correctionsSet': 'Your correction was set.',
@@ -474,6 +476,7 @@ var dbas_de = {
 	'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
 	'countOfArguments': 'Anzahl der Argumente',
 	'countdownEnded': 'Ihre Zeit ist abgelaufen, leider können Sie auf dieser Seite keine Änderungen mehr vornehmen.',
+	'couldNotLock': 'Datensatz konnte nicht für Sie gesperrt werden, bitte versuchen Sie es erneut!',
 	'changelog': 'Änderungsprotokoll',
 	'checkFirstname': 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!',
 	'checkLastname': 'Bitte überprüfen Sie Ihren Nachnamen, da die Eingabe leer ist!',
