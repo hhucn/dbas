@@ -8,6 +8,7 @@ from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue, User, VoteStatement
 from dbas.user_management import get_profile_picture
+from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
 
 
 grey = '#424242'
@@ -49,8 +50,8 @@ def get_d3_data(issue):
     logger('GraphLib', 'get_d3_data', 'issue: ' + db_issue.info)
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
-    db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
+    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
+    db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
 
     # issue
     node_dict = __get_node_dict(id='issue', label=db_issue.info, color=blue, size=issue_size, x=x, y=y)

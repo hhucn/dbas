@@ -23,19 +23,20 @@
                         </div>
                     </div>
                 </div>
-			    <div class="row">
+
+                <div class="row">
                     <div class="col-md-12">
                         <h6 tal:condition="reputation.has_all_rights">
                             <span i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</span>
                         </h6>
                         <h6>
-                            <span i18n:translate="current_reputation_os"> Your current reputation count is:</span> <a href="${request.application_url}/review/reputation">${reputation.count}</a>
+                            <span i18n:translate="current_reputation_os">Your current reputation count is</span>: <a href="${request.application_url}/review/reputation">${reputation.count}</a>
                         </h6>
                     </div>
                 </div>
 
 			    <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-offset-1 col-md-10 col-md-offset-1">
                         <table class="table table-condensed" border="0" id="review-table">
                             <thead>
                                 <tr class="review-table-row">
@@ -51,10 +52,15 @@
                                         <strong tal:condition="task.is_allowed">${structure:task.task_count}</strong>
                                     </td>
                                     <td>
-                                        <div class="forbidden" tal:condition="not:task.is_allowed"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></div>
-                                        <div tal:condition="task.is_allowed"><a tal:attributes="href task.url"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></a></div>
-                                        <div tal:condition="task.is_allowed" style="line-height: normal;"><small>${task.is_allowed_text}</small></div>
+                                        <div tal:condition="not:task.is_allowed" class="forbidden"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></div>
                                         <div tal:condition="not:task.is_allowed" style="line-height: normal;"><small>${task.is_not_allowed_text}</small></div>
+                                        <div tal:condition="task.is_allowed">
+                                            <div tal:omit-tag="" tal:switch="task.task_count == 0">
+                                                <a tal:case="False" tal:attributes="href task.url"><i tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i></a>
+                                                <i tal:case="True" tal:attributes="class task.icon" aria-hidden="true">&nbsp;${task.task_name}</i>
+                                            </div>
+                                        </div>
+                                        <div tal:condition="task.is_allowed" style="line-height: normal;"><small>${task.is_allowed_text}</small></div>
                                     </td>
                                     <td class="center" tal:attributes="id task.id" tal:switch="len(task.last_reviews)>0">
                                         <a tal:case="True" tal:repeat="user task.last_reviews" tal:attributes="title user.name; href user.url" target="_blank"><img tal:attributes="src user.img_src"></a>
@@ -74,46 +80,54 @@
                         <span i18n:translate="what_is_reputation_def">Reputation is a rough measurement of how work you are doing for the discussion and the community;</span>
                         <span i18n:translate="what_is_reputation_earn">you can earn it by using D-BAS and all of its great functions.</span>
                         <span i18n:translate="what_is_reputation_use">Basic use of D-BAS, does not require any reputation at all.</span>
-                        <br>
-                        <br>
-                        <strong i18n:translate="gain_rep_when">You gain reputation when:</strong>
-                        <ul>
-                            <li tal:repeat="reputation reputation_list.gains">
-                                <span>${reputation.text}</span>:
-                                <span class="success-description">${reputation.points}</span>
-                            </li>
-                        </ul>
-                        <strong i18n:translate="lose_rep_when">You lose reputation when:</strong>
-                        <ul>
-                            <li tal:repeat="reputation reputation_list.looses">
-                                <span>${reputation.text}</span>:
-                                <span class="error-description">${reputation.points}</span>
-                            </li>
-                        </ul>
+                        <div class="row" style="margin-top: 1em;">
+                            <div class="col-md-6">
+                                <strong i18n:translate="gain_rep_when">You gain reputation when:</strong>
+                                <ul>
+                                    <li tal:repeat="reputation reputation_list.gains">
+                                        <span>${reputation.text}</span>:
+                                        <span class="success-description">${reputation.points}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <strong i18n:translate="lose_rep_when">You lose reputation when:</strong>
+                                <ul>
+                                    <li tal:repeat="reputation reputation_list.looses">
+                                        <span>${reputation.text}</span>:
+                                        <span class="error-description">${reputation.points}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-12" style="margin-top: 1em;">
+
+                    <div class="col-md-offset-2 col-md-8" style="margin-top: 1em;">
                         <h4 i18n:translate="privileges">Privileges</h4>
                         <span i18n:translate="privileges_explanation">Privileges control what you can see in the review queues of D-BAS. Gain more privileges by increasing your reputation.</span>
-                        <br>
-                        <br>
-                        <table class="table table-condensed" border="0">
-                            <tbody>
-                                <tr class="review-table-row" tal:repeat="privilege privilege_list">
-                                    <td>${privilege.points}</td>
-                                    <td><i class="" aria-hidden="true" tal:attributes="class privilege.icon"></i></td>
-                                    <td>${privilege.text}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="row"  style="margin-top: 1em;">
+                            <div class="col-md-offset-2 col-md-8">
+                                <table class="table table-condensed" border="0">
+                                    <tbody>
+                                        <tr class="review-table-row" tal:repeat="privilege privilege_list">
+                                            <td>${privilege.points}</td>
+                                            <td><i class="" aria-hidden="true" tal:attributes="class privilege.icon"></i></td>
+                                            <td>${privilege.text}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <!--
-                    <div class="col-md-12" style="margin-top: 1em;">
+                    <div class="col-md-offset-2 col-md-8" style="margin-top: 1em;">
                         <h4 i18n:translate="badges">Badges</h4>
                         <span>some text</span>
                     </div>
                     -->
                 </div>
             </div>
+
         </div>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/review/main.js')}"></script>
