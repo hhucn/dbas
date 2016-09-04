@@ -2141,6 +2141,7 @@ class Dbas(object):
         info = ''
         error = ''
         success = ''
+        is_locked = False
 
         try:
             review_uid = self.request.params['review_uid']
@@ -2148,6 +2149,7 @@ class Dbas(object):
             # TODO LOCK
             # on sucess: nothing
             # on locked: send info
+            is_locked = False
 
         except KeyError as e:
             logger('review_lock', 'error', repr(e))
@@ -2156,5 +2158,6 @@ class Dbas(object):
         return_dict['info'] = info
         return_dict['error'] = error
         return_dict['success'] = success
+        return_dict['is_locked'] = is_locked
 
         return json.dumps(return_dict, True)

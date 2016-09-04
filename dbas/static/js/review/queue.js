@@ -41,7 +41,7 @@ $(document).ready(function () {
 	});
 	
 	delete_skip.click(function(){
-		reloadPage(false);
+		new Review().reloadPageAndUnlockData(false);
 	});
 	
 	more_about_reason.click(function() {
@@ -66,16 +66,10 @@ $(document).ready(function () {
 	});
 });
 
-function reloadPage(only_unlock_review){
-	new AjaxReviewHandler().lockOptimizationReview($('#review-id').text(), false, undefined);
-	if (! only_unlock_review)
-		location.reload();
-}
-
 function Review() {
 	var countdown;
 	var _this = this;
-	var countdown_min = 4;
+	var countdown_min = 2;
 	var countdown_sec = 59;
 	
 	/**
@@ -84,13 +78,12 @@ function Review() {
 	this.doOptimizationAck = function(review_uid) {
 		var container = $('#optimization-container');
 		var button = $('#opti_ack');
-		container.show();
-		button.addClass('disabled');
 		
 		$('#close-optimization-container').click(function(){
 			container.hide();
 			button.removeClass('disabled');
 			_this.stopCountdown();
+			new AjaxReviewHandler().lockOptimizationReview(review_uid, false, _this);
 		});
 		
 		button.click(function(){
@@ -107,7 +100,7 @@ function Review() {
 	 *
 	 */
 	this.doOptimizationNack = function() {
-		reloadPage(true);
+		_this.reloadPageAndUnlockData(true);
 		alert('doOptimizationNack');
 	};
 	
@@ -125,6 +118,9 @@ function Review() {
 		new AjaxReviewHandler().reviewDeleteArgument(false, review_uid);
 	};
 	
+	/**
+	 *
+	 */
 	this.startCountdown = function(){
 		var mm = $('#countdown_timer_min');
 		var ss = $('#countdown_timer_sec');
@@ -149,14 +145,30 @@ function Review() {
             	setGlobalErrorHandler(_t(ohsnap), _t(countdownEnded));
 	            $('#opti_nack').addClass('disabled');
 	            $('#send-edit').addClass('disabled');
+				$('#request_lock').show();
             } // final action
 		});
 		countdown.start();
 	};
 	
+	/**
+	 *
+	 */
 	this.stopCountdown = function(){
-		countdown.stop();
-	}
+		if (countdown)
+			countdown.stop();
+		$('#request_lock').hide();
+	};
+	
+	/**
+	 *
+	 * @param only_unlock
+	 */
+	this.reloadPageAndUnlockData = function (only_unlock){
+		new AjaxReviewHandler().lockOptimizationReview($('#review-id').text(), false, undefined);
+		if (! only_unlock)
+			location.reload();
+	};
 	
 }
 
@@ -173,7 +185,7 @@ function ReviewCallbacks() {
 		} else {
 			// reload, when the user is still in the review page
 			if (window.location.href.indexOf('/review/')) {
-				reloadPage(false);
+				new Review().reloadPageAndUnlockData(false);
 			}
 		}
 	};
@@ -190,8 +202,14 @@ function ReviewCallbacks() {
 		} else if (parsedData.info.length != 0) {
 			setGlobalInfoHandler('Mhh', parsedData.info);
 		} else {
-			//setGlobalSuccessHandler('Hurey', parsedData.success);
-			review_instance.startCountdown();
+			if (parsedData.is_locked) {
+				//setGlobalSuccessHandler('Hurey', parsedData.success);
+				review_instance.startCountdown();
+				$('#optimization-container').show();
+				$('#opti_ack').addClass('disabled');
+			} else {
+				setGlobalInfoHandler('Ohh!', _t(couldNotLock));
+			}
 		}
 	};
 }
