@@ -10,6 +10,7 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User
 from dbas.lib import get_text_for_premisesgroup_uid
+from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 
 
 class RelationHelper(object):
@@ -36,8 +37,10 @@ class RelationHelper(object):
         :return: array with dict() with id (of argumet) and text.
         """
         # logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(self.argument_uid))
-        db_attacked_argument = DBDiscussionSession.query(Argument).filter_by(uid=self.argument_uid).first()
-        db_attacked_premises = DBDiscussionSession.query(Premise)\
+        db_arguments = get_not_disabled_arguments_as_query()
+        db_attacked_argument = db_arguments.filter_by(uid=self.argument_uid).first()
+        db_premises = get_not_disabled_premises_as_query()
+        db_attacked_premises = db_premises\
             .filter_by(premisesgroup_uid=db_attacked_argument.premisesgroup_uid)\
             .order_by(Premise.premisesgroup_uid.desc()).all()
 
@@ -75,7 +78,8 @@ class RelationHelper(object):
         :return: array with dict() with id (of argumet) and text.
         """
         # logger('RelationHelper', 'get_rebuts_for_argument_uid', 'main ' + str(self.argument_uid))
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=int(self.argument_uid)).first()
+        db_arguments = get_not_disabled_arguments_as_query()
+        db_argument = db_arguments.filter_by(uid=int(self.argument_uid)).first()
         if not db_argument:
             return None
 
@@ -97,8 +101,9 @@ class RelationHelper(object):
         #  logger('RelationHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' +
         #         str(db_argument.conclusion_uid) + ', is_current_argument_supportive ' + str(db_argument.is_supportive) +
         #         ' (searching for the opposite)')
-        db_rebut = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == (not db_argument.is_supportive),
-                                                              Argument.conclusion_uid == db_argument.conclusion_uid).all()
+        db_arguments = get_not_disabled_arguments_as_query()
+        db_rebut = db_arguments.filter(Argument.is_supportive == (not db_argument.is_supportive),
+                                       Argument.conclusion_uid == db_argument.conclusion_uid).all()
         for rebut in db_rebut:
 
             if rebut.premisesgroup_uid not in given_rebuts:
@@ -121,14 +126,15 @@ class RelationHelper(object):
 
         return_array = []
         given_supports = set()
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=self.argument_uid).join(
-            PremiseGroup).first()
+        db_arguments = get_not_disabled_arguments_as_query()
+        db_argument = db_arguments.filter_by(uid=self.argument_uid).join(PremiseGroup).first()
         db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
         index = 0
 
         for arguments_premises in db_arguments_premises:
-            db_supports = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == arguments_premises.statement_uid,
-                                                                          Argument.is_supportive == True)).join(PremiseGroup).all()
+            db_arguments = get_not_disabled_arguments_as_query()
+            db_supports = db_arguments.filter(and_(Argument.conclusion_uid == arguments_premises.statement_uid,
+                                                   Argument.is_supportive == True)).join(PremiseGroup).all()
             if not db_supports:
                 continue
 
@@ -161,10 +167,11 @@ class RelationHelper(object):
         # all premises out of current pgroup
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).all()
         for premise in db_premises:
-            db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                          Argument.is_supportive == True,
-                                                                          Argument.conclusion_uid == current_argument.conclusion_uid,
-                                                                          Argument.argument_uid == None)).first()
+            db_arguments = get_not_disabled_arguments_as_query()
+            db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
+                                                   Argument.is_supportive == True,
+                                                   Argument.conclusion_uid == current_argument.conclusion_uid,
+                                                   Argument.argument_uid == None)).first()
             if db_argument:
                 return db_argument, True
             else:
@@ -229,10 +236,11 @@ class RelationHelper(object):
         :return: Argument, Boolean if the argument is a duplicate
         """
         # duplicate?
-        db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                      Argument.is_supportive == True,
-                                                                      Argument.conclusion_uid == current_argument.conclusion_uid,
-                                                                      Argument.argument_uid == None)).first()
+        db_arguments = get_not_disabled_arguments_as_query()
+        db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
+                                               Argument.is_supportive == True,
+                                               Argument.conclusion_uid == current_argument.conclusion_uid,
+                                               Argument.argument_uid == None)).first()
         if db_argument:
             return db_argument, True
         else:
@@ -258,10 +266,11 @@ class RelationHelper(object):
         :return: Argument, Boolean if the argument is a duplicate
         """
         # duplicate?
-        db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                      Argument.is_supportive == True,
-                                                                      Argument.conclusion_uid == current_argument.conclusion_uid,
-                                                                      Argument.argument_uid == 0)).first()
+        db_arguments = get_not_disabled_arguments_as_query()
+        db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
+                                               Argument.is_supportive == True,
+                                               Argument.conclusion_uid == current_argument.conclusion_uid,
+                                               Argument.argument_uid == 0)).first()
         if db_argument:
             return db_argument, True
         else:
@@ -335,8 +344,9 @@ class RelationHelper(object):
         return_array = []
         # logger('RelationHelper', '__get_attack_or_support_for_justification_of_argument_uid',
         #        'db_undercut against Argument.argument_uid==' + str(argument_uid))
-        db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
-                                                                               Argument.argument_uid == argument_uid)).all()
+        db_arguments = get_not_disabled_arguments_as_query()
+        db_related_arguments = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
+                                                        Argument.argument_uid == argument_uid)).all()
         given_relations = set()
         index = 0
 
@@ -368,8 +378,9 @@ class RelationHelper(object):
         index = 0
         given_undermines = set()
         for s_uid in premises_as_statements_uid:
-            db_undermine = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
-                                                                           Argument.conclusion_uid == s_uid)).all()
+            db_arguments = get_not_disabled_arguments_as_query()
+            db_undermine = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
+                                                    Argument.conclusion_uid == s_uid)).all()
             for undermine in db_undermine:
                 if undermine.premisesgroup_uid not in given_undermines:
                     given_undermines.add(undermine.premisesgroup_uid)

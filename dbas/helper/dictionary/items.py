@@ -15,6 +15,7 @@ from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 from dbas.url_manager import UrlManager
+from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
 
 
 class ItemDictHelper(object):
@@ -52,7 +53,8 @@ class ItemDictHelper(object):
         :param logged_in: Boolean or String
         :return:
         """
-        db_statements = DBDiscussionSession.query(Statement)\
+        db_statements = get_not_disabled_statement_as_query()
+        db_statements = db_statements\
             .filter(and_(Statement.is_startpoint == True, Statement.issue_uid == self.issue_uid))\
             .join(TextVersion, TextVersion.uid == Statement.textversion_uid).all()
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
@@ -171,35 +173,36 @@ class ItemDictHelper(object):
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
 
         db_arguments = []
+        db_arguments_not_disabled = get_not_disabled_arguments_as_query()
         # description in docs: dbas/logic
         if attack_type == 'undermine':
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
             for premise in db_premises:
-                arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == premise.statement_uid,
-                                                                            Argument.is_supportive == False,
-                                                                            Argument.issue_uid == self.issue_uid)).all()
+                arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == premise.statement_uid,
+                                                                  Argument.is_supportive == False,
+                                                                  Argument.issue_uid == self.issue_uid)).all()
                 db_arguments = db_arguments + arguments
 
         elif attack_type == 'undercut':
-            db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid,
-                                                                           Argument.is_supportive == False,
-                                                                           Argument.issue_uid == self.issue_uid)).all()
+            db_arguments = db_arguments_not_disabled.filter(and_(Argument.argument_uid == argument_uid,
+                                                                 Argument.is_supportive == False,
+                                                                 Argument.issue_uid == self.issue_uid)).all()
 
         elif attack_type == 'overbid':
-            db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.argument_uid == argument_uid,
-                                                                           Argument.is_supportive == True,
-                                                                           Argument.issue_uid == self.issue_uid)).all()
+            db_arguments = db_arguments_not_disabled.filter(and_(Argument.argument_uid == argument_uid,
+                                                                 Argument.is_supportive == True,
+                                                                 Argument.issue_uid == self.issue_uid)).all()
 
         elif attack_type == 'rebut':
-            db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
-                                                                           Argument.argument_uid == db_argument.argument_uid,
-                                                                           Argument.is_supportive == False,
-                                                                           Argument.issue_uid == self.issue_uid)).all()
+            db_arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+                                                                 Argument.argument_uid == db_argument.argument_uid,
+                                                                 Argument.is_supportive == False,
+                                                                 Argument.issue_uid == self.issue_uid)).all()
         elif attack_type == 'support':
-            db_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
-                                                                           Argument.argument_uid == db_argument.argument_uid,
-                                                                           Argument.is_supportive == db_argument.is_supportive,
-                                                                           Argument.issue_uid == self.issue_uid)).all()
+            db_arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+                                                                 Argument.argument_uid == db_argument.argument_uid,
+                                                                 Argument.is_supportive == db_argument.is_supportive,
+                                                                 Argument.issue_uid == self.issue_uid)).all()
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 

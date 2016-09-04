@@ -64,14 +64,14 @@ class InputValidatorTests(unittest.TestCase):
         DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
         # undermine
-        undermine_true = reaction.check_reaction(attacked_arg_uid=2,
-                                                 attacking_arg_uid=19,
+        undermine_true = reaction.check_reaction(attacked_arg_uid=3,
+                                                 attacking_arg_uid=20,
                                                  relation='undermine',
                                                  is_history=False)
         self.assertEqual(undermine_true, True)
 
-        undermine_uid_array_false = reaction.check_reaction(attacked_arg_uid=[1, 2, 3],
-                                                            attacking_arg_uid=[1, 2, 3],
+        undermine_uid_array_false = reaction.check_reaction(attacked_arg_uid=[2, 3, 4],
+                                                            attacking_arg_uid=[2, 3, 4],
                                                             relation='undermine',
                                                             is_history=False)
         self.assertEqual(undermine_uid_array_false, False)
@@ -114,8 +114,8 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(undermine_string_false, False)
 
         # undercut
-        undercut_true = reaction.check_reaction(attacked_arg_uid=1,
-                                                attacking_arg_uid=17,
+        undercut_true = reaction.check_reaction(attacked_arg_uid=2,
+                                                attacking_arg_uid=18,
                                                 relation='undercut',
                                                 is_history=False)
         self.assertEqual(undercut_true, True)
@@ -139,8 +139,8 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(undercut_string_false, False)
 
         # rebut
-        rebut_true = reaction.check_reaction(attacked_arg_uid=31,
-                                             attacking_arg_uid=35,
+        rebut_true = reaction.check_reaction(attacked_arg_uid=32,
+                                             attacking_arg_uid=36,
                                              relation='rebut',
                                              is_history=False)
         self.assertEqual(rebut_true, True)

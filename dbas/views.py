@@ -17,6 +17,7 @@ import dbas.helper.voting as VotingHelper
 import dbas.review.helper.flags as ReviewFlagHelper
 import dbas.review.helper.subpage as ReviewPagerHelper
 import dbas.review.helper.queues as ReviewQueueHelper
+import dbas.review.helper.main as ReviewMainHelper
 import dbas.review.helper.reputation as ReviewReputationHelper
 import dbas.review.helper.history as ReviewHistoryHelper
 import dbas.strings.matcher as FuzzyStringMatcher
@@ -32,10 +33,12 @@ from dbas.helper.query import QueryHelper
 from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, \
     preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, \
     try_to_register_new_user_via_ajax, request_password
+from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification,\
+    rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, rep_reason_new_statement
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
-    resolve_issue_uid_to_slug, get_slug_by_statement_uid
+    get_slug_by_statement_uid
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -48,6 +51,7 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
+from websocket.lib import send_request_for_recent_delete_review_to_socketio
 
 name = 'D-BAS'
 version = '0.7.0'
@@ -257,7 +261,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         is_author = is_user_author(self.request.authenticated_userid)
 
-        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request.authenticated_userid, self.request)
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
             'layout': self.base_layout(),
@@ -572,6 +576,8 @@ class Dbas(object):
             item_dict, discussion_dict, extras_dict = preperation_for_justify_argument(self.request, for_api, api_data,
                                                                                        mainpage, slug, statement_or_arg_id,
                                                                                        supportive, relation, ui_locales)
+            # add reputation
+            add_reputation_for(nickname, rep_reason_first_confrontation, transaction)
         else:
             logger('discussion_justify', 'def', '404')
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -630,7 +636,8 @@ class Dbas(object):
         if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
-        # set votings
+        # set votings and reputation
+        add_reputation_for(nickname, rep_reason_first_argument_click, transaction)
         VotingHelper.add_vote_for_argument(arg_id_user, nickname, transaction)
 
         ui_locales      = get_language(self.request, get_current_registry())
@@ -1118,7 +1125,8 @@ class Dbas(object):
                 error = _tn.get(_tn.userPasswordNotMatch)
             else:
                 logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
-                db_user.should_hold_the_login(keep_login)
+                db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+                db_settings.should_hold_the_login(keep_login)
                 headers = remember(self.request, nickname)
 
                 # update timestamp
@@ -1434,6 +1442,11 @@ class Dbas(object):
                 url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
                 return_dict['url'] = url
                 return_dict['statement_uids'].append(new_statement[0].uid)
+
+                # add reputation
+                if not add_reputation_for(nickname, rep_reason_first_position, transaction):
+                    add_reputation_for(nickname, rep_reason_new_statement, transaction)
+
         except KeyError as e:
             logger('set_new_start_statement', 'error', repr(e))
             return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
@@ -1481,6 +1494,10 @@ class Dbas(object):
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
+
+            # add reputation
+            if not add_reputation_for(nickname, rep_reason_first_justification, transaction):
+                add_reputation_for(nickname, rep_reason_new_statement, transaction)
 
             if url == -1:
                 return json.dumps(return_dict, True)
@@ -1535,6 +1552,10 @@ class Dbas(object):
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
+
+            # add reputation
+            if not add_reputation_for(nickname, rep_reason_first_new_argument, transaction):
+                add_reputation_for(nickname, rep_reason_new_statement, transaction)
 
             if url == -1:
                 return json.dumps(return_dict, True)
@@ -2056,10 +2077,17 @@ class Dbas(object):
         return_dict = dict()
 
         try:
-            # should_delete = True if str(self.request.params['should_delete']) == 'true' else False
-            # nickname = self.request.authenticated_userid
+            should_delete = True if str(self.request.params['should_delete']) == 'true' else False
+            review_uid = self.request.params['review_uid']
+            nickname = self.request.authenticated_userid
+            if not Validator.is_integer(review_uid):
+                return_dict['error'] = _t.get(_t.internalKeyError)
+            else:
+                ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
+                send_request_for_recent_delete_review_to_socketio(nickname)
 
-            return_dict['error'] = ''
+                return_dict['info'] = str(should_delete) + ' by ' + nickname
+                return_dict['error'] = ''
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
             return_dict['error'] = _t.get(_t.internalKeyError)
@@ -2085,14 +2113,51 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                return_dict['info'] = 'TODO: Remove ' + uid + ' in review queue ' + queue
+                success, error = ReviewHistoryHelper.revoke_decision(queue, uid, ui_locales, transaction)
+                return_dict['success'] = success
+                return_dict['error'] = error
             else:
                 return_dict['info'] = _t.get(_t.justLookDontTouch)
 
-            return_dict['success'] = ''
-            return_dict['error'] = ''
         except KeyError as e:
             logger('undo_review', 'error', repr(e))
             return_dict['error'] = _t.get(_t.internalKeyError)
+
+        return json.dumps(return_dict, True)
+
+    # ajax - for undoing reviews
+    @view_config(route_name='ajax_review_lock', renderer='json')
+    def review_lock(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('review_lock', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+
+        info = ''
+        error = ''
+        success = ''
+        is_locked = False
+
+        try:
+            review_uid = self.request.params['review_uid']
+            lock = True if self.request.params['lock'] == 'true' else False
+            # TODO LOCK
+            # on sucess: nothing
+            # on locked: send info
+            is_locked = False
+
+        except KeyError as e:
+            logger('review_lock', 'error', repr(e))
+            error = _t.get(_t.internalKeyError)
+
+        return_dict['info'] = info
+        return_dict['error'] = error
+        return_dict['success'] = success
+        return_dict['is_locked'] = is_locked
 
         return json.dumps(return_dict, True)
