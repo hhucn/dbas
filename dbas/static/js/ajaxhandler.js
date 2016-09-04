@@ -1050,6 +1050,23 @@ function AjaxGraphHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
+
+	/**
+	 *
+	 * @param uid
+     */
+	this.getJumpDataForGraph = function (uid) {
+		$.ajax({
+			url: 'api/get/argument/' + uid,
+			type: 'GET',
+			dataType: 'json',
+			async: true
+		}).done(function (data) {
+			new DiscussionGraph().callbackIfDoneForGetJumpDataForGraph(data);
+		}).fail(function () {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	};
 }
 
 function AjaxReviewHandler(){
