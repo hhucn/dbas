@@ -454,7 +454,7 @@ class Translator(object):
         self.rep_reason_first_confrontation = 'rep_reason_first_confrontation'
         self.rep_reason_first_position = 'rep_reason_first_position'
         self.rep_reason_first_justification = 'rep_reason_first_justification'
-        self.rep_reason_first_argument = 'rep_reason_first_argument'
+        self.rep_reason_first_new_argument = 'rep_reason_first_new_argument'
         self.rep_reason_new_statement = 'rep_reason_new_statement'
         self.rep_reason_success_flag = 'rep_reason_success_flag'
         self.rep_reason_success_edit = 'rep_reason_success_edit'

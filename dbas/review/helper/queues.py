@@ -43,7 +43,7 @@ def __get_delete_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    task_count = __get_review_count_for(ReviewDelete, nickname)
+    task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
 
     key = 'deletes'
     count, all_rights = get_reputation_of(nickname)
@@ -69,12 +69,12 @@ def __get_optimization_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    task_count = __get_review_count_for(ReviewOptimization, nickname)
+    task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
 
     key = 'optimizations'
     count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'Optimizations',
-                'id': 'flags',
+                'id': 'optimizations',
                 'url': mainpage + '/review/' + key,
                 'icon': 'fa fa-flag',
                 'task_count': task_count,
@@ -110,7 +110,7 @@ def __get_history_dict(mainpage, translator, nickname):
     return tmp_dict
 
 
-def __get_review_count_for(review_type, nickname):
+def __get_review_count_for(review_type, last_reviewer_type, nickname):
     """
 
     :param review_type:
@@ -119,8 +119,15 @@ def __get_review_count_for(review_type, nickname):
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
+        db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
+        already_reviewed = []
+        for last_review in db_last_reviews_of_user:
+            already_reviewed.append(last_review.review_uid)
         db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
-                                                                        review_type.detector_uid != db_user.uid)).all()
+                                                                        review_type.detector_uid != db_user.uid))
+        if len(already_reviewed) > 0:
+            db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
+        db_reviews = db_reviews.all()
     else:
         db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
     return len(db_reviews)
@@ -128,6 +135,7 @@ def __get_review_count_for(review_type, nickname):
 
 def __get_last_reviewer_of(reviewer_type, mainpage):
     """
+    Returns a list with the last reviewers of the given type. Multiple reviewers are filtered
 
     :param reviewer_type:
     :param mainpage:
@@ -135,16 +143,22 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
     """
     users_array = list()
     db_reviews = DBDiscussionSession.query(reviewer_type).order_by(reviewer_type.uid.desc()).all()
-    limit = 5 if len(db_reviews) > 5 else len(db_reviews)
-    for x in range(limit):
-        db_review = db_reviews[x]
+    limit = 5 if len(db_reviews) >= 5 else len(db_reviews)
+    index = 0
+    while index < limit:
+        db_review = db_reviews[index]
         db_user = DBDiscussionSession.query(User).filter_by(uid=db_review.reviewer_uid).first()
         if db_user:
             tmp_dict = dict()
             tmp_dict['img_src'] = _user_manager.get_profile_picture(db_user, 40)
             tmp_dict['url'] = mainpage + '/user/' + db_user.get_global_nickname()
             tmp_dict['name'] = db_user.get_global_nickname()
-            users_array.append(tmp_dict)
+            # skip it, if it is already in
+            if tmp_dict in users_array:
+                limit += 1 if len(db_reviews) > limit else 0
+            else:
+                users_array.append(tmp_dict)
         else:
             limit += 1 if len(db_reviews) > limit else 0
+        index += 1
     return users_array

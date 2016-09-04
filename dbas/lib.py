@@ -19,6 +19,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
+from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 
 
 fallback_lang = 'en'
@@ -119,14 +120,14 @@ def get_all_arguments_by_statement(uid):
     :return: [Arguments]
     """
     return_array = []
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).all()
+    db_arguments = get_not_disabled_arguments_as_query().filter_by(conclusion_uid=uid).all()
     if db_arguments:
         return_array = db_arguments
 
-    db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=uid).all()
+    db_premises = get_not_disabled_premises_as_query().filter_by(statement_uid=uid).all()
 
     for premise in db_premises:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
+        db_arguments = get_not_disabled_arguments_as_query().filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
         if db_arguments:
             return_array.append(db_arguments)
 
@@ -680,3 +681,50 @@ def is_user_author(nickname):
             return True
 
     return False
+
+
+def is_argument_disabled_due_to_disabled_statements(argument):
+    """
+    Returns true if any involved statement is disabled.
+
+    :param argument: Argument
+    :return: Boolean
+    """
+    if argument.conclusion_uid is None:
+        # check conclusion of given arguments conclusion
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+        conclusion = DBDiscussionSession(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+        if conclusion.is_disabled:
+            return True
+        # check premisegroup of given arguments conclusion
+        premises = __get_all_premises_of_argument(db_argument)
+        for premise in premises:
+            if premise.statements.is_disabled:
+                return True
+    else:
+        # check conclusion of given argument
+        conclusion = DBDiscussionSession(Statement).filter_by(uid=argument.conclusion_uid).first()
+        if conclusion.is_disabled:
+            return True
+
+    # check premisegroup of given argument
+    premises = __get_all_premises_of_argument(argument)
+    for premise in premises:
+        if premise.statements.is_disabled:
+            return True
+
+    return False
+
+
+def __get_all_premises_of_argument(argument):
+    """
+    Returns list with all premises of the argument.
+
+    :param argument: Argument
+    :return: list()
+    """
+    ret_list = []
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).join(Statement).all()
+    for premise in db_premises:
+        ret_list.append(premise)
+    return ret_list

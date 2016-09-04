@@ -112,13 +112,22 @@ class User(DiscussionBase):
     registered = Column(ArrowType, default=get_now())
     token = Column(Text, nullable=True)
     token_timestamp = Column(ArrowType, nullable=True)
-    keep_logged_in = Column(Boolean, nullable=False)  # TODO: move this into settings
 
     groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
-    def __init__(self, firstname, surname, nickname, email, password, gender, group, token='', token_timestamp=None, keep_logged_in=False):
+    def __init__(self, firstname, surname, nickname, email, password, gender, group, token='', token_timestamp=None):
         """
         Initializes a row in current user-table
+
+        :param firstname:
+        :param surname:
+        :param nickname:
+        :param email:
+        :param password:
+        :param gender:
+        :param group:
+        :param token:
+        :param token_timestamp:
         """
         self.firstname = firstname
         self.surname = surname
@@ -133,11 +142,14 @@ class User(DiscussionBase):
         self.registered = get_now()
         self.token = token
         self.token_timestamp = token_timestamp
-        self.keep_logged_in = keep_logged_in
 
     @classmethod
     def by_surname(cls):
-        """Return a query of users sorted by surname."""
+        """
+        Return a query of users sorted by surname.
+
+        :return:
+        """
         return DBDiscussionSession.query(User).order_by(User.surname)
 
     def validate_password(self, password):
@@ -159,9 +171,6 @@ class User(DiscussionBase):
     def set_public_nickname(self, nick):
         self.public_nickname = nick
 
-    def should_hold_the_login(self, keep_logged_in):
-        self.keep_logged_in = keep_logged_in
-
     def get_global_nickname(self):
         db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=self.uid).first()
         return self.nickname if db_settings.should_show_public_nickname else self.public_nickname
@@ -178,14 +187,22 @@ class Settings(DiscussionBase):
     should_show_public_nickname = Column(Boolean, nullable=False)
     last_topic_uid = Column(Integer, ForeignKey('issues.uid'), nullable=False)
     lang_uid = Column(Integer, ForeignKey('languages.uid'))
+    keep_logged_in = Column(Boolean, nullable=False)
 
     users = relationship('User', foreign_keys=[author_uid])
     issues = relationship('Issue', foreign_keys=[last_topic_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
 
-    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=1):
+    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=1, keep_logged_in=False):
         """
         Initializes a row in current settings-table
+
+        :param author_uid:
+        :param send_mails:
+        :param send_notifications:
+        :param should_show_public_nickname:
+        :param lang_uid:
+        :param keep_logged_in:
         """
         self.author_uid = author_uid
         self.should_send_mails = send_mails
@@ -193,6 +210,7 @@ class Settings(DiscussionBase):
         self.should_show_public_nickname = should_show_public_nickname
         self.last_topic_uid = 1
         self.lang_uid = lang_uid
+        self.keep_logged_in = keep_logged_in
 
     def set_send_mails(self, send_mails):
         self.should_send_mails = send_mails
@@ -209,6 +227,9 @@ class Settings(DiscussionBase):
     def set_lang_uid(self, lang_uid):
         self.lang_uid = lang_uid
 
+    def should_hold_the_login(self, keep_logged_in):
+        self.keep_logged_in = keep_logged_in
+
 
 class Statement(DiscussionBase):
     """
@@ -220,25 +241,34 @@ class Statement(DiscussionBase):
     textversion_uid = Column(Integer, ForeignKey('textversions.uid'))
     is_startpoint = Column(Boolean, nullable=False)
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
+    is_disabled = Column(Boolean, nullable=False)
 
     textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, textversion, is_position, issue):
+    def __init__(self, textversion, is_position, issue, is_disabled=False):
         """
 
         :param textversion:
         :param is_position:
         :param issue:
-        :return:
+        :param is_disabled:
         """
         self.textversion_uid = textversion
         self.is_startpoint = is_position
         self.issue_uid = issue
-        self.weight_uid = 0
+        self.is_disabled = is_disabled
 
     def set_textversion(self, uid):
         self.textversion_uid = uid
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class StatementReferences(DiscussionBase):
@@ -322,11 +352,12 @@ class TextVersion(DiscussionBase):
     content = Column(Text, nullable=False)
     author_uid = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
+    is_disabled = Column(Boolean, nullable=False)
 
     statements = relationship('Statement', foreign_keys=[statement_uid])
     users = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, content, author, statement_uid=None):
+    def __init__(self, content, author, statement_uid=None, is_disabled=False):
         """
         Initializes a row in current text versions-table
         :param content:
@@ -337,6 +368,7 @@ class TextVersion(DiscussionBase):
         self.author_uid = author
         self.timestamp = get_now()
         self.statement_uid = statement_uid
+        self.is_disabled = is_disabled
 
     def set_statement(self, statement_uid):
         """
@@ -345,6 +377,14 @@ class TextVersion(DiscussionBase):
         :return:
         """
         self.statement_uid = statement_uid
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class PremiseGroup(DiscussionBase):
@@ -380,20 +420,23 @@ class Premise(DiscussionBase):
     author_uid = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
+    is_disabled = Column(Boolean, nullable=False)
 
     premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
     users = relationship('User', foreign_keys=[author_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, premisesgroup, statement, is_negated, author, issue):
+    def __init__(self, premisesgroup, statement, is_negated, author, issue, is_disabled=False):
         """
         Initializes a row in current premises-table
+
         :param premisesgroup:
         :param statement:
         :param is_negated:
         :param author:
         :param issue:
+        :param is_disabled:
         :return:
         """
         self.premisesgroup_uid = premisesgroup
@@ -402,6 +445,15 @@ class Premise(DiscussionBase):
         self.author_uid = author
         self.timestamp = get_now()
         self.issue_uid = issue
+        self.is_disabled = is_disabled
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class Argument(DiscussionBase):
@@ -419,6 +471,7 @@ class Argument(DiscussionBase):
     author_uid = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
+    is_disabled = Column(Boolean, nullable=False)
 
     premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
     statements = relationship('Statement', foreign_keys=[conclusion_uid])
@@ -426,7 +479,7 @@ class Argument(DiscussionBase):
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, premisegroup, issupportive, author, issue, conclusion=None, argument=None):
+    def __init__(self, premisegroup, issupportive, author, issue, conclusion=None, argument=None, is_disabled=False):
         """
         Initializes a row in current argument-table
         :param premisegroup:
@@ -435,6 +488,7 @@ class Argument(DiscussionBase):
         :param issue:
         :param conclusion: Default 0, which will be None
         :param argument: Default 0, which will be None
+        :param: is_disabled
         :return:
         """
         self.premisesgroup_uid = premisegroup
@@ -444,9 +498,18 @@ class Argument(DiscussionBase):
         self.author_uid = author
         self.argument_uid = argument
         self.issue_uid = issue
+        self.is_disabled = is_disabled
 
     def conclusions_argument(self, argument):
         self.argument_uid = None if argument == 0 else argument
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class History(DiscussionBase):
@@ -654,6 +717,14 @@ class ReviewDelete(DiscussionBase):
         self.timestamp = get_now()
         self.is_executed = is_executed
 
+    def set_executed(self, is_executed):
+        """
+
+        :param is_executed:
+        :return:
+        """
+        self.is_executed = is_executed
+
 
 class ReviewEdit(DiscussionBase):
     """
@@ -798,7 +869,6 @@ class LastReviewerOptimization(DiscussionBase):
         :param reviewer:
         :param review:
         :param is_okay:
-        :param content:
         """
         self.reviewer_uid = reviewer
         self.review_uid = review

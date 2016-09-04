@@ -1,16 +1,28 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container colored-container center">
+		<div class="container colored-container">
             <h4 tal:condition="not:history.has_access">You have to earn more reputation for this queue!</h4>
 			<img tal:condition="not:history.has_access" class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
-            <h4 tal:condition="history.has_access"><i class="fa fa-history" aria-hidden="true"></i> <span i18n:translate="history_of_votes">The history of votes!</span></h4>
+
+            <div class="row" tal:condition="history.has_access">
+                <div class="col-md-12">
+                    <ul class="breadcrumb">
+                        <li><a href="${request.application_url}/review" i18n:attributes="review">Review</a></li>
+                        <li class="active" i18n:attributes="history">History</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4 tal:condition="history.has_access" class="center">
+                <i class="fa fa-history" aria-hidden="true"></i> <span i18n:translate="history_of_votes">The history of votes!</span>
+            </h4>
 		</div>
 
 
 		<div class="container colored-container" tal:repeat="past history.past_decision">
             <div class="row">
-                <div class="col-md-offset-2 col-md-8">
+                <div class="col-md-offset-1 col-md-10">
                     <h5><i tal:attributes="class past.icon"></i> ${past.title}</h5>
                     <div tal:switch="len(past.content)>0">
                         <p tal:case="False" class="lead" i18n:translate="no_decision_for_this_queue">No decisions for this queue.</p>
@@ -18,6 +30,8 @@
                             <table class="table table-condensed" border="0">
                                 <thead>
                                     <tr>
+                                        <td i18n:translate="argument">Argument</td>
+                                        <td tal:condition="past.has_reason" i18n:translate="reason">Reason</td>
                                         <td i18n:translate="votes">Votes</td>
                                         <td i18n:translate="voters_pro" class="center">Voters Pro</td>
                                         <td i18n:translate="voters_con" class="center">Voters Con</td>
@@ -27,7 +41,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr tal:repeat="rep past.content">
+                                    <tr tal:repeat="rep past.content" tal:attributes="id rep.row_id">
+                                        <td tal:attributes="title rep.argument_fulltext; id rep.entry_id">${structure:rep.argument_shorttext}</td>
+                                        <td tal:condition="past.has_reason">${rep.reason}</td>
                                         <td class="center">
                                             <a href="#">
                                                 <span class="text-success">${len(rep.votes_pro)}</span>:

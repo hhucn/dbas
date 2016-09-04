@@ -7,9 +7,10 @@ Provides helping function for the review page.
 import random
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument, ArgumentSeenBy, Issue
+from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
+    ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization
 from dbas.helper.relation import RelationHelper
-from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print
+from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from sqlalchemy import and_
@@ -65,8 +66,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
                         'issue': issue}
 
     ret_dict['reviewed_argument'] = subpage_dict
-
-    if text is None and reason is None and stats is None:
+    if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
         no_arguments_to_review = True
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
@@ -88,6 +88,40 @@ def __get_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set)
             'button_set': button_set}
 
 
+def __get_all_allowed_reviews_for_user(request, session_keword, db_user, review_type, last_reviewer_type):
+    """
+    Returns all reviews from given type, whereby already seen and reviewed reviews are restricted.
+
+    :param request: current request
+    :param session_keword: keyword of 'already_seen' element in request.session
+    :param db_user: current user
+    :param review_type: data table of reviews
+    :param last_reviewer_type: data table of last reviewers
+    :return: all revies, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the user reviews for the first time in this session
+    """
+    # only get arguments, which the user has not seen yet
+    already_seen, first_time = (request.session[session_keword], False) if session_keword in request.session else (list(), True)
+
+    # and not reviewed
+    db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
+    already_reviewed = []
+    for last_review in db_last_reviews_of_user:
+        already_reviewed.append(last_review.review_uid)
+
+    # get all reviews
+    db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
+                                                                    review_type.detector_uid != db_user.uid))
+    # filter the ones, we have already seen
+    if len(already_seen) > 0:
+        db_reviews = db_reviews.filter(~review_type.uid.in_(already_seen))
+
+    # filter the ones, we have already reviewed
+    if len(already_reviewed) > 0:
+        db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
+
+    return db_reviews.all(), already_seen, already_reviewed, first_time
+
+
 def __get_subpage_dict_for_deletes(request, db_user, translator):
     """
 
@@ -96,25 +130,16 @@ def __get_subpage_dict_for_deletes(request, db_user, translator):
     :param translator:
     :return:
     """
-    # only get arguments, which the user has not seen yet
-    already_seen = request.session['already_seen_deletes'] if 'already_seen_deletes' in request.session else list()
-    logger('x', 'x1', str(already_seen))
-    logger('x', 'x1', str(already_seen))
-    db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
-                                                                     ReviewDelete.detector_uid != db_user.uid,
-                                                                     ReviewDelete.uid not in already_seen)).all()
-    # maybe there are not argument or the user has seen everything, try again
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_deletes', db_user, ReviewDelete, LastReviewerDelete)
+
     extra_info = ''
-    p = ''
-    for r in db_reviews:
-        p += ' ' + str(r.uid)
-    logger('x', 'x', (str(len(db_reviews)) if db_reviews else '0') + '    ' + p)
+    # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
         already_seen = list()
-        logger('x', 'x', 'cleared')
-        extra_info = 'already_seen'
-        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
-                                                                               ReviewOptimization.detector_uid != db_user.uid)).all()
+        extra_info = 'already_seen' if not first_time else ''
+        db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
+                                                                         ReviewDelete.detector_uid != db_user.uid,
+                                                                         ~ReviewDelete.uid.in_(already_reviewed))).all()
     if not db_reviews:
         return {'stats': None,
                 'text': None,
@@ -141,8 +166,6 @@ def __get_subpage_dict_for_deletes(request, db_user, translator):
         reason = translator.get(translator.argumentFlaggedBecauseHarmful)
 
     already_seen.append(rnd_review.uid)
-    logger('x', 'x2', str(already_seen) + '  ' + str(rnd_review.uid))
-    logger('x', 'x2', str(already_seen) + '  ' + str(rnd_review.uid))
     request.session['already_seen_deletes'] = already_seen
 
     return {'stats': stats,
@@ -160,18 +183,16 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
     :param translator:
     :return:
     """
-    # only get arguments, which the user has not seen yet
-    already_seen = request.session['already_seen_optimization'] if 'already_seen_optimization' in request.session else list()
-    db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
-                                                                           ReviewOptimization.detector_uid != db_user.uid,
-                                                                           ReviewOptimization.uid not in already_seen)).all()
-    # maybe there are not argument or the user has seen everything, try again
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_deletes', db_user, ReviewOptimization, LastReviewerOptimization)
+
     extra_info = ''
+    # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
         already_seen = list()
-        extra_info = 'already_seen'
+        extra_info = 'already_seen' if not first_time else ''
         db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.is_executed == False,
-                                                                               ReviewOptimization.detector_uid != db_user.uid)).all()
+                                                                               ReviewOptimization.detector_uid != db_user.uid,
+                                                                               ~ReviewOptimization.uid.in_(already_reviewed))).all()
 
     if not db_reviews:
         return {'stats': None,
@@ -197,7 +218,8 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
             'text': text,
             'reason': reason,
             'issue': issue,
-            'extra_info': extra_info}
+            'extra_info': extra_info,
+            'parts': __get_text_parts_of_argument(db_argument)}
 
 
 def __get_stats_for_argument(argument_uid):
@@ -222,3 +244,34 @@ def __get_stats_for_argument(argument_uid):
     attacks = len_undermines + len_undercuts + len_rebuts
 
     return {'viewed': viewed, 'attacks': attacks, 'supports': len_supports}
+
+
+def __get_text_parts_of_argument(argument):
+    """
+
+    :param argument:
+    :return:
+    """
+    ret_list = list()
+    premisegroup, trash = get_text_for_premisesgroup_uid(argument.premisesgroup_uid)
+    ret_list.append({'type': 'premisegroup',
+                     'text': premisegroup,
+                     'uid': argument.premisesgroup_uid})
+
+    if argument.argument_uid is None:
+        conclusion = get_text_for_statement_uid(argument.conclusion_uid)
+        ret_list.append({'type': 'statement',
+                         'text': conclusion,
+                         'uid': argument.conclusion_uid})
+    else:
+        db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+        premisegroup, trash = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
+        ret_list.append({'type': 'premisegroup',
+                         'text': premisegroup,
+                         'uid': db_conclusions_argument.premisesgroup_uid})
+        conclusion = get_text_for_statement_uid(db_conclusions_argument.conclusion_uid)
+        ret_list.append({'type': 'statement',
+                         'text': conclusion,
+                         'uid': argument.conclusion_uid})
+
+    return ret_list

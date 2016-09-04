@@ -6,10 +6,50 @@ Provides functions
 
 import requests
 
+from dbas.lib import get_public_nickname_based_on_settings
 from dbas.logger import logger
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
+from dbas.user_management import get_public_profile_picture
 
 
-def send_request_for_popup_to_socketio(nickname, type, message='', url=None, increase_counter=False):
+def send_request_for_info_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
+    """
+
+    :param nickname:
+    :param message:
+    :param url:
+    :param increase_counter:
+    :return:
+    """
+    __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter)
+
+
+def send_request_for_success_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
+    """
+
+    :param nickname:
+    :param message:
+    :param url:
+    :param increase_counter:
+    :return:
+    """
+    __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter)
+
+
+def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
+    """
+
+    :param nickname:
+    :param message:
+    :param url:
+    :param increase_counter:
+    :return:
+    """
+    __send_request_for_popup_to_socketio(nickname, 'warning', message, url, increase_counter)
+
+
+def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, increase_counter=False):
     """
     Sends an request to the socket io server
 
@@ -41,9 +81,32 @@ def send_request_for_popup_to_socketio(nickname, type, message='', url=None, inc
     return resp.status_code
 
 
-def send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue):
+def send_request_for_recent_delete_review_to_socketio(nickname):
     """
-    NOT IMPLEMENTED IN SOCKET IO
+
+    :param nickname:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    reviewer_name = get_public_nickname_based_on_settings(db_user)
+    reviewer_image_url = get_public_profile_picture(db_user)
+    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'deletes')
+
+
+def send_request_for_recent_optimization_review_to_socketio(nickname):
+    """
+
+    :param nickname:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    reviewer_name = get_public_nickname_based_on_settings(nickname)
+    reviewer_image_url = get_public_profile_picture(db_user)
+    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'optimizations')
+
+
+def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue):
+    """
 
     :param reviewer_name:
     :param reviewer_image_url:

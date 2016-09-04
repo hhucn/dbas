@@ -34,26 +34,21 @@ class LibTests(unittest.TestCase):
         d = date.fromordinal(736132)
 
         # Verify, that if 'lang' is 'de' format of date is 'month. year'
-        self.assertEqual(lib.python_datetime_pretty_print(ts=d,
-                                                          lang='de'), 'Jun. 2016')
+        self.assertEqual(lib.python_datetime_pretty_print(ts=d, lang='de'), 'Jun. 2016')
 
         # Verify, that if 'lang' is not 'de' format of date is 'day. month.'
-        self.assertEqual(lib.python_datetime_pretty_print(ts=d,
-                                                          lang='en'), '17. Jun.')
+        self.assertEqual(lib.python_datetime_pretty_print(ts=d, lang='en'), '17. Jun.')
 
-        self.assertEqual(lib.python_datetime_pretty_print(ts='2016-01-01',
-                                                          lang=''), '01. Jan.')
+        self.assertEqual(lib.python_datetime_pretty_print(ts='2016-01-01', lang=''), '01. Jan.')
 
     def test_get_text_for_premisesgroup_uid(self):
         # premise, which is in db_premises and premise_group contains only one premise
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1), ('Cats are very independent', ['4']))
-
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=1), ('Cats are very independent', ['4']))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=2), ('Cats are very independent', ['5']))
 
         # premise_group with more than one premises
-        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=11), ('Cats are fluffy und Cats are small', ['14', '15']))
+        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=13), ('Cats are fluffy und Cats are small', ['14', '15']))
 
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=11), ('Cats are fluffy and Cats are small', ['14', '15']))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=12), ('Cats are fluffy and Cats are small', ['15', '16']))
 
         # premise, which is not in db_premises
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), ('', []))
@@ -72,16 +67,16 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_text_for_statement_uid(uid="str"), None)
 
         # id for statement, which ends with '.'
-        self.assertEqual(lib.get_text_for_statement_uid(uid=1), 'We should get a cat')
+        self.assertEqual(lib.get_text_for_statement_uid(uid=2), 'We should get a cat')
 
         # id for statement, which ends with '!'
-        self.assertEqual(lib.get_text_for_statement_uid(uid=30), 'It is important, that pets are small and fluffy')
+        self.assertEqual(lib.get_text_for_statement_uid(uid=31), 'It is important, that pets are small and fluffy')
 
         # negative uid
         self.assertEqual(lib.get_text_for_statement_uid(uid=-30), None)
 
     def test_get_text_for_conclusion(self):
-        argument1 = Argument(premisegroup=1, issupportive=True, author=1, conclusion=1, issue=1)
+        argument1 = Argument(premisegroup=1, issupportive=True, author=1, conclusion=2, issue=1)
         # 'argument' is an argument
         self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
                                                      start_with_intro=False,
@@ -118,10 +113,10 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
 
     def test_get_all_arguments_by_statement(self):
-        argument_list = lib.get_all_arguments_by_statement(1)
+        argument_list = lib.get_all_arguments_by_statement(2)
         self.assertEqual(len(argument_list), 4)
         for argument in argument_list:
-            self.assertTrue(argument.uid in [1, 2, 10, 11])
+            self.assertTrue(argument.uid in [2, 3, 11, 12])
 
         self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 4)
         self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)
