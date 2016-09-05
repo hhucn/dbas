@@ -188,13 +188,13 @@ def lock(nickname, review_uid, translator, transaction):
 
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
     if db_locks:
-        info = 'you have already locked something'
+        info = translator.get(translator.dataAlreadyLockedByYou)
         is_locked = True
         return success, info, error, is_locked
 
     # is already locked?
     if is_review_locked(review_uid):
-        info = 'is already locked something'
+        info = translator.get(translator.dataAlreadyLockedByOthers)
         is_locked = True
         return success, info, error, is_locked
 
