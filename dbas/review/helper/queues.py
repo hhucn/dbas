@@ -7,7 +7,7 @@ Provides helping function for the managing reputation.
 import dbas.user_management as _user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
-    LastReviewerOptimization
+    LastReviewerOptimization, OptimizationReviewLocks, get_now
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
 from sqlalchemy import and_
@@ -162,3 +162,71 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
             limit += 1 if len(db_reviews) > limit else 0
         index += 1
     return users_array
+
+
+def lock(nickname, review_uid, translator, transaction):
+    """
+
+    :param nickname:
+    :param review_uid:
+    :param translator:
+    :param transaction:
+    :return:
+    """
+    success = ''
+    info = ''
+    error = ''
+    is_locked = False
+
+    # has user already locked an item?
+    db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_review = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.uid == review_uid,
+                                                                          ReviewOptimization.is_executed == False)).first()
+    if not db_user or not db_review:
+        error = translator.get(translator.internalKeyError)
+        return success, info, error, is_locked
+
+    db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
+    if db_locks:
+        info = 'you have already locked something'
+        is_locked = True
+        return success, info, error, is_locked
+
+    # is already locked?
+    if is_review_locked(review_uid):
+        info = 'is already locked something'
+        is_locked = True
+        return success, info, error, is_locked
+
+    db_new_lock = OptimizationReviewLocks(db_user.uid, review_uid)
+    DBDiscussionSession.add(db_new_lock)
+    DBDiscussionSession.flush()
+    transaction.commit()
+    is_locked = True
+
+    return success, info, error, is_locked
+
+
+def unlock(review_uid, transaction):
+    """
+
+    :param review_uid:
+    :param transaction:
+    :return:
+    """
+    DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).delete()
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return True
+
+
+def is_review_locked(review_uid):
+    """
+
+    :param review_uid:
+    :return:
+    """
+    db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).first()
+    if not db_lock:
+        return False
+    return (get_now() - db_lock.locked_since).seconds < 3*60

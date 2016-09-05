@@ -2146,10 +2146,12 @@ class Dbas(object):
         try:
             review_uid = self.request.params['review_uid']
             lock = True if self.request.params['lock'] == 'true' else False
-            # TODO LOCK
-            # on sucess: nothing
-            # on locked: send info
             is_locked = True
+            if lock:
+                success, info, error, is_locked = ReviewQueueHelper.lock(self.request.authenticated_userid, review_uid, )
+            else:
+                ReviewQueueHelper.unlock(review_uid, transaction)
+                is_locked = False
 
         except KeyError as e:
             logger('review_lock', 'error', repr(e))
