@@ -4,30 +4,24 @@
  */
 
 function Review() {
+	var sec = parseInt($('#request-lock').data('lock_sec'));
 	var countdown;
 	var _this = this;
-	var countdown_min = 0;
-	var countdown_sec = 10;
+	var countdown_min = parseInt(sec/60);
+	var countdown_sec = sec - countdown_min * 60;
 	
 	/**
 	 *
 	 */
 	this.doOptimizationAck = function(review_uid) {
 		var container = $('#optimization-container');
-		var button = $('#opti_ack');
+		var opti_ack = $('#opti_ack');
 		
 		$('#close-optimization-container').click(function(){
 			container.hide();
-			button.removeClass('disabled');
+			opti_ack.removeClass('disabled');
 			_this.stopCountdown();
 			new AjaxReviewHandler().un_lockOptimizationReview(review_uid, false, _this);
-		});
-		
-		button.click(function(){
-			if (!$(this).hasClass('disabled')){
-			_this.stopCountdown();
-				
-			}
 		});
 		//_this.startCountdown();
 		new AjaxReviewHandler().un_lockOptimizationReview(review_uid, true, _this);
@@ -57,8 +51,8 @@ function Review() {
 		mm.text(countdown_min).removeClass('text-danger');
 		ss.text(countdown_sec).removeClass('text-danger');
 		point.removeClass('text-danger');
-		$('#request_lock_text').show();
-		$('#request_not_lock_text').show();
+		$('#request-lock-text').show();
+		$('#request-not-lock-text').show();
 		
 		countdown = new Countdown({
             seconds: countdown_min * 60 + countdown_sec,  // number of seconds to count down
@@ -76,9 +70,9 @@ function Review() {
             onCounterEnd: function(){
             	setGlobalErrorHandler(_t(ohsnap), _t(countdownEnded));
 	            $('#send_edit').addClass('disabled');
-				$('#request_lock_text').hide();
-				$('#request_not_lock_text').show();
-				var button = $('#request_lock');
+				$('#request-lock-text').hide();
+				$('#request-not-lock-text').show();
+				var button = $('#request-lock');
 				button.show();
 				new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
             } // final action
@@ -92,7 +86,7 @@ function Review() {
 	this.stopCountdown = function(){
 		if (countdown)
 			countdown.stop();
-		var button = $('#request_lock');
+		var button = $('#request-lock');
 		button.hide();
 		new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
 	};
@@ -102,7 +96,7 @@ function Review() {
 	 * @param only_unlock
 	 */
 	this.reloadPageAndUnlockData = function (only_unlock){
-		new AjaxReviewHandler().un_lockOptimizationReview($('#review-id').text(), false, undefined);
+		new AjaxReviewHandler().un_lockOptimizationReview($('#review-id').data('id'), false, undefined);
 		if (! only_unlock)
 			location.reload();
 	};
