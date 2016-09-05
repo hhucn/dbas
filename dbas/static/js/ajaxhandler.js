@@ -1122,17 +1122,19 @@ function AjaxReviewHandler(){
 	 *
 	 * @param should_optimized
 	 * @param review_uid
-	 * @param new_data
+	 * @param new_data (Important: must be JSON.stringify(...))
 	 */
 	this.reviewOptimizationArgument = function(should_optimized, review_uid, new_data){
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		console.log(new_data);
+		console.log(JSON.stringify(new_data));
 		$.ajax({
 			url: 'ajax_review_optimization_argument',
 			type: 'POST',
 			data:{
 				'should_optimized': should_optimized,
 				'review_uid': review_uid,
-				'new_data': new_data },
+				'new_data': JSON.stringify(new_data) },
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function reviewDeleteArgumentDone(data) {
 			new ReviewCallbacks().forReviewArgument(data);

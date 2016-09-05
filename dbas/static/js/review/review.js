@@ -40,23 +40,30 @@ function Review() {
 		});
 	};
 	
+	/**
+	 *
+	 */
 	this.sendOptimization = function(){
 		var container = $('#optimization-container');
-		$.each(container.find('table').find('input'), function(){
-			var edit_array = [];
+		var edit_array = [];
+		// getting all edited values
+		$.each($('#argument-part-table').find('input'), function(){
 			if ($(this).val().length > 0 && $(this).val() != $(this).attr('placeholder')) {
 				edit_array.push({
-					'uid': $(this).data('id'),
-					'type': $(this).data('type'),
-					'val': $(this).val()
+					uid: $(this).data('id'),
+					type: $(this).data('type'),
+					argument: $(this).data('argument'),
+					val: $(this).val()
 				});
 			}
-			if (edit_array.length > 0){
-				//new AjaxReviewHandler().reviewOptimizationArgument(true, $('#send_edit').data('id'), JSON.stringify(edit_array));
-			} else {
-				setGlobalInfoHandler('Ohh!', _t(noEditsInOptimization));
-			}
 		});
+		
+		if (edit_array.length > 0){
+			var id = $('#send_edit').data('id');
+			new AjaxReviewHandler().reviewOptimizationArgument(true, id, edit_array);
+		} else {
+			setGlobalInfoHandler('Ohh!', _t(noEditsInOptimization));
+		}
 	};
 	
 	/**
