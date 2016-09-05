@@ -13,6 +13,9 @@ from dbas.lib import get_profile_picture
 from sqlalchemy import and_
 from dbas.logger import logger
 
+max_lock_time_in_sec = 180
+
+
 def get_review_queues_array(mainpage, translator, nickname):
     """
     Prepares dictionary for the edit section.
@@ -187,9 +190,7 @@ def lock(nickname, review_uid, translator, transaction):
 
     # check if author locked an item and maybe tidy up old locks
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
-    logger('X', 'X', 'user: ' + ('t' if db_locks else 'f'))
     if db_locks:
-        logger('X', 'X', 'user locked : ' + str(is_review_locked(db_locks.review_optimization_uid)))
         if (is_review_locked(db_locks.review_optimization_uid)):
             info = translator.get(translator.dataAlreadyLockedByYou)
             is_locked = True
@@ -211,7 +212,7 @@ def lock(nickname, review_uid, translator, transaction):
     return success, info, error, is_locked
 
 
-def unlock(review_uid, transaction):
+def unlock_optimization_review(review_uid, transaction):
     """
 
     :param review_uid:
@@ -233,4 +234,13 @@ def is_review_locked(review_uid):
     db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).first()
     if not db_lock:
         return False
-    return (get_now() - db_lock.locked_since).seconds < 3*60
+    return (get_now() - db_lock.locked_since).seconds < max_lock_time_in_sec
+
+
+def tidy_up_optimization_locks():
+    """
+
+    :return:
+    """
+    DBDiscussionSession.query(OptimizationReviewLocks).filter_by((get_now() - OptimizationReviewLocks.locked_since).seconds < max_lock_time_in_sec).delete()
+    # TODO USE tidy_up_optimization_locks
