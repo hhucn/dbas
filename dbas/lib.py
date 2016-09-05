@@ -459,6 +459,21 @@ def get_text_for_statement_uid(uid, colored_position=False):
         return None
 
 
+def get_text_for_premise(uid, colored_position=False):
+    """
+    Returns text of premise with given uid
+
+    :param uid: Statement.uid
+    :param colored_position: Boolean
+    :return: String
+    """
+    db_premise = DBDiscussionSession.query(Premise).filter_by(uid).first()
+    if db_premise:
+        return get_text_for_statement_uid(db_premise.statement_uid, colored_position)
+    else:
+        return None
+
+
 def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=False):
     """
     Check the arguments conclusion whether it is an statement or an argument and returns the text

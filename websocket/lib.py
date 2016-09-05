@@ -99,7 +99,7 @@ def send_request_for_recent_optimization_review_to_socketio(nickname):
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    reviewer_name = get_public_nickname_based_on_settings(nickname)
+    reviewer_name = get_public_nickname_based_on_settings(db_user)
     reviewer_image_url = get_profile_picture(db_user)
     return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'optimizations')
 

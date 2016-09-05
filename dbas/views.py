@@ -2115,14 +2115,16 @@ class Dbas(object):
         try:
             should_optimized = True if str(self.request.params['should_optimized']) == 'true' else False
             review_uid = self.request.params['review_uid']
-            new_data = self.request.params['new_data'] if 'new_data' in self.request.params else None
+            new_data = json.loads(self.request.params['new_data']) if 'new_data' in self.request.params else None
             nickname = self.request.authenticated_userid
 
             if not Validator.is_integer(review_uid):
                 error = _t.get(_t.internalKeyError)
             else:
                 error = ReviewMainHelper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t, transaction)
-                send_request_for_recent_optimization_review_to_socketio(nickname)
+
+                if len(error) == 0:
+                    send_request_for_recent_optimization_review_to_socketio(nickname)
 
         except KeyError as e:
             logger('review_optimization_argument', 'error', repr(e))
