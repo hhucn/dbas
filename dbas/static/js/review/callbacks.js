@@ -44,4 +44,19 @@ function ReviewCallbacks() {
 			}
 		}
 	};
+	
+	/**
+	 *
+	 * @param jsonData
+	 */
+	this.forReviewUnlock = function(jsonData){
+		var parsedData = $.parseJSON(jsonData);
+		if (parsedData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		} else if (parsedData.info.length != 0) {
+			setGlobalInfoHandler('Mhh!', parsedData.info);
+		} else {
+			//setGlobalSuccessHandler('Hurey', parsedData.success);
+		}
+	};
 }
