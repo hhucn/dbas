@@ -75,7 +75,6 @@ function Review() {
             }, // callback for each second
             onCounterEnd: function(){
             	setGlobalErrorHandler(_t(ohsnap), _t(countdownEnded));
-	            $('#opti_nack').addClass('disabled');
 	            $('#send-edit').addClass('disabled');
 				$('#request_lock_text').hide();
 				$('#request_unlock_text').show();
