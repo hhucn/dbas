@@ -151,10 +151,10 @@
             <a id="send-edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send">Send</a>
         </div>
 
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/countdown.js')}"></script>
         <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}"></script>
         <script type="text/javascript" src="${request.static_url('dbas:static/js/review/review.js')}"></script>
         <script type="text/javascript" src="${request.static_url('dbas:static/js/review/callbacks.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/countdown.js')}"></script>
 
 	</tal:block>
 </tal:block>

@@ -252,6 +252,8 @@ class EnglischDict:
         en_lang[_self.doesJustify] = 'does justify that'
         en_lang[_self.doesNotJustify] = 'does not justify that'
         en_lang[_self.doYouWantToEnterYourStatements] = 'Do you want to enter your statement(s)?'
+        en_lang[_self.dataAlreadyLockedByYou] = 'You are already editing data. Please finish your work first!'
+        en_lang[_self.dataAlreadyLockedByOthers] = 'Sorry, this data edited by other participants.'
         en_lang[_self.earlierYouArguedThat] = 'Earlier you argued that'
         en_lang[_self.editIndex] = 'Edit Index - Last 30 Tage'
         en_lang[_self.editIndexInfo] = 'Count of Edits'
