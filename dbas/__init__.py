@@ -127,6 +127,7 @@ def main(global_config, **settings):
     config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
     config.add_route('ajax_flag_argument', '{url:.*}ajax_flag_argument')
     config.add_route('ajax_review_delete_argument', '{url:.*}ajax_review_delete_argument')
+    config.add_route('ajax_review_optimization_argument', '{url:.*}ajax_review_optimization_argument')
     config.add_route('ajax_undo_review', '{url:.*}ajax_undo_review')
     config.add_route('ajax_review_lock', '{url:.*}ajax_review_lock')
     config.add_route('ajax_review_unlock', '{url:.*}ajax_review_unlock')
