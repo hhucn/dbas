@@ -12,7 +12,7 @@ import dbas.user_management as UserHandler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.helper.query import QueryHelper
-from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict
+from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -113,8 +113,8 @@ class DictionaryHelper(object):
         return_dict['nickname']                      = nickname
         return_dict['add_premise_container_style']   = 'display: none'
         return_dict['add_statement_container_style'] = 'display: none'
-        return_dict['users_avatar']                  = _uh.get_profile_picture(db_user)
-        return_dict['users_avatar_small']            = _uh.get_profile_picture(db_user, 25)
+        return_dict['users_avatar']                  = get_profile_picture(db_user)
+        return_dict['users_avatar_small']            = get_profile_picture(db_user, 25)
         return_dict['is_user_male']                  = db_user.gender == 'm' if db_user else False
         return_dict['is_user_female']                = db_user.gender == 'f' if db_user else False
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']

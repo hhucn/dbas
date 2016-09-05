@@ -8,7 +8,7 @@ import dbas.helper.email as EmailHelper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument
-from dbas.lib import sql_timestamp_pretty_print, escape_string
+from dbas.lib import sql_timestamp_pretty_print, escape_string, get_profile_picture
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 
@@ -312,12 +312,12 @@ def get_box_for(user, lang, mainpage, is_inbox):
             db_from_user                   = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first()
             tmp_dict['show_from_author']   = db_from_user.get_global_nickname() != 'admin'
             tmp_dict['from_author']        = db_from_user.get_global_nickname()
-            tmp_dict['from_author_avatar'] = UserHandler.get_profile_picture(db_from_user, size=30)
+            tmp_dict['from_author_avatar'] = get_profile_picture(db_from_user, size=30)
             tmp_dict['from_author_url']    = mainpage + '/user/' + db_from_user.public_nickname
         else:
             db_to_user                   = DBDiscussionSession.query(User).filter_by(uid=message.to_author_uid).first()
             tmp_dict['to_author']        = db_to_user.get_global_nickname()
-            tmp_dict['to_author_avatar'] = UserHandler.get_profile_picture(db_to_user, size=30)
+            tmp_dict['to_author_avatar'] = get_profile_picture(db_to_user, size=30)
             tmp_dict['to_author_url']    = mainpage + '/user/' + db_to_user.get_global_nickname()
 
         tmp_dict['id']            = str(message.uid)

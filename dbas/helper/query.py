@@ -7,15 +7,16 @@ Provides helping function for database querys.
 import random
 import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
-import dbas.user_management as UserHandler
 
 from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, VoteStatement, Issue
+from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, \
+    VoteStatement, Issue
 from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
-from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_all_attacking_arg_uids_from_history, get_lang_for_argument
+from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, \
+    get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -56,12 +57,11 @@ class QueryHelper:
         supporters = []
         gravatars = dict()
         public_page = dict()
-        _um = UserHandler
         for vote in db_votes:
             db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
             name = db_user.get_global_nickname()
             supporters.append(name)
-            gravatars[name] = _um.get_profile_picture(db_user)
+            gravatars[name] = get_profile_picture(db_user)
             public_page[name] = mainpage + '/user/' + name
 
         return_dict['supporter'] = supporters
@@ -392,7 +392,7 @@ class QueryHelper:
             corr_dict['uid'] = str(versions.uid)
             corr_dict['author'] = str(db_author.get_global_nickname())
             corr_dict['author_url'] = mainpage + '/user/' + str(db_author.get_global_nickname())
-            corr_dict['author_gravatar'] = UserHandler.get_profile_picture(db_author, 20)
+            corr_dict['author_gravatar'] = get_profile_picture(db_author, 20)
             corr_dict['date'] = sql_timestamp_pretty_print(versions.timestamp, lang)
             corr_dict['text'] = str(versions.content)
             content_dict[str(index)] = corr_dict
