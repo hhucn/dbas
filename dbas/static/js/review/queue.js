@@ -12,7 +12,7 @@ $(document).ready(function () {
 	var delete_nack = $('#del_nack');
 	var delete_skip = $('#del_skip');
 	var request_lock = $('#request-lock');
-	var send_edit  =$('#send_edit');
+	var send_edit  = $('#send_edit');
 	
 	// text
 	var more_about_reason = $('#more_about_reason');
@@ -30,7 +30,7 @@ $(document).ready(function () {
 	
 	optimization_nack.click(function(){
 		var review_uid = $(this).data('id');
-		new AjaxReviewHandler().reviewOptimizationArgument(false, review_uid);
+		new AjaxReviewHandler().reviewOptimizationArgument(false, review_uid, undefined);
 	});
 	
 	optimization_skip.click(function(){
@@ -38,7 +38,7 @@ $(document).ready(function () {
 	});
 	
 	send_edit.click(function(){
-		alert('todo');
+		new Review().sendOptimization()
 	});
 	
 	/**

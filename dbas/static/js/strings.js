@@ -201,6 +201,7 @@ var note 											= 'note';
 var neww 											= 'new';
 var number 											= 'number';
 var notificationWasSend                             = 'notificationWasSend';
+var noEditsInOptimization                           = 'noEditsInOptimization';
 var opinionBarometer                                = 'opinionBarometer';
 var options                                         = 'options';
 var ohsnap                                          = 'ohsnap';
@@ -391,6 +392,7 @@ var dbas_en = {
 	'noDecisionstaken': 'No decision has yet been taken.',
 	'number': 'No',
 	'note': 'Note',
+	'noEditsInOptimization': 'You have edited nothing!',
 	'opinionBarometer': 'Opinion Barometer',
 	'options': 'Options',
 	'ohsnap': 'Oh snap!',
@@ -570,6 +572,7 @@ var dbas_de = {
 	'noDecisionstaken': 'Es wurden noch keine Entscheidungen getroffen',
 	'number': 'Nr',
 	'note': 'Hinweis',
+	'noEditsInOptimization': 'Sie haben keine Änderungen vorgenommen!',
 	'opinionBarometer': 'Meinungsbarometer',
 	'options': 'Optionen',
 	'ohsnap': 'Mist!',

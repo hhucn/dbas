@@ -64,19 +64,20 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     return None
 
 
-def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, transaction):
+def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, translator, transaction):
     """
 
     :param nickname:
     :param should_optimized:
     :param review_uid:
+    :param data:
     :param transaction:
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(uid=review_uid).first()
     if db_review.is_executed or not db_user:
-        return None
+        return translator.get(translator.internalKeyError)
 
     if not should_optimized:
         # add new vote
@@ -92,12 +93,17 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
 
         if len(db_keep_version) > max_votes:
             add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
-
+        error = ''
     else:
         # add new edit
-        return None
+        from dbas.logger import logger
+        logger('X', 'X', str(data))
+        for d in data:
+            logger('X', 'X', str(d))
+            logger(str(d['uid']), str(d['type']), str(d['val']))
+        error = 'some error'
 
-    return None
+    return error
 
 
 def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
