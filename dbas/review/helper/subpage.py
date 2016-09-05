@@ -10,7 +10,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization
 from dbas.helper.relation import RelationHelper
-from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_premisesgroup_uid
+from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
+    get_text_for_premisesgroup_uid, get_text_for_premise
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from sqlalchemy import and_
@@ -100,6 +101,7 @@ def __get_all_allowed_reviews_for_user(request, session_keword, db_user, review_
     :return: all revies, list of already seen reviews as uids, list of already reviewed reviews as uids, boolean if the user reviews for the first time in this session
     """
     # only get arguments, which the user has not seen yet
+    logger('ReviewSubpagerHelper', '__get_all_allowed_reviews_for_user', 'main')
     already_seen, first_time = (request.session[session_keword], False) if session_keword in request.session else (list(), True)
 
     # and not reviewed
@@ -130,6 +132,7 @@ def __get_subpage_dict_for_deletes(request, db_user, translator):
     :param translator:
     :return:
     """
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_deletes', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_deletes', db_user, ReviewDelete, LastReviewerDelete)
 
     extra_info = ''
@@ -183,7 +186,8 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
     :param translator:
     :return:
     """
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_deletes', db_user, ReviewOptimization, LastReviewerOptimization)
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_optimization', 'main')
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_optimization', db_user, ReviewOptimization, LastReviewerOptimization)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
@@ -228,6 +232,7 @@ def __get_stats_for_argument(argument_uid):
     :param argument_uid:
     :return:
     """
+    logger('ReviewSubpagerHelper', '__get_stats_for_argument', 'main')
     viewed = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument_uid).all())
 
     _rh = RelationHelper(argument_uid)
@@ -252,28 +257,52 @@ def __get_text_parts_of_argument(argument):
     :param argument:
     :return:
     """
+    logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'main')
     ret_list = list()
-    premisegroup, trash = get_text_for_premisesgroup_uid(argument.premisesgroup_uid)
-    ret_list.append({'type': 'premisegroup',
-                     'text': premisegroup,
-                     'uid': argument.premisesgroup_uid})
 
-    if argument.argument_uid is None:
+    # get premise of current argument
+    premisegroup, premises_uid = get_text_for_premisesgroup_uid(argument.premisesgroup_uid)
+    for uid in premises_uid:
+        logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add premisegroup of argument ' + str(argument.uid))
+        text = get_text_for_statement_uid(uid)
+        ret_list.append(__get_part_dict('premise', text, argument.argument_uid, uid))
+
+    if argument.argument_uid is None:  # get conlusion of current argument
         conclusion = get_text_for_statement_uid(argument.conclusion_uid)
-        ret_list.append({'type': 'statement',
-                         'text': conclusion,
-                         'uid': argument.conclusion_uid})
-    else:
+        logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add statement of argument ' + str(argument.uid))
+        ret_list.append(__get_part_dict('conclusion', conclusion, argument.argument_uid, argument.conclusion_uid))
+    else:  # or get the conclusions argument
         db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
-        while db_conclusions_argument.argument_uid is not None:
-            premisegroup, trash = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
-            ret_list.append({'type': 'premisegroup',
-                             'text': premisegroup,
-                             'uid': db_conclusions_argument.premisesgroup_uid})
-            db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+
+        while db_conclusions_argument.argument_uid is not None:  # get further conclusions arguments
+
+            # get premise of conclusions arguments
+            premisegroup, premises_uid = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
+            for uid in premises_uid:
+                text = get_text_for_statement_uid(uid)
+                logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add premise of argument ' + str(db_conclusions_argument.argument_uid))
+                ret_list.append(__get_part_dict('premise', text, db_conclusions_argument.argument_uid, uid))
+
+            db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_conclusions_argument.argument_uid).first()
+
+        # get the last conclusion of the chain
         conclusion = get_text_for_statement_uid(db_conclusions_argument.conclusion_uid)
-        ret_list.append({'type': 'statement',
-                         'text': conclusion,
-                         'uid': argument.conclusion_uid})
+        logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add statement of argument ' + str(db_conclusions_argument.uid))
+        ret_list.append(__get_part_dict('conclusion', conclusion, db_conclusions_argument.uid, db_conclusions_argument.conclusion_uid))
 
     return ret_list
+
+
+def __get_part_dict(type, text, argument, uid):
+    """
+
+    :param type:
+    :param text:
+    :param argument:
+    :param uid:
+    :return:
+    """
+    return {'type': type,
+            'text': text,
+            'argument': argument,
+            'uid': uid}
