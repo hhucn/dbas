@@ -126,7 +126,7 @@
                     <strong id="request_not_lock_text" class="text-danger" style="padding-left: 0.5em; display: none;">Data is not locked anymore, please request a new lock for your edits.</strong>
                     <p class="lead" id="request_lock_text">
                         <span i18n:translate="argument_is_locked">This argument is locked for your edit for the next</span>:
-                        <span id="countdown_timer_min"></span><span class="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
+                        <span id="countdown_timer_min"></span><span id="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
                         <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
                     </p>
 
