@@ -148,7 +148,7 @@
                     </table>
                 </div>
             </div>
-            <a id="send-edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send">Send</a>
+            <a id="send_edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send">Send</a>
         </div>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/countdown.js')}"></script>
