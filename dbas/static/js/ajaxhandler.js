@@ -1074,7 +1074,7 @@ function AjaxReviewHandler(){
 	/**
 	 *
 	 * @param review_uid
-	 * @param should_lock
+	 * @param should_lock is true, when the review should be locked and false otherwise
 	 * @param review_instance
 	 */
 	this.un_lockOptimizationReview = function (review_uid, should_lock, review_instance) {
