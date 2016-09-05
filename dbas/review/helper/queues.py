@@ -13,7 +13,7 @@ from dbas.lib import get_profile_picture
 from sqlalchemy import and_
 from dbas.logger import logger
 
-max_lock_time_in_sec = 10
+max_lock_time_in_sec = 180
 
 
 def get_review_queues_array(mainpage, translator, nickname):
@@ -25,6 +25,7 @@ def get_review_queues_array(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Array
     """
+    logger('ReviewQueues', 'get_review_queues_array', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return None
@@ -46,6 +47,7 @@ def __get_delete_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
+    logger('ReviewQueues', '__get_delete_dict', 'main')
     task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
 
     key = 'deletes'
@@ -72,6 +74,7 @@ def __get_optimization_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
+    logger('ReviewQueues', '__get_optimization_dict', 'main')
     task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
 
     key = 'optimizations'
@@ -98,6 +101,7 @@ def __get_history_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
+    logger('ReviewQueues', '__get_history_dict', 'main')
     key = 'history'
     count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'History',
@@ -120,6 +124,7 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
     :param nickname:
     :return:
     """
+    logger('ReviewQueues', '__get_review_count_for', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
         db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
@@ -144,6 +149,7 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
     :param mainpage:
     :return:
     """
+    logger('ReviewQueues', '__get_last_reviewer_of', 'main')
     users_array = list()
     db_reviews = DBDiscussionSession.query(reviewer_type).order_by(reviewer_type.uid.desc()).all()
     limit = 5 if len(db_reviews) >= 5 else len(db_reviews)
@@ -176,6 +182,7 @@ def lock(nickname, review_uid, translator, transaction):
     :param transaction:
     :return:
     """
+    logger('ReviewQueues', 'lock', 'main')
     success = ''
     info = ''
     error = ''
@@ -219,6 +226,7 @@ def unlock_optimization_review(review_uid, transaction):
     :param transaction:
     :return:
     """
+    logger('ReviewQueues', 'unlock_optimization_review', 'main')
     DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).delete()
     DBDiscussionSession.flush()
     transaction.commit()
@@ -231,6 +239,7 @@ def is_review_locked(review_uid):
     :param review_uid:
     :return:
     """
+    logger('ReviewQueues', 'get_review_queues_array', 'main')
     db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).first()
     if not db_lock:
         return False
@@ -242,5 +251,6 @@ def tidy_up_optimization_locks():
 
     :return:
     """
+    logger('ReviewQueues', 'tidy_up_optimization_locks', 'main')
     DBDiscussionSession.query(OptimizationReviewLocks).filter_by((get_now() - OptimizationReviewLocks.locked_since).seconds < max_lock_time_in_sec).delete()
     # TODO USE tidy_up_optimization_locks

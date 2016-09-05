@@ -40,6 +40,26 @@ function ReviewCallbacks() {
 				$('#opti_ack').addClass('disabled');
 				$('#request-lock').hide();
 				$('#request-not-lock-text').hide();
+				
+				var review_argument_text = $('#reviewed-argument-text');
+				review_argument_text.attr('data-oem', review_argument_text.text());
+				
+				$.each($('#argument-part-table').find('input'), function(){
+					var repl_text = review_argument_text.html().replace( new RegExp( "(" + preg_quote( $(this).attr('placeholder') ) + ")" , 'gi' ), "<span id='text" + $(this).data('id') + "'>$1</span>" );
+					review_argument_text.html(repl_text);
+					
+					$(this).focusin(function(){
+						$('#text' + $(this).data('id')).addClass('text-warning');
+					});
+					
+					$(this).focusout(function(){
+						$('#text' + $(this).data('id')).removeClass('text-warning');
+					});
+					
+					$(this).on('input',function(){
+						$('#text' + $(this).data('id')).text($(this).val());
+					});
+				});
 			} else {
 				setGlobalInfoHandler('Ohh!', _t(couldNotLock));
 			}
@@ -60,4 +80,20 @@ function ReviewCallbacks() {
 			//setGlobalSuccessHandler('Hurey', parsedData.success);
 		}
 	};
+	
+	// http://kevin.vanzonneveld.net/techblog/article/javascript_equivalent_for_phps_preg_quote/
+	function preg_quote( str ) {
+    // http://kevin.vanzonneveld.net
+    // +   original by: booeyOH
+    // +   improved by: Ates Goral (http://magnetiq.com)
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   bugfixed by: Onno Marsman
+    // *     example 1: preg_quote("$40");
+    // *     returns 1: '\$40'
+    // *     example 2: preg_quote("*RRRING* Hello?");
+    // *     returns 2: '\*RRRING\* Hello\?'
+    // *     example 3: preg_quote("\\.+*?[^]$(){}=!<>|:");
+    // *     returns 3: '\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:'
+        return (str+'').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
+	}
 }
