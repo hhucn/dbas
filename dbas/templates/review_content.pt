@@ -123,7 +123,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <a id="request_lock" href="#" class="btn btn-info btn-sm" i18n:translate="request_lock" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id" style="display: none;">Request lock</a>
-                    <span class="text-danger">TODO: Set lock while editing (and unlock on skip/break/exit!)</span>
+                    <span id="request_lock_text" class="text-danger">TODO: Set lock while editing (and unlock on skip/break/exit!)</span>
                     <p class="lead">
                         <span i18n:translate="argument_is_locked">This argument is locked for your edit for the next</span>:
                         <span id="countdown_timer_min"></span><span class="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
@@ -152,6 +152,9 @@
         </div>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/review.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/callbacks.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/countdown.js')}"></script>
 
 	</tal:block>
 </tal:block>
