@@ -252,6 +252,8 @@ class GermanDict:
         de_lang[_self.deleteHistory] = 'History löschen'
         de_lang[_self.doYouWantToEnterYourStatements] = 'Möchten Sie Ihre eigenen Gründe angeben?'
         de_lang[_self.doNotHesitateToContact] = 'Zögern Sie nicht, uns zu <span style="cursor: pointer;" id="contact-on-error"><strong>kontaktieren (hier klicken)</strong></span>'
+        de_lang[_self.dataAlreadyLockedByYou] = 'Sie bearbeiten schon einen Datensatz. Schließen Sie diese Bearbeitung bitte zuerst ab!'
+        de_lang[_self.dataAlreadyLockedByOthers] = 'Dieser Datensatz wird gerade durch andere Teilnehmer bearbeitet.'
         de_lang[_self.earlierYouArguedThat] = 'Zuerst haben Sie argumentiert, dass'
         de_lang[_self.editIndex] = 'Änderungs Index - Letzte 30 Tage'
         de_lang[_self.editIndexInfo] = 'Anzahl an Änderungen'
