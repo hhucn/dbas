@@ -122,7 +122,7 @@
             </button>
             <div class="row">
                 <div class="col-md-12">
-                    <a id="request-lock" href="#" class="btn btn-info btn-sm" i18n:translate="request_lock" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id; data-lock_sec lock_time" style="display: none;">Request lock</a>
+                    <a id="request-lock" href="#" class="btn btn-info btn-sm" i18n:translate="request_lock" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id; data-lock_sec lock_time" style="padding-bottom: 0.5em; display: none;">Request lock</a>
                     <strong id="request-not-lock-text" class="text-danger" style="padding-left: 0.5em; display: none;">Data is not locked anymore, please request a new lock for your edits.</strong>
                     <p class="lead" id="request-lock-text">
                         <span i18n:translate="argument_is_locked">This argument is locked for your edit for the next</span>:
@@ -132,9 +132,9 @@
 
                     <table class="table table-condensed" border="0">
                         <thead>
-                            <tr class="review-table-row">
-                                <td i18n:translate="original">Original</td>
-                                <td i18n:translate="your correcture">Your correcture</td>
+                            <tr class="success">
+                                <th i18n:translate="original">Original</th>
+                                <th i18n:translate="your correcture">Your correcture</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -148,7 +148,7 @@
                     </table>
                 </div>
             </div>
-            <a id="send_edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send">Send</a>
+            <a id="send_edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Send</a>
         </div>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/countdown.js')}"></script>
