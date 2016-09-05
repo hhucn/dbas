@@ -2149,7 +2149,7 @@ class Dbas(object):
             # TODO LOCK
             # on sucess: nothing
             # on locked: send info
-            is_locked = False
+            is_locked = True
 
         except KeyError as e:
             logger('review_lock', 'error', repr(e))
