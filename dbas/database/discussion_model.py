@@ -736,7 +736,6 @@ class ReviewEdit(DiscussionBase):
     argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False)
-    tmp_lock = Column(ArrowType, default=get_now(), nullable=True)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
@@ -916,3 +915,23 @@ class ReputationReason(DiscussionBase):
         """
         self.reason = reason
         self.points = points
+
+
+class OptimizationReviewLocks(DiscussionBase):
+    __tablename__ = 'optimization_review_locks'
+    author_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+    review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
+    locked_since = Column(ArrowType, default=get_now(), nullable=True)
+
+    authors = relationship('User', foreign_keys=[author_uid])
+    review_optimization = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
+
+    def __init__(self, author, review_optimization):
+        """
+
+        :param author:
+        :param review_optimization:
+        """
+        self.author_uid = author
+        self.review_optimization_uid = review_optimization
+        self.timestamp = get_now()

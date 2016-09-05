@@ -265,10 +265,12 @@ def __get_text_parts_of_argument(argument):
                          'uid': argument.conclusion_uid})
     else:
         db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
-        premisegroup, trash = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
-        ret_list.append({'type': 'premisegroup',
-                         'text': premisegroup,
-                         'uid': db_conclusions_argument.premisesgroup_uid})
+        while db_conclusions_argument.argument_uid is not None:
+            premisegroup, trash = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
+            ret_list.append({'type': 'premisegroup',
+                             'text': premisegroup,
+                             'uid': db_conclusions_argument.premisesgroup_uid})
+            db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
         conclusion = get_text_for_statement_uid(db_conclusions_argument.conclusion_uid)
         ret_list.append({'type': 'statement',
                          'text': conclusion,

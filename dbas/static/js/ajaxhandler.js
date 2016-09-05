@@ -1077,7 +1077,7 @@ function AjaxReviewHandler(){
 	 * @param should_lock
 	 * @param review_instance
 	 */
-	this.lockOptimizationReview = function (review_uid, should_lock, review_instance) {
+	this.un_lockOptimizationReview = function (review_uid, should_lock, review_instance) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_lock',
@@ -1087,7 +1087,10 @@ function AjaxReviewHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewCallbacks().forReviewLock(data, review_instance);
+			if (should_lock)
+				new ReviewCallbacks().forReviewLock(data, review_instance);
+			else
+				new ReviewCallbacks().forReviewUnlock(data);
 		}).fail(function reviewDeleteArgumentFail() {
 			if (should_lock)
 				setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
