@@ -338,7 +338,7 @@
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}"></script>
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/main.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/index.js')}"></script>
 
         <script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/barometer.js')}"></script>
 
