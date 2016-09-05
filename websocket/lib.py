@@ -6,11 +6,10 @@ Provides functions
 
 import requests
 
-from dbas.lib import get_public_nickname_based_on_settings
+from dbas.lib import get_public_nickname_based_on_settings, get_profile_picture
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.user_management import get_public_profile_picture
 
 
 def send_request_for_info_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
@@ -89,7 +88,7 @@ def send_request_for_recent_delete_review_to_socketio(nickname):
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = get_public_nickname_based_on_settings(db_user)
-    reviewer_image_url = get_public_profile_picture(db_user)
+    reviewer_image_url = get_profile_picture(db_user)
     return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'deletes')
 
 
@@ -101,7 +100,7 @@ def send_request_for_recent_optimization_review_to_socketio(nickname):
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = get_public_nickname_based_on_settings(nickname)
-    reviewer_image_url = get_public_profile_picture(db_user)
+    reviewer_image_url = get_profile_picture(db_user)
     return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'optimizations')
 
 

@@ -4,11 +4,10 @@ Provides helping function for the managing reputation.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import dbas.user_management as _user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
     User, ReputationHistory, ReputationReason, ReviewDeleteReason
-from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid
+from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_arguments_and_premise_of_review
 from sqlalchemy import and_
@@ -145,7 +144,7 @@ def __get_user_dict_for_review(user_id, mainpage):
     :return: dcit with gravatar, uerpage and nickname
     """
     db_user = DBDiscussionSession.query(User).filter_by(uid=user_id).first()
-    image_url = _user_manager.get_profile_picture(db_user, 20)
+    image_url = get_profile_picture(db_user, 20)
     return {
         'gravatar_url': image_url,
         'nickname': get_public_nickname_based_on_settings(db_user),

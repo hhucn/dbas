@@ -5,14 +5,14 @@ Provides helping function for getting some opinions.
 """
 
 import re
+
 from sqlalchemy import and_
-import dbas.user_management as UserHandler
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings
 from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
-    get_text_for_premisesgroup_uid
+    get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -395,5 +395,5 @@ class OpinionHandler:
         name = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
         return {'nickname': name,
                 'public_profile_url': self.mainpage + '/user/' + name,
-                'avatar_url': UserHandler.get_profile_picture(db_user),
+                'avatar_url': get_profile_picture(db_user),
                 'vote_timestamp': sql_timestamp_pretty_print(timestamp, self.lang)}
