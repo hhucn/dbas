@@ -28,7 +28,8 @@ $(document).ready(function () {
 	});
 	
 	optimization_nack.click(function(){
-		new Review().reloadPageAndUnlockData(false);
+		var review_uid = $(this).data('id');
+		new AjaxReviewHandler().reviewOptimizationArgument(false, review_uid);
 	});
 	
 	optimization_skip.click(function(){
@@ -45,6 +46,7 @@ $(document).ready(function () {
 	});
 	
 	delete_nack.click(function(){
+		var review_uid = $(this).data('id');
 		new AjaxReviewHandler().reviewDeleteArgument(false, review_uid);
 	});
 	

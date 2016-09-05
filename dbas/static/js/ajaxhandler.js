@@ -1112,7 +1112,28 @@ function AjaxReviewHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrfToken }
 		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewCallbacks().forReviewDeleteArgument(data);
+			new ReviewCallbacks().forReviewArgument(data);
+		}).fail(function reviewDeleteArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	};
+	
+	/**
+	 *
+	 * @param should_optimized
+	 * @param review_uid
+	 */
+	this.reviewOptimizationArgument = function(should_optimized, review_uid){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_review_optimization_argument',
+			method: 'POST',
+			data:{ 'should_optimized': should_optimized, 'review_uid': review_uid },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function reviewDeleteArgumentDone(data) {
+			new ReviewCallbacks().forReviewArgument(data);
 		}).fail(function reviewDeleteArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});

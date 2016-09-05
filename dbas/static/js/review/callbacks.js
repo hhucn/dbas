@@ -9,7 +9,7 @@ function ReviewCallbacks() {
 	 *
 	 * @param jsonData
 	 */
-	this.forReviewDeleteArgument = function(jsonData){
+	this.forReviewArgument = function(jsonData){
 		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);

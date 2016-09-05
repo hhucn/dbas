@@ -52,7 +52,7 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
-from websocket.lib import send_request_for_recent_delete_review_to_socketio
+from websocket.lib import send_request_for_recent_delete_review_to_socketio, send_request_for_recent_optimization_review_to_socketio
 
 name = 'D-BAS'
 version = '0.7.0'
@@ -2027,6 +2027,10 @@ class Dbas(object):
 
         return data.json()
 
+# ######################################
+# ADDTIONAL AJAX STUFF # REVIEW THINGS #
+# ######################################
+
     # ajax - for flagging arguments
     @view_config(route_name='ajax_flag_argument', renderer='json')
     def flag_argument(self):
@@ -2076,23 +2080,53 @@ class Dbas(object):
         ui_locales = get_discussion_language(self.request)
         _t = Translator(ui_locales)
         return_dict = dict()
+        error = ''
 
         try:
             should_delete = True if str(self.request.params['should_delete']) == 'true' else False
             review_uid = self.request.params['review_uid']
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
-                return_dict['error'] = _t.get(_t.internalKeyError)
+                error = _t.get(_t.internalKeyError)
             else:
                 ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
                 send_request_for_recent_delete_review_to_socketio(nickname)
-
-                return_dict['info'] = str(should_delete) + ' by ' + nickname
-                return_dict['error'] = ''
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalKeyError)
+            error = _t.get(_t.internalKeyError)
 
+        return_dict['error'] = error
+        return json.dumps(return_dict, True)
+
+    # ajax - for feedback on optimization arguments
+    @view_config(route_name='ajax_review_optimization_argument', renderer='json')
+    def review_optimization_argument(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('review_optimization_argument', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+        error = ''
+
+        try:
+            should_optimized = True if str(self.request.params['should_optimized']) == 'true' else False
+            review_uid = self.request.params['review_uid']
+            nickname = self.request.authenticated_userid
+            if not Validator.is_integer(review_uid):
+                error = _t.get(_t.internalKeyError)
+            else:
+                ReviewMainHelper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, transaction)
+                send_request_for_recent_optimization_review_to_socketio(nickname)
+
+        except KeyError as e:
+            logger('review_optimization_argument', 'error', repr(e))
+            error = _t.get(_t.internalKeyError)
+
+        return_dict['error'] = error
         return json.dumps(return_dict, True)
 
     # ajax - for undoing reviews
