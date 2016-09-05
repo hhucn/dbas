@@ -78,19 +78,24 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     if db_review.is_executed or not db_user:
         return None
 
-    # add new vote
-    db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
-    db_new_review = LastReviewerDelete(db_user.uid, db_review.uid, not should_optimized)
-    DBDiscussionSession.add(db_new_review)
-    DBDiscussionSession.flush()
-    transaction.commit()
+    if not should_optimized:
+        # add new vote
+        db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
+        db_new_review = LastReviewerDelete(db_user.uid, db_review.uid, not should_optimized)
+        DBDiscussionSession.add(db_new_review)
+        DBDiscussionSession.flush()
+        transaction.commit()
 
-    # get all keep and delete votes
-    db_keep_version = DBDiscussionSession.query(LastReviewerOptimization).filter(and_(LastReviewerOptimization.review_uid == review_uid,
-                                                                                      LastReviewerOptimization.is_okay == True)).all()
+        # get all keep and delete votes
+        db_keep_version = DBDiscussionSession.query(LastReviewerOptimization).filter(and_(LastReviewerOptimization.review_uid == review_uid,
+                                                                                          LastReviewerOptimization.is_okay == True)).all()
 
-    if len(db_keep_version) > max_votes:
-        add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
+        if len(db_keep_version) > max_votes:
+            add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
+
+    else:
+        # add new edit
+        return None
 
     return None
 

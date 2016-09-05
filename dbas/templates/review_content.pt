@@ -82,7 +82,7 @@
                             <span i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
                             <br><br>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" i18n:attributes="data-uid elements.reviewed_argument.stats.id">${structure:subpage.elements.reviewed_argument.text}</span>
+                            <span class="lead">${structure:subpage.elements.reviewed_argument.text}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                             <br>
                             <span></span>
@@ -112,7 +112,7 @@
                         </table>
                     </div>
                 </div>
-                <small id="review-id" class="text-muted pull-right">ID: ${subpage.elements.reviewed_argument.stats.id}</small>
+                <small id="review-id" class="text-muted pull-right" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">ID: ${subpage.elements.reviewed_argument.stats.id}</small>
             </div>
         </div>
 
@@ -122,9 +122,9 @@
             </button>
             <div class="row">
                 <div class="col-md-12">
-                    <a id="request_lock" href="#" class="btn btn-info btn-sm" i18n:translate="request_lock" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id" style="display: none;">Request lock</a>
-                    <strong id="request_not_lock_text" class="text-danger" style="padding-left: 0.5em; display: none;">Data is not locked anymore, please request a new lock for your edits.</strong>
-                    <p class="lead" id="request_lock_text">
+                    <a id="request-lock" href="#" class="btn btn-info btn-sm" i18n:translate="request_lock" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id; data-lock_sec lock_time" style="display: none;">Request lock</a>
+                    <strong id="request-not-lock-text" class="text-danger" style="padding-left: 0.5em; display: none;">Data is not locked anymore, please request a new lock for your edits.</strong>
+                    <p class="lead" id="request-lock-text">
                         <span i18n:translate="argument_is_locked">This argument is locked for your edit for the next</span>:
                         <span id="countdown_timer_min"></span><span id="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
                         <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
