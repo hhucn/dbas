@@ -911,7 +911,8 @@ class Dbas(object):
             'title': _tn.get(_tn.review),
             'project': project_name,
             'extras': extras_dict,
-            'subpage': subpage_dict
+            'subpage': subpage_dict,
+            'lock_time': ReviewQueueHelper.max_lock_time_in_sec
         }
 
     # history page for reviews
@@ -2185,7 +2186,7 @@ class Dbas(object):
             if lock:
                 success, info, error, is_locked = ReviewQueueHelper.lock(self.request.authenticated_userid, review_uid, _t, transaction)
             else:
-                ReviewQueueHelper.unlock(review_uid, transaction)
+                ReviewQueueHelper.unlock_optimization_review(review_uid, transaction)
                 is_locked = False
 
         except KeyError as e:
