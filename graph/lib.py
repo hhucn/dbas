@@ -6,8 +6,8 @@
 from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue, User, VoteStatement
-from dbas.user_management import get_profile_picture
+from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, VoteStatement
+from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
 
 

@@ -6,14 +6,13 @@ Core component of DBAS.
 
 import json
 import time
+
 import requests
 import transaction
 
 import dbas.handler.news as NewsHandler
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
-import dbas.helper.notification as NotificationHelper
-import dbas.helper.voting as VotingHelper
 import dbas.review.helper.flags as ReviewFlagHelper
 import dbas.review.helper.subpage as ReviewPagerHelper
 import dbas.review.helper.queues as ReviewQueueHelper
@@ -30,6 +29,8 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
+from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
+from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, \
     preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, \
     try_to_register_new_user_via_ajax, request_password
@@ -38,7 +39,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
-    get_slug_by_statement_uid
+    get_slug_by_statement_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -638,7 +639,7 @@ class Dbas(object):
 
         # set votings and reputation
         add_reputation_for(nickname, rep_reason_first_argument_click, transaction)
-        VotingHelper.add_vote_for_argument(arg_id_user, nickname, transaction)
+        add_vote_for_argument(arg_id_user, nickname, transaction)
 
         ui_locales      = get_language(self.request, get_current_registry())
         disc_ui_locales = get_discussion_language(self.request, issue)
@@ -1080,7 +1081,7 @@ class Dbas(object):
         logger('delete_statistics', 'def', 'main')
 
         return_dict = dict()
-        return_dict['removed_data'] = 'true' if VotingHelper.clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
+        return_dict['removed_data'] = 'true' if clear_votes_of_user(transaction, self.request.authenticated_userid) else 'false'
 
         return json.dumps(return_dict, True)
 
@@ -1300,7 +1301,7 @@ class Dbas(object):
 
                 transaction.commit()
                 public_page_url = mainpage + '/user/' + (db_user.nickname if settings_value else public_nick)
-                gravatar_url = UserManager.get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
+                gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
             else:
                 error = _tn.get(_tn.checkNickname)
         except KeyError as e:
@@ -1385,10 +1386,10 @@ class Dbas(object):
                 if not db_author:
                     error = _tn.get(_tn.notLoggedIn)
                 else:
-                    db_notification = NotificationHelper.send_notification(db_author, db_recipient, title, text, mainpage, transaction)
+                    db_notification = send_notification(db_author, db_recipient, title, text, mainpage, transaction)
                     uid = db_notification.uid
                     ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-                    gravatar = UserManager.get_profile_picture(db_recipient, 20)
+                    gravatar = get_profile_picture(db_recipient, 20)
 
         except KeyError:
             error = _tn.get(_tn.internalKeyError)
@@ -1620,7 +1621,7 @@ class Dbas(object):
         try:
             DBDiscussionSession.query(Message).filter_by(uid=self.request.params['id']).first().set_read(True)
             transaction.commit()
-            return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
+            return_dict['unread_messages'] = count_of_new_notifications(self.request.authenticated_userid)
             return_dict['error'] = ''
         except KeyError as e:
             logger('set_message_read', 'error', repr(e))
@@ -1647,9 +1648,9 @@ class Dbas(object):
         try:
             DBDiscussionSession.query(Message).filter_by(uid=self.request.params['id']).delete()
             transaction.commit()
-            return_dict['unread_messages'] = NotificationHelper.count_of_new_notifications(self.request.authenticated_userid)
-            return_dict['total_in_messages'] = str(len(NotificationHelper.get_box_for(self.request.authenticated_userid, ui_locales, mainpage, True)))
-            return_dict['total_out_messages'] = str(len(NotificationHelper.get_box_for(self.request.authenticated_userid, ui_locales, mainpage, False)))
+            return_dict['unread_messages'] = count_of_new_notifications(self.request.authenticated_userid)
+            return_dict['total_in_messages'] = str(len(get_box_for(self.request.authenticated_userid, ui_locales, mainpage, True)))
+            return_dict['total_out_messages'] = str(len(get_box_for(self.request.authenticated_userid, ui_locales, mainpage, False)))
             return_dict['error'] = ''
             return_dict['success'] = _t.get(_t.messageDeleted)
         except KeyError as e:

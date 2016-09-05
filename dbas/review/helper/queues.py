@@ -4,12 +4,12 @@ Provides helping function for the managing reputation.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import dbas.user_management as _user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, OptimizationReviewLocks, get_now
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
+from dbas.lib import get_profile_picture
 from sqlalchemy import and_
 from dbas.logger import logger
 
@@ -150,7 +150,7 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
         db_user = DBDiscussionSession.query(User).filter_by(uid=db_review.reviewer_uid).first()
         if db_user:
             tmp_dict = dict()
-            tmp_dict['img_src'] = _user_manager.get_profile_picture(db_user, 40)
+            tmp_dict['img_src'] = get_profile_picture(db_user, 40)
             tmp_dict['url'] = mainpage + '/user/' + db_user.get_global_nickname()
             tmp_dict['name'] = db_user.get_global_nickname()
             # skip it, if it is already in
