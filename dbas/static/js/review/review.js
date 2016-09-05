@@ -16,15 +16,47 @@ function Review() {
 	this.doOptimizationAck = function(review_uid) {
 		var container = $('#optimization-container');
 		var opti_ack = $('#opti_ack');
+		var send_edit = $('#send_edit');
 		
+		send_edit.addClass('disabled');
 		$('#close-optimization-container').click(function(){
 			container.hide();
 			opti_ack.removeClass('disabled');
 			_this.stopCountdown();
+			send_edit.addClass('disabled');
 			new AjaxReviewHandler().un_lockOptimizationReview(review_uid, false, _this);
 		});
 		//_this.startCountdown();
 		new AjaxReviewHandler().un_lockOptimizationReview(review_uid, true, _this);
+		
+		// for each input in table
+		$.each(container.find('table').find('input'), function(){
+			$(this).focus(function(){
+				if ($(this).val().length == 0){
+					$(this).val($(this).attr('placeholder'));
+					$('#send_edit').removeClass('disabled');
+				}
+			});
+		});
+	};
+	
+	this.sendOptimization = function(){
+		var container = $('#optimization-container');
+		$.each(container.find('table').find('input'), function(){
+			var edit_array = [];
+			if ($(this).val().length > 0 && $(this).val() != $(this).attr('placeholder')) {
+				edit_array.push({
+					'uid': $(this).data('id'),
+					'type': $(this).data('type'),
+					'val': $(this).val()
+				});
+			}
+			if (edit_array.length > 0){
+				//new AjaxReviewHandler().reviewOptimizationArgument(true, $('#send_edit').data('id'), JSON.stringify(edit_array));
+			} else {
+				setGlobalInfoHandler('Ohh!', _t(noEditsInOptimization));
+			}
+		});
 	};
 	
 	/**
@@ -49,7 +81,7 @@ function Review() {
 		var ss = $('#countdown_timer_sec');
 		var point = $('#countdown_timer_point');
 		mm.text(countdown_min).removeClass('text-danger');
-		ss.text(countdown_sec).removeClass('text-danger');
+		ss.text(countdown_sec < 10 ? '0' + countdown_sec : countdown_sec).removeClass('text-danger');
 		point.removeClass('text-danger');
 		$('#request-lock-text').show();
 		$('#request-not-lock-text').show();
