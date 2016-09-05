@@ -38,7 +38,8 @@ function ReviewCallbacks() {
 				review_instance.startCountdown();
 				$('#optimization-container').show();
 				$('#opti_ack').addClass('disabled');
-				$('#request_lock').hide();
+				$('#request-lock').hide();
+				$('#request-not-lock-text').hide();
 			} else {
 				setGlobalInfoHandler('Ohh!', _t(couldNotLock));
 			}
