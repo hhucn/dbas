@@ -154,6 +154,8 @@ class Translator(object):
         self.decisionIndex7Info = 'decisionIndex7Info'
         self.decisionIndex30Info = 'decisionIndex30Info'
         self.dataRemoved = 'dataRemoved'
+        self.dataAlreadyLockedByYou = 'dataAlreadyLockedByYou'
+        self.dataAlreadyLockedByOthers = 'dataAlreadyLockedByOthers'
         self.didYouMean = 'didYouMean'
         self.discussionEnd = 'discussionEnd'
         self.discussionEndLinkText = 'discussionEndLinkText'
