@@ -11,8 +11,8 @@ $(document).ready(function () {
 	var delete_ack = $('#del_ack');
 	var delete_nack = $('#del_nack');
 	var delete_skip = $('#del_skip');
-	var request_lock = $('#request_lock');
-	var send_edit
+	var request_lock = $('#request-lock');
+	var send_edit  =$('#send_edit');
 	
 	// text
 	var more_about_reason = $('#more_about_reason');
@@ -35,6 +35,10 @@ $(document).ready(function () {
 	
 	optimization_skip.click(function(){
 		new Review().reloadPageAndUnlockData(false);
+	});
+	
+	send_edit.click(function(){
+		alert('todo');
 	});
 	
 	/**
@@ -83,7 +87,7 @@ $(document).ready(function () {
 	
 	// unlock data on tab close/reload/...
 	$(window).bind('beforeunload',function(){
-        new AjaxReviewHandler().un_lockOptimizationReview($('#review-id').text(), false, undefined);
+		new Review().reloadPageAndUnlockData(true);
 	});
 });
 
