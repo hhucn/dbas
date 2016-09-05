@@ -603,7 +603,7 @@ var dbas_de = {
 	'statisticsNotThere': 'Sie haben keine Statistiken.',
 	'strength': 'Stärke',
 	'strong': 'stark',
-	'statement': 'Argument',
+	'statement': 'Aussage',
 	'shortenedBy': 'gekürzt mit',
 	'switchDiscussion': 'Diskussionsthema ändern',
 	'switchDiscussionText1': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',

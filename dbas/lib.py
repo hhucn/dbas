@@ -4,17 +4,15 @@ Common, pure functions used by the D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
+import hashlib
 import time
-
 import locale
+
+from urllib import parse
 from datetime import datetime
 from html import escape
-
 from dbas.logger import logger
-
 from sqlalchemy import and_
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
 from dbas.strings.translator import Translator
@@ -728,3 +726,23 @@ def __get_all_premises_of_argument(argument):
     for premise in db_premises:
         ret_list.append(premise)
     return ret_list
+
+
+def get_profile_picture(user, size=80, ignore_privacy_settings=False):
+    """
+    Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
+
+    :param user: User
+    :param size: Integer, default 80
+    :param ignore_privacy_settings:
+    :return: String
+    """
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
+    additional_id = '' if db_settings.should_show_public_nickname else 'x'
+    if ignore_privacy_settings:
+        additional_id = ''
+    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+
+    gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
+    gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
+    return gravatar_url

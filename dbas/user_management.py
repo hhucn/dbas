@@ -14,11 +14,12 @@ import dbas.handler.password as PasswordHandler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
 from dbas.helper import email as EmailHelper
-from dbas.helper import notification as NotificationHelper
-from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid, get_user_by_private_or_public_nickname
+from dbas.helper.notification import send_welcome_notification
+from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid,\
+    get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
-from dbas.strings.translator import Translator
 from dbas.review.helper.reputation import get_reputation_of
+from dbas.strings.translator import Translator
 from sqlalchemy import and_
 
 # from https://moodlist.net/
@@ -162,25 +163,6 @@ def is_user_admin(nickname):
     return db_user and db_user.groups.name == 'admins'
 
 
-def get_profile_picture(user, size=80, ignore_privacy_settings=False):
-    """
-    Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
-
-    :param user: User
-    :param size: Integer, default 80
-    :return: String
-    """
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
-    additional_id = '' if db_settings.should_show_public_nickname else 'x'
-    if ignore_privacy_settings:
-        additional_id = ''
-    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
-
-    gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
-    gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
-    return gravatar_url
-
-
 def get_public_profile_picture(user, size=80):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
@@ -205,6 +187,7 @@ def get_public_information_data(nickname, lang):
     Fetch some public information about the user with given nickname
 
     :param nickname: User.public_nickname
+    :param lang:
     :return: dict()
     """
     return_dict = dict()
@@ -630,7 +613,7 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
         subject = _t.get(_t.accountRegistration)
         body = _t.get(_t.accountWasRegistered)
         EmailHelper.send_mail(request, subject, body, email, ui_locales)
-        NotificationHelper.send_welcome_notification(transaction, checknewuser.uid)
+        send_welcome_notification(transaction, checknewuser.uid)
 
     else:
         logger('UserManagement', 'create_new_user', 'New data was not added')
