@@ -1060,7 +1060,7 @@ function AjaxReviewHandler(){
 	 * @param should_lock
 	 * @param review_instance
 	 */
-	this.lockOptimizationReview = function (review_uid, should_lock, review_instance) {
+	this.un_lockOptimizationReview = function (review_uid, should_lock, review_instance) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_lock',
