@@ -2148,7 +2148,7 @@ class Dbas(object):
             lock = True if self.request.params['lock'] == 'true' else False
             is_locked = True
             if lock:
-                success, info, error, is_locked = ReviewQueueHelper.lock(self.request.authenticated_userid, review_uid, )
+                success, info, error, is_locked = ReviewQueueHelper.lock(self.request.authenticated_userid, review_uid, _t, transaction)
             else:
                 ReviewQueueHelper.unlock(review_uid, transaction)
                 is_locked = False
