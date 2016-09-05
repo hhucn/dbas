@@ -11,7 +11,7 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
 from sqlalchemy import and_
-
+from dbas.logger import logger
 
 def get_review_queues_array(mainpage, translator, nickname):
     """
@@ -180,17 +180,22 @@ def lock(nickname, review_uid, translator, transaction):
 
     # has user already locked an item?
     db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_review = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.uid == review_uid,
-                                                                          ReviewOptimization.is_executed == False)).first()
-    if not db_user or not db_review:
+
+    if not db_user:
         error = translator.get(translator.internalKeyError)
         return success, info, error, is_locked
 
+    # check if author locked an item and maybe tidy up old locks
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
+    logger('X', 'X', 'user: ' + ('t' if db_locks else 'f'))
     if db_locks:
-        info = translator.get(translator.dataAlreadyLockedByYou)
-        is_locked = True
-        return success, info, error, is_locked
+        logger('X', 'X', 'user locked : ' + str(is_review_locked(db_locks.review_optimization_uid)))
+        if (is_review_locked(db_locks.review_optimization_uid)):
+            info = translator.get(translator.dataAlreadyLockedByYou)
+            is_locked = True
+            return success, info, error, is_locked
+        else:
+            DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).delete()
 
     # is already locked?
     if is_review_locked(review_uid):
@@ -198,8 +203,7 @@ def lock(nickname, review_uid, translator, transaction):
         is_locked = True
         return success, info, error, is_locked
 
-    db_new_lock = OptimizationReviewLocks(db_user.uid, review_uid)
-    DBDiscussionSession.add(db_new_lock)
+    DBDiscussionSession.add(OptimizationReviewLocks(db_user.uid, review_uid))
     DBDiscussionSession.flush()
     transaction.commit()
     is_locked = True
