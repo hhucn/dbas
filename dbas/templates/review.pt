@@ -39,14 +39,14 @@
                     <div class="col-md-offset-1 col-md-10 col-md-offset-1">
                         <table class="table table-condensed" border="0" id="review-table">
                             <thead>
-                                <tr class="review-table-row">
-                                    <th i18n:translate="open_tasks" class="center">Open Tasks</th>
+                                <tr>
+                                    <th i18n:translate="open_tasks">Open Tasks</th>
                                     <th i18n:translate="topic">Topic</th>
-                                    <th i18n:translate="recent_reviews" class="center">Recent Reviews</th>
+                                    <th i18n:translate="recent_reviews">Recent Reviews</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="review-table-row" tal:repeat="task review">
+                                <tr tal:repeat="task review">
                                     <td class="center">
                                         <strong class="forbidden" tal:condition="not:task.is_allowed">${structure:task.task_count}</strong>
                                         <strong tal:condition="task.is_allowed">${structure:task.task_count}</strong>
