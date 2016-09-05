@@ -57,6 +57,9 @@ function Review() {
 		mm.text(countdown_min).removeClass('text-danger');
 		ss.text(countdown_sec).removeClass('text-danger');
 		point.removeClass('text-danger');
+		$('#request_lock_text').show();
+		$('#request_unlock_text').hide();
+		
 		countdown = new Countdown({
             seconds: countdown_min * 60 + countdown_sec,  // number of seconds to count down
             onUpdateStatus: function(sec){
@@ -64,7 +67,7 @@ function Review() {
 	            var s = sec - m * 60;
             	mm.text(m);
             	ss.text(s < 10 ? '0' + s : s);
-	            if (sec == 60){
+	            if (sec <= 60){
 	            	mm.addClass('text-danger');
 	            	ss.addClass('text-danger');
 		            point.addClass('text-danger');
@@ -74,7 +77,11 @@ function Review() {
             	setGlobalErrorHandler(_t(ohsnap), _t(countdownEnded));
 	            $('#opti_nack').addClass('disabled');
 	            $('#send-edit').addClass('disabled');
-				$('#request_lock').show();
+				$('#request_lock_text').hide();
+				$('#request_unlock_text').show();
+				var button = $('#request_lock');
+				button.show();
+				new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
             } // final action
 		});
 		countdown.start();
@@ -86,7 +93,9 @@ function Review() {
 	this.stopCountdown = function(){
 		if (countdown)
 			countdown.stop();
-		$('#request_lock').hide();
+		var button = $('#request_lock');
+		button.hide();
+		new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
 	};
 	
 	/**

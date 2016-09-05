@@ -123,8 +123,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <a id="request_lock" href="#" class="btn btn-info btn-sm" i18n:translate="request_lock" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id" style="display: none;">Request lock</a>
-                    <span id="request_lock_text" class="text-danger">TODO: Set lock while editing (and unlock on skip/break/exit!)</span>
-                    <p class="lead">
+                    <strong id="request_not_lock_text" class="text-danger" style="padding-left: 0.5em; display: none;">Data is not locked anymore, please request a new lock for your edits.</strong>
+                    <p class="lead" id="request_lock_text">
                         <span i18n:translate="argument_is_locked">This argument is locked for your edit for the next</span>:
                         <span id="countdown_timer_min"></span><span class="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
                         <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
