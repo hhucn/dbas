@@ -40,9 +40,9 @@
                         <table class="table table-condensed" border="0" id="review-table">
                             <thead>
                                 <tr class="review-table-row">
-                                    <td i18n:translate="open_tasks" class="center">Open Tasks</td>
-                                    <td i18n:translate="topic">Topic</td>
-                                    <td i18n:translate="recent_reviews" class="center">Recent Reviews</td>
+                                    <th i18n:translate="open_tasks" class="center">Open Tasks</th>
+                                    <th i18n:translate="topic">Topic</th>
+                                    <th i18n:translate="recent_reviews" class="center">Recent Reviews</th>
                                 </tr>
                             </thead>
                             <tbody>

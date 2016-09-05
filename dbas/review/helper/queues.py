@@ -13,7 +13,7 @@ from dbas.lib import get_profile_picture
 from sqlalchemy import and_
 from dbas.logger import logger
 
-max_lock_time_in_sec = 180
+max_lock_time_in_sec = 10
 
 
 def get_review_queues_array(mainpage, translator, nickname):
