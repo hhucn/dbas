@@ -12,6 +12,7 @@ $(document).ready(function () {
 	var delete_nack = $('#del_nack');
 	var delete_skip = $('#del_skip');
 	var request_lock = $('#request_lock');
+	var send_edit
 	
 	// text
 	var more_about_reason = $('#more_about_reason');

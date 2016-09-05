@@ -58,7 +58,7 @@ function Review() {
 		ss.text(countdown_sec).removeClass('text-danger');
 		point.removeClass('text-danger');
 		$('#request_lock_text').show();
-		$('#request_unlock_text').hide();
+		$('#request_not_lock_text').show();
 		
 		countdown = new Countdown({
             seconds: countdown_min * 60 + countdown_sec,  // number of seconds to count down
@@ -75,9 +75,9 @@ function Review() {
             }, // callback for each second
             onCounterEnd: function(){
             	setGlobalErrorHandler(_t(ohsnap), _t(countdownEnded));
-	            $('#send-edit').addClass('disabled');
+	            $('#send_edit').addClass('disabled');
 				$('#request_lock_text').hide();
-				$('#request_unlock_text').show();
+				$('#request_not_lock_text').show();
 				var button = $('#request_lock');
 				button.show();
 				new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
