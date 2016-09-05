@@ -26,6 +26,12 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     if db_review.is_executed or not db_user:
         return None
 
+    # add new vote
+    db_new_review = LastReviewerDelete(db_user.uid, db_review.uid, not should_delete)
+    DBDiscussionSession.add(db_new_review)
+    DBDiscussionSession.flush()
+    transaction.commit()
+
     # get all keep and delete votes
     db_reviews = DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=review_uid)
     db_keep_reviews = db_reviews.filter_by(is_okay=True).all()
@@ -53,7 +59,24 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
         en_or_disable_arguments_and_premise_of_review(db_review, True)
         add_reputation_for(db_user, rep_reason_success_flag, transaction)
 
-    # add karma to voter
+    # TODO add karma to voter
+
+    return None
+
+
+def add_review_opinion_for_optimization(nickname, should_delete, review_uid, transaction):
+    """
+
+    :param nickname:
+    :param should_delete:
+    :param review_uid:
+    :param transaction:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_review = DBDiscussionSession.query(ReviewDelete).filter_by(uid=review_uid).first()
+    if db_review.is_executed or not db_user:
+        return None
 
     # add new vote
     db_new_review = LastReviewerDelete(db_user.uid, db_review.uid, not should_delete)
@@ -61,7 +84,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     DBDiscussionSession.flush()
     transaction.commit()
 
-    return None
+    # TODO
 
 
 def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
