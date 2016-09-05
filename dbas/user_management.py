@@ -14,7 +14,7 @@ import dbas.handler.password as PasswordHandler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
 from dbas.helper import email as EmailHelper
-from dbas.helper import notification as NotificationHelper
+from dbas.helper.notification import send_welcome_notification
 from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid, get_text_for_statement_uid, get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.strings.translator import Translator
@@ -168,6 +168,7 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
 
     :param user: User
     :param size: Integer, default 80
+    :param ignore_privacy_settings:
     :return: String
     """
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
@@ -205,6 +206,7 @@ def get_public_information_data(nickname, lang):
     Fetch some public information about the user with given nickname
 
     :param nickname: User.public_nickname
+    :param lang:
     :return: dict()
     """
     return_dict = dict()
@@ -630,7 +632,7 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
         subject = _t.get(_t.accountRegistration)
         body = _t.get(_t.accountWasRegistered)
         EmailHelper.send_mail(request, subject, body, email, ui_locales)
-        NotificationHelper.send_welcome_notification(transaction, checknewuser.uid)
+        send_welcome_notification(transaction, checknewuser.uid)
 
     else:
         logger('UserManagement', 'create_new_user', 'New data was not added')
