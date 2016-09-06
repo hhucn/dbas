@@ -218,7 +218,7 @@
 		<div class="container colored-container">
 			<div class="content row">
 				<div class="col-md-12">
-					<h4><span class="glyphicon glyphicon-time" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="history">Your last history</span></h4>
+					<h4><span class="glyphicon glyphicon-time" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="last_history">Your last history</span></h4>
 
 					<div style="text-align:center;">
 						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.request_history" />
