@@ -97,7 +97,6 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     else:
         # add new edit
         from dbas.logger import logger
-        logger('X', 'X', str(data))
         for d in data:
             logger('X', 'X', str(d))
             logger(str(d['uid']), str(d['type']), str(d['val']))
