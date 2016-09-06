@@ -26,6 +26,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator, mainpa
     :param subpage_name:
     :param nickname:
     :param translator:
+    :param mainpage:
     :return:
     """
     logger('ReviewPagerHelper', 'get_subpage_elements_for', subpage_name)
@@ -65,10 +66,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator, mainpa
         button_set['is_edit'] = True
 
     else:
-        subpage_dict = {'stats': stats,
-                        'text': text,
-                        'reason': reason,
-                        'issue': issue}
+        subpage_dict = {'stats': stats, 'text': text, 'reason': reason, 'issue': issue}
 
     ret_dict['reviewed_argument'] = subpage_dict
     if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
@@ -363,17 +361,17 @@ def __get_text_parts_of_argument(argument):
     return ret_list[::-1]
 
 
-def __get_part_dict(type, text, argument, uid):
+def __get_part_dict(typeof, text, argument, uid):
     """
 
-    :param type:
+    :param typeof:
     :param text:
     :param argument:
     :param uid:
     :return:
     """
-    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(type) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
-    return {'type': type,
+    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
+    return {'type': typeof,
             'text': text,
             'arg': argument,
             'uid': uid}
