@@ -82,6 +82,22 @@ function Review() {
 	
 	/**
 	 *
+	 * @param review_uid
+	 */
+	this.doEditAck = function(review_uid){
+		alert('TODO doEditAck');
+	};
+	
+	/**
+	 *
+	 * @param review_uid
+	 */
+	this.doEditNack = function(review_uid){
+		alert('TODO doEditNack');
+	};
+	
+	/**
+	 *
 	 */
 	this.startCountdown = function(){
 		var mm = $('#countdown_timer_min');

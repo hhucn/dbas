@@ -1120,6 +1120,27 @@ function AjaxReviewHandler(){
 	
 	/**
 	 *
+	 * @param should_edit
+	 * @param review_uid
+	 */
+	this.reviewEditArgument = function(should_edit, review_uid){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_review_edit_argument',
+			method: 'POST',
+			data:{ 'should_edit': should_edit, 'review_uid': review_uid },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function reviewDeleteArgumentDone(data) {
+			new ReviewCallbacks().forReviewArgument(data);
+		}).fail(function reviewDeleteArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	};
+	
+	/**
+	 *
 	 * @param should_optimized
 	 * @param review_uid
 	 * @param new_data (Important: must be JSON.stringify(...))
