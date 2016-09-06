@@ -182,6 +182,7 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
     if not db_user:
         db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
         return len(db_reviews)
+
     # get all reviews but filter reviews, which
     # - the user has detected
     # - the user has reviewed
@@ -191,9 +192,11 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
         already_reviewed.append(last_review.review_uid)
     db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
                                                                     review_type.detector_uid != db_user.uid))
+
     if len(already_reviewed) > 0:
         db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
     db_reviews = db_reviews.all()
+
     return len(db_reviews)
 
 
@@ -295,7 +298,7 @@ def is_review_locked(review_uid):
     :param review_uid:
     :return:
     """
-    logger('ReviewQueues', 'get_review_queues_array', 'main')
+    logger('ReviewQueues', 'is_review_locked', 'main')
     db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).first()
     if not db_lock:
         return False
