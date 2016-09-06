@@ -55,6 +55,12 @@ function Review() {
 					argument: $(this).data('argument'),
 					val: $(this).val()
 				});
+				console.log({
+					uid: $(this).data('id'),
+					type: $(this).data('type'),
+					argument: $(this).data('arg'),
+					val: $(this).val()
+				});
 			}
 		});
 		
