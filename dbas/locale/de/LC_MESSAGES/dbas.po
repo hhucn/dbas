@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-06 07:32+0200\n"
+"POT-Creation-Date: 2016-09-06 08:33+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -545,68 +545,69 @@ msgstr "Auf diese Seite haben Sie keinen Zugriff"
 msgid "history"
 msgstr "Ihre letzte URL-History"
 
-#. Default: The history of votes
-#: templates/review_history.pt:21
-msgid "history_of_votes"
-msgstr "Die Geschichte der Abstimmungen!"
-
+#. Default: Current Decisions
 #. Default: Current decisions
-#: templates/review_history.pt:21
+#: templates/review_history.pt:16 templates/review_history.pt:22
 msgid "current_decisions"
 msgstr "Aktuelle Entscheidungen"
 
+#. Default: The history of votes
+#: templates/review_history.pt:22
+msgid "history_of_votes"
+msgstr "Die Geschichte der Abstimmungen!"
+
 #. Default: No decisions for this queue.
-#: templates/review_history.pt:31
+#: templates/review_history.pt:32
 msgid "no_decision_for_this_queue"
 msgstr "Keine Abstimmungen in dieser Schlange."
 
 #. Default: Argument
-#: templates/review_history.pt:36
+#: templates/review_history.pt:37
 msgid "argument"
 msgstr "Argument"
 
 #. Default: Reason
-#: templates/review_history.pt:37
+#: templates/review_history.pt:38
 msgid "reason"
 msgstr "Grund"
 
 #. Default: Votes
-#: templates/review_history.pt:38
+#: templates/review_history.pt:39
 msgid "votes"
 msgstr "Stimmen"
 
 #. Default: Voters Pro
-#: templates/review_history.pt:39
+#: templates/review_history.pt:40
 msgid "voters_pro"
 msgstr "Stimmen dafür"
 
 #. Default: Voters Con
-#: templates/review_history.pt:40
+#: templates/review_history.pt:41
 msgid "voters_con"
 msgstr "Stimmen dagegen"
 
 #. Default: Accepted
-#: templates/review_history.pt:41
+#: templates/review_history.pt:42
 msgid "accepted"
 msgstr "Akzeptiert"
 
 #. Default: Timestamp
-#: templates/review_history.pt:42
+#: templates/review_history.pt:43
 msgid "timestamp"
 msgstr "Zeitstempel"
 
 #. Default: Action
-#: templates/review_history.pt:43
+#: templates/review_history.pt:44
 msgid "actions"
 msgstr "Aktion"
 
 #. Default: Undo
-#: templates/review_history.pt:78
+#: templates/review_history.pt:79
 msgid "undo"
 msgstr "Rückgängig machen"
 
 #. Default: Cancel
-#: templates/review_history.pt:81 templates/snippet-popups.pt:175
+#: templates/review_history.pt:82 templates/snippet-popups.pt:175
 #: templates/snippet-popups.pt:200
 msgid "cancel"
 msgstr "Abbrechen"

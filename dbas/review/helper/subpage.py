@@ -11,7 +11,7 @@ from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimizatio
     ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization
 from dbas.helper.relation import RelationHelper
 from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
-    get_text_for_premisesgroup_uid, get_text_for_premise
+    get_text_for_premisesgroup_uid
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from sqlalchemy import and_
@@ -60,6 +60,10 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
     elif subpage_name == 'optimizations':
         subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator)
         button_set['is_optimize'] = True
+    elif subpage_name == 'edits':
+        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator)
+        button_set['is_edit'] = True
+
     else:
         subpage_dict = {'stats': stats,
                         'text': text,
@@ -226,6 +230,22 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
             'parts': __get_text_parts_of_argument(db_argument)}
 
 
+def __get_subpage_dict_for_edits(request, db_user, translator):
+    """
+
+    :param request:
+    :param db_user:
+    :param translator:
+    :return:
+    """
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_edits', 'main')
+    return {'stats': None,
+            'text': None,
+            'reason': None,
+            'issue': None,
+            'extra_info': None}
+
+
 def __get_stats_for_argument(argument_uid):
     """
 
@@ -263,7 +283,7 @@ def __get_text_parts_of_argument(argument):
     # get premise of current argument
     premisegroup, premises_uid = get_text_for_premisesgroup_uid(argument.premisesgroup_uid)
     for uid in premises_uid:
-        logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add premisegroup of argument ' + str(argument.uid))
+        logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add premise of argument ' + str(argument.uid))
         text = get_text_for_statement_uid(uid)
         ret_list.append(__get_part_dict('premise', text, argument.argument_uid, uid))
 
@@ -290,7 +310,7 @@ def __get_text_parts_of_argument(argument):
         logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add statement of argument ' + str(db_conclusions_argument.uid))
         ret_list.append(__get_part_dict('conclusion', conclusion, db_conclusions_argument.uid, db_conclusions_argument.conclusion_uid))
 
-    return ret_list
+    return ret_list[::-1]
 
 
 def __get_part_dict(type, text, argument, uid):

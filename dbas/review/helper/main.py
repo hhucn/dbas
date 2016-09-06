@@ -78,6 +78,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(uid=review_uid).first()
     if db_review.is_executed or not db_user:
         return translator.get(translator.internalKeyError)
+    error = ''
 
     if not should_optimized:
         # add new vote
@@ -93,14 +94,22 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
 
         if len(db_keep_version) > max_votes:
             add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
-        error = ''
     else:
         # add new edit
         from dbas.logger import logger
+        from dbas.lib import get_text_for_statement_uid
+        argument_dict = {}
+        logger('X', 'X', str(data))
         for d in data:
             logger('X', 'X', str(d))
-            logger(str(d['uid']), str(d['type']), str(d['val']))
-        error = 'some error'
+            if d['argument'] in argument_dict:
+                argument_dict[d['argument']].append(d)
+            else:
+                argument_dict[d['argument']] = [d]
+            # everything we get, are statements
+            # db_statement = DBDiscussionSession.query(Statement).filter_by(int(d['uid']))
+            # logger('XXX', 'XX', 'old: ' + get_text_for_statement_uid(d['uid']))
+            # logger('XXX', 'XX', 'new: ' + d['text'])
 
     return error
 

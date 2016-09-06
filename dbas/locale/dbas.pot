@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-06 07:32+0200\n"
+"POT-Creation-Date: 2016-09-06 08:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -464,68 +464,69 @@ msgstr ""
 msgid "history"
 msgstr ""
 
-#. Default: The history of votes
-#: ././templates/review_history.pt:21
-msgid "history_of_votes"
-msgstr ""
-
+#. Default: Current Decisions
 #. Default: Current decisions
-#: ././templates/review_history.pt:21
+#: ././templates/review_history.pt:16 ././templates/review_history.pt:22
 msgid "current_decisions"
 msgstr ""
 
+#. Default: The history of votes
+#: ././templates/review_history.pt:22
+msgid "history_of_votes"
+msgstr ""
+
 #. Default: No decisions for this queue.
-#: ././templates/review_history.pt:31
+#: ././templates/review_history.pt:32
 msgid "no_decision_for_this_queue"
 msgstr ""
 
 #. Default: Argument
-#: ././templates/review_history.pt:36
+#: ././templates/review_history.pt:37
 msgid "argument"
 msgstr ""
 
 #. Default: Reason
-#: ././templates/review_history.pt:37
+#: ././templates/review_history.pt:38
 msgid "reason"
 msgstr ""
 
 #. Default: Votes
-#: ././templates/review_history.pt:38
+#: ././templates/review_history.pt:39
 msgid "votes"
 msgstr ""
 
 #. Default: Voters Pro
-#: ././templates/review_history.pt:39
+#: ././templates/review_history.pt:40
 msgid "voters_pro"
 msgstr ""
 
 #. Default: Voters Con
-#: ././templates/review_history.pt:40
+#: ././templates/review_history.pt:41
 msgid "voters_con"
 msgstr ""
 
 #. Default: Accepted
-#: ././templates/review_history.pt:41
+#: ././templates/review_history.pt:42
 msgid "accepted"
 msgstr ""
 
 #. Default: Timestamp
-#: ././templates/review_history.pt:42
+#: ././templates/review_history.pt:43
 msgid "timestamp"
 msgstr ""
 
 #. Default: Action
-#: ././templates/review_history.pt:43
+#: ././templates/review_history.pt:44
 msgid "actions"
 msgstr ""
 
 #. Default: Undo
-#: ././templates/review_history.pt:78
+#: ././templates/review_history.pt:79
 msgid "undo"
 msgstr ""
 
 #. Default: Cancel
-#: ././templates/review_history.pt:81 ././templates/snippet-popups.pt:175
+#: ././templates/review_history.pt:82 ././templates/snippet-popups.pt:175
 #: ././templates/snippet-popups.pt:200
 msgid "cancel"
 msgstr ""

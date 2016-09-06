@@ -6,7 +6,7 @@ Provides helping function for the managing reputation.
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
-    LastReviewerOptimization, OptimizationReviewLocks, get_now
+    LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, get_now
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
 from dbas.lib import get_profile_picture, is_user_author
@@ -33,6 +33,7 @@ def get_review_queues_array(mainpage, translator, nickname):
     review_list = list()
     review_list.append(__get_delete_dict(mainpage, translator, nickname))
     review_list.append(__get_optimization_dict(mainpage, translator, nickname))
+    review_list.append(__get_edit_dict(mainpage, translator, nickname))
     review_list.append(__get_history_dict(mainpage, translator, nickname))
     if is_user_author(nickname):
         review_list.append(__get_ongoing_dict(mainpage, translator))
@@ -90,6 +91,33 @@ def __get_optimization_dict(mainpage, translator, nickname):
                 'is_allowed_text': translator.get(translator.visitOptimizationQueue),
                 'is_not_allowed_text': translator.get(translator.visitOptimizationQueueLimitation).replace('XX', str(reputation_borders[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, mainpage)
+                }
+    return tmp_dict
+
+
+def __get_edit_dict(mainpage, translator, nickname):
+    """
+    Prepares dictionary for the a section.
+
+    :param mainpage: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    logger('ReviewQueues', '__get_edit_dict', 'main')
+    task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname)
+
+    key = 'edits'
+    count, all_rights = get_reputation_of(nickname)
+    tmp_dict = {'task_name': 'Edits',
+                'id': 'edits',
+                'url': mainpage + '/review/' + key,
+                'icon': 'fa fa-flag',
+                'task_count': task_count,
+                'is_allowed': count >= reputation_borders[key] or all_rights,
+                'is_allowed_text': translator.get(translator.visitEditQueue),
+                'is_not_allowed_text': translator.get(translator.visitEditQueueLimitation).replace('XX', str(reputation_borders[key])),
+                'last_reviews': __get_last_reviewer_of(LastReviewerEdit, mainpage)
                 }
     return tmp_dict
 
@@ -217,7 +245,7 @@ def lock(nickname, review_uid, translator, transaction):
     # has user already locked an item?
     db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-    if not db_user or review_uid < 1:
+    if not db_user or int(review_uid) < 1:
         error = translator.get(translator.internalKeyError)
         return success, info, error, is_locked
 
