@@ -82,9 +82,9 @@ function DiscussionGraph() {
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
-		d3.select("svg").call(zoom);
+		d3.selectAll('svg').call(zoom);
         function redraw() {
-            d3.select("g.zoom")
+            d3.selectAll("g.zoom")
             .attr("transform", "translate(" + zoom.translate() + ")"
 			+ " scale(" + zoom.scale() + ")");
         }
@@ -106,11 +106,11 @@ function DiscussionGraph() {
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 		var edgesTypeArrow = createArrowDict(edges);
         var marker = createArrows(svg, edgesTypeArrow);
-		var link = createLinks(svg, edges, marker);
+		var link = createLinks(svg, edges, marker).classed("zoomed", true);
 
 		// node
    		var node = createNodes(svg, force, drag);
-		var circle = setNodeProperties(node).attr("class", "circle");
+		var circle = setNodeProperties(node).classed("zoomed", true).attr("class", "circle");
 
 		// tooltip
 		// rect as background of label
@@ -124,7 +124,7 @@ function DiscussionGraph() {
         var legend = d3.svg.legend();
 
 		// background of legend
-		var legendRect = d3.select("svg").append("rect")
+		var legendRect = d3.select("svg").append("rect");
 
 		// set position of legend
 		var legendPaddingBottom = 3*height/5;
@@ -294,7 +294,7 @@ function DiscussionGraph() {
 	 */
 	function enableDrag(force){
 		return force.drag()
-			.on("dragstart", function(d){
+			.on("dragstart", function(){
 				d3.event.sourceEvent.stopPropagation();
 			});
 	}
@@ -372,7 +372,7 @@ function DiscussionGraph() {
 			}
 			d3.select(this)
 			.attr({width: width, height: height,
-			       y: -height+36, x: -width/2,
+				   x: -width/2, y: -height+36,
 			       id: 'rect-' + d.id});
 		});
 	}
@@ -578,12 +578,14 @@ function DiscussionGraph() {
 	 * @param circleId: id of selected node
 	 */
     function showPartOfGraph(edges, circleId) {
+		// edges with selected circle as source or as target
 		var edgesCircleId = [];
 		// select all incoming and outgoing edges of selected circle
 		edges.forEach(function(d){
-			if(d.source.id === circleId || d.target.id === circleId){
+			if(d.source.id === circleId || d.target.id === circleId) {
 				edgesCircleId.push(d);
-			}});
+			}
+        });
 		edges.forEach(function(d){
 			grayingElements(d);
 		});
@@ -591,18 +593,7 @@ function DiscussionGraph() {
             highlightElements(d);
 		});
 
-	    // virtual nodes
-		var virtualNodes = [];
-		edgesCircleId.forEach(function (d) {
-			if(d.source.label === ''){
-		        virtualNodes.push(d.source);
-			}
-			if(d.target.label === ''){
-		        virtualNodes.push(d.target);
-			}
-		});
-
-		highlightElementsVirtualNodes(virtualNodes, edges);
+		highlightElementsVirtualNodes(edges, edgesCircleId);
 	}
 
 	/**
@@ -611,20 +602,98 @@ function DiscussionGraph() {
 	 * @param virtualNodes
 	 * @param edges
      */
-	function highlightElementsVirtualNodes(virtualNodes, edges) {
+	function highlightElementsVirtualNodes(edges, edgesVirtualNodes) {
+		// array with edges from last loop pass
+		var edgesVirtualNodesLast = edgesVirtualNodes;
+        do {
+            // virtual nodes
+            var virtualNodes = createVirtualNodesArray(edgesVirtualNodes);
+            // edges with a virtual node ad source or as target
+			edgesVirtualNodes = createVirtualNodesEdgesArray(edges, virtualNodes);
+            var isVirtualNodeLeft = testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast);
+			// save array with edges for next loop pass
+			edgesVirtualNodesLast = edgesVirtualNodes;
+        }
+        while(isVirtualNodeLeft);
+	}
+
+	/**
+	 * Create array with virtual nodes.
+	 *
+	 * @param edgesVirtualNodes
+	 * @return virtualNodes
+     */
+	function createVirtualNodesArray(edgesVirtualNodes) {
+		var virtualNodes = [];
+		edgesVirtualNodes.forEach(function (d) {
+                if (d.source.label === '') {
+                    virtualNodes.push(d.source);
+                }
+				if (d.target.label === '') {
+                    virtualNodes.push(d.target);
+                }
+            });
+		return virtualNodes;
+	}
+
+	/**
+	 * Highlighting components of graph.
+	 *
+	 * @param edge: edge that should be highlighted
+	 */
+	function highlightElements(edge){
+		// edges
+		d3.select('#' + edge.id).style('stroke', edge.color);
+		// nodes
+		d3.select('#' + edge.source.id).attr('fill', edge.source.color);
+		d3.select('#' + edge.target.id).attr('fill', edge.target.color);
+		// arrows
+		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
+	}
+
+	/**
+	 * Create array which contains edges with virtual node as source or as target.
+	 *
+	 * @param edges
+	 * @param virtualNodes
+	 * @return edgesVirtualNodes
+     */
+	function createVirtualNodesEdgesArray(edges, virtualNodes) {
 		var edgesVirtualNodes = [];
-		if (virtualNodes != null) {
-			edges.forEach(function (d) {
-				virtualNodes.forEach(function (e) {
-					if (d.source.id === e.id || d.target.id === e.id) {
-						edgesVirtualNodes.push(d);
-					}
-				});
-			});
-			edgesVirtualNodes.forEach(function (e) {
-				highlightElements(e);
-			});
-		}
+		edges.forEach(function (d) {
+            virtualNodes.forEach(function (e) {
+                if (d.source.id === e.id || d.target.id === e.id) {
+                    edgesVirtualNodes.push(d);
+                }
+            });
+        });
+        edgesVirtualNodes.forEach(function (d) {
+            highlightElements(d);
+        });
+		return edgesVirtualNodes;
+	}
+
+	/**
+	 * Test whether virtual nodes are left, where not all incoming and outgoing edges are highlighted.
+	 *
+	 * @param edgesVirtualNodes
+	 * @param edgesVirtualNodesLast
+	 * @return edgesVirtualNodes
+     */
+	function testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast) {
+		var isVirtualNodeLeft = false;
+		edgesVirtualNodes.forEach(function (d) {
+            if (d.source.label === '') {
+                isVirtualNodeLeft = true;
+				// if the edge is already highlighted terminate loop
+				edgesVirtualNodesLast.forEach(function (e) {
+				    if(d.id === e.id){
+				        isVirtualNodeLeft = false;
+				    }
+			    });
+            }
+        });
+		return isVirtualNodeLeft;
 	}
 
 	/**
@@ -640,20 +709,5 @@ function DiscussionGraph() {
 		d3.select('#' + edge.target.id).attr('fill', '#E0E0E0');
 		// arrows
 		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', '#E0E0E0');
-	}
-
-	/**
-	 * Highlighting components of graph.
-	 *
-	 * @param edge: edge that should be highlighted
-     */
-	function highlightElements(edge){
-		// edges
-		d3.select('#' + edge.id).style('stroke', edge.color);
-		// nodes
-		d3.select('#' + edge.source.id).attr('fill', edge.source.color);
-		d3.select('#' + edge.target.id).attr('fill', edge.target.color);
-		// arrows
-		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
 	}
 }
