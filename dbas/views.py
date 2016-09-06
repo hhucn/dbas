@@ -2225,7 +2225,7 @@ class Dbas(object):
         return json.dumps(return_dict, True)
 
     # ajax - for undoing reviews
-    @view_config(route_name='ajax_review_lock', renderer='json')
+    @view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
     def review_lock(self):
         """
 
@@ -2246,11 +2246,15 @@ class Dbas(object):
             review_uid = self.request.params['review_uid']
             lock = True if self.request.params['lock'] == 'true' else False
             is_locked = True
-            if lock:
-                success, info, error, is_locked = ReviewQueueHelper.lock(self.request.authenticated_userid, review_uid, _t, transaction)
+
+            if not Validator.is_integer(review_uid):
+                error = _t.get(_t.internalKeyError)
             else:
-                ReviewQueueHelper.unlock_optimization_review(review_uid, transaction)
-                is_locked = False
+                if lock:
+                    success, info, error, is_locked = ReviewQueueHelper.lock(self.request.authenticated_userid, review_uid, _t, transaction)
+                else:
+                    ReviewQueueHelper.unlock_optimization_review(review_uid, transaction)
+                    is_locked = False
 
         except KeyError as e:
             logger('review_lock', 'error', repr(e))
