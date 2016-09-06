@@ -118,7 +118,7 @@ function doRecentReview(data){
 			console.log(data.reviewer_name + ' is a new reviewer');
 			queue.find$('a:last-child').remove();
 			var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
-			var img = $('<img>').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
+			var img = $('<img>').addClass('img-circle').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
 			link.append(img);
 			queue.prepend(link);
 		} else {
