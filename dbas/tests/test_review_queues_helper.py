@@ -62,7 +62,7 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         self.assertTrue(is_locked)
 
     def test_unlock(self):
-        ReviewQueuesHelper.unlock(3, transaction)
+        ReviewQueuesHelper.unlock_optimization_review(3, transaction)
         self.assertFalse(ReviewQueuesHelper.is_review_locked(3))
 
     def is_review_locked(self):
