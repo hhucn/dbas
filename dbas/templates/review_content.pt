@@ -108,6 +108,15 @@
                                     <td>${subpage.elements.reviewed_argument.stats.reported}</td>
                                 </tr>
                                 <tr>
+                                    <td i18n:translate="reported_by">Reported by</td>
+                                    <td>
+                                        <a tal:attributes="href subpage.elements.reviewed_argument.stats.reporter_url">
+                                            <img class="img-circle" tal:attributes="src subpage.elements.reviewed_argument.stats.reporter_gravatar">
+                                            ${subpage.elements.reviewed_argument.stats.reporter}
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td i18n:translate="viewed">Viewed</td>
                                     <td>${subpage.elements.reviewed_argument.stats.viewed}</td>
                                 </tr>
@@ -152,7 +161,7 @@
                             <tr tal:repeat="part subpage.elements.reviewed_argument.parts">
                                 <td style="width: 50%">${part.text}</td>
                                 <td style="width: 50%">
-                                    <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-id part.uid; data-argument part.argument; data-type part.type">
+                                    <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-id part.uid; data-argument part.arg; data-type part.type">
                                 </td>
                             </tr>
                         </tbody>

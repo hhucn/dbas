@@ -6,7 +6,8 @@ Provides helping function for the managing reviews.
 
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, LastReviewerOptimization, ReviewOptimization
+from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
+    LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag
 
 max_votes = 5
@@ -65,7 +66,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
 
 
 def add_review_opinion_for_edit(nickname, should_edit, review_uid, transaction):
-    # TODO
+    # TODO REVIEW EDIT FEEDBACK
     return None
 
 
@@ -102,19 +103,37 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     else:
         # add new edit
         from dbas.logger import logger
-        from dbas.lib import get_text_for_statement_uid
         argument_dict = {}
-        logger('X', 'X', str(data))
+        logger('X', 'X1', str(data))
+        # sort the new edits by argument uid
         for d in data:
-            logger('X', 'X', str(d))
+            logger('X', 'X1', str(d))
             if d['argument'] in argument_dict:
                 argument_dict[d['argument']].append(d)
             else:
                 argument_dict[d['argument']] = [d]
-            # everything we get, are statements
-            # db_statement = DBDiscussionSession.query(Statement).filter_by(int(d['uid']))
-            # logger('XXX', 'XX', 'old: ' + get_text_for_statement_uid(d['uid']))
-            # logger('XXX', 'XX', 'new: ' + d['text'])
+
+        # add reviews
+        new_edits = list()
+        for argument_uid in argument_dict:
+            logger('X', 'X2', str(argument_uid) + ' - ' + str(argument_dict[argument_uid]))
+            DBDiscussionSession.add(ReviewEdit(db_user.uid, argument_uid))
+            DBDiscussionSession.flush()
+            transaction.commit()
+            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
+                                                                               ReviewEdit.argument_uid == argument_uid)).order_by(ReviewEdit.uid.desc()).first()
+            for edit in argument_dict[argument_uid]:
+                logger('X', 'X3', str(db_review_edit.uid) + ' ' + str(argument_uid) + ' ' + str(edit['uid']) + ' ' + str(edit['type']) + ' ' + str(edit['val']))
+                new_edits.append(ReviewEditValue(db_review_edit.uid, argument_uid, edit['uid'], edit['type'], edit['val']))
+
+        # edit given, so this review is executed
+        logger('X', 'X4', 'Review ' + str(review_uid) + ' is now executed')
+        db_review.set_executed(True)
+
+        if len(new_edits) > 0:
+            DBDiscussionSession.add_all(new_edits)
+            DBDiscussionSession.flush()
+            transaction.commit()
 
     return error
 
