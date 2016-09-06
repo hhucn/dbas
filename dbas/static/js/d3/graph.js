@@ -45,8 +45,8 @@ function DiscussionGraph() {
 	 * @param d3
 	 */
 	this.setDefaultViewParams = function (startD3, jsonData, d3) {
-		$('#hide-content').hide();
-		$('#show-content').show();
+		$('#hide-labels').hide();
+		$('#show-labels').show();
 		$('#show-positions').show();
 		$('#hide-positions').hide();
 
@@ -137,8 +137,8 @@ function DiscussionGraph() {
 
 		// buttons of sidebar
 		showDefaultView(jsonData);
-        showContent(label, rect);
-		hideContent(label, rect);
+        showLabels(label, rect);
+		hideLabels(label, rect);
 		showPositions();
 		hidePositions();
 
@@ -481,12 +481,12 @@ function DiscussionGraph() {
 	 * @param label
 	 * @param rect
 	 */
-	function showContent (label, rect){
-		$('#show-content').click(function() {
+	function showLabels (label, rect){
+		$('#show-labels').click(function() {
 			label.style("display", "inline");
 			rect.style("display", "inline");
-			$('#show-content').hide();
-			$('#hide-content').show();
+			$('#show-labels').hide();
+			$('#hide-labels').show();
 			// also show content of positions
 			$('#show-positions').hide();
 			$('#hide-positions').show();
@@ -500,12 +500,12 @@ function DiscussionGraph() {
 	 * @param label
 	 * @param rect
 	 */
-	function hideContent(label, rect) {
-		$('#hide-content').click(function() {
+	function hideLabels(label, rect) {
+		$('#hide-labels').click(function() {
 			label.style("display", "none");
 			rect.style("display", "none");
-			$('#show-content').show();
-			$('#hide-content').hide();
+			$('#show-labels').show();
+			$('#hide-labels').hide();
 			isContentVisible = false;
 			if (isPositionVisible){
 				setDisplayStyleOfNodes('inline');
