@@ -64,6 +64,11 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     return None
 
 
+def add_review_opinion_for_edit(nickname, should_edit, review_uid, transaction):
+    # TODO
+    return None
+
+
 def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, translator, transaction):
     """
 

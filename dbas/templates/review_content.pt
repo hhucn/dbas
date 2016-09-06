@@ -19,6 +19,7 @@
                             <li><a href="${request.application_url}/review" i18n:attributes="review">Review</a></li>
                             <li tal:condition="subpage.button_set.is_delete" class="active" i18n:attributes="deletes">Deletes</li>
                             <li tal:condition="subpage.button_set.is_optimize" class="active" i18n:attributes="optimizations">Optimizations</li>
+                            <li tal:condition="subpage.button_set.is_edit" class="active" i18n:attributes="edits">Edits</li>
                         </ul>
                     </div>
                 </div>
@@ -39,6 +40,11 @@
                         <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm pull-right" data-queue="optimization" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
                         <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm pull-right" data-queue="optimization" i18n:translate="its_okay_so" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's okay so</a>
                         <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm pull-right" data-queue="optimization" i18n:translate="correct_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Let me correct it</a>
+                    </div>
+                    <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_edit">
+                        <a id="edit_skip" href="#" class="review-btn-optimize btn btn-info btn-sm pull-right" data-queue="edit" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
+                        <a id="edit_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm pull-right" data-queue="edit" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Reject it</a>
+                        <a id="edit_ack" href="#" class="review-btn-optimize btn btn-success btn-sm pull-right" data-queue="edit" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's Okay</a>
                     </div>
                 </div>
                 <div class="row" id="more_about_reason_content" style="display:none;">
@@ -68,6 +74,11 @@
                             <ul tal:condition="subpage.button_set.is_optimize" style="padding-left: 0.5em">
                                 <li><span class="text-success" i18n:translate="correct_it">Let me correct it</span> <span i18n:translate="correct_it_explanation">, if you have an idea for a better formulation with the same content.</span></li>
                                 <li><span class="text-danger" i18n:translate="its_okay_so">It's okay so</span> <span i18n:translate="its_okay_so_explanation">for arguments, which can be understood as-is.</span></li>
+                                <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
+                            </ul>
+                            <ul tal:condition="subpage.button_set.is_delete" style="padding-left: 0.5em">
+                                <li><span class="text-success" i18n:translate="its_okay">It's okay</span> <span i18n:translate="its_okay_explanation">, if the correction is acceptable and the argument is not falsified.</span></li>
+                                <li><span class="text-danger" i18n:translate="reject_it">Reject it</span> <span i18n:translate="reject_itexplanation">for correction which are inappropriate are wrong.</span></li>
                                 <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
                             </ul>
                         </blockquote>

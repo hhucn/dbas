@@ -2128,6 +2128,36 @@ class Dbas(object):
         return_dict['error'] = error
         return json.dumps(return_dict, True)
 
+    # ajax - for feedback on flagged arguments
+    @view_config(route_name='ajax_review_edit_argument', renderer='json')
+    def review_edit_argument(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('review_edit_argument', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+        error = ''
+
+        try:
+            should_edit = True if str(self.request.params['should_edit']) == 'true' else False
+            review_uid = self.request.params['review_uid']
+            nickname = self.request.authenticated_userid
+            if not Validator.is_integer(review_uid):
+                error = _t.get(_t.internalKeyError)
+            else:
+                ReviewMainHelper.add_review_opinion_for_edit(nickname, should_edit, review_uid, transaction)
+                send_request_for_recent_delete_review_to_socketio(nickname)
+        except KeyError as e:
+            logger('review_delete_argument', 'error', repr(e))
+            error = _t.get(_t.internalKeyError)
+
+        return_dict['error'] = error
+        return json.dumps(return_dict, True)
+
     # ajax - for feedback on optimization arguments
     @view_config(route_name='ajax_review_optimization_argument', renderer='json')
     def review_optimization_argument(self):

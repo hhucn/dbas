@@ -8,7 +8,7 @@ import random
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
-    ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization
+    ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit
 from dbas.helper.relation import RelationHelper
 from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid
@@ -16,7 +16,7 @@ from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from sqlalchemy import and_
 
-pages = ['deletes', 'optimizations']
+pages = ['deletes', 'optimizations', 'edits']
 
 
 def get_subpage_elements_for(request, subpage_name, nickname, translator):
@@ -32,7 +32,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     user_has_access = False
     no_arguments_to_review = False
-    button_set = {'is_delete': False, 'is_optimize': False}
+    button_set = {'is_delete': False, 'is_optimize': False, 'is_edit': False}
 
     # does the subpage exists
     if subpage_name not in pages and subpage_name != 'history':
@@ -61,7 +61,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
         subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator)
         button_set['is_optimize'] = True
     elif subpage_name == 'edits':
-        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator)
+        subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator)
         button_set['is_edit'] = True
 
     else:
@@ -191,7 +191,10 @@ def __get_subpage_dict_for_optimization(request, db_user, translator):
     :return:
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_optimization', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_optimization', db_user, ReviewOptimization, LastReviewerOptimization)
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
+                                                                                                'already_seen_optimization',
+                                                                                                db_user, ReviewOptimization,
+                                                                                                LastReviewerOptimization)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
@@ -239,11 +242,46 @@ def __get_subpage_dict_for_edits(request, db_user, translator):
     :return:
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_edits', 'main')
-    return {'stats': None,
-            'text': None,
-            'reason': None,
-            'issue': None,
-            'extra_info': None}
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
+                                                                                                'already_seen_edit',
+                                                                                                db_user,
+                                                                                                ReviewEdit,
+                                                                                                LastReviewerEdit)
+
+    extra_info = ''
+    # if we have no reviews, try again with fewer restrictions
+    if not db_reviews:
+        already_seen = list()
+        extra_info = 'already_seen' if not first_time else ''
+        db_reviews = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewEdit.is_executed == False,
+                                                                               ReviewEdit.detector_uid != db_user.uid,
+                                                                               ~ReviewEdit.uid.in_(already_reviewed))).all()
+
+    if not db_reviews:
+        return {'stats': None,
+                'text': None,
+                'reason': None,
+                'issue': None,
+                'extra_info': None}
+
+    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+    text = get_text_for_argument_uid(db_argument.uid)
+    reason = translator.get(translator.argumentFlaggedBecauseOptimization)
+    issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+
+    stats = __get_stats_for_argument(db_argument.uid)
+    stats['reported'] = sql_timestamp_pretty_print(rnd_review.timestamp, translator.get_lang())
+    stats['id'] = str(rnd_review.uid)
+
+    already_seen.append(rnd_review.uid)
+    request.session['already_seen_edit'] = already_seen
+
+    return {'stats': stats,
+            'text': text,
+            'reason': reason,
+            'issue': issue,
+            'extra_info': extra_info}
 
 
 def __get_stats_for_argument(argument_uid):
