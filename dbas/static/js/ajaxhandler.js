@@ -1162,6 +1162,27 @@ function AjaxReviewHandler(){
 		}).fail(function reviewDeleteArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
+	};
+	
+	/**
+	 *
+	 * @param queue
+	 * @param uid
+	 */
+	this.cancelReview = function(queue, uid){
+		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_cancel_review',
+			method: 'GET',
+			data:{ 'queue': queue, uid: uid },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrfToken }
+		}).done(function reviewDeleteArgumentDone(data) {
+			new ReviewOngoingsCallbacks().forUndoReview(data, queue, uid);
+		}).fail(function reviewDeleteArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
 	}
 	
 }

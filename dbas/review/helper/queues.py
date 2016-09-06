@@ -9,7 +9,7 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
     LastReviewerOptimization, OptimizationReviewLocks, get_now
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
-from dbas.lib import get_profile_picture
+from dbas.lib import get_profile_picture, is_user_author
 from sqlalchemy import and_
 from dbas.logger import logger
 
@@ -34,6 +34,8 @@ def get_review_queues_array(mainpage, translator, nickname):
     review_list.append(__get_delete_dict(mainpage, translator, nickname))
     review_list.append(__get_optimization_dict(mainpage, translator, nickname))
     review_list.append(__get_history_dict(mainpage, translator, nickname))
+    if is_user_author(nickname):
+        review_list.append(__get_ongoing_dict(mainpage, translator))
 
     return review_list
 
@@ -112,6 +114,30 @@ def __get_history_dict(mainpage, translator, nickname):
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitHistoryQueue),
                 'is_not_allowed_text': translator.get(translator.visitHistoryQueueLimitation).replace('XX', str(reputation_borders[key])),
+                'last_reviews': list()
+                }
+    return tmp_dict
+
+
+def __get_ongoing_dict(mainpage, translator):
+    """
+    Prepares dictionary for the a section.
+
+    :param mainpage: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    logger('ReviewQueues', '__get_ongoing_dict', 'main')
+    key = 'ongoing'
+    tmp_dict = {'task_name': 'Ongoing',
+                'id': 'flags',
+                'url': mainpage + '/review/' + key,
+                'icon': 'fa fa-clock-o',
+                'task_count': '-',
+                'is_allowed': True,
+                'is_allowed_text': translator.get(translator.visitOngoingQueue),
+                'is_not_allowed_text': '',
                 'last_reviews': list()
                 }
     return tmp_dict
