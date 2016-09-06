@@ -7,24 +7,31 @@ Provides helping function for the managing reputation.
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
     User, ReputationHistory, ReputationReason, ReviewDeleteReason
-from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture
+from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_arguments_and_premise_of_review
 from sqlalchemy import and_
 from dbas.strings.translator import Translator
 
 
-def get_complete_review_history(mainpage, nickname, translator):
+def get_complete_review_history(mainpage, nickname, translator, is_not_executed=False):
     """
 
+    :param mainpage:
     :param nickname:
+    :param translator:
+    :param is_not_executed:
     :return:
     """
     ret_dict = dict()
-    ret_dict['has_access'] = __has_access_to_history(nickname)
+    if is_not_executed:
+        ret_dict['has_access'] = is_user_author(nickname)
+    else:
+        ret_dict['has_access'] = __has_access_to_history(nickname)
+    ret_dict['is_history'] = not is_not_executed
 
-    deletes_list = __get_executed_reviews_of('deletes', mainpage, ReviewDelete, LastReviewerDelete, translator)
-    optimizations_list = __get_executed_reviews_of('optimizations', mainpage, ReviewOptimization, LastReviewerOptimization, translator)
+    deletes_list = __get_executed_reviews_of('deletes', mainpage, ReviewDelete, LastReviewerDelete, translator, is_not_executed)
+    optimizations_list = __get_executed_reviews_of('optimizations', mainpage, ReviewOptimization, LastReviewerOptimization, translator, is_not_executed)
 
     past_decision = [{
         'title': 'Delete Queue',
@@ -80,7 +87,7 @@ def get_reputation_history_of(nickname, translator):
     return ret_dict
 
 
-def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, translator):
+def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, translator, is_not_executed=False):
     """
     Returns array with all relevant information about the last reviews of the given table.
 
@@ -89,10 +96,11 @@ def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, tra
     :param table_type: Type of the review table
     :param last_review_type: Type of the last reviewer of the table
     :param translator: current ui_locales
+    :param is_not_executed
     :return: Array with all decision per table
     """
     some_list = list()
-    db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == True).order_by(table_type.uid.desc()).all()
+    db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed != is_not_executed).order_by(table_type.uid.desc()).all()
 
     for review in db_reviews:
         fulltext = get_text_for_argument_uid(review.argument_uid)
@@ -163,6 +171,32 @@ def __has_access_to_history(nickname):
 
 
 def revoke_decision(queue, uid, lang, transaction):
+    """
+
+    :param queue:
+    :param uid:
+    :param lang:
+    :param transaction:
+    :return:
+    """
+    success = ''
+    error = ''
+    _t = Translator(lang)
+    if queue == 'deletes':
+        __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid, transaction)
+
+        success = _t.get(_t.dataRemoved)
+    elif queue == 'optimizations':
+        __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid, transaction)
+        success = _t.get(_t.dataRemoved)
+
+    else:
+        error = _t.get(_t.internalKeyError)
+
+    return success, error
+
+
+def cancel_decision(queue, uid, lang, transaction):
     """
 
     :param queue:
