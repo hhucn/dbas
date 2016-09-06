@@ -739,16 +739,32 @@
     				<h4 class="modal-title" id="myModalLabel" i18n:translate="mark-reason">Please mark a reason</h4>
     			</div>
     			<div class="modal-body">
+                    <p class="well well-sm" i18n:translate="keep_in_mind_that_you_can_argue">Please keep in mind that you can argue against the argument or the justification too. This mask is for reporting arguments!</p>
                     <form>
                       <fieldset>
-                        <input type="radio" id="opt" value="optimization" name="flag_argument">
-                        <label for="opt"> <span i18n:translate="statement_optimization">The text needs and correcture.</span><br><small>This statement is right, but needs correcture for his spelling/grammar..</small></label><br>
-                        <input type="radio" id="off" value="offtopic" name="flag_argument">
-                        <label for="off"> <span i18n:translate="statement_offtopic">This statement is offtopic.</span><br><small>Content of the statement is useful, but does not belong to this discussion.</small></label><br>
-                        <input type="radio" id="sp" value="spam" name="flag_argument">
-                        <label for="sp"> <span i18n:translate="statement_spam">It is not relevant at all.</span><br><small>This statement is not important for any discussion on D-BAS.</small></label><br>
-                        <input type="radio" id="bad" value="harmful" name="flag_argument">
-                        <label for="bad"> <span i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br><small>Content is inappropriate, harmful or abusive.</small></label>
+                          <input type="radio" id="opt" value="optimization" name="flag_argument">
+                          <label for="opt">
+                              <span i18n:translate="statement_optimization">The text needs and correcture.</span><br>
+                              <small>This statement is right, but needs correcture for his spelling/grammar..</small>
+                          </label>
+                          <br>
+                          <input type="radio" id="off" value="offtopic" name="flag_argument">
+                          <label for="off">
+                              <span i18n:translate="statement_offtopic">This statement is offtopic.</span><br>
+                              <small>Content of the statement is useful, but does not belong to this discussion.</small>
+                          </label>
+                          <br>
+                          <input type="radio" id="sp" value="spam" name="flag_argument">
+                          <label for="sp">
+                              <span i18n:translate="statement_spam">It is not relevant at all.</span><br>
+                              <small>This statement is not important for any discussion on D-BAS.</small>
+                          </label>
+                          <br>
+                          <input type="radio" id="bad" value="harmful" name="flag_argument">
+                          <label for="bad">
+                              <span i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br>
+                              <small>Content is inappropriate, harmful or abusive.</small>
+                          </label>
                       </fieldset>
                     </form>
     			</div>
