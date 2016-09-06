@@ -899,7 +899,7 @@ class Dbas(object):
             return Dbas(self.request).user_logout(True)
 
         subpage_name = self.request.matchdict['queue']
-        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn)
+        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn, mainpage)
         if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
             return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
@@ -2281,7 +2281,7 @@ class Dbas(object):
                 error = _t.get(_t.internalKeyError)
             else:
                 if lock:
-                    success, info, error, is_locked = ReviewQueueHelper.lock(self.request.authenticated_userid, review_uid, _t, transaction)
+                    success, info, error, is_locked = ReviewQueueHelper.lock_optimization_review(self.request.authenticated_userid, review_uid, _t, transaction)
                 else:
                     ReviewQueueHelper.unlock_optimization_review(review_uid, transaction)
                     is_locked = False

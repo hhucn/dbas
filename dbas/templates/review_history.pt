@@ -57,7 +57,7 @@
                                         <td class="center" tal:switch="len(rep.votes_pro) > 0">
                                             <div tal:case="True" tal:omit-tag="" tal:repeat="pro rep.votes_pro">
                                                 <a tal:attributes="href pro.userpage_url; title pro.nickname">
-                                                    <img tal:attributes="src pro.gravatar_url">
+                                                    <img class="img-circle" tal:attributes="src pro.gravatar_url">
                                                 </a>
                                             </div>
                                             <span tal:case="False">-</span>
@@ -65,7 +65,7 @@
                                         <td class="center" tal:switch="len(rep.votes_con) > 0">
                                             <div tal:case="True" tal:omit-tag="" tal:repeat="con rep.votes_con">
                                                 <a tal:attributes="href con.userpage_url; title con.nickname">
-                                                    <img tal:attributes="src con.gravatar_url">
+                                                    <img class="img-circle" tal:attributes="src con.gravatar_url">
                                                 </a>
                                             </div>
                                             <span tal:case="False">-</span>
