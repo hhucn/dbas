@@ -217,7 +217,7 @@ def lock(nickname, review_uid, translator, transaction):
     # has user already locked an item?
     db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-    if not db_user:
+    if not db_user or review_uid < 1:
         error = translator.get(translator.internalKeyError)
         return success, info, error, is_locked
 
