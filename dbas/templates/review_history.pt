@@ -9,18 +9,21 @@
 			<img tal:condition="not:history.has_access" class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
 
             <div class="row" tal:condition="history.has_access">
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <ul class="breadcrumb">
                         <li><a href="${request.application_url}/review" i18n:attributes="review">Review</a></li>
                         <li tal:condition="history.is_history" class="active" i18n:translate="history">History</li>
                         <li tal:condition="not:history.is_history" class="active" i18n:translate="current_decisions">Current Decisions</li>
                     </ul>
                 </div>
+                <div class="col-md-8">
+                    <h4 tal:condition="history.has_access" class="center">
+                        <i tal:condition="history.is_history" class="fa fa-history" aria-hidden="true"></i><i tal:condition="not:history.is_history" class="fa fa-time-o" aria-hidden="true"></i>
+                        <span tal:condition="history.is_history" i18n:translate="history_of_votes">The history of votes</span>
+                        <span tal:condition="not:history.is_history" i18n:translate="current_decisions">Current decisions</span>!
+                    </h4>
+                </div>
             </div>
-
-            <h4 tal:condition="history.has_access" class="center">
-                <i tal:condition="history.is_history" class="fa fa-history" aria-hidden="true"></i><i tal:condition="not:history.is_history" class="fa fa-time-o" aria-hidden="true"></i> <span tal:condition="history.is_history" i18n:translate="history_of_votes">The history of votes</span><span tal:condition="not:history.is_history" i18n:translate="current_decisions">Current decisions</span>!
-            </h4>
 		</div>
 
 
@@ -34,8 +37,10 @@
                             <table class="table table-condensed" border="0">
                                 <thead>
                                     <tr>
-                                        <td i18n:translate="argument">Argument</td>
+                                        <td tal:condition="not:past.has_oem_text" i18n:translate="argument">Argument</td>
+                                        <td tal:condition="past.has_oem_text" i18n:translate="edit">Edit</td>
                                         <td tal:condition="past.has_reason" i18n:translate="reason">Reason</td>
+                                        <td tal:condition="past.has_oem_text" i18n:translate="original">Original</td>
                                         <td i18n:translate="votes">Votes</td>
                                         <td i18n:translate="voters_pro" class="center">Voters Pro</td>
                                         <td i18n:translate="voters_con" class="center">Voters Con</td>
@@ -48,6 +53,7 @@
                                     <tr tal:repeat="rep past.content" tal:attributes="id rep.row_id">
                                         <td tal:attributes="title rep.argument_fulltext; id rep.entry_id">${structure:rep.argument_shorttext}</td>
                                         <td tal:condition="past.has_reason">${rep.reason}</td>
+                                        <td tal:condition="past.has_oem_text" tal:attributes="title rep.argument_oem_fulltext; id rep.entry_id">${structure:rep.argument_oem_shorttext}</td>
                                         <td class="center">
                                             <a href="#">
                                                 <span class="text-success">${len(rep.votes_pro)}</span>:
@@ -57,7 +63,7 @@
                                         <td class="center" tal:switch="len(rep.votes_pro) > 0">
                                             <div tal:case="True" tal:omit-tag="" tal:repeat="pro rep.votes_pro">
                                                 <a tal:attributes="href pro.userpage_url; title pro.nickname">
-                                                    <img tal:attributes="src pro.gravatar_url">
+                                                    <img class="img-circle" tal:attributes="src pro.gravatar_url">
                                                 </a>
                                             </div>
                                             <span tal:case="False">-</span>
@@ -65,7 +71,7 @@
                                         <td class="center" tal:switch="len(rep.votes_con) > 0">
                                             <div tal:case="True" tal:omit-tag="" tal:repeat="con rep.votes_con">
                                                 <a tal:attributes="href con.userpage_url; title con.nickname">
-                                                    <img tal:attributes="src con.gravatar_url">
+                                                    <img class="img-circle" tal:attributes="src con.gravatar_url">
                                                 </a>
                                             </div>
                                             <span tal:case="False">-</span>
@@ -91,7 +97,6 @@
             </div>
         </div>
 
-        <script tal:condition="history.is_history" type="text/javascript" src="${request.static_url('dbas:static/js/review/history.js')}"></script>
-        <script tal:condition="not:history.is_history" type="text/javascript" src="${request.static_url('dbas:static/js/review/ongoing.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/history.js')}"></script>
 	</tal:block>
 </tal:block>

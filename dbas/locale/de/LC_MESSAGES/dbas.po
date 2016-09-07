@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-06 07:32+0200\n"
+"POT-Creation-Date: 2016-09-07 11:40+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -480,51 +480,51 @@ msgid "recent_reviews"
 msgstr "Letzte Gutachter"
 
 #. Default: None
-#: templates/review.pt:67
+#: templates/review.pt:68
 msgid "None"
 msgstr "Keine"
 
 #. Default: What is reputation? How do I earn (and lose) it?
-#: templates/review.pt:79
+#: templates/review.pt:80
 msgid "what_is_reputation"
 msgstr "Was ist Reputation? Wie bekomme (verliere) ich diese?"
 
 #. Default: Reputation is a rough measurement of how work you are doing for the
 #. discussion and the community;
-#: templates/review.pt:80
+#: templates/review.pt:81
 msgid "what_is_reputation_def"
 msgstr ""
 "Reputation ist eine grobe Messung, wieviel Arbeit Sie in die Diskussion und "
 "die Communty stecken;"
 
 #. Default: you can earn it by using D-BAS and all of its great functions.
-#: templates/review.pt:81
+#: templates/review.pt:82
 msgid "what_is_reputation_earn"
 msgstr "Sie können mehr Reputation durch die Nutzung von D-BAS verdienen"
 
 #. Default: Basic use of D-BAS, does not require any reputation at all.
-#: templates/review.pt:82
+#: templates/review.pt:83
 msgid "what_is_reputation_use"
 msgstr "Normale Nutzung von D-BAS bedarf keiner Reputation."
 
 #. Default: You gain reputation when:
-#: templates/review.pt:85
+#: templates/review.pt:86
 msgid "gain_rep_when"
 msgstr "Reputation bekommen"
 
 #. Default: You lose reputation when:
-#: templates/review.pt:94
+#: templates/review.pt:95
 msgid "lose_rep_when"
 msgstr "Reputation verlieren"
 
 #. Default: Privileges
-#: templates/review.pt:106
+#: templates/review.pt:107
 msgid "privileges"
 msgstr "Privilegien"
 
 #. Default: Privileges control what you can see in the review queues of D-BAS.
 #. Gain more privileges by increasing your reputation.
-#: templates/review.pt:107
+#: templates/review.pt:108
 msgid "privileges_explanation"
 msgstr ""
 "Durch Privilegien erhalten Sie Zugriff auf die Schlangen von D-BAS. Erhalten "
@@ -545,68 +545,69 @@ msgstr "Auf diese Seite haben Sie keinen Zugriff"
 msgid "history"
 msgstr "Ihre letzte URL-History"
 
-#. Default: The history of votes
-#: templates/review_history.pt:21
-msgid "history_of_votes"
-msgstr "Die Geschichte der Abstimmungen!"
-
+#. Default: Current Decisions
 #. Default: Current decisions
-#: templates/review_history.pt:21
+#: templates/review_history.pt:16 templates/review_history.pt:24
 msgid "current_decisions"
 msgstr "Aktuelle Entscheidungen"
 
+#. Default: The history of votes
+#: templates/review_history.pt:23
+msgid "history_of_votes"
+msgstr "Die Geschichte der Abstimmungen"
+
 #. Default: No decisions for this queue.
-#: templates/review_history.pt:31
+#: templates/review_history.pt:34
 msgid "no_decision_for_this_queue"
 msgstr "Keine Abstimmungen in dieser Schlange."
 
 #. Default: Argument
-#: templates/review_history.pt:36
+#: templates/review_history.pt:39
 msgid "argument"
 msgstr "Argument"
 
 #. Default: Reason
-#: templates/review_history.pt:37
+#: templates/review_history.pt:40
 msgid "reason"
 msgstr "Grund"
 
 #. Default: Votes
-#: templates/review_history.pt:38
+#: templates/review_history.pt:41
 msgid "votes"
 msgstr "Stimmen"
 
 #. Default: Voters Pro
-#: templates/review_history.pt:39
+#: templates/review_history.pt:42
 msgid "voters_pro"
 msgstr "Stimmen dafür"
 
 #. Default: Voters Con
-#: templates/review_history.pt:40
+#: templates/review_history.pt:43
 msgid "voters_con"
 msgstr "Stimmen dagegen"
 
 #. Default: Accepted
-#: templates/review_history.pt:41
+#: templates/review_history.pt:44
 msgid "accepted"
 msgstr "Akzeptiert"
 
 #. Default: Timestamp
-#: templates/review_history.pt:42
+#: templates/review_history.pt:45
 msgid "timestamp"
 msgstr "Zeitstempel"
 
 #. Default: Action
-#: templates/review_history.pt:43
+#: templates/review_history.pt:46
 msgid "actions"
 msgstr "Aktion"
 
 #. Default: Undo
-#: templates/review_history.pt:78
+#: templates/review_history.pt:81
 msgid "undo"
 msgstr "Rückgängig machen"
 
 #. Default: Cancel
-#: templates/review_history.pt:81 templates/snippet-popups.pt:175
+#: templates/review_history.pt:84 templates/snippet-popups.pt:175
 #: templates/snippet-popups.pt:200
 msgid "cancel"
 msgstr "Abbrechen"
@@ -885,7 +886,7 @@ msgstr "Password generieren"
 
 #. Default: Anti-Spam (required)
 #. Default: Spam
-#: templates/snippet-popups.pt:390 templates/review_content.pt:53
+#: templates/snippet-popups.pt:390 templates/review_content.pt:60
 msgid "spam"
 msgstr "Anti-Spam"
 
@@ -1000,23 +1001,29 @@ msgstr "Nachricht senden"
 msgid "mark-reason"
 msgstr "Bitte geben Sie einen Grund an"
 
+#. Default: Please keep in mind that you can argue against the argument or the
+#. justification too. This mask is for reporting arguments!
+#: templates/snippet-popups.pt:742
+msgid "keep_in_mind_that_you_can_argue"
+msgstr "Bitte beachten Sie, dass Sie auch gegen das Argument oder die Begründungen argumentieren können. Diese Auswahl ist nur dazu, um Argumente zu melden."
+
 #. Default: The text needs and correcture.
-#: templates/snippet-popups.pt:745
+#: templates/snippet-popups.pt:747
 msgid "statement_optimization"
 msgstr "Der Text sollte überarbeitet werden."
 
 #. Default: This statement is offtopic.
-#: templates/snippet-popups.pt:747
+#: templates/snippet-popups.pt:753
 msgid "statement_offtopic"
 msgstr "Die Aussage gehört nicht zum Thema."
 
 #. Default: It is not relevant at all.
-#: templates/snippet-popups.pt:749
+#: templates/snippet-popups.pt:759
 msgid "statement_spam"
 msgstr "Sie ist nicht relevant."
 
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:751
+#: templates/snippet-popups.pt:765
 msgid "statement_harmful"
 msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
 
@@ -1276,166 +1283,197 @@ msgid "reputation"
 msgstr "Repuation"
 
 #. Default: (more)
-#: templates/review_content.pt:29
+#: templates/review_content.pt:30
 msgid "wrapped_more"
 msgstr "(mehr)"
 
 #. Default: (less)
-#: templates/review_content.pt:30
+#: templates/review_content.pt:31
 msgid "wrapped_less"
 msgstr "(weniger)"
 
 #. Default: Skip it
-#: templates/review_content.pt:34 templates/review_content.pt:39
-#: templates/review_content.pt:66 templates/review_content.pt:71
+#: templates/review_content.pt:35 templates/review_content.pt:40
+#: templates/review_content.pt:45 templates/review_content.pt:73
+#: templates/review_content.pt:78 templates/review_content.pt:83
 msgid "skip_it"
 msgstr "Überspringen"
 
 #. Default: Delete it
-#: templates/review_content.pt:35 templates/review_content.pt:65
+#: templates/review_content.pt:36 templates/review_content.pt:72
 msgid "delete_it"
 msgstr "Löschen"
 
 #. Default: It's Okay
-#: templates/review_content.pt:36 templates/review_content.pt:64
+#. Default: It's okay
+#: templates/review_content.pt:37 templates/review_content.pt:47
+#: templates/review_content.pt:71 templates/review_content.pt:81
 msgid "its_okay"
 msgstr "Das ist okay so"
 
 #. Default: It's okay so
-#: templates/review_content.pt:40 templates/review_content.pt:70
+#: templates/review_content.pt:41 templates/review_content.pt:77
 msgid "its_okay_so"
 msgstr "Das ist okay so"
 
 #. Default: Let me correct it
-#: templates/review_content.pt:41 templates/review_content.pt:69
+#: templates/review_content.pt:42 templates/review_content.pt:76
 msgid "correct_it"
 msgstr "Lass' mich eine Verbesserungen angeben"
 
+#. Default: Reject it
+#: templates/review_content.pt:46 templates/review_content.pt:82
+msgid "reject_it"
+msgstr "Ablehnen"
+
 #. Default: Off topic
-#: templates/review_content.pt:50
+#: templates/review_content.pt:57
 msgid "off_topic"
 msgstr "Abseits des Themas"
 
 #. Default: are useful in general, but do not belong to the current discussion
-#: templates/review_content.pt:50
+#: templates/review_content.pt:57
 msgid "off_topic_explanation"
 msgstr "wenn die Themen sinnvoll sind, aber nicht themenbezogen"
 
 #. Default: Inappropriate, harmful or abbusive
-#: templates/review_content.pt:51
+#: templates/review_content.pt:58
 msgid "inappropriate_harmful_abbusive"
 msgstr "Nicht angebracht, verletzend oder verachtend"
 
 #. Default: are posts, which are inappropriate, harmful or abbusive
-#: templates/review_content.pt:51
+#: templates/review_content.pt:58
 msgid "inappropriate_harmful_abbusive_explanation"
 msgstr "wenn Beiträge nicht angebracht, verletzend oder verachtend sind"
 
 #. Default: Needs optimization
-#: templates/review_content.pt:52
+#: templates/review_content.pt:59
 msgid "needs_optimization"
 msgstr "Der Text sollte überarbeitet werden"
 
 #. Default: if posts are useful, but need edits in grammar and/or spelling
-#: templates/review_content.pt:52
+#: templates/review_content.pt:59
 msgid "needs_optimization_explanation"
 msgstr "wenn Beiträge rein sprachlich überarbeitet werden sollten"
 
 #. Default: is neither useful nor mappend to a discussions topic
-#: templates/review_content.pt:53
+#: templates/review_content.pt:60
 msgid "spam_explanation"
 msgstr "wenn Beiträge weder sinnvoll noch themenbezogen sind"
 
 #. Default: for arguments, which should not be deleted.
-#: templates/review_content.pt:64
+#. Default: , if the correction is acceptable and the argument is not
+#. falsified.
+#: templates/review_content.pt:71 templates/review_content.pt:81
 msgid "its_okay_explanation"
 msgstr "für Argumente, die nicht gelöscht werden sollen."
 
 #. Default: for arguments, that should be deleted based on the reason above.
-#: templates/review_content.pt:65
+#: templates/review_content.pt:72
 msgid "delete_it_explanation"
 msgstr ""
 "für Argumente, die basierend auf dem genannten Grund, gelöscht werden sollen."
 
 #. Default: if you are not sure and want to go to the next argument.
-#: templates/review_content.pt:66 templates/review_content.pt:71
+#: templates/review_content.pt:73 templates/review_content.pt:78
+#: templates/review_content.pt:83
 msgid "skip_it_explanation"
 msgstr "wenn Sie unsicher sind und zum Nächsten gehen möchten."
 
 #. Default: , if you have an idea for a better formulation with the same
 #. content.
-#: templates/review_content.pt:69
+#: templates/review_content.pt:76
 msgid "correct_it_explanation"
 msgstr ""
 ", wenn Sie eine Idee zur besseren Formulierung (aber demselben Inhalt) haben."
 
 #. Default: for arguments, which can be understood as-is.
-#: templates/review_content.pt:70
+#: templates/review_content.pt:77
 msgid "its_okay_so_explanation"
 msgstr "für Argumente, die so gut verständlich sind."
 
+#. Default: for correction which are inappropriate are wrong.
+#: templates/review_content.pt:82
+msgid "reject_itexplanation"
+msgstr "für Änderungen, die falsch sind."
+
 #. Default: In the discussion about
-#: templates/review_content.pt:80
+#: templates/review_content.pt:93 templates/review_content.pt:104
 msgid "in_the_discussion_about"
 msgstr "In der Diskussion über"
 
+#. Default: following argument was corrected.
+#: templates/review_content.pt:95
+msgid "following_argument_was_corrected"
+msgstr "folgendes Argument würde korrigiert."
+
 #. Default: following argument was flagged.
-#: templates/review_content.pt:82
+#: templates/review_content.pt:106
 msgid "following_argument_was_flagged"
 msgstr "wurde folgendes Argument markiert."
 
+#. Default: This is the original version
+#: templates/review_content.pt:109
+msgid "this_is_original_version"
+msgstr "Dies ist die ursprüngliche Version"
+
 #. Default: Reported
-#: templates/review_content.pt:96
+#: templates/review_content.pt:121
 msgid "reported"
 msgstr "Gemeldet am"
 
+#. Default: Reported by
+#: templates/review_content.pt:125
+msgid "reported_by"
+msgstr "Gemeldet von"
+
 #. Default: Viewed
-#: templates/review_content.pt:100
+#: templates/review_content.pt:134
 msgid "viewed"
 msgstr "Gesehen von"
 
 #. Default: Attacks
-#: templates/review_content.pt:104
+#: templates/review_content.pt:138
 msgid "attacks"
 msgstr "Attackiert von"
 
 #. Default: Supports
-#: templates/review_content.pt:108
+#: templates/review_content.pt:142
 msgid "supports"
 msgstr "Unterstützt von"
 
 #. Default: Request lock
-#: templates/review_content.pt:125
+#: templates/review_content.pt:160
 msgid "request_lock"
 msgstr "Sperrung anfragen"
 
 #. Default: This argument is locked for your edit. You have
-#: templates/review_content.pt:128
+#: templates/review_content.pt:163
 msgid "argument_is_locked"
 msgstr "Dieses Argument ist für Sie gesperrt. Sie haben"
 
 #. Default: minutes
-#: templates/review_content.pt:129
+#: templates/review_content.pt:164
 msgid "minutes"
 msgstr "Minuten"
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review_content.pt:130
+#: templates/review_content.pt:165
 msgid "please_make_your_edits"
 msgstr "Bitte geben Sie Änderungen in Grammatik/Rechschreibung hier an:"
 
 #. Default: Original
-#: templates/review_content.pt:136
+#: templates/review_content.pt:171
 msgid "original"
 msgstr "Original"
 
 #. Default: Your correcture
-#: templates/review_content.pt:137
+#: templates/review_content.pt:172
 msgid "your correcture"
 msgstr "Ihre Änderung"
 
 #. Default: Send
-#: templates/review_content.pt:151
+#: templates/review_content.pt:186
 msgid "send"
 msgstr "Änderungen schicken"
 

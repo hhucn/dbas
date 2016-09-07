@@ -55,6 +55,7 @@ class Translator(object):
         self.argumentFlaggedBecauseSpam = 'argumentFlaggedBecauseSpam'
         self.argumentFlaggedBecauseHarmful = 'argumentFlaggedBecauseHarmful'
         self.argumentFlaggedBecauseOptimization = 'argumentFlaggedBecauseOptimization'
+        self.argumentFlaggedBecauseEdit = 'argumentFlaggedBecauseEdit'
         self.alternatively = 'alternatively'
         self.alreadyFlaggedByOthers = 'alreadyFlaggedByOthers'
         self.alreadyFlaggedByYou = 'alreadyFlaggedByYou'

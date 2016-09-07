@@ -752,6 +752,39 @@ class ReviewEdit(DiscussionBase):
         self.timestamp = get_now()
         self.is_executed = is_executed
 
+    def set_executed(self, is_executed):
+        """
+
+        :param is_executed:
+        :return:
+        """
+        self.is_executed = is_executed
+
+
+class ReviewEditValue(DiscussionBase):
+    __tablename__ = 'review_edit_values'
+    uid = Column(Integer, primary_key=True)
+    reviewedit_uid = Column(Integer, ForeignKey('review_edits.uid'))
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    typeof = Column(Text, nullable=False)
+    content = Column(Text, nullable=False)
+
+    def __init__(self, review_edit, argument, statement, typeof, content):
+        """
+
+        :param review_edit:
+        :param argument:
+        :param statement:
+        :param typeof:
+        :param content:
+        """
+        self.reviewedit_uid = review_edit
+        self.argument_uid = argument
+        self.statement_uid = statement
+        self.typeof = typeof
+        self.content = content
+
 
 class ReviewOptimization(DiscussionBase):
     """
@@ -777,6 +810,14 @@ class ReviewOptimization(DiscussionBase):
         self.detector_uid = detector
         self.argument_uid = argument
         self.timestamp = get_now()
+        self.is_executed = is_executed
+
+    def set_executed(self, is_executed):
+        """
+
+        :param is_executed:
+        :return:
+        """
         self.is_executed = is_executed
 
 
@@ -829,12 +870,11 @@ class LastReviewerEdit(DiscussionBase):
     review_uid = Column(Integer, ForeignKey('review_edits.uid'))
     is_okay = Column(Boolean, nullable=False)
     timestamp = Column(ArrowType, default=get_now())
-    content = Column(Text, nullable=False)
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewEdit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay, content):
+    def __init__(self, reviewer, review, is_okay):
         """
 
         :param reviewer:
@@ -845,7 +885,6 @@ class LastReviewerEdit(DiscussionBase):
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
-        self.content = content
 
 
 class LastReviewerOptimization(DiscussionBase):
