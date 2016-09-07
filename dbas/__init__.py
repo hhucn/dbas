@@ -50,7 +50,7 @@ def main(global_config, **settings):
                 'mail.host': 'imap.googlemail.com',
                 'mail.port': '465',
                 'mail.username': 'dbas.hhu@gmail.com',
-                'mail.password': 'dbas_System#2015',
+                'mail.password': 'orpcihtyuecxhoup',
                 'mail.ssl': 'True',
                 'mail.tls': 'False',
                 'mail.default_sender': 'dbas.hhu@gmail.com'

@@ -143,6 +143,7 @@ class EnglischDict:
         en_lang[_self.argumentFlaggedBecauseSpam] = 'This argument was reported by a participant, because it probably is <strong>spam</strong>.'
         en_lang[_self.argumentFlaggedBecauseHarmful] = 'This argument was reported by a participant, because it probably is <strong>inappropriate, harmful or abbusive</strong>.'
         en_lang[_self.argumentFlaggedBecauseOptimization] = 'This argument was reported by a participant, because it probably <strong>needs optimization</strong>.'
+        en_lang[_self.argumentFlaggedBecauseEdit] = 'This argument was improved from a grammatical point of view.'
         en_lang[_self.alternatively] = 'Alternatively'
         en_lang[_self.addArguments] = 'Add arguments'
         en_lang[_self.addStatements] = 'Add statements'
