@@ -874,7 +874,7 @@ class LastReviewerEdit(DiscussionBase):
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewEdit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay, content):
+    def __init__(self, reviewer, review, is_okay):
         """
 
         :param reviewer:
@@ -885,7 +885,6 @@ class LastReviewerEdit(DiscussionBase):
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
-        self.content = content
 
 
 class LastReviewerOptimization(DiscussionBase):
