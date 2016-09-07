@@ -237,7 +237,7 @@ function DiscussionGraph() {
 	function createArrowDict(edges){
 		var edgesTypeArrow = [];
 		edges.forEach(function(d){
-			if(d.edge_type == 'arrow'){
+			if(d.edge_type === 'arrow'){
 			    return edgesTypeArrow.push(d);
 			}
 		});
@@ -256,8 +256,8 @@ function DiscussionGraph() {
             .enter().append("svg:marker")
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
 			       refX: function(d){
-			                 if(d.target.label == ''){ return 4; }
-				             else if(d.target.size == 8){ return 8; }
+			                 if(d.target.label === ''){ return 4; }
+				             else if(d.target.id === 'issue'){ return 8; }
 				             else{ return 7; }}, refY: 2.2,
                    markerWidth: 10, markerHeight: 10,
                    orient: "auto"})
@@ -366,7 +366,7 @@ function DiscussionGraph() {
 			var element = $("#label-" + d.id);
 		    var width = element.width() + 24;
 			var height = element.height() + 10;
-			if(d.size == 0){
+			if(d.size === 0){
 				width = 0;
 				height = 0;
 			}
@@ -428,7 +428,7 @@ function DiscussionGraph() {
         .enter().append("circle")
 		.attr({fill: function (d,i) {return legendColorCircle[i];},
                r: function (d,i) {
-	               if(i == 0) { return 8; }
+	               if(i === 0) { return 8; }
 				   else { return 6; }},
 			   cy: function (d,i) {return i*40;}});
 	}
@@ -542,12 +542,21 @@ function DiscussionGraph() {
 		});
 	}
 
+	/**
+	 * Set display style of nodes.
+	 *
+	 * @param style
+     */
 	function setDisplayStyleOfNodes(style) {
+		// select edges with position as source and issue as target
 		d3.selectAll(".node").each(function(d) {
-			if(d.color == '#3D5AFE' && d.size == '6') {
-				d3.select('#label-' + d.id).style("display", style);
-				d3.select("#rect-" + d.id).style("display", style);
-			}
+			d3.selectAll(".link").each(function(e) {
+				if (e.source.id === d.id && e.target.id === 'issue') {
+					// set display style of positions
+					d3.select('#label-' + d.id).style("display", style);
+					d3.select("#rect-" + d.id).style("display", style);
+				}
+		    });
 		});
 	}
 
