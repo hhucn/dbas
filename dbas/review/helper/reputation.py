@@ -11,10 +11,12 @@ from dbas.lib import is_user_author
 
 reputation_borders = {'deletes': 30,
                       'optimizations': 30,
+                      'edits': 30,
                       'history': 150}
 
 reputation_icons = {'deletes': 'fa fa-pencil-square-o',
                     'optimizations': 'fa fa-flag',
+                    'edits': 'fa fa-pencil-square-o',
                     'history': 'fa fa-history'}
 
 # every reason by its name

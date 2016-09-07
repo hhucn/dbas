@@ -899,7 +899,7 @@ class Dbas(object):
             return Dbas(self.request).user_logout(True)
 
         subpage_name = self.request.matchdict['queue']
-        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn)
+        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn, mainpage)
         if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
             return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
 
@@ -932,7 +932,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        history = ReviewHistoryHelper.get_complete_review_history(mainpage, self.request.authenticated_userid, _tn)
+        history = ReviewHistoryHelper.get_review_history(mainpage, self.request.authenticated_userid, _tn)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
@@ -961,7 +961,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        history = ReviewHistoryHelper.get_complete_review_history(mainpage, self.request.authenticated_userid, _tn, True)
+        history = ReviewHistoryHelper.get_ongoing_reviews(mainpage, self.request.authenticated_userid, _tn)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
@@ -2110,16 +2110,46 @@ class Dbas(object):
         ui_locales = get_discussion_language(self.request)
         _t = Translator(ui_locales)
         return_dict = dict()
-        error = ''
 
         try:
             should_delete = True if str(self.request.params['should_delete']) == 'true' else False
             review_uid = self.request.params['review_uid']
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
+                logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
-                ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
+                error = ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, transaction)
+                send_request_for_recent_delete_review_to_socketio(nickname)
+        except KeyError as e:
+            logger('review_delete_argument', 'error', repr(e))
+            error = _t.get(_t.internalKeyError)
+
+        return_dict['error'] = error
+        return json.dumps(return_dict, True)
+
+    # ajax - for feedback on flagged arguments
+    @view_config(route_name='ajax_review_edit_argument', renderer='json')
+    def review_edit_argument(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('review_edit_argument', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+
+        try:
+            should_edit = True if str(self.request.params['should_edit']) == 'true' else False
+            review_uid = self.request.params['review_uid']
+            nickname = self.request.authenticated_userid
+            if not Validator.is_integer(review_uid):
+                logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
+                error = _t.get(_t.internalKeyError)
+            else:
+                error = ReviewMainHelper.add_review_opinion_for_edit(nickname, should_edit, review_uid, _t, transaction)
                 send_request_for_recent_delete_review_to_socketio(nickname)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
@@ -2148,6 +2178,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if not Validator.is_integer(review_uid):
+                logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
                 error = ReviewMainHelper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t, transaction)
@@ -2181,7 +2212,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                success, error = ReviewHistoryHelper.revoke_decision(queue, uid, ui_locales, transaction)
+                success, error = ReviewHistoryHelper.revoke_old_decision(queue, uid, ui_locales, transaction)
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:
@@ -2212,7 +2243,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                success, error = ReviewHistoryHelper.cancel_decision(queue, uid, ui_locales, transaction)
+                success, error = ReviewHistoryHelper.cancel_ongoing_decision(queue, uid, ui_locales, transaction)
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:
@@ -2225,7 +2256,7 @@ class Dbas(object):
         return json.dumps(return_dict, True)
 
     # ajax - for undoing reviews
-    @view_config(route_name='ajax_review_lock', renderer='json')
+    @view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
     def review_lock(self):
         """
 
@@ -2246,11 +2277,15 @@ class Dbas(object):
             review_uid = self.request.params['review_uid']
             lock = True if self.request.params['lock'] == 'true' else False
             is_locked = True
-            if lock:
-                success, info, error, is_locked = ReviewQueueHelper.lock(self.request.authenticated_userid, review_uid, _t, transaction)
+
+            if not Validator.is_integer(review_uid):
+                error = _t.get(_t.internalKeyError)
             else:
-                ReviewQueueHelper.unlock_optimization_review(review_uid, transaction)
-                is_locked = False
+                if lock:
+                    success, info, error, is_locked = ReviewQueueHelper.lock_optimization_review(self.request.authenticated_userid, review_uid, _t, transaction)
+                else:
+                    ReviewQueueHelper.unlock_optimization_review(review_uid, transaction)
+                    is_locked = False
 
         except KeyError as e:
             logger('review_lock', 'error', repr(e))

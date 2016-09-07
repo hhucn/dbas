@@ -6,7 +6,7 @@ Provides helping function for the managing reputation.
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
-    LastReviewerOptimization, OptimizationReviewLocks, get_now
+    LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, get_now
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
 from dbas.lib import get_profile_picture, is_user_author
@@ -33,6 +33,7 @@ def get_review_queues_array(mainpage, translator, nickname):
     review_list = list()
     review_list.append(__get_delete_dict(mainpage, translator, nickname))
     review_list.append(__get_optimization_dict(mainpage, translator, nickname))
+    review_list.append(__get_edit_dict(mainpage, translator, nickname))
     review_list.append(__get_history_dict(mainpage, translator, nickname))
     if is_user_author(nickname):
         review_list.append(__get_ongoing_dict(mainpage, translator))
@@ -49,7 +50,7 @@ def __get_delete_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    logger('ReviewQueues', '__get_delete_dict', 'main')
+    #  logger('ReviewQueues', '__get_delete_dict', 'main')
     task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
 
     key = 'deletes'
@@ -76,7 +77,7 @@ def __get_optimization_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    logger('ReviewQueues', '__get_optimization_dict', 'main')
+    #  logger('ReviewQueues', '__get_optimization_dict', 'main')
     task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
 
     key = 'optimizations'
@@ -94,6 +95,33 @@ def __get_optimization_dict(mainpage, translator, nickname):
     return tmp_dict
 
 
+def __get_edit_dict(mainpage, translator, nickname):
+    """
+    Prepares dictionary for the a section.
+
+    :param mainpage: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    #  logger('ReviewQueues', '__get_edit_dict', 'main')
+    task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname)
+
+    key = 'edits'
+    count, all_rights = get_reputation_of(nickname)
+    tmp_dict = {'task_name': 'Edits',
+                'id': 'edits',
+                'url': mainpage + '/review/' + key,
+                'icon': 'fa fa-flag',
+                'task_count': task_count,
+                'is_allowed': count >= reputation_borders[key] or all_rights,
+                'is_allowed_text': translator.get(translator.visitEditQueue),
+                'is_not_allowed_text': translator.get(translator.visitEditQueueLimitation).replace('XX', str(reputation_borders[key])),
+                'last_reviews': __get_last_reviewer_of(LastReviewerEdit, mainpage)
+                }
+    return tmp_dict
+
+
 def __get_history_dict(mainpage, translator, nickname):
     """
     Prepares dictionary for the a section.
@@ -103,7 +131,7 @@ def __get_history_dict(mainpage, translator, nickname):
     :param nickname: Users nickname
     :return: Dict()
     """
-    logger('ReviewQueues', '__get_history_dict', 'main')
+    #  logger('ReviewQueues', '__get_history_dict', 'main')
     key = 'history'
     count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'History',
@@ -125,10 +153,9 @@ def __get_ongoing_dict(mainpage, translator):
 
     :param mainpage: URL
     :param translator: Translator
-    :param nickname: Users nickname
     :return: Dict()
     """
-    logger('ReviewQueues', '__get_ongoing_dict', 'main')
+    #  logger('ReviewQueues', '__get_ongoing_dict', 'main')
     key = 'ongoing'
     tmp_dict = {'task_name': 'Ongoing',
                 'id': 'flags',
@@ -145,25 +172,34 @@ def __get_ongoing_dict(mainpage, translator):
 
 def __get_review_count_for(review_type, last_reviewer_type, nickname):
     """
+    Returns the count of reviews of *review_type* for the user with *nickname*, whereby all reviewed data
+    of *last_reviewer_type* is not observed
 
-    :param review_type:
-    :param nickname:
-    :return:
+    :param review_type: ReviewEdit, ReviewOptimization or ...
+    :param last_reviewer_type: LastReviewerEdit, LastReviewer...
+    :param nickname: Users nickname
+    :return: Integer
     """
-    logger('ReviewQueues', '__get_review_count_for', 'main')
+    #  logger('ReviewQueues', '__get_review_count_for', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user:
-        db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
-        already_reviewed = []
-        for last_review in db_last_reviews_of_user:
-            already_reviewed.append(last_review.review_uid)
-        db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
-                                                                        review_type.detector_uid != db_user.uid))
-        if len(already_reviewed) > 0:
-            db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
-        db_reviews = db_reviews.all()
-    else:
+    if not db_user:
         db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
+        return len(db_reviews)
+
+    # get all reviews but filter reviews, which
+    # - the user has detected
+    # - the user has reviewed
+    db_last_reviews_of_user = DBDiscussionSession.query(last_reviewer_type).filter_by(reviewer_uid=db_user.uid).all()
+    already_reviewed = []
+    for last_review in db_last_reviews_of_user:
+        already_reviewed.append(last_review.review_uid)
+    db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
+                                                                    review_type.detector_uid != db_user.uid))
+
+    if len(already_reviewed) > 0:
+        db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
+    db_reviews = db_reviews.all()
+
     return len(db_reviews)
 
 
@@ -175,7 +211,7 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
     :param mainpage:
     :return:
     """
-    logger('ReviewQueues', '__get_last_reviewer_of', 'main')
+    #  logger('ReviewQueues', '__get_last_reviewer_of', 'main')
     users_array = list()
     db_reviews = DBDiscussionSession.query(reviewer_type).order_by(reviewer_type.uid.desc()).all()
     limit = 5 if len(db_reviews) >= 5 else len(db_reviews)
@@ -199,7 +235,7 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
     return users_array
 
 
-def lock(nickname, review_uid, translator, transaction):
+def lock_optimization_review(nickname, review_uid, translator, transaction):
     """
 
     :param nickname:
@@ -217,14 +253,14 @@ def lock(nickname, review_uid, translator, transaction):
     # has user already locked an item?
     db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-    if not db_user or review_uid < 1:
+    if not db_user or int(review_uid) < 1:
         error = translator.get(translator.internalKeyError)
         return success, info, error, is_locked
 
     # check if author locked an item and maybe tidy up old locks
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
     if db_locks:
-        if (is_review_locked(db_locks.review_optimization_uid)):
+        if is_review_locked(db_locks.review_optimization_uid):
             info = translator.get(translator.dataAlreadyLockedByYou)
             is_locked = True
             return success, info, error, is_locked
@@ -265,7 +301,7 @@ def is_review_locked(review_uid):
     :param review_uid:
     :return:
     """
-    logger('ReviewQueues', 'get_review_queues_array', 'main')
+    logger('ReviewQueues', 'is_review_locked', 'main')
     db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).first()
     if not db_lock:
         return False

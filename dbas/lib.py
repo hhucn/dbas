@@ -688,7 +688,7 @@ def is_user_author(nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
     db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
-    logger('UserHandler', 'is_user_author', 'main')
+    #  logger('Lib', 'is_user_author', 'main')
     if db_user:
         if db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid:
             return True
