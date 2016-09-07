@@ -14,17 +14,17 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class TestReviewHistoryHelper(unittest.TestCase):
 
     def test_flag_argument(self):
-        history = ReviewHistoryHelper.get_complete_review_history('mainpage', 'nickname', Translator('en'))
+        history = ReviewHistoryHelper.get_review_history('mainpage', 'nickname', Translator('en'))
         self.assertTrue('has_access' in history)
         self.assertTrue('past_decision' in history)
         self.assertFalse(history['has_access'])
 
-        history = ReviewHistoryHelper.get_complete_review_history('mainpage', 'Tobias', Translator('en'))
+        history = ReviewHistoryHelper.get_review_history('mainpage', 'Tobias', Translator('en'))
         self.assertTrue('has_access' in history)
         self.assertTrue('past_decision' in history)
         self.assertTrue(history['has_access'])
 
-        history = ReviewHistoryHelper.get_complete_review_history('mainpage', 'Pascal', Translator('en'))
+        history = ReviewHistoryHelper.get_review_history('mainpage', 'Pascal', Translator('en'))
         self.assertTrue('has_access' in history)
         self.assertTrue('past_decision' in history)
         self.assertFalse(history['has_access'])

@@ -55,6 +55,12 @@ function Review() {
 					argument: $(this).data('argument'),
 					val: $(this).val()
 				});
+				console.log({
+					uid: $(this).data('id'),
+					type: $(this).data('type'),
+					argument: $(this).data('arg'),
+					val: $(this).val()
+				});
 			}
 		});
 		
@@ -78,6 +84,22 @@ function Review() {
 	 */
 	this.doDeleteNack = function(review_uid) {
 		new AjaxReviewHandler().reviewDeleteArgument(false, review_uid);
+	};
+	
+	/**
+	 *
+	 * @param review_uid
+	 */
+	this.doEditAck = function(review_uid){
+		new AjaxReviewHandler().reviewEditArgument(true, review_uid);
+	};
+	
+	/**
+	 *
+	 * @param review_uid
+	 */
+	this.doEditNack = function(review_uid){
+		new AjaxReviewHandler().reviewEditArgument(true, review_uid);
 	};
 	
 	/**

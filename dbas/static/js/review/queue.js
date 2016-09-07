@@ -11,6 +11,9 @@ $(document).ready(function () {
 	var delete_ack = $('#del_ack');
 	var delete_nack = $('#del_nack');
 	var delete_skip = $('#del_skip');
+	var edit_ack = $('#edit_ack');
+	var edit_nack = $('#edit_nack');
+	var edit_skip = $('#edit_skip');
 	var request_lock = $('#request-lock');
 	var send_edit  = $('#send_edit');
 	
@@ -19,18 +22,18 @@ $(document).ready(function () {
 	var less_about_reason = $('#less_about_reason');
 	var more_about_reason_content = $('#more_about_reason_content');
 	
+	// more
+	
 	/**
 	 * OPTIMIZATION
 	 */
 	
 	optimization_ack.click(function(){
-		var review_uid = $(this).data('id');
-		new Review().doOptimizationAck(review_uid);
+		new Review().doOptimizationAck($(this).data('id'));
 	});
 	
 	optimization_nack.click(function(){
-		var review_uid = $(this).data('id');
-		new AjaxReviewHandler().reviewOptimizationArgument(false, review_uid, undefined);
+		new AjaxReviewHandler().reviewOptimizationArgument(false, $(this).data('id'), undefined);
 	});
 	
 	optimization_skip.click(function(){
@@ -38,7 +41,7 @@ $(document).ready(function () {
 	});
 	
 	send_edit.click(function(){
-		new Review().sendOptimization()
+		new Review().sendOptimization();
 	});
 	
 	/**
@@ -46,16 +49,30 @@ $(document).ready(function () {
 	 */
 	
 	delete_ack.click(function(){
-		var review_uid = $(this).data('id');
-		new Review().doDeleteAck(review_uid);
+		new Review().doDeleteAck($(this).data('id'));
 	});
 	
 	delete_nack.click(function(){
-		var review_uid = $(this).data('id');
-		new AjaxReviewHandler().reviewDeleteArgument(false, review_uid);
+		new Review().doDeleteNack($(this).data('id'));
 	});
 	
 	delete_skip.click(function(){
+		new Review().reloadPageAndUnlockData(false);
+	});
+	
+	/**
+	 * DELETE
+	 */
+	
+	edit_ack.click(function(){
+		new Review().doEditAck($(this).data('id'));
+	});
+	
+	edit_nack.click(function(){
+		new Review().doEditNack($(this).data('id'));
+	});
+	
+	edit_skip.click(function(){
 		new Review().reloadPageAndUnlockData(false);
 	});
 	
@@ -76,8 +93,7 @@ $(document).ready(function () {
 	});
 	
 	request_lock.click(function(){
-		var review_uid = $(this).data('id');
-		new Review().doOptimizationAck(review_uid);
+		new Review().doOptimizationAck($(this).data('id'));
 	});
 	
 	// extra info when user has already seen the complete queue
@@ -87,7 +103,8 @@ $(document).ready(function () {
 	
 	// unlock data on tab close/reload/...
 	$(window).bind('beforeunload',function(){
-		new Review().reloadPageAndUnlockData(true);
+		if (window.location.href.indexOf('review/optimiz') != -1)
+			new Review().reloadPageAndUnlockData(true);
 	});
 });
 

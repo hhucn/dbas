@@ -45,7 +45,10 @@ function ReviewCallbacks() {
 				review_argument_text.attr('data-oem', review_argument_text.text());
 				
 				$.each($('#argument-part-table').find('input'), function(){
-					var repl_text = review_argument_text.html().replace( new RegExp( "(" + preg_quote( $(this).attr('placeholder') ) + ")" , 'gi' ), "<span id='text" + $(this).data('id') + "'>$1</span>" );
+					var html_text = review_argument_text.html();
+					var pos = html_text.toLowerCase().indexOf($(this).attr('placeholder').toLowerCase());
+					var replacement = '<span id="text' + $(this).data('id') + '">' + $(this).attr('placeholder') + '</span>';
+					var repl_text = html_text.substr(0, pos) + replacement + html_text.substr(pos + $(this).attr('placeholder').length);
 					review_argument_text.html(repl_text);
 					
 					$(this).focusin(function(){
