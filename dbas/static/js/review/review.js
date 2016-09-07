@@ -91,7 +91,7 @@ function Review() {
 	 * @param review_uid
 	 */
 	this.doEditAck = function(review_uid){
-		alert('TODO doEditAck');
+		new AjaxReviewHandler().reviewEditArgument(true, review_uid);
 	};
 	
 	/**
@@ -99,7 +99,7 @@ function Review() {
 	 * @param review_uid
 	 */
 	this.doEditNack = function(review_uid){
-		alert('TODO doEditNack');
+		new AjaxReviewHandler().reviewEditArgument(true, review_uid);
 	};
 	
 	/**
