@@ -8,7 +8,8 @@ import random
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
-    ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit
+    ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue,\
+    Statement, TextVersion
 from dbas.helper.relation import RelationHelper
 from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_public_nickname_based_on_settings, get_profile_picture
@@ -265,8 +266,21 @@ def __get_subpage_dict_for_edits(request, db_user, translator, mainpage):
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
     text = get_text_for_argument_uid(db_argument.uid)
-    reason = translator.get(translator.argumentFlaggedBecauseOptimization)
+    reason = translator.get(translator.argumentFlaggedBecauseEdit)
     issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+
+    # build correction
+    correction = '<span class="text-muted">' + text + '</span>'
+    db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=rnd_review.uid).all()
+    if not db_values:
+        correction = translator.get(translator.internalKeyError)
+    for value in db_values:
+        oem_text = get_text_for_statement_uid(value.statement_uid)
+        pos = correction.lower().find(oem_text.lower())
+        correction = correction[0:pos] + '<span class="text-warning">' + value.content + '</span>' + correction[pos + len(oem_text):]
+
+        pos = text.lower().find(oem_text.lower())
+        text = text[0:pos] + '<span class="text-warning">' + text[pos:pos + len(oem_text)] + '</span>' + text[pos + len(oem_text):]
 
     stats = __get_stats_for_argument(db_argument.uid, rnd_review, translator.get_lang(), mainpage)
 
@@ -275,6 +289,7 @@ def __get_subpage_dict_for_edits(request, db_user, translator, mainpage):
 
     return {'stats': stats,
             'text': text,
+            'correction': correction,
             'reason': reason,
             'issue': issue,
             'extra_info': extra_info}

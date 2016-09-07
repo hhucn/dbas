@@ -141,6 +141,7 @@ class GermanDict:
         de_lang[_self.argumentFlaggedBecauseSpam] = 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>Spam</strong> ist.'
         de_lang[_self.argumentFlaggedBecauseHarmful] = 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>nicht angebracht, schädlich oder missbräuchlich</strong> ist.'
         de_lang[_self.argumentFlaggedBecauseOptimization] = 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>sprachlicher Korrektur</strong> bedarf.'
+        de_lang[_self.argumentFlaggedBecauseEdit] = 'Dieses Argument wurde von einer/m Benutzer/in sprachlich verbessert.'
         de_lang[_self.alternatively] = 'Alternativ'
         de_lang[_self.argument] = 'Argument'
         de_lang[_self.accepting] = 'für'

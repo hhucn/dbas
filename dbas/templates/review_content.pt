@@ -13,7 +13,7 @@
 		<div class="container colored-container" tal:condition="not:subpage.no_arguments_to_review">
             <div tal:omit-tag=""  tal:condition="subpage.has_access">
 
-                <div class="row">
+                <div class="row" style="margin-bottom: 1em;">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
                             <li><a href="${request.application_url}/review" i18n:attributes="review">Review</a></li>
@@ -24,32 +24,33 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" style="margin-bottom: 1em;">
                     <div class="col-md-7">
                         <h6>${structure:subpage.elements.reviewed_argument.reason}
                             <a id="more_about_reason"  href="#" i18n:translate="wrapped_more">(more)</a>
                             <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
                         </h6>
                     </div>
-                    <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_delete">
+                    <div class="col-md-5" tal:condition="subpage.button_set.is_delete">
                         <a id="del_skip" href="#" class="review-btn-delete btn btn-info btn-sm pull-right" data-queue="delete" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
                         <a id="del_nack" href="#" class="review-btn-delete btn btn-danger btn-sm pull-right" data-queue="delete" i18n:translate="delete_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Delete it</a>
                         <a id="del_ack" href="#" class="review-btn-delete btn btn-success btn-sm pull-right" data-queue="delete" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's Okay</a>
                     </div>
-                    <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_optimize">
+                    <div class="col-md-5" tal:condition="subpage.button_set.is_optimize">
                         <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm pull-right" data-queue="optimization" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
                         <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm pull-right" data-queue="optimization" i18n:translate="its_okay_so" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's okay so</a>
                         <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm pull-right" data-queue="optimization" i18n:translate="correct_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Let me correct it</a>
                     </div>
-                    <div class="col-md-offset-1 col-md-4" tal:condition="subpage.button_set.is_edit">
-                        <a id="edit_skip" href="#" class="review-btn-optimize btn btn-info btn-sm pull-right" data-queue="edit" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
-                        <a id="edit_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm pull-right" data-queue="edit" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Reject it</a>
-                        <a id="edit_ack" href="#" class="review-btn-optimize btn btn-success btn-sm pull-right" data-queue="edit" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's Okay</a>
+                    <div class="col-md-5" tal:condition="subpage.button_set.is_edit">
+                        <a id="edit_skip" href="#" class="review-btn-edit btn btn-info btn-sm pull-right" data-queue="edit" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
+                        <a id="edit_nack" href="#" class="review-btn-edit btn btn-danger btn-sm pull-right" data-queue="edit" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Reject it</a>
+                        <a id="edit_ack" href="#" class="review-btn-edit btn btn-success btn-sm pull-right" data-queue="edit" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's Okay</a>
                     </div>
                 </div>
-                <div class="row" id="more_about_reason_content" style="display:none;">
+
+                <div class="row" id="more_about_reason_content" style="display:none; margin-bottom: 1em;">
                     <div class="col-md-7">
-                        <blockquote>
+                        <blockquote tal:condition="not:subpage.button_set.is_edit">
                             <div style="padding-left: 0.5em">
                                 <span>Information for the different reasons</span>
                                 <ul style="padding-left: 0.5em">
@@ -76,7 +77,7 @@
                                 <li><span class="text-danger" i18n:translate="its_okay_so">It's okay so</span> <span i18n:translate="its_okay_so_explanation">for arguments, which can be understood as-is.</span></li>
                                 <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
                             </ul>
-                            <ul tal:condition="subpage.button_set.is_delete" style="padding-left: 0.5em">
+                            <ul tal:condition="subpage.button_set.is_edit" style="padding-left: 0.5em">
                                 <li><span class="text-success" i18n:translate="its_okay">It's okay</span> <span i18n:translate="its_okay_explanation">, if the correction is acceptable and the argument is not falsified.</span></li>
                                 <li><span class="text-danger" i18n:translate="reject_it">Reject it</span> <span i18n:translate="reject_itexplanation">for correction which are inappropriate are wrong.</span></li>
                                 <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
@@ -84,20 +85,33 @@
                         </blockquote>
                     </div>
                 </div>
-                <br>
-                <div class="row">
+
+                <div class="row" style="margin-bottom: 1em;">
                     <div class="col-md-offset-1 col-md-6">
+                        <div class="well well-sm center" style="text-align: justify; margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
+                            <div style="margin-bottom: 1em;">
+                                <span i18n:translate="in_the_discussion_about">In the discussion about</span>
+                                <i>${structure:subpage.elements.reviewed_argument.issue}</i>
+                                <span i18n:translate="following_argument_was_corrected">following argument was corrected.</span>
+                            </div>
+                            <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                            <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_argument.correction}</span>
+                            <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                        </div>
+
                         <div class="well well-sm center" style="text-align: justify;">
-                            <span i18n:translate="in_the_discussion_about">In the discussion about</span>
-                            <i>${structure:subpage.elements.reviewed_argument.issue}</i>
-                            <span i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
-                            <br><br>
+                            <div style="margin-bottom: 1em;" tal:condition="not:subpage.button_set.is_edit">
+                                <span i18n:translate="in_the_discussion_about">In the discussion about</span>
+                                <i>${structure:subpage.elements.reviewed_argument.issue}</i>
+                                <span i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
+                            </div>
+                            <div style="margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
+                                <span i18n:translate="this_is_original_version">This is the original version</span>:
+                            </div>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
                             <span class="lead" id="reviewed-argument-text">${structure:subpage.elements.reviewed_argument.text}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                             <br>
-                            <span></span>
-                            <span></span>
                         </div>
                     </div>
                     <div class="col-md-offset-2 col-md-3">
@@ -132,6 +146,7 @@
                         </table>
                     </div>
                 </div>
+
                 <small id="review-id" class="text-muted pull-right" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">ID: ${subpage.elements.reviewed_argument.stats.id}</small>
             </div>
         </div>
