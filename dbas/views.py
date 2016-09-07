@@ -2110,16 +2110,16 @@ class Dbas(object):
         ui_locales = get_discussion_language(self.request)
         _t = Translator(ui_locales)
         return_dict = dict()
-        error = ''
 
         try:
             should_delete = True if str(self.request.params['should_delete']) == 'true' else False
             review_uid = self.request.params['review_uid']
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
+                logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
-                ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
+                error = ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, transaction)
                 send_request_for_recent_delete_review_to_socketio(nickname)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
@@ -2140,16 +2140,16 @@ class Dbas(object):
         ui_locales = get_discussion_language(self.request)
         _t = Translator(ui_locales)
         return_dict = dict()
-        error = ''
 
         try:
             should_edit = True if str(self.request.params['should_edit']) == 'true' else False
             review_uid = self.request.params['review_uid']
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
+                logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
-                ReviewMainHelper.add_review_opinion_for_edit(nickname, should_edit, review_uid, transaction)
+                error = ReviewMainHelper.add_review_opinion_for_edit(nickname, should_edit, review_uid, _t, transaction)
                 send_request_for_recent_delete_review_to_socketio(nickname)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
@@ -2178,6 +2178,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if not Validator.is_integer(review_uid):
+                logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
                 error = ReviewMainHelper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t, transaction)
