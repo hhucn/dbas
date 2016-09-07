@@ -932,7 +932,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        history = ReviewHistoryHelper.get_complete_review_history(mainpage, self.request.authenticated_userid, _tn)
+        history = ReviewHistoryHelper.get_review_history(mainpage, self.request.authenticated_userid, _tn)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
@@ -961,7 +961,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        history = ReviewHistoryHelper.get_complete_review_history(mainpage, self.request.authenticated_userid, _tn, True)
+        history = ReviewHistoryHelper.get_ongoing_reviews(mainpage, self.request.authenticated_userid, _tn)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
@@ -2211,7 +2211,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                success, error = ReviewHistoryHelper.revoke_decision(queue, uid, ui_locales, transaction)
+                success, error = ReviewHistoryHelper.revoke_old_decision(queue, uid, ui_locales, transaction)
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:
@@ -2242,7 +2242,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                success, error = ReviewHistoryHelper.cancel_decision(queue, uid, ui_locales, transaction)
+                success, error = ReviewHistoryHelper.cancel_ongoing_decision(queue, uid, ui_locales, transaction)
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:

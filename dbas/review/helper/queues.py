@@ -172,10 +172,13 @@ def __get_ongoing_dict(mainpage, translator):
 
 def __get_review_count_for(review_type, last_reviewer_type, nickname):
     """
+    Returns the count of reviews of *review_type* for the user with *nickname*, whereby all reviewed data
+    of *last_reviewer_type* is not observed
 
-    :param review_type:
-    :param nickname:
-    :return:
+    :param review_type: ReviewEdit, ReviewOptimization or ...
+    :param last_reviewer_type: LastReviewerEdit, LastReviewer...
+    :param nickname: Users nickname
+    :return: Integer
     """
     #  logger('ReviewQueues', '__get_review_count_for', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()

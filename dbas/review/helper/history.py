@@ -6,7 +6,7 @@ Provides helping function for the managing reputation.
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
-    User, ReputationHistory, ReputationReason, ReviewDeleteReason
+    User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit
 from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_arguments_and_premise_of_review
@@ -14,7 +14,15 @@ from sqlalchemy import and_
 from dbas.strings.translator import Translator
 
 
-def get_complete_review_history(mainpage, nickname, translator, is_not_executed=False):
+def get_review_history(mainpage, nickname, translator):
+    return __get_data(mainpage, nickname, translator, False)
+
+
+def get_ongoing_reviews(mainpage, nickname, translator):
+    return __get_data(mainpage, nickname, translator, True)
+
+
+def __get_data(mainpage, nickname, translator, is_not_executed=False):
     """
 
     :param mainpage:
@@ -32,19 +40,29 @@ def get_complete_review_history(mainpage, nickname, translator, is_not_executed=
 
     deletes_list = __get_executed_reviews_of('deletes', mainpage, ReviewDelete, LastReviewerDelete, translator, is_not_executed)
     optimizations_list = __get_executed_reviews_of('optimizations', mainpage, ReviewOptimization, LastReviewerOptimization, translator, is_not_executed)
+    edits_list = __get_executed_reviews_of('edits', mainpage, ReviewEdit, LastReviewerEdit, translator, is_not_executed)
 
     past_decision = [{
         'title': 'Delete Queue',
         'icon': reputation_icons['deletes'],
         'queue': 'deletes',
         'content': deletes_list,
-        'has_reason': True
+        'has_reason': True,
+        'has_oem_text': False
     }, {
         'title': 'Optimization Queue',
-        'queue': reputation_icons['optimizations'],
-        'icon': 'fa fa-flag',
+        'queue': 'optimizations',
+        'icon': reputation_icons['optimizations'],
         'content': optimizations_list,
-        'has_reason': False
+        'has_reason': False,
+        'has_oem_text': False
+    }, {
+        'title': 'Edit Queue',
+        'queue': 'edits',
+        'icon': reputation_icons['edits'],
+        'content': edits_list,
+        'has_reason': False,
+        'has_oem_text': True
     }]
     ret_dict['past_decision'] = past_decision
 
@@ -134,6 +152,9 @@ def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, tra
         entry['row_id'] = table + str(review.uid)
         entry['argument_shorttext'] = shorttext
         entry['argument_fulltext'] = fulltext
+        if table == 'edits':
+            entry['argument_oem_shorttext'] = 'TODO' + shorttext
+            entry['argument_oem_fulltext'] = 'TODO' + fulltext
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
@@ -170,7 +191,7 @@ def __has_access_to_history(nickname):
     return is_user_author or reputation_count > reputation_borders['history']
 
 
-def revoke_decision(queue, uid, lang, transaction):
+def revoke_old_decision(queue, uid, lang, transaction):
     """
 
     :param queue:
@@ -190,13 +211,16 @@ def revoke_decision(queue, uid, lang, transaction):
         __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid, transaction)
         success = _t.get(_t.dataRemoved)
 
+    elif queue == 'edits':
+        error = 'TODO'
+
     else:
         error = _t.get(_t.internalKeyError)
 
     return success, error
 
 
-def cancel_decision(queue, uid, lang, transaction):
+def cancel_ongoing_decision(queue, uid, lang, transaction):
     """
 
     :param queue:
