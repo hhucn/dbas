@@ -19,9 +19,14 @@ function AjaxMainHandler(){
 			headers: {
 				'X-CSRF-Token': csrfToken
 			}
-		}).done(function ajaxSwitchDisplayLanguageDone() {
-			location.reload(true);
-			setPiwikOptOutLink(new_lang);
+		}).done(function ajaxSwitchDisplayLanguageDone(data) {
+			var parsedData = $.parseJSON(jsonData);
+			if (parsedData.error.length != 0) {
+				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			} else {
+				location.reload(true);
+				setPiwikOptOutLink(new_lang);
+			}
 		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
 			if (xhr.status == 400) {
 				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
