@@ -1953,13 +1953,19 @@ class Dbas(object):
         logger('switch_language', 'def', 'main, self.request.params: ' + str(self.request.params))
 
         return_dict = dict()
+        ui_locales = None
         try:
             ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
             if not ui_locales:
                 ui_locales = get_language(self.request, get_current_registry())
             self.request.response.set_cookie('_LOCALE_', str(ui_locales))
+            return_dict['error'] = ''
         except KeyError as e:
             logger('swich_language', 'error', repr(e))
+            if not ui_locales:
+                ui_locales = 'en'
+            _t = Translator(ui_locales)
+            return_dict['error'] = _t.get(_t.internalError)
 
         return json.dumps(return_dict, True)
 

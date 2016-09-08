@@ -167,10 +167,8 @@ function displayBubbleInformationDialog(){
  * @param lang
  */
 function setPiwikOptOutLink(lang){
-	var src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=';
-	if (lang === 'de')	src += 'de';
-	else 				src += 'en';
-	$('#piwik-opt-out-iframe').attr('src',src);
+	var src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
+	$('#piwik-opt-out-iframe').attr('src', src);
 }
 
 /**
