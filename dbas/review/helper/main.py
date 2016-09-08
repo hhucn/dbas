@@ -140,7 +140,7 @@ def add_review_opinion_for_edit(nickname, should_edit, review_uid, translator, t
 
 def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, translator, transaction):
     """
-    
+
     :param nickname:
     :param should_optimized:
     :param review_uid:
