@@ -7,6 +7,7 @@ function DiscussionGraph() {
     var s;
 	var isPositionVisible = false;
 	var isContentVisible = false;
+
 	/**
 	 * Displays a graph of current discussion
 	 */
@@ -35,7 +36,11 @@ function DiscussionGraph() {
      */
 	this.callbackIfDoneForGetJumpDataForGraph = function (data){
 		var jsonData = $.parseJSON(data);
-		console.log(jsonData);
+		$('#popup-positions' + ' div.modal-body' + " #position-fieldset").empty();
+		$.each(jsonData.arguments, function(key, value) {
+			$('#popup-positions' + ' div.modal-body' + " #position-fieldset")
+				.append('<input type="radio" id="input"' + value.uid + '><label for="input"' + value.uid + '><span>' + value.text + '</span></label><br>');
+		});
 	};
 
 	/**
@@ -167,12 +172,18 @@ function DiscussionGraph() {
 
 		//////////////////////////////////////////////////////////////////////////////
 		// highlight nodes and edges
-		circle.on("click", function()
+		var selectedCircleId;
+		circle.on("click", function(d)
 		{
 			// distinguish between click and drag event
 			if(d3.event.defaultPrevented) return;
+			// show modal when node clicked twice
+			if(d.id === selectedCircleId){
+				showModal(d);
+			}
 			var circleId = this.id;
             showPartOfGraph(edges, circleId);
+			selectedCircleId = d.id;
 		});
 	};
 
@@ -481,7 +492,7 @@ function DiscussionGraph() {
 	 * @param label
 	 * @param rect
 	 */
-	function showLabels (label, rect){
+	function showLabels(label, rect){
 		$('#show-labels').click(function() {
 			label.style("display", "inline");
 			rect.style("display", "inline");
@@ -540,6 +551,18 @@ function DiscussionGraph() {
 			$('#hide-positions').hide();
 			isPositionVisible = false;
 		});
+	}
+
+	/**
+	 * Show modal.
+	 */
+	function showModal(d){
+		var popup = $('#popup-positions');
+		popup.modal('show');
+		// select uid
+		var splitted = d.id.split('_'),
+		    uid = splitted[splitted.length-1];
+		new AjaxGraphHandler().getJumpDataForGraph(uid);
 	}
 
 	/**
