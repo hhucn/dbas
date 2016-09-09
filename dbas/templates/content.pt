@@ -249,8 +249,8 @@
 
                 <ul class="sidebar">
                     <li id="start-view"><i class="fa fa-play" aria-hidden="true" tal:attributes="titel extras.buttons.default_view"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
-                    <li id="show-content"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_content"></i><span class="sidebar-element">${extras.buttons.show_content}</span></li>
-                    <li id="hide-content"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_content"></i><span class="sidebar-element">${extras.buttons.hide_content}</span></li>
+                    <li id="show-labels"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_labels"></i><span class="sidebar-element">${extras.buttons.show_labels}</span></li>
+                    <li id="hide-labels"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_labels"></i><span class="sidebar-element">${extras.buttons.hide_labels}</span></li>
                     <li id="show-positions"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_positions"></i><span class="sidebar-element">${extras.buttons.show_positions}</span></li>
                     <li id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_positions"></i><span class="sidebar-element">${extras.buttons.hide_positions}</span></li>
                     <li id="snapshot-graph"><i class="fa fa-camera" aria-hidden="true" tal:attributes="titel extras.buttons.snapshot_graph"></i><span class="sidebar-element">${extras.buttons.snapshot_graph}</span></li>

@@ -97,8 +97,8 @@ class GermanDict:
         de_lang[_self.defaultView] = 'Standardansicht'
         de_lang[_self.showPositions] = 'Positionen einblenden'
         de_lang[_self.hidePositions] = 'Positionen ausblenden'
-        de_lang[_self.showContent] = 'Inhalt einblenden'
-        de_lang[_self.hideContent] = 'Inhalt ausblenden'
+        de_lang[_self.showLabels] = 'Beschriftungen einblenden'
+        de_lang[_self.hideLabels] = 'Beschriftungen ausblenden'
 
         de_lang[_self.addATopic] = 'Thema hinzufügen'
         de_lang[_self.pleaseEnterTopic] = 'Bitte geben Sie Ihr Thema an:'
