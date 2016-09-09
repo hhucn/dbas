@@ -1062,7 +1062,7 @@ function AjaxGraphHandler(){
      */
 	this.getJumpDataForGraph = function (uid) {
 		$.ajax({
-			url: 'api/get/argument/' + uid,
+			url: 'ajax_get_arguments_by_statement/' + uid,
 			type: 'GET',
 			dataType: 'json',
 			async: true
