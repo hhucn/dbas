@@ -37,7 +37,7 @@ def get_d3_data(issue):
     position_size = 6
     issue_size = 8
     edge_size = 90
-    edge_size_on_virtuell_nodes = 45
+    edge_size_on_virtual_nodes = 45
     edge_type = 'arrow'
 
     nodes_array = []
@@ -127,7 +127,7 @@ def get_d3_data(issue):
                                             source='statement_' + str(premise.statement_uid),
                                             target='argument_' + str(argument.uid),
                                             color=green if argument.is_supportive else red,
-                                            size=edge_size_on_virtuell_nodes,
+                                            size=edge_size_on_virtual_nodes,
                                             edge_type='')
                 edges_array.append(edge_dict)
                 counter += 1
@@ -137,7 +137,7 @@ def get_d3_data(issue):
                                         source='argument_' + str(argument.uid),
                                         target=target,
                                         color=green if argument.is_supportive else red,
-                                        size=edge_size_on_virtuell_nodes,
+                                        size=edge_size_on_virtual_nodes,
                                         edge_type=edge_type)
             edges_array.append(edge_dict)
 
