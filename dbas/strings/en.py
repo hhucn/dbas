@@ -96,8 +96,8 @@ class EnglischDict:
         en_lang[_self.defaultView] = 'Default View'
         en_lang[_self.showPositions] = 'Show Positions'
         en_lang[_self.hidePositions] = 'Hide Positions'
-        en_lang[_self.showContent] = 'Show Content'
-        en_lang[_self.hideContent] = 'Hide Content'
+        en_lang[_self.showLabels] = 'Show Labels'
+        en_lang[_self.hideLabels] = 'Hide Labels'
 
         en_lang[_self.addATopic] = 'Add a topic'
         en_lang[_self.pleaseEnterTopic] = 'Please enter your topic here:'
