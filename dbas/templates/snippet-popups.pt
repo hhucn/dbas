@@ -772,4 +772,61 @@
     	</div>
     </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- SHOW POSITIONS -->
+    <div class="modal fade" id="popup-positions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-positions-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="choose">Please choose</h4>
+    			</div>
+    			<div class="modal-body">
+                    <form>
+                      <fieldset id="position-fieldset">
+                      </fieldset>
+                    </form>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
