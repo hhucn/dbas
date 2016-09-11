@@ -31,16 +31,28 @@ function DiscussionGraph() {
 	};
 
 	/**
-	 * 
+	 * Callback if the ajax request was successful
+	 *
 	 * @param data
      */
 	this.callbackIfDoneForGetJumpDataForGraph = function (data){
 		var jsonData = $.parseJSON(data);
-		$('#popup-positions' + ' div.modal-body' + " #position-fieldset").empty();
-		$.each(jsonData.arguments, function(key, value) {
-			$('#popup-positions' + ' div.modal-body' + " #position-fieldset")
-				.append('<input type="radio" id="input"' + value.uid + '><label for="input"' + value.uid + '><span>' + value.text + '</span></label><br>');
-		});
+		var popup = $('#popup-positions');
+		if (jsonData.error.length === 0) {
+		    $('#popup-positions' + ' div.modal-body' + " #position-fieldset").empty();
+		    $.each(jsonData.arguments, function(key, value) {
+		        $('#popup-positions' + ' div.modal-body' + " #position-fieldset")
+			        .append('<input type="radio" value=' + value.url + '><label><span>' + value.text + '</span></label><br>');
+		    });
+
+		    // jump to url
+		    popup.find('input').click(function () {
+				var url = $(this).attr('value');
+			    window.location = url;
+		    });
+		} else {
+			popup.modal('hide');
+		}
 	};
 
 	/**
@@ -558,11 +570,13 @@ function DiscussionGraph() {
 	 */
 	function showModal(d){
 		var popup = $('#popup-positions');
-		popup.modal('show');
-		// select uid
-		var splitted = d.id.split('_'),
-		    uid = splitted[splitted.length-1];
-		new AjaxGraphHandler().getJumpDataForGraph(uid);
+		if(d.id != 'issue'){
+		    popup.modal('show');
+			// select uid
+			var splitted = d.id.split('_'),
+				uid = splitted[splitted.length - 1];
+			new AjaxGraphHandler().getJumpDataForGraph(uid);
+		}
 	}
 
 	/**
