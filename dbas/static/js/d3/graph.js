@@ -99,7 +99,7 @@ function DiscussionGraph() {
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
-		d3.selectAll('svg').call(zoom);
+		d3.selectAll('svg').call(zoom).on("dblclick.zoom", null);
         function redraw() {
             d3.selectAll("g.zoom")
             .attr("transform", "translate(" + zoom.translate() + ")"
