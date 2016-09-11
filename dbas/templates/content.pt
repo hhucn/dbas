@@ -74,10 +74,12 @@
                                 <p class="triangle-l" tal:attributes="id bubble.id">
                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
                                     <span class="triangle-content">${structure:bubble.message}</span>
+                                    <!--
                                     <br tal:condition="extras.logged_in">
                                     <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flaggable and extras.logged_in" tal:attributes="title extras.title.report_statement">
                                         <i class="fa fa-flag" aria-hidden="true"></i>
                                     </span>
+                                    -->
                                 </p>
                             </div>
                             <div tal:condition="bubble.is_status" class="line-wrapper-m">
