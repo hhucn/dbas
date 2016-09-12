@@ -782,10 +782,6 @@
     				<h4 class="modal-title" id="myModalLabel" i18n:translate="choose">Please choose</h4>
     			</div>
     			<div class="modal-body">
-                    <form>
-                      <fieldset id="position-fieldset">
-                      </fieldset>
-                    </form>
     			</div>
     		</div>
     	</div>
