@@ -39,10 +39,10 @@ function DiscussionGraph() {
 		var jsonData = $.parseJSON(data);
 		var popup = $('#popup-positions');
 		if (jsonData.error.length === 0) {
-		    $('#popup-positions' + ' div.modal-body' + " #position-fieldset").empty();
+		    $('#popup-positions' + ' div.modal-body').empty();
 		    $.each(jsonData.arguments, function(key, value) {
-		        $('#popup-positions' + ' div.modal-body' + " #position-fieldset")
-			        .append('<input type="radio" value=' + value.url + '><label><span>' + value.text + '</span></label><br>');
+		        $('#popup-positions' + ' div.modal-body')
+			        .append('<div class="radio"><label><input type="radio" value=' + value.url + '>' + value.text + '</label></div>');
 		    });
 
 		    // jump to url
