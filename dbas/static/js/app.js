@@ -358,6 +358,10 @@ function prepareLoginRegistrationPopup(){
 	});
 }
 
+/**
+ *
+ * @param element
+ */
 function setTextWatcherInputLength(element){
 	var minlength = element.data('min-length');
 	var maxlength = element.data('max-length');

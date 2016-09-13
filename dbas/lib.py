@@ -196,22 +196,29 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
         return results
 
 
-def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager):
+def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager, color_statement=False):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
     text depends on the provided language.
 
     :param statement_uid: Id to a statement, which should be analyzed
+    :param color_statement: True, if the statement (speicified by the ID) should be colored
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
     arguments = get_all_arguments_by_statement(statement_uid)
     results = list()
+    sb = ('<' + TextGenerator.tag_type + ' data-argumentation-type="position">') if color_statement else ''
+    se = ('</' + TextGenerator.tag_type + '>') if color_statement else ''
     if arguments:
         for argument in arguments:
+            statement_text = get_text_for_statement_uid(statement_uid)
+            argument_text = get_text_for_argument_uid(argument.uid)
+            pos = argument_text.lower().find(statement_text.lower())
+            argument_text = argument_text[0:pos] + sb + argument_text[pos:pos+len(statement_text)] + se + argument_text[pos+len(statement_text):]
             results.append({'uid': argument.uid,
-                            'text': get_text_for_argument_uid(argument.uid),
+                            'text': argument_text,
                             'url': urlmanager.get_url_for_jump(False, argument.uid)})
         return results
 
