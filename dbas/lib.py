@@ -258,8 +258,8 @@ def __build_argument_for_jump(arg_array, with_html_tag):
             ret_value += ' ' + _t.get(_t.because).lower() + ' ' + tag_premise + premises + tag_end
         else:
             ret_value = tag_conclusion + conclusion + ' ' + (_t.get(_t.isNotRight).lower() if not db_argument.is_supportive else '') + tag_end
-            ret_value += _t.get(_t.because).lower()
-            ret_value += ' ' + tag_premise + premises + tag_end
+            ret_value += ' ' + _t.get(_t.because).lower() + ' '
+            ret_value += tag_premise + premises + tag_end
 
     else:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[1]).first()
