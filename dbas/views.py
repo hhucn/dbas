@@ -1927,7 +1927,7 @@ class Dbas(object):
             else:
                 slug = get_slug_by_statement_uid(uid)
                 _um = UrlManager(mainpage, slug)
-                return_dict['arguments'] = get_all_arguments_with_text_and_url_by_statement_id(uid, _um)
+                return_dict['arguments'] = get_all_arguments_with_text_and_url_by_statement_id(uid, _um, True)
                 return_dict['error'] = ''
 
         except KeyError as e:

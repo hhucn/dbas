@@ -37,22 +37,30 @@ function DiscussionGraph() {
      */
 	this.callbackIfDoneForGetJumpDataForGraph = function (data){
 		var jsonData = $.parseJSON(data);
-		var popup = $('#popup-positions');
+		var popup = $('#popup-jump-graph');
 		if (jsonData.error.length === 0) {
-		    $('#popup-positions' + ' div.modal-body').empty();
+			var list = $('<ul>');
+			var label, input, element, counter = 0;
+		    popup.find('div.modal-body div').empty();
 		    $.each(jsonData.arguments, function(key, value) {
-		        $('#popup-positions' + ' div.modal-body')
-			        .append('<div class="radio"><label><input type="radio" value=' + value.url + '>' + value.text + '</label></div>');
+			    input = $('<input>').attr('type', 'radio').attr('value', value.url).attr('id', 'jump_' + counter);
+			    label = $('<label>').html(value.text).attr('for', 'jump_' + counter);
+			    element = $('<li>').append(input).append(label);
+			    list.append(element);
+			    counter += 1;
 		    });
+			popup.find('div.modal-body div').append(list);
 
 		    // jump to url
 		    popup.find('input').click(function () {
-				var url = $(this).attr('value');
-			    window.location = url;
+			    window.location = $(this).attr('value');
 		    });
 		} else {
 			popup.modal('hide');
 		}
+		
+		// add hover effects
+		new GuiHandler().hoverInputListOf(popup.find('div.modal-body div'));
 	};
 
 	/**
@@ -569,7 +577,7 @@ function DiscussionGraph() {
 	 * Show modal.
 	 */
 	function showModal(d){
-		var popup = $('#popup-positions');
+		var popup = $('#popup-jump-graph');
 		if(d.id != 'issue'){
 		    popup.modal('show');
 			// select uid
