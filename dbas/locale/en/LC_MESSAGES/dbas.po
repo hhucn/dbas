@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-07 11:40+0200\n"
+"POT-Creation-Date: 2016-09-13 16:32+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -146,11 +146,6 @@ msgstr "Admin"
 #: templates/snippet-header.pt:92
 msgid "logout"
 msgstr "Logout"
-
-#. Default: Review
-#: templates/snippet-header.pt:100
-msgid "review"
-msgstr "Review"
 
 #. Default: Impressum
 #: templates/imprint.pt:5
@@ -443,7 +438,7 @@ msgid "choose_task"
 msgstr "Choose a task to get started."
 
 #. Default: Based on your user group, you have all rights!
-#: templates/review.pt:30 templates/review_reputation.pt:8
+#: templates/review.pt:30 templates/review_reputation.pt:14
 msgid "unlimited_right_based_on_group"
 msgstr "Based on your user group, you have all rights!"
 
@@ -535,67 +530,77 @@ msgstr "History"
 
 #. Default: Current Decisions
 #. Default: Current decisions
-#: templates/review_history.pt:16 templates/review_history.pt:24
+#: templates/review_history.pt:16 templates/review_history.pt:23
 msgid "current_decisions"
 msgstr "Current decisions"
 
 #. Default: The history of votes
-#: templates/review_history.pt:23
+#: templates/review_history.pt:22
 msgid "history_of_votes"
 msgstr "The history of votes"
 
 #. Default: No decisions for this queue.
-#: templates/review_history.pt:34
+#: templates/review_history.pt:35
 msgid "no_decision_for_this_queue"
 msgstr "No decisions for this queue."
 
 #. Default: Argument
-#: templates/review_history.pt:39
+#: templates/review_history.pt:40
 msgid "argument"
 msgstr "Argument"
 
+#. Default: Edit
+#: templates/review_history.pt:41
+msgid "edit"
+msgstr "Edit"
+
 #. Default: Reason
-#: templates/review_history.pt:40
+#: templates/review_history.pt:42
 msgid "reason"
 msgstr "Reason"
 
+#. Default: Original
+#: templates/review_history.pt:43 templates/review_content.pt:171
+msgid "original"
+msgstr "Original"
+
 #. Default: Votes
-#: templates/review_history.pt:41
+#: templates/review_history.pt:44
 msgid "votes"
 msgstr "Votes"
 
 #. Default: Voters Pro
-#: templates/review_history.pt:42
+#: templates/review_history.pt:45
 msgid "voters_pro"
 msgstr "Voters Pro"
 
 #. Default: Voters Con
-#: templates/review_history.pt:43
+#: templates/review_history.pt:46
 msgid "voters_con"
 msgstr "Voters Con"
 
 #. Default: Accepted
-#: templates/review_history.pt:44
+#: templates/review_history.pt:47
 msgid "accepted"
 msgstr "Accepted"
 
 #. Default: Timestamp
-#: templates/review_history.pt:45
+#: templates/review_history.pt:48
 msgid "timestamp"
 msgstr "Timestamp"
 
 #. Default: Action
-#: templates/review_history.pt:46
+#: templates/review_history.pt:49
 msgid "actions"
 msgstr "Action"
 
 #. Default: Undo
-#: templates/review_history.pt:81
+#: templates/review_history.pt:85
 msgid "undo"
 msgstr "Undo"
 
 #. Default: Cancel
-#: templates/review_history.pt:84 templates/snippet-popups.pt:175
+#: templates/review_history.pt:88 templates/snippet-popups.pt:175
 #: templates/snippet-popups.pt:200
 msgid "cancel"
 msgstr "Cancel"
@@ -966,7 +971,7 @@ msgid "success:"
 msgstr "Success:"
 
 #. Default: Date
-#: templates/snippet-popups.pt:585 templates/review_reputation.pt:22
+#: templates/snippet-popups.pt:585 templates/review_reputation.pt:28
 msgid "date"
 msgstr "Date"
 
@@ -989,7 +994,9 @@ msgstr "Please mark a reason"
 #. justification too. This mask is for reporting arguments!
 #: templates/snippet-popups.pt:742
 msgid "keep_in_mind_that_you_can_argue"
-msgstr "Please keep in mind that you can argue against the argument or the justification too. This mask is for reporting arguments!"
+msgstr ""
+"Please keep in mind that you can argue against the argument or the "
+"justification too. This mask is for reporting arguments!"
 
 #. Default: The text needs and correcture.
 #: templates/snippet-popups.pt:747
@@ -1010,6 +1017,18 @@ msgstr "It is not relevant at all."
 #: templates/snippet-popups.pt:765
 msgid "statement_harmful"
 msgstr "This statement is harmful or abusive."
+
+#. Default: Please choose a step to jump in
+#: templates/snippet-popups.pt:782
+msgid "choose_a_steap_to_jump_in"
+msgstr "Please choose a step to jump in"
+
+#. Default: Below you find a list with all arguments, where your selected text
+#. is used:
+#: templates/snippet-popups.pt:785
+msgid "below_you_will_find"
+msgstr ""
+"Below you find a list with all arguments, where your selected text is used:"
 
 #. Default: Personal Information
 #: templates/settings.pt:7
@@ -1247,20 +1266,21 @@ msgstr "Let's go home!"
 msgid "back_to_the_discussion"
 msgstr "Back to the discussion!"
 
+#. Default: Reputation
+#: templates/review_reputation.pt:9 templates/review_reputation.pt:30
+#: templates/user.pt:57
+msgid "reputation"
+msgstr "Reputation"
+
 #. Default: Reputation count
-#: templates/review_reputation.pt:9
+#: templates/review_reputation.pt:15
 msgid "reputation_count"
 msgstr "Reputation count"
 
 #. Default: Action
-#: templates/review_reputation.pt:23
+#: templates/review_reputation.pt:29
 msgid "action"
 msgstr "Action"
-
-#. Default: Reputation
-#: templates/review_reputation.pt:24 templates/user.pt:57
-msgid "reputation"
-msgstr "Reputation"
 
 #. Default: (more)
 #: templates/review_content.pt:30
@@ -1440,11 +1460,6 @@ msgstr "minutes"
 msgid "please_make_your_edits"
 msgstr "Please make your edits in grammar and/or spelling here:"
 
-#. Default: Original
-#: templates/review_content.pt:171
-msgid "original"
-msgstr "Original"
-
 #. Default: Your correcture
 #: templates/review_content.pt:172
 msgid "your correcture"
@@ -1582,24 +1597,27 @@ msgid "restart_discussion"
 msgstr "Restart"
 
 #. Default: Change display style
-#: templates/content.pt:316
+#: templates/content.pt:318
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: Dialog View
-#: templates/content.pt:319
+#: templates/content.pt:321
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Island View
-#: templates/content.pt:325
+#: templates/content.pt:327
 msgid "island_view"
 msgstr "Island View"
 
 #. Default: Complete View
-#: templates/content.pt:331
+#: templates/content.pt:333
 msgid "complete_view"
 msgstr "Complete View"
+
+#~ msgid "review"
+#~ msgstr "Review"
 
 #~ msgid "reputation_borders"
 #~ msgstr "Reputation"
@@ -1678,9 +1696,6 @@ msgstr "Complete View"
 
 #~ msgid "title"
 #~ msgstr "Title"
-
-#~ msgid "edit"
-#~ msgstr "Edit"
 
 #~ msgid "go_back"
 #~ msgstr "go back"
