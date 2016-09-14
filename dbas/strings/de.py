@@ -241,6 +241,8 @@ class GermanDict:
         de_lang[_self.displayControlDialogIslandBody] = 'Okay, Sie möchten mehr sehen, aber nicht alles? Genau dafür haben wie eine Insel-Ansicht als weitere Modus. Mit dieser Möglichkeit sehen Sie alle Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind.'
         de_lang[_self.displayControlDialogExpertTitle] = 'Experten-Ansicht'
         de_lang[_self.displayControlDialogExpertBody] = 'Du bist also ein Experte? Okay, dann darfst du wirklich alles auf einen Blick sehen.'
+        de_lang[_self.displayControlDialogGraphTitle] = 'Graph-Ansicht'
+        de_lang[_self.displayControlDialogGraphBody] = 'Darstellung der Diskussion als Graph.'
         de_lang[_self.discussionInfoTooltip1] = 'Die Diskussion wurde'
         de_lang[_self.discussionInfoTooltip2] = 'gestartet und hat schon'
         de_lang[_self.discussionInfoTooltip3pl] = 'Argumente.'

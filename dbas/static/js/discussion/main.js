@@ -140,7 +140,7 @@ function Main () {
 				mainpage + "static/images/logo.png");
 		});
 		
-		guiHandler.setDisplayStyleAsDiscussion();
+		//guiHandler.setDisplayStyleAsDiscussion();
 		$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct() {
 			guiHandler.setDisplayStyleAsDiscussion();
 		});
@@ -632,6 +632,14 @@ $(document).ready(function mainDocumentReady() {
 		$('#island-view-support-button').attr('onclick', $('#item_support').attr('onclick'));
 		$('#island-view-undercut-button').attr('onclick', $('#item_undercut').attr('onclick'));
 		$('#island-view-rebut-button').attr('onclick', $('#item_rebut').attr('onclick'));
+	}
+	
+	// chech anchors
+	console.log('read hash: ' + location.hash);
+	if (location.hash.indexOf('graph') != -1){
+		guiHandler.setDisplayStyleAsGraphView();
+	} else if (location.hash.indexOf('island') != -1){
+		guiHandler.setDisplayStyleAsIsland();
 	}
 
 	$(document).delegate('.open', 'click', function(event){

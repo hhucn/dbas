@@ -106,6 +106,7 @@ function GuiHandler() {
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
 		$('#' + headerContainerId).show();
+		new Helper().clearAnchor();
 	};
 
 	/**
@@ -118,6 +119,7 @@ function GuiHandler() {
 		$('#' + islandViewContainerId).fadeIn('slow');
 		//$('#' + graphViewContainerId).hide();
 		//$('#' + discussionContainerId).hide();
+		new Helper().setAnchor('island');
 	};
 
 	/**
@@ -148,6 +150,7 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 		main.setSidebarStyle(graphViewContainer, tacked_sidebar);
 		main.setSidebarClicks(graphViewContainer, tacked_sidebar);
+		new Helper().setAnchor('graph');
 	};
 
 	/**

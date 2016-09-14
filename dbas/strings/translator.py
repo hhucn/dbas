@@ -165,6 +165,8 @@ class Translator(object):
         self.displayControlDialogGuidedTitle = 'displayControlDialogGuidedTitle'
         self.displayControlDialogGuidedBody = 'displayControlDialogGuidedBody'
         self.displayControlDialogIslandTitle = 'displayControlDialogIslandTitle'
+        self.displayControlDialogGraphBody = 'displayControlDialogGraphBody'
+        self.displayControlDialogGraphTitle = 'displayControlDialogGraphTitle'
         self.displayControlDialogIslandBody = 'displayControlDialogIslandBody'
         self.displayControlDialogExpertTitle = 'displayControlDialogExpertTitle'
         self.displayControlDialogExpertBody = 'displayControlDialogExpertBody'
