@@ -365,7 +365,7 @@ class EnglischDict:
         en_lang[_self.interestingOnDBAS] = 'Interesting discussion on DBAS'
         en_lang[_self.inputEmpty] = 'Input is empty!'
         en_lang[_self.informationForStatements] = 'Information for the statements'
-        en_lang[_self.jumpAnswer0] = 'Right, I support XXCONCLUSIONXX and accept XXPREMISEXX.'
+        en_lang[_self.jumpAnswer0] = 'Right, I support XXCONCLUSIONXX and accept the XXPREMISEXX.'
         en_lang[_self.jumpAnswer1] = 'Right, I support XXCONCLUSIONXX, but I want to add my own XXPREMISEXX.'
         en_lang[_self.jumpAnswer2] = 'Right, I support XXCONCLUSIONXX, but the XXPREMISEXX does not support it.'
         en_lang[_self.jumpAnswer3] = 'Wrong, the XXCONCLUSIONXX is false.'
