@@ -239,6 +239,8 @@ class EnglischDict:
         en_lang[_self.displayControlDialogIslandBody] = 'Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.'
         en_lang[_self.displayControlDialogExpertTitle] = 'Expert View'
         en_lang[_self.displayControlDialogExpertBody] = 'So, you think you are an expert? Okay, you can have a view of the complete argumentation map'
+        en_lang[_self.displayControlDialogGraphTitle] = 'Graph-View'
+        en_lang[_self.displayControlDialogGraphBody] = 'Presentation of the discusion as graph.'
         en_lang[_self.discussionEnd] = 'The discussion ends here.'
         en_lang[_self.discussionEndLinkText] = 'You can click <a id="discussionEndStepBack" data-href="back" onclick="window.history.back();" style="cursor: pointer;">here</a> to go one step back or you can use the button above or <a id="discussionEndRestart" data-href="restart" >this link</a> to restart the discussion.'
         en_lang[_self.discussionInfoTooltip1] = 'The discussion was started'

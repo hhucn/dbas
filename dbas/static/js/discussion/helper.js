@@ -319,6 +319,16 @@ function Helper() {
 			.css('-o-transition', 'all ' + speed + 's ease')
 			.css('transition', 'all ' + speed + 's ease');
 	};
+	
+	this.setAnchor = function(anchor){
+		location.hash = anchor;
+		console.log('Set Anchor: ' + anchor);
+	};
+	
+	this.clearAnchor = function(){
+		location.hash = '';
+		console.log('Cleared Anchor');
+	};
 
 	/**
 	 * Delays a specific function
