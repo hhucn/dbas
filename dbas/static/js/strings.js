@@ -203,7 +203,7 @@ var number 											= 'number';
 var notificationWasSend                             = 'notificationWasSend';
 var noEditsInOptimization                           = 'noEditsInOptimization';
 var opinionBarometer                                = 'opinionBarometer';
-var options                                         = 'options';
+var option                                         = 'option';
 var ohsnap                                          = 'ohsnap';
 var report 											= 'report';
 var reportTitle										= 'reportTitle';
@@ -394,7 +394,7 @@ var dbas_en = {
 	'note': 'Note',
 	'noEditsInOptimization': 'You have edited nothing!',
 	'opinionBarometer': 'Opinion Barometer',
-	'options': 'Options',
+	'option': 'Options',
 	'ohsnap': 'Oh snap!',
 	'passwordSubmit': 'Change Password',
 	'pinNavigation': 'Pin Navigation',
@@ -574,7 +574,7 @@ var dbas_de = {
 	'note': 'Hinweis',
 	'noEditsInOptimization': 'Sie haben keine Änderungen vorgenommen!',
 	'opinionBarometer': 'Meinungsbarometer',
-	'options': 'Optionen',
+	'option': 'Optionen',
 	'ohsnap': 'Mist!',
 	'passwordSubmit': 'Passwort ändern',
 	'pinNavigation': 'Navigation anheften',

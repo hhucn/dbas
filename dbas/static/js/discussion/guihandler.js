@@ -501,7 +501,7 @@ function GuiHandler() {
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		td_text = $('<td>').html('<strong>' + _t_discussion(text) + '</strong>').css('text-align', 'center');
-		td_buttons = $('<td>').html('<strong>' + _t_discussion(options) + '</strong>').css('text-align', 'right');
+		td_buttons = $('<td>').html('<strong>' + _t_discussion(option) + '</strong>').css('text-align', 'right');
 		table.append($('<tr>').append(td_text).append(td_buttons));
 
 		// append a row for each statement
@@ -519,6 +519,7 @@ function GuiHandler() {
 		$('#' + popupEditStatementDescriptionId).hide();
 		$('#' + popupEditStatementSubmitButtonId).hide();
 		$('#' + proposalEditListGroupId).empty();
+		$('#popup-edit-statement-textarea-text-counter').hide();
 	};
 
 	/**
