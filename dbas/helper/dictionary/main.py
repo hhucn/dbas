@@ -384,7 +384,7 @@ class DictionaryHelper(object):
         return_dict['title'] = {'barometer': _tn_dis.get(_tn_dis.opinionBarometer),
                                 'guided_view': _tn_dis.get(_tn_dis.displayControlDialogGuidedTitle),
                                 'island_view': _tn_dis.get(_tn_dis.displayControlDialogIslandTitle),
-                                'expert_view': _tn_dis.get(_tn_dis.displayControlDialogExpertTitle),
+                                'graph_view': _tn_dis.get(_tn_dis.displayControlDialogGraphTitle),
                                 'edit_statement': _tn_dis.get(_tn_dis.editTitle),
                                 'report_statement': _tn_dis.get(_tn_dis.reportTitle),
                                 'report_title': _tn_dis.get(_tn_dis.reportTitle),
