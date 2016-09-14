@@ -352,11 +352,18 @@ def setup_news_db(session):
                   news='Our first version of the review-module is now online. Every confrontativ argument can be '
                        'flagged regarding a specific reason now. Theses flagged argument will be reviewed by '
                        'other participants, who have enough reputation. Have a look at the review-section!')
+    news52 = News(title='COMMA16',
+                  date=arrow.get('2016-09-14'),
+                  author='Tobias Krauthoff',
+                  news='Bases on the hard work of the last month, we are attending the 6th International Conference on '
+                       'Computational Models of Argument (COMMA16) in Potsdam. There we are going to show the first demo '
+                       'of D-BAS and present the paper of Krauthoff T., Betz G., Baurmann M. & Mauve, M. (2016) "Dialog-Based '
+                       'Online Argumentation". Looking forward to see you!')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51]
+                  news50, news51, news52]
     session.add_all(news_array[::-1])
     session.flush()
 
