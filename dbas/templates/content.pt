@@ -342,7 +342,7 @@
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/main.js')}"></script>
 
-        <script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/discussion/barometer.js')}"></script>
+        <script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}"></script>
 
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}"></script>
         <script tal:condition="extras.show_expert_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/d3.min.js')}"></script>
