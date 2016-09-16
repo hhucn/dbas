@@ -56,9 +56,9 @@ function DiscussionBarometer(){
 		}).removeClass('btn-success');
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 
-		this.getD3Barometer(jsonData);
-
 		$('#' + popupConfirmDialogId).find('.modal-title').text(jsonData.title).css({'line-height': '1.0'});
+
+		this.getD3Barometer(jsonData);
 	};
 
 	/**
@@ -67,27 +67,13 @@ function DiscussionBarometer(){
 	 * @param jsonData
 	 */
 	this.getD3Barometer = function(jsonData) {
+		$('#' + popupConfirmDialogId + ' div.modal-body').empty();
+
 		var width = 500, height = 550;
 
 		var svg = getSvg(width, height);
 
-		// create scale to map values
-		var xScale = d3.scale.linear().range([0, 450]);
-        var yScale = d3.scale.linear().domain([0, 100]).range([450, 0]);
-
-		// create axis
-        var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-		d3.select("svg").append("g")
-			.attr({id: "xAxis", transform: "translate(50,500)"})
-			.call(xAxis);
-		var yAxis = d3.svg.axis().scale(yScale).orient("left");
-		d3.select("svg").append("g")
-			.attr({id: "yAxis", transform: "translate(50,50)"})
-			.call(yAxis)
-			.append("text")
-			.attr({dx: "0.5em", dy: "-1.5em"})
-			.style("text-anchor", "end")
-            .text("%");
+		createAxis(svg);
 };
 
 	/**
@@ -101,5 +87,30 @@ function DiscussionBarometer(){
 		return d3.select('#' + popupConfirmDialogId + ' div.modal-body').append("svg")
     		.attr({width: width, height: height, id: "barometer-svg"})
 			.append("g");
+	}
+
+	/**
+	 * Create axis for barometer.
+	 *
+	 * @param svg
+	 */
+	function createAxis(svg){
+	    // create scale to map values
+		var xScale = d3.scale.linear().range([0, 450]);
+        var yScale = d3.scale.linear().domain([0, 100]).range([450, 0]);
+
+		// create x and y-axis
+        var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+		svg.append("g")
+			.attr({id: "xAxis", transform: "translate(50,500)"})
+			.call(xAxis);
+		var yAxis = d3.svg.axis().scale(yScale).orient("left");
+		svg.append("g")
+			.attr({id: "yAxis", transform: "translate(50,50)"})
+			.call(yAxis)
+			.append("text")
+			.attr({dx: "0.5em", dy: "-1.5em"})
+			.style("text-anchor", "end")
+            .text("%");
 	}
 }
