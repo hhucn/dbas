@@ -107,7 +107,7 @@ function DiscussionGraph() {
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
-		d3.selectAll('svg').call(zoom).on("dblclick.zoom", null);
+		d3.select("#graph-svg").call(zoom).on("dblclick.zoom", null);
         function redraw() {
             d3.selectAll("g.zoom")
             .attr("transform", "translate(" + zoom.translate() + ")"
@@ -118,10 +118,10 @@ function DiscussionGraph() {
 		// resize graph on window event
 		d3.select(window).on("resize", resize);
 		function resize() {
-			var graphsvg = $('#graph-svg');
-			graphsvg.width(container.width());
+			var graphSvg = $('#graph-svg');
+			graphSvg.width(container.width());
 			// height of space between header and bottom of container
-			graphsvg.height(container.outerHeight()-$('#graph-view-container-header').height() + 20);
+			graphSvg.height(container.outerHeight()-$('#graph-view-container-header').height() + 20);
 			force.size([container.width(), container.outerHeight()]).resume();
 		}
 
@@ -149,11 +149,11 @@ function DiscussionGraph() {
         var legend = d3.svg.legend();
 
 		// background of legend
-		var legendRect = d3.select("svg").append("rect");
+		var legendRect = d3.select("#graph-svg").append("rect");
 
 		// set position of legend
 		var legendPaddingBottom = 3*height/5;
-        d3.select("svg").append("g")
+        d3.select("#graph-svg").append("g")
 			.attr("id", "graphLegend")
             .attr("transform", "translate(30, " + legendPaddingBottom + ")")
             .call(legend);
