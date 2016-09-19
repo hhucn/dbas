@@ -101,7 +101,7 @@ function GuiHandler() {
 	this.setDisplayStyleAsDiscussion = function () {
 		this.setImageInactive($('#' + displayStyleIconGuidedId));
 		this.setImageActive($('#' + displayStyleIconIslandId));
-		this.setImageActive($('#' + displayStyleIconExpertId));
+		this.setImageActive($('#' + displayStyleIconGraphId));
 		$('#' + islandViewContainerId).hide();
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
@@ -115,7 +115,7 @@ function GuiHandler() {
 	this.setDisplayStyleAsIsland = function () {
 		this.setImageActive($('#' + displayStyleIconGuidedId));
 		this.setImageInactive($('#' + displayStyleIconIslandId));
-		this.setImageActive($('#' + displayStyleIconExpertId));
+		this.setImageActive($('#' + displayStyleIconGraphId));
 		$('#' + islandViewContainerId).fadeIn('slow');
 		//$('#' + graphViewContainerId).hide();
 		//$('#' + discussionContainerId).hide();
@@ -133,7 +133,7 @@ function GuiHandler() {
 		
 		this.setImageActive($('#' + displayStyleIconGuidedId));
 		this.setImageActive($('#' + displayStyleIconIslandId));
-		this.setImageInactive($('#' + displayStyleIconExpertId));
+		this.setImageInactive($('#' + displayStyleIconGraphId));
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
 		$('#' + headerContainerId).hide();
