@@ -774,12 +774,5 @@ function GuiHandler() {
 				$(this).prev().prop('checked', false);
 			})
 		});
-		list.find('li').each(function(){
-			$(this).hover(function(){
-				$(this).find('.item-flag').show();
-			}, function(){
-				$(this).find('.item-flag').hide();
-			})
-		});
 	}
 }

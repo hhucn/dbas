@@ -78,7 +78,7 @@ def preperation_for_justify_statement(request, for_api, api_data, mainpage, slug
 
     item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict), nickname)
-    extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, False, True, request, mode == 't',
+    extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, request, mode == 't',
                                               application_url=mainpage, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
@@ -116,7 +116,7 @@ def preperation_for_dontknow_statement(request, for_api, api_data, mainpage, slu
     argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive)
-    extras_dict     = _dh.prepare_extras_dict(slug, False, False, True, True, True, request, argument_id=argument_uid,
+    extras_dict     = _dh.prepare_extras_dict(slug, False, True, True, True, request, argument_id=argument_uid,
                                               application_url=mainpage, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict) == 0:
@@ -149,7 +149,7 @@ def preperation_for_justify_argument(request, for_api, api_data, mainpage, slug,
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
     item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
-    extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, True, request,
+    extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, request,
                                               argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
     # is the discussion at the end?
     if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
