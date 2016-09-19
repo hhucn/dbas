@@ -147,7 +147,7 @@ function Main () {
 		$('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct() {
 			guiHandler.setDisplayStyleAsIsland();
 		});
-		$('#' + displayStyleIconExpertId).click(function displayStyleIconExpertFct() {
+		$('#' + displayStyleIconGraphId).click(function displayStyleIconExpertFct() {
 			guiHandler.setDisplayStyleAsGraphView();
 		});
 		

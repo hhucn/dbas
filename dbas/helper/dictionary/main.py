@@ -76,7 +76,7 @@ class DictionaryHelper(object):
         return self.prepare_extras_dict('', False, False, False, False, False, request, append_notifications=append_notifications)
 
     def prepare_extras_dict(self, current_slug, is_editable, is_reportable, show_bar_icon, show_island_icon,
-                            show_expert_icon, request, argument_id=0, application_url='', for_api=False,
+                            show_graph_icon, request, argument_id=0, application_url='', for_api=False,
                             append_notifications=False):
         """
         Creates the extras.dict() with many options!
@@ -86,7 +86,7 @@ class DictionaryHelper(object):
         :param is_reportable: Boolean
         :param show_bar_icon: Boolean
         :param show_island_icon: Boolean
-        :param show_expert_icon: Boolean
+        :param show_graph_icon: Boolean
         :param request: Request
         :param argument_id: Argument.uid
         :param application_url: String
@@ -121,16 +121,16 @@ class DictionaryHelper(object):
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:
-            return_dict['is_editable']                   = is_editable and is_logged_in
-            return_dict['is_reportable']                 = is_reportable
-            return_dict['is_admin']                      = _uh.is_user_in_group(nickname, 'admins')
-            return_dict['is_author']                     = _uh.is_user_in_group(nickname, 'authors')
-            return_dict['show_bar_icon']                 = show_bar_icon
-            return_dict['show_island_icon']              = show_island_icon
-            return_dict['show_expert_icon']              = show_expert_icon
-            return_dict['close_premise_container']         = True
-            return_dict['close_statement_container']     = True
-            return_dict['date']                             = arrow.utcnow().format('DD-MM-YYYY')
+            return_dict['is_editable']               = is_editable and is_logged_in
+            return_dict['is_reportable']             = is_reportable
+            return_dict['is_admin']                  = _uh.is_user_in_group(nickname, 'admins')
+            return_dict['is_author']                 = _uh.is_user_in_group(nickname, 'authors')
+            return_dict['show_bar_icon']             = show_bar_icon
+            return_dict['show_island_icon']          = show_island_icon
+            return_dict['show_graph_icon']           = show_expert_icon
+            return_dict['close_premise_container']   = True
+            return_dict['close_statement_container'] = True
+            return_dict['date']                      = arrow.utcnow().format('DD-MM-YYYY')
             self.add_title_text(return_dict)
             self.add_button_text(return_dict)
             self.add_tag_text(return_dict)
