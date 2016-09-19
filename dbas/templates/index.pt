@@ -190,7 +190,5 @@
 		</div>
 		-->
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}"></script>
-
 	</tal:block>
 </tal:block>
