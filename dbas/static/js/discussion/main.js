@@ -151,23 +151,6 @@ function Main () {
 			guiHandler.setDisplayStyleAsGraphView();
 		});
 		
-		/**
-		 * Handling report button
-		 */
-		$('#' + reportButtonId).click(function reportFunction() {
-			// jump to contact tab
-			var line1 = 'Report ' + new Helper().getTodayAsDate(),
-				line2 = 'URL: ' + window.location.href,
-				line3 = _t(fillLine).toUpperCase(),
-				params = {
-					'content': line1 + '\n' + line2 + '\n' + line3,
-					'name': $('#header_user').parent().text().replace(/\s/g, '')
-				};
-			
-			new Helper().redirectInNewTabForContact(params);
-			
-		});
-		
 		// opinion barometer
 		$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
 			new DiscussionBarometer().showBarometer();
@@ -199,8 +182,21 @@ function Main () {
 			}
 		});
 		trianglel.find('.triangle-flag').click(function () {
-				var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 			guiHandler.showFlagArgumentPopup(uid);
+		});
+		$('#' + discussionSpaceListId).find('.item-flag').click(function () {
+			alert('todo');
+			// jump to contact tab
+			var line1 = 'Report ' + new Helper().getTodayAsDate(),
+				line2 = 'URL: ' + window.location.href,
+				line3 = _t(fillLine).toUpperCase(),
+				params = {
+					'content': line1 + '\n' + line2 + '\n' + line3,
+					'name': $('#header_user').parent().text().replace(/\s/g, '')
+				};
+			
+			new Helper().redirectInNewTabForContact(params);
 		});
 		
 		// adding issues

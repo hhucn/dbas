@@ -74,12 +74,10 @@
                                 <p class="triangle-l" tal:attributes="id bubble.id">
                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
                                     <span class="triangle-content">${structure:bubble.message}</span>
-                                    <!--
-                                    <br tal:condition="extras.logged_in">
+                                    <br tal:condition="bubble.is_flaggable and extras.logged_in">
                                     <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flaggable and extras.logged_in" tal:attributes="title extras.title.report_statement">
                                         <i class="fa fa-flag" aria-hidden="true"></i>
                                     </span>
-                                    -->
                                 </p>
                             </div>
                             <div tal:condition="bubble.is_status" class="line-wrapper-m">
@@ -95,10 +93,13 @@
                         <li tal:repeat="item items">
                             <input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
                             <span tal:repeat="premise item.premises" tal:omit-tag="">
-                                   <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
-                                   <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
-                                   <label tal:condition="repeat.premise.end and item.already_used"><em>${item.already_used_text}</em></label>
-                               </span>
+                                <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
+                                <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
+                                <label tal:condition="repeat.premise.end and item.already_used"><em>${item.already_used_text}</em></label>
+                                <span class="item-flag" data-toggle="tooltip" data-placement="bottom" tal:condition="item.is_flaggable and extras.logged_in" tal:attributes="title extras.title.report_statement">
+                                    <i class="fa fa-flag" aria-hidden="true"></i>
+                                </span>
+                            </span>
                         </li>
                     </ul>
                        <!--
@@ -125,7 +126,6 @@
                 <ul class="sidebar">
                     <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
                     <li id="edit-statement" tal:condition="extras.is_editable"><i class="fa fa-pencil-square-o" aria-hidden="true" tal:attributes="titel extras.buttons.edit_statement"></i><span class="sidebar-element">${extras.buttons.edit_statement}</span></li>
-                    <li id="report-button" tal:condition="extras.is_reportable"><i class="fa fa-flag" aria-hidden="true" tal:attributes="titel extras.title.report_title"></i><span class="sidebar-element">${extras.title.report_title}</span></li>
                     <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
                     <li id="display-style-icon-island-img" tal:condition="extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
                     <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true" tal:attributes="titel extras.title.graph_view"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
