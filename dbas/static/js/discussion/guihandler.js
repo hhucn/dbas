@@ -739,41 +739,6 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Check whether the edit button should be visible or not
-	 */
-	this.resetEditAndRefactorButton = function (optionalEditable) {
-		if (typeof optionalEditable === 'undefined') { optionalEditable = true; }
-
-		var is_editable = false, statement, uid, is_premise, is_start;
-		$('#' + discussionSpaceId + ' ul > li').children().each(function () {
-			statement = $(this).val();
-			uid = $(this).attr('id');
-			is_premise = $(this).hasClass('premise');
-			is_start = $(this).hasClass('start');
-			// do we have a child with input or just the label?
-			if (optionalEditable) {
-				if ($(this).prop('tagName').toLowerCase().indexOf('input') > -1
-						&& statement.length > 0
-						&& $.isNumeric(uid)
-						|| is_premise
-						|| is_start) {
-					is_editable = true;
-					return false; // break
-				}
-			}
-		});
-
-		// do we have an statement there?
-		if (is_editable) {
-			$('#' + editStatementButtonId).show();
-			$('#' + reportButtonId).show();
-		} else {
-			$('#' + editStatementButtonId).hide();
-			$('#' + reportButtonId).hide();
-		}
-	};
-
-	/**
 	 *
 	 * @returns {*|jQuery}
 	 */
@@ -793,16 +758,27 @@ function GuiHandler() {
 	this.hoverInputListOf = function(list){
 		list.find('input').each(function(){
 			$(this).hover(function(){
+				$(this).parent().closest('li').find('.item-flag').show();
 				$(this).prop('checked', true);
 			}, function(){
+				$(this).parent().closest('li').find('.item-flag').hide();
 				$(this).prop('checked', false);
 			})
 		});
 		list.find('label').each(function(){
 			$(this).hover(function(){
+				$(this).parent().closest('li').find('.item-flag').show();
 				$(this).prev().prop('checked', true);
 			}, function(){
+				$(this).parent().closest('li').find('.item-flag').hide();
 				$(this).prev().prop('checked', false);
+			})
+		});
+		list.find('li').each(function(){
+			$(this).hover(function(){
+				$(this).find('.item-flag').show();
+			}, function(){
+				$(this).find('.item-flag').hide();
 			})
 		});
 	}
