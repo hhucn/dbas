@@ -349,6 +349,33 @@ class Dbas(object):
             'extras': extras_dict
         }
 
+    # imprint
+    @view_config(route_name='main_publications', renderer='templates/publications.pt', permission='everybody')
+    def main_publications(self):
+        """
+        View configuration for the publcations.
+
+        :return: dictionary with title and project name as well as a value, weather the user is logged in
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('main_publications', 'def', 'main')
+        ui_locales = get_language(self.request, get_current_registry())
+        session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
+        HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
+        _tn = Translator(ui_locales)
+        if session_expired:
+            return self.user_logout(True)
+
+        extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
+
+        return {
+            'layout': self.base_layout(),
+            'language': str(ui_locales),
+            'title': _tn.get(_tn.publications),
+            'project': project_name,
+            'extras': extras_dict
+        }
+
     # 404 page
     @notfound_view_config(renderer='templates/404.pt')
     def notfound(self):
