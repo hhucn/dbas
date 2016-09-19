@@ -127,7 +127,7 @@ class DictionaryHelper(object):
             return_dict['is_author']                 = _uh.is_user_in_group(nickname, 'authors')
             return_dict['show_bar_icon']             = show_bar_icon
             return_dict['show_island_icon']          = show_island_icon
-            return_dict['show_graph_icon']           = show_expert_icon
+            return_dict['show_graph_icon']           = show_graph_icon
             return_dict['close_premise_container']   = True
             return_dict['close_statement_container'] = True
             return_dict['date']                      = arrow.utcnow().format('DD-MM-YYYY')
