@@ -1,0 +1,16 @@
+<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<div class="container first-container">
+			<div class="row">
+				<div class="col-md-offset-2 col-md-8 colored-container col-md-offset-2 ">
+                    <p class="lead"><a href="http://ebooks.iospress.nl/publication/45243" target="_blank">Dialog-Based Online Argumentation</a></p>
+                    <p>Tobias Krauthoff, Michael Baurmann, Gregor Betz, Martin Mauve</p>
+                    <p>Proceedings of Computational Model of Arguments 2016</p>
+                    <p><span>Abstract: </span>In this position paper we propose a novel approach to online argumentation. It avoids the pitfalls of unstructured systems such as asynchronous threaded discussions and it is usable by any participant without training while still supporting the full complexity of real-world argumentation. The key idea is to let users exchange arguments with each other in the form of a time-shifted dialog where arguments are presented and acted upon one-at-a-time. We highlight the key research challenges that need to be addressed in order to realize such a system and provide first solutions for those challenges.</p>
+				</div>
+			</div>
+		</div>
+
+	</tal:block>
+</tal:block>
