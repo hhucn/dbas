@@ -53,7 +53,6 @@ var discussionSuccessDescriptionSpaceId       = 'discussion-success-description-
 var discussionArgVoteCountId                  = 'discussion-arg-votes-count';
 var discussionStatVoteCountId                 = 'discussion-stat-votes-count';
 var editIssueButtonId                         = 'edit-issue';
-var editStatementButtonId                     = 'edit-statement';
 var editsDoneCountId                          = 'edits-done-count';
 var headerNicknameId                          = 'header_nickname';
 var headerBadgeCountNotificationsId           = 'header_badge_count_notifications';

@@ -495,4 +495,5 @@ class ItemDictHelper(object):
             'url': url,
             'already_used': already_used,
             'already_used_text': already_used_text,
-            'is_flaggable': is_flaggable}
+            'is_flaggable': is_flaggable,
+            'is_editable': is_flaggable}

@@ -435,7 +435,7 @@ class Dbas(object):
 
         discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
             .get_dict_for_start()
-        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
+        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True,
                                                                                             False, True, self.request,
                                                                                             application_url=mainpage,
                                                                                             for_api=for_api)
@@ -500,7 +500,7 @@ class Dbas(object):
         item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
             .prepare_item_dict_for_attitude(statement_id)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False,
-                                                                                            False, True, False, True,
+                                                                                            True, False, True,
                                                                                             self.request,
                                                                                             application_url=mainpage,
                                                                                             for_api=for_api)
@@ -649,7 +649,7 @@ class Dbas(object):
         _idh            = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
         discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
         item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
-        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True, True,
+        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True, True,
                                                                                             True, self.request,
                                                                                             argument_id=arg_id_sys,
                                                                                             application_url=mainpage,
@@ -747,7 +747,7 @@ class Dbas(object):
         if not item_dict:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
+        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                             True, True, self.request,
                                                                                             application_url=mainpage,
                                                                                             for_api=for_api)
@@ -812,7 +812,7 @@ class Dbas(object):
         _idh = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
         discussion_dict = _ddh.get_dict_for_jump(arg_uid)
         item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
-        extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, False, True,
+        extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                         True, True, self.request,
                                                                                         application_url=mainpage,
                                                                                         for_api=for_api)
