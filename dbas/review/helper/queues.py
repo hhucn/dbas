@@ -16,11 +16,11 @@ from dbas.logger import logger
 max_lock_time_in_sec = 180
 
 
-def get_review_queues_array(mainpage, translator, nickname):
+def get_review_queues_array(main_page, translator, nickname):
     """
     Prepares dictionary for the edit section.
 
-    :param mainpage: URL
+    :param main_page: URL
     :param translator: Translator
     :param nickname: Users nickname
     :return: Array
@@ -31,21 +31,21 @@ def get_review_queues_array(mainpage, translator, nickname):
         return None
 
     review_list = list()
-    review_list.append(__get_delete_dict(mainpage, translator, nickname))
-    review_list.append(__get_optimization_dict(mainpage, translator, nickname))
-    review_list.append(__get_edit_dict(mainpage, translator, nickname))
-    review_list.append(__get_history_dict(mainpage, translator, nickname))
+    review_list.append(__get_delete_dict(main_page, translator, nickname))
+    review_list.append(__get_optimization_dict(main_page, translator, nickname))
+    review_list.append(__get_edit_dict(main_page, translator, nickname))
     if is_user_author(nickname):
-        review_list.append(__get_ongoing_dict(mainpage, translator))
+        review_list.append(__get_history_dict(main_page, translator))
+        review_list.append(__get_ongoing_dict(main_page, translator))
 
     return review_list
 
 
-def __get_delete_dict(mainpage, translator, nickname):
+def __get_delete_dict(main_page, translator, nickname):
     """
     Prepares dictionary for the a section.
 
-    :param mainpage: URL
+    :param main_page: URL
     :param translator: Translator
     :param nickname: Users nickname
     :return: Dict()
@@ -57,22 +57,22 @@ def __get_delete_dict(mainpage, translator, nickname):
     count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'Deletes',
                 'id': 'deletes',
-                'url': mainpage + '/review/' + key,
+                'url': main_page + '/review/' + key,
                 'icon': 'fa fa-trash-o',
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitDeleteQueue),
                 'is_not_allowed_text': translator.get(translator.visitDeleteQueueLimitation).replace('XX', str(reputation_borders[key])),
-                'last_reviews': __get_last_reviewer_of(LastReviewerDelete, mainpage)
+                'last_reviews': __get_last_reviewer_of(LastReviewerDelete, main_page)
                 }
     return tmp_dict
 
 
-def __get_optimization_dict(mainpage, translator, nickname):
+def __get_optimization_dict(main_page, translator, nickname):
     """
     Prepares dictionary for the a section.
 
-    :param mainpage: URL
+    :param main_page: URL
     :param translator: Translator
     :param nickname: Users nickname
     :return: Dict()
@@ -84,22 +84,22 @@ def __get_optimization_dict(mainpage, translator, nickname):
     count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'Optimizations',
                 'id': 'optimizations',
-                'url': mainpage + '/review/' + key,
+                'url': main_page + '/review/' + key,
                 'icon': 'fa fa-flag',
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitOptimizationQueue),
                 'is_not_allowed_text': translator.get(translator.visitOptimizationQueueLimitation).replace('XX', str(reputation_borders[key])),
-                'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, mainpage)
+                'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, main_page)
                 }
     return tmp_dict
 
 
-def __get_edit_dict(mainpage, translator, nickname):
+def __get_edit_dict(main_page, translator, nickname):
     """
     Prepares dictionary for the a section.
 
-    :param mainpage: URL
+    :param main_page: URL
     :param translator: Translator
     :param nickname: Users nickname
     :return: Dict()
@@ -111,47 +111,45 @@ def __get_edit_dict(mainpage, translator, nickname):
     count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'Edits',
                 'id': 'edits',
-                'url': mainpage + '/review/' + key,
+                'url': main_page + '/review/' + key,
                 'icon': 'fa fa-flag',
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitEditQueue),
                 'is_not_allowed_text': translator.get(translator.visitEditQueueLimitation).replace('XX', str(reputation_borders[key])),
-                'last_reviews': __get_last_reviewer_of(LastReviewerEdit, mainpage)
+                'last_reviews': __get_last_reviewer_of(LastReviewerEdit, main_page)
                 }
     return tmp_dict
 
 
-def __get_history_dict(mainpage, translator, nickname):
+def __get_history_dict(main_page, translator):
     """
-    Prepares dictionary for the a section.
+    Prepares dictionary for the a section. Queue should be added iff the user is author!
 
-    :param mainpage: URL
+    :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_history_dict', 'main')
     key = 'history'
-    count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'History',
                 'id': 'flags',
-                'url': mainpage + '/review/' + key,
+                'url': main_page + '/review/' + key,
                 'icon': 'fa fa-history',
                 'task_count': '-',
-                'is_allowed': count >= reputation_borders[key] or all_rights,
+                'is_allowed': True,
                 'is_allowed_text': translator.get(translator.visitHistoryQueue),
-                'is_not_allowed_text': translator.get(translator.visitHistoryQueueLimitation).replace('XX', str(reputation_borders[key])),
+                'is_not_allowed_text': '',
                 'last_reviews': list()
                 }
     return tmp_dict
 
 
-def __get_ongoing_dict(mainpage, translator):
+def __get_ongoing_dict(main_page, translator):
     """
-    Prepares dictionary for the a section.
+    Prepares dictionary for the a section. Queue should be added iff the user is author!
 
-    :param mainpage: URL
+    :param main_page: URL
     :param translator: Translator
     :return: Dict()
     """
@@ -159,7 +157,7 @@ def __get_ongoing_dict(mainpage, translator):
     key = 'ongoing'
     tmp_dict = {'task_name': 'Ongoing',
                 'id': 'flags',
-                'url': mainpage + '/review/' + key,
+                'url': main_page + '/review/' + key,
                 'icon': 'fa fa-clock-o',
                 'task_count': '-',
                 'is_allowed': True,
@@ -203,12 +201,12 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
     return len(db_reviews)
 
 
-def __get_last_reviewer_of(reviewer_type, mainpage):
+def __get_last_reviewer_of(reviewer_type, main_page):
     """
     Returns a list with the last reviewers of the given type. Multiple reviewers are filtered
 
     :param reviewer_type:
-    :param mainpage:
+    :param main_page:
     :return:
     """
     #  logger('ReviewQueues', '__get_last_reviewer_of', 'main')
@@ -222,7 +220,7 @@ def __get_last_reviewer_of(reviewer_type, mainpage):
         if db_user:
             tmp_dict = dict()
             tmp_dict['img_src'] = get_profile_picture(db_user, 40)
-            tmp_dict['url'] = mainpage + '/user/' + db_user.get_global_nickname()
+            tmp_dict['url'] = main_page + '/user/' + db_user.get_global_nickname()
             tmp_dict['name'] = db_user.get_global_nickname()
             # skip it, if it is already in
             if tmp_dict in users_array:
@@ -288,6 +286,7 @@ def unlock_optimization_review(review_uid, transaction):
     :param transaction:
     :return:
     """
+    tidy_up_optimization_locks()
     logger('ReviewQueues', 'unlock_optimization_review', 'main')
     DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).delete()
     DBDiscussionSession.flush()
@@ -301,6 +300,7 @@ def is_review_locked(review_uid):
     :param review_uid:
     :return:
     """
+    tidy_up_optimization_locks()
     logger('ReviewQueues', 'is_review_locked', 'main')
     db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).first()
     if not db_lock:
@@ -315,4 +315,3 @@ def tidy_up_optimization_locks():
     """
     logger('ReviewQueues', 'tidy_up_optimization_locks', 'main')
     DBDiscussionSession.query(OptimizationReviewLocks).filter_by((get_now() - OptimizationReviewLocks.locked_since).seconds < max_lock_time_in_sec).delete()
-    # TODO USE tidy_up_optimization_locks

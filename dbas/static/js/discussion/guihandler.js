@@ -758,19 +758,15 @@ function GuiHandler() {
 	this.hoverInputListOf = function(list){
 		list.find('input').each(function(){
 			$(this).hover(function(){
-				$(this).parent().closest('li').find('.item-flag').show();
 				$(this).prop('checked', true);
 			}, function(){
-				$(this).parent().closest('li').find('.item-flag').hide();
 				$(this).prop('checked', false);
 			})
 		});
 		list.find('label').each(function(){
 			$(this).hover(function(){
-				$(this).parent().closest('li').find('.item-flag').show();
 				$(this).prev().prop('checked', true);
 			}, function(){
-				$(this).parent().closest('li').find('.item-flag').hide();
 				$(this).prev().prop('checked', false);
 			})
 		});

@@ -96,11 +96,10 @@
                                 <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
                                 <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
                                 <label tal:condition="repeat.premise.end and item.already_used"><em>${item.already_used_text}</em></label>
-
+                                <span style="margin-left: 1em" tal:condition="(item.is_editable or item.is_flaggable) and extras.logged_in"></span>
                                 <span class="item-edit" data-toggle="tooltip" data-placement="bottom" tal:condition="item.is_editable and extras.logged_in" tal:attributes="title extras.buttons.edit_statement">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 </span>
-
                                 <span class="item-flag" data-toggle="tooltip" data-placement="bottom" tal:condition="item.is_flaggable and extras.logged_in" tal:attributes="title extras.title.report_statement">
                                     <i class="fa fa-flag" aria-hidden="true"></i>
                                 </span>
