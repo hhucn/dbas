@@ -115,7 +115,7 @@ def setup_news_db(session):
                   date=arrow.get('2015-09-23'),
                   author='Tobias Krauthoff',
                   news='After two and a half weeks of vacation a new feature was done. Hence anonymous users can participate, the ' +
-                       'discussion is open for all, but commiting end editing statements is for registeres users only.')
+                       'discussion is open for all, but committing and editing statements is for registered users only.')
     news03 = News(title='New URL-Schemes',
                   date=arrow.get('2015-09-01'),
                   author='Tobias Krauthoff',
@@ -158,7 +158,7 @@ def setup_news_db(session):
     news11 = News(title='Simple Navigation ready',
                   date=arrow.get('2015-06-09'),
                   author='Tobias Krauthoff',
-                  news='First beta of D-BAS navigation is now ready. Within this kind the user will be permantly confronted with ' +
+                  news='First beta of D-BAS navigation is now ready. Within this kind the user will be permanently confronted with ' +
                        'arguments, which have a attack relation to the current selected argument/position. For an justification the user ' +
                        'can select out of all arguments, which have a attack relation to the \'attacking\' argument. Unfortunately the ' +
                        'support-relation are currently useless except for the justification for the position at start.')
@@ -169,7 +169,7 @@ def setup_news_db(session):
     news13 = News(title='Admin Interface',
                   date=arrow.get('2015-05-29'),
                   author='Tobias Krauthoff',
-                  news='Everything is growing, we have now a little admin interface and a navigation for the discussion is finshed, ' +
+                  news='Everything is growing, we have now a little admin interface and a navigation for the discussion is finished, ' +
                        'but this is very basic and simple')
     news14 = News(title='Sharing',
                   date=arrow.get('2015-05-27'),
@@ -187,7 +187,7 @@ def setup_news_db(session):
     news18 = News(title='No I18N + L10N',
                   date=arrow.get('2015-05-18'),
                   author='Tobias Krauthoff',
-                  news='Interationalization and localization is much more diffult than described by the pyramid. This has something todo ' +
+                  news='Interationalization and localization is much more difficult than described by pyramid. This has something todo ' +
                        'with Chameleon 2, Lingua and Babel, so this feature has to wait.')
     news19 = News(title='I18N + L10N',
                   date=arrow.get('2015-05-12'),
@@ -239,8 +239,8 @@ def setup_news_db(session):
     news29 = News(title='New logic for inserting',
                   date=arrow.get('2015-10-14'),
                   author='Tobias Krauthoff',
-                  news='Logic for inserting statements was redone. Everytime, where the user can add information via a textarea, '
-                       'only the area is visible, which is logically correct. Therefore the decisions are based on argumentations theory.')
+                  news='Logic for inserting statements was redone. Every time, where the user can add information via a text area, '
+                       'only the area is visible, which is logically correct. Therefore the decisions are based on argumentation theory.')
     news30 = News(title='Different topics',
                   date=arrow.get('2015-10-15'),
                   author='Tobias Krauthoff',
@@ -248,7 +248,7 @@ def setup_news_db(session):
     news31 = News(title='Stable release',
                   date=arrow.get('2015-11-10'),
                   author='Tobias Krauthoff',
-                  news='After two weeks of debugging, a first and stable version is online. Now we can start with the interessing things!')
+                  news='After two weeks of debugging, a first and stable version is online. Now we can start with the interesting things!')
     news32 = News(title='Design Update',
                   date=arrow.get('2015-11-11'),
                   author='Tobias Krauthoff',
@@ -295,8 +295,8 @@ def setup_news_db(session):
     news41 = News(title='Voting Model',
                   date=arrow.get('2016-01-05'),
                   author='Tobias Krauthoff',
-                  news='Currently we are improving out model of voting for arguments as well as statements. Therefore we are working'
-                       'together with our colleage out of the theoretical computer science...because D-BAS datastructure can be '
+                  news='Currently we are improving out model of voting for arguments as well as statements. Therefore we are working '
+                       'together with our colleagues from the theoretical computer science... because D-BAS data structure can be '
                        'formalized to be compatible with frameworks of Dung.')
     news42 = News(title='Premisegroups',
                   date=arrow.get('2016-02-09'),
@@ -308,7 +308,7 @@ def setup_news_db(session):
                   date=arrow.get('2016-02-16'),
                   author='Tobias Krauthoff',
                   news='Yesterday we have develope a minimal notification system. This system could send information to every author, '
-                       'if one of their statement was edited. More features are comming soon!')
+                       'if one of their statement was edited. More features are coming soon!')
     news44 = News(title='Speech Bubble System',
                   date=arrow.get('2016-03-02'),
                   author='Tobias Krauthoff',
@@ -349,13 +349,13 @@ def setup_news_db(session):
     news51 = News(title='Review Process',
                   date=arrow.get('2016-09-06'),
                   author='Tobias Krauthoff',
-                  news='Our first version of the review-module is now online. Every confrontativ argument can be '
+                  news='Our first version of the review-module is now online. Every confronting argument can be '
                        'flagged regarding a specific reason now. Theses flagged argument will be reviewed by '
                        'other participants, who have enough reputation. Have a look at the review-section!')
     news52 = News(title='COMMA16',
                   date=arrow.get('2016-09-14'),
                   author='Tobias Krauthoff',
-                  news='Bases on the hard work of the last month, we are attending the 6th International Conference on '
+                  news='Based on the hard work of the last month, we are attending the 6th International Conference on '
                        'Computational Models of Argument (COMMA16) in Potsdam. There we are going to show the first demo '
                        'of D-BAS and present the paper of Krauthoff T., Betz G., Baurmann M. & Mauve, M. (2016) "Dialog-Based '
                        'Online Argumentation". Looking forward to see you!')

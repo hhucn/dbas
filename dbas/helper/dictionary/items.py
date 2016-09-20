@@ -67,7 +67,7 @@ class ItemDictHelper(object):
                 statements_array.append(self.__create_answer_dict(statement.uid,
                                                                   [{'title': get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
                                                                   'start',
-                                                                  _um.get_url_for_statement_attitude(True, statement.uid)))
+                                                                  _um.get_url_for_statement_attitude(True, statement.uid), is_flaggable=True))
             _tn = Translator(self.lang)
             if logged_in:
                 statements_array.append(self.__create_answer_dict('start_statement',
@@ -144,7 +144,8 @@ class ItemDictHelper(object):
                                                                   'justify',
                                                                   _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
                                                                   already_used=already_used,
-                                                                  already_used_text=additional_text))
+                                                                  already_used_text=additional_text,
+                                                                  is_flaggable=True))
 
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
@@ -223,14 +224,14 @@ class ItemDictHelper(object):
                                                                                restriction_on_arg_uids=attacking_arg_uids, history=self.path)
 
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url))
+                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url, is_flaggable=True))
 
         if logged_in:
             if len(statements_array) == 0:
                 text = _tn.get(_tn.newPremisesRadioButtonTextAsFirstOne)
             else:
                 text = _tn.get(_tn.newPremiseRadioButtonText)
-            statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
+            statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add', is_flaggable=True))
         else:
             # elif len(statements_array) == 1:
             statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
@@ -270,7 +271,7 @@ class ItemDictHelper(object):
                 current_mode = mode if relation == 'overbid' else counter_mode
                 url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, relation)
 
-            statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+            statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url, is_flaggable=True))
 
         return statements_array
 
@@ -423,7 +424,7 @@ class ItemDictHelper(object):
                                                                            restriction_on_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
-            statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url))
+            statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url, is_flaggable=True))
         # url = 'back' if self.for_api else 'window.history.go(-1)'
         # text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
         # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
@@ -474,7 +475,7 @@ class ItemDictHelper(object):
         return return_array
 
     @staticmethod
-    def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text=''):
+    def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text='', is_flaggable=False):
         """
         Return dictionary
 
@@ -484,6 +485,7 @@ class ItemDictHelper(object):
         :param url: String
         :param already_used: Boolean
         :param already_used_text: String
+        :param is_flaggable:
         :return: dict()
         """
         return {
@@ -492,4 +494,6 @@ class ItemDictHelper(object):
             'attitude': attitude,
             'url': url,
             'already_used': already_used,
-            'already_used_text': already_used_text}
+            'already_used_text': already_used_text,
+            'is_flaggable': is_flaggable,
+            'is_editable': is_flaggable}

@@ -433,6 +433,7 @@ class Translator(object):
         self.previous = 'previous'
         self.passwordSubmit = 'passwordSubmit'
         self.publicNickTitle = 'publicNickTitle'
+        self.publications = 'publications'
         self.rebut1 = 'rebut1'
         self.rebut2 = 'rebut2'
         self.resumeHere = 'resumeHere'
