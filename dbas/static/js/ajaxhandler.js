@@ -425,10 +425,10 @@ function AjaxDiscussionHandler() {
 	 * @param element
 	 * @param corrected_text the corrected text
 	 */
-	this.sendCorrectureOfStatement = function (uid, corrected_text, element) {
+	this.sendCorrectionOfStatement = function (uid, corrected_text, element) {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_correcture_of_statement',
+			url: 'ajax_set_correction_of_statement',
 			method: 'POST',
 			data: {
 				uid: uid,
