@@ -18,7 +18,7 @@ def flag_argument(argument_uid, reason, nickname, translator, transaction):
     :param reason: String which describes the reason
     :param nickname: Nickname of the requests sender
     :param translator: Class of String-Translator
-    :param transaction: Le transactione
+    :param transaction: current transaction
     :return:
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
