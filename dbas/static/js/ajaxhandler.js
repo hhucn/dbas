@@ -9,7 +9,7 @@ function AjaxMainHandler(){
 	 * @param new_lang is the shortcut for the language
 	 */
 	this.ajaxSwitchDisplayLanguage = function (new_lang){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_switch_language',
 			type: 'POST',
@@ -17,7 +17,7 @@ function AjaxMainHandler(){
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSwitchDisplayLanguageDone(data) {
 			var parsedData = $.parseJSON(jsonData);
@@ -42,7 +42,7 @@ function AjaxMainHandler(){
 	 *
 	 */
 	this.ajaxLogin = function(){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var user = $('#' + loginUserId).val(),
 			password = $('#' + loginPwId).val(),
 			url = window.location.href,
@@ -60,7 +60,7 @@ function AjaxMainHandler(){
 			dataType: 'html',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxLoginDone(data) {
 			callbackIfDoneForLogin(data);
@@ -88,14 +88,14 @@ function AjaxMainHandler(){
 	 *
 	 */
 	this.ajaxLogout = function(){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_user_logout',
 			type: 'POST',
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxLogoutDone(data) {
 			location.reload();
@@ -118,7 +118,7 @@ function AjaxMainHandler(){
 	 *
 	 */
 	this.ajaxRegistration = function(){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var firstname = $('#userfirstname-input').val(),
 			lastname = $('#userlastname-input').val(),
 			nickname = $('#nick-input').val(),
@@ -147,7 +147,7 @@ function AjaxMainHandler(){
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxRegistrationDone(data) {
 			callbackIfDoneForRegistration(data);
@@ -168,7 +168,7 @@ function AjaxMainHandler(){
 	 */
 	this.ajaxPasswordRequest = function(){
 		var email = $('#password-request-email-input').val();
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_user_password_request',
 			type: 'POST',
@@ -176,7 +176,7 @@ function AjaxMainHandler(){
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxPasswordRequestDone(data) {
 			callbackIfDoneForPasswordRequest(data);
@@ -193,7 +193,7 @@ function AjaxMainHandler(){
 	 * Get-Request for an roundhouse kick
 	 */
 	this.ajaxRoundhouseKick = function(){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'additional_service',
 			type: 'POST',
@@ -201,7 +201,7 @@ function AjaxMainHandler(){
 			global: false,
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxRoundhouseKickDone(data) {
 			if (data.type == 'success'){
@@ -217,7 +217,7 @@ function AjaxMainHandler(){
 	 * Get your mama
 	 */
 	this.ajaxMama = function(){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'additional_service',
 			type: 'POST',
@@ -225,7 +225,7 @@ function AjaxMainHandler(){
 			global: false,
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxMamaDone(data) {
 			displayConfirmationDialogWithoutCancelAndFunction('Yo Mamma',  '<h4>' + data.joke + '</h4>\n\n<span' +
@@ -239,7 +239,7 @@ function AjaxMainHandler(){
 	 * @param reason
 	 */
 	this.ajaxFlagArgument = function(argument_uid, reason){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_flag_argument',
 			method: 'POST',
@@ -250,7 +250,7 @@ function AjaxMainHandler(){
 			global: false,
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxFlagArgumentDone(data) {
 			var parsedData = $.parseJSON(data);
@@ -278,7 +278,7 @@ function AjaxDiscussionHandler() {
 	 * @param text
 	 */
 	this.sendNewPremiseForArgument = function (arg_uid, relation, text) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_premises_for_argument',
 			method: 'POST',
@@ -290,7 +290,7 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendNewPremisesForArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewPremisesArgument(data);
@@ -308,7 +308,7 @@ function AjaxDiscussionHandler() {
 	 * @param supportive boolean, whether it is supportive
 	 */
 	this.sendNewStartPremise = function (text, conclusion_id, supportive) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
@@ -320,7 +320,7 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendNewStartPremiseDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
@@ -336,7 +336,7 @@ function AjaxDiscussionHandler() {
 	 * @param statement for sending
 	 */
 	this.sendNewStartStatement = function (statement) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_statement',
 			method: 'POST',
@@ -346,7 +346,7 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
@@ -365,7 +365,7 @@ function AjaxDiscussionHandler() {
 	 * @param callbackFunctionOnDone
 	 */
 	this.sendNewIssue = function(info, title, language, callbackFunctionOnDone){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$('#add-topic-error').hide();
 		$.ajax({
 			url: 'ajax_set_new_issue',
@@ -376,7 +376,7 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
 			callbackFunctionOnDone(data);
@@ -396,7 +396,7 @@ function AjaxDiscussionHandler() {
 	 * @param id_id current uid of the statement
 	 */
 	this.getLogfileForStatement = function (id_id) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_logfile_for_statement',
 			method: 'GET',
@@ -407,7 +407,7 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetLogfileForStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
@@ -420,13 +420,13 @@ function AjaxDiscussionHandler() {
 	};
 
 	/**
-	 * Sends a correcture of a statement
+	 * Sends a correction of a statement
 	 * @param uid
 	 * @param element
 	 * @param corrected_text the corrected text
 	 */
 	this.sendCorrectionOfStatement = function (uid, corrected_text, element) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_correction_of_statement',
 			method: 'POST',
@@ -438,7 +438,7 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, element);
@@ -456,7 +456,7 @@ function AjaxDiscussionHandler() {
 	 */
 	this.getShortenUrl = function (long_url) {
 		var encoded_url = encodeURI(long_url);
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_shortened_url',
 			method: 'GET',
@@ -466,7 +466,7 @@ function AjaxDiscussionHandler() {
 			},
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetShortenUrlDone(data) {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data, long_url);
@@ -482,7 +482,7 @@ function AjaxDiscussionHandler() {
 	 * @param uid
 	 */
 	this.getMoreInfosAboutArgument = function(uid){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_infos_about_argument',
 			method: 'POST',
@@ -492,7 +492,7 @@ function AjaxDiscussionHandler() {
 			},
 			dataType: 'json',
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
@@ -514,7 +514,7 @@ function AjaxDiscussionHandler() {
 		var is_argument = type == 'argument',
 			is_position = type == 'position' || type == 'statement',
 			uid = argument_uid == 'None' ? statement_uid : argument_uid,
-			csrfToken = $('#' + hiddenCSRFTokenId).val();
+			csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			method: 'GET',
@@ -527,7 +527,7 @@ function AjaxDiscussionHandler() {
 			},
 			dataType: 'json',
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
@@ -551,7 +551,7 @@ function AjaxDiscussionHandler() {
 			pencil = '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>',
 			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
 			bubbleSpace = $('#' + discussionBubbleSpaceId),
-			csrfToken = $('#' + hiddenCSRFTokenId).val();
+			csrf_token = $('#' + hiddenCSRFTokenId).val();
 		// clear lists if input is empty
 		if(callback.val().length==0) {
 			$('#' + proposalStatementListGroupId).empty();
@@ -592,7 +592,7 @@ function AjaxDiscussionHandler() {
 			async: true,
 			global: false,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
@@ -613,14 +613,14 @@ function AjaxUserHandler(){
 	 * Ajax call for user data
 	 */
 	this.getPublicUserData = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_public_user_data',
 			method: 'GET',
 			data:{ 'nickname': $('#public_nick').text() },
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getPublicUserDataDone(data) {
 			new User().callbackDone(data);
 		}).fail(function getPublicUserDataFail() {
@@ -634,14 +634,14 @@ function AjaxNewsHandler(){
 	 *
 	 */
 	this.ajaxGetNews = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_news',
 			type: 'POST',
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetNewsDone(data) {
 			new News().callbackIfDoneForGettingNews(data);
@@ -672,7 +672,7 @@ function AjaxNewsHandler(){
 			$('#' + writingNewsSuccessId).hide();
 		}
 
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_send_news',
 			type: 'POST',
@@ -680,7 +680,7 @@ function AjaxNewsHandler(){
 			dataType: 'json',
 			async: true,
 			headers: {
-				'X-CSRF-Token': csrfToken
+				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendNewsDone(data) {
 			new News().callbackIfDoneForSendingNews(data);
@@ -697,13 +697,13 @@ function AjaxSettingsHandler(){
 	 */
 	this.getUserHistoryData = function(){
 		'use strict';
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_user_history',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function ajaxGetUserHistoryDone(data) {
 			new HistoryHandler().getUserHistoryDataDone(data);
 		}).fail(function ajaxGetUserHistoryFail(xhr) {
@@ -716,13 +716,13 @@ function AjaxSettingsHandler(){
 	 */
 	this.deleteUserHistoryData = function(){
 		'use strict';
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_delete_user_history',
 			method: 'POST',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function ajaxGetUserHistoryDone(data) {
 			new HistoryHandler().removeUserHistoryDataDone(data);
 		}).fail(function ajaxGetUserHistoryFail(xhr) {
@@ -737,14 +737,14 @@ function AjaxSettingsHandler(){
 	 */
 	this.setUserSetting = function(toggle_element, service) {
 		var settings_value = toggle_element.prop('checked');
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_user_setting',
 			method: 'POST',
 			data:{'settings_value': settings_value ? 'True': 'False', 'service': service},
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function setUserSettingDone(data) {
 			new SettingsHandler().callbackDone(data, toggle_element, settings_value, service);
 		}).fail(function setUserSettingFail() {
@@ -757,14 +757,14 @@ function AjaxSettingsHandler(){
 	 * @param ui_locales
 	 */
 	this.setNotifcationLanguage = function(ui_locales){
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_user_language',
 			method: 'POST',
 			data:{'ui_locales': ui_locales},
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function setUserSettingDone(data) {
 			var parsedData = $.parseJSON(data);
 
@@ -795,13 +795,13 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_all_edits',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function deleteStatisticsRequestDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
 		}).fail(function deleteStatisticsRequestFail() {
@@ -818,13 +818,13 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_all_posted_statements',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function deleteStatisticsRequestDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
 		}).fail(function deleteStatisticsRequestFail() {
@@ -841,13 +841,13 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_all_argument_votes',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function deleteStatisticsRequestDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
 		}).fail(function deleteStatisticsRequestFail() {
@@ -865,13 +865,13 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_all_statement_votes',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function deleteStatisticsRequestDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
 		}).fail(function deleteStatisticsRequestFail() {
@@ -884,13 +884,13 @@ function AjaxSettingsHandler(){
 	 *
 	 */
 	this.deleteStatisticsRequest = function() {
-		var csrfToken = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_delete_statistics',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function deleteStatisticsRequestDone(data) {
 			new StatisticsHandler().callbackDeleteStatisticsDone(data);
 		}).fail(function deleteStatisticsRequestFail() {
@@ -907,7 +907,7 @@ function AjaxNotificationHandler(){
     */
 	this.sendAjaxForReadMessage = function(id, _this){
 		new Notifications().hideInfoSpaces();
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_notification_read',
 			method: 'POST',
@@ -915,7 +915,7 @@ function AjaxNotificationHandler(){
 				id: id
 			},
 			dataType: 'json',
-			headers: {'X-CSRF-Token': csrfToken}
+			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function sendAjaxForReadMessageDone(data) {
 			var parsedData = $.parseJSON(data);
 			if (parsedData.error.length > 0) {
@@ -938,7 +938,7 @@ function AjaxNotificationHandler(){
     */
 	this.sendAjaxForDeleteMessage = function(id) {
 		new Notifications().hideInfoSpaces();
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_notification_delete',
 			method: 'POST',
@@ -946,7 +946,7 @@ function AjaxNotificationHandler(){
 				id: id
 			},
 			dataType: 'json',
-			headers: {'X-CSRF-Token': csrfToken}
+			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function sendAjaxForDeleteMessageDone(data) {
 			var parsedData = $.parseJSON(data);
 			if (parsedData.success.length > 0) {
@@ -970,7 +970,7 @@ function AjaxNotificationHandler(){
 	this.sendNotification = function(recipient){
 		var title = $('#popup-writing-notification-title').val(),
 			text = $('#popup-writing-notification-text').val();
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 
 		$('#popup-writing-notification-success').hide();
 		$('#popup-writing-notification-failed').hide();
@@ -981,7 +981,7 @@ function AjaxNotificationHandler(){
 			data: {title: title, text: text, recipient: recipient},
 			dataType: 'json',
 			async: true,
-			headers: {'X-CSRF-Token': csrfToken}
+			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function ajaxSendNewsDone(data) {
 			var parsedData = $.parseJSON(data);
 			if (parsedData.error.length == 0) {
@@ -1010,7 +1010,7 @@ function AjaxGraphHandler(){
 	 */
 	this.getUserGraphData = function(uid, adress){
 		var dataString;
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		switch(adress){
 			case 'attitude':
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', is_position: 'false', uids: uid};
@@ -1031,7 +1031,7 @@ function AjaxGraphHandler(){
 			dataType: 'json',
 			data: dataString,
 			async: true,
-			headers: {'X-CSRF-Token': csrfToken}
+			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, adress);
 		}).fail(function () {
@@ -1083,14 +1083,14 @@ function AjaxReviewHandler(){
 	 * @param review_instance
 	 */
 	this.un_lockOptimizationReview = function (review_uid, should_lock, review_instance) {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_lock',
 			method: 'POST',
 			data:{ 'review_uid': review_uid, 'lock': should_lock },
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
 			if (should_lock)
 				new ReviewCallbacks().forReviewLock(data, review_instance);
@@ -1108,14 +1108,14 @@ function AjaxReviewHandler(){
 	 * @param review_uid
 	 */
 	this.reviewDeleteArgument = function(should_delete, review_uid){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_delete_argument',
 			method: 'POST',
 			data:{ 'should_delete': should_delete, 'review_uid': review_uid },
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
 			new ReviewCallbacks().forReviewArgument(data);
 		}).fail(function reviewDeleteArgumentFail() {
@@ -1129,14 +1129,14 @@ function AjaxReviewHandler(){
 	 * @param review_uid
 	 */
 	this.reviewEditArgument = function(should_edit, review_uid){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_edit_argument',
 			method: 'POST',
 			data:{ 'should_edit': should_edit, 'review_uid': review_uid },
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
 			new ReviewCallbacks().forReviewArgument(data);
 		}).fail(function reviewDeleteArgumentFail() {
@@ -1151,7 +1151,7 @@ function AjaxReviewHandler(){
 	 * @param new_data (Important: must be JSON.stringify(...))
 	 */
 	this.reviewOptimizationArgument = function(should_optimized, review_uid, new_data){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		console.log(new_data);
 		console.log(JSON.stringify(new_data));
 		$.ajax({
@@ -1161,7 +1161,7 @@ function AjaxReviewHandler(){
 				'should_optimized': should_optimized,
 				'review_uid': review_uid,
 				'new_data': JSON.stringify(new_data) },
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
 			new ReviewCallbacks().forReviewArgument(data);
 		}).fail(function reviewDeleteArgumentFail() {
@@ -1175,14 +1175,14 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.undoReview = function(queue, uid){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_undo_review',
 			method: 'GET',
 			data:{ 'queue': queue, uid: uid },
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
 			new ReviewHistoryCallbacks().forUndoReview(data, queue, uid);
 		}).fail(function reviewDeleteArgumentFail() {
@@ -1196,14 +1196,14 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.cancelReview = function(queue, uid){
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_cancel_review',
 			method: 'GET',
 			data:{ 'queue': queue, uid: uid },
 			dataType: 'json',
 			async: true,
-			headers: { 'X-CSRF-Token': csrfToken }
+			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
 			new ReviewOngoingsCallbacks().forUndoReview(data, queue, uid);
 		}).fail(function reviewDeleteArgumentFail() {
