@@ -31,8 +31,8 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
-from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, \
-    preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, \
+from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
+    preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_register_new_user_via_form, \
     try_to_register_new_user_via_ajax, request_password
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification,\
     rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, rep_reason_new_statement
@@ -206,7 +206,7 @@ class Dbas(object):
 
         _dh = DictionaryHelper(ui_locales)
         extras_dict = _dh.prepare_extras_dict_for_normal_page(self.request)
-        settings_dict = _dh.preprate_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage)
+        settings_dict = _dh.preparate_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage)
 
         return {
             'layout': self.base_layout(),
@@ -435,7 +435,7 @@ class Dbas(object):
         logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_init', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -502,7 +502,7 @@ class Dbas(object):
         logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_attitude', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -563,7 +563,7 @@ class Dbas(object):
         logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(matchdict))
         logger('discussion_justify', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -586,7 +586,7 @@ class Dbas(object):
             if not get_text_for_statement_uid(statement_or_arg_id)\
                     or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-            item_dict, discussion_dict, extras_dict = preperation_for_justify_statement(self.request, for_api, api_data,
+            item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(self.request, for_api, api_data,
                                                                                         mainpage, slug, statement_or_arg_id,
                                                                                         supportive, mode, ui_locales)
 
@@ -594,14 +594,14 @@ class Dbas(object):
             if not Validator.check_belonging_of_argument(issue, statement_or_arg_id) and \
                     not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-            item_dict, discussion_dict, extras_dict = preperation_for_dontknow_statement(self.request, for_api, api_data,
-                                                                                         mainpage, slug, statement_or_arg_id,
-                                                                                         supportive, ui_locales)
+            item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(self.request, for_api, api_data,
+                                                                                          mainpage, slug, statement_or_arg_id,
+                                                                                          supportive, ui_locales)
 
         elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
             if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
                 return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-            item_dict, discussion_dict, extras_dict = preperation_for_justify_argument(self.request, for_api, api_data,
+            item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(self.request, for_api, api_data,
                                                                                        mainpage, slug, statement_or_arg_id,
                                                                                        supportive, relation, ui_locales)
             # add reputation
@@ -656,7 +656,7 @@ class Dbas(object):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
         supportive = tmp_argument.is_supportive
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -664,7 +664,7 @@ class Dbas(object):
         if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
 
-        # set votings and reputation
+        # set votes and reputation
         add_reputation_for(nickname, rep_reason_first_argument_click, transaction)
         add_vote_for_argument(arg_id_user, nickname, transaction)
 
@@ -763,7 +763,7 @@ class Dbas(object):
         if not Validator.check_belonging_of_premisegroups(issue, pgroup_ids):
             return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
@@ -1628,15 +1628,15 @@ class Dbas(object):
         return json.dumps(return_dict, True)
 
     # ajax - set new textvalue for a statement
-    @view_config(route_name='ajax_set_correcture_of_statement', renderer='json')
-    def set_correcture_of_statement(self):
+    @view_config(route_name='ajax_set_correction_of_statement', renderer='json')
+    def set_correction_of_statement(self):
         """
         Sets a new textvalue for a statement
 
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
+        logger('set_correction_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
         UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         _tn = Translator(get_language(self.request, get_current_registry()))
@@ -1655,7 +1655,7 @@ class Dbas(object):
         except KeyError as e:
             return_dict = dict()
             return_dict['error'] = ''
-            logger('set_correcture_of_statement', 'error', repr(e))
+            logger('set_correction_of_statement', 'error', repr(e))
 
         return json.dumps(return_dict, True)
 

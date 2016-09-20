@@ -99,7 +99,7 @@ def main(global_config, **settings):
     config.add_route('ajax_set_new_start_statement', '/{url:.*}ajax_set_new_start_statement')
     config.add_route('ajax_set_new_start_premise', '/{url:.*}ajax_set_new_start_premise')
     config.add_route('ajax_set_new_premises_for_argument', '/{url:.*}ajax_set_new_premises_for_argument')
-    config.add_route('ajax_set_correcture_of_statement', '/{url:.*}ajax_set_correcture_of_statement')
+    config.add_route('ajax_set_correction_of_statement', '/{url:.*}ajax_set_correction_of_statement')
     config.add_route('ajax_set_new_issue', '/{url:.*}ajax_set_new_issue')
     config.add_route('ajax_get_logfile_for_statement', '/{url:.*}ajax_get_logfile_for_statement')
     config.add_route('ajax_get_shortened_url', '/{url:.*}ajax_get_shortened_url')

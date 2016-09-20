@@ -122,7 +122,7 @@ function Helper() {
 
 				$('#' + popupEditStatementSubmitButtonId).click(function edit_statement_click() {
 					tmp = $('#' + popupEditStatementContentId + ' .text-hover');
-					new AjaxDiscussionHandler().sendCorrectureOfStatement(tmp.attr('id').substr(3), $('#' + popupEditStatementTextareaId).val(), tmp);
+					new AjaxDiscussionHandler().sendCorrectionOfStatement(tmp.attr('id').substr(3), $('#' + popupEditStatementTextareaId).val(), tmp);
 				});
 			}).hover(function edit_button_hover() {
 				$(this).toggleClass('btn-primary', 400);
