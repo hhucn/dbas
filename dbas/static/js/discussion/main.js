@@ -566,39 +566,47 @@ function Main () {
 		// TODO CLEAR DESIGN
 		// options for the extra buttons, where the user can add input!
 		
-		id = input.attr('id').indexOf('item_' == 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
-		if ($.inArray(id, ids) != -1) {
-			input.attr('onclick', '');
-			input.click(function () {
-				// new position at start
-				if (input.attr('id').indexOf('start_statement') != -1) {
-					// guiHandler.showHowToWriteTextPopup();
-					guiHandler.showAddPositionContainer();
-					$('#' + sendNewStatementId).off("click").click(function () {
-						sendStartStatement();
-					});
-				}
-				// new premise for the start
-				else if (input.attr('id').indexOf('start_premise') != -1) {
-					// guiHandler.showHowToWriteTextPopup();
-					guiHandler.showAddPremiseContainer();
-					$('#' + sendNewPremiseId).off("click").click(function () {
-						sendStartPremise();
-					});
-				}
-				// new premise while judging
-				else if (input.attr('id').indexOf('justify_premise') != -1) {
-					// guiHandler.showHowToWriteTextPopup();
-					guiHandler.showAddPremiseContainer();
-					$('#' + sendNewPremiseId).off("click").click(function () {
-						sendArgumentsPremise();
-					});
-				}
-				// login
-				else if (input.attr('id').indexOf('login') != -1) {
-					$('#' + popupLogin).modal('show');
-				}
+		if (input.length > 0){
+			id = input.attr('id').indexOf('item_' == 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
+			if ($.inArray(id, ids) != -1) {
+				input.attr('onclick', '');
+				input.click(function () {
+					// new position at start
+					if (input.attr('id').indexOf('start_statement') != -1) {
+						// guiHandler.showHowToWriteTextPopup();
+						guiHandler.showAddPositionContainer();
+						$('#' + sendNewStatementId).off("click").click(function () {
+							sendStartStatement();
+						});
+					}
+					// new premise for the start
+					else if (input.attr('id').indexOf('start_premise') != -1) {
+						// guiHandler.showHowToWriteTextPopup();
+						guiHandler.showAddPremiseContainer();
+						$('#' + sendNewPremiseId).off("click").click(function () {
+							sendStartPremise();
+						});
+					}
+					// new premise while judging
+					else if (input.attr('id').indexOf('justify_premise') != -1) {
+						// guiHandler.showHowToWriteTextPopup();
+						guiHandler.showAddPremiseContainer();
+						$('#' + sendNewPremiseId).off("click").click(function () {
+							sendArgumentsPremise();
+						});
+					}
+					// login
+					else if (input.attr('id').indexOf('login') != -1) {
+						$('#' + popupLogin).modal('show');
+					}
+				});
+			}
+		} else {
+			var el = $('.line-wrapper-l').last().find('span');
+			el.hover(function() {
+				$(this).css('color', '#000').css('pointer', 'default');
 			});
+			el.off('click');
 		}
 	};
 }
@@ -652,14 +660,14 @@ $(document).ready(function mainDocumentReady() {
 	}
 
 	$(document).delegate('.open', 'click', function(event){
-		$(this).addClass('oppenned');
+		$(this).addClass('opened');
 		event.stopPropagation();
 	});
 	$(document).delegate('body', 'click', function(event) {
-		$('.open').removeClass('oppenned');
+		$('.open').removeClass('opened');
 	});
 	$(document).delegate('.cls', 'click', function(event){
-		$('.open').removeClass('oppenned');
+		$('.open').removeClass('opened');
 		event.stopPropagation();
 	});
 });

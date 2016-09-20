@@ -270,8 +270,8 @@ class DiscussionDictHelper(object):
 
         if attack.startswith('end'):
             #  user_text        = _tn.get(_tn.soYourOpinionIsThat) + ': '
-            text             = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion)
-            user_text        = text[0:1].upper() + text[1:] + '.'
+            text             = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion, minimize_on_undercut=True)
+            user_text        = text[0:1].upper() + text[1:]
             sys_text         = (_tn.get(_tn.otherParticipantsDontHaveCounterForThat) + '.') if attack == 'end' else _tn.get(_tn.otherParticipantsDontHaveNewCounterForThat)
             mid_text         = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
         else:
@@ -294,7 +294,8 @@ class DiscussionDictHelper(object):
             db_statement        = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
             reply_for_argument  = not (db_statement and db_statement.is_startpoint)
             current_argument    = get_text_for_argument_uid(uid, with_html_tag=True, colored_position=True,
-                                                            user_changed_opinion=user_changed_opinion, attack_type=attack)
+                                                            user_changed_opinion=user_changed_opinion, attack_type=attack,
+                                                            minimize_on_undercut=True)
 
             user_is_attacking   = not db_argument.is_supportive
 
