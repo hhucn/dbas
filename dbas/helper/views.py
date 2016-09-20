@@ -37,7 +37,7 @@ def get_nickname_and_session(request, for_api=None, api_data=None):
     return nickname, session_id
 
 
-def preperation_for_view(for_api, api_data, request):
+def preparation_for_view(for_api, api_data, request):
     """
     Does some elementary things like: getting nickname, sessioniod and history. Additionally boolean, if the sesseion is expired
 
@@ -54,7 +54,7 @@ def preperation_for_view(for_api, api_data, request):
     return nickname, session_id, session_expired, history
 
 
-def preperation_for_justify_statement(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, mode, ui_locales):
+def preparation_for_justify_statement(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, mode, ui_locales):
     """
 
     :param request:
@@ -68,9 +68,9 @@ def preperation_for_justify_statement(request, for_api, api_data, mainpage, slug
     :param ui_locales:
     :return:
     """
-    logger('View Helper', 'preperation_for_justify_statement', 'main')
+    logger('View Helper', 'preparation_for_justify_statement', 'main')
 
-    nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, request)
+    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
     logged_in = UserHandler.is_user_logged_in(nickname)
     _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, for_api, request)
 
@@ -89,7 +89,7 @@ def preperation_for_justify_statement(request, for_api, api_data, mainpage, slug
     return item_dict, discussion_dict, extras_dict
 
 
-def preperation_for_dontknow_statement(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, ui_locales):
+def preparation_for_dont_know_statement(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, ui_locales):
     """
 
     :param request:
@@ -102,9 +102,9 @@ def preperation_for_dontknow_statement(request, for_api, api_data, mainpage, slu
     :param ui_locales:
     :return:
     """
-    logger('View Helper', 'preperation_for_dontknow_statement', 'main')
+    logger('View Helper', 'preparation_for_dont_know_statement', 'main')
 
-    nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, request)
+    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
 
     issue               = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales     = get_discussion_language(request, issue)
@@ -125,7 +125,7 @@ def preperation_for_dontknow_statement(request, for_api, api_data, mainpage, slu
     return item_dict, discussion_dict, extras_dict
 
 
-def preperation_for_justify_argument(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, relation, ui_locales):
+def preparation_for_justify_argument(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, relation, ui_locales):
     """
 
     :param request:
@@ -139,9 +139,9 @@ def preperation_for_justify_argument(request, for_api, api_data, mainpage, slug,
     :param ui_locales:
     :return:
     """
-    logger('ViewHelper', 'preperation_for_justify_argument', 'main')
+    logger('ViewHelper', 'preparation_for_justify_argument', 'main')
 
-    nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, request)
+    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
     logged_in = UserHandler.is_user_logged_in(nickname)
     _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, for_api, request)
 

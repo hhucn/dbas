@@ -36,7 +36,7 @@ class DictionaryHelper(object):
         self.discussion_lang = discussion_lang if len(discussion_lang) > 0 else system_lang
 
     @staticmethod
-    def get_random_subdict_out_of_orderer_dict(ordered_dict, count):
+    def get_random_subdict_out_of_ordered_dict(ordered_dict, count):
         """
         Creates a random subdictionary with given count out of the given ordered_dict.
         With a count of <2 the dictionary itself will be returned.
@@ -170,7 +170,7 @@ class DictionaryHelper(object):
                     return_dict['show_island_icon'] = False
         return return_dict
 
-    def preprate_settings_dict(self, success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage):
+    def preparate_settings_dict(self, success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage):
         """
 
         :param success:
