@@ -71,11 +71,6 @@ function Main () {
 			guiHandler.resetChangeDisplayStyleBox();
 		});
 		
-		// open edit statement
-		$('#' + editStatementButtonId).click(function () {
-			guiHandler.showEditStatementsPopup();
-		});
-		
 		// close popups
 		$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId() {
 			guiHandler.hideandClearEditStatementsPopup();
@@ -147,25 +142,8 @@ function Main () {
 		$('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct() {
 			guiHandler.setDisplayStyleAsIsland();
 		});
-		$('#' + displayStyleIconExpertId).click(function displayStyleIconExpertFct() {
+		$('#' + displayStyleIconGraphId).click(function displayStyleIconExpertFct() {
 			guiHandler.setDisplayStyleAsGraphView();
-		});
-		
-		/**
-		 * Handling report button
-		 */
-		$('#' + reportButtonId).click(function reportFunction() {
-			// jump to contact tab
-			var line1 = 'Report ' + new Helper().getTodayAsDate(),
-				line2 = 'URL: ' + window.location.href,
-				line3 = _t(fillLine).toUpperCase(),
-				params = {
-					'content': line1 + '\n' + line2 + '\n' + line3,
-					'name': $('#header_user').parent().text().replace(/\s/g, '')
-				};
-			
-			new Helper().redirectInNewTabForContact(params);
-			
 		});
 		
 		// opinion barometer
@@ -198,9 +176,30 @@ function Main () {
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			}
 		});
+		
 		trianglel.find('.triangle-flag').click(function () {
-				var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 			guiHandler.showFlagArgumentPopup(uid);
+		});
+		
+		var list = $('#' + discussionSpaceListId);
+		list.find('.item-flag').click(function () {
+			alert('todo');
+			// jump to contact tab
+			var line1 = 'Report ' + new Helper().getTodayAsDate(),
+				line2 = 'URL: ' + window.location.href,
+				line3 = _t(fillLine).toUpperCase(),
+				params = {
+					'content': line1 + '\n' + line2 + '\n' + line3,
+					'name': $('#header_user').parent().text().replace(/\s/g, '')
+				};
+			
+			new Helper().redirectInNewTabForContact(params);
+		});
+		
+		list.find('.item-edit').click(function () {
+			alert('todo');
+			guiHandler.showEditStatementsPopup();
 		});
 		
 		// adding issues
@@ -433,6 +432,16 @@ function Main () {
 		// hover on radio buttons
 		guiHandler.hoverInputListOf($('#popup-flag-argument'));
 		guiHandler.hoverInputListOf(list);
+		
+		list.find('li').each(function(){
+			$(this).hover(function(){
+				$(this).find('.item-flag').show();
+				$(this).find('.item-edit').show();
+			}, function(){
+				$(this).find('.item-flag').hide();
+				$(this).find('.item-edit').hide();
+			})
+		});
 	};
 	
 	/**
