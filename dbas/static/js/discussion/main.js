@@ -566,7 +566,13 @@ function Main () {
 		// TODO CLEAR DESIGN
 		// options for the extra buttons, where the user can add input!
 		
-		if (input.length > 0){
+		if (input.length == 0) {
+			var el = $('.line-wrapper-l').last().find('span');
+			el.hover(function () {
+				$(this).css('color', '#000').css('pointer', 'default');
+			});
+			el.off('click');
+		} else {
 			id = input.attr('id').indexOf('item_' == 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
 			if ($.inArray(id, ids) != -1) {
 				input.attr('onclick', '');
@@ -601,12 +607,6 @@ function Main () {
 					}
 				});
 			}
-		} else {
-			var el = $('.line-wrapper-l').last().find('span');
-			el.hover(function() {
-				$(this).css('color', '#000').css('pointer', 'default');
-			});
-			el.off('click');
 		}
 	};
 }

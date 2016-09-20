@@ -19,7 +19,7 @@ class DiscussionDictHelper(object):
     Provides all functions for creating the discussion dictionaries with all bubbles.
     """
 
-    def __init__(self, lang, session_id, nickname=None, history='', mainpage='', slug=''):
+    def __init__(self, lang, session_id, nickname=None, history='', main_page='', slug=''):
         """
         Initialize default values
 
@@ -27,7 +27,7 @@ class DiscussionDictHelper(object):
         :param session_id: request.session_id
         :param nickname: self.request.authenticated_userid
         :param history: history
-        :param mainpage: String
+        :param main_page: String
         :param slug: String
         :return:
         """
@@ -35,7 +35,7 @@ class DiscussionDictHelper(object):
         self.session_id = session_id
         self.nickname = nickname
         self.history = history
-        self.mainpage = mainpage
+        self.main_page = main_page
         self.slug = slug
 
     def get_dict_for_start(self):
@@ -100,7 +100,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'get_dict_for_justify_statement', 'at_justify')
         _tn = Translator(self.lang)
 
-        bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
+        bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         save_statement_url  = 'ajax_set_new_start_statement'
         text                = get_text_for_statement_uid(uid)
         if not text:
@@ -170,7 +170,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'prepare_discussion_dict', 'get_dict_for_justify_argument')
         _tn                   = Translator(self.lang)
         _tg                = TextGenerator(self.lang)
-        bubbles_array      = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
+        bubbles_array      = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         add_premise_text   = ''
         save_statement_url = 'ajax_set_new_premises_for_argument'
 
@@ -231,7 +231,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'get_dict_for_dont_know_reaction', 'at_dont_know')
         _tn = Translator(self.lang)
-        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
+        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         add_premise_text = ''
         save_statement_url = 'ajax_set_new_start_statement'
 
@@ -257,7 +257,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'get_dict_for_argumentation', 'at_argumentation')
         _tn                    = Translator(self.lang)
-        bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
+        bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         add_premise_text    = ''
         save_statement_url  = 'ajax_set_new_start_statement'
         mid_text            = ''
@@ -388,7 +388,7 @@ class DiscussionDictHelper(object):
         :return:
         """
         _tn = Translator(self.lang)
-        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.mainpage, self.slug)
+        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         add_premise_text = ''
         save_statement_url = 'ajax_set_new_start_statement'
 
