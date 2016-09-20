@@ -40,8 +40,8 @@ def __get_review_count(review_type, review_uid):
     """
     db_reviews = DBDiscussionSession.query(review_type).filter_by(review_uid=review_uid)
     count_of_okay = len(db_reviews.filter_by(is_okay=True).all())
-    coount_of_not_okay = len(db_reviews.filter_by(is_okay=False).all())
-    return count_of_okay, coount_of_not_okay
+    count_of_not_okay = len(db_reviews.filter_by(is_okay=False).all())
+    return count_of_okay, count_of_not_okay
 
 
 def add_review_opinion_for_delete(nickname, should_delete, review_uid, translator, transaction):
@@ -175,10 +175,8 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
         # add new edit
         from dbas.logger import logger
         argument_dict = {}
-        logger('X', 'X1', str(data))
         # sort the new edits by argument uid
         for d in data:
-            logger('X', 'X1', str(d))
             if d['argument'] in argument_dict:
                 argument_dict[d['argument']].append(d)
             else:
@@ -187,18 +185,15 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
         # add reviews
         new_edits = list()
         for argument_uid in argument_dict:
-            logger('X', 'X2', str(argument_uid) + ' - ' + str(argument_dict[argument_uid]))
             DBDiscussionSession.add(ReviewEdit(db_user.uid, argument_uid))
             DBDiscussionSession.flush()
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
                                                                                ReviewEdit.argument_uid == argument_uid)).order_by(ReviewEdit.uid.desc()).first()
             for edit in argument_dict[argument_uid]:
-                logger('X', 'X3', str(db_review_edit.uid) + ' ' + str(argument_uid) + ' ' + str(edit['uid']) + ' ' + str(edit['type']) + ' ' + str(edit['val']))
                 new_edits.append(ReviewEditValue(db_review_edit.uid, argument_uid, edit['uid'], edit['type'], edit['val']))
 
         # edit given, so this review is executed
-        logger('X', 'X4', 'Review ' + str(review_uid) + ' is now executed')
         db_review.set_executed(True)
 
         if len(new_edits) > 0:

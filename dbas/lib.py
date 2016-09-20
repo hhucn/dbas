@@ -134,7 +134,7 @@ def get_all_arguments_by_statement(uid):
 
 def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
-                              attack_type=None):
+                              attack_type=None, minimize_on_undercut=False):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -146,6 +146,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     :param rearrange_intro: Boolean
     :param colored_position: Boolean
     :param attack_type: Boolean
+    :param minimize_on_undercut: Boolean
     :return: String
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -174,7 +175,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
         sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
         se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
         doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHold).lower() + ' ' + _t.get(_t.because).lower() + ' ' + sb
-        return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t)
+        return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t, minimize_on_undercut)
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
@@ -349,7 +350,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     return ret_value
 
 
-def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t):
+def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t, minimize_on_undercut):
     """
 
     :param arg_array:
@@ -392,6 +393,10 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
         conclusion = se + conclusion[0:1].upper() + conclusion[1:]  # pretty print
     ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
 
+    # just display the last premise group on undercuts, because the story is always saved in all bubbles
+    if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
+        return _t.get(_t.butYouCounteredWith) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+
     for i in range(1, len(pgroups)):
         ret_value += ' '
         if users_opinion:
@@ -403,13 +408,9 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
             ret_value += _t.get(_t.otherUsersHaveCounterArgument)
 
         if i == len(pgroups) - 1:
-            ret_value += ' ' + sb + pgroups[i] + se
+            ret_value += ' ' + sb + pgroups[i] + se + '.'
         else:
-            ret_value += ' ' + pgroups[i]
-        # if user_changed_opinion:
-        # ret_value += ' ' + se + _t.get(_t.butThenYouCounteredWith) + sb + ' ' + pgroups[i] + '.'
-        # else:
-        # ret_value += ' ' + se + (_t.get(_t.butYouCounteredWith) if users_opinion else _t.get(_t.otherUsersHaveCounterArgument)) + sb + ' ' + pgroups[i] + '.'
+            ret_value += ' ' + pgroups[i] + '.'
         users_opinion = not users_opinion
 
     return ret_value
