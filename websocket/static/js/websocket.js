@@ -114,7 +114,8 @@ function doRecentReview(data){
 	var queue = $('#' + data.queue);
 	if (queue.length != 0){
 		// just push, if given user is not the last reviwer
-		if (queue.find('img[src="' + data.img_url + '?d=wavatar&s=40"]').length == 0) {
+		console.log(data.img_url);
+		if (queue.find('img[src^="' + data.img_url + '"]').length == 0) {
 			console.log(data.reviewer_name + ' is a new reviewer');
 			queue.find('a:last-child').remove();
 			var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
