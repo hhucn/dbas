@@ -22,7 +22,7 @@ dark_green = '#689F38'
 dark_blue = '#1976D2'
 
 
-def get_d3_data(issue):
+def get_d3_data(issue, nickname):
     """
     Given an issue, create an dictionary and return it
 
@@ -30,6 +30,7 @@ def get_d3_data(issue):
     :return: dictionary
     """
     logger('GraphLib', 'get_d3_data', 'main')
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first();
 
     x = 0
     y = 0
@@ -75,8 +76,8 @@ def get_d3_data(issue):
                                     size=position_size if statement.is_startpoint else node_size,
                                     x=x,
                                     y=y,
-                                    author=__get_author_of_statement(statement.uid),
-                                    editor=__get_editor_of_statement(statement.uid))
+                                    author=__get_author_of_statement(statement.uid, db_user),
+                                    editor=__get_editor_of_statement(statement.uid, db_user))
         extras_dict[node_dict['id']] = node_dict
         all_node_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
@@ -160,7 +161,7 @@ def get_d3_data(issue):
     return d3_dict
 
 
-def __get_author_of_statement(uid):
+def __get_author_of_statement(uid, db_user):
     """
 
     :param uid:
@@ -170,11 +171,11 @@ def __get_author_of_statement(uid):
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
     db_author = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_author, 40)
-    name = get_public_nickname_based_on_settings(db_author)
+    name = get_public_nickname_based_on_settings(db_author) if db_user.uid != db_author.uid else db_user.nickname
     return {'name': name, 'gravatar': gravatar}
 
 
-def __get_editor_of_statement(uid):
+def __get_editor_of_statement(uid, db_user):
     """
 
     :param uid:
@@ -184,7 +185,7 @@ def __get_editor_of_statement(uid):
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()
     db_editor = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_editor, 40)
-    name = get_public_nickname_based_on_settings(db_editor)
+    name = get_public_nickname_based_on_settings(db_editor) if db_user.uid != db_editor.uid else db_user.nickname
     return {'name': name, 'gravatar': gravatar}
 
 
