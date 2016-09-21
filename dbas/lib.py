@@ -11,7 +11,6 @@ import locale
 from urllib import parse
 from datetime import datetime
 from html import escape
-from dbas.logger import logger
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
@@ -217,7 +216,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
             statement_text = get_text_for_statement_uid(statement_uid)
             argument_text = get_text_for_argument_uid(argument.uid)
             pos = argument_text.lower().find(statement_text.lower())
-            argument_text = argument_text[0:pos] + sb + argument_text[pos:pos+len(statement_text)] + se + argument_text[pos+len(statement_text):]
+            argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
             results.append({'uid': argument.uid,
                             'text': argument_text,
                             'url': urlmanager.get_url_for_jump(False, argument.uid)})

@@ -173,7 +173,6 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
             add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
     else:
         # add new edit
-        from dbas.logger import logger
         argument_dict = {}
         # sort the new edits by argument uid
         for d in data:
@@ -227,4 +226,4 @@ def accept_edit_review(review, transaction):
     db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=review.uid).all()
     db_user = DBDiscussionSession.query(User).filter_by(uid=review.detector_uid).first()
     for value in db_values:
-        QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content, '', None, False)
+        QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)

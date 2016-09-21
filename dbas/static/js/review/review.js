@@ -109,9 +109,9 @@ function Review() {
 		var mm = $('#countdown_timer_min');
 		var ss = $('#countdown_timer_sec');
 		var point = $('#countdown_timer_point');
-		mm.text(countdown_min).removeClass('text-danger');
-		ss.text(countdown_sec < 10 ? '0' + countdown_sec : countdown_sec).removeClass('text-danger');
-		point.removeClass('text-danger');
+		mm.text(countdown_min).removeClass('text-danger').addClass('text-info');
+		ss.text(countdown_sec < 10 ? '0' + countdown_sec : countdown_sec).removeClass('text-danger').addClass('text-info');
+		point.removeClass('text-danger').addClass('text-info');
 		$('#request-lock-text').show();
 		$('#request-not-lock-text').show();
 		
@@ -123,9 +123,9 @@ function Review() {
             	mm.text(m);
             	ss.text(s < 10 ? '0' + s : s);
 	            if (sec <= 60){
-	            	mm.addClass('text-danger');
-	            	ss.addClass('text-danger');
-		            point.addClass('text-danger');
+	            	mm.addClass('text-danger').removeClass('text-info');
+	            	ss.addClass('text-danger').removeClass('text-info');
+		            point.addClass('text-danger').removeClass('text-info');
 	            }
             }, // callback for each second
             onCounterEnd: function(){

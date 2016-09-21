@@ -248,7 +248,7 @@ class QueryHelper:
         return url
 
     @staticmethod
-    def correct_statement(transaction, user, uid, corrected_text, url, request, send_notification=True):
+    def correct_statement(transaction, user, uid, corrected_text, url='', request=None):
         """
         Corrects a statement
 
@@ -258,7 +258,6 @@ class QueryHelper:
         :param corrected_text: new text
         :param url: current url
         :param request: current request
-        :param send_notification: Boolean
         :return: True
         """
         logger('QueryHelper', 'correct_statement', 'def ' + str(uid))
@@ -285,7 +284,7 @@ class QueryHelper:
             DBDiscussionSession.add(textversion)
             DBDiscussionSession.flush()
 
-        if send_notification:
+        if request:
             NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
 
         db_statement.set_textversion(textversion.uid)
