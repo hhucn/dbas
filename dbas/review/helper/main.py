@@ -150,15 +150,14 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     :return:
     """
     logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'main')
-
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(uid=review_uid).first()
-    if db_review.is_executed or not db_user:
+    if not db_review or db_review.is_executed or not db_user:
         return translator.get(translator.internalKeyError)
 
     if not should_optimized:
         # add new vote
-        db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
+        db_user_who_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
         db_new_review = LastReviewerDelete(db_user.uid, db_review.uid, not should_optimized)
         DBDiscussionSession.add(db_new_review)
         DBDiscussionSession.flush()
@@ -170,7 +169,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
 
         if len(db_keep_version) > max_votes:
             db_review.set_executed(True)
-            add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
+            add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag, transaction)
     else:
         # add new edit
         argument_dict = {}
@@ -193,12 +192,17 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
                 new_edits.append(ReviewEditValue(db_review_edit.uid, argument_uid, edit['uid'], edit['type'], edit['val']))
 
         # edit given, so this review is executed
+        logger('x', 'x', 'x ReviewOptimization ' + str(review_uid) + ' ' + str(db_review.uid) + ' ' + str(db_review.is_executed))
+        logger('x', 'x', 'x ReviewOptimization ' + str(review_uid) + ' ' + str(db_review.uid) + ' ' + str(db_review.is_executed))
         db_review.set_executed(True)
+        logger('x', 'x', 'x ReviewOptimization ' + str(review_uid) + ' ' + str(db_review.uid) + ' ' + str(db_review.is_executed))
+        logger('x', 'x', 'x ReviewOptimization ' + str(review_uid) + ' ' + str(db_review.uid) + ' ' + str(db_review.is_executed))
 
         if len(new_edits) > 0:
             DBDiscussionSession.add_all(new_edits)
-            DBDiscussionSession.flush()
-            transaction.commit()
+
+        DBDiscussionSession.flush()
+        transaction.commit()
 
     return ''
 
