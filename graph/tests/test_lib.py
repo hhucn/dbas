@@ -13,9 +13,9 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class LibTest(unittest.TestCase):
 
     def test_get_review_array(self):
-        self.assertTrue(len(get_d3_data(0)) == 0)
+        self.assertTrue(len(get_d3_data(0, 'Tobias')) == 0)
 
-        ret_dict = get_d3_data(1)
+        ret_dict = get_d3_data(1, 'Tobias')
         self.assertTrue('nodes' in ret_dict)
         self.assertTrue('edges' in ret_dict)
         self.assertTrue('extras' in ret_dict)
