@@ -30,7 +30,7 @@ $(document).ready(function () {
 	});
 	
 	optimization_nack.click(function(){
-		new AjaxReviewHandler().reviewOptimizationArgument(false, $(this).data('id'), undefined);
+		new AjaxReviewHandler().reviewOptimizationArgument(false, $(this).data('id'), '');
 	});
 	
 	optimization_skip.click(function(){
