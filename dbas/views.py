@@ -206,7 +206,7 @@ class Dbas(object):
 
         _dh = DictionaryHelper(ui_locales)
         extras_dict = _dh.prepare_extras_dict_for_normal_page(self.request)
-        settings_dict = _dh.preparate_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, main_page)
+        settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, main_page)
 
         return {
             'layout': self.base_layout(),
@@ -891,7 +891,7 @@ class Dbas(object):
         issue_dict = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, False)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        review_dict = ReviewQueueHelper.get_review_queues_array(main_page, _tn, nickname)
+        review_dict = ReviewQueueHelper.get_review_queues_as_lists(main_page, _tn, nickname)
         count, all_rights = ReviewReputationHelper.get_reputation_of(nickname)
 
         return {

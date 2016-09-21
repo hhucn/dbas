@@ -54,13 +54,13 @@ def preparation_for_view(for_api, api_data, request):
     return nickname, session_id, session_expired, history
 
 
-def preparation_for_justify_statement(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, mode, ui_locales):
+def preparation_for_justify_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, mode, ui_locales):
     """
 
     :param request:
     :param for_api:
     :param api_data:
-    :param mainpage:
+    :param main_page:
     :param slug:
     :param statement_or_arg_id:
     :param supportive:
@@ -72,14 +72,14 @@ def preparation_for_justify_statement(request, for_api, api_data, mainpage, slug
 
     nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
     logged_in = UserHandler.is_user_logged_in(nickname)
-    _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, for_api, request)
+    _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request)
 
     VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 
     item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
-    discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, mainpage, slug, supportive, len(item_dict), nickname)
+    discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict), nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, request, mode == 't',
-                                              application_url=mainpage, for_api=for_api)
+                                              application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
@@ -89,13 +89,13 @@ def preparation_for_justify_statement(request, for_api, api_data, mainpage, slug
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_dont_know_statement(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, ui_locales):
+def preparation_for_dont_know_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales):
     """
 
     :param request:
     :param for_api:
     :param api_data:
-    :param mainpage:
+    :param main_page:
     :param slug:
     :param statement_or_arg_id:
     :param supportive:
@@ -108,8 +108,8 @@ def preparation_for_dont_know_statement(request, for_api, api_data, mainpage, sl
 
     issue               = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales     = get_discussion_language(request, issue)
-    _ddh                = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-    _idh                = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=request.path, history=history)
+    _ddh                = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)
+    _idh                = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     _dh                 = DictionaryHelper(ui_locales, disc_ui_locales)
 
     # dont know
@@ -117,7 +117,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, mainpage, sl
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, True, True, request, argument_id=argument_uid,
-                                              application_url=mainpage, for_api=for_api)
+                                              application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict) == 0:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
@@ -125,13 +125,13 @@ def preparation_for_dont_know_statement(request, for_api, api_data, mainpage, sl
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_argument(request, for_api, api_data, mainpage, slug, statement_or_arg_id, supportive, relation, ui_locales):
+def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, relation, ui_locales):
     """
 
     :param request:
     :param for_api:
     :param api_data:
-    :param mainpage:
+    :param main_page:
     :param slug:
     :param statement_or_arg_id:
     :param supportive:
@@ -143,14 +143,14 @@ def preparation_for_justify_argument(request, for_api, api_data, mainpage, slug,
 
     nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
     logged_in = UserHandler.is_user_logged_in(nickname)
-    _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, for_api, request)
+    _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request)
 
     # justifying argument
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
     item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
     extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, request,
-                                              argument_id=statement_or_arg_id, application_url=mainpage, for_api=for_api)
+                                              argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
@@ -158,14 +158,14 @@ def preparation_for_justify_argument(request, for_api, api_data, mainpage, slug,
     return item_dict, discussion_dict, extras_dict
 
 
-def __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, for_api, request):
+def __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request):
     """
 
     :param ui_locales:
     :param session_id:
     :param nickname:
     :param history:
-    :param mainpage:
+    :param main_page:
     :param slug:
     :param for_api:
     :param request:
@@ -173,8 +173,8 @@ def __prepare_helper(ui_locales, session_id, nickname, history, mainpage, slug, 
     """
     issue           = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-    idh = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=request.path, history=history)
+    ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)
+    idh = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     dh  = DictionaryHelper(ui_locales, disc_ui_locales)
     return ddh, idh, dh
 

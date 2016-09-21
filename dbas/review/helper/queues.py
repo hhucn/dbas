@@ -16,7 +16,7 @@ from dbas.logger import logger
 max_lock_time_in_sec = 180
 
 
-def get_review_queues_array(main_page, translator, nickname):
+def get_review_queues_as_lists(main_page, translator, nickname):
     """
     Prepares dictionary for the edit section.
 
@@ -25,7 +25,7 @@ def get_review_queues_array(main_page, translator, nickname):
     :param nickname: Users nickname
     :return: Array
     """
-    logger('ReviewQueues', 'get_review_queues_array', 'main')
+    logger('ReviewQueues', 'get_review_queues_as_lists', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return None
@@ -112,7 +112,7 @@ def __get_edit_dict(main_page, translator, nickname):
     tmp_dict = {'task_name': 'Edits',
                 'id': 'edits',
                 'url': main_page + '/review/' + key,
-                'icon': 'fa fa-flag',
+                'icon': 'fa fa-pencil-square-o',
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitEditQueue),

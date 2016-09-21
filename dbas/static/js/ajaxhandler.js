@@ -20,7 +20,7 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSwitchDisplayLanguageDone(data) {
-			var parsedData = $.parseJSON(jsonData);
+			var parsedData = $.parseJSON(data);
 			if (parsedData.error.length != 0) {
 				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 			} else {
