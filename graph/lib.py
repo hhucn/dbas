@@ -7,7 +7,7 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, VoteStatement
-from dbas.lib import get_profile_picture
+from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
 
 
@@ -54,7 +54,12 @@ def get_d3_data(issue):
     db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
 
     # issue
-    node_dict = __get_node_dict(id='issue', label=db_issue.info, color=blue, size=issue_size, x=x, y=y)
+    node_dict = __get_node_dict(id='issue',
+                                label=db_issue.info,
+                                color=blue,
+                                size=issue_size,
+                                x=x,
+                                y=y)
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
@@ -69,7 +74,9 @@ def get_d3_data(issue):
                                     color=blue if statement.is_startpoint else yellow,
                                     size=position_size if statement.is_startpoint else node_size,
                                     x=x,
-                                    y=y)
+                                    y=y,
+                                    author=__get_author_of_statement(statement.uid),
+                                    editor=__get_editor_of_statement(statement.uid))
         extras_dict[node_dict['id']] = node_dict
         all_node_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
@@ -153,7 +160,35 @@ def get_d3_data(issue):
     return d3_dict
 
 
-def __get_node_dict(id, label, color, size, x, y):
+def __get_author_of_statement(uid):
+    """
+
+    :param uid:
+    :param main_page:
+    :return:
+    """
+    db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
+    db_author = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
+    gravatar = get_profile_picture(db_author, 40)
+    name = get_public_nickname_based_on_settings(db_author)
+    return {'name': name, 'gravatar': gravatar}
+
+
+def __get_editor_of_statement(uid):
+    """
+
+    :param uid:
+    :param main_page:
+    :return:
+    """
+    db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()
+    db_editor = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
+    gravatar = get_profile_picture(db_editor, 40)
+    name = get_public_nickname_based_on_settings(db_editor)
+    return {'name': name, 'gravatar': gravatar}
+
+
+def __get_node_dict(id, label, color, size, x, y, author=dict(), editor=dict()):
     """
     Create dictionary for nodes
 
@@ -163,6 +198,8 @@ def __get_node_dict(id, label, color, size, x, y):
     :param size:
     :param x:
     :param y:
+    :param author:
+    :param editor:
     :return:
     """
     return {'id': id,
@@ -170,7 +207,9 @@ def __get_node_dict(id, label, color, size, x, y):
             'color': color,
             'size': size,
             'x': x,
-            'y': y}
+            'y': y,
+            'author': author,
+            'editor': editor}
 
 
 def __get_edge_dict(id, source, target, color, size, edge_type):
