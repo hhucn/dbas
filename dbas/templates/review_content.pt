@@ -151,7 +151,7 @@
             </div>
         </div>
 
-		<div id="optimization-container" class="container colored-container" tal:condition="not:subpage.no_arguments_to_review" tal:condition="subpage.button_set.is_optimize" style="display: none;">
+		<div id="optimization-container" class="container colored-container" tal:condition="not:subpage.no_arguments_to_review and subpage.button_set.is_optimize" style="display: none;">
             <button id="close-optimization-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
