@@ -32,5 +32,5 @@ def get_d3_dump(request):
     logger('Graph', 'd3', 'main')
     issue = IssueHelper.get_issue_id(request)
 
-    return_dict = get_d3_data(issue)
+    return_dict = get_d3_data(issue, request.authenticated_userid)
     return json.dumps(return_dict, True)
