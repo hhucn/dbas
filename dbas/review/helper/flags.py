@@ -38,16 +38,18 @@ def flag_argument(argument_uid, reason, nickname, translator, transaction):
     is_flagged_for_delete_by_others = __is_argument_flagged_for_delete(argument_uid, is_executed=False)
     is_flagged_for_optimization_by_user = __is_argument_flagged_for_optimization_by_user(argument_uid, db_user.uid, is_executed=False)
     is_flagged_for_optimization_by_others = __is_argument_flagged_for_optimization(argument_uid, is_executed=False)
+    is_flagged_by_user = is_flagged_for_delete_by_user or is_flagged_for_optimization_by_user
+    is_flagged_by_others = is_flagged_for_delete_by_others or is_flagged_for_optimization_by_others
 
     # was this already flagged?
     if db_reason or reason == 'optimization':
         # does the user has already flagged this argument?
-        if is_flagged_for_delete_by_user or is_flagged_for_optimization_by_user:
+        if is_flagged_by_user:
             ret_info = translator.get(translator.alreadyFlaggedByYou)
             return ret_success, ret_info, ret_error
 
         # was this argument flagged already?
-        if is_flagged_for_delete_by_others or is_flagged_for_optimization_by_others:
+        if is_flagged_by_others:
             ret_info = translator.get(translator.alreadyFlaggedByOthers)
             return ret_success, ret_info, ret_error
 
@@ -56,16 +58,17 @@ def flag_argument(argument_uid, reason, nickname, translator, transaction):
         # flagged for the first time
         __add_delete_review(argument_uid, db_user.uid, db_reason.uid, transaction)
         ret_success = translator.get(translator.thxForFlagText)
-        return ret_success, ret_info, ret_error
 
     # and another reason for optimization
     elif reason == 'optimization':
         # flagged for the first time
         __add_optimization_review(argument_uid, db_user.uid, transaction)
         ret_success = translator.get(translator.thxForFlagText)
-        return ret_success, ret_info, ret_error
 
-    ret_error = translator.get(translator.internalKeyError)
+    # or unknown reason
+    else:
+        ret_error = translator.get(translator.internalKeyError)
+
     return ret_success, ret_info, ret_error
 
 
