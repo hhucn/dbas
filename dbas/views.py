@@ -2090,9 +2090,9 @@ class Dbas(object):
 
         return data.json()
 
-# ######################################
-# ADDTIONAL AJAX STUFF # REVIEW THINGS #
-# ######################################
+# #######################################
+# ADDITIONAL AJAX STUFF # REVIEW THINGS #
+# #######################################
 
     # ajax - for flagging arguments
     @view_config(route_name='ajax_flag_argument', renderer='json')
