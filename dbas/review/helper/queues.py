@@ -314,4 +314,7 @@ def tidy_up_optimization_locks():
     :return:
     """
     logger('ReviewQueues', 'tidy_up_optimization_locks', 'main')
-    DBDiscussionSession.query(OptimizationReviewLocks).filter_by((get_now() - OptimizationReviewLocks.locked_since).seconds < max_lock_time_in_sec).delete()
+    db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
+    for lock in db_locks:
+        if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
+            DBDiscussionSession.query(OptimizationReviewLocks).filter_by(uid=lock.uid).delete()
