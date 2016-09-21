@@ -212,7 +212,7 @@ def __get_last_reviewer_of(reviewer_type, main_page):
     #  logger('ReviewQueues', '__get_last_reviewer_of', 'main')
     users_array = list()
     db_reviews = DBDiscussionSession.query(reviewer_type).order_by(reviewer_type.uid.desc()).all()
-    limit = 5 if len(db_reviews) >= 5 else len(db_reviews)
+    limit = min(5, len(db_reviews))
     index = 0
     while index < limit:
         db_review = db_reviews[index]
