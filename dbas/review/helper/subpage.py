@@ -8,8 +8,7 @@ import random
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
-    ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue,\
-    Statement, TextVersion
+    ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue
 from dbas.helper.relation import RelationHelper
 from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_public_nickname_based_on_settings, get_profile_picture
