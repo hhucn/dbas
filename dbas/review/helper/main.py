@@ -156,12 +156,14 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
         return translator.get(translator.internalKeyError)
 
     db_new_review = LastReviewerOptimization(db_user.uid, db_review.uid, not should_optimized)
+    DBDiscussionSession.add(db_new_review)
+    DBDiscussionSession.flush()
+    transaction.commit()
+
     if not should_optimized:
+        logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'just vote')
         # add new vote
         db_user_who_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
-        DBDiscussionSession.add(db_new_review)
-        DBDiscussionSession.flush()
-        transaction.commit()
 
         # get all keep and delete votes
         db_keep_version = DBDiscussionSession.query(LastReviewerOptimization).filter(and_(LastReviewerOptimization.review_uid == review_uid,
@@ -171,6 +173,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
             db_review.set_executed(True)
             add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag, transaction)
     else:
+        logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new edit')
         # add new edit
         argument_dict = {}
         # sort the new edits by argument uid
@@ -191,11 +194,12 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
             for edit in argument_dict[argument_uid]:
                 new_edits.append(ReviewEditValue(db_review_edit.uid, argument_uid, edit['uid'], edit['type'], edit['val']))
 
-        # edit given, so this review is executed
-        db_review.set_executed(True)
-
         if len(new_edits) > 0:
             DBDiscussionSession.add_all(new_edits)
+
+        # edit given, so this review is executed
+        logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'set executed')
+        db_review.set_executed(True)
 
         DBDiscussionSession.flush()
         transaction.commit()
