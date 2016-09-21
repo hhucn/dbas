@@ -172,7 +172,7 @@ def __get_author_of_statement(uid, db_user):
     db_author = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_author, 40)
     name = get_public_nickname_based_on_settings(db_author) if db_user.uid != db_author.uid else db_user.nickname
-    return {'name': name, 'gravatar': gravatar}
+    return {'name': name, 'gravatar_url': gravatar}
 
 
 def __get_editor_of_statement(uid, db_user):
