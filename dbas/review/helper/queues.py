@@ -317,4 +317,4 @@ def tidy_up_optimization_locks():
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
     for lock in db_locks:
         if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
-            DBDiscussionSession.query(OptimizationReviewLocks).filter_by(uid=lock.uid).delete()
+            DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=lock.review_optimization_uid).delete()

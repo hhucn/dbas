@@ -293,7 +293,6 @@ def get_box_for(user, lang, mainpage, is_inbox):
     :param is_inbox: Boolean
     :return: [Notification]
     """
-    import dbas.user_management as UserHandler
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
     if not db_user:
         return []
