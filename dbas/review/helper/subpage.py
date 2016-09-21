@@ -57,12 +57,19 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator, mainpa
     if subpage_name == 'deletes':
         subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator, mainpage)
         button_set['is_delete'] = True
+        button_set['is_optimize'] = False
+        button_set['is_edit'] = False
 
     elif subpage_name == 'optimizations':
         subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, mainpage)
+        button_set['is_delete'] = False
         button_set['is_optimize'] = True
+        button_set['is_edit'] = False
+
     elif subpage_name == 'edits':
         subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, mainpage)
+        button_set['is_delete'] = False
+        button_set['is_optimize'] = False
         button_set['is_edit'] = True
 
     else:
