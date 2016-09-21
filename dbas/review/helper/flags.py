@@ -34,20 +34,25 @@ def flag_argument(argument_uid, reason, nickname, translator, transaction):
     ret_info = ''
     ret_error = ''
 
-    # notification to the author of the flagged argument
+    is_flagged_for_delete_by_user = __is_argument_flagged_for_delete_by_user(argument_uid, db_user.uid, is_executed=False)
+    is_flagged_for_delete_by_others = __is_argument_flagged_for_delete(argument_uid, is_executed=False)
+    is_flagged_for_optimization_by_user = __is_argument_flagged_for_optimization_by_user(argument_uid, db_user.uid, is_executed=False)
+    is_flagged_for_optimization_by_others = __is_argument_flagged_for_optimization(argument_uid, is_executed=False)
 
-    # get all reasons, why a statement could be flagged for delete
-    if db_reason:
+    # was this already flagged?
+    if db_reason or reason == 'optimization':
         # does the user has already flagged this argument?
-        if __is_argument_flagged_for_delete_by_user(argument_uid, db_user.uid, is_executed=False):
+        if is_flagged_for_delete_by_user or is_flagged_for_optimization_by_user:
             ret_info = translator.get(translator.alreadyFlaggedByYou)
             return ret_success, ret_info, ret_error
 
         # was this argument flagged already?
-        if __is_argument_flagged_for_delete(argument_uid, is_executed=False) or __is_argument_flagged_for_optimization(argument_uid, is_executed=False):
+        if is_flagged_for_delete_by_others or is_flagged_for_optimization_by_others:
             ret_info = translator.get(translator.alreadyFlaggedByOthers)
             return ret_success, ret_info, ret_error
 
+    # add flag
+    if db_reason:
         # flagged for the first time
         __add_delete_review(argument_uid, db_user.uid, db_reason.uid, transaction)
         ret_success = translator.get(translator.thxForFlagText)
@@ -55,23 +60,13 @@ def flag_argument(argument_uid, reason, nickname, translator, transaction):
 
     # and another reason for optimization
     elif reason == 'optimization':
-        if __is_argument_flagged_for_optimization_by_user(argument_uid, db_user.uid, is_executed=False):
-            ret_info = translator.get(translator.alreadyFlaggedByYou)
-            return ret_success, ret_info, ret_error
-
-        # was this argument flagged already?
-        if __is_argument_flagged_for_delete(argument_uid, is_executed=False) or __is_argument_flagged_for_optimization(argument_uid, is_executed=False):
-            ret_info = translator.get(translator.alreadyFlaggedByOthers)
-            return ret_success, ret_info, ret_error
-
         # flagged for the first time
         __add_optimization_review(argument_uid, db_user.uid, transaction)
         ret_success = translator.get(translator.thxForFlagText)
         return ret_success, ret_info, ret_error
 
-    else:
-        ret_error = translator.get(translator.internalKeyError)
-        return ret_success, ret_info, ret_error
+    ret_error = translator.get(translator.internalKeyError)
+    return ret_success, ret_info, ret_error
 
 
 def __is_argument_flagged_for_delete(argument_uid, is_executed=False):
