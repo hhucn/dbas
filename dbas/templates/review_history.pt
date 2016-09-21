@@ -44,7 +44,7 @@
                                         <td i18n:translate="votes">Votes</td>
                                         <td i18n:translate="voters_pro" class="center">Voters Pro</td>
                                         <td i18n:translate="voters_con" class="center">Voters Con</td>
-                                        <td i18n:translate="accepted" class="center">Accepted</td>
+                                        <td tal:condition="history.is_history" i18n:translate="accepted" class="center">Accepted</td>
                                         <td i18n:translate="timestamp">Timestamp</td>
                                         <td i18n:translate="actions" class="center">Action</td>
                                     </tr>
@@ -76,9 +76,9 @@
                                             </div>
                                             <span tal:case="False">-</span>
                                         </td>
-                                        <td tal:condition="len(rep.votes_pro) > len(rep.votes_con)" class="text-success"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>
-                                        <td tal:condition="len(rep.votes_pro) < len(rep.votes_con)" class="text-danger"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></td>
-                                        <td tal:condition="len(rep.votes_pro) == len(rep.votes_con)" class="text-info"><i class="fa fa-question" aria-hidden="true"></i></td>
+                                        <td tal:condition="history.is_history and len(rep.votes_pro) > len(rep.votes_con)" class="text-success"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>
+                                        <td tal:condition="history.is_history and len(rep.votes_pro) < len(rep.votes_con)" class="text-danger"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></td>
+                                        <td tal:condition="history.is_history and len(rep.votes_pro) == len(rep.votes_con)" class="text-info"><i class="fa fa-question" aria-hidden="true"></i></td>
                                         <td>${rep.timestamp}</td>
                                         <td class="center">
                                             <a tal:condition="history.is_history" href="#" class="btn btn-danger btn-sm review-undo" tal:attributes="data-id rep.entry_id; data-queue past.queue">
