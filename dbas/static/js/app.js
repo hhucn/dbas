@@ -365,6 +365,8 @@ function prepareLoginRegistrationPopup(){
 function setTextWatcherInputLength(element){
 	var minlength = element.data('min-length');
 	var maxlength = element.data('max-length');
+	if (!maxlength)
+		maxlength = 1000;
 	var id = element.attr('id') + '-text-counter';
 	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + minlength + ' ' + _t_discussion(textMinCountMessageBegin2);
 	var field = $('<span>').text(msg).attr('id', id).addClass('text-min-counter-input');
