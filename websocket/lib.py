@@ -126,7 +126,7 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
 
     try:
         if use_https:
-            link = 'http://dbas.cs.uni-duesseldorf.de:5001/'
+            link = 'https://dbas.cs.uni-duesseldorf.de:5001/'
         else:
             link = 'http://localhost:5001/'
         resp = requests.get(link + 'recent_review' + params)
