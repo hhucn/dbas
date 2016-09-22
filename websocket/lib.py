@@ -79,7 +79,6 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
     try:
         https = 'https' if use_https else 'http'
         resp = requests.get(https + '://localhost:5001/recent_review' + params)
-        resp = requests.get('http://localhost:5001/publish' + params)
     except:
         return None
     logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')
@@ -87,7 +86,7 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
     return resp.status_code
 
 
-def send_request_for_recent_delete_review_to_socketio(nickname):
+def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
     """
 
     :param nickname:
@@ -96,7 +95,8 @@ def send_request_for_recent_delete_review_to_socketio(nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = get_public_nickname_based_on_settings(db_user)
     reviewer_image_url = get_profile_picture(db_user)
-    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'deletes')
+    use_https = 'dbas' in main_page
+    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'deletes', use_https)
 
 
 def send_request_for_recent_optimization_review_to_socketio(nickname, main_page):
