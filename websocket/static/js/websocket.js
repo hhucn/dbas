@@ -115,6 +115,9 @@ function doRecentReview(data){
 	if (queue.length != 0){
 		// just push, if given user is not the last reviwer
 		console.log(data.img_url);
+		if (queue.find('a:list-child').length == 0){
+			queue.find('span').remove()
+		}
 		if (queue.find('img[src^="' + data.img_url + '"]').length == 0) {
 			console.log(data.reviewer_name + ' is a new reviewer');
 			queue.find('a:last-child').remove();
