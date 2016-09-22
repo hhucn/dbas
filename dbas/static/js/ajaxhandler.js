@@ -237,15 +237,17 @@ function AjaxMainHandler(){
 	 *
 	 * @param argument_uid
 	 * @param reason
+	 * @param is_argument
 	 */
-	this.ajaxFlagArgument = function(argument_uid, reason){
+	this.ajaxFlagArgument = function(argument_uid, reason, is_argument){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_flag_argument',
 			method: 'POST',
 			data: {
 				argument_uid: argument_uid,
-				reason: reason
+				reason: reason,
+				is_argument: is_argument
 			},
 			global: false,
 			async: true,
@@ -1125,7 +1127,7 @@ function AjaxReviewHandler(){
 	
 	/**
 	 *
-	 * @param should_edit
+	 * @param is_edit_okay
 	 * @param review_uid
 	 */
 	this.reviewEditArgument = function(is_edit_okay, review_uid){

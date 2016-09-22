@@ -130,6 +130,7 @@
                                         </a>
                                     </td>
                                 </tr>
+                                <tal:comment replace="nothing">
                                 <tr>
                                     <td i18n:translate="viewed">Viewed</td>
                                     <td>${subpage.elements.reviewed_argument.stats.viewed}</td>
@@ -142,6 +143,7 @@
                                     <td i18n:translate="supports">Supports</td>
                                     <td>${subpage.elements.reviewed_argument.stats.supports}</td>
                                 </tr>
+                                </tal:comment>
                             </tbody>
                         </table>
                     </div>

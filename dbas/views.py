@@ -2111,6 +2111,7 @@ class Dbas(object):
         try:
             argument_uid = self.request.params['argument_uid']
             reason = self.request.params['reason']
+            is_argument = True if str(self.request.params['is_argument']) == 'true' else False
             nickname = self.request.authenticated_userid
 
             db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
@@ -2121,7 +2122,7 @@ class Dbas(object):
                 return_dict['error'] = _t.get(_t.internalError)
             else:
 
-                success, info, error = ReviewFlagHelper.flag_argument(argument_uid, reason, nickname, _t, transaction)
+                success, info, error = ReviewFlagHelper.flag_argument(argument_uid, reason, nickname, _t, is_argument, transaction)
 
                 return_dict['success'] = success
                 return_dict['info'] = info

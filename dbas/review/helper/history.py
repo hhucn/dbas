@@ -7,7 +7,7 @@ Provides helping function for the managing reputation.
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
     User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement
-from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author
+from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_arguments_and_premise_of_review
 from sqlalchemy import and_
@@ -121,7 +121,10 @@ def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, tra
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed != is_not_executed).order_by(table_type.uid.desc()).all()
 
     for review in db_reviews:
-        fulltext = get_text_for_argument_uid(review.argument_uid)
+        if review.statement_uid is None:
+            fulltext = get_text_for_argument_uid(review.argument_uid)
+        else:
+            fulltext = get_text_for_statement_uid(review.statement_uid)
         shorttext = '<span class="text-primary">'
         intro = translator.get(translator.otherUsersSaidThat) + ' '
         if fulltext.startswith(intro):

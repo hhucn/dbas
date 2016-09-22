@@ -580,14 +580,15 @@ function GuiHandler() {
 	
 	/**
 	 *
-	 * @param argument_uid
+	 * @param uid
+	 * @param is_argument
 	 */
-	this.showFlagArgumentPopup = function(argument_uid){
+	this.showFlagArgumentPopup = function(uid, is_argument){
 		var popup = $('#popup-flag-argument');
 		popup.modal('show');
 		popup.find('input').click(function () {
 			var reason = $(this).attr('value');
-			new AjaxMainHandler().ajaxFlagArgument(argument_uid, reason);
+			new AjaxMainHandler().ajaxFlagArgument(uid, reason, is_argument);
 			popup.find('input').prop( 'checked', false );
 			popup.modal('hide');
 		});

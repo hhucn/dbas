@@ -8,8 +8,7 @@ import random
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
-    ArgumentSeenBy, Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue
-from dbas.helper.relation import RelationHelper
+    Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement
 from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_public_nickname_based_on_settings, get_profile_picture
 from dbas.logger import logger
@@ -164,12 +163,20 @@ def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
                 'extra_info': None}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
-    text = get_text_for_argument_uid(db_argument.uid)
-    db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=rnd_review.reason_uid).first()
-    issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+    if rnd_review.statement_uid is None:
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+        text = get_text_for_argument_uid(db_argument.uid)
+        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+    else:
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
+        text = get_text_for_statement_uid(db_statement.uid)
+        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
+    logger('ReviewSubpagerHelper', 'xxx', text)
+    logger('ReviewSubpagerHelper', 'xxx', text)
+    logger('ReviewSubpagerHelper', 'xxx', text)
 
-    stats = __get_stats_for_argument(db_argument.uid, rnd_review, translator.get_lang(), main_page)
+    db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=rnd_review.reason_uid).first()
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
 
     reason = ''
     if db_reason.reason == 'offtopic':
@@ -223,12 +230,18 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
                 'extra_info': None}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
-    text = get_text_for_argument_uid(db_argument.uid)
-    reason = translator.get(translator.argumentFlaggedBecauseOptimization)
-    issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+    if rnd_review.statement_uid is None:
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+        text = get_text_for_argument_uid(db_argument.uid)
+        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+    else:
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
+        text = get_text_for_statement_uid(db_statement.uid)
+        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
 
-    stats = __get_stats_for_argument(db_argument.uid, rnd_review, translator.get_lang(), main_page)
+    reason = translator.get(translator.argumentFlaggedBecauseOptimization)
+
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_optimization'] = already_seen
@@ -294,7 +307,7 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
         pos = text.lower().find(oem_text.lower())
         text = text[0:pos] + '<span class="text-warning">' + text[pos:pos + len(oem_text)] + '</span>' + text[pos + len(oem_text):]
 
-    stats = __get_stats_for_argument(db_argument.uid, rnd_review, translator.get_lang(), main_page)
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_edit'] = already_seen
@@ -307,7 +320,7 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
             'extra_info': extra_info}
 
 
-def __get_stats_for_argument(argument_uid, review, ui_locales, main_page):
+def __get_stats_for_review(review, ui_locales, main_page):
     """
 
     :param argument_uid:
@@ -315,21 +328,20 @@ def __get_stats_for_argument(argument_uid, review, ui_locales, main_page):
     :param ui_locales:
     :return:
     """
-    logger('ReviewSubpagerHelper', '__get_stats_for_argument', 'main')
-    viewed = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument_uid).all())
+    logger('ReviewSubpagerHelper', '__get_stats_for_review', 'main')
+    # viewed = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument_uid).all())
 
-    _rh = RelationHelper(argument_uid)
-    undermines = _rh.get_undermines_for_argument_uid()
-    undercuts = _rh.get_undercuts_for_argument_uid()
-    rebuts = _rh.get_rebuts_for_argument_uid()
-    supports = _rh.get_supports_for_argument_uid()
+    # _rh = RelationHelper(argument_uid)
+    # undermines = _rh.get_undermines_for_argument_uid()
+    # undercuts = _rh.get_undercuts_for_argument_uid()
+    # rebuts = _rh.get_rebuts_for_argument_uid()
+    # supports = _rh.get_supports_for_argument_uid()
 
-    len_undermines = len(undermines) if undermines else 0
-    len_undercuts = len(undercuts) if undercuts else 0
-    len_rebuts = len(rebuts) if rebuts else 0
-    len_supports = len(supports) if supports else 0
-
-    attacks = len_undermines + len_undercuts + len_rebuts
+    # len_undermines = len(undermines) if undermines else 0
+    # len_undercuts = len(undercuts) if undercuts else 0
+    # len_rebuts = len(rebuts) if rebuts else 0
+    # len_supports = len(supports) if supports else 0
+    # attacks = len_undermines + len_undercuts + len_rebuts
 
     db_reporter = DBDiscussionSession.query(User).filter_by(uid=review.detector_uid).first()
 
@@ -339,9 +351,9 @@ def __get_stats_for_argument(argument_uid, review, ui_locales, main_page):
     stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
     stats['reporter_url'] = main_page + '/user/' + stats['reporter']
     stats['id'] = str(review.uid)
-    stats['viewed'] = viewed
-    stats['attacks'] = attacks
-    stats['supports'] = len_supports
+    # stats['viewed'] = viewed
+    # stats['attacks'] = attacks
+    # stats['supports'] = len_supports
 
     return stats
 
