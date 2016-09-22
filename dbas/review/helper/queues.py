@@ -136,7 +136,7 @@ def __get_history_dict(main_page, translator):
                 'id': 'flags',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-history',
-                'task_count': '-',
+                'task_count': __get_review_count_for_history(True),
                 'is_allowed': True,
                 'is_allowed_text': translator.get(translator.visitHistoryQueue),
                 'is_not_allowed_text': '',
@@ -159,7 +159,7 @@ def __get_ongoing_dict(main_page, translator):
                 'id': 'flags',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-clock-o',
-                'task_count': '-',
+                'task_count': __get_review_count_for_history(False),
                 'is_allowed': True,
                 'is_allowed_text': translator.get(translator.visitOngoingQueue),
                 'is_not_allowed_text': '',
@@ -199,6 +199,18 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
     db_reviews = db_reviews.all()
 
     return len(db_reviews)
+
+
+def __get_review_count_for_history(is_executed):
+    """
+
+    :param is_executed:
+    :return:
+    """
+    db_optimizations = DBDiscussionSession.query(ReviewOptimization).filter_by(is_executed=is_executed).all()
+    db_deletes = DBDiscussionSession.query(ReviewDelete).filter_by(is_executed=is_executed).all()
+    db_edits = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=is_executed).all()
+    return len(db_optimizations) + len(db_deletes) + len(db_edits)
 
 
 def __get_last_reviewer_of(reviewer_type, main_page):
