@@ -127,7 +127,8 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
     try:
         https = 'https' if use_https else 'http'
         resp = requests.get(https + '://localhost:5001/recent_review' + params)
-    except:
+    except Exception as e:
+        logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'Error: ' + str(e), error=True)
         return None
     logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code))
 
