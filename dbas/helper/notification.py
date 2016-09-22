@@ -47,12 +47,13 @@ def send_edit_text_notification(db_user, textversion, path, request):
     # logger('NotificationHelper', 'send_edit_text_notification', 'current author: ' + str(new_author))
 
     # add some information for highlights
-    path += '?edited_statement=' + str(textversion.statement_uid)
+    if path is not None:
+        path += '?edited_statement=' + str(textversion.statement_uid)
 
-    if settings_root_author.should_send_mails is True and root_author != db_user.uid:
+    if settings_root_author.should_send_mails is True and root_author != db_user.uid and path is not None:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, request)
 
-    if new_author != last_author and settings_last_author.should_send_mails is True and new_author != db_user.uid:
+    if new_author != last_author and settings_last_author.should_send_mails is True and new_author != db_user.uid and path is not None:
         EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, db_editor, path, request)
 
     # check for different authors

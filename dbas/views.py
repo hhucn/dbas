@@ -55,7 +55,7 @@ from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, send_request_for_recent_optimization_review_to_socketio
 
 name = 'D-BAS'
-version = '0.7.0'
+version = '0.7.1'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
@@ -2175,14 +2175,14 @@ class Dbas(object):
         return_dict = dict()
 
         try:
-            should_edit = True if str(self.request.params['should_edit']) == 'true' else False
+            is_edit_okay = True if str(self.request.params['is_edit_okay']) == 'true' else False
             review_uid = self.request.params['review_uid']
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
                 logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
-                error = ReviewMainHelper.add_review_opinion_for_edit(nickname, should_edit, review_uid, _t, transaction)
+                error = ReviewMainHelper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, transaction)
                 send_request_for_recent_delete_review_to_socketio(nickname)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
