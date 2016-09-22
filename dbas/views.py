@@ -2154,7 +2154,7 @@ class Dbas(object):
                 error = _t.get(_t.internalKeyError)
             else:
                 error = ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, transaction)
-                send_request_for_recent_delete_review_to_socketio(nickname)
+                send_request_for_recent_delete_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
             error = _t.get(_t.internalKeyError)
@@ -2184,7 +2184,7 @@ class Dbas(object):
                 error = _t.get(_t.internalKeyError)
             else:
                 error = ReviewMainHelper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, transaction)
-                send_request_for_recent_delete_review_to_socketio(nickname)
+                send_request_for_recent_delete_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
             error = _t.get(_t.internalKeyError)
@@ -2218,7 +2218,7 @@ class Dbas(object):
                 error = ReviewMainHelper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t, transaction)
 
                 if len(error) == 0:
-                    send_request_for_recent_optimization_review_to_socketio(nickname)
+                    send_request_for_recent_optimization_review_to_socketio(nickname, main_page)
 
         except KeyError as e:
             logger('review_optimization_argument', 'error', repr(e))
