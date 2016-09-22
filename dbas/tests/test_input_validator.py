@@ -187,7 +187,7 @@ class InputValidatorTests(unittest.TestCase):
                                                                       attacking_arg_uid=0,
                                                                       relation='end',
                                                                       is_history=False)
-        self.assertEqual(end_attacking_arg_uid_not_zero_true, True)
+        self.assertEqual(end_attacking_arg_uid_not_zero_true, False)
 
         end_attacking_arg_uid_not_zero_false = reaction.check_reaction(attacked_arg_uid=1,
                                                                        attacking_arg_uid=1,
