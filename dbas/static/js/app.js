@@ -363,41 +363,41 @@ function prepareLoginRegistrationPopup(){
  * @param element
  */
 function setTextWatcherInputLength(element){
-	var minlength = element.data('min-length');
-	var maxlength = element.data('max-length');
-	if (!maxlength)
-		maxlength = 1000;
+	var min_length = element.data('min-length');
+	var max_length = element.data('max-length');
+	if (!max_length)
+		max_length = 1000;
 	var id = element.attr('id') + '-text-counter';
-	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + minlength + ' ' + _t_discussion(textMinCountMessageBegin2);
+	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
 	var field = $('<span>').text(msg).attr('id', id).addClass('text-min-counter-input');
 	field.insertBefore(element);
 	
 	element.keyup(function(){
 		var text = element.val().trim();
-		var currentlength = text.length;
+		var current_length = text.length;
 		
-		if (currentlength == 0){
+		if (current_length == 0){
 			field.removeClass('text-counter-input');
 			field.addClass('text-min-counter-input');
 			field.removeClass('text-max-counter-input');
 			field.text(msg)
-		} else if (currentlength < minlength) {
+		} else if (current_length < min_length) {
 			field.addClass('text-counter-input');
 			field.removeClass('text-max-counter-input');
 			field.removeClass('text-max-counter-input');
-			field.text((minlength - currentlength) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
+			field.text((min_length - current_length) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
 		} else {
 				field.removeClass('text-min-counter-input');
-			if (currentlength * 2 > maxlength){
+			if (current_length * 2 > max_length){
 				field.removeClass('text-counter-input');
 				field.addClass('text-max-counter-input');
 			} else {
 				field.addClass('text-counter-input');
 				field.removeClass('text-max-counter-input');
 			}
-			var left = maxlength < currentlength ? 0 : maxlength - currentlength;
+			var left = max_length < current_length ? 0 : max_length - current_length;
 			field.text(left + ' ' + _t_discussion(textMaxCountMessage));
-			if (maxlength <= currentlength)
+			if (max_length <= current_length)
 				field.text(field.text() + ' ' + _t_discussion(textMaxCountMessageError));
 				// element.val(element.val().substr(0, maxlength));
 		}

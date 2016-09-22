@@ -337,7 +337,7 @@ def __get_stats_for_argument(argument_uid, review, ui_locales, main_page):
     stats['reported'] = sql_timestamp_pretty_print(review.timestamp, ui_locales)
     stats['reporter'] = get_public_nickname_based_on_settings(db_reporter)
     stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
-    stats['reporter_url'] = main_page + 'user/' + stats['reporter']
+    stats['reporter_url'] = main_page + '/user/' + stats['reporter']
     stats['id'] = str(review.uid)
     stats['viewed'] = viewed
     stats['attacks'] = attacks
