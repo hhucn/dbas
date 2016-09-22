@@ -473,8 +473,12 @@ function GuiHandler() {
 					   function(){ $(this).removeClass('active');});
 			span_dist = $('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
 			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
-			img = $('<img>').addClass('preload-image').attr('style', 'height: 20pt;, margin-right: 1em;').attr('src', val.avatar);
-			button.append(img).append(span_dist).append(span_text).click(function(){
+			img = $('<img>').addClass('preload-image').addClass('img-circle').attr('style', 'height: 20pt; margin-right: 1em;').attr('src', val.avatar);
+			if (type == fuzzy_find_user)
+				button.append(img).append(span_text);
+			else
+				button.append(img).append(span_dist).append(span_text);
+			button.click(function(){
 				callbackElement.val($(this).attr('text'));
 				$('#' + proposalStatementListGroupId).empty();
 				$('#' + proposalPremiseListGroupId).empty();
