@@ -73,6 +73,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, translato
     reached_max = max(count_of_keep, count_of_delete) >= max_votes
     if reached_max:
         db_review.set_executed(True)
+        db_review.is_executed = True
         if count_of_delete > count_of_keep:  # disable the flagged part
             en_or_disable_arguments_and_premise_of_review(db_review, True)
             add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
@@ -115,13 +116,12 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, translator, 
 
     # get all keep and delete votes
     count_of_edit, count_of_dont_edit = __get_review_count(LastReviewerEdit, review_uid)
-    logger('ReviewMainHelper', 'xxx', 'count_of_edit ' + str(count_of_edit))
-    logger('ReviewMainHelper', 'xxx', 'count_of_dont_edit ' + str(count_of_dont_edit))
 
     # do we reached any limit?
     reached_max = max(count_of_edit, count_of_dont_edit) >= max_votes
     if reached_max:
         db_review.set_executed(True)
+        db_review.is_executed = True
         if count_of_dont_edit < count_of_edit:  # accept the edit
             accept_edit_review(db_review, transaction, db_user_created_flag)
             add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
@@ -130,11 +130,13 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, translator, 
 
     if count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
         db_review.set_executed(True)
+        db_review.is_executed = True
         accept_edit_review(db_review, transaction, db_user_created_flag)
         add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
 
     if count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
         db_review.set_executed(True)
+        db_review.is_executed = True
         add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
 
     return ''
@@ -172,6 +174,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
 
         if len(db_keep_version) > max_votes:
             db_review.set_executed(True)
+            db_review.is_executed = True
             add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag, transaction)
     else:
         logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new edit')
@@ -202,6 +205,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
         # edit given, so this review is executed
         logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'set executed')
         db_review.set_executed(True)
+        db_review.is_executed = True
 
         DBDiscussionSession.flush()
         transaction.commit()
@@ -218,9 +222,15 @@ def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     """
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=review.argument_uid).first()
     db_argument.set_disable(is_disabled)
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).join(Statement).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+
     for premise in db_premises:
-        premise.statements.set_disable(is_disabled)
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
+        db_statement.set_disable(is_disabled)
+
+    if db_argument.conclusion_uid is not None:
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid.statement_uid).first()
+        db_statement.set_disable(is_disabled)
 
 
 def accept_edit_review(review, transaction, db_user_created_flag):

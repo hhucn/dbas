@@ -6,7 +6,7 @@ Provides helping function for the managing reputation.
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
-    User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit
+    User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement
 from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_arguments_and_premise_of_review
@@ -160,6 +160,7 @@ def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, tra
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
         entry['votes_pro'] = pro_list
         entry['votes_con'] = con_list
+        entry['reporter'] = __get_user_dict_for_review(review.detector_uid, mainpage)
         some_list.append(entry)
 
     return some_list
@@ -212,7 +213,21 @@ def revoke_old_decision(queue, uid, lang, transaction):
         success = _t.get(_t.dataRemoved)
 
     elif queue == 'edits':
-        error = 'TODO'
+        DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
+        db_value = DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=uid)
+        content = db_value.first().content
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_value.first().statement_uid).first()
+        db_value.delete()
+
+        # delete forbidden textversion
+        DBDiscussionSession.query(TextVersion).filter_by(content=content).delete()
+        # grab and set most recent textversion
+        db_new_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=db_statement.uid).order_by(TextVersion.uid.desc()).first()
+        db_statement.set_textversion(db_new_textversion.uid)
+        transaction.commit()
+
+        success = _t.get(_t.dataRemoved)
 
     else:
         error = _t.get(_t.internalKeyError)
@@ -231,14 +246,26 @@ def cancel_ongoing_decision(queue, uid, lang, transaction):
     """
     success = ''
     error = ''
+
     _t = Translator(lang)
     if queue == 'deletes':
-        __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid, transaction)
+        DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
+        success = _t.get(_t.dataRemoved)
+        transaction.commit()
 
-        success = _t.get(_t.dataRemoved)
     elif queue == 'optimizations':
-        __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid, transaction)
+        DBDiscussionSession.query(ReviewOptimization).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=uid).delete()
         success = _t.get(_t.dataRemoved)
+        transaction.commit()
+
+    elif queue == 'edits':
+        DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=uid).delete()
+        success = _t.get(_t.dataRemoved)
+        transaction.commit()
 
     else:
         error = _t.get(_t.internalKeyError)
