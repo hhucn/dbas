@@ -1128,12 +1128,12 @@ function AjaxReviewHandler(){
 	 * @param should_edit
 	 * @param review_uid
 	 */
-	this.reviewEditArgument = function(should_edit, review_uid){
+	this.reviewEditArgument = function(is_edit_okay, review_uid){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_edit_argument',
 			method: 'POST',
-			data:{ 'should_edit': should_edit, 'review_uid': review_uid },
+			data:{ 'is_edit_okay': is_edit_okay, 'review_uid': review_uid },
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
