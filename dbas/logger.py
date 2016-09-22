@@ -20,17 +20,16 @@ def logger(who, when, what, warn=False, error=False, debug=False):
     :param debug: Boolean, default False
     :return: None
     """
-    if who.startswith('Review') or who.lower().startswith('x'):
-        info = not(warn or error or debug)
-        logger = logging.getLogger(__name__)
-        try:
-            if info:
-                logger.info('[' + who.upper() + '] ' + when + ': ' + what)
-            if warn:
-                logger.warn('[' + who.upper() + '] ' + when + ': ' + what)
-            if error:
-                logger.error('[' + who.upper() + '] ' + when + ': ' + what)
-            if debug:
-                logger.debug('[' + who.upper() + '] ' + when + ': ' + what)
-        except Exception as e:
-            logger.error('[LOGGER] LOGGER ERROR: ' + repr(e))
+    info = not(warn or error or debug)
+    logger = logging.getLogger(__name__)
+    try:
+        if info:
+            logger.info('[' + who.upper() + '] ' + when + ': ' + what)
+        if warn:
+            logger.warn('[' + who.upper() + '] ' + when + ': ' + what)
+        if error:
+            logger.error('[' + who.upper() + '] ' + when + ': ' + what)
+        if debug:
+            logger.debug('[' + who.upper() + '] ' + when + ': ' + what)
+    except Exception as e:
+        logger.error('[LOGGER] LOGGER ERROR: ' + repr(e))

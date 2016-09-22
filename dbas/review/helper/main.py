@@ -72,22 +72,28 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, translato
     # do we reached any limit?
     reached_max = max(count_of_keep, count_of_delete) >= max_votes
     if reached_max:
-        db_review.set_executed(True)
-        db_review.is_executed = True
         if count_of_delete > count_of_keep:  # disable the flagged part
             en_or_disable_arguments_and_premise_of_review(db_review, True)
             add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
         else:  # just close the review
             add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
-
-    if count_of_keep - count_of_delete >= min_difference:  # just close the review
         db_review.set_executed(True)
+        db_review.update_timestamp()
+
+    elif count_of_keep - count_of_delete >= min_difference:  # just close the review
         add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
-
-    if count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
         db_review.set_executed(True)
+        db_review.update_timestamp()
+
+    elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
         en_or_disable_arguments_and_premise_of_review(db_review, True)
         add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
+        db_review.set_executed(True)
+        db_review.update_timestamp()
+
+    DBDiscussionSession.add(db_review)
+    DBDiscussionSession.flush()
+    transaction.commit()
 
     return ''
 
@@ -120,24 +126,28 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, translator, 
     # do we reached any limit?
     reached_max = max(count_of_edit, count_of_dont_edit) >= max_votes
     if reached_max:
-        db_review.set_executed(True)
-        db_review.is_executed = True
         if count_of_dont_edit < count_of_edit:  # accept the edit
             accept_edit_review(db_review, transaction, db_user_created_flag)
             add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
         else:  # just close the review
             add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
-
-    if count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
         db_review.set_executed(True)
-        db_review.is_executed = True
+        db_review.update_timestamp()
+
+    elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
         accept_edit_review(db_review, transaction, db_user_created_flag)
         add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
-
-    if count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
         db_review.set_executed(True)
-        db_review.is_executed = True
+        db_review.update_timestamp()
+
+    elif count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
         add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
+        db_review.set_executed(True)
+        db_review.update_timestamp()
+
+    DBDiscussionSession.add(db_review)
+    DBDiscussionSession.flush()
+    transaction.commit()
 
     return ''
 
@@ -173,9 +183,9 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
                                                                                           LastReviewerOptimization.is_okay == True)).all()
 
         if len(db_keep_version) > max_votes:
-            db_review.set_executed(True)
-            db_review.is_executed = True
             add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag, transaction)
+            db_review.set_executed(True)
+            db_review.update_timestamp()
     else:
         logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new edit')
         # add new edit
@@ -205,10 +215,11 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
         # edit given, so this review is executed
         logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'set executed')
         db_review.set_executed(True)
-        db_review.is_executed = True
+        db_review.update_timestamp()
 
-        DBDiscussionSession.flush()
-        transaction.commit()
+    DBDiscussionSession.add(db_review)
+    DBDiscussionSession.flush()
+    transaction.commit()
 
     return ''
 
