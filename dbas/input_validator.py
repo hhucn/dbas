@@ -204,4 +204,6 @@ class Validator:
     @staticmethod
     def is_argument_forbidden(uid):
         db_arg = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        if not db_arg:
+            return False
         return db_arg.is_disabled
