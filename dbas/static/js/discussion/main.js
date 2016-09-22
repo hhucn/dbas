@@ -179,22 +179,23 @@ function Main () {
 		
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			guiHandler.showFlagArgumentPopup(uid);
+			guiHandler.showFlagArgumentPopup(uid, true);
 		});
 		
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
-			alert('todo');
+			var uid = $(this).parent().find('input').attr('id').replace('item_', '')
+			guiHandler.showFlagArgumentPopup(uid, false);
 			// jump to contact tab
-			var line1 = 'Report ' + new Helper().getTodayAsDate(),
-				line2 = 'URL: ' + window.location.href,
-				line3 = _t(fillLine).toUpperCase(),
-				params = {
-					'content': line1 + '\n' + line2 + '\n' + line3,
-					'name': $('#header_user').parent().text().replace(/\s/g, '')
-				};
-			
-			new Helper().redirectInNewTabForContact(params);
+			//var line1 = 'Report ' + new Helper().getTodayAsDate(),
+			//	line2 = 'URL: ' + window.location.href,
+			//	line3 = _t(fillLine).toUpperCase(),
+			//	params = {
+			//		'content': line1 + '\n' + line2 + '\n' + line3,
+			//		'name': $('#header_user').parent().text().replace(/\s/g, '')
+			//	};
+			//
+			//new Helper().redirectInNewTabForContact(params);
 		});
 		
 		list.find('.item-edit').click(function () {
