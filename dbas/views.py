@@ -926,7 +926,8 @@ class Dbas(object):
             return Dbas(self.request).user_logout(True)
 
         subpage_name = self.request.matchdict['queue']
-        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn, main_page)
+        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name,
+                                                                  self.request.authenticated_userid, _tn, main_page)
         if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
             return HTTPFound(location=UrlManager(main_page, for_api=False).get_404([self.request.path[1:]]))
 
