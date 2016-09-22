@@ -129,7 +129,8 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
             link = 'http://dbas.cs.uni-duesseldorf.de:5001/'
         else:
             link = 'http://localhost:5001/'
-        resp = requests.get(link + 'recent_review' + params)
+        # resp = requests.get(link + 'recent_review' + params)
+        resp = requests.post(link + 'recent_review' + params)
     except Exception as e:
         logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'Error: ' + str(e), error=True)
         return None
