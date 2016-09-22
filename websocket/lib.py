@@ -125,8 +125,11 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
     try:
-        https = 'https' if use_https else 'http'
-        resp = requests.get(https + '://localhost:5001/recent_review' + params)
+        if use_https:
+            link = 'http://dbas.cs.uni-duesseldorf.de/'
+        else:
+            link = 'http://localhost:5001/'
+        resp = requests.get(link + 'recent_review' + params)
     except Exception as e:
         logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'Error: ' + str(e), error=True)
         return None
