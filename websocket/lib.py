@@ -16,24 +16,28 @@ def send_request_for_info_popup_to_socketio(nickname, message='', url=None, incr
     """
 
     :param nickname:
+    :param main_page:
     :param message:
     :param url:
     :param increase_counter:
     :return:
     """
-    __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter)
+    use_https = 'dbas.cs' in url
+    __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
 
 
 def send_request_for_success_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
     """
 
     :param nickname:
+    :param main_page:
     :param message:
-    :param url:
+    :param url: 
     :param increase_counter:
     :return:
     """
-    __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter)
+    use_https = 'dbas.cs' in url
+    __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter, use_https)
 
 
 def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
@@ -48,7 +52,7 @@ def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, i
     __send_request_for_popup_to_socketio(nickname, 'warning', message, url, increase_counter)
 
 
-def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, increase_counter=False):
+def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, increase_counter=False, use_https=False):
     """
     Sends an request to the socket io server
 
@@ -57,6 +61,7 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
     :param message: Some message
     :param url: URL for the event, what happened
     :param increase_counter: True, when the notification counter in D-BAS should be increased
+    :param use_https: Boolean
     :return: Status code of the request
     """
     if type not in ['success', 'warning', 'info']:
@@ -72,6 +77,8 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
     params = params[:-1]
 
     try:
+        https = 'https' if use_https else 'http'
+        resp = requests.get(https + '://localhost:5001/recent_review' + params)
         resp = requests.get('http://localhost:5001/publish' + params)
     except:
         return None
@@ -92,30 +99,34 @@ def send_request_for_recent_delete_review_to_socketio(nickname):
     return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'deletes')
 
 
-def send_request_for_recent_optimization_review_to_socketio(nickname):
+def send_request_for_recent_optimization_review_to_socketio(nickname, main_page):
     """
 
     :param nickname:
+    :param main_page:
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = get_public_nickname_based_on_settings(db_user)
     reviewer_image_url = get_profile_picture(db_user)
-    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'optimizations')
+    use_https = 'dbas' in main_page
+    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'optimizations', use_https)
 
 
-def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue):
+def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue, use_https):
     """
 
     :param reviewer_name:
     :param reviewer_image_url:
     :param queue
+    :param use_https
     :return: Status code of the request
     """
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
     try:
-        resp = requests.get('http://localhost:5001/recent_review' + params)
+        https = 'https' if use_https else 'http'
+        resp = requests.get(https + '://localhost:5001/recent_review' + params)
     except:
         return None
     logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code))
