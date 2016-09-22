@@ -483,6 +483,7 @@ class GermanDict:
         de_lang[_self.restartDiscussion] = 'Diskussion neustarten'
         de_lang[_self.restartDiscussionTitle] = 'Diskussion neustarten'
         de_lang[_self.restartOnError] = 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.'
+        de_lang[_self.recipient] = 'Empfänger'
         de_lang[_self.recipientNotFound] = 'Empfänger konnte nicht gefunden werden.'
         de_lang[_self.reactionFor] = 'Reaktionen zu'
         de_lang[_self.rep_reason_first_argument_click] = 'Sie haben ihr erstes Argument ausgewählt'

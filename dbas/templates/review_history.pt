@@ -42,9 +42,9 @@
                                         <td tal:condition="past.has_reason" i18n:translate="reason">Reason</td>
                                         <td tal:condition="past.has_oem_text" i18n:translate="original">Original</td>
                                         <td i18n:translate="votes" class="center">Votes</td>
+                                        <td tal:condition="history.is_history" i18n:translate="accepted" class="center">Accepted</td>
                                         <td i18n:translate="voters_pro" class="center">Voters Pro</td>
                                         <td i18n:translate="voters_con" class="center">Voters Con</td>
-                                        <td tal:condition="history.is_history" i18n:translate="accepted" class="center">Accepted</td>
                                         <td i18n:translate="timestamp">Timestamp</td>
                                         <td i18n:translate="reporter" class="center">Reporter</td>
                                         <td i18n:translate="actions" class="center">Action</td>
@@ -61,6 +61,9 @@
                                                 <span class="text-danger">${len(rep.votes_con)}</span>
                                             </a>
                                         </td>
+                                        <td tal:condition="history.is_history and len(rep.votes_pro) > len(rep.votes_con)" class="text-success center"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>
+                                        <td tal:condition="history.is_history and len(rep.votes_pro) < len(rep.votes_con)" class="text-danger center"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></td>
+                                        <td tal:condition="history.is_history and len(rep.votes_pro) == len(rep.votes_con)" class="text-info center"><i class="fa fa-question" aria-hidden="true"></i></td>
                                         <td class="center" tal:switch="len(rep.votes_pro) > 0">
                                             <div tal:case="True" tal:omit-tag="" tal:repeat="pro rep.votes_pro">
                                                 <a tal:attributes="href pro.userpage_url; title pro.nickname">
@@ -77,9 +80,6 @@
                                             </div>
                                             <span tal:case="False">-</span>
                                         </td>
-                                        <td tal:condition="history.is_history and len(rep.votes_pro) > len(rep.votes_con)" class="text-success center"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>
-                                        <td tal:condition="history.is_history and len(rep.votes_pro) < len(rep.votes_con)" class="text-danger center"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></td>
-                                        <td tal:condition="history.is_history and len(rep.votes_pro) == len(rep.votes_con)" class="text-info center"><i class="fa fa-question" aria-hidden="true"></i></td>
                                         <td>${rep.timestamp}</td>
                                         <td class="center">
                                             <a tal:attributes="href rep.reporter.userpage_url; title rep.reporter.nickname">
