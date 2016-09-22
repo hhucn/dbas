@@ -450,6 +450,7 @@ class Translator(object):
         self.restartDiscussion = 'restartDiscussion'
         self.restartDiscussionTitle = 'restartDiscussionTitle'
         self.restartOnError = 'restartOnError'
+        self.recipient = 'recipient'
         self.recipientNotFound = 'recipientNotFound'
         self.reactionFor = 'reactionFor'
         self.review = 'review'
