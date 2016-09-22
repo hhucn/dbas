@@ -696,7 +696,7 @@ class ReviewDelete(DiscussionBase):
     detector_uid = Column(Integer, ForeignKey('users.uid'))
     argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False)
+    is_executed = Column(Boolean, nullable=False, default=False)
     reason_uid = Column(Integer, ForeignKey('review_delete_reasons.uid'))
 
     detectors = relationship('User', foreign_keys=[detector_uid])
@@ -725,6 +725,9 @@ class ReviewDelete(DiscussionBase):
         """
         self.is_executed = is_executed
 
+    def update_timestamp(self):
+        self.timestamp = get_now()
+
 
 class ReviewEdit(DiscussionBase):
     """
@@ -735,7 +738,7 @@ class ReviewEdit(DiscussionBase):
     detector_uid = Column(Integer, ForeignKey('users.uid'))
     argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False)
+    is_executed = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
@@ -759,6 +762,9 @@ class ReviewEdit(DiscussionBase):
         :return:
         """
         self.is_executed = is_executed
+
+    def update_timestamp(self):
+        self.timestamp = get_now()
 
 
 class ReviewEditValue(DiscussionBase):
@@ -795,7 +801,7 @@ class ReviewOptimization(DiscussionBase):
     detector_uid = Column(Integer, ForeignKey('users.uid'))
     argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     timestamp = Column(ArrowType, default=get_now())
-    is_executed = Column(Boolean, nullable=False)
+    is_executed = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
@@ -820,6 +826,9 @@ class ReviewOptimization(DiscussionBase):
         """
         self.is_executed = is_executed
 
+    def update_timestamp(self):
+        self.timestamp = get_now()
+
 
 class ReviewDeleteReason(DiscussionBase):
     """
@@ -841,7 +850,7 @@ class LastReviewerDelete(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_deletes.uid'))
-    is_okay = Column(Boolean, nullable=False)
+    is_okay = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
@@ -868,7 +877,7 @@ class LastReviewerEdit(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_edits.uid'))
-    is_okay = Column(Boolean, nullable=False)
+    is_okay = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
@@ -895,7 +904,7 @@ class LastReviewerOptimization(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
-    is_okay = Column(Boolean, nullable=False)
+    is_okay = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
