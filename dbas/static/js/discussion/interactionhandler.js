@@ -57,32 +57,22 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
 		if (parsedData.error.length == 0) {
-			$('#' + popupEditStatementLogfileSpaceId).text('');
-			new GuiHandler().showStatementCorrectionsInPopup(parsedData);
+			new GuiHandler().showLogfileOfPremisegroup(parsedData);
 		} else {
-			$('#' + popupEditStatementLogfileSpaceId).text(parsedData.error);
+			$('#' + popupEditStatementErrorDescriptionId).text(parsedData.error);
 		}
 	};
 
 	/**
 	 * Callback, when a correcture could be send
 	 * @param data of the ajax request
-	 * @param element
 	 */
-	this.callbackIfDoneForSendCorrectureOfStatement = function (data, element) {
+	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length != 0) {
-			$('#' + popupEditStatementErrorDescriptionId).text(parsedData.error);
-			/*
-			$('#' + popupEditStatementErrorDescriptionId).text('');
-			$('#' + popupEditStatementSuccessDescriptionId).text('');
-			$('#' + popupEditStatementWarning).show();
-			$('#' + popupEditStatementWarningMessage).text(_t(duplicateDialog));
-			*/
+			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 		} else {
-			new GuiHandler().updateOfStatementInDiscussion(parsedData, element);
-			$('#' + popupEditStatementErrorDescriptionId).text('');
-			$('#' + popupEditStatementSuccessDescriptionId).text(_t(correctionsSet));
+			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
 		}
 	};
 

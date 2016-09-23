@@ -395,15 +395,15 @@ function AjaxDiscussionHandler() {
 
 	/**
 	 * Requests the logfile for the given uid
-	 * @param id_id current uid of the statement
+	 * @param id current uid of the statement
 	 */
-	this.getLogfileForStatement = function (id_id) {
+	this.getLogfileForPremisegroup = function (id) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_logfile_for_statement',
+			url: 'ajax_get_logfile_for_premisegroup',
 			method: 'GET',
 			data: {
-				uid: id_id,
+				uid: id,
 				issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
@@ -411,9 +411,9 @@ function AjaxDiscussionHandler() {
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxGetLogfileForStatementDone(data) {
+		}).done(function ajaxGetLogfileForPremisegroupDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
-		}).fail(function ajaxGetLogfileForStatementFail() {
+		}).fail(function ajaxGetLogfileForPremisegroupFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
 			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). '
@@ -422,20 +422,16 @@ function AjaxDiscussionHandler() {
 	};
 
 	/**
-	 * Sends a correction of a statement
-	 * @param uid
-	 * @param element
-	 * @param corrected_text the corrected text
+	 * Sends a correction of statements
+	 * @param elements
 	 */
-	this.sendCorrectionOfStatement = function (uid, corrected_text, element) {
+	this.sendCorrectionOfStatement = function (elements) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_correction_of_statement',
 			method: 'POST',
 			data: {
-				uid: uid,
-				text: corrected_text,
-				url: window.location.href
+				'elements': JSON.stringify(elements)
 			},
 			dataType: 'json',
 			async: true,
@@ -443,7 +439,7 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, element);
+			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
@@ -1154,8 +1150,6 @@ function AjaxReviewHandler(){
 	 */
 	this.reviewOptimizationArgument = function(should_optimized, review_uid, new_data){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		console.log(new_data);
-		console.log(JSON.stringify(new_data));
 		$.ajax({
 			url: 'ajax_review_optimization_argument',
 			type: 'POST',

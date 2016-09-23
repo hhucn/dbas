@@ -383,6 +383,7 @@ class DictionaryHelper(object):
                                 'island_view': _tn_dis.get(_tn_dis.displayControlDialogIslandTitle),
                                 'graph_view': _tn_dis.get(_tn_dis.displayControlDialogGraphTitle),
                                 'edit_statement': _tn_dis.get(_tn_dis.editTitle),
+                                'view_changelog': _tn_dis.get(_tn_dis.viewChangelog),
                                 'report_statement': _tn_dis.get(_tn_dis.reportTitle),
                                 'report_title': _tn_dis.get(_tn_dis.reportTitle),
                                 'finish_title': _tn_dis.get(_tn_dis.finishTitle),
@@ -392,7 +393,8 @@ class DictionaryHelper(object):
                                 'rem_statement_row_title': _tn_dis.get(_tn_dis.remStatementRow),
                                 'recipient': _tn_dis.get(_tn_dis.recipient),
                                 'topic': _tn_dis.get(_tn_dis.topicString),
-                                'message': _tn_dis.get(_tn_dis.message),                               }
+                                'message': _tn_dis.get(_tn_dis.message),
+                                }
 
     def add_tag_text(self, return_dict):
         """
@@ -412,7 +414,6 @@ class DictionaryHelper(object):
             'edit_issue_view_changelog': _tn_dis.get(_tn_dis.editIssueViewChangelog),
             'edit_title_here': _tn_dis.get(_tn_dis.editTitleHere),
             'edit_info_here': _tn_dis.get(_tn_dis.editInfoHere),
-            'edit_statement_view_changelog': _tn_dis.get(_tn_dis.editStatementViewChangelog),
             'edit_statement_here': _tn_dis.get(_tn_dis.editStatementHere),
             'sys_save': _tn_sys.get(_tn_sys.save),
             'sys_cancel': _tn_sys.get(_tn_sys.cancel),

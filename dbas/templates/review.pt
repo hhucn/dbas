@@ -87,7 +87,7 @@
                                 <ul>
                                     <li tal:repeat="reputation reputation_list.gains">
                                         <span>${reputation.text}</span>:
-                                        <span class="success-description">${reputation.points}</span>
+                                        <span class="text-success">${reputation.points}</span>
                                     </li>
                                 </ul>
                             </div>

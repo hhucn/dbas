@@ -171,9 +171,6 @@ def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
         text = get_text_for_statement_uid(db_statement.uid)
         issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
-    logger('ReviewSubpagerHelper', 'xxx', text)
-    logger('ReviewSubpagerHelper', 'xxx', text)
-    logger('ReviewSubpagerHelper', 'xxx', text)
 
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=rnd_review.reason_uid).first()
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
@@ -234,10 +231,12 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
         text = get_text_for_argument_uid(db_argument.uid)
         issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+        parts = __get_text_parts_of_argument(db_argument)
     else:
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
         text = get_text_for_statement_uid(db_statement.uid)
         issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
+        parts = [__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
 
     reason = translator.get(translator.argumentFlaggedBecauseOptimization)
 
@@ -251,7 +250,7 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
             'reason': reason,
             'issue': issue,
             'extra_info': extra_info,
-            'parts': __get_text_parts_of_argument(db_argument)}
+            'parts': parts}
 
 
 def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
@@ -289,10 +288,15 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
                 'extra_info': None}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
-    text = get_text_for_argument_uid(db_argument.uid)
+    if rnd_review.statement_uid is None:
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+        text = get_text_for_argument_uid(db_argument.uid)
+        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+    else:
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
+        text = get_text_for_statement_uid(db_statement.uid)
+        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
     reason = translator.get(translator.argumentFlaggedBecauseEdit)
-    issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
 
     # build correction
     correction = '<span class="text-muted">' + text + '</span>'
@@ -412,5 +416,5 @@ def __get_part_dict(typeof, text, argument, uid):
     logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
     return {'type': typeof,
             'text': text,
-            'arg': argument,
-            'uid': uid}
+            'argument_uid': argument,
+            'statment_uid': uid}
