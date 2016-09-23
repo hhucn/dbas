@@ -36,7 +36,7 @@ class DictionaryHelper(object):
         self.discussion_lang = discussion_lang if len(discussion_lang) > 0 else system_lang
 
     @staticmethod
-    def get_random_subdict_out_of_orderer_dict(ordered_dict, count):
+    def get_random_subdict_out_of_ordered_dict(ordered_dict, count):
         """
         Creates a random subdictionary with given count out of the given ordered_dict.
         With a count of <2 the dictionary itself will be returned.
@@ -170,7 +170,7 @@ class DictionaryHelper(object):
                     return_dict['show_island_icon'] = False
         return return_dict
 
-    def preprate_settings_dict(self, success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage):
+    def prepare_settings_dict(self, success, old_pw, new_pw, confirm_pw, error, message, db_user, main_page):
         """
 
         :param success:
@@ -180,14 +180,14 @@ class DictionaryHelper(object):
         :param error:
         :param message:
         :param db_user:
-        :param mainpage:
+        :param main_page:
         :return:
         """
         _uh         = UserHandler
         _tn         = Translator(self.system_lang)
         edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
         statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
-        arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else 0, 0
+        arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else (0, 0)
         public_nick = db_user.get_global_nickname() if db_user else ''
         db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first() if db_user else None
         group       = db_group.name if db_group else '-'
@@ -211,7 +211,7 @@ class DictionaryHelper(object):
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
             'edits_done': edits,
-            'statemens_posted': statements,
+            'statements_posted': statements,
             'discussion_arg_votes': arg_vote,
             'discussion_stat_votes': stat_vote,
             'send_mails': db_settings.should_send_mails if db_settings else False,
@@ -220,8 +220,8 @@ class DictionaryHelper(object):
             'title_mails': _tn.get(_tn.mailSettingsTitle),
             'title_notifications': _tn.get(_tn.notificationSettingsTitle),
             'title_public_nick': _tn.get(_tn.publicNickTitle),
-            'title_prefered_lang': _tn.get(_tn.preferedLangTitle),
-            'public_page_url': (mainpage + '/user/' + (db_user.nickname if db_settings.should_show_public_nickname else public_nick)) if db_user else '',
+            'title_preferred_lang': _tn.get(_tn.preferedLangTitle),
+            'public_page_url': (main_page + '/user/' + (db_user.nickname if db_settings.should_show_public_nickname else public_nick)) if db_user else '',
             'on': _tn.get(_tn.on),
             'off': _tn.get(_tn.off),
             'current_lang': db_language.name if db_language else '?',
@@ -383,13 +383,18 @@ class DictionaryHelper(object):
                                 'island_view': _tn_dis.get(_tn_dis.displayControlDialogIslandTitle),
                                 'graph_view': _tn_dis.get(_tn_dis.displayControlDialogGraphTitle),
                                 'edit_statement': _tn_dis.get(_tn_dis.editTitle),
+                                'view_changelog': _tn_dis.get(_tn_dis.viewChangelog),
                                 'report_statement': _tn_dis.get(_tn_dis.reportTitle),
                                 'report_title': _tn_dis.get(_tn_dis.reportTitle),
                                 'finish_title': _tn_dis.get(_tn_dis.finishTitle),
                                 'question_title': _tn_dis.get(_tn_dis.questionTitle),
                                 'more_title': _tn_dis.get(_tn_dis.more),
                                 'add_statement_row_title': _tn_dis.get(_tn_dis.addStatementRow),
-                                'rem_statement_row_title': _tn_dis.get(_tn_dis.remStatementRow)}
+                                'rem_statement_row_title': _tn_dis.get(_tn_dis.remStatementRow),
+                                'recipient': _tn_dis.get(_tn_dis.recipient),
+                                'topic': _tn_dis.get(_tn_dis.topicString),
+                                'message': _tn_dis.get(_tn_dis.message),
+                                }
 
     def add_tag_text(self, return_dict):
         """
@@ -409,7 +414,6 @@ class DictionaryHelper(object):
             'edit_issue_view_changelog': _tn_dis.get(_tn_dis.editIssueViewChangelog),
             'edit_title_here': _tn_dis.get(_tn_dis.editTitleHere),
             'edit_info_here': _tn_dis.get(_tn_dis.editInfoHere),
-            'edit_statement_view_changelog': _tn_dis.get(_tn_dis.editStatementViewChangelog),
             'edit_statement_here': _tn_dis.get(_tn_dis.editStatementHere),
             'sys_save': _tn_sys.get(_tn_sys.save),
             'sys_cancel': _tn_sys.get(_tn_sys.cancel),

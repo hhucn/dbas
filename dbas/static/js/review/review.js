@@ -50,22 +50,16 @@ function Review() {
 		$.each($('#argument-part-table').find('input'), function(){
 			if ($(this).val().length > 0 && $(this).val() != $(this).attr('placeholder')) {
 				edit_array.push({
-					uid: $(this).data('id'),
+					uid: $(this).data('statement'),
 					type: $(this).data('type'),
 					argument: $(this).data('argument'),
-					val: $(this).val()
-				});
-				console.log({
-					uid: $(this).data('id'),
-					type: $(this).data('type'),
-					argument: $(this).data('arg'),
 					val: $(this).val()
 				});
 			}
 		});
 		
 		if (edit_array.length > 0){
-			var id = $('#send_edit').data('id');
+			var id = $('#send_edit').data('statement');
 			new AjaxReviewHandler().reviewOptimizationArgument(true, id, edit_array);
 		} else {
 			setGlobalInfoHandler('Ohh!', _t(noEditsInOptimization));
@@ -109,9 +103,9 @@ function Review() {
 		var mm = $('#countdown_timer_min');
 		var ss = $('#countdown_timer_sec');
 		var point = $('#countdown_timer_point');
-		mm.text(countdown_min).removeClass('text-danger');
-		ss.text(countdown_sec < 10 ? '0' + countdown_sec : countdown_sec).removeClass('text-danger');
-		point.removeClass('text-danger');
+		mm.text(countdown_min).removeClass('text-danger').addClass('text-info');
+		ss.text(countdown_sec < 10 ? '0' + countdown_sec : countdown_sec).removeClass('text-danger').addClass('text-info');
+		point.removeClass('text-danger').addClass('text-info');
 		$('#request-lock-text').show();
 		$('#request-not-lock-text').show();
 		
@@ -123,9 +117,9 @@ function Review() {
             	mm.text(m);
             	ss.text(s < 10 ? '0' + s : s);
 	            if (sec <= 60){
-	            	mm.addClass('text-danger');
-	            	ss.addClass('text-danger');
-		            point.addClass('text-danger');
+	            	mm.addClass('text-danger').removeClass('text-info');
+	            	ss.addClass('text-danger').removeClass('text-info');
+		            point.addClass('text-danger').removeClass('text-info');
 	            }
             }, // callback for each second
             onCounterEnd: function(){

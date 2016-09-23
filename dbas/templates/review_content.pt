@@ -130,6 +130,7 @@
                                         </a>
                                     </td>
                                 </tr>
+                                <tal:comment replace="nothing">
                                 <tr>
                                     <td i18n:translate="viewed">Viewed</td>
                                     <td>${subpage.elements.reviewed_argument.stats.viewed}</td>
@@ -142,6 +143,7 @@
                                     <td i18n:translate="supports">Supports</td>
                                     <td>${subpage.elements.reviewed_argument.stats.supports}</td>
                                 </tr>
+                                </tal:comment>
                             </tbody>
                         </table>
                     </div>
@@ -151,7 +153,8 @@
             </div>
         </div>
 
-		<div id="optimization-container" class="container colored-container" tal:condition="not:subpage.no_arguments_to_review" tal:condition="subpage.button_set.is_optimize" style="display: none;">
+        <div tal:condition="not:subpage.no_arguments_to_review">
+		<div id="optimization-container" class="container colored-container" tal:condition="subpage.button_set.is_optimize" style="display: none;">
             <button id="close-optimization-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -176,7 +179,7 @@
                             <tr tal:repeat="part subpage.elements.reviewed_argument.parts">
                                 <td style="width: 50%">${part.text}</td>
                                 <td style="width: 50%">
-                                    <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-id part.uid; data-argument part.arg; data-type part.type">
+                                    <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-statement part.statement; data-argument part.argument; data-type part.type">
                                 </td>
                             </tr>
                         </tbody>
@@ -184,6 +187,7 @@
                 </div>
             </div>
             <a id="send_edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Send</a>
+        </div>
         </div>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/countdown.js')}"></script>

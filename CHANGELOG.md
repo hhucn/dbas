@@ -186,6 +186,9 @@
 ## 0.7.0 (2016-09-06)
 - Review-Mechanisms
 
+## 0.7.1 (2016-09-22)
+- Fixes for the review mechanisms
+
 ## 0.x.0 (unreleased)
 - Improved recommendation of the next confrontation
 
