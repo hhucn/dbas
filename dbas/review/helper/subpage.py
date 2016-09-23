@@ -414,7 +414,9 @@ def __get_part_dict(typeof, text, argument, uid):
     :return:
     """
     logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
+    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
+    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
     return {'type': typeof,
             'text': text,
             'argument_uid': argument,
-            'statment_uid': uid}
+            'statement_uid': uid}
