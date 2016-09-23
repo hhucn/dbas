@@ -168,6 +168,8 @@ def __get_author_of_statement(uid, db_user):
     :param main_page:
     :return:
     """
+    if not db_user:
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
     db_author = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_author, 40)
@@ -182,6 +184,8 @@ def __get_editor_of_statement(uid, db_user):
     :param main_page:
     :return:
     """
+    if not db_user:
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()
     db_editor = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_editor, 40)
