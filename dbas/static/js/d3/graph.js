@@ -15,7 +15,6 @@ function DiscussionGraph() {
 		new AjaxGraphHandler().getDiscussionGraphData('/graph/d3');
 	};
 
-
 	/**
 	 *
 	 * @param data
@@ -36,15 +35,15 @@ function DiscussionGraph() {
 	 * @param data
      */
 	this.callbackIfDoneForGetJumpDataForGraph = function (data){
-		var jsonData = $.parseJSON(data);
-		var popup = $('#popup-jump-graph');
-		if (jsonData.error.length === 0) {
-			var list = $('<ul>');
-			var label, input, element, counter = 0;
-		    popup.find('div.modal-body div').empty();
-		    $.each(jsonData.arguments, function(key, value) {
+        var jsonData = $.parseJSON(data);
+        var popup = $('#popup-jump-graph');
+        if (jsonData.error.length === 0) {
+            var list = $('<ul>');
+            var label, input, element, counter = 0;
+            popup.find('div.modal-body div').empty();
+			$.each(jsonData.arguments, function(key, value) {
 			    input = $('<input>').attr('type', 'radio').attr('value', value.url).attr('id', 'jump_' + counter);
-			    label = $('<label>').html(value.text).attr('for', 'jump_' + counter);
+                label = $('<label>').html(value.text).attr('for', 'jump_' + counter);
 			    element = $('<li>').append(input).append(label);
 			    list.append(element);
 			    counter += 1;
@@ -58,7 +57,7 @@ function DiscussionGraph() {
 		} else {
 			popup.modal('hide');
 		}
-		
+
 		// add hover effects
 		new GuiHandler().hoverInputListOf(popup.find('div.modal-body div'));
 	};
@@ -93,7 +92,7 @@ function DiscussionGraph() {
 
 	/**
 	 * Create a graph.
-	 * 
+	 *
 	 * @param jsonData
 	 */
 	this.getD3Graph = function(jsonData){
@@ -102,8 +101,8 @@ function DiscussionGraph() {
 
 		var width = container.width(), height = container.outerHeight();
 
-		var svg = getSvg(width, height);
-		var force = getForce(width, height);
+		var svg = getGraphSvg(width, height),
+		    force = getForce(width, height);
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
@@ -129,83 +128,75 @@ function DiscussionGraph() {
 		var edges = createEdgeDict(jsonData);
 		// create arrays of links, nodes and move layout forward one step
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-		var edgesTypeArrow = createArrowDict(edges);
-        var marker = createArrows(svg, edgesTypeArrow);
-		var link = createLinks(svg, edges, marker).classed("zoomed", true);
+		var edgesTypeArrow = createArrowDict(edges),
+            marker = createArrows(svg, edgesTypeArrow),
+		    link = createLinks(svg, edges, marker).call(zoom);
 
 		// node
-   		var node = createNodes(svg, force, drag);
-		var circle = setNodeProperties(node).classed("zoomed", true).attr("class", "circle");
+   		var node = createNodes(svg, force, drag),
+		    circle = setNodeProperties(node).call(zoom);
 
 		// tooltip
 		// rect as background of label
-		var rect = node.append("rect").attr("class", "rect");
-		var label = createLabel(node).attr("class", "label");
+		var rect = node.append("rect"),
+		    label = createLabel(node);
 		setRectProperties(rect);
 
 		// legend
         createLegend();
-		// call updated legend
+        // call updated legend
         var legend = d3.svg.legend();
+		// create div for legend
+		container.append("<div id = 'graphViewLegendId'></div>");
+		getLegendSvg().call(legend);
+        setLegendDivProperties();
 
-		// background of legend
-		var legendRect = d3.select("#graph-svg").append("rect");
-
-		// set position of legend
-		var legendPaddingBottom = 3*height/5;
-        d3.select("#graph-svg").append("g")
-			.attr("id", "graphLegend")
-            .attr("transform", "translate(30, " + legendPaddingBottom + ")")
-            .call(legend);
-
-		setLegendRectProperties(legendRect, legendPaddingBottom);
-
-		// buttons of sidebar
-		showDefaultView(jsonData);
+        // buttons of sidebar
+        showDefaultView(jsonData);
         showLabels(label, rect);
-		hideLabels(label, rect);
-		showPositions();
-		hidePositions();
+        hideLabels(label, rect);
+        showPositions();
+        hidePositions();
 
-		moveToBack(circle);
+        moveToBack(circle);
 
         force.start();
 
-		// update force layout calculations
-		function forceTick() {
-		    // update position of edges
-			link.attr({x1: function(d) { return d.source.x; }, y1: function(d) { return d.source.y; },
+   	    // update force layout calculations
+        function forceTick() {
+            // update position of edges
+            link.attr({x1: function(d) { return d.source.x; }, y1: function(d) { return d.source.y; },
         	           x2: function(d) { return d.target.x; }, y2: function(d) { return d.target.y; }});
 
-		    // update position of rect
-		    rect.attr("transform", function (d) {
-				    return "translate(" + d.x + "," + (d.y - 50) + ")";});
+            // update position of rect
+            rect.attr("transform", function (d) {
+                return "translate(" + d.x + "," + (d.y - 50) + ")";});
 
             // update position of nodes
-		    circle.attr({cx: function(d) { return d.x; },
-       		             cy: function(d) { return d.y; }});
+            circle.attr({cx: function(d) { return d.x; },
+       	                 cy: function(d) { return d.y; }});
 
             // update position of label
-		    label.attr("transform", function (d) {
-  			        return "translate(" + d.x + "," + (d.y - 50) + ")";});
-		}
+            label.attr("transform", function (d) {
+  	            return "translate(" + d.x + "," + (d.y - 50) + ")";});
+        }
 
-		//////////////////////////////////////////////////////////////////////////////
-		// highlight nodes and edges
+        //////////////////////////////////////////////////////////////////////////////
+        // highlight nodes and edges
 		var selectedCircleId;
-		circle.on("click", function(d)
-		{
-			// distinguish between click and drag event
-			if(d3.event.defaultPrevented) return;
-			// show modal when node clicked twice
-			if(d.id === selectedCircleId){
-				showModal(d);
-			}
-			var circleId = this.id;
+        circle.on("click", function(d)
+        {
+            // distinguish between click and drag event
+            if(d3.event.defaultPrevented) return;
+            // show modal when node clicked twice
+            if(d.id === selectedCircleId){
+                showModal(d);
+            }
+            var circleId = this.id;
             showPartOfGraph(edges, circleId);
-			selectedCircleId = d.id;
-		});
-	};
+            selectedCircleId = d.id;
+        });
+    };
 
     /**
 	 * Create svg-element.
@@ -214,11 +205,9 @@ function DiscussionGraph() {
      * @param height: height of container
 	 * @return scalable vector graphic
      */
-	function getSvg(width, height){
-		return d3.select('#' + graphViewContainerSpaceId).append("svg")
-    		.attr({width: width, height: height, id: "graph-svg"})
-			.append('g')
-			.attr("class", "zoom");
+	function getGraphSvg(width, height){
+        return d3.select('#' + graphViewContainerSpaceId).append("svg")
+            .attr({width: width, height: height, id: "graph-svg"});
 	}
 
 	/**
@@ -255,7 +244,6 @@ function DiscussionGraph() {
     		// add edge, color, type, size and id to array
     		edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size, id: e.id});
 		});
-
 		return edges;
 	}
 
@@ -289,10 +277,12 @@ function DiscussionGraph() {
 			       refX: function(d){
 			                 if(d.target.label === ''){ return 4; }
 				             else if(d.target.id === 'issue'){ return 8; }
-				             else{ return 7; }}, refY: 2.2,
+				             else{ return 7; }},
+				   refY: 2.2,
                    markerWidth: 10, markerHeight: 10,
-                   orient: "auto"})
-			.attr("fill", function(d) { return d.color; })
+                   orient: "auto",
+			       fill: function(d) { return d.color; }
+			})
 			.append("svg:path")
 			.attr("d", "M 0,0 V 4 L 5,2 Z");
 	}
@@ -310,9 +300,9 @@ function DiscussionGraph() {
     		.data(edges)
 			// svg lines
     		.enter().append("line")
-      		.attr("class", "link")
+      		.attr({class: "link",
+				   id: function(d) { return 'link_' + d.id; }})
 			.style("stroke", function(d) { return d.color; })
-			.attr("id", function(d) { return d.id; })
 			// assign marker to line
 			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.id + ")"; });
 	}
@@ -342,7 +332,9 @@ function DiscussionGraph() {
 		return svg.selectAll(".node")
         	.data(force.nodes())
         	.enter().append("g")
-            .attr("class", "node")
+            .attr({class: "node",
+			       id: function(d){
+				       return 'node_' + d.id;}})
             .call(drag);
 	}
 
@@ -356,7 +348,7 @@ function DiscussionGraph() {
 		return node.append("circle")
       		.attr({r: function(d){ return d.size; },
 				   fill: function(d){ return d.color; },
-				   id: function (d) { return d.id; }
+				   id: function (d) { return 'circle_' + d.id; }
 			});
 	}
 
@@ -380,9 +372,9 @@ function DiscussionGraph() {
                     d3.select(this).append("tspan").text(' ' + node_text[i]);
 				}
             }
-			d3.select(this).attr("id", 'label-' + d.id);
+			d3.select(this).attr("id", 'label_' + d.id);
 			// set position of label
-			var height = $("#label-" + d.id).height();
+			var height = $("#label_" + d.id).height();
 			d3.select(this).attr("y", -height+45);
 		});
 	}
@@ -394,9 +386,9 @@ function DiscussionGraph() {
  	 */
 	function setRectProperties(rect){
 		rect.each(function (d) {
-			var element = $("#label-" + d.id);
-		    var width = element.width() + 24;
-			var height = element.height() + 10;
+			var element = $("#label_" + d.id),
+		        width = element.width() + 24,
+			    height = element.height() + 10;
 			if(d.size === 0){
 				width = 0;
 				height = 0;
@@ -404,7 +396,7 @@ function DiscussionGraph() {
 			d3.select(this)
 			.attr({width: width, height: height,
 				   x: -width/2, y: -height+36,
-			       id: 'rect-' + d.id});
+			       id: 'rect_' + d.id});
 		});
 	}
 
@@ -431,19 +423,14 @@ function DiscussionGraph() {
 	}
 
 	/**
-	 * Set properties for rect in background of legend.
-	 *
-	 * @param legendRect: background of legend
-	 * @param legendPaddingBottom
+	 * Set properties for div in background of legend.
  	 */
-	function setLegendRectProperties(legendRect, legendPaddingBottom){
+	function setLegendDivProperties(){
 		var legendBBox = $("#graphLegend")[0].getBBox(),
 		    legendWidth = legendBBox.width, legendHeight = legendBBox.height;
-
-	    legendRect.attr("width", legendWidth + 5)
-			.attr("height", legendHeight + 5)
-			.attr("fill", "white")
-			.attr("transform", "translate(20, " + (legendPaddingBottom-10) + ")");
+	    $('#graphViewLegendId')
+			.css({width: legendWidth + 5,
+			      height: legendHeight + 5});
 	}
 
 	/**
@@ -598,8 +585,8 @@ function DiscussionGraph() {
 			d3.selectAll(".link").each(function(e) {
 				if (e.source.id === d.id && e.target.id === 'issue') {
 					// set display style of positions
-					d3.select('#label-' + d.id).style("display", style);
-					d3.select("#rect-" + d.id).style("display", style);
+					d3.select('#label_' + d.id).style("display", style);
+					d3.select("#rect_" + d.id).style("display", style);
 				}
 		    });
 		});
@@ -626,6 +613,17 @@ function DiscussionGraph() {
 	}
 
 	/**
+	 * Create svg for legend.
+	 */
+	function getLegendSvg() {
+        d3.select('#graphViewLegendId').append("svg")
+            .attr({width: 200, height: 500, id: "legend-svg"});
+		return d3.select("#legend-svg").append("g")
+            .attr({id: "graphLegend",
+				   transform: "translate(10,20)"});
+	}
+
+	/**
 	 * Highlight incoming and outgoing edges of selected node.
 	 *
 	 * @param edges: all edges of graph
@@ -636,7 +634,7 @@ function DiscussionGraph() {
 		var edgesCircleId = [];
 		// select all incoming and outgoing edges of selected circle
 		edges.forEach(function(d){
-			if(d.source.id === circleId || d.target.id === circleId) {
+			if(circleId.includes(d.source.id) || circleId.includes(d.target.id)) {
 				edgesCircleId.push(d);
 			}
         });
@@ -680,13 +678,13 @@ function DiscussionGraph() {
 	function createVirtualNodesArray(edgesVirtualNodes) {
 		var virtualNodes = [];
 		edgesVirtualNodes.forEach(function (d) {
-                if (d.source.label === '') {
-                    virtualNodes.push(d.source);
-                }
-				if (d.target.label === '') {
-                    virtualNodes.push(d.target);
-                }
-            });
+            if (d.source.label === '') {
+                virtualNodes.push(d.source);
+            }
+			if (d.target.label === '') {
+                virtualNodes.push(d.target);
+            }
+        });
 		return virtualNodes;
 	}
 
@@ -697,10 +695,10 @@ function DiscussionGraph() {
 	 */
 	function highlightElements(edge){
 		// edges
-		d3.select('#' + edge.id).style('stroke', edge.color);
+		d3.select('#link_' + edge.id).style('stroke', edge.color);
 		// nodes
-		d3.select('#' + edge.source.id).attr('fill', edge.source.color);
-		d3.select('#' + edge.target.id).attr('fill', edge.target.color);
+		d3.select('#circle_' + edge.source.id).attr('fill', edge.source.color);
+		d3.select('#circle_' + edge.target.id).attr('fill', edge.target.color);
 		// arrows
 		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
 	}
@@ -757,10 +755,10 @@ function DiscussionGraph() {
      */
 	function grayingElements(edge) {
 		// edges
-        d3.select('#' + edge.id).style('stroke', '#E0E0E0');
+        d3.select('#link_' + edge.id).style('stroke', '#E0E0E0');
 		// nodes
-		d3.select('#' + edge.source.id).attr('fill', '#E0E0E0');
-		d3.select('#' + edge.target.id).attr('fill', '#E0E0E0');
+		d3.select('#circle_' + edge.source.id).attr('fill', '#E0E0E0');
+		d3.select('#circle_' + edge.target.id).attr('fill', '#E0E0E0');
 		// arrows
 		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', '#E0E0E0');
 	}
