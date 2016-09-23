@@ -210,6 +210,7 @@ var reportTitle										= 'reportTitle';
 var passwordSubmit 									= 'passwordSubmit';
 var proposalsWereForwarded                          = 'proposalsWereForwarded';
 var pinNavigation 									= 'pinNavigation';
+var pleaseEditAtLeast                               = 'pleaseEditAtLeast';
 var queueCompleteSeen                               = 'queueCompleteSeen';
 var revokedArgument                                 = 'revokedArgument';
 var registered 										= 'registered';
@@ -400,6 +401,7 @@ var dbas_en = {
 	'passwordSubmit': 'Change Password',
 	'proposalsWereForwarded': 'Your proposals were forwarded!',
 	'pinNavigation': 'Pin Navigation',
+	'pleaseEditAtLeast': 'Please edit at least 5 chars to reduce noise!',
 	'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
 	'position': 'Position',
 	'revokedArgument': 'revoked argument',
@@ -581,6 +583,7 @@ var dbas_de = {
 	'passwordSubmit': 'Passwort ändern',
 	'proposalsWereForwarded': 'Ihre Vorschläge wurden eingereicht!',
 	'pinNavigation': 'Navigation anheften',
+	'pleaseEditAtLeast': 'Bitte ändern Sie mindestens 5 Zeichen um unnötige Änderungen zu vermeiden.',
 	'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
 	'position': 'Position',
 	'report': 'Melden',

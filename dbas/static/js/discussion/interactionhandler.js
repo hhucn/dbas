@@ -73,6 +73,7 @@ function InteractionHandler() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
+			new GuiHandler().hideAndClearEditStatementsPopup();
 		}
 	};
 
