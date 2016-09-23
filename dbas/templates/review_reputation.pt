@@ -17,7 +17,7 @@
                     </h5>
                 </div>
                 <div class="col-md-2">
-                    <img tal:attributes="src extras.users_avatar" class="pull-right">
+                    <img tal:attributes="src extras.users_avatar" class="pull-right img-circle">
                 </div>
             </div>
             <div class="row">
@@ -32,9 +32,10 @@
                     </thead>
                     <tbody>
                         <tr class="review-table-row" tal:repeat="rep reputation.history">
-                            <td class="rep_date center">${structure:rep.date}</td>
-                            <td class="rep_action">${structure:rep.action}</td>
-                            <td class="rep_points_data center">${structure:rep.points_data}</td>
+                            <td class="rep_date center">${rep.date}</td>
+                            <td class="rep_action">${rep.action}</td>
+                            <td tal:condition="rep.points < 0" class="points center text-danger">${rep.points_data}</td>
+                            <td tal:condition="rep.points > 0" class="points center text-success">${rep.points_data}</td>
                         </tr>
                     </tbody>
                 </table>

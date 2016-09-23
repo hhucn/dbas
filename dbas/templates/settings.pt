@@ -59,7 +59,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td><span i18n:translate="message_language" class="lead">Prefered message language</span><i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_prefered_lang"></i></td>
+							<td><span i18n:translate="message_language" class="lead">Prefered message language</span><i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_preferred_lang"></i></td>
 							<td class="text-center">
 
                                 <li class="dropdown" data-toggle="tooltip" data-placement="left">
@@ -162,7 +162,7 @@
 								<span class="lead" i18n:translate="statements_posted">Statements posted</span>
 								<a href="#"><i id="info-statements" class="fa fa-info-circle"></i></a>
 							</td>
-							<td id="statements-done-count" style="text-align: right">${settings.statemens_posted}</td>
+							<td id="statements-done-count" style="text-align: right">${settings.statements_posted}</td>
 						</tr>
 						<tr>
 							<td>

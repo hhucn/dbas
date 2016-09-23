@@ -28,7 +28,7 @@ $(document).ready(function () {
 });
 
 /**
- * Returns all lables out of the reputation_borders table
+ * Returns all labels out of the reputation_borders table
  * @returns {Array}
  */
 function collectLabels(){
@@ -40,7 +40,7 @@ function collectLabels(){
 }
 
 /**
- * Returns all points out of the reputation_borders table (cummulative)
+ * Returns all points out of the reputation_borders table (cumulative)
  * @returns {number[]}
  */
 function collectAbsoluteDataset() {
@@ -72,24 +72,21 @@ function collectRelativeDataset(){
  * @returns {*[]} labels, absoluteDataset, relativeDataset
  */
 function collectDates(labels, absoluteDataset, relativeDataset){
-	var newLables = [];
+	var newLabels = [];
 	var newAbsolute = [];
 	var newRelative = [];
 	$.each(labels, function(index){
-		if (labels[index] == newLables[newLables.length - 1]){
+		if (labels[index] == newLabels[newLabels.length - 1]){
 			newAbsolute[newAbsolute.length - 1] = newAbsolute[newAbsolute.length - 1] + relativeDataset[index];
 			newRelative[newRelative.length - 1] = newRelative[newRelative.length - 1] + relativeDataset[index];
 		} else {
-			newLables.push(labels[index]);
+			newLabels.push(labels[index]);
 			newAbsolute.push(absoluteDataset[index]);
 			newRelative.push(relativeDataset[index]);
 		}
 	});
-	console.log(newLables);
-	console.log(newAbsolute);
-	console.log(newRelative);
 	
-	return [newLables, newAbsolute, newRelative];
+	return [newLabels, newAbsolute, newRelative];
 }
 
 /**

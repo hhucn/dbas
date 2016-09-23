@@ -16,9 +16,9 @@ class ReviewQueuesHelperTest(unittest.TestCase):
 
     def test_get_review_array(self):
         _tn = Translator('en')
-        self.assertIsNone(ReviewQueuesHelper.get_review_queues_array('page', _tn, 'Pikachu'))
+        self.assertIsNone(ReviewQueuesHelper.get_review_queues_as_lists('page', _tn, 'Pikachu'))
 
-        array = ReviewQueuesHelper.get_review_queues_array('page', _tn, 'Tobias')
+        array = ReviewQueuesHelper.get_review_queues_as_lists('page', _tn, 'Tobias')
         for d in array:
             self.assertTrue('task_name' in d)
             self.assertTrue('url' in d)
