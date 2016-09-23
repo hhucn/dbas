@@ -655,7 +655,12 @@ function GuiHandler() {
 	 * @param jsonData json encoded return data
 	 */
 	this.showLogfileOfPremisegroup = function (jsonData) {
-		$('#' + popupEditStatementLogfileSpaceId).empty();
+		var space = $('#' + popupEditStatementLogfileSpaceId);
+		space.empty();
+		space.show();
+		space.prev().show();
+		
+		var at_least_one_history = false;
 		$.each(jsonData, function( key, value ) {
 			if (key == 'error'){
 				return true;
@@ -673,6 +678,7 @@ function GuiHandler() {
 				.append($('<td>').text(_t(date)));
 			table.append(thead);
 			
+			var counter = 0;
 			$.each(value.content, function (key, val) {
 				tr = $('<tr>')
 					.append($('<td>').text(val.text))
@@ -685,11 +691,18 @@ function GuiHandler() {
 							.text(val.author)))
 					.append($('<td>').text(val.date));
 				tbody.append(tr);
+				counter += 1;
 			});
-			table.append(tbody);
-			
-			$('#' + popupEditStatementLogfileSpaceId).append(table);
+			if (counter > 1) {
+				at_least_one_history = true;
+				table.append(tbody);
+				space.append(table);
+			}
 		});
+		if (!at_least_one_history){
+			space.hide();
+			space.prev().hide();
+		}
 	};
 
 	/**
