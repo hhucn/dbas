@@ -199,14 +199,14 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
         # add reviews
         new_edits = list()
         for argument_uid in argument_dict:
-            DBDiscussionSession.add(ReviewEdit(db_user.uid, argument_uid))
+            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, argument=argument_uid))
             DBDiscussionSession.flush()
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
                                                                                ReviewEdit.argument_uid == argument_uid)).order_by(ReviewEdit.uid.desc()).first()
             logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid))
             for edit in argument_dict[argument_uid]:
-                new_edits.append(ReviewEditValue(db_review_edit.uid, argument_uid, edit['uid'], edit['type'], edit['val']))
+                new_edits.append(ReviewEditValue(db_review_edit.uid, edit['uid'], edit['type'], edit['val']))
 
         if len(new_edits) > 0:
             DBDiscussionSession.add_all(new_edits)

@@ -203,11 +203,12 @@ var number 											= 'number';
 var notificationWasSend                             = 'notificationWasSend';
 var noEditsInOptimization                           = 'noEditsInOptimization';
 var opinionBarometer                                = 'opinionBarometer';
-var option                                         = 'option';
+var option                                          = 'option';
 var ohsnap                                          = 'ohsnap';
 var report 											= 'report';
 var reportTitle										= 'reportTitle';
 var passwordSubmit 									= 'passwordSubmit';
+var proposalsWereForwarded                          = 'proposalsWereForwarded';
 var pinNavigation 									= 'pinNavigation';
 var queueCompleteSeen                               = 'queueCompleteSeen';
 var revokedArgument                                 = 'revokedArgument';
@@ -397,6 +398,7 @@ var dbas_en = {
 	'option': 'Options',
 	'ohsnap': 'Oh snap!',
 	'passwordSubmit': 'Change Password',
+	'proposalsWereForwarded': 'Your proposals were forwarded!',
 	'pinNavigation': 'Pin Navigation',
 	'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
 	'position': 'Position',
@@ -577,6 +579,7 @@ var dbas_de = {
 	'option': 'Optionen',
 	'ohsnap': 'Mist!',
 	'passwordSubmit': 'Passwort ändern',
+	'proposalsWereForwarded': 'Ihre Vorschläge wurden eingereicht!',
 	'pinNavigation': 'Navigation anheften',
 	'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
 	'position': 'Position',

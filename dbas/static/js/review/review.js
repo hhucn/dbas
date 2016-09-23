@@ -50,22 +50,16 @@ function Review() {
 		$.each($('#argument-part-table').find('input'), function(){
 			if ($(this).val().length > 0 && $(this).val() != $(this).attr('placeholder')) {
 				edit_array.push({
-					uid: $(this).data('id'),
+					uid: $(this).data('statement'),
 					type: $(this).data('type'),
 					argument: $(this).data('argument'),
-					val: $(this).val()
-				});
-				console.log({
-					uid: $(this).data('id'),
-					type: $(this).data('type'),
-					argument: $(this).data('arg'),
 					val: $(this).val()
 				});
 			}
 		});
 		
 		if (edit_array.length > 0){
-			var id = $('#send_edit').data('id');
+			var id = $('#send_edit').data('statement');
 			new AjaxReviewHandler().reviewOptimizationArgument(true, id, edit_array);
 		} else {
 			setGlobalInfoHandler('Ohh!', _t(noEditsInOptimization));

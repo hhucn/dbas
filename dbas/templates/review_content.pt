@@ -179,7 +179,7 @@
                             <tr tal:repeat="part subpage.elements.reviewed_argument.parts">
                                 <td style="width: 50%">${part.text}</td>
                                 <td style="width: 50%">
-                                    <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-id part.uid; data-argument part.arg; data-type part.type">
+                                    <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-statement part.statement; data-argument part.argument; data-type part.type">
                                 </td>
                             </tr>
                         </tbody>

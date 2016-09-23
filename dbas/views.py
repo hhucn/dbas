@@ -1642,20 +1642,13 @@ class Dbas(object):
 
         _tn = Translator(get_language(self.request, get_current_registry()))
 
+        return_dict = dict()
         try:
-            uid = self.request.params['uid']
-            url = self.request.params['url']
-            corrected_text = escape_string(self.request.params['text'])
-            return_dict = QueryHelper.correct_statement(transaction, self.request.authenticated_userid, uid,
-                                                        corrected_text, url, self.request)
-            if return_dict == -1:
-                return_dict = dict()
-                return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
-
-            return_dict['error'] = ''
+            elements = json.loads(self.request.params['elements'])
+            nickname = self.request.authenticated_userid
+            return_dict['error'] = ReviewQueueHelper.add_proposals_for_statement_corrections(elements, nickname, _tn, transaction)
         except KeyError as e:
-            return_dict = dict()
-            return_dict['error'] = ''
+            return_dict['error'] = _tn.get(_tn.noCorrections)
             logger('set_correction_of_statement', 'error', repr(e))
 
         return json.dumps(return_dict, True)
@@ -1750,15 +1743,15 @@ class Dbas(object):
 # ###################################
 
     # ajax - getting changelog of a statement
-    @view_config(route_name='ajax_get_logfile_for_statement', renderer='json')
-    def get_logfile_for_statement(self):
+    @view_config(route_name='ajax_get_logfile_for_premisegroup', renderer='json')
+    def get_logfile_for_premisegroup(self):
         """
         Returns the changelog of a statement
 
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('get_logfile_for_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
+        logger('get_logfile_for_premisegroup', 'def', 'main, self.request.params: ' + str(self.request.params))
         UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         return_dict = dict()
@@ -1768,10 +1761,10 @@ class Dbas(object):
             uid = self.request.params['uid']
             issue = self.request.params['issue']
             ui_locales = get_discussion_language(self.request, issue)
-            return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales, main_page)
+            return_dict = QueryHelper.get_logfile_for_premisegroup(uid, ui_locales, main_page)
             return_dict['error'] = ''
         except KeyError as e:
-            logger('get_logfile_for_statement', 'error', repr(e))
+            logger('get_logfile_for_premisegroup', 'error', repr(e))
             _tn = Translator(ui_locales)
             return_dict['error'] = _tn.get(_tn.noCorrections)
 
