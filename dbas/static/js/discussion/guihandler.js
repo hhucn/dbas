@@ -509,6 +509,7 @@ function GuiHandler() {
 		$('#' + proposalEditListGroupId).empty();
 		$('#' + popupEditStatementErrorDescriptionId).text('');
 		$('#' + popupEditStatementSuccessDescriptionId).text('');
+		$('#' + popupEditStatementInfoDescriptionId).text('');
 		$('#' + popupEditStatementSubmitButtonId).addClass('disabled');
 		
 		// getting logfile
@@ -529,16 +530,22 @@ function GuiHandler() {
 		});
 		
 		// gui for editing statements
+		var helper = new Helper();
 		input_space.find('input').each(function(){
 			$(this).keyup(function () {
 				var oem = $(this).attr('placeholder');
 				var now = $(this).val();
 				var id = $(this).attr('id');
 				
-				if (now && oem && now.toLowerCase() == oem.toLowerCase())
+				// reduce noise
+				var levensthein = helper.levensthein(oem, now);
+				$('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? _t_discussion(pleaseEditAtLeast) : '');
+				
+				if (now && oem && now.toLowerCase() == oem.toLowerCase() && levensthein < 5)
 					$('#' + popupEditStatementSubmitButtonId).addClass('disabled');
 				else
 					$('#' + popupEditStatementSubmitButtonId).removeClass('disabled');
+				
 					
 				new Helper().delay(function () {
 					ajaxHandler.fuzzySearch(now,
