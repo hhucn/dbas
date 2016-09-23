@@ -93,7 +93,7 @@ function Review() {
 	 * @param review_uid
 	 */
 	this.doEditNack = function(review_uid){
-		new AjaxReviewHandler().reviewEditArgument(true, review_uid);
+		new AjaxReviewHandler().reviewEditArgument(false, review_uid);
 	};
 	
 	/**
