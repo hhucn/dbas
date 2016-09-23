@@ -142,6 +142,7 @@ var popupEditStatementLogfileSpaceId          = 'popup-edit-statement-logfile';
 var popupEditStatementSubmitButtonId          = 'popup-edit-statement-submit';
 var popupEditStatementErrorDescriptionId      = 'popup-edit-statement-error-description';
 var popupEditStatementSuccessDescriptionId    = 'popup-edit-statement-success-description';
+var popupEditStatementInfoDescriptionId       = 'popup-edit-statement-info-description';
 var popupHowToWriteText                       = 'popup-write-text';
 var popupHowToWriteTextCloseButton            = 'popup-write-text-close-button';
 var popupHowToWriteTextClose                  = 'popup-write-text-close';
