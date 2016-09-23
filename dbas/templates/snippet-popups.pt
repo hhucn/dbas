@@ -135,26 +135,18 @@
     			<div class="modal-header">
     				<button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel">${extras.tag.edit_statement_view_changelog}</h4>
+    				<h5 class="modal-title" id="myModalLabel">${extras.title.edit_statement}</h5>
     			</div>
     			<div id="popup-edit-statement-body">
-    				<h4 id="popup-edit-statement-error-description" class="error-description"></h4>
-    				<h4 id="popup-edit-statement-success-description" class="success-description"></h4>
-    				<div id="popup-edit-statement-content">
-    				</div>
-    				<p id="popup-edit-statement-description-p">${structure:extras.tag.edit_statement_here}</p>
-    				<textarea class="form-control"  id="popup-edit-statement-textarea" type="text" placeholder="some corrected statement" data-min-length="10"></textarea>
-    				<div class="list-group" id="proposal-edit-list-group">
-    				</div>
+    				<p id="popup-edit-statement-success-description" class="text-success"></p>
+    				<p id="popup-edit-statement-error-description" class="text-danger"></p>
+    				<p class="lead">${structure:extras.tag.edit_statement_here}</p>
+                    <div id="popup-edit-statement-inputs">
 
-    				<div id="popup-edit-statement-warning" class="alert alert-warning" role="alert">
-    					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    					<span class="sr-only">${structure:extras.tag.warning}</span>: <span id="popup-edit-statement-warning-message"></span>
-    				</div>
-
-    				<h4 id="popup-edit-statement-logfile-header"></h4>
-    				<div id="popup-edit-statement-logfile">
-    				</div>
+                    </div>
+    				<div class="list-group" id="proposal-edit-list-group"></div>
+    				<p class="lead" style="margin-top: 2em;">${extras.title.view_changelog}:</p>
+    				<div id="popup-edit-statement-logfile"></div>
     			</div>
     			<div class="modal-footer">
     				<button type="button" class="btn btn-success" id="popup-edit-statement-submit">${structure:extras.tag.submit}</button>
@@ -706,8 +698,8 @@
     				<h4 class="modal-title" id="myModalLabel">${extras.tag.edit_issue_view_changelog}</h4>
     			</div>
     			<div id="popup-edit-issue-body">
-    				<h4 id="popup-edit-issue-error-description" class="error-description"></h4>
-    				<h4 id="popup-edit-issue-success-description" class="success-description"></h4>
+    				<p id="popup-edit-issue-error-description" class="text-error lead"></p>
+    				<p id="popup-edit-issue-success-description" class="text-success lead"></p>
     				<div id="popup-edit-issue-content">
     				</div>
     				<p id="popup-edit-title-description-p">${structure:extras.tag.edit_title_here}</p>

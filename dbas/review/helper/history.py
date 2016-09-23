@@ -94,11 +94,13 @@ def get_reputation_history_of(nickname, translator):
     rep_list = list()
     for rep in db_reputation:
         date = sql_timestamp_pretty_print(rep.timestamp, translator.get_lang(), humanize=False)
-        points_data = '<span class="success-description points">+' if rep.reputations.points > 0 else '<span class="error-description points">'
-        points_data += str(rep.reputations.points) + '</span'
+        points_data = ('+' if rep.reputations.points > 0 else '') + str(rep.reputations.points)
         points = rep.reputations.points
         action = translator.get(rep.reputations.reason)
-        rep_list.append({'date': date, 'points_data': points_data, 'action': action, 'points': points})
+        rep_list.append({'date': date,
+                         'points_data': points_data,
+                         'action': action,
+                         'points': points})
 
     ret_dict['history'] = rep_list
 

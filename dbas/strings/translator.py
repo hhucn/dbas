@@ -212,7 +212,7 @@ class Translator(object):
         self.emptyEmail = 'emptyEmail'
         self.emtpyContent = 'emtpyContent'
         self.errorTryLateOrContant = 'errorTryLateOrContant'
-        self.editStatementViewChangelog = 'editStatementViewChangelog'
+        self.viewChangelog = 'viewChangelog'
         self.editStatementHere = 'editStatementHere'
         self.feelFreeToLogin = 'feelFreeToLogin'
         self.forText = 'forText'

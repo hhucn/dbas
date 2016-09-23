@@ -740,13 +740,15 @@ class ReviewEdit(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
     argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, detector, argument, is_executed=False):
+    def __init__(self, detector, argument=None, statement=None, is_executed=False):
         """
 
         :param detector:
@@ -755,6 +757,7 @@ class ReviewEdit(DiscussionBase):
         """
         self.detector_uid = detector
         self.argument_uid = argument
+        self.statement_uid = statement
         self.timestamp = get_now()
         self.is_executed = is_executed
 
@@ -774,12 +777,11 @@ class ReviewEditValue(DiscussionBase):
     __tablename__ = 'review_edit_values'
     uid = Column(Integer, primary_key=True)
     reviewedit_uid = Column(Integer, ForeignKey('review_edits.uid'))
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
     typeof = Column(Text, nullable=False)
     content = Column(Text, nullable=False)
 
-    def __init__(self, review_edit, argument, statement, typeof, content):
+    def __init__(self, review_edit, statement, typeof, content):
         """
 
         :param review_edit:
@@ -789,7 +791,6 @@ class ReviewEditValue(DiscussionBase):
         :param content:
         """
         self.reviewedit_uid = review_edit
-        self.argument_uid = argument
         self.statement_uid = statement
         self.typeof = typeof
         self.content = content

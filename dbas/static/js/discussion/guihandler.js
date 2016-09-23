@@ -436,7 +436,8 @@ function GuiHandler() {
 	 * @param type
 	 */
 	this.setStatementsAsProposal = function (parsedData, callbackid, type){
-		var callbackElement = $('#' + callbackid), uneditted_value;
+		var callbackElement = $('#' + callbackid);
+		var uneditted_value;
 		if (type == fuzzy_start_premise)        $('#' + proposalPremiseListGroupId).empty();
 		else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).empty();
 		else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).empty();
@@ -485,7 +486,7 @@ function GuiHandler() {
 				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
 				$('#' + proposalUserListGroupId).empty();
 			});
-
+			
 			if (type == fuzzy_start_premise)        $('#' + proposalPremiseListGroupId).append(button);
 			else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).append(button);
 			else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).append(button);
@@ -493,40 +494,69 @@ function GuiHandler() {
 			else if (type == fuzzy_find_user)       $('#' + proposalUserListGroupId).append(button);
 		});
 	};
-
+	
 	/**
 	 * Opens the edit statements popup
+	 * @param premisegroup_uid
 	 */
-	this.showEditStatementsPopup = function () {
-		var table, tr, td_text, td_buttons, helper = new Helper(), ids = [];
+	this.showEditStatementsPopup = function (premisegroup_uid) {
+		var input_space = $('#' + popupEditStatementInputSpaceId);
+		var ajaxHandler = new AjaxDiscussionHandler();
 		$('#' + popupEditStatementId).modal('show');
-		$('#' + popupEditStatementWarning).hide();
-
-		// top row
-		table = $('<table>')
-			.attr('class', 'table table-condensed table-hover')
-			.attr('border', '0')
-			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
-		td_text = $('<td>').html('<strong>' + _t_discussion(text) + '</strong>').css('text-align', 'center');
-		td_buttons = $('<td>').html('<strong>' + _t_discussion(option) + '</strong>').css('text-align', 'right');
-		table.append($('<tr>').append(td_text).append(td_buttons));
-
-		// append a row for each statement
-		$('#' + discussionSpaceId + ' li:not(:last-child) label:nth-child(even)').each(function () {
-			tr = helper.createRowInEditDialog($(this).text(), $(this).attr('for').substr('item_'.length), $(this).attr('id'));
-			// add each element only once
-			if ($.inArray($(this).attr('id'), ids) == -1){
-				table.append(tr);
-				ids.push($(this).attr('id'));
-			}
-		});
-
-		$('#' + popupEditStatementContentId).empty().append(table);
-		$('#' + popupEditStatementTextareaId).hide();
-		$('#' + popupEditStatementDescriptionId).hide();
-		$('#' + popupEditStatementSubmitButtonId).hide();
+		$('#' + popupEditStatementInputId).val(premisegroup_uid);
+		input_space.empty();
+		$('#' + popupEditStatementLogfileSpaceId).empty();
 		$('#' + proposalEditListGroupId).empty();
-		$('#popup-edit-statement-textarea-text-counter').hide();
+		$('#' + popupEditStatementErrorDescriptionId).text('');
+		$('#' + popupEditStatementSuccessDescriptionId).text('');
+		$('#' + popupEditStatementSubmitButtonId).addClass('disabled');
+		
+		// getting logfile
+		ajaxHandler.getLogfileForPremisegroup(premisegroup_uid);
+		
+		// add inputs
+		var counter = 0;
+		$('#item_' + premisegroup_uid).parent().find('label:nth-child(even)').each(function(){
+			var input = $('<input>')
+				.addClass('form-control')
+				.attr('id', 'popup-edit-statement-input-' + counter)
+				.attr('type', text)
+				.attr('placeholder', $(this).text())
+				.attr('data-statement-uid', $(this).attr('id'))
+				.val($(this).text());
+			input_space.append(input);
+			counter += 1;
+		});
+		
+		// gui for editing statements
+		input_space.find('input').each(function(){
+			$(this).keyup(function () {
+				var oem = $(this).attr('placeholder');
+				var now = $(this).val();
+				var id = $(this).attr('id');
+				
+				if (now && oem && now.toLowerCase() == oem.toLowerCase())
+					$('#' + popupEditStatementSubmitButtonId).addClass('disabled');
+				else
+					$('#' + popupEditStatementSubmitButtonId).removeClass('disabled');
+					
+				new Helper().delay(function () {
+					ajaxHandler.fuzzySearch(now,
+						id,
+						fuzzy_statement_popup,
+						premisegroup_uid);
+				}, 200);
+			})
+		});
+	};
+	
+	/**
+	 *
+	 */
+	this.hideAndClearEditStatementsPopup = function(){
+		$('#' + popupEditStatementId).modal('hide');
+		$('#' + popupEditStatementLogfileSpaceId).empty();
+		$('#' + popupEditStatementInputSpaceId).empty();
 	};
 
 	/**
@@ -549,15 +579,6 @@ function GuiHandler() {
 		$('#' + popupLoginCloseButton).click(function(){
 			$('#' + popupGeneratePasswordId).modal('hide');
 		});
-	};
-
-	/**
-	 * Displays the edit text field
-	 */
-	this.showEditFieldsInEditPopup = function () {
-		$('#' + popupEditStatementSubmitButtonId).fadeIn('slow');
-		$('#' + popupEditStatementTextareaId).fadeIn('slow');
-		$('#' + popupEditStatementDescriptionId).fadeIn('slow');
 	};
 
 	/**
@@ -626,34 +647,42 @@ function GuiHandler() {
 	 * Displays all corrections in the popup
 	 * @param jsonData json encoded return data
 	 */
-	this.showStatementCorrectionsInPopup = function (jsonData) {
-		var table, tr;
-
-		// top row
-		table = $('<table>');
-		table
-			.attr('id', 'edit_statement_table')
-			.attr('class', 'table table-condensed')
-			.attr('border', '0')
-			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
-		tr = $('<tr>');
-
-		tr.append($('<td>').html('<strong>' + _t(date) + '</strong>').css('text-align', 'center'));
-		tr.append($('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center'));
-		tr.append($('<td>').html('<strong>' + _t(author) + '</strong>').css('text-align', 'center'));
-		table.append(tr);
-
-		$.each(jsonData.content, function displayStatementCorrectionsInPopupEach(key, val) {
-			tr = $('<tr>')
-				.append($('<td>').text(val.date))
-				.append($('<td>').text(val.text))
-				.append($('<td>')
-					.append($('<a>').attr('target', '_blank').attr('href', val.author_url).text(val.author))
-					.append($('<img>').attr('src', val.author_gravatar)));
-			table.append(tr);
+	this.showLogfileOfPremisegroup = function (jsonData) {
+		$('#' + popupEditStatementLogfileSpaceId).empty();
+		$.each(jsonData, function( key, value ) {
+			if (key == 'error'){
+				return true;
+			}
+			var table, tr, tbody, thead;
+			table = $('<table>');
+			table.attr('class', 'table table-condensed table-striped table-hover')
+				.attr('border', '0')
+				.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
+			tbody = $('<tbody>');
+			
+			thead = $('<thead>')
+				.append($('<td>').text(_t(text)))
+				.append($('<td>').text(_t(author)))
+				.append($('<td>').text(_t(date)));
+			table.append(thead);
+			
+			$.each(value.content, function (key, val) {
+				tr = $('<tr>')
+					.append($('<td>').text(val.text))
+					.append($('<td>')
+						.append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em'))
+						.append($('<a>')
+							.addClass('img-circle')
+							.attr('target', '_blank')
+							.attr('href', val.author_url)
+							.text(val.author)))
+					.append($('<td>').text(val.date));
+				tbody.append(tr);
+			});
+			table.append(tbody);
+			
+			$('#' + popupEditStatementLogfileSpaceId).append(table);
 		});
-
-		$('#' + popupEditStatementLogfileSpaceId).empty().append(table);
 	};
 
 	/**
@@ -671,36 +700,6 @@ function GuiHandler() {
 			$('#' + popupHowToWriteText).modal('hide');
 			new Helper().setCookie(cookie_name);
 		});
-	};
-
-	/**
-	 * Hides the url sharing text field
-	 */
-	this.hideEditFieldsInEditPopup = function () {
-		$('#' + popupEditStatementSubmitButtonId).hide();
-		$('#' + popupEditStatementTextareaId).hide();
-		$('#' + popupEditStatementDescriptionId).hide();
-	};
-
-	/**
-	 * Hides the logfiles
-	 */
-	this.hideLogfileInEditPopup = function () {
-		$('#' + popupEditStatementLogfileSpaceId).empty();
-		$('#' + popupEditStatementLogfileHeaderId).html('');
-	};
-
-	/**
-	 * Closes the popup and deletes all of its content
-	 */
-	this.hideandClearEditStatementsPopup = function () {
-		$('#' + popupEditStatementId).modal('hide');
-		$('#' + popupEditStatementContentId).empty();
-		$('#' + popupEditStatementLogfileSpaceId).text('');
-		$('#' + popupEditStatementLogfileHeaderId).text('');
-		$('#' + popupEditStatementTextareaId).text('');
-		$('#' + popupEditStatementErrorDescriptionId).text('');
-		$('#' + popupEditStatementSuccessDescriptionId).text('');
 	};
 
 	/**

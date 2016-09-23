@@ -64,7 +64,7 @@ def get_strings_for_edits(value, statement_uid):
     # db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
     #                                                                Statement.issue_uid == issue)).first()
     # db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
-    db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).join(User).all()
+    db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()
 
     return_array = []
     index = 1
