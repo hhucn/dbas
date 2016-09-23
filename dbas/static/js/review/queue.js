@@ -22,18 +22,15 @@ $(document).ready(function () {
 	var less_about_reason = $('#less_about_reason');
 	var more_about_reason_content = $('#more_about_reason_content');
 	
-	// more
-	
 	/**
 	 * OPTIMIZATION
 	 */
-	
 	optimization_ack.click(function(){
 		new Review().doOptimizationAck($(this).data('id'));
 	});
 	
 	optimization_nack.click(function(){
-		new AjaxReviewHandler().reviewOptimizationArgument(false, $(this).data('id'), undefined);
+		new AjaxReviewHandler().reviewOptimizationArgument(false, $(this).data('id'), '');
 	});
 	
 	optimization_skip.click(function(){
@@ -47,7 +44,6 @@ $(document).ready(function () {
 	/**
 	 * DELETE
 	 */
-	
 	delete_ack.click(function(){
 		new Review().doDeleteAck($(this).data('id'));
 	});
@@ -61,9 +57,8 @@ $(document).ready(function () {
 	});
 	
 	/**
-	 * DELETE
+	 * Edit
 	 */
-	
 	edit_ack.click(function(){
 		new Review().doEditAck($(this).data('id'));
 	});
@@ -79,7 +74,6 @@ $(document).ready(function () {
 	/**
 	 * MORE
 	 */
-	
 	more_about_reason.click(function() {
 		$(this).hide();
 		less_about_reason.show();
@@ -94,6 +88,16 @@ $(document).ready(function () {
 	
 	request_lock.click(function(){
 		new Review().doOptimizationAck($(this).data('id'));
+	});
+	
+	// align buttons
+	var max = 0;
+	var elements = $("*[class^='review-btn-']");
+	elements.each(function(){
+		max = $(this).outerWidth() > max ? $(this).outerWidth() : max;
+	});
+	elements.each(function(){
+		$(this).css('width', max + 'px');
 	});
 	
 	// extra info when user has already seen the complete queue

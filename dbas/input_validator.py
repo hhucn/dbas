@@ -51,6 +51,9 @@ class Validator:
         if not Validator.is_integer(attacked_arg_uid) or not Validator.is_integer(attacking_arg_uid):
             return False
 
+        if Validator.is_argument_forbidden(attacked_arg_uid) or Validator.is_argument_forbidden(attacking_arg_uid):
+            return False
+
         if relation == 'undermine':
             return Validator.related_with_undermine(attacked_arg_uid, attacking_arg_uid)
 
@@ -197,3 +200,10 @@ class Validator:
             return 'rebut'
 
         return None
+
+    @staticmethod
+    def is_argument_forbidden(uid):
+        db_arg = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        if not db_arg:
+            return False
+        return db_arg.is_disabled

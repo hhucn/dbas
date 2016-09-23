@@ -6,8 +6,8 @@ Provides helping function for the managing reputation.
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
-    User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit
-from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author
+    User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement
+from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_arguments_and_premise_of_review
 from sqlalchemy import and_
@@ -94,11 +94,13 @@ def get_reputation_history_of(nickname, translator):
     rep_list = list()
     for rep in db_reputation:
         date = sql_timestamp_pretty_print(rep.timestamp, translator.get_lang(), humanize=False)
-        points_data = '<span class="success-description points">+' if rep.reputations.points > 0 else '<span class="error-description points">'
-        points_data += str(rep.reputations.points) + '</span'
+        points_data = ('+' if rep.reputations.points > 0 else '') + str(rep.reputations.points)
         points = rep.reputations.points
         action = translator.get(rep.reputations.reason)
-        rep_list.append({'date': date, 'points_data': points_data, 'action': action, 'points': points})
+        rep_list.append({'date': date,
+                         'points_data': points_data,
+                         'action': action,
+                         'points': points})
 
     ret_dict['history'] = rep_list
 
@@ -121,7 +123,10 @@ def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, tra
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed != is_not_executed).order_by(table_type.uid.desc()).all()
 
     for review in db_reviews:
-        fulltext = get_text_for_argument_uid(review.argument_uid)
+        if review.statement_uid is None:
+            fulltext = get_text_for_argument_uid(review.argument_uid)
+        else:
+            fulltext = get_text_for_statement_uid(review.statement_uid)
         shorttext = '<span class="text-primary">'
         intro = translator.get(translator.otherUsersSaidThat) + ' '
         if fulltext.startswith(intro):
@@ -160,6 +165,7 @@ def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, tra
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
         entry['votes_pro'] = pro_list
         entry['votes_con'] = con_list
+        entry['reporter'] = __get_user_dict_for_review(review.detector_uid, mainpage)
         some_list.append(entry)
 
     return some_list
@@ -212,7 +218,21 @@ def revoke_old_decision(queue, uid, lang, transaction):
         success = _t.get(_t.dataRemoved)
 
     elif queue == 'edits':
-        error = 'TODO'
+        DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
+        db_value = DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=uid)
+        content = db_value.first().content
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_value.first().statement_uid).first()
+        db_value.delete()
+
+        # delete forbidden textversion
+        DBDiscussionSession.query(TextVersion).filter_by(content=content).delete()
+        # grab and set most recent textversion
+        db_new_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=db_statement.uid).order_by(TextVersion.uid.desc()).first()
+        db_statement.set_textversion(db_new_textversion.uid)
+        transaction.commit()
+
+        success = _t.get(_t.dataRemoved)
 
     else:
         error = _t.get(_t.internalKeyError)
@@ -231,14 +251,26 @@ def cancel_ongoing_decision(queue, uid, lang, transaction):
     """
     success = ''
     error = ''
+
     _t = Translator(lang)
     if queue == 'deletes':
-        __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid, transaction)
+        DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
+        success = _t.get(_t.dataRemoved)
+        transaction.commit()
 
-        success = _t.get(_t.dataRemoved)
     elif queue == 'optimizations':
-        __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid, transaction)
+        DBDiscussionSession.query(ReviewOptimization).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=uid).delete()
         success = _t.get(_t.dataRemoved)
+        transaction.commit()
+
+    elif queue == 'edits':
+        DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=uid).delete()
+        success = _t.get(_t.dataRemoved)
+        transaction.commit()
 
     else:
         error = _t.get(_t.internalKeyError)

@@ -73,16 +73,24 @@ function Main () {
 		
 		// close popups
 		$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId() {
-			guiHandler.hideandClearEditStatementsPopup();
+			guiHandler.hideAndClearEditStatementsPopup();
 		});
 		$('#' + popupEditStatementCloseButtonId).click(function popupEditStatementCloseButtonId() {
-			guiHandler.hideandClearEditStatementsPopup();
+			guiHandler.hideAndClearEditStatementsPopup();
 		});
 		$('#' + popupUrlSharingCloseButtonXId).click(function popupUrlSharingCloseButtonXId() {
 			guiHandler.hideAndClearUrlSharingPopup();
 		});
 		$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId() {
 			guiHandler.hideAndClearUrlSharingPopup();
+		});
+		
+		$('#' + popupEditStatementSubmitButtonId).click(function popupEditStatementSubmitButton() {
+			var elements = [];
+			$('#' + popupEditStatementInputSpaceId).find('input').each(function(){
+				elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')})
+			});
+			new AjaxDiscussionHandler().sendCorrectionOfStatement(elements);
 		});
 		
 		// share url for argument blogging
@@ -179,27 +187,18 @@ function Main () {
 		
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			guiHandler.showFlagArgumentPopup(uid);
+			guiHandler.showFlagArgumentPopup(uid, true);
 		});
 		
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
-			alert('todo');
-			// jump to contact tab
-			var line1 = 'Report ' + new Helper().getTodayAsDate(),
-				line2 = 'URL: ' + window.location.href,
-				line3 = _t(fillLine).toUpperCase(),
-				params = {
-					'content': line1 + '\n' + line2 + '\n' + line3,
-					'name': $('#header_user').parent().text().replace(/\s/g, '')
-				};
-			
-			new Helper().redirectInNewTabForContact(params);
+			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
+			guiHandler.showFlagArgumentPopup(uid, false);
 		});
 		
 		list.find('.item-edit').click(function () {
-			alert('todo');
-			guiHandler.showEditStatementsPopup();
+			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
+			guiHandler.showEditStatementsPopup(uid);
 		});
 		
 		// adding issues
@@ -363,18 +362,6 @@ function Main () {
 			new Helper().delay(function () {
 				var escapedText = new Helper().escapeHtml($('#' + addPremiseContainerMainInputId).val());
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
-			}, 200);
-		});
-		
-		// gui for editing statements
-		$('#' + popupEditStatementTextareaId).keyup(function popupEditStatementTextareaKeyUp() {
-			new Helper().delay(function () {
-				ajaxHandler.fuzzySearch($('#' + popupEditStatementTextareaId).val(),
-					popupEditStatementTextareaId,
-					fuzzy_statement_popup,
-					$('#' + popupEditStatementContentId + ' .text-hover').attr('id').substr(3));
-				$('#' + popupEditStatementWarning).hide();
-				$('#' + popupEditStatementWarningMessage).text('');
 			}, 200);
 		});
 	};
@@ -566,39 +553,47 @@ function Main () {
 		// TODO CLEAR DESIGN
 		// options for the extra buttons, where the user can add input!
 		
-		id = input.attr('id').indexOf('item_' == 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
-		if ($.inArray(id, ids) != -1) {
-			input.attr('onclick', '');
-			input.click(function () {
-				// new position at start
-				if (input.attr('id').indexOf('start_statement') != -1) {
-					// guiHandler.showHowToWriteTextPopup();
-					guiHandler.showAddPositionContainer();
-					$('#' + sendNewStatementId).off("click").click(function () {
-						sendStartStatement();
-					});
-				}
-				// new premise for the start
-				else if (input.attr('id').indexOf('start_premise') != -1) {
-					// guiHandler.showHowToWriteTextPopup();
-					guiHandler.showAddPremiseContainer();
-					$('#' + sendNewPremiseId).off("click").click(function () {
-						sendStartPremise();
-					});
-				}
-				// new premise while judging
-				else if (input.attr('id').indexOf('justify_premise') != -1) {
-					// guiHandler.showHowToWriteTextPopup();
-					guiHandler.showAddPremiseContainer();
-					$('#' + sendNewPremiseId).off("click").click(function () {
-						sendArgumentsPremise();
-					});
-				}
-				// login
-				else if (input.attr('id').indexOf('login') != -1) {
-					$('#' + popupLogin).modal('show');
-				}
+		if (input.length == 0) {
+			var el = $('.line-wrapper-l').last().find('span');
+			el.hover(function () {
+				$(this).css('color', '#000').css('pointer', 'default');
 			});
+			el.off('click');
+		} else {
+			id = input.attr('id').indexOf('item_' == 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
+			if ($.inArray(id, ids) != -1) {
+				input.attr('onclick', '');
+				input.click(function () {
+					// new position at start
+					if (input.attr('id').indexOf('start_statement') != -1) {
+						// guiHandler.showHowToWriteTextPopup();
+						guiHandler.showAddPositionContainer();
+						$('#' + sendNewStatementId).off("click").click(function () {
+							sendStartStatement();
+						});
+					}
+					// new premise for the start
+					else if (input.attr('id').indexOf('start_premise') != -1) {
+						// guiHandler.showHowToWriteTextPopup();
+						guiHandler.showAddPremiseContainer();
+						$('#' + sendNewPremiseId).off("click").click(function () {
+							sendStartPremise();
+						});
+					}
+					// new premise while judging
+					else if (input.attr('id').indexOf('justify_premise') != -1) {
+						// guiHandler.showHowToWriteTextPopup();
+						guiHandler.showAddPremiseContainer();
+						$('#' + sendNewPremiseId).off("click").click(function () {
+							sendArgumentsPremise();
+						});
+					}
+					// login
+					else if (input.attr('id').indexOf('login') != -1) {
+						$('#' + popupLogin).modal('show');
+					}
+				});
+			}
 		}
 	};
 }
@@ -652,14 +647,14 @@ $(document).ready(function mainDocumentReady() {
 	}
 
 	$(document).delegate('.open', 'click', function(event){
-		$(this).addClass('oppenned');
+		$(this).addClass('opened');
 		event.stopPropagation();
 	});
 	$(document).delegate('body', 'click', function(event) {
-		$('.open').removeClass('oppenned');
+		$('.open').removeClass('opened');
 	});
 	$(document).delegate('.cls', 'click', function(event){
-		$('.open').removeClass('oppenned');
+		$('.open').removeClass('opened');
 		event.stopPropagation();
 	});
 });

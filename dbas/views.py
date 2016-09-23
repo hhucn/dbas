@@ -31,8 +31,8 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
-from dbas.helper.views import preperation_for_view, get_nickname_and_session, preperation_for_justify_statement, \
-    preperation_for_dontknow_statement, preperation_for_justify_argument, try_to_register_new_user_via_form, \
+from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
+    preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_register_new_user_via_form, \
     try_to_register_new_user_via_ajax, request_password
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification,\
     rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, rep_reason_new_statement
@@ -55,11 +55,11 @@ from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, send_request_for_recent_optimization_review_to_socketio
 
 name = 'D-BAS'
-version = '0.7.0'
+version = '0.7.1'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
-mainpage = ''
+main_page = ''
 
 
 class Dbas(object):
@@ -75,8 +75,8 @@ class Dbas(object):
         :return: json-dict()
         """
         self.request = request
-        global mainpage
-        mainpage = request.application_url
+        global main_page
+        main_page = request.application_url
 
         try:
             self.issue_fallback = DBDiscussionSession.query(Issue).first().uid
@@ -206,7 +206,7 @@ class Dbas(object):
 
         _dh = DictionaryHelper(ui_locales)
         extras_dict = _dh.prepare_extras_dict_for_normal_page(self.request)
-        settings_dict = _dh.preprate_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, mainpage)
+        settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, main_page)
 
         return {
             'layout': self.base_layout(),
@@ -282,18 +282,18 @@ class Dbas(object):
         :return: dictionary with title and project name as well as a value, weather the user is logged in
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
+        match_dict = self.request.matchdict
         params = self.request.params
-        logger('main_user', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('main_user', 'def', 'main, self.request.matchdict: ' + str(match_dict))
         logger('main_user', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname = matchdict['nickname'] if 'nickname' in matchdict else ''
+        nickname = match_dict['nickname'] if 'nickname' in match_dict else ''
         nickname = nickname.replace('%20', ' ')
         logger('main_user', 'def', 'nickname: ' + str(nickname))
 
         current_user = get_user_by_private_or_public_nickname(nickname)
         if current_user is None:
-            return HTTPFound(location=UrlManager(mainpage).get_404([self.request.path[1:]]))
+            return HTTPFound(location=UrlManager(main_page).get_404([self.request.path[1:]]))
 
         session_expired = UserManager.update_last_action(transaction, self.request.authenticated_userid)
         HistoryHelper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
@@ -401,7 +401,7 @@ class Dbas(object):
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        # return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
+        # return HTTPFound(location=UrlManager(main_page, for_api=False).get_404([self.request.path[1:]]))
 
         return {
             'layout': self.base_layout(),
@@ -430,24 +430,24 @@ class Dbas(object):
         """
         # '/a*slug'
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
+        match_dict = self.request.matchdict
         params = self.request.params
-        logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('discussion_init', 'def', 'main, self.request.matchdict: ' + str(match_dict))
         logger('discussion_init', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
-        count_of_slugs = len(matchdict['slug']) if 'slug' in matchdict and isinstance(matchdict['slug'], ()) else 1
+        count_of_slugs = len(match_dict['slug']) if 'slug' in match_dict and isinstance(match_dict['slug'], ()) else 1
         if count_of_slugs > 1:
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]], True))
 
         ui_locales = get_language(self.request, get_current_registry())
         if for_api:
-            slug = matchdict['slug'] if 'slug' in matchdict else ''
+            slug = match_dict['slug'] if 'slug' in match_dict else ''
         else:
-            slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
+            slug = match_dict['slug'][0] if 'slug' in match_dict and len(match_dict['slug']) > 0 else ''
 
         last_topic      = HistoryHelper.get_saved_issue(nickname)
         if len(slug) == 0 and last_topic != 0:
@@ -456,15 +456,15 @@ class Dbas(object):
             issue      = IssueHelper.get_id_of_slug(slug, self.request, True)
 
         disc_ui_locales = get_discussion_language(self.request, issue)
-        issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
-        item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api).get_array_for_start(nickname)
+        issue_dict      = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, for_api)
+        item_dict       = ItemDictHelper(disc_ui_locales, issue, main_page, for_api).get_array_for_start(nickname)
         HistoryHelper.save_issue_uid(transaction, issue, nickname)
 
-        discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, mainpage=mainpage, slug=slug)\
+        discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, main_page=main_page, slug=slug)\
             .get_dict_for_start()
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True,
                                                                                             False, True, self.request,
-                                                                                            application_url=mainpage,
+                                                                                            application_url=main_page,
                                                                                             for_api=for_api)
 
         if len(item_dict) == 0:
@@ -497,39 +497,39 @@ class Dbas(object):
         """
         # '/discuss/{slug}/attitude/{statement_id}'
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
+        match_dict = self.request.matchdict
         params = self.request.params
-        logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('discussion_attitude', 'def', 'main, self.request.matchdict: ' + str(match_dict))
         logger('discussion_attitude', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
         ui_locales      = get_language(self.request, get_current_registry())
-        slug            = matchdict['slug'] if 'slug' in matchdict else ''
-        statement_id    = matchdict['statement_id'][0] if 'statement_id' in matchdict else ''
+        slug            = match_dict['slug'] if 'slug' in match_dict else ''
+        statement_id    = match_dict['statement_id'][0] if 'statement_id' in match_dict else ''
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
         if not Validator.is_integer(statement_id, True) \
                 or not Validator.check_belonging_of_statement(issue, statement_id) \
                 or not Validator.is_position(statement_id):
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]], True))
 
         disc_ui_locales = get_discussion_language(self.request, issue)
-        issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+        issue_dict      = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, for_api)
 
-        discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
+        discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)\
             .get_dict_for_attitude(statement_id)
         if not discussion_dict:
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_id]))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([slug, statement_id]))
 
-        item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
+        item_dict       = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=self.request.path, history=history)\
             .prepare_item_dict_for_attitude(statement_id)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False,
                                                                                             True, False, True,
                                                                                             self.request,
-                                                                                            application_url=mainpage,
+                                                                                            application_url=main_page,
                                                                                             for_api=for_api)
         return_dict = dict()
         return_dict['issues'] = issue_dict
@@ -558,57 +558,57 @@ class Dbas(object):
         """
         # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
+        match_dict = self.request.matchdict
         params = self.request.params
-        logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('discussion_justify', 'def', 'main, self.request.matchdict: ' + str(match_dict))
         logger('discussion_justify', 'def', 'main, self.request.params: ' + str(params))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
         ui_locales = get_language(self.request, get_current_registry())
 
-        slug                = matchdict['slug'] if 'slug' in matchdict else ''
-        statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
-        mode                = matchdict['mode'] if 'mode' in matchdict else ''
+        slug                = match_dict['slug'] if 'slug' in match_dict else ''
+        statement_or_arg_id = match_dict['statement_or_arg_id'] if 'statement_or_arg_id' in match_dict else ''
+        mode                = match_dict['mode'] if 'mode' in match_dict else ''
         supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
-        relation            = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
+        relation            = match_dict['relation'][0] if len(match_dict['relation']) > 0 else ''
 
         if not Validator.is_integer(statement_or_arg_id, True):
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]], True))
 
         issue               = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
         disc_ui_locales     = get_discussion_language(self.request, issue)
-        issue_dict          = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+        issue_dict          = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, for_api)
 
         if [c for c in ('t', 'f') if c in mode] and relation == '':
             if not get_text_for_statement_uid(statement_or_arg_id)\
                     or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
-                return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-            item_dict, discussion_dict, extras_dict = preperation_for_justify_statement(self.request, for_api, api_data,
-                                                                                        mainpage, slug, statement_or_arg_id,
+                return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([slug, statement_or_arg_id]))
+            item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(self.request, for_api, api_data,
+                                                                                        main_page, slug, statement_or_arg_id,
                                                                                         supportive, mode, ui_locales)
 
         elif 'd' in mode and relation == '':
             if not Validator.check_belonging_of_argument(issue, statement_or_arg_id) and \
                     not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
-                return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-            item_dict, discussion_dict, extras_dict = preperation_for_dontknow_statement(self.request, for_api, api_data,
-                                                                                         mainpage, slug, statement_or_arg_id,
-                                                                                         supportive, ui_locales)
+                return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([slug, statement_or_arg_id]))
+            item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(self.request, for_api, api_data,
+                                                                                          main_page, slug, statement_or_arg_id,
+                                                                                          supportive, ui_locales)
 
         elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
             if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
-                return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, statement_or_arg_id]))
-            item_dict, discussion_dict, extras_dict = preperation_for_justify_argument(self.request, for_api, api_data,
-                                                                                       mainpage, slug, statement_or_arg_id,
+                return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([slug, statement_or_arg_id]))
+            item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(self.request, for_api, api_data,
+                                                                                       main_page, slug, statement_or_arg_id,
                                                                                        supportive, relation, ui_locales)
             # add reputation
             add_reputation_for(nickname, rep_reason_first_confrontation, transaction)
         else:
             logger('discussion_justify', 'def', '404')
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
 
         return_dict = dict()
         return_dict['issues'] = issue_dict
@@ -637,15 +637,15 @@ class Dbas(object):
         """
         # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
+        match_dict = self.request.matchdict
         params = self.request.params
-        logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('discussion_reaction', 'def', 'main, self.request.matchdict: ' + str(match_dict))
         logger('discussion_reaction', 'def', 'main, self.request.params: ' + str(params))
 
-        slug            = matchdict['slug'] if 'slug' in matchdict else ''
-        arg_id_user     = matchdict['arg_id_user'] if 'arg_id_user' in matchdict else ''
-        attack          = matchdict['mode'] if 'mode' in matchdict else ''
-        arg_id_sys      = matchdict['arg_id_sys'] if 'arg_id_sys' in matchdict else ''
+        slug            = match_dict['slug'] if 'slug' in match_dict else ''
+        arg_id_user     = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
+        attack          = match_dict['mode'] if 'mode' in match_dict else ''
+        arg_id_sys      = match_dict['arg_id_sys'] if 'arg_id_sys' in match_dict else ''
         tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
 
@@ -653,33 +653,33 @@ class Dbas(object):
         if not tmp_argument or not valid_reaction\
                 or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_user)\
                 or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_sys):
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]]))
 
         supportive = tmp_argument.is_supportive
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
         # sanity check
         if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]], True))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]], True))
 
-        # set votings and reputation
+        # set votes and reputation
         add_reputation_for(nickname, rep_reason_first_argument_click, transaction)
         add_vote_for_argument(arg_id_user, nickname, transaction)
 
         ui_locales      = get_language(self.request, get_current_registry())
         disc_ui_locales = get_discussion_language(self.request, issue)
-        issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+        issue_dict      = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, for_api)
 
-        _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-        _idh            = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
+        _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)
+        _idh            = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=self.request.path, history=history)
         discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
         item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True, True,
                                                                                             True, self.request,
                                                                                             argument_id=arg_id_sys,
-                                                                                            application_url=mainpage,
+                                                                                            application_url=main_page,
                                                                                             for_api=for_api)
 
         return_dict = dict()
@@ -705,9 +705,9 @@ class Dbas(object):
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
+        match_dict = self.request.matchdict
         params = self.request.params
-        logger('discussion_finish', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('discussion_finish', 'def', 'main, self.request.matchdict: ' + str(match_dict))
         logger('discussion_finish', 'def', 'main, self.request.params: ' + str(params))
         ui_locales      = get_language(self.request, get_current_registry())
         nickname        = self.request.authenticated_userid
@@ -741,16 +741,16 @@ class Dbas(object):
         """
         # '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
+        match_dict = self.request.matchdict
         params = self.request.params
-        logger('discussion_choose', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('discussion_choose', 'def', 'main, self.request.matchdict: ' + str(match_dict))
         logger('discussion_choose', 'def', 'main, self.request.params: ' + str(params))
 
-        slug            = matchdict['slug'] if 'slug' in matchdict else ''
-        is_argument     = matchdict['is_argument'] if 'is_argument' in matchdict else ''
-        is_supportive   = matchdict['supportive'] if 'supportive' in matchdict else ''
-        uid             = matchdict['id'] if 'id' in matchdict else ''
-        pgroup_ids      = matchdict['pgroup_ids'] if 'id' in matchdict else ''
+        slug            = match_dict['slug'] if 'slug' in match_dict else ''
+        is_argument     = match_dict['is_argument'] if 'is_argument' in match_dict else ''
+        is_supportive   = match_dict['supportive'] if 'supportive' in match_dict else ''
+        uid             = match_dict['id'] if 'id' in match_dict else ''
+        pgroup_ids      = match_dict['pgroup_ids'] if 'id' in match_dict else ''
 
         is_argument = True if is_argument is 't' else False
         is_supportive = True if is_supportive is 't' else False
@@ -758,25 +758,25 @@ class Dbas(object):
         ui_locales      = get_language(self.request, get_current_registry())
         issue           = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
         disc_ui_locales = get_discussion_language(self.request, issue)
-        issue_dict      = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+        issue_dict      = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, for_api)
 
         if not Validator.check_belonging_of_premisegroups(issue, pgroup_ids):
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]]))
 
-        nickname, session_id, session_expired, history = preperation_for_view(for_api, api_data, self.request)
+        nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, self.request)
         if session_expired:
             return self.user_logout(True)
 
-        discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)\
+        discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)\
             .get_dict_for_choosing(uid, is_argument, is_supportive)
-        item_dict       = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)\
+        item_dict       = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=self.request.path, history=history)\
             .get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
         if not item_dict:
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]]))
 
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                             True, True, self.request,
-                                                                                            application_url=mainpage,
+                                                                                            application_url=main_page,
                                                                                             for_api=for_api)
 
         return_dict = dict()
@@ -806,9 +806,9 @@ class Dbas(object):
         """
         # '/discuss/{slug}/jump/{arg_id}'
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        matchdict = self.request.matchdict
+        match_dict = self.request.matchdict
         params = self.request.params
-        logger('discussion_jump', 'def', 'main, self.request.matchdict: ' + str(matchdict))
+        logger('discussion_jump', 'def', 'main, self.request.matchdict: ' + str(match_dict))
         logger('discussion_jump', 'def', 'main, self.request.params: ' + str(params))
 
         nickname, session_id = get_nickname_and_session(self.request, for_api, api_data)
@@ -818,8 +818,8 @@ class Dbas(object):
             slug = api_data["slug"]
             arg_uid = api_data["arg_uid"]
         else:
-            slug = matchdict['slug'] if 'slug' in matchdict else ''
-            arg_uid = matchdict['arg_id'] if 'arg_id' in matchdict else ''
+            slug = match_dict['slug'] if 'slug' in match_dict else ''
+            arg_uid = match_dict['arg_id'] if 'arg_id' in match_dict else ''
 
         session_expired = UserManager.update_last_action(transaction, nickname)
         HistoryHelper.save_path_in_database(nickname, self.request.path, transaction)
@@ -830,18 +830,18 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         issue = IssueHelper.get_id_of_slug(slug, self.request, True) if len(slug) > 0 else IssueHelper.get_issue_id(self.request)
         disc_ui_locales = get_discussion_language(self.request, issue)
-        issue_dict = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, for_api)
+        issue_dict = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, for_api)
 
         if not Validator.check_belonging_of_argument(issue, arg_uid):
-            return HTTPFound(location=UrlManager(mainpage, for_api=for_api).get_404([self.request.path[1:]]))
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]]))
 
-        _ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, mainpage=mainpage, slug=slug)
-        _idh = ItemDictHelper(disc_ui_locales, issue, mainpage, for_api, path=self.request.path, history=history)
+        _ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)
+        _idh = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=self.request.path, history=history)
         discussion_dict = _ddh.get_dict_for_jump(arg_uid)
         item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
         extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                         True, True, self.request,
-                                                                                        application_url=mainpage,
+                                                                                        application_url=main_page,
                                                                                         for_api=for_api)
 
         return_dict = dict()
@@ -888,10 +888,10 @@ class Dbas(object):
 
         issue = IssueHelper.get_issue_id(self.request)
         disc_ui_locales = get_discussion_language(self.request, issue)
-        issue_dict = IssueHelper.prepare_json_of_issue(issue, mainpage, disc_ui_locales, False)
+        issue_dict = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, False)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
-        review_dict = ReviewQueueHelper.get_review_queues_array(mainpage, _tn, nickname)
+        review_dict = ReviewQueueHelper.get_review_queues_as_lists(main_page, _tn, nickname)
         count, all_rights = ReviewReputationHelper.get_reputation_of(nickname)
 
         return {
@@ -926,9 +926,10 @@ class Dbas(object):
             return Dbas(self.request).user_logout(True)
 
         subpage_name = self.request.matchdict['queue']
-        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name, self.request.authenticated_userid, _tn, mainpage)
+        subpage_dict = ReviewPagerHelper.get_subpage_elements_for(self.request, subpage_name,
+                                                                  self.request.authenticated_userid, _tn, main_page)
         if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
-            return HTTPFound(location=UrlManager(mainpage, for_api=False).get_404([self.request.path[1:]]))
+            return HTTPFound(location=UrlManager(main_page, for_api=False).get_404([self.request.path[1:]]))
 
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
@@ -959,7 +960,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        history = ReviewHistoryHelper.get_review_history(mainpage, self.request.authenticated_userid, _tn)
+        history = ReviewHistoryHelper.get_review_history(main_page, self.request.authenticated_userid, _tn)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
@@ -988,7 +989,7 @@ class Dbas(object):
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
-        history = ReviewHistoryHelper.get_ongoing_reviews(mainpage, self.request.authenticated_userid, _tn)
+        history = ReviewHistoryHelper.get_ongoing_reviews(main_page, self.request.authenticated_userid, _tn)
         extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(self.request)
 
         return {
@@ -1231,7 +1232,7 @@ class Dbas(object):
         headers = forget(self.request)
         if redirect_to_main:
             return HTTPFound(
-                location=mainpage + '?session_expired=true',
+                location=main_page + '?session_expired=true',
                 headers=headers,
             )
         else:
@@ -1357,7 +1358,7 @@ class Dbas(object):
                     error = _tn.get(_tn.keyword)
 
                 transaction.commit()
-                public_page_url = mainpage + '/user/' + (db_user.nickname if settings_value else public_nick)
+                public_page_url = main_page + '/user/' + (db_user.nickname if settings_value else public_nick)
                 gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
             else:
                 error = _tn.get(_tn.checkNickname)
@@ -1443,7 +1444,7 @@ class Dbas(object):
                 if not db_author:
                     error = _tn.get(_tn.notLoggedIn)
                 else:
-                    db_notification = send_notification(db_author, db_recipient, title, text, mainpage, transaction)
+                    db_notification = send_notification(db_author, db_recipient, title, text, main_page, transaction)
                     uid = db_notification.uid
                     ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
                     gravatar = get_profile_picture(db_recipient, 20)
@@ -1497,7 +1498,7 @@ class Dbas(object):
             if new_statement == -1:
                 return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': 10)'
             else:
-                url = UrlManager(mainpage, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
+                url = UrlManager(main_page, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
                 return_dict['url'] = url
                 return_dict['statement_uids'].append(new_statement[0].uid)
 
@@ -1548,7 +1549,7 @@ class Dbas(object):
             url, statement_uids, error = _qh.process_input_of_start_premises_and_receive_url(self.request, transaction,
                                                                                              premisegroups, conclusion_id,
                                                                                              supportive, issue, nickname,
-                                                                                             for_api, mainpage, lang)
+                                                                                             for_api, main_page, lang)
 
             return_dict['error'] = error
             return_dict['statement_uids'] = statement_uids
@@ -1605,7 +1606,7 @@ class Dbas(object):
                                                                                                      attack_type,
                                                                                                      premisegroups, issue,
                                                                                                      nickname, for_api,
-                                                                                                     mainpage, lang)
+                                                                                                     main_page, lang)
             UserManager.update_last_action(transaction, nickname)
 
             return_dict['error'] = error
@@ -1628,34 +1629,27 @@ class Dbas(object):
         return json.dumps(return_dict, True)
 
     # ajax - set new textvalue for a statement
-    @view_config(route_name='ajax_set_correcture_of_statement', renderer='json')
-    def set_correcture_of_statement(self):
+    @view_config(route_name='ajax_set_correction_of_statement', renderer='json')
+    def set_correction_of_statement(self):
         """
         Sets a new textvalue for a statement
 
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('set_correcture_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
+        logger('set_correction_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
         UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         _tn = Translator(get_language(self.request, get_current_registry()))
 
+        return_dict = dict()
         try:
-            uid = self.request.params['uid']
-            url = self.request.params['url']
-            corrected_text = escape_string(self.request.params['text'])
-            return_dict = QueryHelper.correct_statement(transaction, self.request.authenticated_userid, uid,
-                                                        corrected_text, url, self.request)
-            if return_dict == -1:
-                return_dict = dict()
-                return_dict['error'] = _tn.get(_tn.noCorrectionsSet)
-
-            return_dict['error'] = ''
+            elements = json.loads(self.request.params['elements'])
+            nickname = self.request.authenticated_userid
+            return_dict['error'] = ReviewQueueHelper.add_proposals_for_statement_corrections(elements, nickname, _tn, transaction)
         except KeyError as e:
-            return_dict = dict()
-            return_dict['error'] = ''
-            logger('set_correcture_of_statement', 'error', repr(e))
+            return_dict['error'] = _tn.get(_tn.noCorrections)
+            logger('set_correction_of_statement', 'error', repr(e))
 
         return json.dumps(return_dict, True)
 
@@ -1706,8 +1700,8 @@ class Dbas(object):
             DBDiscussionSession.query(Message).filter_by(uid=self.request.params['id']).delete()
             transaction.commit()
             return_dict['unread_messages'] = count_of_new_notifications(self.request.authenticated_userid)
-            return_dict['total_in_messages'] = str(len(get_box_for(self.request.authenticated_userid, ui_locales, mainpage, True)))
-            return_dict['total_out_messages'] = str(len(get_box_for(self.request.authenticated_userid, ui_locales, mainpage, False)))
+            return_dict['total_in_messages'] = str(len(get_box_for(self.request.authenticated_userid, ui_locales, main_page, True)))
+            return_dict['total_out_messages'] = str(len(get_box_for(self.request.authenticated_userid, ui_locales, main_page, False)))
             return_dict['error'] = ''
             return_dict['success'] = _t.get(_t.messageDeleted)
         except KeyError as e:
@@ -1736,7 +1730,7 @@ class Dbas(object):
             if was_set:
                 db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
                                                                         Issue.info == info)).first()
-                return_dict['issue'] = IssueHelper.get_issue_dict_for(db_issue, mainpage, False, 0, ui_locales)
+                return_dict['issue'] = IssueHelper.get_issue_dict_for(db_issue, main_page, False, 0, ui_locales)
         except KeyError as e:
             logger('set_new_issue', 'error', repr(e))
             error = _tn.get(_tn.notInsertedErrorBecauseInternal)
@@ -1749,15 +1743,15 @@ class Dbas(object):
 # ###################################
 
     # ajax - getting changelog of a statement
-    @view_config(route_name='ajax_get_logfile_for_statement', renderer='json')
-    def get_logfile_for_statement(self):
+    @view_config(route_name='ajax_get_logfile_for_premisegroup', renderer='json')
+    def get_logfile_for_premisegroup(self):
         """
         Returns the changelog of a statement
 
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('get_logfile_for_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
+        logger('get_logfile_for_premisegroup', 'def', 'main, self.request.params: ' + str(self.request.params))
         UserManager.update_last_action(transaction, self.request.authenticated_userid)
 
         return_dict = dict()
@@ -1767,10 +1761,10 @@ class Dbas(object):
             uid = self.request.params['uid']
             issue = self.request.params['issue']
             ui_locales = get_discussion_language(self.request, issue)
-            return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales, mainpage)
+            return_dict = QueryHelper.get_logfile_for_premisegroup(uid, ui_locales, main_page)
             return_dict['error'] = ''
         except KeyError as e:
-            logger('get_logfile_for_statement', 'error', repr(e))
+            logger('get_logfile_for_premisegroup', 'error', repr(e))
             _tn = Translator(ui_locales)
             return_dict['error'] = _tn.get(_tn.noCorrections)
 
@@ -1863,7 +1857,7 @@ class Dbas(object):
             if not Validator.is_integer(uid):
                 return_dict['error'] = _t.get(_t.internalError)
             else:
-                return_dict = QueryHelper.get_infos_about_argument(uid, mainpage)
+                return_dict = QueryHelper.get_infos_about_argument(uid, main_page)
                 return_dict['error'] = ''
         except KeyError as e:
             logger('get_infos_about_argument', 'error', repr(e))
@@ -1896,7 +1890,7 @@ class Dbas(object):
             is_position = params['is_position'] == 'true' if 'is_position' in params else False
             is_supporti = params['is_supporti'] if 'is_supporti' in params else None
 
-            _op = OpinionHandler(ui_locales, nickname, mainpage)
+            _op = OpinionHandler(ui_locales, nickname, main_page)
             if is_argument:
                 if not is_reaction:
                     return_dict = _op.get_user_with_same_opinion_for_argument(uids)
@@ -1953,7 +1947,7 @@ class Dbas(object):
                 return_dict['error'] = _tn.get(_tn.internalKeyError)
             else:
                 slug = get_slug_by_statement_uid(uid)
-                _um = UrlManager(mainpage, slug)
+                _um = UrlManager(main_page, slug)
                 return_dict['arguments'] = get_all_arguments_with_text_and_url_by_statement_id(uid, _um, True)
                 return_dict['error'] = ''
 
@@ -2090,9 +2084,9 @@ class Dbas(object):
 
         return data.json()
 
-# ######################################
-# ADDTIONAL AJAX STUFF # REVIEW THINGS #
-# ######################################
+# #######################################
+# ADDITIONAL AJAX STUFF # REVIEW THINGS #
+# #######################################
 
     # ajax - for flagging arguments
     @view_config(route_name='ajax_flag_argument', renderer='json')
@@ -2110,6 +2104,7 @@ class Dbas(object):
         try:
             argument_uid = self.request.params['argument_uid']
             reason = self.request.params['reason']
+            is_argument = True if str(self.request.params['is_argument']) == 'true' else False
             nickname = self.request.authenticated_userid
 
             db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
@@ -2120,7 +2115,7 @@ class Dbas(object):
                 return_dict['error'] = _t.get(_t.internalError)
             else:
 
-                success, info, error = ReviewFlagHelper.flag_argument(argument_uid, reason, nickname, _t, transaction)
+                success, info, error = ReviewFlagHelper.flag_argument(argument_uid, reason, nickname, _t, is_argument, transaction)
 
                 return_dict['success'] = success
                 return_dict['info'] = info
@@ -2153,7 +2148,7 @@ class Dbas(object):
                 error = _t.get(_t.internalKeyError)
             else:
                 error = ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, transaction)
-                send_request_for_recent_delete_review_to_socketio(nickname)
+                send_request_for_recent_delete_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
             error = _t.get(_t.internalKeyError)
@@ -2175,15 +2170,15 @@ class Dbas(object):
         return_dict = dict()
 
         try:
-            should_edit = True if str(self.request.params['should_edit']) == 'true' else False
+            is_edit_okay = True if str(self.request.params['is_edit_okay']) == 'true' else False
             review_uid = self.request.params['review_uid']
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
                 logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
-                error = ReviewMainHelper.add_review_opinion_for_edit(nickname, should_edit, review_uid, _t, transaction)
-                send_request_for_recent_delete_review_to_socketio(nickname)
+                error = ReviewMainHelper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, transaction)
+                send_request_for_recent_delete_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
             error = _t.get(_t.internalKeyError)
@@ -2217,7 +2212,7 @@ class Dbas(object):
                 error = ReviewMainHelper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t, transaction)
 
                 if len(error) == 0:
-                    send_request_for_recent_optimization_review_to_socketio(nickname)
+                    send_request_for_recent_optimization_review_to_socketio(nickname, main_page)
 
         except KeyError as e:
             logger('review_optimization_argument', 'error', repr(e))
