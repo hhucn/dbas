@@ -52,7 +52,7 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
-from websocket.lib import send_request_for_recent_delete_review_to_socketio, send_request_for_recent_optimization_review_to_socketio
+from websocket.lib import send_request_for_recent_delete_review_to_socketio, send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio
 
 name = 'D-BAS'
 version = '0.7.1'
@@ -2178,7 +2178,7 @@ class Dbas(object):
                 error = _t.get(_t.internalKeyError)
             else:
                 error = ReviewMainHelper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, transaction)
-                send_request_for_recent_delete_review_to_socketio(nickname, main_page)
+                send_request_for_recent_edit_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
             error = _t.get(_t.internalKeyError)
