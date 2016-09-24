@@ -404,7 +404,8 @@ function AjaxDiscussionHandler() {
 			method: 'GET',
 			data: {
 				uid: id,
-				issue: new Helper().getCurrentIssueId()
+				issue: new Helper().getCurrentIssueId(),
+				is_statement: $('#discussions-space-list').find('li:last-child').find('input').attr('id').indexOf('_start_statement') != -1
 			},
 			dataType: 'json',
 			async: true,

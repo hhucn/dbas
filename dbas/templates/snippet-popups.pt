@@ -146,7 +146,9 @@
 
                     </div>
     				<div class="list-group" id="proposal-edit-list-group"></div>
-    				<p class="lead" style="margin-top: 2em;">${extras.title.view_changelog}:</p>
+                    <p style="text-align: right"><small><a href="#" id="popup-edit-statement-changelog-view"></a></small></p>
+                    <p style="text-align: right"><small><a href="#" id="popup-edit-statement-changelog-hide"></a></small></p>
+    				<p class="lead">${extras.title.view_changelog}:</p>
     				<div id="popup-edit-statement-logfile"></div>
     			</div>
     			<div class="modal-footer">
