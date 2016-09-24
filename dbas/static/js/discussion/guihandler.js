@@ -659,6 +659,10 @@ function GuiHandler() {
 		space.empty();
 		space.show();
 		space.prev().show();
+		var view = $('#' + popupEditStatementChangelogView);
+		var hide = $('#' + popupEditStatementChangelogHide);
+		view.text('(' + _t_discussion(changelogView) + ')').hide();
+		hide.text('(' + _t_discussion(changelogHide) + ')').hide();
 		
 		var at_least_one_history = false;
 		$.each(jsonData, function( key, value ) {
@@ -695,14 +699,31 @@ function GuiHandler() {
 			});
 			if (counter > 1) {
 				at_least_one_history = true;
-				table.append(tbody);
-				space.append(table);
 			}
+			space.append(table.append(tbody));
 		});
+		
 		if (!at_least_one_history){
 			space.hide();
 			space.prev().hide();
+			view.show();
+		} else {
+			hide.show();
 		}
+		
+		view.click(function(){
+			space.show();
+			space.prev().show();
+			hide.show();
+			view.hide();
+		});
+		
+		hide.click(function(){
+			space.hide();
+			space.prev().hide();
+			hide.hide();
+			view.show();
+		});
 	};
 
 	/**

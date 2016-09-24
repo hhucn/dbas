@@ -113,6 +113,8 @@ var checkEmail										= 'checkEmail';
 var checkPassword									= 'checkPassword';
 var checkConfirmation 								= 'checkConfirmation';
 var checkPasswordConfirm							= 'checkPasswordConfirm';
+var changelogView                                   = 'changelogView';
+var changelogHide                                   = 'changelogHide';
 var countOfArguments                                = 'countOfArguments';
 var countdownEnded                                  = 'countdownEnded';
 var couldNotLock                                    = 'couldNotLock';
@@ -311,6 +313,8 @@ var dbas_en = {
 	'checkPassword': 'Better check your password, because the input is empty!',
 	'checkConfirmation': 'Better check the confirmation of your password, because the input is empty!',
 	'checkPasswordConfirm': 'Better check your passwords, because they are not equal!',
+	'changelogView': 'view changelog',
+	'changelogHide': 'hide changelog',
 	'deleteTrack': 'Delete track',
 	'deleteHistory': 'Delete history',
 	'dataRemoved': 'Data was successfully removed.',
@@ -491,6 +495,8 @@ var dbas_de = {
 	'checkPassword': 'Bitte überprüfen Sie Ihre Passwort, da die Eingabe leer ist!',
 	'checkConfirmation': 'Bitte überprüfen Sie Ihre Passwort-Bestätigung, da die Eingabe leer ist!',
 	'checkPasswordConfirm': 'Bitte überprüfen Sie Ihre Passwörter, da die Passwärter nicht gleich sind!',
+	'changelogView': 'Änderungen zeigen',
+	'changelogHide': 'Änderungen ausblenden',
 	'dataRemoved': 'Daten wurden erfolgreich gelöscht.',
 	'date': 'Datum',
 	'didYouMean': 'Top 10 der Aussagen, die Sie eventuell meinten:',
