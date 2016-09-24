@@ -1760,8 +1760,12 @@ class Dbas(object):
         try:
             uid = self.request.params['uid']
             issue = self.request.params['issue']
+            is_statement = True if self.request.params['is_statement'] == 'true' else False
             ui_locales = get_discussion_language(self.request, issue)
-            return_dict = QueryHelper.get_logfile_for_premisegroup(uid, ui_locales, main_page)
+            if is_statement:
+                return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales, main_page)
+            else:
+                return_dict = QueryHelper.get_logfile_for_premisegroup(uid, ui_locales, main_page)
             return_dict['error'] = ''
         except KeyError as e:
             logger('get_logfile_for_premisegroup', 'error', repr(e))

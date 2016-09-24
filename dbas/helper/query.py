@@ -371,13 +371,37 @@ class QueryHelper:
         return return_dict
 
     @staticmethod
-    def get_logfile_for_premisegroup(uid, lang, mainpage):
+    def get_logfile_for_statement(uid, lang, main_page):
         """
-        Returns the logfile for the given premisgroup uid
+        Returns the logfile for the given statement uid
 
         :param uid: requested statement uid
         :param lang: ui_locales ui_locales
-        :param mainpage: URL
+        :param main_page: URL
+        :return: dictionary with the logfile-rows
+        """
+        logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
+
+        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
+        main_dict = dict()
+        return_dict = dict()
+        content_dict = dict()
+        # add all corrections
+        for index, version in enumerate(db_textversions):
+            content_dict[str(index)] = QueryHelper.__get_logfile_dict(version, main_page, lang)
+        return_dict['content'] = content_dict
+        main_dict[get_text_for_statement_uid(uid)] = return_dict
+
+        return main_dict
+
+    @staticmethod
+    def get_logfile_for_premisegroup(uid, lang, main_page):
+        """
+        Returns the logfile for the given premisegroup uid
+
+        :param uid: requested statement uid
+        :param lang: ui_locales ui_locales
+        :param main_page: URL
         :return: dictionary with the logfile-rows
         """
         logger('QueryHelper', 'get_logfile_for_premisegroup', 'def with uid: ' + str(uid))
@@ -390,21 +414,24 @@ class QueryHelper:
             return_dict = dict()
             content_dict = dict()
             # add all corrections
-            for index, versions in enumerate(db_textversions):
-                db_author = DBDiscussionSession.query(User).filter_by(uid=versions.author_uid).first()
-                corr_dict = dict()
-                corr_dict['uid'] = str(versions.uid)
-                corr_dict['author'] = str(db_author.get_global_nickname())
-                corr_dict['author_url'] = mainpage + '/user/' + str(db_author.get_global_nickname())
-                corr_dict['author_gravatar'] = get_profile_picture(db_author, 20)
-                corr_dict['date'] = sql_timestamp_pretty_print(versions.timestamp, lang)
-                corr_dict['text'] = str(versions.content)
-                content_dict[str(index)] = corr_dict
+            for index, version in enumerate(db_textversions):
+                content_dict[str(index)] = QueryHelper.__get_logfile_dict(version, main_page, lang)
             return_dict['content'] = content_dict
             main_dict[get_text_for_statement_uid(premise.statement_uid)] = return_dict
 
         return main_dict
 
+    @staticmethod
+    def __get_logfile_dict(textversion, main_page, lang):
+        db_author = DBDiscussionSession.query(User).filter_by(uid=textversion.author_uid).first()
+        corr_dict = dict()
+        corr_dict['uid'] = str(textversion.uid)
+        corr_dict['author'] = str(db_author.get_global_nickname())
+        corr_dict['author_url'] = main_page + '/user/' + str(db_author.get_global_nickname())
+        corr_dict['author_gravatar'] = get_profile_picture(db_author, 20)
+        corr_dict['date'] = sql_timestamp_pretty_print(textversion.timestamp, lang)
+        corr_dict['text'] = str(textversion.content)
+        return corr_dict
 
     @staticmethod
     def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, user, transaction):
