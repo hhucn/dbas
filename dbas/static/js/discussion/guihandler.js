@@ -655,7 +655,16 @@ function GuiHandler() {
 	 * @param jsonData json encoded return data
 	 */
 	this.showLogfileOfPremisegroup = function (jsonData) {
-		$('#' + popupEditStatementLogfileSpaceId).empty();
+		var space = $('#' + popupEditStatementLogfileSpaceId);
+		space.empty();
+		space.show();
+		space.prev().show();
+		var view = $('#' + popupEditStatementChangelogView);
+		var hide = $('#' + popupEditStatementChangelogHide);
+		view.text('(' + _t_discussion(changelogView) + ')').hide();
+		hide.text('(' + _t_discussion(changelogHide) + ')').hide();
+		
+		var at_least_one_history = false;
 		$.each(jsonData, function( key, value ) {
 			if (key == 'error'){
 				return true;
@@ -673,6 +682,7 @@ function GuiHandler() {
 				.append($('<td>').text(_t(date)));
 			table.append(thead);
 			
+			var counter = 0;
 			$.each(value.content, function (key, val) {
 				tr = $('<tr>')
 					.append($('<td>').text(val.text))
@@ -685,10 +695,34 @@ function GuiHandler() {
 							.text(val.author)))
 					.append($('<td>').text(val.date));
 				tbody.append(tr);
+				counter += 1;
 			});
-			table.append(tbody);
-			
-			$('#' + popupEditStatementLogfileSpaceId).append(table);
+			if (counter > 1) {
+				at_least_one_history = true;
+			}
+			space.append(table.append(tbody));
+		});
+		
+		if (!at_least_one_history){
+			space.hide();
+			space.prev().hide();
+			view.show();
+		} else {
+			hide.show();
+		}
+		
+		view.click(function(){
+			space.show();
+			space.prev().show();
+			hide.show();
+			view.hide();
+		});
+		
+		hide.click(function(){
+			space.hide();
+			space.prev().hide();
+			hide.hide();
+			view.show();
 		});
 	};
 
