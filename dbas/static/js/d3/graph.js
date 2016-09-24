@@ -102,7 +102,7 @@ function DiscussionGraph() {
 		var width = container.width(), height = container.outerHeight();
 
 		var svg = getGraphSvg(width, height),
-		    force = getForce(width, height);
+		    force = getForce(width, height+100);
 
 		// zoom and pan
 		var zoom = d3.behavior.zoom().on("zoom", redraw);
@@ -130,11 +130,11 @@ function DiscussionGraph() {
 		force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 		var edgesTypeArrow = createArrowDict(edges),
             marker = createArrows(svg, edgesTypeArrow),
-		    link = createLinks(svg, edges, marker).call(zoom);
+		    link = createLinks(svg, edges, marker);
 
 		// node
    		var node = createNodes(svg, force, drag),
-		    circle = setNodeProperties(node).call(zoom);
+		    circle = setNodeProperties(node);
 
 		// tooltip
 		// rect as background of label
@@ -199,15 +199,28 @@ function DiscussionGraph() {
     };
 
     /**
-	 * Create svg-element.
-	 *
-	 * @param width: width of container, which contains graph
+     * Create svg-element.
+     *
+     * @param width: width of container, which contains graph
      * @param height: height of container
-	 * @return scalable vector graphic
+     * @return scalable vector graphic
      */
-	function getGraphSvg(width, height){
+    function getGraphSvg(width, height){
         return d3.select('#' + graphViewContainerSpaceId).append("svg")
-            .attr({width: width, height: height, id: "graph-svg"});
+            .attr({width: width, height: height, id: "graph-svg"})
+            .append('g')
+            .attr("class", "zoom");
+    }
+	
+	/**
+	 * Create svg for legend.
+	 */
+	function getLegendSvg() {
+        d3.select('#graphViewLegendId').append("svg")
+            .attr({width: 200, height: 500, id: "legend-svg"});
+		return d3.select("#legend-svg").append("g")
+            .attr({id: "graphLegend",
+				   transform: "translate(10,10)"});
 	}
 
 	/**
@@ -301,7 +314,7 @@ function DiscussionGraph() {
 			// svg lines
     		.enter().append("line")
       		.attr({class: "link",
-				   id: function(d) { return 'link_' + d.id; }})
+				   id: function(d) { return 'link-' + d.id; }})
 			.style("stroke", function(d) { return d.color; })
 			// assign marker to line
 			.attr("marker-end", function(d) { return "url(#marker_" + d.edge_type + d.id + ")"; });
@@ -348,7 +361,7 @@ function DiscussionGraph() {
 		return node.append("circle")
       		.attr({r: function(d){ return d.size; },
 				   fill: function(d){ return d.color; },
-				   id: function (d) { return 'circle_' + d.id; }
+				   id: function (d) { return 'circle-' + d.id; }
 			});
 	}
 
@@ -372,9 +385,9 @@ function DiscussionGraph() {
                     d3.select(this).append("tspan").text(' ' + node_text[i]);
 				}
             }
-			d3.select(this).attr("id", 'label_' + d.id);
+			d3.select(this).attr("id", 'label-' + d.id);
 			// set position of label
-			var height = $("#label_" + d.id).height();
+			var height = $("#label-" + d.id).height();
 			d3.select(this).attr("y", -height+45);
 		});
 	}
@@ -386,7 +399,7 @@ function DiscussionGraph() {
  	 */
 	function setRectProperties(rect){
 		rect.each(function (d) {
-			var element = $("#label_" + d.id),
+			var element = $("#label-" + d.id),
 		        width = element.width() + 24,
 			    height = element.height() + 10;
 			if(d.size === 0){
@@ -396,7 +409,7 @@ function DiscussionGraph() {
 			d3.select(this)
 			.attr({width: width, height: height,
 				   x: -width/2, y: -height+36,
-			       id: 'rect_' + d.id});
+			       id: 'rect-' + d.id});
 		});
 	}
 
@@ -567,9 +580,8 @@ function DiscussionGraph() {
 		var popup = $('#popup-jump-graph');
 		if(d.id != 'issue'){
 		    popup.modal('show');
-			// select uid
-			var splitted = d.id.split('_'),
-				uid = splitted[splitted.length - 1];
+		    var splitted = d.id.split('_'),
+			    uid = splitted[splitted.length - 1];
 			new AjaxGraphHandler().getJumpDataForGraph(uid);
 		}
 	}
@@ -585,8 +597,8 @@ function DiscussionGraph() {
 			d3.selectAll(".link").each(function(e) {
 				if (e.source.id === d.id && e.target.id === 'issue') {
 					// set display style of positions
-					d3.select('#label_' + d.id).style("display", style);
-					d3.select("#rect_" + d.id).style("display", style);
+					d3.select('#label-' + d.id).style("display", style);
+					d3.select("#rect-" + d.id).style("display", style);
 				}
 		    });
 		});
@@ -611,16 +623,13 @@ function DiscussionGraph() {
             })
 		});
 	}
-
+	
 	/**
-	 * Create svg for legend.
+	 * Select uid.
 	 */
-	function getLegendSvg() {
-        d3.select('#graphViewLegendId').append("svg")
-            .attr({width: 200, height: 500, id: "legend-svg"});
-		return d3.select("#legend-svg").append("g")
-            .attr({id: "graphLegend",
-				   transform: "translate(10,20)"});
+	function selectUid(id) {
+		var splitted = id.split('-');
+		return splitted[splitted.length - 1];
 	}
 
 	/**
@@ -634,7 +643,8 @@ function DiscussionGraph() {
 		var edgesCircleId = [];
 		// select all incoming and outgoing edges of selected circle
 		edges.forEach(function(d){
-			if(circleId.includes(d.source.id) || circleId.includes(d.target.id)) {
+			var circleUid = selectUid(circleId);
+			if(selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) {
 				edgesCircleId.push(d);
 			}
         });
@@ -695,10 +705,10 @@ function DiscussionGraph() {
 	 */
 	function highlightElements(edge){
 		// edges
-		d3.select('#link_' + edge.id).style('stroke', edge.color);
+		d3.select('#link-' + edge.id).style('stroke', edge.color);
 		// nodes
-		d3.select('#circle_' + edge.source.id).attr('fill', edge.source.color);
-		d3.select('#circle_' + edge.target.id).attr('fill', edge.target.color);
+		d3.select('#circle-' + edge.source.id).attr('fill', edge.source.color);
+		d3.select('#circle-' + edge.target.id).attr('fill', edge.target.color);
 		// arrows
 		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
 	}
@@ -755,10 +765,10 @@ function DiscussionGraph() {
      */
 	function grayingElements(edge) {
 		// edges
-        d3.select('#link_' + edge.id).style('stroke', '#E0E0E0');
+        d3.select('#link-' + edge.id).style('stroke', '#E0E0E0');
 		// nodes
-		d3.select('#circle_' + edge.source.id).attr('fill', '#E0E0E0');
-		d3.select('#circle_' + edge.target.id).attr('fill', '#E0E0E0');
+		d3.select('#circle-' + edge.source.id).attr('fill', '#E0E0E0');
+		d3.select('#circle-' + edge.target.id).attr('fill', '#E0E0E0');
 		// arrows
 		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', '#E0E0E0');
 	}
