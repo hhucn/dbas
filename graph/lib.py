@@ -30,7 +30,7 @@ def get_d3_data(issue, nickname):
     :return: dictionary
     """
     logger('GraphLib', 'get_d3_data', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first();
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     x = 0
     y = 0
