@@ -25,6 +25,15 @@ class Helper:
     """
 
     @staticmethod
+    def print_info(message=''):
+        """
+
+        :param message:
+        :return:
+        """
+        print('    ' + 'Info: ' + message)
+
+    @staticmethod
     def print_success(has_success, message=''):
         """
 
@@ -167,7 +176,7 @@ class FrontendTests:
         splitted_list = test_list.split(',')
         if len(splitted_list) == 1 and splitted_list[0] == 'a':
             splitted_list = []
-            for i in range(12):
+            for i in range(17):
                 splitted_list.append(str(i))
 
         start = time.time()
@@ -207,7 +216,11 @@ class FrontendTests:
             elif splitted_list[0].strip() == '16':
                 success_counter += Helper.test_wrapper('test for undo review in queue', FrontendTests.__test_undo_review_in_queue, browser_style)
             elif splitted_list[0].strip() == '17':
-                success_counter += Helper.test_wrapper('test for cancel review in queue', FrontendTests.__test_test_cancel_review_in_queue, browser_style)
+                success_counter += Helper.test_wrapper('test for cancel review in queue', FrontendTests.__test_cancel_review_in_queue, browser_style)
+            elif splitted_list[0].strip() == '18':
+                success_counter += Helper.test_wrapper('test for edit statement', FrontendTests.__test_edit_statement, browser_style)
+            elif splitted_list[0].strip() == '19':
+                success_counter += Helper.test_wrapper('test for edit as optimization', FrontendTests.__test_edit_as_optimization, browser_style)
             else:
                 print('Malicious list entry: ' + splitted_list[0])
             splitted_list.remove(splitted_list[0])
@@ -243,7 +256,8 @@ class FrontendTests:
         print('Starting tests for pages_not_logged_in:')
         success = True
         b = Browser(browser)
-        b = Helper.logout(b)
+        b.visit(main_page)
+        b.find_by_css('.dropdown-toggle[href="#language"]').click()
         b.find_by_id('link-trans-en').click()
 
         pages = [main_page,
@@ -254,7 +268,7 @@ class FrontendTests:
                  main_page + 'settings',
                  main_page + 'notifications',
                  main_page + 'admin/main',
-                 main_page + 'user/tobias']
+                 main_page + 'user/Tobias']
         tests = ['main',
                  'contact',
                  'news',
@@ -266,13 +280,13 @@ class FrontendTests:
                  'user']
         texts = ['part of the graduate school',
                  'Feel free to drop us a',
-                 'Speech Bubble System',
+                 'COMMA16',
                  'Liability for content',
                  'Current discussion is about:',
                  'part of the graduate school',
                  'part of the graduate school',
-                 '401',
-                 'tobias']
+                 'Dashboard',
+                 'Tobias']
         for index, p in enumerate(pages):
             b.visit(p)
             test = 'testing ' + tests[index] + ' page'
@@ -334,7 +348,7 @@ class FrontendTests:
             b.visit(p)
             test = 'testing ' + tests[index] + ' page'
             success = success and Helper.check_for_present_text(b, texts[index], test)
-            time.sleep(wait_time * 10)
+            time.sleep(wait_time * 2)
 
         b.quit()
         return 1 if success else 0
@@ -426,12 +440,13 @@ class FrontendTests:
         b.visit(main_page)
         success = Helper.check_for_present_text(b, 'part of the graduate', 'check english language')
 
-        b.click_link_by_partial_text('Language')
-        b.click_link_by_partial_text('Deutsch')
+        b.find_by_css('.dropdown-toggle[href="#language"]').click()
+        b.find_by_id('link-trans-de').click()
         success = success and Helper.check_for_present_text(b, 'Teil des Graduierten-Kollegs', 'check switch to german language')
 
-        b.click_link_by_partial_text('Sprache')
-        b.click_link_by_partial_text('English')
+        time.sleep(wait_time * 5)
+        b.find_by_css('.dropdown-toggle[href="#language"]').click()
+        b.find_by_id('link-trans-de').click()
         success = success and Helper.check_for_present_text(b, 'part of the graduate', 'check switch back to english language')
 
         b.quit()
@@ -450,6 +465,12 @@ class FrontendTests:
         b = Helper.login(b, nickname_test_user1, password, main_page + 'discussion')
 
         # check url popup
+        if not b.find_by_id('share-url').visible:
+            b.find_by_css('.hamburger span:first-child')[0].click()
+            time.sleep(wait_time * 2)
+            b.find_by_css('.tack-wrapper i')[0].click()
+
+        # long url
         b.find_by_id('share-url').click()
         success = success and Helper.check_for_present_text(b, 'Share your URL', 'check for share url popup')
         b.find_by_id('popup-url-sharing-long-url-button').click()
@@ -457,21 +478,16 @@ class FrontendTests:
         b.find_by_id('popup-url-sharing-close').click()
         time.sleep(wait_time)
 
-        # check edit statement popup
-        b.find_by_id('edit-statement').click()
-        success = success and Helper.check_for_present_text(b, 'Edit Statements / View Changelog', 'check for edit statements popup')
-        b.find_by_id('popup-edit-statement-close').click()
-        time.sleep(2 * wait_time)
-
         # check issue dropdown and switch issue
         b.find_by_id('issue-dropdown').click()
         success = success and Helper.check_for_present_text(b, 'Cat or Dog', 'check for issue dropdown')
         b.find_by_css('.dropdown-menu li.enabled a').click()
+        time.sleep(wait_time)
         if b.is_text_present('Change of discussion'):
             success = success and Helper.check_for_present_text(b, 'Change of discussion', 'check for change topic popup')
             b.find_by_id('confirm-dialog-checkbox-accept-btn').click()
             time.sleep(wait_time)
-        success = success and Helper.check_for_present_text(b, 'Your familiy argues', 'check for switched issue')
+        success = success and Helper.check_for_present_text(b, 'Your family argues', 'check for switched issue')
 
         # check finish
         b.find_by_id('finish-button').click()
@@ -527,7 +543,7 @@ class FrontendTests:
 
         # justification
         tmp1 = Helper.check_for_present_text(b, 'most important reason', 'check for justification 1')
-        tmp2 = Helper.check_for_present_text(b, 'Let me enter my reason!', 'check for justification 2')
+        tmp2 = Helper.check_for_present_text(b, 'Let me state my ', 'check for justification 2')
         success = success and (tmp1 or tmp2)
         time.sleep(wait_time)
 
@@ -646,17 +662,16 @@ class FrontendTests:
         time.sleep(wait_time)
 
         # confrontation - give feedback
-        success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question')
-        success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for acceptive formulation of rebut')
+        success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confronting question')
+        success = success and Helper.check_for_present_text(b, 'stronger argument for accepting', 'check for accepting formulation of rebut')
 
         # earlier used argument
         b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
-        time.sleep(wait_time)
         success = success and Helper.check_for_present_text(b, 'You used this earlier', 'check for earlier used formulation')
         b.back()
         time.sleep(wait_time)
 
-        while Helper.check_for_non_present_text(b, 'Right, it is true that every street festival is funded by large companies.', 'sanity check', print_message=False):
+        while Helper.check_for_non_present_text(b, 'every street festival is funded by large companies', 'sanity check', print_message=False):
             b.back()
             b.reload()
             time.sleep(wait_time)
@@ -677,7 +692,7 @@ class FrontendTests:
         time.sleep(wait_time)
 
         # confrontation - give feedback again
-        success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confrontative question again')
+        success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confronting question again')
         # b.find_by_css('#item_rebut label').click()
         b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
         time.sleep(wait_time)
@@ -702,10 +717,12 @@ class FrontendTests:
 
         # confrontation - give feedback
         success = success and Helper.check_for_present_text(b, 'does not hold', 'check for rejecting opinion')
-        success = success and Helper.check_for_present_text(b, 'stronger argument for rejecting', 'check for rejecting formulation of rebut')
+        tmp_success1 = b.is_text_present('stronger statement for accepting')
+        tmp_success2 = b.is_text_present('good counter-argument for')
+        Helper.print_success(tmp_success1 or tmp_success2, 'check for rejecting formulation of rebut')
+        success = success and (tmp_success1 or tmp_success2)
         # b.find_by_css('#item_rebut label').click()
         b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
-        time.sleep(wait_time)
 
         # rebut of confrontation
         success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for rejecting', 'check for formulation on rebut again')
@@ -731,14 +748,15 @@ class FrontendTests:
         success = success and Helper.check_for_present_text(b, nickname_test_user1, 'check for real nickname')
 
         b.visit(main_page + 'settings')
-        b.find_by_css('#info-table tr:last-child .toggle').click()
+        b.find_by_css('#settings-table tr:nth-child(3) .toggle').click()
         time.sleep(wait_time)
 
-        b.visit(main_page + 'user/' + nickname_test_user1)
-        success = success and Helper.check_for_present_text(b, '/user/' + nickname_test_user1, 'check for fake nickname')
+        fake_name = b.find_by_css('#info-table tr:nth-child(3) td:nth-child(2)').text
+        b.visit(main_page + 'user/' + fake_name)
+        success = success and Helper.check_for_present_text(b, fake_name, 'check for fake nickname')
 
         b.visit(main_page + 'settings')
-        b.find_by_css('#info-table tr:last-child .toggle').click()
+        b.find_by_css('#settings-table tr:nth-child(3) .toggle').click()
         time.sleep(wait_time)
 
         b.visit(main_page + 'user/' + nickname_test_user1)
@@ -850,8 +868,9 @@ class FrontendTests:
         success = True
         b = Browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page + 'review')
+        b.visit(main_page + 'review')
         time.sleep(wait_time)
-        old_count = b.find_by_css('#review-table tbody tr:last-child strong').text
+        old_count_for_users = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
 
         b.visit(main_page + 'discuss')
         time.sleep(wait_time)
@@ -871,9 +890,18 @@ class FrontendTests:
 
         b.visit(main_page + 'review')
         time.sleep(wait_time)
-        new_count = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
+        new_count_for_user1 = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
+        b = Helper.logout(b)
 
-        success = success and (int(new_count) == int(old_count) + 1)
+        b = Helper.login(b, nickname_test_user2, password, main_page + 'review')
+        b.visit(main_page + 'review')
+        time.sleep(wait_time)
+        new_count_for_user2 = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
+
+        success = success and (int(new_count_for_user1) == int(old_count_for_users))
+        Helper.print_success(success, 'Check review queue length for user, who has flagged (' + str(old_count_for_users) + '/' + str(new_count_for_user1) + ')')
+        success = success and (int(new_count_for_user2) == int(old_count_for_users) + 1)
+        Helper.print_success(success, 'Check review queue length for different user (' + str(old_count_for_users) + '/' + str(new_count_for_user2) + ')')
 
         b = Helper.logout(b)
         b.quit()
@@ -891,7 +919,7 @@ class FrontendTests:
         b = Browser(browser)
         b = Helper.login(b, nickname_test_user2, password, main_page + 'review')
         time.sleep(wait_time)
-        old_count = b.find_by_css('#review-table tbody tr:last-child strong').text
+        old_count = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
 
         b.visit(main_page + 'discuss/town-has-to-cut-spending/reaction/32/rebut/36')
         time.sleep(wait_time)
@@ -908,6 +936,8 @@ class FrontendTests:
         b.visit(main_page + 'review')
         time.sleep(wait_time)
         new_count = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
+
+        Helper.print_info('Old/new review count ' + str(old_count) + '/' + str(new_count))
 
         success = success and (int(new_count) == int(old_count) + 1)
 
@@ -927,37 +957,46 @@ class FrontendTests:
         b = Browser(browser)
 
         # login, have a look at the deletes, search for the text of pascal and vote for delete
-        b = Helper.login(b, nickname_real_user1, nickname_real_user1.lower(), main_page + 'deletes')
+        b = Helper.login(b, nickname_real_user1, nickname_real_user1.lower(), main_page + 'review/deletes')
         while not b.is_text_present('Pascal'):
             b.reload()
             time.sleep(wait_time)
         text = b.find_by_css('#reviewed-argument-text').text
-        b.find_by_css('#del_nack').click()
+        b.find_by_css('#del_ack').click()
         time.sleep(wait_time)
         b = Helper.logout(b)
 
         # login, have a look at the deletes, search for saved text and vote for delete
-        b = Helper.login(b, nickname_real_user2, nickname_real_user2.lower(), main_page + 'deletes')
+        b = Helper.login(b, nickname_real_user2, nickname_real_user2.lower(), main_page + 'review/deletes')
         while not b.is_text_present(text):
             b.reload()
             time.sleep(wait_time)
-        b.find_by_css('#del_nack').click()
+        b.find_by_css('#del_ack').click()
         time.sleep(wait_time)
         b = Helper.logout(b)
 
         # login, have a look at the deletes, search for saved text and vote for delete
-        b = Helper.login(b, nickname_real_user3, nickname_real_user3.lower(), main_page + 'deletes')
+        b = Helper.login(b, nickname_real_user3, nickname_real_user3.lower(), main_page + 'review/ongoing')
+        time.sleep(wait_time)
+        success = success and Helper.check_for_present_text(b, text[0:15], 'Check for the text of revised statement in ongoing queue (must be there)')
+
+        b.visit(main_page + 'review/deletes')
         while not b.is_text_present(text):
             b.reload()
             time.sleep(wait_time)
-        b.find_by_css('#del_nack').click()
+        b.find_by_css('#del_ack').click()
         time.sleep(wait_time)
+
+        b.visit(main_page + 'review/ongoing')
+        success = success and Helper.check_for_non_present_text(b, text[0:15], 'Check for the text of revised statement in ongoing queue (must be gone)')
+        b.visit(main_page + 'review/history')
+        success = success and Helper.check_for_present_text(b, text[0:15], 'Check for the text of revised statement in history queue (must be there)')
         b = Helper.logout(b)
 
         # have a look at the discussion page and check, whether the text ist not visible!
         b.visit(main_page + 'discuss')
         time.sleep(wait_time)
-        success = success and not b.is_text_present(text)
+        success = success and Helper.check_for_non_present_text(b, text, 'Check for the forbidden text "' + text + '"')
 
         b = Helper.logout(b)
         b.quit()
@@ -968,22 +1007,22 @@ class FrontendTests:
         """
         Testing some review mechanism
         :param browser: current browser
+        :param text:
         :return: 1 if success else 0
         """
         print('Starting tests for undo review in queue:')
         success = True
         b = Browser(browser)
-        b = Helper.login(b, nickname_test_user1, password, main_page + 'user/' + nickname_test_user1)
+        b = Helper.login(b, nickname_test_user1, password, main_page)
 
-        # undo statement from previous test
-        # check, if this exists
+        Helper.print_info('TODO')
 
         b = Helper.logout(b)
         b.quit()
         return 1 if success else 0
 
     @staticmethod
-    def __test_test_cancel_review_in_queue(browser):
+    def __test_cancel_review_in_queue(browser):
         """
         Testing some review mechanism
         :param browser: current browser
@@ -992,17 +1031,84 @@ class FrontendTests:
         print('Starting tests for cancel review in queue:')
         success = True
         b = Browser(browser)
-        b = Helper.login(b, nickname_test_user1, password, main_page + 'user/' + nickname_test_user1)
+        b = Helper.login(b, nickname_test_user1, password, main_page)
+
+        Helper.print_info('TODO')
 
         b = Helper.logout(b)
         b.quit()
         return 1 if success else 0
 
+    @staticmethod
+    def __test_edit_statement(browser):
+        """
+        Testing some review mechanism
+        :param browser: current browser
+        :return: 1 if success else 0
+        """
+        print('Starting tests for edit statement:')
+        success = True
+        b = Browser(browser)
+        b = Helper.login(b, nickname_test_user1, password, main_page + 'review')
+        time.sleep(wait_time)
+        old_count_for_users = b.find_by_css('#review-table tbody tr:nth-child(3) strong').text
+
+        # hover edit flag
+        b.visit(main_page + 'discuss')
+        time.sleep(wait_time)
+        text = b.find_by_css('#discussions-space-list li:nth-child(2) label').text
+        b.find_by_css('#discussions-space-list li:nth-child(2)').mouse_over()
+        time.sleep(wait_time)
+        b.find_by_css('#discussions-space-list li:nth-child(2) .item-edit').click()
+        time.sleep(wait_time)
+
+        b.fill('popup-edit-statement-input-0', text + '#42')
+        time.sleep(wait_time)
+
+        b.find_by_css('#popup-edit-statement-submit').click()
+        success = success and Helper.check_for_present_text(b, 'Your proposals', 'Check for general success popup after edit')
+
+        b.visit(main_page + 'review')
+        time.sleep(wait_time)
+        new_count_for_user1 = b.find_by_css('#review-table tbody tr:nth-child(3) strong').text
+        b = Helper.logout(b)
+
+        b = Helper.login(b, nickname_test_user2, password, main_page + 'review')
+        b.visit(main_page + 'review')
+        time.sleep(wait_time)
+        new_count_for_user2 = b.find_by_css('#review-table tbody tr:nth-child(3) strong').text
+
+        success = success and (int(new_count_for_user1) == int(old_count_for_users))
+        Helper.print_success(success, 'Check review queue length for user, who has flagged (' + str(old_count_for_users) + '/' + str(new_count_for_user1) + ')')
+        success = success and (int(new_count_for_user2) == int(old_count_for_users) + 1)
+        Helper.print_success(success, 'Check review queue length for different user (' + str(old_count_for_users) + '/' + str(new_count_for_user2) + ')')
+
+        b = Helper.logout(b)
+        b.quit()
+        return 1 if success else 0
+
+    @staticmethod
+    def __test_edit_as_optimization(browser):
+        """
+        Testing some review mechanism
+        :param browser: current browser
+        :return: 1 if success else 0
+        """
+        print('Starting tests for cancel review in queue:')
+        success = True
+        b = Browser(browser)
+        b = Helper.login(b, nickname_test_user1, password, main_page)
+
+        Helper.print_info('TODO')
+
+        b = Helper.logout(b)
+        b.quit()
+        return 1 if success else 0
 
 if __name__ == "__main__":
-    print('  /--------------------------------------/')
-    print(' / PLEASE USE A FRESH DB WITH DUMMY DATA/')
-    print('/--------------------------------------/')
+    print('  /---------------------------------------/')
+    print(' / PLEASE USE A FRESH DB WITH DUMMY DATA /')
+    print('/---------------------------------------/')
     print('')
     print('Please choose a web browser:')
     print('  [b]reak')
@@ -1028,9 +1134,11 @@ if __name__ == "__main__":
     print('  [12] tests for review page')
     print('  [13] tests for flag statement')
     print('  [14] tests for flag argument')
-    print('  [15] tests for review queue')
-    print('  [16] tests for undo review in queue (only with 15!)')
+    print('  [15] tests for review queue (only with 13!)')
+    print('  [16] tests for undo review in queue')
     print('  [17] tests for cancel review in queue')
+    print('  [18] tests for edit statement')
+    print('  [19] tests for edit as optimization')
     input_list = input('You can enter a number, like 3, or a list, like 5,2,9: ')
 
     if str(input_browser) != 'b':
