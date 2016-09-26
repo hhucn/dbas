@@ -314,8 +314,9 @@ class StatementSeenBy(DiscussionBase):
     List of users, which have seen a statement
     """
     __tablename__ = 'statement_seen_by'
-    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
-    user_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+    uid = Column(Integer, primary_key=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    user_uid = Column(Integer, ForeignKey('users.uid'))
 
     statements = relationship('Statement', foreign_keys=[statement_uid])
     users = relationship('User', foreign_keys=[user_uid])
@@ -330,8 +331,9 @@ class ArgumentSeenBy(DiscussionBase):
     List of users, which have seen a argument
     """
     __tablename__ = 'argument_seen_by'
-    argument_uid = Column(Integer, ForeignKey('arguments.uid'), primary_key=True)
-    user_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+    uid = Column(Integer, primary_key=True)
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    user_uid = Column(Integer, ForeignKey('users.uid'))
 
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     users = relationship('User', foreign_keys=[user_uid])

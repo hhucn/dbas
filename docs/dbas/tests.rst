@@ -47,7 +47,7 @@ If you want to add a tests, please follow these steps:
 
 1. Open tests/splinterTests.py
 
-2. Add your test function in Webtests.run_all_tests() by following this scheme::
+2. Add your test function in Webtests.run_tests() by following this scheme::
 
     success_counter += Helper.test_wrapper('tests for XYZ', self.__test_YOUR_TEST_METHOD, self.browser_style)
 

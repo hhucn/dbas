@@ -126,7 +126,7 @@ def main(global_config, **settings):
     config.add_route('ajax_notification_delete', 'ajax_notification_delete')
     config.add_route('ajax_get_arguments_by_statement_uid', 'ajax_get_arguments_by_statement/{uid}')
     config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
-    config.add_route('ajax_flag_argument', '{url:.*}ajax_flag_argument')
+    config.add_route('ajax_flag_argument_or_statement', '{url:.*}ajax_flag_argument_or_statement')
     config.add_route('ajax_review_delete_argument', '{url:.*}ajax_review_delete_argument')
     config.add_route('ajax_review_optimization_argument', '{url:.*}ajax_review_optimization_argument')
     config.add_route('ajax_review_edit_argument', '{url:.*}ajax_review_edit_argument')

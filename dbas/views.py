@@ -2093,33 +2093,33 @@ class Dbas(object):
 # #######################################
 
     # ajax - for flagging arguments
-    @view_config(route_name='ajax_flag_argument', renderer='json')
-    def flag_argument(self):
+    @view_config(route_name='ajax_flag_argument_or_statement', renderer='json')
+    def flag_argument_or_statement(self):
         """
 
         :return:
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('flag_argument', 'def', 'main: ' + str(self.request.params))
+        logger('flag_argument_or_statement', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
         _t = Translator(ui_locales)
         return_dict = dict()
 
         try:
-            argument_uid = self.request.params['argument_uid']
+            uid = self.request.params['uid']
             reason = self.request.params['reason']
             is_argument = True if str(self.request.params['is_argument']) == 'true' else False
             nickname = self.request.authenticated_userid
 
             db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
 
-            if not Validator.is_integer(argument_uid):
+            if not Validator.is_integer(uid):
                 return_dict['error'] = _t.get(_t.internalError)
             elif not (len(db_reason) > 0 or reason == 'optimization'):
                 return_dict['error'] = _t.get(_t.internalError)
             else:
 
-                success, info, error = ReviewFlagHelper.flag_argument(argument_uid, reason, nickname, _t, is_argument, transaction)
+                success, info, error = ReviewFlagHelper.flag_argument(uid, reason, nickname, _t, is_argument, transaction)
 
                 return_dict['success'] = success
                 return_dict['info'] = info
