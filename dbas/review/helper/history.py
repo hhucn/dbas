@@ -132,7 +132,7 @@ def __get_executed_reviews_of(table, mainpage, table_type, last_review_type, tra
         if fulltext.startswith(intro):
             shorttext += fulltext[len(intro):len(intro) + 1].upper() + fulltext[len(intro) + 1:len(intro) + 15]
         else:
-            shorttext += fulltext[0:15]
+            shorttext += fulltext[0:25]
         shorttext += '...' + '<span>'
 
         # getting all pro and contra votes for this review
