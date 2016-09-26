@@ -521,6 +521,7 @@ function GuiHandler() {
 			var input = $('<input>')
 				.addClass('form-control')
 				.attr('id', 'popup-edit-statement-input-' + counter)
+				.attr('name', 'popup-edit-statement-input-' + counter)
 				.attr('type', text)
 				.attr('placeholder', $(this).text())
 				.attr('data-statement-uid', $(this).attr('id'))

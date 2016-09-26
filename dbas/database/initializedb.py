@@ -593,7 +593,7 @@ def set_up_issue(session, user, lang1, lang2):
     """
     # adding our main issue
     issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
-    issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
+    issue2 = Issue(title='Cat or Dog', info='Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
     #  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
     issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
     issue5 = Issue(title='Unterstützung der Sekretariate', info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.', author_uid=user.uid, lang_uid=lang2.uid)

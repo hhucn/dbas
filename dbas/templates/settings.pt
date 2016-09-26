@@ -39,7 +39,7 @@
 				</div>
 				<div class="col-md-5">
 					<h4><span class="glyphicon glyphicon-cog" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="settings">Settings</span></h4>
-					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+					<table id="settings-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span><i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_notifications"></i></td>
 							<td class="text-center">

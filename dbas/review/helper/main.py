@@ -73,7 +73,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, translato
     reached_max = max(count_of_keep, count_of_delete) >= max_votes
     if reached_max:
         if count_of_delete > count_of_keep:  # disable the flagged part
-            en_or_disable_arguments_and_premise_of_review(db_review, True)
+            en_or_disable_object_of_review(db_review, True)
             add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
         else:  # just close the review
             add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
@@ -222,6 +222,35 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     return ''
 
 
+def en_or_disable_object_of_review(review, is_disabled):
+    """
+
+    :param review:
+    :param is_disabled:
+    :return:
+    """
+    logger('ReviewMainHelper', 'en_or_disable_object_of_review', str(review.uid) + ' ' + str(is_disabled))
+    if review.statement_uid is not None:
+        en_or_disable_statement_and_premise_of_review(review, True)
+    else:
+        en_or_disable_arguments_and_premise_of_review(review, True)
+
+
+def en_or_disable_statement_and_premise_of_review(review, is_disabled):
+    """
+
+    :param review:
+    :param is_disabled:
+    :return:
+    """
+    logger('ReviewMainHelper', 'en_or_disable_statement_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
+    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=review.statement_uid).first()
+    db_statement.set_disable(is_disabled)
+    db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).all()
+    for premise in db_premises:
+        premise.set_disable(is_disabled)
+
+
 def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     """
 
@@ -237,6 +266,7 @@ def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     for premise in db_premises:
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
         db_statement.set_disable(is_disabled)
+        premise.set_disable(is_disabled)
 
     if db_argument.conclusion_uid is not None:
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
