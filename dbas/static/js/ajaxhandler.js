@@ -235,17 +235,17 @@ function AjaxMainHandler(){
 	
 	/**
 	 *
-	 * @param argument_uid
+	 * @param uid
 	 * @param reason
 	 * @param is_argument
 	 */
-	this.ajaxFlagArgument = function(argument_uid, reason, is_argument){
+	this.ajaxFlagArgumentOrStatement = function(uid, reason, is_argument){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_flag_argument',
+			url: 'ajax_flag_argument_or_statement',
 			method: 'POST',
 			data: {
-				argument_uid: argument_uid,
+				uid: uid,
 				reason: reason,
 				is_argument: is_argument
 			},

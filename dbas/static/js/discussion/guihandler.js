@@ -616,7 +616,7 @@ function GuiHandler() {
 		popup.modal('show');
 		popup.find('input').click(function () {
 			var reason = $(this).attr('value');
-			new AjaxMainHandler().ajaxFlagArgument(uid, reason, is_argument);
+			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
 			popup.find('input').prop( 'checked', false );
 			popup.modal('hide');
 		});

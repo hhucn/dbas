@@ -68,6 +68,7 @@ def main_discussion_reload(argv=sys.argv):
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         setup_review_database(DBDiscussionSession)
+        setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
 
@@ -84,6 +85,7 @@ def main_dummy_votes(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
+        setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
 
@@ -612,15 +614,15 @@ def setup_dummy_votes(session):
 
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
-    firstnames = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob',
+    first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob',
                   'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi',
                   'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly',
                   'Sybille', 'Ingeburg']
 
-    max_interval = len(firstnames) - 1
+    max_interval = len(first_names) - 1
 
-    new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, max_interval, firstnames, session)
-    new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, max_interval, firstnames, session)
+    new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, max_interval, first_names, session)
+    new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, max_interval, first_names, session)
 
     rat_arg_up = str(trunc(arg_up / len(db_arguments) * 100) / 100)
     rat_arg_down = str(trunc(arg_down / len(db_arguments) * 100) / 100)
@@ -644,6 +646,45 @@ def setup_dummy_votes(session):
     db_votearguments = session.query(VoteArgument).all()
     for va in db_votearguments:
         va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
+
+
+def setup_dummy_seen_by(session):
+    DBDiscussionSession.query(ArgumentSeenBy).delete()
+    DBDiscussionSession.query(StatementSeenBy).delete()
+
+    db_arguments = DBDiscussionSession.query(Argument).all()
+    db_statements = DBDiscussionSession.query(Statement).all()
+    first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob',
+                  'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi',
+                  'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly',
+                  'Sybille', 'Ingeburg']
+
+    argument_count = 0
+    statement_count = 0
+
+    for argument in db_arguments:
+        tmp_first_names = list(first_names)
+        max_interval = random.randint(10, len(tmp_first_names) - 1)
+        for i in range(0, max_interval):
+            nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
+            db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+            session.add(ArgumentSeenBy(argument_uid=argument.uid, user_uid=db_rnd_tst_user.uid))
+            tmp_first_names.remove(nick)
+            argument_count += 1
+
+    for statement in db_statements:
+        tmp_first_names = list(first_names)
+        max_interval = random.randint(10, len(tmp_first_names) - 1)
+        for i in range(0, max_interval):
+            nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
+            db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+            session.add(StatementSeenBy(statement_uid=statement.uid, user_uid=db_rnd_tst_user.uid))
+            tmp_first_names.remove(nick)
+            statement_count += 1
+
+    session.flush()
+    logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
+    logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
 def __set_votes_for_arguments(db_arguments, max_interval, firstnames, session):
