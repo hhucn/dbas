@@ -783,7 +783,7 @@
     			</div>
     			<div class="modal-body">
                     <p class="well well-sm" id="popup-flag-argument-text"></p>
-                    <form style="margin-top: -2em">
+                    <form>
                         <fieldset>
                             <div tal:repeat="statement discussion.extras" tal:omit-tag="">
                                 <br>

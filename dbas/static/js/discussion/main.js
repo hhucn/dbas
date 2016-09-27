@@ -187,7 +187,7 @@ function Main () {
 		
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			guiHandler.showFlagArgumentPopup(uid, true);
+			guiHandler.showFlagArgumentPopup(uid);
 		});
 		
 		var list = $('#' + discussionSpaceListId);
