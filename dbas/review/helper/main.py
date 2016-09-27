@@ -73,7 +73,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     reached_max = max(count_of_keep, count_of_delete) >= max_votes
     if reached_max:
         if count_of_delete > count_of_keep:  # disable the flagged part
-            en_or_disable_object_of_review(db_review, True)
+            en_or_disable_object_of_review(db_review, True, transaction)
             add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
         else:  # just close the review
             add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
@@ -86,7 +86,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
         db_review.update_timestamp()
 
     elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
-        en_or_disable_object_of_review(db_review, True)
+        en_or_disable_object_of_review(db_review, True, transaction)
         add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
         db_review.set_executed(True)
         db_review.update_timestamp()
@@ -189,12 +189,20 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     else:
         # add new edit
         argument_dict = {}
+        statement_dict = {}
         # sort the new edits by argument uid
         for d in data:
-            if d['argument'] in argument_dict:
-                argument_dict[d['argument']].append(d)
+            is_argument = d['argument'] > 0
+            if is_argument:
+                if d['argument'] in argument_dict:
+                    argument_dict[d['argument']].append(d)
+                else:
+                    argument_dict[d['argument']] = [d]
             else:
-                argument_dict[d['argument']] = [d]
+                if d['statement'] in statement_dict:
+                    statement_dict[d['statement']].append(d)
+                else:
+                    statement_dict[d['statement']] = [d]
 
         # add reviews
         new_edits = list()
@@ -204,9 +212,19 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
                                                                                ReviewEdit.argument_uid == argument_uid)).order_by(ReviewEdit.uid.desc()).first()
-            logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid))
+            logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
             for edit in argument_dict[argument_uid]:
-                new_edits.append(ReviewEditValue(db_review_edit.uid, edit['uid'], edit['type'], edit['val']))
+                new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid, statement=edit['uid'], typeof=edit['type'], content=edit['val']))
+
+        for statement_uid in statement_dict:
+            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=statement_uid))
+            DBDiscussionSession.flush()
+            transaction.commit()
+            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
+                                                                               ReviewEdit.statement_uid == statement_uid)).order_by(ReviewEdit.uid.desc()).first()
+            logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
+            for edit in statement_dict[statement_uid]:
+                new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid, statement=statement_uid, typeof=edit['type'], content=edit['val']))
 
         if len(new_edits) > 0:
             DBDiscussionSession.add_all(new_edits)
@@ -222,55 +240,67 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     return ''
 
 
-def en_or_disable_object_of_review(review, is_disabled):
+def en_or_disable_object_of_review(review, is_disabled, transaction):
     """
 
     :param review:
     :param is_disabled:
+    :param transaction:
     :return:
     """
     logger('ReviewMainHelper', 'en_or_disable_object_of_review', str(review.uid) + ' ' + str(is_disabled))
     if review.statement_uid is not None:
-        en_or_disable_statement_and_premise_of_review(review, True)
+        en_or_disable_statement_and_premise_of_review(review, is_disabled, transaction)
     else:
-        en_or_disable_arguments_and_premise_of_review(review, True)
+        en_or_disable_arguments_and_premise_of_review(review, is_disabled, transaction)
 
 
-def en_or_disable_statement_and_premise_of_review(review, is_disabled):
+def en_or_disable_statement_and_premise_of_review(review, is_disabled, transaction):
     """
 
     :param review:
     :param is_disabled:
+    :param transaction:
     :return:
     """
     logger('ReviewMainHelper', 'en_or_disable_statement_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=review.statement_uid).first()
     db_statement.set_disable(is_disabled)
+    DBDiscussionSession.add(db_statement)
     db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).all()
     for premise in db_premises:
         premise.set_disable(is_disabled)
+        DBDiscussionSession.add(premise)
+    DBDiscussionSession.flush()
+    transaction.commit()
 
 
-def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
+def en_or_disable_arguments_and_premise_of_review(review, is_disabled, transaction):
     """
 
     :param review:
     :param is_disabled:
+    :param transaction:
     :return:
     """
     logger('ReviewMainHelper', 'en_or_disable_arguments_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=review.argument_uid).first()
     db_argument.set_disable(is_disabled)
+    DBDiscussionSession.add(db_argument)
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 
     for premise in db_premises:
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
         db_statement.set_disable(is_disabled)
         premise.set_disable(is_disabled)
+        DBDiscussionSession.add(premise)
 
     if db_argument.conclusion_uid is not None:
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
         db_statement.set_disable(is_disabled)
+        DBDiscussionSession.add(db_statement)
+    DBDiscussionSession.flush()
+    transaction.commit()
 
 
 def accept_edit_review(review, transaction, db_user_created_flag):
@@ -281,7 +311,7 @@ def accept_edit_review(review, transaction, db_user_created_flag):
     :param db_user_created_flag:
     :return:
     """
-    db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=review.uid).all()
+    db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).all()
     db_user = DBDiscussionSession.query(User).filter_by(uid=review.detector_uid).first()
     for value in db_values:
         val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)

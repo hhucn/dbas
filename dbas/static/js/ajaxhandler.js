@@ -1202,7 +1202,7 @@ function AjaxReviewHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewOngoingsCallbacks().forUndoReview(data, queue, uid);
+			new ReviewHistoryCallbacks().forUndoReview(data, queue, uid);
 		}).fail(function reviewDeleteArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});

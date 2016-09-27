@@ -50,7 +50,7 @@ function Review() {
 		$.each($('#argument-part-table').find('input'), function(){
 			if ($(this).val().length > 0 && $(this).val() != $(this).attr('placeholder')) {
 				edit_array.push({
-					uid: $(this).data('statement'),
+					statement: $(this).data('statement'),
 					type: $(this).data('type'),
 					argument: $(this).data('argument'),
 					val: $(this).val()
@@ -59,7 +59,7 @@ function Review() {
 		});
 		
 		if (edit_array.length > 0){
-			var id = $('#send_edit').data('statement');
+			var id = $('#send_edit').data('id');
 			new AjaxReviewHandler().reviewOptimizationArgument(true, id, edit_array);
 		} else {
 			setGlobalInfoHandler('Ohh!', _t(noEditsInOptimization));

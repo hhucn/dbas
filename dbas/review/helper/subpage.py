@@ -300,7 +300,7 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
 
     # build correction
     correction = '<span class="text-muted">' + text + '</span>'
-    db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=rnd_review.uid).all()
+    db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).all()
     if not db_values:
         correction = translator.get(translator.internalKeyError)
     for value in db_values:
