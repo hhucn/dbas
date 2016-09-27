@@ -148,7 +148,7 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
 
     # justifying argument
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-    item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in)
+    item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, True, True, request,
                                               argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api)

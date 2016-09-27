@@ -190,6 +190,11 @@ function Main () {
 			guiHandler.showFlagArgumentPopup(uid);
 		});
 		
+		trianglel.find('.triangle-trash').click(function () {
+			// var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			alert('1) TODO DEL ' + uid);
+		});
+		
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
@@ -200,6 +205,11 @@ function Main () {
 		list.find('.item-edit').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
 			guiHandler.showEditStatementsPopup(uid);
+		});
+		
+		list.find('.item-trash').click(function () {
+			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
+			alert('2) TODO DEL ' + uid);
 		});
 		
 		// adding issues
@@ -424,11 +434,9 @@ function Main () {
 		
 		list.find('li').each(function(){
 			$(this).hover(function(){
-				$(this).find('.item-flag').show();
-				$(this).find('.item-edit').show();
+				$(this).find('.fa').parent().show();
 			}, function(){
-				$(this).find('.item-flag').hide();
-				$(this).find('.item-edit').hide();
+				$(this).find('.fa').parent().hide();
 			})
 		});
 	};

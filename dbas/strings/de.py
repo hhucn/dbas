@@ -252,6 +252,7 @@ class GermanDict:
         de_lang[_self.doesJustify] = 'gerechtfertigen, dass'
         de_lang[_self.doesNotJustify] = 'nicht gerechtfertigen, dass'
         de_lang[_self.deleteTrack] = 'Track löschen'
+        de_lang[_self.deleteStatement] = 'Aussage löschen'
         de_lang[_self.deleteHistory] = 'History löschen'
         de_lang[_self.doYouWantToEnterYourStatements] = 'Möchten Sie Ihre eigenen Gründe angeben?'
         de_lang[_self.doNotHesitateToContact] = 'Zögern Sie nicht, uns zu <span style="cursor: pointer;" id="contact-on-error"><strong>kontaktieren (hier klicken)</strong></span>'

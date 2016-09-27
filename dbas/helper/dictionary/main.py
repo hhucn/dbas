@@ -385,6 +385,7 @@ class DictionaryHelper(object):
                                 'edit_statement': _tn_dis.get(_tn_dis.editTitle),
                                 'view_changelog': _tn_dis.get(_tn_dis.viewChangelog),
                                 'report_statement': _tn_dis.get(_tn_dis.reportTitle),
+                                'delete_statement': _tn_dis.get(_tn_dis.deleteStatement),
                                 'report_title': _tn_dis.get(_tn_dis.reportTitle),
                                 'finish_title': _tn_dis.get(_tn_dis.finishTitle),
                                 'question_title': _tn_dis.get(_tn_dis.questionTitle),

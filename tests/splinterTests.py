@@ -903,22 +903,26 @@ class FrontendTests:
         b.visit(main_page + 'discuss/town-has-to-cut-spending/reaction/32/rebut/36')
         time.sleep(wait_time)
         b.find_by_css('.pull-right .fa-flag').click()
-        time.sleep(wait_time)
+        time.sleep(wait_time * 5)
+        b.find_by_css('#flag_interference').click()
+        time.sleep(wait_time * 5)
         b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'Thanks for reporting', 'Success text for flagging')
 
         b.find_by_css('.pull-right .fa-flag').click()
-        time.sleep(wait_time)
+        time.sleep(wait_time * 5)
+        b.find_by_css('#flag_interference').click()
+        time.sleep(wait_time * 5)
         b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'You have already reported this argument', 'Info text for flagging')
         b = Helper.logout(b)
 
-        b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page + 'review')
+        b = Helper.login(b, nickname_real_user3, nickname_real_password3, main_page + 'review')
         b.visit(main_page + 'review')
         time.sleep(wait_time)
         new_count = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
 
-        Helper.print_success(int(new_count) > int(old_count), 'New review count smaller than old one (' + str(new_count) + '>' + str(old_count) + ')')
+        Helper.print_success(int(new_count) > int(old_count), 'New review count greater than old one (' + str(new_count) + '>' + str(old_count) + ')')
         success = success and (int(new_count) > int(old_count))
 
         b = Helper.logout(b)

@@ -7,7 +7,8 @@ import dbas.helper.history as HistoryHelper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise
-from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
+    get_text_for_conclusion, create_speechbubble_dict, is_author_of_argument
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -244,7 +245,7 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-    def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history):
+    def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history, nickname):
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
@@ -253,6 +254,7 @@ class DiscussionDictHelper(object):
         :param additional_uid: Argument.uid
         :param attack: String (undermine, support, undercut, rebut, ...)
         :param history: History
+        :param nickname: Users nickname
         :return: dict()
         """
         logger('DictionaryHelper', 'get_dict_for_argumentation', 'at_argumentation')
@@ -319,7 +321,7 @@ class DiscussionDictHelper(object):
             bubble_mid  = create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
         else:
             uid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
-            bubble_sys  = create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True, lang=self.lang, is_flaggable=True)
+            bubble_sys  = create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True, lang=self.lang, is_flaggable=True, is_author=is_author_of_argument(nickname, db_confrontation.uid))
             statement_list = self.__get_all_statement_by_argument(db_confrontation)
 
         # dirty fixes
