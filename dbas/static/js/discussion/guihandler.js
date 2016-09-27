@@ -647,23 +647,27 @@ function GuiHandler() {
 		// pretty stuff on hovering
 		popup.find('input').each(function(){
 			if ($(this).data('special') === '') {
+				var current = $(this).next().find('em').text().trim();
 				$(this).hover(function () {
-					var current = $(this).next().find('em').text().trim();
 					var modded_text = text.replace( new RegExp( "(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "<span class='text-primary'>$1</span>" );
 					$('#popup-flag-argument-text').html(modded_text);
+					$(this).next().find('em').text("<span class='text-primary'>" + current + "</span>");
 				}, function () {
 					$('#popup-flag-argument-text').text(text);
+					$(this).next().find('em').html(current);
 				});
 			}
 		});
 		popup.find('label').each(function(){
 			if ($(this).prev().data('special') === '') {
+				var current = $(this).find('em').text().trim();
 				$(this).hover(function () {
-					var current = $(this).find('em').text().trim();
 					var modded_text = text.replace( new RegExp( "(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "<span class='text-primary'>$1</span>" );
 					$('#popup-flag-argument-text').html(modded_text);
+					$(this).find('em').html("<span class='text-primary'>" + current + "</span>");
 				}, function () {
 					$('#popup-flag-argument-text').text(text);
+					$(this).find('em').text(current);
 				});
 			}
 		});
