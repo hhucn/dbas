@@ -789,13 +789,13 @@
                                 <br>
                                 <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument" data-special="">
                                 <label for="a" tal:attributes="for statement.uid">
-                                    <span i18n:translate="report">Report</span>: <em>${statement.text}</em>
+                                    <span i18n:translate="report">Report</span>: <em>${statement.text}</em>.
                                 </label>
                             </div>
                             <br>
                             <input type="radio" id="flag_interference_wrong" value="interference_wrong" name="flag-argument" data-special="undercut">
                             <label for="flag_interference_wrong">
-                                <span i18n:translate="argument_wrong">The justification is wrong.</span><br>
+                                <span i18n:translate="argument_wrong">The implication is wrong.</span><br>
                                 <small i18n:translate="argument_wrong_decription">The text itself is maybe right, but I do not see, that this is well-justified.</small>
                             </label>
                             <br>
