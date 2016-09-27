@@ -191,8 +191,8 @@ function Main () {
 		});
 		
 		trianglel.find('.triangle-trash').click(function () {
-			// var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			alert('1) TODO DEL ' + uid);
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			guiHandler.showDeleteContentPopup(uid, true);
 		});
 		
 		var list = $('#' + discussionSpaceListId);
@@ -209,7 +209,7 @@ function Main () {
 		
 		list.find('.item-trash').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
-			alert('2) TODO DEL ' + uid);
+			guiHandler.showDeleteContentPopup(uid, false);
 		});
 		
 		// adding issues

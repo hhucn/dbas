@@ -215,8 +215,7 @@ function InteractionHandler() {
 			}, 2500);
 		}
 	};
-
-
+	
 	/**
 	 *
 	 * @param data
@@ -237,8 +236,6 @@ function InteractionHandler() {
 			        .append($('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.issue.public_url).text(parsedData.issue.author)))
 			        .append($('<td>').append( $('<a>').attr('href', '#').attr('class' , 'btn btn-info btn-lg').append($('<span>').attr('class', 'glyphicon glyphicon-edit'))));
            	 space.append(tr);
-
-
 		} else {
 			$('#popup-add-topic-error-text').text(parsedData.error);
 			$('#popup-add-topic-error').show();
@@ -246,7 +243,20 @@ function InteractionHandler() {
 				$('#popup-add-topic-error').hide();
 			}, 2500);
 		}
-
+	};
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackIfDoneRevokeContent = function(data) {
+		var parsedData = $.parseJSON(data);
+		
+		if (parsedData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		} else {
+			window.location.reload();
+		}
 	};
 
 	/**

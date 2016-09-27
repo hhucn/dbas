@@ -604,6 +604,33 @@ function AjaxDiscussionHandler() {
 		});
 		callback.focus();
 	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param is_argument
+	 */
+	this.revokeContent = function(uid, is_argument){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_revoke_content',
+			method: 'GET',
+			dataType: 'json',
+			data: {
+				uid: uid, is_argument: is_argument
+			},
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxRevokeContentDone(data) {
+			new InteractionHandler().callbackIfDoneRevokeContent(data);
+		}).fail(function ajaxRevokeContentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			new GuiHandler().hideAndClearUrlSharingPopup();
+			//$('#' + popupUrlSharingInputId).val(long_url);
+		});
+	}
 }
 
 function AjaxUserHandler(){

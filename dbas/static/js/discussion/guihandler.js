@@ -672,6 +672,24 @@ function GuiHandler() {
 		});
 	};
 	
+	/**
+	 *
+	 * @param uid
+	 * @param is_argument
+	 */
+	this.showDeleteContentPopup = function(uid, is_argument){
+		var popup = $('#popup-delete-content');
+		popup.modal('show');
+		
+		$('#popup-delete-content-submit').click(function(){
+			new AjaxDiscussionHandler().revokeContent(uid, is_argument);
+		});
+		
+		$('#popup-delete-content-close').click(function(){
+			popup.modal('hide');
+		});
+	};
+	
      /**
 	 * Opens the edit issues popup
 	 */
