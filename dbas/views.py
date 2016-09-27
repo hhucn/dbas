@@ -462,7 +462,7 @@ class Dbas(object):
 
         discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, main_page=main_page, slug=slug)\
             .get_dict_for_start()
-        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True,
+        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                             False, True, self.request,
                                                                                             application_url=main_page,
                                                                                             for_api=for_api)
@@ -676,7 +676,7 @@ class Dbas(object):
         _idh            = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=self.request.path, history=history)
         discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
         item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
-        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True, True,
+        extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
                                                                                             True, self.request,
                                                                                             argument_id=arg_id_sys,
                                                                                             application_url=main_page,

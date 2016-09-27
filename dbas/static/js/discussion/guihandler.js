@@ -624,8 +624,9 @@ function GuiHandler() {
 	 * @param is_argument
 	 */
 	this.showFlagArgumentPopup = function(uid, is_argument){
-		alert('DEBUG');
 		var popup = $('#popup-flag-argument');
+		var text = $('.triangle-l:last-child .triangle-content').text();
+		$('#popup-flag-argument-text').text(text);
 		popup.modal('show');
 		popup.find('input').click(function () {
 			if ($(this).data('special') === 'undercut'){
@@ -641,6 +642,30 @@ function GuiHandler() {
 			}
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
+		});
+		
+		// pretty stuff on hovering
+		popup.find('input').each(function(){
+			if ($(this).data('special') === '') {
+				$(this).hover(function () {
+					var current = $(this).next().find('em').text().trim();
+					var modded_text = text.replace( new RegExp( "(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "<span class='text-primary'>$1</span>" );
+					$('#popup-flag-argument-text').html(modded_text);
+				}, function () {
+					$('#popup-flag-argument-text').text(text);
+				});
+			}
+		});
+		popup.find('label').each(function(){
+			if ($(this).prev().data('special') === '') {
+				$(this).hover(function () {
+					var current = $(this).find('em').text().trim();
+					var modded_text = text.replace( new RegExp( "(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "<span class='text-primary'>$1</span>" );
+					$('#popup-flag-argument-text').html(modded_text);
+				}, function () {
+					$('#popup-flag-argument-text').text(text);
+				});
+			}
 		});
 	};
 	
