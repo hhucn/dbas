@@ -1388,13 +1388,30 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([reference200, reference201])
     session.flush()
 
-
-def setup_review_database(session):
     reason1 = ReviewDeleteReason(reason='offtopic')
     reason2 = ReviewDeleteReason(reason='spam')
     reason3 = ReviewDeleteReason(reason='harmful')
     session.add_all([reason1, reason2, reason3])
     session.flush()
+
+    reputation01 = ReputationReason(reason='rep_reason_first_position', points=10)
+    reputation02 = ReputationReason(reason='rep_reason_first_justification', points=10)
+    reputation03 = ReputationReason(reason='rep_reason_first_argument_click', points=10)
+    reputation04 = ReputationReason(reason='rep_reason_first_confrontation', points=10)
+    reputation05 = ReputationReason(reason='rep_reason_first_new_argument', points=10)
+    reputation06 = ReputationReason(reason='rep_reason_new_statement', points=2)
+    reputation07 = ReputationReason(reason='rep_reason_success_flag', points=3)
+    reputation08 = ReputationReason(reason='rep_reason_success_edit', points=3)
+    reputation09 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
+    reputation10 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
+    session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07, reputation08, reputation09, reputation10])
+    session.flush()
+
+
+def setup_review_database(session):
+    reason1 = session.qeury(ReviewDeleteReason).filter_by(reason='offtopic').first()
+    reason2 = session.qeury(ReviewDeleteReason).filter_by(reason='spam').first()
+    reason3 = session.qeury(ReviewDeleteReason).filter_by(reason='harmful').first()
 
     int_start = 6
     int_end = 30
@@ -1444,18 +1461,16 @@ def setup_review_database(session):
                      reviewer17, reviewer18, reviewer19, reviewer20, reviewer21, reviewer22, reviewer23, reviewer24])
     session.flush()
 
-    reputation01 = ReputationReason(reason='rep_reason_first_position', points=10)
-    reputation02 = ReputationReason(reason='rep_reason_first_justification', points=10)
-    reputation03 = ReputationReason(reason='rep_reason_first_argument_click', points=10)
-    reputation04 = ReputationReason(reason='rep_reason_first_confrontation', points=10)
-    reputation05 = ReputationReason(reason='rep_reason_first_new_argument', points=10)
-    reputation06 = ReputationReason(reason='rep_reason_new_statement', points=2)
-    reputation07 = ReputationReason(reason='rep_reason_success_flag', points=3)
-    reputation08 = ReputationReason(reason='rep_reason_success_edit', points=3)
-    reputation09 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
-    reputation10 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
-    session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07, reputation08, reputation09, reputation10])
-    session.flush()
+    reputation01 = session.query(ReputationReason).filter_by(reason='rep_reason_first_position').first()
+    reputation02 = session.query(ReputationReason).filter_by(reason='rep_reason_first_justification').first()
+    reputation03 = session.query(ReputationReason).filter_by(reason='rep_reason_first_argument_click').first()
+    reputation04 = session.query(ReputationReason).filter_by(reason='rep_reason_first_confrontation').first()
+    reputation05 = session.query(ReputationReason).filter_by(reason='rep_reason_first_new_argument').first()
+    reputation06 = session.query(ReputationReason).filter_by(reason='rep_reason_new_statement').first()
+    reputation07 = session.query(ReputationReason).filter_by(reason='rep_reason_success_flag').first()
+    reputation08 = session.query(ReputationReason).filter_by(reason='rep_reason_success_edit').first()
+    reputation09 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_flag').first()
+    reputation10 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
 
     martin = session.query(User).filter_by(nickname='Martin').first()
     christian = session.query(User).filter_by(nickname='Christian').first()
