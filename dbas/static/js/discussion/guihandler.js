@@ -621,9 +621,8 @@ function GuiHandler() {
 	/**
 	 *
 	 * @param uid
-	 * @param is_argument
 	 */
-	this.showFlagArgumentPopup = function(uid, is_argument){
+	this.showFlagArgumentPopup = function(uid){
 		var popup = $('#popup-flag-argument');
 		var text = $('.triangle-l:last-child .triangle-content').text();
 		$('#popup-flag-argument-text').text(text);
