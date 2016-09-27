@@ -248,14 +248,18 @@ function InteractionHandler() {
 	/**
 	 *
 	 * @param data
+	 * @param is_argument
 	 */
-	this.callbackIfDoneRevokeContent = function(data) {
+	this.callbackIfDoneRevokeContent = function(data, is_argument) {
 		var parsedData = $.parseJSON(data);
 		
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
-			window.location.reload();
+			if (is_argument)
+				window.history.back();
+			else
+				window.location.reload();
 		}
 	};
 

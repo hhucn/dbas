@@ -624,7 +624,7 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxRevokeContentDone(data) {
-			new InteractionHandler().callbackIfDoneRevokeContent(data);
+			new InteractionHandler().callbackIfDoneRevokeContent(data, is_argument);
 		}).fail(function ajaxRevokeContentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			new GuiHandler().hideAndClearUrlSharingPopup();
