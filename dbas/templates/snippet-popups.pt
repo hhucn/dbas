@@ -811,6 +811,28 @@
     	</div>
     </div>
 
+    <!-- DELETE CONTENT-->
+    <div class="modal fade" id="popup-delete-content" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel">
+                        <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i> <span i18n:translate="caution">Caution</span>
+                    </h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead" i18n:translate="do_you_really_step_irreversible">Do you really want to delete this content? This step is irreversible!</p>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-danger" id="popup-delete-content-submit">${structure:extras.tag.delete}</button>
+    				<button type="button" class="btn btn-success" id="popup-delete-content-close">${structure:extras.tag.close}</button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
     <!-- SHOW POSITIONS -->
     <div class="modal fade" id="popup-jump-graph" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog">

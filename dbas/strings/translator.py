@@ -185,6 +185,7 @@ class Translator(object):
         self.doNotHesitateToContact = 'doNotHesitateToContact'
         self.dbasPwdRequest = 'dbasPwdRequest'
         self.defaultView = 'defaultView'
+        self.delete = 'delete'
         self.earlierYouArguedThat = 'earlierYouArguedThat'
         self.editIndex = 'editIndex'
         self.editIndexInfo = 'editIndexInfo'

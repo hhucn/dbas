@@ -1203,6 +1203,42 @@ class FrontendTests:
         b.quit()
         return 1 if success else 0
 
+    @staticmethod
+    def test_delete_own_statement(browser):
+        """
+        Testing some delete thing
+        :param browser: current browser
+        :return: 1 if success else 0
+        """
+        print('Starting tests for deleting the own statement:')
+        success = True
+        b = Browser(browser)
+        b = Helper.login(b, nickname_test_user1, password, main_page  + 'discuss')
+
+        Helper.print_info('TODO')
+
+        b = Helper.logout(b)
+        b.quit()
+        return 1 if success else 0
+
+    @staticmethod
+    def test_delete_own_argument(browser):
+        """
+        Testing some delete thing
+        :param browser: current browser
+        :return: 1 if success else 0
+        """
+        print('Starting tests for deleting the own argument:')
+        success = True
+        b = Browser(browser)
+        b = Helper.login(b, nickname_test_user1, password, main_page  + 'discuss')
+
+        Helper.print_info('TODO')
+
+        b = Helper.logout(b)
+        b.quit()
+        return 1 if success else 0
+
 
 test_list = [
     {'console_description': 'tests for normal/not logged in pages',
@@ -1284,7 +1320,15 @@ test_list = [
     {'console_description': 'tests for edit as optimization',
      'test_description': 'test for edit as optimization',
      'test_call': FrontendTests.test_edit_as_optimization,
-     'test_id': 19}
+     'test_id': 19},
+    {'console_description': 'tests for delete my own statement',
+     'test_description': 'test for delete my own statement',
+     'test_call': FrontendTests.test_delete_own_statement,
+     'test_id': 20},
+    {'console_description': 'tests for delete my own argument',
+     'test_description': 'test for delete my own argument',
+     'test_call': FrontendTests.test_delete_own_argument,
+     'test_id': 21}
 ]
 
 if __name__ == "__main__":

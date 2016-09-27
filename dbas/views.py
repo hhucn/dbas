@@ -2331,3 +2331,38 @@ class Dbas(object):
         return_dict['is_locked'] = is_locked
 
         return json.dumps(return_dict, True)
+
+    # ajax - for revoking content
+    @view_config(route_name='ajax_revoke_content', renderer='json', require_csrf=False)
+    def review_lock(self):
+        """
+
+        :return:
+        """
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('ajax_revoke_content', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_discussion_language(self.request)
+        _t = Translator(ui_locales)
+        return_dict = dict()
+
+        info = ''
+        success = ''
+
+        try:
+            uid = self.request.params['uid']
+            is_argument = True if self.request.params['is_argument'] == 'true' else False
+
+            if not Validator.is_integer(uid):
+                error = _t.get(_t.internalKeyError)
+            else:
+                error = QueryHelper.revoke_content(uid, is_argument, self.request.authenticated_userid, _t, transaction)
+
+        except KeyError as e:
+            logger('review_lock', 'error', repr(e))
+            error = _t.get(_t.internalKeyError)
+
+        return_dict['info'] = info
+        return_dict['error'] = error
+        return_dict['success'] = success
+
+        return json.dumps(return_dict, True)
