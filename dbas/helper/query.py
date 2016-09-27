@@ -12,11 +12,12 @@ from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, \
-    VoteStatement, Issue
+    VoteStatement, Issue, RevokedContent
 from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, \
-    get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid
+    get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid,\
+    is_author_of_argument, is_author_of_statement
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -678,3 +679,144 @@ class QueryHelper:
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(PremiseGroup.uid.desc()).first()
 
         return db_premisegroup.uid
+
+    @staticmethod
+    def revoke_content(uid, is_argument, nickname, translator, transaction):
+        """
+
+        :param uid:
+        :param is_argument:
+        :param nickname:
+        :param translator:
+        :param transaction:
+        :return:
+        """
+        logger('QueryHelper', 'revoke_content', str(uid) + (' argument' if is_argument else ' statement'))
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if not db_user:
+            logger('QueryHelper', 'revoke_content', 'User not found')
+            return translator.get(translator.internalError)
+
+        # get element, which should be revoked
+        if is_argument:
+            db_element, error = QueryHelper.__revoke_argument(db_user, uid, transaction, translator)
+            if len(error) > 0:
+                return error
+        else:
+            db_element, error = QueryHelper.__revoke_statement(db_user, uid, transaction, translator)
+            if len(error) > 0:
+                return error
+
+        # write log
+        if is_argument:
+            DBDiscussionSession.add(RevokedContent(db_user.uid, argument=db_element.uid))
+        else:
+            DBDiscussionSession.add(RevokedContent(db_user.uid, statement=db_element.uid))
+
+        DBDiscussionSession.add(db_element)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+        return ''
+
+    @staticmethod
+    def __revoke_argument(db_user, uid, transaction, translator):
+        """
+
+        :param db_user:
+        :param uid:
+        :param transaction:
+        :param translator:
+        :return:
+        """
+        db_element = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        is_author = is_author_of_argument(db_user.nickname, uid)
+
+        # exists the argument
+        if not db_element or not is_author:
+            logger('QueryHelper', 'revoke_content', 'Argument does not exists or ' + db_user.nickname + ' is not the author')
+            return None, translator.get(translator.internalError)
+
+        db_element.set_disable(True)
+
+        DBDiscussionSession.add(db_element)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return db_element, ''
+
+    @staticmethod
+    def __revoke_statement(db_user, uid, transaction, translator):
+        """
+
+        :param db_user:
+        :param uid:
+        :param transaction:
+        :param translator:
+        :return:
+        """
+        logger('QueryHelper', 'revoke_content', 'Statement ' + str(uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
+        db_element = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+        is_author = is_author_of_statement(db_user.nickname, uid)
+
+        # exists the statement
+        if not db_element or not is_author:
+            logger('QueryHelper', 'revoke_content', 'Statement does not exists or ' + db_user.nickname + ' is not the author')
+            return None, translator.get(translator.internalError)
+
+        # transfer the responsibility to the next author, who used this statement
+        db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == uid,
+                                                                                     Argument.is_supportive == True,
+                                                                                     Argument.author_uid != db_user.uid)).first()
+        # search new author who supported this statement
+        if db_statement_as_conclusion:
+            logger('QueryHelper', 'revoke_content', 'Statement ' + str(uid) + ' has a new author ' + str(db_statement_as_conclusion.author_uid) + ' (old author ' + str(db_user.uid) + ')')
+            db_element.author_uid = db_statement_as_conclusion.author_uid
+            QueryHelper.__transfer_textversion_to_new_author(uid, db_user.uid, db_statement_as_conclusion.author_uid, transaction)
+        else:
+            logger('QueryHelper', 'revoke_content',
+                   'Statement ' + str(uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
+            db_element.set_disable(True)
+            QueryHelper.__disable_textversions(uid, db_user.uid, transaction)
+
+        DBDiscussionSession.add(db_element)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+        return db_element, ''
+
+    @staticmethod
+    def __disable_textversions(statement_uid, author, transaction):
+        """
+
+        :param statement_uid:
+        :param author:
+        :param transaction:
+        :return:
+        """
+        db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
+                                                                            TextVersion.author_uid == author)).all()
+        for textversion in db_textversion:
+            textversion.set_disable(True)
+            DBDiscussionSession.add(textversion)
+
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    @staticmethod
+    def __transfer_textversion_to_new_author(statement_uid, old_author, new_author, transaction):
+        """
+
+        :param statement_uid:
+        :param old_author:
+        :param new_author:
+        :param transaction:
+        :return:
+        """
+        db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
+                                                                            TextVersion.author_uid == old_author)).all()
+        for textversion in db_textversion:
+            textversion.author_uid = new_author
+            DBDiscussionSession.add(textversion)
+
+        DBDiscussionSession.flush()
+        transaction.commit()

@@ -1031,6 +1031,7 @@ class ReviewCanceled(DiscussionBase):
     review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'), nullable=True)
     review_delete_uid = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
     review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
+    timestamp = Column(ArrowType, default=get_now())
 
     authors = relationship('User', foreign_keys=[author_uid])
     edits = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
@@ -1050,3 +1051,23 @@ class ReviewCanceled(DiscussionBase):
         self.review_edit_uid = review_edit
         self.review_delete_uid = review_delete
         self.review_optimization_uid = review_optimization
+        self.timestamp = get_now()
+
+
+class RevokedContent(DiscussionBase):
+    __tablename__ = 'revoked_content'
+    uid = Column(Integer, primary_key=True)
+    author_uid = Column(Integer, ForeignKey('users.uid'))
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+
+    authors = relationship('User', foreign_keys=[author_uid])
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
+    def __init__(self, author, argument=None, statement=None):
+        self.author_uid = author
+        self.argument_uid = argument
+        self.statement_uid = statement
+        self.timestamp = get_now()

@@ -421,6 +421,7 @@ class DictionaryHelper(object):
             'save': _tn_dis.get(_tn_dis.save),
             'cancel': _tn_dis.get(_tn_dis.cancel),
             'submit': _tn_dis.get(_tn_dis.submit),
+            'delete': _tn_dis.get(_tn_dis.delete),
             'close': _tn_dis.get(_tn_dis.close),
             'url_sharing': _tn_dis.get(_tn_dis.urlSharing),
             'url_sharing_description': _tn_dis.get(_tn_dis.urlSharingDescription),
