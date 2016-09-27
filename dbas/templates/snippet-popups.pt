@@ -739,7 +739,7 @@
     				<h4 class="modal-title" id="myModalLabel" i18n:translate="mark-reason">Please mark a reason</h4>
     			</div>
     			<div class="modal-body">
-                    <p class="well well-sm" id="popup-flag-statement-text" style="display: none;"></p>
+                    <p class="well well-sm" id="popup-flag-statement-text"></p>
                     <form>
                         <fieldset>
                             <input type="radio" id="opt" value="optimization" name="flag-statement">
@@ -786,22 +786,22 @@
                         <fieldset>
                             <div tal:repeat="statement discussion.extras" tal:omit-tag="">
                                 <br>
-                                <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument">
+                                <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument" data-special="">
                                 <label for="a" tal:attributes="for statement.uid">
                                     <span i18n:translate="report">Report</span>: <em>${statement.text}</em>
                                 </label>
                             </div>
                             <br>
-                            <input type="radio" id="flag_interference_wrong" value="interference_wrong" name="flag-argument">
+                            <input type="radio" id="flag_interference_wrong" value="interference_wrong" name="flag-argument" data-special="undercut">
                             <label for="flag_interference_wrong">
                                 <span i18n:translate="argument_wrong">The justification is wrong.</span><br>
                                 <small i18n:translate="argument_wrong_decription">The text itself is maybe right, but I do not see, that this is well-justified.</small>
                             </label>
                             <br>
-                            <input type="radio" id="flag_interference" value="interference" name="flag-argument">
+                            <input type="radio" id="flag_interference" value="interference" name="flag-argument" data-special="argument">
                             <label for="flag_interference">
-                                <span i18n:translate="flag_argument">Report whole argument.</span><br>
-                                <small i18n:translate="flag_argument_description">The implication has to be reported.</small>
+                                <span i18n:translate="flag_argument">Report whole argument, bceause it is harmful or abusive.</span><br>
+                                <small i18n:translate="statement_harmful_decription">Content is inappropriate, harmful or abusive.</small>
                             </label>
                         </fieldset>
                     </form>
