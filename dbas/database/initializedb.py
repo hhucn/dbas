@@ -1409,9 +1409,9 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 
 
 def setup_review_database(session):
-    reason1 = session.qeury(ReviewDeleteReason).filter_by(reason='offtopic').first()
-    reason2 = session.qeury(ReviewDeleteReason).filter_by(reason='spam').first()
-    reason3 = session.qeury(ReviewDeleteReason).filter_by(reason='harmful').first()
+    reason1 = session.query(ReviewDeleteReason).filter_by(reason='offtopic').first()
+    reason2 = session.query(ReviewDeleteReason).filter_by(reason='spam').first()
+    reason3 = session.query(ReviewDeleteReason).filter_by(reason='harmful').first()
 
     int_start = 6
     int_end = 30
