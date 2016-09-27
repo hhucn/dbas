@@ -773,7 +773,7 @@
     </div>
 
     <!-- FLAG ARGUMENTS -->
-    <div class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div tal:condition="extras.is_reportable" class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
@@ -782,7 +782,8 @@
     				<h4 class="modal-title" id="myModalLabel" i18n:translate="select-part">Please select a part, which should be reported</h4>
     			</div>
     			<div class="modal-body">
-                    <form>
+                    <p class="well well-sm" id="popup-flag-argument-text"></p>
+                    <form style="margin-top: -2em">
                         <fieldset>
                             <div tal:repeat="statement discussion.extras" tal:omit-tag="">
                                 <br>
@@ -800,7 +801,7 @@
                             <br>
                             <input type="radio" id="flag_interference" value="interference" name="flag-argument" data-special="argument">
                             <label for="flag_interference">
-                                <span i18n:translate="flag_argument">Report whole argument, bceause it is harmful or abusive.</span><br>
+                                <span i18n:translate="flag_argument">Report whole argument, because it is harmful or abusive.</span><br>
                                 <small i18n:translate="statement_harmful_decription">Content is inappropriate, harmful or abusive.</small>
                             </label>
                         </fieldset>
