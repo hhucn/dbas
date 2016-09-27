@@ -32,7 +32,7 @@ from dbas.helper.query import QueryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
-    preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_register_new_user_via_form, \
+    preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
     try_to_register_new_user_via_ajax, request_password
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification,\
     rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, rep_reason_new_statement
@@ -148,7 +148,7 @@ class Dbas(object):
         spamanswer      = escape_string(self.request.params['spam'] if 'spam' in self.request.params else '')
 
         if 'form.contact.submitted' in self.request.params:
-            contact_error, message, sendmessage = try_to_register_new_user_via_form(self.request, username, email, phone, content, ui_locales, spamanswer)
+            contact_error, message, sendmessage = try_to_contact(self.request, username, email, phone, content, ui_locales, spamanswer)
 
         spamquestion, answer = UserManager.get_random_anti_spam_question(ui_locales)
         key = 'contact-antispamanswer'
@@ -2277,7 +2277,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                success, error = ReviewHistoryHelper.cancel_ongoing_decision(queue, uid, ui_locales, nickname, transaction)
+                success, error = ReviewHistoryHelper.cancel_ongoing_decision(queue, uid, ui_locales, transaction)
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:

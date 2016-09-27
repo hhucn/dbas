@@ -433,8 +433,8 @@ def set_up_users(session):
     pw2 = passwordHandler.get_hashed_password('tobias')
     pw3 = passwordHandler.get_hashed_password('martin')
     pw4 = passwordHandler.get_hashed_password('christian')
-    pw5 = passwordHandler.get_hashed_password('dasistdoof123#')
-    pw6 = passwordHandler.get_hashed_password('dasistdoof321!')
+    pw5 = passwordHandler.get_hashed_password('raphael')
+    pw6 = passwordHandler.get_hashed_password('alexander')
     pw7 = passwordHandler.get_hashed_password('R4n0mpw')
 
     user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')

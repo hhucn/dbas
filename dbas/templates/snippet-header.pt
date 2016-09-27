@@ -100,7 +100,7 @@
 						</a>
 					</li>
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#language">
+						<a id="switch-lang" class="dropdown-toggle" data-toggle="dropdown" href="#language">
 							<img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" tal:condition="extras.lang_is_en">
 							<img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" tal:condition="extras.lang_is_de">
 							<!--

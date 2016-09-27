@@ -29,7 +29,10 @@ function ReviewHistory(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(span + blockquote);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			new AjaxReviewHandler().undoReview(queue, id)
+			if (window.location.href.indexOf('history') != -1)
+				new AjaxReviewHandler().undoReview(queue, id);
+			else
+				new AjaxReviewHandler().cancelReview(queue, id);
 		});
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
@@ -53,6 +56,5 @@ function ReviewHistoryCallbacks(){
 			setGlobalSuccessHandler('Yep!', parsedData.success);
 			$('#' + queue + uid).remove();
 		}
-		
 	}
 }
