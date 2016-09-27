@@ -41,10 +41,10 @@ def flag_argument(uid, reason, nickname, translator, is_argument, transaction):
     argument_uid = uid if is_argument else None
     statement_uid = None if is_argument else uid
 
-    is_flagged_for_delete_by_user = __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, db_user.uid, is_executed=False)
-    is_flagged_for_delete_by_others = __is_argument_flagged_for_delete(argument_uid, statement_uid, is_executed=False)
-    is_flagged_for_optimization_by_user = __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, db_user.uid, is_executed=False)
-    is_flagged_for_optimization_by_others = __is_argument_flagged_for_optimization(argument_uid, statement_uid, is_executed=False)
+    is_flagged_for_delete_by_user = __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, db_user.uid)
+    is_flagged_for_delete_by_others = __is_argument_flagged_for_delete(argument_uid, statement_uid)
+    is_flagged_for_optimization_by_user = __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, db_user.uid)
+    is_flagged_for_optimization_by_others = __is_argument_flagged_for_optimization(argument_uid, statement_uid)
     is_flagged_by_user = is_flagged_for_delete_by_user or is_flagged_for_optimization_by_user
     is_flagged_by_others = is_flagged_for_delete_by_others or is_flagged_for_optimization_by_others
 
@@ -79,80 +79,71 @@ def flag_argument(uid, reason, nickname, translator, is_argument, transaction):
     return ret_success, ret_info, ret_error
 
 
-def __is_argument_flagged_for_delete(argument_uid, statement_uid, is_executed=False):
-    """
-
-    :param argument_uid:
-    :param is_executed:
-    :return:
-    """
-    db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.argument_uid == argument_uid,
-                                                                    ReviewDelete.statement_uid == statement_uid,
-                                                                    ReviewDelete.is_executed == is_executed)).all()
-    return True if len(db_review) > 0 else False
-
-
-def __is_argument_flagged_for_delete_by_user_and_reason(argument_uid, statement_uid, reason_uid, user_uid, is_executed=False):
+def __is_argument_flagged_for_delete(argument_uid, statement_uid, is_executed=False, is_revoked=False):
     """
 
     :param argument_uid:
     :param statement_uid:
-    :param reason_uid:
-    :param user_uid:
     :param is_executed:
-    :return:
-    """
-    db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.argument_uid == argument_uid,
-                                                                    ReviewDelete.statement_uid == statement_uid,
-                                                                    ReviewDelete.reason_uid == reason_uid,
-                                                                    ReviewDelete.is_executed == is_executed,
-                                                                    ReviewDelete.detector_uid == user_uid)).all()
-    return True if len(db_review) > 0 else False
-
-
-def __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid, is_executed=False):
-    """
-
-    :param argument_uid:
-    :param statement_uid:
-    :param user_uid:
-    :param is_executed:
+    :param is_revoked:
     :return:
     """
     db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.argument_uid == argument_uid,
                                                                     ReviewDelete.statement_uid == statement_uid,
                                                                     ReviewDelete.is_executed == is_executed,
-                                                                    ReviewDelete.detector_uid == user_uid)).all()
+                                                                    ReviewDelete.is_revoked == is_revoked)).all()
     return True if len(db_review) > 0 else False
 
 
-def __is_argument_flagged_for_optimization(argument_uid, statement_uid, is_executed=False):
-    """
-
-    :param argument_uid:
-    :param statement_uid:
-    :param is_executed:
-    :return:
-    """
-    db_review = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.argument_uid == argument_uid,
-                                                                          ReviewOptimization.statement_uid == statement_uid,
-                                                                          ReviewOptimization.is_executed == is_executed)).all()
-    return True if len(db_review) > 0 else False
-
-
-def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid, is_executed=False):
+def __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid, is_executed=False, is_revoked=False):
     """
 
     :param argument_uid:
     :param statement_uid:
     :param user_uid:
     :param is_executed:
+    :param is_revoked:
+    :return:
+    """
+    db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.argument_uid == argument_uid,
+                                                                    ReviewDelete.statement_uid == statement_uid,
+                                                                    ReviewDelete.is_executed == is_executed,
+                                                                    ReviewDelete.detector_uid == user_uid,
+                                                                    ReviewDelete.is_revoked == is_revoked)).all()
+    return True if len(db_review) > 0 else False
+
+
+def __is_argument_flagged_for_optimization(argument_uid, statement_uid, is_executed=False, is_revoked=False):
+    """
+
+    :param argument_uid:
+    :param statement_uid:
+    :param is_executed:
+    :param is_revoked:
     :return:
     """
     db_review = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.argument_uid == argument_uid,
                                                                           ReviewOptimization.statement_uid == statement_uid,
                                                                           ReviewOptimization.is_executed == is_executed,
-                                                                          ReviewOptimization.detector_uid == user_uid)).all()
+                                                                          ReviewOptimization.is_revoked == is_revoked)).all()
+    return True if len(db_review) > 0 else False
+
+
+def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid, is_executed=False, is_revoked=False):
+    """
+
+    :param argument_uid:
+    :param statement_uid:
+    :param user_uid:
+    :param is_executed:
+    :param is_revoked:
+    :return:
+    """
+    db_review = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.argument_uid == argument_uid,
+                                                                          ReviewOptimization.statement_uid == statement_uid,
+                                                                          ReviewOptimization.is_executed == is_executed,
+                                                                          ReviewOptimization.detector_uid == user_uid,
+                                                                          ReviewOptimization.is_revoked == is_revoked)).all()
     return True if len(db_review) > 0 else False
 
 

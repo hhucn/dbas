@@ -701,13 +701,14 @@ class ReviewDelete(DiscussionBase):
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
     reason_uid = Column(Integer, ForeignKey('review_delete_reasons.uid'))
+    is_revoked = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
     reasons = relationship('ReviewDeleteReason', foreign_keys=[reason_uid])
 
-    def __init__(self, detector, argument=None, statement=None, reason='', is_executed=False):
+    def __init__(self, detector, argument=None, statement=None, reason='', is_executed=False, is_revoked=False):
         """
 
         :param detector:
@@ -721,6 +722,7 @@ class ReviewDelete(DiscussionBase):
         self.reason_uid = reason
         self.timestamp = get_now()
         self.is_executed = is_executed
+        self.is_revoked = is_revoked
 
     def set_executed(self, is_executed):
         """
@@ -729,6 +731,14 @@ class ReviewDelete(DiscussionBase):
         :return:
         """
         self.is_executed = is_executed
+
+    def set_revoked(self, is_revoked):
+        """
+
+        :param is_executed:
+        :return:
+        """
+        self.is_revoked = is_revoked
 
     def update_timestamp(self):
         self.timestamp = get_now()
@@ -745,12 +755,13 @@ class ReviewEdit(DiscussionBase):
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
+    is_revoked = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, detector, argument=None, statement=None, is_executed=False):
+    def __init__(self, detector, argument=None, statement=None, is_executed=False, is_revoked=False):
         """
 
         :param detector:
@@ -762,6 +773,7 @@ class ReviewEdit(DiscussionBase):
         self.statement_uid = statement
         self.timestamp = get_now()
         self.is_executed = is_executed
+        self.is_revoked = is_revoked
 
     def set_executed(self, is_executed):
         """
@@ -771,6 +783,14 @@ class ReviewEdit(DiscussionBase):
         """
         self.is_executed = is_executed
 
+    def set_revoked(self, is_revoked):
+        """
+
+        :param is_executed:
+        :return:
+        """
+        self.is_revoked = is_revoked
+
     def update_timestamp(self):
         self.timestamp = get_now()
 
@@ -778,7 +798,7 @@ class ReviewEdit(DiscussionBase):
 class ReviewEditValue(DiscussionBase):
     __tablename__ = 'review_edit_values'
     uid = Column(Integer, primary_key=True)
-    reviewedit_uid = Column(Integer, ForeignKey('review_edits.uid'))
+    review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'))
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
     typeof = Column(Text, nullable=False)
     content = Column(Text, nullable=False)
@@ -792,7 +812,7 @@ class ReviewEditValue(DiscussionBase):
         :param typeof:
         :param content:
         """
-        self.reviewedit_uid = review_edit
+        self.review_edit_uid = review_edit
         self.statement_uid = statement
         self.typeof = typeof
         self.content = content
@@ -809,12 +829,13 @@ class ReviewOptimization(DiscussionBase):
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
+    is_revoked = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
 
-    def __init__(self, detector, argument=None, statement=None, is_executed=False):
+    def __init__(self, detector, argument=None, statement=None, is_executed=False, is_revoked=False):
         """
 
         :param detector:
@@ -826,6 +847,7 @@ class ReviewOptimization(DiscussionBase):
         self.statement_uid = statement
         self.timestamp = get_now()
         self.is_executed = is_executed
+        self.is_revoked = is_revoked
 
     def set_executed(self, is_executed):
         """
@@ -834,6 +856,14 @@ class ReviewOptimization(DiscussionBase):
         :return:
         """
         self.is_executed = is_executed
+
+    def set_revoked(self, is_revoked):
+        """
+
+        :param is_executed:
+        :return:
+        """
+        self.is_revoked = is_revoked
 
     def update_timestamp(self):
         self.timestamp = get_now()
@@ -994,10 +1024,10 @@ class OptimizationReviewLocks(DiscussionBase):
         self.timestamp = get_now()
 
 
-class ReviewCancelOrUndone(DiscussionBase):
-    __tablename__ = 'reivew_cancel_or_undone'
-    author_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
-    is_canceled = Column(Boolean)
+class ReviewCanceled(DiscussionBase):
+    __tablename__ = 'review_canceled'
+    uid = Column(Integer, primary_key=True)
+    author_uid = Column(Integer, ForeignKey('users.uid'))
     review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'), nullable=True)
     review_delete_uid = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
     review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
@@ -1007,7 +1037,7 @@ class ReviewCancelOrUndone(DiscussionBase):
     deletes = relationship('ReviewDelete', foreign_keys=[review_delete_uid])
     optimizations = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
 
-    def __init__(self, author, is_canceled, review_edit=None, review_delete=None, review_optimization=None):
+    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None):
         """
 
         :param author:
@@ -1017,7 +1047,6 @@ class ReviewCancelOrUndone(DiscussionBase):
         :param review_optimization:
         """
         self.author_uid = author
-        self.is_canceled = is_canceled
         self.review_edit_uid = review_edit
         self.review_delete_uid = review_delete
         self.review_optimization_uid = review_optimization
