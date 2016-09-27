@@ -45,7 +45,7 @@ def __get_review_count(review_type, review_uid):
     return count_of_okay, count_of_not_okay
 
 
-def add_review_opinion_for_delete(nickname, should_delete, review_uid, translator, transaction):
+def add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction):
     """
 
     :param nickname:
@@ -60,7 +60,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, translato
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewDelete).filter_by(uid=review_uid).first()
     if db_review.is_executed or not db_user:
-        return translator.get(translator.internalKeyError)
+        return ''
 
     db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
     # add new vote
@@ -86,7 +86,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, translato
         db_review.update_timestamp()
 
     elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
-        en_or_disable_arguments_and_premise_of_review(db_review, True)
+        en_or_disable_object_of_review(db_review, True)
         add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
         db_review.set_executed(True)
         db_review.update_timestamp()
@@ -98,7 +98,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, translato
     return ''
 
 
-def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, translator, transaction):
+def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction):
     """
 
     :param nickname:
@@ -113,7 +113,7 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, translator, 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewEdit).filter_by(uid=review_uid).first()
     if db_review.is_executed or not db_user:
-        return translator.get(translator.internalKeyError)
+        return ''
 
     db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
 
@@ -152,7 +152,7 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, translator, 
     return ''
 
 
-def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, translator, transaction):
+def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, transaction):
     """
 
     :param nickname:
@@ -167,7 +167,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(uid=review_uid).first()
     if not db_review or db_review.is_executed or not db_user:
-        return translator.get(translator.internalKeyError)
+        return ''
 
     db_new_review = LastReviewerOptimization(db_user.uid, db_review.uid, not should_optimized)
     DBDiscussionSession.add(db_new_review)

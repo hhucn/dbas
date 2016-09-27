@@ -458,6 +458,7 @@ class GermanDict:
         de_lang[_self.preferedLangTitle] = 'Bevorzugte Sprache für alle Nachrichten/E-Mails'
         de_lang[_self.priv_access_opti_queue] = 'Zugriff auf die Optimierungs-Queue'
         de_lang[_self.priv_access_del_queue] = 'Zugriff auf die Löschantrags-Queue'
+        de_lang[_self.priv_access_edit_queue] = 'Zugriff auf die Editierungs-Queue'
         de_lang[_self.priv_history_queue] = 'Zugriff auf alle Vergangenen Entscheidungen'
         de_lang[_self.publications] = 'Veröffentlichungen'
         de_lang[_self.myPosition] = 'meinen Standpunkt'

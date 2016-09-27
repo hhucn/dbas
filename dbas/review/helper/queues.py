@@ -34,8 +34,8 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     review_list.append(__get_delete_dict(main_page, translator, nickname))
     review_list.append(__get_optimization_dict(main_page, translator, nickname))
     review_list.append(__get_edit_dict(main_page, translator, nickname))
+    review_list.append(__get_history_dict(main_page, translator, nickname))
     if is_user_author(nickname):
-        review_list.append(__get_history_dict(main_page, translator))
         review_list.append(__get_ongoing_dict(main_page, translator))
 
     return review_list
@@ -122,24 +122,26 @@ def __get_edit_dict(main_page, translator, nickname):
     return tmp_dict
 
 
-def __get_history_dict(main_page, translator):
+def __get_history_dict(main_page, translator, nickname):
     """
     Prepares dictionary for the a section. Queue should be added iff the user is author!
 
     :param main_page: URL
     :param translator: Translator
+    :param nickname: Users nickname
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_history_dict', 'main')
     key = 'history'
+    count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': 'History',
                 'id': 'flags',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-history',
                 'task_count': __get_review_count_for_history(True),
-                'is_allowed': True,
+                'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(translator.visitHistoryQueue),
-                'is_not_allowed_text': '',
+                'is_not_allowed_text': translator.get(translator.visitHistoryQueueLimitation).replace('XX', str(reputation_borders[key])),
                 'last_reviews': list()
                 }
     return tmp_dict

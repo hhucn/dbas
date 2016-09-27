@@ -992,3 +992,32 @@ class OptimizationReviewLocks(DiscussionBase):
         self.author_uid = author
         self.review_optimization_uid = review_optimization
         self.timestamp = get_now()
+
+
+class ReviewCancelOrUndone(DiscussionBase):
+    __tablename__ = 'reivew_cancel_or_undone'
+    author_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
+    is_canceled = Column(Boolean)
+    review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'), nullable=True)
+    review_delete_uid = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
+    review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
+
+    authors = relationship('User', foreign_keys=[author_uid])
+    edits = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
+    deletes = relationship('ReviewDelete', foreign_keys=[review_delete_uid])
+    optimizations = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
+
+    def __init__(self, author, is_canceled, review_edit=None, review_delete=None, review_optimization=None):
+        """
+
+        :param author:
+        :param is_canceled:
+        :param review_edit:
+        :param review_delete:
+        :param review_optimization:
+        """
+        self.author_uid = author
+        self.is_canceled = is_canceled
+        self.review_edit_uid = review_edit
+        self.review_delete_uid = review_delete
+        self.review_optimization_uid = review_optimization

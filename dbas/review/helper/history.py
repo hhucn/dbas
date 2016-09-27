@@ -6,7 +6,7 @@ Provides helping function for the managing reputation.
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
-    User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement
+    User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCancelOrUndone
 from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_arguments_and_premise_of_review
@@ -197,25 +197,30 @@ def __has_access_to_history(nickname):
     return is_user_author or reputation_count > reputation_borders['history']
 
 
-def revoke_old_decision(queue, uid, lang, transaction):
+def revoke_old_decision(queue, uid, lang, nickname, transaction):
     """
 
     :param queue:
     :param uid:
     :param lang:
+    :param nickname:
     :param transaction:
     :return:
     """
     success = ''
     error = ''
+    db_user = DBDiscussionSession.query(User).filter_by(nickname).first()
     _t = Translator(lang)
+
     if queue == 'deletes':
         __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid, transaction)
+        DBDiscussionSession.add(ReviewCancelOrUndone(author=db_user.uid, is_canceled=False, review_delete=uid))
 
         success = _t.get(_t.dataRemoved)
     elif queue == 'optimizations':
         __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid, transaction)
         success = _t.get(_t.dataRemoved)
+        DBDiscussionSession.add(ReviewCancelOrUndone(author=db_user.uid, is_canceled=False, review_optimization=uid))
 
     elif queue == 'edits':
         DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).delete()
@@ -224,6 +229,7 @@ def revoke_old_decision(queue, uid, lang, transaction):
         content = db_value.first().content
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_value.first().statement_uid).first()
         db_value.delete()
+        DBDiscussionSession.add(ReviewCancelOrUndone(author=db_user.uid, is_canceled=False, review_edit=uid))
 
         # delete forbidden textversion
         DBDiscussionSession.query(TextVersion).filter_by(content=content).delete()
@@ -240,29 +246,33 @@ def revoke_old_decision(queue, uid, lang, transaction):
     return success, error
 
 
-def cancel_ongoing_decision(queue, uid, lang, transaction):
+def cancel_ongoing_decision(queue, uid, lang, nickname, transaction):
     """
 
     :param queue:
     :param uid:
     :param lang:
+    :param nickname:
     :param transaction:
     :return:
     """
     success = ''
     error = ''
+    db_user = DBDiscussionSession.query(User).filter_by(nickname).first()
 
     _t = Translator(lang)
     if queue == 'deletes':
         DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).delete()
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
         success = _t.get(_t.dataRemoved)
+        DBDiscussionSession.add(ReviewCancelOrUndone(author=db_user.uid, is_canceled=True, review_delete=uid))
         transaction.commit()
 
     elif queue == 'optimizations':
         DBDiscussionSession.query(ReviewOptimization).filter_by(uid=uid).delete()
         DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=uid).delete()
         success = _t.get(_t.dataRemoved)
+        DBDiscussionSession.add(ReviewCancelOrUndone(author=db_user.uid, is_canceled=True, review_optimization=uid))
         transaction.commit()
 
     elif queue == 'edits':
@@ -270,6 +280,7 @@ def cancel_ongoing_decision(queue, uid, lang, transaction):
         DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
         DBDiscussionSession.query(ReviewEditValue).filter_by(reviewedit_uid=uid).delete()
         success = _t.get(_t.dataRemoved)
+        DBDiscussionSession.add(ReviewCancelOrUndone(author=db_user.uid, is_canceled=True, review_edit=uid))
         transaction.commit()
 
     else:

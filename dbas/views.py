@@ -2114,8 +2114,10 @@ class Dbas(object):
             db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
 
             if not Validator.is_integer(uid):
+                logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
                 return_dict['error'] = _t.get(_t.internalError)
             elif not (len(db_reason) > 0 or reason == 'optimization'):
+                logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
                 return_dict['error'] = _t.get(_t.internalError)
             else:
 
@@ -2148,10 +2150,10 @@ class Dbas(object):
             review_uid = self.request.params['review_uid']
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
-                logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
+                logger('review_delete_argument', 'def', 'invalid uid', error=True)
                 error = _t.get(_t.internalKeyError)
             else:
-                error = ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, transaction)
+                error = ReviewMainHelper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
                 send_request_for_recent_delete_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
@@ -2181,7 +2183,7 @@ class Dbas(object):
                 logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
-                error = ReviewMainHelper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, transaction)
+                error = ReviewMainHelper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction)
                 send_request_for_recent_edit_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
@@ -2213,7 +2215,7 @@ class Dbas(object):
                 logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
                 error = _t.get(_t.internalKeyError)
             else:
-                error = ReviewMainHelper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t, transaction)
+                error = ReviewMainHelper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, transaction)
 
                 if len(error) == 0:
                     send_request_for_recent_optimization_review_to_socketio(nickname, main_page)
@@ -2244,7 +2246,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                success, error = ReviewHistoryHelper.revoke_old_decision(queue, uid, ui_locales, transaction)
+                success, error = ReviewHistoryHelper.revoke_old_decision(queue, uid, ui_locales, nickname, transaction)
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:
@@ -2275,7 +2277,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
 
             if is_user_author(nickname):
-                success, error = ReviewHistoryHelper.cancel_ongoing_decision(queue, uid, ui_locales, transaction)
+                success, error = ReviewHistoryHelper.cancel_ongoing_decision(queue, uid, ui_locales, nickname, transaction)
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:

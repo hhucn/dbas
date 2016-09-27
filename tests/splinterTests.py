@@ -154,17 +154,17 @@ class FrontendTests:
     """
 
     @staticmethod
-    def run_tests(browser_style, test_list):
+    def run_tests(browser_style, input_list):
         """
         Just runs every test
 
         :param browser_style: String
-        :param test_list: List
+        :param input_list: List
         :return:
         """
 
         # server check
-        if not Helper.test_wrapper('testing for connectivity to server', FrontendTests.__check_for_server, browser_style):
+        if not Helper.test_wrapper('testing for connectivity to server', FrontendTests.check_for_server, browser_style):
             print('====================================================')
             print('Exit gracefully!')
             return
@@ -173,7 +173,7 @@ class FrontendTests:
         test_counter = 0
         success_counter = 0
 
-        splitted_list = test_list.split(',')
+        splitted_list = input_list.split(',')
         if len(splitted_list) == 1 and splitted_list[0] == 'a':
             splitted_list = []
             for i in range(17):
@@ -181,46 +181,9 @@ class FrontendTests:
 
         start = time.time()
         while len(splitted_list) > 0:
-            if splitted_list[0].strip() == '0':
-                success_counter += Helper.test_wrapper('tests for normal/not logged in pages', FrontendTests.__test_pages_when_not_logged_in, browser_style)
-            elif splitted_list[0].strip() == '1':
-                success_counter += Helper.test_wrapper('tests for login logout', FrontendTests.__test_login_logout, browser_style)
-            elif splitted_list[0].strip() == '2':
-                success_counter += Helper.test_wrapper('tests for logged in pages', FrontendTests.__test_pages_when_logged_in, browser_style)
-            elif splitted_list[0].strip() == '3':
-                success_counter += Helper.test_wrapper('tests for popups', FrontendTests.__test_popups, browser_style)
-            elif splitted_list[0].strip() == '4':
-                success_counter += Helper.test_wrapper('tests for contact form', FrontendTests.__test_contact_form, browser_style)
-            elif splitted_list[0].strip() == '5':
-                success_counter += Helper.test_wrapper('tests for language switch', FrontendTests.__test_language_switch, browser_style)
-            elif splitted_list[0].strip() == '6':
-                success_counter += Helper.test_wrapper('tests for discussion buttons', FrontendTests.__test_discussion_buttons, browser_style)
-            elif splitted_list[0].strip() == '7':
-                success_counter += Helper.test_wrapper('tests for demo discussion', FrontendTests.__test_demo_discussion, browser_style)
-            elif splitted_list[0].strip() == '8':
-                success_counter += Helper.test_wrapper('tests for demo discussion with all functions', FrontendTests.__test_functions_while_discussion, browser_style)
-            elif splitted_list[0].strip() == '9':
-                success_counter += Helper.test_wrapper('tests for content', FrontendTests.__test_content, browser_style)
-            elif splitted_list[0].strip() == '10':
-                success_counter += Helper.test_wrapper('tests for public user page', FrontendTests.__test_user_page, browser_style)
-            elif splitted_list[0].strip() == '11':
-                success_counter += Helper.test_wrapper('tests for notification system', FrontendTests.__test_notification_system, browser_style)
-            elif splitted_list[0].strip() == '12':
-                success_counter += Helper.test_wrapper('test for review_page', FrontendTests.__test_review_page, browser_style)
-            elif splitted_list[0].strip() == '13':
-                success_counter += Helper.test_wrapper('test for flag statement', FrontendTests.__test_flag_statement, browser_style)
-            elif splitted_list[0].strip() == '14':
-                success_counter += Helper.test_wrapper('test for flag argument', FrontendTests.__test_flag_argument, browser_style)
-            elif splitted_list[0].strip() == '15':
-                success_counter += Helper.test_wrapper('test for review queue', FrontendTests.__test_review_queue, browser_style)
-            elif splitted_list[0].strip() == '16':
-                success_counter += Helper.test_wrapper('test for undo review in queue', FrontendTests.__test_undo_review_in_queue, browser_style)
-            elif splitted_list[0].strip() == '17':
-                success_counter += Helper.test_wrapper('test for cancel review in queue', FrontendTests.__test_cancel_review_in_queue, browser_style)
-            elif splitted_list[0].strip() == '18':
-                success_counter += Helper.test_wrapper('test for edit statement', FrontendTests.__test_edit_statement, browser_style)
-            elif splitted_list[0].strip() == '19':
-                success_counter += Helper.test_wrapper('test for edit as optimization', FrontendTests.__test_edit_as_optimization, browser_style)
+            cid = int(splitted_list[0].strip())
+            if cid in range(0, len(test_list) - 1):
+                success_counter += Helper.test_wrapper(test_list[cid]['test_description'], test_list[cid]['test_call'], browser_style)
             else:
                 print('Malicious list entry: ' + splitted_list[0])
             splitted_list.remove(splitted_list[0])
@@ -233,7 +196,7 @@ class FrontendTests:
         print('Failed ' + str(test_counter - success_counter) + ' out of ' + str(test_counter) + ' in ' + str(diff) + 's')
 
     @staticmethod
-    def __check_for_server(browser):
+    def check_for_server(browser):
         """
         Checks whether the server if online
         :param browser: current browser
@@ -247,7 +210,7 @@ class FrontendTests:
         return success
 
     @staticmethod
-    def __test_pages_when_not_logged_in(browser):
+    def test_pages_when_not_logged_in(browser):
         """
         Checks pages
         :param browser: current browser
@@ -289,14 +252,14 @@ class FrontendTests:
                  'Tobias']
         for index, p in enumerate(pages):
             b.visit(p)
-            test = 'testing ' + tests[index] + ' page'
-            success = success and Helper.check_for_present_text(b, texts[index], test)
+            t = 'testing ' + tests[index] + ' page'
+            success = success and Helper.check_for_present_text(b, texts[index], t)
 
         b.quit()
         return 1 if success else 0
 
     @staticmethod
-    def __test_login_logout(browser):
+    def test_login_logout(browser):
         """
 
         :param browser:
@@ -307,24 +270,24 @@ class FrontendTests:
         b = Browser(browser)
 
         b = Helper.login(b, nickname_test_user1, 'wrong_password', main_page)
-        test = 'testing wrong login'
-        success = success and Helper.check_for_present_text(b, 'do not match', test)
+        t = 'testing wrong login'
+        success = success and Helper.check_for_present_text(b, 'do not match', t)
 
         time.sleep(wait_time)
         b = Helper.login(b, nickname_test_user1, password, main_page)
-        test = 'testing right login'
-        success = success and Helper.check_for_present_text(b, nickname_test_user1, test)
+        t = 'testing right login'
+        success = success and Helper.check_for_present_text(b, nickname_test_user1, t)
         time.sleep(wait_time)
 
         b = Helper.logout(b)
-        test = 'testing logout'
-        success = success and Helper.check_for_non_present_text(b, 'tobias', test)
+        t = 'testing logout'
+        success = success and Helper.check_for_non_present_text(b, 'tobias', t)
 
         b.quit()
         return 1 if success else 0
 
     @staticmethod
-    def __test_pages_when_logged_in(browser):
+    def test_pages_when_logged_in(browser):
         """
 
         :param browser:
@@ -346,15 +309,15 @@ class FrontendTests:
                  '401']
         for index, p in enumerate(pages):
             b.visit(p)
-            test = 'testing ' + tests[index] + ' page'
-            success = success and Helper.check_for_present_text(b, texts[index], test)
+            t = 'testing ' + tests[index] + ' page'
+            success = success and Helper.check_for_present_text(b, texts[index], t)
             time.sleep(wait_time * 2)
 
         b.quit()
         return 1 if success else 0
 
     @staticmethod
-    def __test_popups(browser):
+    def test_popups(browser):
         """
         Checks UI popups
         :param browser: current browser
@@ -382,7 +345,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_contact_form(browser):
+    def test_contact_form(browser):
         """
         Checks every form on the contact page
         :param browser: current browser
@@ -428,7 +391,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_language_switch(browser):
+    def test_language_switch(browser):
         """
         Testing language switch
         :param browser: current browser
@@ -453,7 +416,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_discussion_buttons(browser):
+    def test_discussion_buttons(browser):
         """
         Checks the discussions buttons
         :param browser: current browser
@@ -510,7 +473,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_demo_discussion(browser):
+    def test_demo_discussion(browser):
         """
         Checks the demo of the discussion. Simple walk through Helper.
         :param browser: current browser
@@ -556,7 +519,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_functions_while_discussion(browser):
+    def test_functions_while_discussion(browser):
         """
         Checks different functions in the discussion like adding one premise, premise groups and so one
         :param browser: current browser
@@ -634,7 +597,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_content(browser):
+    def test_content(browser):
         """
         Checks the formulation of arguments
         :param browser: current browser
@@ -733,7 +696,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_user_page(browser):
+    def test_user_page(browser):
         """
         Testing language switch
         :param browser: current browser
@@ -767,7 +730,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_notification_system(browser):
+    def test_notification_system(browser):
         """
         Testing notification system
         :param browser: current browser
@@ -828,7 +791,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_review_page(browser):
+    def test_review_page(browser):
         """
         Testing some review mechanism
         :param browser: current browser
@@ -851,14 +814,14 @@ class FrontendTests:
         time.sleep(wait_time)
         new_count = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
 
-        success = success and (int(old_count) == int(new_count) + 1)
+        success = success and (int(old_count) < int(new_count))
 
         b = Helper.logout(b)
         b.quit()
         return 1 if success else 0
 
     @staticmethod
-    def __test_flag_statement(browser):
+    def test_flag_statement(browser):
         """
         Testing some review mechanism
         :param browser: current browser
@@ -900,7 +863,7 @@ class FrontendTests:
 
         success = success and (int(new_count_for_user1) == int(old_count_for_users))
         Helper.print_success(success, 'Check review queue length for user, who has flagged (' + str(old_count_for_users) + '/' + str(new_count_for_user1) + ')')
-        success = success and (int(new_count_for_user2) == int(old_count_for_users) + 1)
+        success = success and (int(new_count_for_user2) > int(old_count_for_users))
         Helper.print_success(success, 'Check review queue length for different user (' + str(old_count_for_users) + '/' + str(new_count_for_user2) + ')')
 
         b = Helper.logout(b)
@@ -908,7 +871,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_flag_argument(browser):
+    def test_flag_argument(browser):
         """
         Testing some review mechanism
         :param browser: current browser
@@ -939,14 +902,14 @@ class FrontendTests:
 
         Helper.print_info('Old/new review count ' + str(old_count) + '/' + str(new_count))
 
-        success = success and (int(new_count) == int(old_count) + 1)
+        success = success and (int(new_count) < int(old_count))
 
         b = Helper.logout(b)
         b.quit()
         return 1 if success else 0
 
     @staticmethod
-    def __test_review_queue(browser):
+    def test_review_queue(browser):
         """
         Testing some review mechanism
         :param browser: current browser
@@ -956,9 +919,14 @@ class FrontendTests:
         success = True
         b = Browser(browser)
 
+        # login ang get points of the first test user
+        b = Helper.login(b, nickname_test_user1, password, main_page + 'review')
+        old_points  = b.find_by_css('#queues h6 a').text
+        b = Helper.logout(b)
+
         # login, have a look at the deletes, search for the text of pascal and vote for delete
         b = Helper.login(b, nickname_real_user1, nickname_real_user1.lower(), main_page + 'review/deletes')
-        while not b.is_text_present('Pascal'):
+        while not b.is_text_present(nickname_test_user1):
             b.reload()
             time.sleep(wait_time)
         text = b.find_by_css('#reviewed-argument-text').text
@@ -975,7 +943,7 @@ class FrontendTests:
         time.sleep(wait_time)
         b = Helper.logout(b)
 
-        # login, have a look at the deletes, search for saved text and vote for delete
+        # login, have a look at the deletes, search for saved text an d vote for delete
         b = Helper.login(b, nickname_real_user3, nickname_real_user3.lower(), main_page + 'review/ongoing')
         time.sleep(wait_time)
         success = success and Helper.check_for_present_text(b, text[0:15], 'Check for the text of revised statement in ongoing queue (must be there)')
@@ -997,17 +965,23 @@ class FrontendTests:
         b.visit(main_page + 'discuss')
         time.sleep(wait_time)
         success = success and Helper.check_for_non_present_text(b, text, 'Check for the forbidden text "' + text + '"')
+        b = Helper.logout(b)
+
+        # login ang get points of the first test user
+        b = Helper.login(b, nickname_test_user1, password, main_page + 'review')
+        new_points  = b.find_by_css('#queues h6 a').text
+        Helper.print_info('Old/new reputation count ' + str(old_points) + '/' + str(new_points))
+        success = success and (int(old_points) < int(new_points))
 
         b = Helper.logout(b)
         b.quit()
         return 1 if success else 0
 
     @staticmethod
-    def __test_undo_review_in_queue(browser):
+    def test_undo_review_in_queue(browser):
         """
         Testing some review mechanism
         :param browser: current browser
-        :param text:
         :return: 1 if success else 0
         """
         print('Starting tests for undo review in queue:')
@@ -1022,7 +996,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_cancel_review_in_queue(browser):
+    def test_cancel_review_in_queue(browser):
         """
         Testing some review mechanism
         :param browser: current browser
@@ -1040,7 +1014,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_edit_statement(browser):
+    def test_edit_statement(browser):
         """
         Testing some review mechanism
         :param browser: current browser
@@ -1080,7 +1054,7 @@ class FrontendTests:
 
         success = success and (int(new_count_for_user1) == int(old_count_for_users))
         Helper.print_success(success, 'Check review queue length for user, who has flagged (' + str(old_count_for_users) + '/' + str(new_count_for_user1) + ')')
-        success = success and (int(new_count_for_user2) == int(old_count_for_users) + 1)
+        success = success and (int(new_count_for_user2) > int(old_count_for_users))
         Helper.print_success(success, 'Check review queue length for different user (' + str(old_count_for_users) + '/' + str(new_count_for_user2) + ')')
 
         b = Helper.logout(b)
@@ -1088,7 +1062,7 @@ class FrontendTests:
         return 1 if success else 0
 
     @staticmethod
-    def __test_edit_as_optimization(browser):
+    def test_edit_as_optimization(browser):
         """
         Testing some review mechanism
         :param browser: current browser
@@ -1105,6 +1079,90 @@ class FrontendTests:
         b.quit()
         return 1 if success else 0
 
+
+test_list = [
+    {'console_description': 'tests for normal/not logged in pages',
+     'test_description': 'tests for normal/not logged in pages',
+     'test_call': FrontendTests.test_pages_when_not_logged_in,
+     'test_id': 0},
+    {'console_description': 'tests for login logout',
+     'test_description': 'tests for login logout',
+     'test_call': FrontendTests.test_login_logout,
+     'test_id': 1},
+    {'console_description': 'tests for logged in pages',
+     'test_description': 'tests for logged in pages',
+     'test_call': FrontendTests.test_pages_when_logged_in,
+     'test_id': 2},
+    {'console_description': 'tests for popups',
+     'test_description': 'tests for popups',
+     'test_call': FrontendTests.test_popups,
+     'test_id': 3},
+    {'console_description': 'tests for contact form',
+     'test_description': 'tests for contact form',
+     'test_call': FrontendTests.test_contact_form,
+     'test_id': 4},
+    {'console_description': 'tests for language switch',
+     'test_description': 'tests for language switch',
+     'test_call': FrontendTests.test_language_switch,
+     'test_id': 5},
+    {'console_description': 'tests for discussion buttons',
+     'test_description': 'tests for discussion buttons',
+     'test_call': FrontendTests.test_discussion_buttons,
+     'test_id': 6},
+    {'console_description': 'tests for demo discussion',
+     'test_description': 'tests for demo discussion',
+     'test_call': FrontendTests.test_demo_discussion,
+     'test_id': 7},
+    {'console_description': 'tests for demo discussion with all functions',
+     'test_description': 'tests for demo discussion with all functions',
+     'test_call': FrontendTests.test_functions_while_discussion,
+     'test_id': 8},
+    {'console_description': 'tests for content',
+     'test_description': 'tests for content',
+     'test_call': FrontendTests.test_content,
+     'test_id': 9},
+    {'console_description': 'tests for public user page',
+     'test_description': 'tests for public user page',
+     'test_call': FrontendTests.test_user_page,
+     'test_id': 10},
+    {'console_description': 'tests for notification system',
+     'test_description': 'tests for notification system',
+     'test_call': FrontendTests.test_notification_system,
+     'test_id': 11},
+    {'console_description': 'tests for review page',
+     'test_description': 'test for review_page',
+     'test_call': FrontendTests.test_review_page,
+     'test_id': 12},
+    {'console_description': 'tests for flag statement',
+     'test_description': 'test for flag statement',
+     'test_call': FrontendTests.test_flag_statement,
+     'test_id': 13},
+    {'console_description': 'tests for flag argument',
+     'test_description': 'test for flag argument',
+     'test_call': FrontendTests.test_flag_argument,
+     'test_id': 14},
+    {'console_description': 'tests for review queue (only with 13!)',
+     'test_description': 'test for review queue',
+     'test_call': FrontendTests.test_review_queue,
+     'test_id': 15},
+    {'console_description': 'tests for undo review in queue',
+     'test_description': 'test for undo review in queue',
+     'test_call': FrontendTests.test_undo_review_in_queue,
+     'test_id': 16},
+    {'console_description': 'tests for cancel review in queue',
+     'test_description': 'test for cancel review in queue',
+     'test_call': FrontendTests.test_cancel_review_in_queue,
+     'test_id': 17},
+    {'console_description': 'tests for edit statement',
+     'test_description': 'test for edit statement',
+     'test_call': FrontendTests.test_edit_statement,
+     'test_id': 18},
+    {'console_description': 'tests for edit as optimization',
+     'test_description': 'test for edit as optimization',
+     'test_call': FrontendTests.test_edit_as_optimization,
+     'test_id': 19}
+]
+
 if __name__ == "__main__":
     print('  /---------------------------------------/')
     print(' / PLEASE USE A FRESH DB WITH DUMMY DATA /')
@@ -1116,29 +1174,11 @@ if __name__ == "__main__":
     print('  [f]irefox')
     input_browser = input('Enter: ')
     print('')
-
     print('Please choose a testing style:')
     print('  [ a]ll (default)')
-    print('  [ 0] tests for normal/not logged in pages')
-    print('  [ 1] tests for login logout')
-    print('  [ 2] tests for logged in pages')
-    print('  [ 3] tests for popups')
-    print('  [ 4] tests for contact form')
-    print('  [ 5] tests for language switch')
-    print('  [ 6] tests for discussion buttons')
-    print('  [ 7] tests for demo discussion')
-    print('  [ 8] tests for demo discussion with all functions')
-    print('  [ 9] tests for content')
-    print('  [10] tests for public user page')
-    print('  [11] tests for notification system')
-    print('  [12] tests for review page')
-    print('  [13] tests for flag statement')
-    print('  [14] tests for flag argument')
-    print('  [15] tests for review queue (only with 13!)')
-    print('  [16] tests for undo review in queue')
-    print('  [17] tests for cancel review in queue')
-    print('  [18] tests for edit statement')
-    print('  [19] tests for edit as optimization')
+    for test in test_list:
+        id = (' ' + str(test['test_id'])) if test['test_id'] < 10 else str(test['test_id'])
+        print('  [' + id + '] ' + test['console_description'])
     input_list = input('You can enter a number, like 3, or a list, like 5,2,9: ')
 
     if str(input_browser) != 'b':
