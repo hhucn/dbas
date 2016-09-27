@@ -613,8 +613,8 @@ def get_user_by_private_or_public_nickname(nickname):
     return current_user
 
 
-def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flaggable=False, uid='', url='',
-                             message='', omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
+def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flaggable=False, is_author=False,
+                             uid='', url='', message='', omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
                              nickname='anonymous', lang='en'):
     """
     Creates an dictionary which includes every information needed for a bubble.
@@ -641,6 +641,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     speech['is_status']          = is_status
     speech['is_info']            = is_info
     speech['is_flaggable']       = is_flaggable
+    speech['is_author']          = is_author
     speech['id']                 = uid if len(str(uid)) > 0 else str(time.time())
     # speech['url']                = url if len(str(url)) > 0 else 'None'
     speech['url']                = url if len(str(url)) > 0 else 'None'
@@ -734,6 +735,37 @@ def is_argument_disabled_due_to_disabled_statements(argument):
             return True
 
     return False
+
+
+def is_author_of_statement(nickname, statement_uid):
+    """
+
+    :param nickname:
+    :param statement_uid:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    if not db_user:
+        return False
+    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).order_by(TextVersion.uid.asc()).first()
+    if not db_textversion:
+        return False
+    return db_textversion.author_uid == db_user.uid
+
+
+def is_author_of_argument(nickname, argument_uid):
+    """
+
+    :param nickname:
+    :param argument_uid:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    if not db_user:
+        return False
+    db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == argument_uid,
+                                                                  Argument.author_uid == db_user.uid)).first()
+    return True if db_argument else False
 
 
 def __get_all_premises_of_argument(argument):

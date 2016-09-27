@@ -75,6 +75,9 @@
                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
                                     <span class="triangle-content">${structure:bubble.message}</span>
                                     <br tal:condition="bubble.is_flaggable and extras.logged_in">
+                                    <span class="triangle-trash pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_author and extras.logged_in" tal:attributes="title extras.title.delete_statement">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </span>
                                     <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flaggable and extras.logged_in" tal:attributes="title extras.title.report_statement">
                                         <i class="fa fa-flag" aria-hidden="true"></i>
                                     </span>
@@ -97,12 +100,15 @@
                                 <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
                                 <label tal:condition="repeat.premise.end and item.already_used"><em>${item.already_used_text}</em></label>
                                 <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
-                                    <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flaggable"></span>
+                                    <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flaggable or item.is_deletable"></span>
                                     <span class="item-edit" data-toggle="tooltip" data-placement="bottom" tal:condition="item.is_editable " tal:attributes="title extras.buttons.edit_statement">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                     </span>
                                     <span class="item-flag" data-toggle="tooltip" data-placement="bottom" tal:condition="item.is_flaggable " tal:attributes="title extras.title.report_statement">
                                         <i class="fa fa-flag" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="item-trash" data-toggle="tooltip" data-placement="bottom" tal:condition="item.is_deletable" tal:attributes="title extras.title.delete_statement">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
                                     </span>
                                 </div>
                             </span>

@@ -674,7 +674,7 @@ class Dbas(object):
 
         _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)
         _idh            = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=self.request.path, history=history)
-        discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history)
+        discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
         item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
         extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
                                                                                             True, self.request,
@@ -770,7 +770,7 @@ class Dbas(object):
         discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)\
             .get_dict_for_choosing(uid, is_argument, is_supportive)
         item_dict       = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=self.request.path, history=history)\
-            .get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive)
+            .get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, nickname)
         if not item_dict:
             return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]]))
 

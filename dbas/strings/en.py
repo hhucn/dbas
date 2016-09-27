@@ -227,6 +227,7 @@ class EnglischDict:
         en_lang[_self.decisionIndex30Info] = 'Count of made decision (due to clicks in a discussion) in the last 30 days'
         en_lang[_self.dateString] = 'Date'
         en_lang[_self.deleteTrack] = 'Delete track'
+        en_lang[_self.deleteStatement] = 'Delete statement'
         en_lang[_self.deleteHistory] = 'Delete history'
         en_lang[_self.disagreeBecause] = 'I disagree because '
         en_lang[_self.dataRemoved] = 'Data was successfully removed.'
