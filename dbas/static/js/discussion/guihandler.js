@@ -633,8 +633,8 @@ function GuiHandler() {
 				$('#item_undercut').click();
 				
 			} else if ($(this).data('special') === 'argument'){
-				var reason = $(this).attr('value');
-				new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
+				$('#popup-flag-statement-text').text(text);
+				new GuiHandler().showFlagStatementPopup(uid, true);
 				
 			} else {
 				new GuiHandler().showFlagStatementPopup($(this).attr('id'), false);
