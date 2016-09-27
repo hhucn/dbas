@@ -189,6 +189,11 @@
 ## 0.7.1 (2016-09-22)
 - Fixes for the review mechanisms
 
+## 0.7.2 (2016-09-28)
+- Additional functions for the review mechanisms
+  - Deleting own statements/arguments
+  - Report arguments
+
 ## 0.x.0 (unreleased)
 - Improved recommendation of the next confrontation
 
