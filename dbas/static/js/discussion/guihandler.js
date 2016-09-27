@@ -607,6 +607,17 @@ function GuiHandler() {
 		});
 	};
 	
+	this.showFlagStatementPopup = function(uid, is_argument){
+		var popup = $('#popup-flag-statement');
+		popup.modal('show');
+		popup.find('input').click(function () {
+			var reason = $(this).attr('value');
+			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
+			popup.find('input').prop( 'checked', false );
+			popup.modal('hide');
+		});
+	};
+	
 	/**
 	 *
 	 * @param uid
@@ -616,8 +627,9 @@ function GuiHandler() {
 		var popup = $('#popup-flag-argument');
 		popup.modal('show');
 		popup.find('input').click(function () {
-			var reason = $(this).attr('value');
-			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
+			setGlobalInfoHandler('TODO', 'uid ' + uid + ' is_argument' + is_argument);
+			//var reason = $(this).attr('value');
+			//new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
 			popup.find('input').prop( 'checked', false );
 			popup.modal('hide');
 		});

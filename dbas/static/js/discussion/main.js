@@ -193,7 +193,7 @@ function Main () {
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
-			guiHandler.showFlagArgumentPopup(uid, false);
+			guiHandler.showFlagStatementPopup(uid, false);
 		});
 		
 		list.find('.item-edit').click(function () {
@@ -418,6 +418,7 @@ function Main () {
 		
 		// hover on radio buttons
 		guiHandler.hoverInputListOf($('#popup-flag-argument'));
+		guiHandler.hoverInputListOf($('#popup-flag-statement'));
 		guiHandler.hoverInputListOf(list);
 		
 		list.find('li').each(function(){

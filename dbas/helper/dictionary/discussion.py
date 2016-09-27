@@ -6,7 +6,7 @@ Provides helping function for dictionaries, which are used in discussions.
 import dbas.helper.history as HistoryHelper
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement
+from dbas.database.discussion_model import Argument, Statement, Premise
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict
 from dbas.logger import logger
 from dbas.strings.translator import Translator
@@ -264,6 +264,8 @@ class DiscussionDictHelper(object):
         bubble_mid          = ''
         splitted_history    = HistoryHelper.get_splitted_history(self.history)
         user_changed_opinion = splitted_history[-1].endswith(str(uid))
+        statement_list      = list()
+        db_confrontation    = ''
 
         _tg                     = TextGenerator(self.lang)
         db_argument             = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
@@ -318,6 +320,7 @@ class DiscussionDictHelper(object):
         else:
             uid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
             bubble_sys  = create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True, lang=self.lang, is_flaggable=True)
+            statement_list = self.__get_all_statement_by_argument(db_confrontation)
 
         # dirty fixes
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
@@ -330,7 +333,7 @@ class DiscussionDictHelper(object):
         if attack.startswith('end'):
             bubbles_array.append(bubble_mid)
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'extras': statement_list}
 
     def get_dict_for_jump(self, uid):
         """
@@ -405,6 +408,43 @@ class DiscussionDictHelper(object):
             create_speechbubble_dict(is_user=True, uid='question-bubble', message=text, omit_url=True, lang=self.lang))
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+
+    def __get_all_statement_by_argument(self, argument):
+        """
+
+        :param argument:
+        :return:
+        """
+        statement_list = list()
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+
+        logger('DictionaryHelper', '__get_all_statement_by_argument', 'Argument ' + str(argument.uid)
+               + ' conclusion: ' + str(argument.conclusion_uid) + '/' + str(argument.argument_uid)
+               + ' premise count: ' + str(len(db_premises)))
+
+        for premise in db_premises:
+            statement_list.append({'text': get_text_for_statement_uid(premise.statement_uid),
+                                   'uid': premise.statement_uid})
+            logger('XX1', str(premise.statement_uid), get_text_for_statement_uid(premise.statement_uid))
+
+        if argument.conclusion_uid is not None:
+            statement_list.append({'text': get_text_for_statement_uid(argument.conclusion_uid),
+                                   'uid': argument.conclusion_uid})
+            logger('XX2', str(argument.conclusion_uid), get_text_for_statement_uid(argument.conclusion_uid))
+
+        else:
+            db_conclusion_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+            db_conclusion_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_conclusion_argument.premisesgroup_uid).all()
+            for conclusion_premise in db_conclusion_premises:
+                statement_list.append({'text': get_text_for_statement_uid(conclusion_premise.statement_uid),
+                                       'uid': conclusion_premise.statement_uid})
+                logger('XX3', str(conclusion_premise.statement_uid), get_text_for_statement_uid(conclusion_premise.statement_uid))
+
+            statement_list.append({'text': get_text_for_statement_uid(db_conclusion_argument.conclusion_uid),
+                                   'uid': db_conclusion_argument.conclusion_uid})
+            logger('XX4', str(db_conclusion_argument.conclusion_uid), get_text_for_statement_uid(db_conclusion_argument.conclusion_uid))
+
+        return statement_list
 
     def __append_now_bubble(self, bubbles_array):
         if len(bubbles_array) > 0:
