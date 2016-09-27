@@ -458,6 +458,7 @@ class EnglischDict:
         en_lang[_self.preferedLangTitle] = 'Preferred language for all notifications/mails'
         en_lang[_self.priv_access_opti_queue] = 'Access to the optimization queue'
         en_lang[_self.priv_access_del_queue] = 'Access to the delete queue'
+        en_lang[_self.priv_access_edit_queue] = 'Access to the edit queue'
         en_lang[_self.priv_history_queue] = 'Access to all reviews of the past'
         en_lang[_self.publications] = 'Publications'
         en_lang[_self.myPosition] = 'my point of view'
