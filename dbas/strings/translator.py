@@ -179,6 +179,7 @@ class Translator(object):
         self.doesJustify = 'doesJustify'
         self.doesNotJustify = 'doesNotJustify'
         self.deleteTrack = 'deleteTrack'
+        self.deleteStatement = 'deleteStatement'
         self.deleteHistory = 'deleteHistory'
         self.doYouWantToEnterYourStatements = 'doYouWantToEnterYourStatements'
         self.doNotHesitateToContact = 'doNotHesitateToContact'
