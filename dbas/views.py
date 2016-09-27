@@ -55,7 +55,7 @@ from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio
 
 name = 'D-BAS'
-version = '0.7.1'
+version = '0.7.2'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 issue_fallback = 1
