@@ -813,7 +813,7 @@ class FrontendTests:
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(2) .item-flag').click()
         time.sleep(wait_time)
-        b.find_by_css('#popup-flag-argument input[value=offtopic]').click()
+        b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         b = Helper.logout(b)
 
         b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page + 'review')
@@ -857,14 +857,14 @@ class FrontendTests:
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(2) .item-flag').click()
         time.sleep(wait_time)
-        b.find_by_css('#popup-flag-argument input[value=offtopic]').click()
+        b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'Thanks for reporting', 'Success text for flagging')
 
         b.find_by_css('#discussions-space-list li:nth-child(2)').mouse_over()
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(2) .item-flag').click()
         time.sleep(wait_time)
-        b.find_by_css('#popup-flag-argument input[value=offtopic]').click()
+        b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'You have already reported this argument', 'Info text for flagging')
 
         b.visit(main_page + 'review')
@@ -904,12 +904,12 @@ class FrontendTests:
         time.sleep(wait_time)
         b.find_by_css('.pull-right .fa-flag').click()
         time.sleep(wait_time)
-        b.find_by_css('#popup-flag-argument input[value=offtopic]').click()
+        b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'Thanks for reporting', 'Success text for flagging')
 
         b.find_by_css('.pull-right .fa-flag').click()
         time.sleep(wait_time)
-        b.find_by_css('#popup-flag-argument input[value=offtopic]').click()
+        b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'You have already reported this argument', 'Info text for flagging')
         b = Helper.logout(b)
 
@@ -1049,7 +1049,7 @@ class FrontendTests:
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(2) .item-flag').click()
         time.sleep(wait_time)
-        b.find_by_css('#popup-flag-argument input[value=offtopic]').click()
+        b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'Thanks for reporting', 'Success text for flagging')
         b = Helper.logout(b)
 
@@ -1144,7 +1144,7 @@ class FrontendTests:
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(1) .item-flag').click()
         time.sleep(wait_time)
-        b.find_by_css('#popup-flag-argument input[value=optimization]').click()
+        b.find_by_css('#popup-flag-statement input[value=optimization]').click()
         success = success and Helper.check_for_present_text(b, 'Thanks for reporting', 'Success text for flagging')
         b = Helper.logout(b)
 

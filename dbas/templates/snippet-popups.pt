@@ -729,6 +729,49 @@
     	</div>
     </div>
 
+    <!-- FLAG STATEMENT -->
+    <div class="modal fade" id="popup-flag-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-flag-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mark-reason">Please mark a reason</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="well well-sm" id="popup-flag-statement-text" style="display: none;"></p>
+                    <form>
+                        <fieldset>
+                            <input type="radio" id="opt" value="optimization" name="flag-statement">
+                            <label for="opt">
+                                <span i18n:translate="statement_optimization">The text needs an correction.</span><br>
+                                <small i18n:translate="statement_optimization_decription">This statement is right, but needs correction for his spelling/grammar..</small>
+                            </label>
+                            <br>
+                            <input type="radio" id="off" value="offtopic" name="flag-statement">
+                            <label for="off">
+                                <span i18n:translate="statement_offtopic">This statement is offtopic.</span><br>
+                                <small i18n:translate="statement_offtopic_decription">Content of the statement is useful, but does not belong to this discussion.</small>
+                            </label>
+                            <br>
+                            <input type="radio" id="sp" value="spam" name="flag-statement">
+                            <label for="sp">
+                                <span i18n:translate="statement_spam">It is not relevant at all.</span><br>
+                                <small i18n:translate="statement_spam_decription">This statement is not important for any discussion on D-BAS.</small>
+                            </label>
+                            <br>
+                            <input type="radio" id="bad" value="harmful" name="flag-statement">
+                            <label for="bad">
+                                <span i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br>
+                                <small i18n:translate="statement_harmful_decription">Content is inappropriate, harmful or abusive.</small>
+                            </label>
+                        </fieldset>
+                    </form>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
     <!-- FLAG ARGUMENTS -->
     <div class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog">
@@ -736,36 +779,31 @@
     			<div class="modal-header">
     				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mark-reason">Please mark a reason</h4>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="select-part">Please select a part, which should be reported</h4>
     			</div>
     			<div class="modal-body">
-                    <p class="well well-sm" i18n:translate="keep_in_mind_that_you_can_argue">Please keep in mind that you can argue against the argument or the justification too. This mask is for reporting arguments!</p>
                     <form>
-                      <fieldset>
-                          <input type="radio" id="opt" value="optimization" name="flag_argument">
-                          <label for="opt">
-                              <span i18n:translate="statement_optimization">The text needs and correcture.</span><br>
-                              <small>This statement is right, but needs correcture for his spelling/grammar..</small>
-                          </label>
-                          <br>
-                          <input type="radio" id="off" value="offtopic" name="flag_argument">
-                          <label for="off">
-                              <span i18n:translate="statement_offtopic">This statement is offtopic.</span><br>
-                              <small>Content of the statement is useful, but does not belong to this discussion.</small>
-                          </label>
-                          <br>
-                          <input type="radio" id="sp" value="spam" name="flag_argument">
-                          <label for="sp">
-                              <span i18n:translate="statement_spam">It is not relevant at all.</span><br>
-                              <small>This statement is not important for any discussion on D-BAS.</small>
-                          </label>
-                          <br>
-                          <input type="radio" id="bad" value="harmful" name="flag_argument">
-                          <label for="bad">
-                              <span i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br>
-                              <small>Content is inappropriate, harmful or abusive.</small>
-                          </label>
-                      </fieldset>
+                        <fieldset>
+                            <div tal:repeat="statement discussion.extras" tal:omit-tag="">
+                                <br>
+                                <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument">
+                                <label for="a" tal:attributes="for statement.uid">
+                                    <span i18n:translate="report">Report</span>: <em>${statement.text}</em>
+                                </label>
+                            </div>
+                            <br>
+                            <input type="radio" id="flag_interference_wrong" value="interference_wrong" name="flag-argument">
+                            <label for="flag_interference_wrong">
+                                <span i18n:translate="argument_wrong">The justification is wrong.</span><br>
+                                <small i18n:translate="argument_wrong_decription">The text itself is maybe right, but I do not see, that this is well-justified.</small>
+                            </label>
+                            <br>
+                            <input type="radio" id="flag_interference" value="interference" name="flag-argument">
+                            <label for="flag_interference">
+                                <span i18n:translate="flag_argument">Report whole argument.</span><br>
+                                <small i18n:translate="flag_argument_description">The implication has to be reported.</small>
+                            </label>
+                        </fieldset>
                     </form>
     			</div>
     		</div>
