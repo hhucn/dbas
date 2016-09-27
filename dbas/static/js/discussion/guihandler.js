@@ -624,13 +624,22 @@ function GuiHandler() {
 	 * @param is_argument
 	 */
 	this.showFlagArgumentPopup = function(uid, is_argument){
+		alert('DEBUG');
 		var popup = $('#popup-flag-argument');
 		popup.modal('show');
 		popup.find('input').click(function () {
-			setGlobalInfoHandler('TODO', 'uid ' + uid + ' is_argument' + is_argument);
-			//var reason = $(this).attr('value');
-			//new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
-			popup.find('input').prop( 'checked', false );
+			if ($(this).data('special') === 'undercut'){
+				$('#item_undercut').click();
+				
+			} else if ($(this).data('special') === 'argument'){
+				var reason = $(this).attr('value');
+				new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
+				
+			} else {
+				new GuiHandler().showFlagStatementPopup($(this).attr('id'), false);
+				$('#popup-flag-statement-text').text($(this).next().find('em').text());
+			}
+			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 		});
 	};

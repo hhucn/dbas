@@ -193,6 +193,7 @@ function Main () {
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
+			$('#popup-flag-statement-text').text($(this).parent().find('label').text());
 			guiHandler.showFlagStatementPopup(uid, false);
 		});
 		

@@ -53,7 +53,7 @@ class DiscussionDictHelper(object):
         start_bubble = create_speechbubble_dict(is_system=True, uid='start', message=intro, omit_url=True, lang=self.lang)
         bubbles_array = [start_bubble]
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'extras': dict()}
 
     def get_dict_for_attitude(self, uid):
         """
@@ -83,7 +83,7 @@ class DiscussionDictHelper(object):
         #     self.__save_speechbubble(select_bubble, db_user, self.session_id, transaction, statement_uid=uid)
         bubbles_array = [bubble]
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'extras': dict()}
 
     def get_dict_for_justify_statement(self, uid, application_url, slug, is_supportive, count_of_items, nickname):
         """
@@ -176,7 +176,7 @@ class DiscussionDictHelper(object):
 
         db_argument        = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
         if not db_argument:
-            return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+            return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'extras': dict()}
 
         confr          = get_text_for_argument_uid(uid)
         premise, tmp   = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
@@ -220,7 +220,7 @@ class DiscussionDictHelper(object):
         # if not self.nickname and count_of_items == 1:
         #     bubbles_array.append(HistoryHelper.create_speechbubble_dict(is_status=True, 'now', '', _tn.get(_tn.onlyOneItemWithLink), True))
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
+        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid, 'extras': dict()}
 
     def get_dict_for_dont_know_reaction(self, uid):
         """
@@ -242,7 +242,7 @@ class DiscussionDictHelper(object):
             bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text + '<br><br>' + _tn.get(_tn.whatDoYouThinkAboutThat) + '?')
             bubbles_array.append(bubble_sys)
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'extras': dict()}
 
     def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history):
         """
@@ -352,7 +352,7 @@ class DiscussionDictHelper(object):
 
         bubbles_array = [bubble]
 
-        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': '', 'extras': dict()}
 
     def get_dict_for_jump_decision(self, uid):
         """
@@ -379,7 +379,7 @@ class DiscussionDictHelper(object):
 
         bubbles_array = [bubble]
 
-        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': '', 'extras': dict()}
 
     def get_dict_for_choosing(self, uid, is_uid_argument, is_supportive):
         """
@@ -407,7 +407,7 @@ class DiscussionDictHelper(object):
         bubbles_array.append(
             create_speechbubble_dict(is_user=True, uid='question-bubble', message=text, omit_url=True, lang=self.lang))
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'extras': dict()}
 
     def __get_all_statement_by_argument(self, argument):
         """
