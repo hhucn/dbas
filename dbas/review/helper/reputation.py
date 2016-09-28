@@ -1,5 +1,5 @@
 """
-Provides helping function for the managing reputation.
+Provides helping function for handling reputation.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """

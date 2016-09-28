@@ -22,9 +22,7 @@ Webtests are end-to-end-full-stack tests.
 
 Execute these tests with::
 
-    nosetests dbas
-
- Edit ...
+    nosetests
 
 
 Code
@@ -47,11 +45,8 @@ If you want to add a tests, please follow these steps:
 
 1. Open tests/splinterTests.py
 
-2. Add your test function in Webtests.run_tests() by following this scheme::
+2. Add your test into the test list.
 
-    success_counter += Helper.test_wrapper('tests for XYZ', self.__test_YOUR_TEST_METHOD, self.browser_style)
-
-Please replace *XYZ* with a short description and *YOUR_TEST_METHOD* with the valid function.
 
 3. Define your test function in Webtests by using this skeleton::
 
