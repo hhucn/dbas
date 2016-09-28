@@ -754,19 +754,19 @@
                             <br>
                             <input type="radio" id="off" value="offtopic" name="flag-statement">
                             <label for="off">
-                                <span class="statement_text" i18n:translate="statement_offtopic">This statement is offtopic.</span><br class="statement_text">
-                                <small class="statement_text" i18n:translate="statement_offtopic_description">This statement does not belong to the topic under discussion.</small>
-                                <span class="argument_text" i18n:translate="argument_offtopic">This argument is offtopic.</span><br class="argument_text">
-                                <small class="argument_text" i18n:translate="argument_offtopic_description">This argument does not belong to the topic under discussion.</small>
+                                <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span><br class="statement_text">
+                                <small class="statement_text" i18n:translate="statement_offtopic_or_irrelevant_description">This statement does not belong to the topic under discussion.</small>
+                                <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span><br class="argument_text">
+                                <small class="argument_text" i18n:translate="argument_offtopic_or_irrelevant_description">This argument does not belong to the topic under discussion.</small>
                             </label>
                             <br>
-                            <input type="radio" id="sp" value="spam" name="flag-statement">
-                            <label for="sp">
-                                <span i18n:translate="statement_spam">It is not relevant at all.</span><br>
-                                <small class="statement_text" i18n:translate="statement_spam_description">This statement does not belong to any topic under discussion.</small>
-                                <small class="argument_text" i18n:translate="argument_spam_description">This argument does not belong to any topic under discussion.</small>
-                            </label>
-                            <br>
+                            <!--<input type="radio" id="sp" value="spam" name="flag-statement">-->
+                            <!--<label for="sp">-->
+<!--                                <span i18n:translate="statement_spam">It is not relevant at all.</span><br>-->
+<!--                                <small class="statement_text" i18n:translate="statement_spam_description">This statement does not belong to any topic under discussion.</small>-->
+<!--                                <small class="argument_text" i18n:translate="argument_spam_description">This argument does not belong to any topic under discussion.</small>-->
+                            <!--</label>-->
+                            <!--<br>-->
                             <input type="radio" id="bad" value="harmful" name="flag-statement">
                             <label for="bad">
                                 <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
@@ -811,7 +811,7 @@
                             <input type="radio" id="flag_interference" value="interference" name="flag-argument" data-special="argument">
                             <label for="flag_interference">
                                 <span i18n:translate="report_whole_argument">Report the whole argument.</span><br>
-                                <small i18n:translate="statement_harmful_description">Content is inappropriate, harmful or abusive.</small>
+                                <!--<small i18n:translate="statement_harmful_description">Content is inappropriate, harmful or abusive.</small>-->
                             </label>
                         </fieldset>
                     </form>

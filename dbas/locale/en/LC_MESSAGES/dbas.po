@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-28 14:30+0200\n"
+"POT-Creation-Date: 2016-09-28 14:47+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -1042,41 +1042,25 @@ msgid "argument_optimization_description"
 msgstr ""
 "This argument is acceptable but it needs correction for spelling/grammar."
 
-#. Default: This statement is offtopic.
+#. Default: This statement is off topic or irrelevant.
 #: templates/snippet-popups.pt:757
-msgid "statement_offtopic"
-msgstr "This statement is offtopic."
+msgid "statement_offtopic_or_irrelevant"
+msgstr "This statement is off topic or irrelevant.."
 
 #. Default: This statement does not belong to the topic under discussion.
 #: templates/snippet-popups.pt:758
-msgid "statement_offtopic_description"
-msgstr ""
-"Content of the statement is useful, but does not belong to this discussion."
+msgid "statement_offtopic_or_irrelevant_description"
+msgstr "This statement does not belong to the topic under discussion."
 
-#. Default: This argument is offtopic.
+#. Default: This argument is off topic or irrelevant.
 #: templates/snippet-popups.pt:759
-msgid "argument_offtopic"
-msgstr "This argument is offtopic."
+msgid "argument_offtopic_or_irrelevant"
+msgstr "This argument is off topic or irrelevant."
 
 #. Default: This argument does not belong to the topic under discussion.
 #: templates/snippet-popups.pt:760
-msgid "argument_offtopic_description"
+msgid "argument_offtopic_or_irrelevant_description"
 msgstr "This argument does not belong to the topic under discussion."
-
-#. Default: It is not relevant at all.
-#: templates/snippet-popups.pt:765
-msgid "statement_spam"
-msgstr "It is not relevant at all."
-
-#. Default: This statement does not belong to any topic under discussion.
-#: templates/snippet-popups.pt:766
-msgid "statement_spam_description"
-msgstr "This statement is not important for any discussion on D-BAS."
-
-#. Default: This argument does not belong to any topic under discussion.
-#: templates/snippet-popups.pt:767
-msgid "argument_spam_description"
-msgstr "This argument does not belong to any topic under discussion."
 
 #. Default: This statement is harmful or abusive.
 #: templates/snippet-popups.pt:772
@@ -1107,11 +1091,6 @@ msgstr "Report"
 #: templates/snippet-popups.pt:813
 msgid "report_whole_argument"
 msgstr "Report the whole argument."
-
-#. Default: Content is inappropriate, harmful or abusive.
-#: templates/snippet-popups.pt:814
-msgid "statement_harmful_description"
-msgstr "Content is inappropriate, harmful or abusive."
 
 #. Default: Caution
 #: templates/snippet-popups.pt:831
@@ -1432,18 +1411,17 @@ msgstr "Let me correct it"
 msgid "reject_it"
 msgstr "Reject it"
 
-#. Default: Off topic
+#. Default: Off topic or irrelevant
 #: templates/review_content.pt:57
-msgid "off_topic"
-msgstr "Off topic"
+msgid "off_topic_or_irrelevant"
+msgstr "Off topic or irrelevant"
 
-#. Default: are useful in general, but do not belong to the current discussion
+#. Default: text does not belong to the topic under discussion
 #: templates/review_content.pt:57
 msgid "off_topic_explanation"
-msgstr ""
-"posts are useful in general, but do not belong to the current discussion"
+msgstr "text does not belong to the topic under discussion"
 
-#. Default: Inappropriate, harmful or abbusive
+#. Default: Inappropriate, harmful or abusive
 #: templates/review_content.pt:58
 msgid "inappropriate_harmful_abbusive"
 msgstr "Inappropriate, harmful or abbusive"
@@ -1462,16 +1440,6 @@ msgstr "Needs optimization"
 #: templates/review_content.pt:59
 msgid "needs_optimization_explanation"
 msgstr "if posts are useful, but need edits in grammar and/or spelling"
-
-#. Default: Spam
-#: templates/review_content.pt:60
-msgid "spam"
-msgstr "Anti-Spam"
-
-#. Default: is neither useful nor mappend to a discussions topic
-#: templates/review_content.pt:60
-msgid "spam_explanation"
-msgstr "is neither useful nor mapped to a discussions topic"
 
 #. Default: for arguments, which should not be deleted.
 #. Default: , if the correction is acceptable and the argument is not
@@ -1727,6 +1695,27 @@ msgstr "Island View"
 #: templates/content.pt:344
 msgid "complete_view"
 msgstr "Complete View"
+
+#~ msgid "statement_harmful_description"
+#~ msgstr "Content is inappropriate, harmful or abusive."
+
+#~ msgid "statement_spam"
+#~ msgstr "It is not relevant at all."
+
+#~ msgid "statement_spam_description"
+#~ msgstr "This statement is not important for any discussion on D-BAS."
+
+#~ msgid "argument_spam_description"
+#~ msgstr "This argument does not belong to any topic under discussion."
+
+#~ msgid "off_topic"
+#~ msgstr "Off topic"
+
+#~ msgid "spam"
+#~ msgstr "Anti-Spam"
+
+#~ msgid "spam_explanation"
+#~ msgstr "is neither useful nor mapped to a discussions topic"
 
 #~ msgid "statement_optimization"
 #~ msgstr "The text needs and correcture."

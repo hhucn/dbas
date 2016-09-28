@@ -54,10 +54,10 @@
                             <div style="padding-left: 0.5em">
                                 <span>Information for the different reasons</span>
                                 <ul style="padding-left: 0.5em">
-                                    <li><strong i18n:translate="off_topic">Off topic</strong> <span i18n:translate="off_topic_explanation">are useful in general, but do not belong to the current discussion</span>.</li>
-                                    <li><strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abbusive</strong> <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.</li>
+                                    <li><strong i18n:translate="off_topic_or_irrelevant">Off topic or irrelevant</strong> <span i18n:translate="off_topic_explanation">text does not belong to the topic under discussion</span>.</li>
+                                    <li><strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abusive</strong> <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.</li>
                                     <li><strong i18n:translate="needs_optimization">Needs optimization</strong> <span i18n:translate="needs_optimization_explanation">if posts are useful, but need edits in grammar and/or spelling</span>.</li>
-                                    <li><strong i18n:translate="spam">Spam</strong> <span i18n:translate="spam_explanation">is neither useful nor mappend to a discussions topic</span>.</li>
+                                    <!--<li><strong i18n:translate="spam">Spam</strong> <span i18n:translate="spam_explanation">is neither useful nor mappend to a discussions topic</span>.</li>-->
                                 </ul>
                             </div>
                         </blockquote>
