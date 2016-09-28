@@ -607,6 +607,11 @@ function GuiHandler() {
 		});
 	};
 	
+	/**
+	 *
+	 * @param uid
+	 * @param is_argument
+	 */
 	this.showFlagStatementPopup = function(uid, is_argument){
 		var popup = $('#popup-flag-statement');
 		if (is_argument){
@@ -617,7 +622,7 @@ function GuiHandler() {
 			popup.find('.argument_text').hide();
 		}
 		popup.modal('show');
-		popup.find('input').click(function () {
+		popup.find('input').off('click').unbind('click').click(function () {
 			var reason = $(this).attr('value');
 			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
 			popup.find('input').prop( 'checked', false );
@@ -632,6 +637,8 @@ function GuiHandler() {
 	this.showFlagArgumentPopup = function(uid){
 		var popup = $('#popup-flag-argument');
 		// var text = $('.triangle-l:last-child .triangle-content').text();
+		
+		// clean text
 		var text = $('.triangle-l:last-child .triangle-content').html();
 		text = text.substr(0, text.indexOf('<br>'));
 		var pos = text.indexOf('</span>');
@@ -642,14 +649,14 @@ function GuiHandler() {
 		pos = text.indexOf('<span');
 		var end = text.indexOf('>');
 		while (pos != -1){
-			console.log(text);
 			text = text.substr(0, pos) + text.substr(end + 1);
 			pos = text.indexOf('<span');
 			end = text.indexOf('>');
 		}
+		
 		$('#popup-flag-argument-text').text(text);
 		popup.modal('show');
-		popup.find('input').click(function () {
+		popup.find('input').off('click').unbind('click').click(function () {
 			if ($(this).data('special') === 'undercut'){
 				$('#item_undercut').click();
 				
