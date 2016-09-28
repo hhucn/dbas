@@ -1215,7 +1215,27 @@ class FrontendTests:
         b = Browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page  + 'discuss')
 
-        Helper.print_info('TODO')
+        # get text and url of the deleted element
+        text = b.find_by_css('#discussions-space-list li:nth-child(1) label').text
+        b.find_by_css('#discussions-space-list li:nth-child(1)').click()
+        time.sleep(wait_time)
+        url = b.url
+        b.back()
+
+        # go back and delete it
+        time.sleep(wait_time)
+        b.find_by_css('#discussions-space-list li:nth-child(1)').mouse_over()
+        time.sleep(wait_time)
+        b.find_by_css('#discussions-space-list li:nth-child(1) .item-trash').click()
+        time.sleep(wait_time)
+        b.find_by_css('#popup-delete-content-submit').click()
+        time.sleep(wait_time)
+
+        success = success and Helper.check_for_non_present_text(b, text, 'Check, if the deleted statement is not presented presence of the edited text')
+
+        b.visit(url)
+        time.sleep(wait_time)
+        success = success and Helper.check_for_non_present_text(b, '404 Error', 'Check, for 404 page')
 
         b = Helper.logout(b)
         b.quit()

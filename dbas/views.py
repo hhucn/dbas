@@ -395,6 +395,7 @@ class Dbas(object):
             path = path[4:]
 
         param_error = True if 'param_error' in self.request.params and self.request.params['param_error'] == 'true' else False
+        revoked_content = True if 'revoked_content' in self.request.params and self.request.params['revoked_content'] == 'true' else False
 
         self.request.response.status = 404
         ui_locales = get_language(self.request, get_current_registry())
@@ -410,7 +411,8 @@ class Dbas(object):
             'project': project_name,
             'page_notfound_viewname': path,
             'extras': extras_dict,
-            'param_error': param_error
+            'param_error': param_error,
+            'revoked_content': revoked_content
         }
 
 
@@ -515,6 +517,8 @@ class Dbas(object):
                 or not Validator.check_belonging_of_statement(issue, statement_id) \
                 or not Validator.is_position(statement_id):
             return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]], True))
+        if Validator.is_statement_forbidden(statement_id):
+            return HTTPFound(location=UrlManager(main_page, for_api=for_api).get_404([self.request.path[1:]], revoked_content=True))
 
         disc_ui_locales = get_discussion_language(self.request, issue)
         issue_dict      = IssueHelper.prepare_json_of_issue(issue, main_page, disc_ui_locales, for_api)
