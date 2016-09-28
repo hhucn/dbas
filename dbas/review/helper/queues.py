@@ -1,5 +1,5 @@
 """
-Provides helping function for the managing reputation.
+Provides helping function for displaying the review queues and locking entries.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """

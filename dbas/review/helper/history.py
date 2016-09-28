@@ -1,5 +1,5 @@
 """
-Provides helping function for the managing reputation.
+Provides helping function for the managing the queue with all executed decisions as well as all ongoing decisions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -15,18 +15,18 @@ from dbas.strings.translator import Translator
 from dbas.logger import logger
 
 
-def get_review_history(mainpage, nickname, translator):
-    return __get_data(mainpage, nickname, translator, True)
+def get_review_history(main_page, nickname, translator):
+    return __get_data(main_page, nickname, translator, True)
 
 
-def get_ongoing_reviews(mainpage, nickname, translator):
-    return __get_data(mainpage, nickname, translator, False)
+def get_ongoing_reviews(main_page, nickname, translator):
+    return __get_data(main_page, nickname, translator, False)
 
 
-def __get_data(mainpage, nickname, translator, is_executed=False):
+def __get_data(main_page, nickname, translator, is_executed=False):
     """
 
-    :param mainpage:
+    :param main_page:
     :param nickname:
     :param translator:
     :param is_executed:
@@ -39,9 +39,9 @@ def __get_data(mainpage, nickname, translator, is_executed=False):
         ret_dict['has_access'] = is_user_author(nickname)
     ret_dict['is_history'] = is_executed
 
-    deletes_list = __get_executed_reviews_of('deletes', mainpage, ReviewDelete, LastReviewerDelete, translator, is_executed)
-    optimizations_list = __get_executed_reviews_of('optimizations', mainpage, ReviewOptimization, LastReviewerOptimization, translator, is_executed)
-    edits_list = __get_executed_reviews_of('edits', mainpage, ReviewEdit, LastReviewerEdit, translator, is_executed)
+    deletes_list = __get_executed_reviews_of('deletes', main_page, ReviewDelete, LastReviewerDelete, translator, is_executed)
+    optimizations_list = __get_executed_reviews_of('optimizations', main_page, ReviewOptimization, LastReviewerOptimization, translator, is_executed)
+    edits_list = __get_executed_reviews_of('edits', main_page, ReviewEdit, LastReviewerEdit, translator, is_executed)
 
     past_decision = [{
         'title': 'Delete Queue',
