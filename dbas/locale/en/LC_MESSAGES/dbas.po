@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-28 14:27+0200\n"
+"POT-Creation-Date: 2016-09-28 14:30+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -1026,8 +1026,8 @@ msgstr "Why do you want to report it"
 
 #. Default: The text needs to be revised.
 #: templates/snippet-popups.pt:750
-msgid "statement_optimization"
-msgstr "The text needs and correcture."
+msgid "text_need_to_be_revised"
+msgstr "The text needs to be revised."
 
 #. Default: This statement is acceptable but it needs correction for
 #. spelling/grammar.
@@ -1727,6 +1727,9 @@ msgstr "Island View"
 #: templates/content.pt:344
 msgid "complete_view"
 msgstr "Complete View"
+
+#~ msgid "statement_optimization"
+#~ msgstr "The text needs and correcture."
 
 #~ msgid "argument_under_consideration_is_as_follows"
 #~ msgstr "The argument under consideration is as follows"

@@ -747,16 +747,16 @@
                         <fieldset>
                             <input type="radio" id="opt" value="optimization" name="flag-statement">
                             <label for="opt">
-                                <span i18n:translate="statement_optimization">The text needs to be revised.</span><br>
+                                <span i18n:translate="text_need_to_be_revised">The text needs to be revised.</span><br>
                                 <small class="statement_text" i18n:translate="statement_optimization_description">This statement is acceptable but it needs correction for spelling/grammar.</small>
                                 <small class="argument_text" i18n:translate="argument_optimization_description">This argument is acceptable but it needs correction for spelling/grammar.</small>
                             </label>
                             <br>
                             <input type="radio" id="off" value="offtopic" name="flag-statement">
                             <label for="off">
-                                <span class="statement_text" i18n:translate="statement_offtopic">This statement is offtopic.</span><br>
+                                <span class="statement_text" i18n:translate="statement_offtopic">This statement is offtopic.</span><br class="statement_text">
                                 <small class="statement_text" i18n:translate="statement_offtopic_description">This statement does not belong to the topic under discussion.</small>
-                                <span class="argument_text" i18n:translate="argument_offtopic">This argument is offtopic.</span><br>
+                                <span class="argument_text" i18n:translate="argument_offtopic">This argument is offtopic.</span><br class="argument_text">
                                 <small class="argument_text" i18n:translate="argument_offtopic_description">This argument does not belong to the topic under discussion.</small>
                             </label>
                             <br>
@@ -769,8 +769,8 @@
                             <br>
                             <input type="radio" id="bad" value="harmful" name="flag-statement">
                             <label for="bad">
-                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br>
-                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span><br>
+                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
+                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
                             </label>
                         </fieldset>
                     </form>

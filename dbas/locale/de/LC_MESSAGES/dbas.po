@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-28 14:27+0200\n"
+"POT-Creation-Date: 2016-09-28 14:30+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1042,7 +1042,7 @@ msgstr "Wieso möchten Sie es melden"
 
 #. Default: The text needs to be revised.
 #: templates/snippet-popups.pt:750
-msgid "statement_optimization"
+msgid "text_need_to_be_revised"
 msgstr "Der Text sollte überarbeitet werden."
 
 #. Default: This statement is acceptable but it needs correction for
@@ -1751,6 +1751,9 @@ msgstr "Insel-Ansicht"
 #: templates/content.pt:344
 msgid "complete_view"
 msgstr "Komplette Ansicht"
+
+#~ msgid "statement_optimization"
+#~ msgstr "Der Text sollte überarbeitet werden."
 
 #~ msgid "mark-reason"
 #~ msgstr "Bitte geben Sie einen Grund an"
