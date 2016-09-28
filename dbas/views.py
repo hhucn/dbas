@@ -2338,7 +2338,7 @@ class Dbas(object):
 
     # ajax - for revoking content
     @view_config(route_name='ajax_revoke_content', renderer='json', require_csrf=False)
-    def review_lock(self):
+    def revoke_content(self):
         """
 
         :return:
