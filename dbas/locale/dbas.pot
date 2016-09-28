@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-28 14:27+0200\n"
+"POT-Creation-Date: 2016-09-28 14:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -937,7 +937,7 @@ msgstr ""
 
 #. Default: The text needs to be revised.
 #: ././templates/snippet-popups.pt:750
-msgid "statement_optimization"
+msgid "text_need_to_be_revised"
 msgstr ""
 
 #. Default: This statement is acceptable but it needs correction for
