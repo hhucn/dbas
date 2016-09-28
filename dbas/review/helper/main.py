@@ -1,5 +1,5 @@
 """
-Provides helping function for the managing reviews.
+Provides helping function for the adding task in the review queuees or en-/disabling statemetns & arguments.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """

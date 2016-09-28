@@ -1,5 +1,5 @@
 """
-Provides helping function for the review page.
+Provides helping function for displaying subpages like the edit queue.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """

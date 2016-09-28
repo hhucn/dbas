@@ -25,12 +25,22 @@ from sqlalchemy import engine_from_config, and_
 
 
 def usage(argv):
+    """
+
+    :param argv:
+    :return:
+    """
     cmd = os.path.basename(argv[0])
     print('usage: %s <config_uri>\n(example: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
 
 
 def main_discussion(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -51,6 +61,11 @@ def main_discussion(argv=sys.argv):
 
 
 def main_discussion_reload(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -74,6 +89,11 @@ def main_discussion_reload(argv=sys.argv):
 
 
 def main_dummy_votes(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -91,6 +111,11 @@ def main_dummy_votes(argv=sys.argv):
 
 
 def main_dummy_reviews(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -107,6 +132,11 @@ def main_dummy_reviews(argv=sys.argv):
 
 
 def main_news(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -123,6 +153,11 @@ def main_news(argv=sys.argv):
 
 
 def setup_news_db(session):
+    """
+
+    :param session:
+    :return:
+    """
     news01 = News(title='Anonymous users after vacation',
                   date=arrow.get('2015-09-24'),
                   author='Tobias Krauthoff',
