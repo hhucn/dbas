@@ -9,8 +9,6 @@ today! Here are the guidelines we'd like you to follow:
  - [Submission Guidelines](#submit)
  - [Coding Rules](#rules)
  - [Commit Message Guidelines](#commit)
- - [Signing the CLA](#cla)
- - [Further Info](#info)
 
 ## <a name="question"></a> Got a Question or Problem?
 
