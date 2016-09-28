@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-28 14:30+0200\n"
+"POT-Creation-Date: 2016-09-28 14:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -952,39 +952,24 @@ msgstr ""
 msgid "argument_optimization_description"
 msgstr ""
 
-#. Default: This statement is offtopic.
+#. Default: This statement is off topic or irrelevant.
 #: ././templates/snippet-popups.pt:757
-msgid "statement_offtopic"
+msgid "statement_offtopic_or_irrelevant"
 msgstr ""
 
 #. Default: This statement does not belong to the topic under discussion.
 #: ././templates/snippet-popups.pt:758
-msgid "statement_offtopic_description"
+msgid "statement_offtopic_or_irrelevant_description"
 msgstr ""
 
-#. Default: This argument is offtopic.
+#. Default: This argument is off topic or irrelevant.
 #: ././templates/snippet-popups.pt:759
-msgid "argument_offtopic"
+msgid "argument_offtopic_or_irrelevant"
 msgstr ""
 
 #. Default: This argument does not belong to the topic under discussion.
 #: ././templates/snippet-popups.pt:760
-msgid "argument_offtopic_description"
-msgstr ""
-
-#. Default: It is not relevant at all.
-#: ././templates/snippet-popups.pt:765
-msgid "statement_spam"
-msgstr ""
-
-#. Default: This statement does not belong to any topic under discussion.
-#: ././templates/snippet-popups.pt:766
-msgid "statement_spam_description"
-msgstr ""
-
-#. Default: This argument does not belong to any topic under discussion.
-#: ././templates/snippet-popups.pt:767
-msgid "argument_spam_description"
+msgid "argument_offtopic_or_irrelevant_description"
 msgstr ""
 
 #. Default: This statement is harmful or abusive.
@@ -1015,11 +1000,6 @@ msgstr ""
 #. Default: Report the whole argument.
 #: ././templates/snippet-popups.pt:813
 msgid "report_whole_argument"
-msgstr ""
-
-#. Default: Content is inappropriate, harmful or abusive.
-#: ././templates/snippet-popups.pt:814
-msgid "statement_harmful_description"
 msgstr ""
 
 #. Default: Caution
@@ -1338,17 +1318,17 @@ msgstr ""
 msgid "reject_it"
 msgstr ""
 
-#. Default: Off topic
+#. Default: Off topic or irrelevant
 #: ././templates/review_content.pt:57
-msgid "off_topic"
+msgid "off_topic_or_irrelevant"
 msgstr ""
 
-#. Default: are useful in general, but do not belong to the current discussion
+#. Default: text does not belong to the topic under discussion
 #: ././templates/review_content.pt:57
 msgid "off_topic_explanation"
 msgstr ""
 
-#. Default: Inappropriate, harmful or abbusive
+#. Default: Inappropriate, harmful or abusive
 #: ././templates/review_content.pt:58
 msgid "inappropriate_harmful_abbusive"
 msgstr ""
@@ -1366,16 +1346,6 @@ msgstr ""
 #. Default: if posts are useful, but need edits in grammar and/or spelling
 #: ././templates/review_content.pt:59
 msgid "needs_optimization_explanation"
-msgstr ""
-
-#. Default: Spam
-#: ././templates/review_content.pt:60
-msgid "spam"
-msgstr ""
-
-#. Default: is neither useful nor mappend to a discussions topic
-#: ././templates/review_content.pt:60
-msgid "spam_explanation"
 msgstr ""
 
 #. Default: for arguments, which should not be deleted.
