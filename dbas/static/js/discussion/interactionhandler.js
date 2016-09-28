@@ -257,7 +257,7 @@ function InteractionHandler() {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
 			if (is_argument)
-				window.history.back();
+				setGlobalSuccessHandler('Yeah', _t_discussion(dataRemoved));
 			else
 				window.location.reload();
 		}

@@ -1213,21 +1213,23 @@ class FrontendTests:
         print('Starting tests for deleting the own statement:')
         success = True
         b = Browser(browser)
-        b = Helper.login(b, nickname_test_user1, password, main_page  + 'discuss')
+        b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'discuss')
 
         # get text and url of the deleted element
-        text = b.find_by_css('#discussions-space-list li:nth-child(1) label').text
-        b.find_by_css('#discussions-space-list li:nth-child(1)').click()
         time.sleep(wait_time)
+        text = b.find_by_css('#discussions-space-list li:nth-child(2) label').text
+        b.find_by_css('#discussions-space-list li:nth-child(2) input').click()
+        time.sleep(wait_time * 5)
         url = b.url
         b.back()
 
         # go back and delete it
+        time.sleep(wait_time * 5)
+        b.find_by_css('#discussions-space-list li:nth-child(2)').mouse_over()
         time.sleep(wait_time)
-        b.find_by_css('#discussions-space-list li:nth-child(1)').mouse_over()
+        b.find_by_css('#discussions-space-list li:nth-child(2) .item-trash').click()
         time.sleep(wait_time)
-        b.find_by_css('#discussions-space-list li:nth-child(1) .item-trash').click()
-        time.sleep(wait_time)
+        success = success and Helper.check_for_present_text(b, 'Caution', 'Check for caution text')
         b.find_by_css('#popup-delete-content-submit').click()
         time.sleep(wait_time)
 
@@ -1235,7 +1237,8 @@ class FrontendTests:
 
         b.visit(url)
         time.sleep(wait_time)
-        success = success and Helper.check_for_non_present_text(b, '404 Error', 'Check, for 404 page')
+        success = success and Helper.check_for_present_text(b, '404 Error', 'Check for 404 page')
+        success = success and Helper.check_for_present_text(b, 'revoked the content', 'Check 404 reason')
 
         b = Helper.logout(b)
         b.quit()
@@ -1251,9 +1254,39 @@ class FrontendTests:
         print('Starting tests for deleting the own argument:')
         success = True
         b = Browser(browser)
-        b = Helper.login(b, nickname_test_user1, password, main_page  + 'discuss')
+        b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'discuss')
 
-        Helper.print_info('TODO')
+        # position
+        time.sleep(wait_time * 2)
+        b.find_by_css('#discussions-space-list li:nth-child(1) input').click()
+        # attitude
+        time.sleep(wait_time * 2)
+        b.find_by_css('#discussions-space-list li:nth-child(1) input').click()
+        # reason
+        time.sleep(wait_time * 2)
+        b.find_by_css('#discussions-space-list li:nth-child(1) input').click()
+
+        # system has a counter argument
+        time.sleep(wait_time)
+        success = success and Helper.check_for_present_text(b, 'Other participants', 'Check for systems counter argument (there should be one)')
+
+        # click trash
+        b.find_by_css('i.fa-trash').click()
+        time.sleep(wait_time)
+        success = success and Helper.check_for_present_text(b, 'Caution', 'Check for caution text')
+        b.find_by_css('#popup-delete-content-submit').click()
+
+        time.sleep(wait_time)
+        success = success and Helper.check_for_present_text(b, 'Yeah', 'Check for success popup')
+
+        # go back and reload
+        b.back()
+        time.sleep(wait_time)
+        b.reload()
+        time.sleep(wait_time)
+        b.find_by_css('#discussions-space-list li:nth-child(1)').click()
+        time.sleep(wait_time)
+        success = success and Helper.check_for_non_present_text(b, 'caution', 'Check for systems counter argument (there should be none)')
 
         b = Helper.logout(b)
         b.quit()
