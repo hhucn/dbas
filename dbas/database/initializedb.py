@@ -1424,9 +1424,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.flush()
 
     reason1 = ReviewDeleteReason(reason='offtopic')
-    reason2 = ReviewDeleteReason(reason='spam')
-    reason3 = ReviewDeleteReason(reason='harmful')
-    session.add_all([reason1, reason2, reason3])
+    reason2 = ReviewDeleteReason(reason='harmful')
+    session.add_all([reason1, reason2])
     session.flush()
 
     reputation01 = ReputationReason(reason='rep_reason_first_position', points=10)
@@ -1445,8 +1444,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 
 def setup_review_database(session):
     reason1 = session.query(ReviewDeleteReason).filter_by(reason='offtopic').first()
-    reason2 = session.query(ReviewDeleteReason).filter_by(reason='spam').first()
-    reason3 = session.query(ReviewDeleteReason).filter_by(reason='harmful').first()
+    reason2 = session.query(ReviewDeleteReason).filter_by(reason='harmful').first()
 
     int_start = 6
     int_end = 30
@@ -1456,13 +1454,13 @@ def setup_review_database(session):
     review03 = ReviewOptimization(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end))
     review04 = ReviewOptimization(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end))
     review05 = ReviewOptimization(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end))
-    review06 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3), is_executed=True)
-    review07 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3), is_executed=True)
-    review08 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 3), is_executed=True)
-    review09 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 3))
-    review10 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3))
-    review11 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3))
-    review12 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3))
+    review06 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review07 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review08 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review09 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review10 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review11 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review12 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review13 = ReviewDelete(detector=2, argument=1, reason=reason1.uid, is_executed=True)
     session.add_all([review01, review02, review03, review04, review05, review06, review07, review08, review09, review10, review11, review12, review13])
     session.flush()
