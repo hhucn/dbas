@@ -178,7 +178,7 @@ class ItemDictHelper(object):
         statements_array = []
         _tn = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+        db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
 
         db_arguments = []
         db_arguments_not_disabled = get_not_disabled_arguments_as_query()
@@ -206,6 +206,7 @@ class ItemDictHelper(object):
                                                                  Argument.argument_uid == db_argument.argument_uid,
                                                                  Argument.is_supportive == False,
                                                                  Argument.issue_uid == self.issue_uid)).all()
+
         elif attack_type == 'support':
             db_arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                                  Argument.argument_uid == db_argument.argument_uid,
@@ -259,7 +260,7 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         statements_array = []
 
-        db_argument  = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+        db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
         if not db_argument:
             return statements_array
 

@@ -729,20 +729,21 @@ class QueryHelper:
         :param translator:
         :return:
         """
-        db_element = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
         is_author = is_author_of_argument(db_user.nickname, uid)
 
         # exists the argument
-        if not db_element or not is_author:
+        if not db_argument or not is_author:
             logger('QueryHelper', 'revoke_content', 'Argument does not exists or ' + db_user.nickname + ' is not the author')
             return None, translator.get(translator.internalError)
 
-        db_element.set_disable(True)
+        logger('QueryHelper', 'revoke_content', 'Disabling argument ' + str(uid))
+        db_argument.set_disable(True)
 
-        DBDiscussionSession.add(db_element)
+        DBDiscussionSession.add(db_argument)
         DBDiscussionSession.flush()
         transaction.commit()
-        return db_element, ''
+        return db_argument, ''
 
     @staticmethod
     def __revoke_statement(db_user, uid, transaction, translator):
