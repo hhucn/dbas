@@ -609,6 +609,13 @@ function GuiHandler() {
 	
 	this.showFlagStatementPopup = function(uid, is_argument){
 		var popup = $('#popup-flag-statement');
+		if (is_argument){
+			popup.find('.statement_text').hide();
+			popup.find('.argument_text').show();
+		} else {
+			popup.find('.statement_text').show();
+			popup.find('.argument_text').hide();
+		}
 		popup.modal('show');
 		popup.find('input').click(function () {
 			var reason = $(this).attr('value');
@@ -624,7 +631,22 @@ function GuiHandler() {
 	 */
 	this.showFlagArgumentPopup = function(uid){
 		var popup = $('#popup-flag-argument');
-		var text = $('.triangle-l:last-child .triangle-content').text();
+		// var text = $('.triangle-l:last-child .triangle-content').text();
+		var text = $('.triangle-l:last-child .triangle-content').html();
+		text = text.substr(0, text.indexOf('<br>'));
+		var pos = text.indexOf('</span>');
+		while (pos != -1){
+			text = text.replace('</span>', '');
+			pos = text.indexOf('</span>');
+		}
+		pos = text.indexOf('<span');
+		var end = text.indexOf('>');
+		while (pos != -1){
+			console.log(text);
+			text = text.substr(0, pos) + text.substr(end + 1);
+			pos = text.indexOf('<span');
+			end = text.indexOf('>');
+		}
 		$('#popup-flag-argument-text').text(text);
 		popup.modal('show');
 		popup.find('input').click(function () {
@@ -650,7 +672,7 @@ function GuiHandler() {
 				$(this).hover(function () {
 					var modded_text = text.replace( new RegExp( "(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")" , 'gi' ), "<span class='text-primary'>$1</span>" );
 					$('#popup-flag-argument-text').html(modded_text);
-					$(this).next().find('em').text("<span class='text-primary'>" + current + "</span>");
+					$(this).next().find('em').html("<span class='text-primary'>" + current + "</span>");
 				}, function () {
 					$('#popup-flag-argument-text').text(text);
 					$(this).next().find('em').html(current);
