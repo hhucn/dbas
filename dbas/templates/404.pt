@@ -9,9 +9,7 @@
 					<p class="lead">
 						<span i18n:translate="404_text_part1">The page</span>&quot;
 						<strong>${page_notfound_viewname}</strong>&quot;
-						<span i18n:translate="404_text_part2">could not be found</span>
-                        <span tal:condition="not:param_error">.</span>
-                        <span tal:condition="param_error" i18n:translate="wrong_input_params">, because the input parameter seems to be wrong.</span>
+						<span i18n:translate="404_text_part2">could not be found</span><span tal:condition="not:(param_error or revoked_content)">.</span><span tal:condition="param_error" i18n:translate="wrong_input_params">, because the input parameter seems to be wrong.</span><span tal:condition="revoked_content" i18n:translate="author_revoked_content">, because the author revoked the content.</span>
                         <br>
                         <br>
                         <a href="/" i18n:translate="go-home">Go home</a>
