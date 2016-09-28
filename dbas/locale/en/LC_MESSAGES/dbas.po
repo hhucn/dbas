@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-27 21:11+0200\n"
+"POT-Creation-Date: 2016-09-28 14:27+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -32,22 +32,27 @@ msgid "404_text_part2"
 msgstr "could not be found"
 
 #. Default: , because the input parameter seems to be wrong.
-#: templates/404.pt:14
+#: templates/404.pt:12
 msgid "wrong_input_params"
 msgstr ", because the input parameter seems to be wrong."
 
+#. Default: , because the author revoked the content.
+#: templates/404.pt:12
+msgid "author_revoked_content"
+msgstr ", because the author revoked the content."
+
 #. Default: Go home
-#: templates/404.pt:17
+#: templates/404.pt:15
 msgid "go-home"
 msgstr "Go home"
 
 #. Default: or
-#: templates/404.pt:19
+#: templates/404.pt:17
 msgid "or"
 msgstr "oder"
 
 #. Default: go back to the discussion
-#: templates/404.pt:20
+#: templates/404.pt:18
 msgid "go_back_to_the_discussion"
 msgstr "go back to the discussion!"
 
@@ -891,10 +896,9 @@ msgid "generate_password"
 msgstr "Generate secure password"
 
 #. Default: Anti-Spam (required)
-#. Default: Spam
-#: templates/snippet-popups.pt:390 templates/review_content.pt:60
-msgid "spam"
-msgstr "Anti-Spam"
+#: templates/snippet-popups.pt:390
+msgid "anti-spam"
+msgstr "Anti-Spam (required)"
 
 #. Default: How to select a strong password
 #: templates/snippet-popups.pt:421 templates/snippet-popups.pt:465
@@ -1000,90 +1004,134 @@ msgstr "Send News"
 msgid "send_notification"
 msgstr "Send Notifcation"
 
-#. Default: Please mark a reason
+#. Default: Selecting a reason
 #: templates/snippet-popups.pt:739
-msgid "mark-reason"
-msgstr "Please mark a reason"
+msgid "select-reason"
+msgstr "Selecting a reason"
 
-#. Default: The text needs an correction.
-#: templates/snippet-popups.pt:747
+#. Default: The statement under consideration is as follows
+#: templates/snippet-popups.pt:742
+msgid "statement_under_consideration_is"
+msgstr "The statement under consideration is as follows"
+
+#. Default: The argument under consideration is as follows
+#: templates/snippet-popups.pt:743 templates/snippet-popups.pt:792
+msgid "argument_under_consideration_is"
+msgstr "The argument under consideration is as follows"
+
+#. Default: Why do you want to report it
+#: templates/snippet-popups.pt:744
+msgid "why_do_you_want_to_report"
+msgstr "Why do you want to report it"
+
+#. Default: The text needs to be revised.
+#: templates/snippet-popups.pt:750
 msgid "statement_optimization"
 msgstr "The text needs and correcture."
 
-#. Default: This statement is right, but needs correction for his
-#. spelling/grammar..
-#: templates/snippet-popups.pt:748
-msgid "statement_optimization_decription"
+#. Default: This statement is acceptable but it needs correction for
+#. spelling/grammar.
+#: templates/snippet-popups.pt:751
+msgid "statement_optimization_description"
 msgstr "This statement is right, but needs correction for spelling/grammar."
 
+#. Default: This argument is acceptable but it needs correction for
+#. spelling/grammar.
+#: templates/snippet-popups.pt:752
+msgid "argument_optimization_description"
+msgstr ""
+"This argument is acceptable but it needs correction for spelling/grammar."
+
 #. Default: This statement is offtopic.
-#: templates/snippet-popups.pt:753
+#: templates/snippet-popups.pt:757
 msgid "statement_offtopic"
 msgstr "This statement is offtopic."
 
-#. Default: Content of the statement is useful, but does not belong to this
-#. discussion.
-#: templates/snippet-popups.pt:754
-msgid "statement_offtopic_decription"
+#. Default: This statement does not belong to the topic under discussion.
+#: templates/snippet-popups.pt:758
+msgid "statement_offtopic_description"
 msgstr ""
 "Content of the statement is useful, but does not belong to this discussion."
 
-#. Default: It is not relevant at all.
+#. Default: This argument is offtopic.
 #: templates/snippet-popups.pt:759
+msgid "argument_offtopic"
+msgstr "This argument is offtopic."
+
+#. Default: This argument does not belong to the topic under discussion.
+#: templates/snippet-popups.pt:760
+msgid "argument_offtopic_description"
+msgstr "This argument does not belong to the topic under discussion."
+
+#. Default: It is not relevant at all.
+#: templates/snippet-popups.pt:765
 msgid "statement_spam"
 msgstr "It is not relevant at all."
 
-#. Default: This statement is not important for any discussion on D-BAS.
-#: templates/snippet-popups.pt:760
-msgid "statement_spam_decription"
+#. Default: This statement does not belong to any topic under discussion.
+#: templates/snippet-popups.pt:766
+msgid "statement_spam_description"
 msgstr "This statement is not important for any discussion on D-BAS."
 
+#. Default: This argument does not belong to any topic under discussion.
+#: templates/snippet-popups.pt:767
+msgid "argument_spam_description"
+msgstr "This argument does not belong to any topic under discussion."
+
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:765
+#: templates/snippet-popups.pt:772
 msgid "statement_harmful"
 msgstr "This statement is harmful or abusive."
 
-#. Default: Content is inappropriate, harmful or abusive.
-#: templates/snippet-popups.pt:766 templates/snippet-popups.pt:805
-msgid "statement_harmful_decription"
-msgstr "Content is inappropriate, harmful or abusive."
+#. Default: This argument is harmful or abusive.
+#: templates/snippet-popups.pt:773
+msgid "argument_harmful"
+msgstr "This argument is harmful or abusive."
 
-#. Default: Please select a part, which should be reported
-#: templates/snippet-popups.pt:782
-msgid "select-part"
-msgstr "Please select a part, which should be reported"
+#. Default: Reporting (parts of) an argument
+#: templates/snippet-popups.pt:789
+msgid "reporting_parts_argument"
+msgstr "Reporting (parts of) an argument"
+
+#. Default: Please choose which part of the argument you want to report
+#: templates/snippet-popups.pt:794
+msgid "please_choose_part_to_report"
+msgstr "Please choose which part of the argument you want to report"
 
 #. Default: Report
-#: templates/snippet-popups.pt:792
+#: templates/snippet-popups.pt:801
 msgid "report"
 msgstr "Report"
 
-#. Default: The implication is wrong.
-#: templates/snippet-popups.pt:798
-msgid "argument_wrong"
-msgstr "The implication is wrong."
+#. Default: Report the whole argument.
+#: templates/snippet-popups.pt:813
+msgid "report_whole_argument"
+msgstr "Report the whole argument."
 
-#. Default: The text itself is maybe right, but I do not see, that this is
-#. well-justified.
-#: templates/snippet-popups.pt:799
-msgid "argument_wrong_decription"
-msgstr ""
-"The text itself is maybe right, but I do not see, that this is well-"
-"justified."
+#. Default: Content is inappropriate, harmful or abusive.
+#: templates/snippet-popups.pt:814
+msgid "statement_harmful_description"
+msgstr "Content is inappropriate, harmful or abusive."
 
-#. Default: Report whole argument, because it is harmful or abusive.
-#: templates/snippet-popups.pt:804
-msgid "flag_argument"
-msgstr "Report whole argument, because it is harmful or abusive."
+#. Default: Caution
+#: templates/snippet-popups.pt:831
+msgid "caution"
+msgstr "Caution"
+
+#. Default: Do you really want to delete this content? This step is
+#. irreversible!
+#: templates/snippet-popups.pt:835
+msgid "do_you_really_step_irreversible"
+msgstr "Do you really want to delete this content? This step is irreversible!"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:821
-msgid "choose_a_steap_to_jump_in"
+#: templates/snippet-popups.pt:852
+msgid "choose_a_step_to_jump_in"
 msgstr "Please choose a step to jump in"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:824
+#: templates/snippet-popups.pt:855
 msgid "below_you_will_find"
 msgstr ""
 "Below you find a list with all arguments, where your selected text is used:"
@@ -1415,6 +1463,11 @@ msgstr "Needs optimization"
 msgid "needs_optimization_explanation"
 msgstr "if posts are useful, but need edits in grammar and/or spelling"
 
+#. Default: Spam
+#: templates/review_content.pt:60
+msgid "spam"
+msgstr "Anti-Spam"
+
 #. Default: is neither useful nor mappend to a discussions topic
 #: templates/review_content.pt:60
 msgid "spam_explanation"
@@ -1656,24 +1709,36 @@ msgid "restart_discussion"
 msgstr "Restart"
 
 #. Default: Change display style
-#: templates/content.pt:323
+#: templates/content.pt:329
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: Dialog View
-#: templates/content.pt:326
+#: templates/content.pt:332
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Island View
-#: templates/content.pt:332
+#: templates/content.pt:338
 msgid "island_view"
 msgstr "Island View"
 
 #. Default: Complete View
-#: templates/content.pt:338
+#: templates/content.pt:344
 msgid "complete_view"
 msgstr "Complete View"
+
+#~ msgid "argument_under_consideration_is_as_follows"
+#~ msgstr "The argument under consideration is as follows"
+
+#~ msgid "mark-reason"
+#~ msgstr "Please mark a reason"
+
+#~ msgid "argument_wrong"
+#~ msgstr "The implication is wrong."
+
+#~ msgid "flag_argument"
+#~ msgstr "Report whole argument, because it is harmful or abusive."
 
 #~ msgid "keep_in_mind_that_you_can_argue"
 #~ msgstr ""
@@ -1903,12 +1968,6 @@ msgstr "Complete View"
 #~ "the bubbles of the map can have play a important role. Therefore using "
 #~ "this data structure for logically presentations of some graphs makes "
 #~ "sense."
-
-#~ msgid "dialog_based_content"
-#~ msgstr ""
-#~ "Yeah, this is a novel and it is a kind of dialog-based approach. This "
-#~ "means that the system will represent argumentations of panelist and "
-#~ "claims will be given through the other participants."
 
 #~ msgid "simple_ui"
 #~ msgstr "Simple UI"
@@ -2184,9 +2243,6 @@ msgstr "Complete View"
 #~ msgstr ""
 #~ "Do never ever use negations! Every negation will be set extra! This is "
 #~ "highly important!"
-
-#~ msgid "insert-argument"
-#~ msgstr "Please insert a new Argument"
 
 #~ msgid "pro"
 #~ msgstr "Pro"
