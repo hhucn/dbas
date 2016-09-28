@@ -695,7 +695,7 @@ class QueryHelper:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         if not db_user:
             logger('QueryHelper', 'revoke_content', 'User not found')
-            return translator.get(translator.internalError)
+            return translator.get(translator.userNotFound)
 
         # get element, which should be revoked
         if is_argument:
@@ -733,11 +733,15 @@ class QueryHelper:
         is_author = is_author_of_argument(db_user.nickname, uid)
 
         # exists the argument
-        if not db_argument or not is_author:
-            logger('QueryHelper', 'revoke_content', 'Argument does not exists or ' + db_user.nickname + ' is not the author')
+        if not db_argument:
+            logger('QueryHelper', '__revoke_argument', 'Argument does not exists')
             return None, translator.get(translator.internalError)
 
-        logger('QueryHelper', 'revoke_content', 'Disabling argument ' + str(uid))
+        if not is_author:
+            logger('QueryHelper', 'revoke_content', db_user.nickname + ' is not the author')
+            return None, translator.get(translator.userIsNotAuthorOfArgument)
+
+        logger('QueryHelper', '__revoke_argument', 'Disabling argument ' + str(uid))
         db_argument.set_disable(True)
 
         DBDiscussionSession.add(db_argument)
@@ -756,13 +760,17 @@ class QueryHelper:
         :return:
         """
         logger('QueryHelper', 'revoke_content', 'Statement ' + str(uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
-        db_element = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
         is_author = is_author_of_statement(db_user.nickname, uid)
 
         # exists the statement
-        if not db_element or not is_author:
-            logger('QueryHelper', 'revoke_content', 'Statement does not exists or ' + db_user.nickname + ' is not the author')
+        if not db_statement:
+            logger('QueryHelper', '__revoke_statement', 'Statement does not exists')
             return None, translator.get(translator.internalError)
+
+        if not is_author:
+            logger('QueryHelper', '__revoke_statement', db_user.nickname + ' is not the author')
+            return None, translator.get(translator.userIsNotAuthorOfStatement)
 
         # transfer the responsibility to the next author, who used this statement
         db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == uid,
@@ -770,20 +778,20 @@ class QueryHelper:
                                                                                      Argument.author_uid != db_user.uid)).first()
         # search new author who supported this statement
         if db_statement_as_conclusion:
-            logger('QueryHelper', 'revoke_content', 'Statement ' + str(uid) + ' has a new author ' + str(db_statement_as_conclusion.author_uid) + ' (old author ' + str(db_user.uid) + ')')
-            db_element.author_uid = db_statement_as_conclusion.author_uid
+            logger('QueryHelper', '__revoke_statement', 'Statement ' + str(uid) + ' has a new author ' + str(db_statement_as_conclusion.author_uid) + ' (old author ' + str(db_user.uid) + ')')
+            db_statement.author_uid = db_statement_as_conclusion.author_uid
             QueryHelper.__transfer_textversion_to_new_author(uid, db_user.uid, db_statement_as_conclusion.author_uid, transaction)
         else:
-            logger('QueryHelper', 'revoke_content',
+            logger('QueryHelper', '__revoke_statement',
                    'Statement ' + str(uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
-            db_element.set_disable(True)
+            db_statement.set_disable(True)
             QueryHelper.__disable_textversions(uid, db_user.uid, transaction)
 
-        DBDiscussionSession.add(db_element)
+        DBDiscussionSession.add(db_statement)
         DBDiscussionSession.flush()
         transaction.commit()
 
-        return db_element, ''
+        return db_statement, ''
 
     @staticmethod
     def __disable_textversions(statement_uid, author, transaction):
