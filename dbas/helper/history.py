@@ -10,7 +10,7 @@ from dbas.input_validator import Validator
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.strings.text_generator import TextGenerator
-from dbas.strings.translator import Translator
+from dbas.strings.translator import translator
 from dbas.lib import create_speechbubble_dict
 
 
@@ -80,7 +80,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     if len(history) == 0:
         return []
 
-    logger('HistoryHelper', 'create_bubbles_from_history', 'nickname: ' + str(nickname) + ', history: ' + history)
+    logger('history_helper', 'create_bubbles_from_history', 'nickname: ' + str(nickname) + ', history: ' + history)
     splitted_history = get_splitted_history(history)
 
     bubble_array = []
@@ -95,7 +95,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
         consumed_history += step if len(consumed_history) == 0 else '-' + step
 
         if 'justify/' in step:
-            logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': justify case -> ' + step)
+            logger('history_helper', 'create_bubbles_from_history', str(index) + ': justify case -> ' + step)
             steps    = step.split('/')
             mode     = steps[2]
             relation = steps[3] if len(steps) > 3 else ''
@@ -106,19 +106,19 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
                     bubble_array += bubbles
 
         elif 'reaction/' in step:
-            logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
+            logger('history_helper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
             bubbles = __reaction_step(step, nickname, lang, splitted_history, url)
             if bubbles:
                 bubble_array += bubbles
 
         # elif 'attitude/' in step:
-        #    logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
+        #    logger('history_helper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
         #    bubbles = __attitude_step(step, nickname, lang, url)
         #    if bubbles:
         #        bubble_array += bubbles
 
         else:
-            logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
+            logger('history_helper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
 
     return bubble_array
 
@@ -133,13 +133,13 @@ def __justify_statement_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('HistoryHelper', '__justify_statement_step', 'def')
+    logger('history_helper', '__justify_statement_step', 'def')
     steps   = step.split('/')
     uid     = int(steps[1])
     #  slug    = ''
     is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
 
-    _tn         = Translator(lang)
+    _tn         = translator(lang)
     #  url     = UrlManager(application_url, slug).get_slug_url(False)
     if lang == 'de':
         intro   = _tn.get(_tn.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
@@ -165,7 +165,7 @@ def __attitude_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('HistoryHelper', '__attitude_step', 'def')
+    logger('history_helper', '__attitude_step', 'def')
     steps   = step.split('/')
     uid     = int(steps[1])
     text    = get_text_for_statement_uid(uid)
@@ -190,7 +190,7 @@ def __dont_know_step(step, nickname, lang, url):
     steps    = step.split('/')
     uid      = int(steps[1])
 
-    _tn      = Translator(lang)
+    _tn      = translator(lang)
     text     = get_text_for_argument_uid(uid)
     text     = text.replace(_tn.get(_tn.because).lower(), '</' + TextGenerator.tag_type + '>' + _tn.get(_tn.because).lower() + '<' + TextGenerator.tag_type + '>')
     sys_text = _tn.get(_tn.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>' + text[0:1].lower() + text[1:]  + '</' + TextGenerator.tag_type + '>. '
@@ -208,7 +208,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     :param url: String
     :return: [dict()]
     """
-    logger('HistoryHelper', '__reaction_step', 'def: ' + str(splitted_history))
+    logger('history_helper', '__reaction_step', 'def: ' + str(splitted_history))
     steps           = step.split('/')
     uid             = int(steps[1])
     additional_uid  = int(steps[3])
@@ -237,7 +237,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
         current_argument = current_argument[0:1].upper() + current_argument[1:]
     premise = premise[0:1].lower() + premise[1:]
 
-    _tn = Translator(lang)
+    _tn = translator(lang)
     user_text = (_tn.get(_tn.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
     user_text += '<' + TextGenerator.tag_type + '>'
     user_text += current_argument if current_argument != '' else premise

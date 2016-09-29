@@ -11,7 +11,7 @@ from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_se
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_object_of_review
 from sqlalchemy import and_
-from dbas.strings.translator import Translator
+from dbas.strings.translator import translator
 from dbas.logger import logger
 
 
@@ -214,12 +214,12 @@ def revoke_old_decision(queue, uid, lang, nickname, transaction):
     :param transaction:
     :return:
     """
-    logger('ReviewHistoryHelper', 'revoke_old_decision', 'queue: ' + queue + ', uid: ' + str(uid))
+    logger('review_history_helper', 'revoke_old_decision', 'queue: ' + queue + ', uid: ' + str(uid))
 
     success = ''
     error = ''
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    _t = Translator(lang)
+    _t = translator(lang)
 
     if queue == 'deletes':
         __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid, transaction)
@@ -267,11 +267,11 @@ def cancel_ongoing_decision(queue, uid, lang, transaction):
     :param transaction:
     :return:
     """
-    logger('ReviewHistoryHelper', 'cancel_ongoing_decision', 'queue: ' + queue + ', uid: ' + str(uid))
+    logger('review_history_helper', 'cancel_ongoing_decision', 'queue: ' + queue + ', uid: ' + str(uid))
     success = ''
     error = ''
 
-    _t = Translator(lang)
+    _t = translator(lang)
     if queue == 'deletes':
         DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).delete()
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
