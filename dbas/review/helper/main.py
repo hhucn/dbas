@@ -55,7 +55,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     :param transaction:
     :return:
     """
-    logger('ReviewMainHelper', 'add_review_opinion_for_delete', 'main')
+    logger('review_main_helper', 'add_review_opinion_for_delete', 'main')
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewDelete).filter_by(uid=review_uid).first()
@@ -108,7 +108,7 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction)
     :param transaction:
     :return:
     """
-    logger('ReviewMainHelper', 'add_review_opinion_for_edit', 'main')
+    logger('review_main_helper', 'add_review_opinion_for_edit', 'main')
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewEdit).filter_by(uid=review_uid).first()
@@ -163,7 +163,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     :param transaction:
     :return:
     """
-    logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'main ' + str(review_uid) + ', optimize ' + str(should_optimized))
+    logger('review_main_helper', 'add_review_opinion_for_optimization', 'main ' + str(review_uid) + ', optimize ' + str(should_optimized))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(uid=review_uid).first()
     if not db_review or db_review.is_executed or not db_user:
@@ -212,7 +212,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
                                                                                ReviewEdit.argument_uid == argument_uid)).order_by(ReviewEdit.uid.desc()).first()
-            logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
+            logger('review_main_helper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
             for edit in argument_dict[argument_uid]:
                 new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid, statement=edit['uid'], typeof=edit['type'], content=edit['val']))
 
@@ -222,7 +222,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
             transaction.commit()
             db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
                                                                                ReviewEdit.statement_uid == statement_uid)).order_by(ReviewEdit.uid.desc()).first()
-            logger('ReviewMainHelper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
+            logger('review_main_helper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
             for edit in statement_dict[statement_uid]:
                 new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid, statement=statement_uid, typeof=edit['type'], content=edit['val']))
 
@@ -248,7 +248,7 @@ def en_or_disable_object_of_review(review, is_disabled, transaction):
     :param transaction:
     :return:
     """
-    logger('ReviewMainHelper', 'en_or_disable_object_of_review', str(review.uid) + ' ' + str(is_disabled))
+    logger('review_main_helper', 'en_or_disable_object_of_review', str(review.uid) + ' ' + str(is_disabled))
     if review.statement_uid is not None:
         en_or_disable_statement_and_premise_of_review(review, is_disabled, transaction)
     else:
@@ -263,7 +263,7 @@ def en_or_disable_statement_and_premise_of_review(review, is_disabled, transacti
     :param transaction:
     :return:
     """
-    logger('ReviewMainHelper', 'en_or_disable_statement_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
+    logger('review_main_helper', 'en_or_disable_statement_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=review.statement_uid).first()
     db_statement.set_disable(is_disabled)
     DBDiscussionSession.add(db_statement)
@@ -283,7 +283,7 @@ def en_or_disable_arguments_and_premise_of_review(review, is_disabled, transacti
     :param transaction:
     :return:
     """
-    logger('ReviewMainHelper', 'en_or_disable_arguments_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
+    logger('review_main_helper', 'en_or_disable_arguments_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=review.argument_uid).first()
     db_argument.set_disable(is_disabled)
     DBDiscussionSession.add(db_argument)

@@ -433,8 +433,9 @@ class ItemDictHelper(object):
                                                                            restriction_on_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
+            is_author = is_author_of_argument(nickname, argument) if is_argument else is_author_of_statement(nickname, conclusion)
             statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
-                                                              is_flaggable=True, is_author=is_author_of_argument(nickname, argument.uid)))
+                                                              is_flaggable=True, is_author=is_author))
         # url = 'back' if self.for_api else 'window.history.go(-1)'
         # text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
         # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))

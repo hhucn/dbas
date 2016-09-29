@@ -80,7 +80,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     if len(history) == 0:
         return []
 
-    logger('HistoryHelper', 'create_bubbles_from_history', 'nickname: ' + str(nickname) + ', history: ' + history)
+    logger('history_helper', 'create_bubbles_from_history', 'nickname: ' + str(nickname) + ', history: ' + history)
     splitted_history = get_splitted_history(history)
 
     bubble_array = []
@@ -95,7 +95,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
         consumed_history += step if len(consumed_history) == 0 else '-' + step
 
         if 'justify/' in step:
-            logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': justify case -> ' + step)
+            logger('history_helper', 'create_bubbles_from_history', str(index) + ': justify case -> ' + step)
             steps    = step.split('/')
             mode     = steps[2]
             relation = steps[3] if len(steps) > 3 else ''
@@ -106,19 +106,19 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
                     bubble_array += bubbles
 
         elif 'reaction/' in step:
-            logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
+            logger('history_helper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
             bubbles = __reaction_step(step, nickname, lang, splitted_history, url)
             if bubbles:
                 bubble_array += bubbles
 
         # elif 'attitude/' in step:
-        #    logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
+        #    logger('history_helper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
         #    bubbles = __attitude_step(step, nickname, lang, url)
         #    if bubbles:
         #        bubble_array += bubbles
 
         else:
-            logger('HistoryHelper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
+            logger('history_helper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
 
     return bubble_array
 
@@ -133,7 +133,7 @@ def __justify_statement_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('HistoryHelper', '__justify_statement_step', 'def')
+    logger('history_helper', '__justify_statement_step', 'def')
     steps   = step.split('/')
     uid     = int(steps[1])
     #  slug    = ''
@@ -165,7 +165,7 @@ def __attitude_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('HistoryHelper', '__attitude_step', 'def')
+    logger('history_helper', '__attitude_step', 'def')
     steps   = step.split('/')
     uid     = int(steps[1])
     text    = get_text_for_statement_uid(uid)
@@ -208,7 +208,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     :param url: String
     :return: [dict()]
     """
-    logger('HistoryHelper', '__reaction_step', 'def: ' + str(splitted_history))
+    logger('history_helper', '__reaction_step', 'def: ' + str(splitted_history))
     steps           = step.split('/')
     uid             = int(steps[1])
     additional_uid  = int(steps[3])
