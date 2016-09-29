@@ -3,7 +3,7 @@
 
 from dbas.database.discussion_model import Premise, Statement, VoteStatement
 from dbas.database import DBDiscussionSession
-from .translator import translator
+from .translator import Translator
 
 
 class TextGenerator(object):
@@ -33,7 +33,7 @@ class TextGenerator(object):
         :param is_supportive: boolean
         :return: string
         """
-        _t = translator(self.lang)
+        _t = Translator(self.lang)
 
         if premise[-1] == '.':
             premise = premise[:-1]
@@ -80,7 +80,7 @@ class TextGenerator(object):
         :param is_logged_in: boolean
         :return: string
         """
-        _t         = translator(self.lang)
+        _t         = Translator(self.lang)
         system_msg = ''
         premise    = premise[0:1].lower() + premise[1:]
         if self.lang != 'de':
@@ -175,7 +175,7 @@ class TextGenerator(object):
         :param for_island_view: Boolean
         :return: dict()
         """
-        _t = translator(self.lang)
+        _t = Translator(self.lang)
         ret_dict = dict()
 
         if first_conclusion and first_conclusion[-1] == '.':
@@ -250,7 +250,7 @@ class TextGenerator(object):
 
         :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not lead to the conclusion, both hold]
         """
-        _t = translator(self.lang)
+        _t = Translator(self.lang)
         tag_premise = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
         tag_conclusion = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
         tag_end = '</' + TextGenerator.tag_type + '>'
@@ -284,7 +284,7 @@ class TextGenerator(object):
         :param color_html: Boolean
         :return: String
         """
-        _t = translator(self.lang)
+        _t = Translator(self.lang)
 
         #  build some confrontation text
         if self.lang != 'de':
@@ -342,7 +342,7 @@ class TextGenerator(object):
         :return:
         """
         nl = '<br>' if for_html else '\n'
-        _t = translator(lang)
+        _t = Translator(lang)
         content = _t.get(_t.textversionChangedContent) + ' ' + nickname
         content += nl + (_t.get(_t.fromm)[0:1].upper() + _t.get(_t.fromm)[1:]) + ': ' + original + nl
         content += (_t.get(_t.to)[0:1].upper() + _t.get(_t.to)[1:]) + ': ' + edited + nl
@@ -364,7 +364,7 @@ class TextGenerator(object):
         :return:
         """
         nl = '<br>' if for_html else '\n'
-        _t = translator(lang)
+        _t = Translator(lang)
         content = _t.get(_t.statementAddedMessageContent) + nl
         content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
         if for_html:
@@ -384,7 +384,7 @@ class TextGenerator(object):
         :return:
         """
         nl = '<br>' if for_html else '\n'
-        _t = translator(lang)
+        _t = Translator(lang)
         content = _t.get(_t.statementAddedMessageContent) + nl
         content += (_t.get(_t.where)[0:1].upper() + _t.get(_t.where)[1:]) + ': '
         if for_html:
@@ -402,7 +402,7 @@ class TextGenerator(object):
         :param start_lower_case: Boolean
         :return: dict()
         """
-        _t = translator(self.lang)
+        _t = Translator(self.lang)
         ret_dict = dict()
 
         if conclusion[-1] == '.':

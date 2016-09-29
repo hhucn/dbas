@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement
 from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
 
@@ -26,7 +26,7 @@ def set_issue(info, title, lang, nickname, transaction, ui_locales):
     :param ui_locales: ui_locales
     :return: True, '' on success, False, String on error
     """
-    _tn = translator(ui_locales)
+    _tn = Translator(ui_locales)
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not is_user_author(nickname):
@@ -124,7 +124,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
         issue_dict = get_issue_dict_for(issue, application_url, for_api, uid, lang)
         all_array.append(issue_dict)
 
-    _t = translator(lang)
+    _t = Translator(lang)
     tooltip = _t.get(_t.discussionInfoTooltip1) + ' ' + date + ' '
     tooltip += _t.get(_t.discussionInfoTooltip2) + ' ' + str(stat_count) + ' '
     tooltip += (_t.get(_t.discussionInfoTooltip3sg if stat_count == 1 else _t.discussionInfoTooltip3pl))

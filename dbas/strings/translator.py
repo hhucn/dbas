@@ -10,7 +10,7 @@ from .de import GermanDict
 from .en import EnglischDict
 
 
-class translator(object):
+class Translator(object):
     """
     Class for translating string
     """

@@ -41,7 +41,7 @@ from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, ge
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
     get_slug_by_statement_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
 from pyramid.httpexceptions import HTTPFound
@@ -333,7 +333,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         session_expired = user_manager.update_last_action(transaction, self.request.authenticated_userid)
         history_helper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
         if session_expired:
             return self.user_logout(True)
 
@@ -362,7 +362,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         session_expired = user_manager.update_last_action(transaction, self.request.authenticated_userid)
         history_helper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
         if session_expired:
             return self.user_logout(True)
 
@@ -886,7 +886,7 @@ class Dbas(object):
         nickname = self.request.authenticated_userid
         session_expired = user_manager.update_last_action(transaction, nickname)
         history_helper.save_path_in_database(nickname, self.request.path, transaction)
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
@@ -925,7 +925,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         session_expired = user_manager.update_last_action(transaction, self.request.authenticated_userid)
         history_helper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
@@ -960,7 +960,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         session_expired = user_manager.update_last_action(transaction, self.request.authenticated_userid)
         history_helper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
@@ -989,7 +989,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         session_expired = user_manager.update_last_action(transaction, self.request.authenticated_userid)
         history_helper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
@@ -1018,7 +1018,7 @@ class Dbas(object):
         ui_locales = get_language(self.request, get_current_registry())
         session_expired = user_manager.update_last_action(transaction, self.request.authenticated_userid)
         history_helper.save_path_in_database(self.request.authenticated_userid, self.request.path, transaction)
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
         if session_expired:
             return Dbas(self.request).user_logout(True)
 
@@ -1163,7 +1163,7 @@ class Dbas(object):
         logger('user_login', 'def', 'main, self.request.params: ' + str(self.request.params))
 
         lang = get_language(self.request, get_current_registry())
-        _tn = translator(lang)
+        _tn = Translator(lang)
 
         try:
             if not nickname and not password:
@@ -1263,7 +1263,7 @@ class Dbas(object):
         ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
         if not ui_locales:
             ui_locales = get_language(self.request, get_current_registry())
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
 
         # getting params
         try:
@@ -1302,7 +1302,7 @@ class Dbas(object):
         ui_locales = self.request.params['lang'] if 'lang' in self.request.params else None
         if not ui_locales:
             ui_locales = get_language(self.request, get_current_registry())
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
 
         try:
             success, error, info = request_password(self.request, ui_locales)
@@ -1331,7 +1331,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('set_user_settings', 'def', 'main, self.request.params: ' + str(self.request.params))
-        _tn = translator(get_language(self.request, get_current_registry()))
+        _tn = Translator(get_language(self.request, get_current_registry()))
 
         try:
             error = ''
@@ -1386,7 +1386,7 @@ class Dbas(object):
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('set_user_language', 'def', 'main, self.request.params: ' + str(self.request.params))
-        _tn = translator(get_language(self.request, get_current_registry()))
+        _tn = Translator(get_language(self.request, get_current_registry()))
 
         try:
             error = ''
@@ -1432,7 +1432,7 @@ class Dbas(object):
         uid = ''
         gravatar = ''
         ui_locales = get_language(self.request, get_current_registry())
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
 
         try:
             recipient = self.request.params['recipient'].replace('%20', ' ')
@@ -1480,7 +1480,7 @@ class Dbas(object):
         logger('set_new_start_statement', 'def', 'main')
 
         discussion_lang = get_discussion_language(self.request)
-        _tn = translator(discussion_lang)
+        _tn = Translator(discussion_lang)
         return_dict = dict()
         return_dict['error'] = ''
         return_dict['statement_uids'] = []
@@ -1531,7 +1531,7 @@ class Dbas(object):
 
         return_dict = dict()
         lang = get_language(self.request, get_current_registry())
-        _tn = translator(lang)
+        _tn = Translator(lang)
         try:
             if for_api and api_data:
                 nickname      = api_data['nickname']
@@ -1587,7 +1587,7 @@ class Dbas(object):
 
         return_dict = dict()
         lang = get_language(self.request, get_current_registry())
-        _tn = translator(lang)
+        _tn = Translator(lang)
 
         try:
             if for_api and api_data:
@@ -1644,7 +1644,7 @@ class Dbas(object):
         logger('set_correction_of_statement', 'def', 'main, self.request.params: ' + str(self.request.params))
         user_manager.update_last_action(transaction, self.request.authenticated_userid)
 
-        _tn = translator(get_language(self.request, get_current_registry()))
+        _tn = Translator(get_language(self.request, get_current_registry()))
 
         return_dict = dict()
         try:
@@ -1671,7 +1671,7 @@ class Dbas(object):
         logger('set_notification_read', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
         ui_locales = get_language(self.request, get_current_registry())
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
 
         try:
             DBDiscussionSession.query(Message).filter_by(uid=self.request.params['id']).first().set_read(True)
@@ -1698,7 +1698,7 @@ class Dbas(object):
         logger('set_notification_delete', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
         ui_locales = get_language(self.request, get_current_registry())
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
 
         try:
             DBDiscussionSession.query(Message).filter_by(uid=self.request.params['id']).delete()
@@ -1724,7 +1724,7 @@ class Dbas(object):
         logger('set_new_issue', 'def', 'main ' + str(self.request.params))
         return_dict = dict()
         ui_locales = get_language(self.request, get_current_registry())
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
 
         try:
             info = escape_string(self.request.params['info'])
@@ -1773,7 +1773,7 @@ class Dbas(object):
             return_dict['error'] = ''
         except KeyError as e:
             logger('get_logfile_for_premisegroup', 'error', repr(e))
-            _tn = translator(ui_locales)
+            _tn = Translator(ui_locales)
             return_dict['error'] = _tn.get(_tn.noCorrections)
 
         # return_dict = QueryHelper().get_logfile_for_premisegroup(uid)
@@ -1824,11 +1824,11 @@ class Dbas(object):
             return_dict['error'] = ''
         except KeyError as e:
             logger('get_shortened_url', 'error', repr(e))
-            _tn = translator(get_discussion_language(self.request))
+            _tn = Translator(get_discussion_language(self.request))
             return_dict['error'] = _tn.get(_tn.internalKeyError)
         except ReadTimeout as e:
             logger('get_shortened_url', 'read timeout error', repr(e))
-            _tn = translator(get_discussion_language(self.request))
+            _tn = Translator(get_discussion_language(self.request))
             return_dict['error'] = _tn.get(_tn.internalError)
 
         return json.dumps(return_dict, True)
@@ -1857,7 +1857,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('get_infos_about_argument', 'def', 'main, self.request.params: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         try:
@@ -1884,7 +1884,7 @@ class Dbas(object):
         logger('get_users_with_same_opinion', 'def', 'main: ' + str(self.request.params))
         nickname = self.request.authenticated_userid
         ui_locales = get_language(self.request, get_current_registry())
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
 
         return_dict = dict()
         try:
@@ -1927,7 +1927,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('get_public_user_data', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_language(self.request, get_current_registry())
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
 
         return_dict = dict()
         try:
@@ -1946,7 +1946,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('get_arguments_by_statement_uid', 'def', 'main: ' + str(self.request.matchdict))
         ui_locales = get_language(self.request, get_current_registry())
-        _tn = translator(ui_locales)
+        _tn = Translator(ui_locales)
 
         return_dict = dict()
         try:
@@ -1993,7 +1993,7 @@ class Dbas(object):
             logger('swich_language', 'error', repr(e))
             if not ui_locales:
                 ui_locales = 'en'
-            _t = translator(ui_locales)
+            _t = Translator(ui_locales)
             return_dict['error'] = _t.get(_t.internalError)
 
         return json.dumps(return_dict, True)
@@ -2017,7 +2017,7 @@ class Dbas(object):
         except KeyError as e:
             return_dict = dict()
             logger('send_news', 'error', repr(e))
-            _tn = translator(get_language(self.request, get_current_registry()))
+            _tn = Translator(get_language(self.request, get_current_registry()))
             return_dict['error'] = _tn.get(_tn.internalKeyError)
 
         return json.dumps(return_dict, True)
@@ -2035,7 +2035,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('fuzzy_search', 'def', 'main, for_api: ' + str(for_api) + ', self.request.params: ' + str(self.request.params))
 
-        _tn = translator(get_language(self.request, get_current_registry()))
+        _tn = Translator(get_language(self.request, get_current_registry()))
 
         try:
             value = api_data["value"] if for_api else self.request.params['value']
@@ -2106,7 +2106,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('flag_argument_or_statement', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         try:
@@ -2146,7 +2146,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('review_delete_argument', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         try:
@@ -2176,7 +2176,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('review_edit_argument', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         try:
@@ -2206,7 +2206,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('review_optimization_argument', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         try:
@@ -2241,7 +2241,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('undo_review', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         try:
@@ -2272,7 +2272,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('cancel_review', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         try:
@@ -2303,7 +2303,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('review_lock', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         info = ''
@@ -2346,7 +2346,7 @@ class Dbas(object):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('ajax_revoke_content', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
-        _t = translator(ui_locales)
+        _t = Translator(ui_locales)
         return_dict = dict()
 
         info = ''

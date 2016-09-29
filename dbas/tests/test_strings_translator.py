@@ -3,7 +3,7 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from dbas.strings.en import EnglischDict
 from dbas.strings.de import GermanDict
 
@@ -15,9 +15,9 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class TranslatorTest(unittest.TestCase):
 
     def test_get(self):
-        trans_fr = translator('fr')
-        trans_de = translator('de')
-        trans_en = translator('en')
+        trans_fr = Translator('fr')
+        trans_de = Translator('de')
+        trans_en = Translator('en')
 
         en_dict = EnglischDict().set_up(trans_en)
         de_dict = GermanDict().set_up(trans_de)

@@ -12,7 +12,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 from dbas.url_manager import UrlManager
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
@@ -73,7 +73,7 @@ class ItemDictHelper(object):
                                                                   _um.get_url_for_statement_attitude(True, statement.uid),
                                                                   is_flaggable=True,
                                                                   is_author=is_author_of_statement(nickname, statement.uid)))
-            _tn = translator(self.lang)
+            _tn = Translator(self.lang)
             if nickname:
                 statements_array.append(self.__create_answer_dict('start_statement',
                                                                   [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
@@ -92,7 +92,7 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'prepare_item_dict_for_attitude', 'def')
-        _tn = translator(self.lang)
+        _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         # text = get_text_for_statement_uid(statement_uid)
@@ -124,7 +124,7 @@ class ItemDictHelper(object):
         """
         logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')
         statements_array = []
-        _tn = translator(self.lang)
+        _tn = Translator(self.lang)
         _rh = RecommenderSystem
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         db_arguments = RecommenderSystem.get_arguments_by_conclusion(statement_uid, is_supportive)
@@ -176,7 +176,7 @@ class ItemDictHelper(object):
         """
         logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
         statements_array = []
-        _tn = translator(self.lang)
+        _tn = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
 
@@ -295,7 +295,7 @@ class ItemDictHelper(object):
         """
         logger('ItemDictHelper', 'get_array_for_reaction', 'def')
         _tg  = TextGenerator(self.lang)
-        _tn  = translator(self.lang)
+        _tn  = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
         db_sys_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_sys).first()
@@ -433,8 +433,9 @@ class ItemDictHelper(object):
                                                                            restriction_on_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
+            is_author = is_author_of_argument(nickname, argument) if is_argument else is_author_of_statement(nickname, conclusion)
             statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
-                                                              is_flaggable=True, is_author=is_author_of_argument(nickname, argument.uid)))
+                                                              is_flaggable=True, is_author=is_author))
         # url = 'back' if self.for_api else 'window.history.go(-1)'
         # text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
         # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))

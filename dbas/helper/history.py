@@ -10,7 +10,7 @@ from dbas.input_validator import Validator
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.strings.text_generator import TextGenerator
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from dbas.lib import create_speechbubble_dict
 
 
@@ -139,7 +139,7 @@ def __justify_statement_step(step, nickname, lang, url):
     #  slug    = ''
     is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
 
-    _tn         = translator(lang)
+    _tn         = Translator(lang)
     #  url     = UrlManager(application_url, slug).get_slug_url(False)
     if lang == 'de':
         intro   = _tn.get(_tn.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
@@ -190,7 +190,7 @@ def __dont_know_step(step, nickname, lang, url):
     steps    = step.split('/')
     uid      = int(steps[1])
 
-    _tn      = translator(lang)
+    _tn      = Translator(lang)
     text     = get_text_for_argument_uid(uid)
     text     = text.replace(_tn.get(_tn.because).lower(), '</' + TextGenerator.tag_type + '>' + _tn.get(_tn.because).lower() + '<' + TextGenerator.tag_type + '>')
     sys_text = _tn.get(_tn.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>' + text[0:1].lower() + text[1:]  + '</' + TextGenerator.tag_type + '>. '
@@ -237,7 +237,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
         current_argument = current_argument[0:1].upper() + current_argument[1:]
     premise = premise[0:1].lower() + premise[1:]
 
-    _tn = translator(lang)
+    _tn = Translator(lang)
     user_text = (_tn.get(_tn.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
     user_text += '<' + TextGenerator.tag_type + '>'
     user_text += current_argument if current_argument != '' else premise

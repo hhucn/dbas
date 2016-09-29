@@ -334,17 +334,17 @@ class FrontendTests:
 
         # open author popup
         b.find_by_id('link_popup_author').click()
+        time.sleep(wait_time * 2)
         success = Helper.check_for_present_text(b, 'About me', 'check for author text')
-        close = b.find_by_name('popup_author_icon_close')
-        close.click()
+        b.find_by_name('popup_author_icon_close').click()
 
-        time.sleep(wait_time)
+        time.sleep(wait_time * 2)
 
         # open licence popup
         b.find_by_id('link_popup_license').click()
+        time.sleep(wait_time * 2)
         success = success and Helper.check_for_present_text(b, 'MIT', 'check for license text')
-        close = b.find_by_name('popup_license_icon_close')
-        close.click()
+        b.find_by_name('popup_license_icon_close').click()
 
         b.quit()
         return 1 if success else 0
@@ -589,7 +589,7 @@ class FrontendTests:
         b.find_by_id('insert_more_arguments_0').click()
         time.sleep(wait_time)
         b.find_by_id('popup-set-premisegroups-send-button').click()
-        time.sleep(wait_time)
+        time.sleep(wait_time * 2)
 
         # check choosing
         success = success and Helper.check_for_present_text(b, 'multiple reasons', 'check options for choosing ')
