@@ -208,7 +208,7 @@ function Main () {
 		});
 		
 		list.find('.item-trash').click(function () {
-			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
+			var uid = $(this).parent().find('label').attr('id');
 			guiHandler.showDeleteContentPopup(uid, false);
 		});
 		
