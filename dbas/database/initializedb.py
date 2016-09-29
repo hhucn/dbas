@@ -11,7 +11,7 @@ import sys
 from math import trunc
 
 import arrow
-import dbas.handler.password as passwordHandler
+import dbas.handler.password as password_handler
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
@@ -22,6 +22,8 @@ from dbas.database.news_model import News
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config, and_
+
+first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
 
 
 def usage(argv):
@@ -462,15 +464,15 @@ def set_up_users(session):
     session.flush()
 
     # adding some dummy users
-    pwt = passwordHandler.get_hashed_password('iamatestuser2016')
-    pw0 = passwordHandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-    pw1 = passwordHandler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
-    pw2 = passwordHandler.get_hashed_password('tobias')
-    pw3 = passwordHandler.get_hashed_password('martin')
-    pw4 = passwordHandler.get_hashed_password('christian')
-    pw5 = passwordHandler.get_hashed_password('raphael')
-    pw6 = passwordHandler.get_hashed_password('alexander')
-    pw7 = passwordHandler.get_hashed_password('R4n0mpw')
+    pwt = password_handler.get_hashed_password('iamatestuser2016')
+    pw0 = password_handler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+    pw1 = password_handler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
+    pw2 = password_handler.get_hashed_password('tobias')
+    pw3 = password_handler.get_hashed_password('martin')
+    pw4 = password_handler.get_hashed_password('christian')
+    pw5 = password_handler.get_hashed_password('raphael')
+    pw6 = password_handler.get_hashed_password('alexander')
+    pw7 = password_handler.get_hashed_password('R4n0mpw')
 
     user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
     user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
@@ -575,23 +577,23 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
     session.add_all([settingst28, settingst29, settingst30])
     session.flush()
 
-    import dbas.user_management as UserHandler
-    UserHandler.refresh_public_nickname(usert07)
-    UserHandler.refresh_public_nickname(usert08)
-    UserHandler.refresh_public_nickname(usert09)
-    UserHandler.refresh_public_nickname(usert10)
-    UserHandler.refresh_public_nickname(usert11)
-    UserHandler.refresh_public_nickname(usert12)
-    UserHandler.refresh_public_nickname(usert13)
-    UserHandler.refresh_public_nickname(usert14)
-    UserHandler.refresh_public_nickname(usert15)
-    UserHandler.refresh_public_nickname(usert16)
-    UserHandler.refresh_public_nickname(usert17)
-    UserHandler.refresh_public_nickname(usert18)
-    UserHandler.refresh_public_nickname(usert19)
-    UserHandler.refresh_public_nickname(usert20)
-    UserHandler.refresh_public_nickname(usert21)
-    UserHandler.refresh_public_nickname(usert22)
+    import dbas.user_management as user_hander
+    user_hander.refresh_public_nickname(usert07)
+    user_hander.refresh_public_nickname(usert08)
+    user_hander.refresh_public_nickname(usert09)
+    user_hander.refresh_public_nickname(usert10)
+    user_hander.refresh_public_nickname(usert11)
+    user_hander.refresh_public_nickname(usert12)
+    user_hander.refresh_public_nickname(usert13)
+    user_hander.refresh_public_nickname(usert14)
+    user_hander.refresh_public_nickname(usert15)
+    user_hander.refresh_public_nickname(usert16)
+    user_hander.refresh_public_nickname(usert17)
+    user_hander.refresh_public_nickname(usert18)
+    user_hander.refresh_public_nickname(usert19)
+    user_hander.refresh_public_nickname(usert20)
+    user_hander.refresh_public_nickname(usert21)
+    user_hander.refresh_public_nickname(usert22)
 
     # Adding welcome notifications
     notification0 = Message(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
@@ -649,10 +651,6 @@ def setup_dummy_votes(session):
 
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
-    first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob',
-                  'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi',
-                  'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly',
-                  'Sybille', 'Ingeburg']
 
     max_interval = len(first_names) - 1
 
@@ -689,10 +687,6 @@ def setup_dummy_seen_by(session):
 
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
-    first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob',
-                  'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi',
-                  'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly',
-                  'Sybille', 'Ingeburg']
 
     argument_count = 0
     statement_count = 0
@@ -1444,7 +1438,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 
 def setup_review_database(session):
     reason1 = session.query(ReviewDeleteReason).filter_by(reason='offtopic').first()
-    reason2 = session.query(ReviewDeleteReason).filter_by(reason='harmful').first()
+    # reason2 = session.query(ReviewDeleteReason).filter_by(reason='harmful').first()
 
     int_start = 6
     int_end = 30
@@ -1511,19 +1505,19 @@ def setup_review_database(session):
 
     today = arrow.utcnow()
     yesterday = today.replace(days=-1)
-    dayBeforeYesterday = yesterday.replace(days=-1)
-    history01 = ReputationHistory(reputator=martin.uid, reputation=reputation01.uid, timestamp=dayBeforeYesterday)
+    day_before_yesterday = yesterday.replace(days=-1)
+    history01 = ReputationHistory(reputator=martin.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
     history02 = ReputationHistory(reputator=martin.uid, reputation=reputation02.uid, timestamp=yesterday)
     history03 = ReputationHistory(reputator=martin.uid, reputation=reputation03.uid, timestamp=today)
     history04 = ReputationHistory(reputator=martin.uid, reputation=reputation08.uid, timestamp=today)
-    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=dayBeforeYesterday)
-    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid, timestamp=dayBeforeYesterday)
+    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=day_before_yesterday)
+    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
     history07 = ReputationHistory(reputator=christian.uid, reputation=reputation05.uid, timestamp=yesterday)
     history08 = ReputationHistory(reputator=christian.uid, reputation=reputation06.uid, timestamp=yesterday)
     history09 = ReputationHistory(reputator=christian.uid, reputation=reputation09.uid, timestamp=today)
     history10 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid, timestamp=today)
-    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation04.uid, timestamp=dayBeforeYesterday)
-    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation05.uid, timestamp=dayBeforeYesterday)
+    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
+    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation05.uid, timestamp=day_before_yesterday)
     history13 = ReputationHistory(reputator=tobias.uid, reputation=reputation06.uid, timestamp=yesterday)
     history14 = ReputationHistory(reputator=tobias.uid, reputation=reputation09.uid, timestamp=yesterday)
     history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation07.uid, timestamp=today)

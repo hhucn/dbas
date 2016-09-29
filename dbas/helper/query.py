@@ -19,7 +19,7 @@ from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_arg
     get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid,\
     is_author_of_argument, is_author_of_statement
 from dbas.logger import logger
-from dbas.strings.translator import Translator
+from dbas.strings.translator import translator
 from dbas.url_manager import UrlManager
 
 statement_min_length = 10
@@ -90,7 +90,7 @@ class QueryHelper:
         :return: URL, [Statement.uids], String
         """
         logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
-        _tn = Translator(lang)
+        _tn = translator(lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
         error = ''
         url = ''
@@ -157,7 +157,7 @@ class QueryHelper:
         :return: URL, [Statement.uids], String
         """
         logger('QueryHelper', 'process_input_of_premises_for_arguments_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
-        _tn = Translator(lang)
+        _tn = translator(lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
         error = ''
         history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
@@ -334,7 +334,7 @@ class QueryHelper:
         logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
         return_dict = {}
         lang = get_lang_for_argument(arg_uid)
-        _t = Translator(lang)
+        _t = translator(lang)
         _rh = RelationHelper(arg_uid, lang)
 
         undermine = _rh.get_undermines_for_argument_uid()
