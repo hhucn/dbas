@@ -12,7 +12,7 @@ from dbas.database.discussion_model import User, TextVersion, Settings, Language
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from dbas.logger import logger
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 
 
@@ -28,7 +28,7 @@ def send_mail_due_to_new_argument(current_user, url, request):
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=current_user.uid).first()
     db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
-    _t = translator(db_language.ui_locales)
+    _t = Translator(db_language.ui_locales)
     subject = _t.get(_t.emailArgumentAddTitle)
     body = _t.get(_t.emailArgumentAddBody) + '\n' + url
     recipient = current_user.email
@@ -46,7 +46,7 @@ def send_mail_due_to_added_text(lang, url, recipient, request):
     :param request: self.request
     :return: duple with boolean for sent message, message-string
     """
-    _t = translator(lang)
+    _t = Translator(lang)
     subject = _t.get(_t.statementAdded)
     body = TextGenerator.get_text_for_add_text_message(lang, url, False)
 
@@ -63,7 +63,7 @@ def send_mail_due_to_added_argument(lang, url, recipient, request):
     :param request: self.request
     :return: duple with boolean for sent message, message-string
     """
-    _t = translator(lang)
+    _t = Translator(lang)
     subject = _t.get(_t.argumentAdded)
     body = TextGenerator.get_text_for_add_argument_message(lang, url, False)
 
@@ -91,7 +91,7 @@ def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, u
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_previous_author.uid).first()
     db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
-    _t = translator(db_language.ui_locales)
+    _t = Translator(db_language.ui_locales)
     subject = _t.get(_t.textversionChangedTopic)
     body = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_current_author.public_nickname,
                                                         db_textversion_old.content, db_textversion_new.content, url, False)
@@ -112,7 +112,7 @@ def send_mail(request, subject, body, recipient, lang):
     :return: duple with boolean for sent message, message-string
     """
     logger('email_helper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
-    _t = translator(lang)
+    _t = Translator(lang)
     send_message = False
     mailer = get_mailer(request)
     body = body + "\n\n---\n" + _t.get(_t.emailBodyText)

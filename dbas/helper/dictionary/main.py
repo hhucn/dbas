@@ -14,7 +14,7 @@ from dbas.database.discussion_model import Argument, User, Language, Group, Sett
 from dbas.helper.query import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict, get_profile_picture
 from dbas.logger import logger
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
 from dbas.url_manager import UrlManager
 
@@ -184,7 +184,7 @@ class DictionaryHelper(object):
         :return:
         """
         _uh         = UserHandler
-        _tn         = translator(self.system_lang)
+        _tn         = Translator(self.system_lang)
         edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
         statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
         arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else (0, 0)
@@ -245,7 +245,7 @@ class DictionaryHelper(object):
         :return: None
         """
         logger('DictionaryHelper', 'add_discussion_end_text', 'main')
-        _tn = translator(self.discussion_lang)
+        _tn = Translator(self.discussion_lang)
 
         if at_start:
             discussion_dict['mode'] = 'start'
@@ -339,8 +339,8 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: None
         """
-        _tn_sys = translator(self.system_lang)
-        _tn_dis = translator(self.discussion_lang)
+        _tn_sys = Translator(self.system_lang)
+        _tn_dis = Translator(self.discussion_lang)
         return_dict['buttons'] = {'show_all_arguments': _tn_sys.get(_tn_sys.showAllArguments),
                                   'show_all_users': _tn_sys.get(_tn_sys.showAllUsers),
                                   'delete_track': _tn_sys.get(_tn_sys.deleteTrack),
@@ -377,7 +377,7 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: None
         """
-        _tn_dis = translator(self.discussion_lang)
+        _tn_dis = Translator(self.discussion_lang)
         return_dict['title'] = {'barometer': _tn_dis.get(_tn_dis.opinionBarometer),
                                 'guided_view': _tn_dis.get(_tn_dis.displayControlDialogGuidedTitle),
                                 'island_view': _tn_dis.get(_tn_dis.displayControlDialogIslandTitle),
@@ -404,8 +404,8 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: None
         """
-        _tn_dis = translator(self.discussion_lang)
-        _tn_sys = translator(self.system_lang)
+        _tn_dis = Translator(self.discussion_lang)
+        _tn_sys = Translator(self.system_lang)
 
         return_dict['tag'] = {
             'add_a_topic': _tn_sys.get(_tn_sys.addATopic),

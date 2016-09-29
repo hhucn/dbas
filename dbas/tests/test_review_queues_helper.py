@@ -4,7 +4,7 @@ import transaction
 import dbas.review.helper.queues as ReviewQueuesHelper
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -15,7 +15,7 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class ReviewQueuesHelperTest(unittest.TestCase):
 
     def test_get_review_array(self):
-        _tn = translator('en')
+        _tn = Translator('en')
         self.assertIsNone(ReviewQueuesHelper.get_review_queues_as_lists('page', _tn, 'Pikachu'))
 
         array = ReviewQueuesHelper.get_review_queues_as_lists('page', _tn, 'Tobias')
@@ -30,7 +30,7 @@ class ReviewQueuesHelperTest(unittest.TestCase):
             self.assertTrue('last_reviews' in d)
 
     def test_lock(self):
-        _tn = translator('en')
+        _tn = Translator('en')
         success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('nickname', 0, _tn, transaction)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) == 0)
