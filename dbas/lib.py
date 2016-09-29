@@ -50,7 +50,7 @@ def get_language(request, current_registry):
 def get_discussion_language(request, current_issue_uid=1):
     """
     Returns Language.ui_locales
-    CALL AFTER IssueHelper.get_id_of_slug(..)!
+    CALL AFTER issue_helper.get_id_of_slug(..)!
 
     :param request: self.request
     :return:
