@@ -4,7 +4,7 @@ from dbas.views import transaction
 import dbas.review.helper.flags as ReviewFlagHelper
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.strings.translator import Translator
+from dbas.strings.translator import translator
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -15,7 +15,7 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class TestReviewFlagHelper(unittest.TestCase):
 
     def test_flag_argument(self):
-        translator = Translator('en')
+        translator = translator('en')
 
         success, info, error = ReviewFlagHelper.flag_argument(0, 'reason', 'some_nick', translator, True, transaction)
         self.__assert_equal_text([[success, ''], [info, ''], [error, translator.get(translator.internalKeyError)]])

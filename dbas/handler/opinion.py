@@ -14,7 +14,7 @@ from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.strings.translator import Translator
+from dbas.strings.translator import translator
 from dbas.strings.text_generator import TextGenerator
 
 
@@ -52,7 +52,7 @@ class OpinionHandler:
         ret_dict = dict()
         all_users = []
         regex = re.compile('</?(strong|em)>')  # replacing html tags
-        _t = Translator(self.lang)
+        _t = translator(self.lang)
         _tg = TextGenerator(self.lang)
         try:
             db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
@@ -150,7 +150,7 @@ class OpinionHandler:
         db_user_uid = db_user.uid if db_user else 0
 
         opinions = []
-        _t = Translator(self.lang)
+        _t = translator(self.lang)
         title = _t.get(_t.informationForStatements)
 
         for uid in statement_uids:
@@ -215,7 +215,7 @@ class OpinionHandler:
         db_user_uid = db_user.uid if db_user else 0
 
         opinions = []
-        _t = Translator(self.lang)
+        _t = translator(self.lang)
         title = _t.get(_t.informationForStatements)
 
         for uid in argument_uids:
@@ -282,7 +282,7 @@ class OpinionHandler:
 
         opinions = dict()
         all_users = []
-        _t = Translator(self.lang)
+        _t = translator(self.lang)
         text = get_text_for_argument_uid(argument_uid, self.lang)
         title = _t.get(_t.reactionFor) + ': ' + text[0:1].upper() + text[1:]
 
@@ -333,7 +333,7 @@ class OpinionHandler:
 
         logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-        _t = Translator(self.lang)
+        _t = translator(self.lang)
         text = get_text_for_statement_uid(statement_uid)
         try:
             title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]

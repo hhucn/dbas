@@ -14,7 +14,7 @@ from html import escape
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
-from dbas.strings.translator import Translator
+from dbas.strings.translator import translator
 from dbas.strings.text_generator import TextGenerator
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 
@@ -50,7 +50,7 @@ def get_language(request, current_registry):
 def get_discussion_language(request, current_issue_uid=1):
     """
     Returns Language.ui_locales
-    CALL AFTER IssueHelper.get_id_of_slug(..)!
+    CALL AFTER issue_helper.get_id_of_slug(..)!
 
     :param request: self.request
     :return:
@@ -154,7 +154,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     if not db_argument:
         return None
 
-    _t = Translator(lang)
+    _t = translator(lang)
 
     # getting all argument id
     arg_array = [db_argument.uid]
@@ -245,7 +245,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     tag_conclusion = ('<' + TextGenerator.tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_end = ('</' + TextGenerator.tag_type + '>') if with_html_tag else ''
     lang = get_lang_for_argument(arg_array[0])
-    _t = Translator(lang)
+    _t = translator(lang)
 
     if len(arg_array) == 1:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
@@ -427,7 +427,7 @@ def get_text_for_premisesgroup_uid(uid):
     uids = []
     for premise in db_premises:
         lang = get_lang_for_statement(premise.statements.uid)
-        _t = Translator(lang)
+        _t = translator(lang)
         tmp = get_text_for_statement_uid(premise.statements.uid)
         if lang != 'de':
             tmp[0:1].lower() + tmp[1:]
@@ -672,7 +672,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
                                                                              VoteStatement.is_up_vote == is_supportive,
                                                                              VoteStatement.is_valid == True,
                                                                              VoteStatement.author_uid != db_user.uid)).all()
-    _t = Translator(lang)
+    _t = translator(lang)
     votecounts = len(db_votecounts) if db_votecounts else 0
 
     if votecounts == 0:
