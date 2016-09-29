@@ -113,7 +113,7 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     Returns array with all relevant information about the last reviews of the given table.
 
     :param table: Shortcut for the table
-    :param main_page: Mainpage of D-BAS
+    :param main_page: Main page of D-BAS
     :param table_type: Type of the review table
     :param last_review_type: Type of the last reviewer of the table
     :param translator: current ui_locales
@@ -124,17 +124,22 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(table_type.uid.desc()).all()
 
     for review in db_reviews:
+        length = 35
+        # getting text
         if review.statement_uid is None:
-            fulltext = get_text_for_argument_uid(review.argument_uid)
+            full_text = get_text_for_argument_uid(review.argument_uid)
         else:
-            fulltext = get_text_for_statement_uid(review.statement_uid)
-        shorttext = '<span class="text-primary">'
+            full_text = get_text_for_statement_uid(review.statement_uid)
+
+        # pretty print
         intro = translator.get(translator.otherUsersSaidThat) + ' '
-        if fulltext.startswith(intro):
-            shorttext += fulltext[len(intro):len(intro) + 1].upper() + fulltext[len(intro) + 1:len(intro) + 15]
+        if full_text.startswith(intro):
+            short_text = full_text[len(intro):len(intro) + 1].upper() + full_text[len(intro) + 1:len(intro) + length]
         else:
-            shorttext += fulltext[0:25]
-        shorttext += '...' + '<span>'
+            short_text = full_text[0:length]
+
+        short_text += '...' if len(full_text) > length else '.'
+        short_text = '<span class="text-primary">' + short_text + '</span>'
 
         is_okay = False if table == 'optimizations' else True
         # getting all pro and contra votes for this review
@@ -157,11 +162,11 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
             db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=review.reason_uid).first()
             entry['reason'] = db_reason.reason
         entry['row_id'] = table + str(review.uid)
-        entry['argument_shorttext'] = shorttext
-        entry['argument_fulltext'] = fulltext
+        entry['argument_shorttext'] = short_text
+        entry['argument_fulltext'] = full_text
         if table == 'edits':
-            entry['argument_oem_shorttext'] = 'TODO' + shorttext
-            entry['argument_oem_fulltext'] = 'TODO' + fulltext
+            entry['argument_oem_shorttext'] = 'TODO' + short_text
+            entry['argument_oem_fulltext'] = 'TODO' + full_text
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
