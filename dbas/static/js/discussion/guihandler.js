@@ -622,7 +622,10 @@ function GuiHandler() {
 			popup.find('.argument_text').hide();
 		}
 		popup.modal('show');
-		popup.find('input').off('click').unbind('click').click(function () {
+		popup.on('hide.bs.modal', function () {
+			popup.find('input').off('click').unbind('click');
+		});
+		popup.find('input').click(function () {
 			var reason = $(this).attr('value');
 			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
 			popup.find('input').prop( 'checked', false );
@@ -639,24 +642,21 @@ function GuiHandler() {
 		// var text = $('.triangle-l:last-child .triangle-content').text();
 		
 		// clean text
+		// cut the part after <br><br>
 		var text = $('.triangle-l:last-child .triangle-content').html();
 		text = text.substr(0, text.indexOf('<br>'));
-		var pos = text.indexOf('</span>');
-		while (pos != -1){
+		// cut all spans
+		while (text.indexOf('</span>') != -1)
 			text = text.replace('</span>', '');
-			pos = text.indexOf('</span>');
-		}
-		pos = text.indexOf('<span');
-		var end = text.indexOf('>');
-		while (pos != -1){
-			text = text.substr(0, pos) + text.substr(end + 1);
-			pos = text.indexOf('<span');
-			end = text.indexOf('>');
-		}
+		while (text.indexOf('<span') != -1)
+			text = text.substr(0, text.indexOf('<span')) + text.substr(text.indexOf('>') + 1);
 		
 		$('#popup-flag-argument-text').text(text);
 		popup.modal('show');
-		popup.find('input').off('click').unbind('click').click(function () {
+		popup.on('hide.bs.modal', function () {
+			popup.find('input').off('click').unbind('click');
+		});
+		popup.find('input').click(function () {
 			if ($(this).data('special') === 'undercut'){
 				$('#item_undercut').click();
 				

@@ -735,7 +735,7 @@ class ReviewDelete(DiscussionBase):
     def set_revoked(self, is_revoked):
         """
 
-        :param is_executed:
+        :param is_revoked:
         :return:
         """
         self.is_revoked = is_revoked
@@ -786,7 +786,7 @@ class ReviewEdit(DiscussionBase):
     def set_revoked(self, is_revoked):
         """
 
-        :param is_executed:
+        :param is_revoked:
         :return:
         """
         self.is_revoked = is_revoked
@@ -807,7 +807,6 @@ class ReviewEditValue(DiscussionBase):
         """
 
         :param review_edit:
-        :param argument:
         :param statement:
         :param typeof:
         :param content:
@@ -860,7 +859,7 @@ class ReviewOptimization(DiscussionBase):
     def set_revoked(self, is_revoked):
         """
 
-        :param is_executed:
+        :param is_revoked:
         :return:
         """
         self.is_revoked = is_revoked
@@ -1042,7 +1041,6 @@ class ReviewCanceled(DiscussionBase):
         """
 
         :param author:
-        :param is_canceled:
         :param review_edit:
         :param review_delete:
         :param review_optimization:

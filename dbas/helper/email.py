@@ -111,7 +111,7 @@ def send_mail(request, subject, body, recipient, lang):
     :param lang: current language
     :return: duple with boolean for sent message, message-string
     """
-    logger('EmailHelper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
+    logger('email_helper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
     _t = Translator(lang)
     send_message = False
     mailer = get_mailer(request)
@@ -123,15 +123,15 @@ def send_mail(request, subject, body, recipient, lang):
         send_message = True
         message = _t.get(_t.emailWasSent)
     except smtplib.SMTPConnectError as exception:
-        logger('EmailHelper', 'send_mail', 'error while sending')
+        logger('email_helper', 'send_mail', 'error while sending')
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
-        logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + code)
-        logger('EmailHelper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + error)
+        logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + code)
+        logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + error)
         message = _t.get(_t.emailWasNotSent)
     except socket_error as serr:
-        logger('EmailHelper', 'send_mail', 'error while sending')
-        logger('EmailHelper', 'send_mail', 'socket_error ' + str(serr))
+        logger('email_helper', 'send_mail', 'error while sending')
+        logger('email_helper', 'send_mail', 'socket_error ' + str(serr))
         message = _t.get(_t.emailWasNotSent)
 
     return send_message, message
