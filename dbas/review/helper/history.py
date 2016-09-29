@@ -11,7 +11,7 @@ from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_se
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.review.helper.main import en_or_disable_object_of_review
 from sqlalchemy import and_
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from dbas.logger import logger
 
 
@@ -219,7 +219,7 @@ def revoke_old_decision(queue, uid, lang, nickname, transaction):
     success = ''
     error = ''
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    _t = translator(lang)
+    _t = Translator(lang)
 
     if queue == 'deletes':
         __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid, transaction)
@@ -271,7 +271,7 @@ def cancel_ongoing_decision(queue, uid, lang, transaction):
     success = ''
     error = ''
 
-    _t = translator(lang)
+    _t = Translator(lang)
     if queue == 'deletes':
         DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).delete()
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()

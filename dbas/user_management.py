@@ -19,7 +19,7 @@ from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, g
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from sqlalchemy import and_
 
 # from https://moodlist.net/
@@ -196,7 +196,7 @@ def get_public_information_data(nickname, lang):
     if current_user is None:
         return return_dict
 
-    _tn = translator(lang)
+    _tn = Translator(lang)
 
     # data for last 7 and 30 days
     labels_decision_7 = []
@@ -277,7 +277,7 @@ def get_random_anti_spam_question(lang):
     :param lang: string
     :return: question, answer
     """
-    _t = translator(lang)
+    _t = Translator(lang)
 
     int1 = random.randint(0, 9)
     int2 = random.randint(0, 9)
@@ -515,7 +515,7 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
     :return: an message and boolean for error and success
     """
     logger('UserHandler', 'change_password', 'def')
-    _t = translator(lang)
+    _t = Translator(lang)
 
     error = False
     success = False
@@ -584,7 +584,7 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
     success = ''
     info = ''
 
-    _t = translator(ui_locales)
+    _t = Translator(ui_locales)
     # creating a new user with hashed password
     logger('UserManagement', 'create_new_user', 'Adding user')
     hashed_password = password_handler.get_hashed_password(password)

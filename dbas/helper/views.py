@@ -12,7 +12,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import Validator
-from dbas.strings.translator import translator
+from dbas.strings.translator import Translator
 from validate_email import validate_email
 
 import dbas.recommender_system as RecommenderSystem
@@ -192,7 +192,7 @@ def try_to_contact(request, username, email, phone, content, ui_locales, spamans
     :param spamanswer:
     :return:
     """
-    _t = translator(ui_locales)
+    _t = Translator(ui_locales)
     send_message = False
 
     spamanswer = spamanswer if Validator.is_integer(spamanswer) else '#'
@@ -251,7 +251,7 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     :return:
     """
     success = ''
-    _t = translator(ui_locales)
+    _t = Translator(ui_locales)
     params = request.params
     firstname = escape_string(params['firstname'] if 'firstname' in params else '')
     lastname = escape_string(params['lastname'] if 'lastname' in params else '')
@@ -314,7 +314,7 @@ def request_password(request, ui_locales):
     error = ''
     info = ''
 
-    _t = translator(ui_locales)
+    _t = Translator(ui_locales)
     email = escape_string(request.params['email'] if 'email' in request.params else '')
     db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
