@@ -1747,7 +1747,7 @@ class Dbas(object):
 # ###################################
 
     # ajax - getting changelog of a statement
-    @view_config(route_name='ajax_get_logfile_for_premisegroup', renderer='json')
+    @view_config(route_name='ajax_get_logfile_for_statements', renderer='json')
     def get_logfile_for_premisegroup(self):
         """
         Returns the changelog of a statement
@@ -1755,28 +1755,22 @@ class Dbas(object):
         :return: json-dict()
         """
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-        logger('get_logfile_for_premisegroup', 'def', 'main, self.request.params: ' + str(self.request.params))
+        logger('get_logfile_for_statements', 'def', 'main, self.request.params: ' + str(self.request.params))
         user_manager.update_last_action(transaction, self.request.authenticated_userid)
 
         return_dict = dict()
         ui_locales = get_language(self.request, get_current_registry())
 
         try:
-            uid = self.request.params['uid']
+            uids = json.loads(self.request.params['uids'])
             issue = self.request.params['issue']
-            is_statement = True if self.request.params['is_statement'] == 'true' else False
             ui_locales = get_discussion_language(self.request, issue)
-            if is_statement:
-                return_dict = QueryHelper.get_logfile_for_statement(uid, ui_locales, main_page)
-            else:
-                return_dict = QueryHelper.get_logfile_for_premisegroup(uid, ui_locales, main_page)
+            return_dict = QueryHelper.get_logfile_for_statements(uids, ui_locales, main_page)
             return_dict['error'] = ''
         except KeyError as e:
             logger('get_logfile_for_premisegroup', 'error', repr(e))
             _tn = Translator(ui_locales)
             return_dict['error'] = _tn.get(_tn.noCorrections)
-
-        # return_dict = QueryHelper().get_logfile_for_premisegroup(uid)
 
         return json.dumps(return_dict, True)
 

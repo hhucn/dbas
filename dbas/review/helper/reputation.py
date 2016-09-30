@@ -118,8 +118,6 @@ def add_reputation_for(user, reason, transaction):
             return False
 
     logger('ReputationPointHelper', 'add_reputation_for', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
-    logger('ReputationPointHelper', 'add_reputation_for', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
-    logger('ReputationPointHelper', 'add_reputation_for', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
