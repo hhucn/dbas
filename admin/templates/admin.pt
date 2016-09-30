@@ -10,17 +10,17 @@
 
             <div class="row" tal:repeat="row dashboard">
 
-                <div class="col-md-3" tal:repeat="dash row">
-                    <div class="panel" tal:attributes="style dash.style">
+                <div class="col-md-3" tal:repeat="group row">
+
+                    <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <p class="lead">${dash.count} - ${dash.name}</p>
+                            <h3 class="panel-title">${group.name}</h3>
                         </div>
-                        <a href="#" tal:attributes="href dash.href">
-                            <div class="panel-footer">
-                                <span i18n:translate="view_details">View Details</span>
-                            </div>
-                        </a>
+                        <div class="panel-body" tal:repeat="line group.content">
+                            <a href="" tal:attributes="href line.href"><p>${line.name}  <span class=" badge">${line.count}</span></p></a>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
