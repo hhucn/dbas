@@ -1,154 +1,128 @@
 # Common library for Admin Component
 #
-# @author Tobias Krauthoff
-# @email krauthoff@cs.uni-duesseldorf.de
+# @author Tobias Krautho66
+# @email krautho66@cs.uni-duesseldorf.de
 
-import dbas.user_management as UserHandler
+from random import randint
 
-from dbas.lib import sql_timestamp_pretty_print, get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, VoteArgument, Issue, User, Group, Statement, VoteStatement, PremiseGroup
-from sqlalchemy import and_
+from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, ReviewCanceled, RevokedContent
+
+table_mapper = {
+    'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
+    'Language'.lower(): {'table': Language, 'name': 'Language'},
+    'Group'.lower(): {'table': Group, 'name': 'Group'},
+    'User'.lower(): {'table': User, 'name': 'User'},
+    'Settings'.lower(): {'table': Settings, 'name': 'Settings'},
+    'Statement'.lower(): {'table': Statement, 'name': 'Statement'},
+    'StatementReferences'.lower(): {'table': StatementReferences, 'name': 'StatementReferences'},
+    'StatementSeenBy'.lower(): {'table': StatementSeenBy, 'name': 'StatementSeenBy'},
+    'ArgumentSeenBy'.lower(): {'table': ArgumentSeenBy, 'name': 'ArgumentSeenBy'},
+    'TextVersion'.lower(): {'table': TextVersion, 'name': 'TextVersion'},
+    'PremiseGroup'.lower(): {'table': PremiseGroup, 'name': 'PremiseGroup'},
+    'Premise'.lower(): {'table': Premise, 'name': 'Premise'},
+    'Argument'.lower(): {'table': Argument, 'name': 'Argument'},
+    'History'.lower(): {'table': History, 'name': 'History'},
+    'VoteArgument'.lower(): {'table': VoteArgument, 'name': 'VoteArgument'},
+    'VoteStatement'.lower(): {'table': VoteStatement, 'name': 'VoteStatement'},
+    'Message'.lower(): {'table': Message, 'name': 'Message'},
+    'ReviewDelete'.lower(): {'table': ReviewDelete, 'name': 'ReviewDelete'},
+    'ReviewEdit'.lower(): {'table': ReviewEdit, 'name': 'ReviewEdit'},
+    'ReviewEditValue'.lower(): {'table': ReviewEditValue, 'name': 'ReviewEditValue'},
+    'ReviewOptimization'.lower(): {'table': ReviewOptimization, 'name': 'ReviewOptimization'},
+    'ReviewDeleteReason'.lower(): {'table': ReviewDeleteReason, 'name': 'ReviewDeleteReason'},
+    'LastReviewerDelete'.lower(): {'table': LastReviewerDelete, 'name': 'LastReviewerDelete'},
+    'LastReviewerEdit'.lower(): {'table': LastReviewerEdit, 'name': 'LastReviewerEdit'},
+    'LastReviewerOptimization'.lower(): {'table': LastReviewerOptimization, 'name': 'LastReviewerOptimization'},
+    'ReputationHistory'.lower(): {'table': ReputationHistory, 'name': 'ReputationHistory'},
+    'ReputationReason'.lower(): {'table': ReputationReason, 'name': 'ReputationReason'},
+    'OptimizationReviewLocks'.lower(): {'table': OptimizationReviewLocks, 'name': 'OptimizationReviewLocks'},
+    'ReviewCanceled'.lower(): {'table': ReviewCanceled, 'name': 'ReviewCanceled'},
+    'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'}
+}
 
 
-def get_overview_of_arguments(user='', lang=''):
+def get_dashboard_infos(main_page):
     """
-    Returns a dicitonary with all attacks, done by the users, but only if the user has admin right!
 
-    :param user: current user
-    :param lang: current language
-    :return: dict()
-    """
-    is_admin = UserHandler.is_user_in_group(user, 'admins')
-    logger('AdminLib', 'get_overview_of_arguments', 'is_admin ' + str(is_admin))
-    return_dict = dict()
-    if not is_admin:
-        return return_dict
-
-    db_issues = DBDiscussionSession.query(Issue).all()
-    for issue in db_issues:
-        issue_array = []
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).order_by(Argument.uid.asc()).all()
-        logger('AdminLib', 'get_overview_of_arguments', 'count: ' + str(len(db_arguments)))
-
-        if len(db_arguments) > 0:
-            for argument in db_arguments:
-                text = get_text_for_argument_uid(argument.uid)
-                tmp_dict = dict()
-                tmp_dict['uid'] = str(argument.uid)
-                tmp_dict['text'] = text[0:1].upper() + text[1:]
-                db_votes         = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument.uid).all()
-                db_valid_votes   = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-                                                                                       VoteArgument.is_valid == True)).all()
-                db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-                                                                                       VoteArgument.is_valid == True,
-                                                                                       VoteArgument.is_up_vote == True)).all()
-                tmp_dict['votes'] = len(db_votes)
-                tmp_dict['valid_votes'] = len(db_valid_votes)
-                tmp_dict['valid_upvotes'] = len(db_valid_upvotes)
-
-                issue_array.append(tmp_dict)
-        return_dict[issue.title] = issue_array
-
-    return return_dict
-
-
-def get_all_users(user, lang, mainpage):
-    """
-    Bla
-
-    :param user:
-    :param lang:
-    :return:
-    """
-    is_admin = UserHandler.is_user_in_group(user, 'admins')
-    logger('AdminLib', 'get_all_users', 'is_admin ' + str(is_admin))
-    return_array = []
-    if not is_admin:
-        return return_array
-
-    _uh = UserHandler
-    db_users = DBDiscussionSession.query(User).order_by(User.uid.asc()).all()
-    for user in db_users:
-        tmp_dict = dict()
-        tmp_dict['uid']             = str(user.uid)
-        tmp_dict['firstname']       = str(user.firstname)
-        tmp_dict['surname']         = str(user.surname)
-        tmp_dict['nickname']        = str(user.nickname)
-        tmp_dict['public_nickname'] = str(user.public_nickname)
-        tmp_dict['email']           = str(user.email)
-        tmp_dict['gender']          = str(user.gender)
-        tmp_dict['group_uid']       = DBDiscussionSession.query(Group).filter_by(uid=user.group_uid).first().name
-        tmp_dict['last_login']      = sql_timestamp_pretty_print(user.last_login, lang)
-        tmp_dict['registered']      = sql_timestamp_pretty_print(user.registered, lang)
-        tmp_dict['avatar']          = get_profile_picture(user, 40, ignore_privacy_settings=True)
-        tmp_dict['public_avatar']   = _uh.get_public_profile_picture(user, 40)
-        tmp_dict['last_action']     = sql_timestamp_pretty_print(user.last_action, lang)
-        tmp_dict['public_url']      = mainpage + '/user/' + str(user.public_nickname)
-        return_array.append(tmp_dict)
-
-    return return_array
-
-
-def get_all_issues(user, lang, mainpage):
-    """
-    Bla
-
-    :param issue:
-    :param lang:
-    :return:
-    """
-    is_admin = UserHandler.is_user_in_group(user, 'admins')
-    logger('AdminLib', 'get_all_issues', 'is_admin ' + str(is_admin))
-    return_array = []
-    if not is_admin:
-        return return_array
-
-    db_issues = DBDiscussionSession.query(Issue)\
-        .join(User)\
-        .order_by(Issue.uid.asc()).all()
-    for issue in db_issues:
-        tmp_dict = dict()
-        tmp_dict['uid'] = str(issue.uid)
-        tmp_dict['title'] = issue.get_slug()
-        tmp_dict['info'] = issue.info
-        tmp_dict['date'] = sql_timestamp_pretty_print(issue.date, lang, humanize=False, with_exact_time=True)
-        tmp_dict['author'] = issue.users.public_nickname
-        tmp_dict['public_url'] = mainpage + '/user/' + str(issue.users.public_nickname)
-        return_array.append(tmp_dict)
-
-    return return_array
-
-
-def get_all_statements(user, lang, mainpage):
-    """
-        Bla
-
-        :return:
-        """
-
-
-def get_all_premisegroups(user, lang, mainpage):
-    """
-        Bla
-
-        :return:
-        """
-
-
-def get_dashboard_infos():
-    """
-    Bla
-
+    :param main_page:
     :return:
     """
     logger('AdminLib', 'get_dashboard_infos', 'main')
-    return_dict = dict()
-    return_dict['user_count'] = str(len(DBDiscussionSession.query(User).all()))
-    return_dict['vote_count'] = str(len(DBDiscussionSession.query(VoteArgument).all()) + len(DBDiscussionSession.query(VoteStatement).all()))
-    return_dict['argument_count'] = str(len(DBDiscussionSession.query(Argument).all()))
-    return_dict['statement_count'] = str(len(DBDiscussionSession.query(Statement).all()))
-    return_dict['issue_count'] = str(len(DBDiscussionSession.query(Issue).all()))
-    return_dict['premisegroup_count'] = str(len(DBDiscussionSession.query(PremiseGroup).all()))
+    return_dict = list()
+
+    tmp = list()
+    for key in table_mapper:
+        db_elements = DBDiscussionSession.query(table_mapper[key]['table']).all()
+        tmp.append(__get_dash_dict(len(db_elements), table_mapper[key]['name'], main_page + table_mapper[key]['name'], __get_random_color()))
+
+    row = list()
+    for index, el in enumerate(tmp):
+        if len(row) % 4 == 0:
+            return_dict.append(row)
+            row = list()
+        row.append(el)
+
+    if len(row) > 0:
+        return_dict.append(row)
+
     return return_dict
+
+
+def get_table_dict(table):
+    """
+
+    :param table:
+    :return:
+    """
+    logger('AdminLib', 'get_table_dict', str(table))
+    return_dict = dict()
+
+    has_elements = table.lower() in table_mapper
+    return_dict['has_elements'] = has_elements
+
+    if not has_elements:
+        return_dict['has_elements'] = False
+        return return_dict
+
+    db_elements = DBDiscussionSession.query(table_mapper[table.lower()]['table']).all()
+    return_dict['has_elements'] = True
+
+    return_dict['name'] = table if db_elements else 'unknown table'
+    return_dict['count'] = len(db_elements) if db_elements else '-1'
+
+    if db_elements:
+        head = list()
+        head.append('a')
+        head.append('a')
+        head.append('a')
+        return_dict['head'] = head
+
+    return return_dict
+
+
+def __get_dash_dict(count, name, href, color):
+    """
+
+    :param count:
+    :param name:
+    :param href:
+    :param color:
+    :return:
+    """
+    return {
+        'count': count,
+        'name': name,
+        'href': href,
+        'style': 'background-color: ' + color
+        }
+
+
+def __get_random_color():
+    """
+
+    :return:
+    """
+    r = lambda: randint(100, 200)
+    return '#%02X%02X%02X' % (r(), r(), r())
