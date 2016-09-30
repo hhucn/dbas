@@ -203,8 +203,11 @@ function Main () {
 		});
 		
 		list.find('.item-edit').click(function () {
-			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
-			guiHandler.showEditStatementsPopup(uid);
+			var uids = [];
+			$(this).parent().find('label:nth-child(even)').each(function(){
+				uids.push($(this).attr('id'))
+			});
+			guiHandler.showEditStatementsPopup(uids);
 		});
 		
 		list.find('.item-trash').click(function () {
