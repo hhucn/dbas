@@ -395,17 +395,16 @@ function AjaxDiscussionHandler() {
 
 	/**
 	 * Requests the logfile for the given uid
-	 * @param id current uid of the statement
+	 * @param statements_uids current uid of the statement
 	 */
-	this.getLogfileForPremisegroup = function (id) {
+	this.getLogfileForStatements = function (statements_uids) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_logfile_for_premisegroup',
+			url: 'ajax_get_logfile_for_statements',
 			method: 'GET',
 			data: {
-				uid: id,
-				issue: new Helper().getCurrentIssueId(),
-				is_statement: $('#discussions-space-list').find('li:last-child').find('input').attr('id').indexOf('_start_statement') != -1
+				uids: JSON.stringify(statements_uids),
+				issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,

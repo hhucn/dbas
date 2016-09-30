@@ -372,53 +372,27 @@ class QueryHelper:
         return return_dict
 
     @staticmethod
-    def get_logfile_for_statement(uid, lang, main_page):
+    def get_logfile_for_statements(uids, lang, main_page):
         """
         Returns the logfile for the given statement uid
 
-        :param uid: requested statement uid
+        :param uids: requested statement uid
         :param lang: ui_locales ui_locales
         :param main_page: URL
         :return: dictionary with the logfile-rows
         """
-        logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
+        logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uids))
 
-        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
         main_dict = dict()
-        return_dict = dict()
-        content_dict = dict()
-        # add all corrections
-        for index, version in enumerate(db_textversions):
-            content_dict[str(index)] = QueryHelper.__get_logfile_dict(version, main_page, lang)
-        return_dict['content'] = content_dict
-        main_dict[get_text_for_statement_uid(uid)] = return_dict
-
-        return main_dict
-
-    @staticmethod
-    def get_logfile_for_premisegroup(uid, lang, main_page):
-        """
-        Returns the logfile for the given premisegroup uid
-
-        :param uid: requested statement uid
-        :param lang: ui_locales ui_locales
-        :param main_page: URL
-        :return: dictionary with the logfile-rows
-        """
-        logger('QueryHelper', 'get_logfile_for_premisegroup', 'def with uid: ' + str(uid))
-
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).all()
-        main_dict = dict()
-        for premise in db_premises:
-            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=premise.statement_uid).all()
-
+        for uid in uids:
+            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
             return_dict = dict()
             content_dict = dict()
             # add all corrections
             for index, version in enumerate(db_textversions):
                 content_dict[str(index)] = QueryHelper.__get_logfile_dict(version, main_page, lang)
             return_dict['content'] = content_dict
-            main_dict[get_text_for_statement_uid(premise.statement_uid)] = return_dict
+            main_dict[get_text_for_statement_uid(uid)] = return_dict
 
         return main_dict
 
