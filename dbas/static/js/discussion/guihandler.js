@@ -497,13 +497,12 @@ function GuiHandler() {
 	
 	/**
 	 * Opens the edit statements popup
-	 * @param premisegroup_uid
+	 * @param statements_uids
 	 */
-	this.showEditStatementsPopup = function (premisegroup_uid) {
+	this.showEditStatementsPopup = function (statements_uids) {
 		var input_space = $('#' + popupEditStatementInputSpaceId);
 		var ajaxHandler = new AjaxDiscussionHandler();
 		$('#' + popupEditStatementId).modal('show');
-		$('#' + popupEditStatementInputId).val(premisegroup_uid);
 		input_space.empty();
 		$('#' + popupEditStatementLogfileSpaceId).empty();
 		$('#' + proposalEditListGroupId).empty();
@@ -513,21 +512,20 @@ function GuiHandler() {
 		$('#' + popupEditStatementSubmitButtonId).addClass('disabled');
 		
 		// getting logfile
-		ajaxHandler.getLogfileForPremisegroup(premisegroup_uid);
+		ajaxHandler.getLogfileForStatements(statements_uids);
 		
 		// add inputs
-		var counter = 0;
-		$('#item_' + premisegroup_uid).parent().find('label:nth-child(even)').each(function(){
+		$.each(statements_uids, function (index, value){
+			var statement = $('#' + value).text().trim().replace(/\s+/g, ' ');
 			var input = $('<input>')
 				.addClass('form-control')
-				.attr('id', 'popup-edit-statement-input-' + counter)
-				.attr('name', 'popup-edit-statement-input-' + counter)
+				.attr('id', 'popup-edit-statement-input-' + index)
+				.attr('name', 'popup-edit-statement-input-' + index)
 				.attr('type', text)
-				.attr('placeholder', $(this).text())
-				.attr('data-statement-uid', $(this).attr('id'))
-				.val($(this).text());
+				.attr('placeholder', statement)
+				.attr('data-statement-uid', value)
+				.val(statement);
 			input_space.append(input);
-			counter += 1;
 		});
 		
 		// gui for editing statements
@@ -537,6 +535,7 @@ function GuiHandler() {
 				var oem = $(this).attr('placeholder');
 				var now = $(this).val();
 				var id = $(this).attr('id');
+				var statement_uid = $(this).data('statement-uid');
 				
 				// reduce noise
 				var levensthein = helper.levensthein(oem, now);
@@ -552,7 +551,7 @@ function GuiHandler() {
 					ajaxHandler.fuzzySearch(now,
 						id,
 						fuzzy_statement_popup,
-						premisegroup_uid);
+						statement_uid);
 				}, 200);
 			})
 		});
