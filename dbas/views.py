@@ -1166,6 +1166,7 @@ class Dbas(object):
         _tn = Translator(lang)
 
         try:
+            error = ''
             if not nickname and not password:
                 nickname = escape_string(self.request.params['user'])
                 password = escape_string(self.request.params['password'])
@@ -1219,7 +1220,7 @@ class Dbas(object):
 
         return_dict = {'error': error}
 
-        return return_dict  # json.dumps(return_dict, True)
+        return json.dumps(return_dict, True)
 
     # ajax - user logout
     @view_config(route_name='ajax_user_logout', renderer='json')

@@ -48,6 +48,7 @@ table = Service(name='table_page',
 def main_admin(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
+
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -75,6 +76,7 @@ def main_admin(request):
 def main_table(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
+
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')

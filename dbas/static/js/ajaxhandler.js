@@ -49,7 +49,7 @@ function AjaxMainHandler(){
 			keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
 
 		$.ajax({
-			url: 'ajax_user_login',
+			url: mainpage + 'ajax_user_login',
 			type: 'POST',
 			data: {
 				user: user,

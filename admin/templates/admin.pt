@@ -1,9 +1,48 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 		
-		<div class="container" tal:condition="not:extras.is_admin" style="max-width: 578px;">
-            <span class="lead">401 - Unauthorized</span><br>
-			<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
+		<!--<div class="container colored-container" tal:condition="not:extras.is_admin" style="max-width: 578px;">-->
+        <!--    <span class="lead">401 - Unauthorized</span><br>-->
+		<!--	<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">-->
+		<!--</div>-->
+
+		<div class="container" tal:condition="not:extras.is_admin">
+
+            <div class="row">
+                <div class="col-md-offset-3 col-md-6 colored-container">
+                    <form autocomplete="on">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
+                            <div class="col-md-9">
+                                <input id="admin-login-user" type="text" class="form-control nickname" name="nickname" autocomplete="on" placeholder="example: Democrator" autofocus>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">Your Password</label>
+                            <div class="col-md-9">
+                                <input id="admin-login-pw" type="password" class="form-control password" name="password" autocomplete="on" placeholder="example: ******">
+                            </div>
+                        </div>
+                    </form>
+
+                    <div style="padding-left: 15px;">
+                        <label>
+                            <input id="admin-keep-login-box" type="checkbox" style="float:left;">
+                            <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
+                        </label>
+                    </div>
+
+    				<div class="col-md-12" id="admin-login-failed">
+    					<div class="alert alert-danger" role="alert">
+    						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    						<span class="sr-only" i18n:translate="error">Error:</span> <span id="admin-login-failed-message"></span>
+    					</div>
+    				</div>
+
+    				<button id="admin-login-button" type="button" class="btn btn-primary pull-right" i18n:translate="login">Log In</button>
+
+                </div>
+            </div>
 		</div>
 
         <div class="container" tal:condition="extras.is_admin">
@@ -28,6 +67,7 @@
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('admin:static/js/admin.js')}"></script>
 
 	</tal:block>
 </tal:block>
