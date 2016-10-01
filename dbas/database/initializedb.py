@@ -474,7 +474,7 @@ def set_up_users(session):
     pw6 = password_handler.get_hashed_password('alexander')
     pw7 = password_handler.get_hashed_password('R4n0mpw')
 
-    user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
+    user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group2.uid, gender='m')
     user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
     user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group=group0.uid, gender='m')
