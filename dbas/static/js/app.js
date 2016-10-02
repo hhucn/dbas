@@ -520,7 +520,7 @@ function callbackIfDoneForLogin(data){
 		// It is JSON
 		if (jsonData.error.length != 0) {
 			$('#' + popupLoginFailed).show();
-			$('#' + popupLoginFailed + '-message').href(jsonData.error);
+			$('#' + popupLoginFailed + '-message').html(jsonData.error);
 		} else {
 			$('#' + popupLogin).modal('hide');
 			location.reload(true);
