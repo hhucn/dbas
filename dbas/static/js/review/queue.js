@@ -99,6 +99,7 @@ $(document).ready(function () {
 	elements.each(function(){
 		$(this).css('width', max + 'px');
 	});
+	console.log(max);
 	
 	// extra info when user has already seen the complete queue
 	if ($('#stats-table').data('extra-info') == 'already_seen'){
