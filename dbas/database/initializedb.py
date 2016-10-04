@@ -11,7 +11,7 @@ import sys
 from math import trunc
 
 import arrow
-import dbas.handler.password as passwordHandler
+import dbas.handler.password as password_handler
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
@@ -23,14 +23,26 @@ from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config, and_
 
+first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
+
 
 def usage(argv):
+    """
+
+    :param argv:
+    :return:
+    """
     cmd = os.path.basename(argv[0])
     print('usage: %s <config_uri>\n(example: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
 
 
 def main_discussion(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -47,11 +59,15 @@ def main_discussion(argv=sys.argv):
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user5, user6, user7, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
         setup_discussion_database(DBDiscussionSession, user2, issue1, issue2, issue4, issue5)
-        setup_review_database(DBDiscussionSession)
         transaction.commit()
 
 
 def main_discussion_reload(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -69,11 +85,17 @@ def main_discussion_reload(argv=sys.argv):
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         setup_review_database(DBDiscussionSession)
+        setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
 
 
 def main_dummy_votes(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -85,11 +107,38 @@ def main_dummy_votes(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
+        setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
 
 
+def main_dummy_reviews(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
+
+    with transaction.manager:
+        setup_review_database(DBDiscussionSession)
+        transaction.commit()
+
+
 def main_news(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -106,6 +155,11 @@ def main_news(argv=sys.argv):
 
 
 def setup_news_db(session):
+    """
+
+    :param session:
+    :return:
+    """
     news01 = News(title='Anonymous users after vacation',
                   date=arrow.get('2015-09-24'),
                   author='Tobias Krauthoff',
@@ -410,17 +464,17 @@ def set_up_users(session):
     session.flush()
 
     # adding some dummy users
-    pwt = passwordHandler.get_hashed_password('iamatestuser2016')
-    pw0 = passwordHandler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-    pw1 = passwordHandler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
-    pw2 = passwordHandler.get_hashed_password('tobias')
-    pw3 = passwordHandler.get_hashed_password('martin')
-    pw4 = passwordHandler.get_hashed_password('christian')
-    pw5 = passwordHandler.get_hashed_password('dasistdoof123#')
-    pw6 = passwordHandler.get_hashed_password('dasistdoof321!')
-    pw7 = passwordHandler.get_hashed_password('R4n0mpw')
+    pwt = password_handler.get_hashed_password('iamatestuser2016')
+    pw0 = password_handler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+    pw1 = password_handler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
+    pw2 = password_handler.get_hashed_password('tobias')
+    pw3 = password_handler.get_hashed_password('martin')
+    pw4 = password_handler.get_hashed_password('christian')
+    pw5 = password_handler.get_hashed_password('raphael')
+    pw6 = password_handler.get_hashed_password('alexander')
+    pw7 = password_handler.get_hashed_password('R4n0mpw')
 
-    user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group0.uid, gender='m')
+    user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group2.uid, gender='m')
     user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group=group0.uid, gender='m')
     user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group=group0.uid, gender='m')
@@ -523,23 +577,23 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
     session.add_all([settingst28, settingst29, settingst30])
     session.flush()
 
-    import dbas.user_management as UserHandler
-    UserHandler.refresh_public_nickname(usert07)
-    UserHandler.refresh_public_nickname(usert08)
-    UserHandler.refresh_public_nickname(usert09)
-    UserHandler.refresh_public_nickname(usert10)
-    UserHandler.refresh_public_nickname(usert11)
-    UserHandler.refresh_public_nickname(usert12)
-    UserHandler.refresh_public_nickname(usert13)
-    UserHandler.refresh_public_nickname(usert14)
-    UserHandler.refresh_public_nickname(usert15)
-    UserHandler.refresh_public_nickname(usert16)
-    UserHandler.refresh_public_nickname(usert17)
-    UserHandler.refresh_public_nickname(usert18)
-    UserHandler.refresh_public_nickname(usert19)
-    UserHandler.refresh_public_nickname(usert20)
-    UserHandler.refresh_public_nickname(usert21)
-    UserHandler.refresh_public_nickname(usert22)
+    import dbas.user_management as user_hander
+    user_hander.refresh_public_nickname(usert07)
+    user_hander.refresh_public_nickname(usert08)
+    user_hander.refresh_public_nickname(usert09)
+    user_hander.refresh_public_nickname(usert10)
+    user_hander.refresh_public_nickname(usert11)
+    user_hander.refresh_public_nickname(usert12)
+    user_hander.refresh_public_nickname(usert13)
+    user_hander.refresh_public_nickname(usert14)
+    user_hander.refresh_public_nickname(usert15)
+    user_hander.refresh_public_nickname(usert16)
+    user_hander.refresh_public_nickname(usert17)
+    user_hander.refresh_public_nickname(usert18)
+    user_hander.refresh_public_nickname(usert19)
+    user_hander.refresh_public_nickname(usert20)
+    user_hander.refresh_public_nickname(usert21)
+    user_hander.refresh_public_nickname(usert22)
 
     # Adding welcome notifications
     notification0 = Message(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
@@ -576,7 +630,7 @@ def set_up_issue(session, user, lang1, lang2):
     """
     # adding our main issue
     issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
-    issue2 = Issue(title='Cat or Dog', info='Your familiy argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
+    issue2 = Issue(title='Cat or Dog', info='Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
     #  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
     issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
     issue5 = Issue(title='Unterstützung der Sekretariate', info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.', author_uid=user.uid, lang_uid=lang2.uid)
@@ -597,15 +651,11 @@ def setup_dummy_votes(session):
 
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
-    firstnames = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob',
-                  'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi',
-                  'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly',
-                  'Sybille', 'Ingeburg']
 
-    max_interval = len(firstnames) - 1
+    max_interval = len(first_names) - 1
 
-    new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, max_interval, firstnames, session)
-    new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, max_interval, firstnames, session)
+    new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, max_interval, first_names, session)
+    new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, max_interval, first_names, session)
 
     rat_arg_up = str(trunc(arg_up / len(db_arguments) * 100) / 100)
     rat_arg_down = str(trunc(arg_down / len(db_arguments) * 100) / 100)
@@ -629,6 +679,41 @@ def setup_dummy_votes(session):
     db_votearguments = session.query(VoteArgument).all()
     for va in db_votearguments:
         va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
+
+
+def setup_dummy_seen_by(session):
+    DBDiscussionSession.query(ArgumentSeenBy).delete()
+    DBDiscussionSession.query(StatementSeenBy).delete()
+
+    db_arguments = DBDiscussionSession.query(Argument).all()
+    db_statements = DBDiscussionSession.query(Statement).all()
+
+    argument_count = 0
+    statement_count = 0
+
+    for argument in db_arguments:
+        tmp_first_names = list(first_names)
+        max_interval = random.randint(10, len(tmp_first_names) - 1)
+        for i in range(0, max_interval):
+            nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
+            db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+            session.add(ArgumentSeenBy(argument_uid=argument.uid, user_uid=db_rnd_tst_user.uid))
+            tmp_first_names.remove(nick)
+            argument_count += 1
+
+    for statement in db_statements:
+        tmp_first_names = list(first_names)
+        max_interval = random.randint(10, len(tmp_first_names) - 1)
+        for i in range(0, max_interval):
+            nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
+            db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
+            session.add(StatementSeenBy(statement_uid=statement.uid, user_uid=db_rnd_tst_user.uid))
+            tmp_first_names.remove(nick)
+            statement_count += 1
+
+    session.flush()
+    logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
+    logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
 def __set_votes_for_arguments(db_arguments, max_interval, firstnames, session):
@@ -1332,13 +1417,28 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([reference200, reference201])
     session.flush()
 
+    reason1 = ReviewDeleteReason(reason='offtopic')
+    reason2 = ReviewDeleteReason(reason='harmful')
+    session.add_all([reason1, reason2])
+    session.flush()
+
+    reputation01 = ReputationReason(reason='rep_reason_first_position', points=10)
+    reputation02 = ReputationReason(reason='rep_reason_first_justification', points=10)
+    reputation03 = ReputationReason(reason='rep_reason_first_argument_click', points=10)
+    reputation04 = ReputationReason(reason='rep_reason_first_confrontation', points=10)
+    reputation05 = ReputationReason(reason='rep_reason_first_new_argument', points=10)
+    reputation06 = ReputationReason(reason='rep_reason_new_statement', points=2)
+    reputation07 = ReputationReason(reason='rep_reason_success_flag', points=3)
+    reputation08 = ReputationReason(reason='rep_reason_success_edit', points=3)
+    reputation09 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
+    reputation10 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
+    session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07, reputation08, reputation09, reputation10])
+    session.flush()
+
 
 def setup_review_database(session):
-    reason1 = ReviewDeleteReason(reason='offtopic')
-    reason2 = ReviewDeleteReason(reason='spam')
-    reason3 = ReviewDeleteReason(reason='harmful')
-    session.add_all([reason1, reason2, reason3])
-    session.flush()
+    reason1 = session.query(ReviewDeleteReason).filter_by(reason='offtopic').first()
+    # reason2 = session.query(ReviewDeleteReason).filter_by(reason='harmful').first()
 
     int_start = 6
     int_end = 30
@@ -1348,13 +1448,13 @@ def setup_review_database(session):
     review03 = ReviewOptimization(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end))
     review04 = ReviewOptimization(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end))
     review05 = ReviewOptimization(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end))
-    review06 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3), is_executed=True)
-    review07 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3), is_executed=True)
-    review08 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 3), is_executed=True)
-    review09 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 3))
-    review10 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3))
-    review11 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3))
-    review12 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 3))
+    review06 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review07 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review08 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review09 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review10 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review11 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review12 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review13 = ReviewDelete(detector=2, argument=1, reason=reason1.uid, is_executed=True)
     session.add_all([review01, review02, review03, review04, review05, review06, review07, review08, review09, review10, review11, review12, review13])
     session.flush()
@@ -1388,18 +1488,16 @@ def setup_review_database(session):
                      reviewer17, reviewer18, reviewer19, reviewer20, reviewer21, reviewer22, reviewer23, reviewer24])
     session.flush()
 
-    reputation01 = ReputationReason(reason='rep_reason_first_position', points=10)
-    reputation02 = ReputationReason(reason='rep_reason_first_justification', points=10)
-    reputation03 = ReputationReason(reason='rep_reason_first_argument_click', points=10)
-    reputation04 = ReputationReason(reason='rep_reason_first_confrontation', points=10)
-    reputation05 = ReputationReason(reason='rep_reason_first_new_argument', points=10)
-    reputation06 = ReputationReason(reason='rep_reason_new_statement', points=2)
-    reputation07 = ReputationReason(reason='rep_reason_success_flag', points=3)
-    reputation08 = ReputationReason(reason='rep_reason_success_edit', points=3)
-    reputation09 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
-    reputation10 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
-    session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07, reputation08, reputation09, reputation10])
-    session.flush()
+    reputation01 = session.query(ReputationReason).filter_by(reason='rep_reason_first_position').first()
+    reputation02 = session.query(ReputationReason).filter_by(reason='rep_reason_first_justification').first()
+    reputation03 = session.query(ReputationReason).filter_by(reason='rep_reason_first_argument_click').first()
+    reputation04 = session.query(ReputationReason).filter_by(reason='rep_reason_first_confrontation').first()
+    reputation05 = session.query(ReputationReason).filter_by(reason='rep_reason_first_new_argument').first()
+    reputation06 = session.query(ReputationReason).filter_by(reason='rep_reason_new_statement').first()
+    reputation07 = session.query(ReputationReason).filter_by(reason='rep_reason_success_flag').first()
+    reputation08 = session.query(ReputationReason).filter_by(reason='rep_reason_success_edit').first()
+    reputation09 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_flag').first()
+    reputation10 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
 
     martin = session.query(User).filter_by(nickname='Martin').first()
     christian = session.query(User).filter_by(nickname='Christian').first()
@@ -1407,19 +1505,19 @@ def setup_review_database(session):
 
     today = arrow.utcnow()
     yesterday = today.replace(days=-1)
-    dayBeforeYesterday = yesterday.replace(days=-1)
-    history01 = ReputationHistory(reputator=martin.uid, reputation=reputation01.uid, timestamp=dayBeforeYesterday)
+    day_before_yesterday = yesterday.replace(days=-1)
+    history01 = ReputationHistory(reputator=martin.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
     history02 = ReputationHistory(reputator=martin.uid, reputation=reputation02.uid, timestamp=yesterday)
     history03 = ReputationHistory(reputator=martin.uid, reputation=reputation03.uid, timestamp=today)
     history04 = ReputationHistory(reputator=martin.uid, reputation=reputation08.uid, timestamp=today)
-    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=dayBeforeYesterday)
-    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid, timestamp=dayBeforeYesterday)
+    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=day_before_yesterday)
+    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
     history07 = ReputationHistory(reputator=christian.uid, reputation=reputation05.uid, timestamp=yesterday)
     history08 = ReputationHistory(reputator=christian.uid, reputation=reputation06.uid, timestamp=yesterday)
     history09 = ReputationHistory(reputator=christian.uid, reputation=reputation09.uid, timestamp=today)
     history10 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid, timestamp=today)
-    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation04.uid, timestamp=dayBeforeYesterday)
-    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation05.uid, timestamp=dayBeforeYesterday)
+    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
+    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation05.uid, timestamp=day_before_yesterday)
     history13 = ReputationHistory(reputator=tobias.uid, reputation=reputation06.uid, timestamp=yesterday)
     history14 = ReputationHistory(reputator=tobias.uid, reputation=reputation09.uid, timestamp=yesterday)
     history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation07.uid, timestamp=today)

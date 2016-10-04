@@ -49,7 +49,7 @@ function AjaxMainHandler(){
 			keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
 
 		$.ajax({
-			url: 'ajax_user_login',
+			url: mainpage + 'ajax_user_login',
 			type: 'POST',
 			data: {
 				user: user,
@@ -235,17 +235,17 @@ function AjaxMainHandler(){
 	
 	/**
 	 *
-	 * @param argument_uid
+	 * @param uid
 	 * @param reason
 	 * @param is_argument
 	 */
-	this.ajaxFlagArgument = function(argument_uid, reason, is_argument){
+	this.ajaxFlagArgumentOrStatement = function(uid, reason, is_argument){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_flag_argument',
+			url: 'ajax_flag_argument_or_statement',
 			method: 'POST',
 			data: {
-				argument_uid: argument_uid,
+				uid: uid,
 				reason: reason,
 				is_argument: is_argument
 			},
@@ -395,17 +395,16 @@ function AjaxDiscussionHandler() {
 
 	/**
 	 * Requests the logfile for the given uid
-	 * @param id current uid of the statement
+	 * @param statements_uids current uid of the statement
 	 */
-	this.getLogfileForPremisegroup = function (id) {
+	this.getLogfileForStatements = function (statements_uids) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_logfile_for_premisegroup',
+			url: 'ajax_get_logfile_for_statements',
 			method: 'GET',
 			data: {
-				uid: id,
-				issue: new Helper().getCurrentIssueId(),
-				is_statement: $('#discussions-space-list').find('li:last-child').find('input').attr('id').indexOf('_start_statement') != -1
+				uids: JSON.stringify(statements_uids),
+				issue: new Helper().getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -604,6 +603,33 @@ function AjaxDiscussionHandler() {
 		});
 		callback.focus();
 	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param is_argument
+	 */
+	this.revokeContent = function(uid, is_argument){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_revoke_content',
+			method: 'GET',
+			dataType: 'json',
+			data: {
+				uid: uid, is_argument: is_argument
+			},
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxRevokeContentDone(data) {
+			new InteractionHandler().callbackIfDoneRevokeContent(data, is_argument);
+		}).fail(function ajaxRevokeContentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			new GuiHandler().hideAndClearUrlSharingPopup();
+			//$('#' + popupUrlSharingInputId).val(long_url);
+		});
+	}
 }
 
 function AjaxUserHandler(){
@@ -1202,7 +1228,7 @@ function AjaxReviewHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewOngoingsCallbacks().forUndoReview(data, queue, uid);
+			new ReviewHistoryCallbacks().forUndoReview(data, queue, uid);
 		}).fail(function reviewDeleteArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});

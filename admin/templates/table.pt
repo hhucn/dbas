@@ -1,0 +1,29 @@
+<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+		
+		<div class="container colored-container">
+            <p class="centering">
+                <span class="lead">${table.name}</span> <span>has</span> <span class="lead">${table.count}</span> <span>Elements</span>
+            </p>
+            <br>
+            <table class="table table-striped table-hover" tal:condition="table.has_elements">
+                <thead>
+                    <tr>
+                        <th tal:repeat="head table.head">${head}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr tal:repeat="row table.row">
+                        <td tal:repeat="el row">
+                            ${el}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+		</div>
+
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
+
+	</tal:block>
+</tal:block>

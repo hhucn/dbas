@@ -10,10 +10,10 @@ from datetime import date, timedelta, datetime
 from urllib import parse
 
 import arrow
-import dbas.handler.password as PasswordHandler
+import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
-from dbas.helper import email as EmailHelper
+from dbas.helper import email as email_helper
 from dbas.helper.notification import send_welcome_notification
 from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid,\
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
@@ -98,7 +98,7 @@ def update_last_action(transaction, nick):
         return False
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
 
-    timeoutInSec = 60 * 60 * 24 * 7
+    timeout_in_sec = 60 * 60 * 24 * 7
 
     # check difference of
     # TODO TIME ZONE OF SERVER
@@ -108,7 +108,7 @@ def update_last_action(transaction, nick):
     diff_login = (datetime.now() - last_login_object).seconds
 
     diff = diff_action if diff_action < diff_login else diff_login
-    should_log_out = diff > timeoutInSec and not db_settings.keep_logged_in
+    should_log_out = diff > timeout_in_sec and not db_settings.keep_logged_in
     db_user.update_last_action()
 
     transaction.commit()
@@ -552,7 +552,7 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
             message = _t.get(_t.oldPwdWrong)  # 'Your old password is wrong.'
             error = True
         else:
-            hashed_pw = PasswordHandler.get_hashed_password(new_pw)
+            hashed_pw = password_handler.get_hashed_password(new_pw)
 
             # set the hashed one
             user.password = hashed_pw
@@ -587,7 +587,7 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
     _t = Translator(ui_locales)
     # creating a new user with hashed password
     logger('UserManagement', 'create_new_user', 'Adding user')
-    hashed_password = PasswordHandler.get_hashed_password(password)
+    hashed_password = password_handler.get_hashed_password(password)
     newuser = User(firstname=firstname,
                    surname=lastname,
                    email=email,
@@ -612,7 +612,7 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
         # sending an email
         subject = _t.get(_t.accountRegistration)
         body = _t.get(_t.accountWasRegistered)
-        EmailHelper.send_mail(request, subject, body, email, ui_locales)
+        email_helper.send_mail(request, subject, body, email, ui_locales)
         send_welcome_notification(transaction, checknewuser.uid)
 
     else:

@@ -1,5 +1,5 @@
 """
-Provides helping function for the managing reputation.
+Provides helping function for handling reputation.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -8,6 +8,7 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
 from dbas.lib import is_user_author
+from dbas.logger import logger
 
 reputation_borders = {'deletes': 30,
                       'optimizations': 30,
@@ -44,6 +45,7 @@ def get_privilege_list(translator):
     reputations.append({'points': reputation_borders['history'], 'icon': reputation_icons['history'], 'text': translator.get(translator.priv_history_queue)})
     reputations.append({'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'], 'text': translator.get(translator.priv_access_opti_queue)})
     reputations.append({'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'], 'text': translator.get(translator.priv_access_del_queue)})
+    reputations.append({'points': reputation_borders['edits'], 'icon': reputation_icons['optimizations'], 'text': translator.get(translator.priv_access_edit_queue)})
     return reputations
 
 
@@ -102,6 +104,7 @@ def add_reputation_for(user, reason, transaction):
     :param transaction: current transaction
     :return: True, if the user gained reputation
     """
+    logger('ReputationPointHelper', 'add_reputation_for', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first() if isinstance(user, str) else user
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
     if not db_reason or not db_user:
@@ -114,6 +117,7 @@ def add_reputation_for(user, reason, transaction):
         if db_already_farmed:
             return False
 
+    logger('ReputationPointHelper', 'add_reputation_for', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()

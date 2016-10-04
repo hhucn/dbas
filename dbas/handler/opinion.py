@@ -9,7 +9,7 @@ import re
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings
+from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings, StatementSeenBy
 from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
@@ -194,7 +194,7 @@ class OpinionHandler:
             else:
                 statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
-            db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid)).all()
+            db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(uid)).all()
             if not db_seen_by:
                 db_seen_by = []
             statement_dict['seen_by'] = len(db_seen_by)
@@ -316,6 +316,11 @@ class OpinionHandler:
         else:
             opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
+        db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(argument_uid)).all()
+        if not db_seen_by:
+            db_seen_by = []
+            opinions['seen_by'] = len(db_seen_by)
+
         return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
     def get_user_with_opinions_for_attitude(self, statement_uid):
@@ -376,7 +381,7 @@ class OpinionHandler:
 
         ret_dict['title'] = title[0:1].upper() + title[1:]
 
-        db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(statement_uid)).all()
+        db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(statement_uid)).all()
         if not db_seen_by:
             db_seen_by = []
         ret_dict['seen_by'] = len(db_seen_by)

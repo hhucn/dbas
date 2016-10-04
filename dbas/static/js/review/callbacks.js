@@ -40,6 +40,7 @@ function ReviewCallbacks() {
 				$('#opti_ack').addClass('disabled');
 				$('#request-lock').hide();
 				$('#request-not-lock-text').hide();
+	            $('#send_edit').removeClass('disabled');
 				
 				var review_argument_text = $('#reviewed-argument-text');
 				review_argument_text.attr('data-oem', review_argument_text.text());

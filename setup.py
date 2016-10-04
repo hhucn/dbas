@@ -63,6 +63,7 @@ setup(name='dbas',
       initialize_discussion_sql = dbas.database.initializedb:main_discussion
       reload_discussion_sql = dbas.database.initializedb:main_discussion_reload
       init_discussion_testvotes = dbas.database.initializedb:main_dummy_votes
+      init_review_tests = dbas.database.initializedb:main_dummy_reviews
       initialize_news_sql = dbas.database.initializedb:main_news
       """,
       )

@@ -11,6 +11,7 @@ from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.input_validator import Validator
 from dbas.strings.translator import Translator
 from validate_email import validate_email
 
@@ -78,7 +79,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
 
     item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict), nickname)
-    extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, request, mode == 't',
+    extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, mode == 't',
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
@@ -147,9 +148,9 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
 
     # justifying argument
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-    item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in)
+    item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
-    extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, request,
+    extras_dict     = _dh.prepare_extras_dict(slug, False, True, True, True, request,
                                               argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
@@ -179,7 +180,7 @@ def __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug,
     return ddh, idh, dh
 
 
-def try_to_register_new_user_via_form(request, username, email, phone, content, ui_locales, spamanswer):
+def try_to_contact(request, username, email, phone, content, ui_locales, spamanswer):
     """
 
     :param request:
@@ -194,38 +195,35 @@ def try_to_register_new_user_via_form(request, username, email, phone, content, 
     _t = Translator(ui_locales)
     send_message = False
 
-    try:
-        spamanswer = int(spamanswer) if len(spamanswer) > 0 else '#'
-    except ValueError and TypeError:
-        spamanswer = '#'
+    spamanswer = spamanswer if Validator.is_integer(spamanswer) else '#'
     key = 'contact-antispamanswer'
     antispamanswer = request.session[key] if key in request.session else ''
     spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
 
-    logger('ViewHelper', 'try_to_register_new_user_via_form', 'validating email')
+    logger('ViewHelper', 'try_to_contact', 'validating email')
     is_mail_valid = validate_email(email, check_mx=True)
 
     # check for empty username
     if not username:
-        logger('ViewHelper', 'try_to_register_new_user_via_form', 'username empty')
+        logger('ViewHelper', 'try_to_contact', 'username empty')
         contact_error = True
         message = _t.get(_t.emptyName)
 
     # check for non valid mail
     elif not is_mail_valid:
-        logger('ViewHelper', 'try_to_register_new_user_via_form', 'mail is not valid')
+        logger('ViewHelper', 'try_to_contact', 'mail is not valid')
         contact_error = True
         message = _t.get(_t.invalidEmail)
 
     # check for empty content
     elif not content:
-        logger('main_contact', 'try_to_register_new_user_via_form', 'content is empty')
+        logger('main_contact', 'try_to_contact', 'content is empty')
         contact_error = True
         message = _t.get(_t.emtpyContent)
 
     # check for empty spam
     elif str(spamanswer) != str(spamsolution):
-        logger('ViewHelper', 'try_to_register_new_user_via_form', 'empty or wrong anti-spam answer' + ', given answer ' +
+        logger('ViewHelper', 'try_to_contact', 'empty or wrong anti-spam answer' + ', given answer ' +
                str(spamanswer) + ', right answer ' + str(antispamanswer))
         contact_error = True
         message = _t.get(_t.maliciousAntiSpam)

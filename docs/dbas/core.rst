@@ -169,13 +169,40 @@ Review
 Flag Helper
 ===========
 
-.. automodule:: dbas.review.helper.flag_handler
+.. automodule:: dbas.review.helper.flags
     :members:
 
 
-Page Manager
-============
+History Manager
+===============
 
-.. automodule:: dbas.review.helper.page_manager
+.. automodule:: dbas.review.helper.history
     :members:
 
+
+Main  Manager
+=============
+
+.. automodule:: dbas.review.helper.main
+    :members:
+
+
+Queues Handler
+==============
+
+.. automodule:: dbas.review.helper.queues
+    :members:
+
+
+Reputation Helper
+=================
+
+.. automodule:: dbas.review.helper.reputation
+    :members:
+
+
+Subpage Manager
+===============
+
+.. automodule:: dbas.review.helper.subpage
+    :members:
