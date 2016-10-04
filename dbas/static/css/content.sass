@@ -132,12 +132,16 @@ span[data-argumentation-type^="position"]
   margin-left: 10px
   margin-right: 10px
 
-#popup-flag-argument
+#popup-flag-argument, #popup-flag-statement
   small
     color: dimgray
   .modal-body
     padding-bottom: 0
     padding-top: 0
+
+#popup-flag-argument
+  form
+    margin-top: -1em
 
 #popup-jump-graph
   ul
@@ -225,6 +229,12 @@ span[data-argumentation-type^="position"]
 
 #discussion-container
   min-height: 300px
+
+.item-flag, .item-edit, .item-trash
+  font-size: 12px
+  display: none !important
+  &:hover
+    color: $error-color
 
 @media (max-width: 767px)
   #pro-position-column, #con-position-column

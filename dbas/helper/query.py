@@ -12,11 +12,12 @@ from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, \
-    VoteStatement, Issue
+    VoteStatement, Issue, RevokedContent
 from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, \
-    get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid
+    get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid,\
+    is_author_of_argument, is_author_of_statement
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -371,53 +372,27 @@ class QueryHelper:
         return return_dict
 
     @staticmethod
-    def get_logfile_for_statement(uid, lang, main_page):
+    def get_logfile_for_statements(uids, lang, main_page):
         """
         Returns the logfile for the given statement uid
 
-        :param uid: requested statement uid
+        :param uids: requested statement uid
         :param lang: ui_locales ui_locales
         :param main_page: URL
         :return: dictionary with the logfile-rows
         """
-        logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uid))
+        logger('QueryHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uids))
 
-        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
         main_dict = dict()
-        return_dict = dict()
-        content_dict = dict()
-        # add all corrections
-        for index, version in enumerate(db_textversions):
-            content_dict[str(index)] = QueryHelper.__get_logfile_dict(version, main_page, lang)
-        return_dict['content'] = content_dict
-        main_dict[get_text_for_statement_uid(uid)] = return_dict
-
-        return main_dict
-
-    @staticmethod
-    def get_logfile_for_premisegroup(uid, lang, main_page):
-        """
-        Returns the logfile for the given premisegroup uid
-
-        :param uid: requested statement uid
-        :param lang: ui_locales ui_locales
-        :param main_page: URL
-        :return: dictionary with the logfile-rows
-        """
-        logger('QueryHelper', 'get_logfile_for_premisegroup', 'def with uid: ' + str(uid))
-
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).all()
-        main_dict = dict()
-        for premise in db_premises:
-            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=premise.statement_uid).all()
-
+        for uid in uids:
+            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
             return_dict = dict()
             content_dict = dict()
             # add all corrections
             for index, version in enumerate(db_textversions):
                 content_dict[str(index)] = QueryHelper.__get_logfile_dict(version, main_page, lang)
             return_dict['content'] = content_dict
-            main_dict[get_text_for_statement_uid(premise.statement_uid)] = return_dict
+            main_dict[get_text_for_statement_uid(uid)] = return_dict
 
         return main_dict
 
@@ -678,3 +653,153 @@ class QueryHelper:
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(PremiseGroup.uid.desc()).first()
 
         return db_premisegroup.uid
+
+    @staticmethod
+    def revoke_content(uid, is_argument, nickname, translator, transaction):
+        """
+
+        :param uid:
+        :param is_argument:
+        :param nickname:
+        :param translator:
+        :param transaction:
+        :return:
+        """
+        logger('QueryHelper', 'revoke_content', str(uid) + (' argument' if is_argument else ' statement'))
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if not db_user:
+            logger('QueryHelper', 'revoke_content', 'User not found')
+            return translator.get(translator.userNotFound)
+
+        # get element, which should be revoked
+        if is_argument:
+            db_element, error = QueryHelper.__revoke_argument(db_user, uid, transaction, translator)
+            if len(error) > 0:
+                return error
+        else:
+            db_element, error = QueryHelper.__revoke_statement(db_user, uid, transaction, translator)
+            if len(error) > 0:
+                return error
+
+        # write log
+        if is_argument:
+            DBDiscussionSession.add(RevokedContent(db_user.uid, argument=db_element.uid))
+        else:
+            DBDiscussionSession.add(RevokedContent(db_user.uid, statement=db_element.uid))
+
+        DBDiscussionSession.add(db_element)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+        return ''
+
+    @staticmethod
+    def __revoke_argument(db_user, uid, transaction, translator):
+        """
+
+        :param db_user:
+        :param uid:
+        :param transaction:
+        :param translator:
+        :return:
+        """
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        is_author = is_author_of_argument(db_user.nickname, uid)
+
+        # exists the argument
+        if not db_argument:
+            logger('QueryHelper', '__revoke_argument', 'Argument does not exists')
+            return None, translator.get(translator.internalError)
+
+        if not is_author:
+            logger('QueryHelper', 'revoke_content', db_user.nickname + ' is not the author')
+            return None, translator.get(translator.userIsNotAuthorOfArgument)
+
+        logger('QueryHelper', '__revoke_argument', 'Disabling argument ' + str(uid))
+        db_argument.set_disable(True)
+
+        DBDiscussionSession.add(db_argument)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return db_argument, ''
+
+    @staticmethod
+    def __revoke_statement(db_user, uid, transaction, translator):
+        """
+
+        :param db_user:
+        :param uid:
+        :param transaction:
+        :param translator:
+        :return:
+        """
+        logger('QueryHelper', 'revoke_content', 'Statement ' + str(uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+        is_author = is_author_of_statement(db_user.nickname, uid)
+
+        # exists the statement
+        if not db_statement:
+            logger('QueryHelper', '__revoke_statement', 'Statement does not exists')
+            return None, translator.get(translator.internalError)
+
+        if not is_author:
+            logger('QueryHelper', '__revoke_statement', db_user.nickname + ' is not the author')
+            return None, translator.get(translator.userIsNotAuthorOfStatement)
+
+        # transfer the responsibility to the next author, who used this statement
+        db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == uid,
+                                                                                     Argument.is_supportive == True,
+                                                                                     Argument.author_uid != db_user.uid)).first()
+        # search new author who supported this statement
+        if db_statement_as_conclusion:
+            logger('QueryHelper', '__revoke_statement', 'Statement ' + str(uid) + ' has a new author ' + str(db_statement_as_conclusion.author_uid) + ' (old author ' + str(db_user.uid) + ')')
+            db_statement.author_uid = db_statement_as_conclusion.author_uid
+            QueryHelper.__transfer_textversion_to_new_author(uid, db_user.uid, db_statement_as_conclusion.author_uid, transaction)
+        else:
+            logger('QueryHelper', '__revoke_statement',
+                   'Statement ' + str(uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
+            db_statement.set_disable(True)
+            QueryHelper.__disable_textversions(uid, db_user.uid, transaction)
+
+        DBDiscussionSession.add(db_statement)
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+        return db_statement, ''
+
+    @staticmethod
+    def __disable_textversions(statement_uid, author, transaction):
+        """
+
+        :param statement_uid:
+        :param author:
+        :param transaction:
+        :return:
+        """
+        db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
+                                                                            TextVersion.author_uid == author)).all()
+        for textversion in db_textversion:
+            textversion.set_disable(True)
+            DBDiscussionSession.add(textversion)
+
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    @staticmethod
+    def __transfer_textversion_to_new_author(statement_uid, old_author, new_author, transaction):
+        """
+
+        :param statement_uid:
+        :param old_author:
+        :param new_author:
+        :param transaction:
+        :return:
+        """
+        db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
+                                                                            TextVersion.author_uid == old_author)).all()
+        for textversion in db_textversion:
+            textversion.author_uid = new_author
+            DBDiscussionSession.add(textversion)
+
+        DBDiscussionSession.flush()
+        transaction.commit()

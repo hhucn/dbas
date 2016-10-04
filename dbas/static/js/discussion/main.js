@@ -187,18 +187,32 @@ function Main () {
 		
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			guiHandler.showFlagArgumentPopup(uid, true);
+			guiHandler.showFlagArgumentPopup(uid);
+		});
+		
+		trianglel.find('.triangle-trash').click(function () {
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			guiHandler.showDeleteContentPopup(uid, true);
 		});
 		
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
-			guiHandler.showFlagArgumentPopup(uid, false);
+			$('#popup-flag-statement-text').text($(this).parent().find('label').text());
+			guiHandler.showFlagStatementPopup(uid, false);
 		});
 		
 		list.find('.item-edit').click(function () {
+			var uids = [];
+			$(this).parent().find('label:nth-child(even)').each(function(){
+				uids.push($(this).attr('id'))
+			});
+			guiHandler.showEditStatementsPopup(uids);
+		});
+		
+		list.find('.item-trash').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
-			guiHandler.showEditStatementsPopup(uid);
+			guiHandler.showDeleteContentPopup(uid, false);
 		});
 		
 		// adding issues
@@ -418,15 +432,14 @@ function Main () {
 		
 		// hover on radio buttons
 		guiHandler.hoverInputListOf($('#popup-flag-argument'));
+		guiHandler.hoverInputListOf($('#popup-flag-statement'));
 		guiHandler.hoverInputListOf(list);
 		
 		list.find('li').each(function(){
 			$(this).hover(function(){
-				$(this).find('.item-flag').show();
-				$(this).find('.item-edit').show();
+				$(this).find('.fa').parent().show();
 			}, function(){
-				$(this).find('.item-flag').hide();
-				$(this).find('.item-edit').hide();
+				$(this).find('.fa').parent().hide();
 			})
 		});
 	};

@@ -1,291 +1,73 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 		
-		<div class="container colored-container" tal:condition="not:extras.is_admin" style="width: 578px;">
-            <span class="lead">401 - Unauthorized</span><br>
-			<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
-		</div>
+		<!--<div class="container colored-container" tal:condition="not:extras.is_admin" style="max-width: 578px;">-->
+        <!--    <span class="lead">401 - Unauthorized</span><br>-->
+		<!--	<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">-->
+		<!--</div>-->
 
-        <div class="row">
-			<div class="col-md-2" id="navbar-wrapper" tal:condition="extras.is_admin">
-				<nav id="admin-navbar" class="navbar navbar-default navbar-left" role="navigation">
-					<ul class="nav navbar navbar-left">
-						<li class="active">
-                            <a href="#" id="admin-dashboards">
-                                <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>&thinsp;&thinsp;
-                                <span i18n:translate="dashboard">Dashboard</span>
-                            </a></li>
-						<li>
-                            <a href="#" id="admin-users">
-                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&thinsp;&thinsp;
-                                <span i18n:translate="users">Users</span>
-                            </a>
-                        </li>
-						<li>
-                            <a href="#" id="admin-arguments">
-                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&thinsp;&thinsp;
-                                <span i18n:translate="arguments">Arguments</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" id="admin-issues">
-                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&thinsp;&thinsp;
-                                <span i18n:translate="issues">Issues</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" id="admin-statements">
-                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&thinsp;&thinsp;
-                                <span i18n:translate="statements">Statements</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" id="admin-premisegroups">
-                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&thinsp;&thinsp;
-                                <span i18n:translate="premisegroups">Premisegroups</span>
-                            </a>
-                        </li>
-					</ul>
-				</nav>
-			</div>
+		<div class="container" tal:condition="not:extras.is_admin">
 
-			<div class="col-md-10"  id="content-wrapper" tal:condition="extras.is_admin">
-                <div class="row col-md-12" id="admins-space-dashboard">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading">
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <img id="dashboard_user" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
-                                        </div>
-                                        <div class="col-xs-9 text-right">
-                                            <div class="huge">${dashboard.user_count}</div>
-                                            <div i18n:translate="users!">Users!</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="#">
-                                    <div class="panel-footer" id="dashboard-user-count-detail">
-                                        <span i18n:translate="view_details">View Details</span>
-                                    </div>
-                                </a>
+            <div class="row">
+                <div class="col-md-offset-3 col-md-6 colored-container">
+                    <form autocomplete="on">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
+                            <div class="col-md-9">
+                                <input id="admin-login-user" type="text" class="form-control nickname" name="nickname" autocomplete="on" placeholder="example: Democrator" autofocus>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-success">
-                                <div class="panel-heading">
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <img id="dashboard_vote" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
-                                        </div>
-                                        <div class="col-xs-9 text-right">
-                                            <div class="huge">${dashboard.vote_count}</div>
-                                            <div i18n:translate="votes!">Votes!</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="#">
-                                    <div class="panel-footer"  id="dashboard-vote-count-detail">
-                                        <span i18n:translate="view_details">View Details</span>
-                                    </div>
-                                </a>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">Your Password</label>
+                            <div class="col-md-9">
+                                <input id="admin-login-pw" type="password" class="form-control password" name="password" autocomplete="on" placeholder="example: ******">
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-warning">
-                                <div class="panel-heading">
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <img id="dashboard_argument" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
-                                        </div>
-                                        <div class="col-xs-9 text-right">
-                                            <div class="huge">${dashboard.argument_count}</div>
-                                            <div i18n:translate="arguments!">Arguments!</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="#">
-                                    <div class="panel-footer" id="dashboard-argument-count-detail">
-                                        <span i18n:translate="view_details">View Details</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-success">
-                                <div class="panel-heading">
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <img id="dashboard_issue" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
-                                        </div>
-                                        <div class="col-xs-9 text-right">
-                                            <div class="huge">${dashboard.issue_count}</div>
-                                            <div i18n:translate="issues!">Issues!</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="#">
-                                    <div class="panel-footer"  id="dashboard-issue-count-detail">
-                                        <span i18n:translate="view_details">View Details</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-danger">
-                                <div class="panel-heading">
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <img id="dashboard_statement" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
-                                        </div>
-                                        <div class="col-xs-9 text-right">
-                                            <div class="huge">${dashboard.statement_count}</div>
-                                            <div i18n:translate="statements!">Statements!</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="#">
-                                    <div class="panel-footer"  id="dashboard-statement-count-detail">
-                                        <span i18n:translate="view_details">View Details</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-danger">
-                                <div class="panel-heading">
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <img id="dashboard_premisegroup" class="glyphicons-dashboard center" src="${request.static_url('dbas:static/images/transparent.gif')}">
-                                        </div>
-                                        <div class="col-xs-9 text-right">
-                                            <div class="huge">${dashboard.premisegroup_count}</div>
-                                            <div i18n:translate="premisegroups!">Premisegroups!</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="#">
-                                    <div class="panel-footer"  id="dashboard-premisegroup-count-detail">
-                                        <span i18n:translate="view_details">View Details</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                    </form>
+
+                    <div style="padding-left: 15px;">
+                        <label>
+                            <input id="admin-keep-login-box" type="checkbox" style="float:left;">
+                            <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
+                        </label>
                     </div>
+
+    				<div class="col-md-12" id="admin-login-failed">
+    					<div class="alert alert-danger" role="alert">
+    						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    						<span class="sr-only" i18n:translate="error">Error:</span> <span id="admin-login-failed-message"></span>
+    					</div>
+    				</div>
+
+    				<button id="admin-login-button" type="button" class="btn btn-primary pull-right" i18n:translate="login">Log In</button>
+
                 </div>
-
-                <div class="row col-md-12 center container colored-container" id="admins-space-users" style="display:none;">
-                     <table style="border-collapse: separate; border-spacing: 0;" class="table table-condensed tablesorter" border="0">
-                         <thead>
-                         <tr>
-                             <th>#</th>
-                             <th i18n:translate="firstname">Firstname</th>
-                             <th i18n:translate="surname">Surname</th>
-                             <th i18n:translate="nickname">Nickname</th>
-                             <th i18n:translate="public_nickname">Public Nickname</th>
-                             <th i18n:translate="email">E-Mail</th>
-                             <th i18n:translate="gender">Gender</th>
-                             <th i18n:translate="group_uid">Group</th>
-                             <th i18n:translate="last_login">Last Login</th>
-                             <th i18n:translate="registered">Registered</th>
-                             <th i18n:translate="avatar">Avatar</th>
-                             <th i18n:translate="public_avatar">Public Avatar</th>
-                         </tr>
-                         </thead>
-                         <tbody>
-                         <tr tal:repeat="user users">
-                             <td>${user.uid}</td>
-                             <td>${user.firstname}</td>
-                             <td>${user.surname}</td>
-                             <td>${user.nickname}</td>
-                             <td><a href="#" target="_blank" tal:attributes="href user.public_url">${user.public_nickname}</a></td>
-                             <td>${user.email}</td>
-                             <td>${user.gender}</td>
-                             <td>${user.group_uid}</td>
-                             <td>${user.last_login}</td>
-                             <td>${user.registered}</td>
-                             <td><img tal:attributes="src user.avatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=80"></td>
-                             <td><img tal:attributes="src user.public_avatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=80"></td>
-                         </tr>
-                         </tbody>
-                     </table>
-                </div>
-
-                <div class="row col-md-12 container colored-container" style="display:none;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-10">
-                        <h4><span class="lead" i18n:translate="list_attacks">List of attacks, clicked by the participants</span></h4>
-                        <p i18n:translate="admin_only">Some additional options for the administrator.</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input id="list-all-arguments" type="button" name="" value="Show all arguments" class="button button-block btn-sm btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.show_all_arguments"/>
-                            </div>
-                            <div class="col-md-6" id="issue-switch-col" style="display: none;  ">
-                                <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" issue="1">
-                                    <span i18n:translate="switch_topc">Switch Topic</span>&nbsp;&nbsp;<span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu" id="dropdown-issue-list" >
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-1"></div>
-                </div>
-
-                <div class="row col-md-12 colored-container" id="admins-space-argument" style="display:none;">
-                </div>
-
-
-                <div class="row col-md-12 center container colored-container" id="admins-space-issue" style="display:none;">
-
-                     <div class="row col-md-12 container colored-container">
-                        <div class="col-md-1"></div>
-                        <div class="col-md-10">
-                              <h4><span class="lead" i18n:translate="new-issue">Issues</span></h4>
-                               <p i18n:translate="admin_only">Some additional options for the administrator.</p>
-                                 <div class="row">
-                                     <div class="col-md-12">
-                                          <a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
-                                     </div>
-                                 </div>
-                        </div>
-                        <div class="col-md-1"></div>
-                    </div >
-                    <table style="border-collapse: separate; border-spacing: 0;" class="table table-condensed tablesorter" border="0">
-                         <thead>
-                         <tr>
-                             <th>#</th>
-                             <th i18n:translate="title">Title</th>
-                             <th i18n:translate="info">Info</th>
-                             <th i18n:translate="date">Date</th>
-                             <th i18n:translate="author">Author</th>
-                             <th i18n:translate="edit">Edit</th>
-                         </tr>
-                         </thead>
-                         <tbody id="issue-table">
-                         <tr tal:repeat="issue issues">
-                             <td>${issue.uid}</td>
-                             <td>${issue.title}</td>
-                             <td>${issue.info}</td>
-                             <td>${issue.date}</td>
-                             <td><a href="#" target="_blank" tal:attributes="href issue.public_url">${issue.author}</a></td>
-                             <td><a href="#"  class="btn btn-info btn-lg" id="edit-issue"><span class="glyphicon glyphicon-edit"></span></a></td>
-                         </tr>
-                         </tbody>
-                     </table>
-                </div>
-
             </div>
 		</div>
 
+        <div class="container" tal:condition="extras.is_admin">
+
+            <div class="row" tal:repeat="row dashboard">
+
+                <div class="col-md-3" tal:repeat="group row">
+
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">${group.name}</h3>
+                        </div>
+                        <div class="panel-body" tal:repeat="line group.content">
+                            <a href="" tal:attributes="href line.href"><p>${line.name}  <span class=" badge">${line.count}</span></p></a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/admin.js')}"></script>
-
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/ajaxhandler.js')}"></script>
-
+		<script type="text/javascript" src="${request.static_url('admin:static/js/admin.js')}"></script>
 
 	</tal:block>
 </tal:block>

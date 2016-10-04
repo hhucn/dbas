@@ -1,15 +1,13 @@
 """
-Introducing an admin interface to enable easy database mangement.
+Introducing an admin interface to enable easy database management.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
-
 import dbas.helper.history as HistoryHelper
 import dbas.user_management as UserHandler
 import transaction
-from admin.lib import get_overview_of_arguments, get_all_users, get_all_issues, get_all_statements, get_all_premisegroups, get_dashboard_infos
+from admin.lib import get_dashboard_infos, get_table_dict
 from cornice import Service
 from dbas.lib import get_language
 from dbas.logger import logger
@@ -32,22 +30,25 @@ cors_policy = dict(enabled=True,
 # =============================================================================
 
 dashboard = Service(name='dashboard_page',
-                    path='/main',
+                    path='/',
                     description="Admin Page",
                     renderer='templates/admin.pt',
                     permission='everybody',  # or permission='use'
                     cors_policy=cors_policy)
 
-all_arguments = Service(name='admin',
-                        path='/argument_overview',
-                        description="Argument Overview",
-                        cors_policy=cors_policy)
+table = Service(name='table_page',
+                path='/{table}',
+                description="Table Page",
+                renderer='templates/table.pt',
+                permission='use',
+                cors_policy=cors_policy)
 
 
 @dashboard.get()
 def main_admin(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
+
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -59,11 +60,7 @@ def main_admin(request):
 
     ui_locales = get_language(request, get_current_registry())
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-    users = get_all_users(request.authenticated_userid, ui_locales, request.application_url)
-    issues = get_all_issues(request.authenticated_userid, ui_locales, request.application_url)
-    statements = get_all_statements(request.authenticated_userid, ui_locales, request.application_url)
-    premisegroups = get_all_premisegroups(request.authenticated_userid, ui_locales, request.application_url)
-    dashboard = get_dashboard_infos()
+    dashboard = get_dashboard_infos(request.path)
 
     return {
         'layout': Dbas.base_layout(),
@@ -71,22 +68,34 @@ def main_admin(request):
         'title': 'Admin',
         'project': project_name,
         'extras': extras_dict,
-        'users': users,
-        'issues': issues,
-        'statements': statements,
-        'premisegroups': premisegroups,
         'dashboard': dashboard
     }
 
 
-# =============================================================================
-# EXPORT-RELATED REQUESTS
-# =============================================================================
+@table.get()
+def main_table(request):
+    """
+    View configuration for the content view. Only logged in user can reach this page.
 
-@all_arguments.get()
-def get_argument_overview(request):
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'get_argument_overview', 'main')
-    return_dict = get_overview_of_arguments(request.authenticated_userid)
+    logger('Admin', 'main_table', 'def')
+    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
+    if should_log_out:
+        return Dbas(request).user_logout(True)
 
-    return json.dumps(return_dict, True)
+    ui_locales = get_language(request, get_current_registry())
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    table = request.matchdict['table']
+    table_dict = get_table_dict(table)
+
+    return {
+        'layout': Dbas.base_layout(),
+        'language': str(ui_locales),
+        'title': table,
+        'project': project_name,
+        'extras': extras_dict,
+        'table': table_dict
+    }
