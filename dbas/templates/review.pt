@@ -96,7 +96,7 @@
                                 <ul>
                                     <li tal:repeat="reputation reputation_list.looses">
                                         <span>${reputation.text}</span>:
-                                        <span class="error-description">${reputation.points}</span>
+                                        <span class="text-danger">${reputation.points}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -111,7 +111,7 @@
                                 <table class="table table-condensed" border="0">
                                     <tbody>
                                         <tr class="review-table-row" tal:repeat="privilege privilege_list">
-                                            <td>${privilege.points}</td>
+                                            <td class="text-info pull right">${privilege.points}</td>
                                             <td><i class="" aria-hidden="true" tal:attributes="class privilege.icon"></i></td>
                                             <td>${privilege.text}</td>
                                         </tr>

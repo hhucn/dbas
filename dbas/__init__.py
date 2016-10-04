@@ -81,6 +81,7 @@ def main(global_config, **settings):
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
     config.add_static_view(name='rv', path='review:static/', cache_max_age=3600)
+    config.add_static_view(name='admin', path='admin:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
@@ -101,7 +102,7 @@ def main(global_config, **settings):
     config.add_route('ajax_set_new_premises_for_argument', '/{url:.*}ajax_set_new_premises_for_argument')
     config.add_route('ajax_set_correction_of_statement', '/{url:.*}ajax_set_correction_of_statement')
     config.add_route('ajax_set_new_issue', '/{url:.*}ajax_set_new_issue')
-    config.add_route('ajax_get_logfile_for_premisegroup', '/{url:.*}ajax_get_logfile_for_premisegroup')
+    config.add_route('ajax_get_logfile_for_statements', '/{url:.*}ajax_get_logfile_for_statements')
     config.add_route('ajax_get_shortened_url', '/{url:.*}ajax_get_shortened_url')
     config.add_route('ajax_user_registration', '/{url:.*}ajax_user_registration')
     config.add_route('ajax_user_password_request', '/{url:.*}ajax_user_password_request')
@@ -126,7 +127,7 @@ def main(global_config, **settings):
     config.add_route('ajax_notification_delete', 'ajax_notification_delete')
     config.add_route('ajax_get_arguments_by_statement_uid', 'ajax_get_arguments_by_statement/{uid}')
     config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
-    config.add_route('ajax_flag_argument', '{url:.*}ajax_flag_argument')
+    config.add_route('ajax_flag_argument_or_statement', '{url:.*}ajax_flag_argument_or_statement')
     config.add_route('ajax_review_delete_argument', '{url:.*}ajax_review_delete_argument')
     config.add_route('ajax_review_optimization_argument', '{url:.*}ajax_review_optimization_argument')
     config.add_route('ajax_review_edit_argument', '{url:.*}ajax_review_edit_argument')
@@ -134,6 +135,7 @@ def main(global_config, **settings):
     config.add_route('ajax_cancel_review', '{url:.*}ajax_cancel_review')
     config.add_route('ajax_review_lock', '{url:.*}ajax_review_lock')
     config.add_route('ajax_review_unlock', '{url:.*}ajax_review_unlock')
+    config.add_route('ajax_revoke_content', '{url:.*}ajax_revoke_content')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')

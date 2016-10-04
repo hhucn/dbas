@@ -33,8 +33,8 @@
                     </div>
                     <div class="col-md-5" tal:condition="subpage.button_set.is_delete">
                         <a id="del_skip" href="#" class="review-btn-delete btn btn-info btn-sm pull-right" data-queue="delete" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
-                        <a id="del_nack" href="#" class="review-btn-delete btn btn-danger btn-sm pull-right" data-queue="delete" i18n:translate="delete_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Delete it</a>
-                        <a id="del_ack" href="#" class="review-btn-delete btn btn-success btn-sm pull-right" data-queue="delete" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's Okay</a>
+                        <a id="del_ack" href="#" class="review-btn-delete btn btn-danger btn-sm pull-right" data-queue="delete" i18n:translate="delete_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Delete it</a>
+                        <a id="del_nack" href="#" class="review-btn-delete btn btn-success btn-sm pull-right" data-queue="delete" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's Okay</a>
                     </div>
                     <div class="col-md-5" tal:condition="subpage.button_set.is_optimize">
                         <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm pull-right" data-queue="optimization" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
@@ -54,10 +54,10 @@
                             <div style="padding-left: 0.5em">
                                 <span>Information for the different reasons</span>
                                 <ul style="padding-left: 0.5em">
-                                    <li><strong i18n:translate="off_topic">Off topic</strong> <span i18n:translate="off_topic_explanation">are useful in general, but do not belong to the current discussion</span>.</li>
-                                    <li><strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abbusive</strong> <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.</li>
+                                    <li><strong i18n:translate="off_topic_or_irrelevant">Off topic or irrelevant</strong> <span i18n:translate="off_topic_explanation">text does not belong to the topic under discussion</span>.</li>
+                                    <li><strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abusive</strong> <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.</li>
                                     <li><strong i18n:translate="needs_optimization">Needs optimization</strong> <span i18n:translate="needs_optimization_explanation">if posts are useful, but need edits in grammar and/or spelling</span>.</li>
-                                    <li><strong i18n:translate="spam">Spam</strong> <span i18n:translate="spam_explanation">is neither useful nor mappend to a discussions topic</span>.</li>
+                                    <!--<li><strong i18n:translate="spam">Spam</strong> <span i18n:translate="spam_explanation">is neither useful nor mappend to a discussions topic</span>.</li>-->
                                 </ul>
                             </div>
                         </blockquote>

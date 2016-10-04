@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-21 09:48+0200\n"
+"POT-Creation-Date: 2016-09-29 08:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,22 +32,27 @@ msgid "404_text_part2"
 msgstr ""
 
 #. Default: , because the input parameter seems to be wrong.
-#: ././templates/404.pt:14
+#: ././templates/404.pt:12
 msgid "wrong_input_params"
 msgstr ""
 
+#. Default: , because the author revoked the content.
+#: ././templates/404.pt:12
+msgid "author_revoked_content"
+msgstr ""
+
 #. Default: Go home
-#: ././templates/404.pt:17
+#: ././templates/404.pt:15
 msgid "go-home"
 msgstr ""
 
 #. Default: or
-#: ././templates/404.pt:19
+#: ././templates/404.pt:17
 msgid "or"
 msgstr ""
 
 #. Default: go back to the discussion
-#: ././templates/404.pt:20
+#: ././templates/404.pt:18
 msgid "go_back_to_the_discussion"
 msgstr ""
 
@@ -120,8 +125,8 @@ msgstr ""
 
 #. Default: Login
 #. Default: Log In
-#: ././templates/snippet-header.pt:56 ././templates/snippet-popups.pt:249
-#: ././templates/snippet-popups.pt:454
+#: ././templates/snippet-header.pt:56 ././templates/snippet-popups.pt:244
+#: ././templates/snippet-popups.pt:449
 msgid "login"
 msgstr ""
 
@@ -496,7 +501,7 @@ msgid "reason"
 msgstr ""
 
 #. Default: Original
-#: ././templates/review_history.pt:43 ././templates/review_content.pt:171
+#: ././templates/review_history.pt:43 ././templates/review_content.pt:174
 msgid "original"
 msgstr ""
 
@@ -505,19 +510,19 @@ msgstr ""
 msgid "votes"
 msgstr ""
 
-#. Default: Voters Pro
+#. Default: Accepted
 #: ././templates/review_history.pt:45
+msgid "accepted"
+msgstr ""
+
+#. Default: Voters Pro
+#: ././templates/review_history.pt:46
 msgid "voters_pro"
 msgstr ""
 
 #. Default: Voters Con
-#: ././templates/review_history.pt:46
-msgid "voters_con"
-msgstr ""
-
-#. Default: Accepted
 #: ././templates/review_history.pt:47
-msgid "accepted"
+msgid "voters_con"
 msgstr ""
 
 #. Default: Timestamp
@@ -525,19 +530,24 @@ msgstr ""
 msgid "timestamp"
 msgstr ""
 
-#. Default: Action
+#. Default: Reporter
 #: ././templates/review_history.pt:49
+msgid "reporter"
+msgstr ""
+
+#. Default: Action
+#: ././templates/review_history.pt:50
 msgid "actions"
 msgstr ""
 
 #. Default: Undo
-#: ././templates/review_history.pt:85
+#: ././templates/review_history.pt:91
 msgid "undo"
 msgstr ""
 
 #. Default: Cancel
-#: ././templates/review_history.pt:88 ././templates/snippet-popups.pt:180
-#: ././templates/snippet-popups.pt:205
+#: ././templates/review_history.pt:94 ././templates/snippet-popups.pt:175
+#: ././templates/snippet-popups.pt:200
 msgid "cancel"
 msgstr ""
 
@@ -552,7 +562,7 @@ msgid "publications"
 msgstr ""
 
 #. Default: Author
-#: ././templates/snippet-footer.pt:17 ././templates/snippet-popups.pt:588
+#: ././templates/snippet-footer.pt:17 ././templates/snippet-popups.pt:583
 msgid "author"
 msgstr ""
 
@@ -638,8 +648,8 @@ msgstr ""
 
 #. Default: Close
 #: ././templates/snippet-popups.pt:80 ././templates/snippet-popups.pt:125
-#: ././templates/snippet-popups.pt:457 ././templates/snippet-popups.pt:496
-#: ././templates/snippet-popups.pt:596 ././templates/snippet-popups.pt:632
+#: ././templates/snippet-popups.pt:452 ././templates/snippet-popups.pt:491
+#: ././templates/snippet-popups.pt:591 ././templates/snippet-popups.pt:627
 msgid "close"
 msgstr ""
 
@@ -677,162 +687,161 @@ msgid "mit_license_part3"
 msgstr ""
 
 #. Default: Okay
-#: ././templates/snippet-popups.pt:179 ././templates/snippet-popups.pt:204
+#: ././templates/snippet-popups.pt:174 ././templates/snippet-popups.pt:199
 msgid "okay"
 msgstr ""
 
 #. Default: Do not remind me again
-#: ././templates/snippet-popups.pt:199
+#: ././templates/snippet-popups.pt:194
 msgid "do_not_remind_me_again"
 msgstr ""
 
 #. Default: Sign Up
-#: ././templates/snippet-popups.pt:251
+#: ././templates/snippet-popups.pt:246
 msgid "sign_up"
 msgstr ""
 
 #. Default: Your Nickname
-#: ././templates/snippet-popups.pt:265
+#: ././templates/snippet-popups.pt:260
 msgid "your_nickname"
 msgstr ""
 
 #. Default: Your Password
-#: ././templates/snippet-popups.pt:272
+#: ././templates/snippet-popups.pt:267
 msgid "your_password"
 msgstr ""
 
 #. Default: Keep me logged in
-#: ././templates/snippet-popups.pt:282
+#: ././templates/snippet-popups.pt:277
 msgid "keep_me_logged_in"
 msgstr ""
 
 #. Default: Forgot your password?
-#: ././templates/snippet-popups.pt:284
+#: ././templates/snippet-popups.pt:279
 msgid "forgot_password"
 msgstr ""
 
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
-#: ././templates/snippet-popups.pt:288
+#: ././templates/snippet-popups.pt:283
 msgid "fill_in_mail_for_password"
 msgstr ""
 
 #. Default: Error:
-#: ././templates/snippet-popups.pt:298 ././templates/snippet-popups.pt:412
+#: ././templates/snippet-popups.pt:293 ././templates/snippet-popups.pt:407
 msgid "error"
 msgstr ""
 
 #. Default: Success:
 #. Default: Success
-#: ././templates/snippet-popups.pt:305 ././templates/snippet-popups.pt:404
+#: ././templates/snippet-popups.pt:300 ././templates/snippet-popups.pt:399
 #: ././templates/settings.pt:233 ././templates/content.pt:57
 msgid "success"
 msgstr ""
 
 #. Default: Info:
-#: ././templates/snippet-popups.pt:312 ././templates/snippet-popups.pt:420
+#: ././templates/snippet-popups.pt:307 ././templates/snippet-popups.pt:415
 msgid "info"
 msgstr ""
 
 #. Default: Your First Name
-#: ././templates/snippet-popups.pt:320
+#: ././templates/snippet-popups.pt:315
 msgid "first_name"
 msgstr ""
 
 #. Default: Your Last Name
-#: ././templates/snippet-popups.pt:327
+#: ././templates/snippet-popups.pt:322
 msgid "last_name"
 msgstr ""
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: ././templates/snippet-popups.pt:334 ././templates/settings.pt:18
+#: ././templates/snippet-popups.pt:329 ././templates/settings.pt:18
 msgid "nickname"
 msgstr ""
 
 #. Default: Your Gender
-#: ././templates/snippet-popups.pt:341
+#: ././templates/snippet-popups.pt:336
 msgid "your_gender"
 msgstr ""
 
 #. Default: none
-#: ././templates/snippet-popups.pt:346
+#: ././templates/snippet-popups.pt:341
 msgid "none"
 msgstr ""
 
 #. Default: female
-#: ././templates/snippet-popups.pt:351
+#: ././templates/snippet-popups.pt:346
 msgid "female"
 msgstr ""
 
 #. Default: male
-#: ././templates/snippet-popups.pt:356
+#: ././templates/snippet-popups.pt:351
 msgid "male"
 msgstr ""
 
 #. Default: Your Email Address
-#: ././templates/snippet-popups.pt:362
+#: ././templates/snippet-popups.pt:357
 msgid "your_email"
 msgstr ""
 
 #. Default: Your Password
-#: ././templates/snippet-popups.pt:369
+#: ././templates/snippet-popups.pt:364
 msgid "password"
 msgstr ""
 
 #. Default: Password (confirm)
-#: ././templates/snippet-popups.pt:376
+#: ././templates/snippet-popups.pt:371
 msgid "password-confirm"
 msgstr ""
 
 #. Default: Password Strength
-#: ././templates/snippet-popups.pt:383
+#: ././templates/snippet-popups.pt:378
 msgid "password-strength"
 msgstr ""
 
 #. Default: very weak
-#: ././templates/snippet-popups.pt:386
+#: ././templates/snippet-popups.pt:381
 msgid "password_strength"
 msgstr ""
 
 #. Default: Generate secure password
-#: ././templates/snippet-popups.pt:389 ././templates/snippet-popups.pt:445
+#: ././templates/snippet-popups.pt:384 ././templates/snippet-popups.pt:440
 msgid "generate_password"
 msgstr ""
 
 #. Default: Anti-Spam (required)
-#. Default: Spam
-#: ././templates/snippet-popups.pt:395 ././templates/review_content.pt:60
-msgid "spam"
+#: ././templates/snippet-popups.pt:390
+msgid "anti-spam"
 msgstr ""
 
 #. Default: How to select a strong password
-#: ././templates/snippet-popups.pt:426 ././templates/snippet-popups.pt:470
+#: ././templates/snippet-popups.pt:421 ././templates/snippet-popups.pt:465
 msgid "select_password"
 msgstr ""
 
 #. Default: A Password is strong, when it contains at least:
-#: ././templates/snippet-popups.pt:428 ././templates/snippet-popups.pt:473
+#: ././templates/snippet-popups.pt:423 ././templates/snippet-popups.pt:468
 msgid "select_password_intro"
 msgstr ""
 
 #. Default: eight characters
-#: ././templates/snippet-popups.pt:430 ././templates/snippet-popups.pt:475
+#: ././templates/snippet-popups.pt:425 ././templates/snippet-popups.pt:470
 msgid "select_password_rule1"
 msgstr ""
 
 #. Default: one uppercase letter
-#: ././templates/snippet-popups.pt:431 ././templates/snippet-popups.pt:476
+#: ././templates/snippet-popups.pt:426 ././templates/snippet-popups.pt:471
 msgid "select_password_rule2"
 msgstr ""
 
 #. Default: one lowercase letter
-#: ././templates/snippet-popups.pt:432 ././templates/snippet-popups.pt:477
+#: ././templates/snippet-popups.pt:427 ././templates/snippet-popups.pt:472
 msgid "select_password_rule3"
 msgstr ""
 
 #. Default: one special sign
-#: ././templates/snippet-popups.pt:433 ././templates/snippet-popups.pt:478
+#: ././templates/snippet-popups.pt:428 ././templates/snippet-popups.pt:473
 msgid "select_password_rule4"
 msgstr ""
 
@@ -840,111 +849,178 @@ msgstr ""
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: ././templates/snippet-popups.pt:435 ././templates/snippet-popups.pt:480
+#: ././templates/snippet-popups.pt:430 ././templates/snippet-popups.pt:475
 msgid "popup_password_text"
 msgstr ""
 
 #. Default: Avoid using a password on several pages
-#: ././templates/snippet-popups.pt:437 ././templates/snippet-popups.pt:482
+#: ././templates/snippet-popups.pt:432 ././templates/snippet-popups.pt:477
 msgid "select_password_avoid1"
 msgstr ""
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: ././templates/snippet-popups.pt:438 ././templates/snippet-popups.pt:483
+#: ././templates/snippet-popups.pt:433 ././templates/snippet-popups.pt:478
 msgid "select_password_avoid2"
 msgstr ""
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: ././templates/snippet-popups.pt:439 ././templates/snippet-popups.pt:484
+#: ././templates/snippet-popups.pt:434 ././templates/snippet-popups.pt:479
 msgid "select_password_avoid3"
 msgstr ""
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: ././templates/snippet-popups.pt:440 ././templates/snippet-popups.pt:485
+#: ././templates/snippet-popups.pt:435 ././templates/snippet-popups.pt:480
 msgid "select_password_avoid4"
 msgstr ""
 
 #. Default: If you need some help with our password, you can get one here:
-#: ././templates/snippet-popups.pt:442 ././templates/snippet-popups.pt:487
+#: ././templates/snippet-popups.pt:437 ././templates/snippet-popups.pt:482
 msgid "select_password_help"
 msgstr ""
 
 #. Default: Register
-#: ././templates/snippet-popups.pt:455
+#: ././templates/snippet-popups.pt:450
 msgid "register"
 msgstr ""
 
 #. Default: Writing a new message
-#: ././templates/snippet-popups.pt:567 ././templates/snippet-popups.pt:609
+#: ././templates/snippet-popups.pt:562 ././templates/snippet-popups.pt:604
 msgid "writing_message"
 msgstr ""
 
 #. Default: Error:
-#: ././templates/snippet-popups.pt:576 ././templates/snippet-popups.pt:621
+#: ././templates/snippet-popups.pt:571 ././templates/snippet-popups.pt:616
 msgid "error:"
 msgstr ""
 
 #. Default: Success:
-#: ././templates/snippet-popups.pt:581 ././templates/snippet-popups.pt:626
+#: ././templates/snippet-popups.pt:576 ././templates/snippet-popups.pt:621
 msgid "success:"
 msgstr ""
 
 #. Default: Date
-#: ././templates/snippet-popups.pt:590 ././templates/review_reputation.pt:28
+#: ././templates/snippet-popups.pt:585 ././templates/review_reputation.pt:28
 msgid "date"
 msgstr ""
 
 #. Default: Send News
-#: ././templates/snippet-popups.pt:595
+#: ././templates/snippet-popups.pt:590
 msgid "send_news"
 msgstr ""
 
 #. Default: Send Notifcation
-#: ././templates/snippet-popups.pt:631
+#: ././templates/snippet-popups.pt:626
 msgid "send_notification"
 msgstr ""
 
-#. Default: Please mark a reason
+#. Default: Selecting a reason
+#: ././templates/snippet-popups.pt:739
+msgid "select-reason"
+msgstr ""
+
+#. Default: The statement under consideration is as follows
+#: ././templates/snippet-popups.pt:742
+msgid "statement_under_consideration_is"
+msgstr ""
+
+#. Default: The argument under consideration is as follows
+#: ././templates/snippet-popups.pt:743 ././templates/snippet-popups.pt:792
+msgid "argument_under_consideration_is"
+msgstr ""
+
+#. Default: Why do you want to report it
 #: ././templates/snippet-popups.pt:744
-msgid "mark-reason"
+msgid "why_do_you_want_to_report"
 msgstr ""
 
-#. Default: Please keep in mind that you can argue against the argument or the
-#. justification too. This mask is for reporting arguments!
-#: ././templates/snippet-popups.pt:747
-msgid "keep_in_mind_that_you_can_argue"
+#. Default: The text needs to be revised.
+#: ././templates/snippet-popups.pt:750
+msgid "text_need_to_be_revised"
 msgstr ""
 
-#. Default: The text needs and correcture.
+#. Default: This statement is acceptable but it needs correction for
+#. spelling/grammar.
+#: ././templates/snippet-popups.pt:751
+msgid "statement_optimization_description"
+msgstr ""
+
+#. Default: This argument is acceptable but it needs correction for
+#. spelling/grammar.
 #: ././templates/snippet-popups.pt:752
-msgid "statement_optimization"
+msgid "argument_optimization_description"
 msgstr ""
 
-#. Default: This statement is offtopic.
+#. Default: This statement is off topic or irrelevant.
+#: ././templates/snippet-popups.pt:757
+msgid "statement_offtopic_or_irrelevant"
+msgstr ""
+
+#. Default: This statement does not belong to the topic under discussion.
 #: ././templates/snippet-popups.pt:758
-msgid "statement_offtopic"
+msgid "statement_offtopic_or_irrelevant_description"
 msgstr ""
 
-#. Default: It is not relevant at all.
-#: ././templates/snippet-popups.pt:764
-msgid "statement_spam"
+#. Default: This argument is off topic or irrelevant.
+#: ././templates/snippet-popups.pt:759
+msgid "argument_offtopic_or_irrelevant"
+msgstr ""
+
+#. Default: This argument does not belong to the topic under discussion.
+#: ././templates/snippet-popups.pt:760
+msgid "argument_offtopic_or_irrelevant_description"
 msgstr ""
 
 #. Default: This statement is harmful or abusive.
-#: ././templates/snippet-popups.pt:770
+#: ././templates/snippet-popups.pt:772
 msgid "statement_harmful"
 msgstr ""
 
+#. Default: This argument is harmful or abusive.
+#: ././templates/snippet-popups.pt:773
+msgid "argument_harmful"
+msgstr ""
+
+#. Default: Reporting (parts of) an argument
+#: ././templates/snippet-popups.pt:789
+msgid "reporting_parts_argument"
+msgstr ""
+
+#. Default: Please choose which part of the argument you want to report
+#: ././templates/snippet-popups.pt:794
+msgid "please_choose_part_to_report"
+msgstr ""
+
+#. Default: Report
+#: ././templates/snippet-popups.pt:801
+msgid "report"
+msgstr ""
+
+#. Default: Report the whole argument.
+#: ././templates/snippet-popups.pt:813
+msgid "report_whole_argument"
+msgstr ""
+
+#. Default: Caution
+#: ././templates/snippet-popups.pt:831
+msgid "caution"
+msgstr ""
+
+#. Default: Do you really want to delete this content? This step is
+#. irreversible!
+#: ././templates/snippet-popups.pt:835
+msgid "do_you_really_step_irreversible"
+msgstr ""
+
 #. Default: Please choose a step to jump in
-#: ././templates/snippet-popups.pt:787
-msgid "choose_a_steap_to_jump_in"
+#: ././templates/snippet-popups.pt:852
+msgid "choose_a_step_to_jump_in"
 msgstr ""
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: ././templates/snippet-popups.pt:790
+#: ././templates/snippet-popups.pt:855
 msgid "below_you_will_find"
 msgstr ""
 
@@ -1242,17 +1318,17 @@ msgstr ""
 msgid "reject_it"
 msgstr ""
 
-#. Default: Off topic
+#. Default: Off topic or irrelevant
 #: ././templates/review_content.pt:57
-msgid "off_topic"
+msgid "off_topic_or_irrelevant"
 msgstr ""
 
-#. Default: are useful in general, but do not belong to the current discussion
+#. Default: text does not belong to the topic under discussion
 #: ././templates/review_content.pt:57
 msgid "off_topic_explanation"
 msgstr ""
 
-#. Default: Inappropriate, harmful or abbusive
+#. Default: Inappropriate, harmful or abusive
 #: ././templates/review_content.pt:58
 msgid "inappropriate_harmful_abbusive"
 msgstr ""
@@ -1270,11 +1346,6 @@ msgstr ""
 #. Default: if posts are useful, but need edits in grammar and/or spelling
 #: ././templates/review_content.pt:59
 msgid "needs_optimization_explanation"
-msgstr ""
-
-#. Default: is neither useful nor mappend to a discussions topic
-#: ././templates/review_content.pt:60
-msgid "spam_explanation"
 msgstr ""
 
 #. Default: for arguments, which should not be deleted.
@@ -1342,47 +1413,47 @@ msgid "reported_by"
 msgstr ""
 
 #. Default: Viewed
-#: ././templates/review_content.pt:134
+#: ././templates/review_content.pt:135
 msgid "viewed"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/review_content.pt:138
+#: ././templates/review_content.pt:139
 msgid "attacks"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/review_content.pt:142
+#: ././templates/review_content.pt:143
 msgid "supports"
 msgstr ""
 
 #. Default: Request lock
-#: ././templates/review_content.pt:160
+#: ././templates/review_content.pt:163
 msgid "request_lock"
 msgstr ""
 
 #. Default: This argument is locked for your edit. You have
-#: ././templates/review_content.pt:163
+#: ././templates/review_content.pt:166
 msgid "argument_is_locked"
 msgstr ""
 
 #. Default: minutes
-#: ././templates/review_content.pt:164
+#: ././templates/review_content.pt:167
 msgid "minutes"
 msgstr ""
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: ././templates/review_content.pt:165
+#: ././templates/review_content.pt:168
 msgid "please_make_your_edits"
 msgstr ""
 
 #. Default: Your correcture
-#: ././templates/review_content.pt:172
+#: ././templates/review_content.pt:175
 msgid "your correcture"
 msgstr ""
 
 #. Default: Send
-#: ././templates/review_content.pt:186
+#: ././templates/review_content.pt:189
 msgid "send"
 msgstr ""
 
@@ -1513,21 +1584,21 @@ msgid "restart_discussion"
 msgstr ""
 
 #. Default: Change display style
-#: ././templates/content.pt:321
+#: ././templates/content.pt:329
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ././templates/content.pt:324
+#: ././templates/content.pt:332
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Island View
-#: ././templates/content.pt:330
+#: ././templates/content.pt:338
 msgid "island_view"
 msgstr ""
 
 #. Default: Complete View
-#: ././templates/content.pt:336
+#: ././templates/content.pt:344
 msgid "complete_view"
 msgstr ""

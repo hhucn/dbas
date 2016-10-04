@@ -242,8 +242,7 @@ def __argument_seen_by_user(user_uid, argument_uid):
     db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter(and_(ArgumentSeenBy.argument_uid == argument_uid,
                                                                        ArgumentSeenBy.user_uid == user_uid)).first()
     if not db_seen_by:
-        new_entry = ArgumentSeenBy(argument_uid=argument_uid, user_uid=user_uid)
-        DBDiscussionSession.add(new_entry)
+        DBDiscussionSession.add(ArgumentSeenBy(argument_uid=argument_uid, user_uid=user_uid))
         DBDiscussionSession.flush()
 
 
@@ -258,6 +257,5 @@ def __statement_seen_by_user(user_uid, statement_uid):
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter(and_(StatementSeenBy.statement_uid == statement_uid,
                                                                         StatementSeenBy.user_uid == user_uid)).first()
     if not db_seen_by:
-        new_entry = StatementSeenBy(statement_uid=statement_uid, user_uid=user_uid)
-        DBDiscussionSession.add(new_entry)
+        DBDiscussionSession.add(StatementSeenBy(statement_uid=statement_uid, user_uid=user_uid))
         DBDiscussionSession.flush()

@@ -387,7 +387,7 @@
     						</div>
 
     						<div class="form-group">
-					            <label class="col-sm-3 control-label" for="spam-input" i18n:translate="spam">Anti-Spam (required)</label>
+					            <label class="col-sm-3 control-label" for="spam-input" i18n:translate="anti-spam">Anti-Spam (required)</label>
 					            <div class="col-sm-9">
 						            <input id="popup-login-spamanswer-input" type="text" class="spam form-control" name="spam" autocomplete="off" placeholder="${extras.spamquestion}" value="${extras.spamanswer}">
 					            </div>
@@ -729,44 +729,114 @@
     	</div>
     </div>
 
+    <!-- FLAG STATEMENT -->
+    <div class="modal fade" id="popup-flag-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-flag-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="select-reason">Selecting a reason</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="statement_text lead"><span i18n:translate="statement_under_consideration_is">The statement under consideration is as follows</span>:</p>
+                    <p class="argument_text lead"><span i18n:translate="argument_under_consideration_is">The argument under consideration is as follows</span>:</p>
+                    <p><span i18n:translate="why_do_you_want_to_report">Why do you want to report it</span>:</p>
+                    <p class="well well-sm" id="popup-flag-statement-text"></p>
+                    <form>
+                        <fieldset>
+                            <input type="radio" id="opt" value="optimization" name="flag-statement">
+                            <label for="opt">
+                                <span i18n:translate="text_need_to_be_revised">The text needs to be revised.</span><br>
+                                <small class="statement_text" i18n:translate="statement_optimization_description">This statement is acceptable but it needs correction for spelling/grammar.</small>
+                                <small class="argument_text" i18n:translate="argument_optimization_description">This argument is acceptable but it needs correction for spelling/grammar.</small>
+                            </label>
+                            <br>
+                            <input type="radio" id="off" value="offtopic" name="flag-statement">
+                            <label for="off">
+                                <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span><br class="statement_text">
+                                <small class="statement_text" i18n:translate="statement_offtopic_or_irrelevant_description">This statement does not belong to the topic under discussion.</small>
+                                <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span><br class="argument_text">
+                                <small class="argument_text" i18n:translate="argument_offtopic_or_irrelevant_description">This argument does not belong to the topic under discussion.</small>
+                            </label>
+                            <br>
+                            <!--<input type="radio" id="sp" value="spam" name="flag-statement">-->
+                            <!--<label for="sp">-->
+<!--                                <span i18n:translate="statement_spam">It is not relevant at all.</span><br>-->
+<!--                                <small class="statement_text" i18n:translate="statement_spam_description">This statement does not belong to any topic under discussion.</small>-->
+<!--                                <small class="argument_text" i18n:translate="argument_spam_description">This argument does not belong to any topic under discussion.</small>-->
+                            <!--</label>-->
+                            <!--<br>-->
+                            <input type="radio" id="bad" value="harmful" name="flag-statement">
+                            <label for="bad">
+                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
+                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
+                            </label>
+                        </fieldset>
+                    </form>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
     <!-- FLAG ARGUMENTS -->
-    <div class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div tal:condition="extras.is_reportable" class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mark-reason">Please mark a reason</h4>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="reporting_parts_argument">Reporting (parts of) an argument</h4>
     			</div>
     			<div class="modal-body">
-                    <p class="well well-sm" i18n:translate="keep_in_mind_that_you_can_argue">Please keep in mind that you can argue against the argument or the justification too. This mask is for reporting arguments!</p>
+                    <p class="lead"><span i18n:translate="argument_under_consideration_is">The argument under consideration is as follows</span>:</p>
+                    <p class="well well-sm" id="popup-flag-argument-text"></p>
+                    <p><span i18n:translate="please_choose_part_to_report">Please choose which part of the argument you want to report</span>:</p>
                     <form>
-                      <fieldset>
-                          <input type="radio" id="opt" value="optimization" name="flag_argument">
-                          <label for="opt">
-                              <span i18n:translate="statement_optimization">The text needs and correcture.</span><br>
-                              <small>This statement is right, but needs correcture for his spelling/grammar..</small>
-                          </label>
-                          <br>
-                          <input type="radio" id="off" value="offtopic" name="flag_argument">
-                          <label for="off">
-                              <span i18n:translate="statement_offtopic">This statement is offtopic.</span><br>
-                              <small>Content of the statement is useful, but does not belong to this discussion.</small>
-                          </label>
-                          <br>
-                          <input type="radio" id="sp" value="spam" name="flag_argument">
-                          <label for="sp">
-                              <span i18n:translate="statement_spam">It is not relevant at all.</span><br>
-                              <small>This statement is not important for any discussion on D-BAS.</small>
-                          </label>
-                          <br>
-                          <input type="radio" id="bad" value="harmful" name="flag_argument">
-                          <label for="bad">
-                              <span i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br>
-                              <small>Content is inappropriate, harmful or abusive.</small>
-                          </label>
-                      </fieldset>
+                        <fieldset>
+                            <div tal:repeat="statement discussion.extras" tal:omit-tag="">
+                                <br>
+                                <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument" data-special="">
+                                <label for="a" tal:attributes="for statement.uid">
+                                    <span i18n:translate="report">Report</span>: &quot;<em>${statement.text}</em> &quot;
+                                </label>
+                            </div>
+                            <!--<br>-->
+                            <!--<input type="radio" id="flag_interference_wrong" value="interference_wrong" name="flag-argument" data-special="undercut">-->
+                            <!--<label for="flag_interference_wrong">-->
+                            <!--    <span i18n:translate="argument_wrong">The implication is wrong.</span><br>-->
+                            <!--    <small i18n:translate="argument_wrong_description">The text itself is maybe right, but I do not see, that this is well-justified.</small>-->
+                            <!--</label>-->
+                            <br>
+                            <input type="radio" id="flag_interference" value="interference" name="flag-argument" data-special="argument">
+                            <label for="flag_interference">
+                                <span i18n:translate="report_whole_argument">Report the whole argument.</span><br>
+                                <!--<small i18n:translate="statement_harmful_description">Content is inappropriate, harmful or abusive.</small>-->
+                            </label>
+                        </fieldset>
                     </form>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- DELETE CONTENT-->
+    <div class="modal fade" id="popup-delete-content" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel">
+                        <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i> <span i18n:translate="caution">Caution</span>
+                    </h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead" i18n:translate="do_you_really_step_irreversible">Do you really want to delete this content? This step is irreversible!</p>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-danger" id="popup-delete-content-submit">${structure:extras.tag.delete}</button>
+    				<button type="button" class="btn btn-success" id="popup-delete-content-close">${structure:extras.tag.close}</button>
     			</div>
     		</div>
     	</div>
@@ -779,7 +849,7 @@
     			<div class="modal-header">
     				<button name="popup-jump-graph-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="choose_a_steap_to_jump_in">Please choose a step to jump in</h4>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="choose_a_step_to_jump_in">Please choose a step to jump in</h4>
     			</div>
     			<div class="modal-body">
                     <p class="lead" i18n:translate="below_you_will_find">Below you find a list with all arguments, where your selected text is used:</p>

@@ -50,19 +50,24 @@ class UrlManager(object):
         """
         return path if self.for_api else (self.url + path)
 
-    def get_404(self, params, is_param_error=False):
+    def get_404(self, params, is_param_error=False, revoked_content=False):
         """
         Returns the 404 page or the API-version
 
         :param params: self.request.params
         :param is_param_error: boolean
+        :param revoked_content: boolean
         :return: 404/params1/param2/
         """
         url = self.url + '404'
         for p in params:
             if p != '':
                 url += '/' + p
-        return url + ('&' if '?' in url else '?') + 'param_error=true' if is_param_error else url
+        params = '&' if '?' in url else '?'
+        params += 'param_error=true' if is_param_error else ''
+        params += 'revoked_content=true' if revoked_content else ''
+        url += params if len(params) > 5 else ''
+        return url
 
     def get_slug_url(self, as_location_href):
         """

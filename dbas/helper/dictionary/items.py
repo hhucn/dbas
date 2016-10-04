@@ -10,7 +10,7 @@ import dbas.recommender_system as RecommenderSystem
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
-from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history
+from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -46,11 +46,11 @@ class ItemDictHelper(object):
         if len(history) > 0:
             self.path = history + '-' + self.path
 
-    def get_array_for_start(self, logged_in):
+    def get_array_for_start(self, nickname):
         """
         Prepares the dict with all items for the first step in discussion, where the user chooses a position.
 
-        :param logged_in: Boolean or String
+        :param nickname: Boolean or String
         :return:
         """
         db_statements = get_not_disabled_statement_as_query()
@@ -65,11 +65,16 @@ class ItemDictHelper(object):
         if db_statements:
             for statement in db_statements:
                 statements_array.append(self.__create_answer_dict(statement.uid,
-                                                                  [{'title': get_text_for_statement_uid(statement.uid), 'id': statement.uid}],
+                                                                  [{
+                                                                      'title': get_text_for_statement_uid(statement.uid),
+                                                                      'id': statement.uid
+                                                                  }],
                                                                   'start',
-                                                                  _um.get_url_for_statement_attitude(True, statement.uid), is_flaggable=True))
+                                                                  _um.get_url_for_statement_attitude(True, statement.uid),
+                                                                  is_flaggable=True,
+                                                                  is_author=is_author_of_statement(nickname, statement.uid)))
             _tn = Translator(self.lang)
-            if logged_in:
+            if nickname:
                 statements_array.append(self.__create_answer_dict('start_statement',
                                                                   [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
                                                                   'start',
@@ -145,7 +150,8 @@ class ItemDictHelper(object):
                                                                   _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
                                                                   already_used=already_used,
                                                                   already_used_text=additional_text,
-                                                                  is_flaggable=True))
+                                                                  is_flaggable=True,
+                                                                  is_author=is_author_of_argument(nickname, argument.uid)))
 
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
@@ -158,20 +164,21 @@ class ItemDictHelper(object):
 
         return statements_array
 
-    def get_array_for_justify_argument(self, argument_uid, attack_type, logged_in):
+    def get_array_for_justify_argument(self, argument_uid, attack_type, logged_in, nickname):
         """
         Prepares the dict with all items for a step in discussion, where the user justifies his attack she has done.
 
         :param argument_uid: Argument.uid
         :param attack_type: String
-        :param logged_in: Boolean or String
+        :param logged_in: String
+        :param nickname:
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
         statements_array = []
         _tn = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+        db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
 
         db_arguments = []
         db_arguments_not_disabled = get_not_disabled_arguments_as_query()
@@ -199,6 +206,7 @@ class ItemDictHelper(object):
                                                                  Argument.argument_uid == db_argument.argument_uid,
                                                                  Argument.is_supportive == False,
                                                                  Argument.issue_uid == self.issue_uid)).all()
+
         elif attack_type == 'support':
             db_arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                                  Argument.argument_uid == db_argument.argument_uid,
@@ -224,14 +232,14 @@ class ItemDictHelper(object):
                                                                                restriction_on_arg_uids=attacking_arg_uids, history=self.path)
 
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url, is_flaggable=True))
+                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url, is_flaggable=True, is_author=is_author_of_argument(nickname, argument.uid)))
 
         if logged_in:
             if len(statements_array) == 0:
                 text = _tn.get(_tn.newPremisesRadioButtonTextAsFirstOne)
             else:
                 text = _tn.get(_tn.newPremiseRadioButtonText)
-            statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add', is_flaggable=True))
+            statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
         else:
             # elif len(statements_array) == 1:
             statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
@@ -252,7 +260,7 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         statements_array = []
 
-        db_argument  = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+        db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
         if not db_argument:
             return statements_array
 
@@ -271,7 +279,7 @@ class ItemDictHelper(object):
                 current_mode = mode if relation == 'overbid' else counter_mode
                 url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, relation)
 
-            statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url, is_flaggable=True))
+            statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url))
 
         return statements_array
 
@@ -384,7 +392,7 @@ class ItemDictHelper(object):
 
         return statements_array
 
-    def get_array_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive):
+    def get_array_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive, nickname):
         """
         Prepares the dict with all items for the choosing an premise, when the user inserted more than one new premise.
 
@@ -392,6 +400,7 @@ class ItemDictHelper(object):
         :param pgroup_ids: PremiseGroups.uid
         :param is_argument: Boolean
         :param is_supportive: Boolean
+        :param nickname:
         :return: dict()
         """
         logger('ItemDictHelper', 'get_array_for_choosing', 'def')
@@ -424,7 +433,9 @@ class ItemDictHelper(object):
                                                                            restriction_on_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
-            statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url, is_flaggable=True))
+            is_author = is_author_of_argument(nickname, argument) if is_argument else is_author_of_statement(nickname, conclusion)
+            statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
+                                                              is_flaggable=True, is_author=is_author))
         # url = 'back' if self.for_api else 'window.history.go(-1)'
         # text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
         # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
@@ -475,7 +486,7 @@ class ItemDictHelper(object):
         return return_array
 
     @staticmethod
-    def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text='', is_flaggable=False):
+    def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text='', is_flaggable=False, is_author=False):
         """
         Return dictionary
 
@@ -486,6 +497,7 @@ class ItemDictHelper(object):
         :param already_used: Boolean
         :param already_used_text: String
         :param is_flaggable:
+        :param is_author:
         :return: dict()
         """
         return {
@@ -496,4 +508,5 @@ class ItemDictHelper(object):
             'already_used': already_used,
             'already_used_text': already_used_text,
             'is_flaggable': is_flaggable,
-            'is_editable': is_flaggable}
+            'is_editable': is_flaggable,
+            'is_deletable': is_author}
