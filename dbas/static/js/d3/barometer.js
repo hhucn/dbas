@@ -61,7 +61,7 @@ function DiscussionBarometer(){
 
 	/**
 	 * Callback if ajax request was successfull.
-     * 
+     *
 	 * @param data: unparsed data of request
 	 * @param adress: step of discussion
 	 */
@@ -100,15 +100,15 @@ function DiscussionBarometer(){
 
 		var usersArrayLength = [];
 		// create array with length of bars depending on adress
-		switch(adress){
-			case 'attitude': usersArrayLength = createLengthArrayForAttitude(jsonData, usersArrayLength); break;
-			case 'position': usersArrayLength = createLengthArrayForStatement(jsonData, usersArrayLength); break;
-			case 'justify':  usersArrayLength = createLengthArrayForStatement(jsonData, usersArrayLength); break;
-			case 'argument': usersArrayLength = createLengthArrayForArgument(jsonData, usersArrayLength); break;
+		if(adress === 'attitude'){
+			usersArrayLength = createLengthArrayForAttitude(jsonData, usersArrayLength);
+		}
+		else{
+			usersArrayLength = createLengthArray(jsonData, usersArrayLength);
 		}
 
         // create bars of chart
-		createBar(width, height, usersArrayLength, barChartSvg);
+		createBar(width, height-50, usersArrayLength, barChartSvg);
 
     };
 
@@ -150,42 +150,37 @@ function DiscussionBarometer(){
 	}
 
 	/**
-	 * Add length of each user-dictionary to array.
+	 * Add length of each user-dictionary and value of key seen_by to array.
 	 *
 	 * @param jsonData
 	 * @param usersArrayLength
 	 * @returns usersArrayLength: array with number of users which agree and which disagree
      */
 	function createLengthArrayForAttitude(jsonData, usersArrayLength){
-        usersArrayLength.push(jsonData.agree_users.length);
-		usersArrayLength.push(jsonData.disagree_users.length);
-		return usersArrayLength;
-	}
-
-	/**
-	 * Add length of each user-dictionary to array.
-	 *
-	 * @param jsonData
-	 * @param usersArrayLength
-	 * @returns usersArrayLength: array with number of users which choose the same statement
-     */
-	function createLengthArrayForStatement(jsonData, usersArrayLength){
-		$.each(jsonData.opinions, function(key, value) {
-			usersArrayLength.push(value.users.length);
+        usersArrayLength.push({
+			usersNumber: jsonData.agree_users.length,
+			seenBy: jsonData.seen_by
+		});
+		usersArrayLength.push({
+			usersNumber: jsonData.disagree_users.length,
+			seenBy: jsonData.seen_by
 		});
 		return usersArrayLength;
 	}
 
 	/**
-	 * Add length of each user-dictionary to array.
+	 * Add length of each user-dictionary and value of key seen_by to array.
 	 *
 	 * @param jsonData
 	 * @param usersArrayLength
-	 * @returns usersArrayLength: array with number of users which choose the same argument
+	 * @returns usersArrayLength: array with number of users which have same opinion
      */
-	function createLengthArrayForArgument(jsonData, usersArrayLength){
+	function createLengthArray(jsonData, usersArrayLength){
 		$.each(jsonData.opinions, function(key, value) {
-			usersArrayLength.push(value.users.length);
+			usersArrayLength.push({
+				usersNumber: value.users.length,
+				seenBy: value.seen_by
+			});
 		});
 		return usersArrayLength;
 	}
@@ -206,12 +201,18 @@ function DiscussionBarometer(){
 		    .data(usersArrayLength)
 			.enter().append("rect")
 		    .attr({width: barWidth,
-			       // height in percent: d/100 = x/height
-			       height: function(d) {return d/100 * height;},
+			       // height in percent: length/seen_by = x/height
+			       height: function(d) {if(d.seenBy === 0){
+					                        return d.usersNumber/100 * height;
+				                        }
+					                    return d.usersNumber/d.seenBy * height;},
 			       // number of bar * width of bar + padding-left + space between to bars
 			       x: function(d,i) {return i*barWidth + 55 + i*5;},
 			       // y: height - barLength, because d3 starts to draw in left upper corner
-			       y: function(d) {return height - (d/100 * height);},
+			       y: function(d) {if(d.seenBy === 0){
+					                   return height - (d.usersNumber/100 * height - 50);
+				                   }
+					               return height - (d.usersNumber/d.seenBy * height - 50);},
 			       fill: function (d, i) {return colors[i % colors.length];}});
 	}
 }
