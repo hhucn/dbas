@@ -98,6 +98,8 @@ class EnglischDict:
         en_lang[_self.hidePositions] = 'Hide Positions'
         en_lang[_self.showLabels] = 'Show Labels'
         en_lang[_self.hideLabels] = 'Hide Labels'
+        en_lang[_self.showMyStatements] = 'Show my statements'
+        en_lang[_self.hideMyStatements] = 'Hide my statements'
 
         en_lang[_self.addATopic] = 'Add a topic'
         en_lang[_self.pleaseEnterTopic] = 'Please enter your topic here:'

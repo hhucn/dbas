@@ -71,6 +71,8 @@ function DiscussionGraph() {
 	this.setDefaultViewParams = function (startD3, jsonData, d3) {
 		$('#hide-labels').hide();
 		$('#show-labels').show();
+		$('#show-my-statements').show();
+		$('#hide-my-statements').hide();
 		$('#show-positions').show();
 		$('#hide-positions').hide();
 
