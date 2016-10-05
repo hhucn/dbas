@@ -364,6 +364,8 @@ class DictionaryHelper(object):
                                        'hide_positions': _tn_dis.get(_tn_dis.hidePositions),
                                        'show_labels': _tn_dis.get(_tn_dis.showLabels),
                                        'hide_labels': _tn_dis.get(_tn_dis.hideLabels),
+                                       'show_my_statements': _tn_dis.get(_tn_dis.showMyStatements),
+                                       'hide_my_statements': _tn_dis.get(_tn_dis.hideMyStatements),
                                        'lets_go_back': _tn_dis.get(_tn_dis.letsGoBack),
                                        'snapshot_graph': _tn_dis.get(_tn_dis.snapshotGraph),
                                        'go_back': _tn_dis.get(_tn_dis.goBack),

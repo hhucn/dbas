@@ -99,6 +99,8 @@ class GermanDict:
         de_lang[_self.hidePositions] = 'Positionen ausblenden'
         de_lang[_self.showLabels] = 'Beschriftungen einblenden'
         de_lang[_self.hideLabels] = 'Beschriftungen ausblenden'
+        de_lang[_self.showMyStatements] = 'Meine Aussagen einblenden'
+        de_lang[_self.hideMyStatements] = 'Meine Aussagen ausblenden'
 
         de_lang[_self.addATopic] = 'Thema hinzufügen'
         de_lang[_self.pleaseEnterTopic] = 'Bitte geben Sie Ihr Thema an:'
