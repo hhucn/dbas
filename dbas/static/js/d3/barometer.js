@@ -2,20 +2,20 @@
 var colors = [
 	'#4CAF50', //  0 green
 	'#F44336', //  1 red
-	'#673AB7', //  2 deep purple
-	'#03A9F4', //  3 light blue
-	'#FFEB3B', //  4 yellow
-	'#FF5722', //  5 deep orange
-	'#607D8B', //  6 blue grey
-	'#E91E63', //  7 pink
-	'#3F51B5', //  8 indigo
-	'#00BCD4', //  9 cyan
-	'#8BC34A', // 10 light green
-	'#FFC107', // 11 amber
-	'#795548', // 12 brown
-	'#000000', // 13 black
-	'#9C27B0', // 14 purple
-	'#2196F3', // 15 blue
+	'#2196F3', //  2 blue
+	'#FFEB3B', //  3 yellow
+	'#673AB7', //  4 deep purple
+	'#03A9F4', //  5 light blue
+	'#FF5722', //  6 deep orange
+	'#607D8B', //  7 blue grey
+	'#E91E63', //  8 pink
+	'#3F51B5', //  9 indigo
+	'#00BCD4', //  10 cyan
+	'#8BC34A', // 11 light green
+	'#FFC107', // 12 amber
+	'#795548', // 13 brown
+	'#000000', // 14 black
+	'#9C27B0', // 15 purple
 	'#009688', // 16 teal
 	'#CDDC39', // 17 lime
 	'#FF9800', // 18 orange
@@ -69,6 +69,7 @@ function DiscussionBarometer(){
 		var jsonData;
         try{
 	        jsonData = JSON.parse(data);
+			console.log(jsonData);
         } catch(e) {
 	        setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
 			alert('parsing-json: ' + e);

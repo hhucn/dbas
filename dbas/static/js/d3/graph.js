@@ -159,6 +159,8 @@ function DiscussionGraph() {
         hideLabels(label, rect);
         showPositions();
         hidePositions();
+		showMyStatements(edges, force);
+		hideMyStatements(edges);
 
         moveToBack(circle);
 
@@ -572,6 +574,45 @@ function DiscussionGraph() {
 			$('#show-positions').show();
 			$('#hide-positions').hide();
 			isPositionVisible = false;
+		});
+	}
+
+	/**
+	 * Show all statements, which the current user has created.
+	 *
+	 * @param edges
+	 */
+	function showMyStatements(edges, force){
+		$('#show-my-statements').click(function() {
+			console.log();
+			// graying all elements of graph
+		    edges.forEach(function(d){
+			    grayingElements(d);
+		    });
+			force.nodes().forEach(function(d){
+				if(d.author.name === $('#header_nickname')[0].innerText){
+					d3.select('#circle-' + d.id).attr('fill', d.color);
+				}
+		    });
+			$('#show-my-statements').hide();
+			$('#hide-my-statements').show();
+		});
+	}
+
+	/**
+	 * Show all statements, which the current user has created.
+	 *
+	 * @param label
+	 * @param rect
+	 */
+	function hideMyStatements(edges){
+		$('#hide-my-statements').click(function() {
+			// highlight all elements of graph
+		    edges.forEach(function(d){
+				highlightElements(d);
+		    });
+			$('#show-my-statements').show();
+			$('#hide-my-statements').hide();
 		});
 	}
 
