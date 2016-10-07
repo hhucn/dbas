@@ -196,7 +196,7 @@ function DiscussionGraph() {
                 showModal(d);
             }
             var circleId = this.id;
-            showPartOfGraph(edges, circleId);
+            showPartOfGraph(edges, circleId, false);
             selectedCircleId = d.id;
         });
     };
@@ -576,9 +576,10 @@ function DiscussionGraph() {
 		    edges.forEach(function(d){
 			    grayingElements(d);
 		    });
+			// highlight incoming and outgoing edges of all statements, which the current user has created
 			force.nodes().forEach(function(d){
 				if(d.author.name === $('#header_nickname')[0].innerText){
-					d3.select('#circle-' + d.id).attr('fill', d.color);
+					showPartOfGraph(edges, d.id, true);
 				}
 		    });
 			$('#show-my-statements').hide();
@@ -667,8 +668,9 @@ function DiscussionGraph() {
 	 *
 	 * @param edges: all edges of graph
 	 * @param circleId: id of selected node
+	 * @param isMyStatementsClicked: if button "My statements" is clicked: true, else: false
 	 */
-    function showPartOfGraph(edges, circleId) {
+    function showPartOfGraph(edges, circleId, isMyStatementsClicked) {
 		// edges with selected circle as source or as target
 		var edgesCircleId = [];
 		// select all incoming and outgoing edges of selected circle
@@ -678,9 +680,14 @@ function DiscussionGraph() {
 				edgesCircleId.push(d);
 			}
         });
-		edges.forEach(function(d){
-			grayingElements(d);
-		});
+
+		// if isMyStatementsClicked is false gray all elements at each function call,
+		// else the graph is colored once gray
+		if(!isMyStatementsClicked){
+		    edges.forEach(function(d){
+			    grayingElements(d);
+		    });
+		}
 		edgesCircleId.forEach(function (d) {
             highlightElements(d);
 		});
