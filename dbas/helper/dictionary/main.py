@@ -401,6 +401,7 @@ class DictionaryHelper(object):
                                 'recipient': _tn_dis.get(_tn_dis.recipient),
                                 'topic': _tn_dis.get(_tn_dis.topicString),
                                 'message': _tn_dis.get(_tn_dis.message),
+                                'my_statements': _tn_dis.get(_tn_dis.myStatements)
                                 }
 
     def add_tag_text(self, return_dict):

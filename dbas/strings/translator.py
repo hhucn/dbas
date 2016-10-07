@@ -350,6 +350,7 @@ class Translator(object):
         self.moreAbout = 'moreAbout'
         self.minLength = 'minLength'
         self.myArgument = 'myArgument'
+        self.myStatements = 'myStatements'
         self.nickIsTaken = 'nickIsTaken'
         self.nicknameIs = 'nicknameIs'
         self.newPwdEmtpy = 'newPwdEmtpy'
