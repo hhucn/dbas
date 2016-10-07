@@ -151,7 +151,6 @@ function DiscussionGraph() {
 		// create div for legend
 		container.append("<div id = 'graphViewLegendId'></div>");
 		getLegendSvg().call(legend);
-        setLegendDivProperties();
 
         // buttons of sidebar
         showDefaultView(jsonData);
@@ -224,7 +223,7 @@ function DiscussionGraph() {
             .attr({width: 200, height: 500, id: "legend-svg"});
 		return d3.select("#legend-svg").append("g")
             .attr({id: "graphLegend",
-				   transform: "translate(10,10)"});
+				   transform: "translate(10,20)"});
 	}
 
 	/**
@@ -440,17 +439,6 @@ function DiscussionGraph() {
 	}
 
 	/**
-	 * Set properties for div in background of legend.
- 	 */
-	function setLegendDivProperties(){
-		var legendBBox = $("#graphLegend")[0].getBBox(),
-		    legendWidth = legendBBox.width, legendHeight = legendBBox.height;
-	    $('#graphViewLegendId')
-			.css({width: legendWidth + 5,
-			      height: legendHeight + 5});
-	}
-
-	/**
 	 * Create symbols for nodes.
 	 *
 	 * @param selection
@@ -584,7 +572,6 @@ function DiscussionGraph() {
 	 */
 	function showMyStatements(edges, force){
 		$('#show-my-statements').click(function() {
-			console.log();
 			// graying all elements of graph
 		    edges.forEach(function(d){
 			    grayingElements(d);
