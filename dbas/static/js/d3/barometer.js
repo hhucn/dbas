@@ -32,30 +32,30 @@ function DiscussionBarometer(){
 		var uid = 0, uid_array = [],
 			url = window.location.href.split('?')[0],
 			splitted = url.split('/'),
-			adress = 'position';
+			address = 'position';
 
 		// parse url
 		if (url.indexOf('/attitude/') != -1){
-			adress = 'attitude';
+			address = 'attitude';
 			uid = splitted[splitted.length-1];
-			new AjaxGraphHandler().getUserGraphData(uid, adress);
+			new AjaxGraphHandler().getUserGraphData(uid, address);
 		} else if (url.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
-			adress = 'justify';
+			address = 'justify';
 			$('#discussions-space-list li:not(:last-child) input').each(function(){
 				uid_array.push($(this).attr('id').substr(5));
 			});
-			new AjaxGraphHandler().getUserGraphData(uid_array, adress);
+			new AjaxGraphHandler().getUserGraphData(uid_array, address);
 		} else if (url.indexOf('/reaction/') != -1){
-			adress = 'argument';
+			address = 'argument';
 			uid_array.push(splitted[splitted.length-3]);
 			uid_array.push(splitted[splitted.length-1]);
-			new AjaxGraphHandler().getUserGraphData(uid_array, adress);
+			new AjaxGraphHandler().getUserGraphData(uid_array, address);
 		} else {
-			adress = 'position';
+			address = 'position';
 			$('#discussions-space-list li:not(:last-child) label').each(function(){
 				uid_array.push($(this).attr('id'));
 			});
-			new AjaxGraphHandler().getUserGraphData(uid_array, adress);
+			new AjaxGraphHandler().getUserGraphData(uid_array, address);
 		}
 	};
 
@@ -63,13 +63,12 @@ function DiscussionBarometer(){
 	 * Callback if ajax request was successfull.
      *
 	 * @param data: unparsed data of request
-	 * @param adress: step of discussion
+	 * @param address: step of discussion
 	 */
-	this.callbackIfDoneForGetDictionary = function(data, adress){
+	this.callbackIfDoneForGetDictionary = function(data, address){
 		var jsonData;
         try{
 	        jsonData = JSON.parse(data);
-			console.log(jsonData);
         } catch(e) {
 	        setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
 			alert('parsing-json: ' + e);
@@ -82,15 +81,16 @@ function DiscussionBarometer(){
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 
 		$('#' + popupConfirmDialogId).find('.modal-title').text(jsonData.title).css({'line-height': '1.0'});
-		this.getD3Barometer(jsonData, adress);
+		this.getD3Barometer(jsonData, address);
 	};
 
 	/**
 	 * Create barometer.
 	 *
 	 * @param jsonData
+	 * @param address
 	 */
-	this.getD3Barometer = function(jsonData, adress) {
+	this.getD3Barometer = function(jsonData, address) {
 		$('#' + popupConfirmDialogId + ' div.modal-body').empty();
 
 		// width and height of chart
@@ -99,18 +99,20 @@ function DiscussionBarometer(){
 
 		createAxis(barChartSvg);
 
-		var usersArrayLength = [];
-		// create array with length of bars depending on adress
-		if(adress === 'attitude'){
-			usersArrayLength = createLengthArrayForAttitude(jsonData, usersArrayLength);
+		var usersDict = [];
+		// create dictionary depending on address
+		if(address === 'attitude'){
+			usersDict = createDictForAttitude(jsonData, usersDict);
 		}
 		else{
-			usersArrayLength = createLengthArray(jsonData, usersArrayLength);
+			usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
 		}
 
         // create bars of chart
-		createBar(width, height-50, usersArrayLength, barChartSvg);
+		createBar(width, height-50, usersDict, barChartSvg);
 
+		//create legend for chart
+		createLegend(usersDict);
     };
 
 	/**
@@ -154,36 +156,39 @@ function DiscussionBarometer(){
 	 * Add length of each user-dictionary and value of key seen_by to array.
 	 *
 	 * @param jsonData
-	 * @param usersArrayLength
-	 * @returns usersArrayLength: array with number of users which agree and which disagree
+	 * @param usersDict
+	 * @returns usersDict
      */
-	function createLengthArrayForAttitude(jsonData, usersArrayLength){
-        usersArrayLength.push({
+	function createDictForAttitude(jsonData, usersDict){
+        usersDict.push({
 			usersNumber: jsonData.agree_users.length,
-			seenBy: jsonData.seen_by
+			seenBy: jsonData.seen_by,
+			text: jsonData.agree_text
 		});
-		usersArrayLength.push({
+		usersDict.push({
 			usersNumber: jsonData.disagree_users.length,
-			seenBy: jsonData.seen_by
+			seenBy: jsonData.seen_by,
+			text: jsonData.disagree_text
 		});
-		return usersArrayLength;
+		return usersDict;
 	}
 
 	/**
 	 * Add length of each user-dictionary and value of key seen_by to array.
 	 *
 	 * @param jsonData
-	 * @param usersArrayLength
-	 * @returns usersArrayLength: array with number of users which have same opinion
+	 * @param usersDict
+	 * @returns usersDict
      */
-	function createLengthArray(jsonData, usersArrayLength){
+	function createDictForArgumentAndStatement(jsonData, usersDict){
 		$.each(jsonData.opinions, function(key, value) {
-			usersArrayLength.push({
+			usersDict.push({
 				usersNumber: value.users.length,
-				seenBy: value.seen_by
+				seenBy: value.seen_by,
+				text: value.text
 			});
 		});
-		return usersArrayLength;
+		return usersDict;
 	}
 
 	/**
@@ -191,15 +196,15 @@ function DiscussionBarometer(){
 	 *
 	 * @param width
 	 * @param height
-	 * @param usersArrayLength
+	 * @param usersDict
 	 * @param barChartSvg
      */
-	function createBar(width, height, usersArrayLength, barChartSvg){
+	function createBar(width, height, usersDict, barChartSvg){
 		// width of one bar
-		var barWidth = width/usersArrayLength.length - 5;
+		var barWidth = width/usersDict.length - 5;
 
 		barChartSvg.selectAll('rect')
-		    .data(usersArrayLength)
+		    .data(usersDict)
 			.enter().append("rect")
 		    .attr({width: barWidth,
 			       // height in percent: length/seen_by = x/height
@@ -215,5 +220,20 @@ function DiscussionBarometer(){
 				                   }
 					               return height - (d.usersNumber/d.seenBy * height - 50);},
 			       fill: function (d, i) {return colors[i % colors.length];}});
+	}
+	
+	/**
+	 * Create legend for chart.
+	 *
+	 * @param usersDict
+	 */
+	function createLegend(usersDict){
+		var div, label, element;
+		$.each(usersDict, function(key, value) {
+			div = $('<div>').attr('class', 'legendDiv').css('background-color', colors[key]);
+            label = $('<label>').attr('class', 'legendLabel').html(value.text);
+			element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
+			$('#' + popupConfirmDialogId + ' div.modal-body').append(element);
+		});
 	}
 }

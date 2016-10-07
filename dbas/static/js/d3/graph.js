@@ -228,8 +228,8 @@ function DiscussionGraph() {
 	 */
 	function getLegendSvg() {
         d3.select('#graphViewLegendId').append("svg")
-            .attr({width: 200, height: 500, id: "legend-svg"});
-		return d3.select("#legend-svg").append("g")
+            .attr({width: 200, height: 200, id: "graph-legend-svg"});
+		return d3.select("#graph-legend-svg").append("g")
             .attr({id: "graphLegend",
 				   transform: "translate(10,20)"});
 	}
