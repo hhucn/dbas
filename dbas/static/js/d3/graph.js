@@ -165,9 +165,9 @@ function DiscussionGraph() {
 		showMyStatements(edges, force);
 		hideMyStatements(edges);
 		showSupportsOnMyStatements(edges, force);
-		hideSupportsOnMyStatements(edges);
+		hideSupportsOnMyStatements(edges, force);
 		showAttacksOnMyStatements(edges, force);
-		hideAttacksOnMyStatements(edges);
+		hideAttacksOnMyStatements(edges, force);
 
         moveToBack(circle);
 
@@ -626,7 +626,7 @@ function DiscussionGraph() {
 		    });
 			force.nodes().forEach(function(d){
 				if(d.author.name === $('#header_nickname')[0].innerText){
-                    d3.select('#circle-' + d.id).attr('fill', d.color);
+                    d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
 					showPartOfGraph(edges, d.id, true, true, false);
 				}
 		    });
@@ -640,12 +640,16 @@ function DiscussionGraph() {
 	 *
 	 * @param edges
      */
-	function hideSupportsOnMyStatements(edges){
+	function hideSupportsOnMyStatements(edges, force){
 		$('#hide-supports-on-my-statements').click(function() {
 			// highlight all elements of graph
 		    edges.forEach(function(d){
 				highlightElements(d);
 		    });
+			// delete border of nodes
+			force.nodes().forEach(function(d) {
+				d3.select('#circle-' + d.id).attr('stroke', 'none');
+			});
 			$('#show-supports-on-my-statements').show();
 			$('#hide-supports-on-my-statements').hide();
 		});
@@ -665,10 +669,10 @@ function DiscussionGraph() {
 		    });
 			force.nodes().forEach(function(d){
 				if(d.author.name === $('#header_nickname')[0].innerText){
-                    d3.select('#circle-' + d.id).attr('fill', d.color);
+                    d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
 					showPartOfGraph(edges, d.id, true, false, true);
 				}
-		   });
+ 		    });
 			$('#show-attacks-on-my-statements').hide();
 			$('#hide-attacks-on-my-statements').show();
 		});
@@ -679,12 +683,16 @@ function DiscussionGraph() {
 	 *
 	 * @param edges
      */
-	function hideAttacksOnMyStatements(edges){
+	function hideAttacksOnMyStatements(edges, force){
 		$('#hide-attacks-on-my-statements').click(function() {
 			// highlight all elements of graph
 		    edges.forEach(function(d){
 				highlightElements(d);
 		    });
+			// delete border of nodes
+			force.nodes().forEach(function(d) {
+				d3.select('#circle-' + d.id).attr('stroke', 'none');
+			});
 			$('#show-attacks-on-my-statements').show();
 			$('#hide-attacks-on-my-statements').hide();
 		});
