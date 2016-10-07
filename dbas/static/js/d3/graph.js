@@ -69,10 +69,14 @@ function DiscussionGraph() {
 	 * @param d3
 	 */
 	this.setDefaultViewParams = function (startD3, jsonData, d3) {
-		$('#hide-labels').hide();
 		$('#show-labels').show();
+		$('#hide-labels').hide();
+		$('#show-attacks-on-my-statements').show();
+		$('#hide-attacks-on-my-statements').hide();
 		$('#show-my-statements').show();
 		$('#hide-my-statements').hide();
+		$('#show-supports-on-my-statements').show();
+		$('#hide-supports-on-my-statements').hide();
 		$('#show-positions').show();
 		$('#hide-positions').hide();
 
@@ -160,6 +164,10 @@ function DiscussionGraph() {
         hidePositions();
 		showMyStatements(edges, force);
 		hideMyStatements(edges);
+		showSupportsOnMyStatements(edges, force);
+		hideSupportsOnMyStatements(edges);
+		showAttacksOnMyStatements(edges, force);
+		hideAttacksOnMyStatements(edges);
 
         moveToBack(circle);
 
@@ -196,7 +204,7 @@ function DiscussionGraph() {
                 showModal(d);
             }
             var circleId = this.id;
-            showPartOfGraph(edges, circleId, false);
+            showPartOfGraph(edges, circleId, false, false, false);
             selectedCircleId = d.id;
         });
     };
@@ -579,7 +587,7 @@ function DiscussionGraph() {
 			// highlight incoming and outgoing edges of all statements, which the current user has created
 			force.nodes().forEach(function(d){
 				if(d.author.name === $('#header_nickname')[0].innerText){
-					showPartOfGraph(edges, d.id, true);
+					showPartOfGraph(edges, d.id, true, false, false);
 				}
 		    });
 			$('#show-my-statements').hide();
@@ -588,7 +596,7 @@ function DiscussionGraph() {
 	}
 
 	/**
-	 * Show all statements, which the current user has created.
+	 * Hide all statements, which the current user has created.
 	 *
 	 * @param label
 	 * @param rect
@@ -601,6 +609,84 @@ function DiscussionGraph() {
 		    });
 			$('#show-my-statements').show();
 			$('#hide-my-statements').hide();
+		});
+	}
+
+	/**
+	 * Show all supports on the statements, which the current user has created.
+	 *
+	 * @param edges
+	 * @param force
+     */
+	function showSupportsOnMyStatements(edges, force){
+		$('#show-supports-on-my-statements').click(function() {
+			// graying all elements of graph
+		    edges.forEach(function(d){
+			    grayingElements(d);
+		    });
+			force.nodes().forEach(function(d){
+				if(d.author.name === $('#header_nickname')[0].innerText){
+                    d3.select('#circle-' + d.id).attr('fill', d.color);
+					showPartOfGraph(edges, d.id, true, true, false);
+				}
+		    });
+			$('#show-supports-on-my-statements').hide();
+			$('#hide-supports-on-my-statements').show();
+		});
+	}
+
+	/**
+	 * Hide all supports on the statements, which the current user has created.
+	 *
+	 * @param edges
+     */
+	function hideSupportsOnMyStatements(edges){
+		$('#hide-supports-on-my-statements').click(function() {
+			// highlight all elements of graph
+		    edges.forEach(function(d){
+				highlightElements(d);
+		    });
+			$('#show-supports-on-my-statements').show();
+			$('#hide-supports-on-my-statements').hide();
+		});
+	}
+
+	/**
+	 * Show all attacks on the statements, which the current user has created.
+	 *
+	 * @param edges
+	 * @param force
+     */
+	function showAttacksOnMyStatements(edges, force){
+		$('#show-attacks-on-my-statements').click(function() {
+			// graying all elements of graph
+		    edges.forEach(function(d){
+			    grayingElements(d);
+		    });
+			force.nodes().forEach(function(d){
+				if(d.author.name === $('#header_nickname')[0].innerText){
+                    d3.select('#circle-' + d.id).attr('fill', d.color);
+					showPartOfGraph(edges, d.id, true, false, true);
+				}
+		   });
+			$('#show-attacks-on-my-statements').hide();
+			$('#hide-attacks-on-my-statements').show();
+		});
+	}
+
+	/**
+	 * Hide all attacks on the statements, which the current user has created.
+	 *
+	 * @param edges
+     */
+	function hideAttacksOnMyStatements(edges){
+		$('#hide-attacks-on-my-statements').click(function() {
+			// highlight all elements of graph
+		    edges.forEach(function(d){
+				highlightElements(d);
+		    });
+			$('#show-attacks-on-my-statements').show();
+			$('#hide-attacks-on-my-statements').hide();
 		});
 	}
 
@@ -670,13 +756,20 @@ function DiscussionGraph() {
 	 * @param circleId: id of selected node
 	 * @param isMyStatementsClicked: if button "My statements" is clicked: true, else: false
 	 */
-    function showPartOfGraph(edges, circleId, isMyStatementsClicked) {
+    function showPartOfGraph(edges, circleId, isMyStatementsClicked, isSupportsOnMyStatementsClicked, isAttacksOnMyStatementsClicked) {
 		// edges with selected circle as source or as target
 		var edgesCircleId = [];
 		// select all incoming and outgoing edges of selected circle
 		edges.forEach(function(d){
 			var circleUid = selectUid(circleId);
-			if(selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) {
+			if(isSupportsOnMyStatementsClicked && selectUid(d.target.id) === circleUid && d.color === '#64DD17'){
+				edgesCircleId.push(d);
+			}
+			else if(isAttacksOnMyStatementsClicked && selectUid(d.target.id) === circleUid && d.color === '#F44336'){
+				edgesCircleId.push(d);
+			}
+			else if((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid)
+				      && !isAttacksOnMyStatementsClicked && !isSupportsOnMyStatementsClicked){
 				edgesCircleId.push(d);
 			}
         });
@@ -736,21 +829,6 @@ function DiscussionGraph() {
 	}
 
 	/**
-	 * Highlighting components of graph.
-	 *
-	 * @param edge: edge that should be highlighted
-	 */
-	function highlightElements(edge){
-		// edges
-		d3.select('#link-' + edge.id).style('stroke', edge.color);
-		// nodes
-		d3.select('#circle-' + edge.source.id).attr('fill', edge.source.color);
-		d3.select('#circle-' + edge.target.id).attr('fill', edge.target.color);
-		// arrows
-		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
-	}
-
-	/**
 	 * Create array which contains edges with virtual node as source or as target.
 	 *
 	 * @param edges
@@ -793,6 +871,21 @@ function DiscussionGraph() {
             }
         });
 		return isVirtualNodeLeft;
+	}
+
+	/**
+	 * Highlighting components of graph.
+	 *
+	 * @param edge: edge that should be highlighted
+	 */
+	function highlightElements(edge){
+		// edges
+		d3.select('#link-' + edge.id).style('stroke', edge.color);
+		// nodes
+		d3.select('#circle-' + edge.source.id).attr('fill', edge.source.color);
+		d3.select('#circle-' + edge.target.id).attr('fill', edge.target.color);
+		// arrows
+		d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
 	}
 
 	/**
