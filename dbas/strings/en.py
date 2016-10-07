@@ -100,6 +100,10 @@ class EnglischDict:
         en_lang[_self.hideLabels] = 'Hide Labels'
         en_lang[_self.showMyStatements] = 'Show my statements'
         en_lang[_self.hideMyStatements] = 'Hide my statements'
+        en_lang[_self.showSupportsOnMyStatements] = 'Show supports on my statements'
+        en_lang[_self.hideSupportsOnMyStatements] = 'Hide supports on my statements'
+        en_lang[_self.showAttacksOnMyStatements] = 'Show attacks on my statements'
+        en_lang[_self.hideAttacksOnMyStatements] = 'Hide attacks on my statements'
 
         en_lang[_self.addATopic] = 'Add a topic'
         en_lang[_self.pleaseEnterTopic] = 'Please enter your topic here:'
