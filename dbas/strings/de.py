@@ -101,6 +101,10 @@ class GermanDict:
         de_lang[_self.hideLabels] = 'Beschriftungen ausblenden'
         de_lang[_self.showMyStatements] = 'Meine Aussagen einblenden'
         de_lang[_self.hideMyStatements] = 'Meine Aussagen ausblenden'
+        de_lang[_self.showSupportsOnMyStatements] = 'Unterstützungen meiner Aussagen einblenden'
+        de_lang[_self.hideSupportsOnMyStatements] = 'Unterstützungen meiner Aussagen ausblenden'
+        de_lang[_self.showAttacksOnMyStatements] = 'Angriffe meiner Aussagen einblenden'
+        de_lang[_self.hideAttacksOnMyStatements] = 'Angriffe meiner Aussagen ausblenden'
 
         de_lang[_self.addATopic] = 'Thema hinzufügen'
         de_lang[_self.pleaseEnterTopic] = 'Bitte geben Sie Ihr Thema an:'
