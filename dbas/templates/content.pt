@@ -268,6 +268,10 @@
                     <li id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_positions"></i><span class="sidebar-element">${extras.buttons.hide_positions}</span></li>
                     <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_my_statements"></i><span class="sidebar-element">${extras.buttons.show_my_statements}</span></li>
                     <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_my_statements"></i><span class="sidebar-element">${extras.buttons.hide_my_statements}</span></li>
+                    <li id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.show_supports_on_my_statements}</span></li>
+                    <li id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.hide_supports_on_my_statements}</span></li>
+                    <li id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.show_attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.show_attacks_on_my_statements}</span></li>
+                    <li id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.hide_attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.hide_attacks_on_my_statements}</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
