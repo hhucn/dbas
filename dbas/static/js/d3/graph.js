@@ -582,7 +582,7 @@ function DiscussionGraph() {
 		});
 		// highlight incoming and outgoing edges of all statements, which the current user has created
 		force.nodes().forEach(function(d){
-			if(d.author.name === 'Tobias'/*$('#header_nickname')[0].innerText*/){
+			if(d.author.name === $('#header_nickname')[0].innerText){
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
 				showPartOfGraph(edges, d.id, true, false, false);
 			}
@@ -644,7 +644,7 @@ function DiscussionGraph() {
 			});
 		}
 		force.nodes().forEach(function(d){
-			if(d.author.name === 'Tobias'/*$('#header_nickname')[0].innerText*/){
+			if(d.author.name === $('#header_nickname')[0].innerText){
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
 				showPartOfGraph(edges, d.id, true, true, false);
 			}
@@ -699,7 +699,7 @@ function DiscussionGraph() {
 			});
 		}
 		force.nodes().forEach(function(d){
-			if(d.author.name === 'Tobias'/*$('#header_nickname')[0].innerText*/){
+			if(d.author.name === $('#header_nickname')[0].innerText){
                    d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
 				showPartOfGraph(edges, d.id, true, false, true);
 			}
