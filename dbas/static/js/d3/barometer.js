@@ -111,7 +111,10 @@ function DiscussionBarometer(){
         // create bars of chart
 		createBar(width, height-50, usersDict, barChartSvg);
 
-		//create legend for chart
+		// tooltip
+        createTooltip(usersDict, barChartSvg, width);
+
+		// create legend for chart
 		createLegend(usersDict);
     };
 
@@ -163,12 +166,14 @@ function DiscussionBarometer(){
         usersDict.push({
 			usersNumber: jsonData.agree_users.length,
 			seenBy: jsonData.seen_by,
-			text: jsonData.agree_text
+			text: jsonData.agree_text,
+			users: jsonData.agree_users
 		});
 		usersDict.push({
 			usersNumber: jsonData.disagree_users.length,
 			seenBy: jsonData.seen_by,
-			text: jsonData.disagree_text
+			text: jsonData.disagree_text,
+			users: jsonData.disagree_users
 		});
 		return usersDict;
 	}
@@ -185,7 +190,9 @@ function DiscussionBarometer(){
 			usersDict.push({
 				usersNumber: value.users.length,
 				seenBy: value.seen_by,
-				text: value.text
+				text: value.text,
+				message: value.message,
+				users: value.users
 			});
 		});
 		return usersDict;
@@ -221,7 +228,44 @@ function DiscussionBarometer(){
 					               return height - (d.usersNumber/d.seenBy * height - 50);},
 			       fill: function (d, i) {return colors[i % colors.length];}});
 	}
-	
+
+	/**
+	 * Create tooltips for bars.
+	 *
+	 * @param usersDict
+	 * @param barChartSvg
+	 * @param width
+     */
+	function createTooltip(usersDict, barChartSvg, width) {
+		var div;
+		var barWidth = width / usersDict.length - 5;
+		barChartSvg.selectAll("rect").on("mouseover", function (d, index) {
+			div = d3.select('#' + popupConfirmDialogId + ' div.modal-body').append("div");
+
+			// set properties of div
+			div.attr("class", "tooltip").style("opacity", 1)
+				.style("left", index * barWidth + 70 + index * 5 + "px")
+				.style("top", 200 + "px")
+				.style("width", barWidth);
+
+			// append list elements to div
+			div.append('li').html(d.text + '.');
+			if (d.message != null) {
+				div.append('li').html(d.message);
+			}
+			div.append('li').html(d.seenBy + ' ' + _t_discussion("participantsSawThisStatement"));
+			div.append('li').html(_t_discussion("users") + ': ');
+
+			// add images of avatars
+			d.users.forEach(function (e) {
+				div.append('img').attr('src', e.avatar_url);
+			});
+		})
+		.on("mouseout", function (d) {
+			div.style("opacity", 0);
+		});
+	}
+
 	/**
 	 * Create legend for chart.
 	 *
