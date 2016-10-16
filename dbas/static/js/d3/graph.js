@@ -5,11 +5,11 @@
 
 function DiscussionGraph() {
     var s;
-	var isPositionVisible = false;
-	var isContentVisible = false;
-	var isStatementVisible = false;
-	var isSupportVisible = false;
-	var isAttackVisible = false;
+    var isPositionVisible = false;
+    var isContentVisible = false;
+    var isStatementVisible = false;
+    var isSupportVisible = false;
+    var isAttackVisible = false;
 
 	/**
 	 * Displays a graph of current discussion
@@ -644,7 +644,7 @@ function DiscussionGraph() {
 			});
 		}
 		force.nodes().forEach(function(d){
-			if(d.author.name === $('#header_nickname')[0].innerText){
+			if(d.author.name === '' + $('#header_nickname')[0].innerText){
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
 				showPartOfGraph(edges, d.id, true, true, false);
 			}
