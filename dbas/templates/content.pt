@@ -262,22 +262,16 @@
 
                 <ul class="sidebar">
                     <li id="start-view"><i class="fa fa-play" aria-hidden="true" tal:attributes="titel extras.buttons.default_view"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
-                    <li>Text</li>
-                    <ul>
-                        <li id="show-labels"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.labels"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
-                        <li id="hide-labels"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.labels"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
-                        <li id="show-positions"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.positions"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                        <li id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.positions"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    </ul>
-                    <li tal:condition="extras.logged_in" tal:attributes="title extras.title.my_statements">${extras.title.my_statements}</li>
-                    <ul>
-                        <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.my_statements"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                        <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.my_statements"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                        <li id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                        <li id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                        <li id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
-                        <li id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
-                    </ul>
+                    <li id="show-labels"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.labels"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
+                    <li id="hide-labels"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.labels"></i><span class="sidebar-element">${extras.buttons.labels}</span>
+                    <li id="show-positions"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.positions"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
+                    <li id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.positions"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
+                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.my_statements"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
+                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.my_statements"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
+                    <li id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
+                    <li id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
+                    <li id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
+                    <li id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
