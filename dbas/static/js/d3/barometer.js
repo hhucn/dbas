@@ -93,6 +93,8 @@ function DiscussionBarometer(){
 	this.getD3Barometer = function(jsonData, address) {
 		$('#' + popupConfirmDialogId + ' div.modal-body').empty();
 
+		// create div for barometer
+		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div id="barometer-div"></div>');
 		// width and height of chart
 		var width = 450, height = 500;
 		var barChartSvg = getSvg(width+50, height+50);
@@ -126,8 +128,7 @@ function DiscussionBarometer(){
 	 * @return scalable vector graphic
      */
 	function getSvg(width, height){
-		return d3.select('#' + popupConfirmDialogId + ' div.modal-body').append("svg")
-    		.attr({width: width, height: height, id: "barometer-svg"});
+		return d3.select('#barometer-div').append('svg').attr({width: width, height: height, id: "barometer-svg"});
 	}
 
 	/**
@@ -273,11 +274,12 @@ function DiscussionBarometer(){
 	 */
 	function createLegend(usersDict){
 		var div, label, element;
+		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div id="legend-div"></div>');
 		$.each(usersDict, function(key, value) {
-			div = $('<div>').attr('class', 'legendDiv').css('background-color', colors[key]);
+			div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', colors[key]);
             label = $('<label>').attr('class', 'legendLabel').html(value.text);
 			element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
-			$('#' + popupConfirmDialogId + ' div.modal-body').append(element);
+			$('#legend-div').append(element);
 		});
 	}
 }
