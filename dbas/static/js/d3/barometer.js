@@ -89,6 +89,7 @@ function DiscussionBarometer(){
 
 		$('#' + popupConfirmDialogId).find('.modal-title').text(jsonData.title).css({'line-height': '1.0'});
 		this.getD3Barometer(jsonData, address);
+		/*this.getD3BarometerPieChart(jsonData, address);*/
 	};
 
 	/**
@@ -223,11 +224,13 @@ function DiscussionBarometer(){
 			.enter().append("rect")
 		    .attr({width: barWidth,
 			       // height in percent: length/seen_by = x/height
-			       height: function(d) {return d.usersNumber/d.seenBy * height;},
+			       height: function(d) {if(d.usersNumber === 0 && d.seenBy === 0){ return 0; }
+					   return d.usersNumber/d.seenBy * height;},
 			       // number of bar * width of bar + padding-left + space between to bars
 			       x: function(d,i) {return i*barWidth + 55 + i*5;},
 			       // y: height - barLength, because d3 starts to draw in left upper corner
-			       y: function(d) {return height - (d.usersNumber/d.seenBy * height - 50);},
+			       y: function(d) {if(d.usersNumber === 0 && d.seenBy === 0){ return 0; }
+					   return height - (d.usersNumber/d.seenBy * height - 50);},
 			       fill: function (d, i) {return colors[i % colors.length];}});
 	}
 
@@ -284,5 +287,158 @@ function DiscussionBarometer(){
 			element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
 			$('#' + popupConfirmDialogId + ' div.modal-body').append(element);
 		});
+	}
+
+	////////////////////////////////////
+	// PIE CHART
+	////////////////////////////////////
+
+	/**
+	 * Create barometer.
+	 *
+	 * @param jsonData
+	 * @param address
+	 */
+	this.getD3BarometerPieChart = function(jsonData, address) {
+		$('#' + popupConfirmDialogId + ' div.modal-body').empty();
+
+		// width and height of chart
+		var width = 560, height = 430;
+		var pieChartSvg = getSvgPieChart(width, height);
+
+		var usersDict = [];
+		// create dictionary depending on address
+		if(address === 'attitude'){
+			usersDict = createDictForAttitude(jsonData, usersDict);
+		}
+		else{
+			usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
+		}
+
+        // create bars of chart
+		createPieChart(usersDict, pieChartSvg);
+
+		// create legend for chart
+		createLegend(usersDict);
+    };
+
+	/**
+	 * Create svg-element.
+	 *
+	 * @param width: width of container, which contains barometer
+     * @param height: height of container
+	 * @return scalable vector graphic
+     */
+	function getSvgPieChart(width, height){
+		return d3.select('#' + popupConfirmDialogId + ' div.modal-body').append('svg').attr({width: width, height: height, id: "barometer-svg"});
+	}
+
+	/**
+	 * Create pie chart.
+	 *
+	 * @param width
+	 * @param height
+	 * @param usersDict
+	 * @param barChartSvg
+     */
+	function createPieChart(usersDict, pieChartSvg) {
+		var height = 400, width = 400,
+			outerRadius = Math.min(width, height) / 2,
+			innerRadius = 0.3 * outerRadius;
+
+		var sumSeenBy = 0;
+		$.each(usersDict, function(key, value) {
+			sumSeenBy += value.seenBy;
+		});
+
+		var pie = getPie(usersDict);
+
+		var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, sumSeenBy);
+		var outerCircle = getOuterCircle(innerRadius, outerRadius);
+
+		createInnerPath(pieChartSvg, usersDict, innerCircle, pie);
+		createOuterPath(pieChartSvg, usersDict, outerCircle, pie);
+	}
+
+	/**
+	 * Choose pie layout of d3.
+	 *
+	 * @param usersDict
+	 * @returns {*}
+     */
+	function getPie(usersDict){
+		return d3.layout.pie()
+			.sort(null)
+			.value(function (d, i) {
+				return usersDict[i].usersNumber;
+			});
+	}
+
+	/**
+	 * Create inner circle of chart.
+	 *
+	 * @param usersDict
+	 * @param innerRadius
+	 * @param outerRadius
+	 * @param sumSeenBy
+	 * @returns {*}
+     */
+	function getInnerCircle(usersDict, innerRadius, outerRadius, sumSeenBy){
+        return d3.svg.arc()
+			.innerRadius(innerRadius)
+			.outerRadius(function (d, i) {
+				return (outerRadius - innerRadius) * (usersDict[i].seenBy/sumSeenBy) + innerRadius;
+			});
+	}
+
+	/**
+	 * Create outer circle of chart.
+	 *
+	 * @param innerRadius
+	 * @param outerRadius
+	 * @returns {*}
+     */
+	function getOuterCircle(innerRadius, outerRadius){
+	    return d3.svg.arc()
+			.innerRadius(innerRadius)
+			.outerRadius(outerRadius);
+	}
+
+	/**
+	 *
+	 *
+	 * @param pieChartSvg
+	 * @param usersDict
+	 * @param innerCircle
+	 * @param pie
+     */
+	function createInnerPath(pieChartSvg, usersDict, innerCircle, pie){
+		pieChartSvg.selectAll(".innerCircle")
+			.data(pie(usersDict))
+			.enter().append("path")
+			.attr("fill", function (d, i) {
+				return colors[i];
+			})
+			.attr("stroke", "gray")
+			.attr("d", innerCircle)
+			.attr("transform", "translate(280,200)");
+	}
+
+	/**
+	 *
+	 *
+	 * @param pieChartSvg
+	 * @param usersDict
+	 * @param outerCircle
+	 * @param pie
+     */
+	function createOuterPath(pieChartSvg, usersDict, outerCircle, pie){
+	    pieChartSvg.selectAll(".outerCircle")
+			.data(pie(usersDict))
+			.enter().append("path")
+			.attr("fill", "none")
+			.attr("stroke", "gray")
+			.attr("d", outerCircle)
+			.attr("transform", "translate(280,200)");
 	}
 }
