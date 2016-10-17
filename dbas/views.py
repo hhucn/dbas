@@ -1166,7 +1166,6 @@ class Dbas(object):
         _tn = Translator(lang)
 
         try:
-            error = ''
             if not nickname and not password:
                 nickname = escape_string(self.request.params['user'])
                 password = escape_string(self.request.params['password'])
