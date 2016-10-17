@@ -661,7 +661,6 @@ def setup_dummy_seen_by(session):
             argument_count += 1
         session.add_all(elements)
         session.flush()
-        logger('INIT_DB', 'Dummy Seen By', '  Created ' + str(max_interval) + ' seen-by entries for argument ' + str(argument.uid))
 
     for statement in db_statements:
         # how many votes does this statement have?
@@ -1410,6 +1409,17 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument207.conclusions_argument(argument202.uid)
     argument208.conclusions_argument(argument204.uid)
     argument209.conclusions_argument(argument205.uid)
+    session.flush()
+
+    # Add seen-by values
+    values = []
+    db_statements = DBDiscussionSession.query(Statement).all()
+    for statement in db_statements:
+        values.append(StatementSeenBy(statement.uid, user.uid))
+    db_arguments = DBDiscussionSession.query(Argument).all()
+    for argument in db_arguments:
+        values.append(ArgumentSeenBy(argument.uid, user.uid))
+    session.add_all(values)
     session.flush()
 
     # Add references
