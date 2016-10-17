@@ -360,12 +360,12 @@ class DictionaryHelper(object):
                                        'edit_statement': _tn_dis.get(_tn_dis.editTitle),
                                        'save_my_statement': _tn_dis.get(_tn_dis.saveMyStatement),
                                        'share_url': _tn_dis.get(_tn_dis.shareUrl),
-                                       'show_positions': _tn_dis.get(_tn_dis.showPositions),
-                                       'hide_positions': _tn_dis.get(_tn_dis.hidePositions),
-                                       'show_labels': _tn_dis.get(_tn_dis.showLabels),
-                                       'hide_labels': _tn_dis.get(_tn_dis.hideLabels),
+                                       'positions': _tn_dis.get(_tn_dis.positions),
+                                       'labels': _tn_dis.get(_tn_dis.labels),
+                                       'my_statements': _tn_dis.get(_tn_dis.myStatements),
+                                       'supports_on_my_statements': _tn_dis.get(_tn_dis.supportsOnMyStatements),
+                                       'attacks_on_my_statements': _tn_dis.get(_tn_dis.attacksOnMyStatements),
                                        'lets_go_back': _tn_dis.get(_tn_dis.letsGoBack),
-                                       'snapshot_graph': _tn_dis.get(_tn_dis.snapshotGraph),
                                        'go_back': _tn_dis.get(_tn_dis.goBack),
                                        'go_forward': _tn_dis.get(_tn_dis.goForward),
                                        'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
@@ -394,7 +394,7 @@ class DictionaryHelper(object):
                                 'rem_statement_row_title': _tn_dis.get(_tn_dis.remStatementRow),
                                 'recipient': _tn_dis.get(_tn_dis.recipient),
                                 'topic': _tn_dis.get(_tn_dis.topicString),
-                                'message': _tn_dis.get(_tn_dis.message),
+                                'message': _tn_dis.get(_tn_dis.message)
                                 }
 
     def add_tag_text(self, return_dict):
