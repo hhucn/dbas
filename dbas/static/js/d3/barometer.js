@@ -71,6 +71,7 @@ function DiscussionBarometer(){
 		var jsonData;
         try{
 	        jsonData = JSON.parse(data);
+			console.log(jsonData);
         } catch(e) {
 	        setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
 			alert('parsing-json: ' + e);
@@ -218,17 +219,11 @@ function DiscussionBarometer(){
 			.enter().append("rect")
 		    .attr({width: barWidth,
 			       // height in percent: length/seen_by = x/height
-			       height: function(d) {if(d.seenBy === 0){
-					                        return d.usersNumber/100 * height;
-				                        }
-					                    return d.usersNumber/d.seenBy * height;},
+			       height: function(d) {return d.usersNumber/d.seenBy * height;},
 			       // number of bar * width of bar + padding-left + space between to bars
 			       x: function(d,i) {return i*barWidth + 55 + i*5;},
 			       // y: height - barLength, because d3 starts to draw in left upper corner
-			       y: function(d) {if(d.seenBy === 0){
-					                   return height - (d.usersNumber/100 * height - 50);
-				                   }
-					               return height - (d.usersNumber/d.seenBy * height - 50);},
+			       y: function(d) {return height - (d.usersNumber/d.seenBy * height - 50);},
 			       fill: function (d, i) {return colors[i % colors.length];}});
 	}
 
@@ -276,12 +271,11 @@ function DiscussionBarometer(){
 	 */
 	function createLegend(usersDict){
 		var div, label, element;
-		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div id="legend-div"></div>');
 		$.each(usersDict, function(key, value) {
 			div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', colors[key]);
             label = $('<label>').attr('class', 'legendLabel').html(value.text);
 			element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
-			$('#legend-div').append(element);
+			$('#' + popupConfirmDialogId + ' div.modal-body').append(element);
 		});
 	}
 }
