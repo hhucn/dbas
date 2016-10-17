@@ -17,7 +17,7 @@ from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, \
     get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid,\
-    is_author_of_argument, is_author_of_statement
+    is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -694,17 +694,17 @@ class QueryHelper:
         return ''
 
     @staticmethod
-    def __revoke_argument(db_user, uid, transaction, translator):
+    def __revoke_argument(db_user, argument_uid, transaction, translator):
         """
 
         :param db_user:
-        :param uid:
+        :param argument_uid:
         :param transaction:
         :param translator:
         :return:
         """
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-        is_author = is_author_of_argument(db_user.nickname, uid)
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+        is_author = is_author_of_argument(db_user.nickname, argument_uid)
 
         # exists the argument
         if not db_argument:
@@ -715,7 +715,7 @@ class QueryHelper:
             logger('QueryHelper', 'revoke_content', db_user.nickname + ' is not the author')
             return None, translator.get(translator.userIsNotAuthorOfArgument)
 
-        logger('QueryHelper', '__revoke_argument', 'Disabling argument ' + str(uid))
+        logger('QueryHelper', '__revoke_argument', 'Disabling argument ' + str(argument_uid))
         db_argument.set_disable(True)
 
         DBDiscussionSession.add(db_argument)
@@ -724,18 +724,18 @@ class QueryHelper:
         return db_argument, ''
 
     @staticmethod
-    def __revoke_statement(db_user, uid, transaction, translator):
+    def __revoke_statement(db_user, statement_uid, transaction, translator):
         """
 
         :param db_user:
-        :param uid:
+        :param statement_uid:
         :param transaction:
         :param translator:
         :return:
         """
-        logger('QueryHelper', 'revoke_content', 'Statement ' + str(uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
-        is_author = is_author_of_statement(db_user.nickname, uid)
+        logger('QueryHelper', 'revoke_content', 'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
+        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+        is_author = is_author_of_statement(db_user.nickname, statement_uid)
 
         # exists the statement
         if not db_statement:
@@ -747,19 +747,20 @@ class QueryHelper:
             return None, translator.get(translator.userIsNotAuthorOfStatement)
 
         # transfer the responsibility to the next author, who used this statement
-        db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == uid,
+        db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == statement_uid,
                                                                                      Argument.is_supportive == True,
                                                                                      Argument.author_uid != db_user.uid)).first()
         # search new author who supported this statement
         if db_statement_as_conclusion:
-            logger('QueryHelper', '__revoke_statement', 'Statement ' + str(uid) + ' has a new author ' + str(db_statement_as_conclusion.author_uid) + ' (old author ' + str(db_user.uid) + ')')
+            logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(db_statement_as_conclusion.author_uid) + ' (old author ' + str(db_user.uid) + ')')
             db_statement.author_uid = db_statement_as_conclusion.author_uid
-            QueryHelper.__transfer_textversion_to_new_author(uid, db_user.uid, db_statement_as_conclusion.author_uid, transaction)
+            QueryHelper.__transfer_textversion_to_new_author(statement_uid, db_user.uid, db_statement_as_conclusion.author_uid, transaction)
         else:
             logger('QueryHelper', '__revoke_statement',
-                   'Statement ' + str(uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
+                   'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ') and all arguments with this statement, cause we have no new author')
             db_statement.set_disable(True)
-            QueryHelper.__disable_textversions(uid, db_user.uid, transaction)
+            QueryHelper.__disable_textversions(statement_uid, db_user.uid, transaction)
+            QueryHelper.__disable_arguments_with_statement(statement_uid, transaction)
 
         DBDiscussionSession.add(db_statement)
         DBDiscussionSession.flush()
@@ -779,8 +780,25 @@ class QueryHelper:
         db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
                                                                             TextVersion.author_uid == author)).all()
         for textversion in db_textversion:
+            logger('QueryHelper', '__disable_textversions', str(textversion.uid))
             textversion.set_disable(True)
             DBDiscussionSession.add(textversion)
+
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    @staticmethod
+    def __disable_arguments_with_statement(statement_uid, transaction):
+        """
+
+        :param statement_uid:
+        :param transaction:
+        :return:
+        """
+        db_arguments = get_all_arguments_by_statement(statement_uid, True)
+        for argument in db_arguments:
+            argument.set_disable(True)
+            DBDiscussionSession.add(argument)
 
         DBDiscussionSession.flush()
         transaction.commit()

@@ -109,24 +109,35 @@ def python_datetime_pretty_print(ts, lang):
     return datetime.strptime(str(ts), '%Y-%m-%d').strftime(formatter)
 
 
-def get_all_arguments_by_statement(uid):
+def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     """
     Returns a list of all arguments where the statement is a conclusion or member of the premisegroup
 
-    :param uid: Statement.uid
+    :param statement_uid: Statement.uid
+    :param include_disabled: Boolean
     :return: [Arguments]
     """
     return_array = []
-    db_arguments = get_not_disabled_arguments_as_query().filter_by(conclusion_uid=uid).all()
+    if include_disabled:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
+    else:
+        db_arguments = get_not_disabled_arguments_as_query().filter_by(conclusion_uid=statement_uid).all()
     if db_arguments:
         return_array = db_arguments
 
-    db_premises = get_not_disabled_premises_as_query().filter_by(statement_uid=uid).all()
+    if include_disabled:
+        db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid).all()
+    else:
+        db_premises = get_not_disabled_premises_as_query().filter_by(statement_uid=statement_uid).all()
 
     for premise in db_premises:
-        db_arguments = get_not_disabled_arguments_as_query().filter_by(premisesgroup_uid=premise.premisesgroup_uid).first()
+        if include_disabled:
+            db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
+        else:
+            db_arguments = get_not_disabled_arguments_as_query().filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
+
         if db_arguments:
-            return_array.append(db_arguments)
+            return_array = return_array + db_arguments
 
     return return_array if len(return_array) > 0 else None
 
