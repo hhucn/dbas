@@ -11,26 +11,26 @@ function DiscussionGraph() {
     var isSupportVisible = false;
     var isAttackVisible = false;
 
-	/**
-	 * Displays a graph of current discussion
-	 */
-	this.showGraph = function () {
-		new AjaxGraphHandler().getDiscussionGraphData('/graph/d3');
-	};
+    /**
+     * Displays a graph of current discussion
+     */
+    this.showGraph = function () {
+        new AjaxGraphHandler().getDiscussionGraphData('/graph/d3');
+    };
 
-	/**
-	 *
-	 * @param data
-	 */
-	this.callbackIfDoneForDiscussionGraph = function (data) {
-		var jsonData = $.parseJSON(data);
-		try {
-			s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
-		} catch (err) {
-			new DiscussionGraph().setDefaultViewParams(false, null, s);
-			setGlobalErrorHandler(_t(ohsnap), _t(internalError));
-		}
-	};
+    /**
+     *
+     * @param data
+     */
+    this.callbackIfDoneForDiscussionGraph = function (data) {
+        var jsonData = $.parseJSON(data);
+        try {
+            s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
+        } catch (err) {
+            new DiscussionGraph().setDefaultViewParams(false, null, s);
+            setGlobalErrorHandler(_t(ohsnap), _t(internalError));
+        }
+    };
 
 	/**
 	 * Callback if the ajax request was successful
@@ -302,16 +302,17 @@ function DiscussionGraph() {
             .enter().append("svg:marker")
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
 			       refX: function(d){
-			                 if(d.target.label === ''){ return 4; }
-				             else if(d.target.id === 'issue'){ return 8; }
-				             else{ return 7; }},
-				   refY: 2.2,
+			                 if(d.target.label === ''){ return 6; }
+				             else if(d.target.id === 'issue'){ return 10; }
+				             else{ return 9; }},
+				   refY: 0/*2.2*/,
                    markerWidth: 10, markerHeight: 10,
+				   viewBox: '0 -5 10 10',
                    orient: "auto",
 			       fill: function(d) { return d.color; }
 			})
 			.append("svg:path")
-			.attr("d", "M 0,0 V 4 L 5,2 Z");
+		    .attr("d", "M0,-3L7,0L0,3");
 	}
 
 	/**
