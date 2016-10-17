@@ -699,7 +699,9 @@ def setup_dummy_seen_by(session):
         db_votes = db_argument_votes.filter_by(argument_uid=argument.uid).all()
 
         tmp_first_names = list(first_names)
-        max_interval = random.randint(0, min(len(tmp_first_names) - 1, len(db_votes)))
+        max_int = min(len(tmp_first_names) - 1, len(db_votes))
+        min_int = 1 if max_int > 0 else 0
+        max_interval = random.randint(min_int, max_int)
         for i in range(0, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
             db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
@@ -712,7 +714,9 @@ def setup_dummy_seen_by(session):
         db_votes = db_statement_votes.filter_by(statement_uid=statement.uid).all()
 
         tmp_first_names = list(first_names)
-        max_interval = random.randint(0, min(len(tmp_first_names) - 1, len(db_votes)))
+        max_int = min(len(tmp_first_names) - 1, len(db_votes))
+        min_int = 1 if max_int > 0 else 0
+        max_interval = random.randint(min_int, max_int)
         for i in range(0, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
             db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
