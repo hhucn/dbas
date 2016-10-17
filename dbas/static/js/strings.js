@@ -211,6 +211,8 @@ var report 											= 'report';
 var reportTitle										= 'reportTitle';
 var passwordSubmit 									= 'passwordSubmit';
 var proposalsWereForwarded                          = 'proposalsWereForwarded';
+var participantsSawThisStatement                    = 'participantsSawThisStatement';
+var participantSawThisStatement                     = 'participantSawThisStatement';
 var pinNavigation 									= 'pinNavigation';
 var pleaseEditAtLeast                               = 'pleaseEditAtLeast';
 var queueCompleteSeen                               = 'queueCompleteSeen';
@@ -403,6 +405,7 @@ var dbas_en = {
 	'option': 'Options',
 	'ohsnap': 'Oh snap!',
 	'participantsSawThisStatement': 'participants saw this statement.',
+	'participantSawThisStatement': 'participant saw this statement.',
 	'passwordSubmit': 'Change Password',
 	'proposalsWereForwarded': 'Your proposals were forwarded!',
 	'pinNavigation': 'Pin Navigation',
@@ -589,6 +592,7 @@ var dbas_de = {
 	'option': 'Optionen',
 	'ohsnap': 'Mist!',
 	'participantsSawThisStatement': 'Teilnehmer sahen diese Aussage.',
+	'participantSawThisStatement': 'Teilnehmer sah diese Aussage.',
 	'passwordSubmit': 'Passwort ändern',
 	'proposalsWereForwarded': 'Ihre Vorschläge wurden eingereicht!',
 	'pinNavigation': 'Navigation anheften',
