@@ -10,7 +10,7 @@ var colors = [
 	'#607D8B', //  7 blue grey
 	'#E91E63', //  8 pink
 	'#3F51B5', //  9 indigo
-	'#00BCD4', //  10 cyan
+	'#00BCD4', // 10 cyan
 	'#8BC34A', // 11 light green
 	'#FFC107', // 12 amber
 	'#795548', // 13 brown
@@ -29,10 +29,12 @@ function DiscussionBarometer(){
 	 * Displays barometer.
 	 */
 	this.showBarometer = function(){
-		var uid = 0, uid_array = [],
-			url = window.location.href.split('?')[0],
-			splitted = url.split('/'),
-			address = 'position';
+		var uid = 0, uid_array = [];
+		var url = window.location.href;
+		url = url.split('#')[0];
+		url = url.split('?')[0];
+		var splitted = url.split('/');
+		var address = 'position';
 
 		// parse url
 		if (url.indexOf('/attitude/') != -1){
@@ -47,8 +49,8 @@ function DiscussionBarometer(){
 			new AjaxGraphHandler().getUserGraphData(uid_array, address);
 		} else if (url.indexOf('/reaction/') != -1){
 			address = 'argument';
-			uid_array.push(splitted[splitted.length-3]);
-			uid_array.push(splitted[splitted.length-1]);
+			uid_array.push(splitted[splitted.length - 3]);
+			uid_array.push(splitted[splitted.length - 1]);
 			new AjaxGraphHandler().getUserGraphData(uid_array, address);
 		} else {
 			address = 'position';
@@ -77,7 +79,9 @@ function DiscussionBarometer(){
 			alert('parsing-json: ' + e);
 	        return;
         }
-		$('#' + popupConfirmDialogId).modal('show');
+		$('#' + popupConfirmDialogId).modal('show').on('hidden.bs.modal', function (e) {
+			new Helper().clearAnchor();
+		});
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		}).removeClass('btn-success');
@@ -251,7 +255,10 @@ function DiscussionBarometer(){
 			if (d.message != null) {
 				div.append('li').html(d.message);
 			}
-			div.append('li').html(d.seenBy + ' ' + _t_discussion("participantsSawThisStatement"));
+			if (d.seenBy == 1)
+				div.append('li').html(d.seenBy + ' ' + _t_discussion(participantSawThisStatement));
+			else
+				div.append('li').html(d.seenBy + ' ' + _t_discussion(participantsSawThisStatement));
 			div.append('li').html(_t_discussion("users") + ': ');
 
 			// add images of avatars
