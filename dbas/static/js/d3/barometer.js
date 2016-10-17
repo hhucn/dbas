@@ -57,6 +57,8 @@ function DiscussionBarometer(){
 			});
 			new AjaxGraphHandler().getUserGraphData(uid_array, address);
 		}
+
+		new Helper().setAnchor('barometer');
 	};
 
 	/**
