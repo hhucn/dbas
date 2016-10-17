@@ -657,6 +657,8 @@ $(document).ready(function mainDocumentReady() {
 		guiHandler.setDisplayStyleAsGraphView();
 	} else if (location.hash.indexOf('island') != -1){
 		guiHandler.setDisplayStyleAsIsland();
+	} else if (location.hash.indexOf('barometer') != -1){
+		new DiscussionBarometer().showBarometer();
 	}
 
 	$(document).delegate('.open', 'click', function(event){

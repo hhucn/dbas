@@ -167,9 +167,16 @@ class OpinionHandler:
             statement_dict['uid'] = str(uid)
             text = get_text_for_statement_uid(uid)
             try:
-                statement_dict['text'] = text[0:1].upper() + text[1:]
+                text = text[0:1].upper() + text[1:]
+                if db_statement.is_startpoint and self.lang == 'de':
+                    text = _t.get(_t.statementIsAbout) + ' ' + text
+                statement_dict['text'] = text
             except TypeError:
-                return None
+                statement_dict['uid']       = None
+                statement_dict['text']      = None
+                statement_dict['message']   = None
+                statement_dict['users']     = None
+                statement_dict['seen_by']   = None
 
             if is_supportive is not None:
                 is_supportive = True if str(is_supportive) == 'True' else False
