@@ -223,11 +223,11 @@ function DiscussionBarometer(){
 			.enter().append("rect")
 		    .attr({width: barWidth,
 			       // height in percent: length/seen_by = x/height
-			       height: function(d) {return d.usersNumber/d.seenBy * height;},
+			       height: function(d) {return (d.seenBy > 0 ? d.usersNumber/d.seenBy : 0) * height;},
 			       // number of bar * width of bar + padding-left + space between to bars
 			       x: function(d,i) {return i*barWidth + 55 + i*5;},
 			       // y: height - barLength, because d3 starts to draw in left upper corner
-			       y: function(d) {return height - (d.usersNumber/d.seenBy * height - 50);},
+			       y: function(d) {return height - ((d.seenBy > 0 ? d.usersNumber/d.seenBy : 0) * height - 50);},
 			       fill: function (d, i) {return colors[i % colors.length];}});
 	}
 
