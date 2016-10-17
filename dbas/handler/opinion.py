@@ -103,7 +103,6 @@ class OpinionHandler:
         :return:
         """
         for relation in reaction_dict:
-            relation_dict   = dict()
             all_users       = []
             message         = ''
             seen_by         = 0
@@ -119,7 +118,6 @@ class OpinionHandler:
                         voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
                         users_dict = self.create_users_dict(voted_user, vote.timestamp)
                         all_users.append(users_dict)
-                    relation_dict['users'] = all_users
 
                     if len(db_votes) == 0:
                         message = _t.get(_t.voteCountTextMayBeFirst) + '.'
@@ -127,9 +125,10 @@ class OpinionHandler:
                         message = _t.get(_t.voteCountTextOneOther) + '.'
                     else:
                         message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
-
                     db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
                     seen_by += len(db_seen_by) if not db_seen_by else 0
+
+                    # logger('X', 'X', str(uid['id']) + ' v ' + str(len(db_votes)) + ' s ' + str(len(db_seen_by)))
 
             ret_dict[relation] = {'users': all_users,
                                   'message': message,
@@ -202,9 +201,7 @@ class OpinionHandler:
                 statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
             db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(uid)).all()
-            if not db_seen_by:
-                db_seen_by = []
-            statement_dict['seen_by'] = len(db_seen_by)
+            statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
             opinions.append(statement_dict)
 
@@ -240,7 +237,7 @@ class OpinionHandler:
 
             statement_dict['uid'] = str(uid)
             text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-            statement_dict['text'] = text[0:1].upper() + text[1:]
+            statement_dict['text'] = _t.get(_t.because) + ' ' + text
 
             db_votes = []
             for premise in db_premises:
@@ -265,9 +262,7 @@ class OpinionHandler:
                 statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
             db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid)).all()
-            if not db_seen_by:
-                db_seen_by = []
-            statement_dict['seen_by'] = len(db_seen_by)
+            statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
             opinions.append(statement_dict)
 
@@ -324,9 +319,7 @@ class OpinionHandler:
             opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
 
         db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(argument_uid)).all()
-        if not db_seen_by:
-            db_seen_by = []
-            opinions['seen_by'] = len(db_seen_by)
+        opinions['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
         return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 
@@ -389,9 +382,7 @@ class OpinionHandler:
         ret_dict['title'] = title[0:1].upper() + title[1:]
 
         db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(statement_uid)).all()
-        if not db_seen_by:
-            db_seen_by = []
-        ret_dict['seen_by'] = len(db_seen_by)
+        ret_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
         return ret_dict
 
