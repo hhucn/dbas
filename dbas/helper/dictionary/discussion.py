@@ -427,12 +427,10 @@ class DiscussionDictHelper(object):
         for premise in db_premises:
             statement_list.append({'text': get_text_for_statement_uid(premise.statement_uid),
                                    'uid': premise.statement_uid})
-            logger('XX1', str(premise.statement_uid), get_text_for_statement_uid(premise.statement_uid))
 
         if argument.conclusion_uid is not None:
             statement_list.append({'text': get_text_for_statement_uid(argument.conclusion_uid),
                                    'uid': argument.conclusion_uid})
-            logger('XX2', str(argument.conclusion_uid), get_text_for_statement_uid(argument.conclusion_uid))
 
         else:
             db_conclusion_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
@@ -440,11 +438,9 @@ class DiscussionDictHelper(object):
             for conclusion_premise in db_conclusion_premises:
                 statement_list.append({'text': get_text_for_statement_uid(conclusion_premise.statement_uid),
                                        'uid': conclusion_premise.statement_uid})
-                logger('XX3', str(conclusion_premise.statement_uid), get_text_for_statement_uid(conclusion_premise.statement_uid))
 
             statement_list.append({'text': get_text_for_statement_uid(db_conclusion_argument.conclusion_uid),
                                    'uid': db_conclusion_argument.conclusion_uid})
-            logger('XX4', str(db_conclusion_argument.conclusion_uid), get_text_for_statement_uid(db_conclusion_argument.conclusion_uid))
 
         return statement_list
 
