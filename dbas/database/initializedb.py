@@ -688,12 +688,18 @@ def setup_dummy_seen_by(session):
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
 
+    db_argument_votes = DBDiscussionSession.query(VoteArgument)
+    db_statement_votes = DBDiscussionSession.query(VoteStatement)
+
     argument_count = 0
     statement_count = 0
 
     for argument in db_arguments:
+        # how many votes does this argument have?
+        db_votes = db_argument_votes.filter_by(argument_uid=argument.uid).all()
+
         tmp_first_names = list(first_names)
-        max_interval = random.randint(10, len(tmp_first_names) - 1)
+        max_interval = random.randint(0, min(len(tmp_first_names) - 1, len(db_votes)))
         for i in range(0, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
             db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
@@ -702,8 +708,11 @@ def setup_dummy_seen_by(session):
             argument_count += 1
 
     for statement in db_statements:
+        # how many votes does this statement have?
+        db_votes = db_statement_votes.filter_by(statement_uid=statement.uid).all()
+
         tmp_first_names = list(first_names)
-        max_interval = random.randint(10, len(tmp_first_names) - 1)
+        max_interval = random.randint(0, min(len(tmp_first_names) - 1, len(db_votes)))
         for i in range(0, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
             db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
