@@ -34,7 +34,7 @@ class RelationHelper(object):
         Returns all uid's of undermines for the argument.
 
         :return is_supportive: Boolean
-        :return: array with dict() with id (of argumet) and text.
+        :return: array with dict() with id (of argument) and text.
         """
         # logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(self.argument_uid))
         db_arguments = get_not_disabled_arguments_as_query()
