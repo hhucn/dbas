@@ -178,6 +178,29 @@
     	</div>
     </div>
 
+    <!-- CONFIRM DIALOG POPUP -->
+    <div class="modal fade " id="confirm-row-dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog modal-lg">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel"></h4>
+    			</div>
+    			<div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-offset-1 col-md-5"></div>
+                    </div>
+    			</div>
+    			<div class="modal-footer">
+    				<button id="confirm-row-dialog-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
+    				<button id="confirm-row-dialog-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
     <!-- CONFIRM DIALOG POPUP WITH CHECKBOX -->
     <div class="modal fade" id="confirm-dialog-checkbox-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     	<div class="modal-dialog">
