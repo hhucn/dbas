@@ -213,6 +213,8 @@ var passwordSubmit 									= 'passwordSubmit';
 var proposalsWereForwarded                          = 'proposalsWereForwarded';
 var participantsSawThisStatement                    = 'participantsSawThisStatement';
 var participantSawThisStatement                     = 'participantSawThisStatement';
+var participantsSawArgumentsToThis                  = 'participantsSawArgumentsToThis';
+var participantSawArgumentsToThis                   = 'participantSawArgumentsToThis';
 var pinNavigation 									= 'pinNavigation';
 var pleaseEditAtLeast                               = 'pleaseEditAtLeast';
 var queueCompleteSeen                               = 'queueCompleteSeen';
@@ -257,6 +259,7 @@ var textMaxCountMessage                             = 'textMaxCountMessage';
 var textMaxCountMessageError                        = 'textMaxCountMessageError';
 var timestamp                                       = 'timestamp';
 var typeofVote                                      = 'typeofVote';
+var users                                           = 'users';
 var usersWithSameOpinion                            = 'usersWithSameOpinion';
 var unpinNavigation 								= 'unpinNavigation';
 var veryweak 										= 'veryweak';
@@ -406,6 +409,8 @@ var dbas_en = {
 	'ohsnap': 'Oh snap!',
 	'participantsSawThisStatement': 'participants saw this statement.',
 	'participantSawThisStatement': 'participant saw this statement.',
+	'participantsSawArgumentsToThis': 'participants saw an argument for this opinition.',
+	'participantSawArgumentsToThis': 'participant saw an argument for this opinition.',
 	'passwordSubmit': 'Change Password',
 	'proposalsWereForwarded': 'Your proposals were forwarded!',
 	'pinNavigation': 'Pin Navigation',
@@ -593,6 +598,8 @@ var dbas_de = {
 	'ohsnap': 'Mist!',
 	'participantsSawThisStatement': 'Teilnehmer sahen diese Aussage.',
 	'participantSawThisStatement': 'Teilnehmer sah diese Aussage.',
+	'participantsSawArgumentsToThis': 'Teilnehmer sahen Argumente für diese Aussage.',
+	'participantSawArgumentsToThis': 'Teilnehmer sah Argumente für diese Aussage.',
 	'passwordSubmit': 'Passwort ändern',
 	'proposalsWereForwarded': 'Ihre Vorschläge wurden eingereicht!',
 	'pinNavigation': 'Navigation anheften',
