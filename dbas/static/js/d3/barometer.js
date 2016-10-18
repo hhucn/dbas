@@ -1,7 +1,7 @@
 // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
 var colors = [
-	'#4CAF50', //  0 green
-	'#F44336', //  1 red
+	'#F44336', //  0 red
+	'#4CAF50', //  1 green
 	'#2196F3', //  2 blue
 	'#FFEB3B', //  3 yellow
 	'#673AB7', //  4 deep purple
@@ -119,18 +119,16 @@ function DiscussionBarometer(){
 
 		var usersDict = [];
 		// create dictionary depending on address
-		if(address === 'attitude'){
+		if(address === 'attitude')
 			usersDict = createDictForAttitude(jsonData, usersDict);
-		}
-		else{
+		else
 			usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
-		}
 
         // create bars of chart
 		createBar(width, height-50, usersDict, barChartSvg);
 
 		// tooltip
-        createTooltip(usersDict, barChartSvg, width);
+        createTooltip(usersDict, barChartSvg, width, address);
 
 		// create legend for chart
 		createLegend(usersDict);
@@ -151,6 +149,7 @@ function DiscussionBarometer(){
 	 * Create axis for barometer.
 	 *
 	 * @param svg
+	 * @param height
 	 */
 	function createAxis(svg, height){
 	    // create scale to map values
@@ -250,8 +249,9 @@ function DiscussionBarometer(){
 	 * @param usersDict
 	 * @param barChartSvg
 	 * @param width
+	 * @param address
      */
-	function createTooltip(usersDict, barChartSvg, width) {
+	function createTooltip(usersDict, barChartSvg, width, address) {
 		var div;
 		var barWidth = width / usersDict.length - 5;
 		barChartSvg.selectAll("rect").on("mouseover", function (d, index) {
@@ -268,18 +268,21 @@ function DiscussionBarometer(){
 			if (d.message != null) {
 				div.append('li').html(d.message);
 			}
-			if (d.seenBy == 1)
-				div.append('li').html(d.seenBy + ' ' + _t_discussion(participantSawThisStatement));
+			
+			var text_keyword = '';
+			if (address == 'argument')
+				text_keyword = d.seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
 			else
-				div.append('li').html(d.seenBy + ' ' + _t_discussion(participantsSawThisStatement));
-			div.append('li').html(_t_discussion("users") + ': ');
+				text_keyword = d.seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
+			div.append('li').html(d.seenBy + ' ' + _t_discussion(text_keyword));
+			div.append('li').html(_t_discussion(users) + ': ');
 
 			// add images of avatars
 			d.users.forEach(function (e) {
 				div.append('img').attr('src', e.avatar_url);
 			});
 		})
-		.on("mouseout", function (d) {
+		.on("mouseout", function () {
 			div.style("opacity", 0);
 		});
 	}
