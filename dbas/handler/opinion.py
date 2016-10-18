@@ -33,7 +33,7 @@ class OpinionHandler:
         self.nickname = nickname
         self.mainpage = mainpage
 
-    def get_user_and_opinions_for_argument(self, argument_uids, attack):
+    def get_user_and_opinions_for_argument(self, argument_uids, attack=None):
         """
         Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
         these attacks.
@@ -88,7 +88,7 @@ class OpinionHandler:
 
         first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
         first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-        relation_text    = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion, attack_type=attack)
+        relation_text    = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion, attack_type=attack)
 
         # getting votes for every reaction
         ret_list = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t)
