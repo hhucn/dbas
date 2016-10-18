@@ -1884,8 +1884,8 @@ class Dbas(object):
         try:
             params = self.request.params
             ui_locales  = params['lang'] if 'lang' in params else 'en'
-
             uids        = params['uids']
+            attack      = params['attack'] if len(params['attack']) > 0 else None
             is_argument = params['is_argument'] == 'true' if 'is_argument' in params else False
             is_attitude = params['is_attitude'] == 'true' if 'is_attitude' in params else False
             is_reaction = params['is_reaction'] == 'true' if 'is_reaction' in params else False
@@ -1898,7 +1898,7 @@ class Dbas(object):
                     return_dict = _op.get_user_with_same_opinion_for_argument(uids)
                 else:
                     uids = json.loads(uids)
-                    return_dict = _op.get_user_and_opinions_for_argument(uids)
+                    return_dict = _op.get_user_and_opinions_for_argument(uids, attack)
             elif is_position:
                 uids = json.loads(uids)
                 return_dict = _op.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], is_supporti)
