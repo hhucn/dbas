@@ -88,7 +88,12 @@ class OpinionHandler:
 
         first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
         first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-        relation_text    = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion, attack_type=attack)
+        premise = '#premise#'
+        conclusion = '#conclusion#'
+        relation_text    = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive,
+                                                                           first_conclusion=first_conclusion,
+                                                                           attack_type=attack, premise=premise,
+                                                                           conclusion=conclusion)
 
         # getting votes for every reaction
         ret_list = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t)

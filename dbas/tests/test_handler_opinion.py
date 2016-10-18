@@ -89,22 +89,22 @@ def verify_structure_of_argument_dictionary(self, response):
 
     # test structure of ...
     # ... value of key 'opinions'
-    self.assertTrue('undermine' in response['opinions'])
-    self.assertTrue('support' in response['opinions'])
-    self.assertTrue('undercut' in response['opinions'])
-    self.assertTrue('rebut' in response['opinions'])
+    undermine = 0
+    support = 1
+    undercut = 2
+    rebut = 3
 
     # ... value of key 'attack_type' in 'opinions'
-    self.assertTrue('users' in response['opinions']['undermine'])
-    self.assertTrue('message' in response['opinions']['support'])
-    self.assertTrue('text' in response['opinions']['undercut'])
-    self.assertTrue('seen_by' in response['opinions']['rebut'])
+    self.assertTrue('users' in response['opinions'][undermine])
+    self.assertTrue('message' in response['opinions'][support])
+    self.assertTrue('text' in response['opinions'][undercut])
+    self.assertTrue('seen_by' in response['opinions'][rebut])
 
     # ... value of key 'users' in {'opinions': {'attack_type': {'users': ...}}}
-    self.assertTrue('nickname' in response['opinions']['rebut']['users'][0])
-    self.assertTrue('public_profile_url' in response['opinions']['undercut']['users'][0])
-    self.assertTrue('avatar_url' in response['opinions']['support']['users'][0])
-    self.assertTrue('vote_timestamp' in response['opinions']['undermine']['users'][0])
+    self.assertTrue('nickname' in response['opinions'][rebut]['users'][0])
+    self.assertTrue('public_profile_url' in response['opinions'][undercut]['users'][0])
+    self.assertTrue('avatar_url' in response['opinions'][support]['users'][0])
+    self.assertTrue('vote_timestamp' in response['opinions'][undermine]['users'][0])
 
     # wrong structure
     self.assertTrue('' not in response)
