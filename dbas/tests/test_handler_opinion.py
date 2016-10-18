@@ -23,7 +23,7 @@ class OpinionHandlerTests(unittest.TestCase):
 
     def test_get_user_and_opinions_for_argument(self):
         # correct argument id
-        response_correct_id = opinion.get_user_and_opinions_for_argument(argument_uids=[2, 2])
+        response_correct_id = opinion.get_user_and_opinions_for_argument(argument_uids=[11, 12])
         self.assertTrue(verify_structure_of_argument_dictionary(self, response_correct_id))
         response_correct_id_2 = opinion.get_user_and_opinions_for_argument(argument_uids=[11, 13])
         self.assertTrue(verify_structure_of_argument_dictionary(self, response_correct_id_2))
