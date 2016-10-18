@@ -162,25 +162,40 @@ class TextGenerator(object):
         user_msg += ' ' + conclusion + '.'
         return user_msg
 
-    def get_relation_text_dict(self, start_lower_case, with_no_opinion_text, is_attacking, is_dont_know=False,
-                               first_conclusion=None, for_island_view=False, attack_type=None):
+    def get_relation_text_dict_without_substitution(self, start_lower_case, with_no_opinion_text, is_attacking, premise,
+                                                    conclusion, is_dont_know=False, first_conclusion=None,
+                                                    for_island_view=False, attack_type=None):
         """
-        Text of the different reaction types for an given argument
 
-        :param start_lower_case: Boolean
-        :param with_no_opinion_text: Boolean
-        :param is_attacking: Boolean
-        :param is_dont_know: Boolean
-        :param first_conclusion: String
-        :param for_island_view: Boolean
-        :return: dict()
+        :param start_lower_case:
+        :param with_no_opinion_text:
+        :param is_attacking:
+        :param premise:
+        :param conclusion:
+        :param is_dont_know:
+        :param first_conclusion:
+        :param for_island_view:
+        :param attack_type:
+        :return:
+        """
+        return self.__get_relation_text_dict(start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
+                                             is_dont_know, first_conclusion, for_island_view, attack_type)
+
+    def get_relation_text_dict_with_substitution(self, start_lower_case, with_no_opinion_text, is_attacking,
+                                                 is_dont_know=False, first_conclusion=None, for_island_view=False,
+                                                 attack_type=None):
+        """
+
+        :param start_lower_case:
+        :param with_no_opinion_text:
+        :param is_attacking:
+        :param is_dont_know:
+        :param first_conclusion:
+        :param for_island_view:
+        :param attack_type:
+        :return:
         """
         _t = Translator(self.lang)
-        ret_dict = dict()
-
-        if first_conclusion and first_conclusion[-1] == '.':
-            first_conclusion = first_conclusion[:-1]
-
         if not is_dont_know:
             premise = _t.get(_t.theirArgument)
             if attack_type == 'undermine' or attack_type == 'rebut':
@@ -190,6 +205,31 @@ class TextGenerator(object):
         else:
             premise = _t.get(_t.thisArgument)
             conclusion = _t.get(_t.opinion)
+
+        return self.__get_relation_text_dict(start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
+                                             is_dont_know, first_conclusion, for_island_view, attack_type)
+
+    def __get_relation_text_dict(self, start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
+                                 is_dont_know=False, first_conclusion=None, for_island_view=False, attack_type=None):
+        """
+        Text of the different reaction types for an given argument
+
+        :param start_lower_case:
+        :param with_no_opinion_text:
+        :param is_attacking:
+        :param premise:
+        :param conclusion:
+        :param is_dont_know:
+        :param first_conclusion:
+        :param for_island_view:
+        :param attack_type:
+        :return:
+        """
+        _t = Translator(self.lang)
+        ret_dict = dict()
+
+        if first_conclusion and first_conclusion[-1] == '.':
+            first_conclusion = first_conclusion[:-1]
 
         # adding tags
         start_attack = '<' + self.tag_type + ' data-argumentation-type="attack">'

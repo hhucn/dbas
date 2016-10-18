@@ -159,9 +159,9 @@ class DictionaryHelper(object):
 
                     island_dict['premise'] = premise[0:1].lower() + premise[1:]
                     island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]
-                    island_dict.update(TextGenerator(self.discussion_lang).get_relation_text_dict(False, False,
-                                                                                                  not db_argument.is_supportive,
-                                                                                                  for_island_view=True))
+                    island_dict.update(TextGenerator(self.discussion_lang).get_relation_text_dict_with_substitution(False, False,
+                                                                                                                    not db_argument.is_supportive,
+                                                                                                                    for_island_view=True))
                     return_dict['island'] = island_dict
                 else:
                     return_dict['is_editable']      = False

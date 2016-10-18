@@ -264,7 +264,7 @@ class ItemDictHelper(object):
         if not db_argument:
             return statements_array
 
-        rel_dict     = _tg.get_relation_text_dict(False, False, False, is_dont_know=True)
+        rel_dict     = _tg.get_relation_text_dict_with_substitution(False, False, False, is_dont_know=True)
         mode         = 't' if is_supportive else 't'
         counter_mode = 'f' if is_supportive else 't'
 
@@ -304,7 +304,7 @@ class ItemDictHelper(object):
         if not db_sys_argument or not db_user_argument:
             return statements_array
 
-        rel_dict         = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=_tn.get(_tn.myPosition), attack_type=attack)
+        rel_dict         = _tg.get_relation_text_dict_with_substitution(False, True, db_user_argument.is_supportive, first_conclusion=_tn.get(_tn.myPosition), attack_type=attack)
         mode             = 't' if is_supportive else 'f'
         _um              = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         _rh              = RecommenderSystem
