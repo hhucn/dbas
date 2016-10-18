@@ -4,8 +4,6 @@ Provides helping function for getting some opinions.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import re
-
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
@@ -35,7 +33,7 @@ class OpinionHandler:
         self.nickname = nickname
         self.mainpage = mainpage
 
-    def get_user_and_opinions_for_argument(self, argument_uids):
+    def get_user_and_opinions_for_argument(self, argument_uids, attack):
         """
         Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
         these attacks.
@@ -48,10 +46,8 @@ class OpinionHandler:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=self.nickname).first()
         db_user_uid = db_user.uid if db_user else 0
 
-        # preperation
-        ret_dict = dict()
+        # preparation
         all_users = []
-        regex = re.compile('</?(strong|em)>')  # replacing html tags
         _t = Translator(self.lang)
         _tg = TextGenerator(self.lang)
         try:
@@ -62,9 +58,12 @@ class OpinionHandler:
 
         # sanity check
         if not db_user_argument or not db_syst_argument:
+            ret_dict = dict()
             ret_dict['message'] = _t.get(_t.internalError) + '.'
             ret_dict['users'] = all_users
-            return {'opinions': ret_dict, 'title': _t.get(_t.internalError)}
+            ret_dict['opinions'] = ret_dict
+            ret_dict['title'] = _t.get(_t.internalError)
+            return ret_dict
 
         title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uids[0], self.lang)
 
@@ -89,25 +88,24 @@ class OpinionHandler:
 
         first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
         first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-        relation_text    = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
+        relation_text    = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion, attack_type=attack)
 
         # getting votes for every reaction
-        ret_dict = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, ret_dict, relation_text, db_user_uid, _t, regex)
+        ret_list = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t)
 
-        return {'opinions': ret_dict, 'title': title[0:1].upper() + title[1:]}
+        return {'opinions': ret_list, 'title': title[0:1].upper() + title[1:]}
 
-    def __get_votes_for_reactions(self, relation, arg_uids_for_reactions, ret_dict, relation_text, db_user_uid, _t, regex):
+    def __get_votes_for_reactions(self, relation, arg_uids_for_reactions, relation_text, db_user_uid, _t):
         """
 
         :param relation:
         :param arg_uids_for_reactions:
-        :param ret_dict:
         :param relation_text:
         :param db_user_uid:
         :param _t:
-        :param regex:
         :return:
         """
+        ret_list = []
 
         for rel in relation:
             all_users       = []
@@ -134,11 +132,11 @@ class OpinionHandler:
                 db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
                 seen_by += len(db_seen_by) if db_seen_by else 0
 
-            ret_dict[rel] = {'users': all_users,
+            ret_list.append({'users': all_users,
                              'message': message,
-                             'text': regex.sub('', relation_text[rel + '_text'].replace('<strong>', '')),
-                             'seen_by': seen_by}
-        return ret_dict
+                             'text': relation_text[rel + '_text'],
+                             'seen_by': seen_by})
+        return ret_list
 
     def get_user_with_same_opinion_for_statements(self, statement_uids, is_supportive):
         """

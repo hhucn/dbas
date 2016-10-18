@@ -509,10 +509,15 @@ function AjaxDiscussionHandler() {
 	 * @param is_supportive
 	 */
 	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
-		var is_argument = type == 'argument',
-			is_position = type == 'position' || type == 'statement',
-			uid = argument_uid == 'None' ? statement_uid : argument_uid,
-			csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var is_argument = type == 'argument';
+		var is_position = type == 'position' || type == 'statement';
+		var uid = argument_uid == 'None' ? statement_uid : argument_uid;
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var attack = '';
+		var splitted = window.location.href.split('?')[0].split('/');
+		if (splitted.indexOf('reaction') != -1)
+			attack = splitted[splitted.indexOf('reaction') + 2];
+		
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			method: 'GET',
@@ -521,7 +526,8 @@ function AjaxDiscussionHandler() {
 				uids: uid,
 				is_position: is_position,
 				is_supporti: is_supportive,
-				lang: $('#issue_info').data('discussion-language')
+				lang: $('#issue_info').data('discussion-language'),
+				attack: attack
 			},
 			dataType: 'json',
 			headers: {
@@ -1036,6 +1042,11 @@ function AjaxGraphHandler(){
 	this.getUserGraphData = function(uid, adress){
 		var dataString;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var attack = '';
+		var splitted = window.location.href.split('?')[0].split('/');
+		if (splitted.indexOf('reaction') != -1)
+			attack = splitted[splitted.indexOf('reaction') + 2];
+		
 		switch(adress){
 			case 'attitude':
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', is_position: 'false', uids: uid};
@@ -1050,6 +1061,7 @@ function AjaxGraphHandler(){
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'true', uids: JSON.stringify(uid)};
 		}
 		dataString['lang'] = $('#issue_info').data('discussion-language');
+		dataString['attack'] = attack;
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			type: 'POST',
