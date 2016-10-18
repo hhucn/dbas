@@ -71,6 +71,9 @@ function DiscussionBarometer(){
 	 */
 	this.callbackIfDoneForGetDictionary = function(data, address){
 		var jsonData;
+		var dialog = $('#' + popupConfirmRowDialogId);
+		var _this = this;
+		
         try{
 	        jsonData = JSON.parse(data);
 			console.log(jsonData);
@@ -79,16 +82,19 @@ function DiscussionBarometer(){
 			alert('parsing-json: ' + e);
 	        return;
         }
-		$('#' + popupConfirmDialogId).modal('show').on('hidden.bs.modal', function (e) {
+        
+		dialog.modal('show').on('hidden.bs.modal', function () {
 			new Helper().clearAnchor();
+		}).on('shown.bs.modal', function () {
+			// display bar after the modal is shown, cause we need the width of the modal
+			_this.getD3Barometer(jsonData, address);
 		});
-		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
-			$('#' + popupConfirmDialogId).modal('hide');
+		$('#' + popupConfirmRowDialogAcceptBtn).show().click( function () {
+			$('#' + popupConfirmRowDialogId).modal('hide');
 		}).removeClass('btn-success');
-		$('#' + popupConfirmDialogRefuseBtn).hide();
+		$('#' + popupConfirmRowDialogRefuseBtn).hide();
 
-		$('#' + popupConfirmDialogId).find('.modal-title').text(jsonData.title).css({'line-height': '1.0'});
-		this.getD3Barometer(jsonData, address);
+		dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
 	};
 
 	/**
@@ -98,15 +104,18 @@ function DiscussionBarometer(){
 	 * @param address
 	 */
 	this.getD3Barometer = function(jsonData, address) {
-		$('#' + popupConfirmDialogId + ' div.modal-body').empty();
+		var dialog = $('#' + popupConfirmRowDialogId);
+		dialog.find('.col-md-6').empty();
+		dialog.find('.col-md-5').empty();
 
 		// create div for barometer
-		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div id="barometer-div"></div>');
+		dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
 		// width and height of chart
-		var width = 450, height = 500;
-		var barChartSvg = getSvg(width+50, height+50);
+		var width = dialog.find('.col-md-6').width();
+		var height = 400;
+		var barChartSvg = getSvg(width+50, height+20);
 
-		createAxis(barChartSvg);
+		createAxis(barChartSvg, height-50);
 
 		var usersDict = [];
 		// create dictionary depending on address
@@ -143,10 +152,10 @@ function DiscussionBarometer(){
 	 *
 	 * @param svg
 	 */
-	function createAxis(svg){
+	function createAxis(svg, height){
 	    // create scale to map values
-		var xScale = d3.scale.linear().range([0, 450]);
-        var yScale = d3.scale.linear().domain([0, 100]).range([450, 0]);
+		var xScale = d3.scale.linear().range([0, height]);
+        var yScale = d3.scale.linear().domain([0, 100]).range([height, 0]);
 
 		// create x and y-axis
         var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
@@ -223,12 +232,16 @@ function DiscussionBarometer(){
 			.enter().append("rect")
 		    .attr({width: barWidth,
 			       // height in percent: length/seen_by = x/height
-			       height: function(d) {return d.seenBy > 0 ? d.usersNumber/d.seenBy * height : 0;},
+			       height: function(d) {return divideWrapperIfZero(d.usersNumber, d.seenBy) * height;},
 			       // number of bar * width of bar + padding-left + space between to bars
 			       x: function(d,i) {return i*barWidth + 55 + i*5;},
 			       // y: height - barLength, because d3 starts to draw in left upper corner
-			       y: function(d) {return height - ((d.seenBy > 0 ? d.usersNumber/d.seenBy * height : 0) - 50);},
+			       y: function(d) {return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);},
 			       fill: function (d, i) {return colors[i % colors.length];}});
+	}
+	
+	function divideWrapperIfZero(numerator, denominator){
+		return denominator == 0 || numerator == 0 ? 0.005 : numerator / denominator;
 	}
 
 	/**
@@ -242,16 +255,16 @@ function DiscussionBarometer(){
 		var div;
 		var barWidth = width / usersDict.length - 5;
 		barChartSvg.selectAll("rect").on("mouseover", function (d, index) {
-			div = d3.select('#' + popupConfirmDialogId + ' div.modal-body').append("div");
+			div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-6').append("div");
 
 			// set properties of div
 			div.attr("class", "tooltip").style("opacity", 1)
 				.style("left", index * barWidth + 70 + index * 5 + "px")
-				.style("top", 200 + "px")
+				.style("top", 100 + "px")
 				.style("width", barWidth);
 
 			// append list elements to div
-			div.append('li').html(d.text + '.');
+			div.append('li').html(d.text);
 			if (d.message != null) {
 				div.append('li').html(d.message);
 			}
@@ -282,7 +295,7 @@ function DiscussionBarometer(){
 			div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', colors[key]);
             label = $('<label>').attr('class', 'legendLabel').html(value.text);
 			element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
-			$('#' + popupConfirmDialogId + ' div.modal-body').append(element);
+			$('#' + popupConfirmRowDialogId).find('.col-md-5').append(element);
 		});
 	}
 }

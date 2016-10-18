@@ -107,28 +107,25 @@ class OpinionHandler:
             message         = ''
             seen_by         = 0
 
-            if reaction_dict[relation]:
-                for uid in reaction_dict[relation]:
-                    db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
-                                                                                   VoteArgument.is_up_vote == True,
-                                                                                   VoteArgument.is_valid == True,
-                                                                                   VoteArgument.author_uid != db_user_uid)).all()
+            for uid in reaction_dict[relation]:
+                db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
+                                                                               VoteArgument.is_up_vote == True,
+                                                                               VoteArgument.is_valid == True,
+                                                                               VoteArgument.author_uid != db_user_uid)).all()
 
-                    for vote in db_votes:
-                        voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-                        users_dict = self.create_users_dict(voted_user, vote.timestamp)
-                        all_users.append(users_dict)
+                for vote in db_votes:
+                    voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+                    users_dict = self.create_users_dict(voted_user, vote.timestamp)
+                    all_users.append(users_dict)
 
-                    if len(db_votes) == 0:
-                        message = _t.get(_t.voteCountTextMayBeFirst) + '.'
-                    elif len(db_votes) == 1:
-                        message = _t.get(_t.voteCountTextOneOther) + '.'
-                    else:
-                        message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
-                    db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
-                    seen_by += len(db_seen_by) if not db_seen_by else 0
-
-                    # logger('X', 'X', str(uid['id']) + ' v ' + str(len(db_votes)) + ' s ' + str(len(db_seen_by)))
+                if len(db_votes) == 0:
+                    message = _t.get(_t.voteCountTextMayBeFirst) + '.'
+                elif len(db_votes) == 1:
+                    message = _t.get(_t.voteCountTextOneOther) + '.'
+                else:
+                    message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+                db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
+                seen_by += len(db_seen_by) if db_seen_by else 0
 
             ret_dict[relation] = {'users': all_users,
                                   'message': message,
