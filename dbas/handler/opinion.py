@@ -70,12 +70,17 @@ class OpinionHandler:
 
         # getting uids of all reactions
         _rh = RelationHelper(argument_uids[0], self.lang)
-        reaction_dict = {
-            'undermine': _rh.get_undermines_for_argument_uid(),
-            'support': _rh.get_supports_for_argument_uid(),
-            'undercut': _rh.get_undercuts_for_argument_uid(),
-            'rebut': _rh.get_rebuts_for_argument_uid()
-        }
+        arg_uids_for_reactions = []
+        arg_uids_for_reactions.append(_rh.get_undermines_for_argument_uid())
+        arg_uids_for_reactions.append(_rh.get_supports_for_argument_uid())
+        arg_uids_for_reactions.append(_rh.get_undercuts_for_argument_uid())
+        arg_uids_for_reactions.append(_rh.get_rebuts_for_argument_uid())
+
+        relation = []
+        relation.append('undermine')
+        relation.append('support')
+        relation.append('undercut')
+        relation.append('rebut')
 
         # getting the text of all reactions
         db_tmp_argument = db_syst_argument
@@ -87,14 +92,15 @@ class OpinionHandler:
         relation_text    = _tg.get_relation_text_dict(False, True, db_user_argument.is_supportive, first_conclusion=first_conclusion)
 
         # getting votes for every reaction
-        ret_dict = self.__get_votes_for_reactions(reaction_dict, ret_dict, relation_text, db_user_uid, _t, regex)
+        ret_dict = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, ret_dict, relation_text, db_user_uid, _t, regex)
 
         return {'opinions': ret_dict, 'title': title[0:1].upper() + title[1:]}
 
-    def __get_votes_for_reactions(self, reaction_dict, ret_dict, relation_text, db_user_uid, _t, regex):
+    def __get_votes_for_reactions(self, relation, arg_uids_for_reactions, ret_dict, relation_text, db_user_uid, _t, regex):
         """
 
-        :param reaction_dict:
+        :param relation:
+        :param arg_uids_for_reactions:
         :param ret_dict:
         :param relation_text:
         :param db_user_uid:
@@ -102,12 +108,13 @@ class OpinionHandler:
         :param regex:
         :return:
         """
-        for relation in reaction_dict:
+
+        for rel in relation:
             all_users       = []
             message         = ''
             seen_by         = 0
 
-            for uid in reaction_dict[relation]:
+            for uid in arg_uids_for_reactions[relation.index(rel)]:
                 db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
                                                                                VoteArgument.is_up_vote == True,
                                                                                VoteArgument.is_valid == True,
@@ -127,10 +134,10 @@ class OpinionHandler:
                 db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
                 seen_by += len(db_seen_by) if db_seen_by else 0
 
-            ret_dict[relation] = {'users': all_users,
-                                  'message': message,
-                                  'text': regex.sub('', relation_text[relation + '_text'].replace('<strong>', '')),
-                                  'seen_by': seen_by}
+            ret_dict[rel] = {'users': all_users,
+                             'message': message,
+                             'text': regex.sub('', relation_text[rel + '_text'].replace('<strong>', '')),
+                             'seen_by': seen_by}
         return ret_dict
 
     def get_user_with_same_opinion_for_statements(self, statement_uids, is_supportive):
