@@ -113,10 +113,10 @@ class OpinionHandler:
                 of = _t.get(_t.strongerStatementForRecjecting3)
                 conclusion = intro + rejection + ' ' + of  + conclusion
 
-            relation_text    = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive,
-                                                                               first_conclusion=first_conclusion,
-                                                                               attack_type=attack, premise=premises,
-                                                                               conclusion=conclusion)
+            relation_text = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive,
+                                                                            first_conclusion=first_conclusion,
+                                                                            attack_type=attack, premise=premises,
+                                                                            conclusion=conclusion)
 
         # getting votes for every reaction
         ret_list = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t)
