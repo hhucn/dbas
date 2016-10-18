@@ -320,14 +320,12 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         sb_tmp = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
 
     # color_everything = attack_type == 'undercut' and False
-    # if not color_everything:
     if attack_type not in ['dont_know', 'jump']:
         if attack_type == 'undermine':
             premises = sb + premises + se
         else:
             conclusion = sb + conclusion + se
     else:
-        se = '</' + TextGenerator.tag_type + '>'
         premises = sb + premises + se
         conclusion = sb_tmp + conclusion + se
     # if not color_everything:
