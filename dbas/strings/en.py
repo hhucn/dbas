@@ -490,6 +490,7 @@ class EnglischDict:
         en_lang[_self.requestFailed] = 'Request failed'
         en_lang[_self.rejecting] = 'rejecting'
         en_lang[_self.remStatementRow] = 'Removes this row.'
+        en_lang[_self.reaction] = 'Reactions'
         en_lang[_self.reactionFor] = 'Reactions for'
         en_lang[_self.rep_reason_first_argument_click] = 'You choose your first argument.'
         en_lang[_self.rep_reason_first_confrontation] = 'You survived your first confrontation'

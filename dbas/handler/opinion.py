@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings, StatementSeenBy
 from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
-    get_text_for_premisesgroup_uid, get_profile_picture
+    get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -65,7 +65,7 @@ class OpinionHandler:
             ret_dict['title'] = _t.get(_t.internalError)
             return ret_dict
 
-        title = _t.get(_t.reactionFor) + ': ' + get_text_for_argument_uid(argument_uids[0], self.lang)
+        title = _t.get(_t.reaction)  # For) + ': ' + get_text_for_argument_uid(argument_uids[0], with_html_tag=True, attack_type='for_modal')
 
         # getting uids of all reactions
         _rh = RelationHelper(argument_uids[0], self.lang)
@@ -88,12 +88,35 @@ class OpinionHandler:
 
         first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
         first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-        premise = '#premise#'
-        conclusion = '#conclusion#'
-        relation_text    = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive,
-                                                                           first_conclusion=first_conclusion,
-                                                                           attack_type=attack, premise=premise,
-                                                                           conclusion=conclusion)
+
+        if not attack:
+            relation_text = _tg.get_relation_text_dict_with_substitution(False, True, db_user_argument.is_supportive,
+                                                                         first_conclusion=first_conclusion,
+                                                                         attack_type=attack)
+        else:
+            if attack == 'undercut':
+                db_argument0 = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
+                db_argument1 = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
+                premises, trash = get_text_for_premisesgroup_uid(db_argument1.premisesgroup_uid)
+                conclusion = get_text_for_conclusion(db_argument0)
+            else:
+                db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
+                premises, trash = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+                conclusion = get_text_for_conclusion(db_argument)
+
+                intro = ''
+                if not db_argument.is_supportive:
+                    forr = _t.get(_t.forText)
+                    the = _t.get(_t.the_die)
+                    intro = forr + ' ' + the + ' '
+                rejection = _t.get(_t.strongerStatementForRecjecting2)
+                of = _t.get(_t.strongerStatementForRecjecting3)
+                conclusion = intro + rejection + ' ' + of  + conclusion
+
+            relation_text    = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive,
+                                                                               first_conclusion=first_conclusion,
+                                                                               attack_type=attack, premise=premises,
+                                                                               conclusion=conclusion)
 
         # getting votes for every reaction
         ret_list = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t)

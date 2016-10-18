@@ -458,6 +458,7 @@ class Translator(object):
         self.restartOnError = 'restartOnError'
         self.recipient = 'recipient'
         self.recipientNotFound = 'recipientNotFound'
+        self.reaction = 'reaction'
         self.reactionFor = 'reactionFor'
         self.review = 'review'
         self.review_history = 'review_history'
