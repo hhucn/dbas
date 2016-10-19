@@ -4,6 +4,7 @@
 # @email krautho66@cs.uni-duesseldorf.de
 
 from random import randint
+from sqlalchemy import inspect
 
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
@@ -140,33 +141,36 @@ def get_overview(main_page):
     return return_list
 
 
-def get_table_dict(table):
+def get_table_dict(table_name):
     """
 
     :param table:
     :return:
     """
-    logger('AdminLib', 'get_table_dict', str(table))
+    logger('AdminLib', 'get_table_dict', str(table_name))
     return_dict = dict()
 
-    has_elements = table.lower() in table_mapper
-    if not has_elements:
+    # check for table
+    if not table_name.lower() in table_mapper:
+        return_dict['is_existing'] = False
+        return return_dict
+    return_dict['is_existing'] = True
+    return_dict['name'] = table_name
+
+    # check for elements
+    db_elements = DBDiscussionSession.query(table_mapper[table_name.lower()]['table']).all()
+    return_dict['count'] = len(db_elements)
+    if len(db_elements) == 0:
         return_dict['has_elements'] = False
         return return_dict
-
-    db_elements = DBDiscussionSession.query(table_mapper[table.lower()]['table']).all()
     return_dict['has_elements'] = True
-    return_dict['name'] = table if db_elements else 'unknown table'
-    return_dict['count'] = len(db_elements) if db_elements else '-1'
 
     # getting all keys
-    table = table_mapper[table.lower()]['table']
+    table = table_mapper[table_name.lower()]['table']
     columns = [r.key for r in table.__table__.columns]
 
     # getting data
-    data = list()
-    for row in db_elements:
-        data.append([key for key in columns])
+    data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
 
     # save it
     return_dict['head'] = columns
