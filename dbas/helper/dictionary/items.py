@@ -178,40 +178,8 @@ class ItemDictHelper(object):
         statements_array = []
         _tn = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-        db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
-
-        db_arguments = []
-        db_arguments_not_disabled = get_not_disabled_arguments_as_query()
         # description in docs: dbas/logic
-        if attack_type == 'undermine':
-            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-            for premise in db_premises:
-                arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == premise.statement_uid,
-                                                                  Argument.is_supportive == False,
-                                                                  Argument.issue_uid == self.issue_uid)).all()
-                db_arguments = db_arguments + arguments
-
-        elif attack_type == 'undercut':
-            db_arguments = db_arguments_not_disabled.filter(and_(Argument.argument_uid == argument_uid,
-                                                                 Argument.is_supportive == False,
-                                                                 Argument.issue_uid == self.issue_uid)).all()
-
-        elif attack_type == 'overbid':
-            db_arguments = db_arguments_not_disabled.filter(and_(Argument.argument_uid == argument_uid,
-                                                                 Argument.is_supportive == True,
-                                                                 Argument.issue_uid == self.issue_uid)).all()
-
-        elif attack_type == 'rebut':
-            db_arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
-                                                                 Argument.argument_uid == db_argument.argument_uid,
-                                                                 Argument.is_supportive == False,
-                                                                 Argument.issue_uid == self.issue_uid)).all()
-
-        elif attack_type == 'support':
-            db_arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
-                                                                 Argument.argument_uid == db_argument.argument_uid,
-                                                                 Argument.is_supportive == db_argument.is_supportive,
-                                                                 Argument.issue_uid == self.issue_uid)).all()
+        db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
@@ -245,6 +213,48 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
 
         return statements_array
+
+    def __get_arguments_based_on_attack(self, attack_type, argument_uid):
+        """
+
+        :param attack_type:
+        :param argument_uid:
+        :return:
+        """
+        db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
+
+        db_arguments = []
+        db_arguments_not_disabled = get_not_disabled_arguments_as_query()
+        if attack_type == 'undermine':
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+            for premise in db_premises:
+                arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == premise.statement_uid,
+                                                                  Argument.is_supportive == False,
+                                                                  Argument.issue_uid == self.issue_uid)).all()
+                db_arguments = db_arguments + arguments
+
+        elif attack_type == 'undercut':
+            db_arguments = db_arguments_not_disabled.filter(and_(Argument.argument_uid == argument_uid,
+                                                                 Argument.is_supportive == False,
+                                                                 Argument.issue_uid == self.issue_uid)).all()
+
+        elif attack_type == 'overbid':
+            db_arguments = db_arguments_not_disabled.filter(and_(Argument.argument_uid == argument_uid,
+                                                                 Argument.is_supportive == True,
+                                                                 Argument.issue_uid == self.issue_uid)).all()
+
+        elif attack_type == 'rebut':
+            db_arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+                                                                 Argument.argument_uid == db_argument.argument_uid,
+                                                                 Argument.is_supportive == False,
+                                                                 Argument.issue_uid == self.issue_uid)).all()
+
+        elif attack_type == 'support':
+            db_arguments = db_arguments_not_disabled.filter(and_(Argument.conclusion_uid == db_argument.conclusion_uid,
+                                                                 Argument.argument_uid == db_argument.argument_uid,
+                                                                 Argument.is_supportive == db_argument.is_supportive,
+                                                                 Argument.issue_uid == self.issue_uid)).all()
+        return db_arguments
 
     def get_array_for_dont_know_reaction(self, argument_uid, is_supportive):
         """
@@ -317,57 +327,7 @@ class ItemDictHelper(object):
         # else:
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
-            url = ''
-
-            # special case, when the user selectes the support, because this does not need to be justified!
-            if relation == 'support':
-                attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-                arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, self.lang,
-                                                                     restriction_on_arg_uids=attacking_arg_uids)
-                if sys_attack == 'rebut' and attack == 'undercut':
-                    # case: system makes an undercut and the user supports this
-                    # new attack can be an rebut, so another undercut for the users argument
-                    # therefore now the users opininion is the new undercut (e.g. rebut)
-                    # because he supported it!
-                    url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
-                else:
-                    url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
-
-            # easy cases
-            elif relation == 'undermine' or relation == 'undercut':
-                url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
-
-            elif relation == 'overbid':
-                # if overbid is the 'overbid', it's easy
-                #  url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
-                # otherwise it will be the attack again
-                url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, attack)
-
-            elif relation == 'rebut':  # if we are having an rebut, everything seems different
-
-                if attack == 'undermine':  # rebutting an undermine will be a support for the initial argument
-                    url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
-                # rebutting an undercut will be a overbid for the initial argument
-                elif attack == 'undercut':
-                    # url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
-                    if db_user_argument.argument_uid is None:
-                        url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
-                    else:
-                        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_user_argument.premisesgroup_uid).all()
-                        db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: ELIMINATE RANDOM
-                        url = _um.get_url_for_justifying_statement(True, db_premise.statement_uid, mode)
-
-                # rebutting an rebut will be a justify for the initial argument
-                elif attack == 'rebut':
-                    current_user_argument = db_user_argument
-                    conclusion_uid = current_user_argument.conclusion_uid
-                    while conclusion_uid is None:
-                        current_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=current_user_argument.argument_uid).first()
-                        conclusion_uid = current_user_argument.conclusion_uid
-                    url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid if conclusion_uid is None else conclusion_uid, mode)
-
-            else:
-                url = _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+            url = self.__get_url_based_on_relation(relation, attack, _rh, _um, argument_uid_user, argument_uid_sys, mode, db_user_argument, db_sys_argument)
 
             # TODO PREVENT LOOPING
             # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
@@ -391,6 +351,112 @@ class ItemDictHelper(object):
         statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
         return statements_array
+
+    def __get_url_based_on_relation(self, relation, attack, _rh, _um, argument_uid_user, argument_uid_sys, mode, db_user_argument, db_sys_argument):
+        """
+
+        :param relation:
+        :param attack:
+        :param _rh:
+        :param _um:
+        :param argument_uid_user:
+        :param argument_uid_sys:
+        :param mode:
+        :param db_user_argument:
+        :param db_sys_argument:
+        :return:
+        """
+        # special case, when the user selects the support, because this does not need to be justified!
+        if relation == 'support':
+            return self.__get_url_for_support(attack, _rh, _um, argument_uid_sys, db_sys_argument)
+        elif relation == 'undermine' or relation == 'undercut':  # easy cases
+            return self.__get_url_for_undermine(relation, _um, argument_uid_sys, mode)
+        elif relation == 'overbid':  # it will be the attack again
+            return self.__get_url_for_overbid(attack, _um, argument_uid_user, mode)
+        elif relation == 'rebut':  # if we are having an rebut, everything seems different
+            return self.__get_url_for_rebut(attack, _um, mode, db_user_argument, db_sys_argument)
+        else:
+            return _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+
+    def __get_url_for_support(self, attack, _rh, _um, argument_uid_sys, db_sys_argument):
+        """
+
+        :param attack:
+        :param _rh:
+        :param _um:
+        :param argument_uid_sys:
+        :param db_sys_argument:
+        :return:
+        """
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+        arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, self.lang,
+                                                             restriction_on_arg_uids=attacking_arg_uids)
+        if sys_attack == 'rebut' and attack == 'undercut':
+            # case: system makes an undercut and the user supports this new attack can be an rebut, so another
+            # undercut for the users argument therefore now the users opinion is the new undercut (e.g. rebut)
+            # because he supported it!
+            url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
+        else:
+            url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
+        return url
+
+    def __get_url_for_undermine(self, relation, _um, argument_uid_sys, mode):
+        """
+
+        :param relation:
+        :param _um:
+        :param argument_uid_sys:
+        :param mode:
+        :return:
+        """
+        return _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+
+    def __get_url_for_overbid(self, attack, _um, argument_uid_user, mode):
+        """
+
+        :param attack:
+        :param _um:
+        :param argument_uid_user:
+        :param mode:
+        :return:
+        """
+        return _um.get_url_for_justifying_argument(True, argument_uid_user, mode, attack)
+
+    def __get_url_for_rebut(self, attack, _um, mode, db_user_argument, db_sys_argument):
+        """
+
+        :param attack:
+        :param _um:
+        :param mode:
+        :param db_user_argument:
+        :param db_sys_argument:
+        :return:
+        """
+        url = ''
+        if attack == 'undermine':  # rebutting an undermine will be a support for the initial argument
+            url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
+
+        elif attack == 'undercut':  # rebutting an undercut will be a overbid for the initial argument
+            # url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
+            if db_user_argument.argument_uid is None:
+                url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+            else:
+                db_premises = DBDiscussionSession.query(Premise).filter_by(
+                    premisesgroup_uid=db_user_argument.premisesgroup_uid).all()
+                db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: ELIMINATE RANDOM
+                url = _um.get_url_for_justifying_statement(True, db_premise.statement_uid, mode)
+
+        # rebutting an rebut will be a justify for the initial argument
+        elif attack == 'rebut':
+            current_user_argument = db_user_argument
+            conclusion_uid = current_user_argument.conclusion_uid
+            while conclusion_uid is None:
+                conclusion_uid = DBDiscussionSession.query(Argument).filter_by(
+                    uid=current_user_argument.argument_uid).first().conclusion_uid
+            url = _um.get_url_for_justifying_statement(True,
+                                                       db_user_argument.conclusion_uid if conclusion_uid is None else conclusion_uid,
+                                                       mode)
+        return url
 
     def get_array_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive, nickname):
         """

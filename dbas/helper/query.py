@@ -196,27 +196,7 @@ class QueryHelper:
             url = QueryHelper.__get_url_for_new_argument(new_argument_uids, history, lang, _um)
 
         else:
-            pgroups = []
-            for uid in new_argument_uids:
-                pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=uid).first().premisesgroup_uid)
-
-            current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
-            # relation to the arguments premise group
-            if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
-                db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).first()
-                db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
-                url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
-
-            # relation to the arguments relation
-            elif attack_type == 'undercut' or attack_type == 'overbid':
-                url = _um.get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
-
-            # relation to the arguments conclusion
-            elif attack_type == 'rebut':
-                # TODO WHAT IS WITH ARGUMENT AS CONCLUSION?
-                is_argument = current_argument.conclusion_uid is not None
-                uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
-                url = UrlManager(mainpage, slug, for_api).get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
+            url = QueryHelper.__receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive)
 
         # send notifications and mails
         if len(new_argument_uids) > 0:
@@ -228,6 +208,43 @@ class QueryHelper:
             NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, request, transaction)
 
         return url, statement_uids, error
+
+    @staticmethod
+    def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive):
+        """
+
+        :param new_argument_uids:
+        :param attack_type:
+        :param arg_id:
+        :param _um:
+        :param supportive:
+        :return:
+        """
+        pgroups = []
+        url = ''
+        for uid in new_argument_uids:
+            pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=uid).first().premisesgroup_uid)
+
+        current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
+        # relation to the arguments premise group
+        if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
+            db_premise = DBDiscussionSession.query(Premise).filter_by(
+                premisesgroup_uid=current_argument.premisesgroup_uid).first()
+            db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
+            url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
+
+        # relation to the arguments relation
+        elif attack_type == 'undercut' or attack_type == 'overbid':
+            url = _um.get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
+
+        # relation to the arguments conclusion
+        elif attack_type == 'rebut':
+            # TODO WHAT IS WITH ARGUMENT AS CONCLUSION?
+            is_argument = current_argument.conclusion_uid is not None
+            uid = current_argument.argument_uid if is_argument else current_argument.conclusion_uid
+            url = _um.get_url_for_choosing_premisegroup(False, is_argument, supportive, uid, pgroups)
+
+        return url
 
     @staticmethod
     def __get_error_for_empty_argument_list(_tn):
