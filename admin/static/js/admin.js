@@ -4,9 +4,9 @@
  */
 
 function AdminIndex(){
-
+	
 	/**
-	 * Requests all attacks
+	 *
 	 */
 	this.login = function () {
 		var csrfToken = $('#' + hiddenCSRFTokenId).val();
@@ -53,8 +53,28 @@ function AdminIndex(){
 }
 
 // main function
-$(function () {
+$(document).ready(function () {
 	$('#admin-login-button').click(function(){
 		new AdminIndex().login();
-	})
+	});
+	
+	var data = $('#data');
+	
+	data.find('.pencil').each(function(){
+		$(this).click(function(){
+			alert('todo edit');
+		})
+	});
+	
+	data.find('.trash').each(function(){
+		$(this).click(function(){
+			alert('todo delete');
+		})
+	});
+	
+	data.find('.add').each(function(){
+		$(this).click(function(){
+			alert('todo create');
+		})
+	});
 });

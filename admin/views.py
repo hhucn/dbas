@@ -7,7 +7,7 @@ Introducing an admin interface to enable easy database management.
 import dbas.helper.history as HistoryHelper
 import dbas.user_management as UserHandler
 import transaction
-from admin.lib import get_dashboard_infos, get_table_dict
+import admin.lib as lib
 from cornice import Service
 from dbas.lib import get_language
 from dbas.logger import logger
@@ -60,7 +60,7 @@ def main_admin(request):
 
     ui_locales = get_language(request, get_current_registry())
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-    dashboard = get_dashboard_infos(request.path)
+    overview = lib.get_overview(request.path)
 
     return {
         'layout': Dbas.base_layout(),
@@ -68,7 +68,7 @@ def main_admin(request):
         'title': 'Admin',
         'project': project_name,
         'extras': extras_dict,
-        'dashboard': dashboard
+        'dashboard': overview
     }
 
 
@@ -89,7 +89,7 @@ def main_table(request):
     ui_locales = get_language(request, get_current_registry())
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     table = request.matchdict['table']
-    table_dict = get_table_dict(table)
+    table_dict = lib.get_table_dict(table)
 
     return {
         'layout': Dbas.base_layout(),
