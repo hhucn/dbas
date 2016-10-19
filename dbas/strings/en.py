@@ -283,6 +283,7 @@ class EnglischDict:
         en_lang[_self.editTitle] = 'Edit statement'
         en_lang[_self.feelFreeToLogin] = 'If you want to proceed, please feel free to <u><a  data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">login</a></u> yourself :)'
         en_lang[_self.forText] = 'for'
+        en_lang[_self.forThat] = 'accepting that'
         en_lang[_self.firstConclusionRadioButtonText] = 'Let me enter my idea!'
         en_lang[_self.firstArgumentRadioButtonText] = 'Let me enter my own statement(s)!'
         en_lang[_self.feelFreeToShareUrl] = 'Please feel free to share this url'

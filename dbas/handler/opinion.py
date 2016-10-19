@@ -117,6 +117,7 @@ class OpinionHandler:
                                                                             first_conclusion=first_conclusion,
                                                                             attack_type=attack, premise=premises,
                                                                             conclusion=conclusion)
+            relation_text['rebut_text'] = relation_text['rebut_text'].replace(_t.get(_t.accepting), _t.get(_t.forThat))
 
         # getting votes for every reaction
         ret_list = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t)

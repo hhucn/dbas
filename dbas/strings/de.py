@@ -283,6 +283,7 @@ class GermanDict:
         de_lang[_self.editTitle] = 'Aussage bearbeiten'
         de_lang[_self.feelFreeToLogin] = 'Wenn Sie weiter machen möchten, <u><a data-href="login" data-toggle="modal" data-target="#popup-login" title="Anmelden">melden</a></u> Sie sich bitte an :)'
         de_lang[_self.forText] = 'für'
+        de_lang[_self.forThat] = 'dafür, dass'
         de_lang[_self.fillLine] = 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung'
         de_lang[_self.firstConclusionRadioButtonText] = 'Lass mich meine eigenen Ideen einfügen!'
         de_lang[_self.firstArgumentRadioButtonText] = 'Lass mich meine eigenen Aussagen einfügen!'
