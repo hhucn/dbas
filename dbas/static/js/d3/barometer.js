@@ -246,8 +246,8 @@ function DiscussionBarometer(){
 	/**
 	 * Create tooltips for bars.
 	 *
-	 * @param usersDict
 	 * @param barChartSvg
+<<<<<<< Updated upstream
 	 * @param width
 	 * @param address
      */
@@ -281,10 +281,10 @@ function DiscussionBarometer(){
 
 			// append list elements to div
 			//div.append('li').html(d.text);
+
 			if (d.message != null) {
-				div.append('li').html(d.message);
+				div.append('p').html(d.message);
 			}
-			
 			var text_keyword = '';
 			if (address == 'argument')
 				text_keyword = d.seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
@@ -293,9 +293,15 @@ function DiscussionBarometer(){
 			div.append('li').html(d.seenBy + ' ' + _t_discussion(text_keyword));
 			div.append('li').html(_t_discussion(users) + ': ');
 
+			var rowDiv = $('<div>').attr('class', 'row');
+            var userTextDiv = $('<div>').attr('class', 'col-md-3').html(_t_discussion("users") + ': ');
+
+
+			rowDiv.append(userTextDiv);
+            var userImageDiv = $('<div>').attr('class', 'col-md-9');
 			// add images of avatars
 			d.users.forEach(function (e) {
-				div.append('img').attr('src', e.avatar_url);
+				userImageDiv.append('img').attr('src', e.avatar_url);
 			});
 			$(this).attr('fill', getDarkColorFor(index));
 		})
