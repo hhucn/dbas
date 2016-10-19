@@ -95,6 +95,8 @@ function DiscussionBarometer(){
 		$('#' + popupConfirmRowDialogRefuseBtn).hide();
 
 		dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
+		this.getD3Barometer(jsonData, address);
+		/*this.getD3BarometerPieChart(jsonData, address);*/
 	};
 
 	/**
@@ -315,5 +317,158 @@ function DiscussionBarometer(){
 			element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
 			$('#' + popupConfirmRowDialogId).find('.col-md-5').append(element);
 		});
+	}
+
+	////////////////////////////////////
+	// PIE CHART
+	////////////////////////////////////
+
+	/**
+	 * Create barometer.
+	 *
+	 * @param jsonData
+	 * @param address
+	 */
+	this.getD3BarometerPieChart = function(jsonData, address) {
+		$('#' + popupConfirmDialogId + ' div.modal-body').empty();
+
+		// width and height of chart
+		var width = 560, height = 430;
+		var pieChartSvg = getSvgPieChart(width, height);
+
+		var usersDict = [];
+		// create dictionary depending on address
+		if(address === 'attitude'){
+			usersDict = createDictForAttitude(jsonData, usersDict);
+		}
+		else{
+			usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
+		}
+
+        // create bars of chart
+		createPieChart(usersDict, pieChartSvg);
+
+		// create legend for chart
+		createLegend(usersDict);
+    };
+
+	/**
+	 * Create svg-element.
+	 *
+	 * @param width: width of container, which contains barometer
+     * @param height: height of container
+	 * @return scalable vector graphic
+     */
+	function getSvgPieChart(width, height){
+		return d3.select('#' + popupConfirmDialogId + ' div.modal-body').append('svg').attr({width: width, height: height, id: "barometer-svg"});
+	}
+
+	/**
+	 * Create pie chart.
+	 *
+	 * @param width
+	 * @param height
+	 * @param usersDict
+	 * @param barChartSvg
+     */
+	function createPieChart(usersDict, pieChartSvg) {
+		var height = 400, width = 400,
+			outerRadius = Math.min(width, height) / 2,
+			innerRadius = 0.3 * outerRadius;
+
+		var sumSeenBy = 0;
+		$.each(usersDict, function(key, value) {
+			sumSeenBy += value.seenBy;
+		});
+
+		var pie = getPie(usersDict);
+
+		var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, sumSeenBy);
+		var outerCircle = getOuterCircle(innerRadius, outerRadius);
+
+		createInnerPath(pieChartSvg, usersDict, innerCircle, pie);
+		createOuterPath(pieChartSvg, usersDict, outerCircle, pie);
+	}
+
+	/**
+	 * Choose pie layout of d3.
+	 *
+	 * @param usersDict
+	 * @returns {*}
+     */
+	function getPie(usersDict){
+		return d3.layout.pie()
+			.sort(null)
+			.value(function (d, i) {
+				return usersDict[i].usersNumber;
+			});
+	}
+
+	/**
+	 * Create inner circle of chart.
+	 *
+	 * @param usersDict
+	 * @param innerRadius
+	 * @param outerRadius
+	 * @param sumSeenBy
+	 * @returns {*}
+     */
+	function getInnerCircle(usersDict, innerRadius, outerRadius, sumSeenBy){
+        return d3.svg.arc()
+			.innerRadius(innerRadius)
+			.outerRadius(function (d, i) {
+				return (outerRadius - innerRadius) * (usersDict[i].seenBy/sumSeenBy) + innerRadius;
+			});
+	}
+
+	/**
+	 * Create outer circle of chart.
+	 *
+	 * @param innerRadius
+	 * @param outerRadius
+	 * @returns {*}
+     */
+	function getOuterCircle(innerRadius, outerRadius){
+	    return d3.svg.arc()
+			.innerRadius(innerRadius)
+			.outerRadius(outerRadius);
+	}
+
+	/**
+	 *
+	 *
+	 * @param pieChartSvg
+	 * @param usersDict
+	 * @param innerCircle
+	 * @param pie
+     */
+	function createInnerPath(pieChartSvg, usersDict, innerCircle, pie){
+		pieChartSvg.selectAll(".innerCircle")
+			.data(pie(usersDict))
+			.enter().append("path")
+			.attr("fill", function (d, i) {
+				return colors[i];
+			})
+			.attr("stroke", "gray")
+			.attr("d", innerCircle)
+			.attr("transform", "translate(280,200)");
+	}
+
+	/**
+	 *
+	 *
+	 * @param pieChartSvg
+	 * @param usersDict
+	 * @param outerCircle
+	 * @param pie
+     */
+	function createOuterPath(pieChartSvg, usersDict, outerCircle, pie){
+	    pieChartSvg.selectAll(".outerCircle")
+			.data(pie(usersDict))
+			.enter().append("path")
+			.attr("fill", "none")
+			.attr("stroke", "gray")
+			.attr("d", outerCircle)
+			.attr("transform", "translate(280,200)");
 	}
 }
