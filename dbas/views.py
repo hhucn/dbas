@@ -684,7 +684,9 @@ class Dbas(object):
                                                                                             True, self.request,
                                                                                             argument_id=arg_id_sys,
                                                                                             application_url=main_page,
-                                                                                            for_api=for_api)
+                                                                                            for_api=for_api,
+                                                                                            argument_for_island=arg_id_user,
+                                                                                            attack=attack)
 
         return_dict = dict()
         return_dict['issues'] = issue_dict
