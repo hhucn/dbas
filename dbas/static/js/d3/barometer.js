@@ -306,8 +306,8 @@ function DiscussionBarometer(){
 	}
 	
 	function getNormalColorFor(index){ return google_colors[index % google_colors.length][0]; }
-	function getLightColorFor(index){ return google_colors[index % google_colors.length][2];	}
-	function getDarkColorFor(index){ return google_colors[index % google_colors.length][10];	}
+	function getLightColorFor(index){ return google_colors[index % google_colors.length][2]; }
+	function getDarkColorFor(index){ return google_colors[index % google_colors.length][10]; }
 
 	/**
 	 * Create legend for chart.
