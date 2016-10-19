@@ -62,13 +62,15 @@ $(document).ready(function () {
 	
 	data.find('.pencil').each(function(){
 		$(this).click(function(){
-			alert('todo edit');
+			var uid = $(this).parents('tr:first').find('td:first').text();
+			alert('todo edit ' + uid);
 		})
 	});
 	
 	data.find('.trash').each(function(){
 		$(this).click(function(){
-			alert('todo delete');
+			var uid = $(this).parents('tr:first').find('td:first').text();
+			alert('todo delete ' + uid);
 		})
 	});
 	
