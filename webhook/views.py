@@ -4,10 +4,8 @@ Introducing websockets.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
-import pyramid.httpexceptions as exc
 import json
 
-from subprocess import call
 from cornice import Service
 from dbas.logger import logger
 

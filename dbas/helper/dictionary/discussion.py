@@ -420,9 +420,9 @@ class DiscussionDictHelper(object):
         statement_list = list()
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 
-        logger('DictionaryHelper', '__get_all_statement_by_argument', 'Argument ' + str(argument.uid)
-               + ' conclusion: ' + str(argument.conclusion_uid) + '/' + str(argument.argument_uid)
-               + ' premise count: ' + str(len(db_premises)))
+        logger('DictionaryHelper', '__get_all_statement_by_argument', 'Argument ' + str(argument.uid) +
+               ' conclusion: ' + str(argument.conclusion_uid) + '/' + str(argument.argument_uid) +
+               ' premise count: ' + str(len(db_premises)))
 
         for premise in db_premises:
             statement_list.append({'text': get_text_for_statement_uid(premise.statement_uid),

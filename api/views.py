@@ -274,7 +274,7 @@ def discussion_init(request):
 
 
 @zinit_blank.get(validators=validate_login)
-def discussion_init(request):
+def discussion_init_blank(request):
     """
     Return data from DBas discussion_init page.
 

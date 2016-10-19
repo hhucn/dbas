@@ -4,7 +4,6 @@
 # @email krautho66@cs.uni-duesseldorf.de
 
 from random import randint
-from sqlalchemy import inspect
 
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
@@ -76,17 +75,20 @@ def get_overview(main_page):
     logger('AdminLib', 'get_dashboard_infos', 'main')
     return_list = list()
 
+    # all tables for the 'general' group
     general = list()
     general.append(__get_dash_dict(len(DBDiscussionSession.query(Issue).all()), 'Issue', main_page + 'Issue'))
     general.append(__get_dash_dict(len(DBDiscussionSession.query(Language).all()), 'Language', main_page + 'Language'))
     general.append(__get_dash_dict(len(DBDiscussionSession.query(History).all()), 'History', main_page + 'History'))
 
+    # all tables for the 'users' group
     users = list()
     users.append(__get_dash_dict(len(DBDiscussionSession.query(Group).all()), 'Group', main_page + 'Group'))
     users.append(__get_dash_dict(len(DBDiscussionSession.query(User).all()), 'User', main_page + 'User'))
     users.append(__get_dash_dict(len(DBDiscussionSession.query(Settings).all()), 'Settings', main_page + 'Settings'))
     users.append(__get_dash_dict(len(DBDiscussionSession.query(Message).all()), 'Message ', main_page + 'Message'))
 
+    # all tables for the 'content' group
     content = list()
     content.append(__get_dash_dict(len(DBDiscussionSession.query(Statement).all()), 'Statement', main_page + 'Statement'))
     content.append(__get_dash_dict(len(DBDiscussionSession.query(TextVersion).all()), 'TextVersion', main_page + 'TextVersion'))
@@ -95,12 +97,14 @@ def get_overview(main_page):
     content.append(__get_dash_dict(len(DBDiscussionSession.query(Premise).all()), 'Premise', main_page + 'Premise'))
     content.append(__get_dash_dict(len(DBDiscussionSession.query(Argument).all()), 'Argument ', main_page + 'Argument'))
 
+    # all tables for the 'voting' group
     voting = list()
     voting.append(__get_dash_dict(len(DBDiscussionSession.query(VoteArgument).all()), 'VoteArgument', main_page + 'VoteArgument'))
     voting.append(__get_dash_dict(len(DBDiscussionSession.query(VoteStatement).all()), 'VoteStatement', main_page + 'VoteStatement'))
     voting.append(__get_dash_dict(len(DBDiscussionSession.query(StatementSeenBy).all()), 'StatementSeenBy', main_page + 'StatementSeenBy'))
     voting.append(__get_dash_dict(len(DBDiscussionSession.query(ArgumentSeenBy).all()), 'ArgumentSeenBy ', main_page + 'ArgumentSeenBy'))
 
+    # all tables for the 'reviews' group
     reviews = list()
     reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewDelete).all()), 'ReviewDelete', main_page + 'ReviewDelete'))
     reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewEdit).all()), 'ReviewEdit', main_page + 'ReviewEdit'))
@@ -108,11 +112,13 @@ def get_overview(main_page):
     reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewOptimization).all()), 'ReviewOptimization', main_page + 'ReviewOptimization'))
     reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewDeleteReason).all()), 'ReviewDeleteReason ', main_page + 'ReviewDeleteReason'))
 
+    # all tables for the 'reviewer' group
     reviewer = list()
     reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerDelete).all()), 'LastReviewerDelete', main_page + 'LastReviewerDelete'))
     reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerEdit).all()), 'LastReviewerEdit', main_page + 'LastReviewerEdit'))
     reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerOptimization).all()), 'LastReviewerOptimization', main_page + 'LastReviewerOptimization'))
 
+    # all tables for the 'reputation' group
     reputation = list()
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReputationHistory).all()), 'ReputationHistory', main_page + 'ReputationHistory'))
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReputationReason).all()), 'ReputationReason', main_page + 'ReputationReason'))
@@ -120,20 +126,12 @@ def get_overview(main_page):
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewCanceled).all()), 'ReviewCanceled', main_page + 'ReviewCanceled'))
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContent).all()), 'RevokedContent', main_page + 'RevokedContent'))
 
-    #from sqlalchemy import create_engine
-    #engine = create_engine("postgresql+psycopg2://dbas:SQL_2015&@localhost:5432/discussion?client_encoding=utf8")
-#
-    #from sqlalchemy import inspect
-    #inspector = inspect(engine)
-#
-    #for table_name in inspector.get_table_names():
-    #    for column in inspector.get_columns(table_name):
-    #        print("Column: %s" % column['name'])
-
+    # first row
     return_list.append([{'name': 'General', 'content': general},
                         {'name': 'Users', 'content': users},
                         {'name': 'Content', 'content': content},
                         {'name': 'Voting', 'content': voting}])
+    # second row
     return_list.append([{'name': 'Reviews', 'content': reviews},
                         {'name': 'Reviewer', 'content': reviewer},
                         {'name': 'Reputation', 'content': reputation}])
@@ -144,7 +142,7 @@ def get_overview(main_page):
 def get_table_dict(table_name):
     """
 
-    :param table:
+    :param table_name:
     :return:
     """
     logger('AdminLib', 'get_table_dict', str(table_name))
@@ -187,11 +185,7 @@ def __get_dash_dict(count, name, href):
     :param href:
     :return:
     """
-    return {
-        'count': count,
-        'name': name,
-        'href': href
-        }
+    return {'count': count, 'name': name, 'href': href}
 
 
 def __get_random_color(index):
