@@ -219,6 +219,7 @@ class Translator(object):
         self.editStatementHere = 'editStatementHere'
         self.feelFreeToLogin = 'feelFreeToLogin'
         self.forText = 'forText'
+        self.forThat = 'forThat'
         self.fillLine = 'fillLine'
         self.firstConclusionRadioButtonText = 'firstConclusionRadioButtonText'
         self.firstArgumentRadioButtonText = 'firstArgumentRadioButtonText'
