@@ -254,17 +254,32 @@ function DiscussionBarometer(){
 	function createTooltip(usersDict, barChartSvg, width, address) {
 		var div;
 		var barWidth = width / usersDict.length - 5;
+		var tooltipWith = width;
+		var tmp;
 		barChartSvg.selectAll("rect").on("mouseover", function (d, index) {
+			var barLeft = index / 2 * barWidth + 70 + index * 5;
+			tmp = index;
+			while (tooltipWith + barLeft > $( window ).width()){
+				if (tmp > 0){
+					// move one step to the left
+					tmp -= 1;
+					tooltipWith = tmp * barWidth + 70 + tmp * 5;
+				} else {
+					tooltipWith = width / usersDict.length - 5;
+					barLeft = index * barWidth + 70 + index * 5;
+				}
+			}
+			
 			div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-6').append("div");
 
 			// set properties of div
 			div.attr("class", "tooltip").style("opacity", 1)
-				.style("left", index * barWidth + 70 + index * 5 + "px")
+				.style("left", barLeft + "px")
 				.style("top", 100 + "px")
-				.style("width", barWidth);
+				.style("width", tooltipWith);
 
 			// append list elements to div
-			div.append('li').html(d.text);
+			//div.append('li').html(d.text);
 			if (d.message != null) {
 				div.append('li').html(d.message);
 			}
