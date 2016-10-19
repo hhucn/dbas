@@ -66,7 +66,7 @@ google_colors = [
     ['#ffffff']]  # white
 
 
-def get_dashboard_infos(main_page):
+def get_overview(main_page):
     """
 
     :param main_page:
@@ -150,31 +150,26 @@ def get_table_dict(table):
     return_dict = dict()
 
     has_elements = table.lower() in table_mapper
-    return_dict['has_elements'] = has_elements
-
     if not has_elements:
         return_dict['has_elements'] = False
         return return_dict
 
     db_elements = DBDiscussionSession.query(table_mapper[table.lower()]['table']).all()
     return_dict['has_elements'] = True
-
     return_dict['name'] = table if db_elements else 'unknown table'
     return_dict['count'] = len(db_elements) if db_elements else '-1'
 
-    keys = list()
+    # getting all keys
     table = table_mapper[table.lower()]['table']
-    for key in table.__table__.columns.keys():
-        keys.append(key)
+    columns = [r.key for r in table.__table__.columns]
 
+    # getting data
     data = list()
     for row in db_elements:
-        tmp = list()
-        for key in keys:
-            tmp.append(str(key))
-        data.append(tmp)
+        data.append([key for key in columns])
 
-    return_dict['head'] = keys
+    # save it
+    return_dict['head'] = columns
     return_dict['row'] = data
 
     return return_dict

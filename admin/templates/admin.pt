@@ -53,7 +53,7 @@
 
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">${group.name}</h3>
+                            <span class="panel-title">${group.name}</span>
                         </div>
                         <div class="panel-body" tal:repeat="line group.content">
                             <a href="" tal:attributes="href line.href"><p>${line.name}  <span class=" badge">${line.count}</span></p></a>
