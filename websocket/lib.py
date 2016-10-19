@@ -32,7 +32,7 @@ def send_request_for_success_popup_to_socketio(nickname, message='', url=None, i
     :param nickname:
     :param main_page:
     :param message:
-    :param url: 
+    :param url:
     :param increase_counter:
     :return:
     """

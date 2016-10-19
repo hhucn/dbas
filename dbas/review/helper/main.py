@@ -175,69 +175,92 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     transaction.commit()
 
     if not should_optimized:
-        # add new vote
-        db_user_who_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
-
-        # get all keep and delete votes
-        db_keep_version = DBDiscussionSession.query(LastReviewerOptimization).filter(and_(LastReviewerOptimization.review_uid == review_uid,
-                                                                                          LastReviewerOptimization.is_okay == True)).all()
-
-        if len(db_keep_version) > max_votes:
-            add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag, transaction)
-            db_review.set_executed(True)
-            db_review.update_timestamp()
+        __keep_the_element(db_review, transaction)
     else:
-        # add new edit
-        argument_dict = {}
-        statement_dict = {}
-        # sort the new edits by argument uid
-        for d in data:
-            is_argument = d['argument'] > 0
-            if is_argument:
-                if d['argument'] in argument_dict:
-                    argument_dict[d['argument']].append(d)
-                else:
-                    argument_dict[d['argument']] = [d]
-            else:
-                if d['statement'] in statement_dict:
-                    statement_dict[d['statement']].append(d)
-                else:
-                    statement_dict[d['statement']] = [d]
-
-        # add reviews
-        new_edits = list()
-        for argument_uid in argument_dict:
-            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, argument=argument_uid))
-            DBDiscussionSession.flush()
-            transaction.commit()
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
-                                                                               ReviewEdit.argument_uid == argument_uid)).order_by(ReviewEdit.uid.desc()).first()
-            logger('review_main_helper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
-            for edit in argument_dict[argument_uid]:
-                new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid, statement=edit['uid'], typeof=edit['type'], content=edit['val']))
-
-        for statement_uid in statement_dict:
-            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=statement_uid))
-            DBDiscussionSession.flush()
-            transaction.commit()
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
-                                                                               ReviewEdit.statement_uid == statement_uid)).order_by(ReviewEdit.uid.desc()).first()
-            logger('review_main_helper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
-            for edit in statement_dict[statement_uid]:
-                new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid, statement=statement_uid, typeof=edit['type'], content=edit['val']))
-
-        if len(new_edits) > 0:
-            DBDiscussionSession.add_all(new_edits)
-
-        # edit given, so this review is executed
-        db_review.set_executed(True)
-        db_review.update_timestamp()
+        __proposal_for_the_element(db_review, data, db_user, transaction)
 
     DBDiscussionSession.add(db_review)
     DBDiscussionSession.flush()
     transaction.commit()
 
     return ''
+
+
+def __keep_the_element(db_review, transaction):
+    """
+
+    :param db_review:
+    :param transaction:
+    :return:
+    """
+    # add new vote
+    db_user_who_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
+
+    # get all keep and delete votes
+    db_keep_version = DBDiscussionSession.query(LastReviewerOptimization).filter(
+        and_(LastReviewerOptimization.review_uid == db_review.uid,
+             LastReviewerOptimization.is_okay == True)).all()
+
+    if len(db_keep_version) > max_votes:
+        add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag, transaction)
+        db_review.set_executed(True)
+        db_review.update_timestamp()
+
+
+def __proposal_for_the_element(db_review, data, db_user, transaction):
+    """
+
+    :param db_review:
+    :param data:
+    :param db_user:
+    :param transaction:
+    :return:
+    """
+    # add new edit
+    argument_dict = {}
+    statement_dict = {}
+    # sort the new edits by argument uid
+    for d in data:
+        is_argument = d['argument'] > 0
+        if is_argument:
+            if d['argument'] in argument_dict:
+                argument_dict[d['argument']].append(d)
+            else:
+                argument_dict[d['argument']] = [d]
+        else:
+            if d['statement'] in statement_dict:
+                statement_dict[d['statement']].append(d)
+            else:
+                statement_dict[d['statement']] = [d]
+
+    # add reviews
+    new_edits = list()
+    for argument_uid in argument_dict:
+        DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, argument=argument_uid))
+        DBDiscussionSession.flush()
+        transaction.commit()
+        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
+                                                                           ReviewEdit.argument_uid == argument_uid)).order_by(ReviewEdit.uid.desc()).first()
+        logger('review_main_helper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
+        for edit in argument_dict[argument_uid]:
+            new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid, statement=edit['uid'], typeof=edit['type'], content=edit['val']))
+
+    for statement_uid in statement_dict:
+        DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=statement_uid))
+        DBDiscussionSession.flush()
+        transaction.commit()
+        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
+                                                                           ReviewEdit.statement_uid == statement_uid)).order_by(ReviewEdit.uid.desc()).first()
+        logger('review_main_helper', 'add_review_opinion_for_optimization', 'new ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
+        for edit in statement_dict[statement_uid]:
+            new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid, statement=statement_uid, typeof=edit['type'], content=edit['val']))
+
+    if len(new_edits) > 0:
+        DBDiscussionSession.add_all(new_edits)
+
+    # edit given, so this review is executed
+    db_review.set_executed(True)
+    db_review.update_timestamp()
 
 
 def en_or_disable_object_of_review(review, is_disabled, transaction):
