@@ -27,6 +27,8 @@
                         <td>
                             <a href="#" title="edit"><i class="fa pencil fa-pencil-square-o" aria-hidden="true"></i></a>
                             <a href="#" title="delete"><i class="fa trash fa-trash-o" aria-hidden="true"></i></a>
+                            <a href="#" title="save" style="pointer-events: none"><i class="fa floppy fa-floppy-o text-muted" aria-hidden="true"></i></a>
+                            <a href="#" title="cancel" style="pointer-events: none"><i class="fa square fa-square-o text-muted" aria-hidden="true"></i></a>
                         </td>
                     </tr>
                 </tbody>

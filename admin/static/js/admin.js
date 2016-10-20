@@ -52,6 +52,96 @@ function AdminIndex(){
 	};
 }
 
+/**
+ *
+ * @param _this
+ * @param elements_class
+ * @param text_class
+ */
+function activateElement(_this, elements_class, text_class){
+	var element = $(_this).parents('td:first').find('.' + elements_class);
+	element.removeClass('text-muted').addClass(text_class);
+	element.parent().css('pointer-events', '');
+}
+
+/**
+ *
+ * @param _this
+ * @param elements_class
+ * @param text_class
+ */
+function deactivateElement(_this, elements_class, text_class){
+	var element = $(_this).parents('td:first').find('.' + elements_class);
+	element.addClass('text-muted').removeClass(text_class);
+	element.parent().css('pointer-events', 'none');
+}
+
+/**
+ *
+ * @param parent
+ */
+function setAddClickEvent(parent){
+	parent.find('.add').each(function(){
+		$(this).click(function(){
+			console.log('todo create');
+		})
+	});
+}
+/**
+ *
+ * @param parent
+ */
+function setEditClickEvent(parent){
+	parent.find('.pencil').each(function(){
+		$(this).click(function(){
+			var uid = $(this).parents('tr:first').find('td:first').text();
+			activateElement(this, 'floppy', 'text-success');
+			activateElement(this, 'square', 'text-danger');
+			console.log('todo edit ' + uid);
+		})
+	});
+}
+/**
+ *
+ * @param parent
+ */
+function setDeleteClickEvent(parent){
+	parent.find('.trash').each(function(){
+		$(this).click(function(){
+			var uid = $(this).parents('tr:first').find('td:first').text();
+			console.log('todo delete ' + uid);
+		})
+	});
+}
+/**
+ *
+ * @param parent
+ */
+function setSaveClickEvent(parent){
+	parent.find('.floppy').each(function(){
+		$(this).click(function(){
+			var uid = $(this).parents('tr:first').find('td:first').text();
+			deactivateElement(this, 'floppy', 'text-success');
+			deactivateElement(this, 'square', 'text-danger');
+			console.log('todo save ' + uid);
+		})
+	});
+}
+/**
+ *
+ * @param parent
+ */
+function setCancelClickEvent(parent){
+	parent.find('.square').each(function(){
+		$(this).click(function(){
+			var uid = $(this).parents('tr:first').find('td:first').text();
+			deactivateElement(this, 'floppy', 'text-success');
+			deactivateElement(this, 'square', 'text-danger');
+			console.log('todo cancel ' + uid);
+		})
+	});
+}
+
 // main function
 $(document).ready(function () {
 	$('#admin-login-button').click(function(){
@@ -60,23 +150,18 @@ $(document).ready(function () {
 	
 	var data = $('#data');
 	
-	data.find('.pencil').each(function(){
-		$(this).click(function(){
-			var uid = $(this).parents('tr:first').find('td:first').text();
-			alert('todo edit ' + uid);
-		})
-	});
+	// events for edit
+	setEditClickEvent(data);
 	
-	data.find('.trash').each(function(){
-		$(this).click(function(){
-			var uid = $(this).parents('tr:first').find('td:first').text();
-			alert('todo delete ' + uid);
-		})
-	});
+	// events for delete
+	setCancelClickEvent(data);
 	
-	data.find('.add').each(function(){
-		$(this).click(function(){
-			alert('todo create');
-		})
-	});
+	// events for save
+	setSaveClickEvent(data);
+	
+	// events for cancel
+	setCancelClickEvent(data);
+	
+	// events for add
+	setAddClickEvent(data);
 });
