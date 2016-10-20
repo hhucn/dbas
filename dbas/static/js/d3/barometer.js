@@ -86,6 +86,7 @@ function DiscussionBarometer(){
 		}).on('shown.bs.modal', function () {
 			// display bar after the modal is shown, cause we need the width of the modal
 			_this.getD3Barometer(jsonData, address);
+			//_this.getD3BarometerPieChart(jsonData, address);
 		});
 		$('#' + popupConfirmRowDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmRowDialogId).modal('hide');
@@ -93,8 +94,7 @@ function DiscussionBarometer(){
 		$('#' + popupConfirmRowDialogRefuseBtn).hide();
 
 		dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
-		this.getD3Barometer(jsonData, address);
-		/*this.getD3BarometerPieChart(jsonData, address);*/
+		//this.getD3Barometer(jsonData, address);
 	};
 
 	/**
@@ -246,7 +246,6 @@ function DiscussionBarometer(){
 	/**
 	 * Create tooltips for bars.
 	 *
-	 * @param usersDict
 	 * @param barChartSvg
 	 * @param width
 	 * @param address
@@ -275,7 +274,7 @@ function DiscussionBarometer(){
 
 			// set properties of div
 			div.attr("class", "tooltip").style("opacity", 1)
-				.style("left", barLeft + "px")
+				.style("left", 65 + "px")
 				.style("top", 100 + "px")
 				.style("width", tooltipWith);
 
@@ -284,7 +283,6 @@ function DiscussionBarometer(){
 			if (d.message != null) {
 				div.append('li').html(d.message);
 			}
-			
 			var text_keyword = '';
 			if (address == 'argument')
 				text_keyword = d.seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
@@ -335,10 +333,15 @@ function DiscussionBarometer(){
 	 * @param address
 	 */
 	this.getD3BarometerPieChart = function(jsonData, address) {
-		$('#' + popupConfirmDialogId + ' div.modal-body').empty();
+		var dialog = $('#' + popupConfirmRowDialogId);
+		dialog.find('.col-md-6').empty();
+		dialog.find('.col-md-5').empty();
+
+		// create div for barometer
+		dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
 
 		// width and height of chart
-		var width = 560, height = 430;
+		var width = 500, height = 410;
 		var pieChartSvg = getSvgPieChart(width, height);
 
 		var usersDict = [];
@@ -365,7 +368,7 @@ function DiscussionBarometer(){
 	 * @return scalable vector graphic
      */
 	function getSvgPieChart(width, height){
-		return d3.select('#' + popupConfirmDialogId + ' div.modal-body').append('svg').attr({width: width, height: height, id: "barometer-svg"});
+		return d3.select('#barometer-div').append('svg').attr({width: width, height: height, id: "barometer-svg"});
 	}
 
 	/**
@@ -437,7 +440,7 @@ function DiscussionBarometer(){
 	}
 
 	/**
-	 *
+	 * Create inner path.
 	 *
 	 * @param pieChartSvg
 	 * @param usersDict
@@ -453,11 +456,11 @@ function DiscussionBarometer(){
 			})
 			.attr("stroke", "gray")
 			.attr("d", innerCircle)
-			.attr("transform", "translate(280,200)");
+			.attr("transform", "translate(250,210)");
 	}
 
 	/**
-	 *
+	 * Create outer path.
 	 *
 	 * @param pieChartSvg
 	 * @param usersDict
@@ -471,6 +474,6 @@ function DiscussionBarometer(){
 			.attr("fill", "none")
 			.attr("stroke", "gray")
 			.attr("d", outerCircle)
-			.attr("transform", "translate(280,200)");
+			.attr("transform", "translate(250,210)");
 	}
 }
