@@ -120,6 +120,7 @@ function AdminGui() {
 			$(this).click(function () {
 				var uid = $(this).parents('tr:first').find('td:first').text();
 				console.log('todo delete ' + uid);
+				new AdminAjaxHandler().deleteSomething(uid);
 			})
 		});
 	};
@@ -132,10 +133,14 @@ function AdminGui() {
 		var _this = this;
 		parent.find('.floppy').each(function () {
 			$(this).click(function () {
+				var tmp = $(this).parents('tr:first');
 				var uid = $(this).parents('tr:first').find('td:first').text();
 				_this.deactivateElement(this, 'floppy', 'text-success');
 				_this.deactivateElement(this, 'square', 'text-danger');
 				console.log('todo save ' + uid);
+				new AdminAjaxHandler().saveSomething(uid);
+				tmp.find('input').remove();
+				tmp.find('span').show();
 			})
 		});
 	};
