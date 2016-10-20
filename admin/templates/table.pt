@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                     <tr tal:repeat="row table.row">
-                        <td tal:repeat="el row">${el}</td>
+                        <td tal:repeat="el row"><span>${el}</span></td>
                         <td>
                             <a href="#" title="edit"><i class="fa pencil fa-pencil-square-o" aria-hidden="true"></i></a>
                             <a href="#" title="delete"><i class="fa trash fa-trash-o" aria-hidden="true"></i></a>
