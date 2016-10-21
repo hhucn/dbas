@@ -4,6 +4,7 @@ Introducing an admin interface to enable easy database management.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import json
 import dbas.helper.history as HistoryHelper
 import dbas.user_management as UserHandler
 import transaction
@@ -11,9 +12,9 @@ import admin.lib as lib
 from cornice import Service
 from dbas.lib import get_language
 from dbas.logger import logger
-from dbas.views import Dbas
-from dbas.views import project_name
+from dbas.views import Dbas, project_name
 from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.strings.translator import Translator
 from pyramid.threadlocal import get_current_registry
 
 #
@@ -42,6 +43,20 @@ table = Service(name='table_page',
                 renderer='templates/table.pt',
                 permission='use',
                 cors_policy=cors_policy)
+
+update = Service(name='update_row',
+                 path='/{url:.*}ajax_admin_update',
+                 description="Update",
+                 renderer='json',
+                 permission='use',
+                 cors_policy=cors_policy)
+
+delete = Service(name='delete_row',
+                 path='/{url:.*}ajax_admin_delete',
+                 description="Delete",
+                 renderer='json',
+                 permission='use',
+                 cors_policy=cors_policy)
 
 
 @dashboard.get()
@@ -99,3 +114,47 @@ def main_table(request):
         'extras': extras_dict,
         'table': table_dict
     }
+
+
+@update.get()
+def main_update(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'main_update', 'def')
+
+    nickname = request.authenticated_userid
+    ui_locales = get_language(request, get_current_registry())
+    _tn = Translator(ui_locales)
+
+    return_dict = dict()
+    try:
+        uid = request.params['uid']
+        table = request.params['table']
+        keys = request.params['keys']
+        values = request.params['values']
+        error = lib.update_row(table, uid, keys, values, nickname, _tn)
+        return_dict['error'] = error
+    except KeyError as e:
+        logger('Admin', 'main_update error', repr(e))
+        return_dict['error'] = _tn.get(_tn.internalKeyError)
+
+    return json.dumps(return_dict, True)
+
+
+@delete.get()
+def main_delete(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'main_delete', 'def')
+
+    nickname = request.authenticated_userid
+    ui_locales = get_language(request, get_current_registry())
+    _tn = Translator(ui_locales)
+
+    return_dict = dict()
+    try:
+        uid = request.params['uid']
+        return_dict['error'] = lib.delete_row(table, uid, nickname, _tn)
+    except KeyError as e:
+        logger('Admin', 'main_delete error', repr(e))
+        return_dict['error'] = _tn.get(_tn.internalKeyError)
+
+    return json.dumps(return_dict, True)

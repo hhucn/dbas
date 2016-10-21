@@ -6,7 +6,7 @@
 from random import randint
 
 from dbas.views import main_page
-from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings
+from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
@@ -252,3 +252,46 @@ def __get_random_color(index):
 
     # r = lambda: randint(100, 200)
     # return '#%02X%02X%02X' % (r(), r(), r())
+
+
+def update_row(table_name, uid, keys, values, nickname, _tn):
+    """
+
+    :param table_name:
+    :param uid:
+    :param keys:
+    :param values:
+    :param nickname:
+    :param _tn:
+    :return:
+    """
+    if not is_user_admin(nickname):
+        return _tn.get(_tn.noRights)
+
+    if not table_name.lower() in table_mapper:
+        return _tn.get(_tn.internalKeyError)
+
+    table = table_mapper[table_name.lower()]['table']
+
+    return ''
+
+
+def delete_row(table_name, uid, nickname, _tn):
+    """
+
+    :param table_name:
+    :param uid:
+    :param nickname:
+    :param _tn:
+    :return:
+    """
+    if not is_user_admin(nickname):
+        return _tn.get(_tn.noRights)
+
+    if not table_name.lower() in table_mapper:
+        return _tn.get(_tn.internalKeyError)
+
+    table = table_mapper[table_name.lower()]['table']
+    DBDiscussionSession.query(table).filter_by(uid).delete()
+
+    return ''
