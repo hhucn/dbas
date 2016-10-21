@@ -7,7 +7,16 @@
 		<div class="container colored-container" tal:condition="table.is_existing">
             <div class="row">
                 <div class="col-md-10">
-                <span class="lead">${table.name} has ${table.count} Elements</span>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="${request.application_url}/admin/" data-toggle="tooltip" data-placement="right">
+                                <span i18n:translate="Admin" class="lead" style="color: #2196f3">Admin</span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <span class="lead">${table.name} has ${table.count} Elements</span>
+                        </li>
+                    </ul>
                 </div>
                 <div class="col-md-2">
                     <span class="lead"><a href="#" title="create"><i class="fa fa-plus-square-o add fa-pull-right" aria-hidden="true"></i></a></span>
@@ -23,7 +32,7 @@
                 </thead>
                 <tbody>
                     <tr tal:repeat="row table.row">
-                        <td tal:repeat="el row"><span>${el}</span></td>
+                        <td tal:repeat="el row"><span>${structure:el}</span></td>
                         <td>
                             <a href="#" title="edit"><i class="fa pencil fa-pencil-square-o" aria-hidden="true"></i></a>
                             <a href="#" title="delete"><i class="fa trash fa-trash-o" aria-hidden="true"></i></a>
