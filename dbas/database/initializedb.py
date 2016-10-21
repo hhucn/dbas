@@ -519,16 +519,16 @@ def set_up_users(session):
     usert29 = User(firstname='Sybille', surname='Redlich', nickname='Sybille', email='to.bias.krautho.ff@gmail.com', password=pwt, group=group2.uid, gender='f')
     usert30 = User(firstname='Ingeburg', surname='Fischer', nickname='Ingeburg', email='t.obias.krauthof.f@gmail.com', password=pwt, group=group2.uid, gender='f')
 
-    session.add_all([user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, usert00])
+    session.add_all([user0, user1, user2, user3, user4, user5, user6, user7, usert00])
     session.add_all([usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10])
     session.add_all([usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20])
     session.add_all([usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30])
     session.flush()
 
-    return user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
+    return user0, user1, user2, user3, user4, user5, user6, user7, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
 
 
-def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, user7, user8, user9,
+def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, user7,
                     usert00, usert01, usert02, usert03, usert04, usert05,
                     usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16,
                     usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27,
@@ -542,8 +542,6 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
     settings5 = Settings(author_uid=user5.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settings6 = Settings(author_uid=user6.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settings7 = Settings(author_uid=user7.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settings8 = Settings(author_uid=user8.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settings9 = Settings(author_uid=user9.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settingst00 = Settings(author_uid=usert00.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settingst01 = Settings(author_uid=usert01.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settingst02 = Settings(author_uid=usert02.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
@@ -575,7 +573,7 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
     settingst28 = Settings(author_uid=usert28.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settingst29 = Settings(author_uid=usert29.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settingst30 = Settings(author_uid=usert30.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7, settings8, settings9])
+    session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7])
     session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
     session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
     session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
@@ -607,9 +605,7 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
     notification2 = Message(from_author_uid=user1.uid, to_author_uid=user4.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
     notification3 = Message(from_author_uid=user1.uid, to_author_uid=user5.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
     notification4 = Message(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification5 = Message(from_author_uid=user1.uid, to_author_uid=user7.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification6 = Message(from_author_uid=user1.uid, to_author_uid=user8.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    session.add_all([notification0, notification1, notification2, notification3, notification4, notification5, notification6])
+    session.add_all([notification0, notification1, notification2, notification3, notification4])
     session.flush()
 
 
