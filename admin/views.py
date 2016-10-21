@@ -37,12 +37,12 @@ dashboard = Service(name='dashboard_page',
                     permission='everybody',  # or permission='use'
                     cors_policy=cors_policy)
 
-table = Service(name='table_page',
-                path='/{table}',
-                description="Table Page",
-                renderer='templates/table.pt',
-                permission='use',
-                cors_policy=cors_policy)
+z_table = Service(name='table_page',
+                  path='/{table}',
+                  description="Table Page",
+                  renderer='templates/table.pt',
+                  permission='use',
+                  cors_policy=cors_policy)
 
 update = Service(name='update_row',
                  path='/{url:.*}ajax_admin_update',
@@ -87,7 +87,7 @@ def main_admin(request):
     }
 
 
-@table.get()
+@z_table.get()
 def main_table(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -119,7 +119,7 @@ def main_table(request):
 @update.get()
 def main_update(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_update', 'def')
+    logger('Admin', 'main_update', 'def ' + str(request.params))
 
     nickname = request.authenticated_userid
     ui_locales = get_language(request, get_current_registry())
@@ -129,10 +129,9 @@ def main_update(request):
     try:
         uid = request.params['uid']
         table = request.params['table']
-        keys = request.params['keys']
-        values = request.params['values']
-        error = lib.update_row(table, uid, keys, values, nickname, _tn)
-        return_dict['error'] = error
+        keys = json.loads(request.params['keys'])
+        values = json.loads(request.params['values'])
+        return_dict['error'] = lib.update_row(table, uid, keys, values, nickname, _tn)
     except KeyError as e:
         logger('Admin', 'main_update error', repr(e))
         return_dict['error'] = _tn.get(_tn.internalKeyError)
@@ -143,7 +142,7 @@ def main_update(request):
 @delete.get()
 def main_delete(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_delete', 'def')
+    logger('Admin', 'main_delete', 'def ' + str(request.params))
 
     nickname = request.authenticated_userid
     ui_locales = get_language(request, get_current_registry())
@@ -151,6 +150,7 @@ def main_delete(request):
 
     return_dict = dict()
     try:
+        table = request.params['table']
         uid = request.params['uid']
         return_dict['error'] = lib.delete_row(table, uid, nickname, _tn)
     except KeyError as e:
