@@ -3,7 +3,9 @@
 # @author Tobias Krauthoff
 # @email krautho66@cs.uni-duesseldorf.de
 
+import arrow
 from random import randint
+from sqlalchemy.exc import IntegrityError
 
 from dbas.views import main_page
 from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
@@ -272,8 +274,34 @@ def update_row(table_name, uid, keys, values, nickname, _tn):
         return _tn.get(_tn.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
+    update_dict = dict()
+    for index, key in enumerate(keys):
+        if str(__find_type(table, key)) == 'INTEGER':
+            update_dict[key] = int(values[index])
+        elif str(__find_type(table, key)) == 'BOOLEAN':
+            update_dict[key] = True if values[index].lower() == 'true' else False
+        elif str(__find_type(table, key)) == 'TEXT':
+            update_dict[key] = str(values[index])
+        elif str(__find_type(table, key)) == 'ARROWTYPE':
+            update_dict[key] = arrow.get(str(values[index]))
+        else:
+            update_dict[key] = values[index]
+
+    try:
+        DBDiscussionSession.query(table).filter_by(uid=uid).update(update_dict)
+    except IntegrityError as e:
+        logger('AdminLib', 'update_row IntegrityError', str(e))
+        return 'SQLAlchemy IntegrityError: ' + str(e)
 
     return ''
+
+
+def __find_type(class_, colname):
+    if hasattr(class_, '__table__') and colname in class_.__table__.c:
+        return class_.__table__.c[colname].type
+    for base in class_.__bases__:
+        return __find_type(base, colname)
+    raise NameError(colname)
 
 
 def delete_row(table_name, uid, nickname, _tn):
@@ -285,6 +313,7 @@ def delete_row(table_name, uid, nickname, _tn):
     :param _tn:
     :return:
     """
+    logger('AdminLib', 'delete_row', table_name + ' ' + str(uid) + ' ' + nickname)
     if not is_user_admin(nickname):
         return _tn.get(_tn.noRights)
 
@@ -292,6 +321,10 @@ def delete_row(table_name, uid, nickname, _tn):
         return _tn.get(_tn.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
-    DBDiscussionSession.query(table).filter_by(uid).delete()
+    try:
+        DBDiscussionSession.query(table).filter_by(uid=uid).delete()
+    except IntegrityError as e:
+        logger('AdminLib', 'delete_row IntegrityError', str(e))
+        return 'SQLAlchemy IntegrityError: ' + str(e)
 
     return ''
