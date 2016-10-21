@@ -5,9 +5,15 @@
 
 from random import randint
 
+from dbas.views import main_page
+from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, ReviewCanceled, RevokedContent
+from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
+    StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
+    Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
+    LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
+    ReviewCanceled, RevokedContent
 
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
@@ -168,13 +174,49 @@ def get_table_dict(table_name):
     columns = [r.key for r in table.__table__.columns]
 
     # getting data
-    data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
+    # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
+    data = []
+    for row in db_elements:
+        tmp = []
+        for column in row.__table__.columns:
+            attribute = getattr(row, column.name)
+            # all keywords for getting a user
+            if 'author_uid' in column.name or column.name in ['reputator_uid', 'reviewer_uid']:
+                tmp.append(__get_author(attribute))
+            # resolve language
+            elif column.name == 'lang_uid':
+                tmp.append(__get_language(attribute))
+            else:
+                tmp.append(str(attribute))
+        data.append(tmp)
 
     # save it
     return_dict['head'] = columns
     return_dict['row'] = data
 
     return return_dict
+
+
+def __get_language(uid):
+    """
+
+    :param uid:
+    :return:
+    """
+    return DBDiscussionSession.query(Language).filter_by(uid=uid).first().ui_locales + ' (' + str(uid) + ')'
+
+
+def __get_author(uid):
+    """
+
+    :param uid:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(uid=int(uid)).first()
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
+    link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
+    link_end = '</a>'
+    return link_begin + db_user.nickname + ' ' + img + ' (' + str(uid) + ')' + link_end
 
 
 def __get_dash_dict(count, name, href):
