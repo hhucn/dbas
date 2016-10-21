@@ -175,6 +175,8 @@ def get_table_dict(table_name):
 
     # getting data
     # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
+    db_languages = DBDiscussionSession.query(Language)
+    db_users = DBDiscussionSession.query(User)
     data = []
     for row in db_elements:
         tmp = []
@@ -182,10 +184,10 @@ def get_table_dict(table_name):
             attribute = getattr(row, column.name)
             # all keywords for getting a user
             if 'author_uid' in column.name or column.name in ['reputator_uid', 'reviewer_uid']:
-                tmp.append(__get_author(attribute))
+                tmp.append(__get_author(attribute, db_users))
             # resolve language
             elif column.name == 'lang_uid':
-                tmp.append(__get_language(attribute))
+                tmp.append(__get_language(attribute, db_languages))
             else:
                 tmp.append(str(attribute))
         data.append(tmp)
@@ -197,26 +199,28 @@ def get_table_dict(table_name):
     return return_dict
 
 
-def __get_language(uid):
+def __get_language(uid, query):
     """
 
     :param uid:
+    :param query:
     :return:
     """
-    return DBDiscussionSession.query(Language).filter_by(uid=uid).first().ui_locales + ' (' + str(uid) + ')'
+    return query.filter_by(uid=uid).first().ui_locales
 
 
-def __get_author(uid):
+def __get_author(uid, query):
     """
 
     :param uid:
+    :param query:
     :return:
     """
-    db_user = DBDiscussionSession.query(User).filter_by(uid=int(uid)).first()
+    db_user = query.filter_by(uid=int(uid)).first()
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
     link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
     link_end = '</a>'
-    return link_begin + db_user.nickname + ' ' + img + ' (' + str(uid) + ')' + link_end
+    return link_begin + db_user.nickname + ' ' + img + link_end
 
 
 def __get_dash_dict(count, name, href):
