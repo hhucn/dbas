@@ -102,6 +102,7 @@ function AdminGui() {
 				var uid = parent.find('td:first').text();
 				_this.activateElement(this, 'floppy', 'text-success');
 				_this.activateElement(this, 'square', 'text-danger');
+				_this.deactivateElement(this, 'pencil', 'text-danger');
 				console.log('todo edit ' + uid);
 				parent.find('td:not(:last)').each(function(){
 					$(this).append($('<input>').attr({'class': 'form-control', 'placeholder': $(this).text()}).val($(this).text()));
@@ -120,7 +121,7 @@ function AdminGui() {
 			$(this).click(function () {
 				var uid = $(this).parents('tr:first').find('td:first').text();
 				console.log('todo delete ' + uid);
-				new AdminAjaxHandler().deleteSomething(uid);
+				new AdminAjaxHandler().deleteSomething(uid, $(this).parents('tr:first'));
 			})
 		});
 	};
@@ -130,15 +131,22 @@ function AdminGui() {
 	 * @param parent
 	 */
 	this.setSaveClickEvent = function(parent) {
-		var _this = this;
 		parent.find('.floppy').each(function () {
 			$(this).click(function () {
 				var tmp = $(this).parents('tr:first');
 				var uid = $(this).parents('tr:first').find('td:first').text();
-				_this.deactivateElement(this, 'floppy', 'text-success');
-				_this.deactivateElement(this, 'square', 'text-danger');
+				var keys = [];
+				var values = [];
+				$(this).parents('tr:first').find('input').each(function (){
+					values.push($(this).val());
+				});
+				$('#data').find('thead').find('th:not(:last-child)').each(function () {
+					keys.push($(this).text());
+				});
 				console.log('todo save ' + uid);
-				new AdminAjaxHandler().saveSomething(uid);
+				console.log('todo save ' + keys);
+				console.log('todo save ' + values);
+				new AdminAjaxHandler().saveSomething(uid, keys, values);
 				tmp.find('input').remove();
 				tmp.find('span').show();
 			})
@@ -157,6 +165,7 @@ function AdminGui() {
 				var uid = tmp.find('td:first').text();
 				_this.deactivateElement(this, 'floppy', 'text-success');
 				_this.deactivateElement(this, 'square', 'text-danger');
+				_this.activateElement(this, 'pencil', '');
 				console.log('todo cancel ' + uid);
 				tmp.find('input').remove();
 				tmp.find('span').show();
