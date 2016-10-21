@@ -10,7 +10,7 @@ function AdminAjaxHandler(){
 	 */
 	this.deleteSomething = function(uid){
 		console.log('ajax delete ' + uid);
-		new AdminCallbackHandler().doSomething();
+		new AdminCallbackHandler().doSomething(uid);
 	};
 	
 	/**
