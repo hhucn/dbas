@@ -473,6 +473,8 @@ def set_up_users(session):
     pw5 = password_handler.get_hashed_password('raphael')
     pw6 = password_handler.get_hashed_password('alexander')
     pw7 = password_handler.get_hashed_password('R4n0mpw')
+    pw8 = password_handler.get_hashed_password('bjoern')
+    pw9 = password_handler.get_hashed_password('teresa')
 
     user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group=group2.uid, gender='m')
     user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group=group0.uid, gender='m')
@@ -482,6 +484,8 @@ def set_up_users(session):
     user5 = User(firstname='Raphael', surname='Bialon', nickname='Яaphael', email='bialon@cs.uni-duesseldorf.de', password=pw5, group=group1.uid, gender='m')
     user6 = User(firstname='Alexander', surname='Schneider', nickname='WeGi', email='aschneider@cs.uni-duesseldorf.de', password=pw6, group=group1.uid, gender='m')
     user7 = User(firstname='Katharina', surname='Esau', nickname='katesa', email='katharina.esau@hhu.de', password=pw7, group=group1.uid, gender='f')
+    user8 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn', email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group=group0.uid, gender='m')
+    user9 = User(firstname='Teresa', surname='Uebber', nickname='Teresa', email='teresa.uebber@uni-duesseldorf.de', password=pw9, group=group0.uid, gender='f')
 
     usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='.tobias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
     usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='t.obias.krauthoff@gmail.com', password=pwt, group=group2.uid, gender='m')
