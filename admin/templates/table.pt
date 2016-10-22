@@ -14,7 +14,7 @@
                             </a>
                         </li>
                         <li class="active">
-                            <span class="lead">${table.name} has ${table.count} Elements</span>
+                            <span class="lead"><span id="table_name">${table.name}</span> has ${table.count} Elements</span>
                         </li>
                     </ul>
                 </div>

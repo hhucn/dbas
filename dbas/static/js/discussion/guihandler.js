@@ -823,23 +823,6 @@ function GuiHandler() {
 	};
 
 	/**
-	 * Dispalys the 'how to write text '-popup, when the setting is not in the cookies
-	 */
-	this.showHowToWriteTextPopup = function(){
-		var cookie_name = 'HOW_TO_WRITE_TEXT',
-			userAcceptedCookies = new Helper().isCookieSet(cookie_name);
-		if (!userAcceptedCookies) {
-			$('#' + popupHowToWriteText).modal('show');
-		}
-
-		// accept cookie
-		$('#' + popupHowToWriteTextOkayButton).click(function(){
-			$('#' + popupHowToWriteText).modal('hide');
-			new Helper().setCookie(cookie_name);
-		});
-	};
-
-	/**
 	 * Closes the popup and deletes all of its content
 	 */
 	this.hideAndClearUrlSharingPopup = function () {

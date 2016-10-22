@@ -398,6 +398,7 @@ class GermanDict:
         de_lang[_self.letsGo] = 'Klicken Sie hier um direkt zu starten!'
         de_lang[_self.letsGoBack] = 'Ab geht\'s zurück!'
         de_lang[_self.letsGoHome] = 'Ab zur Startseite!'
+        de_lang[_self.langNotFound] = 'Sprache nicht gefunden'
         de_lang[_self.more] = 'Mehr'
         de_lang[_self.medium] = 'mittel'
         de_lang[_self.minLength] = 'Mindestlänge'

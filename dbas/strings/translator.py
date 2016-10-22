@@ -331,6 +331,7 @@ class Translator(object):
         self.languageCouldNotBeSwitched = 'languageCouldNotBeSwitched'
         self.last_action = 'last_action'
         self.last_login = 'last_login'
+        self.langNotFound = 'langNotFound'
         self.login = 'login'
         self.logfile = 'logfile'
         self.letsGo = 'letsGo'

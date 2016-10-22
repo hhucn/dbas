@@ -3,55 +3,6 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  */
 
-function AdminIndex(){
-	
-	/**
-	 *
-	 */
-	this.login = function () {
-		var csrfToken = $('#' + hiddenCSRFTokenId).val();
-		$('#admin-login-failed').hide();
-		$('#admin-login-failed-message').html('');
-		
-		var user = $('#admin-login-user').val();
-		var password = $('#admin-login-pw').val();
-		var url = window.location.href;
-		var keep_login = $('#admin-keep-login-box').prop('checked') ? 'true' : 'false';
-		$.ajax({
-			url: mainpage + 'ajax_user_login',
-			type: 'GET',
-			data: {
-				user: user,
-				password: password,
-				url: url,
-				keep_login: keep_login
-			},
-			dataType: 'json',
-			async: true,
-			headers: {'X-CSRF-Token': csrfToken}
-		}).done(function (data) { // display fetched data
-			try {
-				var jsonData = $.parseJSON(data);
-				if (jsonData.error.length != 0) {
-					$('#admin-login-failed').show();
-					$('#admin-login-failed-message').html(jsonData.error);
-				} else {
-					location.reload(true);
-				}
-			} catch(err){
-				//var htmlData = $.parseHTML(data);
-				var url = location.href;
-				if (url.indexOf('?session_expired=true') != -1)
-					url = url.substr(0, url.length - '?session_expired=true'.length);
-				location.href = url;
-			}
-		}).fail(function () { // display error message
-			setGlobalErrorHandler('Ohh', _t(requestFailed));
-			location.reload();
-		});
-	};
-}
-
 function AdminGui() {
 	
 	/**
@@ -80,12 +31,32 @@ function AdminGui() {
 	
 	/**
 	 *
-	 * @param parent
 	 */
-	this.setAddClickEvent = function(parent) {
-		parent.find('.add').each(function () {
+	this.setAddClickEvent = function() {
+		$('body').find('.add').each(function () {
 			$(this).click(function () {
-				console.log('todo create');
+				var dialog = $('#' + popupConfirmRowDialogId);
+				var body = dialog.find('.modal-body');
+				body.children().remove();
+				dialog.modal('show');
+				dialog.children().eq(0).removeClass('modal-lg');
+				dialog.find('.modal-title').text('Add Data');
+				$('#data').find('th:not(:last-child)').each(function (){
+					var form = $('<div>').addClass('form-group');
+					var label = $('<label>').addClass('col-sm-5').addClass('control-label').attr('for', $(this).text()).text($(this).text());
+					var div = $('<div>').addClass('col-sm-7').append($('<input>').attr({'class': 'form-control', 'data-for': $(this).text()}));
+					body.append(form.append(label).append(div));
+				});
+				dialog.find('.btn-danger').off('click').click(function (){
+					dialog.modal('hide');
+				});
+				dialog.find('.btn-success').off('click').click(function (){
+					var data = {};
+					body.find('input').each(function (){
+						data[$(this).data('for')] = $(this).val();
+					});
+					new AdminAjaxHandler().addSomething(data);
+				});
 			})
 		});
 	};
@@ -99,12 +70,12 @@ function AdminGui() {
 		parent.find('.pencil').each(function () {
 			$(this).click(function () {
 				var parent = $(this).parents('tr:first');
-				var uid = parent.find('td:first').text();
+				// var uid = parent.find('td:first').text();
 				_this.activateElement(this, 'floppy', 'text-success');
 				_this.activateElement(this, 'square', 'text-danger');
-				console.log('todo edit ' + uid);
+				_this.deactivateElement(this, 'pencil', 'text-danger');
 				parent.find('td:not(:last)').each(function(){
-					$(this).append($('<input>').attr({'class': 'form-control', 'placeholder': $(this).text()}).val($(this).text()));
+					$(this).append($('<input>').attr({'class': 'form-control', 'placeholder': $(this).text().trim()}).val($(this).text().trim()));
 					$(this).find('span').hide();
 				});
 			})
@@ -116,11 +87,11 @@ function AdminGui() {
 	 * @param parent
 	 */
 	this.setDeleteClickEvent = function(parent) {
+		var _this = this;
 		parent.find('.trash').each(function () {
 			$(this).click(function () {
-				var uid = $(this).parents('tr:first').find('td:first').text();
-				console.log('todo delete ' + uid);
-				new AdminAjaxHandler().deleteSomething(uid);
+				var uids = _this.getUids($(this).parents('tr:first'));
+				new AdminAjaxHandler().deleteSomething(uids, $(this).parents('tr:first'));
 			})
 		});
 	};
@@ -134,11 +105,16 @@ function AdminGui() {
 		parent.find('.floppy').each(function () {
 			$(this).click(function () {
 				var tmp = $(this).parents('tr:first');
-				var uid = $(this).parents('tr:first').find('td:first').text();
-				_this.deactivateElement(this, 'floppy', 'text-success');
-				_this.deactivateElement(this, 'square', 'text-danger');
-				console.log('todo save ' + uid);
-				new AdminAjaxHandler().saveSomething(uid);
+				var uids = _this.getUids(tmp);
+				var keys = [];
+				var values = [];
+				tmp.find('input').each(function (){
+					values.push($(this).val());
+				});
+				$('#data').find('thead').find('th:not(:last-child)').each(function () {
+					keys.push($(this).text());
+				});
+				new AdminAjaxHandler().updateSomething(this, uids, keys, values);
 				tmp.find('input').remove();
 				tmp.find('span').show();
 			})
@@ -154,14 +130,33 @@ function AdminGui() {
 		parent.find('.square').each(function () {
 			$(this).click(function () {
 				var tmp = $(this).parents('tr:first');
-				var uid = tmp.find('td:first').text();
+				// var uid = tmp.find('td:first').text();
 				_this.deactivateElement(this, 'floppy', 'text-success');
 				_this.deactivateElement(this, 'square', 'text-danger');
-				console.log('todo cancel ' + uid);
+				_this.activateElement(this, 'pencil', '');
 				tmp.find('input').remove();
 				tmp.find('span').show();
 			})
 		});
+	};
+	
+	/**
+	 * Searches the PK of the table and returns an array
+	 *
+	 * @param element is the tr element of the table
+	 * @returns {Array}
+	 */
+	this.getUids = function(element){
+		var uids = [];
+		// Premise has two columns as PK
+		$.inArray( 'Premise', [ "8", "9", "10", 10 + "" ] );
+		if ($('#table_name').text().toLowerCase() === 'premise'){
+			uids.push(element.find('td:nth-child(1)').text().trim());
+			uids.push(element.find('td:nth-child(2)').text().trim());
+		} else {
+			uids.push(element.find('td:first').text().trim());
+		}
+		return uids;
 	}
 }
 
@@ -173,6 +168,7 @@ $(document).ready(function () {
 	
 	var data = $('#data');
 	var gui = new AdminGui();
+	var helper = new Helper();
 	
 	// events for edit
 	gui.setEditClickEvent(data);
@@ -187,5 +183,14 @@ $(document).ready(function () {
 	gui.setCancelClickEvent(data);
 	
 	// events for add
-	gui.setAddClickEvent(data);
+	gui.setAddClickEvent();
+	
+	if (!helper.isCookieSet('hide-admin-caution-warning')) {
+		$('#close-warning').fadeIn();
+		$('#close-warning-btn').click(function(){
+			$('#close-warning').fadeOut();
+			helper.setCookieForDays('hide-admin-caution-warning', 7, 'true')
+		});
+	}
+	
 });
