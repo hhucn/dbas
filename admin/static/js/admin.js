@@ -42,10 +42,15 @@ function AdminGui() {
 				dialog.children().eq(0).removeClass('modal-lg');
 				dialog.find('.modal-title').text('Add Data');
 				$('#data').find('th:not(:last-child)').each(function (){
-					var form = $('<div>').addClass('form-group');
-					var label = $('<label>').addClass('col-sm-5').addClass('control-label').attr('for', $(this).text()).text($(this).text());
-					var div = $('<div>').addClass('col-sm-7').append($('<input>').attr({'class': 'form-control', 'data-for': $(this).text()}));
-					body.append(form.append(label).append(div));
+					if ($(this).text() != 'uid') {
+						var form = $('<div>').addClass('form-group');
+						var label = $('<label>').addClass('col-sm-5').addClass('control-label').attr('for', $(this).text()).text($(this).text());
+						var div = $('<div>').addClass('col-sm-7').append($('<input>').attr({
+							'class': 'form-control',
+							'data-for': $(this).text()
+						}));
+						body.append(form.append(label).append(div));
+					}
 				});
 				dialog.find('.btn-danger').off('click').click(function (){
 					dialog.modal('hide');

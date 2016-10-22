@@ -188,7 +188,7 @@ def get_table_dict(table_name):
             attribute = getattr(row, column.name)
             # all keywords for getting a user
             if 'author_uid' in column.name or column.name in ['reputator_uid', 'reviewer_uid']:
-                tmp.append(__get_author(attribute, db_users))
+                tmp.append(__get_author_data(attribute, db_users))
             # resolve language
             elif column.name == 'lang_uid':
                 tmp.append(__get_language(attribute, db_languages))
@@ -213,7 +213,7 @@ def __get_language(uid, query):
     return query.filter_by(uid=uid).first().ui_locales
 
 
-def __get_author(uid, query):
+def __get_author_data(uid, query):
     """
 
     :param uid:
@@ -316,10 +316,8 @@ def __update_row_dict(table, values, keys, _tn):
     """
 
     :param table:
-    :param update_dict:
     :param values:
-    :param index:
-    :param key:
+    :param keys:
     :param _tn:
     :return:
     """
@@ -375,7 +373,7 @@ def delete_row(table_name, uids, nickname, _tn):
             DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
                                                     Premise.statement_uid == uids[1]).delete()
         else:
-            DBDiscussionSession.query(table).filter_by(uid=uids).delete()
+            DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
     except IntegrityError as e:
         logger('AdminLib', 'delete_row IntegrityError', str(e))
         return 'SQLAlchemy IntegrityError: ' + str(e)
@@ -404,7 +402,10 @@ def add_row(table_name, data, nickname, _tn):
     table = table_mapper[table_name.lower()]['table']
     try:
         # TODO
-        a = 1
+        if 'uid' in data:
+            del data['uid']
+        new_one = table(**data)
+        DBDiscussionSession.add(new_one)
     except IntegrityError as e:
         logger('AdminLib', 'add_row IntegrityError', str(e))
         return 'SQLAlchemy IntegrityError: ' + str(e)
