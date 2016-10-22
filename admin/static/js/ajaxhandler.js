@@ -79,6 +79,30 @@ function AdminAjaxHandler(){
 	
 	/**
 	 *
+	 * @param new_data
+	 */
+	this.addSomething = function(new_data){
+		console.log(JSON.stringify(new_data));
+		var table = $('#table_name').text();
+		var csrf_token = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_admin_add',
+			dataType: 'json',
+			data: {
+				'new_data': JSON.stringify(new_data),
+				'table': table
+			},
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function (data) {
+			new AdminCallbackHandler().doAddDone(data, new_data);
+		}).fail(function () {
+			new AdminCallbackHandler().doSomethingOnFail();
+		});
+	};
+	
+	/**
+	 *
 	 * @param element
 	 * @param uids
 	 * @param keys
@@ -142,6 +166,27 @@ function AdminCallbackHandler(){
         if (jsonData.error.length === 0) {
 	        element.remove();
 			setGlobalSuccessHandler('Yehaw!', _t(dataRemoved));
+        } else {
+			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
+        }
+	};
+	
+	/**
+	 *
+	 * @param data
+	 * @param new_data
+	 */
+	this.doAddDone = function(data, new_data){
+        var jsonData = $.parseJSON(data);
+        if (jsonData.error.length === 0) {
+			setGlobalSuccessHandler('Yehaw!', _t(addedEverything));
+	        $('#' + popupConfirmRowDialogId).modal('hide');
+	        var tbody = $('#data').find('tbody');
+	        var tr = $('<tr>');
+	        $.each( new_data, function( key, value ) {
+		        tr.append($('<td>').append($('<span>').text(value)));
+	        });
+	        tbody.append(tr);
         } else {
 			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
         }

@@ -31,12 +31,32 @@ function AdminGui() {
 	
 	/**
 	 *
-	 * @param parent
 	 */
-	this.setAddClickEvent = function(parent) {
-		parent.find('.add').each(function () {
+	this.setAddClickEvent = function() {
+		$('body').find('.add').each(function () {
 			$(this).click(function () {
-				console.log('todo create');
+				var dialog = $('#' + popupConfirmRowDialogId);
+				var body = dialog.find('.modal-body');
+				body.children().remove();
+				dialog.modal('show');
+				dialog.children().eq(0).removeClass('modal-lg');
+				dialog.find('.modal-title').text('Add Data');
+				$('#data').find('th:not(:last-child)').each(function (){
+					var form = $('<div>').addClass('form-group');
+					var label = $('<label>').addClass('col-sm-5').addClass('control-label').attr('for', $(this).text()).text($(this).text());
+					var div = $('<div>').addClass('col-sm-7').append($('<input>').attr({'class': 'form-control', 'data-for': $(this).text()}));
+					body.append(form.append(label).append(div));
+				});
+				dialog.find('.btn-danger').off('click').click(function (){
+					dialog.modal('hide');
+				});
+				dialog.find('.btn-success').off('click').click(function (){
+					var data = {};
+					body.find('input').each(function (){
+						data[$(this).data('for')] = $(this).val();
+					});
+					new AdminAjaxHandler().addSomething(data);
+				});
 			})
 		});
 	};
@@ -55,7 +75,7 @@ function AdminGui() {
 				_this.activateElement(this, 'square', 'text-danger');
 				_this.deactivateElement(this, 'pencil', 'text-danger');
 				parent.find('td:not(:last)').each(function(){
-					$(this).append($('<input>').attr({'class': 'form-control', 'placeholder': $(this).text()}).val($(this).text()));
+					$(this).append($('<input>').attr({'class': 'form-control', 'placeholder': $(this).text().trim()}).val($(this).text().trim()));
 					$(this).find('span').hide();
 				});
 			})
@@ -163,7 +183,7 @@ $(document).ready(function () {
 	gui.setCancelClickEvent(data);
 	
 	// events for add
-	gui.setAddClickEvent(data);
+	gui.setAddClickEvent();
 	
 	if (!helper.isCookieSet('hide-admin-caution-warning')) {
 		$('#close-warning').fadeIn();

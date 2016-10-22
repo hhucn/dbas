@@ -276,18 +276,9 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
         return _tn.get(_tn.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
-    update_dict = dict()
-    for index, key in enumerate(keys):
-        if str(__find_type(table, key)) == 'INTEGER':
-            update_dict[key] = int(values[index])
-        elif str(__find_type(table, key)) == 'BOOLEAN':
-            update_dict[key] = True if values[index].lower() == 'true' else False
-        elif str(__find_type(table, key)) == 'TEXT':
-            update_dict[key] = str(values[index])
-        elif str(__find_type(table, key)) == 'ARROWTYPE':
-            update_dict[key] = arrow.get(str(values[index]))
-        else:
-            update_dict[key] = values[index]
+    update_dict, success = __update_row_dict(table, values, keys, _tn)
+    if not success:
+        return update_dict  # update_dict is a string
 
     try:
         if table_name.lower() == 'settings':
@@ -321,6 +312,44 @@ def __find_type(class_, col_name):
     raise NameError(col_name)
 
 
+def __update_row_dict(table, values, keys, _tn):
+    """
+
+    :param table:
+    :param update_dict:
+    :param values:
+    :param index:
+    :param key:
+    :param _tn:
+    :return:
+    """
+    update_dict = dict()
+    for index, key in enumerate(keys):
+        if str(__find_type(table, key)) == 'INTEGER':
+            if key == 'author_uid':
+                db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
+                if not db_user:
+                    return _tn.get(_tn.userNotFound), False
+                update_dict[key] = db_user.uid
+            elif key == 'lang_uid':
+                db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
+                if not db_lang:
+                    return _tn.get(_tn.userNotFound), False
+                update_dict[key] = db_lang.uid
+            else:
+                update_dict[key] = int(values[index])
+        elif str(__find_type(table, key)) == 'BOOLEAN':
+            update_dict[key] = True if values[index].lower() == 'true' else False
+        elif str(__find_type(table, key)) == 'TEXT':
+            update_dict[key] = str(values[index])
+        elif str(__find_type(table, key)) == 'ARROWTYPE':
+            update_dict[key] = arrow.get(str(values[index]))
+        else:
+            update_dict[key] = values[index]
+
+    return update_dict, True
+
+
 def delete_row(table_name, uids, nickname, _tn):
     """
 
@@ -349,6 +378,35 @@ def delete_row(table_name, uids, nickname, _tn):
             DBDiscussionSession.query(table).filter_by(uid=uids).delete()
     except IntegrityError as e:
         logger('AdminLib', 'delete_row IntegrityError', str(e))
+        return 'SQLAlchemy IntegrityError: ' + str(e)
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return ''
+
+
+def add_row(table_name, data, nickname, _tn):
+    """
+
+    :param table:
+    :param data:
+    :param nickname:
+    :param _tn:
+    :return:
+    """
+    logger('AdminLib', 'add_row', str(data))
+    if not is_user_admin(nickname):
+        return _tn.get(_tn.noRights)
+
+    if not table_name.lower() in table_mapper:
+        return _tn.get(_tn.internalKeyError)
+
+    table = table_mapper[table_name.lower()]['table']
+    try:
+        # TODO
+        a = 1
+    except IntegrityError as e:
+        logger('AdminLib', 'add_row IntegrityError', str(e))
         return 'SQLAlchemy IntegrityError: ' + str(e)
 
     DBDiscussionSession.flush()

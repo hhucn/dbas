@@ -58,6 +58,13 @@ delete = Service(name='delete_row',
                  permission='use',
                  cors_policy=cors_policy)
 
+add = Service(name='add_row',
+              path='/{url:.*}ajax_admin_add',
+              description="Add",
+              renderer='json',
+              permission='use',
+              cors_policy=cors_policy)
+
 
 @dashboard.get()
 def main_admin(request):
@@ -155,6 +162,27 @@ def main_delete(request):
         return_dict['error'] = lib.delete_row(table, uids, nickname, _tn)
     except KeyError as e:
         logger('Admin', 'main_delete error', repr(e))
+        return_dict['error'] = _tn.get(_tn.internalKeyError)
+
+    return json.dumps(return_dict, True)
+
+
+@add.get()
+def main_add(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'main_add', 'def ' + str(request.params))
+
+    nickname = request.authenticated_userid
+    ui_locales = get_language(request, get_current_registry())
+    _tn = Translator(ui_locales)
+
+    return_dict = dict()
+    try:
+        table = request.params['table']
+        new_data = json.loads(request.params['new_data'])
+        return_dict['error'] = lib.add_row(table, new_data, nickname, _tn)
+    except KeyError as e:
+        logger('Admin', 'main_add error', repr(e))
         return_dict['error'] = _tn.get(_tn.internalKeyError)
 
     return json.dumps(return_dict, True)
