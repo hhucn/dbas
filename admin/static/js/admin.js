@@ -67,10 +67,11 @@ function AdminGui() {
 	 * @param parent
 	 */
 	this.setDeleteClickEvent = function(parent) {
+		var _this = this;
 		parent.find('.trash').each(function () {
 			$(this).click(function () {
-				var uid = $(this).parents('tr:first').find('td:first').text();
-				new AdminAjaxHandler().deleteSomething(uid, $(this).parents('tr:first'));
+				var uids = _this.getUids($(this).parents('tr:first'));
+				new AdminAjaxHandler().deleteSomething(uids, $(this).parents('tr:first'));
 			})
 		});
 	};
@@ -80,19 +81,20 @@ function AdminGui() {
 	 * @param parent
 	 */
 	this.setSaveClickEvent = function(parent) {
+		var _this = this;
 		parent.find('.floppy').each(function () {
 			$(this).click(function () {
 				var tmp = $(this).parents('tr:first');
-				var uid = $(this).parents('tr:first').find('td:first').text();
+				var uids = _this.getUids(tmp);
 				var keys = [];
 				var values = [];
-				$(this).parents('tr:first').find('input').each(function (){
+				tmp.find('input').each(function (){
 					values.push($(this).val());
 				});
 				$('#data').find('thead').find('th:not(:last-child)').each(function () {
 					keys.push($(this).text());
 				});
-				new AdminAjaxHandler().updateSomething(this, uid, keys, values);
+				new AdminAjaxHandler().updateSomething(this, uids, keys, values);
 				tmp.find('input').remove();
 				tmp.find('span').show();
 			})
@@ -116,6 +118,25 @@ function AdminGui() {
 				tmp.find('span').show();
 			})
 		});
+	};
+	
+	/**
+	 * Searches the PK of the table and returns an array
+	 *
+	 * @param element is the tr element of the table
+	 * @returns {Array}
+	 */
+	this.getUids = function(element){
+		var uids = [];
+		// Premise has two columns as PK
+		$.inArray( 'Premise', [ "8", "9", "10", 10 + "" ] );
+		if ($('#table_name').text().toLowerCase() === 'premise'){
+			uids.push(element.find('td:nth-child(1)').text().trim());
+			uids.push(element.find('td:nth-child(2)').text().trim());
+		} else {
+			uids.push(element.find('td:first').text().trim());
+		}
+		return uids;
 	}
 }
 
@@ -127,6 +148,7 @@ $(document).ready(function () {
 	
 	var data = $('#data');
 	var gui = new AdminGui();
+	var helper = new Helper();
 	
 	// events for edit
 	gui.setEditClickEvent(data);
@@ -142,4 +164,13 @@ $(document).ready(function () {
 	
 	// events for add
 	gui.setAddClickEvent(data);
+	
+	if (!helper.isCookieSet('hide-admin-caution-warning')) {
+		$('#close-warning').fadeIn();
+		$('#close-warning-btn').click(function(){
+			$('#close-warning').fadeOut();
+			helper.setCookieForDays('hide-admin-caution-warning', 7, 'true')
+		});
+	}
+	
 });

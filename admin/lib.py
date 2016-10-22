@@ -3,6 +3,8 @@
 # @author Tobias Krauthoff
 # @email krautho66@cs.uni-duesseldorf.de
 
+
+import transaction
 import arrow
 from random import randint
 from sqlalchemy.exc import IntegrityError
@@ -256,11 +258,11 @@ def __get_random_color(index):
     # return '#%02X%02X%02X' % (r(), r(), r())
 
 
-def update_row(table_name, uid, keys, values, nickname, _tn):
+def update_row(table_name, uids, keys, values, nickname, _tn):
     """
 
     :param table_name:
-    :param uid:
+    :param uids:
     :param keys:
     :param values:
     :param nickname:
@@ -288,32 +290,47 @@ def update_row(table_name, uid, keys, values, nickname, _tn):
             update_dict[key] = values[index]
 
     try:
-        DBDiscussionSession.query(table).filter_by(uid=uid).update(update_dict)
+        if table_name.lower() == 'settings':
+            uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
+            DBDiscussionSession.query(table).filter_by(author_uid=uid).update(update_dict)
+        elif table_name.lower() == 'premise':
+            DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+                                                    Premise.statement_uid == uids[1]).update(update_dict)
+        else:
+            DBDiscussionSession.query(table).filter_by(uid=uids).update(update_dict)
     except IntegrityError as e:
         logger('AdminLib', 'update_row IntegrityError', str(e))
         return 'SQLAlchemy IntegrityError: ' + str(e)
 
+    DBDiscussionSession.flush()
+    transaction.commit()
     return ''
 
 
-def __find_type(class_, colname):
-    if hasattr(class_, '__table__') and colname in class_.__table__.c:
-        return class_.__table__.c[colname].type
+def __find_type(class_, col_name):
+    """
+
+    :param class_:
+    :param col_name:
+    :return:
+    """
+    if hasattr(class_, '__table__') and col_name in class_.__table__.c:
+        return class_.__table__.c[col_name].type
     for base in class_.__bases__:
-        return __find_type(base, colname)
-    raise NameError(colname)
+        return __find_type(base, col_name)
+    raise NameError(col_name)
 
 
-def delete_row(table_name, uid, nickname, _tn):
+def delete_row(table_name, uids, nickname, _tn):
     """
 
     :param table_name:
-    :param uid:
+    :param uids:
     :param nickname:
     :param _tn:
     :return:
     """
-    logger('AdminLib', 'delete_row', table_name + ' ' + str(uid) + ' ' + nickname)
+    logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
     if not is_user_admin(nickname):
         return _tn.get(_tn.noRights)
 
@@ -322,9 +339,18 @@ def delete_row(table_name, uid, nickname, _tn):
 
     table = table_mapper[table_name.lower()]['table']
     try:
-        DBDiscussionSession.query(table).filter_by(uid=uid).delete()
+        if table_name.lower() == 'settings':
+            uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
+            DBDiscussionSession.query(table).filter_by(author_uid=uid).delete()
+        elif table_name.lower() == 'premise':
+            DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+                                                    Premise.statement_uid == uids[1]).delete()
+        else:
+            DBDiscussionSession.query(table).filter_by(uid=uids).delete()
     except IntegrityError as e:
         logger('AdminLib', 'delete_row IntegrityError', str(e))
         return 'SQLAlchemy IntegrityError: ' + str(e)
 
+    DBDiscussionSession.flush()
+    transaction.commit()
     return ''
