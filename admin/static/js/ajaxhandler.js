@@ -181,12 +181,20 @@ function AdminCallbackHandler(){
         if (jsonData.error.length === 0) {
 			setGlobalSuccessHandler('Yehaw!', _t(addedEverything));
 	        $('#' + popupConfirmRowDialogId).modal('hide');
-	        var tbody = $('#data').find('tbody');
+	        var data = $('#data');
+	        var tbody = data.find('tbody');
 	        var tr = $('<tr>');
 	        $.each( new_data, function( key, value ) {
 		        tr.append($('<td>').append($('<span>').text(value)));
 	        });
+	        var modify = data.find('.pencil:first').parent().parent().clone();
+	        tr.append(modify);
 	        tbody.append(tr);
+	        var gui = new AdminGui();
+			gui.setEditClickEvent(modify);
+			gui.setDeleteClickEvent(modify);
+			gui.setSaveClickEvent(modify);
+			gui.setCancelClickEvent(modify);
         } else {
 			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
         }
