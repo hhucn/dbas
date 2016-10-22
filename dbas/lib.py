@@ -275,7 +275,10 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     else:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[1]).first()
         conclusions_premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        conclusions_conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+        if db_argument.conclusion_uid:
+            conclusions_conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+        else:
+            conclusions_conclusion = get_text_for_argument_uid(db_argument.argument_uid)
 
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
