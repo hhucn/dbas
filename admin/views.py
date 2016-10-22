@@ -4,6 +4,7 @@ Introducing an admin interface to enable easy database management.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import json
 import dbas.helper.history as HistoryHelper
 import dbas.user_management as UserHandler
 import transaction
@@ -11,9 +12,9 @@ import admin.lib as lib
 from cornice import Service
 from dbas.lib import get_language
 from dbas.logger import logger
-from dbas.views import Dbas
-from dbas.views import project_name
+from dbas.views import Dbas, project_name
 from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.strings.translator import Translator
 from pyramid.threadlocal import get_current_registry
 
 #
@@ -36,12 +37,33 @@ dashboard = Service(name='dashboard_page',
                     permission='everybody',  # or permission='use'
                     cors_policy=cors_policy)
 
-table = Service(name='table_page',
-                path='/{table}',
-                description="Table Page",
-                renderer='templates/table.pt',
-                permission='use',
-                cors_policy=cors_policy)
+z_table = Service(name='table_page',
+                  path='/{table}',
+                  description="Table Page",
+                  renderer='templates/table.pt',
+                  permission='use',
+                  cors_policy=cors_policy)
+
+update = Service(name='update_row',
+                 path='/{url:.*}ajax_admin_update',
+                 description="Update",
+                 renderer='json',
+                 permission='use',
+                 cors_policy=cors_policy)
+
+delete = Service(name='delete_row',
+                 path='/{url:.*}ajax_admin_delete',
+                 description="Delete",
+                 renderer='json',
+                 permission='use',
+                 cors_policy=cors_policy)
+
+add = Service(name='add_row',
+              path='/{url:.*}ajax_admin_add',
+              description="Add",
+              renderer='json',
+              permission='use',
+              cors_policy=cors_policy)
 
 
 @dashboard.get()
@@ -72,7 +94,7 @@ def main_admin(request):
     }
 
 
-@table.get()
+@z_table.get()
 def main_table(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -94,8 +116,73 @@ def main_table(request):
     return {
         'layout': Dbas.base_layout(),
         'language': str(ui_locales),
-        'title': table,
+        'title': 'Admin - ' + table,
         'project': project_name,
         'extras': extras_dict,
         'table': table_dict
     }
+
+
+@update.get()
+def main_update(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'main_update', 'def ' + str(request.params))
+
+    nickname = request.authenticated_userid
+    ui_locales = get_language(request, get_current_registry())
+    _tn = Translator(ui_locales)
+
+    return_dict = dict()
+    try:
+        table = request.params['table']
+        uids = json.loads(request.params['uids'])
+        keys = json.loads(request.params['keys'])
+        values = json.loads(request.params['values'])
+        return_dict['error'] = lib.update_row(table, uids, keys, values, nickname, _tn)
+    except KeyError as e:
+        logger('Admin', 'main_update error', repr(e))
+        return_dict['error'] = _tn.get(_tn.internalKeyError)
+
+    return json.dumps(return_dict, True)
+
+
+@delete.get()
+def main_delete(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'main_delete', 'def ' + str(request.params))
+
+    nickname = request.authenticated_userid
+    ui_locales = get_language(request, get_current_registry())
+    _tn = Translator(ui_locales)
+
+    return_dict = dict()
+    try:
+        table = request.params['table']
+        uids = json.loads(request.params['uids'])
+        return_dict['error'] = lib.delete_row(table, uids, nickname, _tn)
+    except KeyError as e:
+        logger('Admin', 'main_delete error', repr(e))
+        return_dict['error'] = _tn.get(_tn.internalKeyError)
+
+    return json.dumps(return_dict, True)
+
+
+@add.get()
+def main_add(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'main_add', 'def ' + str(request.params))
+
+    nickname = request.authenticated_userid
+    ui_locales = get_language(request, get_current_registry())
+    _tn = Translator(ui_locales)
+
+    return_dict = dict()
+    try:
+        table = request.params['table']
+        new_data = json.loads(request.params['new_data'])
+        return_dict['error'] = lib.add_row(table, new_data, nickname, _tn)
+    except KeyError as e:
+        logger('Admin', 'main_add error', repr(e))
+        return_dict['error'] = _tn.get(_tn.internalKeyError)
+
+    return json.dumps(return_dict, True)
