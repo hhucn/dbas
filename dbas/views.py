@@ -114,7 +114,7 @@ class Dbas(object):
         return {
             'layout': self.base_layout(),
             'language': str(ui_locales),
-            'title': 'Main',
+            'title': name + ' ' + full_version,
             'project': project_name,
             'extras': extras_dict,
             'session_expired': session_expired

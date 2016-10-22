@@ -716,6 +716,19 @@ def is_user_author(nickname):
     return False
 
 
+def is_user_admin(nickname):
+    """
+    Check, if the given uid has admin rights or is admin
+
+    :param nickname: current user name
+    :return: true, if user is admin, false otherwise
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
+    #  logger('Lib', 'is_user_author', 'main')
+    return db_user and db_user.group_uid == db_admin_group.uid
+
+
 def is_argument_disabled_due_to_disabled_statements(argument):
     """
     Returns true if any involved statement is disabled.
