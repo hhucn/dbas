@@ -109,7 +109,7 @@ def main_table(request):
     return {
         'layout': Dbas.base_layout(),
         'language': str(ui_locales),
-        'title': table,
+        'title': 'Admin - ' + table,
         'project': project_name,
         'extras': extras_dict,
         'table': table_dict
@@ -127,11 +127,11 @@ def main_update(request):
 
     return_dict = dict()
     try:
-        uid = request.params['uid']
         table = request.params['table']
+        uids = json.loads(request.params['uids'])
         keys = json.loads(request.params['keys'])
         values = json.loads(request.params['values'])
-        return_dict['error'] = lib.update_row(table, uid, keys, values, nickname, _tn)
+        return_dict['error'] = lib.update_row(table, uids, keys, values, nickname, _tn)
     except KeyError as e:
         logger('Admin', 'main_update error', repr(e))
         return_dict['error'] = _tn.get(_tn.internalKeyError)
@@ -151,8 +151,8 @@ def main_delete(request):
     return_dict = dict()
     try:
         table = request.params['table']
-        uid = request.params['uid']
-        return_dict['error'] = lib.delete_row(table, uid, nickname, _tn)
+        uids = json.loads(request.params['uids'])
+        return_dict['error'] = lib.delete_row(table, uids, nickname, _tn)
     except KeyError as e:
         logger('Admin', 'main_delete error', repr(e))
         return_dict['error'] = _tn.get(_tn.internalKeyError)

@@ -55,17 +55,17 @@ function AdminAjaxHandler(){
 	
 	/**
 	 *
-	 * @param uid
+	 * @param uids
 	 * @param element
 	 */
-	this.deleteSomething = function(uid, element){
+	this.deleteSomething = function(uids, element){
 		var table = $('#table_name').text();
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_admin_delete',
 			dataType: 'json',
 			data: {
-				'uid': uid,
+				'uids': JSON.stringify(uids),
 				'table': table
 			},
 			async: true,
@@ -80,19 +80,19 @@ function AdminAjaxHandler(){
 	/**
 	 *
 	 * @param element
-	 * @param uid
+	 * @param uids
 	 * @param keys
 	 * @param values
 	 */
-	this.updateSomething = function(element, uid, keys, values){
+	this.updateSomething = function(element, uids, keys, values){
 		var table = $('#table_name').text();
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_admin_update',
 			dataType: 'json',
 			data: {
-				'uid': uid,
 				'table': table,
+				'uids': JSON.stringify(uids),
 				'keys': JSON.stringify(keys),
 				'values': JSON.stringify(values)
 			},
