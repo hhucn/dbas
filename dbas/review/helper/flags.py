@@ -92,7 +92,7 @@ def __is_argument_flagged_for_delete(argument_uid, statement_uid, is_executed=Fa
                                                                     ReviewDelete.statement_uid == statement_uid,
                                                                     ReviewDelete.is_executed == is_executed,
                                                                     ReviewDelete.is_revoked == is_revoked)).all()
-    return True if len(db_review) > 0 else False
+    return len(db_review) > 0
 
 
 def __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid, is_executed=False, is_revoked=False):
@@ -110,7 +110,7 @@ def __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_u
                                                                     ReviewDelete.is_executed == is_executed,
                                                                     ReviewDelete.detector_uid == user_uid,
                                                                     ReviewDelete.is_revoked == is_revoked)).all()
-    return True if len(db_review) > 0 else False
+    return len(db_review) > 0
 
 
 def __is_argument_flagged_for_optimization(argument_uid, statement_uid, is_executed=False, is_revoked=False):
@@ -126,7 +126,7 @@ def __is_argument_flagged_for_optimization(argument_uid, statement_uid, is_execu
                                                                           ReviewOptimization.statement_uid == statement_uid,
                                                                           ReviewOptimization.is_executed == is_executed,
                                                                           ReviewOptimization.is_revoked == is_revoked)).all()
-    return True if len(db_review) > 0 else False
+    return len(db_review) > 0
 
 
 def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid, is_executed=False, is_revoked=False):
@@ -144,7 +144,7 @@ def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, 
                                                                           ReviewOptimization.is_executed == is_executed,
                                                                           ReviewOptimization.detector_uid == user_uid,
                                                                           ReviewOptimization.is_revoked == is_revoked)).all()
-    return True if len(db_review) > 0 else False
+    return len(db_review) > 0
 
 
 def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid, transaction):
