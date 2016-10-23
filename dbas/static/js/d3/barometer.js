@@ -106,6 +106,8 @@ function DiscussionBarometer(){
      */
     function createButtons(jsonData, address){
         var dialog = $('#' + popupConfirmRowDialogId);
+        dialog.find('.col-md-6').empty();
+        dialog.find('.col-md-5').empty();
         dialog.find('#chart-buttons').empty();
 
         dialog.find('.modal-footer').append('<div id="chart-buttons"></div>');
