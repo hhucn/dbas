@@ -97,27 +97,19 @@ function Helper() {
 	};
 
 	/**
-	 * Sets a cookie with given name
-	 * @param cookie_name string
-	 */
-	this.setCookie = function(cookie_name){
-		this.setCookieForDays(cookie_name, 7);
-	};
-
-	/**
 	 * Sets Cookie with given name for given days
 	 * @param cookie_name string
 	 * @param days int
-	 * @param consent value
+	 * @param content value
 	 */
-	this.setCookieForDays = function(cookie_name, days, consent){
+	this.setCookieForDays = function(cookie_name, days, content){
 		var d = new Date();
 		var expiresInDays = days * 24 * 60 * 60 * 1000;
 		d.setTime( d.getTime() + expiresInDays );
 		var expires = 'expires=' + d.toGMTString();
-		document.cookie = cookie_name + '=' + consent + '; ' + expires + ';path=/';
+		document.cookie = cookie_name + '=' + content + '; ' + expires + ';path=/';
 
-		$(document).trigger('user_cookie_consent_changed', {'consent' : consent});
+		$(document).trigger('user_cookie_consent_changed', {'consent' : content});
 	};
 
 	/**
