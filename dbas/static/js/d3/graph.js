@@ -444,7 +444,7 @@ function DiscussionGraph() {
     }
 
     /**
-	 * Listen whether a node is clicked.
+     * Listen whether a node is clicked.
      *
      * @param circle
      * @param edges
@@ -536,7 +536,7 @@ function DiscussionGraph() {
         .attr({x: 20, y: function (d,i) {return i*40+5;}});
     }
 
-	/**
+    /**
      * Add Listeners for buttons of sidebar.
      *
      * @param jsonData
@@ -808,8 +808,8 @@ function DiscussionGraph() {
         $('#show-attacks-on-my-statements').show();
         $('#hide-attacks-on-my-statements').hide();
     }
-	
-	/**
+
+    /**
      * Set display style of nodes.
      *
      * @param style
@@ -827,7 +827,7 @@ function DiscussionGraph() {
         });
     }
 
-	/**
+    /**
      * Hide nodes on mouse event.
      *
      * @param circle
@@ -959,7 +959,7 @@ function DiscussionGraph() {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
                 if (d.source.id === e.id || d.target.id === e.id) {
-					// if button supports or attacks is clicked do not highlight supports or attacks on premise groups 
+                    // if button supports or attacks is clicked do not highlight supports or attacks on premise groups
                     if(!((isSupportVisible || isAttackVisible) && (d.edge_type === 'arrow') && !isStatementVisible)){
                         edgesVirtualNodes.push(d);
                     }
