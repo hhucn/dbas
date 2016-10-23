@@ -111,7 +111,15 @@ def main_table(request):
     ui_locales = get_language(request, get_current_registry())
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     table = request.matchdict['table']
-    table_dict = lib.get_table_dict(table)
+    try:
+        table_dict = lib.get_table_dict(table)
+        table_dict['has_error'] = False
+        table_dict['error'] = ''
+    except Exception as e:
+        table_dict = dict()
+        table_dict['is_existing'] = False
+        table_dict['has_error'] = True
+        table_dict['error'] = str(e)
 
     return {
         'layout': Dbas.base_layout(),
