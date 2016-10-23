@@ -3,11 +3,21 @@
 # @author Tobias Krauthoff
 # @email krautho66@cs.uni-duesseldorf.de
 
-from random import randint
 
+import transaction
+import arrow
+from random import randint
+from sqlalchemy.exc import IntegrityError
+
+from dbas.views import main_page
+from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, ReviewCanceled, RevokedContent
+from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
+    StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
+    Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
+    LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
+    ReviewCanceled, RevokedContent
 
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
@@ -168,13 +178,53 @@ def get_table_dict(table_name):
     columns = [r.key for r in table.__table__.columns]
 
     # getting data
-    data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
+    # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
+    db_languages = DBDiscussionSession.query(Language)
+    db_users = DBDiscussionSession.query(User)
+    data = []
+    for row in db_elements:
+        tmp = []
+        for column in row.__table__.columns:
+            attribute = getattr(row, column.name)
+            # all keywords for getting a user
+            if 'author_uid' in column.name or column.name in ['reputator_uid', 'reviewer_uid']:
+                tmp.append(__get_author(attribute, db_users))
+            # resolve language
+            elif column.name == 'lang_uid':
+                tmp.append(__get_language(attribute, db_languages))
+            else:
+                tmp.append(str(attribute))
+        data.append(tmp)
 
     # save it
     return_dict['head'] = columns
     return_dict['row'] = data
 
     return return_dict
+
+
+def __get_language(uid, query):
+    """
+
+    :param uid:
+    :param query:
+    :return:
+    """
+    return query.filter_by(uid=uid).first().ui_locales
+
+
+def __get_author(uid, query):
+    """
+
+    :param uid:
+    :param query:
+    :return:
+    """
+    db_user = query.filter_by(uid=int(uid)).first()
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
+    link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
+    link_end = '</a>'
+    return link_begin + db_user.nickname + ' ' + img + link_end
 
 
 def __get_dash_dict(count, name, href):
@@ -206,3 +256,159 @@ def __get_random_color(index):
 
     # r = lambda: randint(100, 200)
     # return '#%02X%02X%02X' % (r(), r(), r())
+
+
+def update_row(table_name, uids, keys, values, nickname, _tn):
+    """
+
+    :param table_name:
+    :param uids:
+    :param keys:
+    :param values:
+    :param nickname:
+    :param _tn:
+    :return:
+    """
+    if not is_user_admin(nickname):
+        return _tn.get(_tn.noRights)
+
+    if not table_name.lower() in table_mapper:
+        return _tn.get(_tn.internalKeyError)
+
+    table = table_mapper[table_name.lower()]['table']
+    update_dict, success = __update_row_dict(table, values, keys, _tn)
+    if not success:
+        return update_dict  # update_dict is a string
+
+    try:
+        if table_name.lower() == 'settings':
+            uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
+            DBDiscussionSession.query(table).filter_by(author_uid=uid).update(update_dict)
+        elif table_name.lower() == 'premise':
+            DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+                                                    Premise.statement_uid == uids[1]).update(update_dict)
+        else:
+            DBDiscussionSession.query(table).filter_by(uid=uids).update(update_dict)
+    except IntegrityError as e:
+        logger('AdminLib', 'update_row IntegrityError', str(e))
+        return 'SQLAlchemy IntegrityError: ' + str(e)
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return ''
+
+
+def __find_type(class_, col_name):
+    """
+
+    :param class_:
+    :param col_name:
+    :return:
+    """
+    if hasattr(class_, '__table__') and col_name in class_.__table__.c:
+        return class_.__table__.c[col_name].type
+    for base in class_.__bases__:
+        return __find_type(base, col_name)
+    raise NameError(col_name)
+
+
+def __update_row_dict(table, values, keys, _tn):
+    """
+
+    :param table:
+    :param update_dict:
+    :param values:
+    :param index:
+    :param key:
+    :param _tn:
+    :return:
+    """
+    update_dict = dict()
+    for index, key in enumerate(keys):
+        if str(__find_type(table, key)) == 'INTEGER':
+            if key == 'author_uid':
+                db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
+                if not db_user:
+                    return _tn.get(_tn.userNotFound), False
+                update_dict[key] = db_user.uid
+            elif key == 'lang_uid':
+                db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
+                if not db_lang:
+                    return _tn.get(_tn.userNotFound), False
+                update_dict[key] = db_lang.uid
+            else:
+                update_dict[key] = int(values[index])
+        elif str(__find_type(table, key)) == 'BOOLEAN':
+            update_dict[key] = True if values[index].lower() == 'true' else False
+        elif str(__find_type(table, key)) == 'TEXT':
+            update_dict[key] = str(values[index])
+        elif str(__find_type(table, key)) == 'ARROWTYPE':
+            update_dict[key] = arrow.get(str(values[index]))
+        else:
+            update_dict[key] = values[index]
+
+    return update_dict, True
+
+
+def delete_row(table_name, uids, nickname, _tn):
+    """
+
+    :param table_name:
+    :param uids:
+    :param nickname:
+    :param _tn:
+    :return:
+    """
+    logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
+    if not is_user_admin(nickname):
+        return _tn.get(_tn.noRights)
+
+    if not table_name.lower() in table_mapper:
+        return _tn.get(_tn.internalKeyError)
+
+    table = table_mapper[table_name.lower()]['table']
+    try:
+        if table_name.lower() == 'settings':
+            uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
+            DBDiscussionSession.query(table).filter_by(author_uid=uid).delete()
+        elif table_name.lower() == 'premise':
+            DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+                                                    Premise.statement_uid == uids[1]).delete()
+        else:
+            DBDiscussionSession.query(table).filter_by(uid=uids).delete()
+    except IntegrityError as e:
+        logger('AdminLib', 'delete_row IntegrityError', str(e))
+        return 'SQLAlchemy IntegrityError: ' + str(e)
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return ''
+
+
+def add_row(table_name, data, nickname, _tn):
+    """
+
+    :param table:
+    :param data:
+    :param nickname:
+    :param _tn:
+    :return:
+    """
+    logger('AdminLib', 'add_row', str(data))
+    if not is_user_admin(nickname):
+        return _tn.get(_tn.noRights)
+
+    if not table_name.lower() in table_mapper:
+        return _tn.get(_tn.internalKeyError)
+
+    table = table_mapper[table_name.lower()]['table']
+    try:
+        # TODO
+        a = 1
+    except IntegrityError as e:
+        logger('AdminLib', 'add_row IntegrityError', str(e))
+        return 'SQLAlchemy IntegrityError: ' + str(e)
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+    return ''
