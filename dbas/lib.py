@@ -275,7 +275,10 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     else:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[1]).first()
         conclusions_premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        conclusions_conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+        if db_argument.conclusion_uid:
+            conclusions_conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+        else:
+            conclusions_conclusion = get_text_for_argument_uid(db_argument.argument_uid)
 
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
@@ -711,6 +714,19 @@ def is_user_author(nickname):
             return True
 
     return False
+
+
+def is_user_admin(nickname):
+    """
+    Check, if the given uid has admin rights or is admin
+
+    :param nickname: current user name
+    :return: true, if user is admin, false otherwise
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
+    #  logger('Lib', 'is_user_author', 'main')
+    return db_user and db_user.group_uid == db_admin_group.uid
 
 
 def is_argument_disabled_due_to_disabled_statements(argument):

@@ -397,6 +397,7 @@ class EnglischDict:
         en_lang[_self.letsGo] = 'Click here to start now!'
         en_lang[_self.letsGoBack] = 'Let\'s go back!'
         en_lang[_self.letsGoHome] = 'Let\'s go home!'
+        en_lang[_self.langNotFound] = 'Language not found'
         en_lang[_self.more] = 'More'
         en_lang[_self.medium] = 'medium'
         en_lang[_self.minLength] = 'Minimal length'
