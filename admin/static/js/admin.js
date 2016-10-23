@@ -198,4 +198,11 @@ $(document).ready(function () {
 		});
 	}
 	
+	$('#admin-overview').find('tr').each(function() {
+		$(this).css('cursor', 'pointer');
+		$(this).click(function (){
+			window.location.href = $(this).data('href');
+		});
+	})
+	
 });

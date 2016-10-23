@@ -188,7 +188,9 @@ def get_table_dict(table_name):
             attribute = getattr(row, column.name)
             # all keywords for getting a user
             if 'author_uid' in column.name or column.name in ['reputator_uid', 'reviewer_uid']:
-                tmp.append(__get_author_data(attribute, db_users))
+                text, success = __get_author_data(attribute, db_users)
+                if success:
+                    tmp.append(text)
             # resolve language
             elif column.name == 'lang_uid':
                 tmp.append(__get_language(attribute, db_languages))
@@ -221,10 +223,15 @@ def __get_author_data(uid, query):
     :return:
     """
     db_user = query.filter_by(uid=int(uid)).first()
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
+    if not db_user:
+        return 'Missing author with uid ' + str(uid), False
+    if not db_settings:
+        return 'Missing settings of author with uid ' + str(uid), False
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
     link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
     link_end = '</a>'
-    return link_begin + db_user.nickname + ' ' + img + link_end
+    return link_begin + db_user.nickname + ' ' + img + link_end, True
 
 
 def __get_dash_dict(count, name, href):
