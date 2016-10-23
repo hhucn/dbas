@@ -80,13 +80,14 @@ function DiscussionBarometer(){
             alert('parsing-json: ' + e);
             return;
         }
-        
+
+        createButtons(jsonData, address);
+
         dialog.modal('show').on('hidden.bs.modal', function () {
             new Helper().clearAnchor();
         }).on('shown.bs.modal', function () {
             // display bar after the modal is shown, cause we need the width of the modal
-            //_this.getD3Barometer(jsonData, address);
-            _this.getD3BarometerPieChart(jsonData, address);
+            getD3BarometerBarChart(jsonData, address);
         });
         $('#' + popupConfirmRowDialogAcceptBtn).show().click( function () {
             $('#' + popupConfirmRowDialogId).modal('hide');
@@ -94,8 +95,38 @@ function DiscussionBarometer(){
         $('#' + popupConfirmRowDialogRefuseBtn).hide();
 
         dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
-        //this.getD3Barometer(jsonData, address);
+        //getD3BarometerBarChart(jsonData, address);
     };
+
+    /**
+     * Create buttons to switch between charts.
+     *
+     * @param jsonData
+     * @param address
+     */
+    function createButtons(jsonData, address){
+        var dialog = $('#' + popupConfirmRowDialogId);
+        dialog.find('#chart-buttons').empty();
+
+        dialog.find('.modal-footer').append('<div id="chart-buttons"></div>');
+
+        dialog.find('#chart-buttons').append('<button id="show-bar-chart-btn" type="button" class="btn btn-default">Bar Chart</button>');
+        dialog.find('#chart-buttons').append('<button id="show-pie-chart-btn" type="button" class="btn btn-default">Pie Chart</button>');
+        dialog.find('#chart-buttons').append('<button id="show-doughnut-chart-btn" type="button" class="btn btn-default">Doughnut Chart</button>');
+        addListenerForChartButtons(jsonData, address);
+    }
+
+    /**
+     * Add listeners for chart-buttons.
+     *
+     * @param jsonData
+     * @param address
+     */
+    function addListenerForChartButtons(jsonData, address) {
+        $('#show-bar-chart-btn').click(function() { getD3BarometerBarChart(jsonData, address); });
+        $('#show-pie-chart-btn').click(function() { getD3BarometerPieChart(jsonData, address, 0); });
+        $('#show-doughnut-chart-btn').click(function() { getD3BarometerPieChart(jsonData, address, 0.3); });
+    }
 
     /**
      * Create barometer.
@@ -103,7 +134,7 @@ function DiscussionBarometer(){
      * @param jsonData
      * @param address
      */
-    this.getD3Barometer = function(jsonData, address) {
+     function getD3BarometerBarChart(jsonData, address) {
         var dialog = $('#' + popupConfirmRowDialogId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
@@ -279,7 +310,6 @@ function DiscussionBarometer(){
                 .style("width", tooltipWith);
 
             // append list elements to div
-            //div.append('li').html(d.text);
             if (d.message != null) {
                 div.append('li').html(d.message);
             }
@@ -331,8 +361,9 @@ function DiscussionBarometer(){
      *
      * @param jsonData
      * @param address
+     * @param innerRadiusFactor
      */
-    this.getD3BarometerPieChart = function(jsonData, address) {
+    function getD3BarometerPieChart(jsonData, address, innerRadiusFactor) {
         var dialog = $('#' + popupConfirmRowDialogId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
@@ -354,7 +385,7 @@ function DiscussionBarometer(){
         }
 
         // create bars of chart
-        createPieChart(usersDict, pieChartSvg);
+        createPieChart(usersDict, pieChartSvg, innerRadiusFactor);
 
         // create legend for chart
         createLegend(usersDict);
@@ -375,11 +406,13 @@ function DiscussionBarometer(){
      * Create pie chart.
      *
      * @param usersDict
+     * @param pieChartSvg
+     * @param innerRadiusFactor
      */
-    function createPieChart(usersDict, pieChartSvg) {
+    function createPieChart(usersDict, pieChartSvg, innerRadiusFactor) {
         var height = 400, width = 400,
             outerRadius = Math.min(width, height) / 2,
-            innerRadius = 0 * outerRadius;
+            innerRadius = innerRadiusFactor * outerRadius;
 
         var sumSeenBy = 0;
         $.each(usersDict, function(key, value) {

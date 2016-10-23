@@ -537,7 +537,7 @@ function DiscussionGraph() {
     }
 
     /**
-     * Add Listeners for buttons of sidebar.
+     * Add listeners for buttons of sidebar.
      *
      * @param jsonData
      * @param label
