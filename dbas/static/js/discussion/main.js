@@ -651,8 +651,8 @@ $(document).ready(function mainDocumentReady() {
 		$('#island-view-rebut-button').attr('onclick', $('#item_rebut').attr('onclick'));
 	}
 	
-	// chech anchors
-	console.log('read hash: ' + location.hash);
+	// check anchors
+	// console.log('read hash: ' + location.hash);
 	if (location.hash.indexOf('graph') != -1){
 		guiHandler.setDisplayStyleAsGraphView();
 	} else if (location.hash.indexOf('island') != -1){

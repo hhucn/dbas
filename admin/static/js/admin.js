@@ -196,7 +196,7 @@ function AdminGui() {
 // main function
 $(document).ready(function () {
 	$('#admin-login-button').click(function(){
-		new AdminIndex().login();
+		new AjaxMainHandler().ajaxLogin($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
 	});
 	
 	var data = $('#data');

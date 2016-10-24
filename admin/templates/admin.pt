@@ -6,7 +6,20 @@
 		<!--	<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">-->
 		<!--</div>-->
 
-		<div class="container" tal:condition="not:extras.is_admin">
+		<div class="container" tal:condition="extras.logged_in">
+		    <div class="container" tal:condition="not:extras.is_admin">
+                <div class="col-md-offset-3 col-md-6">
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Error!</h3>
+                        </div>
+                        <div class="panel-body" i18n:translate="no_admin_message">You have no rights for this page!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<div class="container" tal:condition="not:extras.logged_in">
             <div class="row">
                 <div class="col-md-offset-3 col-md-6 colored-container">
                     <form autocomplete="on">
