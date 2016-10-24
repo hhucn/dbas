@@ -18,25 +18,25 @@ class TestReviewFlagHelper(unittest.TestCase):
         translator = Translator('en')
 
         success, info, error = ReviewFlagHelper.flag_argument(0, 'reason', 'some_nick', translator, True, transaction)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, translator.get(translator.internalKeyError)]])
+        self.__assert_equal_text([[success, ''], [info, ''], [error, translator.internalKeyError]])
 
         success, info, error = ReviewFlagHelper.flag_argument(4, 'reason', 'some_nick', translator, True, transaction)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, translator.get(translator.internalKeyError)]])
+        self.__assert_equal_text([[success, ''], [info, ''], [error, translator.internalKeyError]])
 
         success, info, error = ReviewFlagHelper.flag_argument(4, 'reason', 'Tobias', translator, True, transaction)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, translator.get(translator.internalKeyError)]])
+        self.__assert_equal_text([[success, ''], [info, ''], [error, translator.internalKeyError]])
 
         success, info, error = ReviewFlagHelper.flag_argument(0, 'reason', 'Tobias', translator, True, transaction)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, translator.get(translator.internalKeyError)]])
+        self.__assert_equal_text([[success, ''], [info, ''], [error, translator.internalKeyError]])
 
         success, info, error = ReviewFlagHelper.flag_argument(4, 'optimization', 'Tobias', translator, True, transaction)
-        self.__assert_equal_text([[success, translator.get(translator.thxForFlagText)], [info, ''], [error, '']])
+        self.__assert_equal_text([[success, translator.thxForFlagText], [info, ''], [error, '']])
 
         success, info, error = ReviewFlagHelper.flag_argument(4, 'optimization', 'Tobias', translator, True, transaction)
-        self.__assert_equal_text([[success, ''], [info, translator.get(translator.alreadyFlaggedByYou)], [error, '']])
+        self.__assert_equal_text([[success, ''], [info, translator.alreadyFlaggedByYou], [error, '']])
 
         success, info, error = ReviewFlagHelper.flag_argument(4, 'optimization', 'Christian', translator, True, transaction)
-        self.__assert_equal_text([[success, ''], [info, translator.get(translator.alreadyFlaggedByOthers)], [error, '']])
+        self.__assert_equal_text([[success, ''], [info, translator.alreadyFlaggedByOthers], [error, '']])
 
     def __assert_equal_text(self, values):
         for pair in values:
