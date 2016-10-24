@@ -6,10 +6,11 @@
 function AdminGui() {
 	
 	/**
+	 * Colors text of the element, specified by the class
 	 *
-	 * @param _this
-	 * @param elements_class
-	 * @param text_class
+	 * @param _this current scope
+	 * @param elements_class class of the specific element
+	 * @param text_class class which should be added
 	 */
 	this.activateElement = function(_this, elements_class, text_class) {
 		var element = $(_this).parents('td:first').find('.' + elements_class);
@@ -18,10 +19,11 @@ function AdminGui() {
 	};
 	
 	/**
+	 * Mute text of the element, specified by the class
 	 *
-	 * @param _this
-	 * @param elements_class
-	 * @param text_class
+	 * @param _this current scope
+	 * @param elements_class class of the specific element
+	 * @param text_class class which should be removed
 	 */
 	this.deactivateElement = function(_this, elements_class, text_class) {
 		var element = $(_this).parents('td:first').find('.' + elements_class);
@@ -30,27 +32,22 @@ function AdminGui() {
 	};
 	
 	/**
-	 *
+	 * Open a dialog with every column for adding a new row
 	 */
 	this.setAddClickEvent = function() {
+		var _this = this;
 		$('body').find('.add').each(function () {
 			$(this).click(function () {
 				var dialog = $('#' + popupConfirmRowDialogId);
 				var body = dialog.find('.modal-body');
 				body.children().remove();
+				body.append($('<span>').addClass('col-sm-5').addClass('lead').text('Column'));
+				body.append($('<span>').addClass('col-sm-7').addClass('lead').text('Value'));
 				dialog.modal('show');
 				dialog.children().eq(0).removeClass('modal-lg');
 				dialog.find('.modal-title').text('Add Data');
 				$('#data').find('th:not(:last-child)').each(function (){
-					if ($(this).text() != 'uid') {
-						var form = $('<div>').addClass('form-group');
-						var label = $('<label>').addClass('col-sm-5').addClass('control-label').attr('for', $(this).text()).text($(this).text());
-						var div = $('<div>').addClass('col-sm-7').append($('<input>').attr({
-							'class': 'form-control',
-							'data-for': $(this).text()
-						}));
-						body.append(form.append(label).append(div));
-					}
+					body = _this.createRowForAddModal(body, $(this).text());
 				});
 				dialog.find('.btn-danger').off('click').click(function (){
 					dialog.modal('hide');
@@ -67,12 +64,13 @@ function AdminGui() {
 	};
 	
 	/**
+	 * Replaces every span with input field in current row
 	 *
-	 * @param parent
+	 * @param table: current html table as element
 	 */
-	this.setEditClickEvent = function(parent) {
+	this.setEditClickEvent = function(table) {
 		var _this = this;
-		parent.find('.pencil').each(function () {
+		table.find('.pencil').each(function () {
 			$(this).click(function () {
 				var parent = $(this).parents('tr:first');
 				// var uid = parent.find('td:first').text();
@@ -88,12 +86,13 @@ function AdminGui() {
 	};
 	
 	/**
+	 * Starts ajax request for deleting current row
 	 *
-	 * @param parent
+	 * @param table: current html table as element
 	 */
-	this.setDeleteClickEvent = function(parent) {
+	this.setDeleteClickEvent = function(table) {
 		var _this = this;
-		parent.find('.trash').each(function () {
+		table.find('.trash').each(function () {
 			$(this).click(function () {
 				var uids = _this.getUids($(this).parents('tr:first'));
 				new AdminAjaxHandler().deleteSomething(uids, $(this).parents('tr:first'));
@@ -102,12 +101,13 @@ function AdminGui() {
 	};
 	
 	/**
+	 * Starts ajax request for saving edits of current row
 	 *
-	 * @param parent
+	 * @param table: current html table as element
 	 */
-	this.setSaveClickEvent = function(parent) {
+	this.setSaveClickEvent = function(table) {
 		var _this = this;
-		parent.find('.floppy').each(function () {
+		table.find('.floppy').each(function () {
 			$(this).click(function () {
 				var tmp = $(this).parents('tr:first');
 				var uids = _this.getUids(tmp);
@@ -127,12 +127,13 @@ function AdminGui() {
 	};
 	
 	/**
+	 * Restores the inital state of the row
 	 *
-	 * @param parent
+	 * @param table: current html table as element
 	 */
-	this.setCancelClickEvent = function(parent) {
+	this.setCancelClickEvent = function(table) {
 		var _this = this;
-		parent.find('.square').each(function () {
+		table.find('.square').each(function () {
 			$(this).click(function () {
 				var tmp = $(this).parents('tr:first');
 				// var uid = tmp.find('td:first').text();
@@ -162,6 +163,33 @@ function AdminGui() {
 			uids.push(element.find('td:first').text().trim());
 		}
 		return uids;
+	};
+	
+	/**
+	 * Creates a row for the 'add-data' modal view
+	 * @returns {*|jQuery} body element of the modal view
+	 */
+	this.createRowForAddModal = function(body, column){
+		// skip columns, that we do not need!
+		console.log(column + ' ' + $.inArray(column, ['uid', 'last_action', 'last_login', 'registered', 'public_nickname']));
+		if ($.inArray(column, ['uid', 'last_action', 'last_login', 'registered', 'public_nickname']) != -1) {
+			return body;
+		}
+		var form = $('<div>').addClass('form-group');
+		var label = $('<label>')
+			.addClass('col-sm-5')
+			.addClass('control-label')
+			.attr('for', column)
+			.text(column);
+		var div = $('<div>')
+			.addClass('col-sm-7')
+			.append($('<input>').attr({
+				'class': 'form-control',
+				'data-for': column
+			}));
+		form.append(label).append(div);
+		body.append(form);
+		return body;
 	}
 }
 
@@ -190,6 +218,7 @@ $(document).ready(function () {
 	// events for add
 	gui.setAddClickEvent();
 	
+	// gui modification for the caution row
 	if (!helper.isCookieSet('hide-admin-caution-warning')) {
 		$('#close-warning').fadeIn();
 		$('#close-warning-btn').click(function(){
@@ -198,6 +227,7 @@ $(document).ready(function () {
 		});
 	}
 	
+	// set pointer and click event for every row
 	$('#admin-overview').find('tr').each(function() {
 		$(this).css('cursor', 'pointer');
 		$(this).click(function (){

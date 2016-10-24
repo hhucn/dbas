@@ -17,7 +17,7 @@
 		
 		<div class="container colored-container" tal:condition="table.is_existing">
             <div class="row">
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li>
                             <a href="${request.application_url}/admin/" data-toggle="tooltip" data-placement="right">
@@ -28,9 +28,6 @@
                             <span class="lead"><span id="table_name">${table.name}</span> has ${table.count} Elements</span>
                         </li>
                     </ul>
-                </div>
-                <div class="col-md-2">
-                    <span class="lead"><a href="#" title="create"><i class="fa fa-plus-square-o add fa-pull-right" aria-hidden="true"></i></a></span>
                 </div>
             </div>
             <br>
@@ -54,6 +51,8 @@
                 </tbody>
             </table>
 		</div>
+
+        <span tal:condition="table.is_existing" class="icon-badge blue-button bottom-right add" id="icon-add-news" title="Create">+</span>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
