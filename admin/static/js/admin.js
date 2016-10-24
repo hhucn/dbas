@@ -155,7 +155,6 @@ function AdminGui() {
 	this.getUids = function(element){
 		var uids = [];
 		// Premise has two columns as PK
-		$.inArray( 'Premise', [ "8", "9", "10", 10 + "" ] );
 		if ($('#table_name').text().toLowerCase() === 'premise'){
 			uids.push(element.find('td:nth-child(1)').text().trim());
 			uids.push(element.find('td:nth-child(2)').text().trim());
