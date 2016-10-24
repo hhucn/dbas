@@ -58,7 +58,8 @@ def main_discussion(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user5, user6, user7, user8, user9, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
-        setup_discussion_database(DBDiscussionSession, user2, issue1, issue2, issue4, issue5)
+        main_author = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
+        setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
 
 
@@ -80,7 +81,7 @@ def main_discussion_reload(argv=sys.argv):
 
     with transaction.manager:
         drop_discussion_database(DBDiscussionSession)
-        main_author = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        main_author = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)

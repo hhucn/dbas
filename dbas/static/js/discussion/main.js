@@ -435,6 +435,7 @@ function Main () {
 		guiHandler.hoverInputListOf($('#popup-flag-statement'));
 		guiHandler.hoverInputListOf(list);
 		
+		list.find('li').find('.fa').parent().hide();
 		list.find('li').each(function(){
 			$(this).hover(function(){
 				$(this).find('.fa').parent().show();
