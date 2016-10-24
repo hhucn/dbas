@@ -23,7 +23,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 import dbas.user_management as user_manager
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason, Statement
 from dbas.handler.opinion import OpinionHandler
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
@@ -2103,25 +2103,24 @@ class Dbas(object):
         logger('flag_argument_or_statement', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
         _t = Translator(ui_locales)
-        return_dict = dict()
+        return_dict = {'error': _t.get(_t.internalError)}
 
         try:
             uid = self.request.params['uid']
             reason = self.request.params['reason']
-            is_argument = True if str(self.request.params['is_argument']) == 'true' else False
+            argument_type = Argument if self.request.params['is_argument'] == 'true' else Statement
             nickname = self.request.authenticated_userid
+            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
+            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
             if not Validator.is_integer(uid):
                 logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
-                return_dict['error'] = _t.get(_t.internalError)
-            elif not (len(db_reason) > 0 or reason == 'optimization'):
+            elif db_reason is None and reason != 'optimization':
                 logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
-                return_dict['error'] = _t.get(_t.internalError)
             else:
 
-                success, info, error = review_flag_helper.flag_argument(uid, reason, nickname, _t, is_argument, transaction)
+                success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, _t, argument_type, transaction)
 
                 return_dict = {
                     'success': _t.get(success),
