@@ -6,36 +6,34 @@ Provides helping function for flagging arguments.
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
+from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
     Statement
 
 
-def flag_argument(uid, reason, nickname, translator, is_argument, transaction):
+def flag_argument(uid, reason, db_user, translator, argument_type, transaction):
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
 
     :param uid: Uid of the argument/statement, which should be flagged
     :param reason: String which describes the reason
-    :param nickname: Nickname of the requests sender
+    :param db_user: User model of requests sender
     :param translator: Class of String-Translator
-    :param is_argument: Boolean whether the uid is for an argument
+    :param argument_type: Class of the argument (either Argument or Statement
     :param transaction: current transaction
     :return:
     """
-    argument_type = Argument if is_argument else Statement
     db_element = DBDiscussionSession.query(argument_type).get(uid)
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     # we could have only one reason!
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
     # sanity check
-    if None in [db_element, db_user, db_reason] and reason != 'optimization':
+    if None in [db_element, db_user]:
         return '', '', translator.internalKeyError
 
-    argument_uid = uid if is_argument else None
-    statement_uid = None if is_argument else uid
+    argument_uid = uid if type(argument_type) is Argument else None
+    statement_uid = uid if type(argument_type) is Statement else None
 
     # was this already flagged?
     flag_status = __get_flag_status(argument_uid, statement_uid, db_user.uid)
