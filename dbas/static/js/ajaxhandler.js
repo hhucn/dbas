@@ -41,12 +41,10 @@ function AjaxMainHandler(){
 	/**
 	 *
 	 */
-	this.ajaxLogin = function(){
+	this.ajaxLogin = function(user, password, showGlobalError){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var user = $('#' + loginUserId).val(),
-			password = $('#' + loginPwId).val(),
-			url = window.location.href,
-			keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
+		var url = window.location.href;
+		var keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
 
 		$.ajax({
 			url: mainpage + 'ajax_user_login',
@@ -57,27 +55,32 @@ function AjaxMainHandler(){
 				url: url,
 				keep_login: keep_login
 			},
-			dataType: 'html',
+			dataType: 'json',
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxLoginDone(data) {
-			callbackIfDoneForLogin(data);
+			callbackIfDoneForLogin(data, showGlobalError);
 		}).fail(function ajaxLoginFail(xhr) {
-			if (xhr.status == 200) {
-				location.reload(true);
-			} else if (xhr.status == 302) {
-				location.href = xhr.getResponseHeader('Location');
-			} else if (xhr.status == 400) {
-				$('#' + popupLoginFailed).show();
-				$('#' + popupLoginFailed + '-message').text(_t(requestFailedBadToken));
-			} else if (xhr.status == 500) {
-				$('#' + popupLoginFailed).show();
-				$('#' + popupLoginFailed + '-message').text(_t(requestFailedInternalError));
-			} else {
-				$('#' + popupLoginFailed).show();
-				$('#' + popupLoginFailed + '-message').text(_t(requestFailed));
+			console.log('FAIL ' + xhr.status);
+			var showError = false;
+			var errorMsg = '';
+			
+			if (xhr.status == 200) {			location.reload(true);
+			} else if (xhr.status == 302) {		location.href = xhr.getResponseHeader('Location');
+			} else if (xhr.status == 400) {		errorMsg = _t(requestFailedBadToken);
+			} else if (xhr.status == 500) {		errorMsg = _t(requestFailedInternalError);
+			} else {            				errorMsg = _t(requestFailed);
+			}
+			
+			if (showError){
+				if (showGlobalError) {
+					setGlobalErrorHandler('Ohh!', errorMsg);
+				} else {
+					$('#' + popupLoginFailed).show();
+					$('#' + popupLoginFailed + '-message').text(errorMsg);
+				}
 			}
 		}).always(function ajaxLoginAlways(){
 			$('#' + loginPwId).val('');
@@ -90,7 +93,7 @@ function AjaxMainHandler(){
 	this.ajaxLogout = function(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_user_logout',
+			url: mainpage + 'ajax_user_logout',
 			type: 'POST',
 			dataType: 'json',
 			async: true,
