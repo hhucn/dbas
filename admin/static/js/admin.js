@@ -203,19 +203,11 @@ $(document).ready(function () {
 	var gui = new AdminGui();
 	var helper = new Helper();
 	
-	// events for edit
+	// events for edit, delete, save, cancel, add
 	gui.setEditClickEvent(data);
-	
-	// events for delete
 	gui.setDeleteClickEvent(data);
-	
-	// events for save
 	gui.setSaveClickEvent(data);
-	
-	// events for cancel
 	gui.setCancelClickEvent(data);
-	
-	// events for add
 	gui.setAddClickEvent();
 	
 	// gui modification for the caution row
