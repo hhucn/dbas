@@ -29,7 +29,7 @@ def flag_argument(uid, reason, db_user, translator, argument_type, transaction):
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
     # sanity check
-    if None in [db_element, db_user]:
+    if None in [db_element, db_user, db_reason] and not reason == 'optimization':
         return '', '', translator.internalKeyError
 
     argument_uid = uid if type(argument_type) is Argument else None
