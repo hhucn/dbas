@@ -36,6 +36,7 @@ Frontend with Splinter
 ======================
 Frontend tests are done by *Splinter* and are regardless of DBAS/Pyramid. Splinter is an open source tool for testing web
 applications using Python. It lets you automate browser actions, such as visiting URLs and interacting with their items.
+If you want to use splinter, please install the latest version of `chromedriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_
 For running these tests, just execute::
 
     $ cd tests/
