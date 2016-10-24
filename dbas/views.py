@@ -2123,9 +2123,11 @@ class Dbas(object):
 
                 success, info, error = review_flag_helper.flag_argument(uid, reason, nickname, _t, is_argument, transaction)
 
-                return_dict['success'] = success
-                return_dict['info'] = info
-                return_dict['error'] = error
+                return_dict = {
+                    'success': _t.get(success),
+                    'info': _t.get(info),
+                    'error': _t.get(error)
+                }
         except KeyError as e:
             logger('flag_argument', 'error', repr(e))
             return_dict['error'] = _t.get(_t.internalKeyError)
