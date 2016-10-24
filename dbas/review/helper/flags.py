@@ -31,7 +31,8 @@ def flag_argument(uid, reason, nickname, translator, is_argument, transaction):
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
     # sanity check
-    if not db_element or not db_user or not (db_reason is not None or reason == 'optimization'):
+    # if not db_element or not db_user or not (db_reason is not None or reason == 'optimization'):
+    if not db_element or not db_user or db_reason is None and reason != 'optimization':
         return '', '', translator.get(translator.internalKeyError)
 
     ret_success = ''
