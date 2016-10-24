@@ -101,9 +101,9 @@ class User(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     firstname = Column(Text, nullable=False)
     surname = Column(Text, nullable=False)
-    nickname = Column(Text, nullable=False)
+    nickname = Column(Text, nullable=False, unique=True)
     public_nickname = Column(Text, nullable=False)
-    email = Column(Text, nullable=False, unique=True)
+    email = Column(Text, nullable=False)
     gender = Column(Text, nullable=False)
     password = Column(Text, nullable=False)
     group_uid = Column(Integer, ForeignKey('groups.uid'))
@@ -115,7 +115,7 @@ class User(DiscussionBase):
 
     groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
-    def __init__(self, firstname, surname, nickname, email, password, gender, group, token='', token_timestamp=None):
+    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='', token_timestamp=None):
         """
         Initializes a row in current user-table
 
@@ -125,7 +125,7 @@ class User(DiscussionBase):
         :param email:
         :param password:
         :param gender:
-        :param group:
+        :param group_uid:
         :param token:
         :param token_timestamp:
         """
@@ -136,7 +136,7 @@ class User(DiscussionBase):
         self.email = email
         self.gender = gender
         self.password = password
-        self.group_uid = group
+        self.group_uid = group_uid
         self.last_action = get_now()
         self.last_login = get_now()
         self.registered = get_now()
