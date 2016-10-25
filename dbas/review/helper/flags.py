@@ -8,9 +8,10 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
     Statement
+from dbas.strings.keywords import Keywords as _
 
 
-def flag_argument(uid, reason, db_user, translator, argument_type, transaction):
+def flag_argument(uid, reason, db_user, argument_type, transaction):
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
@@ -30,7 +31,7 @@ def flag_argument(uid, reason, db_user, translator, argument_type, transaction):
 
     # sanity check
     if None in [db_element, db_user, db_reason] and not reason == 'optimization':
-        return '', '', translator.internalKeyError
+        return '', '', _.internalKeyError  # translator.internalKeyError
 
     argument_uid = uid if type(argument_type) is Argument else None
     statement_uid = uid if type(argument_type) is Statement else None
@@ -39,7 +40,7 @@ def flag_argument(uid, reason, db_user, translator, argument_type, transaction):
     flag_status = __get_flag_status(argument_uid, statement_uid, db_user.uid)
     if flag_status:
         # who flagged this argument?
-        return '', translator.alreadyFlaggedByYou if flag_status == 'user' else translator.alreadyFlaggedByOthers, ''
+        return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
 
     # add flag
     else:
@@ -52,7 +53,7 @@ def flag_argument(uid, reason, db_user, translator, argument_type, transaction):
             # flagged for the first time
             __add_optimization_review(argument_uid, statement_uid, db_user.uid, transaction)
 
-        return translator.thxForFlagText, '', ''
+        return _.thxForFlagText, '', ''
 
 
 def __get_flag_status(argument_uid, statement_uid, user_uid):
