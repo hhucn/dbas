@@ -1219,8 +1219,10 @@ class Dbas(object):
             error = _tn.get(_tn.internalKeyError)
             logger('user_login', 'error', repr(e))
 
-        return_dict = {'error': error}
+        return_dict = dict()
+        return_dict['error'] = error
 
+        logger('user_login', 'return', str(return_dict))
         return json.dumps(return_dict, True)
 
     # ajax - user logout

@@ -7,7 +7,7 @@
 import transaction
 import arrow
 from random import randint
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 from dbas.views import main_page
 from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
@@ -76,65 +76,66 @@ google_colors = [
     ['#ffffff']]  # white
 
 
-def get_overview(main_page):
+def get_overview(page):
     """
+    Returns a nested data structure with information about the database
 
-    :param main_page:
-    :return:
+    :param page: Name of the main page
+    :return:[[{'name': .., 'content': [{'name': .., 'count': .., 'href': ..}, ..] }], ..]
     """
     logger('AdminLib', 'get_dashboard_infos', 'main')
     return_list = list()
 
     # all tables for the 'general' group
     general = list()
-    general.append(__get_dash_dict(len(DBDiscussionSession.query(Issue).all()), 'Issue', main_page + 'Issue'))
-    general.append(__get_dash_dict(len(DBDiscussionSession.query(Language).all()), 'Language', main_page + 'Language'))
-    general.append(__get_dash_dict(len(DBDiscussionSession.query(History).all()), 'History', main_page + 'History'))
+    general.append(__get_dash_dict(len(DBDiscussionSession.query(Issue).all()), 'Issue', page + 'Issue'))
+    general.append(__get_dash_dict(len(DBDiscussionSession.query(Language).all()), 'Language', page + 'Language'))
+    general.append(__get_dash_dict(len(DBDiscussionSession.query(History).all()), 'History', page + 'History'))
 
     # all tables for the 'users' group
     users = list()
-    users.append(__get_dash_dict(len(DBDiscussionSession.query(Group).all()), 'Group', main_page + 'Group'))
-    users.append(__get_dash_dict(len(DBDiscussionSession.query(User).all()), 'User', main_page + 'User'))
-    users.append(__get_dash_dict(len(DBDiscussionSession.query(Settings).all()), 'Settings', main_page + 'Settings'))
-    users.append(__get_dash_dict(len(DBDiscussionSession.query(Message).all()), 'Message ', main_page + 'Message'))
+    users.append(__get_dash_dict(len(DBDiscussionSession.query(Group).all()), 'Group', page + 'Group'))
+    users.append(__get_dash_dict(len(DBDiscussionSession.query(User).all()), 'User', page + 'User'))
+    users.append(__get_dash_dict(len(DBDiscussionSession.query(Settings).all()), 'Settings', page + 'Settings'))
+    users.append(__get_dash_dict(len(DBDiscussionSession.query(Message).all()), 'Message', page + 'Message'))
 
     # all tables for the 'content' group
     content = list()
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(Statement).all()), 'Statement', main_page + 'Statement'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(TextVersion).all()), 'TextVersion', main_page + 'TextVersion'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(StatementReferences).all()), 'StatementReferences', main_page + 'StatementReferences'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(PremiseGroup).all()), 'PremiseGroup', main_page + 'PremiseGroup'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(Premise).all()), 'Premise', main_page + 'Premise'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(Argument).all()), 'Argument ', main_page + 'Argument'))
+    content.append(__get_dash_dict(len(DBDiscussionSession.query(Statement).all()), 'Statement', page + 'Statement'))
+    content.append(__get_dash_dict(len(DBDiscussionSession.query(TextVersion).all()), 'TextVersion', page + 'TextVersion'))
+    content.append(__get_dash_dict(len(DBDiscussionSession.query(StatementReferences).all()), 'StatementReferences', page + 'StatementReferences'))
+    content.append(__get_dash_dict(len(DBDiscussionSession.query(PremiseGroup).all()), 'PremiseGroup', page + 'PremiseGroup'))
+    content.append(__get_dash_dict(len(DBDiscussionSession.query(Premise).all()), 'Premise', page + 'Premise'))
+    content.append(__get_dash_dict(len(DBDiscussionSession.query(Argument).all()), 'Argument', page + 'Argument'))
 
     # all tables for the 'voting' group
     voting = list()
-    voting.append(__get_dash_dict(len(DBDiscussionSession.query(VoteArgument).all()), 'VoteArgument', main_page + 'VoteArgument'))
-    voting.append(__get_dash_dict(len(DBDiscussionSession.query(VoteStatement).all()), 'VoteStatement', main_page + 'VoteStatement'))
-    voting.append(__get_dash_dict(len(DBDiscussionSession.query(StatementSeenBy).all()), 'StatementSeenBy', main_page + 'StatementSeenBy'))
-    voting.append(__get_dash_dict(len(DBDiscussionSession.query(ArgumentSeenBy).all()), 'ArgumentSeenBy ', main_page + 'ArgumentSeenBy'))
+    voting.append(__get_dash_dict(len(DBDiscussionSession.query(VoteArgument).all()), 'VoteArgument', page + 'VoteArgument'))
+    voting.append(__get_dash_dict(len(DBDiscussionSession.query(VoteStatement).all()), 'VoteStatement', page + 'VoteStatement'))
+    voting.append(__get_dash_dict(len(DBDiscussionSession.query(StatementSeenBy).all()), 'StatementSeenBy', page + 'StatementSeenBy'))
+    voting.append(__get_dash_dict(len(DBDiscussionSession.query(ArgumentSeenBy).all()), 'ArgumentSeenBy', page + 'ArgumentSeenBy'))
 
     # all tables for the 'reviews' group
     reviews = list()
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewDelete).all()), 'ReviewDelete', main_page + 'ReviewDelete'))
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewEdit).all()), 'ReviewEdit', main_page + 'ReviewEdit'))
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewEditValue).all()), 'ReviewEditValue', main_page + 'ReviewEditValue'))
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewOptimization).all()), 'ReviewOptimization', main_page + 'ReviewOptimization'))
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewDeleteReason).all()), 'ReviewDeleteReason ', main_page + 'ReviewDeleteReason'))
+    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewDelete).all()), 'ReviewDelete', page + 'ReviewDelete'))
+    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewEdit).all()), 'ReviewEdit', page + 'ReviewEdit'))
+    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewEditValue).all()), 'ReviewEditValue', page + 'ReviewEditValue'))
+    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewOptimization).all()), 'ReviewOptimization', page + 'ReviewOptimization'))
+    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewDeleteReason).all()), 'ReviewDeleteReason', page + 'ReviewDeleteReason'))
 
     # all tables for the 'reviewer' group
     reviewer = list()
-    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerDelete).all()), 'LastReviewerDelete', main_page + 'LastReviewerDelete'))
-    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerEdit).all()), 'LastReviewerEdit', main_page + 'LastReviewerEdit'))
-    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerOptimization).all()), 'LastReviewerOptimization', main_page + 'LastReviewerOptimization'))
+    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerDelete).all()), 'LastReviewerDelete', page + 'LastReviewerDelete'))
+    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerEdit).all()), 'LastReviewerEdit', page + 'LastReviewerEdit'))
+    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerOptimization).all()), 'LastReviewerOptimization', page + 'LastReviewerOptimization'))
 
     # all tables for the 'reputation' group
     reputation = list()
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReputationHistory).all()), 'ReputationHistory', main_page + 'ReputationHistory'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReputationReason).all()), 'ReputationReason', main_page + 'ReputationReason'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(OptimizationReviewLocks).all()), 'OptimizationReviewLocks', main_page + 'OptimizationReviewLocks'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewCanceled).all()), 'ReviewCanceled', main_page + 'ReviewCanceled'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContent).all()), 'RevokedContent', main_page + 'RevokedContent'))
+    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReputationHistory).all()), 'ReputationHistory', page + 'ReputationHistory'))
+    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReputationReason).all()), 'ReputationReason', page + 'ReputationReason'))
+    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(OptimizationReviewLocks).all()), 'OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
+    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewCanceled).all()), 'ReviewCanceled', page + 'ReviewCanceled'))
+    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContent).all()), 'RevokedContent', page + 'RevokedContent'))
 
     # first row
     return_list.append([{'name': 'General', 'content': general},
@@ -151,9 +152,10 @@ def get_overview(main_page):
 
 def get_table_dict(table_name):
     """
+    Returns information about a specific table
 
-    :param table_name:
-    :return:
+    :param table_name: Name of the table
+    :return: Dictionary with head, row, count and has_elements
     """
     logger('AdminLib', 'get_table_dict', str(table_name))
     return_dict = dict()
@@ -176,6 +178,11 @@ def get_table_dict(table_name):
     # getting all keys
     table = table_mapper[table_name.lower()]['table']
     columns = [r.key for r in table.__table__.columns]
+    # remove all unnecessary columns
+    bad_columns = ['token', 'token_timestamp']
+    for bad in bad_columns:
+        if bad in columns:
+            columns.remove(bad)
 
     # getting data
     # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
@@ -184,14 +191,19 @@ def get_table_dict(table_name):
     data = []
     for row in db_elements:
         tmp = []
-        for column in row.__table__.columns:
-            attribute = getattr(row, column.name)
+        for column in columns:
+            attribute = getattr(row, column)
             # all keywords for getting a user
-            if 'author_uid' in column.name or column.name in ['reputator_uid', 'reviewer_uid']:
-                tmp.append(__get_author(attribute, db_users))
+            if 'author_uid' in column or column in ['reputator_uid', 'reviewer_uid']:
+                text, success = __get_author_data(attribute, db_users)
+                if success:
+                    tmp.append(text)
             # resolve language
-            elif column.name == 'lang_uid':
+            elif column == 'lang_uid':
                 tmp.append(__get_language(attribute, db_languages))
+            # resolve password
+            elif column == 'password':
+                tmp.append(str(attribute)[:5] + '...')
             else:
                 tmp.append(str(attribute))
         data.append(tmp)
@@ -213,7 +225,7 @@ def __get_language(uid, query):
     return query.filter_by(uid=uid).first().ui_locales
 
 
-def __get_author(uid, query):
+def __get_author_data(uid, query):
     """
 
     :param uid:
@@ -221,10 +233,15 @@ def __get_author(uid, query):
     :return:
     """
     db_user = query.filter_by(uid=int(uid)).first()
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
+    if not db_user:
+        return 'Missing author with uid ' + str(uid), False
+    if not db_settings:
+        return 'Missing settings of author with uid ' + str(uid), False
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
     link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
     link_end = '</a>'
-    return link_begin + db_user.nickname + ' ' + img + link_end
+    return link_begin + db_user.nickname + ' ' + img + link_end, True
 
 
 def __get_dash_dict(count, name, href):
@@ -260,14 +277,15 @@ def __get_random_color(index):
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
     """
+    Updates the data in a specific row of an table
 
-    :param table_name:
-    :param uids:
-    :param keys:
-    :param values:
-    :param nickname:
-    :param _tn:
-    :return:
+    :param table_name: Name of the table
+    :param uids: Array with uids
+    :param keys: Array with keys
+    :param values: Array with values
+    :param nickname: Current nickname of the user
+    :param _tn: Translator
+    :return: Empty string or error message
     """
     if not is_user_admin(nickname):
         return _tn.get(_tn.noRights)
@@ -276,9 +294,13 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
         return _tn.get(_tn.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
-    update_dict, success = __update_row_dict(table, values, keys, _tn)
-    if not success:
-        return update_dict  # update_dict is a string
+    try:
+        update_dict, success = __update_row_dict(table, values, keys, _tn)
+        if not success:
+            return update_dict  # update_dict is a string
+    except ProgrammingError as e:
+        logger('AdminLib', 'update_row ProgrammingError in __update_row_dict', str(e))
+        return 'SQLAlchemy ProgrammingError: ' + str(e)
 
     try:
         if table_name.lower() == 'settings':
@@ -288,10 +310,14 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
             DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
                                                     Premise.statement_uid == uids[1]).update(update_dict)
         else:
-            DBDiscussionSession.query(table).filter_by(uid=uids).update(update_dict)
+            DBDiscussionSession.query(table).filter_by(uid=uids[0]).update(update_dict)
+
     except IntegrityError as e:
         logger('AdminLib', 'update_row IntegrityError', str(e))
         return 'SQLAlchemy IntegrityError: ' + str(e)
+    except ProgrammingError as e:
+        logger('AdminLib', 'update_row ProgrammingError', str(e))
+        return 'SQLAlchemy ProgrammingError: ' + str(e)
 
     DBDiscussionSession.flush()
     transaction.commit()
@@ -316,10 +342,8 @@ def __update_row_dict(table, values, keys, _tn):
     """
 
     :param table:
-    :param update_dict:
     :param values:
-    :param index:
-    :param key:
+    :param keys:
     :param _tn:
     :return:
     """
@@ -331,19 +355,25 @@ def __update_row_dict(table, values, keys, _tn):
                 if not db_user:
                     return _tn.get(_tn.userNotFound), False
                 update_dict[key] = db_user.uid
+
             elif key == 'lang_uid':
                 db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
                 if not db_lang:
                     return _tn.get(_tn.userNotFound), False
                 update_dict[key] = db_lang.uid
+
             else:
                 update_dict[key] = int(values[index])
+
         elif str(__find_type(table, key)) == 'BOOLEAN':
             update_dict[key] = True if values[index].lower() == 'true' else False
+
         elif str(__find_type(table, key)) == 'TEXT':
             update_dict[key] = str(values[index])
+
         elif str(__find_type(table, key)) == 'ARROWTYPE':
             update_dict[key] = arrow.get(str(values[index]))
+
         else:
             update_dict[key] = values[index]
 
@@ -352,12 +382,13 @@ def __update_row_dict(table, values, keys, _tn):
 
 def delete_row(table_name, uids, nickname, _tn):
     """
+    Deletes a row in a table
 
-    :param table_name:
-    :param uids:
-    :param nickname:
-    :param _tn:
-    :return:
+    :param table_name: Name of the table
+    :param uids: Array with uids
+    :param nickname: Current nickname of the user
+    :param _tn: Translator
+    :return: Empty string or error message
     """
     logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
     if not is_user_admin(nickname):
@@ -375,10 +406,14 @@ def delete_row(table_name, uids, nickname, _tn):
             DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
                                                     Premise.statement_uid == uids[1]).delete()
         else:
-            DBDiscussionSession.query(table).filter_by(uid=uids).delete()
+            DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
+
     except IntegrityError as e:
         logger('AdminLib', 'delete_row IntegrityError', str(e))
         return 'SQLAlchemy IntegrityError: ' + str(e)
+    except ProgrammingError as e:
+        logger('AdminLib', 'delete_row ProgrammingError', str(e))
+        return 'SQLAlchemy ProgrammingError: ' + str(e)
 
     DBDiscussionSession.flush()
     transaction.commit()
@@ -387,12 +422,13 @@ def delete_row(table_name, uids, nickname, _tn):
 
 def add_row(table_name, data, nickname, _tn):
     """
+    Updates data of a row in the table
 
-    :param table:
-    :param data:
-    :param nickname:
-    :param _tn:
-    :return:
+    :param table_name: Name of the table
+    :param data: Dictionary with data for teh update
+    :param nickname: Current nickname of the user
+    :param _tn: Translator
+    :return: Empty string or error message
     """
     logger('AdminLib', 'add_row', str(data))
     if not is_user_admin(nickname):
@@ -403,8 +439,10 @@ def add_row(table_name, data, nickname, _tn):
 
     table = table_mapper[table_name.lower()]['table']
     try:
-        # TODO
-        a = 1
+        if 'uid' in data:
+            del data['uid']
+        new_one = table(**data)
+        DBDiscussionSession.add(new_one)
     except IntegrityError as e:
         logger('AdminLib', 'add_row IntegrityError', str(e))
         return 'SQLAlchemy IntegrityError: ' + str(e)

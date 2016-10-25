@@ -44,7 +44,7 @@ function doConnect(){
 		doRecentReview(data);
 	});
 	
-	console.log('Socket.io connected.');
+	// console.log('Socket.io connected.');
 	enableTesting();
 }
 
