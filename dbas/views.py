@@ -2119,7 +2119,8 @@ class Dbas(object):
             elif db_reason is None and reason != 'optimization':
                 logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
             else:
-                success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, _t, argument_type, transaction)
+                success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, argument_type,
+                                                                        transaction)
 
                 return_dict = {
                     'success': _t.get(success),
