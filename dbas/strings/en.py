@@ -5,6 +5,7 @@ TODO
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from collections import defaultdict
 
 
 class EnglischDict:
@@ -18,7 +19,7 @@ class EnglischDict:
         :return: dictionary for the english language
         """
 
-        en_lang = dict()
+        en_lang = defaultdict(lambda: 'unknown')
 
         en_lang[_self.arguments] = 'arguments'
         en_lang[_self.error] = 'Error'
