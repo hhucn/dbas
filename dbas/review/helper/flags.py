@@ -19,7 +19,6 @@ def flag_argument(uid, reason, db_user, argument_type, transaction):
     :param uid: Uid of the argument/statement, which should be flagged
     :param reason: String which describes the reason
     :param db_user: User model of requests sender
-    :param translator: Class of String-Translator
     :param argument_type: Class of the argument (either Argument or Statement
     :param transaction: current transaction
     :return:
