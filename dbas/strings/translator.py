@@ -8,6 +8,7 @@ TODO
 
 from .de import GermanDict
 from .en import EnglischDict
+from .keywords import Keywords
 
 
 class Translator(object):
@@ -620,8 +621,10 @@ class Translator(object):
         self.sentencesOpenersArguingWithDisagreeing = [self.disagreeBecause, self.alternatively]
         self.sentencesOpenersInforming = [self.thinkWeShould, self.letMeExplain, self.sureThat]
 
-        self.en_dict = EnglischDict().set_up(self)
-        self.de_dict = GermanDict().set_up(self)
+        self.lang_dict = {
+            'en': EnglischDict().set_up(self),
+            'de': GermanDict().set_up(self)
+        }
 
     def get(self, sid):
         """
@@ -630,20 +633,14 @@ class Translator(object):
         :param sid: string identifier
         :return: string
         """
-        if self.lang == 'de' and sid in self.de_dict:
-            return self.de_dict[sid]
 
-        elif self.lang == 'en' and sid in self.en_dict:
-            return self.en_dict[sid]
-
-        elif self.lang == 'de' and sid not in self.de_dict:
-            return 'unbekannte ID, kein Eintrag im de Wörterbuch'
-
-        elif self.lang == 'en' and sid not in self.en_dict:
-            return 'unknown ID, no entry in en dictionary'
+        if self.lang not in self.lang_dict.keys():
+            return 'unknown language: ' + self.lang
 
         else:
-            return 'unknown language: ' + str(self.lang)
+            if isinstance(sid, Keywords):
+                sid = sid.name
+            return self.lang_dict[self.lang][sid]
 
     def get_lang(self):
         """
