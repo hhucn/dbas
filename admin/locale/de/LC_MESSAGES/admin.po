@@ -1,0 +1,41 @@
+#. Default: Admin
+#: templates/table.pt:24
+msgid "Admin"
+msgstr "Admin"
+
+#. Default: You have no rights for this page!
+#: templates/admin.pt:16
+msgid "no_admin_message"
+msgstr "Sie haben keine Rechte für diese Seite"
+
+#. Default: Your Nickname
+#: templates/admin.pt:27
+msgid "your_nickname"
+msgstr "Nickname"
+
+#. Default: Your Password
+#: templates/admin.pt:33
+msgid "your_password"
+msgstr "Passwort"
+
+#. Default: Keep me logged in
+#: templates/admin.pt:43
+msgid "keep_me_logged_in"
+msgstr "Eingeloggt bleiben"
+
+#. Default: Error:
+#: templates/admin.pt:50
+msgid "error"
+msgstr "Fehler:"
+
+#. Default: Log In
+#: templates/admin.pt:54
+msgid "login"
+msgstr ""
+
+#. Default: Every edit and/or delete operation can have far-reaching
+#. implications for the complete system. Maybe it will be unusable after the
+#. operation!
+#: templates/admin.pt:71
+msgid "admin_caution_message"
+msgstr "Jede Änderung/Löschung kann weitreichende Folgen für das gesamte System haben. Eventuell ist dieses danach sogar unbenutzbar!"
