@@ -369,7 +369,7 @@ function DiscussionBarometer(){
         var dialog = $('#' + popupConfirmRowDialogId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
-
+        
         // create div for barometer
         dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
 
@@ -416,14 +416,14 @@ function DiscussionBarometer(){
             outerRadius = Math.min(width, height) / 2,
             innerRadius = innerRadiusFactor * outerRadius;
 
-        var sumSeenBy = 0;
+        var sumArrayLength = 0;
         $.each(usersDict, function(key, value) {
-            sumSeenBy += value.seenBy;
+            sumArrayLength += value.usersNumber;
         });
 
         var pie = getPie(usersDict);
 
-        var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, sumSeenBy);
+        var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, sumArrayLength);
         var outerCircle = getOuterCircle(innerRadius, outerRadius);
 
         createOuterPath(pieChartSvg, usersDict, outerCircle, pie);
@@ -453,11 +453,11 @@ function DiscussionBarometer(){
      * @param sumSeenBy
      * @returns {*}
      */
-    function getInnerCircle(usersDict, innerRadius, outerRadius, sumSeenBy){
+    function getInnerCircle(usersDict, innerRadius, outerRadius, sumArrayLength){
         return d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(function (d, i) {
-                return (outerRadius - innerRadius) * (usersDict[i].usersNumber/sumSeenBy) + innerRadius;
+                 return (outerRadius - innerRadius) * (usersDict[i].usersNumber/sumArrayLength) + innerRadius;
             });
     }
 
