@@ -4,20 +4,19 @@
 # @email krautho66@cs.uni-duesseldorf.de
 
 
-from random import randint
-
-import arrow
 import transaction
+import arrow
+
+from dbas.views import main_page
+from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
+from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
     StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent
-from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.views import main_page
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 table_mapper = {
@@ -75,6 +74,12 @@ google_colors = [
     ['#607d8b', '#eceff1', '#cfd8dc', '#b0bec5', '#90a4ae', '#78909c', '#607d8b', '#546e7a', '#455a64', '#37474f', '#263238'],  # blue grey
     ['#000000'],  # black
     ['#ffffff']]  # white
+
+# list of all columns with FK of users table
+_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid']
+
+# list of all columns, which will not be displayed
+_forbidden_columns = ['token', 'token_timestamp']
 
 
 def get_overview(page):
@@ -180,34 +185,13 @@ def get_table_dict(table_name):
     table = table_mapper[table_name.lower()]['table']
     columns = [r.key for r in table.__table__.columns]
     # remove all unnecessary columns
-    bad_columns = ['token', 'token_timestamp']
-    for bad in bad_columns:
+    for bad in _forbidden_columns:
         if bad in columns:
             columns.remove(bad)
 
     # getting data
     # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
-    db_languages = DBDiscussionSession.query(Language)
-    db_users = DBDiscussionSession.query(User)
-    data = []
-    for row in db_elements:
-        tmp = []
-        for column in columns:
-            attribute = getattr(row, column)
-            # all keywords for getting a user
-            if 'author_uid' in column or column in ['reputator_uid', 'reviewer_uid']:
-                text, success = __get_author_data(attribute, db_users)
-                if success:
-                    tmp.append(text)
-            # resolve language
-            elif column == 'lang_uid':
-                tmp.append(__get_language(attribute, db_languages))
-            # resolve password
-            elif column == 'password':
-                tmp.append(str(attribute)[:5] + '...')
-            else:
-                tmp.append(str(attribute))
-        data.append(tmp)
+    data = __get_rows_of(columns, db_elements)
 
     # save it
     return_dict['head'] = columns
@@ -218,20 +202,22 @@ def get_table_dict(table_name):
 
 def __get_language(uid, query):
     """
+    Returns ui_locales of a language
 
-    :param uid:
-    :param query:
-    :return:
+    :param uid: of language
+    :param query: of all languages
+    :return: string
     """
     return query.filter_by(uid=uid).first().ui_locales
 
 
 def __get_author_data(uid, query):
     """
+    Returns a-tag with gravatar of current author and users page as href
 
-    :param uid:
-    :param query:
-    :return:
+    :param uid: of user
+    :param query: of all users
+    :return: string
     """
     db_user = query.filter_by(uid=int(uid)).first()
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
@@ -247,33 +233,45 @@ def __get_author_data(uid, query):
 
 def __get_dash_dict(count, name, href):
     """
+    Returns dictionary with all attributes
 
-    :param count:
-    :param name:
-    :param href:
-    :return:
+    :param count: number of element in current table
+    :param name: name of current table
+    :param href: link for current table
+    :return: {'count': count, 'name': name, 'href': href}
     """
     return {'count': count, 'name': name, 'href': href}
 
 
-def __get_random_color(index):
+def __get_rows_of(columns, db_elements):
     """
+    Returns array with all data of a table
 
-    :param index:
-    :return:
+    :param columns: which should be displayed
+    :param db_elements: which should be displayed
+    :return: []
     """
-    color = randint(0, 15)
-    brightness = randint(1, 10)
-    # color = int(index / 10)
-    # brightness = index - color * 10
-    # brightness += 1
-    # if brightness > 10:
-    #    brightness = 1
-    #    color += 1
-    return google_colors[color][brightness]
-
-    # r = lambda: randint(100, 200)
-    # return '#%02X%02X%02X' % (r(), r(), r())
+    db_languages = DBDiscussionSession.query(Language)
+    db_users = DBDiscussionSession.query(User)
+    data = []
+    for row in db_elements:
+        tmp = []
+        for column in columns:
+            attribute = getattr(row, column)
+            # all keywords for getting a user
+            if column in _user_columns:
+                text, success = __get_author_data(attribute, db_users)
+                if success:
+                    tmp.append(text)
+            # resolve language
+            elif column == 'lang_uid':
+                tmp.append(__get_language(attribute, db_languages))
+            # resolve password
+            elif column == 'password':
+                tmp.append(str(attribute)[:5] + '...')
+            else:
+                tmp.append(str(attribute))
+        data.append(tmp)
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
@@ -304,14 +302,7 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
         return 'SQLAlchemy ProgrammingError: ' + str(e)
 
     try:
-        if table_name.lower() == 'settings':
-            uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
-            DBDiscussionSession.query(table).filter_by(author_uid=uid).update(update_dict)
-        elif table_name.lower() == 'premise':
-            DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
-                                                    Premise.statement_uid == uids[1]).update(update_dict)
-        else:
-            DBDiscussionSession.query(table).filter_by(uid=uids[0]).update(update_dict)
+        __update_row(table, table_name, uids, update_dict)
 
     except IntegrityError as e:
         logger('AdminLib', 'update_row IntegrityError', str(e))
@@ -323,62 +314,6 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
     DBDiscussionSession.flush()
     transaction.commit()
     return ''
-
-
-def __find_type(class_, col_name):
-    """
-
-    :param class_:
-    :param col_name:
-    :return:
-    """
-    if hasattr(class_, '__table__') and col_name in class_.__table__.c:
-        return class_.__table__.c[col_name].type
-    for base in class_.__bases__:
-        return __find_type(base, col_name)
-    raise NameError(col_name)
-
-
-def __update_row_dict(table, values, keys, _tn):
-    """
-
-    :param table:
-    :param values:
-    :param keys:
-    :param _tn:
-    :return:
-    """
-    update_dict = dict()
-    for index, key in enumerate(keys):
-        if str(__find_type(table, key)) == 'INTEGER':
-            if key == 'author_uid':
-                db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
-                if not db_user:
-                    return _tn.get(_.userNotFound), False
-                update_dict[key] = db_user.uid
-
-            elif key == 'lang_uid':
-                db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
-                if not db_lang:
-                    return _tn.get(_.userNotFound), False
-                update_dict[key] = db_lang.uid
-
-            else:
-                update_dict[key] = int(values[index])
-
-        elif str(__find_type(table, key)) == 'BOOLEAN':
-            update_dict[key] = True if values[index].lower() == 'true' else False
-
-        elif str(__find_type(table, key)) == 'TEXT':
-            update_dict[key] = str(values[index])
-
-        elif str(__find_type(table, key)) == 'ARROWTYPE':
-            update_dict[key] = arrow.get(str(values[index]))
-
-        else:
-            update_dict[key] = values[index]
-
-    return update_dict, True
 
 
 def delete_row(table_name, uids, nickname, _tn):
@@ -400,6 +335,7 @@ def delete_row(table_name, uids, nickname, _tn):
 
     table = table_mapper[table_name.lower()]['table']
     try:
+        # check if there is a table, where uid is not the PK!
         if table_name.lower() == 'settings':
             uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
             DBDiscussionSession.query(table).filter_by(author_uid=uid).delete()
@@ -451,3 +387,86 @@ def add_row(table_name, data, nickname, _tn):
     DBDiscussionSession.flush()
     transaction.commit()
     return ''
+
+
+def __update_row_dict(table, values, keys, _tn):
+    """
+    Create a dictionary out of values and keys with data, which is compatible with the table
+
+    :param table: current table
+    :param values: for inserting
+    :param keys: for inserting
+    :param _tn: Translator
+    :return: {}
+    """
+    update_dict = dict()
+    for index, key in enumerate(keys):
+        # if current type is int
+        if str(__find_type(table, key)) == 'INTEGER':
+            # check for foreign key of author or language
+            if key in _user_columns:
+                db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
+                if not db_user:
+                    return _tn.get(_tn.userNotFound), False
+                update_dict[key] = db_user.uid
+
+            elif key == 'lang_uid':
+                db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
+                if not db_lang:
+                    return _tn.get(_tn.userNotFound), False
+                update_dict[key] = db_lang.uid
+
+            else:
+                update_dict[key] = int(values[index])
+
+        # if current type is bolean
+        elif str(__find_type(table, key)) == 'BOOLEAN':
+            update_dict[key] = True if values[index].lower() == 'true' else False
+
+        # if current type is text
+        elif str(__find_type(table, key)) == 'TEXT':
+            update_dict[key] = str(values[index])
+
+        # if current type is date
+        elif str(__find_type(table, key)) == 'ARROWTYPE':
+            update_dict[key] = arrow.get(str(values[index]))
+
+        else:
+            update_dict[key] = values[index]
+
+    return update_dict, True
+
+
+def __update_row(table, table_name, uids, update_dict):
+    """
+    Updates the row
+
+    :param table: current table
+    :param table_name: name of the table
+    :param uids: all uids of the PKs
+    :param update_dict: dictionary with all values
+    :return: None
+    """
+    if table_name.lower() == 'settings':
+        uid = DBDiscussionSession.query(User).filter_by(nickname=uids[0]).first().uid
+        DBDiscussionSession.query(table).filter_by(author_uid=uid).update(update_dict)
+    elif table_name.lower() == 'premise':
+        DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
+                                                Premise.statement_uid == uids[1]).update(update_dict)
+    else:
+        DBDiscussionSession.query(table).filter_by(uid=uids[0]).update(update_dict)
+
+
+def __find_type(table, col_name):
+    """
+    Returns type of tables column
+
+    :param table: current table
+    :param col_name: current columns name
+    :return: String or raise NameError
+    """
+    if hasattr(table, '__table__') and col_name in table.__table__.c:
+        return table.__table__.c[col_name].type
+    for base in table.__bases__:
+        return __find_type(base, col_name)
+    raise NameError(col_name)
