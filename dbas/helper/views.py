@@ -13,6 +13,7 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import Validator
 from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 from validate_email import validate_email
 
 import dbas.recommender_system as RecommenderSystem
@@ -207,35 +208,35 @@ def try_to_contact(request, username, email, phone, content, ui_locales, spamans
     if not username:
         logger('ViewHelper', 'try_to_contact', 'username empty')
         contact_error = True
-        message = _t.get(_t.emptyName)
+        message = _t.get(_.emptyName)
 
     # check for non valid mail
     elif not is_mail_valid:
         logger('ViewHelper', 'try_to_contact', 'mail is not valid')
         contact_error = True
-        message = _t.get(_t.invalidEmail)
+        message = _t.get(_.invalidEmail)
 
     # check for empty content
     elif not content:
         logger('main_contact', 'try_to_contact', 'content is empty')
         contact_error = True
-        message = _t.get(_t.emtpyContent)
+        message = _t.get(_.emtpyContent)
 
     # check for empty spam
     elif str(spamanswer) != str(spamsolution):
         logger('ViewHelper', 'try_to_contact', 'empty or wrong anti-spam answer' + ', given answer ' +
                str(spamanswer) + ', right answer ' + str(antispamanswer))
         contact_error = True
-        message = _t.get(_t.maliciousAntiSpam)
+        message = _t.get(_.maliciousAntiSpam)
 
     else:
-        subject = _t.get(_t.contact) + ' D-BAS'
-        body = _t.get(_t.name) + ': ' + username + '\n'
-        body += _t.get(_t.mail) + ': ' + email + '\n'
-        body += _t.get(_t.phone) + ': ' + phone + '\n'
-        body += _t.get(_t.message) + ':\n' + content
+        subject = _t.get(_.contact) + ' D-BAS'
+        body = _t.get(_.name) + ': ' + username + '\n'
+        body += _t.get(_.mail) + ': ' + email + '\n'
+        body += _t.get(_.phone) + ': ' + phone + '\n'
+        body += _t.get(_.message) + ':\n' + content
         EmailHelper.send_mail(request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
-        body = '* ' + _t.get(_t.thisIsACopyOfMail).upper() + ' *\n\n' + body
+        body = '* ' + _t.get(_.thisIsACopyOfMail).upper() + ' *\n\n' + body
         subject = '[D-BAS INFO] ' + subject
         send_message, message = EmailHelper.send_mail(request, subject, body, email, ui_locales)
         contact_error = not send_message
@@ -271,31 +272,31 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     # are the password equal?
     if not password == passwordconfirm:
         logger('ViewHelper', 'user_registration', 'Passwords are not equal')
-        info = _t.get(_t.pwdNotEqual)
+        info = _t.get(_.pwdNotEqual)
     # is the nick already taken?
     elif db_nick1 or db_nick2:
         logger('ViewHelper', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
-        info = _t.get(_t.nickIsTaken)
+        info = _t.get(_.nickIsTaken)
     # is the email already taken?
     elif db_mail:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is taken')
-        info = _t.get(_t.mailIsTaken)
+        info = _t.get(_.mailIsTaken)
     # is the email valid?
     elif not is_mail_valid:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
-        info = _t.get(_t.mailNotValid)
+        info = _.get(_.mailNotValid)
     # is anti-spam correct?
     elif str(spamanswer) != str(request.session['antispamanswer']):
         logger('ViewHelper', 'user_registration', 'Anti-Spam answer \'' + str(spamanswer) + '\' is not equal ' + str(
             request.session['antispamanswer']))
-        info = _t.get(_t.maliciousAntiSpam)
+        info = _.get(_.maliciousAntiSpam)
     else:
         # getting the authors group
         db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
 
         # does the group exists?
         if not db_group:
-            info = _t.get(_t.errorTryLateOrContant)
+            info = _t.get(_.errorTryLateOrContant)
             logger('ViewHelper', 'user_registration', 'Error occured')
         else:
             success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname,
@@ -332,9 +333,9 @@ def request_password(request, ui_locales):
         db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
         db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
-        body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
-        body += _t.get(_t.newPwdIs) + pwd
-        subject = _t.get(_t.dbasPwdRequest)
+        body = _t.get(_.nicknameIs) + db_user.nickname + '\n'
+        body += _t.get(_.newPwdIs) + pwd
+        subject = _t.get(_.dbasPwdRequest)
         reg_success, message = EmailHelper.send_mail(request, subject, body, email, db_language.ui_locales)
 
         if reg_success:
@@ -343,6 +344,6 @@ def request_password(request, ui_locales):
             error = message
     else:
         logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
-        info = _t.get(_t.emailUnknown)
+        info = _t.get(_.emailUnknown)
 
     return success, error, info
