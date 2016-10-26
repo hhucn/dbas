@@ -1303,7 +1303,7 @@ class FrontendTests:
         success = True
         b = Browser(browser)
 
-        b.visit(main_page  + 'admin')
+        b.visit(main_page  + 'admin/')
         success = success and Helper.check_for_present_text(b, 'Nickname', 'Check for login view')
 
         b.find_by_id('admin-login-user').fill(nickname_test_user1)
@@ -1315,7 +1315,7 @@ class FrontendTests:
         b = Helper.logout(b)
         time.sleep(wait_time)
 
-        b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'admin')
+        b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'admin/')
         success = success and Helper.check_for_present_text(b, 'Caution', 'But Tobias has!')
 
         b = Helper.logout(b)

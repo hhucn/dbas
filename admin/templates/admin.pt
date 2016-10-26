@@ -1,4 +1,4 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="layout" i18n:domain="admin" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 		
 		<!--<div class="container colored-container" tal:condition="not:extras.is_admin" style="max-width: 578px;">-->
@@ -8,7 +8,7 @@
 
 		<div class="container" tal:condition="extras.logged_in">
 		    <div class="container" tal:condition="not:extras.is_admin">
-                <div class="col-md-offset-3 col-md-6">
+                <div class="col-md-offset-2 col-md-8">
                     <div class="panel panel-danger">
                         <div class="panel-heading">
                             <h3 class="panel-title">Error!</h3>
