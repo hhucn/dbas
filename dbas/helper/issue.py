@@ -3,15 +3,14 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from dbas.lib import is_user_author
-from slugify import slugify
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement
+from dbas.lib import is_user_author
 from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from slugify import slugify
 
 
 def set_issue(info, title, lang, nickname, transaction, ui_locales):
@@ -30,19 +29,19 @@ def set_issue(info, title, lang, nickname, transaction, ui_locales):
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not is_user_author(nickname):
-        return False, _tn.get(_tn.noRights)
+        return False, _tn.get(_.noRights)
 
     if len(info) < 10:
-        return False, (_tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': 10)')
+        return False, (_tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)')
 
     db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
     db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
     if db_duplicates1 or db_duplicates2:
-        return False, _tn.get(_tn.duplicate)
+        return False, _tn.get(_.duplicate)
 
     db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
     if not db_lang:
-        return False, _tn.get(_tn.internalError)
+        return False, _tn.get(_.internalError)
 
     DBDiscussionSession.add(Issue(title=title, info=info, author_uid=db_user.uid, lang_uid=db_lang.uid))
     DBDiscussionSession.flush()
@@ -125,9 +124,9 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
         all_array.append(issue_dict)
 
     _t = Translator(lang)
-    tooltip = _t.get(_t.discussionInfoTooltip1) + ' ' + date + ' '
-    tooltip += _t.get(_t.discussionInfoTooltip2) + ' ' + str(stat_count) + ' '
-    tooltip += (_t.get(_t.discussionInfoTooltip3sg if stat_count == 1 else _t.discussionInfoTooltip3pl))
+    tooltip = _t.get(_.discussionInfoTooltip1) + ' ' + date + ' '
+    tooltip += _t.get(_.discussionInfoTooltip2) + ' ' + str(stat_count) + ' '
+    tooltip += (_t.get(_.discussionInfoTooltip3sg if stat_count == 1 else _t.discussionInfoTooltip3pl))
 
     return {'slug': slug,
             'info': info,
@@ -137,7 +136,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
             'date': date,
             'all': all_array,
             'tooltip': tooltip,
-            'intro': _t.get(_t.currentDiscussion)}
+            'intro': _t.get(_.currentDiscussion)}
 
 
 def get_number_of_arguments(issue):

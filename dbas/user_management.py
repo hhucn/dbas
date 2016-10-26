@@ -19,6 +19,7 @@ from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, g
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
 
@@ -209,15 +210,15 @@ def get_public_information_data(nickname, lang):
     data_edit_30 = []
     data_statement_30 = []
 
-    return_dict['label1'] = _tn.get(_tn.decisionIndex7)
-    return_dict['label2'] = _tn.get(_tn.decisionIndex30)
-    return_dict['label3'] = _tn.get(_tn.statementIndex)
-    return_dict['label4'] = _tn.get(_tn.editIndex)
+    return_dict['label1'] = _tn.get(_.decisionIndex7)
+    return_dict['label2'] = _tn.get(_.decisionIndex30)
+    return_dict['label3'] = _tn.get(_.statementIndex)
+    return_dict['label4'] = _tn.get(_.editIndex)
 
-    return_dict['labelinfo1'] = _tn.get(_tn.decisionIndex7Info)
-    return_dict['labelinfo2'] = _tn.get(_tn.decisionIndex30Info)
-    return_dict['labelinfo3'] = _tn.get(_tn.statementIndexInfo)
-    return_dict['labelinfo4'] = _tn.get(_tn.editIndexInfo)
+    return_dict['labelinfo1'] = _tn.get(_.decisionIndex7Info)
+    return_dict['labelinfo2'] = _tn.get(_.decisionIndex30Info)
+    return_dict['labelinfo3'] = _tn.get(_.statementIndexInfo)
+    return_dict['labelinfo4'] = _tn.get(_.editIndexInfo)
 
     for days_diff in range(30, -1, -1):
         date_begin  = date.today() - timedelta(days=days_diff)
@@ -279,36 +280,47 @@ def get_random_anti_spam_question(lang):
     """
     _t = Translator(lang)
 
+    signs = [
+        _.plus,
+        _.minus,
+        _.divided_by,
+        _.times
+    ]
+
+    numbers = {
+        0: _.zero,
+        1: _.one,
+        2: _.two,
+        3: _.three,
+        4: _.four,
+        5: _.five,
+        6: _.six,
+        7: _.seven,
+        8: _.eigth,
+        9: _.nine
+    }
+
     int1 = random.randint(0, 9)
     int2 = random.randint(0, 9)
     answer = 0
-    question = _t.get(_t.antispamquestion) + ' '
-    sign = _t.get(_t.signs)[random.randint(0, 3)]
-
-    if sign is '+':
-        sign = _t.get(sign)
+    question = _t.get(_.antispamquestion) + ' '
+    sign = signs[random.randint(0, 3)]
+    if sign is _.plus:
         answer = int1 + int2
 
-    elif sign is '-':
-        sign = _t.get(sign)
-        if int2 > int1:
-            tmp = int1
-            int1 = int2
-            int2 = tmp
-        answer = int1 - int2
+    elif sign is _.minus:
+        answer = abs(int1 - int2)
 
-    elif sign is '*':
-        sign = _t.get(sign)
+    elif sign is _.times:
         answer = int1 * int2
 
-    elif sign is '/':
-        sign = _t.get(sign)
+    elif sign is _.divided_by:
         while int1 == 0 or int2 == 0 or int1 % int2 != 0:
             int1 = random.randint(1, 9)
             int2 = random.randint(1, 9)
         answer = int1 / int2
 
-    question += _t.get(str(int1)) + ' ' + sign + ' ' + _t.get(str(int2)) + '?'
+    question += "{} {} {}?".format(numbers[int1], _t.get(sign), numbers[int2])
     logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question + ', answer: ' + str(answer))
 
     return question, str(int(answer))
@@ -523,33 +535,33 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
     # is the old password given?
     if not old_pw:
         logger('UserHandler', 'change_password', 'old pwd is empty')
-        message = _t.get(_t.oldPwdEmpty)  # 'The old password field is empty.'
+        message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
         error = True
     # is the new password given?
     elif not new_pw:
         logger('UserHandler', 'change_password', 'new pwd is empty')
-        message = _t.get(_t.newPwdEmtpy)  # 'The new password field is empty.'
+        message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
         error = True
     # is the confirmation password given?
     elif not confirm_pw:
         logger('UserHandler', 'change_password', 'confirm pwd is empty')
-        message = _t.get(_t.confPwdEmpty)  # 'The password confirmation field is empty.'
+        message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
         error = True
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
         logger('UserHandler', 'change_password', 'new pwds not equal')
-        message = _t.get(_t.newPwdNotEqual)  # 'The new passwords are not equal'
+        message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
         error = True
     # is new old password equals the new one?
     elif old_pw == new_pw:
         logger('UserHandler', 'change_password', 'pwds are the same')
-        message = _t.get(_t.pwdsSame)  # 'The new and old password are the same'
+        message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
         error = True
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
             logger('UserHandler', 'change_password', 'old password is wrong')
-            message = _t.get(_t.oldPwdWrong)  # 'Your old password is wrong.'
+            message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
             error = True
         else:
             hashed_pw = password_handler.get_hashed_password(new_pw)
@@ -560,7 +572,7 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
             transaction.commit()
 
             logger('UserHandler', 'change_password', 'password was changed')
-            message = _t.get(_t.pwdChanged)  # 'Your password was changed'
+            message = _t.get(_.pwdChanged)  # 'Your password was changed'
             success = True
 
     return message, error, success
@@ -607,16 +619,16 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
     checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if checknewuser:
         logger('UserManagement', 'create_new_user', 'New data was added with uid ' + str(checknewuser.uid))
-        success = _t.get(_t.accountWasAdded)
+        success = _t.get(_.accountWasAdded)
 
         # sending an email
-        subject = _t.get(_t.accountRegistration)
-        body = _t.get(_t.accountWasRegistered)
+        subject = _t.get(_.accountRegistration)
+        body = _t.get(_.accountWasRegistered)
         email_helper.send_mail(request, subject, body, email, ui_locales)
         send_welcome_notification(transaction, checknewuser.uid)
 
     else:
         logger('UserManagement', 'create_new_user', 'New data was not added')
-        info = _t.get(_t.accoutErrorTryLateOrContant)
+        info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info
