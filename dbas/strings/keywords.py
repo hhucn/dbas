@@ -81,7 +81,7 @@ class Keywords(Enum):
     urlSharingDescription = 'Please feel free to share this url:'
     warning = 'Warning'
     islandViewFor = 'Island View for'
-    resumeHere = 'Resume here' 
+    resumeHere = 'Resume here'
     aand = 'and'
     andor = 'and/or'
     addedEverything = 'Everything was added.'
@@ -146,7 +146,7 @@ class Keywords(Enum):
     butOtherParticipantsDontHaveOpinionRegardingYourOpinion = 'but other participants do not have any opinion regarding your selection'
     butOtherParticipantsDontHaveArgument = 'but other participants do not have any argument for that.'
     butOtherParticipantsDontHaveCounterArgument = 'but other participants do not have any counter argument for that.'
-    butWhich = 'but which one' 
+    butWhich = 'but which one'
     but = 'but'
     butThenYouCounteredWith = 'But then you did not agree with this because'
     butYouCounteredWith = 'You did not agree with this because'
@@ -341,7 +341,7 @@ class Keywords(Enum):
     keywordReplyForPremisegroup = 'Reply for argument'
     keywordReplyForResponseOfConfrontation = 'Justification of'
     keywordReplyForArgument = 'Confrontation'
-    keepSetting = 'Keep this' 
+    keepSetting = 'Keep this'
     holds = 'holds'
     holdsInColor = '<span class=\'text-success\'>holds</span>'
     hideAllUsers = 'Hide all users'
@@ -357,7 +357,7 @@ class Keywords(Enum):
     letsGoBack = 'Let\'s go back!'
     letsGoHome = 'Let\'s go home!'
     langNotFound = 'Language not found'
-    more = 'More' 
+    more = 'More'
     medium = 'medium'
     minLength = 'Minimal length'
     myArgument = 'my argument'
@@ -609,8 +609,18 @@ class Keywords(Enum):
     times = 'times'
     divided_by = 'divided by'
 
-    def __getitem__(self, item):
-        return item.value
+    @staticmethod
+    def get_by_string(string):
+        """
+        Returns a value by the name of a key
 
+        :raises KeyError if the key is not in the enumeration
 
-default_lang = Keywords
+        :param string: The name of the key
+        :return: The value of the key
+        """
+        for key in Keywords:
+            if key.name == string:
+                return key.value
+
+        raise KeyError('Invalid key: {}'.format(string))
