@@ -5,7 +5,7 @@ Unit tests for lib.py
 """
 import unittest
 
-from admin.lib import get_overview, update_row, delete_row, add_row, table_mapper
+from admin.lib import get_overview, get_table_dict, update_row, delete_row, add_row, table_mapper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.helper.tests import add_settings_to_appconfig
@@ -39,14 +39,14 @@ class AdminTest(unittest.TestCase):
                     self.assertTrue(table['count'] >= 0)
                     self.assertTrue('some_main_page' + table['name'] == table['href'])
 
-    #def test_get_table_dict(self):
-    #    for table in table_mapper:
-    #        return_dict = get_table_dict(table_mapper[table]['name'])
-    #        self.assertTrue('is_existing' in return_dict)
-    #        self.assertTrue('name' in return_dict)
-    #        self.assertFalse('password' in return_dict)
-    #        self.assertFalse('token' in return_dict)
-    #        self.assertFalse('token_timestamp' in return_dict)
+    def test_get_table_dict(self):
+        for table in table_mapper:
+            return_dict = get_table_dict(table_mapper[table]['name'])
+            self.assertTrue('is_existing' in return_dict)
+            self.assertTrue('name' in return_dict)
+            self.assertFalse('password' in return_dict)
+            self.assertFalse('token' in return_dict)
+            self.assertFalse('token_timestamp' in return_dict)
 
     def test_add_row(self):
         translator = Translator('en')

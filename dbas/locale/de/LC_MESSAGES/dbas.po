@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-09-29 08:46+0200\n"
+"POT-Creation-Date: 2016-10-25 10:34+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -129,8 +129,8 @@ msgstr "Nachrichten"
 
 #. Default: Login
 #. Default: Log In
-#: templates/snippet-header.pt:56 templates/snippet-popups.pt:244
-#: templates/snippet-popups.pt:449
+#: templates/snippet-header.pt:56 templates/snippet-popups.pt:267
+#: templates/snippet-popups.pt:472
 msgid "login"
 msgstr "Login"
 
@@ -419,7 +419,7 @@ msgstr "Änderungen in der Version"
 #. Default: Queues
 #: templates/review.pt:7
 msgid "queues"
-msgstr "Schlangen"
+msgstr "Listen"
 
 #. Default: How To
 #: templates/review.pt:8
@@ -628,7 +628,7 @@ msgstr "Rückgängig machen"
 
 #. Default: Cancel
 #: templates/review_history.pt:94 templates/snippet-popups.pt:175
-#: templates/snippet-popups.pt:200
+#: templates/snippet-popups.pt:198 templates/snippet-popups.pt:223
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -643,7 +643,7 @@ msgid "publications"
 msgstr "Publikationen"
 
 #. Default: Author
-#: templates/snippet-footer.pt:17 templates/snippet-popups.pt:583
+#: templates/snippet-footer.pt:17 templates/snippet-popups.pt:606
 msgid "author"
 msgstr "Autor"
 
@@ -729,8 +729,8 @@ msgstr "Fax"
 
 #. Default: Close
 #: templates/snippet-popups.pt:80 templates/snippet-popups.pt:125
-#: templates/snippet-popups.pt:452 templates/snippet-popups.pt:491
-#: templates/snippet-popups.pt:591 templates/snippet-popups.pt:627
+#: templates/snippet-popups.pt:475 templates/snippet-popups.pt:514
+#: templates/snippet-popups.pt:614 templates/snippet-popups.pt:650
 msgid "close"
 msgstr "Schließen"
 
@@ -784,163 +784,164 @@ msgstr ""
 "ENTSTANDEN."
 
 #. Default: Okay
-#: templates/snippet-popups.pt:174 templates/snippet-popups.pt:199
+#: templates/snippet-popups.pt:174 templates/snippet-popups.pt:197
+#: templates/snippet-popups.pt:222
 msgid "okay"
 msgstr "Okay"
 
 #. Default: Do not remind me again
-#: templates/snippet-popups.pt:194
+#: templates/snippet-popups.pt:217
 msgid "do_not_remind_me_again"
 msgstr "Nicht erneut erinnern"
 
 #. Default: Sign Up
-#: templates/snippet-popups.pt:246
+#: templates/snippet-popups.pt:269
 msgid "sign_up"
 msgstr "Registrieren"
 
 #. Default: Your Nickname
-#: templates/snippet-popups.pt:260
+#: templates/snippet-popups.pt:283
 msgid "your_nickname"
 msgstr "Ihr Nickname"
 
 #. Default: Your Password
-#: templates/snippet-popups.pt:267
+#: templates/snippet-popups.pt:290
 msgid "your_password"
 msgstr "Ihr Passwort"
 
 #. Default: Keep me logged in
-#: templates/snippet-popups.pt:277
+#: templates/snippet-popups.pt:300
 msgid "keep_me_logged_in"
 msgstr "Angemeldet bleiben"
 
 #. Default: Forgot your password?
-#: templates/snippet-popups.pt:279
+#: templates/snippet-popups.pt:302
 msgid "forgot_password"
 msgstr "Passwort vergessen?"
 
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
-#: templates/snippet-popups.pt:283
+#: templates/snippet-popups.pt:306
 msgid "fill_in_mail_for_password"
 msgstr ""
 "Bitte trage unten deine E-Mail-Adresse ein. Ein neues Passwort wird an diese "
 "Adresse gesendet."
 
 #. Default: Error:
-#: templates/snippet-popups.pt:293 templates/snippet-popups.pt:407
+#: templates/snippet-popups.pt:316 templates/snippet-popups.pt:430
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Success:
 #. Default: Success
-#: templates/snippet-popups.pt:300 templates/snippet-popups.pt:399
+#: templates/snippet-popups.pt:323 templates/snippet-popups.pt:422
 #: templates/settings.pt:233 templates/content.pt:57
 msgid "success"
 msgstr "Erfolg:"
 
 #. Default: Info:
-#: templates/snippet-popups.pt:307 templates/snippet-popups.pt:415
+#: templates/snippet-popups.pt:330 templates/snippet-popups.pt:438
 msgid "info"
 msgstr "Info:"
 
 #. Default: Your First Name
-#: templates/snippet-popups.pt:315
+#: templates/snippet-popups.pt:338
 msgid "first_name"
 msgstr "Vorname"
 
 #. Default: Your Last Name
-#: templates/snippet-popups.pt:322
+#: templates/snippet-popups.pt:345
 msgid "last_name"
 msgstr "Nachname"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: templates/snippet-popups.pt:329 templates/settings.pt:18
+#: templates/snippet-popups.pt:352 templates/settings.pt:18
 msgid "nickname"
 msgstr "Nickname"
 
 #. Default: Your Gender
-#: templates/snippet-popups.pt:336
+#: templates/snippet-popups.pt:359
 msgid "your_gender"
 msgstr "Ihr Geschlecht"
 
 #. Default: none
-#: templates/snippet-popups.pt:341
+#: templates/snippet-popups.pt:364
 msgid "none"
 msgstr "keine Angabe"
 
 #. Default: female
-#: templates/snippet-popups.pt:346
+#: templates/snippet-popups.pt:369
 msgid "female"
 msgstr "weiblich"
 
 #. Default: male
-#: templates/snippet-popups.pt:351
+#: templates/snippet-popups.pt:374
 msgid "male"
 msgstr "männlich"
 
 #. Default: Your Email Address
-#: templates/snippet-popups.pt:357
+#: templates/snippet-popups.pt:380
 msgid "your_email"
 msgstr "Ihre E-Mail"
 
 #. Default: Your Password
-#: templates/snippet-popups.pt:364
+#: templates/snippet-popups.pt:387
 msgid "password"
 msgstr "Passwort"
 
 #. Default: Password (confirm)
-#: templates/snippet-popups.pt:371
+#: templates/snippet-popups.pt:394
 msgid "password-confirm"
 msgstr "Passwort (Bestätigung)"
 
 #. Default: Password Strength
-#: templates/snippet-popups.pt:378
+#: templates/snippet-popups.pt:401
 msgid "password-strength"
 msgstr "Stärke"
 
 #. Default: very weak
-#: templates/snippet-popups.pt:381
+#: templates/snippet-popups.pt:404
 msgid "password_strength"
 msgstr "sehr schwach"
 
 #. Default: Generate secure password
-#: templates/snippet-popups.pt:384 templates/snippet-popups.pt:440
+#: templates/snippet-popups.pt:407 templates/snippet-popups.pt:463
 msgid "generate_password"
 msgstr "Password generieren"
 
 #. Default: Anti-Spam (required)
-#: templates/snippet-popups.pt:390
+#: templates/snippet-popups.pt:413
 msgid "anti-spam"
 msgstr "Anti-Spam (notwendig)"
 
 #. Default: How to select a strong password
-#: templates/snippet-popups.pt:421 templates/snippet-popups.pt:465
+#: templates/snippet-popups.pt:444 templates/snippet-popups.pt:488
 msgid "select_password"
 msgstr "Wie wählt man ein sicheres Password"
 
 #. Default: A Password is strong, when it contains at least:
-#: templates/snippet-popups.pt:423 templates/snippet-popups.pt:468
+#: templates/snippet-popups.pt:446 templates/snippet-popups.pt:491
 msgid "select_password_intro"
 msgstr "Ein Passwort ist stark, wenn es mindestens folgende Sachen enthält:"
 
 #. Default: eight characters
-#: templates/snippet-popups.pt:425 templates/snippet-popups.pt:470
+#: templates/snippet-popups.pt:448 templates/snippet-popups.pt:493
 msgid "select_password_rule1"
 msgstr "acht Zeichen"
 
 #. Default: one uppercase letter
-#: templates/snippet-popups.pt:426 templates/snippet-popups.pt:471
+#: templates/snippet-popups.pt:449 templates/snippet-popups.pt:494
 msgid "select_password_rule2"
 msgstr "ein Großbuchstaben"
 
 #. Default: one lowercase letter
-#: templates/snippet-popups.pt:427 templates/snippet-popups.pt:472
+#: templates/snippet-popups.pt:450 templates/snippet-popups.pt:495
 msgid "select_password_rule3"
 msgstr "ein Kleinbuchstaben"
 
 #. Default: one special sign
-#: templates/snippet-popups.pt:428 templates/snippet-popups.pt:473
+#: templates/snippet-popups.pt:451 templates/snippet-popups.pt:496
 msgid "select_password_rule4"
 msgstr "ein Sonderzeichen"
 
@@ -948,106 +949,106 @@ msgstr "ein Sonderzeichen"
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: templates/snippet-popups.pt:430 templates/snippet-popups.pt:475
+#: templates/snippet-popups.pt:453 templates/snippet-popups.pt:498
 msgid "popup_password_text"
 msgstr ""
 "Als Beispiel ist 'M2015_fiO' ein starkes Passwort. Hier noch ein paar Tipps:"
 
 #. Default: Avoid using a password on several pages
-#: templates/snippet-popups.pt:432 templates/snippet-popups.pt:477
+#: templates/snippet-popups.pt:455 templates/snippet-popups.pt:500
 msgid "select_password_avoid1"
 msgstr "Niemals das gleiche Passwort für verschiedene Seiten nutzen."
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: templates/snippet-popups.pt:433 templates/snippet-popups.pt:478
+#: templates/snippet-popups.pt:456 templates/snippet-popups.pt:501
 msgid "select_password_avoid2"
 msgstr "Phrasen vermeiden, die in Büchern gefunden werden können"
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: templates/snippet-popups.pt:434 templates/snippet-popups.pt:479
+#: templates/snippet-popups.pt:457 templates/snippet-popups.pt:502
 msgid "select_password_avoid3"
 msgstr ""
 "Verwendung von Informationen, die eventuell in Verbindung zur Person stehen"
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: templates/snippet-popups.pt:435 templates/snippet-popups.pt:480
+#: templates/snippet-popups.pt:458 templates/snippet-popups.pt:503
 msgid "select_password_avoid4"
 msgstr ""
 "Verwendung von Informationen, die eventuell Freunde/Bekannte der Person  "
 "kennen"
 
 #. Default: If you need some help with our password, you can get one here:
-#: templates/snippet-popups.pt:437 templates/snippet-popups.pt:482
+#: templates/snippet-popups.pt:460 templates/snippet-popups.pt:505
 msgid "select_password_help"
 msgstr ""
 "Wenn Sie Hilfe bei der Erstellung brauchen, können Sie sich hier eins "
 "generieren lassen:"
 
 #. Default: Register
-#: templates/snippet-popups.pt:450
+#: templates/snippet-popups.pt:473
 msgid "register"
 msgstr "Registierung"
 
 #. Default: Writing a new message
-#: templates/snippet-popups.pt:562 templates/snippet-popups.pt:604
+#: templates/snippet-popups.pt:585 templates/snippet-popups.pt:627
 msgid "writing_message"
 msgstr "Neue Nachricht schreiben"
 
 #. Default: Error:
-#: templates/snippet-popups.pt:571 templates/snippet-popups.pt:616
+#: templates/snippet-popups.pt:594 templates/snippet-popups.pt:639
 msgid "error:"
 msgstr "Fehler:"
 
 #. Default: Success:
-#: templates/snippet-popups.pt:576 templates/snippet-popups.pt:621
+#: templates/snippet-popups.pt:599 templates/snippet-popups.pt:644
 msgid "success:"
 msgstr "Erfolg:"
 
 #. Default: Date
-#: templates/snippet-popups.pt:585 templates/review_reputation.pt:28
+#: templates/snippet-popups.pt:608 templates/review_reputation.pt:28
 msgid "date"
 msgstr "Datum"
 
 #. Default: Send News
-#: templates/snippet-popups.pt:590
+#: templates/snippet-popups.pt:613
 msgid "send_news"
 msgstr "News abschicken"
 
 #. Default: Send Notifcation
-#: templates/snippet-popups.pt:626
+#: templates/snippet-popups.pt:649
 msgid "send_notification"
 msgstr "Nachricht senden"
 
 #. Default: Selecting a reason
-#: templates/snippet-popups.pt:739
+#: templates/snippet-popups.pt:762
 msgid "select-reason"
 msgstr "Grund auswählen"
 
 #. Default: The statement under consideration is as follows
-#: templates/snippet-popups.pt:742
+#: templates/snippet-popups.pt:765
 msgid "statement_under_consideration_is"
 msgstr "Die aktuelle Aussage ist"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:743 templates/snippet-popups.pt:792
+#: templates/snippet-popups.pt:766 templates/snippet-popups.pt:815
 msgid "argument_under_consideration_is"
 msgstr "Das aktuelle Argument ist"
 
 #. Default: Why do you want to report it
-#: templates/snippet-popups.pt:744
+#: templates/snippet-popups.pt:767
 msgid "why_do_you_want_to_report"
 msgstr "Wieso möchten Sie es melden"
 
 #. Default: The text needs to be revised.
-#: templates/snippet-popups.pt:750
+#: templates/snippet-popups.pt:773
 msgid "text_need_to_be_revised"
 msgstr "Der Text sollte überarbeitet werden."
 
 #. Default: This statement is acceptable but it needs correction for
 #. spelling/grammar.
-#: templates/snippet-popups.pt:751
+#: templates/snippet-popups.pt:774
 msgid "statement_optimization_description"
 msgstr ""
 "Die Aussage ist richtig, sollte aber sprachlich/grammatikalisch verbessert "
@@ -1055,83 +1056,83 @@ msgstr ""
 
 #. Default: This argument is acceptable but it needs correction for
 #. spelling/grammar.
-#: templates/snippet-popups.pt:752
+#: templates/snippet-popups.pt:775
 msgid "argument_optimization_description"
 msgstr ""
 "Das Argument ist richtig, sollte aber sprachlich/grammatikalisch verbessert "
 "werden."
 
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:757
+#: templates/snippet-popups.pt:780
 msgid "statement_offtopic_or_irrelevant"
 msgstr "Die Aussage ist nicht themenbezogen /Spam."
 
 #. Default: This statement does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:758
+#: templates/snippet-popups.pt:781
 msgid "statement_offtopic_or_irrelevant_description"
 msgstr "Die Beudeutung der Aussage ist nicht themenbezogen oder Spam."
 
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:759
+#: templates/snippet-popups.pt:782
 msgid "argument_offtopic_or_irrelevant"
 msgstr "Das Argument ist nicht themenbezogen /Spam."
 
 #. Default: This argument does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:760
+#: templates/snippet-popups.pt:783
 msgid "argument_offtopic_or_irrelevant_description"
 msgstr "Die Beudeutung des Arguments ist nicht themenbezogen oder Spam."
 
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:772
+#: templates/snippet-popups.pt:795
 msgid "statement_harmful"
 msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:773
+#: templates/snippet-popups.pt:796
 msgid "argument_harmful"
 msgstr "Die Argument ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:789
+#: templates/snippet-popups.pt:812
 msgid "reporting_parts_argument"
 msgstr "Melden eines Arguments (oder Teile davon)"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:794
+#: templates/snippet-popups.pt:817
 msgid "please_choose_part_to_report"
 msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
 
 #. Default: Report
-#: templates/snippet-popups.pt:801
+#: templates/snippet-popups.pt:824
 msgid "report"
 msgstr "Bericht"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:813
+#: templates/snippet-popups.pt:836
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
 #. Default: Caution
-#: templates/snippet-popups.pt:831
+#: templates/snippet-popups.pt:854
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to delete this content? This step is
 #. irreversible!
-#: templates/snippet-popups.pt:835
+#: templates/snippet-popups.pt:858
 msgid "do_you_really_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich diesen Inhalt löschen? Dieser Schritt ist kann nciht "
 "zurückgenommen werden!"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:852
+#: templates/snippet-popups.pt:875
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:855
+#: templates/snippet-popups.pt:878
 msgid "below_you_will_find"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
@@ -1703,22 +1704,22 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Change display style
-#: templates/content.pt:329
+#: templates/content.pt:348
 msgid "change_style"
 msgstr "Wechsel die Darstellung"
 
 #. Default: Dialog View
-#: templates/content.pt:332
+#: templates/content.pt:351
 msgid "dialog_view"
 msgstr "Dialog-Ansicht"
 
 #. Default: Island View
-#: templates/content.pt:338
+#: templates/content.pt:357
 msgid "island_view"
 msgstr "Insel-Ansicht"
 
 #. Default: Complete View
-#: templates/content.pt:344
+#: templates/content.pt:363
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
