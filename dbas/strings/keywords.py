@@ -589,3 +589,7 @@ class Keywords(Enum):
     youRejectedThisEarlier = 'youRejectedThisEarlier'
     youHaveMuchStrongerArgumentForAccepting = 'youHaveMuchStrongerArgumentForAccepting'
     youHaveMuchStrongerArgumentForRejecting = 'youHaveMuchStrongerArgumentForRejecting'
+
+    sentencesOpenersArguingWithAgreeing = [agreeBecause, therefore]
+    sentencesOpenersArguingWithDisagreeing = [disagreeBecause, alternatively]
+    sentencesOpenersInforming = [thinkWeShould, letMeExplain, sureThat]
