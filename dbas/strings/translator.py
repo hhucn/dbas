@@ -6,18 +6,21 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from .de import GermanDict
-from .en import EnglischDict
-from .keywords import Keywords
+from .de import de_lang
+from .keywords import default_lang
+
+default = 'en'
+
+languages = {
+    'en': default_lang,
+    'de': de_lang,
+}
 
 
 class Translator(object):
     """
     Class for translating string
     """
-
-    def __getattr__(self, item):
-        return item
 
     def __init__(self, lang):
         """
@@ -26,28 +29,24 @@ class Translator(object):
         :param lang: current language
         :return:
         """
-        self.lang = lang
 
-        self.lang_dict = {
-            'en': EnglischDict().set_up(self),
-            'de': GermanDict().set_up(self)
-        }
+        self.lang = lang if lang in languages.keys() else default
+
+        self.lang_dict = languages[self.lang]
 
     def get(self, sid):
         """
         Returns an localized string
 
-        :param sid: string identifier
+        :param sid: a key identifier from .keywords.Keywords
         :return: string
         """
 
-        if self.lang not in self.lang_dict.keys():
-            return 'unknown language: ' + self.lang
-
-        else:
-            if isinstance(sid, Keywords):
-                sid = sid.name
-            return self.lang_dict[self.lang][sid]
+        print(sid)
+        try:
+            return self.lang_dict[sid]
+        except KeyError:
+            return sid.value
 
     def get_lang(self):
         """

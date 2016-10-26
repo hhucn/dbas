@@ -2,10 +2,9 @@ import unittest
 
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.strings.en import EnglischDict
-from dbas.strings.de import GermanDict
+from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
 
@@ -19,22 +18,6 @@ class TranslatorTest(unittest.TestCase):
         trans_de = Translator('de')
         trans_en = Translator('en')
 
-        en_dict = EnglischDict().set_up(trans_en)
-        de_dict = GermanDict().set_up(trans_de)
-
-        self.assertTrue('unknown' in trans_fr.get(trans_fr.accepting))
-        self.assertTrue('unknown' in trans_fr.get('some_weird_text'))
-        self.assertTrue('unbekannt' in trans_de.get('some_weird_text'))
-        self.assertTrue('unknown' in trans_en.get('some_weird_text'))
-
-        for value in de_dict:
-            if value in ['signs']:
-                continue
-            val = trans_de.get(value)
-            self.assertFalse(val.startswith('unbekannt'))
-
-        for value in en_dict:
-            if value in ['signs']:
-                continue
-            val = trans_en.get(value)
-            self.assertFalse(val.startswith('unknown'))
+        self.assertIn('one', trans_fr.get(_.one))
+        self.assertIn('one', trans_en.get(_.one))
+        self.assertNotIn('one', trans_de.get(_.one))

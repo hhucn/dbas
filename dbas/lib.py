@@ -5,19 +5,19 @@ Common, pure functions used by the D-BAS.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import hashlib
-import time
 import locale
-
-from urllib import parse
+import time
 from datetime import datetime
 from html import escape
-from sqlalchemy import and_
+from urllib import parse
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
-from dbas.strings.translator import Translator
-from dbas.strings.text_generator import TextGenerator
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
-
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.text_generator import TextGenerator
+from dbas.strings.translator import Translator
+from sqlalchemy import and_
 
 fallback_lang = 'en'
 
@@ -184,7 +184,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
         # get all pgroups and at last, the conclusion
         sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
         se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
-        doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHold).lower() + ' ' + _t.get(_t.because).lower() + ' ' + sb
+        doesnt_hold_because = ' ' + se + _t.get(_.doesNotHold).lower() + ' ' + _t.get(_.because).lower() + ' ' + sb
         return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t, minimize_on_undercut)
 
 
@@ -264,12 +264,13 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
         if lang == 'de':
-            intro = _t.get(_t.rebut1) if db_argument.is_supportive else _t.get(_t.overbid1)
+            intro = _t.get(_.rebut1) if db_argument.is_supportive else _t.get(_.overbid1)
             ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end
-            ret_value += ' ' + _t.get(_t.because).lower() + ' ' + tag_premise + premises + tag_end
+            ret_value += ' ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
         else:
-            ret_value = tag_conclusion + conclusion + ' ' + (_t.get(_t.isNotRight).lower() if not db_argument.is_supportive else '') + tag_end
-            ret_value += ' ' + _t.get(_t.because).lower() + ' '
+            ret_value = tag_conclusion + conclusion + ' ' + (
+                _t.get(_.isNotRight).lower() if not db_argument.is_supportive else '') + tag_end
+            ret_value += ' ' + _t.get(_.because).lower() + ' '
             ret_value += tag_premise + premises + tag_end
 
     else:
@@ -284,9 +285,9 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 
         ret_value = tag_conclusion + conclusions_premises + ' '
-        ret_value += _t.get(_t.doesNotJustify) + ' '
+        ret_value += _t.get(_.doesNotJustify) + ' '
         ret_value += conclusions_conclusion + tag_end + ' '
-        ret_value += _t.get(_t.because).lower() + ' ' + tag_premise + premises + tag_end
+        ret_value += _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
 
     return ret_value
 
@@ -335,9 +336,9 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
     if lang == 'de':
         if rearrange_intro:
-            intro = _t.get(_t.itTrueIsThat) if db_argument.is_supportive else _t.get(_t.itFalseIsThat)
+            intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
         else:
-            intro = _t.get(_t.itIsTrueThat) if db_argument.is_supportive else _t.get(_t.itIsFalseThat)
+            intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
 
         # if color_everything:
         #     ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
@@ -345,14 +346,14 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         if start_with_intro:
             ret_value = intro[0:1].upper() + intro[1:] + ' '
         else:
-            ret_value = (_t.get(_t.statementIsAbout) + ' ') if lang == 'de' else ''
+            ret_value = (_t.get(_.statementIsAbout) + ' ') if lang == 'de' else ''
         ret_value += conclusion
         ret_value += ', ' if lang == 'de' else ' '
-        ret_value += _t.get(_t.because).lower() + ' ' + premises
+        ret_value += _t.get(_.because).lower() + ' ' + premises
     else:
-        tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
+        tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
         ret_value = conclusion + ' '
-        ret_value += _t.get(_t.because).lower() if db_argument.is_supportive else tmp
+        ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
     # if color_everything:
@@ -391,32 +392,32 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
     se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
     because = ', ' if lang == 'de' else ' '
-    because += _t.get(_t.because).lower() + ' '
+    because += _t.get(_.because).lower() + ' '
 
     if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
-        ret_value = _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat) + ' '
+        ret_value = _t.get(_.earlierYouArguedThat) if user_changed_opinion else _t.get(_.otherUsersSaidThat) + ' '
         users_opinion = True  # user after system
         if lang != 'de':
             conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
     else:  # user starts
-        ret_value = (_t.get(_t.soYourOpinionIsThat) + ': ') if start_with_intro else ''
+        ret_value = (_t.get(_.soYourOpinionIsThat) + ': ') if start_with_intro else ''
         users_opinion = False  # system after user
         conclusion = se + conclusion[0:1].upper() + conclusion[1:]  # pretty print
     ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
-        return _t.get(_t.butYouCounteredWith) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        return _t.get(_.butYouCounteredWith) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 
     for i in range(1, len(pgroups)):
         ret_value += ' '
         if users_opinion:
             if user_changed_opinion:
-                ret_value += _t.get(_t.otherParticipantsConvincedYouThat)
+                ret_value += _t.get(_.otherParticipantsConvincedYouThat)
             else:
-                ret_value += _t.get(_t.butYouCounteredWith)
+                ret_value += _t.get(_.butYouCounteredWith)
         else:
-            ret_value += _t.get(_t.otherUsersHaveCounterArgument)
+            ret_value += _t.get(_.otherUsersHaveCounterArgument)
 
         if i == len(pgroups) - 1:
             ret_value += ' ' + sb + pgroups[i] + se + '.'
@@ -435,18 +436,23 @@ def get_text_for_premisesgroup_uid(uid):
     :return: text, uids
     """
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
-    text = ''
     uids = []
+    texts = []
+    if len(db_premises) > 0:
+        lang = get_lang_for_statement(db_premises[0].statements.uid)
+    else:
+        return '', uids
+
+    _t = Translator(lang)
+
     for premise in db_premises:
-        lang = get_lang_for_statement(premise.statements.uid)
-        _t = Translator(lang)
         tmp = get_text_for_statement_uid(premise.statements.uid)
         if lang != 'de':
             tmp[0:1].lower() + tmp[1:]
         uids.append(str(premise.statements.uid))
-        text += ' ' + _t.get(_t.aand) + ' ' + tmp
+        texts.append(str(tmp))
 
-    return text[5:], uids
+    return ' {} '.format(_t.get(_.aand)).join(texts), uids
 
 
 def get_text_for_statement_uid(uid, colored_position=False):
@@ -542,6 +548,7 @@ def get_all_attacking_arg_uids_from_history(history):
         return []
 
 
+# TODO reduce following three functions to one
 def get_lang_for_argument(uid):
     """
     Return ui_locales code, if the argument exists, otherwise 'en' as fallback
@@ -688,11 +695,11 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     votecounts = len(db_votecounts) if db_votecounts else 0
 
     if votecounts == 0:
-        speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
+        speech['votecounts_message'] = _t.get(_.voteCountTextFirst) + '.'
     elif votecounts == 1:
-        speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
+        speech['votecounts_message'] = _t.get(_.voteCountTextOneOther) + '.'
     else:
-        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_.voteCountTextMore) + '.'
     speech['votecounts'] = votecounts
 
     return speech
@@ -825,3 +832,7 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
     return gravatar_url
+
+
+def _lower_first(text):
+    return text[0:1].lower() + text[1:]

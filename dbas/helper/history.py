@@ -7,11 +7,11 @@ Provides helping function for creating the history as bubbles.
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, Settings
 from dbas.input_validator import Validator
+from dbas.lib import create_speechbubble_dict
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
-from dbas.lib import create_speechbubble_dict
 
 
 def save_issue_uid(transaction, issue_uid, nickname):
@@ -142,9 +142,9 @@ def __justify_statement_step(step, nickname, lang, url):
     _tn         = Translator(lang)
     #  url     = UrlManager(application_url, slug).get_slug_url(False)
     if lang == 'de':
-        intro   = _tn.get(_tn.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
+        intro = _tn.get(_.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
     else:
-        intro   = '' if is_supportive else _tn.get(_tn.youDisagreeWith) + ': '
+        intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
     text    = get_text_for_statement_uid(uid)
     if lang != 'de':
         text    = text[0:1].upper() + text[1:]
@@ -192,8 +192,10 @@ def __dont_know_step(step, nickname, lang, url):
 
     _tn      = Translator(lang)
     text     = get_text_for_argument_uid(uid)
-    text     = text.replace(_tn.get(_tn.because).lower(), '</' + TextGenerator.tag_type + '>' + _tn.get(_tn.because).lower() + '<' + TextGenerator.tag_type + '>')
-    sys_text = _tn.get(_tn.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>' + text[0:1].lower() + text[1:]  + '</' + TextGenerator.tag_type + '>. '
+    text = text.replace(_tn.get(_.because).lower(), '</' + TextGenerator.tag_type + '>' + _tn.get(
+        _.because).lower() + '<' + TextGenerator.tag_type + '>')
+    sys_text = _tn.get(_.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>' + text[0:1].lower() + text[
+                                                                                                                 1:] + '</' + TextGenerator.tag_type + '>. '
     return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url, is_supportive=True)]
 
 
@@ -238,7 +240,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     premise = premise[0:1].lower() + premise[1:]
 
     _tn = Translator(lang)
-    user_text = (_tn.get(_tn.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
+    user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
     user_text += '<' + TextGenerator.tag_type + '>'
     user_text += current_argument if current_argument != '' else premise
     user_text += '</' + TextGenerator.tag_type + '>.'
