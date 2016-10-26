@@ -574,7 +574,7 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user5, user6, us
     settingst28 = Settings(author_uid=usert28.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settingst29 = Settings(author_uid=usert29.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settingst30 = Settings(author_uid=usert30.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7, settings8, settings9])
+    session.add_all([settings0, settings1, settings2, settings3, settings4, settings5, settings6, settings7, settings8])
     session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
     session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
     session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
