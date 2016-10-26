@@ -5,16 +5,29 @@ TODO
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
 from .de import de_lang
-from .keywords import default_lang
-
-default = 'en'
+from .keywords import Keywords
 
 languages = {
-    'en': default_lang,
     'de': de_lang,
 }
+
+
+def get_translation(sid, lang='default'):
+    """
+    Returns an localized string
+
+    :param lang: a local code e.g. 'en'
+    :param sid: a key identifier from .keywords.Keywords or the name of a key (for backwards compatibility reasons)
+    :return: string
+    """
+    if isinstance(sid, Keywords):
+        if lang in languages:
+            return languages[lang][sid]
+        else:
+            return sid.value
+    else:
+        Keywords.get_by_string(sid)
 
 
 class Translator(object):
@@ -30,9 +43,7 @@ class Translator(object):
         :return:
         """
 
-        self.lang = lang if lang in languages.keys() else default
-
-        self.lang_dict = languages[self.lang]
+        self.lang = lang
 
     def get(self, sid):
         """
@@ -41,12 +52,7 @@ class Translator(object):
         :param sid: a key identifier from .keywords.Keywords
         :return: string
         """
-
-        print(sid)
-        try:
-            return self.lang_dict[sid]
-        except KeyError:
-            return sid.value
+        return get_translation(sid, self.lang)
 
     def get_lang(self):
         """
