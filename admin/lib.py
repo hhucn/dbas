@@ -4,20 +4,21 @@
 # @email krautho66@cs.uni-duesseldorf.de
 
 
-import transaction
-import arrow
 from random import randint
-from sqlalchemy.exc import IntegrityError, ProgrammingError
 
-from dbas.views import main_page
-from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
-from dbas.logger import logger
+import arrow
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
     StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent
+from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
+from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
+from dbas.views import main_page
+from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
@@ -288,10 +289,10 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
     :return: Empty string or error message
     """
     if not is_user_admin(nickname):
-        return _tn.get(_tn.noRights)
+        return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
-        return _tn.get(_tn.internalKeyError)
+        return _tn.get(_.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -353,13 +354,13 @@ def __update_row_dict(table, values, keys, _tn):
             if key == 'author_uid':
                 db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
                 if not db_user:
-                    return _tn.get(_tn.userNotFound), False
+                    return _tn.get(_.userNotFound), False
                 update_dict[key] = db_user.uid
 
             elif key == 'lang_uid':
                 db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
                 if not db_lang:
-                    return _tn.get(_tn.userNotFound), False
+                    return _tn.get(_.userNotFound), False
                 update_dict[key] = db_lang.uid
 
             else:
@@ -392,10 +393,10 @@ def delete_row(table_name, uids, nickname, _tn):
     """
     logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
     if not is_user_admin(nickname):
-        return _tn.get(_tn.noRights)
+        return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
-        return _tn.get(_tn.internalKeyError)
+        return _tn.get(_.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -432,10 +433,10 @@ def add_row(table_name, data, nickname, _tn):
     """
     logger('AdminLib', 'add_row', str(data))
     if not is_user_admin(nickname):
-        return _tn.get(_tn.noRights)
+        return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
-        return _tn.get(_tn.internalKeyError)
+        return _tn.get(_.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
     try:

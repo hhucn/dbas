@@ -5,17 +5,17 @@ Provides helping function for dictionaries.
 """
 
 import random
+
 import arrow
 import dbas.helper.notification as NotificationHelper
 import dbas.user_management as UserHandler
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.helper.query import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict, get_profile_picture
 from dbas.logger import logger
-from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
+from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
 
@@ -162,10 +162,11 @@ class DictionaryHelper(object):
                     _tn = Translator(self.discussion_lang)
                     text_dict = TextGenerator(self.discussion_lang).get_relation_text_dict_with_substitution(False, True,
                                                                                                              db_argument.is_supportive,
-                                                                                                             first_conclusion=_tn.get(_tn.myPosition),
+                                                                                                             first_conclusion=_tn.get(
+                                                                                                                 _.myPosition),
                                                                                                              attack_type=attack)
                     for t in text_dict:
-                        text_dict[t] = text_dict[t][:-1] + ', ' + _tn.get(_tn.because).lower() + ' ...'
+                        text_dict[t] = text_dict[t][:-1] + ', ' + _tn.get(_.because).lower() + ' ...'
 
                     island_dict.update(text_dict)
                     return_dict['island'] = island_dict
@@ -223,13 +224,13 @@ class DictionaryHelper(object):
             'send_mails': db_settings.should_send_mails if db_settings else False,
             'send_notifications': db_settings.should_send_notifications if db_settings else False,
             'public_nick': db_settings.should_show_public_nickname if db_settings else True,
-            'title_mails': _tn.get(_tn.mailSettingsTitle),
-            'title_notifications': _tn.get(_tn.notificationSettingsTitle),
-            'title_public_nick': _tn.get(_tn.publicNickTitle),
-            'title_preferred_lang': _tn.get(_tn.preferedLangTitle),
+            'title_mails': _tn.get(_.mailSettingsTitle),
+            'title_notifications': _tn.get(_.notificationSettingsTitle),
+            'title_public_nick': _tn.get(_.publicNickTitle),
+            'title_preferred_lang': _tn.get(_.preferedLangTitle),
             'public_page_url': (main_page + '/user/' + (db_user.nickname if db_settings.should_show_public_nickname else public_nick)) if db_user else '',
-            'on': _tn.get(_tn.on),
-            'off': _tn.get(_tn.off),
+            'on': _tn.get(_.on),
+            'off': _tn.get(_.off),
             'current_lang': db_language.name if db_language else '?',
             'current_ui_locales': db_language.ui_locales if db_language else '?'
         }
@@ -255,8 +256,9 @@ class DictionaryHelper(object):
 
         if at_start:
             discussion_dict['mode'] = 'start'
-            user_text = _tn.get(_tn.firstPositionText) + '<br>'
-            user_text += _tn.get(_tn.pleaseAddYourSuggestion) if logged_in else (_tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin))
+            user_text = _tn.get(_.firstPositionText) + '<br>'
+            user_text += _tn.get(_.pleaseAddYourSuggestion) if logged_in else (
+                _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin))
             discussion_dict['bubbles'].append(
                 create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
             if logged_in:
@@ -274,17 +276,17 @@ class DictionaryHelper(object):
             extras_dict['close_premise_container'] = False
             extras_dict['show_display_style'] = False
             if logged_in:
-                mid_text = _tn.get(_tn.firstOneReason)
+                mid_text = _tn.get(_.firstOneReason)
                 discussion_dict['bubbles'].append(
                     create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
             # else:
-            #     mid_text = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.feelFreeToLogin)
+                #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
 
         elif at_dont_know:
             discussion_dict['mode'] = 'dont_know'
-            sys_text  = _tn.get(_tn.firstOneInformationText) + ' <em>' + current_premise + '</em>, '
-            sys_text += _tn.get(_tn.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
-            mid_text  = _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
+            sys_text = _tn.get(_.firstOneInformationText) + ' <em>' + current_premise + '</em>, '
+            sys_text += _tn.get(_.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
+            mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
             discussion_dict['bubbles'].append(
                 create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=self.system_lang))
             discussion_dict['bubbles'].append(
@@ -293,17 +295,17 @@ class DictionaryHelper(object):
         elif at_justify:
             discussion_dict['mode'] = 'justify'
             current_premise = current_premise[0:1].lower() + current_premise[1:]
-            mid_text = _tn.get(_tn.firstPremiseText1) + ' <em>' + current_premise + '</em>'
+            mid_text = _tn.get(_.firstPremiseText1) + ' <em>' + current_premise + '</em>'
 
             if not supportive:
-                mid_text += ' ' + _tn.get(_tn.doesNotHold)
+                mid_text += ' ' + _tn.get(_.doesNotHold)
             mid_text += '.<br>'
 
             if logged_in:
                 extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
-                mid_text += _tn.get(_tn.firstPremiseText2)
+                mid_text += _tn.get(_.firstPremiseText2)
             else:
-                mid_text += _tn.get(_tn.discussionEnd) + ' ' + _tn.get(_tn.discussionEndLinkText)
+                mid_text += _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
 
             discussion_dict['bubbles'].append(
                 create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
@@ -314,7 +316,8 @@ class DictionaryHelper(object):
             extras_dict['is_reportable']           = False
 
         else:
-            mid_text = _tn.get(_tn.discussionEnd) + ' ' + (_tn.get(_tn.discussionEndLinkText) if logged_in else _tn.get(_tn.feelFreeToLogin))
+            mid_text = _tn.get(_.discussionEnd) + ' ' + (
+                _tn.get(_.discussionEndLinkText) if logged_in else _tn.get(_.feelFreeToLogin))
             discussion_dict['bubbles'].append(
                 create_speechbubble_dict(is_info=True, message=mid_text, lang=self.system_lang))
 
