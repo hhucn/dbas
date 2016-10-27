@@ -11,7 +11,7 @@ import locale
 from urllib import parse
 from datetime import datetime
 from html import escape
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
 from dbas.strings.translator import Translator
@@ -623,6 +623,15 @@ def get_user_by_private_or_public_nickname(nickname):
             current_user = db_public_user
 
     return current_user
+
+
+def get_user_by_case_insensitive_nickname(nickname):
+    """
+
+    :param nickname:
+    :return:
+    """
+    return DBDiscussionSession.query(User).filter(func.lower(User.nickname) == func.lower(nickname)).first()
 
 
 def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flaggable=False, is_author=False,
