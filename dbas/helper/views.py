@@ -7,7 +7,7 @@ Helper for D-BAS Views
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings, Language
 from dbas.logger import logger
-from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string
+from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -263,7 +263,7 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     spamanswer = escape_string(params['spamanswer'] if 'spamanswer' in params else '')
 
     # database queries mail verification
-    db_nick1 = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_nick1 = get_user_by_case_insensitive_nickname(nickname)
     db_nick2 = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
     db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
     is_mail_valid = validate_email(email, check_mx=True)
