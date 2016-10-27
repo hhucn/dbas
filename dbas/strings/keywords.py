@@ -610,17 +610,17 @@ class Keywords(Enum):
     divided_by = 'divided by'
 
     @staticmethod
-    def get_by_string(string):
+    def get_key_by_string(string):
         """
-        Returns a value by the name of a key
+        Returns a key by his name
 
         :raises KeyError if the key is not in the enumeration
 
         :param string: The name of the key
-        :return: The value of the key
+        :return: The key
         """
         for key in Keywords:
             if key.name == string:
-                return key.value
+                return key
 
         raise KeyError('Invalid key: {}'.format(string))
