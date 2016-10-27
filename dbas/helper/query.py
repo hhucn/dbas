@@ -17,6 +17,7 @@ from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_arg
     get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid,\
     is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from sqlalchemy import and_, func

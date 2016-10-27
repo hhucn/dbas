@@ -14,6 +14,7 @@ from dbas.database.discussion_model import Argument, User, Language, Group, Sett
 from dbas.helper.query import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict, get_profile_picture
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager

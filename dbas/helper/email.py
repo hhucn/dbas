@@ -10,6 +10,7 @@ from socket import error as socket_error
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Settings, Language, Statement
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
 from pyramid_mailer import get_mailer
