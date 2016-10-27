@@ -111,7 +111,8 @@ class DiscussionDictHelper(object):
         tag_end = '</' + TextGenerator.tag_type + '>'
         if self.lang == 'de':
             question = _tn.get(
-                _.whatIsYourMostImportantReasonWhyForInColor if is_supportive else _tn.whatIsYourMostImportantReasonWhyAgainstInColor)
+                _.whatIsYourMostImportantReasonWhyForInColor if is_supportive
+                else _.whatIsYourMostImportantReasonWhyAgainstInColor)
         else:
             question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
         question += ' ' + tag_start
@@ -119,19 +120,19 @@ class DiscussionDictHelper(object):
         question += text[1:] + tag_end
 
         if self.lang != 'de':
-            question += ' ' + _tn.get(_.holdsInColor if is_supportive else _tn.isNotAGoodIdeaInColor)
+            question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
         question += '?'
         because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
 
         if self.lang == 'de':
-            intro = _tn.get(_.itIsTrueThat if is_supportive else _tn.itIsFalseThat)
+            intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
             add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
         else:
-            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _tn.isNotAGoodIdea)
+            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.iisNotAGoodIdea)
         add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
 
         if self.lang == 'de':
-            intro = _tn.get(_.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
+            intro = _tn.get(_.youAgreeWith if is_supportive else _.iyouDisagreeWith) + ' '
         else:
             intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
 

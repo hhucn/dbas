@@ -263,6 +263,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
+        # TODO remove this language dependency
         if lang == 'de':
             intro = _t.get(_.rebut1) if db_argument.is_supportive else _t.get(_.overbid1)
             ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end

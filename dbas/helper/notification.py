@@ -74,11 +74,11 @@ def send_edit_text_notification(db_user, textversion, path, request):
                                                 increase_counter=True)
 
     _t1 = Translator(user_lang1)
-    topic1 = _t1.get(_t1.textversionChangedTopic)
+    topic1 = _t1.get(_.textversionChangedTopic)
     content1 = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
     _t2 = Translator(user_lang2)
-    topic2 = _t2.get(_t2.textversionChangedTopic)
+    topic2 = _t2.get(_.textversionChangedTopic)
     content2 = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
     notifications = []
@@ -132,11 +132,13 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
 
     # send notification via websocket to main author
     if db_root_author_settings.should_send_notifications is True and db_root_author != db_current_user:
-        send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_root.get(_t_root.statementAdded), url, increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_root.get(_.statementAdded), url,
+                                                increase_counter=True)
 
     # send notification via websocket to last author
     if db_last_editor_settings.should_send_notifications is True and db_last_editor != db_root_author and db_last_editor != db_current_user:
-        send_request_for_info_popup_to_socketio(db_last_editor.nickname, _t_editor.get(_t_editor.statementAdded), url, increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_last_editor.nickname, _t_editor.get(_.statementAdded), url,
+                                                increase_counter=True)
 
     # find admin
     db_admin = DBDiscussionSession.query(User).filter(and_(User.firstname == 'admin',
@@ -146,10 +148,10 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
                                                            )).first()
 
     # get topic and content for messages to both authors
-    topic1 = _t_root.get(_t_root.statementAdded)
+    topic1 = _t_root.get(_.statementAdded)
     content1 = TextGenerator.get_text_for_add_text_message(root_lang, url, True)
 
-    topic2 = _t_editor.get(_t_editor.statementAdded)
+    topic2 = _t_editor.get(_.statementAdded)
     content2 = TextGenerator.get_text_for_add_text_message(editor_lang, url, True)
 
     if db_root_author != db_current_user:
@@ -173,7 +175,6 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request, tr
 
     :param url:
     :param attacked_argument_uid:
-    :param new_argument_uid:
     :param user:
     :param request:
     :param transaction:
