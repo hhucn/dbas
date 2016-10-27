@@ -50,20 +50,20 @@ function Main () {
 		$('#' + closeStatementContainerId).click(function closeStatementContainerId() {
 			$('#' + addStatementContainerId).hide();
 			$('#' + addStatementErrorContainer).hide();
-			$('#' + discussionSpaceId + ' li:last-child input').attr('checked', false).prop('checked', false).enable = true;
+			$('#' + discussionSpaceId + ' li:last-child input').prop('checked', false).enable = true;
 		});
 		
 		// hides container
 		$('#' + closePremiseContainerId).click(function closeStatementContainerId() {
 			$('#' + addPremiseContainerId).hide();
 			$('#' + addPremiseErrorContainer).hide();
-			$('#' + discussionSpaceId + ' li:last-child input').attr('checked', false).prop('checked', false).enable = true;
+			$('#' + discussionSpaceId + ' li:last-child input').prop('checked', false).enable = true;
 		});
 		
 		// hiding the island view, when the X button is clicked
 		$('#' + closeIslandViewContainerId).click(function () {
 			guiHandler.resetChangeDisplayStyleBox();
-			$('#li_' + addReasonButtonId).attr('checked', true).prop('checked', true);
+			$('#li_' + addReasonButtonId).prop('checked', true);
 		});
 		
 		// hiding the island view, when the X button is clicked
@@ -477,7 +477,7 @@ function Main () {
 		$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
 			var login_item = $('#' + discussionSpaceListId).find('#item_login');
 			if (login_item.length > 0)
-				login_item.attr('checked', false).prop('checked', false)
+				login_item.prop('checked', false)
 		}).on('shown.bs.modal', function () {
 			$('#' + loginUserId).focus();
 		});
@@ -537,9 +537,9 @@ function Main () {
 			})
 		}
 		
-		$('#' + discussionSpaceId + ' input').each(function () {
-			$(this).attr('checked', false).prop('checked', false);
-		});
+		//$('#' + discussionSpaceId + ' input').each(function () {
+		//	$(this).prop('checked', false);
+		//});
 		
 		$('#' + sendNewStatementId).off("click").click(function () {
 			if ($(this).attr('name').indexOf('start') != -1) {
@@ -560,8 +560,9 @@ function Main () {
 		var children = spaceList.find('input');
 		var id = children.eq(0).attr('id');
 		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
+		// if we have just one list element AND the list element has a special function AND we are logged in
 		if (children.length == 1 && ($.inArray(id, ids) != -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
-			children.eq(0).attr('checked', true).prop('checked', true).parent().hide();
+			children.eq(0).prop('checked', true).parent().hide();
 		}
 		
 		// TODO CLEAR DESIGN
