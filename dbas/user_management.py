@@ -296,7 +296,7 @@ def get_random_anti_spam_question(lang):
         5: _.five,
         6: _.six,
         7: _.seven,
-        8: _.eigth,
+        8: _.eight,
         9: _.nine
     }
 
