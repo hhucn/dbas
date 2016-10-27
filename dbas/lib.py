@@ -605,8 +605,8 @@ def get_user_by_private_or_public_nickname(nickname):
     :param nickname: Nickname of the user
     :return: Current user or None
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+    db_user = get_user_by_case_insensitive_nickname(nickname)
+    db_public_user = get_user_by_case_insensitive_public_nickname(nickname)
 
     db_settings = None
     current_user = None
@@ -632,6 +632,15 @@ def get_user_by_case_insensitive_nickname(nickname):
     :return:
     """
     return DBDiscussionSession.query(User).filter(func.lower(User.nickname) == func.lower(nickname)).first()
+
+
+def get_user_by_case_insensitive_public_nickname(public_nickname):
+    """
+
+    :param public_nickname:
+    :return:
+    """
+    return DBDiscussionSession.query(User).filter(func.lower(User.public_nickname) == func.lower(public_nickname)).first()
 
 
 def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flaggable=False, is_author=False,
