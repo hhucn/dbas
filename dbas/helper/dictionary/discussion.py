@@ -128,7 +128,7 @@ class DiscussionDictHelper(object):
             intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
             add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
         else:
-            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.iisNotAGoodIdea)
+            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea)
         add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
 
         if self.lang == 'de':
