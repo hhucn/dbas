@@ -1,12 +1,12 @@
 import unittest
-from dbas.views import transaction
 
-import dbas.review.helper.flags as ReviewFlagHelper
+import dbas.review.helper.flags as rf_helper
 from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Argument
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.keywords import Keywords as _
+from dbas.views import transaction
 from sqlalchemy import engine_from_config
-from dbas.database.discussion_model import User, Argument, Statement
 
 settings = add_settings_to_appconfig()
 
@@ -22,25 +22,25 @@ class TestReviewFlagHelper(unittest.TestCase):
         self.christian = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
 
     def test_flag_argument(self):
-        success, info, error = ReviewFlagHelper.flag_argument(0, 'reason', self.some_nick, Argument, transaction)
+        success, info, error = rf_helper.flag_argument(0, 'reason', self.some_nick, Argument, transaction)
         self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
 
-        success, info, error = ReviewFlagHelper.flag_argument(4, 'reason', self.some_nick, Argument, transaction)
+        success, info, error = rf_helper.flag_argument(4, 'reason', self.some_nick, Argument, transaction)
         self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
 
-        success, info, error = ReviewFlagHelper.flag_argument(4, 'reason', self.tobias, Argument, transaction)
+        success, info, error = rf_helper.flag_argument(4, 'reason', self.tobias, Argument, transaction)
         self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
 
-        success, info, error = ReviewFlagHelper.flag_argument(0, 'reason', self.tobias, Argument, transaction)
+        success, info, error = rf_helper.flag_argument(0, 'reason', self.tobias, Argument, transaction)
         self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
 
-        success, info, error = ReviewFlagHelper.flag_argument(4, 'optimization', self.tobias, Argument, transaction)
+        success, info, error = rf_helper.flag_argument(4, 'optimization', self.tobias, Argument, transaction)
         self.__assert_equal_text([[success, _.thxForFlagText], [info, ''], [error, '']])
 
-        success, info, error = ReviewFlagHelper.flag_argument(4, 'optimization', self.tobias, Argument, transaction)
+        success, info, error = rf_helper.flag_argument(4, 'optimization', self.tobias, Argument, transaction)
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByYou], [error, '']])
 
-        success, info, error = ReviewFlagHelper.flag_argument(4, 'optimization', self.christian, Argument, transaction)
+        success, info, error = rf_helper.flag_argument(4, 'optimization', self.christian, Argument, transaction)
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
 
     def __assert_equal_text(self, values):

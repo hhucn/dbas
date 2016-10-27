@@ -8,7 +8,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, Settings
 from dbas.input_validator import Validator
 from dbas.lib import create_speechbubble_dict
-from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, sql_timestamp_pretty_print
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
+    get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
@@ -97,8 +98,8 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
 
         if 'justify/' in step:
             logger('history_helper', 'create_bubbles_from_history', str(index) + ': justify case -> ' + step)
-            steps    = step.split('/')
-            mode     = steps[2]
+            steps = step.split('/')
+            mode = steps[2]
             relation = steps[3] if len(steps) > 3 else ''
 
             if [c for c in ('t', 'f') if c in mode] and relation == '':
@@ -135,20 +136,20 @@ def __justify_statement_step(step, nickname, lang, url):
     :return: [dict()]
     """
     logger('history_helper', '__justify_statement_step', 'def')
-    steps   = step.split('/')
-    uid     = int(steps[1])
+    steps = step.split('/')
+    uid = int(steps[1])
     #  slug    = ''
     is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
 
-    _tn         = Translator(lang)
+    _tn = Translator(lang)
     #  url     = UrlManager(application_url, slug).get_slug_url(False)
     if lang == 'de':
-        intro = _tn.get(_.youAgreeWith if is_supportive else _tn.youDisagreeWith) + ' '
+        intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
     else:
         intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
-    text    = get_text_for_statement_uid(uid)
+    text = get_text_for_statement_uid(uid)
     if lang != 'de':
-        text    = text[0:1].upper() + text[1:]
+        text = text[0:1].upper() + text[1:]
 
     msg = intro + '<' + TextGenerator.tag_type + '>' + text + '</' + TextGenerator.tag_type + '>'
     bubbsle_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
@@ -167,11 +168,11 @@ def __attitude_step(step, nickname, lang, url):
     :return: [dict()]
     """
     logger('history_helper', '__attitude_step', 'def')
-    steps   = step.split('/')
-    uid     = int(steps[1])
-    text    = get_text_for_statement_uid(uid)
+    steps = step.split('/')
+    uid = int(steps[1])
+    text = get_text_for_statement_uid(uid)
     if lang != 'de':
-        text    = text[0:1].upper() + text[1:]
+        text = text[0:1].upper() + text[1:]
     bubble = create_speechbubble_dict(is_user=True, message=text, omit_url=False, statement_uid=uid, nickname=nickname,
                                       lang=lang, url=url)
 
@@ -188,16 +189,18 @@ def __dont_know_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    steps    = step.split('/')
-    uid      = int(steps[1])
+    steps = step.split('/')
+    uid = int(steps[1])
 
-    _tn      = Translator(lang)
-    text     = get_text_for_argument_uid(uid)
+    _tn = Translator(lang)
+    text = get_text_for_argument_uid(uid)
     text = text.replace(_tn.get(_.because).lower(), '</' + TextGenerator.tag_type + '>' + _tn.get(
         _.because).lower() + '<' + TextGenerator.tag_type + '>')
+    # TODO Possible code injection!? if text e.g. </span><script blabla><span>
     sys_text = _tn.get(_.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>' + text[0:1].lower() + text[
                                                                                                                  1:] + '</' + TextGenerator.tag_type + '>. '
-    return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url, is_supportive=True)]
+    return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url,
+                                     is_supportive=True)]
 
 
 def __reaction_step(step, nickname, lang, splitted_history, url):
@@ -212,29 +215,29 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     :return: [dict()]
     """
     logger('history_helper', '__reaction_step', 'def: ' + str(splitted_history))
-    steps           = step.split('/')
-    uid             = int(steps[1])
-    additional_uid  = int(steps[3])
-    attack          = steps[2]
+    steps = step.split('/')
+    uid = int(steps[1])
+    additional_uid = int(steps[3])
+    attack = steps[2]
 
     if not Validator.check_reaction(uid, additional_uid, attack, is_history=True):
         return None
 
-    is_supportive   = DBDiscussionSession.query(Argument).filter_by(uid=uid).first().is_supportive
-    last_relation   = splitted_history[-1].split('/')[2]
+    is_supportive = DBDiscussionSession.query(Argument).filter_by(uid=uid).first().is_supportive
+    last_relation = splitted_history[-1].split('/')[2]
 
     user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
-    current_argument     = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion)
-    db_argument          = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-    db_confrontation     = DBDiscussionSession.query(Argument).filter_by(uid=additional_uid).first()
-    db_statement         = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+    current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion)
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_uid).first()
+    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
 
-    premise, tmp         = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-    conclusion           = get_text_for_conclusion(db_argument)
-    sys_conclusion       = get_text_for_conclusion(db_confrontation)
-    confr, tmp           = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
-    reply_for_argument   = not (db_statement and db_statement.is_startpoint)
-    user_is_attacking    = not db_argument.is_supportive
+    premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+    conclusion = get_text_for_conclusion(db_argument)
+    sys_conclusion = get_text_for_conclusion(db_confrontation)
+    confr, tmp = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
+    reply_for_argument = not (db_statement and db_statement.is_startpoint)
+    user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
         current_argument = current_argument[0:1].upper() + current_argument[1:]
@@ -253,11 +256,11 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
                                            argument_uid=uid, is_supportive=is_supportive,
                                            nickname=nickname, lang=lang, url=url)
     if attack == 'end':
-        bubble_syst  = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True,
-                                                nickname=nickname, lang=lang)
+        bubble_syst = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True,
+                                               nickname=nickname, lang=lang)
     else:
-        bubble_syst  = create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(additional_uid),
-                                                message=sys_text, omit_url=True, nickname=nickname, lang=lang)
+        bubble_syst = create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(additional_uid),
+                                               message=sys_text, omit_url=True, nickname=nickname, lang=lang)
     return [bubble_user, bubble_syst]
 
 
@@ -314,7 +317,8 @@ def get_history_from_database(nickname, lang):
     db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
     return_array = []
     for history in db_history:
-        return_array.append({'path': history.path, 'timestamp': sql_timestamp_pretty_print(history.timestamp, lang, False, True) + ' GMT'})
+        return_array.append({'path': history.path,
+                             'timestamp': sql_timestamp_pretty_print(history.timestamp, lang, False, True) + ' GMT'})
 
     return return_array
 
