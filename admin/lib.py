@@ -271,6 +271,7 @@ def __get_rows_of(columns, db_elements):
             else:
                 tmp.append(str(attribute))
         data.append(tmp)
+    return data
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
