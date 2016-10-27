@@ -1442,7 +1442,7 @@ class Dbas(object):
             recipient = self.request.params['recipient'].replace('%20', ' ')
             title     = self.request.params['title']
             text      = self.request.params['text']
-            db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
+            db_recipient = get_user_by_private_or_public_nickname(recipient)
             if len(title) < 5 or len(text) < 5:
                 error = _tn.get(_tn.empty_notification_input) + ' (' + _tn.get(_tn.minLength) + ': 5)'
             elif not db_recipient or recipient == 'admin' or recipient == 'anonymous':
