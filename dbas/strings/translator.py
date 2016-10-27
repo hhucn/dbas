@@ -27,7 +27,7 @@ def get_translation(sid, lang='default'):
         else:
             return sid.value
     else:
-        Keywords.get_by_string(sid)
+        get_translation(Keywords.get_key_by_string(sid), lang)
 
 
 class Translator(object):
