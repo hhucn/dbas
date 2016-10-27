@@ -10,6 +10,7 @@ from dbas.input_validator import Validator
 from dbas.lib import create_speechbubble_dict
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, sql_timestamp_pretty_print
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
 

@@ -8,6 +8,7 @@ from dbas.database.discussion_model import Argument, User, Issue, Language, Stat
 from dbas.lib import is_user_author
 from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from slugify import slugify

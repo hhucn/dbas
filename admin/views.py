@@ -14,6 +14,7 @@ from cornice import Service
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.lib import get_language
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.views import Dbas, project_name
 from pyramid.threadlocal import get_current_registry
