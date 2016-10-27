@@ -127,7 +127,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     _t = Translator(lang)
     tooltip = _t.get(_.discussionInfoTooltip1) + ' ' + date + ' '
     tooltip += _t.get(_.discussionInfoTooltip2) + ' ' + str(stat_count) + ' '
-    tooltip += (_t.get(_.discussionInfoTooltip3sg if stat_count == 1 else _t.discussionInfoTooltip3pl))
+    tooltip += (_t.get(_.discussionInfoTooltip3sg if stat_count == 1 else _.discussionInfoTooltip3pl))
 
     return {'slug': slug,
             'info': info,
