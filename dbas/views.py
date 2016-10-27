@@ -7,43 +7,42 @@ Core component of DBAS.
 import json
 import time
 
-import requests
-import transaction
-
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
 import dbas.review.helper.flags as review_flag_helper
-import dbas.review.helper.subpage as review_page_helper
-import dbas.review.helper.queues as review_queue_helper
-import dbas.review.helper.main as review_main_helper
-import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.history as review_history_helper
+import dbas.review.helper.main as review_main_helper
+import dbas.review.helper.queues as review_queue_helper
+import dbas.review.helper.reputation as review_reputation_helper
+import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 import dbas.user_management as user_manager
-
+import requests
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason, Statement
 from dbas.handler.opinion import OpinionHandler
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.query import QueryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
-from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
+from dbas.helper.query import QueryHelper
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
     try_to_register_new_user_via_ajax, request_password
-from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification,\
-    rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, rep_reason_new_statement
+from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
     get_slug_by_statement_uid, get_profile_picture
 from dbas.logger import logger
+from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification, \
+    rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, \
+    rep_reason_new_statement
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.security import remember, forget
