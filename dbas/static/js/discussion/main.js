@@ -190,6 +190,12 @@ function Main () {
 			guiHandler.showFlagArgumentPopup(uid);
 		});
 		
+		trianglel.find('.triangle-reference').click(function () {
+			// var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			// guiHandler.showFlagArgumentPopup(uid);
+			alert('Todo #144');
+		});
+		
 		trianglel.find('.triangle-trash').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 			guiHandler.showDeleteContentPopup(uid, true);
@@ -213,6 +219,12 @@ function Main () {
 		list.find('.item-trash').click(function () {
 			var uid = $(this).parent().find('label').attr('id');
 			guiHandler.showDeleteContentPopup(uid, false);
+		});
+		
+		list.find('.item-reference').click(function () {
+			//var uid = $(this).parent().find('label').attr('id');
+			//guiHandler.showDeleteContentPopup(uid, false);
+			alert('Todo #144');
 		});
 		
 		// adding issues
