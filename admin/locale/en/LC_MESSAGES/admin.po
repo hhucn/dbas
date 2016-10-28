@@ -1,0 +1,61 @@
+#
+# English translations for PACKAGE package
+# This file is distributed under the same license as the PACKAGE package.
+# Tobias Krauthoff <tobias.krauthoff@uni-duesseldorf.de>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2016-10-25 10:34+0200\n"
+"PO-Revision-Date: 2016-10-25 10:46+0200\n"
+"Last-Translator: Tobias Krauthoff <tobias.krauthoff@uni-duesseldorf.de>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 4.9\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Default: Admin
+#: templates/table.pt:24
+msgid "Admin"
+msgstr "Admin"
+
+#. Default: You have no rights for this page!
+#: templates/admin.pt:16
+msgid "no_admin_message"
+msgstr "You have no rights for this page!"
+
+#. Default: Your Nickname
+#: templates/admin.pt:27
+msgid "your_nickname"
+msgstr "Your Nickname"
+
+#. Default: Your Password
+#: templates/admin.pt:33
+msgid "your_password"
+msgstr "Your Password"
+
+#. Default: Keep me logged in
+#: templates/admin.pt:43
+msgid "keep_me_logged_in"
+msgstr "Keep me logged in"
+
+#. Default: Error:
+#: templates/admin.pt:50
+msgid "error"
+msgstr "Error:"
+
+#. Default: Log In
+#: templates/admin.pt:54
+msgid "login"
+msgstr "Log In"
+
+#. Default: Every edit and/or delete operation can have far-reaching
+#. implications for the complete system. Maybe it will be unusable after the
+#. operation!
+#: templates/admin.pt:71
+msgid "admin_caution_message"
+msgstr ""
+"Every edit and/or delete operation can have far-reaching implications for "
+"the complete system. Maybe it will be unusable after the operation!"
