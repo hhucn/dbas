@@ -113,7 +113,6 @@ function DiscussionBarometer(){
         dialog.find('.modal-footer').append('<div id="chart-buttons"></div>');
 
         dialog.find('#chart-buttons').append('<button id="show-bar-chart-btn" type="button" class="btn btn-default">Bar Chart</button>');
-        dialog.find('#chart-buttons').append('<button id="show-pie-chart-btn" type="button" class="btn btn-default">Pie Chart</button>');
         dialog.find('#chart-buttons').append('<button id="show-doughnut-chart-btn" type="button" class="btn btn-default">Doughnut Chart</button>');
         addListenerForChartButtons(jsonData, address);
     }
@@ -126,8 +125,7 @@ function DiscussionBarometer(){
      */
     function addListenerForChartButtons(jsonData, address) {
         $('#show-bar-chart-btn').click(function() { getD3BarometerBarChart(jsonData, address); });
-        $('#show-pie-chart-btn').click(function() { getD3BarometerPieChart(jsonData, address, 0); });
-        $('#show-doughnut-chart-btn').click(function() { getD3BarometerPieChart(jsonData, address, 0.3); });
+        $('#show-doughnut-chart-btn').click(function() { getD3BarometerDoughnutChart(jsonData, address, 0.3); });
     }
 
     /**
@@ -354,18 +352,15 @@ function DiscussionBarometer(){
         });
     }
 
-    ////////////////////////////////////
-    // PIE CHART
-    ////////////////////////////////////
+    // Doughnut Chart
 
     /**
      * Create barometer.
      *
      * @param jsonData
      * @param address
-     * @param innerRadiusFactor
      */
-    function getD3BarometerPieChart(jsonData, address, innerRadiusFactor) {
+    function getD3BarometerDoughnutChart(jsonData, address) {
         var dialog = $('#' + popupConfirmRowDialogId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
@@ -375,7 +370,7 @@ function DiscussionBarometer(){
 
         // width and height of chart
         var width = 500, height = 410;
-        var pieChartSvg = getSvgPieChart(width, height);
+        var doughnutChartSvg = getSvgDoughnutChart(width, height);
 
         var usersDict = [];
         // create dictionary depending on address
@@ -387,7 +382,7 @@ function DiscussionBarometer(){
         }
 
         // create bars of chart
-        createPieChart(usersDict, pieChartSvg, innerRadiusFactor);
+        createDoughnutChart(usersDict, doughnutChartSvg);
 
         // create legend for chart
         createLegend(usersDict);
@@ -400,43 +395,42 @@ function DiscussionBarometer(){
      * @param height: height of container
      * @return scalable vector graphic
      */
-    function getSvgPieChart(width, height){
+    function getSvgDoughnutChart(width, height){
         return d3.select('#barometer-div').append('svg').attr({width: width, height: height, id: "barometer-svg"});
     }
 
     /**
-     * Create pie chart.
+     * Create doughnut chart.
      *
      * @param usersDict
-     * @param pieChartSvg
-     * @param innerRadiusFactor
+     * @param doughnutChartSvg
      */
-    function createPieChart(usersDict, pieChartSvg, innerRadiusFactor) {
+    function createDoughnutChart(usersDict, doughnutChartSvg) {
         var height = 400, width = 400,
             outerRadius = Math.min(width, height) / 2,
-            innerRadius = innerRadiusFactor * outerRadius;
+            innerRadius = 0.3 * outerRadius;
 
         var sumArrayLength = 0;
         $.each(usersDict, function(key, value) {
             sumArrayLength += value.usersNumber;
         });
 
-        var pie = getPie(usersDict);
+        var doughnut = getDoughnut(usersDict);
 
         var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, sumArrayLength);
         var outerCircle = getOuterCircle(innerRadius, outerRadius);
 
-        createOuterPath(pieChartSvg, usersDict, outerCircle, pie);
-        createInnerPath(pieChartSvg, usersDict, innerCircle, pie);
+        createOuterPath(doughnutChartSvg, usersDict, outerCircle, doughnut);
+        createInnerPath(doughnutChartSvg, usersDict, innerCircle, doughnut);
     }
 
     /**
-     * Choose pie layout of d3.
+     * Choose layout of d3.
      *
      * @param usersDict
      * @returns {*}
      */
-    function getPie(usersDict){
+    function getDoughnut(usersDict){
         return d3.layout.pie()
             .sort(null)
             .value(function (d, i) {
@@ -477,14 +471,14 @@ function DiscussionBarometer(){
     /**
      * Create inner path.
      *
-     * @param pieChartSvg
+     * @param doughnutChartSvg
      * @param usersDict
      * @param innerCircle
-     * @param pie
+     * @param doughnut
      */
-    function createInnerPath(pieChartSvg, usersDict, innerCircle, pie){
-        pieChartSvg.selectAll(".innerCircle")
-            .data(pie(usersDict))
+    function createInnerPath(doughnutChartSvg, usersDict, innerCircle, doughnut){
+        doughnutChartSvg.selectAll(".innerCircle")
+            .data(doughnut(usersDict))
             .enter().append("path")
             .attr({fill: function (d, i) { return getNormalColorFor(i); },
                    stroke: "gray", d: innerCircle, transform: "translate(250,210)"});
@@ -493,14 +487,14 @@ function DiscussionBarometer(){
     /**
      * Create outer path.
      *
-     * @param pieChartSvg
+     * @param doughnutChartSvg
      * @param usersDict
      * @param outerCircle
-     * @param pie
+     * @param doughnut
      */
-    function createOuterPath(pieChartSvg, usersDict, outerCircle, pie){
-        pieChartSvg.selectAll(".outerCircle")
-            .data(pie(usersDict))
+    function createOuterPath(doughnutChartSvg, usersDict, outerCircle, doughnut){
+        doughnutChartSvg.selectAll(".outerCircle")
+            .data(doughnut(usersDict))
             .enter().append("path")
             .attr({'fill': function (d, i) { return getLightColorFor(i); },
                    stroke: "gray", d: outerCircle, transform: "translate(250,210)"});
