@@ -275,7 +275,7 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonLogin).show().click(function() {
-		new AjaxMainHandler().ajaxLogin()
+		new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false)
 	}).keypress(function(e) { if (e.which == 13) { new AjaxMainHandler().ajaxRegistration() } });
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
@@ -345,8 +345,10 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	// bind enter key
-	$('#' + loginUserId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin()			}	});
-	$('#' + loginPwId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin()			}	});
+	$('#' + loginUserId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
+	$('#' + loginPwId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
+	$('#admin-login-user').keypress(function(e) {   					if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
+	$('#admin-login-pw').keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
 	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
 	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
 	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
@@ -513,20 +515,26 @@ function setGlobalInfoHandler(heading, body){
 /**
  *
  * @param data
+ * @param showGlobalError
  */
-function callbackIfDoneForLogin(data){
+function callbackIfDoneForLogin(data, showGlobalError){
 	try {
-		var jsonData = $.parseJSON(data);
-		// It is JSON
-		if (jsonData.error.length != 0) {
-			$('#' + popupLoginFailed).show();
-			$('#' + popupLoginFailed + '-message').html(jsonData.error);
+		var parsedData = $.parseJSON(data);
+		
+		if (parsedData.error.length != 0) {
+			if (showGlobalError) {
+					setGlobalErrorHandler('Ohh!', parsedData.error);
+			} else {
+				$('#' + popupLoginFailed).show();
+				$('#' + popupLoginFailed + '-message').html(parsedData.error);
+			}
 		} else {
 			$('#' + popupLogin).modal('hide');
 			location.reload(true);
 		}
 	} catch(err){
-		//var htmlData = $.parseHTML(data);
+		console.log('ERROR');
+		//console.log(err);
 		var url = location.href;
 		if (url.indexOf('?session_expired=true') != -1)
 			url = url.substr(0, url.length - '?session_expired=true'.length);

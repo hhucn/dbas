@@ -277,6 +277,7 @@ function DiscussionBarometer(){
     /**
      * Create tooltips for bars.
      *
+     * @param usersDict
      * @param barChartSvg
      * @param width
      * @param address
@@ -286,7 +287,6 @@ function DiscussionBarometer(){
         var barWidth = width / usersDict.length - 5;
         var tooltipWith = width;
         var tmp;
-        var _this = this;
         barChartSvg.selectAll("rect").on("mouseover", function (d, index) {
             var barLeft = index / 2 * barWidth + 70 + index * 5;
             tmp = index;

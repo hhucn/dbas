@@ -16,7 +16,7 @@ function InteractionHandler() {
 			$('#' + addStatementErrorContainer).show();
 			$('#' + addStatementErrorMsg).text(parsedData.error);
 		} else {
-			$('#' + discussionSpaceId + 'input:last-child').attr('checked', false).prop('checked', false);
+			$('#' + discussionSpaceId + 'input:last-child').prop('checked', false);
 			window.location.href = parsedData.url;
 		}
 	};

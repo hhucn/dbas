@@ -3,8 +3,8 @@ Admin
 =====
 
 Note for tables with more than one row as PK:
- * Add these table in admin/static/js/admin.js:getUids()
- * Respect the PKs in admin/lib.py, when CRUD elements!
+ * Add these table in admin/static/js/admin.js:getUids() for getting the right uids
+ * Respect the PKs in admin/lib.py, when CUD elements! There you have to access all uids
 
 Description
 ===========

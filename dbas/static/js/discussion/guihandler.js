@@ -882,16 +882,24 @@ function GuiHandler() {
 	this.hoverInputListOf = function(list){
 		list.find('input').each(function(){
 			$(this).hover(function(){
-				$(this).prop('checked', true);
+				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+					$(this).prop('checked', true);
+				}
 			}, function(){
-				$(this).prop('checked', false);
+				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+					$(this).prop('checked', false);
+				}
 			})
 		});
 		list.find('label').each(function(){
 			$(this).hover(function(){
-				$(this).prev().prop('checked', true);
+				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+					$(this).prev().prop('checked', true);
+				}
 			}, function(){
-				$(this).prev().prop('checked', false);
+				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+					$(this).prev().prop('checked', false);
+				}
 			})
 		});
 	}
