@@ -359,8 +359,7 @@ class DictionaryHelper(object):
                                   'next': _tn_sys.get(_tn_sys.next),
                                   'clear_statistics': _tn_sys.get(_tn_sys.clearStatistics),
                                   'go_home': _tn_sys.get(_tn_sys.letsGoHome),
-                                  'count_of_posts': _tn_sys.get(_tn_sys.countOfPosts),
-                                  'default_view': _tn_sys.get(_tn_sys.defaultView)}
+                                  'count_of_posts': _tn_sys.get(_tn_sys.countOfPosts)}
         return_dict['buttons'].update({'report': _tn_dis.get(_tn_dis.report),
                                        'opinion_barometer': _tn_dis.get(_tn_dis.opinionBarometer),
                                        'edit_statement': _tn_dis.get(_tn_dis.editTitle),
@@ -374,7 +373,8 @@ class DictionaryHelper(object):
                                        'lets_go_back': _tn_dis.get(_tn_dis.letsGoBack),
                                        'go_back': _tn_dis.get(_tn_dis.goBack),
                                        'go_forward': _tn_dis.get(_tn_dis.goForward),
-                                       'resume_here': _tn_dis.get(_tn_dis.resumeHere)})
+                                       'resume_here': _tn_dis.get(_tn_dis.resumeHere),
+                                       'default_view': _tn_dis.get(_tn_dis.defaultView)})
 
     def add_title_text(self, return_dict):
         """
