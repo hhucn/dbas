@@ -39,7 +39,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
-    get_slug_by_statement_uid, get_profile_picture
+    get_slug_by_statement_uid, get_profile_picture, get_user_by_case_insensitive_nickname
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -1179,7 +1179,7 @@ class Dbas(object):
                 password = escape_string(password)
                 url = ''
 
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+            db_user = get_user_by_case_insensitive_nickname(nickname)
 
             # check for user and password validations
             if not db_user:
@@ -1192,7 +1192,7 @@ class Dbas(object):
                 logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
                 db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
                 db_settings.should_hold_the_login(keep_login)
-                headers = remember(self.request, nickname)
+                headers = remember(self.request, db_user.nickname)
 
                 # update timestamp
                 logger('user_login', 'login', 'update login timestamp')
@@ -1219,8 +1219,10 @@ class Dbas(object):
             error = _tn.get(_tn.internalKeyError)
             logger('user_login', 'error', repr(e))
 
-        return_dict = {'error': error}
+        return_dict = dict()
+        return_dict['error'] = error
 
+        logger('user_login', 'return', str(return_dict))
         return json.dumps(return_dict, True)
 
     # ajax - user logout
@@ -1440,7 +1442,7 @@ class Dbas(object):
             recipient = self.request.params['recipient'].replace('%20', ' ')
             title     = self.request.params['title']
             text      = self.request.params['text']
-            db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
+            db_recipient = get_user_by_private_or_public_nickname(recipient)
             if len(title) < 5 or len(text) < 5:
                 error = _tn.get(_tn.empty_notification_input) + ' (' + _tn.get(_tn.minLength) + ': 5)'
             elif not db_recipient or recipient == 'admin' or recipient == 'anonymous':

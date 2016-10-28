@@ -1292,6 +1292,36 @@ class FrontendTests:
         b.quit()
         return 1 if success else 0
 
+    @staticmethod
+    def test_admin_interface(browser):
+        """
+        Testing the admin interface
+        :param browser: current browser
+        :return: 1 if success else 0
+        """
+        print('Starting tests for the admin interface:')
+        success = True
+        b = Browser(browser)
+
+        b.visit(main_page  + 'admin/')
+        success = success and Helper.check_for_present_text(b, 'Nickname', 'Check for login view')
+
+        b.find_by_id('admin-login-user').fill(nickname_test_user1)
+        b.find_by_id('admin-login-pw').fill(password)
+        b.find_by_id('admin-login-button').click()
+        time.sleep(wait_time)
+
+        success = success and Helper.check_for_present_text(b, 'no rights', 'Kurt has no rights!')
+        b = Helper.logout(b)
+        time.sleep(wait_time)
+
+        b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'admin/')
+        success = success and Helper.check_for_present_text(b, 'Caution', 'But Tobias has!')
+
+        b = Helper.logout(b)
+        b.quit()
+        return 1 if success else 0
+
 
 test_list = [
     {'console_description': 'tests for normal/not logged in pages',
@@ -1381,7 +1411,11 @@ test_list = [
     {'console_description': 'tests for delete my own argument',
      'test_description': 'test for delete my own argument',
      'test_call': FrontendTests.test_delete_own_argument,
-     'test_id': 21}
+     'test_id': 21},
+    {'console_description': 'tests for the admin interface',
+     'test_description': 'test for the admin interface',
+     'test_call': FrontendTests.test_admin_interface,
+     'test_id': 22}
 ]
 
 if __name__ == "__main__":
