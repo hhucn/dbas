@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-10-25 10:34+0200\n"
+"POT-Creation-Date: 2016-10-28 21:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,143 +16,117 @@ msgstr ""
 "Language: \n"
 "Generated-By: Lingua 4.9\n"
 
-#. Default: 404 Error
-#: ././templates/404.pt:8
-msgid "404"
+#. Default: Queues
+#: ././templates/review.pt:7
+msgid "queues"
 msgstr ""
 
-#. Default: The page
-#: ././templates/404.pt:10
-msgid "404_text_part1"
+#. Default: How To
+#: ././templates/review.pt:8
+msgid "howto"
 msgstr ""
 
-#. Default: could not be found
-#: ././templates/404.pt:12
-msgid "404_text_part2"
+#. Default: Help improve the dialog
+#: ././templates/review.pt:15
+msgid "help_to_improve"
 msgstr ""
 
-#. Default: , because the input parameter seems to be wrong.
-#: ././templates/404.pt:12
-msgid "wrong_input_params"
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: ././templates/review.pt:16
+msgid "dbas_is_moderated_by"
 msgstr ""
 
-#. Default: , because the author revoked the content.
-#: ././templates/404.pt:12
-msgid "author_revoked_content"
+#. Default: Evaluate new statements
+#: ././templates/review.pt:18
+msgid "evaluate_new_statements"
 msgstr ""
 
-#. Default: Go home
-#: ././templates/404.pt:15
-msgid "go-home"
+#. Default: Reviewing suspicious statements
+#: ././templates/review.pt:19
+msgid "reviewing_suspicious_statements"
 msgstr ""
 
-#. Default: or
-#: ././templates/404.pt:17
-msgid "or"
+#. Default: Voting to close or reopen statements
+#: ././templates/review.pt:20
+msgid "voting_to_close"
 msgstr ""
 
-#. Default: go back to the discussion
-#: ././templates/404.pt:18
-msgid "go_back_to_the_discussion"
+#. Default: Choose a task to get started.
+#: ././templates/review.pt:22
+msgid "choose_task"
 msgstr ""
 
-#. Default: Your session has expired!
-#: ././templates/index.pt:8
-msgid "session_expired"
+#. Default: Based on your user group, you have all rights!
+#: ././templates/review.pt:30 ././templates/review_reputation.pt:14
+msgid "unlimited_right_based_on_group"
 msgstr ""
 
-#. Default: You have to log in again.
-#: ././templates/index.pt:9
-msgid "login_again"
+#. Default: Your current reputation count is
+#: ././templates/review.pt:33
+msgid "current_reputation_os"
 msgstr ""
 
-#. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
-#. argumentation system. There will be bugs. Please feel free to
-#: ././templates/index.pt:18
-msgid "welcome_text1"
+#. Default: Open Tasks
+#: ././templates/review.pt:43
+msgid "open_tasks"
 msgstr ""
 
-#. Default: contact
-#: ././templates/index.pt:19
-msgid "welcome_text2"
+#. Default: Topic
+#: ././templates/review.pt:44
+msgid "topic"
 msgstr ""
 
-#. Default: us to report bugs or provide feedback.
-#: ././templates/index.pt:20
-msgid "welcome_text3"
+#. Default: Recent Reviews
+#: ././templates/review.pt:45
+msgid "recent_reviews"
 msgstr ""
 
-#. Default: Click here to start now!
-#: ././templates/index.pt:26
-msgid "lets_start_now"
+#. Default: None
+#: ././templates/review.pt:68
+msgid "None"
 msgstr ""
 
-#. Default: This work is part of the graduate school on
-#: ././templates/index.pt:32
-msgid "work_based_on"
+#. Default: What is reputation? How do I earn (and lose) it?
+#: ././templates/review.pt:80
+msgid "what_is_reputation"
 msgstr ""
 
-#. Default: Online-Participation
-#: ././templates/index.pt:32
-msgid "online_participation"
+#. Default: Reputation is a rough measurement of how work you are doing for the
+#. discussion and the community;
+#: ././templates/review.pt:81
+msgid "what_is_reputation_def"
 msgstr ""
 
-#. Default: It is funded by the
-#: ././templates/index.pt:33
-msgid "funded_by"
+#. Default: you can earn it by using D-BAS and all of its great functions.
+#: ././templates/review.pt:82
+msgid "what_is_reputation_earn"
 msgstr ""
 
-#. Default: Ministry of Innovation, Science and Research in North Rhine-
-#. Westphalia
-#: ././templates/index.pt:33
-msgid "ministry_of_innovation"
+#. Default: Basic use of D-BAS, does not require any reputation at all.
+#: ././templates/review.pt:83
+msgid "what_is_reputation_use"
 msgstr ""
 
-#. Default: Toggle navigation
-#: ././templates/snippet-header.pt:9
-msgid "Toggle Navigation"
+#. Default: You gain reputation when:
+#: ././templates/review.pt:86
+msgid "gain_rep_when"
 msgstr ""
 
-#. Default: Let's go
-#: ././templates/snippet-header.pt:44
-msgid "lets_go"
+#. Default: You lose reputation when:
+#: ././templates/review.pt:95
+msgid "lose_rep_when"
 msgstr ""
 
-#. Default: News
-#: ././templates/snippet-header.pt:50
-msgid "news"
+#. Default: Privileges
+#: ././templates/review.pt:107
+msgid "privileges"
 msgstr ""
 
-#. Default: Login
-#. Default: Log In
-#: ././templates/snippet-header.pt:56 ././templates/snippet-popups.pt:267
-#: ././templates/snippet-popups.pt:472
-msgid "login"
-msgstr ""
-
-#. Default: Settings
-#: ././templates/snippet-header.pt:75 ././templates/settings.pt:41
-msgid "settings"
-msgstr ""
-
-#. Default: Notifications
-#: ././templates/snippet-header.pt:82
-msgid "notifications"
-msgstr ""
-
-#. Default: Admin
-#: ././templates/snippet-header.pt:87
-msgid "Admin"
-msgstr ""
-
-#. Default: Logout
-#: ././templates/snippet-header.pt:92
-msgid "logout"
-msgstr ""
-
-#. Default: Review
-#: ././templates/snippet-header.pt:99
-msgid "review"
+#. Default: Privileges control what you can see in the review queues of D-BAS.
+#. Gain more privileges by increasing your reputation.
+#: ././templates/review.pt:108
+msgid "privileges_explanation"
 msgstr ""
 
 #. Default: Impressum
@@ -341,234 +315,301 @@ msgstr ""
 msgid "changes"
 msgstr ""
 
-#. Default: Queues
-#: ././templates/review.pt:7
-msgid "queues"
+#. Default: Public Information of
+#: ././templates/user.pt:9
+msgid "public_information_of"
 msgstr ""
 
-#. Default: How To
-#: ././templates/review.pt:8
-msgid "howto"
+#. Default: Last Action
+#: ././templates/user.pt:13
+msgid "last_action"
 msgstr ""
 
-#. Default: Help improve the dialog
-#: ././templates/review.pt:15
-msgid "help_to_improve"
+#. Default: Last Login
+#: ././templates/user.pt:17
+msgid "last_login"
 msgstr ""
 
-#. Default: D-BAS is moderated by you. Help your discussion members learn to
-#. argue and raise the quality of argumenty by:
-#: ././templates/review.pt:16
-msgid "dbas_is_moderated_by"
+#. Default: Registered
+#: ././templates/user.pt:21
+msgid "registered"
 msgstr ""
 
-#. Default: Evaluate new statements
-#: ././templates/review.pt:18
-msgid "evaluate_new_statements"
+#. Default: User group
+#: ././templates/user.pt:25
+msgid "user_group"
 msgstr ""
 
-#. Default: Reviewing suspicious statements
-#: ././templates/review.pt:19
-msgid "reviewing_suspicious_statements"
+#. Default: Profile Picture of
+#: ././templates/user.pt:33
+msgid "profile_picture_of"
 msgstr ""
 
-#. Default: Voting to close or reopen statements
-#: ././templates/review.pt:20
-msgid "voting_to_close"
+#. Default: Discussion Statistics
+#: ././templates/user.pt:38 ././templates/settings.pt:158
+msgid "discussion_stat"
 msgstr ""
 
-#. Default: Choose a task to get started.
-#: ././templates/review.pt:22
-msgid "choose_task"
+#. Default: Statements posted
+#: ././templates/user.pt:41 ././templates/settings.pt:162
+#: ././templates/finish.pt:26
+msgid "statements_posted"
 msgstr ""
 
-#. Default: Based on your user group, you have all rights!
-#: ././templates/review.pt:30 ././templates/review_reputation.pt:14
-msgid "unlimited_right_based_on_group"
+#. Default: Edits done
+#: ././templates/user.pt:45 ././templates/settings.pt:169
+#: ././templates/finish.pt:30
+msgid "edits_done"
 msgstr ""
 
-#. Default: Your current reputation count is
-#: ././templates/review.pt:33
-msgid "current_reputation_os"
+#. Default: Votes for Arguments
+#: ././templates/user.pt:49 ././templates/settings.pt:176
+#: ././templates/finish.pt:34
+msgid "discussion_votes_statements"
 msgstr ""
 
-#. Default: Open Tasks
-#: ././templates/review.pt:43
-msgid "open_tasks"
+#. Default: Votes for Statements
+#: ././templates/user.pt:53 ././templates/settings.pt:183
+#: ././templates/finish.pt:38
+msgid "discussion_votes_arguments"
 msgstr ""
 
-#. Default: Topic
-#: ././templates/review.pt:44
-msgid "topic"
+#. Default: Reputation
+#: ././templates/user.pt:57 ././templates/review_reputation.pt:9
+#: ././templates/review_reputation.pt:30
+msgid "reputation"
 msgstr ""
 
-#. Default: Recent Reviews
-#: ././templates/review.pt:45
-msgid "recent_reviews"
+#. Default: Personal Information
+#: ././templates/settings.pt:7
+msgid "personal_information"
 msgstr ""
 
-#. Default: None
-#: ././templates/review.pt:68
-msgid "None"
+#. Default: Firstname
+#: ././templates/settings.pt:10
+msgid "firstname"
 msgstr ""
 
-#. Default: What is reputation? How do I earn (and lose) it?
-#: ././templates/review.pt:80
-msgid "what_is_reputation"
+#. Default: Surname
+#: ././templates/settings.pt:14
+msgid "surname"
 msgstr ""
 
-#. Default: Reputation is a rough measurement of how work you are doing for the
-#. discussion and the community;
-#: ././templates/review.pt:81
-msgid "what_is_reputation_def"
+#. Default: Nickname
+#. Default: Your Nickname
+#: ././templates/settings.pt:18 ././templates/snippet-popups.pt:356
+msgid "nickname"
 msgstr ""
 
-#. Default: you can earn it by using D-BAS and all of its great functions.
-#: ././templates/review.pt:82
-msgid "what_is_reputation_earn"
+#. Default: Public Nickname
+#: ././templates/settings.pt:22
+msgid "public_nickname"
 msgstr ""
 
-#. Default: Basic use of D-BAS, does not require any reputation at all.
-#: ././templates/review.pt:83
-msgid "what_is_reputation_use"
+#. Default: Click here for your public page
+#: ././templates/settings.pt:26
+msgid "click_here_for_public_page"
 msgstr ""
 
-#. Default: You gain reputation when:
-#: ././templates/review.pt:86
-msgid "gain_rep_when"
+#. Default: Group
+#: ././templates/settings.pt:35
+msgid "group"
 msgstr ""
 
-#. Default: You lose reputation when:
-#: ././templates/review.pt:95
-msgid "lose_rep_when"
+#. Default: Settings
+#: ././templates/settings.pt:41 ././templates/snippet-header.pt:75
+msgid "settings"
 msgstr ""
 
-#. Default: Privileges
-#: ././templates/review.pt:107
-msgid "privileges"
+#. Default: Receive Notifications
+#: ././templates/settings.pt:44
+msgid "receive_notifications"
 msgstr ""
 
-#. Default: Privileges control what you can see in the review queues of D-BAS.
-#. Gain more privileges by increasing your reputation.
-#: ././templates/review.pt:108
-msgid "privileges_explanation"
+#. Default: Receive E-Mails
+#: ././templates/settings.pt:50
+msgid "receive_mails"
 msgstr ""
 
-#. Default: You have to earn more reputation for this queue
-#: ././templates/review_history.pt:6
-msgid "earn_more_reputation_for_queue"
+#. Default: Nickname is public
+#: ././templates/settings.pt:56
+msgid "nickname_is_public"
 msgstr ""
 
-#. Default: You have no access to this site
-#: ././templates/review_history.pt:7
-msgid "you_have_no_access"
+#. Default: Prefered message language
+#: ././templates/settings.pt:62
+msgid "message_language"
 msgstr ""
 
-#. Default: History
-#: ././templates/review_history.pt:15
-msgid "history"
+#. Default: Profile Picture
+#: ././templates/settings.pt:85
+msgid "profile_picture"
 msgstr ""
 
-#. Default: Current Decisions
-#. Default: Current decisions
-#: ././templates/review_history.pt:16 ././templates/review_history.pt:23
-msgid "current_decisions"
+#. Default: Change your profile picture on the
+#: ././templates/settings.pt:87
+msgid "change_gravatar"
 msgstr ""
 
-#. Default: The history of votes
-#: ././templates/review_history.pt:22
-msgid "history_of_votes"
+#. Default: A Gravatar is a Globally Recognized Avatar. You upload it and
+#. create your profile just once, and then when you participate in any
+#. Gravatar-enabled site, your Gravatar image will automatically follow you
+#. there.
+#: ././templates/settings.pt:89
+msgid "what_is_gravatar"
 msgstr ""
 
-#. Default: No decisions for this queue.
-#: ././templates/review_history.pt:35
-msgid "no_decision_for_this_queue"
+#. Default: Settings could not be set. Please try again later.
+#: ././templates/settings.pt:98
+msgid "settings_not_set"
 msgstr ""
 
-#. Default: Argument
-#: ././templates/review_history.pt:40
-msgid "argument"
+#. Default: Settings were set successfully.
+#: ././templates/settings.pt:103
+msgid "settings_set"
 msgstr ""
 
-#. Default: Edit
-#: ././templates/review_history.pt:41
-msgid "edit"
+#. Default: Change your password
+#: ././templates/settings.pt:112
+msgid "change_password"
 msgstr ""
 
-#. Default: Reason
-#: ././templates/review_history.pt:42
-msgid "reason"
+#. Default: Old password
+#: ././templates/settings.pt:117
+msgid "old_password"
 msgstr ""
 
-#. Default: Original
-#: ././templates/review_history.pt:43 ././templates/review_content.pt:174
-msgid "original"
+#. Default: New Password
+#: ././templates/settings.pt:124
+msgid "new_password"
 msgstr ""
 
-#. Default: Votes
-#: ././templates/review_history.pt:44
-msgid "votes"
+#. Default: New Password (confirm)
+#: ././templates/settings.pt:131
+msgid "new_password_confirm"
 msgstr ""
 
-#. Default: Accepted
-#: ././templates/review_history.pt:45
-msgid "accepted"
+#. Default: Strength
+#: ././templates/settings.pt:138
+msgid "strength"
 msgstr ""
 
-#. Default: Voters Pro
-#: ././templates/review_history.pt:46
-msgid "voters_pro"
+#. Default: Your password was changed
+#: ././templates/settings.pt:198
+msgid "password_changed"
 msgstr ""
 
-#. Default: Voters Con
-#: ././templates/review_history.pt:47
-msgid "voters_con"
+#. Default: Statistics could not be deleted.
+#: ././templates/settings.pt:205
+msgid "statistics_not_deleted"
 msgstr ""
 
-#. Default: Timestamp
-#: ././templates/review_history.pt:48
-msgid "timestamp"
+#. Default: Statistics were set successfully deleted.
+#: ././templates/settings.pt:211
+msgid "statistics_deletet"
 msgstr ""
 
-#. Default: Reporter
-#: ././templates/review_history.pt:49
-msgid "reporter"
+#. Default: Your last history
+#: ././templates/settings.pt:221
+msgid "last_history"
 msgstr ""
 
-#. Default: Action
-#: ././templates/review_history.pt:50
-msgid "actions"
+#. Default: Success:
+#. Default: Success
+#: ././templates/settings.pt:233 ././templates/snippet-popups.pt:327
+#: ././templates/snippet-popups.pt:426 ././templates/content.pt:57
+msgid "success"
 msgstr ""
 
-#. Default: Undo
-#: ././templates/review_history.pt:91
-msgid "undo"
+#. Default: Get In Touch With Us
+#: ././templates/contact.pt:5
+msgid "contact_header_1"
 msgstr ""
 
-#. Default: Cancel
-#: ././templates/review_history.pt:94 ././templates/snippet-popups.pt:175
-#: ././templates/snippet-popups.pt:198 ././templates/snippet-popups.pt:223
-msgid "cancel"
+#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
+#. hours max!
+#: ././templates/contact.pt:6
+msgid "contact_header_2"
 msgstr ""
 
-#. Default: Imprint and Copyrights
-#: ././templates/snippet-footer.pt:11
-msgid "imprint_copyright"
+#. Default: Your Name (required)
+#: ././templates/contact.pt:12
+msgid "name_req"
 msgstr ""
 
-#. Default: Publications
-#: ././templates/snippet-footer.pt:14
-msgid "publications"
+#. Default: Your E-Mail (required)
+#: ././templates/contact.pt:19
+msgid "mail_req"
 msgstr ""
 
-#. Default: Author
-#: ././templates/snippet-footer.pt:17 ././templates/snippet-popups.pt:606
-msgid "author"
+#. Default: Your Phone Number
+#: ././templates/contact.pt:26
+msgid "phone_no"
 msgstr ""
 
-#. Default: license
-#: ././templates/snippet-footer.pt:20
-msgid "license"
+#. Default: Your Notification (required)
+#: ././templates/contact.pt:33
+msgid "message_req"
+msgstr ""
+
+#. Default: Anti-Spam (required)
+#: ././templates/contact.pt:40
+msgid "spam_req"
+msgstr ""
+
+#. Default: Warning!
+#: ././templates/contact.pt:57
+msgid "warning"
+msgstr ""
+
+#. Default: Great:
+#: ././templates/contact.pt:64
+msgid "great"
+msgstr ""
+
+#. Default: Your message was sent.
+#: ././templates/contact.pt:64
+msgid "message_sent"
+msgstr ""
+
+#. Default: 404 Error
+#: ././templates/404.pt:8
+msgid "404"
+msgstr ""
+
+#. Default: The page
+#: ././templates/404.pt:10
+msgid "404_text_part1"
+msgstr ""
+
+#. Default: could not be found
+#: ././templates/404.pt:12
+msgid "404_text_part2"
+msgstr ""
+
+#. Default: , because the input parameter seems to be wrong.
+#: ././templates/404.pt:12
+msgid "wrong_input_params"
+msgstr ""
+
+#. Default: , because the author revoked the content.
+#: ././templates/404.pt:12
+msgid "author_revoked_content"
+msgstr ""
+
+#. Default: Go home
+#: ././templates/404.pt:15
+msgid "go-home"
+msgstr ""
+
+#. Default: or
+#: ././templates/404.pt:17
+msgid "or"
+msgstr ""
+
+#. Default: go back to the discussion
+#: ././templates/404.pt:18
+msgid "go_back_to_the_discussion"
 msgstr ""
 
 #. Default: About me
@@ -648,8 +689,8 @@ msgstr ""
 
 #. Default: Close
 #: ././templates/snippet-popups.pt:80 ././templates/snippet-popups.pt:125
-#: ././templates/snippet-popups.pt:475 ././templates/snippet-popups.pt:514
-#: ././templates/snippet-popups.pt:614 ././templates/snippet-popups.pt:650
+#: ././templates/snippet-popups.pt:479 ././templates/snippet-popups.pt:518
+#: ././templates/snippet-popups.pt:618 ././templates/snippet-popups.pt:654
 msgid "close"
 msgstr ""
 
@@ -687,162 +728,172 @@ msgid "mit_license_part3"
 msgstr ""
 
 #. Default: Okay
-#: ././templates/snippet-popups.pt:174 ././templates/snippet-popups.pt:197
-#: ././templates/snippet-popups.pt:222
+#: ././templates/snippet-popups.pt:174 ././templates/snippet-popups.pt:201
+#: ././templates/snippet-popups.pt:226
 msgid "okay"
 msgstr ""
 
+#. Default: Cancel
+#: ././templates/snippet-popups.pt:175 ././templates/snippet-popups.pt:202
+#: ././templates/snippet-popups.pt:227 ././templates/review_history.pt:94
+msgid "cancel"
+msgstr ""
+
+#. Default: Bar Chart
+#: ././templates/snippet-popups.pt:198
+msgid "bar_chart"
+msgstr ""
+
+#. Default: Doughnut Chart
+#: ././templates/snippet-popups.pt:199
+msgid "doughnut_chart"
+msgstr ""
+
 #. Default: Do not remind me again
-#: ././templates/snippet-popups.pt:217
+#: ././templates/snippet-popups.pt:221
 msgid "do_not_remind_me_again"
 msgstr ""
 
+#. Default: Log In
+#. Default: Login
+#: ././templates/snippet-popups.pt:271 ././templates/snippet-popups.pt:476
+#: ././templates/snippet-header.pt:56
+msgid "login"
+msgstr ""
+
 #. Default: Sign Up
-#: ././templates/snippet-popups.pt:269
+#: ././templates/snippet-popups.pt:273
 msgid "sign_up"
 msgstr ""
 
 #. Default: Your Nickname
-#: ././templates/snippet-popups.pt:283
+#: ././templates/snippet-popups.pt:287
 msgid "your_nickname"
 msgstr ""
 
 #. Default: Your Password
-#: ././templates/snippet-popups.pt:290
+#: ././templates/snippet-popups.pt:294
 msgid "your_password"
 msgstr ""
 
 #. Default: Keep me logged in
-#: ././templates/snippet-popups.pt:300
+#: ././templates/snippet-popups.pt:304
 msgid "keep_me_logged_in"
 msgstr ""
 
 #. Default: Forgot your password?
-#: ././templates/snippet-popups.pt:302
+#: ././templates/snippet-popups.pt:306
 msgid "forgot_password"
 msgstr ""
 
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
-#: ././templates/snippet-popups.pt:306
+#: ././templates/snippet-popups.pt:310
 msgid "fill_in_mail_for_password"
 msgstr ""
 
 #. Default: Error:
-#: ././templates/snippet-popups.pt:316 ././templates/snippet-popups.pt:430
+#: ././templates/snippet-popups.pt:320 ././templates/snippet-popups.pt:434
 msgid "error"
 msgstr ""
 
-#. Default: Success:
-#. Default: Success
-#: ././templates/snippet-popups.pt:323 ././templates/snippet-popups.pt:422
-#: ././templates/settings.pt:233 ././templates/content.pt:57
-msgid "success"
-msgstr ""
-
 #. Default: Info:
-#: ././templates/snippet-popups.pt:330 ././templates/snippet-popups.pt:438
+#: ././templates/snippet-popups.pt:334 ././templates/snippet-popups.pt:442
 msgid "info"
 msgstr ""
 
 #. Default: Your First Name
-#: ././templates/snippet-popups.pt:338
+#: ././templates/snippet-popups.pt:342
 msgid "first_name"
 msgstr ""
 
 #. Default: Your Last Name
-#: ././templates/snippet-popups.pt:345
+#: ././templates/snippet-popups.pt:349
 msgid "last_name"
 msgstr ""
 
-#. Default: Your Nickname
-#. Default: Nickname
-#: ././templates/snippet-popups.pt:352 ././templates/settings.pt:18
-msgid "nickname"
-msgstr ""
-
 #. Default: Your Gender
-#: ././templates/snippet-popups.pt:359
+#: ././templates/snippet-popups.pt:363
 msgid "your_gender"
 msgstr ""
 
 #. Default: none
-#: ././templates/snippet-popups.pt:364
+#: ././templates/snippet-popups.pt:368
 msgid "none"
 msgstr ""
 
 #. Default: female
-#: ././templates/snippet-popups.pt:369
+#: ././templates/snippet-popups.pt:373
 msgid "female"
 msgstr ""
 
 #. Default: male
-#: ././templates/snippet-popups.pt:374
+#: ././templates/snippet-popups.pt:378
 msgid "male"
 msgstr ""
 
 #. Default: Your Email Address
-#: ././templates/snippet-popups.pt:380
+#: ././templates/snippet-popups.pt:384
 msgid "your_email"
 msgstr ""
 
 #. Default: Your Password
-#: ././templates/snippet-popups.pt:387
+#: ././templates/snippet-popups.pt:391
 msgid "password"
 msgstr ""
 
 #. Default: Password (confirm)
-#: ././templates/snippet-popups.pt:394
+#: ././templates/snippet-popups.pt:398
 msgid "password-confirm"
 msgstr ""
 
 #. Default: Password Strength
-#: ././templates/snippet-popups.pt:401
+#: ././templates/snippet-popups.pt:405
 msgid "password-strength"
 msgstr ""
 
 #. Default: very weak
-#: ././templates/snippet-popups.pt:404
+#: ././templates/snippet-popups.pt:408
 msgid "password_strength"
 msgstr ""
 
 #. Default: Generate secure password
-#: ././templates/snippet-popups.pt:407 ././templates/snippet-popups.pt:463
+#: ././templates/snippet-popups.pt:411 ././templates/snippet-popups.pt:467
 msgid "generate_password"
 msgstr ""
 
 #. Default: Anti-Spam (required)
-#: ././templates/snippet-popups.pt:413
+#: ././templates/snippet-popups.pt:417
 msgid "anti-spam"
 msgstr ""
 
 #. Default: How to select a strong password
-#: ././templates/snippet-popups.pt:444 ././templates/snippet-popups.pt:488
+#: ././templates/snippet-popups.pt:448 ././templates/snippet-popups.pt:492
 msgid "select_password"
 msgstr ""
 
 #. Default: A Password is strong, when it contains at least:
-#: ././templates/snippet-popups.pt:446 ././templates/snippet-popups.pt:491
+#: ././templates/snippet-popups.pt:450 ././templates/snippet-popups.pt:495
 msgid "select_password_intro"
 msgstr ""
 
 #. Default: eight characters
-#: ././templates/snippet-popups.pt:448 ././templates/snippet-popups.pt:493
+#: ././templates/snippet-popups.pt:452 ././templates/snippet-popups.pt:497
 msgid "select_password_rule1"
 msgstr ""
 
 #. Default: one uppercase letter
-#: ././templates/snippet-popups.pt:449 ././templates/snippet-popups.pt:494
+#: ././templates/snippet-popups.pt:453 ././templates/snippet-popups.pt:498
 msgid "select_password_rule2"
 msgstr ""
 
 #. Default: one lowercase letter
-#: ././templates/snippet-popups.pt:450 ././templates/snippet-popups.pt:495
+#: ././templates/snippet-popups.pt:454 ././templates/snippet-popups.pt:499
 msgid "select_password_rule3"
 msgstr ""
 
 #. Default: one special sign
-#: ././templates/snippet-popups.pt:451 ././templates/snippet-popups.pt:496
+#: ././templates/snippet-popups.pt:455 ././templates/snippet-popups.pt:500
 msgid "select_password_rule4"
 msgstr ""
 
@@ -850,382 +901,219 @@ msgstr ""
 #. days to crack this password with a desktop pc in 2015. Removing one sign,
 #. reduces the time to 3 days, and adding a sign increases the time to 57
 #. years. It should be noted:
-#: ././templates/snippet-popups.pt:453 ././templates/snippet-popups.pt:498
+#: ././templates/snippet-popups.pt:457 ././templates/snippet-popups.pt:502
 msgid "popup_password_text"
 msgstr ""
 
 #. Default: Avoid using a password on several pages
-#: ././templates/snippet-popups.pt:455 ././templates/snippet-popups.pt:500
+#: ././templates/snippet-popups.pt:459 ././templates/snippet-popups.pt:504
 msgid "select_password_avoid1"
 msgstr ""
 
 #. Default: Avoid using patterns, which can be found in a dictionary
-#: ././templates/snippet-popups.pt:456 ././templates/snippet-popups.pt:501
+#: ././templates/snippet-popups.pt:460 ././templates/snippet-popups.pt:505
 msgid "select_password_avoid2"
 msgstr ""
 
 #. Default: Avoid using information that is or might become publicly associated
 #. with the user or the account
-#: ././templates/snippet-popups.pt:457 ././templates/snippet-popups.pt:502
+#: ././templates/snippet-popups.pt:461 ././templates/snippet-popups.pt:506
 msgid "select_password_avoid3"
 msgstr ""
 
 #. Default: Avoid using information that the user's colleagues and/or
 #. acquaintances might know to be associated with the user
-#: ././templates/snippet-popups.pt:458 ././templates/snippet-popups.pt:503
+#: ././templates/snippet-popups.pt:462 ././templates/snippet-popups.pt:507
 msgid "select_password_avoid4"
 msgstr ""
 
 #. Default: If you need some help with our password, you can get one here:
-#: ././templates/snippet-popups.pt:460 ././templates/snippet-popups.pt:505
+#: ././templates/snippet-popups.pt:464 ././templates/snippet-popups.pt:509
 msgid "select_password_help"
 msgstr ""
 
 #. Default: Register
-#: ././templates/snippet-popups.pt:473
+#: ././templates/snippet-popups.pt:477
 msgid "register"
 msgstr ""
 
 #. Default: Writing a new message
-#: ././templates/snippet-popups.pt:585 ././templates/snippet-popups.pt:627
+#: ././templates/snippet-popups.pt:589 ././templates/snippet-popups.pt:631
 msgid "writing_message"
 msgstr ""
 
 #. Default: Error:
-#: ././templates/snippet-popups.pt:594 ././templates/snippet-popups.pt:639
+#: ././templates/snippet-popups.pt:598 ././templates/snippet-popups.pt:643
 msgid "error:"
 msgstr ""
 
 #. Default: Success:
-#: ././templates/snippet-popups.pt:599 ././templates/snippet-popups.pt:644
+#: ././templates/snippet-popups.pt:603 ././templates/snippet-popups.pt:648
 msgid "success:"
 msgstr ""
 
+#. Default: Author
+#: ././templates/snippet-popups.pt:610 ././templates/snippet-footer.pt:17
+msgid "author"
+msgstr ""
+
 #. Default: Date
-#: ././templates/snippet-popups.pt:608 ././templates/review_reputation.pt:28
+#: ././templates/snippet-popups.pt:612 ././templates/review_reputation.pt:28
 msgid "date"
 msgstr ""
 
 #. Default: Send News
-#: ././templates/snippet-popups.pt:613
+#: ././templates/snippet-popups.pt:617
 msgid "send_news"
 msgstr ""
 
 #. Default: Send Notifcation
-#: ././templates/snippet-popups.pt:649
+#: ././templates/snippet-popups.pt:653
 msgid "send_notification"
 msgstr ""
 
 #. Default: Selecting a reason
-#: ././templates/snippet-popups.pt:762
+#: ././templates/snippet-popups.pt:766
 msgid "select-reason"
 msgstr ""
 
 #. Default: The statement under consideration is as follows
-#: ././templates/snippet-popups.pt:765
+#: ././templates/snippet-popups.pt:769
 msgid "statement_under_consideration_is"
 msgstr ""
 
 #. Default: The argument under consideration is as follows
-#: ././templates/snippet-popups.pt:766 ././templates/snippet-popups.pt:815
+#: ././templates/snippet-popups.pt:770 ././templates/snippet-popups.pt:819
 msgid "argument_under_consideration_is"
 msgstr ""
 
 #. Default: Why do you want to report it
-#: ././templates/snippet-popups.pt:767
+#: ././templates/snippet-popups.pt:771
 msgid "why_do_you_want_to_report"
 msgstr ""
 
 #. Default: The text needs to be revised.
-#: ././templates/snippet-popups.pt:773
+#: ././templates/snippet-popups.pt:777
 msgid "text_need_to_be_revised"
 msgstr ""
 
 #. Default: This statement is acceptable but it needs correction for
 #. spelling/grammar.
-#: ././templates/snippet-popups.pt:774
+#: ././templates/snippet-popups.pt:778
 msgid "statement_optimization_description"
 msgstr ""
 
 #. Default: This argument is acceptable but it needs correction for
 #. spelling/grammar.
-#: ././templates/snippet-popups.pt:775
+#: ././templates/snippet-popups.pt:779
 msgid "argument_optimization_description"
 msgstr ""
 
 #. Default: This statement is off topic or irrelevant.
-#: ././templates/snippet-popups.pt:780
+#: ././templates/snippet-popups.pt:784
 msgid "statement_offtopic_or_irrelevant"
 msgstr ""
 
 #. Default: This statement does not belong to the topic under discussion.
-#: ././templates/snippet-popups.pt:781
+#: ././templates/snippet-popups.pt:785
 msgid "statement_offtopic_or_irrelevant_description"
 msgstr ""
 
 #. Default: This argument is off topic or irrelevant.
-#: ././templates/snippet-popups.pt:782
+#: ././templates/snippet-popups.pt:786
 msgid "argument_offtopic_or_irrelevant"
 msgstr ""
 
 #. Default: This argument does not belong to the topic under discussion.
-#: ././templates/snippet-popups.pt:783
+#: ././templates/snippet-popups.pt:787
 msgid "argument_offtopic_or_irrelevant_description"
 msgstr ""
 
 #. Default: This statement is harmful or abusive.
-#: ././templates/snippet-popups.pt:795
+#: ././templates/snippet-popups.pt:799
 msgid "statement_harmful"
 msgstr ""
 
 #. Default: This argument is harmful or abusive.
-#: ././templates/snippet-popups.pt:796
+#: ././templates/snippet-popups.pt:800
 msgid "argument_harmful"
 msgstr ""
 
 #. Default: Reporting (parts of) an argument
-#: ././templates/snippet-popups.pt:812
+#: ././templates/snippet-popups.pt:816
 msgid "reporting_parts_argument"
 msgstr ""
 
 #. Default: Please choose which part of the argument you want to report
-#: ././templates/snippet-popups.pt:817
+#: ././templates/snippet-popups.pt:821
 msgid "please_choose_part_to_report"
 msgstr ""
 
 #. Default: Report
-#: ././templates/snippet-popups.pt:824
+#: ././templates/snippet-popups.pt:828
 msgid "report"
 msgstr ""
 
 #. Default: Report the whole argument.
-#: ././templates/snippet-popups.pt:836
+#: ././templates/snippet-popups.pt:840
 msgid "report_whole_argument"
 msgstr ""
 
 #. Default: Caution
-#: ././templates/snippet-popups.pt:854
+#: ././templates/snippet-popups.pt:858
 msgid "caution"
 msgstr ""
 
 #. Default: Do you really want to delete this content? This step is
 #. irreversible!
-#: ././templates/snippet-popups.pt:858
+#: ././templates/snippet-popups.pt:862
 msgid "do_you_really_step_irreversible"
 msgstr ""
 
 #. Default: Please choose a step to jump in
-#: ././templates/snippet-popups.pt:875
+#: ././templates/snippet-popups.pt:879
 msgid "choose_a_step_to_jump_in"
 msgstr ""
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: ././templates/snippet-popups.pt:878
+#: ././templates/snippet-popups.pt:882
 msgid "below_you_will_find"
 msgstr ""
 
-#. Default: Personal Information
-#: ././templates/settings.pt:7
-msgid "personal_information"
+#. Default: Switch Topic
+#: ././templates/content.pt:14
+msgid "switch_topc"
 msgstr ""
 
-#. Default: Firstname
-#: ././templates/settings.pt:10
-msgid "firstname"
+#. Default: Add a Topic
+#: ././templates/content.pt:30
+msgid "add_topic"
 msgstr ""
 
-#. Default: Surname
-#: ././templates/settings.pt:14
-msgid "surname"
+#. Default: Restart
+#: ././templates/content.pt:37
+msgid "restart_discussion"
 msgstr ""
 
-#. Default: Public Nickname
-#: ././templates/settings.pt:22
-msgid "public_nickname"
+#. Default: Change display style
+#: ././templates/content.pt:348
+msgid "change_style"
 msgstr ""
 
-#. Default: Click here for your public page
-#: ././templates/settings.pt:26
-msgid "click_here_for_public_page"
+#. Default: Dialog View
+#: ././templates/content.pt:351
+msgid "dialog_view"
 msgstr ""
 
-#. Default: Group
-#: ././templates/settings.pt:35
-msgid "group"
+#. Default: Island View
+#: ././templates/content.pt:357
+msgid "island_view"
 msgstr ""
 
-#. Default: Receive Notifications
-#: ././templates/settings.pt:44
-msgid "receive_notifications"
-msgstr ""
-
-#. Default: Receive E-Mails
-#: ././templates/settings.pt:50
-msgid "receive_mails"
-msgstr ""
-
-#. Default: Nickname is public
-#: ././templates/settings.pt:56
-msgid "nickname_is_public"
-msgstr ""
-
-#. Default: Prefered message language
-#: ././templates/settings.pt:62
-msgid "message_language"
-msgstr ""
-
-#. Default: Profile Picture
-#: ././templates/settings.pt:85
-msgid "profile_picture"
-msgstr ""
-
-#. Default: Change your profile picture on the
-#: ././templates/settings.pt:87
-msgid "change_gravatar"
-msgstr ""
-
-#. Default: A Gravatar is a Globally Recognized Avatar. You upload it and
-#. create your profile just once, and then when you participate in any
-#. Gravatar-enabled site, your Gravatar image will automatically follow you
-#. there.
-#: ././templates/settings.pt:89
-msgid "what_is_gravatar"
-msgstr ""
-
-#. Default: Settings could not be set. Please try again later.
-#: ././templates/settings.pt:98
-msgid "settings_not_set"
-msgstr ""
-
-#. Default: Settings were set successfully.
-#: ././templates/settings.pt:103
-msgid "settings_set"
-msgstr ""
-
-#. Default: Change your password
-#: ././templates/settings.pt:112
-msgid "change_password"
-msgstr ""
-
-#. Default: Old password
-#: ././templates/settings.pt:117
-msgid "old_password"
-msgstr ""
-
-#. Default: New Password
-#: ././templates/settings.pt:124
-msgid "new_password"
-msgstr ""
-
-#. Default: New Password (confirm)
-#: ././templates/settings.pt:131
-msgid "new_password_confirm"
-msgstr ""
-
-#. Default: Strength
-#: ././templates/settings.pt:138
-msgid "strength"
-msgstr ""
-
-#. Default: Discussion Statistics
-#: ././templates/settings.pt:158 ././templates/user.pt:38
-msgid "discussion_stat"
-msgstr ""
-
-#. Default: Statements posted
-#: ././templates/settings.pt:162 ././templates/finish.pt:26
-#: ././templates/user.pt:41
-msgid "statements_posted"
-msgstr ""
-
-#. Default: Edits done
-#: ././templates/settings.pt:169 ././templates/finish.pt:30
-#: ././templates/user.pt:45
-msgid "edits_done"
-msgstr ""
-
-#. Default: Votes for Arguments
-#: ././templates/settings.pt:176 ././templates/finish.pt:34
-#: ././templates/user.pt:49
-msgid "discussion_votes_statements"
-msgstr ""
-
-#. Default: Votes for Statements
-#: ././templates/settings.pt:183 ././templates/finish.pt:38
-#: ././templates/user.pt:53
-msgid "discussion_votes_arguments"
-msgstr ""
-
-#. Default: Your password was changed
-#: ././templates/settings.pt:198
-msgid "password_changed"
-msgstr ""
-
-#. Default: Statistics could not be deleted.
-#: ././templates/settings.pt:205
-msgid "statistics_not_deleted"
-msgstr ""
-
-#. Default: Statistics were set successfully deleted.
-#: ././templates/settings.pt:211
-msgid "statistics_deletet"
-msgstr ""
-
-#. Default: Your last history
-#: ././templates/settings.pt:221
-msgid "last_history"
-msgstr ""
-
-#. Default: Get In Touch With Us
-#: ././templates/contact.pt:5
-msgid "contact_header_1"
-msgstr ""
-
-#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
-#. hours max!
-#: ././templates/contact.pt:6
-msgid "contact_header_2"
-msgstr ""
-
-#. Default: Your Name (required)
-#: ././templates/contact.pt:12
-msgid "name_req"
-msgstr ""
-
-#. Default: Your E-Mail (required)
-#: ././templates/contact.pt:19
-msgid "mail_req"
-msgstr ""
-
-#. Default: Your Phone Number
-#: ././templates/contact.pt:26
-msgid "phone_no"
-msgstr ""
-
-#. Default: Your Notification (required)
-#: ././templates/contact.pt:33
-msgid "message_req"
-msgstr ""
-
-#. Default: Anti-Spam (required)
-#: ././templates/contact.pt:40
-msgid "spam_req"
-msgstr ""
-
-#. Default: Warning!
-#: ././templates/contact.pt:57
-msgid "warning"
-msgstr ""
-
-#. Default: Great:
-#: ././templates/contact.pt:64
-msgid "great"
-msgstr ""
-
-#. Default: Your message was sent.
-#: ././templates/contact.pt:64
-msgid "message_sent"
+#. Default: Complete View
+#: ././templates/content.pt:363
+msgid "complete_view"
 msgstr ""
 
 #. Default: Thank you!
@@ -1259,10 +1147,56 @@ msgstr ""
 msgid "back_to_the_discussion"
 msgstr ""
 
-#. Default: Reputation
-#: ././templates/review_reputation.pt:9 ././templates/review_reputation.pt:30
-#: ././templates/user.pt:57
-msgid "reputation"
+#. Default: Your session has expired!
+#: ././templates/index.pt:8
+msgid "session_expired"
+msgstr ""
+
+#. Default: You have to log in again.
+#: ././templates/index.pt:9
+msgid "login_again"
+msgstr ""
+
+#. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
+#. argumentation system. There will be bugs. Please feel free to
+#: ././templates/index.pt:18
+msgid "welcome_text1"
+msgstr ""
+
+#. Default: contact
+#: ././templates/index.pt:19
+msgid "welcome_text2"
+msgstr ""
+
+#. Default: us to report bugs or provide feedback.
+#: ././templates/index.pt:20
+msgid "welcome_text3"
+msgstr ""
+
+#. Default: Click here to start now!
+#: ././templates/index.pt:26
+msgid "lets_start_now"
+msgstr ""
+
+#. Default: This work is part of the graduate school on
+#: ././templates/index.pt:32
+msgid "work_based_on"
+msgstr ""
+
+#. Default: Online-Participation
+#: ././templates/index.pt:32
+msgid "online_participation"
+msgstr ""
+
+#. Default: It is funded by the
+#: ././templates/index.pt:33
+msgid "funded_by"
+msgstr ""
+
+#. Default: Ministry of Innovation, Science and Research in North Rhine-
+#. Westphalia
+#: ././templates/index.pt:33
+msgid "ministry_of_innovation"
 msgstr ""
 
 #. Default: Reputation count
@@ -1273,6 +1207,62 @@ msgstr ""
 #. Default: Action
 #: ././templates/review_reputation.pt:29
 msgid "action"
+msgstr ""
+
+#. Default: You have got
+#: ././templates/notifications.pt:8
+msgid "youHaveGot"
+msgstr ""
+
+#. Default: unread notifications and
+#: ././templates/notifications.pt:10
+msgid "unreadNotificationAnd"
+msgstr ""
+
+#. Default: total in the inbox.
+#: ././templates/notifications.pt:12
+msgid "totalInTheInbox"
+msgstr ""
+
+#. Default: There are
+#: ././templates/notifications.pt:13
+msgid "thereAre"
+msgstr ""
+
+#. Default: in the outbox.
+#: ././templates/notifications.pt:15
+msgid "inTheOutbox"
+msgstr ""
+
+#. Default: Inbox
+#: ././templates/notifications.pt:20
+msgid "inbox"
+msgstr ""
+
+#. Default: Outbox
+#: ././templates/notifications.pt:21
+msgid "outbox"
+msgstr ""
+
+#. Default: NEW
+#: ././templates/notifications.pt:37
+msgid "new"
+msgstr ""
+
+#. Default: From:
+#: ././templates/notifications.pt:42 ././templates/notifications.pt:49
+msgid "from"
+msgstr ""
+
+#. Default: answer
+#: ././templates/notifications.pt:54 ././templates/notifications.pt:83
+msgid "answer"
+msgstr ""
+
+#. Default: To:
+#. Default: to:
+#: ././templates/notifications.pt:71 ././templates/notifications.pt:78
+msgid "to"
 msgstr ""
 
 #. Default: (more)
@@ -1448,6 +1438,11 @@ msgstr ""
 msgid "please_make_your_edits"
 msgstr ""
 
+#. Default: Original
+#: ././templates/review_content.pt:174 ././templates/review_history.pt:43
+msgid "original"
+msgstr ""
+
 #. Default: Your correcture
 #: ././templates/review_content.pt:175
 msgid "your correcture"
@@ -1458,60 +1453,105 @@ msgstr ""
 msgid "send"
 msgstr ""
 
-#. Default: You have got
-#: ././templates/notifications.pt:8
-msgid "youHaveGot"
+#. Default: Imprint and Copyrights
+#: ././templates/snippet-footer.pt:11
+msgid "imprint_copyright"
 msgstr ""
 
-#. Default: unread notifications and
-#: ././templates/notifications.pt:10
-msgid "unreadNotificationAnd"
+#. Default: Publications
+#: ././templates/snippet-footer.pt:14
+msgid "publications"
 msgstr ""
 
-#. Default: total in the inbox.
-#: ././templates/notifications.pt:12
-msgid "totalInTheInbox"
+#. Default: license
+#: ././templates/snippet-footer.pt:20
+msgid "license"
 msgstr ""
 
-#. Default: There are
-#: ././templates/notifications.pt:13
-msgid "thereAre"
+#. Default: You have to earn more reputation for this queue
+#: ././templates/review_history.pt:6
+msgid "earn_more_reputation_for_queue"
 msgstr ""
 
-#. Default: in the outbox.
-#: ././templates/notifications.pt:15
-msgid "inTheOutbox"
+#. Default: You have no access to this site
+#: ././templates/review_history.pt:7
+msgid "you_have_no_access"
 msgstr ""
 
-#. Default: Inbox
-#: ././templates/notifications.pt:20
-msgid "inbox"
+#. Default: History
+#: ././templates/review_history.pt:15
+msgid "history"
 msgstr ""
 
-#. Default: Outbox
-#: ././templates/notifications.pt:21
-msgid "outbox"
+#. Default: Current Decisions
+#. Default: Current decisions
+#: ././templates/review_history.pt:16 ././templates/review_history.pt:23
+msgid "current_decisions"
 msgstr ""
 
-#. Default: NEW
-#: ././templates/notifications.pt:37
-msgid "new"
+#. Default: The history of votes
+#: ././templates/review_history.pt:22
+msgid "history_of_votes"
 msgstr ""
 
-#. Default: From:
-#: ././templates/notifications.pt:42 ././templates/notifications.pt:49
-msgid "from"
+#. Default: No decisions for this queue.
+#: ././templates/review_history.pt:35
+msgid "no_decision_for_this_queue"
 msgstr ""
 
-#. Default: answer
-#: ././templates/notifications.pt:54 ././templates/notifications.pt:83
-msgid "answer"
+#. Default: Argument
+#: ././templates/review_history.pt:40
+msgid "argument"
 msgstr ""
 
-#. Default: To:
-#. Default: to:
-#: ././templates/notifications.pt:71 ././templates/notifications.pt:78
-msgid "to"
+#. Default: Edit
+#: ././templates/review_history.pt:41
+msgid "edit"
+msgstr ""
+
+#. Default: Reason
+#: ././templates/review_history.pt:42
+msgid "reason"
+msgstr ""
+
+#. Default: Votes
+#: ././templates/review_history.pt:44
+msgid "votes"
+msgstr ""
+
+#. Default: Accepted
+#: ././templates/review_history.pt:45
+msgid "accepted"
+msgstr ""
+
+#. Default: Voters Pro
+#: ././templates/review_history.pt:46
+msgid "voters_pro"
+msgstr ""
+
+#. Default: Voters Con
+#: ././templates/review_history.pt:47
+msgid "voters_con"
+msgstr ""
+
+#. Default: Timestamp
+#: ././templates/review_history.pt:48
+msgid "timestamp"
+msgstr ""
+
+#. Default: Reporter
+#: ././templates/review_history.pt:49
+msgid "reporter"
+msgstr ""
+
+#. Default: Action
+#: ././templates/review_history.pt:50
+msgid "actions"
+msgstr ""
+
+#. Default: Undo
+#: ././templates/review_history.pt:91
+msgid "undo"
 msgstr ""
 
 #. Default: JavaScript is not enabled:
@@ -1539,67 +1579,37 @@ msgstr ""
 msgid "request_success"
 msgstr ""
 
-#. Default: Public Information of
-#: ././templates/user.pt:9
-msgid "public_information_of"
+#. Default: Toggle navigation
+#: ././templates/snippet-header.pt:9
+msgid "Toggle Navigation"
 msgstr ""
 
-#. Default: Last Action
-#: ././templates/user.pt:13
-msgid "last_action"
+#. Default: Let's go
+#: ././templates/snippet-header.pt:44
+msgid "lets_go"
 msgstr ""
 
-#. Default: Last Login
-#: ././templates/user.pt:17
-msgid "last_login"
+#. Default: News
+#: ././templates/snippet-header.pt:50
+msgid "news"
 msgstr ""
 
-#. Default: Registered
-#: ././templates/user.pt:21
-msgid "registered"
+#. Default: Notifications
+#: ././templates/snippet-header.pt:82
+msgid "notifications"
 msgstr ""
 
-#. Default: User group
-#: ././templates/user.pt:25
-msgid "user_group"
+#. Default: Admin
+#: ././templates/snippet-header.pt:87
+msgid "Admin"
 msgstr ""
 
-#. Default: Profile Picture of
-#: ././templates/user.pt:33
-msgid "profile_picture_of"
+#. Default: Logout
+#: ././templates/snippet-header.pt:92
+msgid "logout"
 msgstr ""
 
-#. Default: Switch Topic
-#: ././templates/content.pt:14
-msgid "switch_topc"
-msgstr ""
-
-#. Default: Add a Topic
-#: ././templates/content.pt:30
-msgid "add_topic"
-msgstr ""
-
-#. Default: Restart
-#: ././templates/content.pt:37
-msgid "restart_discussion"
-msgstr ""
-
-#. Default: Change display style
-#: ././templates/content.pt:348
-msgid "change_style"
-msgstr ""
-
-#. Default: Dialog View
-#: ././templates/content.pt:351
-msgid "dialog_view"
-msgstr ""
-
-#. Default: Island View
-#: ././templates/content.pt:357
-msgid "island_view"
-msgstr ""
-
-#. Default: Complete View
-#: ././templates/content.pt:363
-msgid "complete_view"
+#. Default: Review
+#: ././templates/snippet-header.pt:99
+msgid "review"
 msgstr ""
