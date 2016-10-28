@@ -81,13 +81,16 @@ function DiscussionBarometer(){
             return;
         }
 
-        createButtons(jsonData, address);
+        var dialog = $('#' + popupConfirmRowDialogId);
+        dialog.find('.col-md-6').empty();
+        dialog.find('.col-md-5').empty();
+        addListenerForChartButtons(jsonData, address);
 
         dialog.modal('show').on('hidden.bs.modal', function () {
             new Helper().clearAnchor();
         }).on('shown.bs.modal', function () {
-            // display bar after the modal is shown, cause we need the width of the modal
-            getD3BarometerBarChart(jsonData, address);
+            // display doughnut chart after the modal is shown, cause we need the width of the modal
+            getD3BarometerDoughnutChart(jsonData, address);
         });
         $('#' + popupConfirmRowDialogAcceptBtn).show().click( function () {
             $('#' + popupConfirmRowDialogId).modal('hide');
@@ -95,27 +98,8 @@ function DiscussionBarometer(){
         $('#' + popupConfirmRowDialogRefuseBtn).hide();
 
         dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
-        //getD3BarometerBarChart(jsonData, address);
     };
 
-    /**
-     * Create buttons to switch between charts.
-     *
-     * @param jsonData
-     * @param address
-     */
-    function createButtons(jsonData, address){
-        var dialog = $('#' + popupConfirmRowDialogId);
-        dialog.find('.col-md-6').empty();
-        dialog.find('.col-md-5').empty();
-        dialog.find('#chart-buttons').empty();
-
-        dialog.find('.modal-footer').append('<div id="chart-buttons"></div>');
-
-        dialog.find('#chart-buttons').append('<button id="show-bar-chart-btn" type="button" class="btn btn-default">Bar Chart</button>');
-        dialog.find('#chart-buttons').append('<button id="show-doughnut-chart-btn" type="button" class="btn btn-default">Doughnut Chart</button>');
-        addListenerForChartButtons(jsonData, address);
-    }
 
     /**
      * Add listeners for chart-buttons.
@@ -125,7 +109,7 @@ function DiscussionBarometer(){
      */
     function addListenerForChartButtons(jsonData, address) {
         $('#show-bar-chart-btn').click(function() { getD3BarometerBarChart(jsonData, address); });
-        $('#show-doughnut-chart-btn').click(function() { getD3BarometerDoughnutChart(jsonData, address, 0.3); });
+        $('#show-doughnut-chart-btn').click(function() { getD3BarometerDoughnutChart(jsonData, address); });
     }
 
     /**
@@ -352,7 +336,7 @@ function DiscussionBarometer(){
         });
     }
 
-    // Doughnut Chart
+    // doughnut chart
 
     /**
      * Create barometer.
@@ -364,7 +348,7 @@ function DiscussionBarometer(){
         var dialog = $('#' + popupConfirmRowDialogId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
-        
+
         // create div for barometer
         dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
 
@@ -444,14 +428,14 @@ function DiscussionBarometer(){
      * @param usersDict
      * @param innerRadius
      * @param outerRadius
-     * @param sumSeenBy
+     * @param sumArrayLength
      * @returns {*}
      */
     function getInnerCircle(usersDict, innerRadius, outerRadius, sumArrayLength){
         return d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(function (d, i) {
-                 return (outerRadius - innerRadius) * (usersDict[i].usersNumber/sumArrayLength) + innerRadius;
+                return (outerRadius - innerRadius) * (usersDict[i].usersNumber/sumArrayLength) + innerRadius;
             });
     }
 
