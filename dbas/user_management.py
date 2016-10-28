@@ -594,7 +594,7 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
                    nickname=nickname,
                    password=hashed_password,
                    gender=gender,
-                   group=db_group_uid)
+                   group_uid=db_group_uid)
     DBDiscussionSession.add(newuser)
     transaction.commit()
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
