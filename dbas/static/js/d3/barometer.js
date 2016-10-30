@@ -81,16 +81,16 @@ function DiscussionBarometer(){
             return;
         }
 
-        var dialog = $('#' + popupConfirmRowDialogId);
+        // remove content of modal
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
+        // create doughnut chart as default view
+        getD3BarometerDoughnutChart(jsonData, address);
+        // add listener for buttons to change the type of chart
         addListenerForChartButtons(jsonData, address);
 
         dialog.modal('show').on('hidden.bs.modal', function () {
             new Helper().clearAnchor();
-        }).on('shown.bs.modal', function () {
-            // display doughnut chart after the modal is shown, cause we need the width of the modal
-            getD3BarometerDoughnutChart(jsonData, address);
         });
         $('#' + popupConfirmRowDialogAcceptBtn).show().click( function () {
             $('#' + popupConfirmRowDialogId).modal('hide');
@@ -141,9 +141,9 @@ function DiscussionBarometer(){
 
         // create bars of chart
         createBar(width, height-50, usersDict, barChartSvg);
-
+        
         // tooltip
-        createTooltip(usersDict, barChartSvg, width, address);
+        createBarChartTooltip(usersDict, barChartSvg, width, address);
 
         // create legend for chart
         createLegend(usersDict);
@@ -266,7 +266,7 @@ function DiscussionBarometer(){
      * @param width
      * @param address
      */
-    function createTooltip(usersDict, barChartSvg, width, address) {
+    function createBarChartTooltip(usersDict, barChartSvg, width, address) {
         var div;
         var barWidth = width / usersDict.length - 5;
         var tooltipWith = width;
@@ -284,11 +284,11 @@ function DiscussionBarometer(){
                     barLeft = index * barWidth + 70 + index * 5;
                 }
             }
-            
+
             div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-6').append("div");
 
             // set properties of div
-            div.attr("class", "tooltip").style("opacity", 1)
+            div.attr("class", "barChartTooltip").style("opacity", 1)
                 .style("left", 65 + "px")
                 .style("top", 100 + "px")
                 .style("width", tooltipWith);
@@ -365,8 +365,11 @@ function DiscussionBarometer(){
             usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
         }
 
-        // create bars of chart
-        createDoughnutChart(usersDict, doughnutChartSvg);
+        // create doughnut of chart
+        createDoughnutChart(usersDict, doughnutChartSvg, address);
+
+        // create tooltip
+        createDoughnutChartTooltip(usersDict, doughnutChartSvg, address);
 
         // create legend for chart
         createLegend(usersDict);
@@ -465,7 +468,8 @@ function DiscussionBarometer(){
             .data(doughnut(usersDict))
             .enter().append("path")
             .attr({fill: function (d, i) { return getNormalColorFor(i); },
-                   stroke: "gray", d: innerCircle, transform: "translate(250,210)"});
+                   stroke: "gray", d: innerCircle, transform: "translate(250,210)",
+                   class: "chart-sector"});
     }
 
     /**
@@ -482,5 +486,43 @@ function DiscussionBarometer(){
             .enter().append("path")
             .attr({'fill': function (d, i) { return getLightColorFor(i); },
                    stroke: "gray", d: outerCircle, transform: "translate(250,210)"});
+    }
+
+    /**
+     * Create tooltips for segments.
+     *
+     * @param usersDict
+     * @param doughnutChartSvg
+     * @param address
+     */
+    function createDoughnutChartTooltip(usersDict, doughnutChartSvg, address) {
+        var div;
+
+        doughnutChartSvg.selectAll(".chart-sector").on("mouseover", function (d, index) {
+            div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-5').append("div");
+            div.attr("class", "doughnutChartTooltip").style("opacity", 1);
+
+            // append list elements to div
+            if (usersDict[index].message != null) {
+                div.append('li').html(usersDict[index].message);
+            }
+            var text_keyword = '';
+            if (address == 'argument')
+                text_keyword = usersDict[index].seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
+            else
+                text_keyword = usersDict[index].seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
+            div.append('li').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
+            div.append('li').html(_t_discussion(users) + ': ');
+
+            // add images of avatars
+            usersDict[index].users.forEach(function (e) {
+                div.append('img').attr('src', e.avatar_url);
+            });
+            d3.select(this).attr('fill', getDarkColorFor(index));
+        })
+        .on("mouseout", function (d, index) {
+            div.style("opacity", 0);
+            $(this).attr('fill', getNormalColorFor(index));
+        });
     }
 }
