@@ -1253,8 +1253,39 @@ function AjaxReviewHandler(){
 
 function AjaxReferenceHandler(){
 	
-	this.setReference = function(){
+	/**
+	 *
+	 * @param uid
+	 * @param reference
+	 * @param ref_source
+	 */
+	this.setReference = function(uid, reference, ref_source){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		console.log(uid);
+		console.log(reference);
+		console.log(ref_source);
 		
+		$.ajax({
+			url: 'ajax_set_references',
+			method: 'POST',
+			data:{
+				uid: uid,
+				ref_source: JSON.stringify(ref_source),
+				reference: JSON.stringify(reference)
+			},
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function (data) {
+			var parsedData = $.parseJSON(data);
+			if (parsedData.error.length > 0)
+				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
+			else
+				setGlobalSuccessHandler('Yeah!', _t_discussion(dataAdded));
+			$('#' + popupReferences).modal('hide');
+		}).fail(function () {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
 	};
 	
 	/**
@@ -1274,9 +1305,9 @@ function AjaxReferenceHandler(){
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDeleteArgumentDone(data) {
+		}).done(function (data) {
 			new InteractionHandler().callbackIfDoneForGettingReferences(data);
-		}).fail(function reviewDeleteArgumentFail() {
+		}).fail(function () {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
