@@ -119,6 +119,7 @@ var countOfArguments                                = 'countOfArguments';
 var countdownEnded                                  = 'countdownEnded';
 var couldNotLock                                    = 'couldNotLock';
 var dataRemoved 									= 'dataRemoved';
+var dataAdded 									    = 'dataAdded';
 var didYouMean										= 'didYouMean';
 var duplicateDialog									= 'duplicateDialog';
 var doNotHesitateToContact 							= 'doNotHesitateToContact';
@@ -197,6 +198,7 @@ var notInsertedErrorBecauseInternal					= 'notInsertedErrorBecauseInternal';
 var notInsertedErrorBecauseTooShort					= 'notInsertedErrorBecauseTooShort';
 var noTrackedData 									= 'noTrackedData';
 var noDecisionstaken                                = 'noDecisionstaken';
+var noReferencesButYouCanAdd                        = 'noReferencesButYouCanAdd';
 var noEntries                                       = 'noEntries';
 var noEntriesFor                                    = 'noEntriesFor';
 var note 											= 'note';
@@ -323,6 +325,7 @@ var dbas_en = {
 	'deleteTrack': 'Delete track',
 	'deleteHistory': 'Delete history',
 	'dataRemoved': 'Data was successfully removed.',
+	'dataAdded': 'Data was successfully added.',
 	'date': 'Date',
 	'didYouMean': 'Top10 statements, which you probably could mean:',
 	'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version as the current one once again?',
@@ -401,6 +404,7 @@ var dbas_en = {
 	'noEntriesFor': 'No entries for',
 	'noTrackedData': 'No data was tracked.',
 	'noDecisionstaken': 'No decision has yet been taken.',
+	'noReferencesButYouCanAdd': 'There are no references for this statement, but you can add a new one (Source from a newspaper etc.):',
 	'number': 'No',
 	'note': 'Note',
 	'noEditsInOptimization': 'You have edited nothing!',
@@ -508,6 +512,7 @@ var dbas_de = {
 	'changelogView': 'Änderungen zeigen',
 	'changelogHide': 'Änderungen ausblenden',
 	'dataRemoved': 'Daten wurden erfolgreich gelöscht.',
+	'dataAdded': 'Daten wurden erfolgreich hinzugefügt.',
 	'date': 'Datum',
 	'didYouMean': 'Top 10 der Aussagen, die Sie eventuell meinten:',
 	'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
@@ -590,6 +595,7 @@ var dbas_de = {
 	'noEntriesFor': 'Keine Einträge vorhanden für',
 	'noTrackedData': 'Keine Daten wurden gespeichert.',
 	'noDecisionstaken': 'Es wurden noch keine Entscheidungen getroffen',
+	'noReferencesButYouCanAdd': 'Aktuell wurden noch keine Referenzen eingetragen, aber Sie können eine hinzufügen (Quelle aus einer Zeitung o.Ä.):',
 	'number': 'Nr',
 	'note': 'Hinweis',
 	'noEditsInOptimization': 'Sie haben keine Änderungen vorgenommen!',

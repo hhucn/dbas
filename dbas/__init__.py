@@ -136,6 +136,8 @@ def main(global_config, **settings):
     config.add_route('ajax_review_lock', '{url:.*}ajax_review_lock')
     config.add_route('ajax_review_unlock', '{url:.*}ajax_review_unlock')
     config.add_route('ajax_revoke_content', '{url:.*}ajax_revoke_content')
+    config.add_route('ajax_get_references', '{url:.*}ajax_get_references')
+    config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')
