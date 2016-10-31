@@ -30,6 +30,7 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import QueryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
+from dbas.helper.references import get_references_for_argument, get_references_for_statements
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
@@ -1960,6 +1961,53 @@ class Dbas(object):
         except KeyError as e:
             logger('get_arguments_by_statement_uid', 'error', repr(e))
             return_dict['error'] = _tn.get(_tn.internalKeyError)
+
+        return json.dumps(return_dict, True)
+
+    @view_config(route_name='ajax_get_references', renderer='json')
+    def get_references(self):
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('get_references', 'def', 'main: ' + str(self.request.matchdict))
+        logger('get_references', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_language(self.request, get_current_registry())
+        _tn = Translator(ui_locales)
+
+        try:
+            uid = json.loads(self.request.params['uid'])
+            is_argument = True if str(self.request.params['is_argument']) == 'true' else False
+
+            if is_argument:
+                data = get_references_for_argument(uid, main_page)
+            else:
+                data = get_references_for_statements(uid, main_page)
+
+            logger('get_references', 'def', str(data))
+
+            return_dict = {'error': '',
+                           'data': data}
+
+        except KeyError as e:
+            logger('get_references', 'error', repr(e))
+            return_dict = {'error': _tn.get(_tn.internalKeyError)}
+
+        return json.dumps(return_dict, True)
+
+    @view_config(route_name='ajax_set_references', renderer='json')
+    def set_references(self):
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('set_references', 'def', 'main: ' + str(self.request.matchdict))
+        ui_locales = get_language(self.request, get_current_registry())
+        _tn = Translator(ui_locales)
+
+        try:
+            uid = self.request.matchdict['uid']
+            is_argument = True if str(self.request.params['is_argument']) == 'true' else False
+            return_dict = dict()
+            return_dict['error'] = ''
+
+        except KeyError as e:
+            logger('set_references', 'error', repr(e))
+            return_dict = {'error': _tn.get(_tn.internalKeyError)}
 
         return json.dumps(return_dict, True)
 
