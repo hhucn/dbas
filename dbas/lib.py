@@ -843,3 +843,22 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
     return gravatar_url
+
+
+def get_author_data(main_page, uid):
+    """
+    Returns a-tag with gravatar of current author and users page as href
+
+    :param uid: of user
+    :return: string
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(uid=int(uid)).first()
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
+    if not db_user:
+        return 'Missing author with uid ' + str(uid), False
+    if not db_settings:
+        return 'Missing settings of author with uid ' + str(uid), False
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
+    link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
+    link_end = '</a>'
+    return link_begin + db_user.nickname + ' ' + img + link_end, True
