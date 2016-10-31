@@ -875,11 +875,61 @@
     				<h4 class="modal-title" id="myModalLabel" i18n:translate="choose_a_step_to_jump_in">Please choose a step to jump in</h4>
     			</div>
     			<div class="modal-body">
-                    <p class="lead" i18n:translate="below_you_will_find">Below you find a list with all arguments, where your selected text is used:</p>
+                    <p class="lead" i18n:translate="below_you_will_find_list_with_jump_arguments">Below you find a list with all arguments, where your selected text is used:</p>
                     <div>
 
                     </div>
     			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- SET AND GET REFERENCES -->
+    <div class="modal fade" id="popup-references" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-references-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel" i18n:translate="refereces">References</h4>
+    			</div>
+    			<div class="modal-body">
+                    <div id="popup-references-body">
+
+                    </div>
+                    <div id="popup-references-body-add" style="display: none">
+
+                        <div class="form-group">
+					        <label class="col-md-2 control-label" for="popup-references-add-text">Statement</label>
+                            <div class="col-md-10">
+						        <input type="text" id="popup-references-add-text" class="col-md-9 form-control" placeholder="Please cite here">
+                            </div>
+					    </div>
+                        <div class="form-group">
+					        <label class="col-md-2 control-label" for="popup-references-add-source">Source</label>
+                            <div class="col-md-10">
+						        <input type="text" id="popup-references-add-source" class="form-control" placeholder="Please enter the source here">
+                            </div>
+					    </div>
+                        <p id="choose_reference_text" class="text-info" i18n:translate="please_choose_a_reference">Please choose a statement for your reference!</p>
+                    </div>
+                    <p>
+                        <span class="icon-badge blue-button" id="popup-reference-add-btn" style="font-size: 25px; height: 32px; width: 32px;">+</span>
+                    </p>
+    			</div>
+    			<div class="modal-footer">
+
+                    <div id="popup-references-cite-dropdown" class="btn-group open" style="display: block;">
+                        <a href="#" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                            <span i18n:translate="statement" id="popup-references-cite-dropdown-title">Statement</span><span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" id="popup-references-cite-dropdown-list">
+                        </ul>
+                    </div>
+
+    				<button type="button" class="btn btn-sm btn-success" id="popup-reference-send-btn">Add reference</button>
+                </div>
     		</div>
     	</div>
     </div>

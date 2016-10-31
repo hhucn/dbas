@@ -821,7 +821,103 @@ function GuiHandler() {
 			view.show();
 		});
 	};
-
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.showReferencesPopup = function (data){
+		var popup = $('#' + popupReferences);
+		var references_body = $('#popup-references-body');
+		var references_body_add = $('#popup-references-body-add').hide();
+		var add_button = $('#popup-reference-add-btn');
+		var send_button = $('#popup-reference-send-btn');
+		var dropdown = $('#popup-references-cite-dropdown');
+		var dropdown_list = $('#popup-references-cite-dropdown-list');
+		var reference_text = $('#popup-references-add-text');
+		var reference_source = $('#popup-references-add-source');
+		
+		dropdown.hide();
+		popup.modal('show');
+		dropdown_list.empty();
+		references_body.empty();
+		add_button.show();
+		send_button.prop('disabled', true);
+		reference_text.val('');
+		reference_source.val('');
+		
+		add_button.off('click').click(function (){
+			add_button.hide();
+			references_body_add.fadeIn();
+			//send_button.prop('disabled', false);
+			if (dropdown_list.find('li').length < 2){
+				dropdown.hide();
+				$('#choose_reference_text').hide();
+			} else {
+				dropdown.show();
+				$('#choose_reference_text').show();
+			}
+			send_button.prop('disabled', false);
+		});
+		
+		send_button.off('click').click(function (){
+			var uid = $(this).data('id');
+			var reference = reference_text.val();
+			var ref_source = reference_source.val();
+			new AjaxReferenceHandler().setReference(uid, reference, ref_source);
+		});
+		
+		// data is an dictionary with all statement uid's as key
+		// the value of every key is an array with dictionaries for every reference
+		$.each(data.data, function (statement_uid, array) {
+			var statements_div = $('<div>');
+			var text = '';
+			// build a callout for every reference
+			array.forEach(function (dict){
+				text = dict.statement_text;
+				var author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
+					.append($('<span>').text(dict.author.name))
+					.append($('<img>').addClass('img-circle').attr('src', dict.author.img));
+					
+				var link = $('<a>').attr({'href': dict.host + dict.path, 'target': '_blank'}).text('(' + dict.host + dict.path + ')');
+				var span = $('<span>').text(dict.reference + ' ');
+				
+				var label = $('<label>').addClass('bs-callout').addClass('bs-callout-primary');
+				var body = $('<p>').append(span).append(link).append(author);
+				label.append(body);
+				
+				statements_div.append(label);
+			});
+			// add the statemet itself
+			var glqq = $.parseHTML('<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
+			var grqq = $.parseHTML('<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
+			var statement = $('<span>').addClass('lead').text(text);
+			var wrapper = $('<p>').append(glqq).append(statement).append(grqq);
+			
+			// add elements for the dropdown
+			if (text.length > 0) {
+				references_body.append(wrapper.append(statements_div));
+				var tmp = $('<a>').attr('href', '#').attr('data-id', statement_uid).text(text).click(function(){
+					// set text, remove popup
+					$('#popup-references-cite-dropdown-title').text($(this).text()).parent().attr('aria-expanded', false);
+					dropdown.removeClass('open');
+					send_button.attr('data-id', statement_uid);
+				});
+				dropdown_list.append($('<li>').append(tmp));
+			}
+			
+			// default id
+			send_button.attr('data-id', statement_uid);
+		});
+		
+		if (references_body.children().length == 0){
+			references_body.append($('<p>').addClass('lead').text(_t_discussion(noReferencesButYouCanAdd)));
+			add_button.hide();
+			send_button.prop('disabled', false);
+			references_body_add.fadeIn();
+		}
+	};
+	
 	/**
 	 * Closes the popup and deletes all of its content
 	 */
