@@ -191,6 +191,7 @@ var popupUrlSharingCloseButtonXId             = 'popup-url-sharing-close';
 var popupUrlSharingCloseButtonId              = 'popup-url-sharing-close-button';
 var popupUrlSharingInputId                    = 'popup-url-sharing-input';
 var popupUrlSharingDescriptionPId             = 'popup-url-sharing-description-p';
+var popupReferences                           = 'popup-references';
 var requestTrackButtonId                      = 'request-track';
 var requestHistoryButtonId                    = 'request-history';
 var radioButtonGroup                          = 'radioButtonGroup';

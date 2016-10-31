@@ -327,7 +327,20 @@ function InteractionHandler() {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		}
 	};
-
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackIfDoneForGettingReferences = function(data){
+		var parsedData = $.parseJSON(data);
+		
+		if (parsedData.error.length != 0)
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		else
+			new GuiHandler().showReferencesPopup(parsedData);
+	};
+	
 	/**
 	 *
 	 * @param text

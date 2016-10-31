@@ -190,6 +190,11 @@ function Main () {
 			guiHandler.showFlagArgumentPopup(uid);
 		});
 		
+		trianglel.find('.triangle-reference').click(function () {
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			new AjaxReferenceHandler().getReferences(uid, true);
+		});
+		
 		trianglel.find('.triangle-trash').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 			guiHandler.showDeleteContentPopup(uid, true);
@@ -213,6 +218,14 @@ function Main () {
 		list.find('.item-trash').click(function () {
 			var uid = $(this).parent().find('label').attr('id');
 			guiHandler.showDeleteContentPopup(uid, false);
+		});
+		
+		list.find('.item-reference').click(function () {
+			var uids = [];
+			$(this).parent().find('label:nth-child(even)').each(function(){
+				uids.push($(this).attr('id'))
+			});
+			new AjaxReferenceHandler().getReferences(uids, false);
 		});
 		
 		// adding issues
