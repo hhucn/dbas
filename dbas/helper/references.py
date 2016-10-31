@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
@@ -80,3 +82,30 @@ def __get_values_of_reference(reference, main_page):
                        'link': link},
             'created': str(reference.created.humanize),
             'statement_text': get_text_for_statement_uid(reference.statement_uid)}
+
+
+def set_reference(reference, url, nickname, statement_uid, issue_uid, transaction):
+    """
+    Creates a new reference
+
+    :param reference: Text of the reference
+    :param nickname: nickname of the user
+    :param statement_uid: statement uid of the linked statement
+    :param issue_uid: current issue uid
+    :param transaction: current transaction
+    :return: Boolean
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return False
+
+    parsed_url = urlparse(url)
+    host = parsed_url.scheme + '://' + parsed_url.netloc
+    path = parsed_url.path
+    author_uid = db_user.uid
+
+    DBDiscussionSession.add(StatementReferences(reference, host, path, author_uid, statement_uid, issue_uid))
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+    return True
