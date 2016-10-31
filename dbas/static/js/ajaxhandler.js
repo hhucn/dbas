@@ -1250,3 +1250,34 @@ function AjaxReviewHandler(){
 	}
 	
 }
+
+function AjaxReferenceHandler(){
+	
+	this.setReference = function(){
+		
+	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param is_argument
+	 */
+	this.getReferences = function(uid, is_argument){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_get_references',
+			method: 'POST',
+			data:{
+				'uid': JSON.stringify(uid),
+				'is_argument': is_argument
+			},
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function reviewDeleteArgumentDone(data) {
+			new InteractionHandler().callbackIfDoneForGettingReferences(data);
+		}).fail(function reviewDeleteArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	};
+}

@@ -504,6 +504,7 @@ class EnglischDict:
         en_lang[_self.rep_reason_success_edit] = 'You send your first edit'
         en_lang[_self.rep_reason_bad_flag] = 'You misused the flag function'
         en_lang[_self.rep_reason_bad_edit] = 'You made a bad edit'
+        en_lang[_self.reference] = 'Reference'
         en_lang[_self.questionTitle] = 'Get more information about the statement!'
         en_lang[_self.queueDelete] = 'Deletes'
         en_lang[_self.queueOptimization] = 'Optimizations'
