@@ -197,6 +197,7 @@ var notInsertedErrorBecauseInternal					= 'notInsertedErrorBecauseInternal';
 var notInsertedErrorBecauseTooShort					= 'notInsertedErrorBecauseTooShort';
 var noTrackedData 									= 'noTrackedData';
 var noDecisionstaken                                = 'noDecisionstaken';
+var noReferencesButYouCanAdd                        = 'noReferencesButYouCanAdd';
 var noEntries                                       = 'noEntries';
 var noEntriesFor                                    = 'noEntriesFor';
 var note 											= 'note';
@@ -401,6 +402,7 @@ var dbas_en = {
 	'noEntriesFor': 'No entries for',
 	'noTrackedData': 'No data was tracked.',
 	'noDecisionstaken': 'No decision has yet been taken.',
+	'noReferencesButYouCanAdd': 'There are no references for this statement, but you can add a new one (Source from a newspaper etc.):',
 	'number': 'No',
 	'note': 'Note',
 	'noEditsInOptimization': 'You have edited nothing!',
@@ -590,6 +592,7 @@ var dbas_de = {
 	'noEntriesFor': 'Keine Einträge vorhanden für',
 	'noTrackedData': 'Keine Daten wurden gespeichert.',
 	'noDecisionstaken': 'Es wurden noch keine Entscheidungen getroffen',
+	'noReferencesButYouCanAdd': 'Aktuell wurden noch keine Referenzen eingetragen, aber Sie können eine hinzufügen (Quelle aus einer Zeitung o.Ä.):',
 	'number': 'Nr',
 	'note': 'Hinweis',
 	'noEditsInOptimization': 'Sie haben keine Änderungen vorgenommen!',

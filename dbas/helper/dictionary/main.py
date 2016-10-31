@@ -400,7 +400,8 @@ class DictionaryHelper(object):
                                 'rem_statement_row_title': _tn_dis.get(_tn_dis.remStatementRow),
                                 'recipient': _tn_dis.get(_tn_dis.recipient),
                                 'topic': _tn_dis.get(_tn_dis.topicString),
-                                'message': _tn_dis.get(_tn_dis.message)
+                                'message': _tn_dis.get(_tn_dis.message),
+                                'reference': _tn_dis.get(_tn_dis.reference)
                                 }
 
     def add_tag_text(self, return_dict):
