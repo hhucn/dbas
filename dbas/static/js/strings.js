@@ -119,6 +119,7 @@ var countOfArguments                                = 'countOfArguments';
 var countdownEnded                                  = 'countdownEnded';
 var couldNotLock                                    = 'couldNotLock';
 var dataRemoved 									= 'dataRemoved';
+var dataAdded 									    = 'dataAdded';
 var didYouMean										= 'didYouMean';
 var duplicateDialog									= 'duplicateDialog';
 var doNotHesitateToContact 							= 'doNotHesitateToContact';
@@ -324,6 +325,7 @@ var dbas_en = {
 	'deleteTrack': 'Delete track',
 	'deleteHistory': 'Delete history',
 	'dataRemoved': 'Data was successfully removed.',
+	'dataAdded': 'Data was successfully added.',
 	'date': 'Date',
 	'didYouMean': 'Top10 statements, which you probably could mean:',
 	'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version as the current one once again?',
@@ -510,6 +512,7 @@ var dbas_de = {
 	'changelogView': 'Änderungen zeigen',
 	'changelogHide': 'Änderungen ausblenden',
 	'dataRemoved': 'Daten wurden erfolgreich gelöscht.',
+	'dataAdded': 'Daten wurden erfolgreich hinzugefügt.',
 	'date': 'Datum',
 	'didYouMean': 'Top 10 der Aussagen, die Sie eventuell meinten:',
 	'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
