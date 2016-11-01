@@ -1436,8 +1436,25 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
                                        author_uid=5,
                                        statement_uid=statement213.uid,
                                        issue_uid=issue4.uid)
-    reference201 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist", host="localhost:3449", path="/", author_uid=5, statement_uid=statement213.uid, issue_uid=issue4.uid)
-    session.add_all([reference200, reference201])
+    reference201 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
+                                       host="localhost:3449",
+                                       path="/",
+                                       author_uid=5,
+                                       statement_uid=statement213.uid,
+                                       issue_uid=issue4.uid)
+    reference014 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
+                                       host="http://www.iflscience.com/",
+                                       path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
+                                       author_uid=2,
+                                       statement_uid=statement14.uid,
+                                       issue_uid=issue2.uid)
+    reference015 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
+                                       host="http://www.iflscience.com/",
+                                       path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
+                                       author_uid=2,
+                                       statement_uid=statement15.uid,
+                                       issue_uid=issue2.uid)
+    session.add_all([reference200, reference201, reference014, reference015])
     session.flush()
 
     reason1 = ReviewDeleteReason(reason='offtopic')
