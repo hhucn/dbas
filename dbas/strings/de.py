@@ -599,6 +599,7 @@ class GermanDict:
         de_lang[_self.relation_undercut] = 'ist ein Gegenargument für'
         de_lang[_self.relation_overbid] = 'ist ein Argument für'
         de_lang[_self.relation_rebut] = 'ist ein Gegenargument für'
+        de_lang[_self.reference] = 'Referenz'
         de_lang[_self.uid] = 'ID'
         de_lang[_self.unfortunatelyNoMoreArgument] = 'Leider gibt es keine weiteren Argumente für'
         de_lang[_self.userPasswordNotMatch] = 'Benutzername und/oder Passwort stimmen nicht überein'
