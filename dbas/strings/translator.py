@@ -477,6 +477,7 @@ class Translator(object):
         self.rep_reason_success_edit = 'rep_reason_success_edit'
         self.rep_reason_bad_flag = 'rep_reason_bad_flag'
         self.rep_reason_bad_edit = 'rep_reason_bad_edit'
+        self.reference = 'reference'
         self.questionTitle = 'questionTitle'
         self.queueDelete = 'queueDelete'
         self.queueOptimization = 'queueOptimization'
