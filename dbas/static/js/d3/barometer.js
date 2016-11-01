@@ -92,6 +92,7 @@ function DiscussionBarometer(){
         dialog.modal('show').on('hidden.bs.modal', function () {
             new Helper().clearAnchor();
         });
+
         $('#' + popupConfirmRowDialogAcceptBtn).show().click( function () {
             $('#' + popupConfirmRowDialogId).modal('hide');
         }).removeClass('btn-success');
@@ -500,6 +501,7 @@ function DiscussionBarometer(){
 
         doughnutChartSvg.selectAll(".chart-sector").on("mouseover", function (d, index) {
             div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-5').append("div");
+
             div.attr("class", "doughnutChartTooltip").style("opacity", 1);
 
             // append list elements to div
@@ -519,6 +521,13 @@ function DiscussionBarometer(){
                 div.append('img').attr('src', e.avatar_url);
             });
             d3.select(this).attr('fill', getDarkColorFor(index));
+
+            // set position of tooltip to bottom right corner
+            // if the height of legend is greater then (height of barometer + offset) place directly under legend
+            var offset = 20;
+            if(400-$('.col-md-5').height() > offset){
+                console.log(400-$('.col-md-5').height());
+            }
         })
         .on("mouseout", function (d, index) {
             div.style("opacity", 0);
