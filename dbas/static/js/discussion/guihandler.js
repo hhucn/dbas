@@ -836,8 +836,10 @@ function GuiHandler() {
 		var dropdown_list = $('#popup-references-cite-dropdown-list');
 		var reference_text = $('#popup-references-add-text');
 		var reference_source = $('#popup-references-add-source');
+		var info_text = $('#choose_reference_text');
 		
 		dropdown.hide();
+		info_text.hide();
 		popup.modal('show');
 		dropdown_list.empty();
 		references_body.empty();
@@ -852,10 +854,10 @@ function GuiHandler() {
 			//send_button.prop('disabled', false);
 			if (dropdown_list.find('li').length < 2){
 				dropdown.hide();
-				$('#choose_reference_text').hide();
+				info_text.hide();
 			} else {
 				dropdown.show();
-				$('#choose_reference_text').show();
+				info_text.show();
 			}
 			send_button.prop('disabled', false);
 		});
@@ -866,6 +868,35 @@ function GuiHandler() {
 			var ref_source = reference_source.val();
 			new AjaxReferenceHandler().setReference(uid, reference, ref_source);
 		});
+		
+		this.createReferencesPopupBody(data);
+		
+		if (references_body.children().length == 0){
+			references_body.append($('<p>').addClass('lead').text(_t_discussion(noReferencesButYouCanAdd)));
+			add_button.hide();
+			send_button.prop('disabled', false);
+			references_body_add.fadeIn();
+			if (dropdown_list.find('li').length < 2){
+				dropdown.hide();
+				info_text.hide();
+			} else {
+				dropdown.show();
+				info_text.show();
+			}
+		}
+	};
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.createReferencesPopupBody = function(data)	{
+		var popup = $('#' + popupReferences);
+		var references_body = $('#popup-references-body');
+		var send_button = $('#popup-reference-send-btn');
+		var dropdown = $('#popup-references-cite-dropdown');
+		var dropdown_list = $('#popup-references-cite-dropdown-list');
+		var dropdown_title = $('#popup-references-cite-dropdown-title');
 		
 		// data is an dictionary with all statement uid's as key
 		// the value of every key is an array with dictionaries for every reference
@@ -897,25 +928,21 @@ function GuiHandler() {
 			// add elements for the dropdown
 			if (text.length > 0) {
 				references_body.append(wrapper.append(statements_div));
-				var tmp = $('<a>').attr('href', '#').attr('data-id', statement_uid).text(text).click(function(){
-					// set text, remove popup
-					$('#popup-references-cite-dropdown-title').text($(this).text()).parent().attr('aria-expanded', false);
-					dropdown.removeClass('open');
-					send_button.attr('data-id', statement_uid);
-				});
-				dropdown_list.append($('<li>').append(tmp));
+			} else {
+				text = data.text[statement_uid];
 			}
+			console.log(text);
+			var tmp = $('<a>').attr('href', '#').attr('data-id', statement_uid).text(text).click(function(){
+				// set text, remove popup
+				dropdown_title.text($(this).text()).parent().attr('aria-expanded', false);
+				dropdown.removeClass('open');
+				send_button.attr('data-id', statement_uid);
+			});
+			dropdown_list.append($('<li>').append(tmp));
 			
 			// default id
 			send_button.attr('data-id', statement_uid);
 		});
-		
-		if (references_body.children().length == 0){
-			references_body.append($('<p>').addClass('lead').text(_t_discussion(noReferencesButYouCanAdd)));
-			add_button.hide();
-			send_button.prop('disabled', false);
-			references_body_add.fadeIn();
-		}
 	};
 	
 	/**
@@ -962,13 +989,48 @@ function GuiHandler() {
 	 *
 	 * @returns {*|jQuery}
 	 */
-	this.getAlertIntoDialogNoDecisions = function(){
+	this.getNoDecisionsAlert = function(){
 		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
 		span = $('<span>').text(_t_discussion(noDecisionstaken));
 		div.append(strong).append(span);
 		return div;
+	};
+	
+	/**
+	 *
+	 */
+	this.createUserRowsForOpinionDialog = function(users_array){
+		var left = '';
+		var middle = '';
+		var right = '';
+		var j = 0;
+		var rows = [];
+
+		$.each(users_array, function (index, val) {
+			var img = $.parseHTML('<img class="img-circle" style="height: 40%; padding-left: 0.5em;" src="' + val.avatar_url + '">');
+			var span = $('<span>').text(val.nickname);
+			var link = $('<td>').append($('<a>').attr({'target': '_blank', 'href': val.public_profile_url, 'style': 'padding-right: 0.5em;'}).append(span).append(img));
+			
+			// three elements per row (store middle and left element, append later)
+			if (j==0){
+				left = link;
+			} else if (j==1){
+				middle = link;
+			} else if (j==2){
+				rows.push($('<tr>').append(left).append(middle).append(link));
+			}
+			j = (j+1) % 3;
+		});
+		
+		// append the last row
+		if (j==1)
+			rows.push($('<tr>').append(left));
+		if (j==2)
+			rows.push($('<tr>').append(left).append(middle));
+		
+		return rows
 	};
 	
 	/**

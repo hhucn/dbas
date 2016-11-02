@@ -8,7 +8,7 @@ import difflib
 from itertools import islice
 
 from collections import OrderedDict
-from sqlalchemy import and_, func, not_
+from sqlalchemy import and_, func
 from Levenshtein import distance
 
 from dbas.database import DBDiscussionSession
