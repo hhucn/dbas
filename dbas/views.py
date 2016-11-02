@@ -28,6 +28,8 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import QueryHelper
+from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
+from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
     try_to_register_new_user_via_ajax, request_password
@@ -35,7 +37,7 @@ from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
-    get_slug_by_statement_uid, get_profile_picture
+    get_slug_by_statement_uid, get_profile_picture, get_user_by_case_insensitive_nickname
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification, \
     rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, \
@@ -312,7 +314,7 @@ class Dbas(object):
         return {
             'layout': self.base_layout(),
             'language': str(ui_locales),
-            'title': 'User ' + nickname,
+            'title': user_dict['public_nick'],
             'project': project_name,
             'extras': extras_dict,
             'user': user_dict,
@@ -1178,7 +1180,7 @@ class Dbas(object):
                 password = escape_string(password)
                 url = ''
 
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+            db_user = get_user_by_case_insensitive_nickname(nickname)
 
             # check for user and password validations
             if not db_user:
@@ -1191,7 +1193,7 @@ class Dbas(object):
                 logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
                 db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
                 db_settings.should_hold_the_login(keep_login)
-                headers = remember(self.request, nickname)
+                headers = remember(self.request, db_user.nickname)
 
                 # update timestamp
                 logger('user_login', 'login', 'update login timestamp')
@@ -1441,7 +1443,7 @@ class Dbas(object):
             recipient = self.request.params['recipient'].replace('%20', ' ')
             title     = self.request.params['title']
             text      = self.request.params['text']
-            db_recipient = DBDiscussionSession.query(User).filter_by(public_nickname=recipient).first()
+            db_recipient = get_user_by_private_or_public_nickname(recipient)
             if len(title) < 5 or len(text) < 5:
                 error = _tn.get(_.empty_notification_input) + ' (' + _tn.get(_.minLength) + ': 5)'
             elif not db_recipient or recipient == 'admin' or recipient == 'anonymous':
@@ -1959,6 +1961,55 @@ class Dbas(object):
         except KeyError as e:
             logger('get_arguments_by_statement_uid', 'error', repr(e))
             return_dict['error'] = _tn.get(_.internalKeyError)
+
+        return json.dumps(return_dict, True)
+
+    @view_config(route_name='ajax_get_references', renderer='json')
+    def get_references(self):
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('get_references', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_language(self.request, get_current_registry())
+        _tn = Translator(ui_locales)
+
+        try:
+            uid = json.loads(self.request.params['uid'])
+            is_argument = True if str(self.request.params['is_argument']) == 'true' else False
+
+            if is_argument:
+                data, text = get_references_for_argument(uid, main_page)
+            else:
+                data, text = get_references_for_statements(uid, main_page)
+
+            return_dict = {'error': '',
+                           'data': data,
+                           'text': text}
+
+        except KeyError as e:
+            logger('get_references', 'error', repr(e))
+            return_dict = {'error': _tn.get(_tn.internalKeyError)}
+
+        return json.dumps(return_dict, True)
+
+    @view_config(route_name='ajax_set_references', renderer='json')
+    def set_references(self):
+        logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+        logger('set_references', 'def', 'main: ' + str(self.request.params))
+        ui_locales = get_language(self.request, get_current_registry())
+        _tn = Translator(ui_locales)
+
+        try:
+            nickname    = self.request.authenticated_userid
+            issue_uid   = issue_helper.get_issue_id(self.request)
+
+            uid         = self.request.params['uid']
+            reference   = escape_string(json.loads(self.request.params['reference']))
+            source      = escape_string(json.loads(self.request.params['ref_source']))
+            success     = set_reference(reference, source, nickname, uid, issue_uid, transaction)
+            return_dict = {'error': '' if success else _tn.get(_tn.internalKeyError)}
+
+        except KeyError as e:
+            logger('set_references', 'error', repr(e))
+            return_dict = {'error': _tn.get(_tn.internalKeyError)}
 
         return json.dumps(return_dict, True)
 

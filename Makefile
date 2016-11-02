@@ -38,7 +38,7 @@ nosetests:
 	# grep TOTAL nosetests_temp_output.log | awk '{ print "TOTAL: "$$4; }'
 	# rm nosetests_temp_output.log
 
-mac_refresh:
+reload_dummy:
 	dropdb discussion
 	dropdb news
 	createdb -O dbas discussion
