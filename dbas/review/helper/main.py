@@ -338,5 +338,5 @@ def accept_edit_review(review, transaction, db_user_created_flag):
     db_user = DBDiscussionSession.query(User).filter_by(uid=review.detector_uid).first()
     for value in db_values:
         val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)
-        db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=val['text']).order_by(TextVersion.uid.desc()).first()
-        send_edit_text_notification(db_user_created_flag, db_textversion, None, None)
+        # db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=val['text']).order_by(TextVersion.uid.desc()).first()
+        # send_edit_text_notification(db_user_created_flag, db_textversion, None, None)
