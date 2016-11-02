@@ -526,12 +526,31 @@ function DiscussionBarometer(){
             // if the height of legend is greater then (height of barometer + offset) place directly under legend
             var offset = 20;
             if(400-$('.col-md-5').height() > offset){
-                console.log(400-$('.col-md-5').height());
+                $('.doughnutChartTooltip').css('bottom', -(400-$('.col-md-5').height()) + 'px');
             }
+
+            // append tooltip in middle of doughnut chart
+            doughnutChartSvg.append("text")
+                .attr("x", 250 )
+                .attr("y", 210 )
+                .style("font-weight", "bold")
+                .style("font-size", "25px")
+                .attr("class", "doughnut-chart-text-tooltip")
+                .text(usersDict[index].usersNumber + "/" + usersDict[index].seenBy);
+
+            doughnutChartSvg.append("text")
+                .attr("x", 250)
+                .attr("y", 230)
+                .attr("class", "doughnut-chart-text-tooltip")
+                .text("clicked on this");
+
         })
         .on("mouseout", function (d, index) {
             div.style("opacity", 0);
             $(this).attr('fill', getNormalColorFor(index));
+
+            // hide text in middle of doughnut
+            $('.doughnut-chart-text-tooltip').text("");
         });
     }
 }
