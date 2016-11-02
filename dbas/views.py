@@ -314,7 +314,7 @@ class Dbas(object):
         return {
             'layout': self.base_layout(),
             'language': str(ui_locales),
-            'title': 'User ' + nickname,
+            'title': user_dict['public_nick'],
             'project': project_name,
             'extras': extras_dict,
             'user': user_dict,
