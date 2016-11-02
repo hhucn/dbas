@@ -1976,12 +1976,13 @@ class Dbas(object):
             is_argument = True if str(self.request.params['is_argument']) == 'true' else False
 
             if is_argument:
-                data = get_references_for_argument(uid, main_page)
+                data, text = get_references_for_argument(uid, main_page)
             else:
-                data = get_references_for_statements(uid, main_page)
+                data, text = get_references_for_statements(uid, main_page)
 
             return_dict = {'error': '',
-                           'data': data}
+                           'data': data,
+                           'text': text}
 
         except KeyError as e:
             logger('get_references', 'error', repr(e))
@@ -1993,7 +1994,6 @@ class Dbas(object):
     def set_references(self):
         logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
         logger('set_references', 'def', 'main: ' + str(self.request.params))
-        logger('set_references', 'def', 'main: ' + str(self.request.matchdict))
         ui_locales = get_language(self.request, get_current_registry())
         _tn = Translator(ui_locales)
 
