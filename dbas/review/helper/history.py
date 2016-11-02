@@ -165,8 +165,9 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
         entry['argument_shorttext'] = short_text
         entry['argument_fulltext'] = full_text
         if table == 'edits':
-            entry['argument_oem_shorttext'] = 'TODO' + short_text
-            entry['argument_oem_fulltext'] = 'TODO' + full_text
+            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
+            entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
+            entry['argument_oem_fulltext'] = db_textversions[1].content
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
