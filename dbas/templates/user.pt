@@ -28,7 +28,7 @@
 					</table>
                     <div>
                         <div class="center text-center" style="margin: 2em;">
-						    <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src user.avatar_url">
+						    <img class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src user.avatar_url">
 						    <br>
 						    <span i18n:translate="profile_picture_of">Profile Picture of</span> ${user.public_nick}
                         </div>
