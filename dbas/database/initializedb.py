@@ -471,7 +471,6 @@ def set_up_users(session):
     pw2 = password_handler.get_hashed_password('tobias')
     pw3 = password_handler.get_hashed_password('martin')
     pw4 = password_handler.get_hashed_password('christian')
-    pw5 = password_handler.get_hashed_password('raphael')
     pw6 = password_handler.get_hashed_password('alexander')
     pw7 = password_handler.get_hashed_password('R4n0mpw')
     pw8 = password_handler.get_hashed_password('bjoern')

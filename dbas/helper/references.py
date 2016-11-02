@@ -23,11 +23,13 @@ def get_references_for_argument(uid, main_page):
     db_premises = db_premises.filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 
     data = {}
+    text = {}
     for premise in db_premises:
         tmp_uid = premise.statement_uid
         references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
         data[premise.statement_uid] = references_array
-    return data
+        text[premise.statement_uid] = get_text_for_statement_uid(premise.statement_uid)
+    return data, text
 
 
 def get_references_for_statements(uids, main_page):
@@ -39,10 +41,12 @@ def get_references_for_statements(uids, main_page):
     :return: dict
     """
     data = {}
+    text = {}
     for uid in uids:
         references_array = __get_references_for_statement(uid, main_page)[uid]
         data[uid] = references_array
-    return data
+        text[uid] = get_text_for_statement_uid(uid)
+    return data, text
 
 
 def __get_references_for_statement(uid, main_page):
