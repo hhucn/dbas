@@ -181,7 +181,7 @@
 - Publish / Subscribe
 
 ## 0.6.1 (2016-08-24)
-- New bootstraping
+- New bootstraping (jump-mechanism)
 
 ## 0.7.0 (2016-09-06)
 - Review-Mechanisms
