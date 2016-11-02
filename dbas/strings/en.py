@@ -367,6 +367,7 @@ en_lang = {
     _.restartOnError: 'Please try to reload this page or restart the discussion, if reloading does not fix the problem.',
     _.recipient: 'Recipient',
     _.recipientNotFound: 'Recipient not found!',
+    _.reference: 'Referenz',
     _.report: 'Report',
     _.reportStatement: 'Report statement',
     _.reportArgument: 'Report argument',
