@@ -29,7 +29,7 @@ function-test:
   stage: test
   script:
     - apt-get -y update
-    - apt-get -y install npm
+    - apt-get -y install nodejs
     - npm install phantomjs
     - export PATH=$PATH:$(pwd)/node_modules/phantomjs/bin/
     - python tests/splinterTests.py --no-input
