@@ -30,6 +30,12 @@ class Helper:
     """
 
     @staticmethod
+    def open_browser(browser):
+        b = Browser(browser)
+        b.driver.set_window_size(1920, 1080)
+        return b
+
+    @staticmethod
     def print_info(message=''):
         """
 
@@ -208,7 +214,7 @@ class FrontendTests:
         :return: true when the server is on, false otherwise
         """
         print('Is server online? ')
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b.visit(main_page)
         success = Helper.check_for_present_text(b, 'part of the graduate school', 'check main page')
         b.quit()
@@ -223,7 +229,7 @@ class FrontendTests:
         """
         print('Starting tests for pages_not_logged_in:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b.visit(main_page)
         b.find_by_css('.dropdown-toggle[href="#language"]').click()
         b.find_by_id('link-trans-en').click()
@@ -272,7 +278,7 @@ class FrontendTests:
         """
         success = True
         print('Starting tests for login_logout:')
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
 
         b = Helper.login(b, nickname_test_user1, 'wrong_password', main_page)
         t = 'testing wrong login'
@@ -300,7 +306,7 @@ class FrontendTests:
         """
         success = True
         print('Starting tests for pages_logged_in:')
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page)
 
         pages = [main_page + 'settings',
@@ -329,7 +335,7 @@ class FrontendTests:
         :return: 1 if success else 0
         """
         print('Starting tests for popups:')
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b.visit(main_page)
 
         # open author popup
@@ -357,7 +363,7 @@ class FrontendTests:
         :return: 1 if success else 0
         """
         print('Starting tests for contact_form:')
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b.visit('http://localhost:4284/contact')
 
         form = ['',
@@ -398,7 +404,7 @@ class FrontendTests:
         :return: 1 if success else 0
         """
         print('Starting tests for language_switch:')
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
 
         b.visit(main_page)
         success = Helper.check_for_present_text(b, 'part of the graduate', 'check english language')
@@ -427,7 +433,7 @@ class FrontendTests:
         :return: 1 if success else 0
         """
         print('Starting tests for discussion_buttons:')
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         success = True
         b = Helper.login(b, nickname_test_user1, password, main_page + 'discussion')
 
@@ -485,7 +491,7 @@ class FrontendTests:
         """
         print('Starting tests for demo_discussion:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page + 'discussion')
 
         # position
@@ -531,7 +537,7 @@ class FrontendTests:
         """
         print('Starting tests for functions_while_discussion:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page + 'discussion')
 
         # new position
@@ -609,7 +615,7 @@ class FrontendTests:
         """
         print('Starting tests for test_content:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page + 'discuss/town-has-to-cut-spending')
 
         if b.is_text_present('Continue'):
@@ -711,7 +717,7 @@ class FrontendTests:
         """
         print('Starting tests for user_page:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page + 'user/' + nickname_test_user1)
 
         success = success and Helper.check_for_present_text(b, 'Public Information', 'check for public page')
@@ -745,7 +751,7 @@ class FrontendTests:
         """
         print('Starting tests for notification_system:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
 
         b = Helper.login(b, nickname_test_user1, password, main_page + 'notifications')
 
@@ -806,7 +812,7 @@ class FrontendTests:
         """
         print('Starting tests for review page:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user2, password, main_page + 'discuss/cat-or-dog')
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(2)').mouse_over()
@@ -845,7 +851,7 @@ class FrontendTests:
         """
         print('Starting tests for flag statement:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page + 'review')
         b.visit(main_page + 'review')
         time.sleep(wait_time)
@@ -895,7 +901,7 @@ class FrontendTests:
         """
         print('Starting tests for flag argument:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user2, password, main_page + 'review')
         time.sleep(wait_time)
         old_count = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
@@ -938,7 +944,7 @@ class FrontendTests:
         """
         print('Starting tests for review queue:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
 
         # login ang get points of the first test user
         b = Helper.login(b, nickname_test_user1, password, main_page + 'review')
@@ -1008,7 +1014,7 @@ class FrontendTests:
         """
         print('Starting tests for undo review in queue:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page + 'review/history')
         text = b.find_by_css('tbody:nth-child(2) td:first-child span').text[:-3]
 
@@ -1044,7 +1050,7 @@ class FrontendTests:
         """
         print('Starting tests for cancel review in queue:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page  + 'discuss')
 
         # flag a statement
@@ -1091,7 +1097,7 @@ class FrontendTests:
         """
         print('Starting tests for edit statement:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page + 'review')
         time.sleep(wait_time)
         old_count_for_users = b.find_by_css('#review-table tbody tr:nth-child(3) strong').text
@@ -1139,7 +1145,7 @@ class FrontendTests:
         """
         print('Starting tests for edit statement as optimization:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_test_user1, password, main_page  + 'discuss')
 
         # flag a statement
@@ -1212,7 +1218,7 @@ class FrontendTests:
         """
         print('Starting tests for deleting the own statement:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'discuss')
 
         # get text and url of the deleted element
@@ -1253,7 +1259,7 @@ class FrontendTests:
         """
         print('Starting tests for deleting the own argument:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
         b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'discuss')
 
         # position
@@ -1301,7 +1307,7 @@ class FrontendTests:
         """
         print('Starting tests for the admin interface:')
         success = True
-        b = Browser(browser)
+        b = Helper.open_browser(browser)
 
         b.visit(main_page  + 'admin/')
         success = success and Helper.check_for_present_text(b, 'Nickname', 'Check for login view')
