@@ -962,13 +962,48 @@ function GuiHandler() {
 	 *
 	 * @returns {*|jQuery}
 	 */
-	this.getAlertIntoDialogNoDecisions = function(){
+	this.getNoDecisionsAlert = function(){
 		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
 		span = $('<span>').text(_t_discussion(noDecisionstaken));
 		div.append(strong).append(span);
 		return div;
+	};
+	
+	/**
+	 *
+	 */
+	this.createUserRowsForOpinionDialog = function(users_array){
+		var left = '';
+		var middle = '';
+		var right = '';
+		var j = 0;
+		var rows = [];
+
+		$.each(users_array, function (index, val) {
+			var img = $.parseHTML('<img class="img-circle" style="height: 40%; padding-left: 0.5em;" src="' + val.avatar_url + '">');
+			var span = $('<span>').text(val.nickname);
+			var link = $('<td>').append($('<a>').attr({'target': '_blank', 'href': val.public_profile_url, 'style': 'padding-right: 0.5em;'}).append(span).append(img));
+			
+			// three elements per row (store middle and left element, append later)
+			if (j==0){
+				left = link;
+			} else if (j==1){
+				middle = link;
+			} else if (j==2){
+				rows.push($('<tr>').append(left).append(middle).append(link));
+			}
+			j = (j+1) % 3;
+		});
+		
+		// append the last row
+		if (j==1)
+			rows.push($('<tr>').append(left));
+		if (j==2)
+			rows.push($('<tr>').append(left).append(middle));
+		
+		return rows
 	};
 	
 	/**
