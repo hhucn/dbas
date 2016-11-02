@@ -900,6 +900,8 @@
                     </div>
                     <div id="popup-references-body-add" style="display: none">
 
+                        <p class="text-info" i18n:translate="statement_reference_definition">Statement is a cite from a website like a newspaper article, which underpins the opinion. The source is the website as link.</p>
+
                         <div class="form-group">
 					        <label class="col-md-2 control-label" for="popup-references-add-text">Statement</label>
                             <div class="col-md-10">
@@ -927,7 +929,6 @@
                         <ul class="dropdown-menu" id="popup-references-cite-dropdown-list">
                         </ul>
                     </div>
-
     				<button type="button" class="btn btn-sm btn-success" id="popup-reference-send-btn">Add reference</button>
                 </div>
     		</div>
