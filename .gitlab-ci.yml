@@ -30,6 +30,6 @@ function-test:
   script:
     - apt-get -y update
     - apt-get -y install nodejs npm
-    - npm install phantomjs
-    - export PATH=$PATH:$(pwd)/node_modules/phantomjs/bin/
+    - npm install phantomjs2
+    - export PATH=$PATH:$(pwd)/node_modules/phantomjs2/bin/
     - python tests/splinterTests.py --no-input
