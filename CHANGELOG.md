@@ -181,7 +181,7 @@
 - Publish / Subscribe
 
 ## 0.6.1 (2016-08-24)
-- New bootstraping
+- New bootstraping (jump-mechanism)
 
 ## 0.7.0 (2016-09-06)
 - Review-Mechanisms
@@ -193,6 +193,11 @@
 - Additional functions for the review mechanisms
   - Deleting own statements/arguments
   - Report arguments
+
+## 0.7.3 (2016-11-01)
+- Add references for statements from the 'outside world'
+- Barometer for the behaviour of all users
+- Improvements of the graph view
 
 ## 0.x.0 (unreleased)
 - Improved recommendation of the next confrontation
