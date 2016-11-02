@@ -241,7 +241,7 @@ class FrontendTests:
                  main_page + 'discuss',
                  main_page + 'settings',
                  main_page + 'notifications',
-                 main_page + 'admin/main',
+                 main_page + 'admin/',
                  main_page + 'user/Tobias']
         tests = ['main',
                  'contact',
@@ -259,7 +259,7 @@ class FrontendTests:
                  'Current discussion is about:',
                  'part of the graduate school',
                  'part of the graduate school',
-                 'Dashboard',
+                 'Nickname',
                  'Tobias']
         for index, p in enumerate(pages):
             b.visit(p)
@@ -311,13 +311,13 @@ class FrontendTests:
 
         pages = [main_page + 'settings',
                  main_page + 'notifications',
-                 main_page + 'admin/main']
+                 main_page + 'admin/']
         tests = ['settings',
                  'notifications',
                  'admin']
         texts = ['Personal Information',
                  'Notification Board',
-                 '401']
+                 'no rights']
         for index, p in enumerate(pages):
             b.visit(p)
             t = 'testing ' + tests[index] + ' page'
