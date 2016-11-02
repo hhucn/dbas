@@ -13,11 +13,11 @@ $(function () {
 	$('#send-notification').each(function () {
 		$(this).click(function () {
 			var _this = $(this);
-			$('#popup-writing-notification-recipient').hide();
-			$('#popup-writing-notification').modal('show');
-			$('#popup-writing-notification-success').hide();
-			$('#popup-writing-notification-failed').hide();
-			$('#popup-writing-notification-send').click(function () {
+			$('#' + popupWritingNotificationRecipient).hide();
+			$('#' + popupWritingNotification).modal('show');
+			$('#' + popupWritingNotificationSuccess).hide();
+			$('#' + popupWritingNotificationFailed).hide();
+			$('#' + popupWritingNotificationSend).click(function () {
 				var url = window.location.href,
 					splitted = url.split('/'),
 					recipient;
@@ -31,7 +31,7 @@ $(function () {
 		});
 	});
 
-	new AjaxUserHandler().getPublicUserData();
+	// new AjaxUserHandler().getPublicUserData();
 });
 
 function User() {

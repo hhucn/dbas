@@ -821,7 +821,130 @@ function GuiHandler() {
 			view.show();
 		});
 	};
-
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.showReferencesPopup = function (data){
+		var popup = $('#' + popupReferences);
+		var references_body = $('#popup-references-body');
+		var references_body_add = $('#popup-references-body-add').hide();
+		var add_button = $('#popup-reference-add-btn');
+		var send_button = $('#popup-reference-send-btn');
+		var dropdown = $('#popup-references-cite-dropdown');
+		var dropdown_list = $('#popup-references-cite-dropdown-list');
+		var reference_text = $('#popup-references-add-text');
+		var reference_source = $('#popup-references-add-source');
+		var info_text = $('#choose_reference_text');
+		
+		dropdown.hide();
+		info_text.hide();
+		popup.modal('show');
+		dropdown_list.empty();
+		references_body.empty();
+		add_button.show();
+		send_button.prop('disabled', true);
+		reference_text.val('');
+		reference_source.val('');
+		
+		add_button.off('click').click(function (){
+			add_button.hide();
+			references_body_add.fadeIn();
+			//send_button.prop('disabled', false);
+			if (dropdown_list.find('li').length < 2){
+				dropdown.hide();
+				info_text.hide();
+			} else {
+				dropdown.show();
+				info_text.show();
+			}
+			send_button.prop('disabled', false);
+		});
+		
+		send_button.off('click').click(function (){
+			var uid = $(this).data('id');
+			var reference = reference_text.val();
+			var ref_source = reference_source.val();
+			new AjaxReferenceHandler().setReference(uid, reference, ref_source);
+		});
+		
+		this.createReferencesPopupBody(data);
+		
+		if (references_body.children().length == 0){
+			references_body.append($('<p>').addClass('lead').text(_t_discussion(noReferencesButYouCanAdd)));
+			add_button.hide();
+			send_button.prop('disabled', false);
+			references_body_add.fadeIn();
+			if (dropdown_list.find('li').length < 2){
+				dropdown.hide();
+				info_text.hide();
+			} else {
+				dropdown.show();
+				info_text.show();
+			}
+		}
+	};
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.createReferencesPopupBody = function(data)	{
+		var popup = $('#' + popupReferences);
+		var references_body = $('#popup-references-body');
+		var send_button = $('#popup-reference-send-btn');
+		var dropdown = $('#popup-references-cite-dropdown');
+		var dropdown_list = $('#popup-references-cite-dropdown-list');
+		var dropdown_title = $('#popup-references-cite-dropdown-title');
+		
+		// data is an dictionary with all statement uid's as key
+		// the value of every key is an array with dictionaries for every reference
+		$.each(data.data, function (statement_uid, array) {
+			var statements_div = $('<div>');
+			var text = '';
+			// build a callout for every reference
+			array.forEach(function (dict){
+				text = dict.statement_text;
+				var author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
+					.append($('<span>').text(dict.author.name))
+					.append($('<img>').addClass('img-circle').attr('src', dict.author.img));
+					
+				var link = $('<a>').attr({'href': dict.host + dict.path, 'target': '_blank'}).text('(' + dict.host + dict.path + ')');
+				var span = $('<span>').text(dict.reference + ' ');
+				
+				var label = $('<label>').addClass('bs-callout').addClass('bs-callout-primary');
+				var body = $('<p>').append(span).append(link).append(author);
+				label.append(body);
+				
+				statements_div.append(label);
+			});
+			// add the statemet itself
+			var glqq = $.parseHTML('<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
+			var grqq = $.parseHTML('<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
+			var statement = $('<span>').addClass('lead').text(text);
+			var wrapper = $('<p>').append(glqq).append(statement).append(grqq);
+			
+			// add elements for the dropdown
+			if (text.length > 0) {
+				references_body.append(wrapper.append(statements_div));
+			} else {
+				text = data.text[statement_uid];
+			}
+			console.log(text);
+			var tmp = $('<a>').attr('href', '#').attr('data-id', statement_uid).text(text).click(function(){
+				// set text, remove popup
+				dropdown_title.text($(this).text()).parent().attr('aria-expanded', false);
+				dropdown.removeClass('open');
+				send_button.attr('data-id', statement_uid);
+			});
+			dropdown_list.append($('<li>').append(tmp));
+			
+			// default id
+			send_button.attr('data-id', statement_uid);
+		});
+	};
+	
 	/**
 	 * Closes the popup and deletes all of its content
 	 */
@@ -866,7 +989,7 @@ function GuiHandler() {
 	 *
 	 * @returns {*|jQuery}
 	 */
-	this.getAlertIntoDialogNoDecisions = function(){
+	this.getNoDecisionsAlert = function(){
 		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
@@ -877,21 +1000,64 @@ function GuiHandler() {
 	
 	/**
 	 *
+	 */
+	this.createUserRowsForOpinionDialog = function(users_array){
+		var left = '';
+		var middle = '';
+		var right = '';
+		var j = 0;
+		var rows = [];
+
+		$.each(users_array, function (index, val) {
+			var img = $.parseHTML('<img class="img-circle" style="height: 40%; padding-left: 0.5em;" src="' + val.avatar_url + '">');
+			var span = $('<span>').text(val.nickname);
+			var link = $('<td>').append($('<a>').attr({'target': '_blank', 'href': val.public_profile_url, 'style': 'padding-right: 0.5em;'}).append(span).append(img));
+			
+			// three elements per row (store middle and left element, append later)
+			if (j==0){
+				left = link;
+			} else if (j==1){
+				middle = link;
+			} else if (j==2){
+				rows.push($('<tr>').append(left).append(middle).append(link));
+			}
+			j = (j+1) % 3;
+		});
+		
+		// append the last row
+		if (j==1)
+			rows.push($('<tr>').append(left));
+		if (j==2)
+			rows.push($('<tr>').append(left).append(middle));
+		
+		return rows
+	};
+	
+	/**
+	 *
 	 * @param list
 	 */
 	this.hoverInputListOf = function(list){
 		list.find('input').each(function(){
 			$(this).hover(function(){
-				$(this).prop('checked', true);
+				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+					$(this).prop('checked', true);
+				}
 			}, function(){
-				$(this).prop('checked', false);
+				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+					$(this).prop('checked', false);
+				}
 			})
 		});
 		list.find('label').each(function(){
 			$(this).hover(function(){
-				$(this).prev().prop('checked', true);
+				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+					$(this).prev().prop('checked', true);
+				}
 			}, function(){
-				$(this).prev().prop('checked', false);
+				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
+					$(this).prev().prop('checked', false);
+				}
 			})
 		});
 	}
