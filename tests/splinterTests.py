@@ -4,9 +4,12 @@ Class for front end tests with Splinter and Selenium
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import sys
 import time
-from splinter import Browser, exceptions
+from collections import defaultdict
+
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException
+from splinter import Browser, exceptions
 
 main_page = 'http://localhost:4284/'
 test_counter = 0
@@ -1425,41 +1428,52 @@ test_list = [
 ]
 
 if __name__ == "__main__":
-    print('  /---------------------------------------/')
-    print(' / PLEASE USE A FRESH DB WITH DUMMY DATA /')
-    print('/---------------------------------------/')
-    print('')
-    print('Please choose a web browser:')
-    print('  [b]reak')
-    print('  [c]hrome  (default)')
-    print('  [f]irefox')
-    input_browser = input('Enter: ')
-    print('')
-    print('Please choose a testing style:')
-    print('  [ a]ll (default)')
-    for test in test_list:
-        id = (' ' + str(test['test_id'])) if test['test_id'] < 10 else str(test['test_id'])
-        print('  [' + id + '] ' + test['console_description'])
-    input_list = input('You can enter a number, like 3, or a list, like 5,2,9 (respect the order!): ')
+    browser_shorts = defaultdict(lambda: 'phantomjs')
+    browser_shorts['c'] = 'chrome'
+    browser_shorts['f'] = 'firefox'
+    browser_shorts['p'] = 'phantomjs'
 
-    if str(input_browser) != 'b':
-        web_driver = 'firefox' if str(input_browser) == 'f' else 'chrome'
+    if sys.argv[1] == '--no-input':
+        input_browser = browser_shorts['default']
+        input_list = 'a'
+    else:
+        print('  /---------------------------------------/')
+        print(' / PLEASE USE A FRESH DB WITH DUMMY DATA /')
+        print('/---------------------------------------/')
+        print('')
+        print('Please choose a web browser:')
+        print('  [b]reak')
+        print('  [c]hrome')
+        print('  [f]irefox')
+        print('  [p]hantomjs (default)')
+        input_browser = input('Enter: ')
+        if input_browser == 'b':
+            exit()
+        print('')
+        print('Please choose a testing style:')
+        print('  [ a]ll (default)')
+        for test in test_list:
+            id = (' ' + str(test['test_id'])) if test['test_id'] < 10 else str(test['test_id'])
+            print('  [' + id + '] ' + test['console_description'])
+        input_list = input('You can enter a number, like 3, or a list, like 5,2,9 (respect the order!): ')
         if len(input_list) == 0:
             input_list = 'a'
 
-        print('')
-        print('-> Tests will be done with ' + web_driver)
-        print('')
+    web_driver = browser_shorts[str(input_browser)]
 
-        try:
-            FrontendTests.run_tests(web_driver, input_list)
-        except ConnectionResetError as e1:
-            print('  Server is offline found: ' + str(e1))
-        except FileNotFoundError as e2:
-            print('FileNotFoundError found: ' + str(e2))
-        except AttributeError as e3:
-            print('AttributeError found: ' + str(e3))
-        except WebDriverException as e4:
-            print('WebDriverException found: ' + str(e4))
-        except KeyboardInterrupt as e5:
-            print('Exit through KeyboardInterrupt')
+    print('')
+    print('-> Tests will be done with ' + web_driver)
+    print('')
+
+    try:
+        FrontendTests.run_tests(web_driver, input_list)
+    except ConnectionResetError as e1:
+        print('  Server is offline found: ' + str(e1))
+    except FileNotFoundError as e2:
+        print('FileNotFoundError found: ' + str(e2))
+    except AttributeError as e3:
+        print('AttributeError found: ' + str(e3))
+    except WebDriverException as e4:
+        print('WebDriverException found: ' + str(e4))
+    except KeyboardInterrupt as e5:
+        print('Exit through KeyboardInterrupt')
