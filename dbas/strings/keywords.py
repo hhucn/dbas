@@ -433,6 +433,7 @@ class Keywords(Enum):
     the_der = 'the'
     the_die = 'the'
     the_das = 'the'
+    reference = 'Reference'
     theirPosition = 'their point of view'
     registered = 'Registered'
     restartDiscussion = 'Restart Discussion'

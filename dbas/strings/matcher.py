@@ -8,7 +8,7 @@ import difflib
 from itertools import islice
 
 from collections import OrderedDict
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from Levenshtein import distance
 
 from dbas.database import DBDiscussionSession
@@ -171,21 +171,16 @@ def get_strings_for_public_nickname(value, nickname):
     :param nickname:
     :return:
     """
-    db_user = DBDiscussionSession.query(User).all()
+    db_user = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname).contains(func.lower(value)),
+                                                     ~User.public_nickname.in_([nickname, 'admin', 'anonymous'])).all()
     return_array = []
 
-    index = 1
-    for user in db_user:
-        if user.public_nickname.lower().startswith(value.lower())\
-                and user.nickname != nickname\
-                and user.nickname != 'admin'\
-                and user.nickname != 'anonymous':
-            dist = get_distance(value, user.public_nickname)
-            return_array.append({'index': 0,
-                                 'distance': dist,
-                                 'text': user.public_nickname,
-                                 'avatar': get_public_profile_picture(user)})
-            index += 1
+    for index, user in enumerate(db_user):
+        dist = get_distance(value, user.public_nickname)
+        return_array.append({'index': index,
+                             'distance': dist,
+                             'text': user.public_nickname,
+                             'avatar': get_public_profile_picture(user)})
 
     return_array = __sort_array(return_array)
     return mechanism, return_array[:list_length]

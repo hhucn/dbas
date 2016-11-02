@@ -18,6 +18,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
+from sqlalchemy import func
 
 fallback_lang = 'en'
 
@@ -613,8 +614,8 @@ def get_user_by_private_or_public_nickname(nickname):
     :param nickname: Nickname of the user
     :return: Current user or None
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_public_user = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
+    db_user = get_user_by_case_insensitive_nickname(nickname)
+    db_public_user = get_user_by_case_insensitive_public_nickname(nickname)
 
     db_settings = None
     current_user = None
@@ -631,6 +632,23 @@ def get_user_by_private_or_public_nickname(nickname):
             current_user = db_public_user
 
     return current_user
+
+
+def get_user_by_case_insensitive_nickname(nickname):
+    """
+    :param nickname:
+    :return:
+    """
+    return DBDiscussionSession.query(User).filter(func.lower(User.nickname) == func.lower(nickname)).first()
+
+
+def get_user_by_case_insensitive_public_nickname(public_nickname):
+    """
+    :param public_nickname:
+    :return:
+    """
+    return DBDiscussionSession.query(User).filter(
+        func.lower(User.public_nickname) == func.lower(public_nickname)).first()
 
 
 def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flaggable=False, is_author=False,
@@ -696,11 +714,11 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     votecounts = len(db_votecounts) if db_votecounts else 0
 
     if votecounts == 0:
-        speech['votecounts_message'] = _t.get(_.voteCountTextFirst) + '.'
+        speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
     elif votecounts == 1:
-        speech['votecounts_message'] = _t.get(_.voteCountTextOneOther) + '.'
+        speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
     else:
-        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_.voteCountTextMore) + '.'
+        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
     speech['votecounts'] = votecounts
 
     return speech
@@ -835,5 +853,20 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     return gravatar_url
 
 
-def _lower_first(text):
-    return text[0:1].lower() + text[1:]
+def get_author_data(main_page, uid):
+    """
+    Returns a-tag with gravatar of current author and users page as href
+
+    :param uid: of user
+    :return: string
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(uid=int(uid)).first()
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
+    if not db_user:
+        return 'Missing author with uid ' + str(uid), False
+    if not db_settings:
+        return 'Missing settings of author with uid ' + str(uid), False
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
+    link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
+    link_end = '</a>'
+    return link_begin + db_user.nickname + ' ' + img + link_end, True
