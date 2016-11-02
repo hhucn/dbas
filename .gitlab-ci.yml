@@ -13,7 +13,7 @@ flake8:
     - flake8 .
   allow_failure: true
 
-test:
+unit-test:
   stage: test
   script:
     - pip install --quiet -r requirements.txt
@@ -24,3 +24,10 @@ test:
     - init_review_tests docker.ini > /dev/null 2>&1
     - cp docker.ini development.ini
     - make nosetests
+
+function-test:
+  stage: test
+  script:
+    - npm install phantomjs
+    - export PATH=$PATH:$(pwd)/node_modules/phantomjs/bin/
+    - python tests/splinterTests.py --no-input
