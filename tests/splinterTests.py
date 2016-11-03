@@ -13,12 +13,12 @@ from splinter import Browser, exceptions
 
 main_page = 'http://localhost:4284/'
 test_counter = 0
-wait_time = 0.3
+wait_time = 0.5
 nickname_test_user1 = 'Pascal'
 nickname_test_user2 = 'Kurt'
 nickname_real_user1 = 'Tobias'
 nickname_real_user2 = 'Martin'
-nickname_real_user3 = 'Christian'
+nickname_real_user3 = 'christian'
 nickname_real_user4 = 'WeGi'
 nickname_real_password1 = 'tobias'
 nickname_real_password2 = 'martin'
@@ -93,10 +93,11 @@ class Helper:
         print('       ' + str(error))
 
     @staticmethod
-    def test_wrapper(name, test_function, *args):
+    def test_wrapper(name, id, test_function, *args):
         """
         Wrapper method
         :param name: of the test
+        :param id: of the test
         :param test_function: the function itself
         :return: value of the test_function on success, 0 otherwise
         """
@@ -105,7 +106,7 @@ class Helper:
             global test_counter
             test_counter += 1
             ret_val = test_function(*args)
-            print('    SUCCESS' if ret_val == 1 else '    FAIL')
+            print('    ' + str(id) + ': ' + ('SUCCESS' if ret_val == 1 else 'FAIL'))
             print('')
         except AttributeError as e:
             Helper.print_error('AttributeError', name, e)
@@ -178,7 +179,7 @@ class FrontendTests:
         """
 
         # server check
-        if not Helper.test_wrapper('testing for connectivity to server', FrontendTests.check_for_server, browser_style):
+        if not Helper.test_wrapper('testing for connectivity to server', -1, FrontendTests.check_for_server, browser_style):
             print('====================================================')
             print('Exit gracefully!')
             return
@@ -197,7 +198,7 @@ class FrontendTests:
         while len(splitted_list) > 0:
             cid = int(splitted_list[0].strip())
             if cid in range(len(test_list)):
-                success_counter += Helper.test_wrapper(test_list[cid]['test_description'], test_list[cid]['test_call'], browser_style)
+                success_counter += Helper.test_wrapper(test_list[cid]['test_description'], cid, test_list[cid]['test_call'], browser_style)
             else:
                 print('Malicious list entry: ' + splitted_list[0])
             splitted_list.remove(splitted_list[0])
@@ -259,7 +260,7 @@ class FrontendTests:
                  'Feel free to drop us a',
                  'COMMA16',
                  'Liability for content',
-                 'Current discussion is about:',
+                 'discussion is about',
                  'part of the graduate school',
                  'part of the graduate school',
                  'Nickname',
@@ -456,6 +457,7 @@ class FrontendTests:
 
         # check issue dropdown and switch issue
         b.find_by_id('issue-dropdown').click()
+        time.sleep(wait_time)
         success = success and Helper.check_for_present_text(b, 'Cat or Dog', 'check for issue dropdown')
         b.find_by_css('.dropdown-menu li.enabled a').click()
         time.sleep(wait_time)
@@ -839,7 +841,7 @@ class FrontendTests:
         new_count = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
 
         success = success and (int(old_count) > int(new_count))
-        Helper.print_success(success, 'Check review queue length (' + str(old_count) + '>' + str(new_count) + ')')
+        Helper.print_success(success, 'check review queue length (' + str(old_count) + '>' + str(new_count) + ')')
 
         b = Helper.logout(b)
         b.quit()
@@ -869,6 +871,7 @@ class FrontendTests:
         b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'Thanks for reporting', 'Success text for flagging')
 
+        time.sleep(wait_time * 2.5)
         b.find_by_css('#discussions-space-list li:nth-child(2)').mouse_over()
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(2) .item-flag').click()
@@ -887,9 +890,9 @@ class FrontendTests:
         new_count_for_user2 = b.find_by_css('#review-table tbody tr:nth-child(1) strong').text
 
         success = success and (int(new_count_for_user1) == int(old_count_for_users))
-        Helper.print_success(success, 'Check review queue length for user, who has flagged (' + str(new_count_for_user1) + '==' + str(old_count_for_users) + ')')
+        Helper.print_success(success, 'check review queue length for user, who has flagged (' + str(new_count_for_user1) + '==' + str(old_count_for_users) + ')')
         success = success and (int(new_count_for_user2) > int(old_count_for_users))
-        Helper.print_success(success, 'Check review queue length for different user (' + str(new_count_for_user2) + '>' + str(old_count_for_users) + ')')
+        Helper.print_success(success, 'check review queue length for different user (' + str(new_count_for_user2) + '>' + str(old_count_for_users) + ')')
 
         b = Helper.logout(b)
         b.quit()
@@ -918,6 +921,7 @@ class FrontendTests:
         b.find_by_css('#popup-flag-statement input[value=offtopic]').click()
         success = success and Helper.check_for_present_text(b, 'Thanks for reporting', 'Success text for flagging')
 
+        time.sleep(wait_time * 5)
         b.find_by_css('.pull-right .fa-flag').click()
         time.sleep(wait_time * 5)
         b.find_by_css('#flag_interference').click()
@@ -976,7 +980,7 @@ class FrontendTests:
         # login, have a look at the deletes, search for saved text an d vote for delete
         b = Helper.login(b, nickname_real_user3, nickname_real_password3, main_page + 'review/ongoing')
         time.sleep(wait_time)
-        success = success and Helper.check_for_present_text(b, text[0:15], 'Check for the text of revised statement in ongoing queue (must be there)')
+        success = success and Helper.check_for_present_text(b, text[0:15], 'check for the text of revised statement in ongoing queue (must be there)')
 
         b.visit(main_page + 'review/deletes')
         while not b.is_text_present(text):
@@ -986,15 +990,15 @@ class FrontendTests:
         time.sleep(wait_time)
 
         b.visit(main_page + 'review/ongoing')
-        success = success and Helper.check_for_non_present_text(b, text[0:15], 'Check for the text of revised statement in ongoing queue (must be gone)')
+        success = success and Helper.check_for_non_present_text(b, text[0:15], 'check for the text of revised statement in ongoing queue (must be gone)')
         b.visit(main_page + 'review/history')
-        success = success and Helper.check_for_present_text(b, text[0:15], 'Check for the text of revised statement in history queue (must be there)')
+        success = success and Helper.check_for_present_text(b, text[0:15], 'check for the text of revised statement in history queue (must be there)')
         b = Helper.logout(b)
 
         # have a look at the discussion page and check, whether the text ist not visible!
         b.visit(main_page + 'discuss')
         time.sleep(wait_time)
-        success = success and Helper.check_for_non_present_text(b, text, 'Check for the forbidden text "' + text + '"')
+        success = success and Helper.check_for_non_present_text(b, text, 'check for the forbidden text "' + text + '"')
         b = Helper.logout(b)
 
         # login ang get points of the first test user
@@ -1023,22 +1027,22 @@ class FrontendTests:
 
         # check text in discussion
         b.visit(main_page + 'discuss')
-        success = success and Helper.check_for_non_present_text(b, text, 'Check for the forbidden text "' + text + '" (must be gone)')
+        success = success and Helper.check_for_non_present_text(b, text, 'check for the forbidden text "' + text + '" (must be gone)')
 
         # go to history and undo
         b.visit(main_page + 'review/history')
         b.find_by_css('tbody:nth-child(2) a.btn-danger').click()
         time.sleep(3 * wait_time)
-        success = success and Helper.check_for_present_text(b, text, 'Caution popup')
+        success = success and Helper.check_for_present_text(b, text, 'caution popup')
         b.find_by_css('#confirm-dialog-accept-btn').click()
         time.sleep(wait_time)
 
         # check for success popup
-        success = success and Helper.check_for_present_text(b, 'Data was successfully removed', 'Check for success popup')
+        success = success and Helper.check_for_present_text(b, 'Data was successfully removed', 'check for success popup')
 
         # check text in discussion
         b.visit(main_page + 'discuss')
-        success = success and Helper.check_for_present_text(b, text, 'Check for the forbidden text "' + text + '" (must be there)')
+        success = success and Helper.check_for_present_text(b, text, 'check for the forbidden text "' + text + '" (must be there)')
 
         b = Helper.logout(b)
         b.quit()
@@ -1115,10 +1119,10 @@ class FrontendTests:
         time.sleep(wait_time)
 
         b.fill('popup-edit-statement-input-0', text + '#42')
-        time.sleep(wait_time)
+        time.sleep(wait_time * 3)
 
         b.find_by_css('#popup-edit-statement-submit').click()
-        success = success and Helper.check_for_present_text(b, 'Your proposals', 'Check for general success popup after edit')
+        success = success and Helper.check_for_present_text(b, 'Your proposals', 'check for general success popup after edit')
 
         b.visit(main_page + 'review')
         time.sleep(wait_time)
@@ -1131,9 +1135,9 @@ class FrontendTests:
         new_count_for_user2 = b.find_by_css('#review-table tbody tr:nth-child(3) strong').text
 
         success = success and (int(new_count_for_user1) == int(old_count_for_users))
-        Helper.print_success(success, 'Check review queue length for user, who has flagged (' + str(old_count_for_users) + '==' + str(new_count_for_user1) + ')')
+        Helper.print_success(success, 'check review queue length for user, who has flagged (' + str(old_count_for_users) + '==' + str(new_count_for_user1) + ')')
         success = success and (int(new_count_for_user2) > int(old_count_for_users))
-        Helper.print_success(success, 'Check review queue length for user (' + str(old_count_for_users) + '>' + str(new_count_for_user2) + ')')
+        Helper.print_success(success, 'check review queue length for user (' + str(old_count_for_users) + '>' + str(new_count_for_user2) + ')')
 
         b = Helper.logout(b)
         b.quit()
@@ -1183,9 +1187,9 @@ class FrontendTests:
         new_opti_for_users = b.find_by_css('#review-table tbody tr:nth-child(2) strong').text
         new_hist_for_users = b.find_by_css('#review-table tbody tr:nth-child(4) strong').text
         success = success and (int(old_opti_for_users) > int(new_opti_for_users))
-        Helper.print_success(success, 'Check optimization queue length for user (' + str(old_opti_for_users) + '>' + str(new_opti_for_users) + ')')
+        Helper.print_success(success, 'check optimization queue length for user (' + str(old_opti_for_users) + '>' + str(new_opti_for_users) + ')')
         success = success and (int(old_hist_for_users) < int(new_hist_for_users))
-        Helper.print_success(success, 'Check history queue length for user (' + str(new_hist_for_users) + '>' + str(old_hist_for_users) + ')')
+        Helper.print_success(success, 'check history queue length for user (' + str(new_hist_for_users) + '>' + str(old_hist_for_users) + ')')
 
         # voting
         b.visit(main_page  + 'review/edits')
@@ -1206,7 +1210,8 @@ class FrontendTests:
 
         # check edited data
         b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'discuss')
-        success = success and Helper.check_for_present_text(b, '#4242', 'Check the presence of the edited text')
+        time.sleep(wait_time)
+        success = success and Helper.check_for_present_text(b, '#4242', 'check the presence of the edited text')
 
         b = Helper.logout(b)
         b.quit()
@@ -1238,16 +1243,16 @@ class FrontendTests:
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(2) .item-trash').click()
         time.sleep(wait_time)
-        success = success and Helper.check_for_present_text(b, 'Caution', 'Check for caution text')
+        success = success and Helper.check_for_present_text(b, 'Caution', 'check for caution text')
         b.find_by_css('#popup-delete-content-submit').click()
         time.sleep(wait_time)
 
-        success = success and Helper.check_for_non_present_text(b, text, 'Check, if the deleted statement is not presented presence of the edited text')
+        success = success and Helper.check_for_non_present_text(b, text, 'check, if the deleted statement is not presented presence of the edited text')
 
         b.visit(url)
         time.sleep(wait_time)
-        success = success and Helper.check_for_present_text(b, '404 Error', 'Check for 404 page')
-        success = success and Helper.check_for_present_text(b, 'revoked the content', 'Check 404 reason')
+        success = success and Helper.check_for_present_text(b, '404 Error', 'check for 404 page')
+        success = success and Helper.check_for_present_text(b, 'revoked the content', 'check 404 reason')
 
         b = Helper.logout(b)
         b.quit()
@@ -1277,16 +1282,16 @@ class FrontendTests:
 
         # system has a counter argument
         time.sleep(wait_time)
-        success = success and Helper.check_for_present_text(b, 'Other participants', 'Check for systems counter argument (there should be one)')
+        success = success and Helper.check_for_present_text(b, 'Other participants', 'check for systems counter argument (there should be one)')
 
         # click trash
         b.find_by_css('i.fa-trash').click()
         time.sleep(wait_time)
-        success = success and Helper.check_for_present_text(b, 'Caution', 'Check for caution text')
+        success = success and Helper.check_for_present_text(b, 'Caution', 'check for caution text')
         b.find_by_css('#popup-delete-content-submit').click()
 
         time.sleep(wait_time)
-        success = success and Helper.check_for_present_text(b, 'Yeah', 'Check for success popup')
+        success = success and Helper.check_for_present_text(b, 'Yeah', 'check for success popup')
 
         # go back and reload
         b.back()
@@ -1295,7 +1300,7 @@ class FrontendTests:
         time.sleep(wait_time)
         b.find_by_css('#discussions-space-list li:nth-child(1)').click()
         time.sleep(wait_time)
-        success = success and Helper.check_for_non_present_text(b, 'caution', 'Check for systems counter argument (there should be none)')
+        success = success and Helper.check_for_non_present_text(b, 'Caution', 'check for systems counter argument (there should be none)')
 
         b = Helper.logout(b)
         b.quit()
@@ -1313,7 +1318,7 @@ class FrontendTests:
         b = Helper.open_browser(browser)
 
         b.visit(main_page  + 'admin/')
-        success = success and Helper.check_for_present_text(b, 'Nickname', 'Check for login view')
+        success = success and Helper.check_for_present_text(b, 'Nickname', 'check for login view')
 
         b.find_by_id('admin-login-user').fill(nickname_test_user1)
         b.find_by_id('admin-login-pw').fill(password)
@@ -1325,7 +1330,7 @@ class FrontendTests:
         time.sleep(wait_time)
 
         b = Helper.login(b, nickname_real_user1, nickname_real_password1, main_page  + 'admin/')
-        success = success and Helper.check_for_present_text(b, 'Caution', 'But Tobias has!')
+        success = success and Helper.check_for_present_text(b, 'Vote', 'But Tobias has!')
 
         b = Helper.logout(b)
         b.quit()
