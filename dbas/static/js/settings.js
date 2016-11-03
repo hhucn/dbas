@@ -21,7 +21,7 @@ function HistoryHandler(){
 	this.getDataFail = function(statuscode){
 		$('#' + historyTableSuccessId).hide();
 		$('#' + historyTableFailureId).fadeIn('slow');
-		new Helper().delay(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
+		delay(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
 
 		if (statuscode == 400) {		$('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
 		} else if (statuscode == 500) {	$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
@@ -182,7 +182,7 @@ function SettingsHandler(){
 			$('#value_public_nickname').text(parsedData.public_nick);
 			$('#value_public_page').attr('href', parsedData.public_page_url);
 			$('#user_gravatar').attr('src', parsedData.gravatar_url);
-			new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
+			delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 		} else {
 			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
 		}
@@ -196,7 +196,7 @@ function SettingsHandler(){
 	 */
 	this.callbackFail = function (toggle_element, settings_value, service){
 		$('#' + settingsAlertDialog).fadeIn();
-		new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
+		delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 		toggle_element.off('change').bootstrapToggle(settings_value ? 'off' : 'on').change(function() {
 			new AjaxSettingsHandler().setUserSetting(toggle_element, service);
 		});
@@ -289,7 +289,7 @@ function StatisticsHandler(){
 			$(".scrollarea").slimScroll({destroy:true});
 		}).removeClass('btn-danger').text('Okay');
 
-		new Helper().delay(function() {
+		delay(function() {
 			if (modalBody.height() > (window.innerHeight-250)){
 				modalBody.slimScroll({
 					position: 'right',
@@ -312,7 +312,7 @@ function StatisticsHandler(){
 		if (parsedData.removed_data == 'true') {
 			$('#' + statisticsSuccessDialog).fadeIn();
 			$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
-			new Helper().delay(function () {
+			delay(function () {
 				$('#' + statisticsSuccessDialog).fadeOut();
 			}, 3000);
 			$('#' + editsDoneCountId).text('0');
@@ -330,7 +330,7 @@ function StatisticsHandler(){
 	this.callbackStatisticsFail = function(text){
 		$('#' + statisticsAlertDialog).fadeIn();
 		$('#' + statisticsAlertMessage).text(text);
-		new Helper().delay(function() { $('#' + statisticsAlertDialog).fadeOut(); }, 3000);
+		delay(function() { $('#' + statisticsAlertDialog).fadeOut(); }, 3000);
 	};
 
 }

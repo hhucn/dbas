@@ -79,7 +79,7 @@ function GuiHandler() {
 
 		// add fuzzy search
 		$('#' + id).keyup(function () {
-			new Helper().delay(function () {
+			delay(function () {
 				var escapedText = new Helper().escapeHtml($('#' + id).val());
 				new AjaxDiscussionHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
 			}, 200);
@@ -424,7 +424,7 @@ function GuiHandler() {
 			bigText += ' ' + infix + splitted[i];
 		}
 
-		bigTextSpan.html(new Helper().startWithUpperCase(bigText) + '.');
+		bigTextSpan.html(bigText + '.');
 
 		return div_page;
 	};
@@ -547,7 +547,7 @@ function GuiHandler() {
 					$('#' + popupEditStatementSubmitButtonId).removeClass('disabled');
 				
 					
-				new Helper().delay(function () {
+				delay(function () {
 					ajaxHandler.fuzzySearch(now,
 						id,
 						fuzzy_statement_popup,
