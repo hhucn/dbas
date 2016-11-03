@@ -7,11 +7,10 @@ Provides helping function for the adding task in the review queuees or en-/disab
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
-    LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit, TextVersion
+    LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag
 from dbas.helper.query import QueryHelper
 from dbas.logger import logger
-from dbas.helper.notification import send_edit_text_notification
 
 max_votes = 5
 min_difference = 3
@@ -337,6 +336,7 @@ def accept_edit_review(review, transaction, db_user_created_flag):
     db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).all()
     db_user = DBDiscussionSession.query(User).filter_by(uid=review.detector_uid).first()
     for value in db_values:
-        val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)
+        QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)
+        # val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)
         # db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=val['text']).order_by(TextVersion.uid.desc()).first()
         # send_edit_text_notification(db_user_created_flag, db_textversion, None, None)
