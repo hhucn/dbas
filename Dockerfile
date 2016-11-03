@@ -1,12 +1,7 @@
-FROM python:3.5
+FROM hhucn/dbas-build
 MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
-# Add sources for nodejs
-# RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-RUN apt-get update -qq
-RUN apt-get install -yqq rubygems && \
-    (yes | gem install sass) && \
-    mkdir /code
+RUN mkdir /code
 
 WORKDIR /code
 
