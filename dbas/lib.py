@@ -714,11 +714,11 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     votecounts = len(db_votecounts) if db_votecounts else 0
 
     if votecounts == 0:
-        speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
+        speech['votecounts_message'] = _t.get(_.voteCountTextFirst) + '.'
     elif votecounts == 1:
-        speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
+        speech['votecounts_message'] = _t.get(_.voteCountTextOneOther) + '.'
     else:
-        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_.voteCountTextMore) + '.'
     speech['votecounts'] = votecounts
 
     return speech
