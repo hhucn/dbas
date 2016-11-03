@@ -90,10 +90,11 @@ class Helper:
         print('       ' + str(error))
 
     @staticmethod
-    def test_wrapper(name, test_function, *args):
+    def test_wrapper(name, id, test_function, *args):
         """
         Wrapper method
         :param name: of the test
+        :param id: of the test
         :param test_function: the function itself
         :return: value of the test_function on success, 0 otherwise
         """
@@ -102,7 +103,7 @@ class Helper:
             global test_counter
             test_counter += 1
             ret_val = test_function(*args)
-            print('    SUCCESS' if ret_val == 1 else '    FAIL')
+            print('    ' + str(id) + ': ' + ('SUCCESS' if ret_val == 1 else 'FAIL'))
             print('')
         except AttributeError as e:
             Helper.print_error('AttributeError', name, e)
@@ -175,7 +176,7 @@ class FrontendTests:
         """
 
         # server check
-        if not Helper.test_wrapper('testing for connectivity to server', FrontendTests.check_for_server, browser_style):
+        if not Helper.test_wrapper('testing for connectivity to server', -1, FrontendTests.check_for_server, browser_style):
             print('====================================================')
             print('Exit gracefully!')
             return
@@ -194,7 +195,7 @@ class FrontendTests:
         while len(splitted_list) > 0:
             cid = int(splitted_list[0].strip())
             if cid in range(len(test_list)):
-                success_counter += Helper.test_wrapper(test_list[cid]['test_description'], test_list[cid]['test_call'], browser_style)
+                success_counter += Helper.test_wrapper(test_list[cid]['test_description'], cid, test_list[cid]['test_call'], browser_style)
             else:
                 print('Malicious list entry: ' + splitted_list[0])
             splitted_list.remove(splitted_list[0])
