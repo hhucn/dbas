@@ -102,7 +102,15 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajaxhandler.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/discussion.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/graph.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/main.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/news.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/notification.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/reference.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/review.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/settings.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/user.js')}"></script>
     <script type="text/javascript" src="${request.static_url('dbas:static/js/dolan.js')}"></script>
     <script type="text/javascript" src="${request.static_url('dbas:static/js/socketio/socket.io-1.4.5.js')}"></script>
     <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}"></script>
