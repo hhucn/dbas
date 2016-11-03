@@ -25,32 +25,6 @@ function Helper() {
 	};
 
 	/**
-	 * Swaps the element with the paramter
-	 * @param from element
-	 * @param to element
-	 * @returns {*}
-	 */
-	this.swapElements = function(from, to) {
-	    var copy_to = $(to).clone(true),
-		    copy_from = $(from).clone(true);
-		$(to).replaceWith(copy_from);
-		$(from).replaceWith(copy_to);
-	};
-
-	/**
-	 * Returns today as date
-	 * @returns {string} date as dd.mm.yyy
-	 */
-	this.getTodayAsDate = function(){
-		var d = new Date(),
-				month = d.getMonth()+ 1,
-				day = d.getDate();
-		return ((day<10 ? '0' : '') + day + '.' +
-		(month<10 ? '0' : '') + month + '.' +
-		d.getFullYear());
-	};
-
-	/**
 	 * Use the browser's built-in functionality to quickly and safely escape the string
 	 * Based on http://shebang.brandonmintern.com/foolproof-html-escaping-in-javascript/
 	 * @param text to escape
@@ -68,24 +42,6 @@ function Helper() {
 	 */
 	this.getFullHtmlTextOf = function (element) {
 		return $('<div>').append(element).html();
-	};
-
-	/**
-	 * Turns first character into lowercase
-	 * @param text
-	 * @returns {string}
-	 */
-	this.startWithLowerCase = function (text){
-		return text.substr(0, 1).toLowerCase() + text.substr(1);
-	};
-
-	/**
-	 * Turns first character into uppercase
-	 * @param text
-	 * @returns {string}
-	 */
-	this.startWithUpperCase = function (text){
-		return text.substr(0, 1).toLocaleUpperCase() + text.substr(1);
 	};
 
 	/**
@@ -297,15 +253,4 @@ function Helper() {
 			}
 		}
 	};
-
-	/**
-	 * Delays a specific function
-	 */
-	this.delay = function(){
-		var timer = 0;
-		return function(callback, ms){
-			clearTimeout (timer);
-			timer = setTimeout(callback, ms);
-		};
-	}();
 }

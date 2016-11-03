@@ -82,7 +82,7 @@ function AjaxSettingsHandler(){
 
 			if (parsedData.error.length == 0){
 				$('#' + settingsSuccessDialog).fadeIn();
-				new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
+				delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 				$.each($('#settings-language-dropdown').find('li'), function(){ $(this).removeClass('active');});
 				$.each($('#current-lang-images').find('img'), function(){ $(this).hide()});
 				$('#link-settings-' + parsedData.ui_locales).addClass('active');
@@ -90,11 +90,11 @@ function AjaxSettingsHandler(){
 				$('#current-lang-images span').eq(0).text(parsedData.current_lang);
 			} else {
 				$('#' + settingsAlertDialog).fadeIn();
-				new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
+				delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 			}
 		}).fail(function setUserSettingFail() {
 			$('#' + settingsAlertDialog).fadeIn();
-			new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
+			delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 		});
 	};
 
