@@ -578,7 +578,6 @@ function Main () {
 			children.eq(0).prop('checked', true).parent().hide();
 		}
 		
-		// TODO CLEAR DESIGN
 		// options for the extra buttons, where the user can add input!
 		
 		if (input.length == 0) {
