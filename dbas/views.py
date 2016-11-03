@@ -7,44 +7,44 @@ Core component of DBAS.
 import json
 import time
 
-import requests
-import transaction
-
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
 import dbas.review.helper.flags as review_flag_helper
-import dbas.review.helper.subpage as review_page_helper
-import dbas.review.helper.queues as review_queue_helper
-import dbas.review.helper.main as review_main_helper
-import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.history as review_history_helper
+import dbas.review.helper.main as review_main_helper
+import dbas.review.helper.queues as review_queue_helper
+import dbas.review.helper.reputation as review_reputation_helper
+import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 import dbas.user_management as user_manager
-
+import requests
+import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason, Statement
 from dbas.handler.opinion import OpinionHandler
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.query import QueryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
+from dbas.helper.query import QueryHelper
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
     try_to_register_new_user_via_ajax, request_password
-from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification,\
-    rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, rep_reason_new_statement
+from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.input_validator import Validator
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
     get_slug_by_statement_uid, get_profile_picture, get_user_by_case_insensitive_nickname
 from dbas.logger import logger
+from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification, \
+    rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, \
+    rep_reason_new_statement
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.security import remember, forget
@@ -345,7 +345,7 @@ class Dbas(object):
         return {
             'layout': self.base_layout(),
             'language': str(ui_locales),
-            'title': _tn.get(_tn.imprint),
+            'title': _tn.get(_.imprint),
             'project': project_name,
             'extras': extras_dict
         }
@@ -372,7 +372,7 @@ class Dbas(object):
         return {
             'layout': self.base_layout(),
             'language': str(ui_locales),
-            'title': _tn.get(_tn.publications),
+            'title': _tn.get(_.publications),
             'project': project_name,
             'extras': extras_dict
         }
@@ -904,7 +904,7 @@ class Dbas(object):
         return {
             'layout': Dbas.base_layout(),
             'language': str(ui_locales),
-            'title': _tn.get(_tn.review),
+            'title': _tn.get(_.review),
             'project': project_name,
             'extras': extras_dict,
             'review': review_dict,
@@ -943,7 +943,7 @@ class Dbas(object):
         return {
             'layout': Dbas.base_layout(),
             'language': str(ui_locales),
-            'title': _tn.get(_tn.review),
+            'title': _tn.get(_.review),
             'project': project_name,
             'extras': extras_dict,
             'subpage': subpage_dict,
@@ -973,7 +973,7 @@ class Dbas(object):
         return {
             'layout': Dbas.base_layout(),
             'language': str(ui_locales),
-            'title': _tn.get(_tn.review_history),
+            'title': _tn.get(_.review_history),
             'project': project_name,
             'extras': extras_dict,
             'history': history
@@ -1002,7 +1002,7 @@ class Dbas(object):
         return {
             'layout': Dbas.base_layout(),
             'language': str(ui_locales),
-            'title': _tn.get(_tn.review_history),
+            'title': _tn.get(_.review_history),
             'project': project_name,
             'extras': extras_dict,
             'history': history
@@ -1032,7 +1032,7 @@ class Dbas(object):
         return {
             'layout': Dbas.base_layout(),
             'language': str(ui_locales),
-            'title': _tn.get(_tn.review),
+            'title': _tn.get(_.review),
             'project': project_name,
             'extras': extras_dict,
             'reputation': reputation_dict
@@ -1185,10 +1185,10 @@ class Dbas(object):
             # check for user and password validations
             if not db_user:
                 logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
-                error = _tn.get(_tn.userPasswordNotMatch)
+                error = _tn.get(_.userPasswordNotMatch)
             elif not db_user.validate_password(password):
                 logger('user_login', 'password not valid', 'wrong password')
-                error = _tn.get(_tn.userPasswordNotMatch)
+                error = _tn.get(_.userPasswordNotMatch)
             else:
                 logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
                 db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
@@ -1217,7 +1217,7 @@ class Dbas(object):
                     )
 
         except KeyError as e:
-            error = _tn.get(_tn.internalKeyError)
+            error = _tn.get(_.internalKeyError)
             logger('user_login', 'error', repr(e))
 
         return_dict = dict()
@@ -1276,7 +1276,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('user_registration', 'error', repr(e))
-            error = _t.get(_t.internalKeyError)
+            error = _t.get(_.internalKeyError)
 
         # get anti-spam-question
         spamquestion, answer = user_manager.get_random_anti_spam_question(ui_locales)
@@ -1314,7 +1314,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('user_password_request', 'error', repr(e))
-            error = _t.get(_t.internalKeyError)
+            error = _t.get(_.internalKeyError)
 
         return_dict['success'] = str(success)
         return_dict['error']   = str(error)
@@ -1364,15 +1364,15 @@ class Dbas(object):
                         user_manager.refresh_public_nickname(db_user)
                     public_nick = db_user.public_nickname
                 else:
-                    error = _tn.get(_tn.keyword)
+                    error = _tn.get(_.keyword)
 
                 transaction.commit()
                 public_page_url = main_page + '/user/' + (db_user.nickname if settings_value else public_nick)
                 gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
             else:
-                error = _tn.get(_tn.checkNickname)
+                error = _tn.get(_.checkNickname)
         except KeyError as e:
-            error = _tn.get(_tn.internalKeyError)
+            error = _tn.get(_.internalKeyError)
             public_nick = ''
             public_page_url = ''
             gravatar_url = ''
@@ -1407,13 +1407,13 @@ class Dbas(object):
                         db_settings.set_lang_uid(db_language.uid)
                         transaction.commit()
                     else:
-                        error = _tn.get(_tn.internalError)
+                        error = _tn.get(_.internalError)
                 else:
-                    error = _tn.get(_tn.checkNickname)
+                    error = _tn.get(_.checkNickname)
             else:
-                error = _tn.get(_tn.checkNickname)
+                error = _tn.get(_.checkNickname)
         except KeyError as e:
-            error = _tn.get(_tn.internalKeyError)
+            error = _tn.get(_.internalKeyError)
             ui_locales = ''
             current_lang = ''
             logger('set_user_settings', 'error', repr(e))
@@ -1445,13 +1445,13 @@ class Dbas(object):
             text      = self.request.params['text']
             db_recipient = get_user_by_private_or_public_nickname(recipient)
             if len(title) < 5 or len(text) < 5:
-                error = _tn.get(_tn.empty_notification_input) + ' (' + _tn.get(_tn.minLength) + ': 5)'
+                error = _tn.get(_.empty_notification_input) + ' (' + _tn.get(_.minLength) + ': 5)'
             elif not db_recipient or recipient == 'admin' or recipient == 'anonymous':
-                error = _tn.get(_tn.recipientNotFound)
+                error = _tn.get(_.recipientNotFound)
             else:
                 db_author = DBDiscussionSession.query(User).filter_by(nickname=self.request.authenticated_userid).first()
                 if not db_author:
-                    error = _tn.get(_tn.notLoggedIn)
+                    error = _tn.get(_.notLoggedIn)
                 else:
                     db_notification = send_notification(db_author, db_recipient, title, text, main_page, transaction)
                     uid = db_notification.uid
@@ -1459,7 +1459,7 @@ class Dbas(object):
                     gravatar = get_profile_picture(db_recipient, 20)
 
         except KeyError:
-            error = _tn.get(_tn.internalKeyError)
+            error = _tn.get(_.internalKeyError)
 
         return_dict = {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
         return json.dumps(return_dict, True)
@@ -1505,7 +1505,7 @@ class Dbas(object):
             user_manager.update_last_action(transaction, nickname)
             new_statement = QueryHelper.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
             if new_statement == -1:
-                return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': 10)'
+                return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
             else:
                 url = UrlManager(main_page, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
                 return_dict['url'] = url
@@ -1517,7 +1517,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('set_new_start_statement', 'error', repr(e))
-            return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
+            return_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
 
         return json.dumps(return_dict, True)
 
@@ -1573,7 +1573,7 @@ class Dbas(object):
             return_dict['url'] = url
         except KeyError as e:
             logger('set_new_start_premise', 'error', repr(e))
-            return_dict['error'] = _tn.get(_tn.notInsertedErrorBecauseInternal)
+            return_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
 
         return json.dumps(return_dict, True)
 
@@ -1632,7 +1632,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('set_new_premises_for_argument', 'error', repr(e))
-            return_dict['error']  = _tn.get(_tn.notInsertedErrorBecauseInternal)
+            return_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
 
         logger('set_new_premises_for_argument', 'def', 'returning ' + str(return_dict))
         return json.dumps(return_dict, True)
@@ -1657,7 +1657,7 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
             return_dict['error'] = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn, transaction)
         except KeyError as e:
-            return_dict['error'] = _tn.get(_tn.noCorrections)
+            return_dict['error'] = _tn.get(_.noCorrections)
             logger('set_correction_of_statement', 'error', repr(e))
 
         return json.dumps(return_dict, True)
@@ -1685,7 +1685,7 @@ class Dbas(object):
             return_dict['error'] = ''
         except KeyError as e:
             logger('set_message_read', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalKeyError)
+            return_dict['error'] = _t.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -1712,10 +1712,10 @@ class Dbas(object):
             return_dict['total_in_messages'] = str(len(get_box_for(self.request.authenticated_userid, ui_locales, main_page, True)))
             return_dict['total_out_messages'] = str(len(get_box_for(self.request.authenticated_userid, ui_locales, main_page, False)))
             return_dict['error'] = ''
-            return_dict['success'] = _t.get(_t.messageDeleted)
+            return_dict['success'] = _t.get(_.messageDeleted)
         except KeyError as e:
             logger('set_message_read', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalKeyError)
+            return_dict['error'] = _t.get(_.internalKeyError)
             return_dict['success'] = ''
 
         return json.dumps(return_dict, True)
@@ -1742,7 +1742,7 @@ class Dbas(object):
                 return_dict['issue'] = issue_helper.get_issue_dict_for(db_issue, main_page, False, 0, ui_locales)
         except KeyError as e:
             logger('set_new_issue', 'error', repr(e))
-            error = _tn.get(_tn.notInsertedErrorBecauseInternal)
+            error = _tn.get(_.notInsertedErrorBecauseInternal)
 
         return_dict['error'] = error
         return json.dumps(return_dict, True)
@@ -1775,7 +1775,7 @@ class Dbas(object):
         except KeyError as e:
             logger('get_logfile_for_premisegroup', 'error', repr(e))
             _tn = Translator(ui_locales)
-            return_dict['error'] = _tn.get(_tn.noCorrections)
+            return_dict['error'] = _tn.get(_.noCorrections)
 
         return json.dumps(return_dict, True)
 
@@ -1824,11 +1824,11 @@ class Dbas(object):
         except KeyError as e:
             logger('get_shortened_url', 'error', repr(e))
             _tn = Translator(get_discussion_language(self.request))
-            return_dict['error'] = _tn.get(_tn.internalKeyError)
+            return_dict['error'] = _tn.get(_.internalKeyError)
         except ReadTimeout as e:
             logger('get_shortened_url', 'read timeout error', repr(e))
             _tn = Translator(get_discussion_language(self.request))
-            return_dict['error'] = _tn.get(_tn.internalError)
+            return_dict['error'] = _tn.get(_.internalError)
 
         return json.dumps(return_dict, True)
 
@@ -1862,13 +1862,13 @@ class Dbas(object):
         try:
             uid = self.request.params['uid']
             if not Validator.is_integer(uid):
-                return_dict['error'] = _t.get(_t.internalError)
+                return_dict['error'] = _t.get(_.internalError)
             else:
                 return_dict = OpinionHandler.get_infos_about_argument(uid, main_page)
                 return_dict['error'] = ''
         except KeyError as e:
             logger('get_infos_about_argument', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalKeyError)
+            return_dict['error'] = _t.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -1916,7 +1916,7 @@ class Dbas(object):
             return_dict['error'] = ''
         except KeyError as e:
             logger('get_users_with_same_opinion', 'error', repr(e))
-            return_dict['error'] = _tn.get(_tn.internalKeyError)
+            return_dict['error'] = _tn.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -1932,11 +1932,11 @@ class Dbas(object):
         try:
             nickname = self.request.params['nickname']
             return_dict = user_manager.get_public_information_data(nickname, ui_locales)
-            return_dict['error'] = '' if len(return_dict) != 0 else _tn.get(_tn.internalKeyError)
+            return_dict['error'] = '' if len(return_dict) != 0 else _tn.get(_.internalKeyError)
 
         except KeyError as e:
             logger('get_public_user_data', 'error', repr(e))
-            return_dict['error'] = _tn.get(_tn.internalKeyError)
+            return_dict['error'] = _tn.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -1951,7 +1951,7 @@ class Dbas(object):
         try:
             uid = self.request.matchdict['uid']
             if not Validator.is_integer(uid):
-                return_dict['error'] = _tn.get(_tn.internalKeyError)
+                return_dict['error'] = _tn.get(_.internalKeyError)
             else:
                 slug = get_slug_by_statement_uid(uid)
                 _um = UrlManager(main_page, slug)
@@ -1960,7 +1960,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('get_arguments_by_statement_uid', 'error', repr(e))
-            return_dict['error'] = _tn.get(_tn.internalKeyError)
+            return_dict['error'] = _tn.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -2042,7 +2042,7 @@ class Dbas(object):
             if not ui_locales:
                 ui_locales = 'en'
             _t = Translator(ui_locales)
-            return_dict['error'] = _t.get(_t.internalError)
+            return_dict['error'] = _t.get(_.internalError)
 
         return json.dumps(return_dict, True)
 
@@ -2066,7 +2066,7 @@ class Dbas(object):
             return_dict = dict()
             logger('send_news', 'error', repr(e))
             _tn = Translator(get_language(self.request, get_current_registry()))
-            return_dict['error'] = _tn.get(_tn.internalKeyError)
+            return_dict['error'] = _tn.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -2108,10 +2108,10 @@ class Dbas(object):
                 return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_public_nickname(value, nickname)
             else:
                 logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
-                return_dict = {'error': _tn.get(_tn.internalError)}
+                return_dict = {'error': _tn.get(_.internalError)}
 
         except KeyError as e:
-            return_dict = {'error': _tn.get(_tn.internalKeyError)}
+            return_dict = {'error': _tn.get(_.internalKeyError)}
             logger('fuzzy_search', 'error', repr(e))
 
         if for_api:
@@ -2155,32 +2155,33 @@ class Dbas(object):
         logger('flag_argument_or_statement', 'def', 'main: ' + str(self.request.params))
         ui_locales = get_discussion_language(self.request)
         _t = Translator(ui_locales)
-        return_dict = dict()
+        return_dict = {'error': _t.get(_.internalError)}
 
         try:
             uid = self.request.params['uid']
             reason = self.request.params['reason']
-            is_argument = True if str(self.request.params['is_argument']) == 'true' else False
+            argument_type = Argument if self.request.params['is_argument'] == 'true' else Statement
             nickname = self.request.authenticated_userid
+            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).all()
+            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
             if not Validator.is_integer(uid):
                 logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
-                return_dict['error'] = _t.get(_t.internalError)
-            elif not (len(db_reason) > 0 or reason == 'optimization'):
+            elif db_reason is None and reason != 'optimization':
                 logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
-                return_dict['error'] = _t.get(_t.internalError)
             else:
+                success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, argument_type,
+                                                                        transaction)
 
-                success, info, error = review_flag_helper.flag_argument(uid, reason, nickname, _t, is_argument, transaction)
-
-                return_dict['success'] = success
-                return_dict['info'] = info
-                return_dict['error'] = error
+                return_dict = {
+                    'success': _t.get(success),
+                    'info': _t.get(info),
+                    'error': _t.get(error)
+                }
         except KeyError as e:
             logger('flag_argument', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalKeyError)
+            return_dict['error'] = _t.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -2203,13 +2204,13 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
                 logger('review_delete_argument', 'def', 'invalid uid', error=True)
-                error = _t.get(_t.internalKeyError)
+                error = _t.get(_.internalKeyError)
             else:
                 error = review_main_helper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
                 send_request_for_recent_delete_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
-            error = _t.get(_t.internalKeyError)
+            error = _t.get(_.internalKeyError)
 
         return_dict['error'] = error
         return json.dumps(return_dict, True)
@@ -2233,13 +2234,13 @@ class Dbas(object):
             nickname = self.request.authenticated_userid
             if not Validator.is_integer(review_uid):
                 logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
-                error = _t.get(_t.internalKeyError)
+                error = _t.get(_.internalKeyError)
             else:
                 error = review_main_helper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction)
                 send_request_for_recent_edit_review_to_socketio(nickname, main_page)
         except KeyError as e:
             logger('review_delete_argument', 'error', repr(e))
-            error = _t.get(_t.internalKeyError)
+            error = _t.get(_.internalKeyError)
 
         return_dict['error'] = error
         return json.dumps(return_dict, True)
@@ -2265,7 +2266,7 @@ class Dbas(object):
 
             if not Validator.is_integer(review_uid):
                 logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
-                error = _t.get(_t.internalKeyError)
+                error = _t.get(_.internalKeyError)
             else:
                 error = review_main_helper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, transaction)
 
@@ -2274,7 +2275,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('review_optimization_argument', 'error', repr(e))
-            error = _t.get(_t.internalKeyError)
+            error = _t.get(_.internalKeyError)
 
         return_dict['error'] = error
         return json.dumps(return_dict, True)
@@ -2302,11 +2303,11 @@ class Dbas(object):
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:
-                return_dict['info'] = _t.get(_t.justLookDontTouch)
+                return_dict['info'] = _t.get(_.justLookDontTouch)
 
         except KeyError as e:
             logger('undo_review', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalKeyError)
+            return_dict['error'] = _t.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -2333,11 +2334,11 @@ class Dbas(object):
                 return_dict['success'] = success
                 return_dict['error'] = error
             else:
-                return_dict['info'] = _t.get(_t.justLookDontTouch)
+                return_dict['info'] = _t.get(_.justLookDontTouch)
 
         except KeyError as e:
             logger('undo_review', 'error', repr(e))
-            return_dict['error'] = _t.get(_t.internalKeyError)
+            return_dict['error'] = _t.get(_.internalKeyError)
 
         return json.dumps(return_dict, True)
 
@@ -2365,7 +2366,7 @@ class Dbas(object):
             is_locked = True
 
             if not Validator.is_integer(review_uid):
-                error = _t.get(_t.internalKeyError)
+                error = _t.get(_.internalKeyError)
             else:
                 if lock:
                     success, info, error, is_locked = review_queue_helper.lock_optimization_review(self.request.authenticated_userid, review_uid, _t, transaction)
@@ -2375,7 +2376,7 @@ class Dbas(object):
 
         except KeyError as e:
             logger('review_lock', 'error', repr(e))
-            error = _t.get(_t.internalKeyError)
+            error = _t.get(_.internalKeyError)
 
         return_dict['info'] = info
         return_dict['error'] = error
@@ -2405,13 +2406,13 @@ class Dbas(object):
             is_argument = True if self.request.params['is_argument'] == 'true' else False
 
             if not Validator.is_integer(uid):
-                error = _t.get(_t.internalKeyError)
+                error = _t.get(_.internalKeyError)
             else:
                 error = QueryHelper.revoke_content(uid, is_argument, self.request.authenticated_userid, _t, transaction)
 
         except KeyError as e:
             logger('review_lock', 'error', repr(e))
-            error = _t.get(_t.internalKeyError)
+            error = _t.get(_.internalKeyError)
 
         return_dict['info'] = info
         return_dict['error'] = error
