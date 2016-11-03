@@ -7,17 +7,18 @@ Common, pure functions used by the D-BAS.
 import hashlib
 import locale
 import time
+from collections import defaultdict
 from datetime import datetime
 from html import escape
 from urllib import parse
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
+from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
+    VoteArgument, VoteStatement, Group
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
-from sqlalchemy import and_
-from sqlalchemy import func
+from sqlalchemy import and_, func
 
 fallback_lang = 'en'
 
@@ -624,23 +625,22 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param lang: String
     :return: dict()
     """
-    speech = dict()
-    speech['is_user']            = is_user
-    speech['is_system']          = is_system
-    speech['is_status']          = is_status
-    speech['is_info']            = is_info
-    speech['is_flaggable']       = is_flaggable
-    speech['is_author']          = is_author
-    speech['id']                 = uid if len(str(uid)) > 0 else str(time.time())
-    # speech['url']                = url if len(str(url)) > 0 else 'None'
-    speech['url']                = url if len(str(url)) > 0 else 'None'
-    speech['message']            = message
-    speech['omit_url']           = omit_url
-    speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'
-    speech['data_argument_uid']  = str(argument_uid)
-    speech['data_statement_uid'] = str(statement_uid)
-    speech['data_is_supportive'] = str(is_supportive)
-    db_votecounts                = None
+    speech = {'is_user': is_user,
+              'is_system': is_system,
+              'is_status': is_status,
+              'is_info': is_info,
+              'is_flaggable': is_flaggable,
+              'is_author': is_author,
+              'id': uid if len(str(uid)) > 0 else str(time.time()),
+              'url': url if len(str(url)) > 0 else 'None',
+              'message': message,
+              'omit_url': omit_url,
+              'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
+              'data_argument_uid': str(argument_uid), 'data_statement_uid': str(statement_uid),
+              'data_is_supportive': str(is_supportive),
+              # 'url': url if len(str(url)) > 0 else 'None'
+              }
+    db_votecounts = None
 
     if is_supportive is None:
         is_supportive = False
@@ -652,25 +652,26 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
 
     if argument_uid:
-        db_votecounts = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                                            VoteArgument.is_up_vote == is_supportive,
-                                                                            VoteArgument.is_valid == True,
-                                                                            VoteArgument.author_uid != db_user.uid)).all()
-    elif statement_uid:
-        db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                                             VoteStatement.is_up_vote == is_supportive,
-                                                                             VoteStatement.is_valid == True,
-                                                                             VoteStatement.author_uid != db_user.uid)).all()
-    _t = Translator(lang)
-    votecounts = len(db_votecounts) if db_votecounts else 0
+        db_votecounts = DBDiscussionSession.query(VoteArgument). \
+            filter(and_(VoteArgument.argument_uid == argument_uid,
+                        VoteArgument.is_up_vote == is_supportive,
+                        VoteArgument.is_valid,
+                        VoteArgument.author_uid != db_user.uid)). \
+            all()
 
-    if votecounts == 0:
-        speech['votecounts_message'] = _t.get(_.voteCountTextFirst) + '.'
-    elif votecounts == 1:
-        speech['votecounts_message'] = _t.get(_.voteCountTextOneOther) + '.'
-    else:
-        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_.voteCountTextMore) + '.'
-    speech['votecounts'] = votecounts
+    elif statement_uid:
+        db_votecounts = DBDiscussionSession.query(VoteStatement). \
+            filter(and_(VoteStatement.statement_uid == statement_uid,
+                        VoteStatement.is_up_vote == is_supportive,
+                        VoteStatement.is_valid,
+                        VoteStatement.author_uid != db_user.uid)). \
+            all()
+    _t = Translator(lang)
+    speech['votecounts'] = len(db_votecounts) if db_votecounts else 0
+
+    votecount_keys = defaultdict(lambda: "{} {}.".format(speech['votecounts'], _t.get(_.voteCountTextMore)))
+    votecount_keys[0] = _t.get(_.voteCountTextFirst) + '.'
+    votecount_keys[1] = _t.get(_.voteCountTextOneOther) + '.'
 
     return speech
 
