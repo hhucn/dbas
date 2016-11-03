@@ -1864,7 +1864,7 @@ class Dbas(object):
             if not Validator.is_integer(uid):
                 return_dict['error'] = _t.get(_t.internalError)
             else:
-                return_dict = QueryHelper.get_infos_about_argument(uid, main_page)
+                return_dict = OpinionHandler.get_infos_about_argument(uid, main_page)
                 return_dict['error'] = ''
         except KeyError as e:
             logger('get_infos_about_argument', 'error', repr(e))

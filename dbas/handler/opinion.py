@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings, StatementSeenBy
 from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
-    get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion
+    get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion, get_lang_for_argument
 from dbas.logger import logger
 from dbas.strings.translator import Translator
 from dbas.strings.text_generator import TextGenerator
@@ -431,3 +431,44 @@ class OpinionHandler:
                 'public_profile_url': self.mainpage + '/user/' + name,
                 'avatar_url': get_profile_picture(db_user),
                 'vote_timestamp': sql_timestamp_pretty_print(timestamp, self.lang)}
+
+    @staticmethod
+    def get_infos_about_argument(uid, mainpage):
+        """
+        Returns several infos about the argument.
+
+        :param uid: Argument.uid
+        :param mainpage: url
+        :return: dict()
+        """
+        return_dict = dict()
+        lang = get_lang_for_argument(uid)
+        db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
+                                                                       VoteArgument.is_valid == True,
+                                                                       VoteStatement.is_up_vote == True)).all()
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        if not db_argument:
+            return return_dict
+
+        db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
+        return_dict['vote_count'] = str(len(db_votes))
+        return_dict['author'] = db_author.public_nickname
+        return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, lang)
+        text = get_text_for_argument_uid(uid)
+        return_dict['text'] = text[0:1].upper() + text[1:] + '.'
+
+        supporters = []
+        gravatars = dict()
+        public_page = dict()
+        for vote in db_votes:
+            db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+            name = db_user.get_global_nickname()
+            supporters.append(name)
+            gravatars[name] = get_profile_picture(db_user)
+            public_page[name] = mainpage + '/user/' + name
+
+        return_dict['supporter'] = supporters
+        return_dict['gravatars'] = gravatars
+        return_dict['public_page'] = public_page
+
+        return return_dict
