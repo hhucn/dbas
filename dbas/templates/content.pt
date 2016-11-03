@@ -8,7 +8,7 @@
                     <span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
                     <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>
                 </div>
-                <div class="col-md-2 center inner">
+                <div class="col-md-2 center inner" tal:condition="len(issues.all)>1">
                     <div class="dropdown">
                         <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
                             <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
