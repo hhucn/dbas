@@ -37,3 +37,13 @@ nosetests:
 	# cat nosetests_temp_output.log
 	# grep TOTAL nosetests_temp_output.log | awk '{ print "TOTAL: "$$4; }'
 	# rm nosetests_temp_output.log
+
+reload_dummy:
+	dropdb discussion
+	dropdb news
+	createdb -O dbas discussion
+	createdb -O dbas news
+	initialize_discussion_sql development.ini
+	initialize_news_sql development.ini
+	init_discussion_testvotes development.ini
+	init_review_tests development.ini
