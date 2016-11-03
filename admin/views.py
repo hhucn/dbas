@@ -5,16 +5,18 @@ Introducing an admin interface to enable easy database management.
 """
 
 import json
+
+import admin.lib as lib
 import dbas.helper.history as HistoryHelper
 import dbas.user_management as UserHandler
 import transaction
-import admin.lib as lib
 from cornice import Service
+from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.lib import get_language
 from dbas.logger import logger
-from dbas.views import Dbas, project_name
-from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.views import Dbas, project_name
 from pyramid.threadlocal import get_current_registry
 
 #
@@ -149,7 +151,7 @@ def main_update(request):
         return_dict['error'] = lib.update_row(table, uids, keys, values, nickname, _tn)
     except KeyError as e:
         logger('Admin', 'main_update error', repr(e))
-        return_dict['error'] = _tn.get(_tn.internalKeyError)
+        return_dict['error'] = _tn.get(_.internalKeyError)
 
     return json.dumps(return_dict, True)
 
@@ -170,7 +172,7 @@ def main_delete(request):
         return_dict['error'] = lib.delete_row(table, uids, nickname, _tn)
     except KeyError as e:
         logger('Admin', 'main_delete error', repr(e))
-        return_dict['error'] = _tn.get(_tn.internalKeyError)
+        return_dict['error'] = _tn.get(_.internalKeyError)
 
     return json.dumps(return_dict, True)
 
@@ -191,6 +193,6 @@ def main_add(request):
         return_dict['error'] = lib.add_row(table, new_data, nickname, _tn)
     except KeyError as e:
         logger('Admin', 'main_add error', repr(e))
-        return_dict['error'] = _tn.get(_tn.internalKeyError)
+        return_dict['error'] = _tn.get(_.internalKeyError)
 
     return json.dumps(return_dict, True)
