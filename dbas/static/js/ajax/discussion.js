@@ -120,7 +120,7 @@ function AjaxDiscussionHandler() {
 			$('#' + addTopicPopupErrorText).text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). '
 				 + _t(doNotHesitateToContact) + '. ');
 			$('#' + addTopicPopupContainer).show();
-			new Helper().delay(function(){
+			delay(function(){
 				$('#' + addTopicPopupContainer).hide();
 			}, 2500);
 		});
