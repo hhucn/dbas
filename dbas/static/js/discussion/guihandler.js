@@ -1000,6 +1000,30 @@ function GuiHandler() {
 	
 	/**
 	 *
+	 * @param users_array
+	 * @param gh
+	 * @param element
+	 * @param tbody
+	 * @returns {*|jQuery|HTMLElement}
+	 */
+	this.closePrepareTableForOpinonDialog = function(users_array, gh, element, tbody) {
+		var body = $('<div>');
+		var table = $('<table>')
+			.attr('class', 'table table-condensed table-hover center')
+			.attr('border', '0')
+			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
+		
+		if (Object.keys(users_array).length == 0)
+			body.append(gh.getNoDecisionsAlert());
+		else
+			body.append(element).append(table.append(tbody));
+		return body;
+	};
+	
+	/**
+	 *
+	 * @param users_array
+	 * @returns {Array}
 	 */
 	this.createUserRowsForOpinionDialog = function(users_array){
 		var left = '';
