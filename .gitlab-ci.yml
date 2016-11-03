@@ -1,10 +1,17 @@
-image: hhucn/python
+image: hhucn/dbas-build
 
 services:
   - hhucn/docker-dbas-postgres
 
 before_script:
   - pip install --quiet -U pip
+  - pip install --quiet -r requirements.txt
+  - python setup.py --quiet develop
+  - initialize_discussion_sql docker.ini > /dev/null 2>&1
+  - initialize_news_sql docker.ini > /dev/null 2>&1
+  - init_discussion_testvotes docker.ini > /dev/null 2>&1
+  - init_review_tests docker.ini > /dev/null 2>&1
+  - cp docker.ini development.ini
 
 flake8:
   stage: test
@@ -13,14 +20,12 @@ flake8:
     - flake8 .
   allow_failure: true
 
-test:
+unit-test:
   stage: test
   script:
-    - pip install --quiet -r requirements.txt
-    - python setup.py --quiet develop
-    - initialize_discussion_sql docker.ini > /dev/null 2>&1
-    - initialize_news_sql docker.ini > /dev/null 2>&1
-    - init_discussion_testvotes docker.ini > /dev/null 2>&1
-    - init_review_tests docker.ini > /dev/null 2>&1
-    - cp docker.ini development.ini
     - make nosetests
+
+function-test:
+  stage: test
+  script:
+    - python tests/splinterTests.py --no-input

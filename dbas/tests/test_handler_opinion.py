@@ -1,8 +1,8 @@
 import unittest
 
 from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig
 from dbas.handler.opinion import OpinionHandler
+from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -30,7 +30,7 @@ class OpinionHandlerTests(unittest.TestCase):
 
         # unknown argument id
         response_wrong_id = opinion.get_user_and_opinions_for_argument(argument_uids=[0, 0])
-        self.assertTrue('Internal Error' in response_wrong_id['title'])
+        self.assertIn('Internal Error', response_wrong_id['title'])
 
         # none id
         response_single_id = opinion.get_user_and_opinions_for_argument(argument_uids=1)
