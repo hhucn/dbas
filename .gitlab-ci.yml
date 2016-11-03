@@ -4,6 +4,7 @@ services:
   - hhucn/docker-dbas-postgres
 
 before_script:
+  - export PIP_CACHE_DIR="pip-cache"
   - pip install --quiet -U pip
   - pip install --quiet -r requirements.txt
   - python setup.py --quiet develop
