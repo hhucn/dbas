@@ -280,14 +280,14 @@ function Main () {
 				maincontainer.css('max-height', '');
 				sidebarwrapper.css('background-color', '')
 					.css('height', '');
-				helper.delay(function () {
+				delay(function () {
 					wrapper.width('');//width + sidebar.outerWidth());
 				}, 300);
 				helper.setLocalStorage(localStorageId, 'false');
 			} else {
 				wrapper.width(width - sidebar.outerWidth());
 				maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
-				helper.delay(function () {
+				delay(function () {
 					sidebar.toggle('slide');
 					hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
 						.css('margin-left', 'auto')
@@ -372,7 +372,7 @@ function Main () {
 	this.setKeyUpFunctions = function (guiHandler, ajaxHandler) {
 		// gui for the fuzzy search (statements)
 		$('#' + addStatementContainerMainInputId).keyup(function () {
-			new Helper().delay(function () {
+			delay(function () {
 				var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
 				if ($('#' + discussionBubbleSpaceId).find('p:last-child').text().indexOf(_t(initialPositionInterest)) != -1) {
 					// here we have our start statement
@@ -386,7 +386,7 @@ function Main () {
 		
 		// gui for the fuzzy search (premises)
 		$('#' + addPremiseContainerMainInputId).keyup(function () {
-			new Helper().delay(function () {
+			delay(function () {
 				var escapedText = new Helper().escapeHtml($('#' + addPremiseContainerMainInputId).val());
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 			}, 200);
