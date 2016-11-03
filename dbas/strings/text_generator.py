@@ -279,7 +279,7 @@ class TextGenerator(object):
         ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgument) + ' '
         ret_dict['rebut_text'] += start_argument if is_dont_know else start_position
         ret_dict['rebut_text'] += _t.get(_.rejecting if is_dont_know else _.accepting)
-        # ret_dict['rebut_text'] += _t.get(_.accepting if is_attacking else _t.rejecting)
+        # ret_dict['rebut_text'] += _t.get(_.accepting if is_attacking else _.rejecting)
         ret_dict['rebut_text'] += ' ' + (first_conclusion if first_conclusion else conclusion) + end_tag + '.'
         # + (_t.get(_.doesNotHold) if is_attacking else _t.get(_.hold)) + '.'
 
@@ -540,17 +540,17 @@ class TextGenerator(object):
             confrontation_text = _t.get(_.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(
                 _.otherParticipantsDontHaveOpinion)
             confrontation_text += ' ' + premise + ', '
-            tmp = _t.get(_.strongerStatementForAccepting1 if user_is_attacking else _t.strongerStatementForRecjecting1)
+            tmp = _t.get(_.strongerStatementForAccepting1 if user_is_attacking else _.strongerStatementForRecjecting1)
             tmp += start_argument
-            tmp += _t.get(_.strongerStatementForAccepting2 if user_is_attacking else _t.strongerStatementForRecjecting2)
+            tmp += _t.get(_.strongerStatementForAccepting2 if user_is_attacking else _.strongerStatementForRecjecting2)
             if (_t.get(
-                    _.strongerStatementForAccepting3 if user_is_attacking else _t.strongerStatementForRecjecting3)) == '':
+                    _.strongerStatementForAccepting3 if user_is_attacking else _.strongerStatementForRecjecting3)) == '':
                 tmp += ' '
                 conclusion = conclusion[len(start_argument):]
             else:
                 tmp += end_tag + ' '
                 tmp += _t.get(
-                    _.strongerStatementForAccepting3 if user_is_attacking else _t.strongerStatementForRecjecting3) + ' '
+                    _.strongerStatementForAccepting3 if user_is_attacking else _.strongerStatementForRecjecting3) + ' '
             confrontation_text += tmp
             confrontation_text += conclusion + '.' + ' '
             confrontation_text += _t.get(_.theySay)
