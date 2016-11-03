@@ -13,7 +13,6 @@ from urllib import parse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
-from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
@@ -118,24 +117,22 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    return_array = []
-    if include_disabled:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
-    else:
-        db_arguments = get_not_disabled_arguments_as_query().filter_by(conclusion_uid=statement_uid).all()
-    if db_arguments:
-        return_array = db_arguments
 
-    if include_disabled:
-        db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid).all()
-    else:
-        db_premises = get_not_disabled_premises_as_query().filter_by(statement_uid=statement_uid).all()
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(
+        is_disabled=include_disabled,
+        conclusion_uid=statement_uid
+    ).all()
 
-    for premise in db_premises:
-        if include_disabled:
-            db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
-        else:
-            db_arguments = get_not_disabled_arguments_as_query().filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
+    premises = DBDiscussionSession.query(Premise).filter_by(
+        is_disabled=include_disabled,
+        statement_uid=statement_uid
+    ).all()
+
+    return_array = db_arguments if db_arguments else None
+
+    for premise in premises:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=include_disabled,
+                                                                     premisesgroup_uid=premise.premisesgroup_uid).all()
 
         if db_arguments:
             return_array = return_array + db_arguments
