@@ -14,7 +14,7 @@ from dbas.database.discussion_model import Argument, Statement, User, TextVersio
 from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, \
-    get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid,\
+    get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid, \
     is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -40,13 +40,14 @@ class QueryHelper:
         :return: dict()
         """
         return_dict = dict()
-        lang = get_lang_for_argument(uid)
+
         db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
                                                                        VoteArgument.is_valid == True,
                                                                        VoteStatement.is_up_vote == True)).all()
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(uid)
         if not db_argument:
             return return_dict
+        lang = db_argument.lang
 
         db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
         return_dict['vote_count']       = str(len(db_votes))
@@ -353,7 +354,10 @@ class QueryHelper:
         """
         logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
         return_dict = {}
-        lang = get_lang_for_argument(arg_uid)
+        db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
+        if not db_argument:
+            return
+        lang = db_argument.lang
         _t = Translator(lang)
         _rh = RelationHelper(arg_uid, lang)
 

@@ -13,7 +13,6 @@ from urllib import parse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
-from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
@@ -118,24 +117,22 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    return_array = []
-    if include_disabled:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
-    else:
-        db_arguments = get_not_disabled_arguments_as_query().filter_by(conclusion_uid=statement_uid).all()
-    if db_arguments:
-        return_array = db_arguments
 
-    if include_disabled:
-        db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid).all()
-    else:
-        db_premises = get_not_disabled_premises_as_query().filter_by(statement_uid=statement_uid).all()
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(
+        is_disabled=include_disabled,
+        conclusion_uid=statement_uid
+    ).all()
 
-    for premise in db_premises:
-        if include_disabled:
-            db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
-        else:
-            db_arguments = get_not_disabled_arguments_as_query().filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
+    premises = DBDiscussionSession.query(Premise).filter_by(
+        is_disabled=include_disabled,
+        statement_uid=statement_uid
+    ).all()
+
+    return_array = db_arguments if db_arguments else []
+
+    for premise in premises:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=include_disabled,
+                                                                     premisesgroup_uid=premise.premisesgroup_uid).all()
 
         if db_arguments:
             return_array = return_array + db_arguments
@@ -160,11 +157,12 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     :param minimize_on_undercut: Boolean
     :return: String
     """
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-    lang = get_lang_for_argument(uid)
-    # catch error
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None
+
+    lang = db_argument.lang
+    # catch error
 
     _t = Translator(lang)
 
@@ -256,7 +254,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     tag_premise = ('<' + TextGenerator.tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
     tag_conclusion = ('<' + TextGenerator.tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_end = ('</' + TextGenerator.tag_type + '>') if with_html_tag else ''
-    lang = get_lang_for_argument(arg_array[0])
+    lang = DBDiscussionSession.query_property(Argument).get(arg_array[0]).lang
     _t = Translator(lang)
 
     if len(arg_array) == 1:
@@ -309,7 +307,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
-    lang = get_lang_for_argument(uid)
+    lang = DBDiscussionSession.query(Argument).get(uid).lang
 
     if lang != 'de':
         # conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
@@ -382,7 +380,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     pgroups = []
     supportive = []
     arg_array = arg_array[::-1]
-    lang = get_lang_for_argument(arg_array[0])
+    lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     for uid in arg_array:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
         text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
@@ -441,7 +439,7 @@ def get_text_for_premisesgroup_uid(uid):
     uids = []
     texts = []
     if len(db_premises) > 0:
-        lang = get_lang_for_statement(db_premises[0].statements.uid)
+        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
     else:
         return '', uids
 
@@ -548,53 +546,6 @@ def get_all_attacking_arg_uids_from_history(history):
         return uids
     except AttributeError:
         return []
-
-
-# TODO reduce following three functions to one
-def get_lang_for_argument(uid):
-    """
-    Return ui_locales code, if the argument exists, otherwise 'en' as fallback
-
-    :param uid: id of the argument
-    :return: ui_locales code for the discussion with the given argument
-    """
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-    if not db_argument:
-        return fallback_lang
-
-    return get_lang_for_issue(db_argument.issue_uid)
-
-
-def get_lang_for_statement(uid):
-    """
-    Return ui_locales code, if the statement exists, otherwise 'en' as fallback
-
-    :param uid: id of the statement
-    :return: ui_locales code for the discussion with the given statement
-    """
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
-    if not db_statement:
-        return fallback_lang
-
-    return get_lang_for_issue(db_statement.issue_uid)
-
-
-def get_lang_for_issue(uid):
-    """
-    Return ui_locales code, if the issue exists, otherwise 'en' as fallback
-
-    :param uid: id of the issue
-    :return: ui_locales code for the discussion with the given issue
-    """
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
-    if not db_issue:
-        return fallback_lang
-
-    db_lang = DBDiscussionSession.query(Language).filter_by(uid=db_issue.lang_uid).first()
-    if not db_lang:
-        return fallback_lang
-
-    return db_lang.ui_locales
 
 
 def get_public_nickname_based_on_settings(user):
