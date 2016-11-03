@@ -1,4 +1,4 @@
-image: hhucn/python
+image: hhucn/dbas-build
 
 services:
   - hhucn/docker-dbas-postgres
