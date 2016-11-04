@@ -11,7 +11,7 @@ function Main () {
 	 * @param guiHandler
 	 * @param ajaxHandler
 	 */
-	this.setClickFunctions = function (guiHandler, ajaxHandler) {
+	this.setClickFunctions = function (guiHandler, popupHandler, ajaxHandler) {
 		$('.icon-add-premise').each(function () {
 			$(this).click(function () {
 				guiHandler.appendAddPremiseRow($(this));
@@ -73,16 +73,16 @@ function Main () {
 		
 		// close popups
 		$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId() {
-			guiHandler.hideAndClearEditStatementsPopup();
+			popupHandler.hideAndClearEditStatementsPopup();
 		});
 		$('#' + popupEditStatementCloseButtonId).click(function popupEditStatementCloseButtonId() {
-			guiHandler.hideAndClearEditStatementsPopup();
+			popupHandler.hideAndClearEditStatementsPopup();
 		});
 		$('#' + popupUrlSharingCloseButtonXId).click(function popupUrlSharingCloseButtonXId() {
-			guiHandler.hideAndClearUrlSharingPopup();
+			popupHandler.hideAndClearUrlSharingPopup();
 		});
 		$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId() {
-			guiHandler.hideAndClearUrlSharingPopup();
+			popupHandler.hideAndClearUrlSharingPopup();
 		});
 		
 		$('#' + popupEditStatementSubmitButtonId).click(function popupEditStatementSubmitButton() {
@@ -95,7 +95,7 @@ function Main () {
 		
 		// share url for argument blogging
 		$('#' + shareUrlId).click(function shareurlClick() {
-			guiHandler.showUrlSharingPopup();
+			popupHandler.showUrlSharingPopup();
 		});
 		
 		/**
@@ -187,7 +187,7 @@ function Main () {
 		
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			guiHandler.showFlagArgumentPopup(uid);
+			popupHandler.showFlagArgumentPopup(uid);
 		});
 		
 		trianglel.find('.triangle-reference').click(function () {
@@ -197,14 +197,14 @@ function Main () {
 		
 		trianglel.find('.triangle-trash').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			guiHandler.showDeleteContentPopup(uid, true);
+			popupHandler.showDeleteContentPopup(uid, true);
 		});
 		
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
 			$('#popup-flag-statement-text').text($(this).parent().find('label').text());
-			guiHandler.showFlagStatementPopup(uid, false);
+			popupHandler.showFlagStatementPopup(uid, false);
 		});
 		
 		list.find('.item-edit').click(function () {
@@ -212,12 +212,12 @@ function Main () {
 			$(this).parent().find('label:nth-child(even)').each(function(){
 				uids.push($(this).attr('id'))
 			});
-			guiHandler.showEditStatementsPopup(uids);
+			popupHandler.showEditStatementsPopup(uids);
 		});
 		
 		list.find('.item-trash').click(function () {
 			var uid = $(this).parent().find('label').attr('id');
-			guiHandler.showDeleteContentPopup(uid, false);
+			popupHandler.showDeleteContentPopup(uid, false);
 		});
 		
 		list.find('.item-reference').click(function () {
@@ -230,7 +230,7 @@ function Main () {
 		
 		// adding issues
 		$('#' + addTopicButtonId).click(function () {
-			guiHandler.showAddTopicPopup(new InteractionHandler().callbackIfDoneForSendNewIssue);
+			popupHandler.showAddTopicPopup(new InteractionHandler().callbackIfDoneForSendNewIssue);
 		});
 		
 		// user info click
@@ -634,6 +634,7 @@ $(document).ready(function mainDocumentReady() {
 	var guiHandler = new GuiHandler();
 	var ajaxHandler = new AjaxDiscussionHandler();
 	var interactionHandler = new InteractionHandler();
+	var popupHandler = new PopupHandler();
 	var main = new Main();
 	var tmp;
 	var discussionContainer = $('#' + discussionContainerId);
@@ -643,7 +644,7 @@ $(document).ready(function mainDocumentReady() {
 	main.setSidebarStyle(discussionContainer, tacked_sidebar);
 	main.setSidebarClicks(discussionContainer, tacked_sidebar);
 	// sidebar of the graphview is set in GuiHandler:setDisplayStyleAsGraphView()
-	main.setClickFunctions(guiHandler, ajaxHandler);
+	main.setClickFunctions(guiHandler, popupHandler, ajaxHandler);
 	main.setKeyUpFunctions(guiHandler, ajaxHandler);
 	main.setWindowOptions();
 	main.setGuiOptions();

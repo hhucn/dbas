@@ -101,6 +101,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/popups.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/lib.js')}"></script>
 
