@@ -59,4 +59,4 @@ def get_doj_dump(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Export', 'main', 'def')
 
-    return json.dumps(get_map(), True)
+    return get_map()
