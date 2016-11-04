@@ -210,11 +210,11 @@ $(document).ready(function () {
 	gui.setAddClickEvent();
 	
 	// gui modification for the caution row
-	if (!helper.isCookieSet('hide-admin-caution-warning')) {
+	if (!isCookieSet('hide-admin-caution-warning')) {
 		$('#close-warning').fadeIn();
 		$('#close-warning-btn').click(function(){
 			$('#close-warning').fadeOut();
-			helper.setCookieForDays('hide-admin-caution-warning', 7, 'true')
+			setCookieForDays('hide-admin-caution-warning', 7, 'true')
 		});
 	}
 	
