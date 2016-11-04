@@ -95,7 +95,6 @@
 		</div>
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/ajaxhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
 
