@@ -36,7 +36,7 @@ class LibTest(unittest.TestCase):
         self.assertTrue(len(ret_dict['vote_statement']) > 0)
 
     def test_get_minimal_graph_export(self):
-        ret_dict = get_minimal_graph_export()
+        ret_dict = get_minimal_graph_export(1)
         self.assertTrue('nodes' in ret_dict)
         self.assertTrue('inferences' in ret_dict)
         self.assertTrue('undercuts' in ret_dict)
