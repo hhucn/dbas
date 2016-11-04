@@ -260,7 +260,7 @@ function Main () {
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
 	this.setSidebarClicks = function (maincontainer, localStorageId) {
-		var helper = new Helper();
+		var gui = new GuiHandler();
 		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
 		var wrapper = maincontainer.find('.' + contentWrapperClass);
 		var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
@@ -283,7 +283,7 @@ function Main () {
 				delay(function () {
 					wrapper.width('');//width + sidebar.outerWidth());
 				}, 300);
-				helper.setLocalStorage(localStorageId, 'false');
+				setLocalStorage(localStorageId, 'false');
 			} else {
 				wrapper.width(width - sidebar.outerWidth());
 				maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
@@ -301,10 +301,10 @@ function Main () {
 		
 		// action for tacking the sidebar
 		tackwrapper.click(function () {
-			var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
+			var shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
-				helper.rotateElement(tack, '0');
-				helper.setLocalStorage(localStorageId, 'false');
+				gui.rotateElement(tack, '0');
+				setLocalStorage(localStorageId, 'false');
 				
 				tack.data('title', _t_discussion(pinNavigation));
 				
@@ -313,8 +313,8 @@ function Main () {
 					hamburger.click();
 				}
 			} else {
-				helper.rotateElement(tack, '90');
-				helper.setLocalStorage(localStorageId, 'true');
+				gui.rotateElement(tack, '90');
+				setLocalStorage(localStorageId, 'true');
 				tack.data('title', _t_discussion(unpinNavigation));
 			}
 		});
@@ -328,20 +328,21 @@ function Main () {
 	 */
 	this.setSidebarStyle = function (maincontainer, localStorageId) {
 		// read local storage for pinning the bar / set title
-		var shouldShowSidebar = new Helper().getLocalStorage(localStorageId) == 'true';
+		var shouldShowSidebar = new getLocalStorage(localStorageId) == 'true';
 		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
 		var wrapper = maincontainer.find('.' + contentWrapperClass);
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
 		var tack = sidebarwrapper.find('.' + sidebarTackClass);
 		var sidebar = sidebarwrapper.find('.' + sidebarClass);
-		var helper = new Helper();
+		var gui = new GuiHandler();
+		
 		if (shouldShowSidebar) {
 			var width = wrapper.width();
 			var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 			
-			helper.rotateElement(tack, '90');
-			helper.setAnimationSpeed(wrapper, '0.0');
-			helper.setAnimationSpeed(hamburger, '0.0');
+			gui.rotateElement(tack, '90');
+			gui.setAnimationSpeed(wrapper, '0.0');
+			gui.setAnimationSpeed(hamburger, '0.0');
 			
 			hamburger.addClass('open');
 			
@@ -355,8 +356,8 @@ function Main () {
 				.css('height', maincontainer.outerHeight() + 'px');
 			tackwrapper.fadeIn();
 			
-			helper.setAnimationSpeed(wrapper, '0.5');
-			helper.setAnimationSpeed(hamburger, '0.5');
+			gui.setAnimationSpeed(wrapper, '0.5');
+			gui.setAnimationSpeed(hamburger, '0.5');
 			
 			tackwrapper.data('title', _t_discussion(unpinNavigation));
 		} else {
@@ -373,7 +374,7 @@ function Main () {
 		// gui for the fuzzy search (statements)
 		$('#' + addStatementContainerMainInputId).keyup(function () {
 			delay(function () {
-				var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
+				var escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
 				if ($('#' + discussionBubbleSpaceId).find('p:last-child').text().indexOf(_t(initialPositionInterest)) != -1) {
 					// here we have our start statement
 					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
@@ -387,7 +388,7 @@ function Main () {
 		// gui for the fuzzy search (premises)
 		$('#' + addPremiseContainerMainInputId).keyup(function () {
 			delay(function () {
-				var escapedText = new Helper().escapeHtml($('#' + addPremiseContainerMainInputId).val());
+				var escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 			}, 200);
 		});

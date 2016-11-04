@@ -137,7 +137,7 @@ function AjaxDiscussionHandler() {
 			method: 'GET',
 			data: {
 				uids: JSON.stringify(statements_uids),
-				issue: new Helper().getCurrentIssueId()
+				issue: getCurrentIssueId()
 			},
 			dataType: 'json',
 			async: true,
@@ -193,7 +193,7 @@ function AjaxDiscussionHandler() {
 			method: 'GET',
 			dataType: 'json',
 			data: {
-				url: encoded_url, issue: new Helper().getCurrentIssueId()
+				url: encoded_url, issue: getCurrentIssueId()
 			},
 			async: true,
 			headers: {
@@ -325,7 +325,7 @@ function AjaxDiscussionHandler() {
 			url: 'ajax_fuzzy_search',
 			method: 'GET',
 			dataType: 'json',
-			data: { value: value, type:type, extra: extra, issue: new Helper().getCurrentIssueId() },
+			data: { value: value, type:type, extra: extra, issue: getCurrentIssueId() },
 			async: true,
 			global: false,
 			headers: {
