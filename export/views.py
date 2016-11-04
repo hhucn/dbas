@@ -12,7 +12,7 @@ from pyramid.threadlocal import get_current_registry
 
 from dbas.lib import get_language
 from dbas.logger import logger
-from export.lib import get_dump, get_map
+from export.lib import get_dump, get_minimal_graph_export
 
 #
 # CORS configuration
@@ -59,4 +59,4 @@ def get_doj_dump(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Export', 'main', 'def')
 
-    return get_map()
+    return json.dumps(get_minimal_graph_export(), True)
