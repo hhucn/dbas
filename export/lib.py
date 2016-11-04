@@ -173,7 +173,7 @@ def __get_all_votestatements(statement_uid_set):
     return vote_dict
 
 
-def get_map():
+def get_minimal_graph_export():
     """
     Returns type of tables column
 
