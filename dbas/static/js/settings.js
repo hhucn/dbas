@@ -337,9 +337,6 @@ function StatisticsHandler(){
 
 $(function () {
 	'use strict';
-	if (window.location.href != mainpage + 'settings'){
-		return;
-	}
 	var settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
 
 	$('#' + requestHistoryButtonId).click(function requestTrack() {
@@ -429,7 +426,7 @@ $(function () {
 	 * main function
 	 */
 	$(document).ready(function settingsDocumentReady() {
-		$.each($('#current-lang-images').find('img'), function(){ $(this).hide()});
-		$('#indicator-' + $('#current-lang-images').data('lang')).show();
+		var img = $('#current-lang-images');
+		$('#indicator-' + img.data('lang')).show();
 	});
 });
