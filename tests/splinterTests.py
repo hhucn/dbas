@@ -1438,7 +1438,7 @@ if __name__ == "__main__":
     browser_shorts['f'] = 'firefox'
     browser_shorts['p'] = 'phantomjs'
 
-    if sys.argv[1] == '--no-input':
+    if len(sys.argv) > 1 and sys.argv[1] == '--no-input':
         input_browser = browser_shorts['default']
         input_list = 'a'
     else:
