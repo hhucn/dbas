@@ -31,7 +31,7 @@ dump = Service(name='export_dump',
                description='Database Dump')
 
 doj = Service(name='export_doj',
-              path='/doj',
+              path='/doj*issue',
               description='Export for DoJ')
 
 
@@ -58,5 +58,8 @@ def get_doj_dump(request):
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Export', 'main', 'def')
+    logger('Export', 'main', str(request.matchdict))
+    logger('Export', 'main', str(request.params))
+    issue = request.matchdict['issue']
 
-    return json.dumps(get_minimal_graph_export(), True)
+    return json.dumps(get_minimal_graph_export(issue), True)
