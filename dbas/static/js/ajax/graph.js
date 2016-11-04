@@ -56,7 +56,7 @@ function AjaxGraphHandler(){
 			url: url,
 			type: 'GET',
 			dataType: 'json',
-			data: {issue: new Helper().getCurrentIssueId()}
+			data: {issue: getCurrentIssueId()}
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
 		}).fail(function () {
