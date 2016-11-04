@@ -59,19 +59,6 @@ function goBackToTop() {
 }
 
 /**
- * Changes the navbar on background scrolling events
- */
-function changeBackgroundOnScroll(){
-	$(window).scroll(function () {
-		if (jQuery(this).scrollTop() > 10) {
-			$('#custom-bootstrap-menu').removeClass('navbar-transparent');
-		} else {
-			$('#custom-bootstrap-menu').addClass('navbar-transparent');
-		}
-	});
-}
-
-/**
  * Displays dialog
  * @param titleText
  * @param bodyText
@@ -117,7 +104,7 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
  */
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
 	// display dialog only if the cookie was not set yet
-	if (new Helper().isCookieSet(WARNING_CHANGE_DISCUSSION_POPUP)){
+	if (isCookieSet(WARNING_CHANGE_DISCUSSION_POPUP)){
 		window.location.href = functionForAccept;
 	} else {
 		$('#' + popupConfirmChecbkoxDialogId).modal('show');
@@ -128,7 +115,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 			// maybe set a cookie
 			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7, true);
+				setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7, true);
 			}
 
 			if (isRestartingDiscussion) {
@@ -148,7 +135,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  *
  */
 function displayBubbleInformationDialog(){
-	if (!new Helper().isCookieSet(BUBBLE_INFOS)){
+	if (!isCookieSet(BUBBLE_INFOS)){
 		var img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' .modal-dialog').attr('style', 'width: ' + ($(document).width() > 992? '430' : '200') + 'px;');
@@ -156,7 +143,7 @@ function displayBubbleInformationDialog(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(img);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			new Helper().setCookieForDays(BUBBLE_INFOS, 30, true);
+			setCookieForDays(BUBBLE_INFOS, 30, true);
 		}).removeClass('btn-success');
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 	}
@@ -469,7 +456,7 @@ function setGlobalErrorHandler(heading, body){
 	});
 	$('#' + requestFailedContainerHeading).html(heading);
 	$('#' + requestFailedContainerMessage).html(body);
-	new Helper().delay(function(){
+	delay(function(){
 		$('#' + requestFailedContainer).fadeOut();
 	}, 5000);
 }
@@ -486,7 +473,7 @@ function setGlobalSuccessHandler(heading, body){
 	});
 	$('#' + requestSuccessContainerHeading).html(heading);
 	$('#' + requestSuccessContainerMessage).html(body);
-	new Helper().delay(function(){
+	delay(function(){
 		$('#' + requestSuccessContainer).fadeOut();
 	}, 5000);
 }
@@ -503,7 +490,7 @@ function setGlobalInfoHandler(heading, body){
 	});
 	$('#' + requestInfoContainerHeading).html(heading);
 	$('#' + requestInfoContainerMessage).html(body);
-	new Helper().delay(function(){
+	delay(function(){
 		$('#' + requestInfoContainer).fadeOut();
 	}, 5000);
 }
@@ -665,7 +652,7 @@ $(document).ready(function () {
 
 	// session expired popup
 	if ($('#' + sessionExpiredContainer).length == 1)
-		new Helper().delay(function(){
+		delay(function(){
 			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
 
