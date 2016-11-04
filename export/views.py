@@ -58,8 +58,7 @@ def get_doj_dump(request):
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Export', 'main', 'def')
-    logger('Export', 'main', str(request.matchdict))
-    logger('Export', 'main', str(request.params))
-    issue = request.matchdict['issue']
+    m = request.matchdict
+    issue = m['issue'][0] if 'issue' in m and len(m['issue']) > 0 else None
 
     return json.dumps(get_minimal_graph_export(issue), True)
