@@ -6,9 +6,12 @@
 
 
 function Main () {
+	
 	/**
 	 * Sets all click functions
+	 *
 	 * @param guiHandler
+	 * @param popupHandler
 	 * @param ajaxHandler
 	 */
 	this.setClickFunctions = function (guiHandler, popupHandler, ajaxHandler) {
