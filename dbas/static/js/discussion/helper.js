@@ -5,6 +5,7 @@
 
 /**
  * Insert a <br>-tag after the given maxTextWidth or char
+ *
  * @param text string
  * @param maxTextWidth int
  * @param charr char
@@ -25,6 +26,7 @@ function cutTextOnChar (text, maxTextWidth, charr) {
 /**
  * Use the browser's built-in functionality to quickly and safely escape the string
  * Based on http://shebang.brandonmintern.com/foolproof-html-escaping-in-javascript/
+ *
  * @param text to escape
  * @returns {*} escaped string
  */
@@ -36,6 +38,7 @@ function escapeHtml (text) {
 
 /**
  * Returns the uid of current issue
+ *
  * @returns {number}
  */
 function getCurrentIssueId (){
@@ -44,6 +47,7 @@ function getCurrentIssueId (){
 
 /**
  * Sets Cookie with given name for given days
+ *
  * @param cookie_name string
  * @param days int
  * @param content value
@@ -59,8 +63,9 @@ function setCookieForDays (cookie_name, days, content){
 }
 
 /**
+ * Returns true if the cookie with given name is set.
  *
- * @param cookie_name
+ * @param cookie_name string
  * @returns {boolean}
  */
 function isCookieSet (cookie_name){
@@ -75,7 +80,8 @@ function isCookieSet (cookie_name){
 }
 
 /**
- * Opens a new tab with the contact form. Given params should containt name and content
+ * Opens a new tab with the contact form. Given params should contain name and content
+ *
  * @param params dictionary with at least {'name': ?, 'content': ?}
  */
 function redirectInNewTabForContact (params){
@@ -92,6 +98,7 @@ function redirectInNewTabForContact (params){
 }
 	
 /**
+ * Writes key-value-pair into local storage and returns boolean
  *
  * @param key
  * @param value
@@ -108,6 +115,7 @@ function setLocalStorage (key, value){
 }
 
 /**
+ * Reads the entry of local storage by key
  *
  * @param key
  * @returns {undefined}
@@ -122,18 +130,17 @@ function getLocalStorage (key){
 }
 	
 /**
+ * Sets an anchor into the location
  *
- * @param anchor
+ * @param anchor string
  */
 function setAnchor (anchor){
 	location.hash = anchor;
-	console.log('Set Anchor: ' + anchor);
 }
 
 /**
- *
+ * Clears all anchors in the location
  */
 function clearAnchor (){
 	location.hash = '';
-	console.log('Cleared Anchor');
 }
