@@ -10,6 +10,16 @@ function DiscussionGraph() {
     var isStatementVisible = false;
     var isSupportVisible = false;
     var isAttackVisible = false;
+    var grey = '#424242';
+    var yellow = '#FFC107';
+    var red = '#F44336';
+    var green = '#64DD17';
+    var blue = '#3D5AFE';
+    var black = '#000000';
+    var dark_grey = '#616161';
+    var dark_red = '#D32F2F';
+    var dark_green = '#689F38';
+    var dark_blue = '#1976D2';
 
     /**
      * Displays a graph of current discussion
@@ -141,6 +151,7 @@ function DiscussionGraph() {
 
         // edge
         var edges = createEdgeDict(jsonData);
+        setNodeColorsForData(jsonData);
         // create arrays of links, nodes and move layout forward one step
         force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
         var edgesTypeArrow = createArrowDict(edges),
@@ -271,7 +282,17 @@ function DiscussionGraph() {
             force.size([container.width(), container.outerHeight()]).resume();
         }
     }
-
+    
+    /**
+     * Sets the color in the json Data
+     * @param jsonData: dict with data for nodes and edges
+     */
+    function setNodeColorsForData(jsonData){
+        jsonData.nodes.forEach(function(e) {
+            e.color = e.type === 'position' ? blue : e.type === 'statement' ? yellow : black;
+        });
+    }
+    
     /**
      * Create dictionary for edges.
      *
@@ -285,7 +306,8 @@ function DiscussionGraph() {
             var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
                 targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
             // add edge, color, type, size and id to array
-            edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size, id: e.id});
+            var color = e.is_attacking === 'none'? grey : e.is_attacking ? green : red;
+            edges.push({source: sourceNode, target: targetNode, color: color, edge_type: e.edge_type, size: e.size, id: e.id});
         });
         return edges;
     }
@@ -880,10 +902,10 @@ function DiscussionGraph() {
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function(d){
             var circleUid = selectUid(circleId);
-            if(isSupportVisible && selectUid(d.target.id) === circleUid && d.color === '#64DD17'){
+            if(isSupportVisible && selectUid(d.target.id) === circleUid && d.color === green){
                 edgesCircleId.push(d);
             }
-            else if(isAttackVisible && selectUid(d.target.id) === circleUid && d.color === '#F44336'){
+            else if(isAttackVisible && selectUid(d.target.id) === circleUid && d.color === 'red'){
                 edgesCircleId.push(d);
             }
             else if((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid)
