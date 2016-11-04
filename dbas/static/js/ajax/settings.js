@@ -43,6 +43,7 @@ function AjaxSettingsHandler(){
 	};
 
 	/**
+	 * Ajax request for setting a setting
 	 *
 	 * @param toggle_element
 	 * @param service
@@ -65,6 +66,7 @@ function AjaxSettingsHandler(){
 	};
 
 	/**
+	 * Ajax request for the change of the notification language
 	 *
 	 * @param ui_locales
 	 */
@@ -81,13 +83,16 @@ function AjaxSettingsHandler(){
 			var parsedData = $.parseJSON(data);
 
 			if (parsedData.error.length == 0){
+				var lang_image = $('#current-lang-images');
 				$('#' + settingsSuccessDialog).fadeIn();
 				delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
-				$.each($('#settings-language-dropdown').find('li'), function(){ $(this).removeClass('active');});
-				$.each($('#current-lang-images').find('img'), function(){ $(this).hide()});
+				$.each($('#settings-language-dropdown').find('li'), function(){
+					$(this).removeClass('active');
+				});
+				$.each(lang_image.find('img'), function(){ $(this).hide()});
 				$('#link-settings-' + parsedData.ui_locales).addClass('active');
 				$('#indicator-' + parsedData.ui_locales).show();
-				$('#current-lang-images span').eq(0).text(parsedData.current_lang);
+				lang_image.find('span').eq(0).text(parsedData.current_lang);
 			} else {
 				$('#' + settingsAlertDialog).fadeIn();
 				delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
@@ -99,7 +104,7 @@ function AjaxSettingsHandler(){
 	};
 
 	/**
-	 *
+	 * Ajax request for getting all edits done by the user
 	 */
 	this.getEditsDone = function() {
 		if ($('#' + editsDoneCountId).text() == '0'){
@@ -122,7 +127,7 @@ function AjaxSettingsHandler(){
 	};
 
 	/**
-	 *
+	 * Ajax request for getting all statements send by the user
 	 */
 	this.getStatementsSend = function() {
 		if ($('#' + statementsDoneCountId).text() == '0'){
@@ -145,7 +150,7 @@ function AjaxSettingsHandler(){
 	};
 
 	/**
-	 *
+	 * Ajax request for getting all arguments, which the user voted for
 	 */
 	this.getArgumentVotes = function(){
 		if ($('#' + discussionArgVoteCountId).text() == '0'){
@@ -169,7 +174,7 @@ function AjaxSettingsHandler(){
 	};
 
 	/**
-	 *
+	 * Ajax request for getting all edits done by the user
 	 */
 	this.getStatementVotes = function(){
 		if ($('#' + discussionStatVoteCountId).text() == '0'){
@@ -193,7 +198,7 @@ function AjaxSettingsHandler(){
 	};
 
 	/**
-	 *
+	 * Ajax request for deleting the statitistics
 	 */
 	this.deleteStatisticsRequest = function() {
 		var csrf_token = $('#hidden_csrf_token').val();

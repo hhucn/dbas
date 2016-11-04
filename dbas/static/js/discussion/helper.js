@@ -4,20 +4,20 @@
  */
 
 /**
- * Insert a <br>-tag after the given maxTextWidth or char
+ * Insert a <br>-tag after the given maxTextWidth or pattern
  *
  * @param text string
  * @param maxTextWidth int
- * @param charr char
+ * @param pattern string
  * @returns {String}
  */
-function cutTextOnChar (text, maxTextWidth, charr) {
+function cutTextOnChar (text, maxTextWidth, pattern) {
 	var i, p, l;
 		i = 1;
 		l = text.length;
 	while (i * maxTextWidth < l) {
-		p = text.indexOf(charr, i * maxTextWidth);
-		text =  text.substr(0, p) + '<br>' + text.substr(p + charr.length);
+		p = text.indexOf(pattern3, i * maxTextWidth);
+		text =  text.substr(0, p) + '<br>' + text.substr(p + pattern.length);
 		i = i + 1;
 	}
 	return text;
