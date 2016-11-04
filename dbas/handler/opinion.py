@@ -8,7 +8,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings, StatementSeenBy
 from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
-    get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion, get_lang_for_argument
+    get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
@@ -441,7 +441,6 @@ class OpinionHandler:
         :return: dict()
         """
         return_dict = dict()
-        lang = get_lang_for_argument(uid)
         db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
                                                                        VoteArgument.is_valid == True,
                                                                        VoteStatement.is_up_vote == True)).all()
@@ -452,7 +451,7 @@ class OpinionHandler:
         db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
         return_dict['vote_count'] = str(len(db_votes))
         return_dict['author'] = db_author.public_nickname
-        return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, lang)
+        return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
         text = get_text_for_argument_uid(uid)
         return_dict['text'] = text[0:1].upper() + text[1:] + '.'
 
