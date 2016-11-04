@@ -173,7 +173,7 @@ def __get_all_votestatements(statement_uid_set):
     return vote_dict
 
 
-def get_minimal_graph_export():
+def get_minimal_graph_export(issue):
     """
     Returns type of tables column
 
@@ -181,8 +181,12 @@ def get_minimal_graph_export():
     :param col_name: current columns name
     :return: String or raise NameError
     """
-    db_statements = get_not_disabled_statement_as_query().all()
-    db_arguments = get_not_disabled_arguments_as_query().all()
+    if issue is None or len(issue) == 0:
+        db_statements = get_not_disabled_statement_as_query().all()
+        db_arguments = get_not_disabled_arguments_as_query().all()
+    else:
+        db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
+        db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
 
     nodes = [s.uid for s in db_statements]
 
