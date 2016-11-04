@@ -59,19 +59,6 @@ function goBackToTop() {
 }
 
 /**
- * Changes the navbar on background scrolling events
- */
-function changeBackgroundOnScroll(){
-	$(window).scroll(function () {
-		if (jQuery(this).scrollTop() > 10) {
-			$('#custom-bootstrap-menu').removeClass('navbar-transparent');
-		} else {
-			$('#custom-bootstrap-menu').addClass('navbar-transparent');
-		}
-	});
-}
-
-/**
  * Displays dialog
  * @param titleText
  * @param bodyText
