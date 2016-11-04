@@ -367,7 +367,7 @@ $(function () {
 	});
 
 	$('#' + settingsPasswordInfoIconId).click(function passwordInfoIcon() {
-		new GuiHandler().showGeneratePasswordPopup();
+		new PopupHandler().showGeneratePasswordPopup();
 	});
 
 	$('#' + passwordGeneratorButton).click(function passwordGeneratorButton() {

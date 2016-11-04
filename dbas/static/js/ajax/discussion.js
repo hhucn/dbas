@@ -203,7 +203,7 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneForShortenUrl(data, long_url);
 		}).fail(function ajaxGetShortenUrl() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			new GuiHandler().hideAndClearUrlSharingPopup();
+			new PopupHandler().hideAndClearUrlSharingPopup();
 			//$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	};
@@ -365,7 +365,7 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneRevokeContent(data, is_argument);
 		}).fail(function ajaxRevokeContentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			new GuiHandler().hideAndClearUrlSharingPopup();
+			new PopupHandler().hideAndClearUrlSharingPopup();
 			//$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	}

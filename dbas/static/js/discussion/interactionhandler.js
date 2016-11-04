@@ -73,7 +73,7 @@ function InteractionHandler() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
-			new GuiHandler().hideAndClearEditStatementsPopup();
+			new PopupHandler().hideAndClearEditStatementsPopup();
 		}
 	};
 
@@ -298,7 +298,7 @@ function InteractionHandler() {
 		if (parsedData.error.length != 0)
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		else
-			new GuiHandler().showReferencesPopup(parsedData);
+			new PopupHandler().showReferencesPopup(parsedData);
 	};
 	
 	/**
