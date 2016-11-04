@@ -58,7 +58,7 @@ function DiscussionBarometer(){
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
         }
 
-        new Helper().setAnchor('barometer');
+        setAnchor('barometer');
     };
 
     /**
@@ -70,7 +70,6 @@ function DiscussionBarometer(){
     this.callbackIfDoneForGetDictionary = function(data, address){
         var jsonData;
         var dialog = $('#' + popupConfirmRowDialogId);
-        var _this = this;
         
         try{
             jsonData = JSON.parse(data);
@@ -84,7 +83,7 @@ function DiscussionBarometer(){
         createButtons(jsonData, address);
 
         dialog.modal('show').on('hidden.bs.modal', function () {
-            new Helper().clearAnchor();
+            clearAnchor();
         }).on('shown.bs.modal', function () {
             // display bar after the modal is shown, cause we need the width of the modal
             getD3BarometerBarChart(jsonData, address);
