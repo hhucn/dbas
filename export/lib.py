@@ -199,12 +199,12 @@ def get_map():
             # undercut
             undercuts.append({'id': arg.uid,
                               'premises': premises,
-                              'conclusion': arg.conclusion_uid})
+                              'conclusion': arg.argument_uid})
         else:
             # not an undercut
             inferences.append({'id': arg.uid,
                                'premises': premises,
-                               'conclusion': arg.argument_uid})
+                               'conclusion': arg.conclusion_uid})
 
     return {'nodes': nodes,
             'inferences': inferences,
