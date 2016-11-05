@@ -129,7 +129,7 @@ function DiscussionBarometer(){
         // width and height of chart
         var width = dialog.find('.col-md-6').width();
         var height = 400;
-        var barChartSvg = getSvg(width+50, height+20);
+        var barChartSvg = getSvg(width+50, height+10);
 
         createAxis(barChartSvg, height-50);
 
@@ -522,13 +522,6 @@ function DiscussionBarometer(){
             });
             d3.select(this).attr('fill', getDarkColorFor(index));
 
-            // set position of tooltip to bottom right corner
-            // if the height of legend is greater then (height of barometer + offset) place directly under legend
-            var offset = 20;
-            if(400-$('.col-md-5').height() > offset){
-                $('.doughnutChartTooltip').css('bottom', -(400-$('.col-md-5').height()) + 'px');
-            }
-
             // append tooltip in middle of doughnut chart
             doughnutChartSvg.append("text")
                 .attr("x", 250 )
@@ -546,11 +539,13 @@ function DiscussionBarometer(){
 
         })
         .on("mouseout", function (d, index) {
+            // hide tooltip with detailed information
             div.style("opacity", 0);
-            $(this).attr('fill', getNormalColorFor(index));
 
             // hide text in middle of doughnut
             $('.doughnut-chart-text-tooltip').text("");
+            // fill sector of doughnut with originally color
+            $(this).attr('fill', getNormalColorFor(index));
         });
     }
 }
