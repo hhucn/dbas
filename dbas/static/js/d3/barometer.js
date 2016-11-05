@@ -144,7 +144,7 @@ function DiscussionBarometer(){
         createBar(width, height-50, usersDict, barChartSvg);
         
         // tooltip
-        createBarChartTooltip(usersDict, barChartSvg, width, address);
+        createBarChartTooltip(usersDict, barChartSvg, address);
 
         // create legend for chart
         createLegend(usersDict);
@@ -267,73 +267,17 @@ function DiscussionBarometer(){
      * @param width
      * @param address
      */
-    function createBarChartTooltip(usersDict, barChartSvg, width, address) {
+    function createBarChartTooltip(usersDict, barChartSvg, address) {
         var div;
-        var barWidth = width / usersDict.length - 5;
-        var tooltipWith = width;
-        var tmp;
         barChartSvg.selectAll("rect").on("mouseover", function (d, index) {
-            var barLeft = index / 2 * barWidth + 70 + index * 5;
-            tmp = index;
-            while (tooltipWith + barLeft > $( window ).width()){
-                if (tmp > 0){
-                    // move one step to the left
-                    tmp -= 1;
-                    tooltipWith = tmp * barWidth + 70 + tmp * 5;
-                } else {
-                    tooltipWith = width / usersDict.length - 5;
-                    barLeft = index * barWidth + 70 + index * 5;
-                }
-            }
+            div = getTooltip(usersDict, index, address);
 
-            div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-6').append("div");
-
-            // set properties of div
-            div.attr("class", "barChartTooltip").style("opacity", 1)
-                .style("left", 65 + "px")
-                .style("top", 100 + "px")
-                .style("width", tooltipWith);
-
-            // append list elements to div
-            if (d.message != null) {
-                div.append('li').html(d.message);
-            }
-            var text_keyword = '';
-            if (address == 'argument')
-                text_keyword = d.seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
-            else
-                text_keyword = d.seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
-            div.append('li').html(d.seenBy + ' ' + _t_discussion(text_keyword));
-            div.append('li').html(_t_discussion(users) + ': ');
-
-            // add images of avatars
-            d.users.forEach(function (e) {
-                div.append('img').attr('src', e.avatar_url);
-            });
-            $(this).attr('fill', getDarkColorFor(index));
+            // highlight bar on hover
+            d3.select(this).attr('fill', getDarkColorFor(index));
         })
         .on("mouseout", function (d, index) {
             div.style("opacity", 0);
             $(this).attr('fill', getNormalColorFor(index));
-        });
-    }
-    
-    function getNormalColorFor(index){ return google_colors[index % google_colors.length][0]; }
-    function getLightColorFor(index){ return google_colors[index % google_colors.length][2]; }
-    function getDarkColorFor(index){ return google_colors[index % google_colors.length][10]; }
-
-    /**
-     * Create legend for chart.
-     *
-     * @param usersDict
-     */
-    function createLegend(usersDict){
-        var div, label, element;
-        $.each(usersDict, function(key, value) {
-            div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key));
-            label = $('<label>').attr('class', 'legendLabel').html(value.text);
-            element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
-            $('#' + popupConfirmRowDialogId).find('.col-md-5').append(element);
         });
     }
 
@@ -365,13 +309,10 @@ function DiscussionBarometer(){
         else{
             usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
         }
-
         // create doughnut of chart
         createDoughnutChart(usersDict, doughnutChartSvg, address);
-
         // create tooltip
         createDoughnutChartTooltip(usersDict, doughnutChartSvg, address);
-
         // create legend for chart
         createLegend(usersDict);
     };
@@ -490,7 +431,7 @@ function DiscussionBarometer(){
     }
 
     /**
-     * Create tooltips for segments.
+     * Create tooltips for sectors.
      *
      * @param usersDict
      * @param doughnutChartSvg
@@ -498,45 +439,13 @@ function DiscussionBarometer(){
      */
     function createDoughnutChartTooltip(usersDict, doughnutChartSvg, address) {
         var div;
-
         doughnutChartSvg.selectAll(".chart-sector").on("mouseover", function (d, index) {
-            div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-5').append("div");
+            div = getTooltip(usersDict, index, address);
 
-            div.attr("class", "doughnutChartTooltip").style("opacity", 1);
-
-            // append list elements to div
-            if (usersDict[index].message != null) {
-                div.append('li').html(usersDict[index].message);
-            }
-            var text_keyword = '';
-            if (address == 'argument')
-                text_keyword = usersDict[index].seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
-            else
-                text_keyword = usersDict[index].seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
-            div.append('li').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
-            div.append('li').html(_t_discussion(users) + ': ');
-
-            // add images of avatars
-            usersDict[index].users.forEach(function (e) {
-                div.append('img').attr('src', e.avatar_url);
-            });
+            // highlight sector on hover
             d3.select(this).attr('fill', getDarkColorFor(index));
 
-            // append tooltip in middle of doughnut chart
-            doughnutChartSvg.append("text")
-                .attr("x", 250 )
-                .attr("y", 210 )
-                .style("font-weight", "bold")
-                .style("font-size", "25px")
-                .attr("class", "doughnut-chart-text-tooltip")
-                .text(usersDict[index].usersNumber + "/" + usersDict[index].seenBy);
-
-            doughnutChartSvg.append("text")
-                .attr("x", 250)
-                .attr("y", 230)
-                .attr("class", "doughnut-chart-text-tooltip")
-                .text("clicked on this");
-
+            createShortTooltipDoughnutChart(doughnutChartSvg, usersDict, index);
         })
         .on("mouseout", function (d, index) {
             // hide tooltip with detailed information
@@ -548,4 +457,94 @@ function DiscussionBarometer(){
             $(this).attr('fill', getNormalColorFor(index));
         });
     }
+
+    /**
+     * Create short tooltip for doughnut chart in middle of chart.
+     *
+     * @param doughnutChartSvg
+     * @param usersDict
+     * @param index
+     */
+    function createShortTooltipDoughnutChart(doughnutChartSvg, usersDict, index){
+        // append tooltip in middle of doughnut chart
+        doughnutChartSvg.append("text")
+            .attr({x: 250, y: 210,
+                   class: "doughnut-chart-text-tooltip"})
+            .style({"font-weight": "bold", "font-size": "25px"})
+            .text(usersDict[index].usersNumber + "/" + usersDict[index].seenBy);
+
+        doughnutChartSvg.append("text")
+            .attr({x: 250, y: 230,
+                   class: "doughnut-chart-text-tooltip"})
+            .text("clicked on this");
+    }
+
+    // bar chart and doughnut chart
+     /**
+     * Create tooltip.
+     *
+     * @param usersDict
+     * @param index
+     * @param address
+     * @returns {*}
+     */
+    function getTooltip(usersDict, index, address){
+        var div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-5').append("div").attr("class", "chartTooltip");
+
+        // make tooltip visible
+        div.style("opacity", 1);
+
+        createTooltipContent(usersDict, index, address, div);
+
+        // fill border of tooltip with the same color as the sector of barometer
+        $(".chartTooltip").css('border-color', getDarkColorFor(index));
+
+        return div;
+    }
+
+    /**
+     * Create content of tooltip-div.
+     *
+     * @param usersDict
+     * @param index: index of bar is selected
+     * @param address
+     * @param div: contains the tooltip
+     */
+    function createTooltipContent(usersDict, index, address, div){
+        // append list elements to div
+        if (usersDict[index].message != null) {
+            div.append('li').html(usersDict[index].message);
+        }
+        var text_keyword = '';
+        if (address == 'argument')
+            text_keyword = usersDict[index].seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
+        else
+            text_keyword = usersDict[index].seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
+        div.append('li').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
+        div.append('li').html(_t_discussion(users) + ': ');
+
+        // add images of avatars
+        usersDict[index].users.forEach(function (e) {
+            div.append('img').attr('src', e.avatar_url).style("class", "img-circle");
+        });
+    }
+
+    /**
+     * Create legend for chart.
+     *
+     * @param usersDict
+     */
+    function createLegend(usersDict){
+        var div, label, element;
+        $.each(usersDict, function(key, value) {
+            div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key));
+            label = $('<label>').attr('class', 'legendLabel').html(value.text);
+            element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
+            $('#' + popupConfirmRowDialogId).find('.col-md-5').append(element);
+        });
+    }
+
+    function getNormalColorFor(index){ return google_colors[index % google_colors.length][0]; }
+    function getLightColorFor(index){ return google_colors[index % google_colors.length][2]; }
+    function getDarkColorFor(index){ return google_colors[index % google_colors.length][10]; }
 }
