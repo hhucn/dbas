@@ -4,15 +4,17 @@ D-BAS database Model
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
-import time
 import datetime
+import time
+
+import arrow
+from cryptacular.bcrypt import BCRYPTPasswordManager
+from dbas.database import DBDiscussionSession, DiscussionBase
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey
-from sqlalchemy_utils import ArrowType
-from cryptacular.bcrypt import BCRYPTPasswordManager
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from dbas.database import DBDiscussionSession, DiscussionBase
+from sqlalchemy_utils import ArrowType
 
 
 def get_now():
@@ -52,6 +54,10 @@ class Issue(DiscussionBase):
 
     def get_slug(self):
         return slugify(self.title)
+
+    @hybrid_property
+    def lang(self):
+        return DBDiscussionSession.query(Language).get(self.lang_uid).ui_locales
 
 
 class Language(DiscussionBase):
@@ -269,6 +275,10 @@ class Statement(DiscussionBase):
         :return:
         """
         self.is_disabled = is_disabled
+
+    @hybrid_property
+    def lang(self):
+        return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
 
 class StatementReferences(DiscussionBase):
@@ -512,6 +522,10 @@ class Argument(DiscussionBase):
         :return:
         """
         self.is_disabled = is_disabled
+
+    @hybrid_property
+    def lang(self):
+        return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
 
 class History(DiscussionBase):

@@ -5,22 +5,21 @@ Provides helping function for database querys.
 """
 
 import random
+
 import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
-
-from sqlalchemy import and_, func
-
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument, \
-    VoteStatement, Issue, RevokedContent
+from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, RevokedContent
 from dbas.helper.relation import RelationHelper
 from dbas.input_validator import Validator
-from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_argument_uid, get_text_for_premisesgroup_uid, \
-    get_all_attacking_arg_uids_from_history, get_lang_for_argument, get_profile_picture, get_text_for_statement_uid,\
+from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_premisesgroup_uid, \
+    get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid,\
     is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from sqlalchemy import and_, func
 
 statement_min_length = 10
 
@@ -29,47 +28,6 @@ class QueryHelper:
     """
     Provides several functions for setting new statements or arguments, as well as gettinhg logfiles or many information.
     """
-
-    @staticmethod
-    def get_infos_about_argument(uid, mainpage):
-        """
-        Returns several infos about the argument.
-
-        :param uid: Argument.uid
-        :param mainpage: url
-        :return: dict()
-        """
-        return_dict = dict()
-        lang = get_lang_for_argument(uid)
-        db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
-                                                                       VoteArgument.is_valid == True,
-                                                                       VoteStatement.is_up_vote == True)).all()
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-        if not db_argument:
-            return return_dict
-
-        db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
-        return_dict['vote_count']       = str(len(db_votes))
-        return_dict['author']           = db_author.public_nickname
-        return_dict['timestamp']        = sql_timestamp_pretty_print(db_argument.timestamp, lang)
-        text                            = get_text_for_argument_uid(uid)
-        return_dict['text']             = text[0:1].upper() + text[1:] + '.'
-
-        supporters = []
-        gravatars = dict()
-        public_page = dict()
-        for vote in db_votes:
-            db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
-            name = db_user.get_global_nickname()
-            supporters.append(name)
-            gravatars[name] = get_profile_picture(db_user)
-            public_page[name] = mainpage + '/user/' + name
-
-        return_dict['supporter'] = supporters
-        return_dict['gravatars'] = gravatars
-        return_dict['public_page'] = public_page
-
-        return return_dict
 
     @staticmethod
     def process_input_of_start_premises_and_receive_url(request, transaction, premisegroups, conclusion_id, supportive,
@@ -103,7 +61,8 @@ class QueryHelper:
         for group in premisegroups:  # premise groups is a list of lists
             new_argument, statement_uids = QueryHelper.__create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
             if not isinstance(new_argument, Argument):  # break on error
-                error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
+                error = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
+                    statement_min_length) + ')'
                 return -1, None, error
 
             new_argument_uids.append(new_argument.uid)
@@ -169,7 +128,8 @@ class QueryHelper:
         for group in premisegroups:  # premise groups is a list of lists
             new_argument = QueryHelper.__insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
             if not isinstance(new_argument, Argument):  # break on error
-                error = _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
+                error = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
+                    statement_min_length) + ')'
                 return -1, None, error
 
             new_argument_uids.append(new_argument.uid)
@@ -253,7 +213,8 @@ class QueryHelper:
         :param _tn:
         :return:
         """
-        return _tn.get(_tn.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_tn.minLength) + ': ' + str(statement_min_length) + ')'
+        return _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
+            statement_min_length) + ')'
 
     @staticmethod
     def __get_url_for_new_argument(new_argument_uids, history, lang, urlmanager):
@@ -350,7 +311,10 @@ class QueryHelper:
         """
         logger('QueryHelper', 'get_every_attack_for_island_view', 'def with arg_uid: ' + str(arg_uid))
         return_dict = {}
-        lang = get_lang_for_argument(arg_uid)
+        db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
+        if not db_argument:
+            return
+        lang = db_argument.lang
         _t = Translator(lang)
         _rh = RelationHelper(arg_uid, lang)
 
@@ -360,7 +324,7 @@ class QueryHelper:
         # overbid = _rh.get_overbids_for_argument_uid()
         rebut = _rh.get_rebuts_for_argument_uid()
 
-        no_entry_text = _t.get(_t.no_arguments) + '. ' + _t.get(_t.voteCountTextMayBeFirst)
+        no_entry_text = _t.get(_.no_arguments) + '. ' + _t.get(_.voteCountTextMayBeFirst)
         undermine = undermine if undermine else [{'id': 0, 'text': no_entry_text}]
         support = support if support else [{'id': 0, 'text': no_entry_text}]
         undercut = undercut if undercut else [{'id': 0, 'text': no_entry_text}]
@@ -377,7 +341,7 @@ class QueryHelper:
         for dict in return_dict:
             for entry in return_dict[dict]:
                 has_entry = False if entry['id'] == 0 or lang == 'de' else True
-                entry['text'] = (_t.get(_t.because) + ' ' if has_entry else '') + entry['text']
+                entry['text'] = (_t.get(_.because) + ' ' if has_entry else '') + entry['text']
 
         logger('QueryHelper', 'get_every_attack_for_island_view', 'summary: ' +
                str(len(undermine)) + ' undermines, ' +
@@ -686,7 +650,7 @@ class QueryHelper:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         if not db_user:
             logger('QueryHelper', 'revoke_content', 'User not found')
-            return translator.get(translator.userNotFound)
+            return translator.get(_.userNotFound)
 
         # get element, which should be revoked
         if is_argument:
@@ -726,11 +690,11 @@ class QueryHelper:
         # exists the argument
         if not db_argument:
             logger('QueryHelper', '__revoke_argument', 'Argument does not exists')
-            return None, translator.get(translator.internalError)
+            return None, translator.get(_.internalError)
 
         if not is_author:
             logger('QueryHelper', 'revoke_content', db_user.nickname + ' is not the author')
-            return None, translator.get(translator.userIsNotAuthorOfArgument)
+            return None, translator.get(_.userIsNotAuthorOfArgument)
 
         logger('QueryHelper', '__revoke_argument', 'Disabling argument ' + str(argument_uid))
         db_argument.set_disable(True)
@@ -757,18 +721,18 @@ class QueryHelper:
         # exists the statement
         if not db_statement:
             logger('QueryHelper', '__revoke_statement', 'Statement does not exists')
-            return None, translator.get(translator.internalError)
+            return None, translator.get(_.internalError)
 
         if not is_author:
             logger('QueryHelper', '__revoke_statement', db_user.nickname + ' is not the author')
-            return None, translator.get(translator.userIsNotAuthorOfStatement)
+            return None, translator.get(_.userIsNotAuthorOfStatement)
 
         # transfer the responsibility to the next author, who used this statement
         db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == statement_uid,
                                                                                      Argument.is_supportive == True,
                                                                                      Argument.author_uid != db_user.uid)).first()
         # search new author who supported this statement
-        if db_statement_as_conclusion:
+        if db_statement_as_conclusion and False:  # TODO DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
             logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(db_statement_as_conclusion.author_uid) + ' (old author ' + str(db_user.uid) + ')')
             db_statement.author_uid = db_statement_as_conclusion.author_uid
             QueryHelper.__transfer_textversion_to_new_author(statement_uid, db_user.uid, db_statement_as_conclusion.author_uid, transaction)

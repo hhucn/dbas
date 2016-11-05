@@ -22,8 +22,9 @@ def send_request_for_info_popup_to_socketio(nickname, message='', url=None, incr
     :param increase_counter:
     :return:
     """
-    use_https = 'dbas.cs' in url
-    __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
+    if url:
+        use_https = 'dbas.cs' in url
+        __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
 
 
 def send_request_for_success_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
@@ -36,8 +37,9 @@ def send_request_for_success_popup_to_socketio(nickname, message='', url=None, i
     :param increase_counter:
     :return:
     """
-    use_https = 'dbas.cs' in url
-    __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter, use_https)
+    if url:
+        use_https = 'dbas.cs' in url
+        __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter, use_https)
 
 
 def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
