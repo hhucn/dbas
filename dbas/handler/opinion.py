@@ -4,16 +4,16 @@ Provides helping function for getting some opinions.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from sqlalchemy import and_
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings, StatementSeenBy
 from dbas.helper.relation import RelationHelper
 from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion
 from dbas.logger import logger
-from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
+from dbas.strings.translator import Translator
+from sqlalchemy import and_
 
 
 class OpinionHandler:
@@ -59,27 +59,26 @@ class OpinionHandler:
         # sanity check
         if not db_user_argument or not db_syst_argument:
             ret_dict = dict()
-            ret_dict['message'] = _t.get(_t.internalError) + '.'
+            ret_dict['message'] = _t.get(_.internalError) + '.'
             ret_dict['users'] = all_users
             ret_dict['opinions'] = ret_dict
-            ret_dict['title'] = _t.get(_t.internalError)
+            ret_dict['title'] = _t.get(_.internalError)
             return ret_dict
 
-        title = _t.get(_t.reaction)  # For) + ': ' + get_text_for_argument_uid(argument_uids[0], with_html_tag=True, attack_type='for_modal')
+        title = _t.get(
+            _.reaction)  # For) + ': ' + get_text_for_argument_uid(argument_uids[0], with_html_tag=True, attack_type='for_modal')
 
         # getting uids of all reactions
         _rh = RelationHelper(argument_uids[0], self.lang)
-        arg_uids_for_reactions = []
-        arg_uids_for_reactions.append(_rh.get_undermines_for_argument_uid())
-        arg_uids_for_reactions.append(_rh.get_supports_for_argument_uid())
-        arg_uids_for_reactions.append(_rh.get_undercuts_for_argument_uid())
-        arg_uids_for_reactions.append(_rh.get_rebuts_for_argument_uid())
 
-        relation = []
-        relation.append('undermine')
-        relation.append('support')
-        relation.append('undercut')
-        relation.append('rebut')
+        arg_uids_for_reactions = [
+            _rh.get_undermines_for_argument_uid(),
+            _rh.get_supports_for_argument_uid(),
+            _rh.get_undercuts_for_argument_uid(),
+            _rh.get_rebuts_for_argument_uid()
+        ]
+
+        relation = ['undermine', 'support', 'undercut', 'rebut']
 
         # getting the text of all reactions
         db_tmp_argument = db_syst_argument
@@ -106,18 +105,18 @@ class OpinionHandler:
 
                 intro = ''
                 if not db_argument.is_supportive:
-                    forr = _t.get(_t.forText)
-                    the = _t.get(_t.the_die)
+                    forr = _t.get(_.forText)
+                    the = _t.get(_.the_die)
                     intro = forr + ' ' + the + ' '
-                rejection = _t.get(_t.strongerStatementForRecjecting2)
-                of = _t.get(_t.strongerStatementForRecjecting3)
+                rejection = _t.get(_.strongerStatementForRecjecting2)
+                of = _t.get(_.strongerStatementForRecjecting3)
                 conclusion = intro + rejection + ' ' + of  + conclusion
 
             relation_text = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive,
                                                                             first_conclusion=first_conclusion,
                                                                             attack_type=attack, premise=premises,
                                                                             conclusion=conclusion)
-            relation_text['rebut_text'] = relation_text['rebut_text'].replace(_t.get(_t.accepting), _t.get(_t.forThat))
+            relation_text['rebut_text'] = relation_text['rebut_text'].replace(_t.get(_.accepting), _t.get(_.forThat))
 
         # getting votes for every reaction
         ret_list = self.__get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t)
@@ -153,11 +152,11 @@ class OpinionHandler:
                     all_users.append(users_dict)
 
                 if len(db_votes) == 0:
-                    message = _t.get(_t.voteCountTextMayBeFirst) + '.'
+                    message = _t.get(_.voteCountTextMayBeFirst) + '.'
                 elif len(db_votes) == 1:
-                    message = _t.get(_t.voteCountTextOneOther) + '.'
+                    message = _t.get(_.voteCountTextOneOther) + '.'
                 else:
-                    message = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+                    message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
                 db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
                 seen_by += len(db_seen_by) if db_seen_by else 0
 
@@ -181,7 +180,7 @@ class OpinionHandler:
 
         opinions = []
         _t = Translator(self.lang)
-        title = _t.get(_t.informationForStatements)
+        title = _t.get(_.informationForStatements)
 
         for uid in statement_uids:
             statement_dict = dict()
@@ -199,7 +198,7 @@ class OpinionHandler:
             try:
                 text = text[0:1].upper() + text[1:]
                 if db_statement.is_startpoint and self.lang == 'de':
-                    text = _t.get(_t.statementIsAbout) + ' ' + text
+                    text = _t.get(_.statementIsAbout) + ' ' + text
                 statement_dict['text'] = text
             except TypeError:
                 statement_dict['uid']       = None
@@ -225,11 +224,11 @@ class OpinionHandler:
             statement_dict['users'] = all_users
 
             if len(db_votes) == 0:
-                statement_dict['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
+                statement_dict['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
             elif len(db_votes) == 1:
-                statement_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
+                statement_dict['message'] = _t.get(_.voteCountTextOneOther) + '.'
             else:
-                statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+                statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
             db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(uid)).all()
             statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
@@ -251,7 +250,7 @@ class OpinionHandler:
 
         opinions = []
         _t = Translator(self.lang)
-        title = _t.get(_t.informationForStatements)
+        title = _t.get(_.informationForStatements)
 
         for uid in argument_uids:
             logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'argument ' + str(uid))
@@ -268,7 +267,7 @@ class OpinionHandler:
 
             statement_dict['uid'] = str(uid)
             text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-            statement_dict['text'] = _t.get(_t.because) + ' ' + text
+            statement_dict['text'] = _t.get(_.because) + ' ' + text
 
             db_votes = []
             for premise in db_premises:
@@ -286,11 +285,11 @@ class OpinionHandler:
             statement_dict['users'] = all_users
 
             if len(db_votes) == 0:
-                statement_dict['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
+                statement_dict['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
             elif len(db_votes) == 1:
-                statement_dict['message'] = _t.get(_t.voteCountTextOneOther) + '.'
+                statement_dict['message'] = _t.get(_.voteCountTextOneOther) + '.'
             else:
-                statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+                statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
             db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid)).all()
             statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
@@ -317,7 +316,7 @@ class OpinionHandler:
         all_users = []
         _t = Translator(self.lang)
         text = get_text_for_argument_uid(argument_uid, self.lang)
-        title = _t.get(_t.reactionFor) + ': ' + text[0:1].upper() + text[1:]
+        title = _t.get(_.reactionFor) + ': ' + text[0:1].upper() + text[1:]
 
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
         if not db_argument:
@@ -343,11 +342,11 @@ class OpinionHandler:
         opinions['users'] = all_users
 
         if len(db_votes) == 0:
-            opinions['message'] = _t.get(_t.voteCountTextMayBeFirst) + '.'
+            opinions['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
         elif len(db_votes) == 1:
-            opinions['message'] = _t.get(_t.voteCountTextOneOther) + '.'
+            opinions['message'] = _t.get(_.voteCountTextOneOther) + '.'
         else:
-            opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_t.voteCountTextMore) + '.'
+            opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
         db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(argument_uid)).all()
         opinions['seen_by'] = len(db_seen_by) if db_seen_by else 0
@@ -367,7 +366,7 @@ class OpinionHandler:
         _t = Translator(self.lang)
         text = get_text_for_statement_uid(statement_uid)
         try:
-            title = _t.get(_t.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
+            title = _t.get(_.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
         except TypeError:
             return None
 
@@ -400,7 +399,7 @@ class OpinionHandler:
             users_dict = self.create_users_dict(voted_user, vote.timestamp)
             pro_array.append(users_dict)
         ret_dict['agree_users'] = pro_array
-        ret_dict['agree_text'] = _t.get(_t.iAgreeWith)
+        ret_dict['agree_text'] = _t.get(_.iAgreeWith)
 
         con_array = []
         for vote in db_con_votes:
@@ -408,7 +407,7 @@ class OpinionHandler:
             users_dict = self.create_users_dict(voted_user, vote.timestamp)
             con_array.append(users_dict)
         ret_dict['disagree_users'] = con_array
-        ret_dict['disagree_text'] = _t.get(_t.iDisagreeWith)
+        ret_dict['disagree_text'] = _t.get(_.iDisagreeWith)
 
         ret_dict['title'] = title[0:1].upper() + title[1:]
 
@@ -431,3 +430,43 @@ class OpinionHandler:
                 'public_profile_url': self.mainpage + '/user/' + name,
                 'avatar_url': get_profile_picture(db_user),
                 'vote_timestamp': sql_timestamp_pretty_print(timestamp, self.lang)}
+
+    @staticmethod
+    def get_infos_about_argument(uid, mainpage):
+        """
+        Returns several infos about the argument.
+
+        :param uid: Argument.uid
+        :param mainpage: url
+        :return: dict()
+        """
+        return_dict = dict()
+        db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
+                                                                       VoteArgument.is_valid == True,
+                                                                       VoteStatement.is_up_vote == True)).all()
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        if not db_argument:
+            return return_dict
+
+        db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
+        return_dict['vote_count'] = str(len(db_votes))
+        return_dict['author'] = db_author.public_nickname
+        return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
+        text = get_text_for_argument_uid(uid)
+        return_dict['text'] = text[0:1].upper() + text[1:] + '.'
+
+        supporters = []
+        gravatars = dict()
+        public_page = dict()
+        for vote in db_votes:
+            db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+            name = db_user.get_global_nickname()
+            supporters.append(name)
+            gravatars[name] = get_profile_picture(db_user)
+            public_page[name] = mainpage + '/user/' + name
+
+        return_dict['supporter'] = supporters
+        return_dict['gravatars'] = gravatars
+        return_dict['public_page'] = public_page
+
+        return return_dict

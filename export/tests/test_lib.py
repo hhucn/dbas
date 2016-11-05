@@ -3,7 +3,7 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config
-from export.lib import get_dump
+from export.lib import get_dump, get_minimal_graph_export
 
 settings = add_settings_to_appconfig()
 
@@ -34,3 +34,19 @@ class LibTest(unittest.TestCase):
         self.assertTrue(len(ret_dict['premise']) > 0)
         self.assertTrue(len(ret_dict['vote_argument']) > 0)
         self.assertTrue(len(ret_dict['vote_statement']) > 0)
+
+    def test_get_minimal_graph_export(self):
+        ret_dict = get_minimal_graph_export(1)
+        self.assertTrue('nodes' in ret_dict)
+        self.assertTrue('inferences' in ret_dict)
+        self.assertTrue('undercuts' in ret_dict)
+
+        for element in ret_dict['inferences']:
+            self.assertTrue('id' in element)
+            self.assertTrue('premises' in element)
+            self.assertTrue('conclusion' in element)
+
+        for element in ret_dict['undercuts']:
+            self.assertTrue('id' in element)
+            self.assertTrue('premises' in element)
+            self.assertTrue('conclusion' in element)

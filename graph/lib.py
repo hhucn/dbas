@@ -11,15 +11,8 @@ from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
 
 
-grey = '#424242'
 yellow = '#FFC107'
-red = '#F44336'
-green = '#64DD17'
 blue = '#3D5AFE'
-dark_grey = '#616161'
-dark_red = '#D32F2F'
-dark_green = '#689F38'
-dark_blue = '#1976D2'
 
 
 def get_d3_data(issue, nickname):
@@ -32,6 +25,7 @@ def get_d3_data(issue, nickname):
     logger('GraphLib', 'get_d3_data', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
+    # default values
     x = 0
     y = 0
     node_size = 6
@@ -57,55 +51,87 @@ def get_d3_data(issue, nickname):
     # issue
     node_dict = __get_node_dict(id='issue',
                                 label=db_issue.info,
-                                color=blue,
                                 size=issue_size,
                                 x=x,
-                                y=y)
+                                y=y,
+                                type='position')
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
     all_node_ids = ['issue']
 
     # for each statement a node will be added
+    all_ids, nodes, edges, extras = __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x, y,
+                                                                     node_size, position_size, edge_size, edge_type)
+    all_node_ids += all_ids
+    nodes_array += nodes
+    edges_array += edges
+    extras_dict.update(extras)
+
+    # for each argument edges will be added as well as the premises
+    all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes,
+                                                                    edge_size, edge_type)
+    all_node_ids += all_ids
+    nodes_array += nodes
+    edges_array += edges
+    extras_dict.update(extras)
+
+    __sanity_check_of_d3_data(all_node_ids, edges_array)
+
+    d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
+    return d3_dict
+
+
+def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x, y, node_size, position_size, edge_size, edge_type):
+    all_ids = []
+    nodes = []
+    edges = []
+    extras = {}
     for statement in db_statements:
         text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
         text = text.content if text else 'None'
         node_dict = __get_node_dict(id='statement_' + str(statement.uid),
                                     label=text,
-                                    color=blue if statement.is_startpoint else yellow,
                                     size=position_size if statement.is_startpoint else node_size,
                                     x=x,
                                     y=y,
+                                    type='position' if statement.is_startpoint else 'statement',
                                     author=__get_author_of_statement(statement.uid, db_user),
                                     editor=__get_editor_of_statement(statement.uid, db_user))
-        extras_dict[node_dict['id']] = node_dict
-        all_node_ids.append('statement_' + str(statement.uid))
+        extras[node_dict['id']] = node_dict
+        all_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
         y += (1 if x == 0 else 0)
-        nodes_array.append(node_dict)
+        nodes.append(node_dict)
         if statement.is_startpoint:
             edge_dict = __get_edge_dict(id='edge_' + str(statement.uid) + '_issue',
                                         source='statement_' + str(statement.uid),
                                         target='issue',
-                                        color=grey,
+                                        is_attacking='none',
                                         size=edge_size,
                                         edge_type=edge_type)
-            edges_array.append(edge_dict)
+            edges.append(edge_dict)
 
-    # for each argument edges will be added as well as the premises
+    return all_ids, nodes, edges, extras
+
+
+def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes, edge_size, edge_type):
+    all_ids = []
+    nodes = []
+    edges = []
+    extras = {}
     for argument in db_arguments:
         counter = 1
         # add invisible point in the middle of the edge (to enable pgroups and undercuts)
         node_dict = __get_node_dict(id='argument_' + str(argument.uid),
                                     label='',
-                                    color=green if argument.is_supportive else red,
                                     size=0,
                                     x=x,
                                     y=y)
         x = (x + 1) % 10
         y += 1 if x == 0 else 0
-        nodes_array.append(node_dict)
-        all_node_ids.append('argument_' + str(argument.uid))
+        nodes.append(node_dict)
+        all_ids.append('argument_' + str(argument.uid))
 
         # we have an argument with:
         # 1) with one premise and no undercut is done on this argument
@@ -123,10 +149,10 @@ def get_d3_data(issue, nickname):
             edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
                                         source='statement_' + str(db_premises[0].statement_uid),
                                         target=target,
-                                        color=green if argument.is_supportive else red,
+                                        is_attacking=argument.is_supportive,
                                         size=edge_size,
                                         edge_type=edge_type)
-            edges_array.append(edge_dict)
+            edges.append(edge_dict)
 
         else:
             # edge from premisegroup to the middle point
@@ -134,21 +160,31 @@ def get_d3_data(issue, nickname):
                 edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
                                             source='statement_' + str(premise.statement_uid),
                                             target='argument_' + str(argument.uid),
-                                            color=green if argument.is_supportive else red,
+                                            is_attacking=argument.is_supportive,
                                             size=edge_size_on_virtual_nodes,
                                             edge_type='')
-                edges_array.append(edge_dict)
+                edges.append(edge_dict)
                 counter += 1
 
             # edge from the middle point to the conclusion/argument
             edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_0',
                                         source='argument_' + str(argument.uid),
                                         target=target,
-                                        color=green if argument.is_supportive else red,
+                                        is_attacking=argument.is_supportive,
                                         size=edge_size_on_virtual_nodes,
                                         edge_type=edge_type)
-            edges_array.append(edge_dict)
+            edges.append(edge_dict)
 
+    return all_ids, nodes, edges, extras
+
+
+def __sanity_check_of_d3_data(all_node_ids, edges_array):
+    """
+
+    :param all_node_ids:
+    :param edges_array:
+    :return:
+    """
     error = False
     for edge in edges_array:
         error = error or edge['source'] not in all_node_ids or edge['target'] not in all_node_ids
@@ -156,9 +192,6 @@ def get_d3_data(issue, nickname):
         logger('GraphLib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
     else:
         logger('GraphLib', 'get_d3_data', 'All nodes are connected well')
-
-    d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
-    return d3_dict
 
 
 def __get_author_of_statement(uid, db_user):
@@ -193,38 +226,39 @@ def __get_editor_of_statement(uid, db_user):
     return {'name': name, 'gravatar': gravatar}
 
 
-def __get_node_dict(id, label, color, size, x, y, author=dict(), editor=dict()):
+def __get_node_dict(id, label, size, x, y, type='', author=dict(), editor=dict()):
     """
     Create dictionary for nodes
 
     :param id:
     :param label:
-    :param color:
     :param size:
     :param x:
     :param y:
+    :param type:
     :param author:
     :param editor:
     :return:
     """
     return {'id': id,
             'label': label,
-            'color': color,
+            'color': '',
             'size': size,
             'x': x,
             'y': y,
+            'type': type,
             'author': author,
             'editor': editor}
 
 
-def __get_edge_dict(id, source, target, color, size, edge_type):
+def __get_edge_dict(id, source, target, is_attacking, size, edge_type):
     """
     Create dictionary for edges
 
     :param id:
     :param source:
     :param target:
-    :param color:
+    :param is_attacking:
     :param size:
     :param edge_type:
     :return:
@@ -232,7 +266,7 @@ def __get_edge_dict(id, source, target, color, size, edge_type):
     return {'id': id,
             'source': source,
             'target': target,
-            'color': color,
+            'is_attacking': is_attacking,
             'size': size,
             'edge_type': edge_type}
 
