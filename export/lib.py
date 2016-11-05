@@ -4,10 +4,12 @@
 # @email krauthoff@cs.uni-duesseldorf.de
 
 from dbas.lib import sql_timestamp_pretty_print
+from dbas.input_validator import Validator
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument,\
     VoteStatement, Issue
+from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
 
 
 def get_dump(issue, lang):
@@ -170,3 +172,46 @@ def __get_all_votestatements(statement_uid_set):
             tmp_dict['is_valid']      = vote.is_valid
             vote_dict[str(index)]     = tmp_dict
     return vote_dict
+
+
+def get_minimal_graph_export(issue):
+    """
+    Returns type of tables column
+
+    :param table: current table
+    :param col_name: current columns name
+    :return: String or raise NameError
+    """
+    logger('X', str(issue), str(Validator.is_integer((issue))))
+    if Validator.is_integer(issue):
+        db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
+        db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
+    else:
+        db_statements = get_not_disabled_statement_as_query().all()
+        db_arguments = get_not_disabled_arguments_as_query().all()
+
+    nodes = [s.uid for s in db_statements]
+
+    inferences = []
+    undercuts = []
+
+    # getting all arguments
+    for arg in db_arguments:
+        # getting premises of current argument
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid).all()
+        premises = [p.statement_uid for p in db_premises]
+
+        if arg.conclusion_uid is None:
+            # undercut
+            undercuts.append({'id': arg.uid,
+                              'premises': premises,
+                              'conclusion': arg.argument_uid})
+        else:
+            # not an undercut
+            inferences.append({'id': arg.uid,
+                               'premises': premises,
+                               'conclusion': arg.conclusion_uid})
+
+    return {'nodes': nodes,
+            'inferences': inferences,
+            'undercuts': undercuts}

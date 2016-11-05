@@ -89,7 +89,7 @@ function DiscussionGraph() {
 			var now = new Date(Date.now());
 			var formatted = now.getYear + '-' + now.getMonth + '-' + now.getHours();
 			formatted += '_' + now.getMinutes() + '-' + now.getSeconds();
-			formatted += '_' + new Helper().getCurrentIssueId();
+			formatted += '_' + getCurrentIssueId();
 			window.open(s.renderers[0].snapshot({
 				format: 'png',
 				background: 'white',

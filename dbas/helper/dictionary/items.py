@@ -5,17 +5,18 @@ Provides helping function for dictionaries, which are used for the radio buttons
 """
 
 import random
-from sqlalchemy import and_
-import dbas.recommender_system as RecommenderSystem
 
+import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
-from dbas.strings.translator import Translator
-from dbas.strings.text_generator import TextGenerator
-from dbas.url_manager import UrlManager
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.text_generator import TextGenerator
+from dbas.strings.translator import Translator
+from dbas.url_manager import UrlManager
+from sqlalchemy import and_
 
 
 class ItemDictHelper(object):
@@ -76,11 +77,14 @@ class ItemDictHelper(object):
             _tn = Translator(self.lang)
             if nickname:
                 statements_array.append(self.__create_answer_dict('start_statement',
-                                                                  [{'title': _tn.get(_tn.newConclusionRadioButtonText), 'id': 0}],
+                                                                  [{'title': _tn.get(_.newConclusionRadioButtonText),
+                                                                    'id': 0}],
                                                                   'start',
                                                                   'add'))
             else:
-                statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.wantToStateNewPosition)}], 'justify', 'login'))
+                statements_array.append(
+                    self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
+                                              'justify', 'login'))
 
         return statements_array
 
@@ -101,9 +105,9 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
         # colon = ' ' if self.lang == 'de' else ': '
-        titleT = _tn.get(_tn.iAgreeWithInColor)  # + colon + text
-        titleF = _tn.get(_tn.iDisagreeWithInColor)  # + colon + text
-        titleD = _tn.get(_tn.iHaveNoOpinionYetInColor)  # + colon + text
+        titleT = _tn.get(_.iAgreeWithInColor)  # + colon + text
+        titleF = _tn.get(_.iDisagreeWithInColor)  # + colon + text
+        titleD = _tn.get(_.iHaveNoOpinionYetInColor)  # + colon + text
         urlT = _um.get_url_for_justifying_statement(True, statement_uid, 't')
         urlF = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
         urlD = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
@@ -143,7 +147,7 @@ class ItemDictHelper(object):
                 # get attack for each premise, so the urls will be unique
                 arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.lang, history=self.path)
                 already_used = 'reaction/' + str(argument.uid) + '/' in self.path
-                additional_text = '(' + _tn.get(_tn.youUsedThisEarlier) + ')'
+                additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
                 statements_array.append(self.__create_answer_dict(str(argument.uid),
                                                                   premise_array,
                                                                   'justify',
@@ -155,12 +159,14 @@ class ItemDictHelper(object):
 
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
-                                                              [{'title': _tn.get(_tn.newPremiseRadioButtonText), 'id': 0}],
+                                                              [{'title': _tn.get(_.newPremiseRadioButtonText),
+                                                                'id': 0}],
                                                               'justify',
                                                               'add'))
         else:
             # elif len(statements_array) == 1:
-            statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
+            statements_array.append(
+                self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
 
         return statements_array
 
@@ -204,13 +210,14 @@ class ItemDictHelper(object):
 
         if logged_in:
             if len(statements_array) == 0:
-                text = _tn.get(_tn.newPremisesRadioButtonTextAsFirstOne)
+                text = _tn.get(_.newPremisesRadioButtonTextAsFirstOne)
             else:
-                text = _tn.get(_tn.newPremiseRadioButtonText)
+                text = _tn.get(_.newPremiseRadioButtonText)
             statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
         else:
             # elif len(statements_array) == 1:
-            statements_array.append(self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_tn.onlyOneItem)}], 'justify', 'login'))
+            statements_array.append(
+                self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
 
         return statements_array
 
@@ -314,7 +321,9 @@ class ItemDictHelper(object):
         if not db_sys_argument or not db_user_argument:
             return statements_array
 
-        rel_dict         = _tg.get_relation_text_dict_with_substitution(False, True, db_user_argument.is_supportive, first_conclusion=_tn.get(_tn.myPosition), attack_type=attack)
+        rel_dict = _tg.get_relation_text_dict_with_substitution(False, True, db_user_argument.is_supportive,
+                                                                first_conclusion=_tn.get(_.myPosition),
+                                                                attack_type=attack)
         mode             = 't' if is_supportive else 'f'
         _um              = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         _rh              = RecommenderSystem
@@ -331,7 +340,7 @@ class ItemDictHelper(object):
 
             # TODO PREVENT LOOPING
             # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
-            # additionalText = (' (<em>' + _tn.get(_tn.youUsedThisEarlier) + '<em>)') if newStepInUrl in url[url.index('?'):] else ''
+            # additionalText = (' (<em>' + _tn.get(_.youUsedThisEarlier) + '<em>)') if newStepInUrl in url[url.index('?'):] else ''
 
             statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
@@ -503,7 +512,7 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
                                                               is_flaggable=True, is_author=is_author))
         # url = 'back' if self.for_api else 'window.history.go(-1)'
-        # text = _t.get(_t.iHaveNoOpinion) + '. ' + _t.get(_t.goStepBack) + '.'
+        # text = _t.get(_iHaveNoOpinion) + '. ' + _t.get(_goStepBack) + '.'
         # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
         return statements_array
 
