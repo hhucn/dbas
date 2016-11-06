@@ -487,26 +487,8 @@ function DiscussionBarometer(){
         });
     }
 
-    /**
-     *
-     *
-     * @param div
-     * @param selector
-     * @param index
-     */
-    function hideTooltip(div, selector, index, _this){
-        // hide tooltip with detailed information
-        div.style("opacity", 0);
-        // fill chart element with originally color
-        $(_this).attr('fill', getNormalColorFor(index));
-        // if doughnut chart is selected hide text in middle of doughnut
-        if(selector === ".chart-sector") {
-            $('.doughnut-chart-text-tooltip').text("");
-        }
-    }
-
-    /**
-     *
+     /**
+     * Show tooltip on mouse event.
      *
      * @param div
      * @param usersDict
@@ -514,6 +496,7 @@ function DiscussionBarometer(){
      * @param address
      * @param chartSvg
      * @param selector
+     * @param _this
      * @returns {*}
      */
     function showTooltip(div, usersDict, index, address, chartSvg, selector, _this){
@@ -525,6 +508,25 @@ function DiscussionBarometer(){
         // highlight sector on hover
         d3.select(_this).attr('fill', getDarkColorFor(index));
         return div;
+    }
+
+    /**
+     * Hide tooltip on mouse event.
+     *
+     * @param div
+     * @param selector
+     * @param index
+     * @param _this
+     */
+    function hideTooltip(div, selector, index, _this){
+        // hide tooltip with detailed information
+        div.style("opacity", 0);
+        // fill chart element with originally color
+        $(_this).attr('fill', getNormalColorFor(index));
+        // if doughnut chart is selected hide text in middle of doughnut
+        if(selector === ".chart-sector") {
+            $('.doughnut-chart-text-tooltip').text("");
+        }
     }
 
      /**
@@ -572,7 +574,9 @@ function DiscussionBarometer(){
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
-            div.append('img').attr('src', e.avatar_url);
+            div.append('img')
+               .attr({src: e.avatar_url, class: "img-circle"})
+               .style({width: '10%', padding: '2px'});
         });
     }
 
