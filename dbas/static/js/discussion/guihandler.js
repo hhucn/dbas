@@ -83,7 +83,7 @@ function GuiHandler() {
 		
 		// add fuzzy search
 		$('#' + id).keyup(function () {
-			delay(function () {
+			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + id).val());
 				new AjaxDiscussionHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
 			}, 200);

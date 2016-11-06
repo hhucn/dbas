@@ -456,7 +456,7 @@ function setGlobalErrorHandler(heading, body){
 	});
 	$('#' + requestFailedContainerHeading).html(heading);
 	$('#' + requestFailedContainerMessage).html(body);
-	delay(function(){
+	setTimeout(function(){
 		$('#' + requestFailedContainer).fadeOut();
 	}, 5000);
 }
@@ -473,7 +473,7 @@ function setGlobalSuccessHandler(heading, body){
 	});
 	$('#' + requestSuccessContainerHeading).html(heading);
 	$('#' + requestSuccessContainerMessage).html(body);
-	delay(function(){
+	setTimeout(function(){
 		$('#' + requestSuccessContainer).fadeOut();
 	}, 5000);
 }
@@ -490,7 +490,7 @@ function setGlobalInfoHandler(heading, body){
 	});
 	$('#' + requestInfoContainerHeading).html(heading);
 	$('#' + requestInfoContainerMessage).html(body);
-	delay(function(){
+	setTimeout(function(){
 		$('#' + requestInfoContainer).fadeOut();
 	}, 5000);
 }
@@ -652,7 +652,7 @@ $(document).ready(function () {
 
 	// session expired popup
 	if ($('#' + sessionExpiredContainer).length == 1)
-		delay(function(){
+		setTimeout(function(){
 			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
 
