@@ -56,7 +56,7 @@ function PopupHandler() {
 					$('#' + popupEditStatementSubmitButtonId).removeClass('disabled');
 				
 				
-				delay(function () {
+				setTimeout(function () {
 					ajaxHandler.fuzzySearch(now,
 						id,
 						fuzzy_statement_popup,
