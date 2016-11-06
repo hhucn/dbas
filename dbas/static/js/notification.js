@@ -12,7 +12,7 @@ $(function () {
 	not.setClickFunctionsForNewNotification();
 
 	$('#popup-writing-notification-recipient').keyup(function () {
-		delay(function () {
+		setTimeout(function () {
 			var escapedText = escapeHtml($('#popup-writing-notification-recipient').val());
 			new AjaxDiscussionHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
 		}, 200);

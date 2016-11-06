@@ -17,17 +17,6 @@ function swapElements (from, to) {
 	$(from).replaceWith(copy_to);
 }
 
-/**
- * Delays a specific function
- */
-function delay (){
-	var timer = 0;
-	return function(callback, ms){
-		clearTimeout (timer);
-		timer = setTimeout(callback, ms);
-	}();
-}
-
 
 /**
  * Src: http://stackoverflow.com/questions/11919065/sort-an-array-by-the-levenshtein-distance-with-best-performance-in-javascript

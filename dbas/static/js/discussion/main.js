@@ -274,6 +274,7 @@ function Main () {
 		$(hamburger).click(function () {
 			$(this).toggleClass('open');
 			var width = wrapper.width();
+			var bg_color = $('#' + discussionBubbleSpaceId).css('background-color');
 			
 			if (sidebar.is(':visible')) {
 				tackwrapper.fadeOut();
@@ -283,19 +284,19 @@ function Main () {
 				maincontainer.css('max-height', '');
 				sidebarwrapper.css('background-color', '')
 					.css('height', '');
-				delay(function () {
+				setTimeout(function () {
 					wrapper.width('');//width + sidebar.outerWidth());
 				}, 300);
 				setLocalStorage(localStorageId, 'false');
 			} else {
 				wrapper.width(width - sidebar.outerWidth());
 				maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
-				delay(function () {
+				setTimeout(function () {
 					sidebar.toggle('slide');
 					hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
 						.css('margin-left', 'auto')
 						.css('background-color', sidebar.css('background-color'));
-					sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
+					sidebarwrapper.css('background-color', bg_color)
 						.css('height', maincontainer.outerHeight() + 'px');
 					tackwrapper.fadeIn();
 				}, 200);
@@ -331,7 +332,7 @@ function Main () {
 	 */
 	this.setSidebarStyle = function (maincontainer, localStorageId) {
 		// read local storage for pinning the bar / set title
-		var shouldShowSidebar = new getLocalStorage(localStorageId) == 'true';
+		var shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
 		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
 		var wrapper = maincontainer.find('.' + contentWrapperClass);
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
@@ -376,7 +377,7 @@ function Main () {
 	this.setKeyUpFunctions = function (guiHandler, ajaxHandler) {
 		// gui for the fuzzy search (statements)
 		$('#' + addStatementContainerMainInputId).keyup(function () {
-			delay(function () {
+			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
 				if ($('#' + discussionBubbleSpaceId).find('p:last-child').text().indexOf(_t(initialPositionInterest)) != -1) {
 					// here we have our start statement
@@ -390,7 +391,7 @@ function Main () {
 		
 		// gui for the fuzzy search (premises)
 		$('#' + addPremiseContainerMainInputId).keyup(function () {
-			delay(function () {
+			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 			}, 200);
