@@ -58,7 +58,7 @@ function DiscussionBarometer(){
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
         }
 
-        setAnchor('barometer');
+        //setAnchor('barometer');
     };
 
     /**
@@ -70,7 +70,7 @@ function DiscussionBarometer(){
     this.callbackIfDoneForGetDictionary = function(data, address){
         var jsonData;
         var dialog = $('#' + popupConfirmRowDialogId);
-        
+
         try{
             jsonData = JSON.parse(data);
             console.log(jsonData);
@@ -142,9 +142,9 @@ function DiscussionBarometer(){
 
         // create bars of chart
         createBar(width, height-50, usersDict, barChartSvg);
-        
+
         // tooltip
-        createBarChartTooltip(usersDict, barChartSvg, address);
+        addListenerForTooltip(usersDict, barChartSvg, address, "rect");
 
         // create legend for chart
         createLegend(usersDict);
@@ -254,31 +254,9 @@ function DiscussionBarometer(){
                    y: function(d) {return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);},
                    fill: function (d, i) {return getNormalColorFor(i);}});
     }
-    
+
     function divideWrapperIfZero(numerator, denominator){
         return denominator == 0 || numerator == 0 ? 0.005 : numerator / denominator;
-    }
-
-    /**
-     * Create tooltips for bars.
-     *
-     * @param usersDict
-     * @param barChartSvg
-     * @param width
-     * @param address
-     */
-    function createBarChartTooltip(usersDict, barChartSvg, address) {
-        var div;
-        barChartSvg.selectAll("rect").on("mouseover", function (d, index) {
-            div = getTooltip(usersDict, index, address);
-
-            // highlight bar on hover
-            d3.select(this).attr('fill', getDarkColorFor(index));
-        })
-        .on("mouseout", function (d, index) {
-            div.style("opacity", 0);
-            $(this).attr('fill', getNormalColorFor(index));
-        });
     }
 
     // doughnut chart
@@ -311,8 +289,8 @@ function DiscussionBarometer(){
         }
         // create doughnut of chart
         createDoughnutChart(usersDict, doughnutChartSvg, address);
-        // create tooltip
-        createDoughnutChartTooltip(usersDict, doughnutChartSvg, address);
+        // tooltip
+        addListenerForTooltip(usersDict, doughnutChartSvg, address, ".chart-sector");
         // create legend for chart
         createLegend(usersDict);
     };
@@ -431,34 +409,6 @@ function DiscussionBarometer(){
     }
 
     /**
-     * Create tooltips for sectors.
-     *
-     * @param usersDict
-     * @param doughnutChartSvg
-     * @param address
-     */
-    function createDoughnutChartTooltip(usersDict, doughnutChartSvg, address) {
-        var div;
-        doughnutChartSvg.selectAll(".chart-sector").on("mouseover", function (d, index) {
-            div = getTooltip(usersDict, index, address);
-
-            // highlight sector on hover
-            d3.select(this).attr('fill', getDarkColorFor(index));
-
-            createShortTooltipDoughnutChart(doughnutChartSvg, usersDict, index);
-        })
-        .on("mouseout", function (d, index) {
-            // hide tooltip with detailed information
-            div.style("opacity", 0);
-
-            // hide text in middle of doughnut
-            $('.doughnut-chart-text-tooltip').text("");
-            // fill sector of doughnut with originally color
-            $(this).attr('fill', getNormalColorFor(index));
-        });
-    }
-
-    /**
      * Create short tooltip for doughnut chart in middle of chart.
      *
      * @param doughnutChartSvg
@@ -480,6 +430,103 @@ function DiscussionBarometer(){
     }
 
     // bar chart and doughnut chart
+    /**
+     * Create tooltips for bar chart and doughnut chart.
+     *
+     * @param usersDict
+     * @param chartSvg
+     * @param address
+     * @param selector: different selectors for bar chart and doughnut chart
+     */
+    function addListenerForTooltip(usersDict, chartSvg, address, selector) {
+        var div;
+        var isClicked = false;
+        var isHover = false;
+        // save index and object of last click event
+        var _index,
+            _this;
+
+        // add listener for click event
+        chartSvg.selectAll(selector).on("click", function (d, index) {
+            if(isClicked){
+                // if the user clicks on another element hide the old element and make the new one visible
+                if(_index != index){
+                    hideTooltip(div, selector, _index, _this);
+                    div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
+                    isClicked = true;
+                }
+                // if the user clicks on the same tooltip for a second time hide the tooltip
+                if(_index === index){
+                    hideTooltip(div, selector, index, this);
+                    isClicked = false;
+                }
+            }
+            else{
+                // if isHover is false no tooltip is visible then create a tooltip
+                if(!isHover){
+                    div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
+                }
+                isClicked = true;
+            }
+            _index = index;
+            _this = this;
+        });
+
+        // add listener for hover event
+        chartSvg.selectAll(selector).on("mouseover", function (d, index) {
+            if(!isClicked){
+                div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
+                isHover = true;
+            }
+        })
+        .on("mouseout", function (d, index) {
+            if(!isClicked){
+                hideTooltip(div, selector, index, this);
+                isHover = false;
+            }
+        });
+    }
+
+    /**
+     *
+     *
+     * @param div
+     * @param selector
+     * @param index
+     */
+    function hideTooltip(div, selector, index, _this){
+        // hide tooltip with detailed information
+        div.style("opacity", 0);
+        // fill chart element with originally color
+        $(_this).attr('fill', getNormalColorFor(index));
+        // if doughnut chart is selected hide text in middle of doughnut
+        if(selector === ".chart-sector") {
+            $('.doughnut-chart-text-tooltip').text("");
+        }
+    }
+
+    /**
+     *
+     *
+     * @param div
+     * @param usersDict
+     * @param index
+     * @param address
+     * @param chartSvg
+     * @param selector
+     * @returns {*}
+     */
+    function showTooltip(div, usersDict, index, address, chartSvg, selector, _this){
+        div = getTooltip(usersDict, index, address);
+        // if doughnut chart is selected add short tooltip in middle of chart
+        if(selector === ".chart-sector"){
+            createShortTooltipDoughnutChart(chartSvg, usersDict, index);
+        }
+        // highlight sector on hover
+        d3.select(_this).attr('fill', getDarkColorFor(index));
+        return div;
+    }
+
      /**
      * Create tooltip.
      *
@@ -525,7 +572,7 @@ function DiscussionBarometer(){
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
-            div.append('img').attr('src', e.avatar_url).style("class", "img-circle");
+            div.append('img').attr('src', e.avatar_url);
         });
     }
 
