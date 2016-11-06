@@ -34,9 +34,9 @@ function AjaxNewsHandler(){
 		if (title.length == 0 || text.length < 10) {
 			$('#' + writingNewsFailedId).show();
 			$('#' + writingNewsFailedMessageId).text(_t(empty_news_input));
-			delay(function(){
+			setTimeout(function(){
 				$('#' + writingNewsFailedId).fadeOut();
-				delay(function(){
+				setTimeout(function(){
 					$('#' + writingNewsFailedMessageId).text('');
 				}, 2000);
 			}, 2000);

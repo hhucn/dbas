@@ -85,7 +85,7 @@ function AjaxSettingsHandler(){
 			if (parsedData.error.length == 0){
 				var lang_image = $('#current-lang-images');
 				$('#' + settingsSuccessDialog).fadeIn();
-				delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
+				setTimeout(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 				$.each($('#settings-language-dropdown').find('li'), function(){
 					$(this).removeClass('active');
 				});
@@ -95,11 +95,11 @@ function AjaxSettingsHandler(){
 				lang_image.find('span').eq(0).text(parsedData.current_lang);
 			} else {
 				$('#' + settingsAlertDialog).fadeIn();
-				delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
+				setTimeout(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 			}
 		}).fail(function setUserSettingFail() {
 			$('#' + settingsAlertDialog).fadeIn();
-			delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
+			setTimeout(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 		});
 	};
 
