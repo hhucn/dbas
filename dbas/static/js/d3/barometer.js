@@ -442,6 +442,7 @@ function DiscussionBarometer(){
         var div;
         var isClicked = false;
         var isHover = false;
+        var tooltipIsVisible = false;
         // save index and object of last click event
         var _index,
             _this;
@@ -451,22 +452,30 @@ function DiscussionBarometer(){
             if(isClicked){
                 // if the user clicks on another element hide the old element and make the new one visible
                 if(_index != index){
+                    console.log(1);
                     hideTooltip(div, selector, _index, _this);
                     div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
                     isClicked = true;
+                    tooltipIsVisible = true;
                 }
                 // if the user clicks on the same tooltip for a second time hide the tooltip
                 if(_index === index){
+                    console.log(2);
                     hideTooltip(div, selector, index, this);
                     isClicked = false;
+                    tooltipIsVisible = false;
                 }
             }
             else{
                 // if isHover is false no tooltip is visible then create a tooltip
-                if(!isHover){
+                console.log(isHover);
+                    console.log(3);
+                if(!tooltipIsVisible){
+                    console.log(4);
                     div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
                 }
                 isClicked = true;
+                tooltipIsVisible = true;
             }
             _index = index;
             _this = this;
@@ -476,13 +485,13 @@ function DiscussionBarometer(){
         chartSvg.selectAll(selector).on("mouseover", function (d, index) {
             if(!isClicked){
                 div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
-                isHover = true;
+                tooltipIsVisible = true;
             }
         })
         .on("mouseout", function (d, index) {
             if(!isClicked){
                 hideTooltip(div, selector, index, this);
-                isHover = false;
+                tooltipIsVisible = false;
             }
         });
     }
@@ -545,6 +554,8 @@ function DiscussionBarometer(){
 
         createTooltipContent(usersDict, index, address, div);
 
+        // fill background of tooltip with color of selected sector of barometer
+        $(".chartTooltip").css('background-color', getLightColorFor(index));
         // fill border of tooltip with the same color as the sector of barometer
         $(".chartTooltip").css('border-color', getDarkColorFor(index));
 
