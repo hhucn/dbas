@@ -109,8 +109,8 @@ function DiscussionBarometer(){
      * @param address
      */
     function addListenerForChartButtons(jsonData, address) {
-        $('#show-bar-chart-btn').click(function() { getD3BarometerBarChart(jsonData, address); });
-        $('#show-doughnut-chart-btn').click(function() { getD3BarometerDoughnutChart(jsonData, address); });
+        $('#show-bar-chart-btn').click(function() {getD3BarometerBarChart(jsonData, address); });
+        $('#show-doughnut-chart-btn').click(function() {getD3BarometerDoughnutChart(jsonData, address); });
     }
 
     /**
@@ -317,14 +317,9 @@ function DiscussionBarometer(){
             outerRadius = Math.min(width, height) / 2,
             innerRadius = 0.3 * outerRadius;
 
-        var sumArrayLength = 0;
-        $.each(usersDict, function(key, value) {
-            sumArrayLength += value.usersNumber;
-        });
-
         var doughnut = getDoughnut(usersDict);
 
-        var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, sumArrayLength);
+        var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius);
         var outerCircle = getOuterCircle(innerRadius, outerRadius);
 
         createOuterPath(doughnutChartSvg, usersDict, outerCircle, doughnut);
@@ -341,7 +336,7 @@ function DiscussionBarometer(){
         return d3.layout.pie()
             .sort(null)
             .value(function (d, i) {
-                return usersDict[i].seenBy;
+                return usersDict[i].usersNumber;
             });
     }
 
@@ -351,14 +346,13 @@ function DiscussionBarometer(){
      * @param usersDict
      * @param innerRadius
      * @param outerRadius
-     * @param sumArrayLength
      * @returns {*}
      */
-    function getInnerCircle(usersDict, innerRadius, outerRadius, sumArrayLength){
+    function getInnerCircle(usersDict, innerRadius, outerRadius){
         return d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(function (d, i) {
-                return (outerRadius - innerRadius) * (usersDict[i].usersNumber/sumArrayLength) + innerRadius;
+                return (outerRadius - innerRadius) * (usersDict[i].usersNumber/usersDict[i].seenBy) + innerRadius;
             });
     }
 
@@ -555,7 +549,7 @@ function DiscussionBarometer(){
         createTooltipContent(usersDict, index, address, div);
 
         // fill background of tooltip with color of selected sector of barometer
-        $(".chartTooltip").css('background-color', getLightColorFor(index));
+        $(".chartTooltip").css('background-color', getVeryLightColorFor(index));
         // fill border of tooltip with the same color as the sector of barometer
         $(".chartTooltip").css('border-color', getDarkColorFor(index));
 
@@ -607,6 +601,7 @@ function DiscussionBarometer(){
     }
 
     function getNormalColorFor(index){ return google_colors[index % google_colors.length][0]; }
+    function getVeryLightColorFor(index){ return google_colors[index % google_colors.length][1]; }
     function getLightColorFor(index){ return google_colors[index % google_colors.length][2]; }
     function getDarkColorFor(index){ return google_colors[index % google_colors.length][10]; }
 }
