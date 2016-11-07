@@ -194,10 +194,6 @@
                     </div>
     			</div>
     			<div class="modal-footer">
-                    <div id="chart-buttons">
-                        <button id="show-bar-chart-btn" type="button" class="btn btn-default" i18n:translate="bar_chart">Bar Chart</button>
-                        <button id="show-doughnut-chart-btn" type="button" class="btn btn-default" i18n:translate="doughnut_chart">Doughnut Chart</button>
-                    </div>
     				<button id="confirm-row-dialog-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
     				<button id="confirm-row-dialog-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
     			</div>
@@ -935,6 +931,33 @@
                     </div>
     				<button type="button" class="btn btn-sm btn-success" id="popup-reference-send-btn">Add reference</button>
                 </div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- BAROMETER POPUP -->
+    <div class="modal fade" id="barometer-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    	<div class="modal-dialog modal-lg">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabel"></h4>
+    			</div>
+    			<div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-offset-1 col-md-5"></div>
+                    </div>
+    			</div>
+    			<div class="modal-footer">
+                    <div id="chart-buttons">
+                        <button id="show-bar-chart-btn" type="button" class="btn btn-default" i18n:translate="bar_chart">Bar Chart</button>
+                        <button id="show-doughnut-chart-btn" type="button" class="btn btn-default" i18n:translate="doughnut_chart">Doughnut Chart</button>
+                    </div>
+    				<button id="barometer-popup-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
+    				<button id="barometer-popup-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    			</div>
     		</div>
     	</div>
     </div>
