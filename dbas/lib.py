@@ -216,7 +216,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     text depends on the provided language.
 
     :param statement_uid: Id to a statement, which should be analyzed
-    :param color_statement: True, if the statement (speicified by the ID) should be colored
+    :param color_statement: True, if the statement (specified by the ID) should be colored
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
@@ -229,9 +229,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
             statement_text = get_text_for_statement_uid(statement_uid)
             argument_text = get_text_for_argument_uid(argument.uid)
             pos = argument_text.lower().find(statement_text.lower())
-            argument_text = argument_text[0:pos] + sb + argument_text[
-                                                        pos:pos + len(statement_text)] + se + argument_text[pos + len(
-                statement_text):]
+            argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
             results.append({'uid': argument.uid,
                             'text': argument_text,
                             'url': urlmanager.get_url_for_jump(False, argument.uid)})
@@ -244,7 +242,7 @@ def get_slug_by_statement_uid(uid):
     :param uid:
     :return:
     """
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
     return resolve_issue_uid_to_slug(db_statement.issue_uid)
 
 
@@ -252,22 +250,22 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     """
 
     :param arg_array:
-    :param colored_position:
     :param with_html_tag:
     :return:
     """
+    from dbas.logger import logger
+    logger('x', 'x', str(arg_array))
     tag_premise = ('<' + TextGenerator.tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
     tag_conclusion = ('<' + TextGenerator.tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_end = ('</' + TextGenerator.tag_type + '>') if with_html_tag else ''
-    lang = DBDiscussionSession.query_property(Argument).get(arg_array[0]).lang
+    lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     _t = Translator(lang)
 
     if len(arg_array) == 1:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+        db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
-        # TODO remove this language dependency
         if lang == 'de':
             intro = _t.get(_.rebut1) if db_argument.is_supportive else _t.get(_.overbid1)
             ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end
