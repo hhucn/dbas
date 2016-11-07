@@ -242,7 +242,7 @@ def get_slug_by_statement_uid(uid):
     :param uid:
     :return:
     """
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
     return resolve_issue_uid_to_slug(db_statement.issue_uid)
 
 
@@ -250,7 +250,6 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     """
 
     :param arg_array:
-    :param colored_position:
     :param with_html_tag:
     :return:
     """
@@ -259,11 +258,11 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     tag_premise = ('<' + TextGenerator.tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
     tag_conclusion = ('<' + TextGenerator.tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_end = ('</' + TextGenerator.tag_type + '>') if with_html_tag else ''
-    lang = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().lang
+    lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     _t = Translator(lang)
 
     if len(arg_array) == 1:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+        db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
