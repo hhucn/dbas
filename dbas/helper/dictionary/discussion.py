@@ -350,7 +350,7 @@ class DiscussionDictHelper(object):
         :param uid: Argument.uid
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_jump', 'at_attitude')
+        logger('DictionaryHelper', 'get_dict_for_jump', 'argument ' + str(uid))
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
 
