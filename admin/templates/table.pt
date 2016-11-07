@@ -56,7 +56,7 @@
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('admin:static/js/admin.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('admin:static/js/table.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('admin:static/js/ajaxhandler.js')}"></script>
 
 	</tal:block>
