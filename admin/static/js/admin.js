@@ -200,7 +200,6 @@ $(document).ready(function () {
 	
 	var data = $('#data');
 	var gui = new AdminGui();
-	var helper = new Helper();
 	
 	// events for edit, delete, save, cancel, add
 	gui.setEditClickEvent(data);
