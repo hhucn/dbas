@@ -96,9 +96,17 @@ class DictionaryHelper(object):
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def')
         _uh = UserHandler
-        nickname = request.authenticated_userid if request.authenticated_userid else 'anonymous'
+        db_user = None
+        nickname = ''
+
+        if request.authenticated_userid:
+            nickname = request.authenticated_userid if request.authenticated_userid else 'anonymous'
+            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
+        if not db_user or request.authenticated_userid is None:
+            nickname = 'anonymous'
+            db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
         is_logged_in = False if nickname == 'anonymous' else _uh.is_user_logged_in(nickname)
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         # get anti-spam-question
         spamquestion, answer = UserHandler.get_random_anti_spam_question(self.system_lang)
