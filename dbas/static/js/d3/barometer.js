@@ -69,7 +69,7 @@ function DiscussionBarometer(){
      */
     this.callbackIfDoneForGetDictionary = function(data, address){
         var jsonData;
-        var dialog = $('#' + popupConfirmRowDialogId);
+        var dialog = $('#' + popupBarometerId);
 
         try{
             jsonData = JSON.parse(data);
@@ -93,10 +93,10 @@ function DiscussionBarometer(){
         });
 
 
-        $('#' + popupConfirmRowDialogAcceptBtn).show().click( function () {
-            $('#' + popupConfirmRowDialogId).modal('hide');
+        $('#' + popupBarometerAcceptBtn).show().click( function () {
+            $('#' + popupBarometerId).modal('hide');
         }).removeClass('btn-success');
-        $('#' + popupConfirmRowDialogRefuseBtn).hide();
+        $('#' + popupBarometerRefuseBtn).hide();
 
         dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
     };
@@ -120,7 +120,7 @@ function DiscussionBarometer(){
      * @param address
      */
      function getD3BarometerBarChart(jsonData, address) {
-        var dialog = $('#' + popupConfirmRowDialogId);
+        var dialog = $('#' + popupBarometerId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
 
@@ -268,7 +268,7 @@ function DiscussionBarometer(){
      * @param address
      */
     function getD3BarometerDoughnutChart(jsonData, address) {
-        var dialog = $('#' + popupConfirmRowDialogId);
+        var dialog = $('#' + popupBarometerId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
 
@@ -547,7 +547,7 @@ function DiscussionBarometer(){
      * @returns {*}
      */
     function getTooltip(usersDict, index, address){
-        var div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-5').append("div").attr("class", "chartTooltip");
+        var div = d3.select('#' + popupBarometerId + ' .col-md-5').append("div").attr("class", "chartTooltip");
 
         // make tooltip visible
         div.style("opacity", 1);
@@ -602,7 +602,7 @@ function DiscussionBarometer(){
             div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key));
             label = $('<label>').attr('class', 'legendLabel').html(value.text);
             element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
-            $('#' + popupConfirmRowDialogId).find('.col-md-5').append(element);
+            $('#' + popupBarometerId).find('.col-md-5').append(element);
         });
     }
 
