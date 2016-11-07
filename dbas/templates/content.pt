@@ -123,16 +123,6 @@
                             </span>
                         </li>
                     </ul>
-                       <!--
-                       <div id="discussion-space-answer-buttons" class="center" tal:condition="extras.show_island_icon">
-                           <a tal:attributes="id items[0].id; href items[0].url; title items[0].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_attack.svg')}"></a>
-                           <a tal:attributes="id items[1].id; href items[1].url; title items[1].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_support.svg')}"></a>
-                           <a tal:attributes="id items[2].id; href items[2].url; title items[2].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_undercut.svg')}"></a>
-                           <a tal:attributes="id items[3].id; href items[3].url; title items[3].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_rebut.svg')}"></a>
-                           <a tal:condition="items[4].id == 'item_no_opinion'" tal:attributes="id items[4].id; href items[4].url; title items[4].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_dontknow.svg')}"></a>
-                           <a href="javascript:window.history.back();" data-toggle="tooltip" data-placement="top" tal:attributes="title extras.buttons.go_back"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_back.svg')}"></a>
-                       </div>
-                       -->
                 </div>
             </div>
 
@@ -154,13 +144,6 @@
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
                     <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
-                </div>
-            </div>
-
-            <div class="hidden">
-                <div class="col-md-12 center">
-                    <img class="glyphicon-local navigation-icon" id="navigation-back" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_back"/>
-                    <img class="glyphicon-local navigation-icon" id="navigation-forward" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_forward"/>
                 </div>
             </div>
         </div>
@@ -284,17 +267,17 @@
                 </div>
 
                 <ul class="sidebar">
-                    <li id="start-view"><i class="fa fa-play" aria-hidden="true" tal:attributes="titel extras.buttons.default_view"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
-                    <li id="show-labels"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.labels"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
-                    <li id="hide-labels"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.labels"></i><span class="sidebar-element">${extras.buttons.labels}</span>
-                    <li class="indented-button" id="show-positions"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.positions"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li class="indented-button" id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.positions"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.my_statements"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.my_statements"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                    <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                    <li class="indented-button" id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                    <li class="indented-button" id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
-                    <li class="indented-button" id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
+                    <li id="start-view"><i class="fa fa-play" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
+                    <li id="show-labels"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
+                    <li id="hide-labels"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
+                    <li class="indented-button" id="show-positions"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
+                    <li class="indented-button" id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
+                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
+                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
+                    <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
+                    <li class="indented-button" id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
+                    <li class="indented-button" id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
+                    <li class="indented-button" id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
