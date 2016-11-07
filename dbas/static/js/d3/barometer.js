@@ -85,14 +85,15 @@ function DiscussionBarometer(){
         dialog.find('.col-md-5').empty();
         // create doughnut chart as default view
         getD3BarometerDoughnutChart(jsonData, address);
+        // hide button for doughnut chart
+        $('#show-doughnut-chart-btn').hide();
         // add listener for buttons to change the type of chart
         addListenerForChartButtons(jsonData, address);
 
         dialog.modal('show').on('hidden.bs.modal', function () {
             clearAnchor();
         });
-
-
+        
         $('#' + popupBarometerAcceptBtn).show().click( function () {
             $('#' + popupBarometerId).modal('hide');
         }).removeClass('btn-success');
@@ -109,8 +110,13 @@ function DiscussionBarometer(){
      * @param address
      */
     function addListenerForChartButtons(jsonData, address) {
-        $('#show-bar-chart-btn').click(function() {getD3BarometerBarChart(jsonData, address); });
-        $('#show-doughnut-chart-btn').click(function() {getD3BarometerDoughnutChart(jsonData, address); });
+        // show only button of chart which is currently not visible
+        $('#show-bar-chart-btn').click(function() {$('#show-doughnut-chart-btn').show();
+                                                   $('#show-bar-chart-btn').hide();
+                                                   getD3BarometerBarChart(jsonData, address); });
+        $('#show-doughnut-chart-btn').click(function() {$('#show-bar-chart-btn').show();
+                                                        $('#show-doughnut-chart-btn').hide();
+                                                        getD3BarometerDoughnutChart(jsonData, address); });
     }
 
     /**
@@ -382,7 +388,7 @@ function DiscussionBarometer(){
             .data(doughnut(usersDict))
             .enter().append("path")
             .attr({fill: function (d, i) { return getNormalColorFor(i); },
-                   stroke: "gray", d: innerCircle, transform: "translate(250,210)",
+                   stroke: "gray", d: innerCircle, transform: "translate(240,210)",
                    class: "chart-sector"});
     }
 
@@ -399,7 +405,7 @@ function DiscussionBarometer(){
             .data(doughnut(usersDict))
             .enter().append("path")
             .attr({'fill': function (d, i) { return getLightColorFor(i); },
-                   stroke: "gray", d: outerCircle, transform: "translate(250,210)"});
+                   stroke: "gray", d: outerCircle, transform: "translate(240,210)"});
     }
 
     /**
@@ -412,13 +418,13 @@ function DiscussionBarometer(){
     function createShortTooltipDoughnutChart(doughnutChartSvg, usersDict, index){
         // append tooltip in middle of doughnut chart
         doughnutChartSvg.append("text")
-            .attr({x: 250, y: 210,
+            .attr({x: 240, y: 210,
                    class: "doughnut-chart-text-tooltip"})
             .style({"font-weight": "bold", "font-size": "25px"})
             .text(usersDict[index].usersNumber + "/" + usersDict[index].seenBy);
 
         doughnutChartSvg.append("text")
-            .attr({x: 250, y: 230,
+            .attr({x: 240, y: 230,
                    class: "doughnut-chart-text-tooltip"})
             .text("clicked on this");
     }
