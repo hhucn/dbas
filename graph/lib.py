@@ -7,7 +7,7 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, VoteStatement
-from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings
+from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
 
 
@@ -206,7 +206,7 @@ def __get_author_of_statement(uid, db_user):
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
     db_author = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_author, 40)
-    name = get_public_nickname_based_on_settings(db_author) if db_user.uid != db_author.uid else db_user.nickname
+    name = db_author.get_global_nickname if db_user.uid != db_author.uid else db_user.nickname
     return {'name': name, 'gravatar_url': gravatar}
 
 
@@ -222,7 +222,7 @@ def __get_editor_of_statement(uid, db_user):
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()
     db_editor = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_editor, 40)
-    name = get_public_nickname_based_on_settings(db_editor) if db_user.uid != db_editor.uid else db_user.nickname
+    name = db_editor.get_global_nickname if db_user.uid != db_editor.uid else db_user.nickname
     return {'name': name, 'gravatar': gravatar}
 
 
