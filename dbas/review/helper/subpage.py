@@ -10,7 +10,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement
 from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
-    get_text_for_premisesgroup_uid, get_public_nickname_based_on_settings, get_profile_picture
+    get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
@@ -352,7 +352,7 @@ def __get_stats_for_review(review, ui_locales, main_page):
 
     stats = dict()
     stats['reported'] = sql_timestamp_pretty_print(review.timestamp, ui_locales)
-    stats['reporter'] = get_public_nickname_based_on_settings(db_reporter)
+    stats['reporter'] = db_reporter.get_global_nickname
     stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
     stats['reporter_url'] = main_page + '/user/' + stats['reporter']
     stats['id'] = str(review.uid)

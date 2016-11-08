@@ -549,16 +549,6 @@ def get_all_attacking_arg_uids_from_history(history):
         return []
 
 
-def get_public_nickname_based_on_settings(user):
-    """
-
-    :param user:
-    :return:
-    """
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
-    return user.nickname if db_settings.should_show_public_nickname else user.public_nickname
-
-
 def get_user_by_private_or_public_nickname(nickname):
     """
     Gets the user by his (public) nickname, based on the option, whether his nickname is public or not
@@ -804,8 +794,8 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     additional_id = '' if db_settings.should_show_public_nickname else 'x'
     if ignore_privacy_settings:
         additional_id = ''
-    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode(
-        'utf-8')
+    unknown = 'unknown@dbas.cs.uni-duesseldorf.de'
+    email = (user.email + additional_id).encode('utf-8') if user else unknown.encode('utf-8')
 
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
@@ -826,6 +816,6 @@ def get_author_data(main_page, uid):
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
-    link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
+    link_begin = '<a href="' + main_page + '/user/' + db_user.get_global_nickname + '">'
     link_end = '</a>'
     return link_begin + db_user.nickname + ' ' + img + link_end, True
