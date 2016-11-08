@@ -14,7 +14,7 @@ from datetime import datetime
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.views import Dbas
+from dbas.views import user_login
 
 from .lib import HTTP401, logger
 
@@ -124,7 +124,7 @@ def validate_credentials(request):
     password = data['password']
 
     # Check in DB-AS' database, if the user's credentials are valid
-    logged_in = Dbas(request).user_login(nickname, password, for_api=True)
+    logged_in = user_login(request, nickname, password, for_api=True)
 
     try:
         if logged_in['status'] == 'success':

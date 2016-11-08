@@ -12,7 +12,7 @@ which can then be used in external websites.
 import json
 
 from cornice import Service
-from dbas.views import Dbas
+import dbas.views as dbas
 from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, \
     get_all_arguments_with_text_by_statement_id, resolve_issue_uid_to_slug
 
@@ -231,10 +231,10 @@ def discussion_reaction(request):
     Return data from DBas discussion_reaction page.
 
     :param request: request
-    :return: Dbas(request).discussion_reaction(True)
+    :return: dbas.discussion_reaction(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_reaction(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_reaction(for_api=True, api_data=api_data))
 
 
 @justify.get(validators=validate_login)
@@ -243,10 +243,10 @@ def discussion_justify(request):
     Return data from DBas discussion_justify page.
 
     :param request: request
-    :return: Dbas(request).discussion_justify(True)
+    :return: dbas.discussion_justify(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_justify(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_justify(for_api=True, api_data=api_data))
 
 
 @attitude.get(validators=validate_login)
@@ -255,10 +255,10 @@ def discussion_attitude(request):
     Return data from DBas discussion_attitude page.
 
     :param request: request
-    :return: Dbas(request).discussion_attitude(True)
+    :return: dbas.discussion_attitude(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_attitude(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_attitude(for_api=True, api_data=api_data))
 
 
 @zinit.get(validators=validate_login)
@@ -267,10 +267,10 @@ def discussion_init(request):
     Return data from DBas discussion_init page.
 
     :param request: request
-    :return: Dbas(request).discussion_init(True)
+    :return: dbas.discussion_init(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_init(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_init(for_api=True, api_data=api_data))
 
 
 @zinit_blank.get(validators=validate_login)
@@ -279,10 +279,10 @@ def discussion_init_blank(request):
     Return data from DBas discussion_init page.
 
     :param request: request
-    :return: Dbas(request).discussion_init(True)
+    :return: dbas.discussion_init(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_init(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_init(for_api=True, api_data=api_data))
 
 
 #
@@ -296,7 +296,7 @@ def add_start_statement(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_statement))
+    return as_json(prepare_data_assign_reference(request, dbas.set_new_start_statement))
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -307,7 +307,7 @@ def add_start_premise(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_premise))
+    return as_json(prepare_data_assign_reference(request, dbas.set_new_start_premise))
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
@@ -318,7 +318,7 @@ def add_justify_premise(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument))
+    return as_json(prepare_data_assign_reference(request, dbas.set_new_premises_for_argument))
 
 
 # =============================================================================
@@ -418,7 +418,7 @@ def find_statements_fn(request):
     api_data["issue"] = request.matchdict["issue"]
     api_data["mode"] = request.matchdict["type"]
     api_data["value"] = request.matchdict["value"]
-    results = Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
+    results = dbas.fuzzy_search(for_api=True, api_data=api_data)
 
     issue_uid = api_data["issue"]
 
@@ -463,7 +463,7 @@ def fn_jump_to_argument(request):
     :return: Argument with a list of possible interactions
     """
     api_data = jump_preparation(request)
-    return as_json(Dbas(request).discussion_jump(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_jump(for_api=True, api_data=api_data))
 
 
 @jump_to_decision.get()
@@ -475,7 +475,7 @@ def fn_jump_to_decision(request):
     :return: Argument with a list of possible interactions
     """
     api_data = jump_preparation(request)
-    return as_json(Dbas(request).discussion_jump_decision(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_jump_decision(for_api=True, api_data=api_data))
 
 
 # =============================================================================
@@ -530,6 +530,6 @@ def get_news(request):
        Unused.
 
     :param request: request
-    :return: Dbas(request).get_news()
+    :return: dbas.get_news()
     """
-    return Dbas(request).get_news()
+    return dbas.get_news()
