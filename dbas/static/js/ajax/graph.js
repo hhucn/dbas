@@ -43,7 +43,7 @@ function AjaxGraphHandler(){
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, adress);
 		}).fail(function () {
-			new DiscussionBarometer().callbackIfFailForGetDictionary();
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
 
