@@ -16,7 +16,7 @@ from dbas.lib import get_language
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.views import Dbas, project_name
+from dbas.views import user_logout, base_layout, project_name
 from pyramid.threadlocal import get_current_registry
 
 #
@@ -80,14 +80,14 @@ def main_admin(request):
     HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
     should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
     if should_log_out:
-        return Dbas(request).user_logout(True)
+        return user_logout(request, True)
 
     ui_locales = get_language(request, get_current_registry())
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     overview = lib.get_overview(request.path)
 
     return {
-        'layout': Dbas.base_layout(),
+        'layout': base_layout(),
         'language': str(ui_locales),
         'title': 'Admin',
         'project': project_name,
@@ -108,7 +108,7 @@ def main_table(request):
     HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
     should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
     if should_log_out:
-        return Dbas(request).user_logout(True)
+        return user_logout(request, True)
 
     ui_locales = get_language(request, get_current_registry())
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
@@ -124,7 +124,7 @@ def main_table(request):
         table_dict['error'] = str(e)
 
     return {
-        'layout': Dbas.base_layout(),
+        'layout': base_layout(),
         'language': str(ui_locales),
         'title': 'Admin - ' + table,
         'project': project_name,

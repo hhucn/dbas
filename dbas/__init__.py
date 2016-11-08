@@ -7,6 +7,9 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
+from wsgiref.simple_server import make_server
+
+from pyramid.threadlocal import get_current_registry
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -158,4 +161,6 @@ def main(global_config, **settings):
 
     # read the input and start
     config.scan()
-    return config.make_wsgi_app()
+    app = config.make_wsgi_app()
+    server = make_server('0.0.0.0', 4284, app)
+    server.serve_forever()
