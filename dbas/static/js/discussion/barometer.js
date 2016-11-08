@@ -258,11 +258,4 @@ function DiscussionBarometer(){
 			div.remove();
 		});
 	};
-
-	/**
-	 * Callback if the ajax request failed
-	 */
-	this.callbackIfFailForGetDictionary = function(){
-		setGlobalErrorHandler(_t(ohsnap), _t_discussion(requestFailed));
-	};
 }
