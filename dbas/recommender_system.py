@@ -7,12 +7,52 @@ TODO
 import random
 
 from sqlalchemy import and_
-
 from dbas.helper.relation import RelationHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, VoteArgument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
+
+max_count = 5
+
+
+def filter_best_positions(db_statements):
+    """
+
+    :param db_statements:
+    :return:
+    """
+    return __select_random(db_statements)
+
+
+def filter_best_statements_for_justify_position(db_arguments):
+    """
+
+    :param db_arguments:
+    :return:
+    """
+    return __select_random(db_arguments)
+
+
+def filter_best_statements_for_justify_argument(db_arguments):
+    """
+
+    :param db_arguments:
+    :return:
+    """
+    return __select_random(db_arguments)
+
+
+def __select_random(some_list):
+    """
+
+    :param some_list:
+    :return:
+    """
+    if len(some_list) <= max_count:
+        return some_list
+
+    return [some_list[i] for i in sorted(random.sample(range(len(some_list)), max_count))]
 
 
 def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, restriction_on_arg_uids=[], last_attack=None, history=None):
