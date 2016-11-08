@@ -7,7 +7,7 @@ Provides helping function for the managing the queue with all executed decisions
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
     User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled
-from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
+from dbas.lib import sql_timestamp_pretty_print, get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
@@ -198,8 +198,8 @@ def __get_user_dict_for_review(user_id, mainpage):
     image_url = get_profile_picture(db_user, 20)
     return {
         'gravatar_url': image_url,
-        'nickname': get_public_nickname_based_on_settings(db_user),
-        'userpage_url': mainpage + '/user/' + get_public_nickname_based_on_settings(db_user)
+        'nickname': db_user.get_global_nickname,
+        'userpage_url': mainpage + '/user/' + db_user.get_global_nickname
     }
 
 

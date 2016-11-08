@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
-from dbas.lib import get_text_for_statement_uid, get_profile_picture, get_public_nickname_based_on_settings
+from dbas.lib import get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
 
 
@@ -74,7 +74,7 @@ def __get_values_of_reference(reference, main_page):
     db_user = DBDiscussionSession.query(User).filter_by(uid=int(reference.author_uid)).first()
 
     img = get_profile_picture(db_user, 20, True)
-    name = get_public_nickname_based_on_settings(db_user)
+    name = db_user.get_global_nickname
     link = main_page + '/user/' + name
 
     return {'uid': reference.uid,
