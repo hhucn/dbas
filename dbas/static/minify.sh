@@ -8,11 +8,13 @@ path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # files which are minifed (has to be in the same order as paths!
 files=($path"/js/compiled/main.min.js"
-       $path"/js/compiled/main_discussion.min.js")
+       $path"/js/compiled/main_discussion.min.js"
+       $path"/js/compiled/main_ajax.min.js")
 
 # path for files, which should be minified
 paths=($path"/js/*.js"
-       $path"/js/discussion/*.js")
+       $path"/js/discussion/*.js"
+       $path"/js/ajax/*.js")
 
 # path for files, which should be appended for the final file
 appends=($path"/js/compiled/main.min.js"

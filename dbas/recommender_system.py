@@ -22,6 +22,7 @@ def filter_best_positions(db_statements):
     :param db_statements:
     :return:
     """
+    # TODO # 166
     return __select_random(db_statements)
 
 
@@ -31,6 +32,7 @@ def filter_best_statements_for_justify_position(db_arguments):
     :param db_arguments:
     :return:
     """
+    # TODO # 166
     return __select_random(db_arguments)
 
 
@@ -40,6 +42,7 @@ def filter_best_statements_for_justify_argument(db_arguments):
     :param db_arguments:
     :return:
     """
+    # TODO # 166
     return __select_random(db_arguments)
 
 
