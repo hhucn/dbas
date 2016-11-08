@@ -58,6 +58,7 @@ class ItemDictHelper(object):
         db_statements = db_statements\
             .filter(and_(Statement.is_startpoint == True, Statement.issue_uid == self.issue_uid))\
             .join(TextVersion, TextVersion.uid == Statement.textversion_uid).all()
+        # db_statements = RecommenderSystem.filter_best_positions(db_statements)  # TODO # 166
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
         statements_array = []
@@ -136,6 +137,7 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
         if db_arguments:
+            # db_arguments = RecommenderSystem.filter_best_statements_for_justify_position(db_arguments)  # TODO # 166
             for argument in db_arguments:
                 # get all premises in the premisegroup of this argument
                 db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
@@ -190,8 +192,9 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
         if db_arguments:
+            # db_arguments = RecommenderSystem.filter_best_statements_for_justify_argument(db_arguments)  # TODO # 166
             for argument in db_arguments:
-                # get alles premises in this group
+                # get all premises in this group
                 db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
                 premises_array = []
                 for premise in db_premises:
