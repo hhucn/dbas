@@ -30,7 +30,7 @@
 
         <span tal:condition="is_author" class="icon-badge blue-button bottom-right" id="icon-add-news">+</span>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/news.js')}"></script>
+		<script type="text/javascript" src="/static/js/news.js"></script>
 
 	</tal:block>
 </tal:block>

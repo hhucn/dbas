@@ -71,7 +71,7 @@
     						</div>
 
     						<div class="col-md-3 col-md-offset-1">
-    							<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author" style="border-radius: 5px;">
+    							<img class="popup_author_img" src="static/images/author.jpg')}" alt="image of the author" style="border-radius: 5px;">
     						</div>
     					</div>
     				</div>
@@ -360,17 +360,17 @@
     							<div class="col-md-9">
     								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked>
     								<label for="inlineRadioGender1">
-    									<img id="inlineRadioGender1img" src="${request.static_url('dbas:static/images/transparent.gif')}">
+    									<img id="inlineRadioGender1img" src="static/images/transparent.gif')}">
     									<span i18n:translate="none">none</span>
     								</label>
     								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f">
     								<label for="inlineRadioGender2">
-    									<img id="inlineRadioGender2img" src="${request.static_url('dbas:static/images/transparent.gif')}">
+    									<img id="inlineRadioGender2img" src="static/images/transparent.gif')}">
     									<span i18n:translate="female">female</span>
     								</label>
     								<input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m">
     								<label for="inlineRadioGender3">
-    									<img id="inlineRadioGender3img" src="${request.static_url('dbas:static/images/transparent.gif')}">
+    									<img id="inlineRadioGender3img" src="static/images/transparent.gif')}">
     									<span i18n:translate="male">male</span>
     								</label>
     							</div>
@@ -673,7 +673,7 @@
                             <input tal:condition="not:extras.lang_is_de" id="de" type="radio" name="lang_topic">
                             <input tal:condition="extras.lang_is_de" id="de" type="radio" name="lang_topic" checked>
                             <label for="de">
-                                <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">
+                                <img class="language_selector_img" src="static/images/flag-de-24.png')}" alt="flag_ge">
                                 Deutsch
                             </label>
                         </li>
@@ -681,7 +681,7 @@
                             <input tal:condition="not:extras.lang_is_en" id="en" type="radio" name="lang_topic">
                             <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
                             <label for="en">
-                                <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
+                                <img class="language_selector_img" src="static/images/flag-us-gb-24.png')}" alt="flag_en">
                                 English
                             </label>
                         </li>
@@ -689,14 +689,14 @@
                         <li style="margin-right: 1em;">
                             <input id="es" type="radio" name="lang_topic">
                             <label for="es">
-                                <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">
+                                <img class="language_selector_img" src="static/images/flag-sp-24.png')}" alt="flag_es">
                                 Espa&ntilde;ol
                             </label>
                         </li>
                         <li style="margin-right: 1em;">
                             <input id="sw" type="radio" name="lang_topic">
                             <label for="sw">
-                                <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-24.png')}" alt="flag_sw">
+                                <img class="language_selector_img" src="static/images/flag-sw-24.png')}" alt="flag_sw">
                                 Svensk
                             </label>
                         </li>

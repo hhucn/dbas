@@ -2,7 +2,7 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-        <img id="prototype_img" src="${request.static_url('dbas:static/images/alpha.png')}" style="position:fixed; z-index:10; top:65px; width:100px;">
+        <img id="prototype_img" src="/static/images/alpha.png" style="position:fixed; z-index:10; top:65px; width:100px;">
 
 	    <div class="blocked session_expired center alert-warning" id="session_expired_container" tal:condition="session_expired">
 	    	<span i18n:translate="session_expired">Your session has expired!</span>
@@ -11,8 +11,8 @@
 
 		<div class="container colored-container first-container jumbotron" id="home-template">
 			<div class="content">
-				<img id="dbas-logo" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
-				<img id="dbas-logo" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
+				<img id="dbas-logo" class="logo img-responsive" src="/static/images/logo.png" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
+				<img id="dbas-logo" class="logo img-responsive" src="/static/images/logo_de.png" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
 				<br>
 				<p class="lead">
 					<span i18n:translate="welcome_text1">Welcome to D-BAS! This is an early prototype of our dialog-based argumentation system. There will be bugs. Please feel free to</span>
@@ -33,10 +33,10 @@
 					<span i18n:translate="funded_by">It is funded by the</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
 				</p>
 				<div class="list-logos center">
-						<a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>
-						<a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img id="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}"/><img id="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/></a>
-						<a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img id="logo_diid" src="${request.static_url('dbas:static/images/logo_diid.jpg')}"/><img id="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
-                    	<a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img id="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" /><img id="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/></a>
+						<a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" src="/static/images/logo_hhu.jpg"/></a>
+						<a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img id="logo_kolleg" src="/static/images/logo_kolleg.jpg"/><img id="logo_kolleg_s" src="/static/images/logo_kolleg_s.jpg"/></a>
+						<a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img id="logo_diid" src="/static/images/logo_diid.jpg"/><img id="logo_fhoev_s" src="/static/images/logo_diid_s.jpg"/></a>
+                    	<a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img id="logo_fhoev" src="/static/images/logo_fhoev.png" /><img id="logo_fhoev_s" src="/static/images/logo_fhoev_s.png"/></a>
 				</div>
 			</div>
 		</div>
@@ -54,17 +54,17 @@
 
 			<div class="row">
 				<div class="col-md-4 col-badge">
-					<img id="icon-map" class="icon-badge" alt="icon-scooter" src="${request.static_url('dbas:static/images/icon_scooter.png')}" />
+					<img id="icon-map" class="icon-badge" alt="icon-scooter" src="/static/images/icon_scooter.png" />
 					<h3 i18n:translate="Fast">Fast</h3>
 					<p class="content" i18n:translate="fast_content">Participant do not have to read much text. Every unique step in our novel system regards to one point of view in the discussion. Less text, less confusions.</p>
 				</div>
 				<div class="col-md-4 col-badge">
-					<img id="icon-dialog" class="icon-badge" alt="icon-match" src="${request.static_url('dbas:static/images/icon_match.png')}" />
+					<img id="icon-dialog" class="icon-badge" alt="icon-match" src="/static/images/icon_match.png" />
 					<h3 i18n:translate="dialog_based">Matching Ideas</h3>
 					<p class="content" i18n:translate="matching_ideas_content">Do you have a matching idea? Good, because your idea will not become boggy in a flood of text, it will matched at the right position into the discussion.</p>
 			</div>
 				<div class="col-md-4 col-badge">
-					<img id="icon-science" class="icon-badge" alt="icon-laboratory" src="${request.static_url('dbas:static/images/icon_laboratory.png')}" />
+					<img id="icon-science" class="icon-badge" alt="icon-laboratory" src="/static/images/icon_laboratory.png" />
 					<h3 i18n:translate="based_on_science">Based on Science</h3>
 					<p class="content" i18n:translate="based_on_science_content">Our novel system is based on the work of multiple doctoral thesis' as well as final papers of students.</p>
 					</div>
@@ -85,17 +85,17 @@
 
 			<div class="row">
 				<div class="col-md-4 col-badge">
-					<img id="icon-map" class="icon-badge" alt="icon-map" src="${request.static_url('dbas:static/images/icon_graph.png')}" />
+					<img id="icon-map" class="icon-badge" alt="icon-map" src="/static/images/icon_graph.png" />
 					<h3 i18n:translate="argu_maps">Argumentation Maps</h3>
 					<p i18n:translate="argu_maps_content" class="content">A argumentation map is like a mind map, but the relations between the nodes are highly important and can have several meanings. Additionally the bubbles of the map can have play a important role. Therefore using this data structure for logically presentations of some graphs makes sense.</p>
 				</div>
 				<div class="col-md-4 col-badge">
-					<img id="icon-dialog" class="icon-badge" alt="icon-dialog" src="${request.static_url('dbas:static/images/icon_dialog.png')}" />
+					<img id="icon-dialog" class="icon-badge" alt="icon-dialog" src="/static/images/icon_dialog.png" />
 					<h3 i18n:translate="dialog_based">Dialog-based</h3>
 					<p i18n:translate="dialog_based_content" class="content">Yeah, this is a novel and it is a kind of dialog-based approach. This means that the system will represent argumentations of panelist and claims will be given through the other participants.</p>
 				</div>
 				<div class="col-md-4 col-badge">
-					<img id="icon-simple" class="icon-badge" alt="icon-lollipop" src="${request.static_url('dbas:static/images/icon_lollipop.png')}" />
+					<img id="icon-simple" class="icon-badge" alt="icon-lollipop" src="/static/images/icon_lollipop.png" />
 					<h3 i18n:translate="simple_ui">Simple UI</h3>
 					<p i18n:translate="simple_ui_content" class="content">The user interface of D-BAS is simple, clear and easy. At any point during the discussion the choices for the participant are bounded, but not isolating him/her.</p>
 				</div>
@@ -103,17 +103,17 @@
 
 			<div class="row">
 				<div class="col-md-4 col-badge">
-					<img id="icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
+					<img id="icon-guided" class="icon-badge" alt="icon-guided" src="/static/images/icon_guided.png" />
 					<h3 i18n:translate="guided_view">Guided View</h3>
 					<p class="content"><span i18n:translate="guided_view_content">You will never see something like an argumentation map, because the systems is your dialog partner</span>.</p>
 				</div>
 				<div class="col-md-4 col-badge">
-					<img id="icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
+					<img id="icon-island" class="icon-badge" alt="icon-island" src="/static/images/icon_island.png" />
 					<h3 i18n:translate="island_view">Island View</h3>
 					<p class="content" i18n:translate="island_view_content">Okay, you want to see more as, but not everything. Therefore the island view will present you a list of every connected statement for an specific statement.</p>
 				</div>
 				<div class="col-md-4 col-badge">
-					<img id="icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
+					<img id="icon-expert" class="icon-badge" alt="icon-expert" src="/static/images/icon_expert.png" />
 					<h3 i18n:translate="expert_view">Expert View</h3>
 					<p class="content" i18n:translate="expert_view_content">So, you think you are an expert? Okay, you can have a view of the complete argumentation map.</p>
 				</div>
@@ -130,17 +130,17 @@
 
 					<div class="row">
 						<div class="col-md-4 col-badge">
-							<img id="icon-liqd" class="icon-badge" alt="icon-liqd" src="${request.static_url('dbas:static/images/icon_liqd.png')}" />
+							<img id="icon-liqd" class="icon-badge" alt="icon-liqd" src="/static/images/icon_liqd.png" />
 							<h3><a target="_blank" href="https://liqd.net/" data-toggle="tooltip" data-placement="bottom" title="Liquid Democracy e.V.">Liquid Democracy e.V.</a></h3>
 							<p i18n:translate="liquid_democracy_description">A partner of practice of Tobias Krauthoff is Daniel Reichert of Liquid Democracy e.V., which is a non-party, non-profit association. The key element of their work is the development of Adhocracy, a free software which serves as a digital participation tool. It offers various functions for the different needs of our users. In addition, we are developing Thentos, an identity management system which ensures privacy during complex participation processes.</p>
 						</div>
 						<div class="col-md-4 col-badge">
-							<img id="icon-kolleg" class="icon-badge" alt="icon-kolleg" src="${request.static_url('dbas:static/images/icon_kolleg.png')}" />
+							<img id="icon-kolleg" class="icon-badge" alt="icon-kolleg" src="/static/images/icon_kolleg.png" />
 							<h3><a href="http://www.fortschrittskolleg.de/" data-toggle="tooltip" data-placement="bottom" title="Graduation School Online Participation" target="_blank"><span i18n:translate="graduation_scool">Graduation School</span> <span i18n:translate="fk_op">Online-Participation</span></a></h3>
 							<p i18n:translate="fk_op_description">The NRW Graduation School Online-Participation is subsidised governmentally by Ministry of Innovation, Science and Research in North Rhine-Westphalia. The Graduation School is a network of business economics, computer scientiests, communication scientists, political scientists, jurists and sociologist, which are wokring together with partners from practice. The objective is the examination of opportunities of the internet, where affected persons are able to participate in decisions, where they are affected.</p>
 						</div>
 						<div class="col-md-4 col-badge">
-							<img id="icon-kit" class="icon-badge" alt="icon-kit" src="${request.static_url('dbas:static/images/icon_kit.png')}" />
+							<img id="icon-kit" class="icon-badge" alt="icon-kit" src="/static/images/icon_kit.png" />
 							<h3><a target="_blank" data-toggle="tooltip" data-placement="bottom" title="KIT" href="http://www.philosophie.kit.edu/mitarbeiter_betz_gregor.php" i18n:translate="kit">Karlsruhe Institut of Technology</a></h3>
 							<p i18n:translate="kit_description">The workging group of functionality of the graduation school has a close-knit connection with the Institute for Technology Assessment and Systems Analysis (ITAS) of the Karlsruhe Institut of Technology, especially to Prof. Dr. G. Betz. His working group develoepd Argunet, a software tool for collaborative argumentation analysis. Its underlying theory, the theory of dialectical struc- tures, defines argument relations in terms of locigo- sematical relations between propositions and thus gives rise to a new computational approach to the reconstruction of complex debates.
 							</p>
@@ -169,17 +169,17 @@
 
 						<div class="row">
 							<div class="col-md-4 col-badge">
-								<img id="icon-forum" class="icon-badge" alt="icon-forum" src="${request.static_url('dbas:static/images/icon_forum.png')}" />
+								<img id="icon-forum" class="icon-badge" alt="icon-forum" src="/static/images/icon_forum.png" />
 								<h3 i18n:translate="forum">Forum</h3>
 								<p i18n:translate="forum_description">Forum-based approaches are well known to all kind of users, but are only scale with the number of users, not with the number of arguments. Therefore messages can be highly redundant. Additionally the messages are not connected logically to each other.</p>
 							</div>
 							<div class="col-md-4 col-badge">
-								<img id="icon-pro-con" class="icon-badge" alt="icon-pro-con" src="${request.static_url('dbas:static/images/icon_procon.png')}" />
+								<img id="icon-pro-con" class="icon-badge" alt="icon-pro-con" src="/static/images/icon_procon.png" />
 								<h3 i18n:translate="pro-contra_lists">Pro-Contra Lists</h3>
 								<p i18n:translate="pro-contra_lists_description">These lists are more arranged than the forum-based approaches, but even there are no connections between the arguments. Therefore these approaches are just lists and not more.</p>
 							</div>
 							<div class="col-md-4 col-badge">
-								<img id="icon-argapproach" class="icon-badge" alt="icon-argapproach" src="${request.static_url('dbas:static/images/icon_argu.png')}" />
+								<img id="icon-argapproach" class="icon-badge" alt="icon-argapproach" src="/static/images/icon_argu.png" />
 								<h3 i18n:translate="argu_approaches">Argumentation-based Approaches</h3>
 								<p i18n:translate="argu_approaches_description">This concept seems to be perfect, because posts are connected logically to each other and redundancy can be avoided. Unfortunately these tools are for experts only and not for amateurs.</p>
 							</div>
