@@ -9,7 +9,6 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 
 from wsgiref.simple_server import make_server
 
-from pyramid.threadlocal import get_current_registry
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator

@@ -336,7 +336,7 @@ def main_imprint(request):
 @view_config(route_name='main_publications', renderer='templates/publications.pt', permission='everybody')
 def main_publications(request):
     """
-    View configuration for the publcations.
+    View configuration for the publications.
 
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
@@ -1427,14 +1427,14 @@ def set_user_language(request):
 
 # ajax - sending notification
 @view_config(route_name='ajax_send_notification', renderer='json')
-def send_notification(request):
+def send_some_notification(request):
     """
     Set a new message into the inbox of an recipient, and the outbox of the sender.
 
     :return: dict()
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('send_notification', 'def', 'main, request.params: ' + str(request.params))
+    logger('send_some_notification', 'def', 'main, request.params: ' + str(request.params))
 
     error = ''
     ts = ''
