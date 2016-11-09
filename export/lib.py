@@ -209,6 +209,7 @@ def get_minimal_graph_export(issue):
             # not an undercut
             inferences.append({'id': arg.uid,
                                'premises': premises,
+                               'is_supportive': arg.is_supportive,
                                'conclusion': arg.conclusion_uid})
 
     return {'nodes': nodes,
