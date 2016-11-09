@@ -4,7 +4,7 @@
 # @email krauthoff@cs.uni-duesseldorf.de
 
 from dbas.lib import sql_timestamp_pretty_print
-from dbas.input_validator import Validator
+from dbas.input_validator import is_integer
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument,\
@@ -182,7 +182,7 @@ def get_minimal_graph_export(issue):
     :param col_name: current columns name
     :return: String or raise NameError
     """
-    if Validator.is_integer(issue):
+    if is_integer(issue):
         db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
         db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
     else:
