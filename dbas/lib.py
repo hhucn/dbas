@@ -816,6 +816,6 @@ def get_author_data(main_page, uid):
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
-    link_begin = '<a href="' + main_page + '/user/' + db_user.get_global_nickname + '">'
+    link_begin = '<a href="' + main_page + '/user/' + db_user.get_global_nickname() + '">'
     link_end = '</a>'
     return link_begin + db_user.nickname + ' ' + img + link_end, True

@@ -95,7 +95,7 @@ def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    reviewer_name = db_user.get_global_nickname
+    reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
     use_https = 'dbas' in main_page
     return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'deletes', use_https)
@@ -108,7 +108,7 @@ def send_request_for_recent_edit_review_to_socketio(nickname, main_page):
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    reviewer_name = db_user.get_global_nickname
+    reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
     use_https = 'dbas' in main_page
     return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'edits', use_https)
@@ -122,7 +122,7 @@ def send_request_for_recent_optimization_review_to_socketio(nickname, main_page)
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    reviewer_name = db_user.get_global_nickname
+    reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
     use_https = 'dbas' in main_page
     return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'optimizations', use_https)

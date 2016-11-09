@@ -21,7 +21,7 @@ import dbas.user_management as user_manager
 import requests
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason, Statement
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
 from dbas.handler.opinion import OpinionHandler
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
@@ -29,7 +29,6 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import QueryHelper
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
-from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
     try_to_register_new_user_via_ajax, request_password
@@ -62,9 +61,7 @@ project_name = name + ' ' + full_version
 
 
 def base_layout():
-    renderer = get_renderer('templates/basetemplate.pt')
-    layout = renderer.implementation().macros['layout']
-    return layout
+    return get_renderer('templates/basetemplate.pt').implementation().macros['layout']
 
 
 # main page
@@ -1535,6 +1532,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
     """
     Sets new premise for the start
 
+    :param request: request of the webserver
     :param for_api: boolean
     :param api_data:
     :return: json-dict()
@@ -2008,7 +2006,7 @@ def get_references(request):
 
     except KeyError as e:
         logger('get_references', 'error', repr(e))
-        return_dict = {'error': _tn.get(_tn.internalKeyError)}
+        return_dict = {'error': _tn.get(_.internalKeyError)}
 
     return json.dumps(return_dict, True)
 
@@ -2028,11 +2026,11 @@ def set_references(request):
         reference   = escape_string(json.loads(request.params['reference']))
         source      = escape_string(json.loads(request.params['ref_source']))
         success     = set_reference(reference, source, nickname, uid, issue_uid, transaction)
-        return_dict = {'error': '' if success else _tn.get(_tn.internalKeyError)}
+        return_dict = {'error': '' if success else _tn.get(_.internalKeyError)}
 
     except KeyError as e:
         logger('set_references', 'error', repr(e))
-        return_dict = {'error': _tn.get(_tn.internalKeyError)}
+        return_dict = {'error': _tn.get(_.internalKeyError)}
 
     return json.dumps(return_dict, True)
 

@@ -187,19 +187,19 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     return some_list
 
 
-def __get_user_dict_for_review(user_id, mainpage):
+def __get_user_dict_for_review(user_id, main_page):
     """
     Fetches some data of the given user.
 
-    :param mainpage: Mainpage of D-BAS
-    :return: dcit with gravatar, uerpage and nickname
+    :param main_page: main_page of D-BAS
+    :return: dict with gravatar, users page and nickname
     """
     db_user = DBDiscussionSession.query(User).filter_by(uid=user_id).first()
     image_url = get_profile_picture(db_user, 20)
     return {
         'gravatar_url': image_url,
-        'nickname': db_user.get_global_nickname,
-        'userpage_url': mainpage + '/user/' + db_user.get_global_nickname
+        'nickname': db_user.get_global_nickname(),
+        'userpage_url': main_page + '/user/' + db_user.get_global_nickname()
     }
 
 
