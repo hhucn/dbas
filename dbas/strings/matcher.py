@@ -14,6 +14,7 @@ from Levenshtein import distance
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.user_management import get_public_profile_picture
+from dbas.database.initializedb import nick_of_anonymous_user
 
 list_length = 5
 max_count_zeros = 5
@@ -172,7 +173,7 @@ def get_strings_for_public_nickname(value, nickname):
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname).contains(func.lower(value)),
-                                                     ~User.public_nickname.in_([nickname, 'admin', 'anonymous'])).all()
+                                                     ~User.public_nickname.in_([nickname, 'admin', nick_of_anonymous_user])).all()
     return_array = []
 
     for index, user in enumerate(db_user):

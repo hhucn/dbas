@@ -11,6 +11,7 @@ import dbas.helper.notification as NotificationHelper
 import dbas.user_management as UserHandler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
+from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.query import QueryHelper
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict, get_profile_picture
 from dbas.logger import logger
@@ -99,14 +100,19 @@ class DictionaryHelper(object):
         db_user = None
         nickname = ''
 
+        logger('X', 'X', str(request.authenticated_userid) + ' ' + str(request.authenticated_userid is None))
+        logger('X', 'X', str(request.authenticated_userid) + ' ' + str(request.authenticated_userid is None))
+        logger('X', 'X', str(request.authenticated_userid) + ' ' + str(request.authenticated_userid is None))
+
         if request.authenticated_userid:
-            nickname = request.authenticated_userid if request.authenticated_userid else 'anonymous'
+            nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         if not db_user or request.authenticated_userid is None:
-            nickname = 'anonymous'
-            db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
-        is_logged_in = False if nickname == 'anonymous' else _uh.is_user_logged_in(nickname)
+            nickname = nick_of_anonymous_user
+            db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+            logger('X', 'X', '------------------ ' + str(db_user is None))
+        is_logged_in = False if nickname == nick_of_anonymous_user else _uh.is_user_logged_in(nickname)
 
         # get anti-spam-question
         spamquestion, answer = UserHandler.get_random_anti_spam_question(self.system_lang)
