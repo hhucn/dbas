@@ -160,6 +160,7 @@ def main(global_config, **settings):
 
     # read the input and start
     config.scan()
-    app = config.make_wsgi_app()
-    server = make_server('134.99.112.44', 5000, app)
-    server.serve_forever()
+    return config.make_wsgi_app()
+    # app = config.make_wsgi_app()
+    # server = make_server('134.99.112.44', 5000, app)
+    # server.serve_forever()
