@@ -1,5 +1,5 @@
 """
-Core component of DBAS.
+Core component of D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -22,7 +22,9 @@ import requests
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
-from dbas.handler.opinion import OpinionHandler
+from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
+    get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
+    get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -34,14 +36,16 @@ from dbas.helper.views import preparation_for_view, get_nickname_and_session, pr
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
     try_to_register_new_user_via_ajax, request_password
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
-from dbas.input_validator import Validator
+from dbas.input_validator import is_integer, is_position, is_statement_forbidden, check_belonging_of_argument, \
+    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
 from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
-    get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, get_all_arguments_with_text_and_url_by_statement_id, \
-    get_slug_by_statement_uid, get_profile_picture, get_user_by_case_insensitive_nickname
+    get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, \
+    get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
+    get_user_by_case_insensitive_nickname
 from dbas.logger import logger
-from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, rep_reason_first_justification, \
-    rep_reason_first_argument_click, rep_reason_first_confrontation, rep_reason_first_new_argument, \
-    rep_reason_new_statement
+from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
+    rep_reason_first_justification, rep_reason_first_argument_click, rep_reason_first_confrontation, \
+    rep_reason_first_new_argument, rep_reason_new_statement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -53,7 +57,8 @@ from pyramid.view import view_config, notfound_view_config, forbidden_view_confi
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
-from websocket.lib import send_request_for_recent_delete_review_to_socketio, send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio
+from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
+    send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio
 from dbas.database.initializedb import nick_of_anonymous_user
 
 name = 'D-BAS'
@@ -412,6 +417,7 @@ def discussion_init(request, for_api=False, api_data=None):
     """
     View configuration for the content view.
 
+    :param request: request of the web server
     :param for_api: Boolean
     :param api_data: Dictionary, containing data of a user who logged in via API
     :return: dictionary
@@ -480,6 +486,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     """
     View configuration for the content view.
 
+    :param request: request of the web server
     :param for_api: Boolean
     :param api_data:
     :return: dictionary
@@ -500,11 +507,11 @@ def discussion_attitude(request, for_api=False, api_data=None):
     statement_id    = match_dict['statement_id'][0] if 'statement_id' in match_dict else ''
     issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
 
-    if not Validator.is_integer(statement_id, True) \
-            or not Validator.check_belonging_of_statement(issue, statement_id) \
-            or not Validator.is_position(statement_id):
+    if not is_integer(statement_id, True) \
+            or not check_belonging_of_statement(issue, statement_id) \
+            or not is_position(statement_id):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
-    if Validator.is_statement_forbidden(statement_id):
+    if is_statement_forbidden(statement_id):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], revoked_content=True))
 
     disc_ui_locales = get_discussion_language(request, issue)
@@ -544,6 +551,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     """
     View configuration for the content view.
 
+    :param request: request of the web server
     :param for_api: Boolean
     :param api_data:
     :return: dictionary
@@ -567,7 +575,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
     relation            = match_dict['relation'][0] if len(match_dict['relation']) > 0 else ''
 
-    if not Validator.is_integer(statement_or_arg_id, True):
+    if not is_integer(statement_or_arg_id, True):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
 
     issue               = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
@@ -576,22 +584,22 @@ def discussion_justify(request, for_api=False, api_data=None):
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
         if not get_text_for_statement_uid(statement_or_arg_id)\
-                or not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
+                or not check_belonging_of_statement(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
         item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, api_data,
                                                                                     request.application_url, slug, statement_or_arg_id,
                                                                                     supportive, mode, ui_locales)
 
     elif 'd' in mode and relation == '':
-        if not Validator.check_belonging_of_argument(issue, statement_or_arg_id) and \
-                not Validator.check_belonging_of_statement(issue, statement_or_arg_id):
+        if not check_belonging_of_argument(issue, statement_or_arg_id) and \
+                not check_belonging_of_statement(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
         item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, api_data,
                                                                                       request.application_url, slug, statement_or_arg_id,
                                                                                       supportive, ui_locales)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
-        if not Validator.check_belonging_of_argument(issue, statement_or_arg_id):
+        if not check_belonging_of_argument(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
         item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, api_data,
                                                                                    request.application_url, slug, statement_or_arg_id,
@@ -624,6 +632,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     """
     View configuration for the content view.
 
+    :param request: request of the web server
     :param for_api: Boolean
     :param api_data:
     :return: dictionary
@@ -642,10 +651,10 @@ def discussion_reaction(request, for_api=False, api_data=None):
     tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
     issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
 
-    valid_reaction = Validator.check_reaction(arg_id_user, arg_id_sys, attack)
+    valid_reaction = check_reaction(arg_id_user, arg_id_sys, attack)
     if not tmp_argument or not valid_reaction\
-            or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_user)\
-            or not valid_reaction and not Validator.check_belonging_of_argument(issue, arg_id_sys):
+            or not valid_reaction and not check_belonging_of_argument(issue, arg_id_user)\
+            or not valid_reaction and not check_belonging_of_argument(issue, arg_id_sys):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     supportive = tmp_argument.is_supportive
@@ -698,6 +707,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
 def discussion_finish(request):
     """
 
+    :param request: request of the web server
     :return:
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -732,6 +742,7 @@ def discussion_choose(request, for_api=False, api_data=None):
     """
     View configuration for the choosing view.
 
+    :param request: request of the web server
     :param for_api: Boolean
     :param api_data:
     :return: dictionary
@@ -757,7 +768,7 @@ def discussion_choose(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    if not Validator.check_belonging_of_premisegroups(issue, pgroup_ids):
+    if not check_belonging_of_premisegroups(issue, pgroup_ids):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
@@ -798,6 +809,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     """
     View configuration for the jump view.
 
+    :param request: request of the web server
     :param for_api: Boolean
     :param api_data:
     :return: dictionary
@@ -830,7 +842,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    if not Validator.check_belonging_of_argument(issue, arg_uid):
+    if not check_belonging_of_argument(issue, arg_uid):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     _ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)
@@ -1117,6 +1129,7 @@ def delete_user_history(request):
     """
     Request the complete user history.
 
+    :param request: request of the web server
     :return: json-dict()
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1136,6 +1149,7 @@ def delete_statistics(request):
     """
     Request the complete user history.
 
+    :param request: request of the web server
     :return: json-dict()
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1155,6 +1169,7 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     """
     Will login the user by his nickname and password
 
+    :param request: request of the web server
     :param nickname: Manually provide nickname (e.g. from API)
     :param password: Manually provide password (e.g. from API)
     :param for_api: Manually provide boolean (e.g. from API)
@@ -1232,6 +1247,7 @@ def user_logout(request, redirect_to_main=False):
     """
     Will logout the user
 
+    :param request: request of the web server
     :param redirect_to_main: Boolean
     :return: HTTPFound with forgotten headers
     """
@@ -1481,6 +1497,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
     """
     Inserts a new statement into the database, which should be available at the beginning
 
+    :param request: request of the web server
     :param for_api: boolean
     :param api_data: api_data
     :return: a status code, if everything was successful
@@ -1534,7 +1551,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
     """
     Sets new premise for the start
 
-    :param request: request of the webserver
+    :param request: request of the web server
     :param for_api: boolean
     :param api_data:
     :return: json-dict()
@@ -1591,6 +1608,7 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
     """
     Sets a new premise for an argument
 
+    :param request: request of the web server
     :param api_data:
     :param for_api: boolean
     :return: json-dict()
@@ -1863,24 +1881,24 @@ def get_news(request):
 
 # ajax - for getting argument infos
 @view_config(route_name='ajax_get_infos_about_argument', renderer='json')
-def get_infos_about_argument(request):
+def get_all_infos_about_argument(request):
     """
     ajax interface for getting a dump
 
     :return: json-set with everything
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_infos_about_argument', 'def', 'main, request.params: ' + str(request.params))
+    logger('get_all_infos_about_argument', 'def', 'main, request.params: ' + str(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
 
     try:
         uid = request.params['uid']
-        if not Validator.is_integer(uid):
+        if not is_integer(uid):
             return_dict['error'] = _t.get(_.internalError)
         else:
-            return_dict = OpinionHandler.get_infos_about_argument(uid, request.application_url)
+            return_dict = get_infos_about_argument(uid, request.application_url)
             return_dict['error'] = ''
     except KeyError as e:
         logger('get_infos_about_argument', 'error', repr(e))
@@ -1914,22 +1932,23 @@ def get_users_with_same_opinion(request):
         is_position = params['is_position'] == 'true' if 'is_position' in params else False
         is_supporti = params['is_supporti'] if 'is_supporti' in params else None
 
-        _op = OpinionHandler(ui_locales, nickname, request.application_url)
         if is_argument:
             if not is_reaction:
-                return_dict = _op.get_user_with_same_opinion_for_argument(uids)
+                return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
             else:
                 uids = json.loads(uids)
-                return_dict = _op.get_user_and_opinions_for_argument(uids, attack)
+                return_dict = get_user_and_opinions_for_argument(uids, attack, ui_locales, request.application_url)
         elif is_position:
             uids = json.loads(uids)
-            return_dict = _op.get_user_with_same_opinion_for_statements(uids if isinstance(uids, list) else [uids], is_supporti)
+            ids = uids if isinstance(uids, list) else [uids]
+            return_dict = get_user_with_same_opinion_for_statements(ids, is_supporti, nickname, ui_locales, request.application_url)
         else:
             if not is_attitude:
                 uids = json.loads(uids)
-                return_dict = _op.get_user_with_same_opinion_for_premisegroups(uids if isinstance(uids, list) else [uids])
+                ids = uids if isinstance(uids, list) else [uids]
+                return_dict = get_user_with_same_opinion_for_premisegroups(ids, nickname, ui_locales, request.application_url)
             else:
-                return_dict = _op.get_user_with_opinions_for_attitude(uids)
+                return_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, request.application_url)
         return_dict['error'] = ''
     except KeyError as e:
         logger('get_users_with_same_opinion', 'error', repr(e))
@@ -1941,6 +1960,11 @@ def get_users_with_same_opinion(request):
 # ajax - for getting all users with the same opinion
 @view_config(route_name='ajax_get_public_user_data', renderer='json')
 def get_public_user_data(request):
+    """
+
+    :param request: request of the web server
+    :return:
+    """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_public_user_data', 'def', 'main: ' + str(request.params))
     ui_locales = get_language(request, get_current_registry())
@@ -1969,7 +1993,7 @@ def get_arguments_by_statement_uid(request):
     return_dict = dict()
     try:
         uid = request.matchdict['uid']
-        if not Validator.is_integer(uid):
+        if not is_integer(uid):
             return_dict['error'] = _tn.get(_.internalKeyError)
         else:
             slug = get_slug_by_statement_uid(uid)
@@ -2101,6 +2125,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
     """
     ajax interface for fuzzy string search
 
+    :param request: request of the web server
     :param for_api: boolean
     :param api_data: data
     :return: json-set with all matched strings
@@ -2194,7 +2219,7 @@ def flag_argument_or_statement(request):
 
         db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
-        if not Validator.is_integer(uid):
+        if not is_integer(uid):
             logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
         elif db_reason is None and reason != 'optimization':
             logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
@@ -2231,7 +2256,7 @@ def review_delete_argument(request):
         should_delete = True if str(request.params['should_delete']) == 'true' else False
         review_uid = request.params['review_uid']
         nickname = request.authenticated_userid
-        if not Validator.is_integer(review_uid):
+        if not is_integer(review_uid):
             logger('review_delete_argument', 'def', 'invalid uid', error=True)
             error = _t.get(_.internalKeyError)
         else:
@@ -2262,7 +2287,7 @@ def review_edit_argument(request):
         is_edit_okay = True if str(request.params['is_edit_okay']) == 'true' else False
         review_uid = request.params['review_uid']
         nickname = request.authenticated_userid
-        if not Validator.is_integer(review_uid):
+        if not is_integer(review_uid):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
@@ -2295,7 +2320,7 @@ def review_optimization_argument(request):
         new_data = json.loads(request.params['new_data']) if 'new_data' in request.params else None
         nickname = request.authenticated_userid
 
-        if not Validator.is_integer(review_uid):
+        if not is_integer(review_uid):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
@@ -2399,7 +2424,7 @@ def review_lock(request):
         lock = True if request.params['lock'] == 'true' else False
         is_locked = True
 
-        if not Validator.is_integer(review_uid):
+        if not is_integer(review_uid):
             error = _t.get(_.internalKeyError)
         else:
             if lock:
@@ -2440,7 +2465,7 @@ def revoke_content(request):
         uid = request.params['uid']
         is_argument = True if request.params['is_argument'] == 'true' else False
 
-        if not Validator.is_integer(uid):
+        if not is_integer(uid):
             error = _t.get(_.internalKeyError)
         else:
             error = revoke_content(uid, is_argument, request.authenticated_userid, _t, transaction)

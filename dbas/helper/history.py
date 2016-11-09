@@ -6,7 +6,7 @@ Provides helping function for creating the history as bubbles.
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, Settings
-from dbas.input_validator import Validator
+from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
     get_text_for_conclusion, sql_timestamp_pretty_print
@@ -221,7 +221,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     additional_uid = int(steps[3])
     attack = steps[2]
 
-    if not Validator.check_reaction(uid, additional_uid, attack, is_history=True):
+    if not check_reaction(uid, additional_uid, attack, is_history=True):
         return None
 
     is_supportive = DBDiscussionSession.query(Argument).filter_by(uid=uid).first().is_supportive

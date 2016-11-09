@@ -9,9 +9,12 @@ import random
 import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, RevokedContent
-from dbas.helper.relation import RelationHelper
-from dbas.input_validator import Validator
+from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
+    RevokedContent
+from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
+    get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
+    set_new_undercut_or_overbid, set_new_undermine_or_support
+from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_premisesgroup_uid, \
     get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid,\
     is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement
@@ -155,7 +158,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, transaction
     # send notifications and mails
     if len(new_argument_uids) > 0:
         new_uid = new_argument_uids[0] if len(new_argument_uids) == 1 else random.choice(new_argument_uids)   # TODO eliminate random
-        attack = Validator.get_relation_between_arguments(arg_id, new_uid)
+        attack = get_relation_between_arguments(arg_id, new_uid)
 
         tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
 
@@ -310,13 +313,12 @@ def get_every_attack_for_island_view(arg_uid):
         return
     lang = db_argument.lang
     _t = Translator(lang)
-    _rh = RelationHelper(arg_uid, lang)
 
-    undermine = _rh.get_undermines_for_argument_uid()
-    support = _rh.get_supports_for_argument_uid()
-    undercut = _rh.get_undercuts_for_argument_uid()
-    # overbid = _rh.get_overbids_for_argument_uid()
-    rebut = _rh.get_rebuts_for_argument_uid()
+    undermine = get_undermines_for_argument_uid(arg_uid)
+    support = get_supports_for_argument_uid(arg_uid)
+    undercut = get_undercuts_for_argument_uid(arg_uid)
+    # overbid = get_overbids_for_argument_uid(arg_uid)
+    rebut = get_rebuts_for_argument_uid(arg_uid)
 
     no_entry_text = _t.get(_.no_arguments) + '. ' + _t.get(_.voteCountTextMayBeFirst)
     undermine = undermine if undermine else [{'id': 0, 'text': no_entry_text}]
@@ -396,7 +398,6 @@ def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, use
     :return:
     """
     logger('QueryHelper', '__insert_new_premises_for_argument', 'def')
-    _rh = RelationHelper()
 
     statements = insert_as_statements(transaction, text, user, issue)
     if statements == -1:
@@ -409,16 +410,16 @@ def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, use
 
     new_argument = None
     if current_attack == 'undermine':
-        new_argument = _rh.set_new_undermine_or_support(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
+        new_argument = set_new_undermine_or_support(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
 
     elif current_attack == 'support':
-        new_argument, duplicate = _rh.set_new_support(transaction, new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_support(transaction, new_pgroup_uid, current_argument, db_user, issue)
 
     elif current_attack == 'undercut' or current_attack == 'overbid':
-        new_argument, duplicate = _rh.set_new_undercut_or_overbid(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
+        new_argument, duplicate = set_new_undercut_or_overbid(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
 
     elif current_attack == 'rebut':
-        new_argument, duplicate = _rh.set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
 
     return new_argument
 

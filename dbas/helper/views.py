@@ -11,7 +11,7 @@ from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.input_validator import Validator
+from dbas.input_validator import is_integer
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 from validate_email import validate_email
@@ -196,7 +196,7 @@ def try_to_contact(request, username, email, phone, content, ui_locales, spamans
     _t = Translator(ui_locales)
     send_message = False
 
-    spamanswer = spamanswer if Validator.is_integer(spamanswer) else '#'
+    spamanswer = spamanswer if is_integer(spamanswer) else '#'
     key = 'contact-antispamanswer'
     antispamanswer = request.session[key] if key in request.session else ''
     spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
