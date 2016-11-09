@@ -4,7 +4,7 @@
 		<div class="container first-container center">
 			<div class="row">
 				<div class="col-md-8 center colored-container" style="float: none; height: 230px;">
-                    <img style="height: 200px;" align="right" src="/static/images/404_monster.png"/>
+                    <img style="height: 200px;" align="right" src="${request.static_url('dbas:static/images/404_monster.png')}"/>
 					<h3 class="text-center" i18n:translate="404">404 Error</h3>
 					<p class="lead">
 						<span i18n:translate="404_text_part1">The page</span>&quot;

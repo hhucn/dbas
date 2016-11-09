@@ -3,7 +3,7 @@
 
 		<div class="container colored-container" tal:condition="not:subpage.has_access">
             <h5>You have to earn more reputation for this queue!</h5>
-			<img class="center" src="/static/images/nopower.jpg">
+			<img class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
 		</div>
 
 		<div class="container colored-container" tal:condition="subpage.has_access and subpage.no_arguments_to_review">
@@ -190,10 +190,10 @@
         </div>
         </div>
 
-        <script type="text/javascript" src="/static/js/countdown.js"></script>
-        <script type="text/javascript" src="/static/js/review/queue.js"></script>
-        <script type="text/javascript" src="/static/js/review/review.js"></script>
-        <script type="text/javascript" src="/static/js/review/callbacks.js"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/countdown.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/review.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/callbacks.js')}"></script>
 
 	</tal:block>
 </tal:block>

@@ -6,7 +6,7 @@
                 <span tal:condition="history.is_history" i18n:translate="earn_more_reputation_for_queue">You have to earn more reputation for this queue</span>
                 <span tal:condition="not:history.is_history" i18n:translate="you_have_no_access">You have no access to this site</span>!
             </h4>
-			<img tal:condition="not:history.has_access" class="center" src="/static/images/nopower.jpg">
+			<img tal:condition="not:history.has_access" class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
 
             <div class="row" tal:condition="history.has_access">
                 <div class="col-md-4">
@@ -103,6 +103,6 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="/static/js/review/history.js"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/history.js')}"></script>
 	</tal:block>
 </tal:block>
