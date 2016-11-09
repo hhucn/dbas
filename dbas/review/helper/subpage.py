@@ -351,7 +351,7 @@ def __get_stats_for_review(review, ui_locales, main_page):
 
     stats = dict()
     stats['reported'] = sql_timestamp_pretty_print(review.timestamp, ui_locales)
-    stats['reporter'] = db_reporter.get_global_nickname
+    stats['reporter'] = db_reporter.get_global_nickname()
     stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
     stats['reporter_url'] = main_page + '/user/' + stats['reporter']
     stats['id'] = str(review.uid)
