@@ -58,7 +58,7 @@ function DiscussionBarometer(){
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
         }
 
-        setAnchor('barometer');
+        //setAnchor('barometer');
     };
 
     /**
@@ -69,8 +69,8 @@ function DiscussionBarometer(){
      */
     this.callbackIfDoneForGetDictionary = function(data, address){
         var jsonData;
-        var dialog = $('#' + popupConfirmRowDialogId);
-        
+        var dialog = $('#' + popupBarometerId);
+
         try{
             jsonData = JSON.parse(data);
             console.log(jsonData);
@@ -80,42 +80,28 @@ function DiscussionBarometer(){
             return;
         }
 
-        createButtons(jsonData, address);
+        // remove content of modal
+        dialog.find('.col-md-6').empty();
+        dialog.find('.col-md-5').empty();
+        // create doughnut chart as default view
+        getD3BarometerDoughnutChart(jsonData, address);
+        // hide button for doughnut chart
+        $('#show-doughnut-chart-btn').hide();
+        // add listener for buttons to change the type of chart
+        addListenerForChartButtons(jsonData, address);
 
         dialog.modal('show').on('hidden.bs.modal', function () {
             clearAnchor();
-        }).on('shown.bs.modal', function () {
-            // display bar after the modal is shown, cause we need the width of the modal
-            getD3BarometerBarChart(jsonData, address);
         });
-        $('#' + popupConfirmRowDialogAcceptBtn).show().click( function () {
-            $('#' + popupConfirmRowDialogId).modal('hide');
+        
+        $('#' + popupBarometerAcceptBtn).show().click( function () {
+            $('#' + popupBarometerId).modal('hide');
         }).removeClass('btn-success');
-        $('#' + popupConfirmRowDialogRefuseBtn).hide();
+        $('#' + popupBarometerRefuseBtn).hide();
 
         dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
-        //getD3BarometerBarChart(jsonData, address);
     };
 
-    /**
-     * Create buttons to switch between charts.
-     *
-     * @param jsonData
-     * @param address
-     */
-    function createButtons(jsonData, address){
-        var dialog = $('#' + popupConfirmRowDialogId);
-        dialog.find('.col-md-6').empty();
-        dialog.find('.col-md-5').empty();
-        dialog.find('#chart-buttons').empty();
-
-        dialog.find('.modal-footer').append('<div id="chart-buttons"></div>');
-
-        dialog.find('#chart-buttons').append('<button id="show-bar-chart-btn" type="button" class="btn btn-default">Bar Chart</button>');
-        dialog.find('#chart-buttons').append('<button id="show-pie-chart-btn" type="button" class="btn btn-default">Pie Chart</button>');
-        dialog.find('#chart-buttons').append('<button id="show-doughnut-chart-btn" type="button" class="btn btn-default">Doughnut Chart</button>');
-        addListenerForChartButtons(jsonData, address);
-    }
 
     /**
      * Add listeners for chart-buttons.
@@ -124,9 +110,13 @@ function DiscussionBarometer(){
      * @param address
      */
     function addListenerForChartButtons(jsonData, address) {
-        $('#show-bar-chart-btn').click(function() { getD3BarometerBarChart(jsonData, address); });
-        $('#show-pie-chart-btn').click(function() { getD3BarometerPieChart(jsonData, address, 0); });
-        $('#show-doughnut-chart-btn').click(function() { getD3BarometerPieChart(jsonData, address, 0.3); });
+        // show only button of chart which is currently not visible
+        $('#show-bar-chart-btn').click(function() {$('#show-doughnut-chart-btn').show();
+                                                   $('#show-bar-chart-btn').hide();
+                                                   getD3BarometerBarChart(jsonData, address); });
+        $('#show-doughnut-chart-btn').click(function() {$('#show-bar-chart-btn').show();
+                                                        $('#show-doughnut-chart-btn').hide();
+                                                        getD3BarometerDoughnutChart(jsonData, address); });
     }
 
     /**
@@ -136,7 +126,7 @@ function DiscussionBarometer(){
      * @param address
      */
      function getD3BarometerBarChart(jsonData, address) {
-        var dialog = $('#' + popupConfirmRowDialogId);
+        var dialog = $('#' + popupBarometerId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
 
@@ -145,7 +135,7 @@ function DiscussionBarometer(){
         // width and height of chart
         var width = dialog.find('.col-md-6').width();
         var height = 400;
-        var barChartSvg = getSvg(width+50, height+20);
+        var barChartSvg = getSvg(width+50, height+10);
 
         createAxis(barChartSvg, height-50);
 
@@ -160,7 +150,7 @@ function DiscussionBarometer(){
         createBar(width, height-50, usersDict, barChartSvg);
 
         // tooltip
-        createTooltip(usersDict, barChartSvg, width, address);
+        addListenerForTooltip(usersDict, barChartSvg, address, "rect");
 
         // create legend for chart
         createLegend(usersDict);
@@ -270,102 +260,21 @@ function DiscussionBarometer(){
                    y: function(d) {return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);},
                    fill: function (d, i) {return getNormalColorFor(i);}});
     }
-    
+
     function divideWrapperIfZero(numerator, denominator){
         return denominator == 0 || numerator == 0 ? 0.005 : numerator / denominator;
     }
 
-    /**
-     * Create tooltips for bars.
-     *
-     * @param usersDict
-     * @param barChartSvg
-     * @param width
-     * @param address
-     */
-    function createTooltip(usersDict, barChartSvg, width, address) {
-        var div;
-        var barWidth = width / usersDict.length - 5;
-        var tooltipWith = width;
-        var tmp;
-        barChartSvg.selectAll("rect").on("mouseover", function (d, index) {
-            var barLeft = index / 2 * barWidth + 70 + index * 5;
-            tmp = index;
-            while (tooltipWith + barLeft > $( window ).width()){
-                if (tmp > 0){
-                    // move one step to the left
-                    tmp -= 1;
-                    tooltipWith = tmp * barWidth + 70 + tmp * 5;
-                } else {
-                    tooltipWith = width / usersDict.length - 5;
-                    barLeft = index * barWidth + 70 + index * 5;
-                }
-            }
-            
-            div = d3.select('#' + popupConfirmRowDialogId + ' .col-md-6').append("div");
-
-            // set properties of div
-            div.attr("class", "tooltip").style("opacity", 1)
-                .style("left", 65 + "px")
-                .style("top", 100 + "px")
-                .style("width", tooltipWith);
-
-            // append list elements to div
-            if (d.message != null) {
-                div.append('li').html(d.message);
-            }
-            var text_keyword = '';
-            if (address == 'argument')
-                text_keyword = d.seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
-            else
-                text_keyword = d.seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
-            div.append('li').html(d.seenBy + ' ' + _t_discussion(text_keyword));
-            div.append('li').html(_t_discussion(users) + ': ');
-
-            // add images of avatars
-            d.users.forEach(function (e) {
-                div.append('img').attr('src', e.avatar_url);
-            });
-            $(this).attr('fill', getDarkColorFor(index));
-        })
-        .on("mouseout", function (d, index) {
-            div.style("opacity", 0);
-            $(this).attr('fill', getNormalColorFor(index));
-        });
-    }
-    
-    function getNormalColorFor(index){ return google_colors[index % google_colors.length][0]; }
-    function getLightColorFor(index){ return google_colors[index % google_colors.length][2]; }
-    function getDarkColorFor(index){ return google_colors[index % google_colors.length][10]; }
-
-    /**
-     * Create legend for chart.
-     *
-     * @param usersDict
-     */
-    function createLegend(usersDict){
-        var div, label, element;
-        $.each(usersDict, function(key, value) {
-            div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key));
-            label = $('<label>').attr('class', 'legendLabel').html(value.text);
-            element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
-            $('#' + popupConfirmRowDialogId).find('.col-md-5').append(element);
-        });
-    }
-
-    ////////////////////////////////////
-    // PIE CHART
-    ////////////////////////////////////
+    // doughnut chart
 
     /**
      * Create barometer.
      *
      * @param jsonData
      * @param address
-     * @param innerRadiusFactor
      */
-    function getD3BarometerPieChart(jsonData, address, innerRadiusFactor) {
-        var dialog = $('#' + popupConfirmRowDialogId);
+    function getD3BarometerDoughnutChart(jsonData, address) {
+        var dialog = $('#' + popupBarometerId);
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
 
@@ -374,7 +283,7 @@ function DiscussionBarometer(){
 
         // width and height of chart
         var width = 500, height = 410;
-        var pieChartSvg = getSvgPieChart(width, height);
+        var doughnutChartSvg = getSvgDoughnutChart(width, height);
 
         var usersDict = [];
         // create dictionary depending on address
@@ -384,10 +293,10 @@ function DiscussionBarometer(){
         else{
             usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
         }
-
-        // create bars of chart
-        createPieChart(usersDict, pieChartSvg, innerRadiusFactor);
-
+        // create doughnut of chart
+        createDoughnutChart(usersDict, doughnutChartSvg, address);
+        // tooltip
+        addListenerForTooltip(usersDict, doughnutChartSvg, address, ".chart-sector");
         // create legend for chart
         createLegend(usersDict);
     };
@@ -399,47 +308,41 @@ function DiscussionBarometer(){
      * @param height: height of container
      * @return scalable vector graphic
      */
-    function getSvgPieChart(width, height){
+    function getSvgDoughnutChart(width, height){
         return d3.select('#barometer-div').append('svg').attr({width: width, height: height, id: "barometer-svg"});
     }
 
     /**
-     * Create pie chart.
+     * Create doughnut chart.
      *
      * @param usersDict
-     * @param pieChartSvg
-     * @param innerRadiusFactor
+     * @param doughnutChartSvg
      */
-    function createPieChart(usersDict, pieChartSvg, innerRadiusFactor) {
+    function createDoughnutChart(usersDict, doughnutChartSvg) {
         var height = 400, width = 400,
             outerRadius = Math.min(width, height) / 2,
-            innerRadius = innerRadiusFactor * outerRadius;
+            innerRadius = 0.3 * outerRadius;
 
-        var sumSeenBy = 0;
-        $.each(usersDict, function(key, value) {
-            sumSeenBy += value.seenBy;
-        });
+        var doughnut = getDoughnut(usersDict);
 
-        var pie = getPie(usersDict);
-
-        var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, sumSeenBy);
+        var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius);
         var outerCircle = getOuterCircle(innerRadius, outerRadius);
 
-        createOuterPath(pieChartSvg, usersDict, outerCircle, pie);
-        createInnerPath(pieChartSvg, usersDict, innerCircle, pie);
+        createOuterPath(doughnutChartSvg, usersDict, outerCircle, doughnut);
+        createInnerPath(doughnutChartSvg, usersDict, innerCircle, doughnut);
     }
 
     /**
-     * Choose pie layout of d3.
+     * Choose layout of d3.
      *
      * @param usersDict
      * @returns {*}
      */
-    function getPie(usersDict){
+    function getDoughnut(usersDict){
         return d3.layout.pie()
             .sort(null)
             .value(function (d, i) {
-                return usersDict[i].seenBy;
+                return usersDict[i].usersNumber;
             });
     }
 
@@ -449,14 +352,13 @@ function DiscussionBarometer(){
      * @param usersDict
      * @param innerRadius
      * @param outerRadius
-     * @param sumSeenBy
      * @returns {*}
      */
-    function getInnerCircle(usersDict, innerRadius, outerRadius, sumSeenBy){
+    function getInnerCircle(usersDict, innerRadius, outerRadius){
         return d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(function (d, i) {
-                return (outerRadius - innerRadius) * (usersDict[i].usersNumber/sumSeenBy) + innerRadius;
+                return (outerRadius - innerRadius) * (usersDict[i].usersNumber/usersDict[i].seenBy) + innerRadius;
             });
     }
 
@@ -476,32 +378,236 @@ function DiscussionBarometer(){
     /**
      * Create inner path.
      *
-     * @param pieChartSvg
+     * @param doughnutChartSvg
      * @param usersDict
      * @param innerCircle
-     * @param pie
+     * @param doughnut
      */
-    function createInnerPath(pieChartSvg, usersDict, innerCircle, pie){
-        pieChartSvg.selectAll(".innerCircle")
-            .data(pie(usersDict))
+    function createInnerPath(doughnutChartSvg, usersDict, innerCircle, doughnut){
+        doughnutChartSvg.selectAll(".innerCircle")
+            .data(doughnut(usersDict))
             .enter().append("path")
             .attr({fill: function (d, i) { return getNormalColorFor(i); },
-                   stroke: "gray", d: innerCircle, transform: "translate(250,210)"});
+                   stroke: "gray", d: innerCircle, transform: "translate(240,210)",
+                   class: "chart-sector"});
     }
 
     /**
      * Create outer path.
      *
-     * @param pieChartSvg
+     * @param doughnutChartSvg
      * @param usersDict
      * @param outerCircle
-     * @param pie
+     * @param doughnut
      */
-    function createOuterPath(pieChartSvg, usersDict, outerCircle, pie){
-        pieChartSvg.selectAll(".outerCircle")
-            .data(pie(usersDict))
+    function createOuterPath(doughnutChartSvg, usersDict, outerCircle, doughnut){
+        doughnutChartSvg.selectAll(".outerCircle")
+            .data(doughnut(usersDict))
             .enter().append("path")
             .attr({'fill': function (d, i) { return getLightColorFor(i); },
-                   stroke: "gray", d: outerCircle, transform: "translate(250,210)"});
+                   stroke: "gray", d: outerCircle, transform: "translate(240,210)"});
     }
+
+    /**
+     * Create short tooltip for doughnut chart in middle of chart.
+     *
+     * @param doughnutChartSvg
+     * @param usersDict
+     * @param index
+     */
+    function createShortTooltipDoughnutChart(doughnutChartSvg, usersDict, index){
+        // append tooltip in middle of doughnut chart
+        doughnutChartSvg.append("text")
+            .attr({x: 240, y: 210,
+                   class: "doughnut-chart-text-tooltip"})
+            .style({"font-weight": "bold", "font-size": "25px"})
+            .text(usersDict[index].usersNumber + "/" + usersDict[index].seenBy);
+
+        doughnutChartSvg.append("text")
+            .attr({x: 240, y: 230,
+                   class: "doughnut-chart-text-tooltip"})
+            .text("clicked on this");
+    }
+
+    // bar chart and doughnut chart
+    /**
+     * Create tooltips for bar chart and doughnut chart.
+     *
+     * @param usersDict
+     * @param chartSvg
+     * @param address
+     * @param selector: different selectors for bar chart and doughnut chart
+     */
+    function addListenerForTooltip(usersDict, chartSvg, address, selector) {
+        var div;
+        var isClicked = false;
+        var isHover = false;
+        var tooltipIsVisible = false;
+        // save index and object of last click event
+        var _index,
+            _this;
+
+        // add listener for click event
+        chartSvg.selectAll(selector).on("click", function (d, index) {
+            if(isClicked){
+                // if the user clicks on another element hide the old element and make the new one visible
+                if(_index != index){
+                    console.log(1);
+                    hideTooltip(div, selector, _index, _this);
+                    div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
+                    isClicked = true;
+                    tooltipIsVisible = true;
+                }
+                // if the user clicks on the same tooltip for a second time hide the tooltip
+                if(_index === index){
+                    console.log(2);
+                    hideTooltip(div, selector, index, this);
+                    isClicked = false;
+                    tooltipIsVisible = false;
+                }
+            }
+            else{
+                // if isHover is false no tooltip is visible then create a tooltip
+                console.log(isHover);
+                    console.log(3);
+                if(!tooltipIsVisible){
+                    console.log(4);
+                    div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
+                }
+                isClicked = true;
+                tooltipIsVisible = true;
+            }
+            _index = index;
+            _this = this;
+        });
+
+        // add listener for hover event
+        chartSvg.selectAll(selector).on("mouseover", function (d, index) {
+            if(!isClicked){
+                div = showTooltip(div, usersDict, index, address, chartSvg, selector, this);
+                tooltipIsVisible = true;
+            }
+        })
+        .on("mouseout", function (d, index) {
+            if(!isClicked){
+                hideTooltip(div, selector, index, this);
+                tooltipIsVisible = false;
+            }
+        });
+    }
+
+     /**
+     * Show tooltip on mouse event.
+     *
+     * @param div
+     * @param usersDict
+     * @param index
+     * @param address
+     * @param chartSvg
+     * @param selector
+     * @param _this
+     * @returns {*}
+     */
+    function showTooltip(div, usersDict, index, address, chartSvg, selector, _this){
+        div = getTooltip(usersDict, index, address);
+        // if doughnut chart is selected add short tooltip in middle of chart
+        if(selector === ".chart-sector"){
+            createShortTooltipDoughnutChart(chartSvg, usersDict, index);
+        }
+        // highlight sector on hover
+        d3.select(_this).attr('fill', getDarkColorFor(index));
+        return div;
+    }
+
+    /**
+     * Hide tooltip on mouse event.
+     *
+     * @param div
+     * @param selector
+     * @param index
+     * @param _this
+     */
+    function hideTooltip(div, selector, index, _this){
+        // hide tooltip with detailed information
+        div.style("opacity", 0);
+        // fill chart element with originally color
+        $(_this).attr('fill', getNormalColorFor(index));
+        // if doughnut chart is selected hide text in middle of doughnut
+        if(selector === ".chart-sector") {
+            $('.doughnut-chart-text-tooltip').text("");
+        }
+    }
+
+     /**
+     * Create tooltip.
+     *
+     * @param usersDict
+     * @param index
+     * @param address
+     * @returns {*}
+     */
+    function getTooltip(usersDict, index, address){
+        var div = d3.select('#' + popupBarometerId + ' .col-md-5').append("div").attr("class", "chartTooltip");
+
+        // make tooltip visible
+        div.style("opacity", 1);
+
+        createTooltipContent(usersDict, index, address, div);
+
+        // fill background of tooltip with color of selected sector of barometer
+        $(".chartTooltip").css('background-color', getVeryLightColorFor(index));
+        // fill border of tooltip with the same color as the sector of barometer
+        $(".chartTooltip").css('border-color', getDarkColorFor(index));
+
+        return div;
+    }
+
+    /**
+     * Create content of tooltip-div.
+     *
+     * @param usersDict
+     * @param index: index of bar is selected
+     * @param address
+     * @param div: contains the tooltip
+     */
+    function createTooltipContent(usersDict, index, address, div){
+        // append list elements to div
+        if (usersDict[index].message != null) {
+            div.append('li').html(usersDict[index].message);
+        }
+        var text_keyword = '';
+        if (address == 'argument')
+            text_keyword = usersDict[index].seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
+        else
+            text_keyword = usersDict[index].seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
+        div.append('li').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
+        div.append('li').html(_t_discussion(users) + ': ');
+
+        // add images of avatars
+        usersDict[index].users.forEach(function (e) {
+            div.append('img')
+               .attr({src: e.avatar_url, class: "img-circle"})
+               .style({width: '10%', padding: '2px'});
+        });
+    }
+
+    /**
+     * Create legend for chart.
+     *
+     * @param usersDict
+     */
+    function createLegend(usersDict){
+        var div, label, element;
+        $.each(usersDict, function(key, value) {
+            div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key));
+            label = $('<label>').attr('class', 'legendLabel').html(value.text);
+            element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
+            $('#' + popupBarometerId).find('.col-md-5').append(element);
+        });
+    }
+
+    function getNormalColorFor(index){ return google_colors[index % google_colors.length][0]; }
+    function getVeryLightColorFor(index){ return google_colors[index % google_colors.length][1]; }
+    function getLightColorFor(index){ return google_colors[index % google_colors.length][2]; }
+    function getDarkColorFor(index){ return google_colors[index % google_colors.length][10]; }
 }
