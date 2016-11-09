@@ -64,14 +64,14 @@
 
                                 <li class="dropdown" data-toggle="tooltip" data-placement="left">
                                     <a class="dropdown-toggle" data-toggle="dropdown" href="#language" id="current-lang-images" tal:attributes="data-lang settings.current_ui_locales">
-                                        <img id="indicator-en" style="display:none;" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}">
-                                        <img id="indicator-de" style="display:none;" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
+                                        <img id="indicator-en" style="display:none;" src="/static/images/flag-us-gb-24.png">
+                                        <img id="indicator-de" style="display:none;" src="/static/images/flag-de-24.png">
                                         <span>${settings.current_lang}</span>
                                         <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu" id="settings-language-dropdown">
-                                        <li tal:attributes="class extras.link_de_class"><a id="link-settings-de" style="cursor:pointer" data-ui-locales="de" ><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">Deutsch</a></li>
-                                        <li tal:attributes="class extras.link_en_class"><a id="link-settings-en" style="cursor:pointer" data-ui-locales="en" ><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">English</a></li>
+                                        <li tal:attributes="class extras.link_de_class"><a id="link-settings-de" style="cursor:pointer" data-ui-locales="de" ><img class="language_selector_img" src="/static/images/flag-de-24.png" alt="flag_ge">Deutsch</a></li>
+                                        <li tal:attributes="class extras.link_en_class"><a id="link-settings-en" style="cursor:pointer" data-ui-locales="en" ><img class="language_selector_img" src="/static/images/flag-us-gb-24.png" alt="flag_en">English</a></li>
                                     </ul>
                                 </li>
 
@@ -252,8 +252,8 @@
 			</div>
 		</div>
 
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/settings.js')}"></script>
+        <script type="text/javascript" src="/static/js/settings.js"></script>
+        <script type="text/javascript" src="/static/js/ajax/settings.js"></script>
 
 	</tal:block>
 </tal:block>

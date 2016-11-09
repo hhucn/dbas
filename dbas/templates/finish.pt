@@ -11,7 +11,7 @@
                     <div class="row" style="margin-top: 2em" tal:condition="show_summary">
                         <div class="col-md-5 text-center">
                             <!--
-                            <img style="margin-top: 3em" class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
+                            <img style="margin-top: 3em" class="icon-badge" src="/static/images/icon_trophy.png" />
                             -->
                             <i class="fa fa-flag-checkered" aria-hidden="true" style="font-size: 180px;"></i>
                         </div>
@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="text-center" style="margin: 3em" tal:condition="not:show_summary">
-                            <img class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
+                            <img class="icon-badge" src="/static/images/icon_trophy.png" />
                         </div>
 
 					<div class="text-center">
