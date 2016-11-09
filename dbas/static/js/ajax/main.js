@@ -45,6 +45,8 @@ function AjaxMainHandler(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var url = window.location.href;
 		var keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
+		$('#' + popupLoginFailed).hide();
+		$('#' + popupLoginFailed + '-message').text('');
 
 		$.ajax({
 			url: mainpage + 'ajax_user_login',

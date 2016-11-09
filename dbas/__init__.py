@@ -34,7 +34,9 @@ def main(global_config, **settings):
 
     # log settings
     log = logging.getLogger(__name__)
+    development = False
     for k, v in settings.items():
+        development = development or 'testing' in str(v)
         log.debug('__init__() '.upper() + 'main() <' + str(k) + ' : ' + str(v) + '>')
 
     # load database
@@ -85,6 +87,7 @@ def main(global_config, **settings):
     config.add_static_view(name='rv', path='review:static/', cache_max_age=3600)
     config.add_static_view(name='admin', path='admin:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
+    config.add_cache_buster('admin:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
     # adding routes
@@ -160,7 +163,9 @@ def main(global_config, **settings):
 
     # read the input and start
     config.scan()
-    return config.make_wsgi_app()
-    # app = config.make_wsgi_app()
-    # server = make_server('134.99.112.44', 5000, app)
-    # server.serve_forever()
+    if development:
+        return config.make_wsgi_app()
+    else:
+        app = config.make_wsgi_app()
+        server = make_server('134.99.112.44', 5000, app)
+        server.serve_forever()
