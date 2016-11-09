@@ -179,8 +179,6 @@ class User(DiscussionBase):
 
     def get_global_nickname(self):
         db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=self.uid).first()
-        from dbas.logger import logger
-        logger('X', str(self.uid), str(self.nickname) + ' ' + str(self.public_nickname))
         return self.nickname if db_settings.should_show_public_nickname else self.public_nickname
 
 
