@@ -131,7 +131,7 @@
 
         </div>
 
-        <script type="text/javascript" src="/static/js/review/index.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/index.js')}"></script>
 
 	</tal:block>
 </tal:block>
