@@ -53,6 +53,7 @@ from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio
+from dbas.database.initializedb import nick_of_anonymous_user
 
 name = 'D-BAS'
 version = '0.7.2'
@@ -1449,7 +1450,7 @@ def send_notification(request):
         db_recipient = get_user_by_private_or_public_nickname(recipient)
         if len(title) < 5 or len(text) < 5:
             error = _tn.get(_.empty_notification_input) + ' (' + _tn.get(_.minLength) + ': 5)'
-        elif not db_recipient or recipient == 'admin' or recipient == 'anonymous':
+        elif not db_recipient or recipient == 'admin' or recipient == nick_of_anonymous_user:
             error = _tn.get(_.recipientNotFound)
         else:
             db_author = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()

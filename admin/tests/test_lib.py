@@ -12,6 +12,7 @@ from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import engine_from_config
+from dbas.database.initializedb import nick_of_anonymous_user
 
 settings = add_settings_to_appconfig()
 
@@ -82,6 +83,9 @@ class AdminTest(unittest.TestCase):
         self.assertTrue(len(return_val) == 0)
         self.assertTrue(len(db_old_user) == 0)
         self.assertTrue(len(db_new_user) == 1)
+
+        db_reset = update_row('User', [db_new_user[0].uid], keys, [nick_of_anonymous_user], 'Tobias', translator)
+        self.assertTrue(len(db_reset) == 0)
 
     def test_delete_row(self):
         translator = Translator('en')

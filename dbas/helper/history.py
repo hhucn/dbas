@@ -14,6 +14,7 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
+from dbas.database.initializedb import nick_of_anonymous_user
 
 
 def save_issue_uid(transaction, issue_uid, nickname):
@@ -88,7 +89,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     bubble_array = []
     consumed_history = ''
 
-    nickname = nickname if nickname else 'anonymous'
+    nickname = nickname if nickname else nick_of_anonymous_user
 
     for index, step in enumerate(splitted_history):
         url = application_url + '/discuss/' + slug + '/' + step
