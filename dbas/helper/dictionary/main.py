@@ -12,7 +12,7 @@ import dbas.user_management as UserHandler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.helper.query import QueryHelper
+from dbas.helper.query import get_every_attack_for_island_view
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -160,7 +160,7 @@ class DictionaryHelper(object):
                 # does an argumente exists?
                 db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
                 if db_argument:
-                    island_dict = QueryHelper.get_every_attack_for_island_view(argument_id)
+                    island_dict = get_every_attack_for_island_view(argument_id)
 
                     premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
                     conclusion = get_text_for_conclusion(db_argument)

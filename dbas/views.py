@@ -27,7 +27,8 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
-from dbas.helper.query import QueryHelper
+from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
+    process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
@@ -1508,7 +1509,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
 
         # escaping will be done in QueryHelper().set_statement(...)
         user_manager.update_last_action(transaction, nickname)
-        new_statement = QueryHelper.insert_as_statements(transaction, statement, nickname, issue, is_start=True)
+        new_statement = insert_as_statements(transaction, statement, nickname, issue, is_start=True)
         if new_statement == -1:
             return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
         else:
@@ -1561,11 +1562,10 @@ def set_new_start_premise(request, for_api=False, api_data=None):
         # escaping will be done in QueryHelper().set_statement(...)
         user_manager.update_last_action(transaction, nickname)
 
-        _qh = QueryHelper
-        url, statement_uids, error = _qh.process_input_of_start_premises_and_receive_url(request, transaction,
-                                                                                         premisegroups, conclusion_id,
-                                                                                         supportive, issue, nickname,
-                                                                                         for_api, request.application_url, lang)
+        url, statement_uids, error = process_input_of_start_premises_and_receive_url(request, transaction,
+                                                                                     premisegroups, conclusion_id,
+                                                                                     supportive, issue, nickname,
+                                                                                     for_api, request.application_url, lang)
 
         return_dict['error'] = error
         return_dict['statement_uids'] = statement_uids
@@ -1617,13 +1617,12 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
             attack_type = request.params['attack_type']
 
         # escaping will be done in QueryHelper().set_statement(...)
-        _qh = QueryHelper
-        url, statement_uids, error = _qh.process_input_of_premises_for_arguments_and_receive_url(request,
-                                                                                                 transaction, arg_uid,
-                                                                                                 attack_type,
-                                                                                                 premisegroups, issue,
-                                                                                                 nickname, for_api,
-                                                                                                 request.application_url, lang)
+        url, statement_uids, error = process_input_of_premises_for_arguments_and_receive_url(request,
+                                                                                             transaction, arg_uid,
+                                                                                             attack_type,
+                                                                                             premisegroups, issue,
+                                                                                             nickname, for_api,
+                                                                                             request.application_url, lang)
         user_manager.update_last_action(transaction, nickname)
 
         return_dict['error'] = error
@@ -1784,7 +1783,7 @@ def get_logfile_for_premisegroup(request):
         uids = json.loads(request.params['uids'])
         issue = request.params['issue']
         ui_locales = get_discussion_language(request, issue)
-        return_dict = QueryHelper.get_logfile_for_statements(uids, ui_locales, request.application_url)
+        return_dict = get_logfile_for_statements(uids, ui_locales, request.application_url)
         return_dict['error'] = ''
     except KeyError as e:
         logger('get_logfile_for_premisegroup', 'error', repr(e))
@@ -2444,7 +2443,7 @@ def revoke_content(request):
         if not Validator.is_integer(uid):
             error = _t.get(_.internalKeyError)
         else:
-            error = QueryHelper.revoke_content(uid, is_argument, request.authenticated_userid, _t, transaction)
+            error = revoke_content(uid, is_argument, request.authenticated_userid, _t, transaction)
 
     except KeyError as e:
         logger('review_lock', 'error', repr(e))
