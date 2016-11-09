@@ -19,14 +19,13 @@ from sqlalchemy import and_
 pages = ['deletes', 'optimizations', 'edits']
 
 
-def get_subpage_elements_for(request, subpage_name, nickname, translator, main_page):
+def get_subpage_elements_for(request, subpage_name, nickname, translator):
     """
 
     :param request:
     :param subpage_name:
     :param nickname:
     :param translator:
-    :param main_page:
     :return:
     """
     logger('ReviewSubpagerHelper', 'get_subpage_elements_for', subpage_name)
@@ -55,19 +54,19 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator, main_p
     issue = translator.get(_.internalError)
 
     if subpage_name == 'deletes':
-        subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator, main_page)
+        subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator, request.application_url)
         button_set['is_delete'] = True
         button_set['is_optimize'] = False
         button_set['is_edit'] = False
 
     elif subpage_name == 'optimizations':
-        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
+        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, request.application_url)
         button_set['is_delete'] = False
         button_set['is_optimize'] = True
         button_set['is_edit'] = False
 
     elif subpage_name == 'edits':
-        subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, main_page)
+        subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, request.application_url)
         button_set['is_delete'] = False
         button_set['is_optimize'] = False
         button_set['is_edit'] = True
