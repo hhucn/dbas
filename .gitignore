@@ -29,6 +29,7 @@ coverage.xml
 *.db
 *.sqlite
 *.sqlite-journal
+*.log
 
 # Sphinx documentation
 # docs/
