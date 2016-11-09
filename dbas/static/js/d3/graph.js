@@ -341,7 +341,6 @@ function DiscussionGraph() {
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
                    refX: function(d){
                              if(d.target.label === ''){ return 6; }
-                             if(d.target.label === ''){ return 6; }
                              else if(d.target.id === 'issue'){ return 10; }
                              else{ return 9; }},
                    refY: 0,
