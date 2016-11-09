@@ -198,8 +198,8 @@ def __dont_know_step(step, nickname, lang, url):
     text = text.replace(_tn.get(_.because).lower(), '</' + TextGenerator.tag_type + '>' + _tn.get(
         _.because).lower() + '<' + TextGenerator.tag_type + '>')
     # TODO Possible code injection!? if text e.g. </span><script blabla><span>
-    sys_text = _tn.get(_.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>' + text[0:1].lower() + text[
-                                                                                                                 1:] + '</' + TextGenerator.tag_type + '>. '
+    sys_text = _tn.get(_.otherParticipantsThinkThat) + ' <' + TextGenerator.tag_type + '>'
+    sys_text += text[0:1].lower() + text[1:] + '</' + TextGenerator.tag_type + '>. '
     return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url,
                                      is_supportive=True)]
 

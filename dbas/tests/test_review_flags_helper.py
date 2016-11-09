@@ -2,7 +2,7 @@ import unittest
 
 import dbas.review.helper.flags as rf_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, ReviewOptimization
+from dbas.database.discussion_model import User, ReviewOptimization
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.keywords import Keywords as _
 from dbas.views import transaction
