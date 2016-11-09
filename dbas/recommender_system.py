@@ -7,7 +7,8 @@ TODO
 import random
 
 from sqlalchemy import and_
-from dbas.helper.relation import RelationHelper
+from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
+    get_undercuts_for_argument_uid
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, VoteArgument
 from dbas.logger import logger
@@ -58,7 +59,8 @@ def __select_random(some_list):
     return [some_list[i] for i in sorted(random.sample(range(len(some_list)), max_count))]
 
 
-def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, restriction_on_arg_uids=[], last_attack=None, history=None):
+def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, restriction_on_arg_uids=[],
+                            last_attack=None, history=None):
     """
     Selects an attack out of the web of reasons.
 
@@ -110,7 +112,8 @@ def get_argument_by_conclusion(statement_uid, is_supportive):
     :param is_supportive: Boolean
     :return: Argument
     """
-    logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
+    logger('RecommenderSystem', 'get_argument_by_conclusion',
+           'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
     db_arguments = get_arguments_by_conclusion(statement_uid, is_supportive)
 
     if not db_arguments:
@@ -127,7 +130,8 @@ def get_arguments_by_conclusion(statement_uid, is_supportive):
     :param is_supportive: Boolean
     :return: [Argument]
     """
-    logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
+    logger('RecommenderSystem', 'get_argument_by_conclusion',
+           'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
     db_arguments = get_not_disabled_arguments_as_query()
     db_arguments = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
                                             Argument.conclusion_uid == statement_uid)).all()
@@ -196,15 +200,15 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
     :param history: History
     :return: [Argument.uid], String, Boolean if no new attacks are found
     """
-    return_array    = None
-    key             = ''
-    left_attacks    = list(set(list_of_all_attacks) - set(attack_list))
-    attack_found    = False
-    is_supportive   = False
-    is_attack_in_history  = False
-    _rh = RelationHelper(argument_uid, lang)
+    return_array = None
+    key = ''
+    left_attacks = list(set(list_of_all_attacks) - set(attack_list))
+    attack_found = False
+    is_supportive = False
+    is_attack_in_history = False
 
-    logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'argument_uid: Argument.uid ' + str(argument_uid) +
+    logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range',
+           'argument_uid: Argument.uid ' + str(argument_uid) +
            ', attack_list : ' + str(attack_list) +
            ', complete_list_of_attacks : ' + str(list_of_all_attacks) +
            ', left_attacks : ' + str(left_attacks))
@@ -217,17 +221,17 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
 
         if attack == 1:
             key = 'undermine'
-            return_array = _rh.get_undermines_for_argument_uid(is_supportive)
+            return_array = get_undermines_for_argument_uid(argument_uid, is_supportive)
             # special case when undermining an undermine
             is_supportive = last_attack == 'undermine'
 
         elif attack == 5:
             key = 'rebut'
-            return_array = _rh.get_rebuts_for_argument_uid()
+            return_array = get_rebuts_for_argument_uid(argument_uid)
 
         else:
             key = 'undercut'
-            return_array = _rh.get_undercuts_for_argument_uid()
+            return_array = get_undercuts_for_argument_uid(argument_uid)
 
         if return_array and len(return_array) != 0:
             # check if the step is already in history
@@ -237,19 +241,24 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
             if str(key) not in restriction_on_attacks \
                     and return_array[0]['id'] not in restriction_on_argument_uids \
                     and not is_attack_in_history:  # no duplicated attacks
-                logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack found for key: ' + key)
+                logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range',
+                       'attack found for key: ' + key)
                 attack_found = True
                 break
             else:
-                logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'attack \'' + key + '\' is restricted')
+                logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range',
+                       'attack \'' + key + '\' is restricted')
                 key = ''
                 return_array = []
         else:
-            logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'no attack found for key: ' + key)
+            logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range',
+                   'no attack found for key: ' + key)
 
     if len(left_attacks) > 0 and not attack_found:
-        logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range', 'redo algo with left attacks ' + str(left_attacks))
-        return_array, key, is_attack_in_history = __get_attack_for_argument_by_random_in_range(argument_uid, left_attacks,
+        logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range',
+               'redo algo with left attacks ' + str(left_attacks))
+        return_array, key, is_attack_in_history = __get_attack_for_argument_by_random_in_range(argument_uid,
+                                                                                               left_attacks,
                                                                                                left_attacks, lang,
                                                                                                restriction_on_attacks,
                                                                                                restriction_on_argument_uids,
@@ -288,8 +297,8 @@ def __evaluate_argument(argument_uid):
     logger('RecommenderSystem', '__evaluate_argument', 'argument ' + str(argument_uid))
 
     db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument_uid).all()
-    db_valid_votes   = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                                           VoteArgument.is_valid == True)).all()
+    db_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
+                                                                         VoteArgument.is_valid == True)).all()
     db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
                                                                            VoteArgument.is_valid == True,
                                                                            VoteArgument.is_up_vote == True)).all()
