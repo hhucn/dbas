@@ -41,7 +41,7 @@ class AdminTest(unittest.TestCase):
 
     def test_get_table_dict(self):
         for table in table_mapper:
-            return_dict = get_table_dict(table_mapper[table]['name'])
+            return_dict = get_table_dict(table_mapper[table]['name'], 'some_main_page')
             self.assertTrue('is_existing' in return_dict)
             self.assertTrue('name' in return_dict)
             self.assertFalse('password' in return_dict)

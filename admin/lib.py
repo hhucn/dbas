@@ -15,7 +15,6 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
 from dbas.lib import get_profile_picture, is_user_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.views import main_page
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 table_mapper = {
@@ -155,11 +154,12 @@ def get_overview(page):
     return return_list
 
 
-def get_table_dict(table_name):
+def get_table_dict(table_name, main_page):
     """
     Returns information about a specific table
 
     :param table_name: Name of the table
+    :params main_page: URL
     :return: Dictionary with head, row, count and has_elements
     """
     logger('AdminLib', 'get_table_dict', str(table_name))
@@ -190,7 +190,7 @@ def get_table_dict(table_name):
 
     # getting data
     # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
-    data = __get_rows_of(columns, db_elements)
+    data = __get_rows_of(columns, db_elements, main_page)
 
     # save it
     return_dict['head'] = columns
@@ -210,12 +210,13 @@ def __get_language(uid, query):
     return query.filter_by(uid=uid).first().ui_locales
 
 
-def __get_author_data(uid, query):
+def __get_author_data(uid, query, main_page):
     """
     Returns a-tag with gravatar of current author and users page as href
 
     :param uid: of user
     :param query: of all users
+    :params main_page: URL
     :return: string
     """
     db_user = query.filter_by(uid=int(uid)).first()
@@ -243,12 +244,13 @@ def __get_dash_dict(count, name, href):
     return {'count': count, 'name': name, 'href': href}
 
 
-def __get_rows_of(columns, db_elements):
+def __get_rows_of(columns, db_elements, main_page):
     """
     Returns array with all data of a table
 
     :param columns: which should be displayed
     :param db_elements: which should be displayed
+    :params main_page: URL
     :return: []
     """
     db_languages = DBDiscussionSession.query(Language)
@@ -260,7 +262,7 @@ def __get_rows_of(columns, db_elements):
             attribute = getattr(row, column)
             # all keywords for getting a user
             if column in _user_columns:
-                text, success = __get_author_data(attribute, db_users)
+                text, success = __get_author_data(attribute, db_users, main_page)
                 if success:
                     tmp.append(text)
             # resolve language

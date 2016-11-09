@@ -114,7 +114,7 @@ def main_table(request):
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     table = request.matchdict['table']
     try:
-        table_dict = lib.get_table_dict(table)
+        table_dict = lib.get_table_dict(table, request.application_url)
         table_dict['has_error'] = False
         table_dict['error'] = ''
     except Exception as e:
