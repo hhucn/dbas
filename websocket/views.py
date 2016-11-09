@@ -41,7 +41,7 @@ def debug_function(request):
     logger('Websocket', 'socketio', 'debug_function')
 
     ui_locales = get_language(request, get_current_registry())
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.authenticated_userid, request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     return {
         'layout': base_layout(),
