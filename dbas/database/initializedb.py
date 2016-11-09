@@ -24,6 +24,7 @@ from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config, and_
 
 first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
+nick_of_anonymous_user = 'anonymous'
 
 
 def usage(argv):
@@ -58,7 +59,7 @@ def main_discussion(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user5, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
-        main_author = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
+        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
 
@@ -81,7 +82,7 @@ def main_discussion_reload(argv=sys.argv):
 
     with transaction.manager:
         drop_discussion_database(DBDiscussionSession)
-        main_author = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
+        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
@@ -476,7 +477,7 @@ def set_up_users(session):
     pw8 = password_handler.get_hashed_password('bjoern')
     pw9 = password_handler.get_hashed_password('teresa')
 
-    user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group_uid=group2.uid, gender='m')
+    user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user, email='', password=pw0, group_uid=group2.uid, gender='m')
     user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group_uid=group0.uid, gender='m')
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group_uid=group0.uid, gender='m')
     user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group_uid=group0.uid, gender='m')
