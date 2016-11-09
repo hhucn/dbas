@@ -20,6 +20,7 @@ def logger(who, when, what, warn=False, error=False, debug=False):
     :param debug: Boolean, default False
     :return: None
     """
+
     info = not(warn or error or debug)
     logger = logging.getLogger(__name__)
     try:
