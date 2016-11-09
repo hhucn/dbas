@@ -100,10 +100,6 @@ class DictionaryHelper(object):
         db_user = None
         nickname = ''
 
-        logger('X', 'X', str(request.authenticated_userid) + ' ' + str(request.authenticated_userid is None))
-        logger('X', 'X', str(request.authenticated_userid) + ' ' + str(request.authenticated_userid is None))
-        logger('X', 'X', str(request.authenticated_userid) + ' ' + str(request.authenticated_userid is None))
-
         if request.authenticated_userid:
             nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -111,7 +107,6 @@ class DictionaryHelper(object):
         if not db_user or request.authenticated_userid is None:
             nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-            logger('X', 'X', '------------------ ' + str(db_user is None))
         is_logged_in = False if nickname == nick_of_anonymous_user else _uh.is_user_logged_in(nickname)
 
         # get anti-spam-question

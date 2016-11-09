@@ -182,7 +182,6 @@ def get_minimal_graph_export(issue):
     :param col_name: current columns name
     :return: String or raise NameError
     """
-    logger('X', str(issue), str(Validator.is_integer((issue))))
     if Validator.is_integer(issue):
         db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
         db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
