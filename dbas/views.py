@@ -59,19 +59,6 @@ name = 'D-BAS'
 version = '0.7.2'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
-main_page = ''
-
-
-def __init__(request):
-    """
-    Object initialization
-
-    :param request: init http request
-    :return: json-dict()
-    """
-    request = request
-    global main_page
-    main_page = request.application_url
 
 
 def base_layout():
@@ -876,13 +863,6 @@ def discussion_jump(request, for_api=False, api_data=None):
 # REVIEW                             #
 # ####################################
 
-
-
-# ####################################
-# REVIEW                             #
-# ####################################
-
-
 # index page for reviews
 @view_config(route_name='review_index', renderer='templates/review.pt', permission='use')
 def main_review(request):
@@ -943,7 +923,7 @@ def review_content(request):
 
     subpage_name = request.matchdict['queue']
     subpage_dict = review_page_helper.get_subpage_elements_for(request, subpage_name,
-                                                               request.authenticated_userid, _tn, request.application_url)
+                                                               request.authenticated_userid, _tn)
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
         return HTTPFound(location=UrlManager(request.application_url, for_api=False).get_404([request.path[1:]]))
 
@@ -2210,7 +2190,7 @@ def flag_argument_or_statement(request):
     try:
         uid = request.params['uid']
         reason = request.params['reason']
-        argument_type = Argument if request.params['is_argument'] == 'true' else Statement
+        is_argument = True if request.params['is_argument'] == 'true' else False
         nickname = request.authenticated_userid
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
@@ -2221,7 +2201,7 @@ def flag_argument_or_statement(request):
         elif db_reason is None and reason != 'optimization':
             logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
         else:
-            success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, argument_type,
+            success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument,
                                                                     transaction)
 
             return_dict = {

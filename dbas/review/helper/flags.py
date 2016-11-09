@@ -11,7 +11,7 @@ from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewD
 from dbas.strings.keywords import Keywords as _
 
 
-def flag_argument(uid, reason, db_user, argument_type, transaction):
+def flag_argument(uid, reason, db_user, is_argument, transaction):
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
@@ -19,11 +19,11 @@ def flag_argument(uid, reason, db_user, argument_type, transaction):
     :param uid: Uid of the argument/statement, which should be flagged
     :param reason: String which describes the reason
     :param db_user: User model of requests sender
-    :param argument_type: Class of the argument (either Argument or Statement
+    :param is_argument: Boolean
     :param transaction: current transaction
     :return:
     """
-    db_element = DBDiscussionSession.query(argument_type).get(uid)
+    db_element = DBDiscussionSession.query(Argument if is_argument else Statement).get(uid)
 
     # we could have only one reason!
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
@@ -32,8 +32,8 @@ def flag_argument(uid, reason, db_user, argument_type, transaction):
     if None in [db_element, db_user, db_reason] and not reason == 'optimization':
         return '', '', _.internalKeyError  # translator.internalKeyError
 
-    argument_uid = uid if type(argument_type) is Argument else None
-    statement_uid = uid if type(argument_type) is Statement else None
+    argument_uid = uid if is_argument else None
+    statement_uid = uid if not is_argument else None
 
     # was this already flagged?
     flag_status = __get_flag_status(argument_uid, statement_uid, db_user.uid)
@@ -66,14 +66,12 @@ def __get_flag_status(argument_uid, statement_uid, user_uid):
     """
     ret_val = None
 
-    if any((
-            __is_argument_flagged_for_delete(argument_uid, statement_uid),
-            __is_argument_flagged_for_optimization(argument_uid, statement_uid),)):
+    if any((__is_argument_flagged_for_delete(argument_uid, statement_uid),
+            __is_argument_flagged_for_optimization(argument_uid, statement_uid))):
         ret_val = 'other'
 
-    if any((
-            __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid),
-            __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid),)):
+    if any((__is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid),
+            __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid))):
         ret_val = 'user'
 
     return ret_val
@@ -148,6 +146,8 @@ def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, 
              ReviewOptimization.is_executed == is_executed,
              ReviewOptimization.detector_uid == user_uid,
              ReviewOptimization.is_revoked == is_revoked)).all()
+    from dbas.logger import logger
+    logger('--', str(argument_uid) + ' ' + str(statement_uid), str(user_uid))
     return len(db_review) > 0
 
 
