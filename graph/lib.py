@@ -206,7 +206,7 @@ def __get_author_of_statement(uid, db_user):
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
     db_author = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_author, 40)
-    name = db_author.get_global_nickname if db_user.uid != db_author.uid else db_user.nickname
+    name = db_author.get_global_nickname() if db_user.uid != db_author.uid else db_user.nickname
     return {'name': name, 'gravatar_url': gravatar}
 
 
@@ -222,7 +222,7 @@ def __get_editor_of_statement(uid, db_user):
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()
     db_editor = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
     gravatar = get_profile_picture(db_editor, 40)
-    name = db_editor.get_global_nickname if db_user.uid != db_editor.uid else db_user.nickname
+    name = db_editor.get_global_nickname() if db_user.uid != db_editor.uid else db_user.nickname
     return {'name': name, 'gravatar': gravatar}
 
 

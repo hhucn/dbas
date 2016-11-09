@@ -74,7 +74,7 @@ def __get_values_of_reference(reference, main_page):
     db_user = DBDiscussionSession.query(User).filter_by(uid=int(reference.author_uid)).first()
 
     img = get_profile_picture(db_user, 20, True)
-    name = db_user.get_global_nickname
+    name = db_user.get_global_nickname()
     link = main_page + '/user/' + name
 
     return {'uid': reference.uid,
