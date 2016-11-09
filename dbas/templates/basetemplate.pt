@@ -7,11 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="dialog based discussion online participation">
 	<meta name="author" content="Tobias Krauthoff">
-	<link rel="shortcut icon" href="/static/images/favicon-16x16.png">
+	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
 	<title>${title}</title>
 	<!-- Bootstrap core CSS -->
-    <link type="text/css" href="/static/css/main.css" rel="stylesheet">
-    <link type="text/css" href="/static/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
+    <link type="text/css" href="${request.static_url('dbas:static/fontawesome/css/font-awesome.min.css')}" rel="stylesheet">
 </head>
 
 <body>
@@ -19,12 +19,12 @@
     <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
 	<!-- Inlcuding this at top for references -->
-	<script type="text/javascript" src="/static/js/jquery/jquery-3.1.0.min.js"></script>
-	<script type="text/javascript" src="/static/js/bootstrap/bootstrap-3.3.7.min.js"></script>
-	<script type="text/javascript" src="/static/js/bootstrap/bootstrap-toggle.min.js"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery/jquery-3.1.0.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap/bootstrap-3.3.7.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap/bootstrap-toggle.min.js')}"></script>
 
 	<!--
-	<script type="text/javascript" src="/static/js/ads.js"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/ads.js')}"></script>
 	-->
 
 	<!-- JS DISABLED -->
@@ -81,7 +81,7 @@
 		</div>
 
 		<div id="wrapper-footer">
-			<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" src="/static/images/chevron_up.png"></a>
+			<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
 
 			<div metal:use-macro="load: snippet-footer.pt"></div>
 		</div>
@@ -92,32 +92,32 @@
 	<div class="eupopup eupopup-bottomleft"></div>
 
 	<!-- Placed at the end of the document so the pages load faster -->
-	<!--<script type="text/javascript" src="/static/js/libs/pace.min.js"></script>-->
-    <script type="text/javascript" src="/static/js/libs/eu-cookie-law-popup.min.js"></script>
-	<script type="text/javascript" src="/static/js/jquery/jquery.slimscroll-1.3.8.min.js"></script>
+	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>-->
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery/jquery.slimscroll-1.3.8.min.js')}"></script>
 
-	<script type="text/javascript" src="/static/js/ids.js"></script>
-	<script type="text/javascript" src="/static/js/app.js"></script>
-	<script type="text/javascript" src="/static/js/sharing.js"></script>
-	<script type="text/javascript" src="/static/js/strings.js"></script>
-	<script type="text/javascript" src="/static/js/discussion/guihandler.js"></script>
-	<script type="text/javascript" src="/static/js/discussion/popups.js"></script>
-	<script type="text/javascript" src="/static/js/discussion/helper.js"></script>
-	<script type="text/javascript" src="/static/js/lib.js"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/popups.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/lib.js')}"></script>
 
-    <script type="text/javascript" src="/static/js/ajax/discussion.js"></script>
-    <script type="text/javascript" src="/static/js/ajax/graph.js"></script>
-    <script type="text/javascript" src="/static/js/ajax/main.js"></script>
-    <script type="text/javascript" src="/static/js/ajax/news.js"></script>
-    <script type="text/javascript" src="/static/js/ajax/notification.js"></script>
-    <script type="text/javascript" src="/static/js/ajax/reference.js"></script>
-    <script type="text/javascript" src="/static/js/ajax/review.js"></script>
-    <script type="text/javascript" src="/static/js/ajax/user.js"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/discussion.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/graph.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/main.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/news.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/notification.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/reference.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/review.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/user.js')}"></script>
 
-    <script type="text/javascript" src="/static/js/dolan.js"></script>
-    <script type="text/javascript" src="/static/js/socketio/socket.io-1.4.5.js"></script>
-    <script type="text/javascript" src="/ws/js/websocket.js"></script>
-	<!--<script type="text/javascript" src="/static/js/libs/gremlins.min.js"></script>-->
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/dolan.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/socketio/socket.io-1.4.5.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}"></script>
+	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}"></script>-->
 
 	<!-- Piwik -->
 	<script type="text/javascript">

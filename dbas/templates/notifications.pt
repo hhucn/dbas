@@ -23,7 +23,7 @@
                             </ul>
 						</div>
 						<div>
-							<img style="width: 50px; float: right;" id="new-notification" class="icon-badge" src="/static/images/icon_mail.png" title="" />
+							<img style="width: 50px; float: right;" id="new-notification" class="icon-badge" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
 						</div>
 					</div>
 
@@ -94,9 +94,9 @@
 			</div>
 		</div>
 
-		<script type="text/javascript" src="/static/js/notification.js"></script>
-		<script type="text/javascript" src="/static/js/discussion/interactionhandler.js"></script>
-		<script type="text/javascript" src="/static/js/discussion/guihandler.js"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
 
 	</tal:block>
 </tal:block>

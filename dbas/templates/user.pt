@@ -58,7 +58,7 @@
 							<td id="discussion-stat-reputation" style="text-align: right">${user.discussion_stat_rep}</td>
 						</tr>
 					</table>
-                    <img style="width: 50px; float: right;" id="send-notification" class="icon-badge" tal:condition="can_send_notification" src="/static/images/icon_mail.png" title="" />
+                    <img style="width: 50px; float: right;" id="send-notification" class="icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
 				</div>
             </div>
 
@@ -78,9 +78,9 @@
 
         </div>
 
-		<script type="text/javascript" src="/static/js/user.js"></script>
-		<script type="text/javascript" src="/static/js/notification.js"></script>
-        <script type="text/javascript" src="/static/js/libs/chart.min.js"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/user.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>
 
 	</tal:block>
 </tal:block>

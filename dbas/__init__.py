@@ -84,7 +84,6 @@ def main(global_config, **settings):
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
-    config.add_static_view(name='rv', path='review:static/', cache_max_age=3600)
     config.add_static_view(name='admin', path='admin:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('admin:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
