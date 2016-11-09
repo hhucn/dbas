@@ -25,10 +25,10 @@
 				</li>
 					<img id="roundhousekick"
 							 style="width: 25px; height: 25px; border: none; opacity: 0;"
-							 src="${request.static_url('dbas:static/images/transparent.gif')}">
+							 src="/static/images/transparent.gif">
 					<img id="yomamma"
 							 style="width: 25px; height: 25px; border: none; opacity: 0;"
-							 src="${request.static_url('dbas:static/images/transparent.gif')}">
+							 src="/static/images/transparent.gif">
 			</ul>
 		</div>
 	</div>
