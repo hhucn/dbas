@@ -39,7 +39,6 @@ coverage.xml
 .python-version
 *.bak
 pull*.sh
-<<<<<<< HEAD
 gource.sh
 dbas_timelapse.mp4
 git-delete-history.sh
