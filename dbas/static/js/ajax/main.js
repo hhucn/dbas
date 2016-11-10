@@ -65,7 +65,6 @@ function AjaxMainHandler(){
 		}).done(function ajaxLoginDone(data) {
 			callbackIfDoneForLogin(data, showGlobalError);
 		}).fail(function ajaxLoginFail(xhr) {
-			console.log('FAIL ' + xhr.status);
 			var showError = false;
 			var errorMsg = '';
 			
