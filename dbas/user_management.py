@@ -280,25 +280,8 @@ def get_random_anti_spam_question(lang):
     """
     _t = Translator(lang)
 
-    signs = [
-        _.plus,
-        _.minus,
-        _.divided_by,
-        _.times
-    ]
-
-    numbers = {
-        0: _.zero,
-        1: _.one,
-        2: _.two,
-        3: _.three,
-        4: _.four,
-        5: _.five,
-        6: _.six,
-        7: _.seven,
-        8: _.eight,
-        9: _.nine
-    }
+    signs = [_.plus, _.minus, _.divided_by, _.times]
+    numbers = [_.zero, _.one, _.two, _.three, _.four, _.five, _.six, _.seven, _.eight, _.nine]
 
     int1 = random.randint(0, 9)
     int2 = random.randint(0, 9)
@@ -309,7 +292,11 @@ def get_random_anti_spam_question(lang):
         answer = int1 + int2
 
     elif sign is _.minus:
-        answer = abs(int1 - int2)
+        if int2 > int1:
+            tmp = int1
+            int1 = int2
+            int2 = tmp
+        answer = int1 - int2
 
     elif sign is _.times:
         answer = int1 * int2
@@ -320,7 +307,7 @@ def get_random_anti_spam_question(lang):
             int2 = random.randint(1, 9)
         answer = int1 / int2
 
-    question += "{} {} {}?".format(numbers[int1], _t.get(sign), numbers[int2])
+    question += "{} {} {}?".format(_t.get(numbers[int1]), _t.get(sign), _t.get(numbers[int2]))
     logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question + ', answer: ' + str(answer))
 
     return question, str(int(answer))
