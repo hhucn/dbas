@@ -11,6 +11,8 @@ from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 
+port = 5100
+
 
 def send_request_for_info_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
     """
@@ -80,7 +82,7 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
 
     try:
         https = 'https' if use_https else 'http'
-        resp = requests.get(https + '://localhost:5001/recent_review' + params)
+        resp = requests.get(https + '://localhost:' + str(port) + '/recent_review' + params)
     except:
         return None
     logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')
@@ -141,9 +143,9 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
 
     try:
         if use_https:
-            link = 'https://dbas.cs.uni-duesseldorf.de:5001/'
+            link = 'https://dbas.cs.uni-duesseldorf.de:' + str(port) + '/'
         else:
-            link = 'http://localhost:5001/'
+            link = 'http://localhost:' + str(port) + '/'
         resp = requests.get(link + 'recent_review' + params)
     except Exception as e:
         logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'Error: ' + str(e), error=True)

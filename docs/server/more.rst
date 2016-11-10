@@ -13,5 +13,6 @@ Socket.io http://socket.io/
 
 Deployment
 ==========
-Supervisor is just for Python2 :(
-http://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/deployment/nginx.html
+- Supervisor is just for Python2 :(
+- http://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/deployment/nginx.html
+- Grep for *dbas.cs* in code and replace it with the real address
