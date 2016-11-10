@@ -56,7 +56,7 @@ def __get_delete_dict(main_page, translator, nickname):
 
     key = 'deletes'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'Deletes',
+    tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-trash-o',
@@ -84,7 +84,7 @@ def __get_optimization_dict(main_page, translator, nickname):
 
     key = 'optimizations'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'Optimizations',
+    tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-flag',
@@ -112,7 +112,7 @@ def __get_edit_dict(main_page, translator, nickname):
 
     key = 'edits'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'Edits',
+    tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-pencil-square-o',
@@ -138,7 +138,7 @@ def __get_history_dict(main_page, translator, nickname):
     #  logger('ReviewQueues', '__get_history_dict', 'main')
     key = 'history'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'History',
+    tmp_dict = {'task_name': translator.get(_.queueHistory),
                 'id': 'flags',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-history',
@@ -162,7 +162,7 @@ def __get_ongoing_dict(main_page, translator):
     """
     #  logger('ReviewQueues', '__get_ongoing_dict', 'main')
     key = 'ongoing'
-    tmp_dict = {'task_name': 'Ongoing',
+    tmp_dict = {'task_name': translator.get(_.queueOngoing),
                 'id': 'flags',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-clock-o',
