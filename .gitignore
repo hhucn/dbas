@@ -40,6 +40,7 @@ coverage.xml
 *.bak
 pull*.sh
 dbas_timelapse.mp4
+git-delete-history.sh
 
 # Pycharm
 .idea/
