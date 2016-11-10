@@ -165,44 +165,6 @@ function setEasterEggs(){
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
 
-	if (window.location.href == mainpage) {
-		/* christmas only
-        var div = $('<div>'),
-        christmas = $('<input>').attr('type','checkbox').data('toggle','toggle').data('onstyle','primary').bootstrapToggle('off'),
-        silvester = $('<input>').attr('type','checkbox').data('toggle','toggle').data('onstyle','primary').bootstrapToggle('off'),
-        spanChristmas = $('<span>').text('Christmas'),
-        spanSilvester = $('<span>').text('Silvester');
-        christmas.attr('style','margin-left: 5px;');
-        silvester.attr('style','margin-left: 5px;');
-        spanSilvester.attr('style','margin-left: 20px;');
-        div.attr('style','padding-right: 50px; z-index: 200; text-align: right;')
-		        .append(spanChristmas)
-		        .append(christmas)
-		        .append(spanSilvester)
-		        .append(silvester);
-		div.prependTo($('.first-container'));
-		$('#cot_tl3_fixed').hide();
-		$('#cot_tl4_fixed').hide();
-		christmas.change(function() {
-			if($(this).is(":checked")) {
-				$('#cot_tl3_fixed').show();
-				$('#cot_tl4_fixed').show();
-			} else {
-				$('#cot_tl3_fixed').hide();
-				$('#cot_tl4_fixed').hide();
-			}
-		});
-		silvester.change(function() {
-			if($(this).is(":checked")) {
-				document.body.appendChild(canvas);
-				window.scrollTo(0,document.body.scrollHeight);
-			} else {
-				canvas.remove();
-			}
-		});
-		*/
-	}
-
 	$('#dbas-logo').click(function(){
 		var counter = parseInt($(this).data('counter'));
 		counter += 1;
