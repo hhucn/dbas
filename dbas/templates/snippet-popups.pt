@@ -333,7 +333,7 @@
     					</div>
 
     					<div id="signup">
-
+                            <p class="center lead"><span class="text-info" i18n:translate="never_display_real_name">We will never display your real name to other users!</span></p>
     						<div class="form-group">
     							<label class="col-md-3 control-label" for="userfirstname-input" i18n:translate="first_name">Your First Name</label>
     							<div class="col-md-9">
@@ -444,12 +444,20 @@
     							<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
 
     							<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
-    							<ul>
-    								<li i18n:translate="select_password_rule1">eight characters</li>
-    								<li i18n:translate="select_password_rule2">one uppercase letter</li>
-    								<li i18n:translate="select_password_rule3">one lowercase letter</li>
-    								<li i18n:translate="select_password_rule4">one special sign</li>
-    							</ul>
+                                <table>
+                                    <tr>
+                                        <td>
+    							            <ul>
+    							            	<li i18n:translate="select_password_rule1">eight characters</li>
+    							            	<li i18n:translate="select_password_rule2">one uppercase letter</li>
+    							            </ul></td>
+                                        <td>
+    							            <ul>
+    							            	<li i18n:translate="select_password_rule3">one lowercase letter</li>
+    							            	<li i18n:translate="select_password_rule4">one special sign</li>
+    							            </ul></td>
+                                    </tr>
+                                </table>
     							<span i18n:translate="popup_password_text">For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 years. It should be noted:</span>
     							<ul>
     								<li i18n:translate="select_password_avoid1">Avoid using a password on several pages</li>
