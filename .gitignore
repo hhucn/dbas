@@ -39,6 +39,8 @@ coverage.xml
 .python-version
 *.bak
 pull*.sh
+gource.sh
+dbas_timelapse.mp4
 
 # Pycharm
 .idea/
