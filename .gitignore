@@ -42,6 +42,7 @@ pull*.sh
 gource.sh
 dbas_timelapse.mp4
 git-delete-history.sh
+*.jar
 
 # Pycharm
 .idea/
