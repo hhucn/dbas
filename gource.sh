@@ -12,7 +12,7 @@ gource \
     --max-files 0  \
     --background-colour 000000 \
     --font-size 22 \
-    --title "dabas minus" \
+    --title "Animated Version Control of D-BAS" \
     --output-ppm-stream - \
     --output-framerate 25 \
     | ffmpeg -y -r 25 -f image2pipe -vcodec ppm -i - -b 65536K dbas_timelapse.mp4
