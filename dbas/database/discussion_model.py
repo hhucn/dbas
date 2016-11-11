@@ -681,7 +681,8 @@ class Message(DiscussionBase):
     read = Column(Boolean, nullable=False)
     is_inbox = Column(Boolean, nullable=False)
 
-    users = relationship('User', foreign_keys=[from_author_uid, to_author_uid])
+    from_users = relationship('User', foreign_keys=[from_author_uid])
+    to_users = relationship('User', foreign_keys=[to_author_uid])
 
     def __init__(self, from_author_uid, to_author_uid, topic, content, is_inbox=True, read=False):
         self.from_author_uid = from_author_uid
@@ -1091,7 +1092,8 @@ class RevokedContentHistory(DiscussionBase):
     new_author_uid = Column(Integer, ForeignKey('users.uid'))
     textversion_uid = Column(Integer, ForeignKey('textversions.uid'))
 
-    authors = relationship('User', foreign_keys=[old_author_uid, new_author_uid])
+    old_authors = relationship('User', foreign_keys=[old_author_uid])
+    new_authors = relationship('User', foreign_keys=[new_author_uid])
     textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
 
     def __init__(self, old_author_uid, new_author_uid, textversion_uid):
