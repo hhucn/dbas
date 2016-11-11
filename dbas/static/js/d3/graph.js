@@ -244,12 +244,12 @@ function DiscussionGraph() {
      * Enable zoom and pan functionality on graph.
      */
     function zoomAndPan(){
-        var zoom = d3.behavior.zoom().on("zoom", redraw);
+        var zoom = d3.behavior.zoom().on("zoom", redraw).scaleExtent([0.5, 5]);
         d3.select("#graph-svg").call(zoom).on("dblclick.zoom", null);
         function redraw() {
+            console.log('zoom');
             d3.selectAll("g.zoom")
-            .attr("transform", "translate(" + zoom.translate() + ")"
-            + " scale(" + zoom.scale() + ")");
+            .attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom.scale() + ")");
         }
     }
 
