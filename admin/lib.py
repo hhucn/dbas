@@ -11,7 +11,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
-    ReviewCanceled, RevokedContent
+    ReviewCanceled, RevokedContent, RevokedContentHistory
 from dbas.lib import get_profile_picture, is_user_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -47,7 +47,8 @@ table_mapper = {
     'ReputationReason'.lower(): {'table': ReputationReason, 'name': 'ReputationReason'},
     'OptimizationReviewLocks'.lower(): {'table': OptimizationReviewLocks, 'name': 'OptimizationReviewLocks'},
     'ReviewCanceled'.lower(): {'table': ReviewCanceled, 'name': 'ReviewCanceled'},
-    'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'}
+    'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'},
+    'RevokedContentHistory'.lower(): {'table': RevokedContentHistory, 'name': 'RevokedContentHistory'}
 }
 
 google_colors = [
@@ -140,6 +141,7 @@ def get_overview(page):
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(OptimizationReviewLocks).all()), 'OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewCanceled).all()), 'ReviewCanceled', page + 'ReviewCanceled'))
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContent).all()), 'RevokedContent', page + 'RevokedContent'))
+    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContentHistory).all()), 'RevokedContentHistory', page + 'RevokedContentHistory'))
 
     # first row
     return_list.append([{'name': 'General', 'content': general},
