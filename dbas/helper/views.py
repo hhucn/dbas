@@ -117,7 +117,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive)
-    extras_dict     = _dh.prepare_extras_dict(slug, False, True, True, True, request, argument_id=argument_uid,
+    extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:

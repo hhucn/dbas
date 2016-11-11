@@ -126,7 +126,7 @@ def get_argument_by_conclusion(statement_uid, is_supportive):
            'statement: ' + str(statement_uid) + ', supportive: ' + str(is_supportive))
     db_arguments = get_arguments_by_conclusion(statement_uid, is_supportive)
 
-    if not db_arguments:
+    if len(db_arguments) == 0:
         return 0
     rnd = random.randint(0, len(db_arguments) - 1)  # TODO fix random
     return db_arguments[0 if len(db_arguments) == 1 else rnd].uid
@@ -145,7 +145,6 @@ def get_arguments_by_conclusion(statement_uid, is_supportive):
     db_arguments = get_not_disabled_arguments_as_query()
     db_arguments = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
                                             Argument.conclusion_uid == statement_uid)).all()
-
     if not db_arguments:
         return []
 

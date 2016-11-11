@@ -241,11 +241,10 @@ class DiscussionDictHelper(object):
         save_statement_url = 'ajax_set_new_start_statement'
 
         if uid != 0:
-            text            = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know')
+            text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True)
             sys_text = _tn.get(_.otherParticipantsThinkThat) + ' ' + text[0:1].lower() + text[1:] + '. '
-
-            bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text + '<br><br>' + _tn.get(
-                _.whatDoYouThinkAboutThat) + '?')
+            sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
+            bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text)
             bubbles_array.append(bubble_sys)
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}

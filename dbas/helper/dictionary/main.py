@@ -78,8 +78,8 @@ class DictionaryHelper(object):
         return self.prepare_extras_dict('', False, False, False, False, request, append_notifications=append_notifications)
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_island_icon,
-                            show_graph_icon, request, argument_id=0, argument_for_island=0, application_url='', for_api=False,
-                            append_notifications=False, attack=None):
+                            show_graph_icon, request, argument_id=0, argument_for_island=0, application_url='',
+                            for_api=False, append_notifications=False, attack=None):
         """
         Creates the extras.dict() with many options!
 
@@ -157,7 +157,7 @@ class DictionaryHelper(object):
 
             # add everything for the island view
             if return_dict['show_island_icon']:
-                # does an argumente exists?
+                # does an argument exists?
                 db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
                 if db_argument:
                     island_dict = get_every_attack_for_island_view(argument_id)
