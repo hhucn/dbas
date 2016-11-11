@@ -122,11 +122,6 @@ jump_to_zargument = Service(name="jump_to_argument",  # Need this 'z' to call th
                             description="Jump to an argument",
                             cors_policy=cors_policy)
 
-jump_to_decision = Service(name="jump_to_decision",
-                           path="/{slug}/jump/decision/{arg_uid}",
-                           description="Persuade the user to make a decision",
-                           cors_policy=cors_policy)
-#
 # Other Services
 #
 news = Service(name='api_news',
@@ -464,18 +459,6 @@ def fn_jump_to_argument(request):
     """
     api_data = jump_preparation(request)
     return as_json(dbas.discussion_jump(request, for_api=True, api_data=api_data))
-
-
-@jump_to_decision.get()
-def fn_jump_to_decision(request):
-    """
-    Persuade a user to make a decision when she previously marked both parts of the argument as invalid.
-
-    :param request:
-    :return: Argument with a list of possible interactions
-    """
-    api_data = jump_preparation(request)
-    return as_json(dbas.discussion_jump_decision(for_api=True, api_data=api_data))
 
 
 # =============================================================================
