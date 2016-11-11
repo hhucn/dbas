@@ -413,7 +413,7 @@ def find_statements_fn(request):
     api_data["issue"] = request.matchdict["issue"]
     api_data["mode"] = request.matchdict["type"]
     api_data["value"] = request.matchdict["value"]
-    results = dbas.fuzzy_search(for_api=True, api_data=api_data)
+    results = dbas.fuzzy_search(request, for_api=True, api_data=api_data)
 
     issue_uid = api_data["issue"]
 
