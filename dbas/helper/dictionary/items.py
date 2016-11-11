@@ -559,12 +559,12 @@ class ItemDictHelper(object):
         answers.append({'text': item_text[2], 'url': url2})
         answers.append({'text': item_text[3], 'url': url3})
 
-        return_array = []
+        statements_array = []
         for no in range(0, len(answers)):
             arr = [{'title': answers[no]['text'], 'id': 0}]
-            return_array.append(self.__create_answer_dict('jump' + str(no), arr, 'jump', answers[no]['url']))
+            statements_array.append(self.__create_answer_dict('jump' + str(no), arr, 'jump', answers[no]['url']))
 
-        return return_array
+        return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     @staticmethod
     def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text='', is_flagable=False, is_author=False, is_visible=True):
