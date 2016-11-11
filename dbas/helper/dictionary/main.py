@@ -405,6 +405,7 @@ class DictionaryHelper(object):
                                 'report_statement': _tn_dis.get(_.reportStatement),
                                 'report_argument': _tn_dis.get(_.reportArgument),
                                 'delete_statement': _tn_dis.get(_.deleteStatement),
+                                'disassociate_statement': _tn_dis.get(_.disassociateStatement),
                                 'finish_title': _tn_dis.get(_.finishTitle),
                                 'question_title': _tn_dis.get(_.questionTitle),
                                 'more_title': _tn_dis.get(_.more),

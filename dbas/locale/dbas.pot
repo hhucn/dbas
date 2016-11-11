@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-11-10 09:42+0100\n"
+"POT-Creation-Date: 2016-11-11 10:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -548,7 +548,7 @@ msgstr ""
 #. Default: Cancel
 #: ././templates/review_history.pt:94 ././templates/snippet-popups.pt:175
 #: ././templates/snippet-popups.pt:198 ././templates/snippet-popups.pt:223
-#: ././templates/snippet-popups.pt:929
+#: ././templates/snippet-popups.pt:930
 msgid "cancel"
 msgstr ""
 
@@ -689,7 +689,7 @@ msgstr ""
 
 #. Default: Okay
 #: ././templates/snippet-popups.pt:174 ././templates/snippet-popups.pt:197
-#: ././templates/snippet-popups.pt:222 ././templates/snippet-popups.pt:928
+#: ././templates/snippet-popups.pt:222 ././templates/snippet-popups.pt:929
 msgid "okay"
 msgstr ""
 
@@ -1014,51 +1014,52 @@ msgstr ""
 msgid "caution"
 msgstr ""
 
-#. Default: Do you really want to delete this content? This step is
-#. irreversible!
-#: ././templates/snippet-popups.pt:828
-msgid "do_you_really_step_irreversible"
+#. Default: Do you really want to disassociate yourself from your content? This
+#. step is irreversible! Subsequently you will not be the author of this
+#. statement anymore!
+#: ././templates/snippet-popups.pt:829
+msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 
 #. Default: Please choose a step to jump in
-#: ././templates/snippet-popups.pt:845
+#: ././templates/snippet-popups.pt:846
 msgid "choose_a_step_to_jump_in"
 msgstr ""
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: ././templates/snippet-popups.pt:848
+#: ././templates/snippet-popups.pt:849
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 
 #. Default: References
-#: ././templates/snippet-popups.pt:865
+#: ././templates/snippet-popups.pt:866
 msgid "refereces"
 msgstr ""
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: ././templates/snippet-popups.pt:873
+#: ././templates/snippet-popups.pt:874
 msgid "statement_reference_definition"
 msgstr ""
 
 #. Default: Please choose a statement for your reference!
-#: ././templates/snippet-popups.pt:887
+#: ././templates/snippet-popups.pt:888
 msgid "please_choose_a_reference"
 msgstr ""
 
 #. Default: Statement
-#: ././templates/snippet-popups.pt:897
+#: ././templates/snippet-popups.pt:898
 msgid "statement"
 msgstr ""
 
 #. Default: Bar Chart
-#: ././templates/snippet-popups.pt:925
+#: ././templates/snippet-popups.pt:926
 msgid "bar_chart"
 msgstr ""
 
 #. Default: Doughnut Chart
-#: ././templates/snippet-popups.pt:926
+#: ././templates/snippet-popups.pt:927
 msgid "doughnut_chart"
 msgstr ""
 
@@ -1621,22 +1622,32 @@ msgstr ""
 msgid "restart_discussion"
 msgstr ""
 
+#. Default: Show all statements
+#: ././templates/content.pt:128
+msgid "show_all_statements"
+msgstr ""
+
+#. Default: Hide statements
+#: ././templates/content.pt:129
+msgid "hide_statements"
+msgstr ""
+
 #. Default: Change display style
-#: ././templates/content.pt:340
+#: ././templates/content.pt:345
 msgid "change_style"
 msgstr ""
 
 #. Default: Dialog View
-#: ././templates/content.pt:343
+#: ././templates/content.pt:348
 msgid "dialog_view"
 msgstr ""
 
 #. Default: Island View
-#: ././templates/content.pt:349
+#: ././templates/content.pt:354
 msgid "island_view"
 msgstr ""
 
 #. Default: Complete View
-#: ././templates/content.pt:355
+#: ././templates/content.pt:360
 msgid "complete_view"
 msgstr ""

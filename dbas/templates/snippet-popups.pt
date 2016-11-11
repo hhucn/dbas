@@ -825,10 +825,11 @@
                     </h4>
     			</div>
     			<div class="modal-body">
-                    <p class="lead" i18n:translate="do_you_really_step_irreversible">Do you really want to delete this content? This step is irreversible!</p>
+                    <!--<p class="lead" i18n:translate="do_you_really_delete_step_irreversible">Do you really want to delete this content? This step is irreversible!</p>-->
+                    <p class="lead" i18n:translate="do_you_really_disassociate_step_irreversible">Do you really want to disassociate yourself from your content? This step is irreversible! Subsequently you will not be the author of this statement anymore!</p>
     			</div>
     			<div class="modal-footer">
-    				<button type="button" class="btn btn-danger" id="popup-delete-content-submit">${structure:extras.tag.delete}</button>
+    				<button type="button" class="btn btn-danger" id="popup-delete-content-submit">Okay</button>
     				<button type="button" class="btn btn-success" id="popup-delete-content-close">${structure:extras.tag.close}</button>
     			</div>
     		</div>

@@ -27,7 +27,7 @@ def get_uids_of_best_positions(db_statements):
     if db_statements is None:
         return []
     if len(db_statements) <= max_count:
-        return db_statements
+        return [element.uid for element in db_statements]
     return __select_random([element.uid for element in db_statements])
 
 
@@ -41,7 +41,7 @@ def get_uids_of_best_statements_for_justify_position(db_arguments):
     if db_arguments is None:
         return []
     if len(db_arguments) <= max_count:
-        return db_arguments
+        return [element.uid for element in db_arguments]
     return __select_random([element.uid for element in db_arguments])
 
 
@@ -55,7 +55,7 @@ def get_uids_of_best_statements_for_justify_argument(db_arguments):
     if db_arguments is None:
         return []
     if len(db_arguments) <= max_count:
-        return db_arguments
+        return [element.uid for element in db_arguments]
     return __select_random([element.uid for element in db_arguments])
 
 

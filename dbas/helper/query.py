@@ -727,7 +727,7 @@ def __revoke_statement(db_user, statement_uid, transaction, translator):
                                                                                  Argument.is_supportive == True,
                                                                                  Argument.author_uid != db_user.uid)).first()
     # search new author who supported this statement
-    if db_statement_as_conclusion and False:  # TODO DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
+    if db_statement_as_conclusion:  # TODO DO WE REALLY WANT TO SET A NEW AUTHOR HERE? # 197
         logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(db_statement_as_conclusion.author_uid) + ' (old author ' + str(db_user.uid) + ')')
         db_statement.author_uid = db_statement_as_conclusion.author_uid
         __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_statement_as_conclusion.author_uid, transaction)

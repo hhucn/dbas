@@ -191,6 +191,7 @@ class Keywords(Enum):
     dateString = 'Date'
     deleteTrack = 'Delete track'
     deleteStatement = 'Delete statement'
+    disassociateStatement = 'Disassociate from statement'
     deleteHistory = 'Delete history'
     delete = 'Delete'
     disagreeBecause = 'I disagree because '

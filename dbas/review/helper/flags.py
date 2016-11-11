@@ -5,6 +5,7 @@ Provides helping function for flagging arguments.
 """
 from sqlalchemy import and_
 
+from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
     Statement
@@ -69,10 +70,12 @@ def __get_flag_status(argument_uid, statement_uid, user_uid):
     if any((__is_argument_flagged_for_delete(argument_uid, statement_uid),
             __is_argument_flagged_for_optimization(argument_uid, statement_uid))):
         ret_val = 'other'
+        logger('FlagingHelper', '__get_flag_status', 'Already flagged by others')
 
     if any((__is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid),
             __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid))):
         ret_val = 'user'
+        logger('FlagingHelper', '__get_flag_status', 'Already flagged by the user')
 
     return ret_val
 
@@ -146,8 +149,6 @@ def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, 
              ReviewOptimization.is_executed == is_executed,
              ReviewOptimization.detector_uid == user_uid,
              ReviewOptimization.is_revoked == is_revoked)).all()
-    from dbas.logger import logger
-    logger('--', str(argument_uid) + ' ' + str(statement_uid), str(user_uid))
     return len(db_review) > 0
 
 

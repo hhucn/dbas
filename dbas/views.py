@@ -2222,13 +2222,11 @@ def flag_argument_or_statement(request):
         elif db_reason is None and reason != 'optimization':
             logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
         else:
-            success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument,
-                                                                    transaction)
-
+            success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument, transaction)
             return_dict = {
-                'success': _t.get(success),
-                'info': _t.get(info),
-                'error': _t.get(error)
+                'success': '' if isinstance(success, str) else _t.get(success),
+                'info': '' if isinstance(info, str) else _t.get(info),
+                'error': '' if isinstance(error, str) else _t.get(error)
             }
     except KeyError as e:
         logger('flag_argument', 'error', repr(e))
@@ -2445,13 +2443,13 @@ def review_lock(request):
 
 # ajax - for revoking content
 @view_config(route_name='ajax_revoke_content', renderer='json', require_csrf=False)
-def revoke_content(request):
+def revoke_some_content(request):
     """
 
     :return:
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('ajax_revoke_content', 'def', 'main: ' + str(request.params))
+    logger('revoke_some_content', 'def', 'main: ' + str(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-11-10 09:42+0100\n"
+"POT-Creation-Date: 2016-11-11 10:12+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -617,7 +617,7 @@ msgstr "Undo"
 #. Default: Cancel
 #: templates/review_history.pt:94 templates/snippet-popups.pt:175
 #: templates/snippet-popups.pt:198 templates/snippet-popups.pt:223
-#: templates/snippet-popups.pt:929
+#: templates/snippet-popups.pt:930
 msgid "cancel"
 msgstr "Cancel"
 
@@ -773,7 +773,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:174 templates/snippet-popups.pt:197
-#: templates/snippet-popups.pt:222 templates/snippet-popups.pt:928
+#: templates/snippet-popups.pt:222 templates/snippet-popups.pt:929
 msgid "okay"
 msgstr "Okay"
 
@@ -1104,54 +1104,57 @@ msgstr "Report the whole argument."
 msgid "caution"
 msgstr "Caution"
 
-#. Default: Do you really want to delete this content? This step is
-#. irreversible!
-#: templates/snippet-popups.pt:828
-msgid "do_you_really_step_irreversible"
-msgstr "Do you really want to delete this content? This step is irreversible!"
+#. Default: Do you really want to disassociate yourself from your content? This
+#. step is irreversible! Subsequently you will not be the author of this
+#. statement anymore!
+#: templates/snippet-popups.pt:829
+msgid "do_you_really_disassociate_step_irreversible"
+msgstr ""
+"Do you really want to disassociate yourself from your content? This step is "
+"irreversible! Subsequently you will not be the author of this"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:845
+#: templates/snippet-popups.pt:846
 msgid "choose_a_step_to_jump_in"
 msgstr "Please choose a step to jump in"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:848
+#: templates/snippet-popups.pt:849
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 "Below you find a list with all arguments, where your selected text is used:"
 
 #. Default: References
-#: templates/snippet-popups.pt:865
+#: templates/snippet-popups.pt:866
 msgid "refereces"
 msgstr "References"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:873
+#: templates/snippet-popups.pt:874
 msgid "statement_reference_definition"
 msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:887
+#: templates/snippet-popups.pt:888
 msgid "please_choose_a_reference"
 msgstr "Please choose a statement for your reference!"
 
 #. Default: Statement
-#: templates/snippet-popups.pt:897
+#: templates/snippet-popups.pt:898
 msgid "statement"
 msgstr "Statement"
 
 #. Default: Bar Chart
-#: templates/snippet-popups.pt:925
+#: templates/snippet-popups.pt:926
 msgid "bar_chart"
 msgstr "Bar chart"
 
 #. Default: Doughnut Chart
-#: templates/snippet-popups.pt:926
+#: templates/snippet-popups.pt:927
 msgid "doughnut_chart"
 msgstr "Doughnut chart"
 
@@ -1716,23 +1719,33 @@ msgstr "Add a topic"
 msgid "restart_discussion"
 msgstr "Restart"
 
+#. Default: Show all statements
+#: templates/content.pt:128
+msgid "show_all_statements"
+msgstr "Show all statements"
+
+#. Default: Hide statements
+#: templates/content.pt:129
+msgid "hide_statements"
+msgstr "Hide statements"
+
 #. Default: Change display style
-#: templates/content.pt:340
+#: templates/content.pt:345
 msgid "change_style"
 msgstr "Change display style"
 
 #. Default: Dialog View
-#: templates/content.pt:343
+#: templates/content.pt:348
 msgid "dialog_view"
 msgstr "Dialog View"
 
 #. Default: Island View
-#: templates/content.pt:349
+#: templates/content.pt:354
 msgid "island_view"
 msgstr "Island View"
 
 #. Default: Complete View
-#: templates/content.pt:355
+#: templates/content.pt:360
 msgid "complete_view"
 msgstr "Complete View"
 
@@ -1883,9 +1896,6 @@ msgstr "Complete View"
 
 #~ msgid "island_view_for"
 #~ msgstr "Island View for"
-
-#~ msgid "add_statement"
-#~ msgstr "Add statement"
 
 #~ msgid "let_me_enter_my_reason"
 #~ msgstr "Let me enter my reason!"
