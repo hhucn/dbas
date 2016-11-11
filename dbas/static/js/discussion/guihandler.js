@@ -94,9 +94,9 @@ function GuiHandler() {
 	 * Dialog based discussion modi
 	 */
 	this.setDisplayStyleAsDiscussion = function () {
-		this.setActivityOfImage($('#' + displayStyleIconGuidedId), false);
-		this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
-		this.setActivityOfImage($('#' + displayStyleIconGraphId), true);
+		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), false);
+		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
+		// this.setActivityOfImage($('#' + displayStyleIconGraphId), true);
 		$('#' + islandViewContainerId).hide();
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
@@ -108,9 +108,9 @@ function GuiHandler() {
 	 * Some kind of pro contra list, but how?
 	 */
 	this.setDisplayStyleAsIsland = function () {
-		this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
-		this.setActivityOfImage($('#' + displayStyleIconIslandId), false);
-		this.setActivityOfImage($('#' + displayStyleIconGraphId), true);
+		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
+		// this.setActivityOfImage($('#' + displayStyleIconIslandId), false);
+		// this.setActivityOfImage($('#' + displayStyleIconGraphId), true);
 		$('#' + islandViewContainerId).fadeIn('slow');
 		//$('#' + graphViewContainerId).hide();
 		//$('#' + discussionContainerId).hide();
@@ -126,9 +126,9 @@ function GuiHandler() {
 		var tacked_sidebar = 'tacked_graph_sidebar';
 		var header = $('#graph-view-container-header');
 		
-		this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
-		this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
-		this.setActivityOfImage($('#' + displayStyleIconGraphId), false);
+		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
+		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
+		// this.setActivityOfImage($('#' + displayStyleIconGraphId), false);
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
 		$('#' + headerContainerId).hide();
