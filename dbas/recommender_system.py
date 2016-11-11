@@ -17,45 +17,55 @@ from dbas.query_wrapper import get_not_disabled_arguments_as_query
 max_count = 5
 
 
-def filter_best_positions(db_statements):
+def get_uids_of_best_positions(db_statements):
     """
 
     :param db_statements:
     :return:
     """
     # TODO # 166
-    return __select_random(db_statements)
+    if db_statements is None:
+        return []
+    if len(db_statements) <= max_count:
+        return db_statements
+    return __select_random([element.uid for element in db_statements])
 
 
-def filter_best_statements_for_justify_position(db_arguments):
+def get_uids_of_best_statements_for_justify_position(db_arguments):
     """
 
     :param db_arguments:
     :return:
     """
     # TODO # 166
-    return __select_random(db_arguments)
+    if db_arguments is None:
+        return []
+    if len(db_arguments) <= max_count:
+        return db_arguments
+    return __select_random([element.uid for element in db_arguments])
 
 
-def filter_best_statements_for_justify_argument(db_arguments):
+def get_uids_of_best_statements_for_justify_argument(db_arguments):
     """
 
     :param db_arguments:
     :return:
     """
     # TODO # 166
-    return __select_random(db_arguments)
+    if db_arguments is None:
+        return []
+    if len(db_arguments) <= max_count:
+        return db_arguments
+    return __select_random([element.uid for element in db_arguments])
 
 
 def __select_random(some_list):
     """
+    If the input list is to long, a ordered list with random subset is returned as well as a boolean, if the list is to long
 
-    :param some_list:
-    :return:
+    :param some_list: any kind of list
+    :return: list, boolean
     """
-    if len(some_list) <= max_count:
-        return some_list
-
     return [some_list[i] for i in sorted(random.sample(range(len(some_list)), max_count))]
 
 
@@ -137,7 +147,7 @@ def get_arguments_by_conclusion(statement_uid, is_supportive):
                                             Argument.conclusion_uid == statement_uid)).all()
 
     if not db_arguments:
-        return None
+        return []
 
     logger('RecommenderSystem', 'get_argument_by_conclusion', 'found ' + str(len(db_arguments)) + ' arguments')
     # TODO sort arguments and return a subset

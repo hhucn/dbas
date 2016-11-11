@@ -58,36 +58,35 @@ class ItemDictHelper(object):
         db_statements = db_statements\
             .filter(and_(Statement.is_startpoint == True, Statement.issue_uid == self.issue_uid))\
             .join(TextVersion, TextVersion.uid == Statement.textversion_uid).all()
-        # db_statements = RecommenderSystem.filter_best_positions(db_statements)  # TODO # 166
+        uids = RecommenderSystem.get_uids_of_best_positions(db_statements)  # TODO # 166
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
         statements_array = []
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-        if db_statements:
-            for statement in db_statements:
+        for statement in db_statements:
                 statements_array.append(self.__create_answer_dict(statement.uid,
-                                                                  [{
-                                                                      'title': get_text_for_statement_uid(statement.uid),
-                                                                      'id': statement.uid
-                                                                  }],
+                                                                  [{'title': get_text_for_statement_uid(statement.uid),
+                                                                      'id': statement.uid}],
                                                                   'start',
                                                                   _um.get_url_for_statement_attitude(True, statement.uid),
-                                                                  is_flaggable=True,
-                                                                  is_author=is_author_of_statement(nickname, statement.uid)))
-            _tn = Translator(self.lang)
-            if nickname:
+                                                                  is_flagable=True,
+                                                                  is_author=is_author_of_statement(nickname, statement.uid),
+                                                                  is_visible=statement.uid in uids))
+
+        _tn = Translator(self.lang)
+        if nickname:
                 statements_array.append(self.__create_answer_dict('start_statement',
                                                                   [{'title': _tn.get(_.newConclusionRadioButtonText),
                                                                     'id': 0}],
                                                                   'start',
                                                                   'add'))
-            else:
+        else:
                 statements_array.append(
                     self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
                                               'justify', 'login'))
 
-        return statements_array
+        return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
     def prepare_item_dict_for_attitude(self, statement_uid):
         """
@@ -116,7 +115,7 @@ class ItemDictHelper(object):
         statements_array.append(self.__create_answer_dict('disagree', [{'title': titleF, 'id': 'disagree'}], 'disagree', urlF))
         statements_array.append(self.__create_answer_dict('dontknow', [{'title': titleD, 'id': 'dontknow'}], 'dontknow', urlD))
 
-        return statements_array
+        return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     def get_array_for_justify_statement(self, statement_uid, nickname, is_supportive):
         """
@@ -133,12 +132,11 @@ class ItemDictHelper(object):
         _rh = RecommenderSystem
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         db_arguments = RecommenderSystem.get_arguments_by_conclusion(statement_uid, is_supportive)
+        uids = RecommenderSystem.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-        if db_arguments:
-            # db_arguments = RecommenderSystem.filter_best_statements_for_justify_position(db_arguments)  # TODO # 166
-            for argument in db_arguments:
+        for argument in db_arguments:
                 # get all premises in the premisegroup of this argument
                 db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
                 premise_array = []
@@ -156,8 +154,9 @@ class ItemDictHelper(object):
                                                                   _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
                                                                   already_used=already_used,
                                                                   already_used_text=additional_text,
-                                                                  is_flaggable=True,
-                                                                  is_author=is_author_of_argument(nickname, argument.uid)))
+                                                                  is_flagable=True,
+                                                                  is_author=is_author_of_argument(nickname, argument.uid),
+                                                                  is_visible=argument.uid in uids))
 
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
@@ -170,7 +169,7 @@ class ItemDictHelper(object):
             statements_array.append(
                 self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
 
-        return statements_array
+        return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
     def get_array_for_justify_argument(self, argument_uid, attack_type, logged_in, nickname):
         """
@@ -188,12 +187,11 @@ class ItemDictHelper(object):
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         # description in docs: dbas/logic
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
+        uids = RecommenderSystem.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-        if db_arguments:
-            # db_arguments = RecommenderSystem.filter_best_statements_for_justify_argument(db_arguments)  # TODO # 166
-            for argument in db_arguments:
+        for argument in db_arguments:
                 # get all premises in this group
                 db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
                 premises_array = []
@@ -205,11 +203,16 @@ class ItemDictHelper(object):
                 is_undermine = 'undermine' if attack_type == 'undermine' else None
                 attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
 
-                arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang, last_attack=is_undermine,
-                                                                               restriction_on_arg_uids=attacking_arg_uids, history=self.path)
+                arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang,
+                                                                               last_attack=is_undermine,
+                                                                               restriction_on_arg_uids=attacking_arg_uids,
+                                                                               history=self.path)
 
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url, is_flaggable=True, is_author=is_author_of_argument(nickname, argument.uid)))
+                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
+                                                                  is_flagable=True,
+                                                                  is_author=is_author_of_argument(nickname, argument.uid),
+                                                                  is_visible=argument.uid in uids))
 
         if logged_in:
             if len(statements_array) == 0:
@@ -222,7 +225,7 @@ class ItemDictHelper(object):
             statements_array.append(
                 self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
 
-        return statements_array
+        return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
     def __get_arguments_based_on_attack(self, attack_type, argument_uid):
         """
@@ -282,7 +285,7 @@ class ItemDictHelper(object):
 
         db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
         if not db_argument:
-            return statements_array
+            return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
         rel_dict     = _tg.get_relation_text_dict_with_substitution(False, False, False, is_dont_know=True)
         mode         = 't' if is_supportive else 't'
@@ -301,7 +304,7 @@ class ItemDictHelper(object):
 
             statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url))
 
-        return statements_array
+        return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack):
         """
@@ -322,7 +325,7 @@ class ItemDictHelper(object):
         db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid_user).first()
         statements_array = []
         if not db_sys_argument or not db_user_argument:
-            return statements_array
+            return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
         rel_dict = _tg.get_relation_text_dict_with_substitution(False, True, db_user_argument.is_supportive,
                                                                 first_conclusion=_tn.get(_.myPosition),
@@ -362,7 +365,7 @@ class ItemDictHelper(object):
             url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
         statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
-        return statements_array
+        return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     def __get_url_based_on_relation(self, relation, attack, _rh, _um, argument_uid_user, argument_uid_sys, mode, db_user_argument, db_sys_argument):
         """
@@ -513,11 +516,11 @@ class ItemDictHelper(object):
 
             is_author = is_author_of_argument(nickname, argument) if is_argument else is_author_of_statement(nickname, conclusion)
             statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
-                                                              is_flaggable=True, is_author=is_author))
+                                                              is_flagable=True, is_author=is_author))
         # url = 'back' if self.for_api else 'window.history.go(-1)'
         # text = _t.get(_iHaveNoOpinion) + '. ' + _t.get(_goStepBack) + '.'
         # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
-        return statements_array
+        return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     def get_array_for_jump(self, arg_uid, slug, for_api):
         """
@@ -564,7 +567,7 @@ class ItemDictHelper(object):
         return return_array
 
     @staticmethod
-    def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text='', is_flaggable=False, is_author=False):
+    def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text='', is_flagable=False, is_author=False, is_visible=True):
         """
         Return dictionary
 
@@ -574,8 +577,9 @@ class ItemDictHelper(object):
         :param url: String
         :param already_used: Boolean
         :param already_used_text: String
-        :param is_flaggable:
-        :param is_author:
+        :param is_flagable: Boolean
+        :param is_author: Boolean
+        :param is_visible: Boolean
         :return: dict()
         """
         return {
@@ -585,6 +589,7 @@ class ItemDictHelper(object):
             'url': url,
             'already_used': already_used,
             'already_used_text': already_used_text,
-            'is_flaggable': is_flaggable,
-            'is_editable': is_flaggable,
-            'is_deletable': is_author}
+            'is_flagable': is_flagable,
+            'is_editable': is_flagable,
+            'is_deletable': is_author,
+            'style': '' if is_visible else 'display: none;'}

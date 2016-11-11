@@ -79,15 +79,14 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 
     item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
-    discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict), nickname)
+    discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict['elements']), nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, mode == 't',
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
-    if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
+    if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
                                     current_premise=get_text_for_statement_uid(statement_or_arg_id),
                                     supportive=supportive)
-
     return item_dict, discussion_dict, extras_dict
 
 
@@ -121,7 +120,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, True, True, request, argument_id=argument_uid,
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
-    if len(item_dict) == 0:
+    if len(item_dict['elements']) == 0:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
                                     current_premise=get_text_for_statement_uid(statement_or_arg_id))
     return item_dict, discussion_dict, extras_dict
@@ -154,7 +153,7 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request,
                                               argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api)
     # is the discussion at the end?
-    if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
+    if not logged_in and len(item_dict['elements']) == 1 or logged_in and len(item_dict['elements']) == 1:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 
     return item_dict, discussion_dict, extras_dict

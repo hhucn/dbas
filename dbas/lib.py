@@ -593,11 +593,9 @@ def get_user_by_case_insensitive_public_nickname(public_nickname):
         func.lower(User.public_nickname) == func.lower(public_nickname)).first()
 
 
-def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flaggable=False,
-                             is_author=False,
-                             uid='', url='', message='', omit_url=False, argument_uid=None, statement_uid=None,
-                             is_supportive=None,
-                             nickname='anonymous', lang='en'):
+def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flagable=False,
+                             is_author=False, uid='', url='', message='', omit_url=False, argument_uid=None,
+                             statement_uid=None, is_supportive=None, nickname='anonymous', lang='en'):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
@@ -605,7 +603,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param is_system: Boolean
     :param is_status: Boolean
     :param is_info: Boolean
-    :param is_flaggable: Boolean
+    :param is_flagable: Boolean
     :param uid: Argument.uid
     :param url: URL
     :param message: String
@@ -621,7 +619,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
               'is_system': is_system,
               'is_status': is_status,
               'is_info': is_info,
-              'is_flaggable': is_flaggable,
+              'is_flagable': is_flagable,
               'is_author': is_author,
               'id': uid if len(str(uid)) > 0 else str(time.time()),
               'url': url if len(str(url)) > 0 else 'None',

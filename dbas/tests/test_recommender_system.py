@@ -87,10 +87,10 @@ class RecommenerSystemTests(unittest.TestCase):
 
     def get_argument_by_conclusion(self):
         for i in range(0, 5):
-            argument = recommender_system.get_arguments_by_conclusion('1', True)
+            argument = recommender_system.get_argument_by_conclusion('1', True)
             self.assertTrue(argument in [1, 10, 11])
 
-        argument = recommender_system.get_arguments_by_conclusion('1', False)
+        argument = recommender_system.get_argument_by_conclusion('1', False)
         self.assertTrue(argument, 2)
 
     def get_arguments_by_conclusion(self):

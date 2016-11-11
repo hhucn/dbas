@@ -255,6 +255,17 @@ function Main () {
 			setTimeout("$('body').addClass('loading')", 0);
 		});
 		
+		$('#' + discussionSpaceShowItems).click(function(){
+			$(this).hide();
+			$('#' + discussionSpaceHideItems).show();
+			$('#' + discussionSpaceListId).find('li[style="display: none;"]').addClass('cropped').fadeIn();
+		});
+		
+		$('#' + discussionSpaceHideItems).click(function(){
+			$(this).hide();
+			$('#' + discussionSpaceShowItems).show();
+			$('#' + discussionSpaceListId).find('li.cropped').fadeOut();
+		});
 	};
 	
 	/**

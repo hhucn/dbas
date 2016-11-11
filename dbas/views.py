@@ -515,20 +515,19 @@ def discussion_attitude(request, for_api=False, api_data=None):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], revoked_content=True))
 
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
     discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)\
         .get_dict_for_attitude(statement_id)
     if not discussion_dict:
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_id]))
 
-    item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)\
+    item_dict = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)\
         .prepare_item_dict_for_attitude(statement_id)
-    extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False,
-                                                                                        True, False, True,
-                                                                                        request,
-                                                                                        application_url=request.application_url,
-                                                                                        for_api=for_api)
+    extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False, True,
+                                                                                    False, True, request,
+                                                                                    application_url=request.application_url,
+                                                                                    for_api=for_api)
     return_dict = dict()
     return_dict['issues'] = issue_dict
     return_dict['discussion'] = discussion_dict
@@ -615,7 +614,6 @@ def discussion_justify(request, for_api=False, api_data=None):
     return_dict['discussion'] = discussion_dict
     return_dict['items'] = item_dict
     return_dict['extras'] = extras_dict
-
     if for_api:
         return return_dict
     else:

@@ -74,14 +74,14 @@
                                 <p class="triangle-l" tal:attributes="id bubble.id">
                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
                                     <span class="triangle-content">${structure:bubble.message}</span>
-                                    <br tal:condition="bubble.is_flaggable and extras.logged_in">
+                                    <br tal:condition="bubble.is_flagable and extras.logged_in">
                                     <span class="triangle-trash pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_author and extras.logged_in" tal:attributes="title extras.title.delete_statement">
                                         <i class="fa fa-trash" aria-hidden="true" tal:attributes="title extras.title.delete_statement"></i>
                                     </span>
-                                    <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flaggable and extras.logged_in" tal:attributes="title extras.title.report_argument">
+                                    <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" tal:attributes="title extras.title.report_argument">
                                         <i class="fa fa-flag" aria-hidden="true"  tal:attributes="title extras.buttons.edit_statement"></i>
                                     </span>
-                                    <span class="triangle-reference pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flaggable and extras.logged_in" >
+                                    <span class="triangle-reference pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" >
                                         <i class="fa fa-link" aria-hidden="true" tal:attributes="title extras.title.reference"></i>
                                     </span>
                                 </p>
@@ -96,26 +96,26 @@
                     </div>
                 <div id="discussions-space">
                     <ul id="discussions-space-list">
-                        <li tal:repeat="item items">
-                            <input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
+                        <li tal:repeat="item items.elements" tal:attributes="style item.style">
+                            <input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
                             <span tal:repeat="premise item.premises" tal:omit-tag="">
                                 <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
                                 <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
                                 <label tal:condition="repeat.premise.end and item.already_used"><em>${item.already_used_text}</em></label>
                                 <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
-                                    <div tal:omit-tag="" tal:condition="item.is_editable or item.is_flaggable or item.is_deletable">
-                                        <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flaggable or item.is_deletable"></span>
+                                    <div tal:omit-tag="" tal:condition="item.is_editable or item.is_flagable or item.is_deletable">
+                                        <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flagable or item.is_deletable"></span>
                                         <span class="item-edit" tal:condition="item.is_editable" tal:attributes="title extras.buttons.edit_statement">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </span>
-                                        <span class="item-flag" tal:condition="item.is_flaggable " tal:attributes="title extras.title.report_statement">
+                                        <span class="item-flag" tal:condition="item.is_flagable " tal:attributes="title extras.title.report_statement">
                                             <i class="fa fa-flag" aria-hidden="true"></i>
                                         </span>
                                         <span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.delete_statement">
                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                         </span>
                                         <span class="item-reference">
-                                            <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_flaggable or item.is_deletable)" tal:attributes="title extras.title.reference"></span>
+                                            <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_flagable or item.is_deletable)" tal:attributes="title extras.title.reference"></span>
                                             <i class="fa fa-link" aria-hidden="true"></i>
                                         </span>
                                     </div>
@@ -123,6 +123,10 @@
                             </span>
                         </li>
                     </ul>
+                    <div tal:condition="items.extras.cropped_list" style="padding-left: 40px;">
+                        <a id="show-all-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs"><span i18n:translate="show_all_statements">Show all statements</span></a>
+                        <a id="hide-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs" style="display:none;"><span i18n:translate="hide_statements">Hide statements</span></a>
+                    </div>
                 </div>
             </div>
 
