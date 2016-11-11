@@ -7,13 +7,15 @@ Provides helping function for dictionaries.
 import random
 
 import arrow
-import dbas.helper.notification as NotificationHelper
-import dbas.user_management as UserHandler
+from dbas.user_management import get_random_anti_spam_question, is_user_in_group, is_user_logged_in, \
+    get_count_of_statements_of_user, get_count_of_votes_of_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.query import get_every_attack_for_island_view
-from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, create_speechbubble_dict, get_profile_picture
+from dbas.helper.notification import count_of_new_notifications, get_box_for
+from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, \
+    create_speechbubble_dict, get_profile_picture, get_public_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
@@ -89,14 +91,15 @@ class DictionaryHelper(object):
         :param show_island_icon: Boolean
         :param show_graph_icon: Boolean
         :param request: Request
-        :param argument_id: Argument.uid
+        :param argument_id: Argument.uid, default is 0
+        :param argument_for_island: Argument.uid, default is 0
         :param application_url: String
         :param for_api: Boolean
         :param append_notifications: Boolean
+        :param attack: String
         :return: dict()
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def')
-        _uh = UserHandler
         db_user = None
         nickname = ''
 
@@ -107,10 +110,10 @@ class DictionaryHelper(object):
         if not db_user or request.authenticated_userid is None:
             nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        is_logged_in = False if nickname == nick_of_anonymous_user else _uh.is_user_logged_in(nickname)
+        is_logged_in = False if nickname == nick_of_anonymous_user else is_user_logged_in(nickname)
 
         # get anti-spam-question
-        spamquestion, answer = UserHandler.get_random_anti_spam_question(self.system_lang)
+        spamquestion, answer = get_random_anti_spam_question(self.system_lang)
         # save answer in session
         request.session['antispamanswer'] = answer
 
@@ -131,8 +134,8 @@ class DictionaryHelper(object):
 
         if not for_api:
             return_dict['is_reportable']             = is_reportable
-            return_dict['is_admin']                  = _uh.is_user_in_group(nickname, 'admins')
-            return_dict['is_author']                 = _uh.is_user_in_group(nickname, 'authors')
+            return_dict['is_admin']                  = is_user_in_group(nickname, 'admins')
+            return_dict['is_author']                 = is_user_in_group(nickname, 'authors')
             return_dict['show_bar_icon']             = show_bar_icon
             return_dict['show_island_icon']          = show_island_icon
             return_dict['show_graph_icon']           = show_graph_icon
@@ -144,10 +147,10 @@ class DictionaryHelper(object):
             self.add_tag_text(return_dict)
 
             message_dict = dict()
-            message_dict['new_count']    = NotificationHelper.count_of_new_notifications(nickname)
+            message_dict['new_count']    = count_of_new_notifications(nickname)
             message_dict['has_unread']   = (message_dict['new_count'] > 0)
-            inbox = NotificationHelper.get_box_for(nickname, self.system_lang, application_url, True)
-            outbox = NotificationHelper.get_box_for(nickname, self.system_lang, application_url, False)
+            inbox = get_box_for(nickname, self.system_lang, application_url, True)
+            outbox = get_box_for(nickname, self.system_lang, application_url, False)
             if append_notifications:
                 message_dict['inbox']    = inbox
                 message_dict['outbox']   = outbox
@@ -200,15 +203,14 @@ class DictionaryHelper(object):
         :param main_page:
         :return:
         """
-        _uh         = UserHandler
         _tn         = Translator(self.system_lang)
-        edits       = _uh.get_count_of_statements_of_user(db_user, True) if db_user else 0
-        statements  = _uh.get_count_of_statements_of_user(db_user, False) if db_user else 0
-        arg_vote, stat_vote = _uh.get_count_of_votes_of_user(db_user) if db_user else (0, 0)
+        edits       = get_count_of_statements_of_user(db_user, True) if db_user else 0
+        statements  = get_count_of_statements_of_user(db_user, False) if db_user else 0
+        arg_vote, stat_vote = get_count_of_votes_of_user(db_user) if db_user else (0, 0)
         public_nick = db_user.get_global_nickname() if db_user else ''
         db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first() if db_user else None
         group       = db_group.name if db_group else '-'
-        gravatar_public_url = _uh.get_public_profile_picture(db_user)
+        gravatar_public_url = get_public_profile_picture(db_user)
 
         db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
         db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None

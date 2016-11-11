@@ -13,7 +13,7 @@ from Levenshtein import distance
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
-from dbas.user_management import get_public_profile_picture
+from dbas.lib import get_public_profile_picture
 from dbas.database.initializedb import nick_of_anonymous_user
 
 list_length = 5

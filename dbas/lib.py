@@ -800,6 +800,25 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     return gravatar_url
 
 
+def get_public_profile_picture(user, size=80):
+    """
+    Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
+    If the user doesn want an public profile, an anoynmous image will be returned
+
+    :param user: User
+    :param size: Integer, default 80
+    :return: String
+    """
+    if user:
+        additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
+    else:
+        additional_id = 'y'
+    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+    gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
+    gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
+    return gravatar_url
+
+
 def get_author_data(main_page, uid):
     """
     Returns a-tag with gravatar of current author and users page as href
