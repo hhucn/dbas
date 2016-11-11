@@ -20,6 +20,9 @@ function DiscussionGraph() {
     var dark_red = '#D32F2F';
     var dark_green = '#689F38';
     var dark_blue = '#1976D2';
+    var text_size = 14;
+    var line_height = 1.5;
+    var box_sizes = {};
 
     /**
      * Displays a graph of current discussion
@@ -154,18 +157,18 @@ function DiscussionGraph() {
         setNodeColorsForData(jsonData);
         // create arrays of links, nodes and move layout forward one step
         force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-        var edgesTypeArrow = createArrowDict(edges),
-            marker = createArrows(svg, edgesTypeArrow),
-            link = createLinks(svg, edges, marker);
+        var edgesTypeArrow = createArrowDict(edges);
+        var marker = createArrows(svg, edgesTypeArrow);
+        var link = createLinks(svg, edges, marker);
 
         // node
-        var node = createNodes(svg, force, drag),
-            circle = setNodeProperties(node);
+        var node = createNodes(svg, force, drag);
+        var circle = setNodeProperties(node);
 
         // tooltip
         // rect as background of label
-        var rect = node.append("rect").attr('class', 'labelBox'),
-            label = createLabel(node);
+        var rect = node.append("rect").attr('class', 'labelBox');
+        var label = createLabel(node);
         setRectProperties(rect);
 
         // legend
@@ -247,9 +250,21 @@ function DiscussionGraph() {
         var zoom = d3.behavior.zoom().on("zoom", redraw).scaleExtent([0.5, 5]);
         d3.select("#graph-svg").call(zoom).on("dblclick.zoom", null);
         function redraw() {
-            console.log('zoom');
-            d3.selectAll("g.zoom")
-            .attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom.scale() + ")");
+            d3.selectAll("g.zoom").attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom.scale() + ")");
+            // # TODO RESIZING
+            //$('#' + graphViewContainerSpaceId).find('.node').each(function(){
+            //    var id = $(this).attr('id').substr(5); // cur 'node-'
+            //    if (id.indexOf('statement') != -1 || id.indexOf('issue') != -1) {
+            //        $('#label-' + id).css({
+            //            'font-size': text_size / zoom.scale() + 'px',
+            //            'line-height': line_height / zoom.scale() + 'px'
+            //        });
+            //        $('#rect-' + id).attr({
+            //            'width': box_sizes[id].width,
+            //            'height': box_sizes[id].height
+            //        });
+            //    }
+            //});
         }
     }
 
@@ -386,8 +401,8 @@ function DiscussionGraph() {
             .data(force.nodes())
             .enter().append("g")
             .attr({class: "node",
-                   id: function(d){
-                       return 'node_' + d.id;}})
+                   id: function(d){ return 'node_' + d.id; }
+            })
             .call(drag);
     }
 
@@ -446,10 +461,14 @@ function DiscussionGraph() {
                 width = 0;
                 height = 0;
             }
-            d3.select(this)
-            .attr({width: width, height: height,
-                   x: -width/2, y: -height+36,
-                   id: 'rect-' + d.id});
+            d3.select(this).attr({
+                width: width,
+                height: height,
+                x: -width/2, y: -height+36,
+                id: 'rect-' + d.id});
+            if (d.id.indexOf('statement') != -1) {
+                box_sizes['rect-' + d.id] = {'width': width, 'height': height};
+            }
         });
     }
 
