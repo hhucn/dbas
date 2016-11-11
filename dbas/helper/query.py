@@ -10,7 +10,7 @@ import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
-    RevokedContent
+    RevokedContent, RevokedContentHistory
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
     set_new_undercut_or_overbid, set_new_undermine_or_support
@@ -794,6 +794,7 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author, 
     for textversion in db_textversion:
         textversion.author_uid = new_author
         DBDiscussionSession.add(textversion)
+        DBDiscussionSession.add(RevokedContentHistory(old_author, new_author, textversion.uid))
 
     DBDiscussionSession.flush()
     transaction.commit()
