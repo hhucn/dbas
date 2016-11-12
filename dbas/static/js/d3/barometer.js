@@ -147,7 +147,10 @@ function DiscussionBarometer(){
             usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
 
         // create bars of chart
-        createBar(width, height-50, usersDict, barChartSvg);
+        // selector = inner-rect: clicks on statement relative to seen_by value
+        createBar(width, height-50, usersDict, barChartSvg, "inner-rect");
+        // selector = outer-rect: seen_by value
+        createBar(width, height-50, usersDict, barChartSvg, "outer-rect");
 
         // tooltip
         addListenerForTooltip(usersDict, barChartSvg, address, "rect");
@@ -243,23 +246,43 @@ function DiscussionBarometer(){
      * @param height
      * @param usersDict
      * @param barChartSvg
+     * @param selector
      */
-    function createBar(width, height, usersDict, barChartSvg){
+    function createBar(width, height, usersDict, barChartSvg, selector) {
         // width of one bar
-        var barWidth = width/usersDict.length - 5;
+        // width - 10: width - left padding to y-Axis
+        var barWidth = (width-10) / usersDict.length - 10;
 
-        barChartSvg.selectAll('rect')
+        barChartSvg.selectAll(selector)
             .data(usersDict)
             .enter().append("rect")
-            .attr({width: barWidth,
-                   // height in percent: length/seen_by = x/height
-                   height: function(d) {return divideWrapperIfZero(d.usersNumber, d.seenBy) * height;},
-                   // number of bar * width of bar + padding-left + space between to bars
-                   x: function(d,i) {return i*barWidth + 55 + i*5;},
-                   // y: height - barLength, because d3 starts to draw in left upper corner
-                   y: function(d) {return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);},
-                   fill: function (d, i) {return getNormalColorFor(i);},
-                   id: function (d, i) {return "rect-" + i}});
+            .attr({
+                width: barWidth,
+                // height in percent: length/seen_by = x/height
+                height: function (d) {
+                    if (selector === 'inner-rect')
+                        return divideWrapperIfZero(d.usersNumber, d.seenBy) * height;
+                    return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height);
+                },
+                // number of bar * width of bar + padding-left + space between to bars
+                x: function (d, i) {
+                    return i * barWidth + 60 + i * 10;
+                },
+                // y: height - barLength, because d3 starts to draw in left upper corner
+                y: function (d) {
+                    if (selector === 'inner-rect')
+                        return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);
+                    return 50;
+                },
+                fill: function (d, i) {
+                    if (selector === 'inner-rect')
+                        return getNormalColorFor(i);
+                    return getLightColorFor(i)
+                },
+                id: function (d, i) {
+                    return selector + "-" + i;
+                }
+            });
     }
 
     function divideWrapperIfZero(numerator, denominator){
@@ -533,7 +556,8 @@ function DiscussionBarometer(){
         }
         else{
             // highlight sector on hover
-            d3.select("#rect-" + index).attr('fill', getDarkColorFor(index));
+            d3.select("#inner-rect-" + index).attr('fill', getDarkColorFor(index));
+            d3.select("#outer-rect-" + index).attr('fill', google_colors[index % google_colors.length][3]);
         }
         return div;
     }
@@ -559,7 +583,8 @@ function DiscussionBarometer(){
         }
         else{
             // fill chart element with originally color
-            d3.select("#rect-" + index).attr('fill', getNormalColorFor(index));
+            d3.select("#inner-rect-" + index).attr('fill', getNormalColorFor(index));
+            d3.select("#outer-rect-" + index).attr('fill', getLightColorFor(index));
         }
     }
 
