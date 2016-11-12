@@ -445,24 +445,26 @@ function DiscussionBarometer(){
         var isClicked = false;
         var tooltipIsVisible = false;
         // save index and id of object of last click event
+        var elementIndex;
         var _index;
 
         // add listener for click event
         chartSvg.selectAll(selector).on("click", function (d, index) {
             // sector of doughnut chart and part which represents the seen-by-value should have the same index
-            index = index % usersDict.length;
+            elementIndex = index % usersDict.length;
+            console.log(elementIndex);
 
             if(isClicked){
                 // if the user clicks on another element hide the old element and make the new one visible
-                if(_index != index){
+                if(_index != elementIndex){
                     hideTooltip(div, selector, _index);
-                    div = showTooltip(div, usersDict, index, address, chartSvg, selector);
+                    div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
                     isClicked = true;
                     tooltipIsVisible = true;
                 }
                 // if the user clicks on the same tooltip for a second time hide the tooltip
-                if(_index === index){
-                    hideTooltip(div, selector, index);
+                if(_index === elementIndex){
+                    hideTooltip(div, selector, elementIndex);
                     isClicked = false;
                     tooltipIsVisible = false;
                 }
@@ -470,28 +472,39 @@ function DiscussionBarometer(){
             else{
                 // if isHover is false no tooltip is visible then create a tooltip
                 if(!tooltipIsVisible){
-                    div = showTooltip(div, usersDict, index, address, chartSvg, selector/*, path + index*/);
+                    div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
                 }
                 isClicked = true;
                 tooltipIsVisible = true;
             }
-            _index = index;
+            _index = elementIndex;
         });
 
         // add listener for hover event
         chartSvg.selectAll(selector).on("mouseover", function (d, index) {
-            index = index % usersDict.length;
-
             if(!isClicked){
-                div = showTooltip(div, usersDict, index, address, chartSvg, selector/*, path + index*/);
+                elementIndex = index % usersDict.length;
+
+                div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
                 tooltipIsVisible = true;
             }
         })
         .on("mouseout", function (d, index) {
-            index = index % usersDict.length;
-
             if(!isClicked){
-                hideTooltip(div, selector, index);
+                elementIndex = index % usersDict.length;
+
+                hideTooltip(div, selector, elementIndex);
+                tooltipIsVisible = false;
+            }
+        });
+
+        // add click-event-listener for popup
+        $('#' + popupBarometerId).on('click', function (d) {
+            // select area of popup without tooltip and listen for click event
+            // if tooltip is visible hide tooltip
+            if (d.target.id.indexOf("path") === -1 && d.target.id.indexOf("rect") === -1 && tooltipIsVisible === true) {
+                hideTooltip(div, selector, elementIndex);
+                isClicked = false;
                 tooltipIsVisible = false;
             }
         });
