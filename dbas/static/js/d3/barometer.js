@@ -83,10 +83,10 @@ function DiscussionBarometer(){
         // remove content of modal
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
+        // change status of toggle
+        $('#chart-btn').bootstrapToggle('on');
         // create doughnut chart as default view
         getD3BarometerDoughnutChart(jsonData, address);
-        // hide button for doughnut chart
-        $('#show-doughnut-chart-btn').hide();
         // add listener for buttons to change the type of chart
         addListenerForChartButtons(jsonData, address);
 
@@ -111,12 +111,16 @@ function DiscussionBarometer(){
      */
     function addListenerForChartButtons(jsonData, address) {
         // show only button of chart which is currently not visible
-        $('#show-bar-chart-btn').click(function() {$('#show-doughnut-chart-btn').show();
-                                                   $('#show-bar-chart-btn').hide();
-                                                   getD3BarometerBarChart(jsonData, address); });
-        $('#show-doughnut-chart-btn').click(function() {$('#show-bar-chart-btn').show();
-                                                        $('#show-doughnut-chart-btn').hide();
-                                                        getD3BarometerDoughnutChart(jsonData, address); });
+        var i = 0;
+        $('#chart-btn-div').click(function() {
+            if (i % 2 == 0) {
+                getD3BarometerBarChart(jsonData, address);
+            }
+            else{
+                getD3BarometerDoughnutChart(jsonData, address);
+            }
+            i++;
+        });
     }
 
     /**
@@ -250,8 +254,8 @@ function DiscussionBarometer(){
      */
     function createBar(width, height, usersDict, barChartSvg, selector) {
         // width of one bar
-        // width - 10: width - left padding to y-Axis
-        var barWidth = (width-10) / usersDict.length - 10;
+        // width - left padding to y-Axis - space between bars
+        var barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
 
         barChartSvg.selectAll(selector)
             .data(usersDict)
