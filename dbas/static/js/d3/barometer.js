@@ -85,8 +85,8 @@ function DiscussionBarometer(){
         dialog.find('.col-md-5').empty();
         // change status of toggle
         $('#chart-btn').bootstrapToggle('on');
-        // create doughnut chart as default view
-        getD3BarometerDoughnutChart(jsonData, address);
+        // create bar chart as default view
+        getD3BarometerBarChart(jsonData, address);
         // add listener for buttons to change the type of chart
         addListenerForChartButtons(jsonData, address);
 
@@ -114,10 +114,10 @@ function DiscussionBarometer(){
         var i = 0;
         $('#chart-btn-div').click(function() {
             if (i % 2 == 0) {
-                getD3BarometerBarChart(jsonData, address);
+                getD3BarometerDoughnutChart(jsonData, address);
             }
             else{
-                getD3BarometerDoughnutChart(jsonData, address);
+                getD3BarometerBarChart(jsonData, address);
             }
             i++;
         });
@@ -137,7 +137,7 @@ function DiscussionBarometer(){
         // create div for barometer
         dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
         // width and height of chart
-        var width = dialog.find('.col-md-6').width();
+        var width = 400;
         var height = 400;
         var barChartSvg = getSvg(width+50, height+10);
 
