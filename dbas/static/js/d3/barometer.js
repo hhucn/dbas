@@ -33,6 +33,7 @@ function DiscussionBarometer(){
         url = url.split('?')[0];
         var splitted = url.split('/');
         var address = 'position';
+        var inputs = $('#discussions-space-list').find('li:not(:last-child) input');
 
         // parse url
         if (url.indexOf('/attitude/') != -1){
@@ -41,7 +42,7 @@ function DiscussionBarometer(){
             new AjaxGraphHandler().getUserGraphData(uid, address);
         } else if (url.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
             address = 'justify';
-            $('#discussions-space-list li:not(:last-child) input').each(function(){
+            inputs.each(function(){
                 uid_array.push($(this).attr('id').substr(5));
             });
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
@@ -52,8 +53,8 @@ function DiscussionBarometer(){
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
         } else {
             address = 'position';
-            $('#discussions-space-list li:not(:last-child) label').each(function(){
-                uid_array.push($(this).attr('id'));
+            inputs.each(function(){
+                uid_array.push($(this).attr('id').substr(5));
             });
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
         }
@@ -73,7 +74,6 @@ function DiscussionBarometer(){
 
         try{
             jsonData = JSON.parse(data);
-            console.log(jsonData);
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             alert('parsing-json: ' + e);
@@ -83,10 +83,13 @@ function DiscussionBarometer(){
         // remove content of modal
         dialog.find('.col-md-6').empty();
         dialog.find('.col-md-5').empty();
+        
         // change status of toggle
         $('#chart-btn').bootstrapToggle('on');
-        // create doughnut chart as default view
+        
+        // create bar chart as default view
         getD3BarometerDoughnutChart(jsonData, address);
+        
         // add listener for buttons to change the type of chart
         addListenerForChartButtons(jsonData, address);
 
@@ -121,7 +124,7 @@ function DiscussionBarometer(){
             }
             i++;
         });
-    }
+    };
 
     /**
      * Create barometer.

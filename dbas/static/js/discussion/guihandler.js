@@ -439,11 +439,10 @@ function GuiHandler() {
 	this.setStatementsAsProposal = function (parsedData, callbackid, type) {
 		var callbackElement = $('#' + callbackid);
 		var uneditted_value;
-		if (type == fuzzy_start_premise)        $('#' + proposalPremiseListGroupId).empty();
-		else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).empty();
-		else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).empty();
-		else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).empty();
-		else if (type == fuzzy_find_user)       $('#' + proposalUserListGroupId).empty();
+		$('#' + proposalPremiseListGroupId).empty();
+		$('#' + proposalStatementListGroupId).empty();
+		$('#' + proposalEditListGroupId).empty();
+		$('#' + proposalUserListGroupId).empty();
 		
 		// do we have values ?
 		if (parsedData.length == 0) {
@@ -477,13 +476,16 @@ function GuiHandler() {
 					function () {
 						$(this).removeClass('active');
 					});
-			span_dist = $('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
+			// we do not want the "Levensthein badge"
+			span_dist = '';//$('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
 			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
 			img = $('<img>').addClass('preload-image').addClass('img-circle').attr('style', 'height: 20pt; margin-right: 1em;').attr('src', val.avatar);
+			
 			if (type == fuzzy_find_user)
 				button.append(img).append(span_text);
 			else
 				button.append(img).append(span_dist).append(span_text);
+			
 			button.click(function () {
 				callbackElement.val($(this).attr('text'));
 				$('#' + proposalStatementListGroupId).empty();
@@ -492,7 +494,7 @@ function GuiHandler() {
 				$('#' + proposalUserListGroupId).empty();
 			});
 			
-			if (type == fuzzy_start_premise)        $('#' + proposalPremiseListGroupId).append(button);
+			if (type == fuzzy_start_premise)        $('#' + proposalStatementListGroupId).append(button);
 			else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).append(button);
 			else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).append(button);
 			else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).append(button);
