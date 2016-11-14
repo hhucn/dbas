@@ -65,7 +65,6 @@ function AjaxMainHandler(){
 		}).done(function ajaxLoginDone(data) {
 			callbackIfDoneForLogin(data, showGlobalError);
 		}).fail(function ajaxLoginFail(xhr) {
-			var showError = false;
 			var errorMsg = '';
 			
 			if (xhr.status == 200) {			location.reload(true);
@@ -75,7 +74,7 @@ function AjaxMainHandler(){
 			} else {            				errorMsg = _t(requestFailed);
 			}
 			
-			if (showError){
+			if (errorMsg.length > 0){
 				if (showGlobalError) {
 					setGlobalErrorHandler('Ohh!', errorMsg);
 				} else {

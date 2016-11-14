@@ -154,15 +154,12 @@
         </div>
 
         <div class="container colored-container" id="island-view-container" style="display:none" tal:condition="extras.show_island_icon">
-            <button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <div class="row">
+                <button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <div class="row" id="island-view-container-space">
-                <!--<div class="row">-->
-                <!--    <div class="col-md-11 text-center">-->
-                <!--        <h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading">${structure:extras.island.heading}</span></h4>-->
-                <!--    </div>-->
-                <!--</div>-->
 
                 <div class="row">
                     <div class="col-md-6">
@@ -337,30 +334,6 @@
                 </div>
                 <div class="list-group" id="proposal-premise-list-group"></div>
                 <input id="send-new-premise" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
-            </div>
-        </div>
-
-        <div class="container colored-container" id="display-control-container" tal:condition="extras.show_island_icon" style="display:none">
-            <div class="row">
-                <h4 i18n:translate="change_style">Change display style</h4>
-                <div class="col-md-4">
-                    <input type="radio" id="sc-style-1" checked value="Dialog View">
-                    <label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View" i18n:translate="dialog_view">Dialog View </label>
-                    <br>
-                    <img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
-                </div>
-                <div class="col-md-4">
-                    <input type="radio" id="sc-style-2" value="Island View">
-                    <label id="label-sc-style-2" for="sc-style-2" data-value="Island View" i18n:translate="island_view">Island View</label>
-                    <br>
-                    <img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
-                </div>
-                <div class="col-md-4">
-                    <input type="radio" id="sc-style-3" value="Complete View">
-                    <label id="label-sc-style-3" for="sc-style-3" data-value="Complete View" i18n:translate="complete_view">Complete View</label>
-                    <br>
-                    <img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
-                </div>
             </div>
         </div>
 
