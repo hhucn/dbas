@@ -470,6 +470,7 @@ de_lang = {
     _.voteCountTextMayBeFirst: 'Sie wären der/die Erste mit dieser Meinung',
     _.voteCountTextOneOther: 'Ein/e Andere/r mit dieser Meinung',
     _.voteCountTextMore: 'weitere Teilnehmer/innen mit dieser Meinung',
+    _.voteCountTextOneMore: 'weitere/r Teilnehmer/innen mit dieser Meinung',
     _.visitDeleteQueue: 'Schauen Sie in die Queue für Löschanträge.',
     _.visitDeleteQueueLimitation: 'Sie brauchen mindestens XX Punkte, um sich die Löschanträge anzuschauen.',
     _.visitOptimizationQueue: 'Schauen Sie in die Queue für Optimierungen.',
