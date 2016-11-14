@@ -181,8 +181,15 @@ function GuiHandler() {
 		});
 		
 		start = nowBubble.length == 0 ? 'bottom' : nowBubble;
+		// scroll to now bubble on mobile devices and do not enable slimscroll
+		if (isMobileAgent()){
+			if (nowBubble.length != 0)
+				$('html, body').animate({scrollTop: nowBubble.offset().top - 75}, 500);
+			speechBubbles.css({'background': '#fff'});
+			return;
+		}
 		if (height > maxHeight) {
-			if (maxHeight < maxHeightOfBubbleSpace) {//} && new Helper().isMobileAgent() ) {
+			if (maxHeight < maxHeightOfBubbleSpace) {
 				maxHeight = maxHeightOfBubbleSpace;
 			}
 			speechBubbles.slimscroll({

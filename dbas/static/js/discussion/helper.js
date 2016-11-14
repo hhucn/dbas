@@ -144,3 +144,12 @@ function setAnchor (anchor){
 function clearAnchor (){
 	location.hash = '';
 }
+
+/**
+ * Returns true, if the used device is a mobile agent
+ *
+ * @returns {boolean}
+ */
+function isMobileAgent(){
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
