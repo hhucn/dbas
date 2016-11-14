@@ -571,6 +571,7 @@ class Keywords(Enum):
     voteCountTextMayBeFirst = 'You would be the first one with this opinion'
     voteCountTextOneOther = 'One other participant with this opinion'
     voteCountTextMore = 'more participants with this opinion'
+    voteCountTextOneMore = ' participant with this opinion'
     visitDeleteQueue = 'Visit the delete queue of D-BAS.'
     visitDeleteQueueLimitation = 'You need at least XX reputation points to review deletes.'
     visitEditQueue = 'Visit the edit queue of D-BAS.'

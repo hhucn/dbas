@@ -141,7 +141,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
             if len(db_votes) == 0:
                 message = _t.get(_.voteCountTextMayBeFirst) + '.'
             elif len(db_votes) == 1:
-                message = _t.get(_.voteCountTextOneOther) + '.'
+                message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
             else:
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
             db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
@@ -217,7 +217,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
         if len(db_votes) == 0:
             statement_dict['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
         elif len(db_votes) == 1:
-            statement_dict['message'] = _t.get(_.voteCountTextOneOther) + '.'
+            statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
         else:
             statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
@@ -282,7 +282,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
         if len(db_votes) == 0:
             statement_dict['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
         elif len(db_votes) == 1:
-            statement_dict['message'] = _t.get(_.voteCountTextOneOther) + '.'
+            statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
         else:
             statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
@@ -343,7 +343,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
     if len(db_votes) == 0:
         opinions['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
     elif len(db_votes) == 1:
-        opinions['message'] = _t.get(_.voteCountTextOneOther) + '.'
+        opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
     else:
         opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
