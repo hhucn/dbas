@@ -45,7 +45,7 @@ class StringMatcherTest(unittest.TestCase):
         return_dict = matcher.get_strings_for_search('cat')
         for key in return_dict:
             self.assertTrue('cat' in return_dict[key]['text'].lower())
-            self.assertGreater(return_dict[key]['statement'], 0)
+            self.assertGreater(return_dict[key]['statement_uid'], 0)
 
     def test_get_distance(self):
         self.assertEqual(3, int(matcher.get_distance('cat', 'dog')))

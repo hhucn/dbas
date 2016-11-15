@@ -42,11 +42,16 @@ Then follow these steps:
     $ make init
     $ make all
 
-6. Start development web server::
+8. Deploy Sass::
+
+    $ sass static/css/main.sass  static/css/main.css --style compressed --no-cache
+
+
+7. Start development web server::
 
     $ pserve development.ini --reload
 
-7. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
+8. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
 
 
 Makefile

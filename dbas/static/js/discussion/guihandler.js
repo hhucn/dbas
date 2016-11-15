@@ -34,13 +34,8 @@ function GuiHandler() {
 			.attr('class', 'form-control')
 			.attr('autocomplete', 'off')
 			.attr('placeholder', '...')
-			.data('min-length', '10')
-			.keyup(function () {
-				setTextWatcherForMinLength($(this));
-			})
-			.focusin(function () {
-				setTextWatcherForMinLength($(this));
-			});
+			.attr('data-min-length', '10')
+			.attr('data-max-length', '160');
 		var imgm = $('<img>')
 			.attr('class', 'icon-rem-premise')
 			.attr('src', mainpage + 'static/images/icon_minus1.png')
@@ -54,6 +49,7 @@ function GuiHandler() {
 		div.append(div_m.append(input))
 			.append(div_r.append(imgm).append(imgp));
 		$('#' + addPremiseContainerBodyId).append(div);
+		setTextWatcherInputLength(input);
 		
 		imgp.click(function () {
 			new GuiHandler().appendAddPremiseRow();

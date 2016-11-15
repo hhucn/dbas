@@ -33,22 +33,18 @@ def get_strings_for_start(value, issue, is_startpoint):
     :param is_startpoint: boolean
     :return: dict()
     """
-    db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.is_startpoint == is_startpoint, Statement.issue_uid == issue)).all()
+    db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.is_startpoint == is_startpoint,
+                                                                     Statement.issue_uid == issue)).all()
     return_array = []
     index = 1
-    for statement in db_statements:
-        db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
-        if value.lower() in db_textversion.content.lower():
-            dist = get_distance(value, db_textversion.content)
-            return_array.append({'index': 0,
-                                 'distance': dist,
-                                 'text': db_textversion.content,
-                                 'statement_uid': db_textversion.statement_uid})
+    for stat in db_statements:
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(uid=stat.textversion_uid).first()
+        if value.lower() in db_tv.content.lower():
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
+            return_array.append(rd)
             index += 1
 
     return_array = __sort_array(return_array)
-
-    # logger('fuzzy_string_matcher', 'get_strings_for_start', 'dictionary length: ' + str(len(return_array)), debug=True)
 
     return mechanism, return_array[:list_length]
 
@@ -62,26 +58,17 @@ def get_strings_for_edits(value, statement_uid):
     :return: dict()
     """
 
-    # db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
-    #                                                                Statement.issue_uid == issue)).first()
-    # db_textversions = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.textversion_uid).join(User).all()
-    db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()
+    db_tvs = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()
 
     return_array = []
     index = 1
-    for textversion in db_textversions:
+    for textversion in db_tvs:
         if value.lower() in textversion.content.lower():
-            dist = get_distance(value, textversion.content)
-            return_array.append({'index': 0,
-                                 'distance': dist,
-                                 'text': textversion.content,
-                                 'statement_uid': textversion.statement_uid})
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=textversion.content, uid=textversion.statement_uid)
+            return_array.append(rd)
             index += 1
 
     return_array = __sort_array(return_array)
-
-    # logger('fuzzy_string_matcher', 'get_strings_for_edits', 'string: ' + value + ', string: ' + value +
-    #        ', statement uid: ' + str(statement_uid) + ', dictionary length: ' + str(len(return_array)), debug=True)
 
     return mechanism, return_array[:list_length]
 
@@ -98,14 +85,11 @@ def get_strings_for_reasons(value, issue):
     return_array = []
 
     index = 1
-    for statement in db_statements:
-        db_textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=statement.textversion_uid).first()
-        if value.lower() in db_textversion.content.lower():
-            dist = get_distance(value, db_textversion.content)
-            return_array.append({'index': 0,
-                                 'distance': dist,
-                                 'text': db_textversion.content,
-                                 'statement_uid': db_textversion.statement_uid})
+    for stat in db_statements:
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(uid=stat.textversion_uid).first()
+        if value.lower() in db_tv.content.lower():
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
+            return_array.append(rd)
             index += 1
 
     return_array = __sort_array(return_array)
@@ -127,15 +111,10 @@ def get_strings_for_issues(value):
     return_array = []
 
     for index, issue in enumerate(db_issues):
-        dist = get_distance(value, issue.title)
-        return_array.append({'index': 0,
-                             'distance': dist,
-                             'text': issue.title})
+        rd = __get_fuzzy_string_dict(current_text=value, return_text=issue.title)
+        return_array.append(rd)
 
     return_array = __sort_array(return_array)
-
-    # logger('fuzzy_string_matcher', 'get_strings_for_issues', 'string: ' + value +
-    #        ', dictionary length: ' + str(len(return_array)), debug=True)
 
     return mechanism, return_array[:list_length]
 
@@ -149,13 +128,11 @@ def get_strings_for_search(value):
     """
     tmp_dict = OrderedDict()
     db_statements = DBDiscussionSession.query(Statement).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
-    for statement in db_statements:
-        if value.lower() in statement.textversions.content.lower():
+    for stat in db_statements:
+        if value.lower() in stat.textversions.content.lower():
             # get distance between input value and saved value
-            dist = get_distance(value, statement.textversions.content.lower())
-            tmp_dict[str(statement.uid)] = {'text': statement.textversions.content,
-                                            'distance': dist,
-                                            'statement': statement.uid}
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=stat.textversions.content, uid=stat.uid)
+            tmp_dict[str(stat.uid)] = rd
 
     tmp_dict = __sort_dict(tmp_dict)
     return_index = list(islice(tmp_dict, list_length))
@@ -163,6 +140,21 @@ def get_strings_for_search(value):
     for index in return_index:
         return_dict[index] = tmp_dict[index]
     return return_dict
+
+
+def __get_fuzzy_string_dict(index=0, current_text='', return_text='', uid=0):
+    """
+
+    :param index:
+    :param current_text:
+    :param return_text:
+    :param uid:
+    :return:
+    """
+    return {'index': index,
+            'distance': get_distance(current_text.lower(), return_text.lower()),
+            'text': return_text,
+            'statement_uid': uid}
 
 
 def get_strings_for_public_nickname(value, nickname):
@@ -192,7 +184,7 @@ def __sort_array(list):
     newlist = sorted(list, key=lambda k: k['distance'])
 
     if mechanism == 'SequenceMatcher':  # sort descending
-        newlist = list(reversed(newlist))
+        newlist = reversed(newlist)
 
     # add index
     for index, dict in enumerate(newlist):

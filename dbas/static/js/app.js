@@ -319,7 +319,7 @@ function setTextWatcherInputLength(element){
 		max_length = 1000;
 	var id = element.attr('id') + '-text-counter';
 	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
-	var field = $('<span>').text(msg).attr('id', id).addClass('text-min-counter-input');
+	var field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
 	field.insertBefore(element);
 	
 	element.keyup(function(){
@@ -327,82 +327,25 @@ function setTextWatcherInputLength(element){
 		var current_length = text.length;
 		
 		if (current_length == 0){
-			field.removeClass('text-counter-input');
-			field.addClass('text-min-counter-input');
-			field.removeClass('text-max-counter-input');
+			field.addClass('text-info');
+			field.removeClass('text-danger');
 			field.text(msg)
 		} else if (current_length < min_length) {
-			field.addClass('text-counter-input');
-			field.removeClass('text-max-counter-input');
-			field.removeClass('text-max-counter-input');
+			field.removeClass('text-danger');
 			field.text((min_length - current_length) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
 		} else {
-				field.removeClass('text-min-counter-input');
-			if (current_length * 2 > max_length){
-				field.removeClass('text-counter-input');
-				field.addClass('text-max-counter-input');
+				field.removeClass('text-info');
+			if (current_length > max_length * 3 / 4){
+				field.addClass('text-danger');
 			} else {
-				field.addClass('text-counter-input');
-				field.removeClass('text-max-counter-input');
+				field.removeClass('text-danger');
 			}
 			var left = max_length < current_length ? 0 : max_length - current_length;
 			field.text(left + ' ' + _t_discussion(textMaxCountMessage));
 			if (max_length <= current_length)
 				field.text(field.text() + ' ' + _t_discussion(textMaxCountMessageError));
-				// element.val(element.val().substr(0, maxlength));
 		}
 	});
-}
-
-/**
- * Sets an text watcher for the given element. After every input the attribute 'data-min-length' will be checked
- * and maybe a text is shown
- * @param element
- */
-function setTextWatcherForMinLength(element){
-	var text = element.val().trim();
-	var minlength = element.data('min-length');
-	var offset = parseInt(minlength - text.length);
-	var id = element.attr('id') + '-text-min-counter';
-	var msg = _t_discussion(textMinCountMessage1) + ' ' + offset + ' ' + _t_discussion(textMinCountMessage2);
-	var field = $('#' + id);
-	if (offset > 0) {
-		if (field.length > 0) {
-			field.text(msg);
-		} else {
-			$('<span>').text(msg).attr('id', id).addClass('text-min-counter-input').insertBefore(element);
-		}
-	} else {
-		if (field.length > 0) {
-			field.text(_t_discussion(textMinCountMessageBegin1) + ' ' + minlength + ' ' + _t_discussion(textMinCountMessageBegin2));
-			field.remove();
-		}
-	}
-}
-
-/**
- * Sets an text watcher for the given element. After every input the attribute 'data-min-length' will be checked
- * and maybe a text is shown
- * @param element
- */
-function setTextWatcherForMaxLength(element){
-	var text = element.val().trim();
-	var maxlength = element.data('max-length');
-	var offset = parseInt(maxlength - text.length);
-	var id = element.attr('id') + '-text-max-counter';
-	var msg = _t_discussion(textMaxCountMessage);
-	var field = $('#' + id);
-	if (offset < 0) {
-		if (field.length > 0) {
-			field.text(msg);
-		} else {
-			$('<span>').text(msg).attr('id', id).addClass('text-max-counter-input').insertBefore(element);
-		}
-	} else {
-		if (field.length > 0) {
-			field.remove();
-		}
-	}
 }
 
 /**

@@ -660,7 +660,7 @@ var dbas_de = {
 	'textMinCountMessageBegin2': 'Zeichen ein',
 	'textMinCountMessageDuringTyping': 'Zeichen noch ...',
 	'textMaxCountMessage': 'Zeichen verbleibend',
-	'textMaxCountMessageError': 'Bitte kürzen!',
+	'textMaxCountMessageError': 'Versuchen Sie zu kürzen!',
 	'valid': 'Gültigkeit',
 	'veryweak': 'sehr schwach',
 	'vote': 'Stimme',
