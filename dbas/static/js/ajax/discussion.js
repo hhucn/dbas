@@ -368,5 +368,33 @@ function AjaxDiscussionHandler() {
 			new PopupHandler().hideAndClearUrlSharingPopup();
 			//$('#' + popupUrlSharingInputId).val(long_url);
 		});
-	}
+	};
+	
+	/**
+	 * Marks given statements as read
+	 *
+	 * @param uids of the statements
+	 */
+	this.setSeenStatements = function(uids){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_set_seen_statements',
+			method: 'POST',
+			data: {
+				uids: JSON.stringify(uids),
+			},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function (data) {
+			var parsedData = $.parseJSON(data);
+			// note that we already send data
+			if (parsedData.error.length == 0){
+				$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
+			}
+		}).fail(function () {
+		});
+	};
 }

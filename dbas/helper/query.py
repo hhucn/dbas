@@ -14,6 +14,7 @@ from dbas.database.discussion_model import Argument, Statement, User, TextVersio
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
     set_new_undercut_or_overbid, set_new_undermine_or_support
+from dbas.helper.voting import add_seen_statement
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_premisesgroup_uid, \
     get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid,\
@@ -24,6 +25,7 @@ from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from sqlalchemy import and_, func
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.input_validator import is_integer
 
 statement_min_length = 10
 
@@ -166,6 +168,33 @@ def process_input_of_premises_for_arguments_and_receive_url(request, transaction
         NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, request, transaction)
 
     return url, statement_uids, error
+
+
+def process_seen_statements(uids, nickname, transaction, translator):
+    """
+
+    :param uids:
+    :param nickname:
+    :param transaction:
+    :param translator:
+    :return:
+    """
+    logger('QueryHelper', 'process_seen_statements', 'user ' + str(nickname) + ', statements ' + str(uids))
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    error = ''
+
+    if not db_user:
+        return error
+
+    for uid in uids:
+        # we get the premise group id's only
+        if not is_integer(uid):
+            error = translator.get(_.internalKeyError)
+            break
+
+        add_seen_statement(uid, db_user.uid, transaction)
+
+    return error
 
 
 def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive):

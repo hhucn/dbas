@@ -30,7 +30,8 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
-    process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url
+    process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
+    process_seen_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
@@ -451,7 +452,7 @@ def discussion_init(request, for_api=False, api_data=None):
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-    item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
+    item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname, transaction)
     history_helper.save_issue_uid(transaction, issue, nickname)
 
     discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, main_page=request.application_url, slug=slug)\
@@ -1772,6 +1773,31 @@ def set_new_issue(request):
         error = _tn.get(_.notInsertedErrorBecauseInternal)
 
     return_dict['error'] = error
+    return json.dumps(return_dict, True)
+
+
+# ajax - set seen premisegroup
+@view_config(route_name='ajax_set_seen_statements', renderer='json')
+def set_seen_statements(request):
+    """
+    Set statements as seen
+
+    :return: json
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('set_seen_statements', 'def', 'main ' + str(request.params))
+    return_dict = dict()
+    ui_locales = get_language(request, get_current_registry())
+    _t = Translator(ui_locales)
+
+    try:
+        uids = json.loads(request.params['uids'])
+        error = process_seen_statements(uids, request.authenticated_userid, transaction, _t)
+        return_dict['error'] = error
+    except KeyError as e:
+        logger('set_seen_statements', 'error', repr(e))
+        return_dict['error'] = _t.get(_.internalKeyError)
+
     return json.dumps(return_dict, True)
 
 

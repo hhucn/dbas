@@ -142,6 +142,7 @@ def main(global_config, **settings):
     config.add_route('ajax_revoke_content', '{url:.*}ajax_revoke_content')
     config.add_route('ajax_get_references', '{url:.*}ajax_get_references')
     config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
+    config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')

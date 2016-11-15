@@ -258,7 +258,14 @@ function Main () {
 		$('#' + discussionSpaceShowItems).click(function(){
 			$(this).hide();
 			$('#' + discussionSpaceHideItems).show();
-			$('#' + discussionSpaceListId).find('li[style="display: none;"]').addClass('cropped').fadeIn();
+			var uids = [];
+			$.each($('#' + discussionSpaceListId).find('li[style="display: none;"]'), function(){
+				$(this).addClass('cropped').fadeIn();
+				$.each($(this).find('label:even'), function(){
+					uids.push($(this).attr('id'));
+				})
+			});
+			new AjaxDiscussionHandler().setSeenStatements(uids);
 		});
 		
 		$('#' + discussionSpaceHideItems).click(function(){
@@ -362,13 +369,13 @@ function Main () {
 			hamburger.addClass('open');
 			
 			wrapper.width(width - sidebar.outerWidth());
-			maincontainer.css('max-height', maincontainer.outerHeight() + 30 + 'px');
+			maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
 			sidebar.show();
 			hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
 				.css('margin-left', 'auto')
 				.css('background-color', sidebar.css('background-color'));
 			sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
-				.css('height', maincontainer.outerHeight() + 30 + 'px');
+				.css('height', maincontainer.outerHeight() + 'px');
 			tackwrapper.fadeIn();
 			
 			gui.setAnimationSpeed(wrapper, '0.5');

@@ -104,6 +104,32 @@ def add_vote_for_statement(statement_uid, user, supportive, transaction):
     return False
 
 
+def add_seen_statement(statement_uid, user_uid, transaction):
+    """
+    Adds the uid of the statement into the seen_by list, mapped with the given user uid
+
+    :param user_uid: uid of current user
+    :param statement_uid: uid of the statement
+    :param transaction: current transaction
+    :return: undefined
+    """
+    if __statement_seen_by_user(user_uid, statement_uid):
+        transaction.commit()
+
+
+def add_seen_argument(argument_uid, user_uid, transaction):
+    """
+    Adds the uid of the argument into the seen_by list, mapped with the given user uid
+
+    :param user_uid: uid of current user
+    :param argument_uid: uid of the argument
+    :param transaction: current transaction
+    :return: undefined
+    """
+    if __argument_seen_by_user(user_uid, argument_uid):
+        transaction.commit()
+
+
 def clear_votes_of_user(transaction, user):
     """
     Deletes all votes of given user
@@ -235,27 +261,31 @@ def __argument_seen_by_user(user_uid, argument_uid):
     """
     Adds an reference for an seen argument
 
-    :param user_uid:
-    :param argument_uid:
-    :return:
+    :param user_uid: uid of current user
+    :param argument_uid: uid of the argument
+    :return: True if the argument was not seen by the user (until now), false otherwise
     """
     db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter(and_(ArgumentSeenBy.argument_uid == argument_uid,
                                                                        ArgumentSeenBy.user_uid == user_uid)).first()
     if not db_seen_by:
         DBDiscussionSession.add(ArgumentSeenBy(argument_uid=argument_uid, user_uid=user_uid))
         DBDiscussionSession.flush()
+        return True
+    return False
 
 
 def __statement_seen_by_user(user_uid, statement_uid):
     """
     Adds an reference for an seen statement
 
-    :param user_uid:
-    :param argument_uid:
-    :return:
+    :param user_uid: uid of current user
+    :param statement_uid: uid of the statement
+    :return: True if the statement was not seen by the user (until now), false otherwise
     """
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter(and_(StatementSeenBy.statement_uid == statement_uid,
                                                                         StatementSeenBy.user_uid == user_uid)).first()
     if not db_seen_by:
         DBDiscussionSession.add(StatementSeenBy(statement_uid=statement_uid, user_uid=user_uid))
         DBDiscussionSession.flush()
+        return True
+    return False

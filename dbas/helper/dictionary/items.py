@@ -8,7 +8,7 @@ import random
 
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
+from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue, User
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
@@ -16,6 +16,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from dbas.helper.voting import add_seen_argument, add_seen_statement
 from sqlalchemy import and_
 
 
@@ -47,11 +48,12 @@ class ItemDictHelper(object):
         if len(history) > 0:
             self.path = history + '-' + self.path
 
-    def get_array_for_start(self, nickname):
+    def get_array_for_start(self, nickname, transaction):
         """
         Prepares the dict with all items for the first step in discussion, where the user chooses a position.
 
         :param nickname: Boolean or String
+        :param transaction: current transaction
         :return:
         """
         db_statements = get_not_disabled_statement_as_query()
@@ -63,16 +65,19 @@ class ItemDictHelper(object):
 
         statements_array = []
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for statement in db_statements:
-                statements_array.append(self.__create_answer_dict(statement.uid,
-                                                                  [{'title': get_text_for_statement_uid(statement.uid),
-                                                                      'id': statement.uid}],
-                                                                  'start',
-                                                                  _um.get_url_for_statement_attitude(True, statement.uid),
-                                                                  is_flagable=True,
-                                                                  is_author=is_author_of_statement(nickname, statement.uid),
-                                                                  is_visible=statement.uid in uids))
+            if db_user and statement.uid in uids:  # add seen by if the statement is visible
+                add_seen_statement(statement.uid, db_user.uid, transaction)
+            statements_array.append(self.__create_answer_dict(statement.uid,
+                                                              [{'title': get_text_for_statement_uid(statement.uid),
+                                                                  'id': statement.uid}],
+                                                              'start',
+                                                              _um.get_url_for_statement_attitude(True, statement.uid),
+                                                              is_flagable=True,
+                                                              is_author=is_author_of_statement(nickname, statement.uid),
+                                                              is_visible=statement.uid in uids))
 
         _tn = Translator(self.lang)
         if nickname:
