@@ -154,7 +154,7 @@ class OpinionHandler:
                 if len(db_votes) == 0:
                     message = _t.get(_.voteCountTextMayBeFirst) + '.'
                 elif len(db_votes) == 1:
-                    message = _t.get(_.voteCountTextOneOther) + '.'
+                    message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
                 else:
                     message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
                 db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
@@ -226,7 +226,7 @@ class OpinionHandler:
             if len(db_votes) == 0:
                 statement_dict['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
             elif len(db_votes) == 1:
-                statement_dict['message'] = _t.get(_.voteCountTextOneOther) + '.'
+                statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
             else:
                 statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
@@ -287,7 +287,7 @@ class OpinionHandler:
             if len(db_votes) == 0:
                 statement_dict['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
             elif len(db_votes) == 1:
-                statement_dict['message'] = _t.get(_.voteCountTextOneOther) + '.'
+                statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
             else:
                 statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
@@ -344,7 +344,7 @@ class OpinionHandler:
         if len(db_votes) == 0:
             opinions['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
         elif len(db_votes) == 1:
-            opinions['message'] = _t.get(_.voteCountTextOneOther) + '.'
+            opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
         else:
             opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 

@@ -520,7 +520,6 @@ function DiscussionBarometer(){
                 }
             }
             else{
-                // if isHover is false no tooltip is visible then create a tooltip
                 if(!tooltipIsVisible){
                     div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
                 }
@@ -569,7 +568,6 @@ function DiscussionBarometer(){
      * @param address
      * @param chartSvg
      * @param selector
-     * @param path
      * @returns {*}
      */
     function showTooltip(div, usersDict, index, address, chartSvg, selector){
@@ -595,7 +593,6 @@ function DiscussionBarometer(){
      * @param div
      * @param selector
      * @param index
-     * @param _this
      */
     function hideTooltip(div, selector, index){
         // hide tooltip with detailed information
