@@ -639,9 +639,9 @@ function DiscussionBarometer(){
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
-            div.append('img')
-               .attr({src: e.avatar_url, class: "img-circle"})
-               .style({width: '10%', padding: '2px'});
+            div.append('a').attr({'href': e.public_profile_url, 'title': e.nickname})
+                .append('img').attr({src: e.avatar_url, class: 'img-circle'})
+                .style({width: '10%', padding: '2px'});
         });
     }
 
