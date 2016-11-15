@@ -1792,7 +1792,13 @@ def set_seen_statements(request):
 
     try:
         uids = json.loads(request.params['uids'])
-        error = process_seen_statements(uids, request.authenticated_userid, _t)
+        # are the statements connected to an argument?
+        additional_argument = None
+        if 'justify' in request.path:
+            url = request.path[request.path.index('justify/') + len('justify/'):]
+            additional_argument = int(url[:url.index('/')])
+
+        error = process_seen_statements(uids, request.authenticated_userid, _t, additional_argument=additional_argument)
         return_dict['error'] = error
     except KeyError as e:
         logger('set_seen_statements', 'error', repr(e))

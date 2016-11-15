@@ -201,29 +201,32 @@ class ItemDictHelper(object):
         uids = RecommenderSystem.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for argument in db_arguments:
-                # get all premises in this group
-                db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
-                premises_array = []
-                for premise in db_premises:
-                    text = get_text_for_statement_uid(premise.statement_uid)
-                    premises_array.append({'id': premise.statement_uid, 'title': text[0:1].upper() + text[1:]})
+            if db_user:  # add seen by if the statement is visible
+                add_seen_argument(argument_uid, db_user.uid)
+            # get all premises in this group
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+            premises_array = []
+            for premise in db_premises:
+                text = get_text_for_statement_uid(premise.statement_uid)
+                premises_array.append({'id': premise.statement_uid, 'title': text[0:1].upper() + text[1:]})
 
-                # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
-                is_undermine = 'undermine' if attack_type == 'undermine' else None
-                attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+            # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
+            is_undermine = 'undermine' if attack_type == 'undermine' else None
+            attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
 
-                arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang,
-                                                                               last_attack=is_undermine,
-                                                                               restriction_on_arg_uids=attacking_arg_uids,
-                                                                               history=self.path)
+            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang,
+                                                                           last_attack=is_undermine,
+                                                                           restriction_on_arg_uids=attacking_arg_uids,
+                                                                           history=self.path)
 
-                url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
-                                                                  is_flagable=True,
-                                                                  is_author=is_author_of_argument(nickname, argument.uid),
-                                                                  is_visible=argument.uid in uids))
+            url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
+            statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
+                                                              is_flagable=True,
+                                                              is_author=is_author_of_argument(nickname, argument.uid),
+                                                              is_visible=argument.uid in uids))
 
         if logged_in:
             if len(statements_array) == 0:

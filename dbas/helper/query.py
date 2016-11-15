@@ -14,7 +14,7 @@ from dbas.database.discussion_model import Argument, Statement, User, TextVersio
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
     set_new_undercut_or_overbid, set_new_undermine_or_support
-from dbas.helper.voting import add_seen_statement
+from dbas.helper.voting import add_seen_statement, add_seen_argument
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_premisesgroup_uid, \
     get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid,\
@@ -170,21 +170,26 @@ def process_input_of_premises_for_arguments_and_receive_url(request, transaction
     return url, statement_uids, error
 
 
-def process_seen_statements(uids, nickname, translator):
+def process_seen_statements(uids, nickname, translator, additional_argument=None):
     """
     Sets the given statement uids as seen by given user
 
     :param uids:
     :param nickname:
     :param translator:
+    :param additional_argument: uid of an argument, where the uids are connected to
     :return:
     """
-    logger('QueryHelper', 'process_seen_statements', 'user ' + str(nickname) + ', statements ' + str(uids))
+    logger('QueryHelper', 'process_seen_statements', 'user ' + str(nickname) + ', statements ' + str(uids)
+           + ', additional argument ' + str(additional_argument))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     error = ''
 
     if not db_user:
         return error
+
+    if additional_argument:
+        add_seen_argument(additional_argument, db_user.uid)
 
     for uid in uids:
         # we get the premise group id's only
