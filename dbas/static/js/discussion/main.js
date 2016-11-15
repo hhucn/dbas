@@ -260,19 +260,20 @@ function Main () {
 			var hide_btn = $('#' + discussionSpaceHideItems);
 			var space = $('#' + discussionSpaceListId);
 			hide_btn.show();
-			space.find('li[style="display: none;"]').addClass('cropped').fadeIn();
 			// send request if it was not send until now
-			var uids = [];
-			if ($('#' + discussionSpaceShowItems).attr('data-send-request') !== 'true'){
-				$.each(space.find('li[style="display: none;"]'), function(){
+			if ($(this).attr('data-send-request') !== 'true'){
+				var uids = [];
+				$.each(space.find('li:not(:visible)'), function(){
 					$.each($(this).find('label:even'), function(){
 						uids.push($(this).attr('id'));
 					})
 				});
 				new AjaxDiscussionHandler().setSeenStatements(uids);
 			}
+			// fade in after we collected the missed id's!
+			space.find('li[style="display: none;"]').addClass('cropped').fadeIn();
 			
-			// guification
+			// guification, resize main container and sidebar
 			var container = $('#' + discussionContainerId);
 			var add_height = space.find('li.cropped').length * space.find('li:visible:first').outerHeight() + hide_btn.outerHeight();
 			var container_height = parseInt(container.css('max-height').replace('px',''));
@@ -291,6 +292,7 @@ function Main () {
 			var container = $('#' + discussionContainerId);
 			var height = parseInt(container.css('max-height').replace('px',''));
 			var new_height = height - parseInt(container.attr('data-add-height'));
+			// guification, resize main container and sidebar
 			setTimeout(function() {
 				container.css('max-height', new_height + 'px');
 				var sidebar = $('.sidebar-wrapper:first');

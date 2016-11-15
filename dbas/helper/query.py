@@ -170,13 +170,12 @@ def process_input_of_premises_for_arguments_and_receive_url(request, transaction
     return url, statement_uids, error
 
 
-def process_seen_statements(uids, nickname, transaction, translator):
+def process_seen_statements(uids, nickname, translator):
     """
     Sets the given statement uids as seen by given user
 
     :param uids:
     :param nickname:
-    :param transaction:
     :param translator:
     :return:
     """
@@ -193,7 +192,7 @@ def process_seen_statements(uids, nickname, transaction, translator):
             error = translator.get(_.internalKeyError)
             break
 
-        add_seen_statement(uid, db_user.uid, transaction)
+        add_seen_statement(uid, db_user.uid)
 
     return error
 

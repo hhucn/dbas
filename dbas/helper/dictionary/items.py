@@ -5,6 +5,7 @@ Provides helping function for dictionaries, which are used for the radio buttons
 """
 
 import random
+import transaction
 
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
@@ -48,7 +49,7 @@ class ItemDictHelper(object):
         if len(history) > 0:
             self.path = history + '-' + self.path
 
-    def get_array_for_start(self, nickname, transaction):
+    def get_array_for_start(self, nickname):
         """
         Prepares the dict with all items for the first step in discussion, where the user chooses a position.
 
@@ -69,7 +70,7 @@ class ItemDictHelper(object):
 
         for statement in db_statements:
             if db_user and statement.uid in uids:  # add seen by if the statement is visible
-                add_seen_statement(statement.uid, db_user.uid, transaction)
+                add_seen_statement(statement.uid, db_user.uid)
             statements_array.append(self.__create_answer_dict(statement.uid,
                                                               [{'title': get_text_for_statement_uid(statement.uid),
                                                                   'id': statement.uid}],
@@ -122,13 +123,14 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_justify_statement(self, statement_uid, nickname, is_supportive):
+    def get_array_for_justify_statement(self, statement_uid, nickname, is_supportive, transaction):
         """
         Prepares the dict with all items for the third step in discussion, where the user justifies his position.
 
         :param statement_uid: Statement.uid
         :param nickname: User.nickname
         :param is_supportive: Boolean
+        :param transaction:
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')
@@ -140,8 +142,12 @@ class ItemDictHelper(object):
         uids = RecommenderSystem.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for argument in db_arguments:
+                if db_user and argument.uid in uids:  # add seen by if the statement is visible
+                    add_seen_argument(argument.uid, db_user.uid)
+
                 # get all premises in the premisegroup of this argument
                 db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
                 premise_array = []
@@ -274,12 +280,13 @@ class ItemDictHelper(object):
                                                                  Argument.issue_uid == self.issue_uid)).all()
         return db_arguments
 
-    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive):
+    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive, nickname):
         """
-        Prepares the dict with all items for the third step, where an suppotive argument will be presented.
+        Prepares the dict with all items for the third step, where a supportive argument will be presented.
 
         :param argument_uid: Argument.uid
         :param is_supportive: Boolean
+        :param nickname: nickname
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
@@ -287,6 +294,10 @@ class ItemDictHelper(object):
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         statements_array = []
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if db_user:  # add seen by if the statement is visible
+            add_seen_argument(argument_uid, db_user.uid)
 
         db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
         if not db_argument:

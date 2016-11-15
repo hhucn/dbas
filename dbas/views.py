@@ -452,7 +452,7 @@ def discussion_init(request, for_api=False, api_data=None):
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-    item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname, transaction)
+    item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
     history_helper.save_issue_uid(transaction, issue, nickname)
 
     discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, main_page=request.application_url, slug=slug)\
@@ -572,7 +572,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     slug                = match_dict['slug'] if 'slug' in match_dict else ''
     statement_or_arg_id = match_dict['statement_or_arg_id'] if 'statement_or_arg_id' in match_dict else ''
     mode                = match_dict['mode'] if 'mode' in match_dict else ''
-    supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
+    supportive          = mode == 't' or mode == 'd'  # supportive = t or do not know mode
     relation            = match_dict['relation'][0] if len(match_dict['relation']) > 0 else ''
 
     if not is_integer(statement_or_arg_id, True):
@@ -1792,7 +1792,7 @@ def set_seen_statements(request):
 
     try:
         uids = json.loads(request.params['uids'])
-        error = process_seen_statements(uids, request.authenticated_userid, transaction, _t)
+        error = process_seen_statements(uids, request.authenticated_userid, _t)
         return_dict['error'] = error
     except KeyError as e:
         logger('set_seen_statements', 'error', repr(e))

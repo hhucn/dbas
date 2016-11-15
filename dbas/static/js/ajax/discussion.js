@@ -393,6 +393,7 @@ function AjaxDiscussionHandler() {
 			// note that we already send data
 			if (parsedData.error.length == 0){
 				$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
+				$('#' + discussionSpaceHideItems).attr('data-send-request', 'true');
 			}
 		}).fail(function () {
 		});
