@@ -181,15 +181,9 @@ function DiscussionBarometer(){
      * @param height
      */
     function createAxis(svg, height){
-        // create scale to map values
-        var xScale = d3.scale.linear().range([0, height]);
         var yScale = d3.scale.linear().domain([0, 100]).range([height, 0]);
 
-        // create x and y-axis
-        var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-        svg.append("g")
-            .attr({id: "xAxis", transform: "translate(50,500)"})
-            .call(xAxis);
+        // create y-axis
         var yAxis = d3.svg.axis().scale(yScale).orient("left");
         svg.append("g")
             .attr({id: "yAxis", transform: "translate(50,50)"})
@@ -256,6 +250,11 @@ function DiscussionBarometer(){
         // width of one bar
         // width - left padding to y-Axis - space between bars
         var barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
+        console.log(barWidth);
+        // set max-width of bar
+        if(barWidth > 190){
+            barWidth = 190;
+        }
 
         barChartSvg.selectAll(selector)
             .data(usersDict)
@@ -345,15 +344,16 @@ function DiscussionBarometer(){
      *
      * @param usersDict
      * @param doughnutChartSvg
+     * @param address
      */
-    function createDoughnutChart(usersDict, doughnutChartSvg) {
+    function createDoughnutChart(usersDict, doughnutChartSvg, address) {
         var height = 400, width = 400,
             outerRadius = Math.min(width, height) / 2,
             innerRadius = 0.3 * outerRadius;
 
-        var doughnut = getDoughnut(usersDict);
+        var doughnut = getDoughnut(usersDict, address);
 
-        var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius);
+        var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, address);
         var outerCircle = getOuterCircle(innerRadius, outerRadius);
 
         createOuterPath(doughnutChartSvg, usersDict, outerCircle, doughnut);
@@ -364,12 +364,17 @@ function DiscussionBarometer(){
      * Choose layout of d3.
      *
      * @param usersDict
+     * @param address
      * @returns {*}
      */
-    function getDoughnut(usersDict){
+    function getDoughnut(usersDict, address){
         return d3.layout.pie()
             .sort(null)
             .value(function (d, i) {
+                // if the user can only choose between agree and disagree: half of doughnut for agree and half for disagree
+                if(address === "attitude"){
+                    return 50;
+                }
                 return usersDict[i].usersNumber;
             });
     }
@@ -380,12 +385,16 @@ function DiscussionBarometer(){
      * @param usersDict
      * @param innerRadius
      * @param outerRadius
+     * @param address
      * @returns {*}
      */
-    function getInnerCircle(usersDict, innerRadius, outerRadius){
+    function getInnerCircle(usersDict, innerRadius, outerRadius, address){
         return d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(function (d, i) {
+                if(address === "attitude"){
+                    return (outerRadius - innerRadius) + innerRadius;
+                }
                 return (outerRadius - innerRadius) * (usersDict[i].usersNumber/usersDict[i].seenBy) + innerRadius;
             });
     }
@@ -443,19 +452,34 @@ function DiscussionBarometer(){
      * @param doughnutChartSvg
      * @param usersDict
      * @param index
+     * @param address
      */
-    function createShortTooltipDoughnutChart(doughnutChartSvg, usersDict, index){
+    function createShortTooltipDoughnutChart(doughnutChartSvg, usersDict, index, address){
         // append tooltip in middle of doughnut chart
+        // text of tooltip depends on address
+        var tooltipText;
+        if(address === "attitude"){
+            tooltipText = usersDict[index].seenBy;
+        }
+        else{
+            tooltipText = usersDict[index].usersNumber + "/" + usersDict[index].seenBy;
+        }
         doughnutChartSvg.append("text")
             .attr({x: 240, y: 210,
-                   class: "doughnut-chart-text-tooltip"})
-            .style({"font-weight": "bold", "font-size": "25px"})
-            .text(usersDict[index].usersNumber + "/" + usersDict[index].seenBy);
+                   class: "doughnut-chart-text-tooltip",
+                   "font-weight": "bold", "font-size": "25px"})
+            .text(tooltipText);
 
+        if(address === "attitude") {
+            tooltipText = "saw this";
+        }
+        else {
+            tooltipText = "clicked on this";
+        }
         doughnutChartSvg.append("text")
             .attr({x: 240, y: 230,
                    class: "doughnut-chart-text-tooltip"})
-            .text("clicked on this");
+            .text(tooltipText);
     }
 
     // bar chart and doughnut chart
@@ -479,7 +503,6 @@ function DiscussionBarometer(){
         chartSvg.selectAll(selector).on("click", function (d, index) {
             // sector of doughnut chart and part which represents the seen-by-value should have the same index
             elementIndex = index % usersDict.length;
-            console.log(elementIndex);
 
             if(isClicked){
                 // if the user clicks on another element hide the old element and make the new one visible
@@ -553,7 +576,7 @@ function DiscussionBarometer(){
         div = getTooltip(usersDict, index, address);
         // if doughnut chart is selected add short tooltip in middle of chart
         if(selector === ".chart-sector"){
-            createShortTooltipDoughnutChart(chartSvg, usersDict, index);
+            createShortTooltipDoughnutChart(chartSvg, usersDict, index, address);
             // highlight whole sector on hover
             d3.select("#inner-path-" + index).attr('fill', getDarkColorFor(index));
             d3.select("#outer-path-" + index).attr('fill', google_colors[index % google_colors.length][3]);
