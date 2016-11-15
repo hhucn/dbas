@@ -4,6 +4,7 @@ Provides helping function for the managing the queue with all executed decisions
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
     User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled
@@ -213,14 +214,13 @@ def __has_access_to_history(nickname):
     return is_user_author or reputation_count > reputation_borders['history']
 
 
-def revoke_old_decision(queue, uid, lang, nickname, transaction):
+def revoke_old_decision(queue, uid, lang, nickname):
     """
 
     :param queue:
     :param uid:
     :param lang:
     :param nickname:
-    :param transaction:
     :return:
     """
     logger('review_history_helper', 'revoke_old_decision', 'queue: ' + queue + ', uid: ' + str(uid))
@@ -231,12 +231,12 @@ def revoke_old_decision(queue, uid, lang, nickname, transaction):
     _t = Translator(lang)
 
     if queue == 'deletes':
-        __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid, transaction)
+        __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid)
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_delete=uid))
 
     elif queue == 'optimizations':
-        __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid, transaction)
+        __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid)
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_optimization=uid))
 
@@ -267,13 +267,12 @@ def revoke_old_decision(queue, uid, lang, nickname, transaction):
     return success, error
 
 
-def cancel_ongoing_decision(queue, uid, lang, transaction):
+def cancel_ongoing_decision(queue, uid, lang):
     """
 
     :param queue:
     :param uid:
     :param lang:
-    :param transaction:
     :return:
     """
     logger('review_history_helper', 'cancel_ongoing_decision', 'queue: ' + queue + ', uid: ' + str(uid))
@@ -306,7 +305,7 @@ def cancel_ongoing_decision(queue, uid, lang, transaction):
     return success, error
 
 
-def __revoke_decision_and_implications(type, reviewer_type, uid, transaction):
+def __revoke_decision_and_implications(type, reviewer_type, uid):
     """
 
     :param type:
@@ -319,7 +318,7 @@ def __revoke_decision_and_implications(type, reviewer_type, uid, transaction):
 
     db_review = DBDiscussionSession.query(type).filter_by(uid=uid).first()
     db_review.set_revoked(True)
-    en_or_disable_object_of_review(db_review, False, transaction)
+    en_or_disable_object_of_review(db_review, False)
 
     DBDiscussionSession.flush()
     transaction.commit()

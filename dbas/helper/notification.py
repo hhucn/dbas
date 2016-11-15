@@ -4,6 +4,7 @@ Provides functions for te internal messaging system
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 import dbas.helper.email as EmailHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument
@@ -99,7 +100,7 @@ def send_edit_text_notification(db_user, textversion, path, request):
         DBDiscussionSession.flush()
 
 
-def send_add_text_notification(url, conclusion_id, user, request, transaction):
+def send_add_text_notification(url, conclusion_id, user, request):
     """
     Send notifications and mails to related users.
 
@@ -107,7 +108,6 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
     :param conclusion_id: Statement.uid
     :param user: current users nickname
     :param request: self.request
-    :param transaction: transaction
     :return: None
     """
     # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
@@ -170,14 +170,13 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
     transaction.commit()
 
 
-def send_add_argument_notification(url, attacked_argument_uid, user, request, transaction):
+def send_add_argument_notification(url, attacked_argument_uid, user, request):
     """
 
     :param url:
     :param attacked_argument_uid:
     :param user:
     :param request:
-    :param transaction:
     :return:
     """
     # getting current argument, arguments author, current user and some settings
@@ -219,11 +218,10 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request, tr
     transaction.commit()
 
 
-def send_welcome_notification(transaction, user, lang='en'):
+def send_welcome_notification(user, lang='en'):
     """
     Creates and send the welcome message to a new user.
 
-    :param transaction: transaction
     :param user: User.uid
     :param lang: ui_locales
     :return: None
@@ -237,7 +235,7 @@ def send_welcome_notification(transaction, user, lang='en'):
     transaction.commit()
 
 
-def send_notification(from_user, to_user, topic, content, mainpage, transaction):
+def send_notification(from_user, to_user, topic, content, mainpage):
     """
     Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
@@ -245,7 +243,6 @@ def send_notification(from_user, to_user, topic, content, mainpage, transaction)
     :param to_user: User
     :param topic: String
     :param content: String
-    :param transaction: transaction
     :return:
     """
     content = escape_string(content)

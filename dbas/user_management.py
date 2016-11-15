@@ -4,10 +4,9 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import hashlib
+import transaction
 import random
 from datetime import date, timedelta, datetime
-from urllib import parse
 
 import arrow
 import dbas.handler.password as password_handler
@@ -85,12 +84,11 @@ thingslist = ['Angle', 'Ant', 'Apple', 'Arch', 'Arm', 'Army', 'Baby', 'Bag', 'Ba
               'Window', 'Wing', 'Wire', 'Worm']
 
 
-def update_last_action(transaction, nick):
+def update_last_action(nick):
     """
     Updates the last action field of the user-row in database. Returns boolean if the users session
     is older than one hour or True, when she wants to keep the login
 
-    :param transaction: transaction
     :param nick: User.nickname
     :return: Boolean
     """
@@ -483,10 +481,9 @@ def get_summary_of_today(nickname):
     return ret_dict
 
 
-def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
+def change_password(user, old_pw, new_pw, confirm_pw, lang):
     """
 
-    :param transaction: current database transaction
     :param user: current database user
     :param old_pw: old received password
     :param new_pw: new received password
@@ -546,7 +543,7 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
     return message, error, success
 
 
-def create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales, transaction):
+def create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales):
     """
 
     :param request:
@@ -558,7 +555,6 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
     :param gender:
     :param db_group_uid:
     :param ui_locales:
-    :param transaction:
     :return:
     """
     success = ''
@@ -593,7 +589,7 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
         subject = _t.get(_.accountRegistration)
         body = _t.get(_.accountWasRegistered)
         email_helper.send_mail(request, subject, body, email, ui_locales)
-        send_welcome_notification(transaction, checknewuser.uid)
+        send_welcome_notification(checknewuser.uid)
 
     else:
         logger('UserManagement', 'create_new_user', 'New data was not added')

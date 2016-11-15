@@ -17,13 +17,12 @@ from dbas.database.discussion_model import Argument, Statement, Premise, VoteArg
 from dbas.logger import logger
 
 
-def add_vote_for_argument(argument_uid, user, transaction):
+def add_vote_for_argument(argument_uid, user):
     """
     Increases the votes of a given argument.
 
     :param argument_uid: id of the argument
     :param user: self.request.authenticated_userid
-    :param transaction: transaction
     :return: increased votes of the argument
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -82,7 +81,7 @@ def add_vote_for_argument(argument_uid, user, transaction):
     return len(db_votes)
 
 
-def add_vote_for_statement(statement_uid, user, supportive, transaction):
+def add_vote_for_statement(statement_uid, user, supportive):
     """
     Adds a vote for the given statements
 
@@ -147,11 +146,10 @@ def add_seen_argument(argument_uid, user_uid):
     transaction.commit()
 
 
-def clear_votes_of_user(transaction, user):
+def clear_votes_of_user(user):
     """
     Deletes all votes of given user
 
-    :param transaction: Transaction
     :param user: User.nickname
     :return: None
     """

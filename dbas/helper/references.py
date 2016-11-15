@@ -1,3 +1,5 @@
+import transaction
+
 from urllib.parse import urlparse
 
 from dbas.database import DBDiscussionSession
@@ -88,7 +90,7 @@ def __get_values_of_reference(reference, main_page):
             'statement_text': get_text_for_statement_uid(reference.statement_uid)}
 
 
-def set_reference(reference, url, nickname, statement_uid, issue_uid, transaction):
+def set_reference(reference, url, nickname, statement_uid, issue_uid):
     """
     Creates a new reference
 
@@ -96,7 +98,6 @@ def set_reference(reference, url, nickname, statement_uid, issue_uid, transactio
     :param nickname: nickname of the user
     :param statement_uid: statement uid of the linked statement
     :param issue_uid: current issue uid
-    :param transaction: current transaction
     :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()

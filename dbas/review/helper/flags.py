@@ -3,6 +3,8 @@ Provides helping function for flagging arguments.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+
+import transaction
 from sqlalchemy import and_
 
 from dbas.logger import logger
@@ -12,7 +14,7 @@ from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewD
 from dbas.strings.keywords import Keywords as _
 
 
-def flag_argument(uid, reason, db_user, is_argument, transaction):
+def flag_argument(uid, reason, db_user, is_argument):
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
@@ -21,7 +23,6 @@ def flag_argument(uid, reason, db_user, is_argument, transaction):
     :param reason: String which describes the reason
     :param db_user: User model of requests sender
     :param is_argument: Boolean
-    :param transaction: current transaction
     :return:
     """
     db_element = DBDiscussionSession.query(Argument if is_argument else Statement).get(uid)
@@ -46,12 +47,12 @@ def flag_argument(uid, reason, db_user, is_argument, transaction):
     else:
         if db_reason:
             # flagged for the first time
-            __add_delete_review(argument_uid, statement_uid, db_user.uid, db_reason.uid, transaction)
+            __add_delete_review(argument_uid, statement_uid, db_user.uid, db_reason.uid)
 
         # and another reason for optimization
         elif reason == 'optimization':
             # flagged for the first time
-            __add_optimization_review(argument_uid, statement_uid, db_user.uid, transaction)
+            __add_optimization_review(argument_uid, statement_uid, db_user.uid)
 
         return _.thxForFlagText, '', ''
 
@@ -152,14 +153,13 @@ def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, 
     return len(db_review) > 0
 
 
-def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid, transaction):
+def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
     """
 
     :param argument_uid:
     :param statement_uid:
     :param user_uid:
     :param reason_uid:
-    :param transaction:
     :return:
     """
     review_delete = ReviewDelete(detector=user_uid, argument=argument_uid, statement=statement_uid, reason=reason_uid)
@@ -168,13 +168,12 @@ def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid, trans
     transaction.commit()
 
 
-def __add_optimization_review(argument_uid, statement_uid, user_uid, transaction):
+def __add_optimization_review(argument_uid, statement_uid, user_uid):
     """
 
     :param argument_uid:
     :param statement_uid:
     :param user_uid:
-    :param transaction:
     :return:
     """
     review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)

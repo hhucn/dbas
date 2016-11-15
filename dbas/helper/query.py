@@ -5,6 +5,7 @@ Provides helping function for database querys.
 """
 
 import random
+import transaction
 
 import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
@@ -30,13 +31,12 @@ from dbas.input_validator import is_integer
 statement_min_length = 10
 
 
-def process_input_of_start_premises_and_receive_url(request, transaction, premisegroups, conclusion_id, supportive,
+def process_input_of_start_premises_and_receive_url(request, premisegroups, conclusion_id, supportive,
                                                     issue, user, for_api, mainpage, lang):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
     :param request: request
-    :param transaction: Transaction
     :param premisegroups: [String]
     :param conclusion_id: Statement.uid
     :param supportive: Boolean
@@ -59,7 +59,7 @@ def process_input_of_start_premises_and_receive_url(request, transaction, premis
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument, statement_uids = __create_argument_by_raw_input(transaction, user, group, conclusion_id, supportive, issue)
+        new_argument, statement_uids = __create_argument_by_raw_input(user, group, conclusion_id, supportive, issue)
         if not isinstance(new_argument, Argument):  # break on error
             error = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
                 statement_min_length) + ')'
@@ -89,12 +89,12 @@ def process_input_of_start_premises_and_receive_url(request, transaction, premis
     # send notifications and mails
     if len(new_argument_uids) > 0:
         email_url = _main_um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
-        NotificationHelper.send_add_text_notification(email_url, conclusion_id, user, request, transaction)
+        NotificationHelper.send_add_text_notification(email_url, conclusion_id, user, request)
 
     return url, new_statement_uids, error
 
 
-def process_input_of_premises_for_arguments_and_receive_url(request, transaction, arg_id, attack_type, premisegroups,
+def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, attack_type, premisegroups,
                                                             issue, user, for_api, mainpage, lang):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input paramters and returns a URL for forwarding.
@@ -104,7 +104,6 @@ def process_input_of_premises_for_arguments_and_receive_url(request, transaction
         Optimize the "for_api" part
 
     :param request: request
-    :param transaction: transaction
     :param arg_id: Argument.uid
     :param attack_type: String
     :param premisegroups: [Strings]
@@ -126,7 +125,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, transaction
     # all new arguments are collected in a list
     new_argument_uids = []
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument = __insert_new_premises_for_argument(group, attack_type, arg_id, issue, user, transaction)
+        new_argument = __insert_new_premises_for_argument(group, attack_type, arg_id, issue, user)
         if not isinstance(new_argument, Argument):  # break on error
             error = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
                 statement_min_length) + ')'
@@ -165,7 +164,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, transaction
 
         tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
 
-        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, request, transaction)
+        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, request)
 
     return url, statement_uids, error
 
@@ -180,8 +179,8 @@ def process_seen_statements(uids, nickname, translator, additional_argument=None
     :param additional_argument: uid of an argument, where the uids are connected to
     :return:
     """
-    logger('QueryHelper', 'process_seen_statements', 'user ' + str(nickname) + ', statements ' + str(uids)
-           + ', additional argument ' + str(additional_argument))
+    logger('QueryHelper', 'process_seen_statements', 'user ' + str(nickname) + ', statements ' + str(uids) +
+           ', additional argument ' + str(additional_argument))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     error = ''
 
@@ -259,11 +258,10 @@ def __get_url_for_new_argument(new_argument_uids, history, lang, urlmanager):
     return url
 
 
-def correct_statement(transaction, user, uid, corrected_text, url='', request=None):
+def correct_statement(user, uid, corrected_text, url='', request=None):
     """
     Corrects a statement
 
-    :param transaction: transaction current transaction
     :param user: User.nickname requesting user
     :param uid: requested statement uid
     :param corrected_text: new text
@@ -306,11 +304,10 @@ def correct_statement(transaction, user, uid, corrected_text, url='', request=No
     return return_dict
 
 
-def insert_as_statements(transaction, text_list, user, issue, is_start=False):
+def insert_as_statements(text_list, user, issue, is_start=False):
     """
     Inserts the given texts as statements and returns the uids
 
-    :param transaction: transaction
     :param text_list: [String]
     :param user: User.nickname
     :param issue: Issue
@@ -323,13 +320,13 @@ def insert_as_statements(transaction, text_list, user, issue, is_start=False):
             if len(text) < statement_min_length:
                 return -1
             else:
-                new_statement, is_duplicate = __set_statement(transaction, text, user, is_start, issue)
+                new_statement, is_duplicate = __set_statement(text, user, is_start, issue)
                 statements.append(new_statement)
     else:
         if len(text_list) < statement_min_length:
             return -1
         else:
-            new_statement, is_duplicate = __set_statement(transaction, text_list, user, is_start, issue)
+            new_statement, is_duplicate = __set_statement(text_list, user, is_start, issue)
             statements.append(new_statement)
     return statements
 
@@ -421,7 +418,7 @@ def __get_logfile_dict(textversion, main_page, lang):
     return corr_dict
 
 
-def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, user, transaction):
+def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, user):
     """
 
     :param text: String
@@ -429,12 +426,11 @@ def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, use
     :param arg_uid: Argument.uid
     :param issue: Issue
     :param user: User.nickname
-    :param transaction: transaction
     :return:
     """
     logger('QueryHelper', '__insert_new_premises_for_argument', 'def')
 
-    statements = insert_as_statements(transaction, text, user, issue)
+    statements = insert_as_statements(text, user, issue)
     if statements == -1:
         return -1
 
@@ -445,25 +441,24 @@ def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, use
 
     new_argument = None
     if current_attack == 'undermine':
-        new_argument = set_new_undermine_or_support(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
+        new_argument = set_new_undermine_or_support(new_pgroup_uid, current_argument, current_attack, db_user, issue)
 
     elif current_attack == 'support':
-        new_argument, duplicate = set_new_support(transaction, new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_support(new_pgroup_uid, current_argument, db_user, issue)
 
     elif current_attack == 'undercut' or current_attack == 'overbid':
-        new_argument, duplicate = set_new_undercut_or_overbid(transaction, new_pgroup_uid, current_argument, current_attack, db_user, issue)
+        new_argument, duplicate = set_new_undercut_or_overbid(new_pgroup_uid, current_argument, current_attack, db_user, issue)
 
     elif current_attack == 'rebut':
-        new_argument, duplicate = set_new_rebut(transaction, new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_rebut(new_pgroup_uid, current_argument, db_user, issue)
 
     return new_argument
 
 
-def __set_statement(transaction, statement, user, is_start, issue):
+def __set_statement(statement, user, is_start, issue):
     """
     Saves statement for user
 
-    :param transaction: transaction current transaction
     :param statement: given statement
     :param user: User.nickname given user
     :param is_start: if it is a start statement
@@ -539,10 +534,9 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     return return_array
 
 
-def __create_argument_by_raw_input(transaction, user, text, conclusion_id, is_supportive, issue):
+def __create_argument_by_raw_input(user, text, conclusion_id, is_supportive, issue):
     """
 
-    :param transaction: transaction
     :param user: User.nickname
     :param text: String
     :param conclusion_id:
@@ -554,7 +548,7 @@ def __create_argument_by_raw_input(transaction, user, text, conclusion_id, is_su
     # current conclusion
     db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                      Statement.issue_uid == issue)).first()
-    statements = insert_as_statements(transaction, text, user, issue)
+    statements = insert_as_statements(text, user, issue)
     if statements == -1:
         return -1, None
 
@@ -564,16 +558,15 @@ def __create_argument_by_raw_input(transaction, user, text, conclusion_id, is_su
     new_premisegroup_uid = __set_statements_as_new_premisegroup(statements, user, issue)
 
     # third, insert the argument
-    new_argument = __create_argument_by_uids(transaction, user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
+    new_argument = __create_argument_by_uids(user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
 
     transaction.commit()
     return new_argument, statement_uids
 
 
-def __create_argument_by_uids(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
+def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
     """
 
-    :param transaction: transaction
     :param user: User.nickname
     :param premisegroup_uid: PremseGroup.uid
     :param conclusion_uid: Statement.uid
@@ -666,14 +659,13 @@ def __set_statements_as_new_premisegroup(statements, user, issue):
     return db_premisegroup.uid
 
 
-def revoke_content(uid, is_argument, nickname, translator, transaction):
+def revoke_content(uid, is_argument, nickname, translator):
     """
 
     :param uid:
     :param is_argument:
     :param nickname:
     :param translator:
-    :param transaction:
     :return:
     """
     logger('QueryHelper', 'revoke_content', str(uid) + (' argument' if is_argument else ' statement'))
@@ -684,11 +676,11 @@ def revoke_content(uid, is_argument, nickname, translator, transaction):
 
     # get element, which should be revoked
     if is_argument:
-        db_element, error = __revoke_argument(db_user, uid, transaction, translator)
+        db_element, error = __revoke_argument(db_user, uid, translator)
         if len(error) > 0:
             return error
     else:
-        db_element, error = __revoke_statement(db_user, uid, transaction, translator)
+        db_element, error = __revoke_statement(db_user, uid, translator)
         if len(error) > 0:
             return error
 
@@ -705,12 +697,11 @@ def revoke_content(uid, is_argument, nickname, translator, transaction):
     return ''
 
 
-def __revoke_argument(db_user, argument_uid, transaction, translator):
+def __revoke_argument(db_user, argument_uid, translator):
     """
 
     :param db_user:
     :param argument_uid:
-    :param transaction:
     :param translator:
     :return:
     """
@@ -747,12 +738,11 @@ def __revoke_argument(db_user, argument_uid, transaction, translator):
     return db_argument, ''
 
 
-def __revoke_statement(db_user, statement_uid, transaction, translator):
+def __revoke_statement(db_user, statement_uid, translator):
     """
 
     :param db_user:
     :param statement_uid:
-    :param transaction:
     :param translator:
     :return:
     """
@@ -772,7 +762,7 @@ def __revoke_statement(db_user, statement_uid, transaction, translator):
     db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(db_new_author.uid) + ' (old author ' + str(db_user.uid) + ')')
     db_statement.author_uid = db_new_author.uid
-    __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_new_author.uid, transaction)
+    __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_new_author.uid)
 
     # transfer the responsibility to the next author (NOW ANONYMOUS), who used this statement
     db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == statement_uid,
@@ -784,13 +774,13 @@ def __revoke_statement(db_user, statement_uid, transaction, translator):
         new_author_uid = db_new_author.uid  # db_statement_as_conclusion.author_uid
         logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(new_author_uid) + ' (old author ' + str(db_user.uid) + ')')
         db_statement.author_uid = new_author_uid
-        __transfer_textversion_to_new_author(statement_uid, db_user.uid, new_author_uid, transaction)
+        __transfer_textversion_to_new_author(statement_uid, db_user.uid, new_author_uid)
     else:
         logger('QueryHelper', '__revoke_statement',
                'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ') and all arguments with this statement, cause we have no new author')
         db_statement.set_disable(True)
-        __disable_textversions(statement_uid, db_user.uid, transaction)
-        __disable_arguments_with_statement(db_user, statement_uid, transaction, translator)
+        __disable_textversions(statement_uid, db_user.uid)
+        __disable_arguments_with_statement(db_user, statement_uid, translator)
 
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
@@ -799,12 +789,11 @@ def __revoke_statement(db_user, statement_uid, transaction, translator):
     return db_statement, ''
 
 
-def __disable_textversions(statement_uid, author, transaction):
+def __disable_textversions(statement_uid, author):
     """
 
     :param statement_uid:
     :param author:
-    :param transaction:
     :return:
     """
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
@@ -818,17 +807,18 @@ def __disable_textversions(statement_uid, author, transaction):
     transaction.commit()
 
 
-def __disable_arguments_with_statement(db_user, statement_uid, transaction, translator):
+def __disable_arguments_with_statement(db_user, statement_uid, translator):
     """
 
+    :param db_user:
     :param statement_uid:
-    :param transaction:
+    :param translator:
     :return:
     """
     db_arguments = get_all_arguments_by_statement(statement_uid, True)
     if db_arguments:
         for argument in db_arguments:
-            __revoke_argument(db_user, argument.uid, transaction, translator)
+            __revoke_argument(db_user, argument.uid, translator)
             # argument.set_disable(True)
             # DBDiscussionSession.add(argument)
 
@@ -836,13 +826,12 @@ def __disable_arguments_with_statement(db_user, statement_uid, transaction, tran
     transaction.commit()
 
 
-def __transfer_textversion_to_new_author(statement_uid, old_author, new_author, transaction):
+def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
     """
 
     :param statement_uid:
     :param old_author:
     :param new_author:
-    :param transaction:
     :return:
     """
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
@@ -850,7 +839,7 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author, 
     for textversion in db_textversion:
         textversion.author_uid = new_author
         DBDiscussionSession.add(textversion)
-        DBDiscussionSession.add(RevokedContentHistory(old_author, new_author, textversion_uid = textversion.uid))
+        DBDiscussionSession.add(RevokedContentHistory(old_author, new_author, textversion_uid=textversion.uid))
 
     DBDiscussionSession.flush()
     transaction.commit()

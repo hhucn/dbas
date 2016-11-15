@@ -49,9 +49,9 @@ def preparation_for_view(for_api, api_data, request):
     :return: nickname, session_id, session_expired, history
     """
     nickname, session_id = get_nickname_and_session(request, for_api, api_data)
-    session_expired = UserHandler.update_last_action(transaction, nickname)
+    session_expired = UserHandler.update_last_action(nickname)
     history         = request.params['history'] if 'history' in request.params else ''
-    HistoryHelper.save_path_in_database(nickname, request.path, transaction)
+    HistoryHelper.save_path_in_database(nickname, request.path)
     HistoryHelper.save_history_in_cookie(request, request.path, history)
     return nickname, session_id, session_expired, history
 
@@ -76,7 +76,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     logged_in = UserHandler.is_user_logged_in(nickname)
     _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request)
 
-    VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
+    VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive)
 
     item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict['elements']), nickname)
@@ -299,7 +299,7 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
             logger('ViewHelper', 'user_registration', 'Error occured')
         else:
             success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname,
-                                                        password, gender, db_group.uid, ui_locales, transaction)
+                                                        password, gender, db_group.uid, ui_locales)
     return success, info
 
 

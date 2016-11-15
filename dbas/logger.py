@@ -20,8 +20,6 @@ def logger(who, when, what, warn=False, error=False, debug=False):
     :param debug: Boolean, default False
     :return: None
     """
-    if who != 'VotingHelper':
-        return
 
     info = not(warn or error or debug)
     logger = logging.getLogger(__name__)

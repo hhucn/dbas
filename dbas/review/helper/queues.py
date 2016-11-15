@@ -4,6 +4,7 @@ Provides helping function for displaying the review queues and locking entries.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now
@@ -252,13 +253,12 @@ def __get_last_reviewer_of(reviewer_type, main_page):
     return users_array
 
 
-def add_proposals_for_statement_corrections(elements, nickname, translator, transaction):
+def add_proposals_for_statement_corrections(elements, nickname, translator):
     """
 
     :param elements:
     :param nickname:
     :param translator:
-    :param transaction:
     :return:
     """
     logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
@@ -284,13 +284,12 @@ def add_proposals_for_statement_corrections(elements, nickname, translator, tran
     return ''
 
 
-def lock_optimization_review(nickname, review_uid, translator, transaction):
+def lock_optimization_review(nickname, review_uid, translator):
     """
 
     :param nickname:
     :param review_uid:
     :param translator:
-    :param transaction:
     :return:
     """
     logger('ReviewQueues', 'lock', 'main')
@@ -330,11 +329,10 @@ def lock_optimization_review(nickname, review_uid, translator, transaction):
     return success, info, error, is_locked
 
 
-def unlock_optimization_review(review_uid, transaction):
+def unlock_optimization_review(review_uid):
     """
 
     :param review_uid:
-    :param transaction:
     :return:
     """
     tidy_up_optimization_locks()

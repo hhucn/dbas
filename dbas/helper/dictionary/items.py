@@ -5,7 +5,6 @@ Provides helping function for dictionaries, which are used for the radio buttons
 """
 
 import random
-import transaction
 
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
@@ -54,7 +53,6 @@ class ItemDictHelper(object):
         Prepares the dict with all items for the first step in discussion, where the user chooses a position.
 
         :param nickname: Boolean or String
-        :param transaction: current transaction
         :return:
         """
         db_statements = get_not_disabled_statement_as_query()
@@ -130,7 +128,6 @@ class ItemDictHelper(object):
         :param statement_uid: Statement.uid
         :param nickname: User.nickname
         :param is_supportive: Boolean
-        :param transaction:
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')

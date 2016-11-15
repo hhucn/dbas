@@ -9,7 +9,6 @@ import json
 import admin.lib as lib
 import dbas.helper.history as HistoryHelper
 import dbas.user_management as UserHandler
-import transaction
 from cornice import Service
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.lib import get_language
@@ -77,8 +76,8 @@ def main_admin(request):
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_admin', 'def')
-    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
-    should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
+    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path)
+    should_log_out = UserHandler.update_last_action(request.authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
 
@@ -105,8 +104,8 @@ def main_table(request):
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_table', 'def')
-    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path, transaction)
-    should_log_out = UserHandler.update_last_action(transaction, request.authenticated_userid)
+    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path)
+    should_log_out = UserHandler.update_last_action(request.authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
 

@@ -3,6 +3,8 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement
 from dbas.lib import is_user_author
@@ -14,7 +16,7 @@ from dbas.url_manager import UrlManager
 from slugify import slugify
 
 
-def set_issue(info, title, lang, nickname, transaction, ui_locales):
+def set_issue(info, title, lang, nickname, ui_locales):
     """
     Inserts new issue into database
 
@@ -22,7 +24,6 @@ def set_issue(info, title, lang, nickname, transaction, ui_locales):
     :param title: String
     :param lang: String
     :param nickname: User.nickname
-    :param transaction: transaction
     :param ui_locales: ui_locales
     :return: True, '' on success, False, String on error
     """
