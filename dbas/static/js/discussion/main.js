@@ -257,21 +257,45 @@ function Main () {
 		
 		$('#' + discussionSpaceShowItems).click(function(){
 			$(this).hide();
-			$('#' + discussionSpaceHideItems).show();
+			var hide_btn = $('#' + discussionSpaceHideItems);
+			var space = $('#' + discussionSpaceListId);
+			hide_btn.show();
+			space.find('li[style="display: none;"]').addClass('cropped').fadeIn();
+			// send request if it was not send until now
 			var uids = [];
-			$.each($('#' + discussionSpaceListId).find('li[style="display: none;"]'), function(){
-				$(this).addClass('cropped').fadeIn();
-				$.each($(this).find('label:even'), function(){
-					uids.push($(this).attr('id'));
-				})
-			});
-			new AjaxDiscussionHandler().setSeenStatements(uids);
+			if ($('#' + discussionSpaceShowItems).attr('data-send-request') !== 'true'){
+				$.each(space.find('li[style="display: none;"]'), function(){
+					$.each($(this).find('label:even'), function(){
+						uids.push($(this).attr('id'));
+					})
+				});
+				new AjaxDiscussionHandler().setSeenStatements(uids);
+			}
+			
+			// guification
+			var container = $('#' + discussionContainerId);
+			var add_height = space.find('li.cropped').length * space.find('li:visible:first').outerHeight() + hide_btn.outerHeight();
+			var container_height = parseInt(container.css('max-height').replace('px',''));
+			container.css('max-height', (add_height + container_height) + 'px');
+			container.attr('data-add-height', add_height);
+			
+			var sidebar = $('.sidebar-wrapper:first');
+			sidebar.height(sidebar.height() + add_height);
+				
 		});
 		
 		$('#' + discussionSpaceHideItems).click(function(){
 			$(this).hide();
 			$('#' + discussionSpaceShowItems).show();
 			$('#' + discussionSpaceListId).find('li.cropped').fadeOut();
+			var container = $('#' + discussionContainerId);
+			var height = parseInt(container.css('max-height').replace('px',''));
+			var new_height = height - parseInt(container.attr('data-add-height'));
+			setTimeout(function() {
+				container.css('max-height', new_height + 'px');
+				var sidebar = $('.sidebar-wrapper:first');
+				sidebar.height(sidebar.height() - parseInt(container.attr('data-add-height')));
+			}, 400);
 		});
 	};
 	

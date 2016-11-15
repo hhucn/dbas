@@ -172,6 +172,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, transaction
 
 def process_seen_statements(uids, nickname, transaction, translator):
     """
+    Sets the given statement uids as seen by given user
 
     :param uids:
     :param nickname:
