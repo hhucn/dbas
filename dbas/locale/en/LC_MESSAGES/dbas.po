@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-11-11 10:12+0100\n"
+"POT-Creation-Date: 2016-11-15 10:27+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -617,7 +617,7 @@ msgstr "Undo"
 #. Default: Cancel
 #: templates/review_history.pt:94 templates/snippet-popups.pt:175
 #: templates/snippet-popups.pt:198 templates/snippet-popups.pt:223
-#: templates/snippet-popups.pt:930
+#: templates/snippet-popups.pt:931
 msgid "cancel"
 msgstr "Cancel"
 
@@ -773,7 +773,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:174 templates/snippet-popups.pt:197
-#: templates/snippet-popups.pt:222 templates/snippet-popups.pt:929
+#: templates/snippet-popups.pt:222 templates/snippet-popups.pt:930
 msgid "okay"
 msgstr "Okay"
 
@@ -1147,16 +1147,6 @@ msgstr "Please choose a statement for your reference!"
 #: templates/snippet-popups.pt:898
 msgid "statement"
 msgstr "Statement"
-
-#. Default: Bar Chart
-#: templates/snippet-popups.pt:926
-msgid "bar_chart"
-msgstr "Bar chart"
-
-#. Default: Doughnut Chart
-#: templates/snippet-popups.pt:927
-msgid "doughnut_chart"
-msgstr "Doughnut chart"
 
 #. Default: Personal Information
 #: templates/settings.pt:7
@@ -1729,25 +1719,23 @@ msgstr "Show all statements"
 msgid "hide_statements"
 msgstr "Hide statements"
 
-#. Default: Change display style
-#: templates/content.pt:345
-msgid "change_style"
-msgstr "Change display style"
+#~ msgid "bar_chart"
+#~ msgstr "Bar chart"
 
-#. Default: Dialog View
-#: templates/content.pt:348
-msgid "dialog_view"
-msgstr "Dialog View"
+#~ msgid "doughnut_chart"
+#~ msgstr "Doughnut chart"
 
-#. Default: Island View
-#: templates/content.pt:354
-msgid "island_view"
-msgstr "Island View"
+#~ msgid "change_style"
+#~ msgstr "Change display style"
 
-#. Default: Complete View
-#: templates/content.pt:360
-msgid "complete_view"
-msgstr "Complete View"
+#~ msgid "dialog_view"
+#~ msgstr "Dialog View"
+
+#~ msgid "island_view"
+#~ msgstr "Island View"
+
+#~ msgid "complete_view"
+#~ msgstr "Complete View"
 
 #~ msgid "statement_spam"
 #~ msgstr "It is not relevant at all."

@@ -33,7 +33,7 @@ function DiscussionBarometer(){
         url = url.split('?')[0];
         var splitted = url.split('/');
         var address = 'position';
-        var inputs = $('#discussions-space-list').find('li:not(:last-child) input');
+        var inputs = $('#discussions-space-list').find('li:visible:not(:last-child) input');
 
         // parse url
         if (url.indexOf('/attitude/') != -1){

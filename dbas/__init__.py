@@ -62,7 +62,7 @@ def main(global_config, **settings):
 
     # creating the configurator    cache_regions = set_cache_regions_from_settings
     config = Configurator(settings=settings, root_factory='dbas.security.RootFactory')
-    config.add_translation_dirs('dbas:locale')  # add this before the locale negotiator
+    config.add_translation_dirs('dbas:locale', 'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)
 
     config.set_authentication_policy(authn_policy)

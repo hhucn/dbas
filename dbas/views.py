@@ -2081,6 +2081,7 @@ def switch_language(request):
         if not ui_locales:
             ui_locales = get_language(request, get_current_registry())
         request.response.set_cookie('_LOCALE_', str(ui_locales))
+        request._LOCALE_ = ui_locales
         return_dict['error'] = ''
     except KeyError as e:
         logger('swich_language', 'error', repr(e))

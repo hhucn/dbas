@@ -362,13 +362,13 @@ function Main () {
 			hamburger.addClass('open');
 			
 			wrapper.width(width - sidebar.outerWidth());
-			maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
+			maincontainer.css('max-height', maincontainer.outerHeight() + 30 + 'px');
 			sidebar.show();
 			hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
 				.css('margin-left', 'auto')
 				.css('background-color', sidebar.css('background-color'));
 			sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
-				.css('height', maincontainer.outerHeight() + 'px');
+				.css('height', maincontainer.outerHeight() + 30 + 'px');
 			tackwrapper.fadeIn();
 			
 			gui.setAnimationSpeed(wrapper, '0.5');

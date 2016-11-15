@@ -127,6 +127,13 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
         message         = ''
         seen_by         = 0
 
+        if not arg_uids_for_reactions[relation.index(rel)]:
+            ret_list.append({'users': [],
+                             'message': _t.get(_.voteCountTextMayBeFirst) + '.',
+                             'text': relation_text[rel + '_text'],
+                             'seen_by': 0})
+            continue
+
         for uid in arg_uids_for_reactions[relation.index(rel)]:
             db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
                                                                            VoteArgument.is_up_vote == True,
