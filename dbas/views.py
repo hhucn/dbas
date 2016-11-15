@@ -1956,7 +1956,7 @@ def get_users_with_same_opinion(request):
         is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
         is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
         is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
-        # is_pos = params['is_position'] == 'true' if 'is_position' in params else False
+        is_pos = params['is_position'] == 'true' if 'is_position' in params else False
         is_sup = params['is_supporti'] if 'is_supporti' in params else None
 
         if is_arg:
@@ -1965,7 +1965,7 @@ def get_users_with_same_opinion(request):
             else:
                 uids = json.loads(uids)
                 return_dict = get_user_and_opinions_for_argument(uids, attack, ui_locales, request.application_url)
-        elif is_position:
+        elif is_pos:
             uids = json.loads(uids)
             ids = uids if isinstance(uids, list) else [uids]
             return_dict = get_user_with_same_opinion_for_statements(ids, is_sup, nickname, ui_locales, request.application_url)

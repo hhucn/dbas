@@ -51,8 +51,8 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         ret_dict['title'] = _t.get(_.internalError)
         return ret_dict
 
-    title = _t.get(
-        _.reaction)  # For) + ': ' + get_text_for_argument_uid(argument_uids[0], with_html_tag=True, attack_type='for_modal')
+    title = _t.get(_.attitudesOfOpinions)
+    # For) + ': ' + get_text_for_argument_uid(argument_uids[0], with_html_tag=True, attack_type='for_modal')
 
     # getting uids of all reactions
 
@@ -121,6 +121,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
     :return:
     """
     ret_list = []
+    user_query = DBDiscussionSession.query(User)
 
     for rel in relation:
         all_users       = []
@@ -141,7 +142,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
                                                                            VoteArgument.author_uid != db_user_uid)).all()
 
             for vote in db_votes:
-                voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+                voted_user = user_query.filter_by(uid=vote.author_uid).first()
                 users_dict = create_users_dict(voted_user, vote.timestamp, main_page, _t.get_lang())
                 all_users.append(users_dict)
 
@@ -151,6 +152,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
             else:
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
+
             db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
             seen_by += len(db_seen_by) if db_seen_by else 0
 
@@ -178,7 +180,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
 
     opinions = []
     _t = Translator(lang)
-    title = _t.get(_.informationForStatements)
+    title = _t.get(_.relativePopularityOfStatements)
 
     for uid in statement_uids:
         statement_dict = dict()
@@ -252,7 +254,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
 
     opinions = []
     _t = Translator(lang)
-    title = _t.get(_.informationForStatements)
+    title = _t.get(_.relativePopularityOfStatements)
 
     for uid in argument_uids:
         logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'argument ' + str(uid))
@@ -374,11 +376,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
     _t = Translator(lang)
-    text = get_text_for_statement_uid(statement_uid)
-    try:
-        title = _t.get(_.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
-    except TypeError:
-        return None
+    title = _t.get(_.agreeVsDisagree)
 
     ret_dict = dict()
 
