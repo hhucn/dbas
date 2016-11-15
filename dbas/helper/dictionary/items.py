@@ -123,7 +123,7 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_justify_statement(self, statement_uid, nickname, is_supportive, transaction):
+    def get_array_for_justify_statement(self, statement_uid, nickname, is_supportive):
         """
         Prepares the dict with all items for the third step in discussion, where the user justifies his position.
 

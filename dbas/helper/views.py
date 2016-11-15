@@ -78,7 +78,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
 
     VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
 
-    item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive, transaction)
+    item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict['elements']), nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, mode == 't',
                                               application_url=main_page, for_api=for_api)
