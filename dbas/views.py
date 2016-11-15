@@ -639,9 +639,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
-    params = request.params
     logger('discussion_reaction', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_reaction', 'def', 'main, request.params: ' + str(params))
 
     slug            = match_dict['slug'] if 'slug' in match_dict else ''
     arg_id_user     = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
@@ -1956,14 +1954,14 @@ def get_users_with_same_opinion(request):
         ui_locales  = params['lang'] if 'lang' in params else 'en'
         uids        = params['uids']
         attack      = params['attack'] if len(params['attack']) > 0 else None
-        is_argument = params['is_argument'] == 'true' if 'is_argument' in params else False
-        is_attitude = params['is_attitude'] == 'true' if 'is_attitude' in params else False
-        is_reaction = params['is_reaction'] == 'true' if 'is_reaction' in params else False
-        is_position = params['is_position'] == 'true' if 'is_position' in params else False
-        is_supporti = params['is_supporti'] if 'is_supporti' in params else None
+        is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
+        is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
+        is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
+        # is_pos = params['is_position'] == 'true' if 'is_position' in params else False
+        is_sup = params['is_supporti'] if 'is_supporti' in params else None
 
-        if is_argument:
-            if not is_reaction:
+        if is_arg:
+            if not is_rea:
                 return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
             else:
                 uids = json.loads(uids)
@@ -1971,9 +1969,9 @@ def get_users_with_same_opinion(request):
         elif is_position:
             uids = json.loads(uids)
             ids = uids if isinstance(uids, list) else [uids]
-            return_dict = get_user_with_same_opinion_for_statements(ids, is_supporti, nickname, ui_locales, request.application_url)
+            return_dict = get_user_with_same_opinion_for_statements(ids, is_sup, nickname, ui_locales, request.application_url)
         else:
-            if not is_attitude:
+            if not is_att:
                 uids = json.loads(uids)
                 ids = uids if isinstance(uids, list) else [uids]
                 return_dict = get_user_with_same_opinion_for_premisegroups(ids, nickname, ui_locales, request.application_url)

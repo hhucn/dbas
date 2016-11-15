@@ -162,7 +162,8 @@ class ItemDictHelper(object):
                 statements_array.append(self.__create_answer_dict(str(argument.uid),
                                                                   premise_array,
                                                                   'justify',
-                                                                  _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
+                                                                  _um.get_url_for_reaction_on_argument(True, argument.uid,
+                                                                                                       attack, arg_id_sys),
                                                                   already_used=already_used,
                                                                   already_used_text=additional_text,
                                                                   is_flagable=True,
@@ -509,6 +510,7 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         conclusion = argument_or_statement_id if not is_argument else None
         argument = argument_or_statement_id if is_argument else None
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for group_id in pgroup_ids:
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
@@ -516,6 +518,8 @@ class ItemDictHelper(object):
             for premise in db_premises:
                 text = get_text_for_statement_uid(premise.statement_uid)
                 premise_array.append({'title': text, 'id': premise.statement_uid})
+                if db_user:  # add seen by if the statement is visible
+                    add_seen_statement(premise.statement_uid, db_user.uid)
 
             # get attack for each premise, so the urls will be unique
             logger('ItemDictHelper', 'get_array_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
