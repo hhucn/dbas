@@ -115,6 +115,7 @@ var checkConfirmation 								= 'checkConfirmation';
 var checkPasswordConfirm							= 'checkPasswordConfirm';
 var changelogView                                   = 'changelogView';
 var changelogHide                                   = 'changelogHide';
+var clickedOnThis                                   = 'clickedOnThis';
 var countOfArguments                                = 'countOfArguments';
 var countdownEnded                                  = 'countdownEnded';
 var couldNotLock                                    = 'couldNotLock';
@@ -322,6 +323,7 @@ var dbas_en = {
 	'checkPasswordConfirm': 'Better check your passwords, because they are not equal!',
 	'changelogView': 'view changelog',
 	'changelogHide': 'hide changelog',
+	'clickedOnThis': 'clickedOnThis',
 	'deleteTrack': 'Delete track',
 	'deleteHistory': 'Delete history',
 	'dataRemoved': 'Data was successfully removed.',
@@ -511,6 +513,7 @@ var dbas_de = {
 	'checkPasswordConfirm': 'Bitte überprüfen Sie Ihre Passwörter, da die Passwärter nicht gleich sind!',
 	'changelogView': 'Änderungen zeigen',
 	'changelogHide': 'Änderungen ausblenden',
+	'clickedOnThis': 'haben\'s angeklickt',
 	'dataRemoved': 'Daten wurden erfolgreich gelöscht.',
 	'dataAdded': 'Daten wurden erfolgreich hinzugefügt.',
 	'date': 'Datum',

@@ -378,11 +378,15 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     _t = Translator(lang)
     title = _t.get(_.agreeVsDisagree)
 
-    ret_dict = dict()
-
     if not db_statement:
-        ret_dict = {'text': None, 'agree': None, 'disagree': None, 'agree_users': [], 'disagree_users': [], 'title': title[0:1].upper() + title[1:]}
+        return {'text': None,
+                'agree_users': [],
+                'agree_text': None,
+                'disagree_users': [],
+                'disagree_text': None,
+                'title': title}
 
+    ret_dict = dict()
     text = get_text_for_statement_uid(statement_uid)
     ret_dict['text'] = text[0:1].upper() + text[1:]
     ret_dict['agree'] = None
@@ -417,7 +421,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     ret_dict['disagree_users'] = con_array
     ret_dict['disagree_text'] = _t.get(_.iDisagreeWith)
 
-    ret_dict['title'] = title[0:1].upper() + title[1:]
+    ret_dict['title'] = title
 
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(statement_uid)).all()
     ret_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0

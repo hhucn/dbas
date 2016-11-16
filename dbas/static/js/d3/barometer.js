@@ -458,7 +458,7 @@ function DiscussionBarometer(){
         doughnutChartSvg.append("text")
             .attr({x: 240, y: 230,
                    class: "doughnut-chart-text-tooltip"})
-            .text("clicked on this");
+            .text(_t(clickedOnThis));
     }
 
     // bar chart and doughnut chart
@@ -479,46 +479,38 @@ function DiscussionBarometer(){
         var _index;
 
         // add listener for click event
-        chartSvg.selectAll(selector).on("click", function (d, index) {
+        chartSvg.selectAll(selector).on('click', function (d, index) {
             // sector of doughnut chart and part which represents the seen-by-value should have the same index
             elementIndex = index % usersDict.length;
-            console.log(elementIndex);
-
-            if(isClicked){
+            
+            if (isClicked){
                 // if the user clicks on another element hide the old element and make the new one visible
-                if(_index != elementIndex){
+                if (_index != elementIndex){
                     hideTooltip(div, selector, _index);
                     div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
                     isClicked = true;
                     tooltipIsVisible = true;
-                }
-                // if the user clicks on the same tooltip for a second time hide the tooltip
-                if(_index === elementIndex){
+                } else { // if the user clicks on the same tooltip for a second time hide the tooltip
                     hideTooltip(div, selector, elementIndex);
                     isClicked = false;
                     tooltipIsVisible = false;
                 }
-            }
-            else{
-                if(!tooltipIsVisible){
+            } else {
+                if (!tooltipIsVisible){
                     div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
                 }
                 isClicked = true;
                 tooltipIsVisible = true;
             }
             _index = elementIndex;
-        });
-
-        // add listener for hover event
-        chartSvg.selectAll(selector).on("mouseover", function (d, index) {
+        }).on("mouseover", function (d, index) { // add listener for hover event
             if(!isClicked){
                 elementIndex = index % usersDict.length;
 
                 div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
                 tooltipIsVisible = true;
             }
-        })
-        .on("mouseout", function (d, index) {
+        }).on("mouseout", function (d, index) { // add listener for mouse out event
             if(!isClicked){
                 elementIndex = index % usersDict.length;
 
@@ -607,11 +599,12 @@ function DiscussionBarometer(){
         div.style("opacity", 1);
 
         createTooltipContent(usersDict, index, address, div);
-
+         
+        var tooltip = $(".chartTooltip");
         // fill background of tooltip with color of selected sector of barometer
-        $(".chartTooltip").css('background-color', getVeryLightColorFor(index));
+        tooltip.css('background-color', getVeryLightColorFor(index));
         // fill border of tooltip with the same color as the sector of barometer
-        $(".chartTooltip").css('border-color', getDarkColorFor(index));
+        tooltip.css('border-color', getDarkColorFor(index));
 
         return div;
     }
