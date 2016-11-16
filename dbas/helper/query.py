@@ -769,7 +769,7 @@ def __revoke_statement(db_user, statement_uid, translator):
                                                                                  Argument.is_supportive == True,
                                                                                  Argument.author_uid != db_user.uid)).first()
     # search new author who supported this statement
-    if db_statement_as_conclusion:  # TODO DO WE REALLY WANT TO SET A NEW AUTHOR HERE? # 197
+    if db_statement_as_conclusion:  # TODO 197 DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
         db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         new_author_uid = db_new_author.uid  # db_statement_as_conclusion.author_uid
         logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(new_author_uid) + ' (old author ' + str(db_user.uid) + ')')

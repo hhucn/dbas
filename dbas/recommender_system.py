@@ -23,7 +23,6 @@ def get_uids_of_best_positions(db_statements):
     :param db_statements:
     :return:
     """
-    # TODO # 166
     if db_statements is None:
         return []
     if len(db_statements) <= max_count:
@@ -37,7 +36,6 @@ def get_uids_of_best_statements_for_justify_position(db_arguments):
     :param db_arguments:
     :return:
     """
-    # TODO # 166
     if db_arguments is None:
         return []
     if len(db_arguments) <= max_count:
@@ -51,7 +49,6 @@ def get_uids_of_best_statements_for_justify_argument(db_arguments):
     :param db_arguments:
     :return:
     """
-    # TODO # 166
     if db_arguments is None:
         return []
     if len(db_arguments) <= max_count:
@@ -66,7 +63,8 @@ def __select_random(some_list):
     :param some_list: any kind of list
     :return: list, boolean
     """
-    return [some_list[i] for i in sorted(random.sample(range(len(some_list)), max_count))]
+    return some_list  # TODO 166 currently disabled
+    # return [some_list[i] for i in sorted(random.sample(range(len(some_list)), max_count))]
 
 
 def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, restriction_on_arg_uids=[],

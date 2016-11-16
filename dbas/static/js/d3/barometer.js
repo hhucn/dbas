@@ -251,7 +251,7 @@ function DiscussionBarometer(){
         // width of one bar
         // width - left padding to y-Axis - space between bars
         var barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
-        console.log(barWidth);
+
         // set max-width of bar
         if(barWidth > 190){
             barWidth = 190;

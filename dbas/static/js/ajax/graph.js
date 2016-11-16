@@ -51,12 +51,13 @@ function AjaxGraphHandler(){
 	 * Displays a graph of current discussion
 	 */
 	this.getDiscussionGraphData = function (url) {
-		// TODO FIX CSRF
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: url,
 			type: 'GET',
 			dataType: 'json',
-			data: {issue: getCurrentIssueId()}
+			data: {issue: getCurrentIssueId()},
+			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
 		}).fail(function () {
@@ -69,11 +70,13 @@ function AjaxGraphHandler(){
 	 * @param uid
      */
 	this.getJumpDataForGraph = function (uid) {
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: '/ajax_get_arguments_by_statement/' + uid,
 			type: 'GET',
 			dataType: 'json',
-			async: true
+			async: true,
+			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForGetJumpDataForGraph(data);
 		}).fail(function () {

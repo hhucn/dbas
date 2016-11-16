@@ -268,8 +268,6 @@ def get_public_information_data(nickname, lang):
     return_dict['data3'] = data_statement_30
     return_dict['data4'] = data_edit_30
 
-    # history = get_reputation_history(nickname)  # TODO REPUTATION CHART
-
     return return_dict
 
 
