@@ -160,12 +160,5 @@ def main(global_config, **settings):
     config.add_route('review_ongoing', '/review/ongoing')
     config.add_route('review_content', '/review/{queue}')
 
-    # read the input and start
     config.scan()
     return config.make_wsgi_app()
-    # if development:
-    #     return config.make_wsgi_app()
-    # else:
-    #     app = config.make_wsgi_app()
-    #     server = make_server('134.99.112.44', 5000, app)
-    #     server.serve_forever()
