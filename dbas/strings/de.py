@@ -256,7 +256,7 @@ de_lang = {
     _.emailWasSent: 'E-Mail wurde gesendet.',
     _.emailWasNotSent: 'E-Mail wurde nicht gesendet.',
     _.emailUnknown: 'Die Adresse ist nicht gültig.',
-    _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS https://dbas.cs.uni-duesseldorf.de/.\nBei Rückfragen können Sie gerne eine E-Mail an krauthoff@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Promotion und noch in der Testphase.',
+    _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS XXXXX.\nBei Rückfragen können Sie gerne eine E-Mail an krauthoff@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Promotion und noch in der Testphase.',
     _.emailArgumentAddTitle: 'D-BAS Infos zum Argument',
     _.emailArgumentAddBody: 'Zu Ihrem Argument wurden weitere Informationen hinzugefügt. Schauen Sie doch mal rein:',
     _.edit: 'Bearbeiten',

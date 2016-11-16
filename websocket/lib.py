@@ -6,7 +6,7 @@ Provides functions
 
 import requests
 
-from dbas.lib import get_profile_picture
+from dbas.lib import get_profile_picture, get_global_url
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
@@ -143,7 +143,7 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
 
     try:
         if use_https:
-            link = 'https://dbas.cs.uni-duesseldorf.de:' + str(port) + '/'
+            link = get_global_url() + ':' + str(port) + '/'
         else:
             link = 'http://localhost:' + str(port) + '/'
         resp = requests.get(link + 'recent_review' + params)

@@ -199,6 +199,10 @@
 - Barometer for the behaviour of all users
 - Improvements of the graph view
 
+## 0.8.0 (unreleased)
+- Minor improvements and bugfix
+- Reworked the opinion barometer and argument graph
+
 ## 0.x.0 (unreleased)
 - Improved recommendation of the next confrontation
 

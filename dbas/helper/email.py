@@ -7,6 +7,7 @@ Provides class for sending an email
 import smtplib
 from socket import error as socket_error
 
+from dbas.lib import get_global_url
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Settings, Language, Statement
 from dbas.logger import logger
@@ -116,7 +117,7 @@ def send_mail(request, subject, body, recipient, lang):
     _t = Translator(lang)
     send_message = False
     mailer = get_mailer(request)
-    body = body + "\n\n---\n" + _t.get(_.emailBodyText)
+    body = body + "\n\n---\n" + _t.get(_.emailBodyText).replace('XXXXX', get_global_url())
     message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
     # try sending an catching errors
     try:

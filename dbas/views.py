@@ -63,7 +63,7 @@ from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
 from dbas.database.initializedb import nick_of_anonymous_user
 
 name = 'D-BAS'
-version = '0.7.2'
+version = '0.7.3'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 
@@ -83,6 +83,7 @@ def main_page(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_page', 'def', 'main, request.params: ' + str(request.params))
+
     session_expired = user_manager.update_last_action(request.authenticated_userid)
     history_helper.save_path_in_database(request.authenticated_userid, request.path)
     if session_expired:

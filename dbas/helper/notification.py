@@ -15,7 +15,7 @@ from dbas.strings.translator import Translator
 from sqlalchemy import and_
 from websocket.lib import send_request_for_info_popup_to_socketio
 
-# TODO: IMRPOVE TEXT (what happend, which text was added, ...)
+# TODO: IMPROVE TEXT (what happend, which text was added, ...)
 
 
 def send_edit_text_notification(db_user, textversion, path, request):

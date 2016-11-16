@@ -7,6 +7,8 @@ Common, pure functions used by the D-BAS.
 import hashlib
 import locale
 import time
+import os
+
 from collections import defaultdict
 from datetime import datetime
 from html import escape
@@ -21,6 +23,19 @@ from dbas.strings.translator import Translator, get_translation
 from sqlalchemy import and_, func
 
 fallback_lang = 'en'
+
+
+def get_global_url():
+    """
+    Returns the global url of the project.
+    Important: the global url has to be in setup.py like "url='http://foo.bar'"
+
+    :return: String
+    """
+    path = str(os.path.realpath(__file__ + '/../../setup.py'))
+    lines = [line.rstrip('\n').strip() for line in open(path)]
+
+    return str([l[l.index('htt'):-2] for l in lines if 'url=' in l])
 
 
 def escape_string(text):
@@ -792,7 +807,9 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     additional_id = '' if db_settings.should_show_public_nickname else 'x'
     if ignore_privacy_settings:
         additional_id = ''
-    unknown = 'unknown@dbas.cs.uni-duesseldorf.de'
+    url = get_global_url()
+    url = url[url.index('//')+2:]
+    unknown = 'unknown@' + url
     email = (user.email + additional_id).encode('utf-8') if user else unknown.encode('utf-8')
 
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
@@ -813,7 +830,9 @@ def get_public_profile_picture(user, size=80):
         additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
     else:
         additional_id = 'y'
-    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+    url = get_global_url()
+    url = url[url.index('//')+2:]
+    email = (user.email + additional_id).encode('utf-8') if user else ('unknown@' + url).encode('utf-8')
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
     return gravatar_url

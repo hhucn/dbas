@@ -236,7 +236,7 @@ class Keywords(Enum):
     emailWasSent = 'E-Mail was sent.'
     emailWasNotSent = 'E-Mail was not sent.'
     emailUnknown = 'The given mail address is unknown.'
-    emailBodyText = 'This is an automatically generated mail by D-BAS https://dbas.cs.uni-duesseldorf.de/.\nFor contact please write an mail to krauthoff@cs.uni-duesseldorf.de\nThis system is part of a doctoral thesis and currently in an alpha-phase.'
+    emailBodyText = 'This is an automatically generated mail by D-BAS XXXXX.\nFor contact please write an mail to krauthoff@cs.uni-duesseldorf.de\nThis system is part of a doctoral thesis and currently in an alpha-phase.'
     emailArgumentAddTitle = 'D-BAS Information about an Argument'
     emailArgumentAddBody = 'New statements were added to your argument. Have a look at:'
     error_code = 'Error code'

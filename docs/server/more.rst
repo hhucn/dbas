@@ -13,6 +13,8 @@ Socket.io http://socket.io/
 
 Deployment
 ==========
-- Supervisor is just for Python2 :(
 - http://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/deployment/nginx.html
-- Grep for *dbas.cs* in code and replace it with the real address
+- Grep for *dbas.cs* in code and replace it with the real address / currently it is hardcoded :\
+
+- The short story: http://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/deployment/gunicorn.html
+- Then ''gunicorn --paste production.ini --daemon''

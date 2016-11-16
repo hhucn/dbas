@@ -105,6 +105,12 @@
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
+                    <span class="project lead">0.8.0 (unreleased)</span>
+					<ul>
+						<li>Minor improvements and bugfix</li>
+                        <li>Reworked the opinion barometer and argument graph</li>
+                    </ul>
+
                     <span class="project lead">0.7.3 (2016-11-02)</span>
 					<ul>
 						<li>Add references for statements from the 'outside world'</li>

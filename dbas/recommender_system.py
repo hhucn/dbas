@@ -14,7 +14,9 @@ from dbas.database.discussion_model import Argument, User, VoteArgument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 
-max_count = 5
+# Millers Magic Number are 6 (https://en.wikipedia.org/wiki/The_Magical_Number_Seven,_Plus_or_Minus_Two)
+# Buddeley says 3-4
+max_count = 6
 
 
 def get_uids_of_best_positions(db_statements):
