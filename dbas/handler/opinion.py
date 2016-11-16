@@ -51,8 +51,8 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         ret_dict['title'] = _t.get(_.internalError)
         return ret_dict
 
-    title = _t.get(
-        _.reaction)  # For) + ': ' + get_text_for_argument_uid(argument_uids[0], with_html_tag=True, attack_type='for_modal')
+    title = _t.get(_.attitudesOfOpinions)
+    # For) + ': ' + get_text_for_argument_uid(argument_uids[0], with_html_tag=True, attack_type='for_modal')
 
     # getting uids of all reactions
 
@@ -121,11 +121,19 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
     :return:
     """
     ret_list = []
+    user_query = DBDiscussionSession.query(User)
 
     for rel in relation:
         all_users       = []
         message         = ''
         seen_by         = 0
+
+        if not arg_uids_for_reactions[relation.index(rel)]:
+            ret_list.append({'users': [],
+                             'message': _t.get(_.voteCountTextMayBeFirst) + '.',
+                             'text': relation_text[rel + '_text'],
+                             'seen_by': 0})
+            continue
 
         for uid in arg_uids_for_reactions[relation.index(rel)]:
             db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
@@ -134,7 +142,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
                                                                            VoteArgument.author_uid != db_user_uid)).all()
 
             for vote in db_votes:
-                voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+                voted_user = user_query.filter_by(uid=vote.author_uid).first()
                 users_dict = create_users_dict(voted_user, vote.timestamp, main_page, _t.get_lang())
                 all_users.append(users_dict)
 
@@ -144,6 +152,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
             else:
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
+
             db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
             seen_by += len(db_seen_by) if db_seen_by else 0
 
@@ -171,7 +180,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
 
     opinions = []
     _t = Translator(lang)
-    title = _t.get(_.informationForStatements)
+    title = _t.get(_.relativePopularityOfStatements)
 
     for uid in statement_uids:
         statement_dict = dict()
@@ -245,7 +254,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
 
     opinions = []
     _t = Translator(lang)
-    title = _t.get(_.informationForStatements)
+    title = _t.get(_.relativePopularityOfStatements)
 
     for uid in argument_uids:
         logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'argument ' + str(uid))
@@ -367,17 +376,17 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
     _t = Translator(lang)
-    text = get_text_for_statement_uid(statement_uid)
-    try:
-        title = _t.get(_.attitudeFor) + ': ' + text[0:1].upper() + text[1:]
-    except TypeError:
-        return None
-
-    ret_dict = dict()
+    title = _t.get(_.agreeVsDisagree)
 
     if not db_statement:
-        ret_dict = {'text': None, 'agree': None, 'disagree': None, 'agree_users': [], 'disagree_users': [], 'title': title[0:1].upper() + title[1:]}
+        return {'text': None,
+                'agree_users': [],
+                'agree_text': None,
+                'disagree_users': [],
+                'disagree_text': None,
+                'title': title}
 
+    ret_dict = dict()
     text = get_text_for_statement_uid(statement_uid)
     ret_dict['text'] = text[0:1].upper() + text[1:]
     ret_dict['agree'] = None
@@ -412,7 +421,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     ret_dict['disagree_users'] = con_array
     ret_dict['disagree_text'] = _t.get(_.iDisagreeWith)
 
-    ret_dict['title'] = title[0:1].upper() + title[1:]
+    ret_dict['title'] = title
 
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(statement_uid)).all()
     ret_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0

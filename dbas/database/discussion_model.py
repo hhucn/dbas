@@ -1090,13 +1090,16 @@ class RevokedContentHistory(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     old_author_uid = Column(Integer, ForeignKey('users.uid'))
     new_author_uid = Column(Integer, ForeignKey('users.uid'))
-    textversion_uid = Column(Integer, ForeignKey('textversions.uid'))
+    textversion_uid = Column(Integer, ForeignKey('textversions.uid'), nullable=True)
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
 
     old_authors = relationship('User', foreign_keys=[old_author_uid])
     new_authors = relationship('User', foreign_keys=[new_author_uid])
     textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
 
-    def __init__(self, old_author_uid, new_author_uid, textversion_uid):
+    def __init__(self, old_author_uid, new_author_uid, textversion_uid=None, argument_uid=None):
         self.old_author_uid = old_author_uid
         self.new_author_uid = new_author_uid
         self.textversion_uid = textversion_uid
+        self.argument_uid = argument_uid

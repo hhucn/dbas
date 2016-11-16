@@ -7,7 +7,7 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-from wsgiref.simple_server import make_server
+# from wsgiref.simple_server import make_server
 
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -62,7 +62,7 @@ def main(global_config, **settings):
 
     # creating the configurator    cache_regions = set_cache_regions_from_settings
     config = Configurator(settings=settings, root_factory='dbas.security.RootFactory')
-    config.add_translation_dirs('dbas:locale')  # add this before the locale negotiator
+    config.add_translation_dirs('dbas:locale', 'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)
 
     config.set_authentication_policy(authn_policy)
@@ -142,6 +142,7 @@ def main(global_config, **settings):
     config.add_route('ajax_revoke_content', '{url:.*}ajax_revoke_content')
     config.add_route('ajax_get_references', '{url:.*}ajax_get_references')
     config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
+    config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')

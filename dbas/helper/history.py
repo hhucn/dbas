@@ -4,6 +4,7 @@ Provides helping function for creating the history as bubbles.
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, Settings
 from dbas.input_validator import check_reaction
@@ -17,10 +18,9 @@ from dbas.strings.translator import Translator
 from dbas.database.initializedb import nick_of_anonymous_user
 
 
-def save_issue_uid(transaction, issue_uid, nickname):
+def save_issue_uid(issue_uid, nickname):
     """
 
-    :param transaction:
     :param issue_uid:
     :param nickname:
     :return:
@@ -280,13 +280,12 @@ def save_history_in_cookie(request, path, history):
         request.response.set_cookie('_HISTORY_', history + '-' + path)
 
 
-def save_path_in_database(nickname, path, transaction):
+def save_path_in_database(nickname, path):
     """
     Saves a path into the database
 
     :param nickname: User.nickname
     :param path: String
-    :param transaction: Transaction
     :return: Boolean
     """
 
@@ -324,7 +323,7 @@ def get_history_from_database(nickname, lang):
     return return_array
 
 
-def delete_history_in_database(nickname, transaction):
+def delete_history_in_database(nickname):
     """
     Deletes history from database
 

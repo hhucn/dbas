@@ -30,7 +30,8 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
-    process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url
+    process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
+    process_seen_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
@@ -82,8 +83,8 @@ def main_page(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_page', 'def', 'main, request.params: ' + str(request.params))
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     if session_expired:
         return user_logout(request, True)
 
@@ -113,8 +114,8 @@ def main_contact(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_contact', 'def', 'main, request.params: ' + str(request.params))
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     if session_expired:
         return user_logout(request, True)
 
@@ -166,8 +167,8 @@ def main_settings(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_settings', 'def', 'main, request.params: ' + str(request.params))
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     if session_expired:
         return user_logout(request, True)
 
@@ -186,7 +187,7 @@ def main_settings(request):
         new_pw = escape_string(request.params['password'])
         confirm_pw = escape_string(request.params['passwordconfirm'])
 
-        message, error, success = _uh.change_password(transaction, db_user, old_pw, new_pw, confirm_pw, ui_locales)
+        message, error, success = _uh.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
     _dh = DictionaryHelper(ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
@@ -213,8 +214,8 @@ def main_notifications(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_notifications', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
 
     if session_expired:
         return user_logout(request, True)
@@ -240,8 +241,8 @@ def main_news(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_news', 'def', 'main')
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     if session_expired:
         return user_logout(request, True)
 
@@ -282,8 +283,8 @@ def main_user(request):
     if current_user is None:
         return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     if session_expired:
         return user_logout(request, True)
 
@@ -319,8 +320,8 @@ def main_imprint(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_imprint', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -349,8 +350,8 @@ def main_publications(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_publications', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -375,7 +376,7 @@ def notfound(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
     logger('notfound', 'def', 'main in ' + str(request.method) + '-request' +
            ', path: ' + request.path +
            ', view name: ' + request.view_name +
@@ -452,7 +453,7 @@ def discussion_init(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
     item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
-    history_helper.save_issue_uid(transaction, issue, nickname)
+    history_helper.save_issue_uid(issue, nickname)
 
     discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, main_page=request.application_url, slug=slug)\
         .get_dict_for_start()
@@ -571,7 +572,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     slug                = match_dict['slug'] if 'slug' in match_dict else ''
     statement_or_arg_id = match_dict['statement_or_arg_id'] if 'statement_or_arg_id' in match_dict else ''
     mode                = match_dict['mode'] if 'mode' in match_dict else ''
-    supportive          = mode == 't' or mode == 'd'  # supportive = t or dont know mode
+    supportive          = mode == 't' or mode == 'd'  # supportive = t or do not know mode
     relation            = match_dict['relation'][0] if len(match_dict['relation']) > 0 else ''
 
     if not is_integer(statement_or_arg_id, True):
@@ -604,7 +605,7 @@ def discussion_justify(request, for_api=False, api_data=None):
                                                                                    request.application_url, slug, statement_or_arg_id,
                                                                                    supportive, relation, ui_locales)
         # add reputation
-        add_reputation_for(nickname, rep_reason_first_confrontation, transaction)
+        add_reputation_for(nickname, rep_reason_first_confrontation)
     else:
         logger('discussion_justify', 'def', '404')
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -638,9 +639,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
-    params = request.params
     logger('discussion_reaction', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_reaction', 'def', 'main, request.params: ' + str(params))
 
     slug            = match_dict['slug'] if 'slug' in match_dict else ''
     arg_id_user     = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
@@ -665,8 +664,8 @@ def discussion_reaction(request, for_api=False, api_data=None):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
 
     # set votes and reputation
-    add_reputation_for(nickname, rep_reason_first_argument_click, transaction)
-    add_vote_for_argument(arg_id_user, nickname, transaction)
+    add_reputation_for(nickname, rep_reason_first_argument_click)
+    add_vote_for_argument(arg_id_user, nickname)
 
     ui_locales      = get_language(request, get_current_registry())
     disc_ui_locales = get_discussion_language(request, issue)
@@ -715,8 +714,8 @@ def discussion_finish(request):
     logger('discussion_finish', 'def', 'main, request.params: ' + str(params))
     ui_locales      = get_language(request, get_current_registry())
     nickname        = request.authenticated_userid
-    session_expired = user_manager.update_last_action(transaction, nickname)
-    history_helper.save_path_in_database(nickname, request.path, transaction)
+    session_expired = user_manager.update_last_action(nickname)
+    history_helper.save_path_in_database(nickname, request.path)
     if session_expired:
         return user_logout(request, True)
 
@@ -829,8 +828,8 @@ def discussion_jump(request, for_api=False, api_data=None):
         slug = match_dict['slug'] if 'slug' in match_dict else ''
         arg_uid = match_dict['arg_id'] if 'arg_id' in match_dict else ''
 
-    session_expired = user_manager.update_last_action(transaction, nickname)
-    history_helper.save_path_in_database(nickname, request.path, transaction)
+    session_expired = user_manager.update_last_action(nickname)
+    history_helper.save_path_in_database(nickname, request.path)
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -884,8 +883,8 @@ def main_review(request):
     logger('main_review', 'main', 'def ' + str(request.matchdict))
     ui_locales = get_language(request, get_current_registry())
     nickname = request.authenticated_userid
-    session_expired = user_manager.update_last_action(transaction, nickname)
-    history_helper.save_path_in_database(nickname, request.path, transaction)
+    session_expired = user_manager.update_last_action(nickname)
+    history_helper.save_path_in_database(nickname, request.path)
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -924,8 +923,8 @@ def review_content(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_content', 'main', 'def ' + str(request.matchdict))
     ui_locales = get_language(request, get_current_registry())
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -960,8 +959,8 @@ def review_history(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_history', 'main', 'def ' + str(request.matchdict))
     ui_locales = get_language(request, get_current_registry())
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -990,8 +989,8 @@ def ongoing_history(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('ongoing_history', 'main', 'def ' + str(request.matchdict))
     ui_locales = get_language(request, get_current_registry())
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1020,8 +1019,8 @@ def review_reputation(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_reputation', 'main', 'def ' + str(request.matchdict))
     ui_locales = get_language(request, get_current_registry())
-    session_expired = user_manager.update_last_action(transaction, request.authenticated_userid)
-    history_helper.save_path_in_database(request.authenticated_userid, request.path, transaction)
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    history_helper.save_path_in_database(request.authenticated_userid, request.path)
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1054,7 +1053,7 @@ def get_user_history(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
     logger('get_user_history', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
     return_list = history_helper.get_history_from_database(request.authenticated_userid, ui_locales)
@@ -1069,7 +1068,7 @@ def get_all_posted_statements(request):
     :return:
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
     logger('get_all_posted_statements', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
     return_array, tmp = user_manager.get_textversions_of_user(request.authenticated_userid, ui_locales)
@@ -1084,7 +1083,7 @@ def get_all_edits(request):
     :return:
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
     logger('get_all_edits', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
     tmp, return_array = user_manager.get_textversions_of_user(request.authenticated_userid, ui_locales)
@@ -1099,7 +1098,7 @@ def get_all_argument_votes(request):
     :return:
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
     logger('get_all_argument_votes', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
     return_array = user_manager.get_votes_of_user(request.authenticated_userid, True, ui_locales)
@@ -1114,7 +1113,7 @@ def get_all_statement_votes(request):
     :return:
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
     logger('get_all_statement_votes', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
     return_array = user_manager.get_votes_of_user(request.authenticated_userid, False, ui_locales)
@@ -1131,10 +1130,10 @@ def delete_user_history(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
 
     logger('delete_user_history', 'def', 'main')
-    history_helper.delete_history_in_database(request.authenticated_userid, transaction)
+    history_helper.delete_history_in_database(request.authenticated_userid)
     return_dict = dict()
     return_dict['removed_data'] = 'true'  # necessary
 
@@ -1151,12 +1150,12 @@ def delete_statistics(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
 
     logger('delete_statistics', 'def', 'main')
 
     return_dict = dict()
-    return_dict['removed_data'] = 'true' if clear_votes_of_user(transaction, request.authenticated_userid) else 'false'
+    return_dict['removed_data'] = 'true' if clear_votes_of_user(request.authenticated_userid) else 'false'
 
     return json.dumps(return_dict, True)
 
@@ -1472,7 +1471,7 @@ def send_some_notification(request):
             if not db_author:
                 error = _tn.get(_.notLoggedIn)
             else:
-                db_notification = send_notification(db_author, db_recipient, title, text, request.application_url, transaction)
+                db_notification = send_notification(db_author, db_recipient, title, text, request.application_url)
                 uid = db_notification.uid
                 ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
                 gravatar = get_profile_picture(db_recipient, 20)
@@ -1523,8 +1522,8 @@ def set_new_start_statement(request, for_api=False, api_data=None):
             slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
 
         # escaping will be done in QueryHelper().set_statement(...)
-        user_manager.update_last_action(transaction, nickname)
-        new_statement = insert_as_statements(transaction, statement, nickname, issue, is_start=True)
+        user_manager.update_last_action(nickname)
+        new_statement = insert_as_statements(statement, nickname, issue, is_start=True)
         if new_statement == -1:
             return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
         else:
@@ -1533,8 +1532,8 @@ def set_new_start_statement(request, for_api=False, api_data=None):
             return_dict['statement_uids'].append(new_statement[0].uid)
 
             # add reputation
-            if not add_reputation_for(nickname, rep_reason_first_position, transaction):
-                add_reputation_for(nickname, rep_reason_new_statement, transaction)
+            if not add_reputation_for(nickname, rep_reason_first_position):
+                add_reputation_for(nickname, rep_reason_new_statement)
 
     except KeyError as e:
         logger('set_new_start_statement', 'error', repr(e))
@@ -1575,19 +1574,19 @@ def set_new_start_premise(request, for_api=False, api_data=None):
             supportive      = True if request.params['supportive'].lower() == 'true' else False
 
         # escaping will be done in QueryHelper().set_statement(...)
-        user_manager.update_last_action(transaction, nickname)
+        user_manager.update_last_action(nickname)
 
-        url, statement_uids, error = process_input_of_start_premises_and_receive_url(request, transaction,
-                                                                                     premisegroups, conclusion_id,
-                                                                                     supportive, issue, nickname,
-                                                                                     for_api, request.application_url, lang)
+        url, statement_uids, error = process_input_of_start_premises_and_receive_url(request, premisegroups,
+                                                                                     conclusion_id, supportive, issue,
+                                                                                     nickname, for_api,
+                                                                                     request.application_url, lang)
 
         return_dict['error'] = error
         return_dict['statement_uids'] = statement_uids
 
         # add reputation
-        if not add_reputation_for(nickname, rep_reason_first_justification, transaction):
-            add_reputation_for(nickname, rep_reason_new_statement, transaction)
+        if not add_reputation_for(nickname, rep_reason_first_justification):
+            add_reputation_for(nickname, rep_reason_new_statement)
 
         if url == -1:
             return json.dumps(return_dict, True)
@@ -1634,19 +1633,18 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
 
         # escaping will be done in QueryHelper().set_statement(...)
         url, statement_uids, error = process_input_of_premises_for_arguments_and_receive_url(request,
-                                                                                             transaction, arg_uid,
-                                                                                             attack_type,
+                                                                                             arg_uid, attack_type,
                                                                                              premisegroups, issue,
                                                                                              nickname, for_api,
                                                                                              request.application_url, lang)
-        user_manager.update_last_action(transaction, nickname)
+        user_manager.update_last_action(nickname)
 
         return_dict['error'] = error
         return_dict['statement_uids'] = statement_uids
 
         # add reputation
-        if not add_reputation_for(nickname, rep_reason_first_new_argument, transaction):
-            add_reputation_for(nickname, rep_reason_new_statement, transaction)
+        if not add_reputation_for(nickname, rep_reason_first_new_argument):
+            add_reputation_for(nickname, rep_reason_new_statement)
 
         if url == -1:
             return json.dumps(return_dict, True)
@@ -1671,7 +1669,7 @@ def set_correction_of_statement(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('set_correction_of_statement', 'def', 'main, request.params: ' + str(request.params))
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
 
     _tn = Translator(get_language(request, get_current_registry()))
 
@@ -1679,7 +1677,7 @@ def set_correction_of_statement(request):
     try:
         elements = json.loads(request.params['elements'])
         nickname = request.authenticated_userid
-        return_dict['error'] = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn, transaction)
+        return_dict['error'] = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn)
     except KeyError as e:
         return_dict['error'] = _tn.get(_.noCorrections)
         logger('set_correction_of_statement', 'error', repr(e))
@@ -1696,7 +1694,7 @@ def set_notification_read(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
 
     logger('set_notification_read', 'def', 'main ' + str(request.params))
     return_dict = dict()
@@ -1724,7 +1722,7 @@ def set_notification_delete(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
 
     logger('set_notification_delete', 'def', 'main ' + str(request.params))
     return_dict = dict()
@@ -1751,7 +1749,7 @@ def set_notification_delete(request):
 @view_config(route_name='ajax_set_new_issue', renderer='json')
 def set_new_issue(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
 
     logger('set_new_issue', 'def', 'main ' + str(request.params))
     return_dict = dict()
@@ -1762,7 +1760,7 @@ def set_new_issue(request):
         info = escape_string(request.params['info'])
         title = escape_string(request.params['title'])
         lang = escape_string(request.params['lang'])
-        was_set, error = issue_helper.set_issue(info, title, lang, request.authenticated_userid, transaction, ui_locales)
+        was_set, error = issue_helper.set_issue(info, title, lang, request.authenticated_userid, ui_locales)
         if was_set:
             db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
                                                                     Issue.info == info)).first()
@@ -1772,6 +1770,37 @@ def set_new_issue(request):
         error = _tn.get(_.notInsertedErrorBecauseInternal)
 
     return_dict['error'] = error
+    return json.dumps(return_dict, True)
+
+
+# ajax - set seen premisegroup
+@view_config(route_name='ajax_set_seen_statements', renderer='json')
+def set_seen_statements(request):
+    """
+    Set statements as seen
+
+    :return: json
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('set_seen_statements', 'def', 'main ' + str(request.params))
+    return_dict = dict()
+    ui_locales = get_language(request, get_current_registry())
+    _t = Translator(ui_locales)
+
+    try:
+        uids = json.loads(request.params['uids'])
+        # are the statements connected to an argument?
+        additional_argument = None
+        if 'justify' in request.path:
+            url = request.path[request.path.index('justify/') + len('justify/'):]
+            additional_argument = int(url[:url.index('/')])
+
+        error = process_seen_statements(uids, request.authenticated_userid, _t, additional_argument=additional_argument)
+        return_dict['error'] = error
+    except KeyError as e:
+        logger('set_seen_statements', 'error', repr(e))
+        return_dict['error'] = _t.get(_.internalKeyError)
+
     return json.dumps(return_dict, True)
 
 
@@ -1790,7 +1819,7 @@ def get_logfile_for_premisegroup(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_logfile_for_statements', 'def', 'main, request.params: ' + str(request.params))
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
 
     return_dict = dict()
     ui_locales = get_language(request, get_current_registry())
@@ -1818,7 +1847,7 @@ def get_shortened_url(request):
     :return: dictionary with shortend url
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
 
     logger('get_shortened_url', 'def', 'main')
 
@@ -1924,24 +1953,24 @@ def get_users_with_same_opinion(request):
         ui_locales  = params['lang'] if 'lang' in params else 'en'
         uids        = params['uids']
         attack      = params['attack'] if len(params['attack']) > 0 else None
-        is_argument = params['is_argument'] == 'true' if 'is_argument' in params else False
-        is_attitude = params['is_attitude'] == 'true' if 'is_attitude' in params else False
-        is_reaction = params['is_reaction'] == 'true' if 'is_reaction' in params else False
-        is_position = params['is_position'] == 'true' if 'is_position' in params else False
-        is_supporti = params['is_supporti'] if 'is_supporti' in params else None
+        is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
+        is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
+        is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
+        is_pos = params['is_position'] == 'true' if 'is_position' in params else False
+        is_sup = params['is_supporti'] if 'is_supporti' in params else None
 
-        if is_argument:
-            if not is_reaction:
+        if is_arg:
+            if not is_rea:
                 return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
             else:
                 uids = json.loads(uids)
                 return_dict = get_user_and_opinions_for_argument(uids, attack, ui_locales, request.application_url)
-        elif is_position:
+        elif is_pos:
             uids = json.loads(uids)
             ids = uids if isinstance(uids, list) else [uids]
-            return_dict = get_user_with_same_opinion_for_statements(ids, is_supporti, nickname, ui_locales, request.application_url)
+            return_dict = get_user_with_same_opinion_for_statements(ids, is_sup, nickname, ui_locales, request.application_url)
         else:
-            if not is_attitude:
+            if not is_att:
                 uids = json.loads(uids)
                 ids = uids if isinstance(uids, list) else [uids]
                 return_dict = get_user_with_same_opinion_for_premisegroups(ids, nickname, ui_locales, request.application_url)
@@ -2047,7 +2076,7 @@ def set_references(request):
         uid         = request.params['uid']
         reference   = escape_string(json.loads(request.params['reference']))
         source      = escape_string(json.loads(request.params['ref_source']))
-        success     = set_reference(reference, source, nickname, uid, issue_uid, transaction)
+        success     = set_reference(reference, source, nickname, uid, issue_uid)
         return_dict = {'error': '' if success else _tn.get(_.internalKeyError)}
 
     except KeyError as e:
@@ -2071,7 +2100,7 @@ def switch_language(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    user_manager.update_last_action(transaction, request.authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
     logger('switch_language', 'def', 'main, request.params: ' + str(request.params))
 
     return_dict = dict()
@@ -2081,6 +2110,7 @@ def switch_language(request):
         if not ui_locales:
             ui_locales = get_language(request, get_current_registry())
         request.response.set_cookie('_LOCALE_', str(ui_locales))
+        request._LOCALE_ = ui_locales
         return_dict['error'] = ''
     except KeyError as e:
         logger('swich_language', 'error', repr(e))
@@ -2106,7 +2136,7 @@ def send_news(request):
     try:
         title = escape_string(request.params['title'])
         text = escape_string(request.params['text'])
-        return_dict = news_handler.set_news(transaction, title, text, request.authenticated_userid, get_language(request, get_current_registry()))
+        return_dict = news_handler.set_news(title, text, request.authenticated_userid, get_language(request, get_current_registry()))
         return_dict['error'] = ''
     except KeyError as e:
         return_dict = dict()
@@ -2222,7 +2252,7 @@ def flag_argument_or_statement(request):
         elif db_reason is None and reason != 'optimization':
             logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
         else:
-            success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument, transaction)
+            success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument)
             return_dict = {
                 'success': '' if isinstance(success, str) else _t.get(success),
                 'info': '' if isinstance(info, str) else _t.get(info),
@@ -2256,7 +2286,7 @@ def review_delete_argument(request):
             logger('review_delete_argument', 'def', 'invalid uid', error=True)
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction)
+            error = review_main_helper.add_review_opinion_for_delete(nickname, should_delete, review_uid)
             send_request_for_recent_delete_review_to_socketio(nickname, request.application_url)
     except KeyError as e:
         logger('review_delete_argument', 'error', repr(e))
@@ -2287,7 +2317,7 @@ def review_edit_argument(request):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction)
+            error = review_main_helper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid)
             send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
     except KeyError as e:
         logger('review_delete_argument', 'error', repr(e))
@@ -2320,7 +2350,7 @@ def review_optimization_argument(request):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, transaction)
+            error = review_main_helper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data)
 
             if len(error) == 0:
                 send_request_for_recent_optimization_review_to_socketio(nickname, request.application_url)
@@ -2352,7 +2382,7 @@ def undo_review(request):
         nickname = request.authenticated_userid
 
         if is_user_author(nickname):
-            success, error = review_history_helper.revoke_old_decision(queue, uid, ui_locales, nickname, transaction)
+            success, error = review_history_helper.revoke_old_decision(queue, uid, ui_locales, nickname)
             return_dict['success'] = success
             return_dict['error'] = error
         else:
@@ -2384,7 +2414,7 @@ def cancel_review(request):
         nickname = request.authenticated_userid
 
         if is_user_author(nickname):
-            success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales, transaction)
+            success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales)
             return_dict['success'] = success
             return_dict['error'] = error
         else:
@@ -2424,9 +2454,9 @@ def review_lock(request):
             error = _t.get(_.internalKeyError)
         else:
             if lock:
-                success, info, error, is_locked = review_queue_helper.lock_optimization_review(request.authenticated_userid, review_uid, _t, transaction)
+                success, info, error, is_locked = review_queue_helper.lock_optimization_review(request.authenticated_userid, review_uid, _t)
             else:
-                review_queue_helper.unlock_optimization_review(review_uid, transaction)
+                review_queue_helper.unlock_optimization_review(review_uid)
                 is_locked = False
 
     except KeyError as e:
@@ -2464,7 +2494,7 @@ def revoke_some_content(request):
         if not is_integer(uid):
             error = _t.get(_.internalKeyError)
         else:
-            error = revoke_content(uid, is_argument, request.authenticated_userid, _t, transaction)
+            error = revoke_content(uid, is_argument, request.authenticated_userid, _t)
 
     except KeyError as e:
         logger('review_lock', 'error', repr(e))

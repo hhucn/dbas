@@ -115,6 +115,7 @@ var checkConfirmation 								= 'checkConfirmation';
 var checkPasswordConfirm							= 'checkPasswordConfirm';
 var changelogView                                   = 'changelogView';
 var changelogHide                                   = 'changelogHide';
+var clickedOnThis                                   = 'clickedOnThis';
 var countOfArguments                                = 'countOfArguments';
 var countdownEnded                                  = 'countdownEnded';
 var couldNotLock                                    = 'couldNotLock';
@@ -232,6 +233,7 @@ var requestFailedInternalError                      = 'requestFailedInternalErro
 var restartOnError									= 'restartOnError';
 var repuationChartSum                               = 'repuationChartSum';
 var repuationChartDay                               = 'repuationChartDay';
+var sawThis                                         = 'saw this';
 var saveMyStatement                                 = 'saveMyStatement';
 var saveMyStatements                                = 'saveMyStatements';
 var showAllUsers 									= 'showAllUsers';
@@ -322,6 +324,7 @@ var dbas_en = {
 	'checkPasswordConfirm': 'Better check your passwords, because they are not equal!',
 	'changelogView': 'view changelog',
 	'changelogHide': 'hide changelog',
+	'clickedOnThis': 'clickedOnThis',
 	'deleteTrack': 'Delete track',
 	'deleteHistory': 'Delete history',
 	'dataRemoved': 'Data was successfully removed.',
@@ -435,6 +438,7 @@ var dbas_en = {
 	'requestFailedInternalError': 'Request failed due to bad token, please reload this page. If the reload fails again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
 	'repuationChartSum': 'Summarized Reputation',
 	'repuationChartDay': 'Reputation per Day',
+	'sawThis': 'saw this',
 	'saveMyStatement': 'Save my Statement!',
 	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
@@ -511,6 +515,7 @@ var dbas_de = {
 	'checkPasswordConfirm': 'Bitte überprüfen Sie Ihre Passwörter, da die Passwärter nicht gleich sind!',
 	'changelogView': 'Änderungen zeigen',
 	'changelogHide': 'Änderungen ausblenden',
+	'clickedOnThis': 'haben\'s angeklickt',
 	'dataRemoved': 'Daten wurden erfolgreich gelöscht.',
 	'dataAdded': 'Daten wurden erfolgreich hinzugefügt.',
 	'date': 'Datum',
@@ -626,6 +631,7 @@ var dbas_de = {
 	'repuationChartSum': 'Reputation ingsesamt',
 	'repuationChartDay': 'Reputation pro Tag',
 	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
+	'sawThis': 'sahen dies!',
 	'saveMyStatement': 'Aussage speichern!',
 	'saveMyStatements': 'Ausagen speichern!',
 	'showAllUsers': 'Zeig\' alle Benutzer',

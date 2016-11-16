@@ -9,6 +9,7 @@ We are not deleting opposite votes for detecting opinion changes!
 
 
 import dbas.user_management as UserHandler
+import transaction
 
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
@@ -16,13 +17,12 @@ from dbas.database.discussion_model import Argument, Statement, Premise, VoteArg
 from dbas.logger import logger
 
 
-def add_vote_for_argument(argument_uid, user, transaction):
+def add_vote_for_argument(argument_uid, user):
     """
     Increases the votes of a given argument.
 
     :param argument_uid: id of the argument
     :param user: self.request.authenticated_userid
-    :param transaction: transaction
     :return: increased votes of the argument
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -81,7 +81,7 @@ def add_vote_for_argument(argument_uid, user, transaction):
     return len(db_votes)
 
 
-def add_vote_for_statement(statement_uid, user, supportive, transaction):
+def add_vote_for_statement(statement_uid, user, supportive):
     """
     Adds a vote for the given statements
 
@@ -104,11 +104,52 @@ def add_vote_for_statement(statement_uid, user, supportive, transaction):
     return False
 
 
-def clear_votes_of_user(transaction, user):
+def add_seen_statement(statement_uid, user_uid):
+    """
+    Adds the uid of the statement into the seen_by list, mapped with the given user uid
+
+    :param user_uid: uid of current user
+    :param statement_uid: uid of the statement
+    :return: undefined
+    """
+    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(statement_uid) + ', for user ' + str(user_uid))
+    __statement_seen_by_user(user_uid, statement_uid)
+    transaction.commit()
+
+
+def add_seen_argument(argument_uid, user_uid):
+    """
+    Adds the uid of the argument into the seen_by list as well as all included statements, mapped with the given user uid
+
+    :param user_uid: uid of current user
+    :param argument_uid: uid of the argument
+    :return: undefined
+    """
+    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', for user ' + str(user_uid))
+    __argument_seen_by_user(user_uid, argument_uid)
+
+    # getting all statements out of the premise
+    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    logger('VotingHelper', 'add_seen_argument', 'premise count ' + str(len(db_premises)))
+    for p in db_premises:
+        logger('VotingHelper', 'add_seen_argument', 'premise ' + str(p.statement_uid))
+        __statement_seen_by_user(user_uid, p.statement_uid)
+
+    # find the conclusion and mark all arguments on the way
+    while db_argument.conclusion_uid is None:
+        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_argument.argument_uid).first()
+        __argument_seen_by_user(user_uid, argument_uid)
+    logger('VotingHelper', 'add_seen_argument', 'conclusion ' + str(db_argument.conclusion_uid))
+    __statement_seen_by_user(user_uid, db_argument.conclusion_uid)
+
+    transaction.commit()
+
+
+def clear_votes_of_user(user):
     """
     Deletes all votes of given user
 
-    :param transaction: Transaction
     :param user: User.nickname
     :return: None
     """
@@ -235,27 +276,33 @@ def __argument_seen_by_user(user_uid, argument_uid):
     """
     Adds an reference for an seen argument
 
-    :param user_uid:
-    :param argument_uid:
-    :return:
+    :param user_uid: uid of current user
+    :param argument_uid: uid of the argument
+    :return: True if the argument was not seen by the user (until now), false otherwise
     """
+    logger('VotingHelper', '__argument_seen_by_user', 'argument ' + str(argument_uid) + ', for user ' + str(user_uid))
     db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter(and_(ArgumentSeenBy.argument_uid == argument_uid,
                                                                        ArgumentSeenBy.user_uid == user_uid)).first()
     if not db_seen_by:
         DBDiscussionSession.add(ArgumentSeenBy(argument_uid=argument_uid, user_uid=user_uid))
         DBDiscussionSession.flush()
+        return True
+    return False
 
 
 def __statement_seen_by_user(user_uid, statement_uid):
     """
     Adds an reference for an seen statement
 
-    :param user_uid:
-    :param argument_uid:
-    :return:
+    :param user_uid: uid of current user
+    :param statement_uid: uid of the statement
+    :return: True if the statement was not seen by the user (until now), false otherwise
     """
+    logger('VotingHelper', '__statement_seen_by_user', 'argument ' + str(statement_uid) + ', for user ' + str(user_uid))
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter(and_(StatementSeenBy.statement_uid == statement_uid,
                                                                         StatementSeenBy.user_uid == user_uid)).first()
     if not db_seen_by:
         DBDiscussionSession.add(StatementSeenBy(statement_uid=statement_uid, user_uid=user_uid))
         DBDiscussionSession.flush()
+        return True
+    return False

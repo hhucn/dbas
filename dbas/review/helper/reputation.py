@@ -4,6 +4,7 @@ Provides helping function for handling reputation.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
 from dbas.lib import is_user_author
@@ -98,14 +99,13 @@ def get_reputation_of(nickname):
     return count, is_user_author(nickname)
 
 
-def add_reputation_for(user, reason, transaction):
+def add_reputation_for(user, reason):
     """
     Add reputation for the given nickname with the reason only iff the reason can be added. (For example all reputataion
     for 'first' things cannot be given twice.
 
     :param user: current user oder his nickname
     :param reason: reason as string, as given in reputation.py
-    :param transaction: current transaction
     :return: True, if the user gained reputation
     """
     logger('ReputationPointHelper', 'add_reputation_for', 'main')

@@ -5,6 +5,7 @@ Class for handling relations of arguments
 """
 
 import random
+import transaction
 
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
@@ -144,11 +145,10 @@ def get_supports_for_argument_uid(argument_uid):
     return [] if len(return_array) == 0 else return_array
 
 
-def set_new_undermine_or_support(transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
+def set_new_undermine_or_support(premisegroup_uid, current_argument, current_attack, db_user, issue):
     """
     Inserts a new undermine or support with the given parameters.
 
-    :param transaction: transaction
     :param premisegroup_uid: premisesgroup_uid
     :param current_argument: Argument
     :param current_attack: String
@@ -188,11 +188,10 @@ def set_new_undermine_or_support(transaction, premisegroup_uid, current_argument
     return already_in[rnd]
 
 
-def set_new_undercut_or_overbid(transaction, premisegroup_uid, current_argument, current_attack, db_user, issue):
+def set_new_undercut_or_overbid(premisegroup_uid, current_argument, current_attack, db_user, issue):
     """
     Inserts a new undercut or overbid with the given parameters.
 
-    :param transaction: transaction
     :param premisegroup_uid: premisesgroup_uid
     :param current_argument: Argument
     :param current_attack: String
@@ -219,11 +218,10 @@ def set_new_undercut_or_overbid(transaction, premisegroup_uid, current_argument,
         return new_argument, False
 
 
-def set_new_rebut(transaction, premisegroup_uid, current_argument, db_user, issue):
+def set_new_rebut(premisegroup_uid, current_argument, db_user, issue):
     """
     Inserts a new rebut with the given parameters.
 
-    :param transaction: transaction
     :param premisegroup_uid: premisesgroup_uid
     :param current_argument: Argument
     :param db_user: User
@@ -249,11 +247,10 @@ def set_new_rebut(transaction, premisegroup_uid, current_argument, db_user, issu
         return new_argument, False
 
 
-def set_new_support(transaction, premisegroup_uid, current_argument, db_user, issue):
+def set_new_support(premisegroup_uid, current_argument, db_user, issue):
     """
     Inserts a new support with the given parameters.
 
-    :param transaction: transaction
     :param premisegroup_uid: premisesgroup_uid
     :param current_argument: Argument
     :param db_user: User
@@ -279,11 +276,10 @@ def set_new_support(transaction, premisegroup_uid, current_argument, db_user, is
         return new_argument, False
 
 
-def __set_argument(transaction, user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
+def __set_argument(user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
     """
     Set an Argument with given values into database
 
-    :param transaction: transaction
     :param user: User.nickname
     :param premisegroup_uid: premisesgroup_uid
     :param conclusion_uid: Statement.uid

@@ -111,10 +111,10 @@ class OpinionHandlerTests(unittest.TestCase):
         # wrong id
         response_wrong_id = get_user_with_opinions_for_attitude(statement_uid=0, nickname=nickname, lang=lang,
                                                                 main_page=main_page)
-        self.assertEqual(response_wrong_id, None)
+        self.assertEqual(response_wrong_id['text'], None)
         response_wrong_id2 = get_user_with_opinions_for_attitude(statement_uid=None, nickname=nickname,
                                                                  lang=lang, main_page=main_page)
-        self.assertEqual(response_wrong_id2, None)
+        self.assertEqual(response_wrong_id2['text'], None)
 
 
 def verify_structure_of_argument_dictionary(self, response):

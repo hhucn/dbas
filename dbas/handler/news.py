@@ -4,6 +4,7 @@ Provides helping function round about the news.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 import arrow
 import collections
 
@@ -14,11 +15,10 @@ from dbas.logger import logger
 from dbas.lib import sql_timestamp_pretty_print
 
 
-def set_news(transaction, title, text, user, lang):
+def set_news(title, text, user, lang):
     """
     Sets a new news into the news table
 
-    :param transaction: transaction current transaction
     :param title: news title
     :param text: String news text
     :param user: User.nickname self.request.authenticated_userid

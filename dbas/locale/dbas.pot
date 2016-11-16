@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-11-11 10:12+0100\n"
+"POT-Creation-Date: 2016-11-15 10:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -548,7 +548,7 @@ msgstr ""
 #. Default: Cancel
 #: ././templates/review_history.pt:94 ././templates/snippet-popups.pt:175
 #: ././templates/snippet-popups.pt:198 ././templates/snippet-popups.pt:223
-#: ././templates/snippet-popups.pt:930
+#: ././templates/snippet-popups.pt:931
 msgid "cancel"
 msgstr ""
 
@@ -689,7 +689,7 @@ msgstr ""
 
 #. Default: Okay
 #: ././templates/snippet-popups.pt:174 ././templates/snippet-popups.pt:197
-#: ././templates/snippet-popups.pt:222 ././templates/snippet-popups.pt:929
+#: ././templates/snippet-popups.pt:222 ././templates/snippet-popups.pt:930
 msgid "okay"
 msgstr ""
 
@@ -1051,16 +1051,6 @@ msgstr ""
 #. Default: Statement
 #: ././templates/snippet-popups.pt:898
 msgid "statement"
-msgstr ""
-
-#. Default: Bar Chart
-#: ././templates/snippet-popups.pt:926
-msgid "bar_chart"
-msgstr ""
-
-#. Default: Doughnut Chart
-#: ././templates/snippet-popups.pt:927
-msgid "doughnut_chart"
 msgstr ""
 
 #. Default: Personal Information
@@ -1630,24 +1620,4 @@ msgstr ""
 #. Default: Hide statements
 #: ././templates/content.pt:129
 msgid "hide_statements"
-msgstr ""
-
-#. Default: Change display style
-#: ././templates/content.pt:345
-msgid "change_style"
-msgstr ""
-
-#. Default: Dialog View
-#: ././templates/content.pt:348
-msgid "dialog_view"
-msgstr ""
-
-#. Default: Island View
-#: ././templates/content.pt:354
-msgid "island_view"
-msgstr ""
-
-#. Default: Complete View
-#: ././templates/content.pt:360
-msgid "complete_view"
 msgstr ""

@@ -8,7 +8,7 @@ import random
 
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue
+from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue, User
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
@@ -16,6 +16,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from dbas.helper.voting import add_seen_argument, add_seen_statement
 from sqlalchemy import and_
 
 
@@ -63,16 +64,19 @@ class ItemDictHelper(object):
 
         statements_array = []
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for statement in db_statements:
-                statements_array.append(self.__create_answer_dict(statement.uid,
-                                                                  [{'title': get_text_for_statement_uid(statement.uid),
-                                                                      'id': statement.uid}],
-                                                                  'start',
-                                                                  _um.get_url_for_statement_attitude(True, statement.uid),
-                                                                  is_flagable=True,
-                                                                  is_author=is_author_of_statement(nickname, statement.uid),
-                                                                  is_visible=statement.uid in uids))
+            if db_user and statement.uid in uids:  # add seen by if the statement is visible
+                add_seen_statement(statement.uid, db_user.uid)
+            statements_array.append(self.__create_answer_dict(statement.uid,
+                                                              [{'title': get_text_for_statement_uid(statement.uid),
+                                                                  'id': statement.uid}],
+                                                              'start',
+                                                              _um.get_url_for_statement_attitude(True, statement.uid),
+                                                              is_flagable=True,
+                                                              is_author=is_author_of_statement(nickname, statement.uid),
+                                                              is_visible=statement.uid in uids))
 
         _tn = Translator(self.lang)
         if nickname:
@@ -135,8 +139,12 @@ class ItemDictHelper(object):
         uids = RecommenderSystem.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for argument in db_arguments:
+                if db_user and argument.uid in uids:  # add seen by if the statement is visible
+                    add_seen_argument(argument.uid, db_user.uid)
+
                 # get all premises in the premisegroup of this argument
                 db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
                 premise_array = []
@@ -151,7 +159,8 @@ class ItemDictHelper(object):
                 statements_array.append(self.__create_answer_dict(str(argument.uid),
                                                                   premise_array,
                                                                   'justify',
-                                                                  _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys),
+                                                                  _um.get_url_for_reaction_on_argument(True, argument.uid,
+                                                                                                       attack, arg_id_sys),
                                                                   already_used=already_used,
                                                                   already_used_text=additional_text,
                                                                   is_flagable=True,
@@ -190,29 +199,32 @@ class ItemDictHelper(object):
         uids = RecommenderSystem.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for argument in db_arguments:
-                # get all premises in this group
-                db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
-                premises_array = []
-                for premise in db_premises:
-                    text = get_text_for_statement_uid(premise.statement_uid)
-                    premises_array.append({'id': premise.statement_uid, 'title': text[0:1].upper() + text[1:]})
+            if db_user:  # add seen by if the statement is visible
+                add_seen_argument(argument_uid, db_user.uid)
+            # get all premises in this group
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+            premises_array = []
+            for premise in db_premises:
+                text = get_text_for_statement_uid(premise.statement_uid)
+                premises_array.append({'id': premise.statement_uid, 'title': text[0:1].upper() + text[1:]})
 
-                # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
-                is_undermine = 'undermine' if attack_type == 'undermine' else None
-                attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
+            # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
+            is_undermine = 'undermine' if attack_type == 'undermine' else None
+            attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
 
-                arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang,
-                                                                               last_attack=is_undermine,
-                                                                               restriction_on_arg_uids=attacking_arg_uids,
-                                                                               history=self.path)
+            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang,
+                                                                           last_attack=is_undermine,
+                                                                           restriction_on_arg_uids=attacking_arg_uids,
+                                                                           history=self.path)
 
-                url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
-                statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
-                                                                  is_flagable=True,
-                                                                  is_author=is_author_of_argument(nickname, argument.uid),
-                                                                  is_visible=argument.uid in uids))
+            url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
+            statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
+                                                              is_flagable=True,
+                                                              is_author=is_author_of_argument(nickname, argument.uid),
+                                                              is_visible=argument.uid in uids))
 
         if logged_in:
             if len(statements_array) == 0:
@@ -269,12 +281,13 @@ class ItemDictHelper(object):
                                                                  Argument.issue_uid == self.issue_uid)).all()
         return db_arguments
 
-    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive):
+    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive, nickname):
         """
-        Prepares the dict with all items for the third step, where an suppotive argument will be presented.
+        Prepares the dict with all items for the third step, where a supportive argument will be presented.
 
         :param argument_uid: Argument.uid
         :param is_supportive: Boolean
+        :param nickname: nickname
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
@@ -282,6 +295,10 @@ class ItemDictHelper(object):
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         statements_array = []
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if db_user:  # add seen by if the statement is visible
+            add_seen_argument(argument_uid, db_user.uid)
 
         db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
         if not db_argument:
@@ -490,6 +507,7 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         conclusion = argument_or_statement_id if not is_argument else None
         argument = argument_or_statement_id if is_argument else None
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for group_id in pgroup_ids:
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
@@ -497,6 +515,8 @@ class ItemDictHelper(object):
             for premise in db_premises:
                 text = get_text_for_statement_uid(premise.statement_uid)
                 premise_array.append({'title': text, 'id': premise.statement_uid})
+                if db_user:  # add seen by if the statement is visible
+                    add_seen_statement(premise.statement_uid, db_user.uid)
 
             # get attack for each premise, so the urls will be unique
             logger('ItemDictHelper', 'get_array_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
