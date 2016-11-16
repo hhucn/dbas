@@ -924,7 +924,7 @@
     			<div class="modal-footer">
                     <div style="float:left;">
                         <div id="chart-btn-div">
-                            <input id="chart-btn" class="fa fa-eye" data-toggle="toggle" data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>" data-off="<i class='fa fa-pie-chart fa-2x'></i>" checked type="checkbox" data-onstyle="primary" data-offstyle="primary">
+                            <input id="chart-btn" class="fa fa-eye" data-toggle="toggle" data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>" data-off="<i class='fa fa-pie-chart fa-2x'></i>" checked type="checkbox" data-onstyle="default" data-offstyle="default">
                         </div>
                     </div>
     				<button id="barometer-popup-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>

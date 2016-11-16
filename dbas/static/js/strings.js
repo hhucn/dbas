@@ -233,6 +233,7 @@ var requestFailedInternalError                      = 'requestFailedInternalErro
 var restartOnError									= 'restartOnError';
 var repuationChartSum                               = 'repuationChartSum';
 var repuationChartDay                               = 'repuationChartDay';
+var sawThis                                         = 'saw this';
 var saveMyStatement                                 = 'saveMyStatement';
 var saveMyStatements                                = 'saveMyStatements';
 var showAllUsers 									= 'showAllUsers';
@@ -437,6 +438,7 @@ var dbas_en = {
 	'requestFailedInternalError': 'Request failed due to bad token, please reload this page. If the reload fails again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
 	'repuationChartSum': 'Summarized Reputation',
 	'repuationChartDay': 'Reputation per Day',
+	'sawThis': 'saw this',
 	'saveMyStatement': 'Save my Statement!',
 	'saveMyStatements': 'Save my Statements!',
 	'showAllUsers': 'Show all users',
@@ -629,6 +631,7 @@ var dbas_de = {
 	'repuationChartSum': 'Reputation ingsesamt',
 	'repuationChartDay': 'Reputation pro Tag',
 	'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
+	'sawThis': 'sahen dies!',
 	'saveMyStatement': 'Aussage speichern!',
 	'saveMyStatements': 'Ausagen speichern!',
 	'showAllUsers': 'Zeig\' alle Benutzer',
