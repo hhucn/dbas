@@ -318,7 +318,9 @@ function AjaxDiscussionHandler() {
 					$('#current_' + tmpid).html(value + '...' + pencil);
 				}
 			}
-			new GuiHandler().setMaxHeightForBubbleSpace();
+			var gh = new GuiHandler();
+			var resize = gh.setMaxHeightForBubbleSpace();
+			gh.setMaxHeightForDiscussionContainer(resize);
 		}
 
 		$.ajax({

@@ -158,6 +158,17 @@ function GuiHandler() {
 	};
 	
 	/**
+	 *
+	 * @param resize
+	 */
+	this.setMaxHeightForDiscussionContainer = function(resize){
+		var maincontainer = $('#' + discussionContainerId);
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		maincontainer.css('max-height', maincontainer.outerHeight() + resize + 'px');
+		sidebarwrapper.css('height', maincontainer.outerHeight() + 'px');
+	};
+	
+	/**
 	 * Sets the maximal height for the bubble space. If needed, a scrollbar will be displayed.
 	 */
 	this.setMaxHeightForBubbleSpace = function () {
@@ -167,6 +178,7 @@ function GuiHandler() {
 		var maxHeight = this.getMaxSizeOfDiscussionViewContainer();
 		var start;
 		var nowBubble = speechBubbles.find('*[id*=now]');
+		var oldSize = speechBubbles.height();
 		$.each(speechBubbles.find('div p'), function () {
 			height += $(this).outerHeight(true);
 			// clear unnecessary a tags
@@ -198,13 +210,14 @@ function GuiHandler() {
 				allowPageScroll: true
 			});
 		} else {
-			height += 20;
+			height += 30;
 			if (height < 50)
 				speechBubbles.css('min-height', '100px');
 			else
 				speechBubbles.css('height', height + 'px').css('min-height', '300px');
 			speechBubbles.css('min-height', '100px').css('max-height', maxHeight + 'px');
 		}
+		return speechBubbles.height() - oldSize;
 	};
 	
 	/**
