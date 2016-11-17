@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-10-25 10:34+0200\n"
+"POT-Creation-Date: 2016-11-17 09:31+0100\n"
 "PO-Revision-Date: 2016-10-25 10:45+0200\n"
 "Last-Translator: Tobias Krauthoff <tobias.krauthoff@uni-duesseldorf.de>\n"
 "Language-Team: German\n"
@@ -20,6 +20,11 @@ msgstr ""
 #: templates/table.pt:24
 msgid "Admin"
 msgstr "Admin"
+
+#. Default: Error
+#: templates/admin.pt:14 templates/admin.pt:50
+msgid "error"
+msgstr "Fehler"
 
 #. Default: You have no rights for this page!
 #: templates/admin.pt:16
@@ -41,15 +46,15 @@ msgstr "Passwort"
 msgid "keep_me_logged_in"
 msgstr "Eingeloggt bleiben"
 
-#. Default: Error:
-#: templates/admin.pt:50
-msgid "error"
-msgstr "Fehler:"
-
 #. Default: Log In
 #: templates/admin.pt:54
 msgid "login"
 msgstr "Log In"
+
+#. Default: Caution
+#: templates/admin.pt:67
+msgid "caution"
+msgstr "Achtung"
 
 #. Default: Every edit and/or delete operation can have far-reaching
 #. implications for the complete system. Maybe it will be unusable after the
