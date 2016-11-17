@@ -157,7 +157,7 @@ function InteractionHandler() {
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function (e) {
 			$(this).removeClass('modal-lg');
 		});
-		new Helper().delay(function(){
+		setTimeout(function(){
 				var popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
 				if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
 					popup_table.slimScroll({
@@ -192,7 +192,7 @@ function InteractionHandler() {
 		} else {
 			$('#popup-add-topic-error-text').text(parsedData.error);
 			$('#popup-add-topic-error').show();
-			new Helper().delay(function(){
+			setTimeout(function(){
 				$('#popup-add-topic-error').hide();
 			}, 2500);
 		}
@@ -221,7 +221,7 @@ function InteractionHandler() {
 		} else {
 			$('#popup-add-topic-error-text').text(parsedData.error);
 			$('#popup-add-topic-error').show();
-			new Helper().delay(function(){
+			setTimeout(function(){
 				$('#popup-add-topic-error').hide();
 			}, 2500);
 		}
@@ -274,7 +274,7 @@ function InteractionHandler() {
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function (e) {
 			$(this).removeClass('modal-lg');
 		});
-		new Helper().delay(function(){
+		setTimeout(function(){
 				popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
 				if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
 					popup_table.slimScroll({
