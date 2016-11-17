@@ -528,18 +528,21 @@ function Main () {
 		//});
 		
 		var container = $('#' + discussionContainerId);
-		var oldSize = container.width();
+		var oldContainerSize = container.width();
 		var burger = $('.hamburger');
-		var wrapper= $('#dialog-wrapper');
+		var wrapper = $('#dialog-wrapper');
+		
 		$(window).resize(function () {
 			new GuiHandler().setMaxHeightForBubbleSpace();
-			var difference = oldSize - container.width();
+			
+			// resize main container
+			var difference = oldContainerSize - container.width();
 			if (difference > 0 && burger.hasClass('open')){
 				wrapper.width(wrapper.width() - difference);
 			} else if (difference < 0 && burger.hasClass('open')){
 				wrapper.width(wrapper.width() - difference);
 			}
-			oldSize = container.width();
+			oldContainerSize = container.width();
 		});
 	};
 	
