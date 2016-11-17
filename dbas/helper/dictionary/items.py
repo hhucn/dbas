@@ -296,13 +296,13 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         statements_array = []
 
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        if db_user:  # add seen by if the statement is visible
-            add_seen_argument(argument_uid, db_user.uid)
-
         db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
         if not db_argument:
             return {'elements': statements_array, 'extras': {'cropped_list': False}}
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if db_user:  # add seen by if the statement is visible
+            add_seen_argument(argument_uid, db_user.uid)
 
         rel_dict     = _tg.get_relation_text_dict_with_substitution(False, False, False, is_dont_know=True)
         mode         = 't' if is_supportive else 't'

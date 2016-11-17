@@ -105,7 +105,7 @@
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
-                    <span class="project lead">0.8.0 (unreleased)</span>
+                    <span class="project lead">0.8.0 (2016-11-17)</span>
 					<ul>
 						<li>Minor improvements and bugfix</li>
                         <li>Reworked the opinion barometer and argument graph</li>
