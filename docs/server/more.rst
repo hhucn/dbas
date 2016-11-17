@@ -18,3 +18,5 @@ Deployment
 
 - The short story: http://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/deployment/gunicorn.html
 - Then ''gunicorn --paste production.ini --daemon''
+
+- Got problems with UTF8 and debian? https://wiki.debian.org/ChangeLanguage
