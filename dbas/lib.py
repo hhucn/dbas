@@ -808,7 +808,7 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     if ignore_privacy_settings:
         additional_id = ''
     url = get_global_url()
-    url = url[url.index('//')+2:]
+    url = url[url.index('//') + 2:]
     unknown = 'unknown@' + url
     email = (user.email + additional_id).encode('utf-8') if user else unknown.encode('utf-8')
 
@@ -831,7 +831,7 @@ def get_public_profile_picture(user, size=80):
     else:
         additional_id = 'y'
     url = get_global_url()
-    url = url[url.index('//')+2:]
+    url = url[url.index('//') + 2:]
     email = (user.email + additional_id).encode('utf-8') if user else ('unknown@' + url).encode('utf-8')
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})

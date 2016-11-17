@@ -337,7 +337,7 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
 		}).fail(function ajaxGetAllUsersFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			//new Helper().delay(function ajaxGetAllUsersFailDelay() {
+			//setTimout(function ajaxGetAllUsersFailDelay() {
 			//	new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
 			//			+ _t(doNotHesitateToContact) + '. ');
 			//}, 350);

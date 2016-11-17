@@ -527,8 +527,19 @@ function Main () {
 		//$(window).load(function windowLoad() {
 		//});
 		
+		var container = $('#' + discussionContainerId);
+		var oldSize = container.width();
+		var burger = $('.hamburger');
+		var wrapper= $('#dialog-wrapper');
 		$(window).resize(function () {
 			new GuiHandler().setMaxHeightForBubbleSpace();
+			var difference = oldSize - container.width();
+			if (difference > 0 && burger.hasClass('open')){
+				wrapper.width(wrapper.width() - difference);
+			} else if (difference < 0 && burger.hasClass('open')){
+				wrapper.width(wrapper.width() - difference);
+			}
+			oldSize = container.width();
 		});
 	};
 	
