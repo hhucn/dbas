@@ -57,7 +57,8 @@ def main(global_config, **settings):
                 'mail.password': 'orpcihtyuecxhoup',
                 'mail.ssl': 'True',
                 'mail.tls': 'False',
-                'mail.default_sender': 'dbas.hhu@gmail.com'
+                'mail.default_sender': 'dbas.hhu@gmail.com',
+                'session_factory': session_factory
                 }
 
     # creating the configurator    cache_regions = set_cache_regions_from_settings
