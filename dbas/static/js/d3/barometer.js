@@ -535,17 +535,6 @@ function DiscussionBarometer(){
         $(document).on('click', '.img-circle', function () {
             window.location = $(this).attr('href');
         });
-
-        // add click-event-listener for popup
-        $('#' + popupBarometerId).on('click', function (d) {
-            // select area of popup without tooltip and listen for click event
-            // if tooltip is visible hide tooltip
-            if (d.target.id.indexOf("path") === -1 && d.target.id.indexOf("rect") === -1 && tooltipIsVisible === true) {
-                hideTooltip(selector, elementIndex);
-                isClicked = false;
-                tooltipIsVisible = false;
-            }
-        });
     }
 
      /**
@@ -623,7 +612,7 @@ function DiscussionBarometer(){
     }
 
     /**
-     * Create content of tooltip-div.
+     * Create content of -div.
      *
      * @param usersDict
      * @param index: index of bar is selected
@@ -645,17 +634,17 @@ function DiscussionBarometer(){
 
         var list;
         if(usersDict[index].message != null){
-            list = $('<ul>').append(messageList).append(seenByList).append(userList);
+            list = messageList.append(seenByList).append(userList);
         }
         else{
-            list = $('<ul>').append(seenByList).append(userList);
+            list = seenByList.append(userList);
         }
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
-            var avatarLink = $('<a>').attr({'href': e.public_profile_url, 'title': e.nickname});
-            var avatarImage = $('<img>').attr({'class': 'img-circle', 'src': e.avatar_url, width: '10%', padding: '2px'});
-            list.append(avatarLink).append(avatarImage);
+            var avatarImage = $('<img>').attr({'href': e.public_profile_url, 'title': e.nickname,
+                'class': 'img-circle', 'src': e.avatar_url});
+            list.append(avatarImage);
         });
 
         $('.chartTooltip').append(list);
