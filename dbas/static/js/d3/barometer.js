@@ -157,11 +157,11 @@ function DiscussionBarometer(){
         // selector = outer-rect: seen_by value
         createBar(width, height-50, usersDict, barChartSvg, "outer-rect");
 
-        // tooltip
-        addListenerForTooltip(usersDict, barChartSvg, address, "rect");
-
         // create legend for chart
         createLegend(usersDict);
+
+        // tooltip
+        addListenerForTooltip(usersDict, barChartSvg, address, "rect");
     };
 
     /**
@@ -323,10 +323,10 @@ function DiscussionBarometer(){
         }
         // create doughnut of chart
         createDoughnutChart(usersDict, doughnutChartSvg, address);
-        // tooltip
-        addListenerForTooltip(usersDict, doughnutChartSvg, address, ".chart-sector");
         // create legend for chart
         createLegend(usersDict);
+        // tooltip
+        addListenerForTooltip(usersDict, doughnutChartSvg, address, ".chart-sector");
     };
 
     /**
@@ -487,7 +487,6 @@ function DiscussionBarometer(){
      * @param selector: different selectors for bar chart and doughnut chart
      */
     function addListenerForTooltip(usersDict, chartSvg, address, selector) {
-        var div;
         var isClicked = false;
         var tooltipIsVisible = false;
         // save index and id of object of last click event
@@ -498,22 +497,20 @@ function DiscussionBarometer(){
         chartSvg.selectAll(selector).on('click', function (d, index) {
             // sector of doughnut chart and part which represents the seen-by-value should have the same index
             elementIndex = index % usersDict.length;
-            
             if (isClicked){
-                // if the user clicks on another element hide the old element and make the new one visible
                 if (_index != elementIndex){
-                    hideTooltip(div, selector, _index);
-                    div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
+                    hideTooltip(selector, _index);
+                    showTooltip(usersDict, elementIndex, address, chartSvg, selector);
                     isClicked = true;
                     tooltipIsVisible = true;
                 } else { // if the user clicks on the same tooltip for a second time hide the tooltip
-                    hideTooltip(div, selector, elementIndex);
+                    hideTooltip(selector, elementIndex);
                     isClicked = false;
                     tooltipIsVisible = false;
                 }
             } else {
                 if (!tooltipIsVisible){
-                    div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
+                    showTooltip(usersDict, elementIndex, address, chartSvg, selector);
                 }
                 isClicked = true;
                 tooltipIsVisible = true;
@@ -523,16 +520,20 @@ function DiscussionBarometer(){
             if(!isClicked){
                 elementIndex = index % usersDict.length;
 
-                div = showTooltip(div, usersDict, elementIndex, address, chartSvg, selector);
+                showTooltip(usersDict, elementIndex, address, chartSvg, selector);
                 tooltipIsVisible = true;
             }
         }).on("mouseout", function (d, index) { // add listener for mouse out event
             if(!isClicked){
                 elementIndex = index % usersDict.length;
 
-                hideTooltip(div, selector, elementIndex);
+                hideTooltip(selector, elementIndex);
                 tooltipIsVisible = false;
             }
+        });
+
+        $(document).on('click', '.img-circle', function () {
+            window.location = $(this).attr('href');
         });
 
         // add click-event-listener for popup
@@ -540,7 +541,7 @@ function DiscussionBarometer(){
             // select area of popup without tooltip and listen for click event
             // if tooltip is visible hide tooltip
             if (d.target.id.indexOf("path") === -1 && d.target.id.indexOf("rect") === -1 && tooltipIsVisible === true) {
-                hideTooltip(div, selector, elementIndex);
+                hideTooltip(selector, elementIndex);
                 isClicked = false;
                 tooltipIsVisible = false;
             }
@@ -550,16 +551,14 @@ function DiscussionBarometer(){
      /**
      * Show tooltip on mouse event.
      *
-     * @param div
      * @param usersDict
      * @param index
      * @param address
      * @param chartSvg
      * @param selector
-     * @returns {*}
      */
-    function showTooltip(div, usersDict, index, address, chartSvg, selector){
-        div = getTooltip(usersDict, index, address);
+    function showTooltip(usersDict, index, address, chartSvg, selector){
+        getTooltip(usersDict, index, address);
         // if doughnut chart is selected add short tooltip in middle of chart
         if(selector === ".chart-sector"){
             createShortTooltipDoughnutChart(chartSvg, usersDict, index, address);
@@ -572,19 +571,18 @@ function DiscussionBarometer(){
             d3.select("#inner-rect-" + index).attr('fill', getDarkColorFor(index));
             d3.select("#outer-rect-" + index).attr('fill', google_colors[index % google_colors.length][3]);
         }
-        return div;
     }
 
     /**
      * Hide tooltip on mouse event.
      *
-     * @param div
      * @param selector
      * @param index
      */
-    function hideTooltip(div, selector, index){
+    function hideTooltip(selector, index){
+        $('.chartTooltip').remove();
         // hide tooltip with detailed information
-        div.style("opacity", 0);
+        $('.chartTooltip').css("opacity", 0);
 
         // if doughnut chart is selected hide text in middle of doughnut
         if(selector === ".chart-sector") {
@@ -606,23 +604,22 @@ function DiscussionBarometer(){
      * @param usersDict
      * @param index
      * @param address
-     * @returns {*}
      */
     function getTooltip(usersDict, index, address){
-        var div = d3.select('#' + popupBarometerId + ' .col-md-5').append("div").attr("class", "chartTooltip");
+        var div = $('<div>').attr("class", "chartTooltip");
+        $('#' + popupBarometerId).find('.col-md-5').append(div);
+
+        var tooltip = $(".chartTooltip");
 
         // make tooltip visible
-        div.style("opacity", 1);
+        tooltip.css("opacity", 1);
 
-        createTooltipContent(usersDict, index, address, div);
-         
-        var tooltip = $(".chartTooltip");
+        createTooltipContent(usersDict, index, address);
+
         // fill background of tooltip with color of selected sector of barometer
         tooltip.css('background-color', getVeryLightColorFor(index));
         // fill border of tooltip with the same color as the sector of barometer
         tooltip.css('border-color', getDarkColorFor(index));
-
-        return div;
     }
 
     /**
@@ -633,25 +630,35 @@ function DiscussionBarometer(){
      * @param address
      * @param div: contains the tooltip
      */
-    function createTooltipContent(usersDict, index, address, div){
+    function createTooltipContent(usersDict, index, address){
         // append list elements to div
         if (usersDict[index].message != null) {
-            div.append('li').html(usersDict[index].message);
+            var messageList = $('<li>').html(usersDict[index].message);
         }
         var text_keyword = '';
         if (address == 'argument')
             text_keyword = usersDict[index].seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
         else
             text_keyword = usersDict[index].seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
-        div.append('li').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
-        div.append('li').html(_t_discussion(users) + ': ');
+        var seenByList = $('<li>').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
+        var userList = $('<li>').html(_t_discussion(users) + ': ');
+
+        var list;
+        if(usersDict[index].message != null){
+            list = $('<ul>').append(messageList).append(seenByList).append(userList);
+        }
+        else{
+            list = $('<ul>').append(seenByList).append(userList);
+        }
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
-            div.append('a').attr({'href': e.public_profile_url, 'title': e.nickname})
-                .append('img').attr({src: e.avatar_url, class: 'img-circle'})
-                .style({width: '10%', padding: '2px'});
+            var avatarLink = $('<a>').attr({'href': e.public_profile_url, 'title': e.nickname});
+            var avatarImage = $('<img>').attr({'class': 'img-circle', 'src': e.avatar_url, width: '10%', padding: '2px'});
+            list.append(avatarLink).append(avatarImage);
         });
+
+        $('.chartTooltip').append(list);
     }
 
     /**
