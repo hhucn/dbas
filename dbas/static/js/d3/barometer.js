@@ -352,7 +352,7 @@ function DiscussionBarometer(){
             outerRadius = Math.min(width, height) / 2,
             innerRadius = 0.3 * outerRadius;
 
-        var doughnut = getDoughnut(usersDict, address);
+        var doughnut = getDoughnut(usersDict);
 
         var innerCircle = getInnerCircle(usersDict, innerRadius, outerRadius, address);
         var outerCircle = getOuterCircle(innerRadius, outerRadius);
@@ -368,10 +368,19 @@ function DiscussionBarometer(){
      * @param address
      * @returns {*}
      */
-    function getDoughnut(usersDict, address){
+    function getDoughnut(usersDict){
+        var sumUsersNumber = 0;
+        /*$.each(usersDict, function (key, value) {
+            sumUsersNumber += value.usersNumber;
+        });*/
         return d3.layout.pie()
             .sort(null)
             .value(function (d, i) {
+                // if all arguments have not been seen by anyone,
+                // then all sectors have the same angle
+                if(sumUsersNumber === 0){
+                    return 1;
+                }
                 return usersDict[i].usersNumber;
             });
     }
@@ -389,8 +398,13 @@ function DiscussionBarometer(){
         return d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(function (d, i) {
+                // if the user can only decide between agree and disagree: the height of sector is not dependent on seen-by-value
                 if(address === "attitude"){
                     return (outerRadius - innerRadius) + innerRadius;
+                }
+                // if nobody has chosen the argument then the height of the sector is 2% of the difference between innerRadius and outerRadius
+                if(usersDict[i].usersNumber === 0){
+                    return ((outerRadius-innerRadius)*2)/100 + innerRadius;
                 }
                 return (outerRadius - innerRadius) * (usersDict[i].usersNumber/usersDict[i].seenBy) + innerRadius;
             });
