@@ -253,8 +253,8 @@ function DiscussionBarometer(){
         var barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
 
         // set max-width of bar
-        if(barWidth > 190){
-            barWidth = 190;
+        if(barWidth > 150){
+            barWidth = 150;
         }
 
         barChartSvg.selectAll(selector)
@@ -372,10 +372,6 @@ function DiscussionBarometer(){
         return d3.layout.pie()
             .sort(null)
             .value(function (d, i) {
-                // if the user can only choose between agree and disagree: half of doughnut for agree and half for disagree
-                if(address === "attitude"){
-                    return 50;
-                }
                 return usersDict[i].usersNumber;
             });
     }
