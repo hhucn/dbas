@@ -370,9 +370,9 @@ function DiscussionBarometer(){
      */
     function getDoughnut(usersDict){
         var sumUsersNumber = 0;
-        /*$.each(usersDict, function (key, value) {
+        $.each(usersDict, function (key, value) {
             sumUsersNumber += value.usersNumber;
-        });*/
+        });
         return d3.layout.pie()
             .sort(null)
             .value(function (d, i) {
@@ -380,6 +380,11 @@ function DiscussionBarometer(){
                 // then all sectors have the same angle
                 if(sumUsersNumber === 0){
                     return 1;
+                }
+                // if the argument has not been seen by anyone,
+                // then the height of the sector is 2% of the number of all users
+                else if(usersDict[i].usersNumber === 0){
+                    return (sumUsersNumber*2)/100;
                 }
                 return usersDict[i].usersNumber;
             });
