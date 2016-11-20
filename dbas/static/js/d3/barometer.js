@@ -150,12 +150,15 @@ function DiscussionBarometer(){
             usersDict = createDictForAttitude(jsonData, usersDict);
         else
             usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
+        console.log(usersDict);
 
         // create bars of chart
         // selector = inner-rect: clicks on statement relative to seen_by value
-        createBar(width, height-50, usersDict, barChartSvg, "inner-rect");
+        createBar(width, height-50, usersDict, barChartSvg, "inner-rect", address);
         // selector = outer-rect: seen_by value
-        createBar(width, height-50, usersDict, barChartSvg, "outer-rect");
+        if(address != 'attitude'){
+            createBar(width, height-50, usersDict, barChartSvg, "outer-rect", address);
+        }
 
         // create legend for chart
         createLegend(usersDict);
@@ -246,8 +249,9 @@ function DiscussionBarometer(){
      * @param usersDict
      * @param barChartSvg
      * @param selector
+     * @param address
      */
-    function createBar(width, height, usersDict, barChartSvg, selector) {
+    function createBar(width, height, usersDict, barChartSvg, selector, address) {
         // width of one bar
         // width - left padding to y-Axis - space between bars
         var barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
@@ -257,6 +261,12 @@ function DiscussionBarometer(){
             barWidth = 150;
         }
 
+        // sum of users
+        var sumUsersNumber = 0;
+        if(address === 'attitude'){
+            sumUsersNumber = usersDict[0].usersNumber + usersDict[1].usersNumber;
+        }
+
         barChartSvg.selectAll(selector)
             .data(usersDict)
             .enter().append("rect")
@@ -264,9 +274,12 @@ function DiscussionBarometer(){
                 width: barWidth,
                 // height in percent: length/seen_by = x/height
                 height: function (d) {
-                    if (selector === 'inner-rect')
-                        return divideWrapperIfZero(d.usersNumber, d.seenBy) * height;
-                    return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height);
+                        if(address === 'attitude'){
+                            return divideWrapperIfZero(d.usersNumber, sumUsersNumber) * height;
+                        }
+                        if (selector === 'inner-rect')
+                            return divideWrapperIfZero(d.usersNumber, d.seenBy) * height;
+                        return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height);
                 },
                 // number of bar * width of bar + padding-left + space between to bars
                 x: function (d, i) {
@@ -274,6 +287,9 @@ function DiscussionBarometer(){
                 },
                 // y: height - barLength, because d3 starts to draw in left upper corner
                 y: function (d) {
+                    if(address === 'attitude'){
+                        return height - (divideWrapperIfZero(d.usersNumber, sumUsersNumber) * height - 50);
+                    }
                     if (selector === 'inner-rect')
                         return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);
                     return 50;
