@@ -1,8 +1,8 @@
 // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
 var google_colors = [
     //0          1          2          3          4          5          6          7          8          9          10         11         12         13         14
-    ['#f44336', '#ffebee', '#ffcdd2', '#ef9a9a', '#e57373', '#ef5350', '#f44336', '#e53935', '#d32f2f', '#c62828', '#b71c1c', '#ff8a80', '#ff5252', '#ff1744', '#d50000'],  // red
     ['#4caf50', '#e8f5e9', '#c8e6c9', '#a5d6a7', '#81c784', '#66bb6a', '#4caf50', '#43a047', '#388e3c', '#2e7d32', '#1b5e20', '#b9f6ca', '#69f0ae', '#00e676', '#00c853'],  // green
+    ['#f44336', '#ffebee', '#ffcdd2', '#ef9a9a', '#e57373', '#ef5350', '#f44336', '#e53935', '#d32f2f', '#c62828', '#b71c1c', '#ff8a80', '#ff5252', '#ff1744', '#d50000'],  // red
     ['#2196f3', '#e3f2fd', '#bbdefb', '#90caf9', '#64b5f6', '#42a5f5', '#2196f3', '#1e88e5', '#1976d2', '#1565c0', '#0d47a1', '#82b1ff', '#448aff', '#2979ff', '#2962ff'],  // blue
     ['#ffeb3b', '#fffde7', '#fff9c4', '#fff59d', '#fff176', '#ffee58', '#ffeb3b', '#fdd835', '#fbc02d', '#f9a825', '#f57f17', '#ffff8d', '#ffff00', '#ffea00', '#ffd600'],  // yellow
     ['#673ab7', '#ede7f6', '#d1c4e9', '#b39ddb', '#9575cd', '#7e57c2', '#673ab7', '#5e35b1', '#512da8', '#4527a0', '#311b92', '#b388ff', '#7c4dff', '#651fff', '#6200ea'],  // deep purple
@@ -85,7 +85,7 @@ function DiscussionBarometer(){
         dialog.find('.col-md-5').empty();
         
         // change status of toggle
-        $('#chart-btn').bootstrapToggle('on');
+        $('#chart-btn').bootstrapToggle('off');
         // create bar chart as default view
         getD3BarometerBarChart(jsonData, address);
         // add listener for buttons to change the type of chart
@@ -491,7 +491,7 @@ function DiscussionBarometer(){
         // text of tooltip depends on address
         var tooltipText;
         if(address === "attitude"){
-            tooltipText = usersDict[index].seenBy;
+            tooltipText = usersDict[index].usersNumber;
         }
         else{
             tooltipText = usersDict[index].usersNumber + "/" + usersDict[index].seenBy;
@@ -502,9 +502,7 @@ function DiscussionBarometer(){
                    "font-weight": "bold", "font-size": "25px"})
             .text(tooltipText);
 
-        if(address === "attitude") {
-            tooltipText = address === "attitude" ? _t(sawThis) : _t(clickedOnThis);
-        }
+        tooltipText = _t(clickedOnThis);
         doughnutChartSvg.append("text").attr({x: 240, y: 230, class: "doughnut-chart-text-tooltip"}).text(tooltipText);
     }
 

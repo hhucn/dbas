@@ -324,7 +324,7 @@ var dbas_en = {
 	'checkPasswordConfirm': 'Better check your passwords, because they are not equal!',
 	'changelogView': 'view changelog',
 	'changelogHide': 'hide changelog',
-	'clickedOnThis': 'clickedOnThis',
+	'clickedOnThis': 'clicked on this',
 	'deleteTrack': 'Delete track',
 	'deleteHistory': 'Delete history',
 	'dataRemoved': 'Data was successfully removed.',
