@@ -532,9 +532,21 @@ function DiscussionBarometer(){
             }
         });
 
+        // add click-event-listener for avatar-icons
         $(document).on('click', '.img-circle', function () {
             window.location = $(this).attr('href');
         });
+
+        // add click-event-listener for popup
+        $('#' + popupBarometerId).on('click', function (d) {
+            // select area of popup without tooltip and listen for click event
+            // if tooltip is visible hide tooltip
+            if (d.target.id.indexOf("path") === -1 && d.target.id.indexOf("rect") === -1 && tooltipIsVisible === true) {
+                hideTooltip(selector, elementIndex);
+                isClicked = false;
+                tooltipIsVisible = false;
+            }
+       });
     }
 
      /**
