@@ -214,6 +214,8 @@ function DiscussionGraph() {
         //////////////////////////////////////////////////////////////////////////////
         // highlight nodes and edges
         addListenerForNodes(circle, edges);
+
+        addListenerForBackgroundOfNodes(edges);
     };
 
     /**
@@ -270,7 +272,7 @@ function DiscussionGraph() {
                     if (id.indexOf('statement') != -1 || id.indexOf('issue') != -1) {
                         $('#label-' + id).css({
                             'font-size': font_size / zoom_scale + 'px',
-                            'line-height': line_height / zoom_scale,
+                            'line-height': line_height / zoom_scale
                         });
                         var width = box_sizes[id].width / zoom_scale;
                         var height = box_sizes[id].height / zoom_scale;
@@ -537,6 +539,7 @@ function DiscussionGraph() {
      */
     function addListenerForNodes(circle, edges){
         var selectedCircleId;
+
         circle.on("click", function(d)
         {
             // distinguish between click and drag event
@@ -548,6 +551,19 @@ function DiscussionGraph() {
             var circleId = this.id;
             showPartOfGraph(edges, circleId);
             selectedCircleId = d.id;
+        });
+    }
+
+    /**
+     * Remove highlighted parts of graph if background of graph is clicked.
+     *
+     * @param edges
+     */
+    function addListenerForBackgroundOfNodes(edges) {
+        $(document).on("click", function (d) {
+            if(d.target.id.indexOf("circle") === -1){
+                highlightAllElements(edges);
+            }
         });
     }
 
@@ -766,10 +782,8 @@ function DiscussionGraph() {
             isAttackVisible = false;
         }
 
-        // highlight all elements of graph
-        edges.forEach(function(d){
-            highlightElements(d);
-        });
+        highlightAllElements(edges);
+
         // delete border of nodes
         force.nodes().forEach(function(d) {
             d3.select('#circle-' + d.id).attr('stroke', 'none');
@@ -778,6 +792,18 @@ function DiscussionGraph() {
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
     }
+
+    /**
+     * Highlight all elements of graph.
+     *
+     * @param edges
+     */
+    function highlightAllElements(edges) {
+        edges.forEach(function(d){
+            highlightElements(d);
+        });
+    }
+
 
     /**
      * Show all supports on the statements, which the current user has created.
@@ -817,10 +843,8 @@ function DiscussionGraph() {
         // if attacks are not visible, show the default view of the graph
         // else let them visible
         if(!isAttackVisible){
-            // highlight all elements of graph
-            edges.forEach(function(d){
-                highlightElements(d);
-            });
+            highlightAllElements(edges);
+
             // delete border of nodes
             force.nodes().forEach(function(d) {
                 d3.select('#circle-' + d.id).attr('stroke', 'none');
@@ -874,10 +898,8 @@ function DiscussionGraph() {
         isAttackVisible = false;
 
         if(!isSupportVisible){
-            // highlight all elements of graph
-            edges.forEach(function(d){
-                highlightElements(d);
-            });
+            highlightAllElements(edges);
+
             // delete border of nodes
             force.nodes().forEach(function(d) {
                 d3.select('#circle-' + d.id).attr('stroke', 'none');
