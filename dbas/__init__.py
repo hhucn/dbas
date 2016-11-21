@@ -58,10 +58,10 @@ def main(global_config, **settings):
                      'mail.tls': 'False',
                      'mail.default_sender': 'dbas.hhu@gmail.com'
                      }
-    all_settings = {**settings, **mail_settings}
+    # all_settings = {**settings, **mail_settings}
 
     # creating the configurator
-    config = Configurator(settings=all_settings,
+    config = Configurator(settings=mail_settings,
                           authentication_policy=authn_policy,
                           authorization_policy=authz_policy,
                           root_factory='dbas.security.RootFactory',
@@ -83,7 +83,9 @@ def main(global_config, **settings):
     config.include('websocket', route_prefix='/ws')
     config.include('webhook', route_prefix='/deploy')
 
-    # includes are in the the config
+    # more includes are in the config
+    config.include('pyramid_chameleon')
+    config.include('pyramid_mailer')
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
