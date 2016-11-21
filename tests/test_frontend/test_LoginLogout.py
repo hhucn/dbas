@@ -21,12 +21,12 @@ class TestLoginLogout:
         # assert that the user is now logged in
         assert_true(self.browser.is_text_present('do not match'))
 
-    def test_right_login(self):
+    def test_01_right_login(self):
         assert_false(self.browser.is_text_present('Pascal'), 'String \'Pascal\' present')
         self.browser.visit(login_url.format('Pascal', 'iamatestuser2016', ROOT))
         assert_true(self.browser.is_text_present('Pascal'), 'There is no \'Pascal\' on the side')
 
-    def test_logout(self):
-        self.test_right_login()
+    def test_02_logout(self):
+        # self.test_right_login()
         self.browser.visit(logout_url)
         assert_false(self.browser.is_text_present('Pascal'), 'String \'Pascal\' present')
