@@ -182,6 +182,7 @@ def main_settings(request):
     success     = False
     db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).join(Group).first()
     _uh         = user_manager
+    _t          = Translator(ui_locales)
 
     if db_user and 'form.passwordchange.submitted' in request.params:
         old_pw = escape_string(request.params['passwordold'])
@@ -197,7 +198,7 @@ def main_settings(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'Settings',
+        'title': _t.get(_.settings),
         'project': project_name,
         'extras': extras_dict,
         'settings': settings_dict
@@ -2487,6 +2488,7 @@ def revoke_some_content(request):
 
     info = ''
     success = ''
+    is_deleted = False
 
     try:
         uid = request.params['uid']
@@ -2495,7 +2497,7 @@ def revoke_some_content(request):
         if not is_integer(uid):
             error = _t.get(_.internalKeyError)
         else:
-            error = revoke_content(uid, is_argument, request.authenticated_userid, _t)
+            error, is_deleted = revoke_content(uid, is_argument, request.authenticated_userid, _t)
 
     except KeyError as e:
         logger('review_lock', 'error', repr(e))
@@ -2504,5 +2506,7 @@ def revoke_some_content(request):
     return_dict['info'] = info
     return_dict['error'] = error
     return_dict['success'] = success
+    return_dict['is_deleted'] = is_deleted
+    transaction.commit()
 
     return json.dumps(return_dict, True)

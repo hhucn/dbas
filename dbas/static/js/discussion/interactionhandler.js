@@ -230,18 +230,18 @@ function InteractionHandler() {
 	/**
 	 *
 	 * @param data
-	 * @param is_argument
 	 */
-	this.callbackIfDoneRevokeContent = function(data, is_argument) {
+	this.callbackIfDoneRevokeContent = function(data) {
 		var parsedData = $.parseJSON(data);
 		
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
-			if (is_argument)
+			console.log(parsedData['is_deleted']);
+			if (parsedData['is_deleted'])
 				setGlobalSuccessHandler('Yeah', _t_discussion(dataRemoved));
 			else
-				window.location.reload();
+				setGlobalSuccessHandler('Yeah', _t_discussion(contentWillBeRevoked));
 		}
 	};
 

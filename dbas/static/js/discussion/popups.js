@@ -223,6 +223,7 @@ function PopupHandler() {
 		
 		$('#popup-delete-content-submit').click(function () {
 			new AjaxDiscussionHandler().revokeContent(uid, is_argument);
+			popup.modal('hide');
 		});
 		
 		$('#popup-delete-content-close').click(function () {

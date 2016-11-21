@@ -11,7 +11,7 @@ import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
-    RevokedContent, RevokedContentHistory
+    RevokedContent, RevokedContentHistory, VoteStatement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
     set_new_undercut_or_overbid, set_new_undermine_or_support
@@ -297,7 +297,7 @@ def correct_statement(user, uid, corrected_text, url='', request=None):
         NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
 
     db_statement.set_textversion(textversion.uid)
-    transaction.commit()
+    # transaction.commit() # #207
 
     return_dict['uid'] = uid
     return_dict['text'] = corrected_text
@@ -500,7 +500,7 @@ def __set_statement(statement, user, is_start, issue):
                                                                      Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
     textversion.set_statement(new_statement.uid)
 
-    transaction.commit()
+    transaction.commit()  # necessary for #207
 
     return new_statement, False
 
@@ -560,7 +560,7 @@ def __create_argument_by_raw_input(user, text, conclusion_id, is_supportive, iss
     # third, insert the argument
     new_argument = __create_argument_by_uids(user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
 
-    transaction.commit()
+    transaction.commit()  # necessary for #207
     return new_argument, statement_uids
 
 
@@ -601,7 +601,7 @@ def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_u
                                                                        Argument.conclusion_uid == conclusion_uid,
                                                                        Argument.argument_uid == argument_uid,
                                                                        Argument.issue_uid == issue)).first()
-    transaction.commit()
+    transaction.commit()  # necessary for #207
     if new_argument:
         logger('QueryHelper', '__create_argument_by_uids', 'argument was inserted')
         return new_argument
@@ -676,13 +676,13 @@ def revoke_content(uid, is_argument, nickname, translator):
 
     # get element, which should be revoked
     if is_argument:
-        db_element, error = __revoke_argument(db_user, uid, translator)
+        db_element, is_deleted, error = __revoke_argument(db_user, uid, translator)
         if len(error) > 0:
-            return error
+            return error, False
     else:
-        db_element, error = __revoke_statement(db_user, uid, translator)
+        db_element, is_deleted, error = __revoke_statement(db_user, uid, translator)
         if len(error) > 0:
-            return error
+            return error, False
 
     # write log
     if is_argument:
@@ -692,9 +692,9 @@ def revoke_content(uid, is_argument, nickname, translator):
 
     DBDiscussionSession.add(db_element)
     DBDiscussionSession.flush()
-    transaction.commit()
+    # transaction.commit()  # #207
 
-    return ''
+    return '', is_deleted
 
 
 def __revoke_argument(db_user, argument_uid, translator):
@@ -711,11 +711,11 @@ def __revoke_argument(db_user, argument_uid, translator):
     # exists the argument
     if not db_argument:
         logger('QueryHelper', '__revoke_argument', 'Argument does not exists')
-        return None, translator.get(_.internalError)
+        return None, False, translator.get(_.internalError)
 
     if not is_author:
         logger('QueryHelper', 'revoke_content', db_user.nickname + ' is not the author')
-        return None, translator.get(_.userIsNotAuthorOfArgument)
+        return None, False, translator.get(_.userIsNotAuthorOfArgument)
 
     # does the argument has any attack or supports?
     relations = [get_undermines_for_argument_uid(argument_uid),
@@ -728,14 +728,16 @@ def __revoke_argument(db_user, argument_uid, translator):
         logger('QueryHelper', '__revoke_argument', 'New anonymous author for argument ' + str(argument_uid))
         db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         db_argument.author_uid = db_new_author.uid
+        is_deleted = False
     else:
         logger('QueryHelper', '__revoke_argument', 'Disabling argument ' + str(argument_uid))
         db_argument.set_disable(True)
+        is_deleted = True
 
     DBDiscussionSession.add(db_argument)
     DBDiscussionSession.flush()
-    transaction.commit()
-    return db_argument, ''
+    # transaction.commit()  # #207
+    return db_argument, is_deleted, ''
 
 
 def __revoke_statement(db_user, statement_uid, translator):
@@ -753,11 +755,11 @@ def __revoke_statement(db_user, statement_uid, translator):
     # exists the statement
     if not db_statement:
         logger('QueryHelper', '__revoke_statement', 'Statement does not exists')
-        return None, translator.get(_.internalError)
+        return None, False, translator.get(_.internalError)
 
     if not is_author:
         logger('QueryHelper', '__revoke_statement', db_user.nickname + ' is not the author')
-        return None, translator.get(_.userIsNotAuthorOfStatement)
+        return None, False, translator.get(_.userIsNotAuthorOfStatement)
 
     db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(db_new_author.uid) + ' (old author ' + str(db_user.uid) + ')')
@@ -768,25 +770,29 @@ def __revoke_statement(db_user, statement_uid, translator):
     db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == statement_uid,
                                                                                  Argument.is_supportive == True,
                                                                                  Argument.author_uid != db_user.uid)).first()
+    db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid != db_user.uid,
+                                                                    VoteStatement.is_up_vote == True,
+                                                                    VoteStatement.is_valid == True)).first()
     # search new author who supported this statement
-    if db_statement_as_conclusion:  # TODO 197 DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
+    if db_statement_as_conclusion or db_votes:  # TODO 197 DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
         db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         new_author_uid = db_new_author.uid  # db_statement_as_conclusion.author_uid
         logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(new_author_uid) + ' (old author ' + str(db_user.uid) + ')')
         db_statement.author_uid = new_author_uid
         __transfer_textversion_to_new_author(statement_uid, db_user.uid, new_author_uid)
+        is_deleted = False
     else:
         logger('QueryHelper', '__revoke_statement',
                'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ') and all arguments with this statement, cause we have no new author')
         db_statement.set_disable(True)
         __disable_textversions(statement_uid, db_user.uid)
         __disable_arguments_with_statement(db_user, statement_uid, translator)
+        is_deleted = True
 
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
-    transaction.commit()
 
-    return db_statement, ''
+    return db_statement, is_deleted, ''
 
 
 def __disable_textversions(statement_uid, author):
@@ -823,7 +829,6 @@ def __disable_arguments_with_statement(db_user, statement_uid, translator):
             # DBDiscussionSession.add(argument)
 
     DBDiscussionSession.flush()
-    transaction.commit()
 
 
 def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
@@ -842,4 +847,3 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
         DBDiscussionSession.add(RevokedContentHistory(old_author, new_author, textversion_uid=textversion.uid))
 
     DBDiscussionSession.flush()
-    transaction.commit()

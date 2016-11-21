@@ -21,6 +21,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from dbas.review.helper.reputation import get_reputation_of
 
 
 class DictionaryHelper(object):
@@ -211,6 +212,7 @@ class DictionaryHelper(object):
         db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first() if db_user else None
         group       = db_group.name if db_group else '-'
         gravatar_public_url = get_public_profile_picture(db_user)
+        reputation, tmp = get_reputation_of(db_user.nickname)
 
         db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
         db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None
@@ -244,7 +246,8 @@ class DictionaryHelper(object):
             'on': _tn.get(_.on),
             'off': _tn.get(_.off),
             'current_lang': db_language.name if db_language else '?',
-            'current_ui_locales': db_language.ui_locales if db_language else '?'
+            'current_ui_locales': db_language.ui_locales if db_language else '?',
+            'reputation': reputation
         }
 
     def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
