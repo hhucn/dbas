@@ -523,6 +523,7 @@ de_lang = {
     _.supportPosition: 'Position unterstützen',
     _.supportsNot: 'unterstützt nicht',
     _.isupport: 'ich halte',
+    _.settings: 'Einstellungen',
     _.statement: 'Aussage',
     _.statementIsAbout: 'Die Aussage ist die, dass',
     _.statementAdded: 'Aussage wurde hinzugefügt',
