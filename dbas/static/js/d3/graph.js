@@ -555,7 +555,7 @@ function DiscussionGraph() {
     }
 
     /**
-     * Remove highlighted parts of graph if background of graph is clicked.
+     * Make whole graph visible if background of graph is clicked.
      *
      * @param edges
      */
