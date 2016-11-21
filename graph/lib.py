@@ -3,6 +3,8 @@
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+import requests
+
 from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
@@ -81,6 +83,22 @@ def get_d3_data(issue, nickname):
 
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
     return d3_dict
+
+
+def get_doj_data(issue):
+    """
+
+    :param issue:
+    :return:
+    """
+    logger('GraphLib', 'get_doj_data', 'main')
+    url = 'http://localhost:5101/evaluate/all?issue=' + str(issue)
+    try:
+        resp = requests.get(url)
+    except Exception as e:
+        logger('Graph.lib', 'get_doj_data', 'Error: ' + str(e), error=True)
+        return {}
+    return resp
 
 
 def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x, y, node_size, position_size, edge_size, edge_type):

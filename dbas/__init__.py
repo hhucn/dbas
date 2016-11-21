@@ -50,25 +50,30 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
 
     # creating the configurator
-    settings = {'pyramid.default_locale_name': 'en',
-                'mail.host': 'imap.googlemail.com',
-                'mail.port': '465',
-                'mail.username': 'dbas.hhu@gmail.com',
-                'mail.password': 'orpcihtyuecxhoup',
-                'mail.ssl': 'True',
-                'mail.tls': 'False',
-                'mail.default_sender': 'dbas.hhu@gmail.com',
-                'session_factory': session_factory
-                }
+    settings.update({'pyramid.default_locale_name': 'en',
+                     'mail.host': 'imap.googlemail.com',
+                     'mail.port': '465',
+                     'mail.username': 'dbas.hhu@gmail.com',
+                     'mail.password': 'orpcihtyuecxhoup',
+                     'mail.ssl': 'True',
+                     'mail.tls': 'False',
+                     'mail.default_sender': 'dbas.hhu@gmail.com'
+                     })
 
     # creating the configurator    cache_regions = set_cache_regions_from_settings
-    config = Configurator(settings=settings, root_factory='dbas.security.RootFactory')
+    config = Configurator(settings=settings,
+                          authentication_policy=authn_policy,
+                          authorization_policy=authz_policy,
+                          root_factory='dbas.security.RootFactory',
+                          session_factory=session_factory
+                          )
     config.add_translation_dirs('dbas:locale', 'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)
 
-    config.set_authentication_policy(authn_policy)
-    config.set_authorization_policy(authz_policy)
-    config.set_session_factory(session_factory)
+    # config.set_authentication_policy(authn_policy)
+    # config.set_authorization_policy(authz_policy)
+    # config.set_root_factory('dbas.security.RootFactory')
+    # config.set_session_factory(session_factory)
 
     # Include apps
     config.include('api', route_prefix='/api')
