@@ -1,6 +1,4 @@
 from . import *
-from splinter import Browser
-from nose.tools import *
 
 ROOT = 'http://localhost:4284'
 error_text = 'test string not present on website'

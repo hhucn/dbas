@@ -1,6 +1,4 @@
 from . import *
-from splinter import Browser
-import time
 
 login_url = ROOT + '/ajax_user_login?user={0}&password={1}&keep_login=false&url={2}'
 logout_url = ROOT + '/ajax_user_logout'
@@ -26,8 +24,6 @@ class TestLoginLogout:
     def test_right_login(self):
         assert_false(self.browser.is_text_present('Pascal'), 'String \'Pascal\' present')
         self.browser.visit(login_url.format('Pascal', 'iamatestuser2016', ROOT))
-        print(self.browser.driver.page_source)
-        self.browser.driver.save_screenshot('picture.png')
         assert_true(self.browser.is_text_present('Pascal'), 'There is no \'Pascal\' on the side')
 
     def test_logout(self):
