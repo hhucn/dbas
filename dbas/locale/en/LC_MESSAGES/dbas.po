@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-11-17 08:17+0100\n"
+"POT-Creation-Date: 2016-11-21 10:00+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -395,12 +395,12 @@ msgid "icons_by"
 msgstr "Icons by"
 
 #. Default: is generated with Pyramid Web Framework
-#: templates/imprint.pt:80
+#: templates/imprint.pt:79
 msgid "generated_with"
 msgstr "is generated with Pyramid Web Framework"
 
 #. Default: Changes
-#: templates/imprint.pt:106
+#: templates/imprint.pt:102
 msgid "changes"
 msgstr "Changes in Version"
 

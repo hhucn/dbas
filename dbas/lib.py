@@ -56,6 +56,7 @@ def get_language(request, current_registry):
     :param current_registry: get_current_registry()
     :return: language abrreviation
     """
+    from dbas.logger import logger
     try:
         lang = request.cookies['_LOCALE_']
     except (KeyError, AttributeError):
