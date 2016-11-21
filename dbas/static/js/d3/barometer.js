@@ -148,7 +148,6 @@ function DiscussionBarometer(){
             usersDict = createDictForAttitude(jsonData, usersDict);
         else
             usersDict = createDictForArgumentAndStatement(jsonData, usersDict);
-        console.log(usersDict);
 
         // create bars of chart
         // selector = inner-rect: clicks on statement relative to seen_by value
@@ -379,7 +378,7 @@ function DiscussionBarometer(){
 
         // width and height of chart
         var width = 500, height = 410;
-        var doughnutChartSvg = getSvgDoughnutChart(width, height);
+        var doughnutChartSvg = getSvgDoughnutChart(width, height + 40);
 
         var usersDict = [];
         // create dictionary depending on address
@@ -509,7 +508,7 @@ function DiscussionBarometer(){
             .data(doughnut(usersDict))
             .enter().append("path")
             .attr({fill: function (d, i) { return getNormalColorFor(i); },
-                   stroke: "gray", d: innerCircle, transform: "translate(240,210)",
+                   stroke: "gray", d: innerCircle, transform: "translate(240,230)",
                    id: function (d, i) {return "inner-path-" + i}, class: "chart-sector"});
     }
 
@@ -526,7 +525,7 @@ function DiscussionBarometer(){
             .data(doughnut(usersDict))
             .enter().append("path")
             .attr({'fill': function (d, i) { return getLightColorFor(i); },
-                   stroke: "gray", d: outerCircle, transform: "translate(240,210)",
+                   stroke: "gray", d: outerCircle, transform: "translate(240,230)",
                    id: function (d, i) {return "outer-path-" + i}, class: "chart-sector"});
     }
 
@@ -549,13 +548,13 @@ function DiscussionBarometer(){
             tooltipText = usersDict[index].usersNumber + "/" + usersDict[index].seenBy;
         }
         doughnutChartSvg.append("text")
-            .attr({x: 240, y: 210,
+            .attr({x: 240, y: 230,
                    class: "doughnut-chart-text-tooltip",
                    "font-weight": "bold", "font-size": "25px"})
             .text(tooltipText);
 
         tooltipText = _t(clickedOnThis);
-        doughnutChartSvg.append("text").attr({x: 240, y: 230, class: "doughnut-chart-text-tooltip"}).text(tooltipText);
+        doughnutChartSvg.append("text").attr({x: 240, y: 250, class: "doughnut-chart-text-tooltip"}).text(tooltipText);
     }
 
     // bar chart and doughnut chart
