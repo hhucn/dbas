@@ -11,8 +11,8 @@
 
 		<div class="container colored-container first-container jumbotron" id="home-template">
 			<div class="content">
-				<img id="dbas-logo" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.svg')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
-				<img id="dbas-logo" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.svg')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
+				<img id="dbas-logo" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
+				<img id="dbas-logo" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
 				<br>
 				<p class="lead">
 					<span i18n:translate="welcome_text1">Welcome to D-BAS! This is an early prototype of our dialog-based argumentation system. There will be bugs. Please feel free to</span>

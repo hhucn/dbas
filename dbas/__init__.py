@@ -9,7 +9,7 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 
 # from wsgiref.simple_server import make_server
 
-from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authentication import AuthTktAuthenticationPolicy  # , SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
@@ -45,7 +45,7 @@ def main(global_config, **settings):
     load_discussion_database(discussion_engine)
     load_news_database(news_engine)
 
-    # session management and cache region support with pyramid_beaker
+    # session management and cache region support
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
 
@@ -58,9 +58,10 @@ def main(global_config, **settings):
                      'mail.tls': 'False',
                      'mail.default_sender': 'dbas.hhu@gmail.com'
                      }
+    all_settings = {**settings, **mail_settings}
 
     # creating the configurator
-    config = Configurator(settings=mail_settings,
+    config = Configurator(settings=all_settings,
                           authentication_policy=authn_policy,
                           authorization_policy=authz_policy,
                           root_factory='dbas.security.RootFactory',
@@ -82,10 +83,7 @@ def main(global_config, **settings):
     config.include('websocket', route_prefix='/ws')
     config.include('webhook', route_prefix='/deploy')
 
-    # includings for the config
-    config.include('pyramid_chameleon')
-    config.include('pyramid_mailer')
-    config.include('pyramid_beaker')
+    # includes are in the the config
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
@@ -94,7 +92,7 @@ def main(global_config, **settings):
     config.add_cache_buster('admin:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
-    # adding routes
+    # adding main routes
     config.add_route('main_page', '/')
     config.add_route('main_contact', '/contact')
     config.add_route('main_settings', '/settings')
@@ -149,7 +147,7 @@ def main(global_config, **settings):
     config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
     config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
 
-    # ajax for navigation logic at the end, otherwise the * pattern will do shit
+    # logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')
     config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
     config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
