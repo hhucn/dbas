@@ -140,9 +140,7 @@ function DiscussionBarometer(){
         // width and height of chart
         var width = 400;
         var height = 400;
-        var barChartSvg = getSvg(width+50, height+10);
-
-        createAxis(barChartSvg, height-50);
+        var barChartSvg = getSvg(width+70, height+50);
 
         var usersDict = [];
         // create dictionary depending on address
@@ -155,9 +153,17 @@ function DiscussionBarometer(){
         // create bars of chart
         // selector = inner-rect: clicks on statement relative to seen_by value
         createBar(width, height-50, usersDict, barChartSvg, "inner-rect", address);
-        // selector = outer-rect: seen_by value
-        if(address != 'attitude'){
+        if(address != 'argument' && address != 'attitude'){
+            // selector = outer-rect: seen_by value
             createBar(width, height-50, usersDict, barChartSvg, "outer-rect", address);
+        }
+
+        // create axis
+        if(address === 'argument'){
+            createXAxis(barChartSvg, width, height+10, usersDict);
+        }
+        else{
+            createYAxis(barChartSvg, height-50);
         }
 
         // create legend for chart
@@ -179,12 +185,36 @@ function DiscussionBarometer(){
     }
 
     /**
-     * Create axis for barometer.
+     * Create x-axis for barometer.
+     *
+     * @param svg
+     * @param width
+     * @param height
+     * @param usersDict
+     */
+     function createXAxis(svg, width, height, usersDict){
+        // number of all users
+        var sumUsersNumber = 0;
+        $.each(usersDict, function(key, value){
+            sumUsersNumber += value.usersNumber;
+        });
+
+        var xScale = d3.scale.linear().domain([0, sumUsersNumber]).range([0, width]);
+
+        // create y-axis
+        var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+        svg.append("g")
+            .attr({id: "xAxis", transform: "translate(50," + height + ")"})
+            .call(xAxis);
+    }
+
+    /**
+     * Create y-axis for barometer.
      *
      * @param svg
      * @param height
      */
-    function createAxis(svg, height){
+    function createYAxis(svg, height){
         var yScale = d3.scale.linear().domain([0, 100]).range([height, 0]);
 
         // create y-axis
@@ -253,8 +283,14 @@ function DiscussionBarometer(){
      */
     function createBar(width, height, usersDict, barChartSvg, selector, address) {
         // width of one bar
-        // width - left padding to y-Axis - space between bars
-        var barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
+        // width/height - left padding to y-Axis - space between bars
+        var barWidth;
+        if(address === "argument"){
+            barWidth = (height - 10 - (usersDict.length-1)*10) / usersDict.length;
+        }
+        else{
+            barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
+        }
 
         // set max-width of bar
         if(barWidth > 150){
@@ -263,19 +299,29 @@ function DiscussionBarometer(){
 
         // sum of users
         var sumUsersNumber = 0;
-        if(address === 'attitude'){
-            sumUsersNumber = usersDict[0].usersNumber + usersDict[1].usersNumber;
-        }
+        $.each(usersDict, function(key, value){
+            sumUsersNumber += value.usersNumber;
+        });
 
         barChartSvg.selectAll(selector)
             .data(usersDict)
             .enter().append("rect")
             .attr({
-                width: barWidth,
+                width: function (d) {
+                    if(address === 'argument'){
+                        return divideWrapperIfZero(d.usersNumber, sumUsersNumber) * width;
+                    }
+                    else{
+                        return barWidth;
+                    }
+                },
                 // height in percent: length/seen_by = x/height
                 height: function (d) {
                         if(address === 'attitude'){
                             return divideWrapperIfZero(d.usersNumber, sumUsersNumber) * height;
+                        }
+                        if(address === 'argument'){
+                            return barWidth;
                         }
                         if (selector === 'inner-rect')
                             return divideWrapperIfZero(d.usersNumber, d.seenBy) * height;
@@ -283,12 +329,18 @@ function DiscussionBarometer(){
                 },
                 // number of bar * width of bar + padding-left + space between to bars
                 x: function (d, i) {
+                    if(address === 'argument'){
+                        return 50;
+                    }
                     return i * barWidth + 60 + i * 10;
                 },
                 // y: height - barLength, because d3 starts to draw in left upper corner
-                y: function (d) {
+                y: function (d, i) {
                     if(address === 'attitude'){
                         return height - (divideWrapperIfZero(d.usersNumber, sumUsersNumber) * height - 50);
+                    }
+                    if(address === 'argument'){
+                        return i * barWidth + 60 + i * 10;
                     }
                     if (selector === 'inner-rect')
                         return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);
