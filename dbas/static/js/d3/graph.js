@@ -10,6 +10,21 @@ function DiscussionGraph() {
     var isStatementVisible = false;
     var isSupportVisible = false;
     var isAttackVisible = false;
+    var grey = '#424242';
+    var yellow = '#FFC107';
+    var red = '#F44336';
+    var green = '#64DD17';
+    var blue = '#3D5AFE';
+    var black = '#000000';
+    var dark_grey = '#616161';
+    var dark_red = '#D32F2F';
+    var dark_green = '#689F38';
+    var dark_blue = '#1976D2';
+    var font_size = 14;
+    var line_height = 1.5;
+    var box_sizes = {};
+    var node_id_prefix = 'node_';
+    var old_scale = 1.0;
 
     /**
      * Displays a graph of current discussion
@@ -126,11 +141,15 @@ function DiscussionGraph() {
     this.getD3Graph = function(jsonData){
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
+        
+        // height of the header ( offset per line count)
+        var offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
 
-        var width = container.width(), height = container.outerHeight();
+        var width = container.width();
+        var height = container.outerHeight() - offset;
 
-        var svg = getGraphSvg(width, height),
-            force = getForce(width, height+100);
+        var svg = getGraphSvg(width, height);
+        var force = getForce(width, height+100);
 
         // zoom and pan
         zoomAndPan();
@@ -141,20 +160,21 @@ function DiscussionGraph() {
 
         // edge
         var edges = createEdgeDict(jsonData);
+        setNodeColorsForData(jsonData);
         // create arrays of links, nodes and move layout forward one step
         force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-        var edgesTypeArrow = createArrowDict(edges),
-            marker = createArrows(svg, edgesTypeArrow),
-            link = createLinks(svg, edges, marker);
+        var edgesTypeArrow = createArrowDict(edges);
+        var marker = createArrows(svg, edgesTypeArrow);
+        var link = createLinks(svg, edges, marker);
 
         // node
-        var node = createNodes(svg, force, drag),
-            circle = setNodeProperties(node);
+        var node = createNodes(svg, force, drag);
+        var circle = setNodeProperties(node);
 
         // tooltip
         // rect as background of label
-        var rect = node.append("rect").attr('class', 'labelBox'),
-            label = createLabel(node);
+        var rect = node.append('rect').attr('class', 'labelBox');
+        var label = createLabel(node);
         setRectProperties(rect);
 
         // legend
@@ -233,12 +253,51 @@ function DiscussionGraph() {
      * Enable zoom and pan functionality on graph.
      */
     function zoomAndPan(){
-        var zoom = d3.behavior.zoom().on("zoom", redraw);
+        var zoom = d3.behavior.zoom().on("zoom", redraw).scaleExtent([0.5, 5]);
+        
         d3.select("#graph-svg").call(zoom).on("dblclick.zoom", null);
+        
         function redraw() {
-            d3.selectAll("g.zoom")
-            .attr("transform", "translate(" + zoom.translate() + ")"
-            + " scale(" + zoom.scale() + ")");
+            var zoom_scale = zoom.scale();
+            var change_scale = Math.abs(old_scale - zoom_scale) > 0.02;
+            old_scale = zoom_scale;
+        
+            d3.selectAll("g.zoom").attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom_scale + ")");
+            if (change_scale){
+                // resizing of font size, line height and the complete rectangle
+                $('#' + graphViewContainerSpaceId).find('.node').each(function(){
+                    var id = $(this).attr('id').replace(node_id_prefix, '');
+                    if (id.indexOf('statement') != -1 || id.indexOf('issue') != -1) {
+                        $('#label-' + id).css({
+                            'font-size': font_size / zoom_scale + 'px',
+                            'line-height': line_height / zoom_scale,
+                        });
+                        var width = box_sizes[id].width / zoom_scale;
+                        var height = box_sizes[id].height / zoom_scale;
+                        var pos = calculateRectPos(box_sizes[id].width, box_sizes[id].height);
+                        $('#rect-' + id).attr({
+                            'width': width,
+                            'height': height,
+                            'x': pos[0] / zoom_scale,
+                            'y': pos[1] / zoom_scale
+                        });
+                    }
+                });
+                
+                // dirty hack to accept new line height and label position
+                $('body').css({'line-height': '1.0'});
+                setTimeout(function(){
+                    $('body').css({'line-height': '1.5'});
+                    $('#' + graphViewContainerSpaceId).find('.node').each(function(){
+                        var id = $(this).attr('id').replace(node_id_prefix, '');
+                        var label = $('#label-' + id);
+                        var rect = $('#rect-' + id);
+                        label.attr({
+                            'y': -label.height()/ zoom_scale + 45 / zoom_scale
+                        });
+                    });
+                }, 300);
+            }
         }
     }
 
@@ -271,7 +330,17 @@ function DiscussionGraph() {
             force.size([container.width(), container.outerHeight()]).resume();
         }
     }
-
+    
+    /**
+     * Sets the color in the json Data
+     * @param jsonData: dict with data for nodes and edges
+     */
+    function setNodeColorsForData(jsonData){
+        jsonData.nodes.forEach(function(e) {
+            e.color = e.type === 'position' ? blue : e.type === 'statement' ? yellow : black;
+        });
+    }
+    
     /**
      * Create dictionary for edges.
      *
@@ -285,7 +354,8 @@ function DiscussionGraph() {
             var sourceNode = jsonData.nodes.filter(function(d) { return d.id === e.source; })[0],
                 targetNode = jsonData.nodes.filter(function(d) { return d.id === e.target; })[0];
             // add edge, color, type, size and id to array
-            edges.push({source: sourceNode, target: targetNode, color: e.color, edge_type: e.edge_type, size: e.size, id: e.id});
+            var color = e.is_attacking === 'none'? grey : e.is_attacking ? green : red;
+            edges.push({source: sourceNode, target: targetNode, color: color, edge_type: e.edge_type, size: e.size, id: e.id});
         });
         return edges;
     }
@@ -364,8 +434,8 @@ function DiscussionGraph() {
             .data(force.nodes())
             .enter().append("g")
             .attr({class: "node",
-                   id: function(d){
-                       return 'node_' + d.id;}})
+                   id: function(d){ return node_id_prefix + d.id; }
+            })
             .call(drag);
     }
 
@@ -417,18 +487,35 @@ function DiscussionGraph() {
      */
     function setRectProperties(rect){
         rect.each(function (d) {
-            var element = $("#label-" + d.id),
-                width = element.width() + 24,
-                height = element.height() + 10;
+            var element = $("#label-" + d.id);
+            var width = element.width() + 24;
+            var height = element.height() + 10;
+            var pos = calculateRectPos(width, height);
             if(d.size === 0){
                 width = 0;
                 height = 0;
             }
-            d3.select(this)
-            .attr({width: width, height: height,
-                   x: -width/2, y: -height+36,
-                   id: 'rect-' + d.id});
+            d3.select(this).attr({
+                width: width,
+                height: height,
+                x: pos[0],
+                y: pos[1],
+                id: 'rect-' + d.id});
+            if (d.id.indexOf('statement') != -1 || d.id.indexOf('issue') != -1) {
+                box_sizes[d.id] = {'width': width, 'height': height};
+            }
         });
+    }
+    
+    /**
+     * Calculate the rectangle position depending on the rectangle width and height
+     *
+     * @param width int
+     * @param height int
+     * @returns {*[]} [x, y]
+     */
+    function calculateRectPos(width, height){
+        return [-width/2, -height+36];
     }
 
     /**
@@ -879,10 +966,10 @@ function DiscussionGraph() {
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function(d){
             var circleUid = selectUid(circleId);
-            if(isSupportVisible && selectUid(d.target.id) === circleUid && d.color === '#64DD17'){
+            if(isSupportVisible && selectUid(d.target.id) === circleUid && d.color === green){
                 edgesCircleId.push(d);
             }
-            else if(isAttackVisible && selectUid(d.target.id) === circleUid && d.color === '#F44336'){
+            else if(isAttackVisible && selectUid(d.target.id) === circleUid && d.color === 'red'){
                 edgesCircleId.push(d);
             }
             else if((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid)

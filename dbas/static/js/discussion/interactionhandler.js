@@ -73,7 +73,7 @@ function InteractionHandler() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
-			new GuiHandler().hideAndClearEditStatementsPopup();
+			new PopupHandler().hideAndClearEditStatementsPopup();
 		}
 	};
 
@@ -121,57 +121,43 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingInfosAboutArgument = function(data){
 		var parsedData = $.parseJSON(data), text, element;
 		// status is the length of the content
-		if (parsedData.error.length == 0) {
-			var body = $('<div>'),
-				table = $('<table>')
-					.attr('class', 'table table-condensed table-hover')
-					.attr('border', '0')
-					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
-				tr = $('<tr>')
-					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left')),
-				tbody = $('<tbody>'),
-				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', i=0;
-			
-			if (Object.keys(parsedData.supporter).length > 1)
-				tr.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left'));
+		if (parsedData.error.length != 0) {
+			text = parsedData.error;
+			element = $('<p>').html(text);
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
+			return;
+		}
 
-			// supporters = parsedData.supporter.join(', ');
-			text = parsedData.text + '<br><br>';
-			text += _t_discussion(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ', ';
-			text += parsedData.timestamp + '.<br>';
-			text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
-			text +=_t_discussion(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t_discussion(messageInfoParticipantPl)) + '.';
+		// supporters = parsedData.supporter.join(', ');
+		text = parsedData.text + '<br><br>';
+		text += _t_discussion(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ', ';
+		text += parsedData.timestamp + '.<br>';
+		text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
+		text +=_t_discussion(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t_discussion(messageInfoParticipantPl)) + '.';
 
-			if (parsedData.vote_count>0) {
-				$.each(parsedData.supporter, function(index, nick){
-					td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.public_page[nick]).text(nick));
-					td_avatar = $('<td>').html('<img class="preload-image" style="height: 40%;" src="' + parsedData.gravatars[nick] + '"></td>');
-					if (i==1){
-						i=0;
-						tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
-					} else {
-						i=1;
-						stored_td_nick = td_nick;
-						stored_td_avatar = td_avatar;
-					}
-				});
-				if (i==1)
-					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
-			}
+		var users_array = [];
+		$.each(parsedData.supporter, function (index, val) {
+			users_array.push({
+				'avatar_url': parsedData.gravatars[val],
+				'nickname': val,
+				'public_profile_url': parsedData.public_page[val]
+			});
+		});
+		
+		var gh = new GuiHandler();
+		var tbody = $('<tbody>');
+		var rows = gh.createUserRowsForOpinionDialog(users_array);
+		$.each( rows, function( key, value ) {
+			tbody.append(value);
+		});
+		
+		var body = gh.closePrepareTableForOpinonDialog(parsedData.supporter, gh, text, tbody);
 
-			if (tbody.find('tr').length==0)
-				body.append(new GuiHandler().getAlertIntoDialogNoDecisions());
-			else
-				body.append(table.append(tbody));
-
-			body.append(text).append(table.append(tbody));
-			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
-			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
-			new Helper().delay(function(){
+		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
+		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function (e) {
+			$(this).removeClass('modal-lg');
+		});
+		setTimeout(function(){
 				var popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
 				if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
 					popup_table.slimScroll({
@@ -182,11 +168,7 @@ function InteractionHandler() {
 					});
 				}
 			}, 300);
-		} else {
-			text = parsedData.error;
-			element = $('<p>').html(text);
-			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
-		}
+		
 	};
 
 	/**
@@ -210,7 +192,7 @@ function InteractionHandler() {
 		} else {
 			$('#popup-add-topic-error-text').text(parsedData.error);
 			$('#popup-add-topic-error').show();
-			new Helper().delay(function(){
+			setTimeout(function(){
 				$('#popup-add-topic-error').hide();
 			}, 2500);
 		}
@@ -239,7 +221,7 @@ function InteractionHandler() {
 		} else {
 			$('#popup-add-topic-error-text').text(parsedData.error);
 			$('#popup-add-topic-error').show();
-			new Helper().delay(function(){
+			setTimeout(function(){
 				$('#popup-add-topic-error').hide();
 			}, 2500);
 		}
@@ -271,48 +253,28 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data, is_argument){
 		var parsedData = $.parseJSON(data), users_array, popup_table;
 
-		if (parsedData.error.length == 0) {
-			var body = $('<div>'),
-				span = is_argument? $('<span>').text(parsedData.opinions.message) : $('<span>').text(parsedData.opinions[0].message),
-				table = $('<table>')
-					.attr('class', 'table table-condensed table-hover')
-					.attr('border', '0')
-					.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;'),
-				tr = $('<tr>')
-					.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left')),
-				tbody = $('<tbody>'),
-				td_nick, td_avatar, stored_td_nick='', stored_td_avatar='', j=0;
+		if (parsedData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			return;
+		}
+		
+		var gh = new GuiHandler();
+		var tbody = $('<tbody>');
+		var span = is_argument? $('<span>').text(parsedData.opinions.message) : $('<span>').text(parsedData.opinions[0].message);
 
-			users_array = is_argument ? parsedData.opinions.users : parsedData.opinions[0].users;
-			if (Object.keys(users_array).length > 1)
-				tr.append($('<td>').html('<strong>' + _t_discussion(avatar) + '</strong>').css('text-align', 'left'))
-					.append($('<td>').html('<strong>' + _t_discussion(nickname) + '</strong>').css('text-align', 'left'));
-			table.append($('<thead>').append(tr));
+		users_array = is_argument ? parsedData.opinions.users : parsedData.opinions[0].users;
+		var rows = gh.createUserRowsForOpinionDialog(users_array);
+		$.each( rows, function( key, value ) {
+			tbody.append(value);
+		});
+		
+		var body = gh.closePrepareTableForOpinonDialog(users_array, gh, span, tbody);
 
-			$.each(users_array, function (i, val) {
-				td_nick = $('<td>').append($('<a>').attr('target', '_blank').attr('href', val.public_profile_url).text(val.nickname));
-				td_avatar = $('<td>').html('<img class="preload-image" style="height: 40%;" src="' + val.avatar_url + '"></td>');
-				if (j==1){
-					j=0;
-					tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick).append(td_avatar).append(td_nick));
-				} else {
-					j=1;
-					stored_td_nick = td_nick;
-					stored_td_avatar = td_avatar;
-				}
-			});
-			if (j==1)
-				tbody.append($('<tr>').append(stored_td_avatar).append(stored_td_nick));
-
-			if (tbody.find('tr').length==0)
-				body.append(new GuiHandler().getAlertIntoDialogNoDecisions());
-			else
-				body.append(span).append(table.append(tbody));
-
-			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(usersWithSameOpinion), body);
-			$('#' + popupConfirmDialogId).find('.modal-dialog');//.addClass('modal-sm');
-			new Helper().delay(function(){
+		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(usersWithSameOpinion), body);
+		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function (e) {
+			$(this).removeClass('modal-lg');
+		});
+		setTimeout(function(){
 				popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
 				if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
 					popup_table.slimScroll({
@@ -323,11 +285,22 @@ function InteractionHandler() {
 					});
 				}
 			}, 300);
-		} else {
-			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-		}
+		
 	};
-
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackIfDoneForGettingReferences = function(data){
+		var parsedData = $.parseJSON(data);
+		
+		if (parsedData.error.length != 0)
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		else
+			new PopupHandler().showReferencesPopup(parsedData);
+	};
+	
 	/**
 	 *
 	 * @param text
@@ -376,9 +349,7 @@ function InteractionHandler() {
 			}
 
 			if (undecided_texts.length > 0){
-				var helper = new Helper();
 				for (var j=0; j<undecided_texts.length; j++){
-					undecided_texts[j] = helper.startWithLowerCase(undecided_texts[j]);
 					if (undecided_texts[j].match(/\.$/))
 						undecided_texts[j] = undecided_texts[j].substr(0, undecided_texts[j].length -1)
 				}

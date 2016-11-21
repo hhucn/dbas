@@ -4,15 +4,17 @@ Provides helping function for the managing the queue with all executed decisions
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
     User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled
-from dbas.lib import sql_timestamp_pretty_print, get_public_nickname_based_on_settings, get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
-from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
-from dbas.review.helper.main import en_or_disable_object_of_review
-from sqlalchemy import and_
-from dbas.strings.translator import Translator
+from dbas.lib import sql_timestamp_pretty_print, get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
 from dbas.logger import logger
+from dbas.review.helper.main import en_or_disable_object_of_review
+from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+from sqlalchemy import and_
 
 
 def get_review_history(main_page, nickname, translator):
@@ -132,7 +134,7 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
             full_text = get_text_for_statement_uid(review.statement_uid)
 
         # pretty print
-        intro = translator.get(translator.otherUsersSaidThat) + ' '
+        intro = translator.get(_.otherUsersSaidThat) + ' '
         if full_text.startswith(intro):
             short_text = full_text[len(intro):len(intro) + 1].upper() + full_text[len(intro) + 1:len(intro) + length]
         else:
@@ -165,8 +167,16 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
         entry['argument_shorttext'] = short_text
         entry['argument_fulltext'] = full_text
         if table == 'edits':
-            entry['argument_oem_shorttext'] = 'TODO' + short_text
-            entry['argument_oem_fulltext'] = 'TODO' + full_text
+            if is_executed:
+                db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
+                entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
+                entry['argument_oem_fulltext'] = db_textversions[1].content
+            else:
+                db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).first()
+                entry['argument_oem_shorttext'] = short_text
+                entry['argument_oem_fulltext'] = full_text
+                entry['argument_shorttext'] = short_text.replace(short_text, (db_edit_value.content[0:length] + '...') if len(full_text) > length else db_edit_value.content)
+                entry['argument_fulltext'] = db_edit_value.content
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
@@ -178,19 +188,19 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     return some_list
 
 
-def __get_user_dict_for_review(user_id, mainpage):
+def __get_user_dict_for_review(user_id, main_page):
     """
     Fetches some data of the given user.
 
-    :param mainpage: Mainpage of D-BAS
-    :return: dcit with gravatar, uerpage and nickname
+    :param main_page: main_page of D-BAS
+    :return: dict with gravatar, users page and nickname
     """
     db_user = DBDiscussionSession.query(User).filter_by(uid=user_id).first()
     image_url = get_profile_picture(db_user, 20)
     return {
         'gravatar_url': image_url,
-        'nickname': get_public_nickname_based_on_settings(db_user),
-        'userpage_url': mainpage + '/user/' + get_public_nickname_based_on_settings(db_user)
+        'nickname': db_user.get_global_nickname(),
+        'userpage_url': main_page + '/user/' + db_user.get_global_nickname()
     }
 
 
@@ -204,14 +214,13 @@ def __has_access_to_history(nickname):
     return is_user_author or reputation_count > reputation_borders['history']
 
 
-def revoke_old_decision(queue, uid, lang, nickname, transaction):
+def revoke_old_decision(queue, uid, lang, nickname):
     """
 
     :param queue:
     :param uid:
     :param lang:
     :param nickname:
-    :param transaction:
     :return:
     """
     logger('review_history_helper', 'revoke_old_decision', 'queue: ' + queue + ', uid: ' + str(uid))
@@ -222,13 +231,13 @@ def revoke_old_decision(queue, uid, lang, nickname, transaction):
     _t = Translator(lang)
 
     if queue == 'deletes':
-        __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid, transaction)
-        success = _t.get(_t.dataRemoved)
+        __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid)
+        success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_delete=uid))
 
     elif queue == 'optimizations':
-        __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid, transaction)
-        success = _t.get(_t.dataRemoved)
+        __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid)
+        success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_optimization=uid))
 
     elif queue == 'edits':
@@ -247,10 +256,10 @@ def revoke_old_decision(queue, uid, lang, nickname, transaction):
         db_new_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=db_statement.uid).order_by(TextVersion.uid.desc()).first()
         db_statement.set_textversion(db_new_textversion.uid)
 
-        success = _t.get(_t.dataRemoved)
+        success = _t.get(_.dataRemoved)
 
     else:
-        error = _t.get(_t.internalKeyError)
+        error = _t.get(_.internalKeyError)
 
     DBDiscussionSession.flush()
     transaction.commit()
@@ -258,13 +267,12 @@ def revoke_old_decision(queue, uid, lang, nickname, transaction):
     return success, error
 
 
-def cancel_ongoing_decision(queue, uid, lang, transaction):
+def cancel_ongoing_decision(queue, uid, lang):
     """
 
     :param queue:
     :param uid:
     :param lang:
-    :param transaction:
     :return:
     """
     logger('review_history_helper', 'cancel_ongoing_decision', 'queue: ' + queue + ', uid: ' + str(uid))
@@ -275,21 +283,21 @@ def cancel_ongoing_decision(queue, uid, lang, transaction):
     if queue == 'deletes':
         DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).delete()
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
-        success = _t.get(_t.dataRemoved)
+        success = _t.get(_.dataRemoved)
 
     elif queue == 'optimizations':
         DBDiscussionSession.query(ReviewOptimization).filter_by(uid=uid).delete()
         DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=uid).delete()
-        success = _t.get(_t.dataRemoved)
+        success = _t.get(_.dataRemoved)
 
     elif queue == 'edits':
         DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).delete()
         DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
         DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=uid).delete()
-        success = _t.get(_t.dataRemoved)
+        success = _t.get(_.dataRemoved)
 
     else:
-        error = _t.get(_t.internalKeyError)
+        error = _t.get(_.internalKeyError)
 
     DBDiscussionSession.flush()
     transaction.commit()
@@ -297,7 +305,7 @@ def cancel_ongoing_decision(queue, uid, lang, transaction):
     return success, error
 
 
-def __revoke_decision_and_implications(type, reviewer_type, uid, transaction):
+def __revoke_decision_and_implications(type, reviewer_type, uid):
     """
 
     :param type:
@@ -310,7 +318,7 @@ def __revoke_decision_and_implications(type, reviewer_type, uid, transaction):
 
     db_review = DBDiscussionSession.query(type).filter_by(uid=uid).first()
     db_review.set_revoked(True)
-    en_or_disable_object_of_review(db_review, False, transaction)
+    en_or_disable_object_of_review(db_review, False)
 
     DBDiscussionSession.flush()
     transaction.commit()

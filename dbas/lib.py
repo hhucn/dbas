@@ -5,21 +5,37 @@ Common, pure functions used by the D-BAS.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import hashlib
-import time
 import locale
+import time
+import os
 
-from urllib import parse
+from collections import defaultdict
 from datetime import datetime
 from html import escape
-from sqlalchemy import and_, func
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, VoteArgument, VoteStatement, Group
-from dbas.strings.translator import Translator
-from dbas.strings.text_generator import TextGenerator
-from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
+from urllib import parse
 
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
+    VoteArgument, VoteStatement, Group
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.text_generator import TextGenerator
+from dbas.strings.translator import Translator, get_translation
+from sqlalchemy import and_, func
 
 fallback_lang = 'en'
+
+
+def get_global_url():
+    """
+    Returns the global url of the project.
+    Important: the global url has to be in setup.py like "url='http://foo.bar'"
+
+    :return: String
+    """
+    path = str(os.path.realpath(__file__ + '/../../setup.py'))
+    lines = [line.rstrip('\n').strip() for line in open(path)]
+
+    return str([l[l.index('htt'):-2] for l in lines if 'url=' in l])
 
 
 def escape_string(text):
@@ -40,6 +56,7 @@ def get_language(request, current_registry):
     :param current_registry: get_current_registry()
     :return: language abrreviation
     """
+    from dbas.logger import logger
     try:
         lang = request.cookies['_LOCALE_']
     except (KeyError, AttributeError):
@@ -117,24 +134,22 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    return_array = []
-    if include_disabled:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
-    else:
-        db_arguments = get_not_disabled_arguments_as_query().filter_by(conclusion_uid=statement_uid).all()
-    if db_arguments:
-        return_array = db_arguments
 
-    if include_disabled:
-        db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid).all()
-    else:
-        db_premises = get_not_disabled_premises_as_query().filter_by(statement_uid=statement_uid).all()
+    db_arguments = DBDiscussionSession.query(Argument).filter_by(
+        is_disabled=include_disabled,
+        conclusion_uid=statement_uid
+    ).all()
 
-    for premise in db_premises:
-        if include_disabled:
-            db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
-        else:
-            db_arguments = get_not_disabled_arguments_as_query().filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
+    premises = DBDiscussionSession.query(Premise).filter_by(
+        is_disabled=include_disabled,
+        statement_uid=statement_uid
+    ).all()
+
+    return_array = db_arguments if db_arguments else []
+
+    for premise in premises:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=include_disabled,
+                                                                     premisesgroup_uid=premise.premisesgroup_uid).all()
 
         if db_arguments:
             return_array = return_array + db_arguments
@@ -159,11 +174,12 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     :param minimize_on_undercut: Boolean
     :return: String
     """
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-    lang = get_lang_for_argument(uid)
-    # catch error
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None
+
+    lang = db_argument.lang
+    # catch error
 
     _t = Translator(lang)
 
@@ -178,14 +194,16 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
 
     if len(arg_array) == 1:
         # build one argument only
-        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro)
+        return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
+                                       start_with_intro)
 
     else:
         # get all pgroups and at last, the conclusion
         sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
         se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
-        doesnt_hold_because = ' ' + se + _t.get(_t.doesNotHold).lower() + ' ' + _t.get(_t.because).lower() + ' ' + sb
-        return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t, minimize_on_undercut)
+        doesnt_hold_because = ' ' + se + _t.get(_.doesNotHold).lower() + ' ' + _t.get(_.because).lower() + ' ' + sb
+        return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
+                                       start_with_intro, doesnt_hold_because, lang, minimize_on_undercut)
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
@@ -214,7 +232,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     text depends on the provided language.
 
     :param statement_uid: Id to a statement, which should be analyzed
-    :param color_statement: True, if the statement (speicified by the ID) should be colored
+    :param color_statement: True, if the statement (specified by the ID) should be colored
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
@@ -240,7 +258,7 @@ def get_slug_by_statement_uid(uid):
     :param uid:
     :return:
     """
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
     return resolve_issue_uid_to_slug(db_statement.issue_uid)
 
 
@@ -248,28 +266,30 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     """
 
     :param arg_array:
-    :param colored_position:
     :param with_html_tag:
     :return:
     """
+    from dbas.logger import logger
+    logger('x', 'x', str(arg_array))
     tag_premise = ('<' + TextGenerator.tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
     tag_conclusion = ('<' + TextGenerator.tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_end = ('</' + TextGenerator.tag_type + '>') if with_html_tag else ''
-    lang = get_lang_for_argument(arg_array[0])
+    lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     _t = Translator(lang)
 
     if len(arg_array) == 1:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+        db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
         if lang == 'de':
-            intro = _t.get(_t.rebut1) if db_argument.is_supportive else _t.get(_t.overbid1)
+            intro = _t.get(_.rebut1) if db_argument.is_supportive else _t.get(_.overbid1)
             ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end
-            ret_value += ' ' + _t.get(_t.because).lower() + ' ' + tag_premise + premises + tag_end
+            ret_value += ' ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
         else:
-            ret_value = tag_conclusion + conclusion + ' ' + (_t.get(_t.isNotRight).lower() if not db_argument.is_supportive else '') + tag_end
-            ret_value += ' ' + _t.get(_t.because).lower() + ' '
+            ret_value = tag_conclusion + conclusion + ' ' + (
+                _t.get(_.isNotRight).lower() if not db_argument.is_supportive else '') + tag_end
+            ret_value += ' ' + _t.get(_.because).lower() + ' '
             ret_value += tag_premise + premises + tag_end
 
     else:
@@ -284,9 +304,9 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 
         ret_value = tag_conclusion + conclusions_premises + ' '
-        ret_value += _t.get(_t.doesNotJustify) + ' '
+        ret_value += _t.get(_.doesNotJustify) + ' '
         ret_value += conclusions_conclusion + tag_end + ' '
-        ret_value += _t.get(_t.because).lower() + ' ' + tag_premise + premises + tag_end
+        ret_value += _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
 
     return ret_value
 
@@ -306,7 +326,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
-    lang = get_lang_for_argument(uid)
+    lang = DBDiscussionSession.query(Argument).get(uid).lang
 
     if lang != 'de':
         # conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
@@ -335,9 +355,9 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
     if lang == 'de':
         if rearrange_intro:
-            intro = _t.get(_t.itTrueIsThat) if db_argument.is_supportive else _t.get(_t.itFalseIsThat)
+            intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
         else:
-            intro = _t.get(_t.itIsTrueThat) if db_argument.is_supportive else _t.get(_t.itIsFalseThat)
+            intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
 
         # if color_everything:
         #     ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
@@ -345,14 +365,14 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         if start_with_intro:
             ret_value = intro[0:1].upper() + intro[1:] + ' '
         else:
-            ret_value = (_t.get(_t.statementIsAbout) + ' ') if lang == 'de' else ''
+            ret_value = (_t.get(_.statementIsAbout) + ' ') if lang == 'de' else ''
         ret_value += conclusion
         ret_value += ', ' if lang == 'de' else ' '
-        ret_value += _t.get(_t.because).lower() + ' ' + premises
+        ret_value += _t.get(_.because).lower() + ' ' + premises
     else:
-        tmp = sb + ' ' + _t.get(_t.isNotRight).lower() + se + ', ' + _t.get(_t.because).lower() + ' '
+        tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
         ret_value = conclusion + ' '
-        ret_value += _t.get(_t.because).lower() if db_argument.is_supportive else tmp
+        ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
     # if color_everything:
@@ -361,11 +381,12 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     return ret_value
 
 
-def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro, doesnt_hold_because, _t, minimize_on_undercut):
+def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
+                            doesnt_hold_because, lang, minimize_on_undercut):
     """
 
     :param arg_array:
-    :param lang:
+    :param local_lang:
     :param first_arg_by_user:
     :param user_changed_opinion:
     :param with_html_tag:
@@ -379,49 +400,46 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     pgroups = []
     supportive = []
     arg_array = arg_array[::-1]
-    lang = get_lang_for_argument(arg_array[0])
+    local_lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     for uid in arg_array:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
         text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        pgroups.append((text[0:1].lower() + text[1:])if lang != 'de' else text)
+        pgroups.append((text[0:1].lower() + text[1:]) if local_lang != 'de' else text)
         supportive.append(db_argument.is_supportive)
     uid = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid
     conclusion = get_text_for_statement_uid(uid)
 
-    sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
-    se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
-    because = ', ' if lang == 'de' else ' '
-    because += _t.get(_t.because).lower() + ' '
+    sb = '<{} data-argumentation-type="position">'.format(TextGenerator.tag_type) if with_html_tag else ''
+    se = '</{}>'.format(TextGenerator.tag_type) if with_html_tag else ''
+
+    because = ', ' if local_lang == 'de' else ' '
+    because += get_translation(_.because, lang).lower() + ' '
 
     if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
-        ret_value = _t.get(_t.earlierYouArguedThat) if user_changed_opinion else _t.get(_t.otherUsersSaidThat) + ' '
+        ret_value = get_translation(_.earlierYouArguedThat, lang) if user_changed_opinion else get_translation(
+            _.otherUsersSaidThat, lang) + ' '
         users_opinion = True  # user after system
-        if lang != 'de':
+        if local_lang != 'de':
             conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
     else:  # user starts
-        ret_value = (_t.get(_t.soYourOpinionIsThat) + ': ') if start_with_intro else ''
+        ret_value = (get_translation(_.soYourOpinionIsThat, lang) + ': ') if start_with_intro else ''
         users_opinion = False  # system after user
         conclusion = se + conclusion[0:1].upper() + conclusion[1:]  # pretty print
     ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
-        return _t.get(_t.butYouCounteredWith) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        return get_translation(_.butYouCounteredWith, lang) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 
-    for i in range(1, len(pgroups)):
+    for i, pgroup in enumerate(pgroups):
         ret_value += ' '
         if users_opinion:
-            if user_changed_opinion:
-                ret_value += _t.get(_t.otherParticipantsConvincedYouThat)
-            else:
-                ret_value += _t.get(_t.butYouCounteredWith)
+            ret_value += get_translation(
+                _.otherParticipantsConvincedYouThat if user_changed_opinion else _.butYouCounteredWith, lang)
         else:
-            ret_value += _t.get(_t.otherUsersHaveCounterArgument)
+            ret_value += get_translation(_.otherUsersHaveCounterArgument, lang)
 
-        if i == len(pgroups) - 1:
-            ret_value += ' ' + sb + pgroups[i] + se + '.'
-        else:
-            ret_value += ' ' + pgroups[i] + '.'
+        ret_value += ' {}{}{}.'.format(sb, pgroup, se) if i == len(pgroups) - 1 else ' {} '.format(pgroup)
         users_opinion = not users_opinion
 
     return ret_value
@@ -435,18 +453,23 @@ def get_text_for_premisesgroup_uid(uid):
     :return: text, uids
     """
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
-    text = ''
     uids = []
+    texts = []
+    if len(db_premises) > 0:
+        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
+    else:
+        return '', uids
+
+    _t = Translator(lang)
+
     for premise in db_premises:
-        lang = get_lang_for_statement(premise.statements.uid)
-        _t = Translator(lang)
         tmp = get_text_for_statement_uid(premise.statements.uid)
         if lang != 'de':
             tmp[0:1].lower() + tmp[1:]
         uids.append(str(premise.statements.uid))
-        text += ' ' + _t.get(_t.aand) + ' ' + tmp
+        texts.append(str(tmp))
 
-    return text[5:], uids
+    return ' {} '.format(_t.get(_.aand)).join(texts), uids
 
 
 def get_text_for_statement_uid(uid, colored_position=False):
@@ -542,62 +565,6 @@ def get_all_attacking_arg_uids_from_history(history):
         return []
 
 
-def get_lang_for_argument(uid):
-    """
-    Return ui_locales code, if the argument exists, otherwise 'en' as fallback
-
-    :param uid: id of the argument
-    :return: ui_locales code for the discussion with the given argument
-    """
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-    if not db_argument:
-        return fallback_lang
-
-    return get_lang_for_issue(db_argument.issue_uid)
-
-
-def get_lang_for_statement(uid):
-    """
-    Return ui_locales code, if the statement exists, otherwise 'en' as fallback
-
-    :param uid: id of the statement
-    :return: ui_locales code for the discussion with the given statement
-    """
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
-    if not db_statement:
-        return fallback_lang
-
-    return get_lang_for_issue(db_statement.issue_uid)
-
-
-def get_lang_for_issue(uid):
-    """
-    Return ui_locales code, if the issue exists, otherwise 'en' as fallback
-
-    :param uid: id of the issue
-    :return: ui_locales code for the discussion with the given issue
-    """
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
-    if not db_issue:
-        return fallback_lang
-
-    db_lang = DBDiscussionSession.query(Language).filter_by(uid=db_issue.lang_uid).first()
-    if not db_lang:
-        return fallback_lang
-
-    return db_lang.ui_locales
-
-
-def get_public_nickname_based_on_settings(user):
-    """
-
-    :param user:
-    :return:
-    """
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
-    return user.nickname if db_settings.should_show_public_nickname else user.public_nickname
-
-
 def get_user_by_private_or_public_nickname(nickname):
     """
     Gets the user by his (public) nickname, based on the option, whether his nickname is public or not
@@ -627,7 +594,6 @@ def get_user_by_private_or_public_nickname(nickname):
 
 def get_user_by_case_insensitive_nickname(nickname):
     """
-
     :param nickname:
     :return:
     """
@@ -636,16 +602,16 @@ def get_user_by_case_insensitive_nickname(nickname):
 
 def get_user_by_case_insensitive_public_nickname(public_nickname):
     """
-
     :param public_nickname:
     :return:
     """
-    return DBDiscussionSession.query(User).filter(func.lower(User.public_nickname) == func.lower(public_nickname)).first()
+    return DBDiscussionSession.query(User).filter(
+        func.lower(User.public_nickname) == func.lower(public_nickname)).first()
 
 
-def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flaggable=False, is_author=False,
-                             uid='', url='', message='', omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
-                             nickname='anonymous', lang='en'):
+def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flagable=False,
+                             is_author=False, uid='', url='', message='', omit_url=False, argument_uid=None,
+                             statement_uid=None, is_supportive=None, nickname='anonymous', lang='en'):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
@@ -653,7 +619,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param is_system: Boolean
     :param is_status: Boolean
     :param is_info: Boolean
-    :param is_flaggable: Boolean
+    :param is_flagable: Boolean
     :param uid: Argument.uid
     :param url: URL
     :param message: String
@@ -665,23 +631,22 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param lang: String
     :return: dict()
     """
-    speech = dict()
-    speech['is_user']            = is_user
-    speech['is_system']          = is_system
-    speech['is_status']          = is_status
-    speech['is_info']            = is_info
-    speech['is_flaggable']       = is_flaggable
-    speech['is_author']          = is_author
-    speech['id']                 = uid if len(str(uid)) > 0 else str(time.time())
-    # speech['url']                = url if len(str(url)) > 0 else 'None'
-    speech['url']                = url if len(str(url)) > 0 else 'None'
-    speech['message']            = message
-    speech['omit_url']           = omit_url
-    speech['data_type']          = 'argument' if argument_uid else 'statement' if statement_uid else 'None'
-    speech['data_argument_uid']  = str(argument_uid)
-    speech['data_statement_uid'] = str(statement_uid)
-    speech['data_is_supportive'] = str(is_supportive)
-    db_votecounts                = None
+    speech = {'is_user': is_user,
+              'is_system': is_system,
+              'is_status': is_status,
+              'is_info': is_info,
+              'is_flagable': is_flagable,
+              'is_author': is_author,
+              'id': uid if len(str(uid)) > 0 else str(time.time()),
+              'url': url if len(str(url)) > 0 else 'None',
+              'message': message,
+              'omit_url': omit_url,
+              'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
+              'data_argument_uid': str(argument_uid), 'data_statement_uid': str(statement_uid),
+              'data_is_supportive': str(is_supportive),
+              # 'url': url if len(str(url)) > 0 else 'None'
+              }
+    db_votecounts = None
 
     if is_supportive is None:
         is_supportive = False
@@ -693,25 +658,28 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
 
     if argument_uid:
-        db_votecounts = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                                            VoteArgument.is_up_vote == is_supportive,
-                                                                            VoteArgument.is_valid == True,
-                                                                            VoteArgument.author_uid != db_user.uid)).all()
-    elif statement_uid:
-        db_votecounts = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                                             VoteStatement.is_up_vote == is_supportive,
-                                                                             VoteStatement.is_valid == True,
-                                                                             VoteStatement.author_uid != db_user.uid)).all()
-    _t = Translator(lang)
-    votecounts = len(db_votecounts) if db_votecounts else 0
+        db_votecounts = DBDiscussionSession.query(VoteArgument). \
+            filter(and_(VoteArgument.argument_uid == argument_uid,
+                        VoteArgument.is_up_vote == is_supportive,
+                        VoteArgument.is_valid,
+                        VoteArgument.author_uid != db_user.uid)). \
+            all()
 
-    if votecounts == 0:
-        speech['votecounts_message'] = _t.get(_t.voteCountTextFirst) + '.'
-    elif votecounts == 1:
-        speech['votecounts_message'] = _t.get(_t.voteCountTextOneOther) + '.'
-    else:
-        speech['votecounts_message'] = str(votecounts) + ' ' + _t.get(_t.voteCountTextMore) + '.'
-    speech['votecounts'] = votecounts
+    elif statement_uid:
+        db_votecounts = DBDiscussionSession.query(VoteStatement). \
+            filter(and_(VoteStatement.statement_uid == statement_uid,
+                        VoteStatement.is_up_vote == is_supportive,
+                        VoteStatement.is_valid,
+                        VoteStatement.author_uid != db_user.uid)). \
+            all()
+    _t = Translator(lang)
+    speech['votecounts'] = len(db_votecounts) if db_votecounts else 0
+
+    votecount_keys = defaultdict(lambda: "{} {}.".format(speech['votecounts'], _t.get(_.voteCountTextMore)))
+    votecount_keys[0] = _t.get(_.voteCountTextFirst) + '.'
+    votecount_keys[1] = _t.get(_.voteCountTextOneOther) + '.'
+
+    speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
     return speech
 
@@ -790,7 +758,8 @@ def is_author_of_statement(nickname, statement_uid):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
         return False
-    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).order_by(TextVersion.uid.asc()).first()
+    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).order_by(
+        TextVersion.uid.asc()).first()
     if not db_textversion:
         return False
     return db_textversion.author_uid == db_user.uid
@@ -819,7 +788,8 @@ def __get_all_premises_of_argument(argument):
     :return: list()
     """
     ret_list = []
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).join(Statement).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).join(
+        Statement).all()
     for premise in db_premises:
         ret_list.append(premise)
     return ret_list
@@ -838,8 +808,51 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     additional_id = '' if db_settings.should_show_public_nickname else 'x'
     if ignore_privacy_settings:
         additional_id = ''
-    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
+    url = get_global_url()
+    url = url[url.index('//') + 2:]
+    unknown = 'unknown@' + url
+    email = (user.email + additional_id).encode('utf-8') if user else unknown.encode('utf-8')
 
     gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
     return gravatar_url
+
+
+def get_public_profile_picture(user, size=80):
+    """
+    Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
+    If the user doesn want an public profile, an anoynmous image will be returned
+
+    :param user: User
+    :param size: Integer, default 80
+    :return: String
+    """
+    if user:
+        additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
+    else:
+        additional_id = 'y'
+    url = get_global_url()
+    url = url[url.index('//') + 2:]
+    email = (user.email + additional_id).encode('utf-8') if user else ('unknown@' + url).encode('utf-8')
+    gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
+    gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
+    return gravatar_url
+
+
+def get_author_data(main_page, uid):
+    """
+    Returns a-tag with gravatar of current author and users page as href
+
+    :param uid: of user
+    :return: string
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(uid=int(uid)).first()
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
+    if not db_user:
+        return 'Missing author with uid ' + str(uid), False
+    if not db_settings:
+        return 'Missing settings of author with uid ' + str(uid), False
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
+    link_begin = '<a href="' + main_page + '/user/' + db_user.get_global_nickname() + '">'
+    link_end = '</a>'
+    return link_begin + db_user.nickname + ' ' + img + link_end, True

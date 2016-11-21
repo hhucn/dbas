@@ -5,15 +5,17 @@ Provides class for sending an email
 """
 
 import smtplib
-
 from socket import error as socket_error
+
+from dbas.lib import get_global_url
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Settings, Language, Statement
+from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.text_generator import TextGenerator
+from dbas.strings.translator import Translator
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
-from dbas.logger import logger
-from dbas.strings.translator import Translator
-from dbas.strings.text_generator import TextGenerator
 
 
 def send_mail_due_to_new_argument(current_user, url, request):
@@ -29,8 +31,8 @@ def send_mail_due_to_new_argument(current_user, url, request):
     db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
     _t = Translator(db_language.ui_locales)
-    subject = _t.get(_t.emailArgumentAddTitle)
-    body = _t.get(_t.emailArgumentAddBody) + '\n' + url
+    subject = _t.get(_.emailArgumentAddTitle)
+    body = _t.get(_.emailArgumentAddBody) + '\n' + url
     recipient = current_user.email
 
     return send_mail(request, subject, body, recipient, db_language.ui_locales)
@@ -47,7 +49,7 @@ def send_mail_due_to_added_text(lang, url, recipient, request):
     :return: duple with boolean for sent message, message-string
     """
     _t = Translator(lang)
-    subject = _t.get(_t.statementAdded)
+    subject = _t.get(_.statementAdded)
     body = TextGenerator.get_text_for_add_text_message(lang, url, False)
 
     return send_mail(request, subject, body, recipient.email, lang)
@@ -64,7 +66,7 @@ def send_mail_due_to_added_argument(lang, url, recipient, request):
     :return: duple with boolean for sent message, message-string
     """
     _t = Translator(lang)
-    subject = _t.get(_t.argumentAdded)
+    subject = _t.get(_.argumentAdded)
     body = TextGenerator.get_text_for_add_argument_message(lang, url, False)
 
     return send_mail(request, subject, body, recipient.email, lang)
@@ -92,7 +94,7 @@ def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, u
     db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
     _t = Translator(db_language.ui_locales)
-    subject = _t.get(_t.textversionChangedTopic)
+    subject = _t.get(_.textversionChangedTopic)
     body = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_current_author.public_nickname,
                                                         db_textversion_old.content, db_textversion_new.content, url, False)
     recipient = db_previous_author.email
@@ -115,23 +117,23 @@ def send_mail(request, subject, body, recipient, lang):
     _t = Translator(lang)
     send_message = False
     mailer = get_mailer(request)
-    body = body + "\n\n---\n" + _t.get(_t.emailBodyText)
+    body = body + "\n\n---\n" + _t.get(_.emailBodyText).replace('XXXXX', get_global_url())
     message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
     # try sending an catching errors
     try:
         mailer.send_immediately(message, fail_silently=False)
         send_message = True
-        message = _t.get(_t.emailWasSent)
+        message = _t.get(_.emailWasSent)
     except smtplib.SMTPConnectError as exception:
         logger('email_helper', 'send_mail', 'error while sending')
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
         logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + code)
         logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + error)
-        message = _t.get(_t.emailWasNotSent)
+        message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
         logger('email_helper', 'send_mail', 'error while sending')
         logger('email_helper', 'send_mail', 'socket_error ' + str(serr))
-        message = _t.get(_t.emailWasNotSent)
+        message = _t.get(_.emailWasNotSent)
 
     return send_message, message

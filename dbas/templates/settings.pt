@@ -64,8 +64,8 @@
 
                                 <li class="dropdown" data-toggle="tooltip" data-placement="left">
                                     <a class="dropdown-toggle" data-toggle="dropdown" href="#language" id="current-lang-images" tal:attributes="data-lang settings.current_ui_locales">
-                                        <img id="indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}">
-                                        <img id="indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
+                                        <img id="indicator-en" style="display:none;" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}">
+                                        <img id="indicator-de" style="display:none;" src="${request.static_url('dbas:static/images/flag-de-24.png')}">
                                         <span>${settings.current_lang}</span>
                                         <span class="caret"></span>
                                     </a>
@@ -197,7 +197,7 @@
 				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 				<span i18n:translate="password_changed">Your password was changed</span>.
 			</div>
-			
+
 			<div class="col-md-12">
 				<div id="statistics-alert" class="alert alert-dismissible alert-danger hidden">
 					<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -251,6 +251,8 @@
 				</div>
 			</div>
 		</div>
+
+        <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/settings.js')}"></script>
 
 	</tal:block>
 </tal:block>

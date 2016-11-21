@@ -5,629 +5,614 @@ TODO
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from .keywords import Keywords as _
 
-
-class GermanDict:
-
-    @staticmethod
-    def set_up(_self):
-        """
-        Sets up the german dictionary
-
-        :param _self:
-        :return: dictionary for the german language
-        """
-
-        de_lang = dict()
-
-        de_lang[_self.arguments] = 'Argumente'
-        de_lang[_self.error] = 'Fehler'
-        de_lang[_self.iActuallyHave] = 'Ich habe'
-        de_lang[_self.insertOneArgument] = 'Ich habe eine Aussage:'
-        # de_lang[_self.insertDontCare] = 'Es ist mir egal. Nimm\' meine Aussage wie sie ist!'
-        de_lang[_self.insertDontCare] = 'Es ist ein Argument und das System interpretiert es falsch!'
-        de_lang[_self.forgotInputRadio] = 'Sie haben eine Auswahl vergessen'
-        de_lang[_self.needHelpToUnderstandStatement] = 'Wir brauchen Hilfe zum Verständnis Ihrer Aussage!'
-        de_lang[_self.setPremisegroupsIntro1] = 'Sie haben \'und\' in Ihrer Aussage '
-        de_lang[_self.setPremisegroupsIntro2] = ' benutzt. Daher existieren mehrere mögliche Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen:'
-
-        de_lang[_self.attack] = 'Sie lehnen ab, dass'
-        de_lang[_self.assertion] = 'Behauptung'
-        de_lang[_self.support] = 'Sie akzeptieren'
-        de_lang[_self.premise] = 'Prämisse'
-        de_lang[_self.because] = 'weil'
-        de_lang[_self.moreAbout] = 'Mehr über'
-        de_lang[_self.undermine] = 'Es ist falsch, dass'
-        de_lang[_self.support1] = 'Es ist richtig, dass'
-        de_lang[_self.undercut1] = 'Es ist falsch, dass'
-        de_lang[_self.undercut2] = 'und das ist ein schlechter Konter'
-        de_lang[_self.overbid1] = 'Es ist falsch, dass'
-        de_lang[_self.overbid2] = 'und das ist ein guter Konter'
-        de_lang[_self.rebut1] = 'Es ist richtig, dass'
-        de_lang[_self.rebut2] = ', aber ich habe etwas besseres'
-        de_lang[_self.oldPwdEmpty] = 'Altes Passwortfeld ist leer.'
-        de_lang[_self.newPwdEmtpy] = 'Neues Passwortfeld ist leer.'
-        de_lang[_self.confPwdEmpty] = 'Bestätigungs-Passwordfeld ist leer.'
-        de_lang[_self.newPwdNotEqual] = 'Passwort und Bestätigung stimmen nicht überein.'
-        de_lang[_self.pwdsSame] = 'Beide eingegeben Passwörter sind identisch.'
-        de_lang[_self.oldPwdWrong] = 'Ihr altes Passwort ist falsch.'
-        de_lang[_self.pwdChanged] = 'Ihr Passwort würde geändert.'
-        de_lang[_self.emptyName] = 'Ihr Name ist leer!'
-        de_lang[_self.emptyEmail] = 'Ihre E-Mail ist leer!'
-        de_lang[_self.emtpyContent] = 'Ihr Inhalt ist leer!'
-        de_lang[_self.maliciousAntiSpam] = 'Ihr Anti-Spam-Nachricht ist leer oder falsch!'
-        de_lang[_self.nonValidCSRF] = 'CSRF-Token ist nicht valide'
-        de_lang[_self.name] = 'Name'
-        de_lang[_self.mail] = 'Mail'
-        de_lang[_self.phone] = 'Telefon'
-        de_lang[_self.message] = 'Nachricht'
-        de_lang[_self.messageDeleted] = 'Nachricht gelöscht'
-        de_lang[_self.notification] = 'Benachrichtigung'
-        de_lang[_self.notificationDeleted] = 'Benachrichtigung gelöscht'
-        de_lang[_self.pwdNotEqual] = 'Passwörter sind nicht gleich.'
-        de_lang[_self.nickIsTaken] = 'Nickname ist schon vergeben.'
-        de_lang[_self.mailIsTaken] = 'E-Mail ist schon vergeben.'
-        de_lang[_self.mailNotValid] = 'E-Mail ist nicht gültig.'
-        de_lang[_self.mailSettingsTitle] = '(De-)Aktiviert E-Mail'
-        de_lang[_self.notificationSettingsTitle] = '(De-)Aktiviert Nachrichten'
-        de_lang[_self.errorTryLateOrContant] = 'Leider ist ein Fehler aufgetreten, bitte versuchen Sie später erneut oder kontaktieren Sie uns.'
-        de_lang[_self.accountWasAdded] = 'Ihr Account wurde angelegt. Sie können sich nun anmelden.'
-        de_lang[_self.accountRegistration] = 'D-BAS Benutzer Registrierung'
-        de_lang[_self.accountWasRegistered] = 'Ihr Account wurde erfolgreich für die genannte E-Mail registriert.'
-        de_lang[_self.accoutErrorTryLateOrContant] = 'Ihr Account konnte nicht angelegt werden, bitte versuchen Sie später erneut oder kontaktieren Sie uns.'
-        de_lang[_self.nicknameIs] = 'Ihr Nickname lautet: '
-        de_lang[_self.newPwdIs] = 'Ihr Passwort lautet: '
-        de_lang[_self.dbasPwdRequest] = 'D-BAS Passwort Nachfrage'
-        de_lang[_self.antispamquestion] = 'Was ist'
-        de_lang[_self.signs] = ['+', '*', '/', '-']
-        de_lang['0'] = 'null'
-        de_lang['1'] = 'eins'
-        de_lang['2'] = 'zwei'
-        de_lang['3'] = 'drei'
-        de_lang['4'] = 'vier'
-        de_lang['5'] = 'fünf'
-        de_lang['6'] = 'sechs'
-        de_lang['7'] = 'sieben'
-        de_lang['8'] = 'acht'
-        de_lang['9'] = 'neun'
-        de_lang['+'] = 'plus'
-        de_lang['-'] = 'minus'
-        de_lang['*'] = 'mal'
-        de_lang['/'] = 'durch'
-        de_lang[_self.defaultView] = 'Standardansicht'
-        de_lang[_self.positions] = 'Positionen'
-        de_lang[_self.labels] = 'Beschriftungen'
-        de_lang[_self.myStatements] = 'Meine Aussagen'
-        de_lang[_self.supportsOnMyStatements] = 'Unterstützungen'
-        de_lang[_self.attacksOnMyStatements] = 'Angriffe'
-
-        de_lang[_self.addATopic] = 'Thema hinzufügen'
-        de_lang[_self.pleaseEnterTopic] = 'Bitte geben Sie Ihr Thema an:'
-        de_lang[_self.pleaseEnterShorttextForTopic] = 'Bitte geben Sie die Kurzform Ihres Themas an:'
-        de_lang[_self.pleaseSelectLanguageForTopic] = 'Bitte geben Sie die Sprache Ihres Themas an:'
-        de_lang[_self.editIssueViewChangelog] = 'Thema editieren / Änderungprotokoll einsehen'
-        de_lang[_self.editTitleHere] = 'Bitte bearbeiten Sie hier den Title:'
-        de_lang[_self.editInfoHere] = 'Bitte bearbeiten Sie hier die Info:'
-        de_lang[_self.viewChangelog] = 'Änderungprotokoll einsehen'
-        de_lang[_self.editStatementHere] = 'Bitte bearbeiten Sie hier die Aussage:'
-        de_lang[_self.save] = 'Sichern'
-        de_lang[_self.cancel] = 'Abbrechen'
-        de_lang[_self.submit] = 'Senden'
-        de_lang[_self.close] = 'Schließen'
-        de_lang[_self.urlSharing] = 'URL teilen'
-        de_lang[_self.urlSharingDescription] = 'Teilen Sie diese URL:'
-        de_lang[_self.warning] = 'Warnung'
-        de_lang[_self.islandViewFor] = 'Inselansicht für'
-        de_lang[_self.resumeHere] = 'Hier weitermachen'
-
-        de_lang[_self.aand] = 'und'
-        de_lang[_self.andor] = 'und/oder'
-        de_lang[_self.addStatementRow] = 'Weiteres Argument angegeben.'
-        de_lang[_self.addedEverything] = 'Alles wurde hinzugefügt.'
-        de_lang[_self.addTopic] = 'Thema hinzufügen'
-        de_lang[_self.at] = 'am'
-        de_lang[_self.alreadyInserted] = 'Dies ist ein Duplikat und schon vorhanden.'
-        de_lang[_self.addPremisesRadioButtonText] = 'Lass\' mich meine eigenen Gründe angeben!'
-        de_lang[_self.addArgumentsRadioButtonText] = 'Lass\' mich meine eigenen Aussagen angeben!'
-        de_lang[_self.argumentContainerTextIfPremises] = 'Sie möchten Ihre eigenen Gründe angeben?'
-        de_lang[_self.argumentContainerTextIfArguments] = 'Sie möchten Ihre eigenen Argumente angeben?'
-        de_lang[_self.addPremiseRadioButtonText] = 'Lass\' mich meinen eigenen Grund angeben!'
-        de_lang[_self.addArgumentRadioButtonText] = 'Lass\' mich meine eigene Aussage angeben!'
-        de_lang[_self.argumentContainerTextIfPremise] = 'Sie möchten Ihren eigenen Grund angeben?'
-        de_lang[_self.argumentContainerTextIfArgument] = 'Sie möchten Ihr eigenes Argument angeben?'
-        de_lang[_self.argumentContainerTextIfConclusion] = 'Was ist Ihre Idee? Was sollten wir unternehmen?'
-        de_lang[_self.argueAgainstPositionToggleButton] = 'Oder wenn Sie gegen eine Position argumentieren möchten, drücken Sie bitte diesen Schalter:'
-        de_lang[_self.argueForPositionToggleButton] = 'Oder wenn Sie für eine Position argumentieren möchten, drücken Sie bitte diesen Schalter:'
-        de_lang[_self.argumentFlaggedBecauseOfftopic] = 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>nicht themenbezogen</strong> ist.'
-        de_lang[_self.argumentFlaggedBecauseSpam] = 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>Spam</strong> ist.'
-        de_lang[_self.argumentFlaggedBecauseHarmful] = 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>nicht angebracht, schädlich oder missbräuchlich</strong> ist.'
-        de_lang[_self.argumentFlaggedBecauseOptimization] = 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>sprachlicher Korrektur</strong> bedarf.'
-        de_lang[_self.argumentFlaggedBecauseEdit] = 'Dieses Argument wurde von einer/m Benutzer/in sprachlich verbessert.'
-        de_lang[_self.alternatively] = 'Alternativ'
-        de_lang[_self.argument] = 'Argument'
-        de_lang[_self.accepting] = 'für'
-        de_lang[_self.andIDoNotBelieveCounter] = 'und ich glaube, dass ist kein gutes Gegenargument für'
-        de_lang[_self.andIDoNotBelieveArgument] = 'und ich glaube, dass ist kein gutes Argument für'
-        de_lang[_self.andTheyDoNotBelieveCounter] = 'und sie glauben, dass ist kein gutes Gegenargument für'
-        de_lang[_self.andTheyDoNotBelieveArgument] = 'und sie glauben, dass ist kein gutes Argument für'
-        de_lang[_self.asReasonFor] = 'als einen Grund für'
-        de_lang[_self.attackedBy] = 'Sie wurden attackiert mit'
-        de_lang[_self.attackedWith] = 'Sie haben attackiert mit'
-        de_lang[_self.attackPosition] = 'Position angreifen'
-        de_lang[_self.agreeBecause] = 'Ich stimme zu, weil '
-        de_lang[_self.andIDoBelieveCounterFor] = 'und ich glaube, dass ist ein gutes Gegenargument für'
-        de_lang[_self.andIDoBelieveArgument] = 'und ich glaube, dass ist ein gutes Argument für'
-        de_lang[_self.addArguments] = 'Argumente hizufügen'
-        de_lang[_self.addStatements] = 'Aussagen hizufügen'
-        de_lang[_self.addArgumentsTitle] = 'Fügt neue Argumente hinzu'
-        de_lang[_self.acceptItTitle] = 'Einsenden...'
-        de_lang[_self.acceptIt] = 'Eintragen...'
-        de_lang[_self.attitudeFor] = 'Einstellungen zu'
-        de_lang[_self.alreadyFlaggedByOthers] = 'Diese Aussage wurde uns schon gemeldet!'
-        de_lang[_self.alreadyFlaggedByYou] = 'Diese Aussage haben Sie uns schon gemeldet!'
-        de_lang[_self.breadcrumbsStart] = 'Start'
-        de_lang[_self.breadcrumbsChoose] = 'Mehrere Gründe für'
-        de_lang[_self.breadcrumbsJustifyStatement] = 'Wieso denken Sie das'
-        de_lang[_self.breadcrumbsGetPremisesForStatement] = 'Prämissen'
-        de_lang[_self.breadcrumbsMoreAboutArgument] = 'Mehr Über'
-        de_lang[_self.breadcrumbsReplyForPremisegroup] = 'Antwort für Gruppe'
-        de_lang[_self.breadcrumbsReplyForResponseOfConfrontation] = 'Begründung von'  # Antwort für die Konfrontation'
-        de_lang[_self.breadcrumbsReplyForArgument] = 'Antwort fürs Argument'
-        de_lang[_self.butOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'aber andere Teilnehmer haben keine Meinung bezüglich ihrer Eingabe'
-        de_lang[_self.butOtherParticipantsDontHaveArgument] = 'aber andere Teilnehmer haben keine Begründung für dafür'
-        de_lang[_self.butOtherParticipantsDontHaveCounterArgument] = 'aber andere Teilnehmer haben kein Gegenargument.'
-        de_lang[_self.butIDoNotBelieveCounterFor] = 'aber ich glaube nicht, dass es ein gutes Argument dagegen ist, dass'
-        de_lang[_self.butIDoNotBelieveArgumentFor] = 'aber ich glaube nicht, dass es ein gutes Argument dafür ist, dass'
-        de_lang[_self.butIDoNotBelieveCounter] = 'aber ich glaube nicht, dass es ein gutes Argument gegen'
-        de_lang[_self.butIDoNotBelieveArgument] = 'aber ich glaube nicht, dass es ein gutes Argument für'
-        de_lang[_self.butIDoNotBelieveReasonForReject] = 'aber ich glaube nicht, dass das zur Aussage führt'
-        de_lang[_self.butTheyDoNotBelieveCounter] = 'aber sie glauben, dass es kein gutes Argument dagegen ist, dass'
-        de_lang[_self.butTheyDoNotBelieveArgument] = 'aber sie glauben, dass es kein gutes Argument dafür ist, dass'
-        de_lang[_self.butThenYouCounteredWith] = 'Jedoch haben Sie dann das Gegenargument gebracht, dass'
-        de_lang[_self.butYouCounteredWith] = 'Jedoch haben Sie das Gegenargument gebracht, dass'
-        de_lang[_self.butYouAgreedWith] = 'Und Sie haben zugestimmt, weil'
-        de_lang[_self.because] = 'Weil'
-        de_lang[_self.but] = 'aber'
-        de_lang[_self.butWhich] = 'aber welches'
-        de_lang[_self.clickHereForRegistration] = 'Klick <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> für die Anmeldung oder eine Registrierung!'
-        de_lang[_self.clickForMore] = 'Klick hier!'
-        de_lang[_self.confirmation] = 'Bestätigung'
-        de_lang[_self.contactSubmit] = 'Nachricht senden'
-        de_lang[_self.contact] = 'Kontakt'
-        de_lang[_self.confirmTranslation] = 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!'
-        de_lang[_self.correctionsSet] = 'Ihre Korrektur wurde gesetzt.'
-        de_lang[_self.countOfArguments] = 'Anzahl der Argumente'
-        de_lang[_self.countOfPosts] = 'Anzahl der Beiträge'
-        de_lang[_self.checkFirstname] = 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!'
-        de_lang[_self.checkLastname] = 'Bitte überprüfen Sie Ihren Nachnamen, da die Eingabe leer ist!'
-        de_lang[_self.checkNickname] = 'Bitte überprüfen Sie Ihren Spitznamen, da die Eingabe leer ist!'
-        de_lang[_self.checkEmail] = 'Bitte überprüfen Sie Ihre E-Mail, da die Eingabe leer ist!'
-        de_lang[_self.checkPassword] = 'Bitte überprüfen Sie Ihre Passwort, da die Eingabe leer ist!'
-        de_lang[_self.checkConfirmation] = 'Bitte überprüfen Sie Ihre Passwort-Bestätigung, da die Eingabe leer ist!'
-        de_lang[_self.checkPasswordConfirm] = 'Bitte überprüfen Sie Ihre Passwörter, da die Passwärter nicht gleich sind!'
-        de_lang[_self.clickToChoose] = 'Klicken zum wählen'
-        de_lang[_self.clearStatistics] = 'Statistik löschen'
-        de_lang[_self.canYouGiveAReason] = 'Können Sie einen Grund angeben?'
-        de_lang[_self.canYouGiveAReasonFor] = 'Können Sie einen Grund für folgendes angeben:'
-        de_lang[_self.canYouGiveACounterArgumentWhy1] = 'Können Sie begründen, wieso sie gegen'
-        de_lang[_self.canYouGiveACounterArgumentWhy2] = 'sind?'
-        de_lang[_self.canYouGiveACounter] = 'Können Sie einen Grund dagegen angeben?'
-        de_lang[_self.canYouGiveAReasonForThat] = 'Können Sie dafür einen Grund angeben?'
-        de_lang[_self.completeView] = 'Komplette View'
-        de_lang[_self.completeViewTitle] = 'Kompletten Graphen anzeigen'
-        de_lang[_self.currentDiscussion] = 'Die aktuelle Diskussion hat folgendes Thema'
-        de_lang[_self.dialogView] = 'Dialog-Ansicht'
-        de_lang[_self.dialogViewTitle] = 'Dialog-Ansicht'
-        de_lang[_self.dateString] = 'Datum'
-        de_lang[_self.disagreeBecause] = 'Ich widerspreche, weil '
-        de_lang[_self.description_undermine] = 'Diese Aussage ist gegen die Prämisse.'
-        de_lang[_self.description_support] = 'Diese Aussage ist für die Prämisse.'
-        de_lang[_self.description_undercut] = 'Diese Aussage ist gegen die Begründung (undercut). Sie glauben nicht, dass aus der Prämisse die Konklusion folgt.'
-        de_lang[_self.description_overbid] = 'Diese Aussage ist für die Begründung (overbid). Sie glauben nicht, dass aus der Prämisse die Konklusion folgt.'
-        de_lang[_self.description_rebut] = 'Diese Aussage ist gegen die Konklusion.'
-        de_lang[_self.description_no_opinion] = 'Sie haben keine Meinung odeWas ist Ihre Meinung?r möchten diesen Punkt nur überspringen.'
-        de_lang[_self.decisionIndex7] = 'Entscheidungs Index - Letzte 7 Tage'
-        de_lang[_self.decisionIndex30] = 'Entscheidungs Index - Letzte 30 Tage'
-        de_lang[_self.decisionIndex7Info] = 'Anzahl an getroffenen Entscheidungen (bedingt durch Klicks im System), in den letzten 7 Tage'
-        de_lang[_self.decisionIndex30Info] = 'Anzahl an getroffenen Entscheidungen (bedingt durch Klicks im System), in den letzten 30 Tage'
-        de_lang[_self.dataRemoved] = 'Daten wurden erfolgreich gelöscht.'
-        de_lang[_self.didYouMean] = 'Top 10 der Aussagen, die Sie eventuell meinten:'
-        de_lang[_self.discussionEnd] = 'Die Diskussion endet hier.'
-        de_lang[_self.discussionEndLinkText] = 'Sie können <a id="discussionEndStepBack" data-href="back" onclick="window.history.back();" style="cursor: pointer;">hier</a> klicken, um einen Schritt zurückzugehen oder den oberen Button bzw. <a id="discussionEndRestart" data-href="restart">diesen Link</a> nutzen, um die Diskussion neu zustarten.'
-        de_lang[_self.duplicateDialog] = 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?'
-        de_lang[_self.duplicate] = 'Duplikat'
-        de_lang[_self.displayControlDialogGuidedTitle] = 'Dialog-Ansicht'
-        de_lang[_self.displayControlDialogGuidedBody] = 'Du wirst nie etwas wie eine Argumentationskarte sehen, da das System dich führt. Das System ist daher dynamisch und generisch für dich.'
-        de_lang[_self.displayControlDialogIslandTitle] = 'Insel-Ansicht'
-        de_lang[_self.displayControlDialogIslandBody] = 'Okay, Sie möchten mehr sehen, aber nicht alles? Genau dafür haben wie eine Insel-Ansicht als weitere Modus. Mit dieser Möglichkeit sehen Sie alle Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind.'
-        de_lang[_self.displayControlDialogExpertTitle] = 'Experten-Ansicht'
-        de_lang[_self.displayControlDialogExpertBody] = 'Du bist also ein Experte? Okay, dann darfst du wirklich alles auf einen Blick sehen.'
-        de_lang[_self.displayControlDialogGraphTitle] = 'Graph-Ansicht'
-        de_lang[_self.displayControlDialogGraphBody] = 'Darstellung der Diskussion als Graph.'
-        de_lang[_self.discussionInfoTooltip1] = 'Die Diskussion wurde'
-        de_lang[_self.discussionInfoTooltip2] = 'gestartet und hat schon'
-        de_lang[_self.discussionInfoTooltip3pl] = 'Argumente.'
-        de_lang[_self.discussionInfoTooltip3sg] = 'Argument.'
-        de_lang[_self.doesNotHold] = 'ist keine gute Idee'
-        de_lang[_self.isNotRight] = 'ist nicht richtig'
-        de_lang[_self.doesJustify] = 'gerechtfertigen, dass'
-        de_lang[_self.doesNotJustify] = 'nicht gerechtfertigen, dass'
-        de_lang[_self.deleteTrack] = 'Track löschen'
-        de_lang[_self.deleteStatement] = 'Aussage löschen'
-        de_lang[_self.delete] = 'Löschen'
-        de_lang[_self.deleteHistory] = 'History löschen'
-        de_lang[_self.doYouWantToEnterYourStatements] = 'Möchten Sie Ihre eigenen Gründe angeben?'
-        de_lang[_self.doNotHesitateToContact] = 'Zögern Sie nicht, uns zu <span style="cursor: pointer;" id="contact-on-error"><strong>kontaktieren (hier klicken)</strong></span>'
-        de_lang[_self.dataAlreadyLockedByYou] = 'Sie bearbeiten schon einen Datensatz. Schließen Sie diese Bearbeitung bitte zuerst ab!'
-        de_lang[_self.dataAlreadyLockedByOthers] = 'Dieser Datensatz wird gerade durch andere Teilnehmer bearbeitet.'
-        de_lang[_self.earlierYouArguedThat] = 'Zuerst haben Sie argumentiert, dass'
-        de_lang[_self.editIndex] = 'Änderungs Index - Letzte 30 Tage'
-        de_lang[_self.editIndexInfo] = 'Anzahl an Änderungen'
-        de_lang[_self.euCookiePopupTitle] = 'Diese Seite nutzt Cookies und Piwik.'
-        de_lang[_self.euCookiePopupText] = 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.'
-        de_lang[_self.euCookiePopoupButton1] = 'Weiter'
-        de_lang[_self.euCookiePopoupButton2] = 'Lerne&nbsp;mehr'
-        de_lang[_self.empty_news_input] = 'Nachrichten-Titel oder Text ist leer oder zu kurz!'
-        de_lang[_self.empty_notification_input] = 'Nachrichten-Titel oder Text ist leer oder zu kurz!'
-        de_lang[_self.email] = 'E-Mail'
-        de_lang[_self.emailWasSent] = 'Eine E-Mail wurde zu der genannten Adresse gesendet.'
-        de_lang[_self.emailWasNotSent] = 'Ihre E-Mail konnte nicht gesendet werden!'
-        de_lang[_self.emailUnknown] = 'Die Adresse ist nicht gültig.'
-        de_lang[_self.emailBodyText] = 'Dies ist eine automatisch generierte E-Mail von D-BAS https://dbas.cs.uni-duesseldorf.de/.\nBei Rückfragen können Sie gerne eine E-Mail an krauthoff@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Promotion und noch in der Testphase.'
-        de_lang[_self.emailWasSent] = 'E-Mail wurde gesendet.'
-        de_lang[_self.emailWasNotSent] = 'E-Mail wurde nicht gesendet.'
-        de_lang[_self.emailArgumentAddTitle] = 'D-BAS Infos zum Argument'
-        de_lang[_self.emailArgumentAddBody] = 'Zu Ihrem Argument wurden weitere Informationen hinzugefügt. Schauen Sie doch mal rein:'
-        de_lang[_self.edit] = 'Bearbeiten'
-        de_lang[_self.error_code] = 'Fehler-Code'
-        de_lang[_self.editTitle] = 'Aussage bearbeiten'
-        de_lang[_self.feelFreeToLogin] = 'Wenn Sie weiter machen möchten, <u><a data-href="login" data-toggle="modal" data-target="#popup-login" title="Anmelden">melden</a></u> Sie sich bitte an :)'
-        de_lang[_self.forText] = 'für'
-        de_lang[_self.forThat] = 'dafür, dass'
-        de_lang[_self.fillLine] = 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung'
-        de_lang[_self.firstConclusionRadioButtonText] = 'Lass mich meine eigenen Ideen einfügen!'
-        de_lang[_self.firstArgumentRadioButtonText] = 'Lass mich meine eigenen Aussagen einfügen!'
-        de_lang[_self.feelFreeToShareUrl] = 'Bitte teilen Sie diese URL'
-        de_lang[_self.fetchLongUrl] = 'Normale URL'
-        de_lang[_self.fetchShortUrl] = 'Kurze URL'
-        de_lang[_self.forgotPassword] = 'Passwort vergessen'
-        de_lang[_self.firstOneText] = 'Sie sind der Erste, der sagt: '
-        de_lang[_self.firstOneInformationText] = 'Sie sind der Erste, der Informationen haben möchte, über: '
-        de_lang[_self.firstOneReason] = 'Sie sind der Erste mit diesem Argument. Bitte geben Sie Ihre Begründung an.'
-        de_lang[_self.firstPositionText] = 'Sie sind der Erste in dieser Diskussion!'
-        de_lang[_self.firstPremiseText1] = 'Sie sind der Erste, der sagt, dass '
-        de_lang[_self.firstPremiseText2] = 'Bitte begründen Sie Ihre Aussage.'
-        de_lang[_self.firstname] = 'Vorname'
-        de_lang[_self.fromm] = 'von'
-        de_lang[_self.finishTitle] = 'Diskussion beenden'
-        de_lang[_self.hold] = 'stimmen'
-        de_lang[_self.gender] = 'Geschlecht'
-        de_lang[_self.goBack] = 'Zurück'
-        de_lang[_self.goHome] = 'Startseite'
-        de_lang[_self.goStepBack] = 'Einen Schritt zurück'
-        de_lang[_self.generateSecurePassword] = 'Generate secure password'
-        de_lang[_self.goodPointTakeMeBackButtonText] = 'Ich stimme zu, dass ist ein gutes Argument. Geh einen Schritt zurück.'
-        de_lang[_self.group_uid] = 'Gruppe'
-        de_lang[_self.goBackToTheDiscussion] = 'Geh zur Diskussion'
-        de_lang[_self.goBack] = 'Klicken, um zurückzugehen'
-        de_lang[_self.goForward] = 'Klicken, um weiterzugehen'
-        de_lang[_self.haveALookAt] = 'Hey, schau dir mal das an: '
-        de_lang[_self.hidePasswordRequest] = 'Verstecke die Passwort-Anfrage'
-        de_lang[_self.hideGenerator] = 'Verstecke Generator'
-        de_lang[_self.history] = 'Geschichte'
-        de_lang[_self.howeverIHaveMuchStrongerArgumentRejectingThat] = 'Jedoch habe ich ein viel stärkeres Argument dagegen, dass'
-        de_lang[_self.howeverIHaveMuchStrongerArgumentAcceptingThat] = 'Jedoch habe ich ein viel stärkeres Argument dafür, dass'
-        de_lang[_self.howeverIHaveMuchStrongerArgument] = 'Jedoch habe ich ein viel stärkeres Argument'
-        de_lang[_self.howeverIHaveEvenStrongerArgumentRejecting] = 'Jedoch habe ich ein stärkeres Argument gegen:'
-        de_lang[_self.howeverIHaveEvenStrongerArgumentAccepting] = 'Jedoch habe ich ein stärkeres Argument für:'
-        de_lang[_self.imprint] = 'Impressum'
-        de_lang[_self.internalFailureWhileDeletingTrack] = 'Interner Fehler, bitte versuchen Sie es später erneut.'
-        de_lang[_self.internalFailureWhileDeletingHistory] = 'Interner Fehler, bitte versuchen Sie es später erneut.'
-        de_lang[_self.internalError] = '<strong>Interner Fehler:</strong> Wahrscheinlich ist der Server nicht erreichbar. Bitte laden Sie die Seite erneut!.'
-        de_lang[_self.internalKeyError] = 'Interner Fehler beim verarbeiten von Daten.'
-        de_lang[_self.inputEmpty] = 'Ihre Eingabe ist leer!'
-        de_lang[_self.informationForExperts] = 'Infos für Experten'
-        de_lang[_self.issueList] = 'Themen'
-        de_lang[_self.islandViewHeaderText] = 'Dies sind alle Argumente für: '
-        de_lang[_self.irrelevant] = 'Irrelevant'
-        de_lang[_self.itIsTrueThat] = 'ich akzeptiere, dass'
-        de_lang[_self.itIsTrue1] = 'ich akzeptiere'
-        de_lang[_self.itIsTrue2] = ''
-        de_lang[_self.itIsFalseThat] = 'ich lehne ab, dass'
-        de_lang[_self.itIsFalse1] = 'ich lehne'
-        de_lang[_self.itIsFalse2] = 'ab'
-        de_lang[_self.itTrueIsThat] = 'es richtig ist, dass'
-        de_lang[_self.itFalseIsThat] = 'es falsch ist, dass'
-        de_lang[_self.islandView] = 'Insel Ansicht'
-        de_lang[_self.isFalse] = 'ist falsch'
-        de_lang[_self.isTrue] = 'richtig ist'
-        de_lang[_self.areTrue] = 'sind richtig'
-        de_lang[_self.isNotAGoodIdea] = 'falsch ist'
-        de_lang[_self.isNotAGoodIdeaInColor] = '<span class=\'text-danger\'>falsch ist</span>'
-        de_lang[_self.initialPosition] = 'Anfangs-interesse'
-        de_lang[_self.initialPositionSupport] = 'Was ist Ihre Meinung, die Sie unterstützen?'
-        de_lang[_self.initialPositionAttack] = 'Was ist Ihre Meinung, die Sie angreifen möchten?'
-        de_lang[_self.initialPositionInterest] = 'Ich möchte über die Aussage reden, dass ...'
-        de_lang[_self.invalidEmail] = 'Ihre E-Mail ist ungültig!'
-        de_lang[_self.islandViewTitle] = 'Zeigt die Insel Ansicht'
-        de_lang[_self.iAcceptCounter] = 'und ich akzeptiere, dass es ein Argument gegen'
-        de_lang[_self.iAcceptArgument] = 'und ich akzeptiere, dass es ein Argument für'
-        de_lang[_self.iAcceptCounterThat] = 'und ich akzeptiere, dass es ein Argument dagegen ist, dass'
-        de_lang[_self.iAcceptArgumentThat] = 'und ich akzeptiere, dass es ein Argument dafür ist, dass'
-        de_lang[_self.iAgreeWith] = 'Ich akzeptiere es'
-        de_lang[_self.iAgreeWithInColor] = 'Ich <span class=\'text-success\'>akzeptiere es</span>'
-        de_lang[_self.iDisagreeWith] = 'Ich lehne es ab'
-        de_lang[_self.iDisagreeWithInColor] = 'Ich <span class=\'text-danger\'>lehne es ab</span>'
-        de_lang[_self.iDoNotKnow] = 'Ich weiß es nicht, dass'
-        de_lang[_self.iDoNotKnowInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>'
-        de_lang[_self.iHaveNoOpinionYet] = 'Ich weiß es nicht, dass'
-        de_lang[_self.iHaveNoOpinion] = 'Ich weiß es nicht'
-        de_lang[_self.iHaveNoOpinionYetInColor] = 'Ich <span class=\'text-info\'>weiß es nicht</span>. Zeige mir eine Aussage für das Argument'
-        de_lang[_self.iHaveMuchStrongerArgumentRejecting] = 'Ich habe ein viel stärkeres Argument zum Ablehnen von'
-        de_lang[_self.iHaveEvenStrongerArgumentRejecting] = 'Ich habe ein stärkeres Argument zum Ablehnen von'
-        de_lang[_self.iHaveMuchStrongerArgumentAccepting] = 'Ich habe ein viel stärkeres Argument zum Akzeptieren von'
-        de_lang[_self.iHaveEvenStrongerArgumentAccepting] = 'Ich habe ein stärkeres Argument zum Akzeptieren von'
-        de_lang[_self.iNoOpinion] = 'Ich habe keine Meinung bezüglich'
-        de_lang[_self.interestingOnDBAS] = 'Interessante Diskussion in D-BAS'
-        de_lang[_self.informationForStatements] = 'Informationen zu den Aussagen'
-        de_lang[_self.jumpAnswer0] = 'Ja, ich halte die XXCONCLUSIONXX für richtig und finde die XXPREMISEXX gut.'
-        de_lang[_self.jumpAnswer1] = 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber ich möchte meine eigene XXPREMISEXX angeben.'
-        de_lang[_self.jumpAnswer2] = 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber sie wird nicht von der XXPREMISEXX unterstützt.'
-        de_lang[_self.jumpAnswer3] = 'Nein, ich halte die XXCONCLUSIONXX für falsch.'
-        de_lang[_self.justLookDontTouch] = 'Nur anschauen, nichts anfassen!'
-        de_lang[_self.keyword] = 'Schlüsselwort'
-        de_lang[_self.keywordStart] = 'Start'
-        de_lang[_self.keywordChooseActionForStatement] = 'Einstellung zu'
-        de_lang[_self.keywordGetPremisesForStatement] = 'Prämissen von'
-        de_lang[_self.keywordMoreAboutArgument] = 'Mehr über'
-        de_lang[_self.keywordReplyForPremisegroup] = 'Antwort auf das Argument'
-        de_lang[_self.keywordReplyForResponseOfConfrontation] = 'Begründung von'
-        de_lang[_self.keywordReplyForArgument] = 'Konfrontation'
-        de_lang[_self.keepSetting] = 'Entscheidung merken'
-        de_lang[_self.holds] = 'ist richtig'
-        de_lang[_self.holdsInColor] = 'ist <span class=\'text-success\'>richtig</span>'
-        de_lang[_self.hideAllUsers] = 'Verstecke alle Benutzer'
-        de_lang[_self.hideAllAttacks] = 'Verstecke alle Angriffe'
-        de_lang[_self.letMeExplain] = 'Lass\' es mich so erklären'
-        de_lang[_self.levenshteinDistance] = 'Levenshtein-Distanz'
-        de_lang[_self.languageCouldNotBeSwitched] = 'Leider konnte die Sprache nicht gewechselt werden'
-        de_lang[_self.last_action] = 'Letzte Aktion'
-        de_lang[_self.last_login] = 'Letzte Anmeldung'
-        de_lang[_self.login] = 'Login'
-        de_lang[_self.logfile] = 'Logdatei für'
-        de_lang[_self.letsGo] = 'Klicken Sie hier um direkt zu starten!'
-        de_lang[_self.letsGoBack] = 'Ab geht\'s zurück!'
-        de_lang[_self.letsGoHome] = 'Ab zur Startseite!'
-        de_lang[_self.langNotFound] = 'Sprache nicht gefunden'
-        de_lang[_self.more] = 'Mehr'
-        de_lang[_self.medium] = 'mittel'
-        de_lang[_self.minLength] = 'Mindestlänge'
-        de_lang[_self.myArgument] = 'mein Argument'
-        de_lang[_self.newNotification] = 'Sie haben eine neue Benachrichtigung.'
-        de_lang[_self.newMention] = 'Sie wurden in einem Beitrag erwähnt.'
-        de_lang[_self.newPremisesRadioButtonText] = 'Nichts von all dem. Ich habe neue Gründe!'
-        de_lang[_self.newPremisesRadioButtonTextAsFirstOne] = 'Ja, ich möchte neue Gründe angeben!'
-        de_lang[_self.newStatementsRadioButtonTextAsFirstOne] = 'Ja, ich möchte neue Aussagen angeben!'
-        de_lang[_self.newPremiseRadioButtonText] = 'Nichts von all dem. Ich möchte einen neuen Grund angeben!'
-        de_lang[_self.newPremiseRadioButtonTextAsFirstOne] = 'Ja, ich möchte einen neuen Grunde angeben!'
-        de_lang[_self.newStatementRadioButtonTextAsFirstOne] = 'Ja, ich möchte eine neue Aussage angeben!'
-        de_lang[_self.newConclusionRadioButtonText] = 'Nichts von all dem. Ich habe eine andere Idee!'
-        de_lang[_self.newsAboutDbas] = 'Nachrichten über D-BAS'
-        de_lang[_self.next] = 'Nächster Eintrag'
-        de_lang[_self.nickname] = 'Spitzname'
-        de_lang[_self.noOtherAttack] = 'Das System hat kein weiteres Gegenargument'
-        de_lang[_self.noIslandView] = 'Daten für die Island View konnten nicht geladen werden. Tschuldigung!'
-        de_lang[_self.noCorrections] = 'Keinte Korreturen für die aktuelle Aussage.'
-        de_lang[_self.noDecisionDone] = 'Es liegt keine Entscheidung vor.'
-        de_lang[_self.noCorrectionsSet] = 'Korrektur wurde nicht gespeichert, da der Benutzer unbekannt ist. Sind Sie angemeldet?'
-        de_lang[_self.notInsertedErrorBecauseEmpty] = 'Ihre Idee wurde nicht gespeichert, da das Feld leer oder der Inhalt zu kurz ist.'
-        de_lang[_self.notInsertedErrorBecauseDuplicate] = 'Ihre Idee wurde nicht gespeichert, da Ihre Idee ein Duplikat ist.'
-        de_lang[_self.notInsertedErrorBecauseUnknown] = 'Ihre Idee wurde aufgrund eines unbekannten Fehlers nicht gespeichert.'
-        de_lang[_self.notInsertedErrorBecauseInternal] = 'Ihre Idee wurde aufgrund eines internen Fehlers nicht gespeichert.'
-        de_lang[_self.noEntries] = 'Keine Einträge vorhanden'
-        de_lang[_self.noTrackedData] = 'Keine Daten wurden gespeichert.'
-        de_lang[_self.number] = 'Nr'
-        de_lang[_self.note] = 'Hinweis'
-        de_lang[_self.now] = 'Jetzt'
-        de_lang[_self.no_entry] = 'Kein Eintrag'
-        de_lang[_self.no_arguments] = 'Keine Argumente für diese Meinung'
-        de_lang[_self.noRights] = 'Sie haben nicht genügend Rechte!'
-        de_lang[_self.notLoggedIn] = 'Sie sind nicht angemeldet!'
-        de_lang[_self.on] = 'An'
-        de_lang[_self.off] = 'Aus'
-        de_lang[_self.opinion] = 'die Meinung'
-        de_lang[_self.onlyOneItem] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte hier um sich anzumelden.'
-        de_lang[_self.onlyOneItemWithLink] = 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> um sich anzumelden.'
-        de_lang[_self.unfortunatelyOnlyOneItem] = 'Leider gibt es nur eine Auswahl. Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> m sich anzumelden.'
-        de_lang[_self.otherParticipantsConvincedYouThat] = 'Andere Teilnehmer haben Sie überzeuge, dass'
-        de_lang[_self.otherParticipantsThinkThat] = 'Andere Teilnehmer denken, dass'
-        de_lang[_self.otherParticipantsAgreeThat] = 'Andere Teilnehmer stimmen zu, dass'
-        de_lang[_self.otherParticipantsDontHaveOpinion] = 'Andere Teilnehmer haben keine Meinung, dazu dass'
-        de_lang[_self.otherParticipantsDontHaveOpinionRegaringYourSelection] = 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage'
-        de_lang[_self.otherParticipantsDontHaveCounter] = 'Andere Teilnehmer haben kein Gegenargument für '
-        de_lang[_self.otherParticipantsDontHaveCounterForThat] = 'Andere Teilnehmer haben kein Gegenargument dafür'
-        de_lang[_self.otherParticipantsDontHaveNewCounterForThat] = 'Andere Teilnehmer haben kein neues Gegenargument dafür. Sie habe schon alle Gegenargumente gesehen.'
-        de_lang[_self.otherParticipantsDontHaveArgument] = 'Andere Teilnehmer haben kein Argument für '
-        de_lang[_self.otherParticipantsAcceptBut] = 'Andere Teilnehmer akzeptieren Ihr Argument, aber'
-        de_lang[_self.otherParticipantDisagreeThat] = 'Andere Teilnehmer widersprechen, dass '
-        de_lang[_self.otherUsersClaimStrongerArgumentRejecting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon, dass'
-        de_lang[_self.otherUsersClaimStrongerArgumentAccepting] = 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme davon, dass'
-        de_lang[_self.otherUsersHaveCounterArgument] = 'Andere Teilnehmer haben das Gegenargument, dass'
-        de_lang[_self.otherUsersSaidThat] = 'Andere Teilnehmer haben gesagt, dass'
-        de_lang[_self.opinionBarometer] = 'Meinungsbarometer'
-        de_lang[_self.pleaseAddYourSuggestion] = 'Bitte geben Sie Ihren Vorschlag an!'
-        de_lang[_self.previous] = 'Vorheriger Eintrag'
-        de_lang[_self.premiseGroup] = 'Gruppe von Voraussetzung(en)'
-        de_lang[_self.publicNickTitle] = '(De-)Aktiviert Ihren richtigen Nickname auf Ihrer öffentlichen Seite'
-        de_lang[_self.passwordSubmit] = 'Passwort ändern'
-        de_lang[_self.preferedLangTitle] = 'Bevorzugte Sprache für alle Nachrichten/E-Mails'
-        de_lang[_self.priv_access_opti_queue] = 'Zugriff auf die Optimierungs-Queue'
-        de_lang[_self.priv_access_del_queue] = 'Zugriff auf die Löschantrags-Queue'
-        de_lang[_self.priv_access_edit_queue] = 'Zugriff auf die Editierungs-Queue'
-        de_lang[_self.priv_history_queue] = 'Zugriff auf alle Vergangenen Entscheidungen'
-        de_lang[_self.publications] = 'Veröffentlichungen'
-        de_lang[_self.myPosition] = 'meinen Standpunkt'
-        de_lang[_self.theirPosition] = 'deren Standpunkt'
-        de_lang[_self.the_der] = 'der'
-        de_lang[_self.the_die] = 'die'
-        de_lang[_self.the_das] = 'das'
-        de_lang[_self.report] = 'Melden'
-        de_lang[_self.review] = 'Prüfung'
-        de_lang[_self.review_history] = 'Vergangene Entscheidungen'
-        de_lang[_self.review_ongoing] = 'Aktuelle Entscheidungen'
-        de_lang[_self.reason] = 'Begründung'
-        de_lang[_self.reportStatement] = 'Aussage melden'
-        de_lang[_self.reportArgument] = 'Argument melden'
-        de_lang[_self.remStatementRow] = 'Entfernt diese Reihe.'
-        de_lang[_self.registered] = 'Registriert'
-        de_lang[_self.right] = 'Ja'
-        de_lang[_self.rejecting] = 'gegen'
-        de_lang[_self.requestTrack] = 'Track anfragen'
-        de_lang[_self.refreshTrack] = 'Track neuladen'
-        de_lang[_self.requestHistory] = 'History anfragen'
-        de_lang[_self.refreshHistory] = 'History neuladen'
-        de_lang[_self.requestFailed] = 'Anfrage fehlgeschlagen'
-        de_lang[_self.restartDiscussion] = 'Diskussion neustarten'
-        de_lang[_self.restartDiscussionTitle] = 'Diskussion neustarten'
-        de_lang[_self.restartOnError] = 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.'
-        de_lang[_self.recipient] = 'Empfänger'
-        de_lang[_self.recipientNotFound] = 'Empfänger konnte nicht gefunden werden.'
-        de_lang[_self.reaction] = 'Reaktionen'
-        de_lang[_self.reactionFor] = 'Reaktionen zu'
-        de_lang[_self.rep_reason_first_argument_click] = 'Sie haben ihr erstes Argument ausgewählt'
-        de_lang[_self.rep_reason_first_confrontation] = 'Sie haben ihre erste Konfrontation überlebt'
-        de_lang[_self.rep_reason_first_position] = 'Sie haben zum ersten mal eine Position eingeben'
-        de_lang[_self.rep_reason_first_justification] = 'Sie haben zum ersten mal eine Begründung eingeben'
-        de_lang[_self.rep_reason_first_new_argument] = 'Sie haben zum ersten mal ein Argument eingeben'
-        de_lang[_self.rep_reason_new_statement] = 'Für jedes weitere Argument, dass Sie eingeben haben'
-        de_lang[_self.rep_reason_success_flag] = 'Sie haben zum ersten Mal ein Argument markieren'
-        de_lang[_self.rep_reason_success_edit] = 'Sie haben zum ersten Mal eine Editierung vornehmen'
-        de_lang[_self.rep_reason_bad_flag] = 'Sie haben die Melde-Funktion missbrauchen'
-        de_lang[_self.rep_reason_bad_edit] = 'Sie haben einen schlechten Editierungsvorschlag gemacht'
-        de_lang[_self.questionTitle] = 'Erhalten Sie mehr Informationen über die Aussage!'
-        de_lang[_self.queueDelete] = 'Löschen'
-        de_lang[_self.queueOptimization] = 'Optimieren'
-        de_lang[_self.queueEdit] = 'Editieren'
-        de_lang[_self.queueHistory] = 'History'
-        de_lang[_self.queueOngoing] = 'Aktuell'
-        de_lang[_self.saveMyStatement] = 'Aussage speichern!'
-        de_lang[_self.selectStatement] = 'Bitte Wählen Sie eine Aussage!'
-        de_lang[_self.showAllUsers] = 'Zeig\' alle Benutzer'
-        de_lang[_self.showAllArguments] = 'Zeig\' alle Argumente'
-        de_lang[_self.showAllArgumentsTitle] = 'Zeigt alle Argumente'
-        de_lang[_self.showAllUsersTitle] = 'Zeige alle Nutzer'
-        de_lang[_self.strength] = 'Stärke'
-        de_lang[_self.strong] = 'stark'
-        de_lang[_self.strongerStatementForAccepting1] = 'aber Sie haben eine stärkere Aussage zur '
-        de_lang[_self.strongerStatementForAccepting2] = 'Annahme'
-        de_lang[_self.strongerStatementForAccepting3] = 'davon, dass'
-        de_lang[_self.strongerStatementForRecjecting1] = 'aber Sie haben eine stärkere Aussage zur '
-        de_lang[_self.strongerStatementForRecjecting2] = 'Ablehnung'
-        de_lang[_self.strongerStatementForRecjecting3] = 'davon, dass'
-        de_lang[_self.soYouEnteredMultipleReasons] = 'Sie haben mehrere Gründe eingegeben'
-        de_lang[_self.soYourOpinionIsThat] = 'Ihre Meinung ist, dass'
-        de_lang[_self.soYouWantToArgueAgainst] = 'Sie möchten ein Gegenargument bringen für'
-        de_lang[_self.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion] = 'sodass andere Teilnehmer haben keine Meinung bezüglich ihrer Eingabe'
-        de_lang[_self.shortenedBy] = 'welche gekürzt wurde mit'
-        de_lang[_self.shareUrl] = 'Link teilen'
-        de_lang[_self.showMeAnotherArgument] = 'Zeige mir ein weiteres Argument'
-        de_lang[_self.switchDiscussion] = 'Diskussionsthema ändern'
-        de_lang[_self.switchDiscussionTitle] = 'Diskussionsthema ändern'
-        de_lang[_self.switchDiscussionText1] = 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu'
-        de_lang[_self.switchDiscussionText2] = 'und die Diskussion neugestartet.'
-        de_lang[_self.switchLanguage] = 'Sprache ändern'
-        de_lang[_self.supportPosition] = 'Position unterstützen'
-        de_lang[_self.supportsNot] = 'unterstützt nicht'
-        de_lang[_self.isupport] = 'ich halte'
-        de_lang[_self.statement] = 'Aussage'
-        de_lang[_self.statementIsAbout] = 'Die Aussage ist die, dass'
-        de_lang[_self.statementAdded] = 'Aussage wurde hinzugefügt'
-        de_lang[_self.argumentAdded] = 'Argument wurde hinzugefügt'
-        de_lang[_self.statementAddedMessageContent] = 'Hey, jemand hat seine Meinung zu Deiner Aussage hinzugefügt!'
-        de_lang[_self.argumentAddedMessageContent] = 'Hey, jemand hat sein Argument zu Deiner Aussage hinzugefügt!'
-        de_lang[_self.statementIndex] = 'Aussagen Index - Letzte 30 Tage'
-        de_lang[_self.statementIndexInfo] = 'Anzahl an hinzugefügten Aussagen'
-        de_lang[_self.sureThat] = 'Ich bin sehr sicher, dass '
-        de_lang[_self.surname] = 'Nachname'
-        de_lang[_self.myStatement] = 'meine Aussage'
-        de_lang[_self.showMeAnArgumentFor] = 'Zeig\' mir ein Argument für'
-        de_lang[_self.textAreaReasonHintText] = 'Bitte nutzen Sie ein Feld für jeden Grund. Schreiben Sie kurz und prägnant!'
-        de_lang[_self.theCounterArgument] = 'dem Gegenargument'
-        de_lang[_self.therefore] = 'Daher'
-        de_lang[_self.thinkWeShould] = 'Ich denke, wir sollten '
-        de_lang[_self.thisConfrontationIs] = 'Dieser Angriff ist ein'
-        de_lang[_self.textChange] = 'Eine Ihrer Aussagen wurde editiert.'
-        de_lang[_self.track] = 'Spur'
-        de_lang[_self.this] = 'Diese'
-        de_lang[_self.textversionChangedTopic] = 'Aussage wurde geändert'
-        de_lang[_self.textversionChangedContent] = 'Ihr Text wurde geändert von'
-        de_lang[_self.to] = 'zu'
-        de_lang[_self.topicString] = 'Thema'
-        de_lang[_self.text] = 'Text'
-        de_lang[_self.theySay] = 'Sie sagen, dass'
-        de_lang[_self.theyThink] = 'Sie denken, dass'
-        de_lang[_self.thisIsACopyOfMail] = 'Dies ist eine Kopie Ihrer Mail'
-        de_lang[_self.theirArgument] = 'deren Argument'
-        de_lang[_self.thisArgument] = 'das Argument'
-        de_lang[_self.thxForFlagText] = 'Danke für Ihre Meldung, wir kümmern uns drum!'
-        de_lang[_self.veryweak] = 'sehr schwach'
-        de_lang[_self.wantToStateNewPosition] = 'Um eine neue Aussage hinzuzufügen, klicken Sie bitte hier um sich anzumelden.'
-        de_lang[_self.weak] = 'schwach'
-        de_lang[_self.where] = 'Wo'
-        de_lang[_self.wrong] = 'Nein'
-        de_lang[_self.wouldYourShareArgument] = 'Können Sie einen Grund angeben?'
-        de_lang[_self.wrongURL] = 'Ihre URL scheint falsch zu sein.'
-        de_lang[_self.whatDoYouThinkAbout] = 'Was halten Sie davon, dass'
-        de_lang[_self.whatDoYouThinkOf] = 'Was halten Sie von'
-        de_lang[_self.whatDoYouThinkAboutThat] = 'Was denken Sie darüber'
-        de_lang[_self.whatIsYourIdea] = 'Ich denke / meine, dass ...'
-        de_lang[_self.whatIsYourMostImportantReasonFor] = 'Was ist Ihr wichtigster Grund für die Aussage'
-        de_lang[_self.whatIsYourMostImportantReasonWhyFor] = 'Was ist Ihr wichtigster Grund dafür, dass '
-        de_lang[_self.whatIsYourMostImportantReasonWhyAgainst] = 'Was ist Ihr wichtigster Grund dagegen, dass '
-        de_lang[_self.whatIsYourMostImportantReasonWhyForInColor] = 'Was ist Ihr wichtigster Grund <span class=\'text-success\'>dafür</span>, dass '
-        de_lang[_self.whatIsYourMostImportantReasonWhyAgainstInColor] = 'Was ist Ihr wichtigster Grund <span class=\'text-danger\'>dagegen</span>, dass '
-        de_lang[_self.whyDoYouThinkThat] = 'Wieso denken Sie, dass'
-        de_lang[_self.whyAreYouDisagreeingWith] = 'Warum sind sie dagegenen, dass'
-        de_lang[_self.whyAreYouAgreeingWith] = 'Warum sind sie dafür, dass'
-        de_lang[_self.whyAreYouDisagreeingWithInColor] = 'Warum sind sie <span class=\'text-danger\'>dagegenen</span>, dass'
-        de_lang[_self.whyAreYouAgreeingWithInColor] = 'Warum sind sie <span class=\'text-success\'>dafür</span>, dass'
-        de_lang[_self.whyAreYouDisagreeingWithThat] = 'Warum sind Sie anderer Meinung?'
-        de_lang[_self.youMadeA] = 'Sie machten ein/e'
-        de_lang[_self.youMadeAn] = 'Sie machten ein/e'
-        de_lang[_self.relation_undermine] = 'ist ein Gegenargument für'
-        de_lang[_self.relation_support] = 'ist ein Argument für'
-        de_lang[_self.relation_undercut] = 'ist ein Gegenargument für'
-        de_lang[_self.relation_overbid] = 'ist ein Argument für'
-        de_lang[_self.relation_rebut] = 'ist ein Gegenargument für'
-        de_lang[_self.uid] = 'ID'
-        de_lang[_self.unfortunatelyNoMoreArgument] = 'Leider gibt es keine weiteren Argumente für'
-        de_lang[_self.userPasswordNotMatch] = 'Benutzername und/oder Passwort stimmen nicht überein'
-        de_lang[_self.userOptions] = 'Benutzeroptionen'
-        de_lang[_self.userNotFound] = 'Benutzer konnte nicht gefunden werden'
-        de_lang[_self.userIsNotAuthorOfStatement] = 'Sie sind nicht Autor der Aussage'
-        de_lang[_self.userIsNotAuthorOfArgument] = 'Sie sind nicht Autor des Arguments'
-        de_lang[_self.voteCountTextFirst] = 'Sie sind der/die Erste mit dieser Meinung'
-        de_lang[_self.voteCountTextMayBeFirst] = 'Sie wären der/die Erste mit dieser Meinung'
-        de_lang[_self.voteCountTextOneOther] = 'Ein/e Andere/r mit dieser Meinung'
-        de_lang[_self.voteCountTextMore] = 'weitere Teilnehmer/innen mit dieser Meinung'
-        de_lang[_self.visitDeleteQueue] = 'Schauen Sie in die Queue für Löschanträge.'
-        de_lang[_self.visitDeleteQueueLimitation] = 'Sie brauchen mindestens XX Punkte, um sich die Löschanträge anzuschauen.'
-        de_lang[_self.visitOptimizationQueue] = 'Schauen Sie in die Queue für Optimierungen.'
-        de_lang[_self.visitOptimizationQueueLimitation] = 'Sie brauchen mindestens XX Punkte, um sich die Optimierungen anzuschauen.'
-        de_lang[_self.visitEditQueue] = 'Schauen Sie in die Queue für Änderungen.'
-        de_lang[_self.visitEditQueueLimitation] = 'Sie brauchen mindestens XX Punkte, um sich die Änderungen anzuschauen.'
-        de_lang[_self.visitHistoryQueue] = 'Schauen Sie sich alle vergangenen Entscheidungen an.'
-        de_lang[_self.visitHistoryQueueLimitation] = 'Sie brauchen mindestens XX Punkte, um in die Vergangenheit zu reisen.'
-        de_lang[_self.visitOngoingQueue] = 'Schauen Sie sich die aktuell laufenden Entscheidungen an.'
-        de_lang[_self.welcome] = 'Willkommen'
-        de_lang[_self.welcomeMessage] = 'Willkommen im neuen dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!'
-        de_lang[_self.youAreInterestedIn] = 'Sie interessieren sich für'
-        de_lang[_self.youAgreeWith] = 'Ich bin der Meinung, dass'
-        de_lang[_self.youDisagreeWith] = 'Ich widerspreche, dass'
-        de_lang[_self.youSaidThat] = 'Sie haben gesagt, dass'
-        de_lang[_self.youUsedThisEarlier] = 'Sie haben diese Aussage schon benutzt.'
-        de_lang[_self.youRejectedThisEarlier] = 'Sie haben diese Aussage schon abgelehnt.'
-        de_lang[_self.youHaveMuchStrongerArgumentForAccepting] = 'Sie haben eine viel stärker Begründung für'
-        de_lang[_self.youHaveMuchStrongerArgumentForRejecting] = 'Sie haben eine viel stärker Ablehnung für'
-
-        return de_lang
+de_lang = {
+    _.zero: 'null',
+    _.one: 'eins',
+    _.two: 'zwei',
+    _.three: 'drei',
+    _.four: 'vier',
+    _.five: 'fünf',
+    _.six: 'sechs',
+    _.seven: 'sieben',
+    _.eight: 'acht',
+    _.nine: 'neun',
+    _.plus: 'plus',
+    _.minus: 'minus',
+    _.times: 'mal',
+    _.divided_by: 'durch',
+    _.arguments: 'Argumente',
+    _.error: 'Fehler',
+    _.iActuallyHave: 'Ich habe',
+    _.insertOneArgument: 'Ich habe eine Aussage:',
+    _.insertDontCare: 'Es ist ein Argument und das System interpretiert es falsch!',
+    _.forgotInputRadio: 'Sie haben eine Auswahl vergessen',
+    _.needHelpToUnderstandStatement: 'Wir brauchen Hilfe zum Verständnis Ihrer Aussage!',
+    _.setPremisegroupsIntro1: 'Sie haben \'und\' in Ihrer Aussage ',
+    _.setPremisegroupsIntro2: ' benutzt. Daher existieren mehrere mögliche Auswertungen. Bitte helfen Sie uns, die richtig Eingabe zu wählen:',
+    _.attack: 'Sie lehnen ab, dass',
+    _.assertion: 'Behauptung',
+    _.support: 'Sie akzeptieren',
+    _.premise: 'Prämisse',
+    _.because: 'Weil',
+    _.moreAbout: 'Mehr über',
+    _.undermine: 'Es ist falsch, dass',
+    _.support1: 'Es ist richtig, dass',
+    _.undercut1: 'Es ist falsch, dass',
+    _.undercut2: 'und das ist ein schlechter Konter',
+    _.overbid1: 'Es ist falsch, dass',
+    _.overbid2: 'und das ist ein guter Konter',
+    _.rebut1: 'Es ist richtig, dass',
+    _.rebut2: ', aber ich habe etwas besseres',
+    _.oldPwdEmpty: 'Altes Passwortfeld ist leer.',
+    _.newPwdEmtpy: 'Neues Passwortfeld ist leer.',
+    _.confPwdEmpty: 'Bestätigungs-Passwordfeld ist leer.',
+    _.newPwdNotEqual: 'Passwort und Bestätigung stimmen nicht überein.',
+    _.pwdsSame: 'Beide eingegeben Passwörter sind identisch.',
+    _.oldPwdWrong: 'Ihr altes Passwort ist falsch.',
+    _.pwdChanged: 'Ihr Passwort würde geändert.',
+    _.emptyName: 'Ihr Name ist leer!',
+    _.emptyEmail: 'Ihre E-Mail ist leer!',
+    _.emtpyContent: 'Ihr Inhalt ist leer!',
+    _.maliciousAntiSpam: 'Ihr Anti-Spam-Nachricht ist leer oder falsch!',
+    _.nonValidCSRF: 'CSRF-Token ist nicht valide',
+    _.name: 'Name',
+    _.mail: 'Mail',
+    _.phone: 'Telefon',
+    _.message: 'Nachricht',
+    _.messageDeleted: 'Nachricht gelöscht',
+    _.notification: 'Benachrichtigung',
+    _.notificationDeleted: 'Benachrichtigung gelöscht',
+    _.pwdNotEqual: 'Passwörter sind nicht gleich.',
+    _.nickIsTaken: 'Nickname ist schon vergeben.',
+    _.mailIsTaken: 'E-Mail ist schon vergeben.',
+    _.mailNotValid: 'E-Mail ist nicht gültig.',
+    _.mailSettingsTitle: '(De-)Aktiviert E-Mail',
+    _.notificationSettingsTitle: '(De-)Aktiviert Nachrichten',
+    _.errorTryLateOrContant: 'Leider ist ein Fehler aufgetreten, bitte versuchen Sie später erneut oder kontaktieren Sie uns.',
+    _.accountWasAdded: 'Ihr Account XXX wurde angelegt. Sie können sich nun anmelden.',
+    _.accountRegistration: 'D-BAS Benutzer Registrierung',
+    _.accountWasRegistered: 'Ihr Account XXX wurde erfolgreich für die genannte E-Mail registriert.',
+    _.accoutErrorTryLateOrContant: 'Ihr Account konnte nicht angelegt werden, bitte versuchen Sie später erneut oder kontaktieren Sie uns.',
+    _.nicknameIs: 'Ihr Nickname lautet: ',
+    _.newPwdIs: 'Ihr Passwort lautet: ',
+    _.dbasPwdRequest: 'D-BAS Passwort Nachfrage',
+    _.antispamquestion: 'Was ist',
+    _.defaultView: 'Standardansicht',
+    _.positions: 'Positionen',
+    _.labels: 'Beschriftungen',
+    _.myStatements: 'Meine Aussagen',
+    _.supportsOnMyStatements: 'Unterstützungen',
+    _.attacksOnMyStatements: 'Angriffe',
+    _.addATopic: 'Thema hinzufügen',
+    _.pleaseEnterTopic: 'Bitte geben Sie Ihr Thema an:',
+    _.pleaseEnterShorttextForTopic: 'Bitte geben Sie die Kurzform Ihres Themas an:',
+    _.pleaseSelectLanguageForTopic: 'Bitte geben Sie die Sprache Ihres Themas an:',
+    _.editIssueViewChangelog: 'Thema editieren / Änderungprotokoll einsehen',
+    _.editTitleHere: 'Bitte bearbeiten Sie hier den Title:',
+    _.editInfoHere: 'Bitte bearbeiten Sie hier die Info:',
+    _.viewChangelog: 'Änderungprotokoll einsehen',
+    _.editStatementHere: 'Bitte bearbeiten Sie hier die Aussage:',
+    _.save: 'Sichern',
+    _.cancel: 'Abbrechen',
+    _.submit: 'Senden',
+    _.close: 'Schließen',
+    _.urlSharing: 'URL teilen',
+    _.urlSharingDescription: 'Teilen Sie diese URL:',
+    _.warning: 'Warnung',
+    _.islandViewFor: 'Inselansicht für',
+    _.resumeHere: 'Hier weitermachen',
+    _.aand: 'und',
+    _.andor: 'und/oder',
+    _.addStatementRow: 'Weiteres Argument angegeben.',
+    _.addedEverything: 'Alles wurde hinzugefügt.',
+    _.addTopic: 'Thema hinzufügen',
+    _.at: 'am',
+    _.alreadyInserted: 'Dies ist ein Duplikat und schon vorhanden.',
+    _.addPremisesRadioButtonText: 'Lass\' mich meine eigenen Gründe angeben!',
+    _.addArgumentsRadioButtonText: 'Lass\' mich meine eigenen Aussagen angeben!',
+    _.argumentContainerTextIfPremises: 'Sie möchten Ihre eigenen Gründe angeben?',
+    _.argumentContainerTextIfArguments: 'Sie möchten Ihre eigenen Argumente angeben?',
+    _.addPremiseRadioButtonText: 'Lass\' mich meinen eigenen Grund angeben!',
+    _.addArgumentRadioButtonText: 'Lass\' mich meine eigene Aussage angeben!',
+    _.argumentContainerTextIfPremise: 'Sie möchten Ihren eigenen Grund angeben?',
+    _.argumentContainerTextIfArgument: 'Sie möchten Ihr eigenes Argument angeben?',
+    _.argumentContainerTextIfConclusion: 'Was ist Ihre Idee? Was sollten wir unternehmen?',
+    _.argueAgainstPositionToggleButton: 'Oder wenn Sie gegen eine Position argumentieren möchten, drücken Sie bitte diesen Schalter:',
+    _.argueForPositionToggleButton: 'Oder wenn Sie für eine Position argumentieren möchten, drücken Sie bitte diesen Schalter:',
+    _.argumentFlaggedBecauseOfftopic: 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>nicht themenbezogen</strong> ist.',
+    _.argumentFlaggedBecauseSpam: 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>Spam</strong> ist.',
+    _.argumentFlaggedBecauseHarmful: 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>nicht angebracht, schädlich oder missbräuchlich</strong> ist.',
+    _.argumentFlaggedBecauseOptimization: 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>sprachlicher Korrektur</strong> bedarf.',
+    _.argumentFlaggedBecauseEdit: 'Dieses Argument wurde von einer/m Benutzer/in sprachlich verbessert.',
+    _.alternatively: 'Alternativ',
+    _.argument: 'Argument',
+    _.accepting: 'für',
+    _.andIDoNotBelieveCounter: 'und ich glaube, dass ist kein gutes Gegenargument für',
+    _.andIDoNotBelieveArgument: 'und ich glaube, dass ist kein gutes Argument für',
+    _.andTheyDoNotBelieveCounter: 'und sie glauben, dass ist kein gutes Gegenargument für',
+    _.andTheyDoNotBelieveArgument: 'und sie glauben, dass ist kein gutes Argument für',
+    _.asReasonFor: 'als einen Grund für',
+    _.attackedBy: 'Sie wurden attackiert mit',
+    _.attackedWith: 'Sie haben attackiert mit',
+    _.attackPosition: 'Position angreifen',
+    _.agreeBecause: 'Ich stimme zu, weil ',
+    _.andIDoBelieveCounterFor: 'und ich glaube, dass ist ein gutes Gegenargument für',
+    _.andIDoBelieveArgument: 'und ich glaube, dass ist ein gutes Argument für',
+    _.addArguments: 'Argumente hizufügen',
+    _.addStatements: 'Aussagen hizufügen',
+    _.addArgumentsTitle: 'Fügt neue Argumente hinzu',
+    _.acceptItTitle: 'Einsenden...',
+    _.acceptIt: 'Eintragen...',
+    _.attitudeFor: 'Einstellungen zu',
+    _.alreadyFlaggedByOthers: 'Diese Aussage wurde uns schon gemeldet!',
+    _.alreadyFlaggedByYou: 'Diese Aussage haben Sie uns schon gemeldet!',
+    _.breadcrumbsStart: 'Start',
+    _.breadcrumbsChoose: 'Mehrere Gründe für',
+    _.breadcrumbsJustifyStatement: 'Wieso denken Sie das',
+    _.breadcrumbsGetPremisesForStatement: 'Prämissen',
+    _.breadcrumbsMoreAboutArgument: 'Mehr Über',
+    _.breadcrumbsReplyForPremisegroup: 'Antwort für Gruppe',
+    _.breadcrumbsReplyForResponseOfConfrontation: 'Begründung von',
+    _.breadcrumbsReplyForArgument: 'Antwort fürs Argument',
+    _.butOtherParticipantsDontHaveOpinionRegardingYourOpinion: 'aber andere Teilnehmer haben keine Meinung bezüglich ihrer Eingabe',
+    _.butOtherParticipantsDontHaveArgument: 'aber andere Teilnehmer haben keine Begründung für dafür',
+    _.butOtherParticipantsDontHaveCounterArgument: 'aber andere Teilnehmer haben kein Gegenargument.',
+    _.butIDoNotBelieveCounterFor: 'aber ich glaube nicht, dass es ein gutes Argument dagegen ist, dass',
+    _.butIDoNotBelieveArgumentFor: 'aber ich glaube nicht, dass es ein gutes Argument dafür ist, dass',
+    _.butIDoNotBelieveCounter: 'aber ich glaube nicht, dass es ein gutes Argument gegen',
+    _.butIDoNotBelieveArgument: 'aber ich glaube nicht, dass es ein gutes Argument für',
+    _.butIDoNotBelieveReasonForReject: 'aber ich glaube nicht, dass das zur Aussage führt',
+    _.butTheyDoNotBelieveCounter: 'aber sie glauben, dass es kein gutes Argument dagegen ist, dass',
+    _.butTheyDoNotBelieveArgument: 'aber sie glauben, dass es kein gutes Argument dafür ist, dass',
+    _.butThenYouCounteredWith: 'Jedoch haben Sie dann das Gegenargument gebracht, dass',
+    _.butYouCounteredWith: 'Jedoch haben Sie das Gegenargument gebracht, dass',
+    _.butYouAgreedWith: 'Und Sie haben zugestimmt, weil',
+    _.but: 'aber',
+    _.butWhich: 'aber welches',
+    _.clickHereForRegistration: 'Klick <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> für die Anmeldung oder eine Registrierung!',
+    _.clickForMore: 'Klick hier!',
+    _.confirmation: 'Bestätigung',
+    _.contactSubmit: 'Nachricht senden',
+    _.contact: 'Kontakt',
+    _.confirmTranslation: 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
+    _.correctionsSet: 'Ihre Korrektur wurde gesetzt.',
+    _.countOfArguments: 'Anzahl der Argumente',
+    _.countOfPosts: 'Anzahl der Beiträge',
+    _.checkFirstname: 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!',
+    _.checkLastname: 'Bitte überprüfen Sie Ihren Nachnamen, da die Eingabe leer ist!',
+    _.checkNickname: 'Bitte überprüfen Sie Ihren Spitznamen, da die Eingabe leer ist!',
+    _.checkEmail: 'Bitte überprüfen Sie Ihre E-Mail, da die Eingabe leer ist!',
+    _.checkPassword: 'Bitte überprüfen Sie Ihre Passwort, da die Eingabe leer ist!',
+    _.checkConfirmation: 'Bitte überprüfen Sie Ihre Passwort-Bestätigung, da die Eingabe leer ist!',
+    _.checkPasswordConfirm: 'Bitte überprüfen Sie Ihre Passwörter, da die Passwärter nicht gleich sind!',
+    _.clickToChoose: 'Klicken zum wählen',
+    _.clearStatistics: 'Statistik löschen',
+    _.canYouGiveAReason: 'Können Sie einen Grund angeben?',
+    _.canYouGiveAReasonFor: 'Können Sie einen Grund für folgendes angeben:',
+    _.canYouGiveACounterArgumentWhy1: 'Können Sie begründen, wieso sie gegen',
+    _.canYouGiveACounterArgumentWhy2: 'sind?',
+    _.canYouGiveACounter: 'Können Sie einen Grund dagegen angeben?',
+    _.canYouGiveAReasonForThat: 'Können Sie dafür einen Grund angeben?',
+    _.completeView: 'Komplette View',
+    _.completeViewTitle: 'Kompletten Graphen anzeigen',
+    _.currentDiscussion: 'Die aktuelle Diskussion hat folgendes Thema',
+    _.dialogView: 'Dialog-Ansicht',
+    _.dialogViewTitle: 'Dialog-Ansicht',
+    _.dateString: 'Datum',
+    _.disagreeBecause: 'Ich widerspreche, weil ',
+    _.description_undermine: 'Diese Aussage ist gegen die Prämisse.',
+    _.description_support: 'Diese Aussage ist für die Prämisse.',
+    _.description_undercut: 'Diese Aussage ist gegen die Begründung (undercut). Sie glauben nicht, dass aus der Prämisse die Konklusion folgt.',
+    _.description_overbid: 'Diese Aussage ist für die Begründung (overbid). Sie glauben nicht, dass aus der Prämisse die Konklusion folgt.',
+    _.description_rebut: 'Diese Aussage ist gegen die Konklusion.',
+    _.description_no_opinion: 'Sie haben keine Meinung odeWas ist Ihre Meinung?r möchten diesen Punkt nur überspringen.',
+    _.decisionIndex7: 'Entscheidungs Index - Letzte 7 Tage',
+    _.decisionIndex30: 'Entscheidungs Index - Letzte 30 Tage',
+    _.decisionIndex7Info: 'Anzahl an getroffenen Entscheidungen (bedingt durch Klicks im System), in den letzten 7 Tage',
+    _.decisionIndex30Info: 'Anzahl an getroffenen Entscheidungen (bedingt durch Klicks im System), in den letzten 30 Tage',
+    _.dataRemoved: 'Daten wurden erfolgreich gelöscht.',
+    _.didYouMean: 'Top 10 der Aussagen, die Sie eventuell meinten:',
+    _.discussionEnd: 'Die Diskussion endet hier.',
+    _.discussionEndLinkText: 'Sie können <a id="discussionEndStepBack" data-href="back" onclick="window.history.back();" style="cursor: pointer;">hier</a> klicken, um einen Schritt zurückzugehen oder den oberen Button bzw. <a id="discussionEndRestart" data-href="restart">diesen Link</a> nutzen, um die Diskussion neu zustarten.',
+    _.duplicateDialog: 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
+    _.duplicate: 'Duplikat',
+    _.displayControlDialogGuidedTitle: 'Dialog-Ansicht',
+    _.displayControlDialogGuidedBody: 'Du wirst nie etwas wie eine Argumentationskarte sehen, da das System dich führt. Das System ist daher dynamisch und generisch für dich.',
+    _.displayControlDialogIslandTitle: 'Insel-Ansicht',
+    _.displayControlDialogIslandBody: 'Okay, Sie möchten mehr sehen, aber nicht alles? Genau dafür haben wie eine Insel-Ansicht als weitere Modus. Mit dieser Möglichkeit sehen Sie alle Aussagen, die mit Ihrem aktuellen Standpunkt verbunden sind.',
+    _.displayControlDialogExpertTitle: 'Experten-Ansicht',
+    _.displayControlDialogExpertBody: 'Du bist also ein Experte? Okay, dann darfst du wirklich alles auf einen Blick sehen.',
+    _.displayControlDialogGraphTitle: 'Graph-Ansicht',
+    _.displayControlDialogGraphBody: 'Darstellung der Diskussion als Graph.',
+    _.discussionInfoTooltip1: 'Die Diskussion wurde',
+    _.discussionInfoTooltip2: 'gestartet und hat schon',
+    _.discussionInfoTooltip3pl: 'Argumente.',
+    _.discussionInfoTooltip3sg: 'Argument.',
+    _.doesNotHold: 'ist keine gute Idee',
+    _.isNotRight: 'ist nicht richtig',
+    _.doesJustify: 'gerechtfertigen, dass',
+    _.doesNotJustify: 'nicht gerechtfertigen, dass',
+    _.deleteTrack: 'Track löschen',
+    _.deleteStatement: 'Aussage löschen',
+    _.disassociateStatement: 'Vom Statement entfernen',
+    _.delete: 'Löschen',
+    _.deleteHistory: 'History löschen',
+    _.doYouWantToEnterYourStatements: 'Möchten Sie Ihre eigenen Gründe angeben?',
+    _.doNotHesitateToContact: 'Zögern Sie nicht, uns zu <span style="cursor: pointer;" id="contact-on-error"><strong>kontaktieren (hier klicken)</strong></span>',
+    _.dataAlreadyLockedByYou: 'Sie bearbeiten schon einen Datensatz. Schließen Sie diese Bearbeitung bitte zuerst ab!',
+    _.dataAlreadyLockedByOthers: 'Dieser Datensatz wird gerade durch andere Teilnehmer bearbeitet.',
+    _.earlierYouArguedThat: 'Zuerst haben Sie argumentiert, dass',
+    _.editIndex: 'Änderungs Index - Letzte 30 Tage',
+    _.editIndexInfo: 'Anzahl an Änderungen',
+    _.euCookiePopupTitle: 'Diese Seite nutzt Cookies und Piwik.',
+    _.euCookiePopupText: 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
+    _.euCookiePopoupButton1: 'Weiter',
+    _.euCookiePopoupButton2: 'Lerne&nbsp;mehr',
+    _.empty_news_input: 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
+    _.empty_notification_input: 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
+    _.email: 'E-Mail',
+    _.emailWasSent: 'E-Mail wurde gesendet.',
+    _.emailWasNotSent: 'E-Mail wurde nicht gesendet.',
+    _.emailUnknown: 'Die Adresse ist nicht gültig.',
+    _.emailBodyText: 'Dies ist eine automatisch generierte E-Mail von D-BAS XXXXX.\nBei Rückfragen können Sie gerne eine E-Mail an krauthoff@cs.uni-duesseldorf.de verfassen.\nDieses System ist Teil einer Promotion und noch in der Testphase.',
+    _.emailArgumentAddTitle: 'D-BAS Infos zum Argument',
+    _.emailArgumentAddBody: 'Zu Ihrem Argument wurden weitere Informationen hinzugefügt. Schauen Sie doch mal rein:',
+    _.edit: 'Bearbeiten',
+    _.error_code: 'Fehler-Code',
+    _.editTitle: 'Aussage bearbeiten',
+    _.feelFreeToLogin: 'Wenn Sie weiter machen möchten, <u><a data-href="login" data-toggle="modal" data-target="#popup-login" title="Anmelden">melden</a></u> Sie sich bitte an :)',
+    _.forText: 'für',
+    _.forThat: 'dafür, dass',
+    _.fillLine: 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung',
+    _.firstConclusionRadioButtonText: 'Lass mich meine eigenen Ideen einfügen!',
+    _.firstArgumentRadioButtonText: 'Lass mich meine eigenen Aussagen einfügen!',
+    _.feelFreeToShareUrl: 'Bitte teilen Sie diese URL',
+    _.fetchLongUrl: 'Normale URL',
+    _.fetchShortUrl: 'Kurze URL',
+    _.forgotPassword: 'Passwort vergessen',
+    _.firstOneText: 'Sie sind der Erste, der sagt: ',
+    _.firstOneInformationText: 'Sie sind der Erste, der Informationen haben möchte, über: ',
+    _.firstOneReason: 'Sie sind der Erste mit diesem Argument. Bitte geben Sie Ihre Begründung an.',
+    _.firstPositionText: 'Sie sind der Erste in dieser Diskussion!',
+    _.firstPremiseText1: 'Sie sind der Erste, der sagt, dass ',
+    _.firstPremiseText2: 'Bitte begründen Sie Ihre Aussage.',
+    _.firstname: 'Vorname',
+    _.fromm: 'von',
+    _.finishTitle: 'Diskussion beenden',
+    _.hold: 'stimmen',
+    _.gender: 'Geschlecht',
+    _.goBack: 'Klicken, um zurückzugehen',
+    _.goHome: 'Startseite',
+    _.goStepBack: 'Einen Schritt zurück',
+    _.generateSecurePassword: 'Generate secure password',
+    _.goodPointTakeMeBackButtonText: 'Ich stimme zu, dass ist ein gutes Argument. Geh einen Schritt zurück.',
+    _.group_uid: 'Gruppe',
+    _.goBackToTheDiscussion: 'Geh zur Diskussion',
+    _.goForward: 'Klicken, um weiterzugehen',
+    _.haveALookAt: 'Hey, schau dir mal das an: ',
+    _.hidePasswordRequest: 'Verstecke die Passwort-Anfrage',
+    _.hideGenerator: 'Verstecke Generator',
+    _.history: 'Geschichte',
+    _.howeverIHaveMuchStrongerArgumentRejectingThat: 'Jedoch habe ich ein viel stärkeres Argument dagegen, dass',
+    _.howeverIHaveMuchStrongerArgumentAcceptingThat: 'Jedoch habe ich ein viel stärkeres Argument dafür, dass',
+    _.howeverIHaveMuchStrongerArgument: 'Jedoch habe ich ein viel stärkeres Argument',
+    _.howeverIHaveEvenStrongerArgumentRejecting: 'Jedoch habe ich ein stärkeres Argument gegen:',
+    _.howeverIHaveEvenStrongerArgumentAccepting: 'Jedoch habe ich ein stärkeres Argument für:',
+    _.imprint: 'Impressum',
+    _.internalFailureWhileDeletingTrack: 'Interner Fehler, bitte versuchen Sie es später erneut.',
+    _.internalFailureWhileDeletingHistory: 'Interner Fehler, bitte versuchen Sie es später erneut.',
+    _.internalError: '<strong>Interner Fehler:</strong> Wahrscheinlich ist der Server nicht erreichbar. Bitte laden Sie die Seite erneut!.',
+    _.internalKeyError: 'Interner Fehler beim verarbeiten von Daten.',
+    _.inputEmpty: 'Ihre Eingabe ist leer!',
+    _.informationForExperts: 'Infos für Experten',
+    _.issueList: 'Themen',
+    _.islandViewHeaderText: 'Dies sind alle Argumente für: ',
+    _.irrelevant: 'Irrelevant',
+    _.itIsTrueThat: 'ich akzeptiere, dass',
+    _.itIsTrue1: 'ich akzeptiere',
+    _.itIsTrue2: '',
+    _.itIsFalseThat: 'ich lehne ab, dass',
+    _.itIsFalse1: 'ich lehne',
+    _.itIsFalse2: 'ab',
+    _.itTrueIsThat: 'es richtig ist, dass',
+    _.itFalseIsThat: 'es falsch ist, dass',
+    _.islandView: 'Insel Ansicht',
+    _.isFalse: 'ist falsch',
+    _.isTrue: 'richtig ist',
+    _.areTrue: 'sind richtig',
+    _.isNotAGoodIdea: 'falsch ist',
+    _.isNotAGoodIdeaInColor: '<span class=\'text-danger\'>falsch ist</span>',
+    _.initialPosition: 'Anfangs-interesse',
+    _.initialPositionSupport: 'Was ist Ihre Meinung, die Sie unterstützen?',
+    _.initialPositionAttack: 'Was ist Ihre Meinung, die Sie angreifen möchten?',
+    _.initialPositionInterest: 'Ich möchte über die Aussage reden, dass ...',
+    _.invalidEmail: 'Ihre E-Mail ist ungültig!',
+    _.islandViewTitle: 'Zeigt die Insel Ansicht',
+    _.iAcceptCounter: 'und ich akzeptiere, dass es ein Argument gegen',
+    _.iAcceptArgument: 'und ich akzeptiere, dass es ein Argument für',
+    _.iAcceptCounterThat: 'und ich akzeptiere, dass es ein Argument dagegen ist, dass',
+    _.iAcceptArgumentThat: 'und ich akzeptiere, dass es ein Argument dafür ist, dass',
+    _.iAgreeWith: 'Ich akzeptiere es',
+    _.iAgreeWithInColor: 'Ich <span class=\'text-success\'>akzeptiere es</span>',
+    _.iDisagreeWith: 'Ich lehne es ab',
+    _.iDisagreeWithInColor: 'Ich <span class=\'text-danger\'>lehne es ab</span>',
+    _.iDoNotKnow: 'Ich weiß es nicht, dass',
+    _.iDoNotKnowInColor: 'Ich <span class=\'text-info\'>weiß es nicht</span>',
+    _.iHaveNoOpinionYet: 'Ich weiß es nicht, dass',
+    _.iHaveNoOpinion: 'Ich weiß es nicht',
+    _.iHaveNoOpinionYetInColor: 'Ich <span class=\'text-info\'>weiß es nicht</span>. Zeige mir eine Aussage für das Argument',
+    _.iHaveMuchStrongerArgumentRejecting: 'Ich habe ein viel stärkeres Argument zum Ablehnen von',
+    _.iHaveEvenStrongerArgumentRejecting: 'Ich habe ein stärkeres Argument zum Ablehnen von',
+    _.iHaveMuchStrongerArgumentAccepting: 'Ich habe ein viel stärkeres Argument zum Akzeptieren von',
+    _.iHaveEvenStrongerArgumentAccepting: 'Ich habe ein stärkeres Argument zum Akzeptieren von',
+    _.iNoOpinion: 'Ich habe keine Meinung bezüglich',
+    _.interestingOnDBAS: 'Interessante Diskussion in D-BAS',
+    _.informationForStatements: 'Informationen zu den Aussagen',
+    _.relativePopularityOfStatements: 'Relative Beliebheit der Aussagen',
+    _.jumpAnswer0: 'Ja, ich halte die XXCONCLUSIONXX für richtig und finde die XXPREMISEXX gut.',
+    _.jumpAnswer1: 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber ich möchte meine eigene XXPREMISEXX angeben.',
+    _.jumpAnswer2: 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber sie wird nicht von der XXPREMISEXX unterstützt.',
+    _.jumpAnswer3: 'Nein, ich halte die XXCONCLUSIONXX für falsch.',
+    _.justLookDontTouch: 'Nur anschauen, nichts anfassen!',
+    _.keyword: 'Schlüsselwort',
+    _.keywordStart: 'Start',
+    _.keywordChooseActionForStatement: 'Einstellung zu',
+    _.keywordGetPremisesForStatement: 'Prämissen von',
+    _.keywordMoreAboutArgument: 'Mehr über',
+    _.keywordReplyForPremisegroup: 'Antwort auf das Argument',
+    _.keywordReplyForResponseOfConfrontation: 'Begründung von',
+    _.keywordReplyForArgument: 'Konfrontation',
+    _.keepSetting: 'Entscheidung merken',
+    _.holds: 'ist richtig',
+    _.holdsInColor: 'ist <span class=\'text-success\'>richtig</span>',
+    _.hideAllUsers: 'Verstecke alle Benutzer',
+    _.hideAllAttacks: 'Verstecke alle Angriffe',
+    _.letMeExplain: 'Lass\' es mich so erklären',
+    _.levenshteinDistance: 'Levenshtein-Distanz',
+    _.languageCouldNotBeSwitched: 'Leider konnte die Sprache nicht gewechselt werden',
+    _.last_action: 'Letzte Aktion',
+    _.last_login: 'Letzte Anmeldung',
+    _.login: 'Login',
+    _.logfile: 'Logdatei für',
+    _.letsGo: 'Klicken Sie hier um direkt zu starten!',
+    _.letsGoBack: 'Ab geht\'s zurück!',
+    _.letsGoHome: 'Ab zur Startseite!',
+    _.langNotFound: 'Sprache nicht gefunden',
+    _.more: 'Mehr',
+    _.medium: 'mittel',
+    _.minLength: 'Mindestlänge',
+    _.myArgument: 'mein Argument',
+    _.newNotification: 'Sie haben eine neue Benachrichtigung.',
+    _.newMention: 'Sie wurden in einem Beitrag erwähnt.',
+    _.newPremisesRadioButtonText: 'Nichts von all dem. Ich habe neue Gründe!',
+    _.newPremisesRadioButtonTextAsFirstOne: 'Ja, ich möchte neue Gründe angeben!',
+    _.newStatementsRadioButtonTextAsFirstOne: 'Ja, ich möchte neue Aussagen angeben!',
+    _.newPremiseRadioButtonText: 'Nichts von all dem. Ich möchte einen neuen Grund angeben!',
+    _.newPremiseRadioButtonTextAsFirstOne: 'Ja, ich möchte einen neuen Grunde angeben!',
+    _.newStatementRadioButtonTextAsFirstOne: 'Ja, ich möchte eine neue Aussage angeben!',
+    _.newConclusionRadioButtonText: 'Nichts von all dem. Ich habe eine andere Idee!',
+    _.newsAboutDbas: 'Nachrichten über D-BAS',
+    _.next: 'Nächster Eintrag',
+    _.nickname: 'Spitzname',
+    _.noOtherAttack: 'Das System hat kein weiteres Gegenargument',
+    _.noIslandView: 'Daten für die Island View konnten nicht geladen werden. Tschuldigung!',
+    _.noCorrections: 'Keinte Korreturen für die aktuelle Aussage.',
+    _.noDecisionDone: 'Es liegt keine Entscheidung vor.',
+    _.noCorrectionsSet: 'Korrektur wurde nicht gespeichert, da der Benutzer unbekannt ist. Sind Sie angemeldet?',
+    _.notInsertedErrorBecauseEmpty: 'Ihre Idee wurde nicht gespeichert, da das Feld leer oder der Inhalt zu kurz ist.',
+    _.notInsertedErrorBecauseDuplicate: 'Ihre Idee wurde nicht gespeichert, da Ihre Idee ein Duplikat ist.',
+    _.notInsertedErrorBecauseUnknown: 'Ihre Idee wurde aufgrund eines unbekannten Fehlers nicht gespeichert.',
+    _.notInsertedErrorBecauseInternal: 'Ihre Idee wurde aufgrund eines internen Fehlers nicht gespeichert.',
+    _.noEntries: 'Keine Einträge vorhanden',
+    _.noTrackedData: 'Keine Daten wurden gespeichert.',
+    _.number: 'Nr',
+    _.note: 'Hinweis',
+    _.now: 'Jetzt',
+    _.no_entry: 'Kein Eintrag',
+    _.no_arguments: 'Keine Argumente für diese Meinung',
+    _.noRights: 'Sie haben nicht genügend Rechte!',
+    _.notLoggedIn: 'Sie sind nicht angemeldet!',
+    _.on: 'An',
+    _.off: 'Aus',
+    _.opinion: 'die Meinung',
+    _.onlyOneItem: 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte hier um sich anzumelden.',
+    _.onlyOneItemWithLink: 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> um sich anzumelden.',
+    _.unfortunatelyOnlyOneItem: 'Leider gibt es nur eine Auswahl. Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> m sich anzumelden.',
+    _.otherParticipantsConvincedYouThat: 'Andere Teilnehmer haben Sie überzeuge, dass',
+    _.otherParticipantsThinkThat: 'Andere Teilnehmer denken, dass',
+    _.otherParticipantsAgreeThat: 'Andere Teilnehmer stimmen zu, dass',
+    _.otherParticipantsDontHaveOpinion: 'Andere Teilnehmer haben keine Meinung, dazu dass',
+    _.otherParticipantsDontHaveOpinionRegaringYourSelection: 'Andere Teilnehmer haben keine Meinung zu Ihrer Aussage',
+    _.otherParticipantsDontHaveCounter: 'Andere Teilnehmer haben kein Gegenargument für ',
+    _.otherParticipantsDontHaveCounterForThat: 'Andere Teilnehmer haben kein Gegenargument dafür',
+    _.otherParticipantsDontHaveNewCounterForThat: 'Andere Teilnehmer haben kein neues Gegenargument dafür. Sie habe schon alle Gegenargumente gesehen.',
+    _.otherParticipantsDontHaveArgument: 'Andere Teilnehmer haben kein Argument für ',
+    _.otherParticipantsAcceptBut: 'Andere Teilnehmer akzeptieren Ihr Argument, aber',
+    _.otherParticipantDisagreeThat: 'Andere Teilnehmer widersprechen, dass ',
+    _.otherUsersClaimStrongerArgumentRejecting: 'Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon, dass',
+    _.otherUsersClaimStrongerArgumentAccepting: 'Andere Teilnehmer haben eine stärkere Aussage zur Annahme davon, dass',
+    _.otherUsersHaveCounterArgument: 'Andere Teilnehmer haben das Gegenargument, dass',
+    _.otherUsersSaidThat: 'Andere Teilnehmer haben gesagt, dass',
+    _.opinionBarometer: 'Meinungsbarometer',
+    _.pleaseAddYourSuggestion: 'Bitte geben Sie Ihren Vorschlag an!',
+    _.previous: 'Vorheriger Eintrag',
+    _.premiseGroup: 'Gruppe von Voraussetzung(en)',
+    _.publicNickTitle: '(De-)Aktiviert Ihren richtigen Nickname auf Ihrer öffentlichen Seite',
+    _.passwordSubmit: 'Passwort ändern',
+    _.preferedLangTitle: 'Bevorzugte Sprache für alle Nachrichten/E-Mails',
+    _.priv_access_opti_queue: 'Zugriff auf die Optimierungs-Queue',
+    _.priv_access_del_queue: 'Zugriff auf die Löschantrags-Queue',
+    _.priv_access_edit_queue: 'Zugriff auf die Editierungs-Queue',
+    _.priv_history_queue: 'Zugriff auf alle Vergangenen Entscheidungen',
+    _.publications: 'Veröffentlichungen',
+    _.queueDelete: 'Löschen',
+    _.queueOptimization: 'Optimieren',
+    _.queueEdit: 'Editieren',
+    _.queueHistory: 'History',
+    _.queueOngoing: 'Aktuell',
+    _.myPosition: 'meinen Standpunkt',
+    _.theirPosition: 'deren Standpunkt',
+    _.the_der: 'der',
+    _.the_die: 'die',
+    _.the_das: 'das',
+    _.report: 'Melden',
+    _.review: 'Prüfung',
+    _.review_history: 'Vergangene Entscheidungen',
+    _.review_ongoing: 'Aktuelle Entscheidungen',
+    _.reason: 'Begründung',
+    _.reportStatement: 'Aussage melden',
+    _.reportArgument: 'Argument melden',
+    _.remStatementRow: 'Entfernt diese Reihe.',
+    _.registered: 'Registriert',
+    _.right: 'Ja',
+    _.rejecting: 'gegen',
+    _.requestTrack: 'Track anfragen',
+    _.refreshTrack: 'Track neuladen',
+    _.requestHistory: 'History anfragen',
+    _.refreshHistory: 'History neuladen',
+    _.requestFailed: 'Anfrage fehlgeschlagen',
+    _.restartDiscussion: 'Diskussion neustarten',
+    _.restartDiscussionTitle: 'Diskussion neustarten',
+    _.restartOnError: 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt.',
+    _.recipient: 'Empfänger',
+    _.recipientNotFound: 'Empfänger konnte nicht gefunden werden.',
+    _.reaction: 'Reaktionen',
+    _.reactionFor: 'Reaktionen zu',
+    _.attitudesOfOpinions: 'Meinungsverhalten',
+    _.agreeVsDisagree: 'Ja vs. Nein',
+    _.reference: 'Referenz',
+    _.rep_reason_first_argument_click: 'Sie haben ihr erstes Argument ausgewählt',
+    _.rep_reason_first_confrontation: 'Sie haben ihre erste Konfrontation überlebt',
+    _.rep_reason_first_position: 'Sie haben zum ersten mal eine Position eingeben',
+    _.rep_reason_first_justification: 'Sie haben zum ersten mal eine Begründung eingeben',
+    _.rep_reason_first_new_argument: 'Sie haben zum ersten mal ein Argument eingeben',
+    _.rep_reason_new_statement: 'Für jedes weitere Argument, dass Sie eingeben haben',
+    _.rep_reason_success_flag: 'Sie haben zum ersten Mal ein Argument markieren',
+    _.rep_reason_success_edit: 'Sie haben zum ersten Mal eine Editierung vornehmen',
+    _.rep_reason_bad_flag: 'Sie haben die Melde-Funktion missbrauchen',
+    _.rep_reason_bad_edit: 'Sie haben einen schlechten Editierungsvorschlag gemacht',
+    _.questionTitle: 'Erhalten Sie mehr Informationen über die Aussage!',
+    _.saveMyStatement: 'Aussage speichern!',
+    _.selectStatement: 'Bitte Wählen Sie eine Aussage!',
+    _.showAllUsers: 'Zeig\' alle Benutzer',
+    _.showAllArguments: 'Zeig\' alle Argumente',
+    _.showAllArgumentsTitle: 'Zeigt alle Argumente',
+    _.showAllUsersTitle: 'Zeige alle Nutzer',
+    _.strength: 'Stärke',
+    _.strong: 'stark',
+    _.strongerStatementForAccepting1: 'aber Sie haben eine stärkere Aussage zur ',
+    _.strongerStatementForAccepting2: 'Annahme',
+    _.strongerStatementForAccepting3: 'davon, dass',
+    _.strongerStatementForRecjecting1: 'aber Sie haben eine stärkere Aussage zur ',
+    _.strongerStatementForRecjecting2: 'Ablehnung',
+    _.strongerStatementForRecjecting3: 'davon, dass',
+    _.soYouEnteredMultipleReasons: 'Sie haben mehrere Gründe eingegeben',
+    _.soYourOpinionIsThat: 'Ihre Meinung ist, dass',
+    _.soYouWantToArgueAgainst: 'Sie möchten ein Gegenargument bringen für',
+    _.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion: 'sodass andere Teilnehmer haben keine Meinung bezüglich ihrer Eingabe',
+    _.shortenedBy: 'welche gekürzt wurde mit',
+    _.shareUrl: 'Link teilen',
+    _.showMeAnotherArgument: 'Zeige mir ein weiteres Argument',
+    _.switchDiscussion: 'Diskussionsthema ändern',
+    _.switchDiscussionTitle: 'Diskussionsthema ändern',
+    _.switchDiscussionText1: 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',
+    _.switchDiscussionText2: 'und die Diskussion neugestartet.',
+    _.switchLanguage: 'Sprache ändern',
+    _.supportPosition: 'Position unterstützen',
+    _.supportsNot: 'unterstützt nicht',
+    _.isupport: 'ich halte',
+    _.statement: 'Aussage',
+    _.statementIsAbout: 'Die Aussage ist die, dass',
+    _.statementAdded: 'Aussage wurde hinzugefügt',
+    _.argumentAdded: 'Argument wurde hinzugefügt',
+    _.statementAddedMessageContent: 'Hey, jemand hat seine Meinung zu Deiner Aussage hinzugefügt!',
+    _.argumentAddedMessageContent: 'Hey, jemand hat sein Argument zu Deiner Aussage hinzugefügt!',
+    _.statementIndex: 'Aussagen Index - Letzte 30 Tage',
+    _.statementIndexInfo: 'Anzahl an hinzugefügten Aussagen',
+    _.sureThat: 'Ich bin sehr sicher, dass ',
+    _.surname: 'Nachname',
+    _.myStatement: 'meine Aussage',
+    _.showMeAnArgumentFor: 'Zeig\' mir ein Argument für',
+    _.textAreaReasonHintText: 'Bitte nutzen Sie ein Feld für jeden Grund. Schreiben Sie kurz und prägnant!',
+    _.theCounterArgument: 'dem Gegenargument',
+    _.therefore: 'Daher',
+    _.thinkWeShould: 'Ich denke, wir sollten ',
+    _.thisConfrontationIs: 'Dieser Angriff ist ein',
+    _.textChange: 'Eine Ihrer Aussagen wurde editiert.',
+    _.track: 'Spur',
+    _.this: 'Diese',
+    _.textversionChangedTopic: 'Aussage wurde geändert',
+    _.textversionChangedContent: 'Ihr Text wurde geändert von',
+    _.to: 'zu',
+    _.topicString: 'Thema',
+    _.text: 'Text',
+    _.theySay: 'Sie sagen, dass',
+    _.theyThink: 'Sie denken, dass',
+    _.thisIsACopyOfMail: 'Dies ist eine Kopie Ihrer Mail',
+    _.theirArgument: 'deren Argument',
+    _.thisArgument: 'das Argument',
+    _.thxForFlagText: 'Danke für Ihre Meldung, wir kümmern uns drum!',
+    _.veryweak: 'sehr schwach',
+    _.wantToStateNewPosition: 'Um eine neue Aussage hinzuzufügen, klicken Sie bitte hier um sich anzumelden.',
+    _.weak: 'schwach',
+    _.where: 'Wo',
+    _.wrong: 'Nein',
+    _.wouldYourShareArgument: 'Können Sie einen Grund angeben?',
+    _.wrongURL: 'Ihre URL scheint falsch zu sein.',
+    _.whatDoYouThinkAbout: 'Was halten Sie davon, dass',
+    _.whatDoYouThinkOf: 'Was halten Sie von',
+    _.whatDoYouThinkAboutThat: 'Was denken Sie darüber',
+    _.whatIsYourIdea: 'Ich denke / meine, dass ...',
+    _.whatIsYourMostImportantReasonFor: 'Was ist Ihr wichtigster Grund für die Aussage',
+    _.whatIsYourMostImportantReasonWhyFor: 'Was ist Ihr wichtigster Grund dafür, dass ',
+    _.whatIsYourMostImportantReasonWhyAgainst: 'Was ist Ihr wichtigster Grund dagegen, dass ',
+    _.whatIsYourMostImportantReasonWhyForInColor: 'Was ist Ihr wichtigster Grund <span class=\'text-success\'>dafür</span>, dass ',
+    _.whatIsYourMostImportantReasonWhyAgainstInColor: 'Was ist Ihr wichtigster Grund <span class=\'text-danger\'>dagegen</span>, dass ',
+    _.whyDoYouThinkThat: 'Wieso denken Sie, dass',
+    _.whyAreYouDisagreeingWith: 'Warum sind sie dagegenen, dass',
+    _.whyAreYouAgreeingWith: 'Warum sind sie dafür, dass',
+    _.whyAreYouDisagreeingWithInColor: 'Warum sind sie <span class=\'text-danger\'>dagegenen</span>, dass',
+    _.whyAreYouAgreeingWithInColor: 'Warum sind sie <span class=\'text-success\'>dafür</span>, dass',
+    _.whyAreYouDisagreeingWithThat: 'Warum sind Sie anderer Meinung?',
+    _.youMadeA: 'Sie machten ein/e',
+    _.youMadeAn: 'Sie machten ein/e',
+    _.relation_undermine: 'ist ein Gegenargument für',
+    _.relation_support: 'ist ein Argument für',
+    _.relation_undercut: 'ist ein Gegenargument für',
+    _.relation_overbid: 'ist ein Argument für',
+    _.relation_rebut: 'ist ein Gegenargument für',
+    _.uid: 'ID',
+    _.unfortunatelyNoMoreArgument: 'Leider gibt es keine weiteren Argumente für',
+    _.userPasswordNotMatch: 'Benutzername und/oder Passwort stimmen nicht überein',
+    _.userOptions: 'Benutzeroptionen',
+    _.userNotFound: 'Benutzer konnte nicht gefunden werden',
+    _.userIsNotAuthorOfStatement: 'Sie sind nicht Autor der Aussage',
+    _.userIsNotAuthorOfArgument: 'Sie sind nicht Autor des Arguments',
+    _.voteCountTextFirst: 'Sie sind der/die Erste mit dieser Meinung',
+    _.voteCountTextMayBeFirst: 'Sie wären der/die Erste mit dieser Meinung',
+    _.voteCountTextOneOther: 'Ein/e Andere/r mit dieser Meinung',
+    _.voteCountTextMore: 'weitere Teilnehmer/innen mit dieser Meinung',
+    _.voteCountTextOneMore: 'weitere/r Teilnehmer/innen mit dieser Meinung',
+    _.visitDeleteQueue: 'Schauen Sie in die Queue für Löschanträge.',
+    _.visitDeleteQueueLimitation: 'Sie brauchen mindestens XX Punkte, um sich die Löschanträge anzuschauen.',
+    _.visitOptimizationQueue: 'Schauen Sie in die Queue für Optimierungen.',
+    _.visitOptimizationQueueLimitation: 'Sie brauchen mindestens XX Punkte, um sich die Optimierungen anzuschauen.',
+    _.visitEditQueue: 'Schauen Sie in die Queue für Änderungen.',
+    _.visitEditQueueLimitation: 'Sie brauchen mindestens XX Punkte, um sich die Änderungen anzuschauen.',
+    _.visitHistoryQueue: 'Schauen Sie sich alle vergangenen Entscheidungen an.',
+    _.visitHistoryQueueLimitation: 'Sie brauchen mindestens XX Punkte, um in die Vergangenheit zu reisen.',
+    _.visitOngoingQueue: 'Schauen Sie sich die aktuell laufenden Entscheidungen an.',
+    _.welcome: 'Willkommen',
+    _.welcomeMessage: 'Willkommen im neuen dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!',
+    _.youAreInterestedIn: 'Sie interessieren sich für',
+    _.youAgreeWith: 'Ich bin der Meinung, dass',
+    _.youDisagreeWith: 'Ich widerspreche, dass',
+    _.youSaidThat: 'Sie haben gesagt, dass',
+    _.youUsedThisEarlier: 'Sie haben diese Aussage schon benutzt.',
+    _.youRejectedThisEarlier: 'Sie haben diese Aussage schon abgelehnt.',
+    _.youHaveMuchStrongerArgumentForAccepting: 'Sie haben eine viel stärker Begründung für',
+    _.youHaveMuchStrongerArgumentForRejecting: 'Sie haben eine viel stärker Ablehnung für',
+    # _.insertDontCare': Es ist mir egal. Nimm\' meine Aussage wie sie ist!'
+}

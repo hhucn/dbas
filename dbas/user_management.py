@@ -4,10 +4,9 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import hashlib
+import transaction
 import random
 from datetime import date, timedelta, datetime
-from urllib import parse
 
 import arrow
 import dbas.handler.password as password_handler
@@ -19,6 +18,7 @@ from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, g
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
 
@@ -41,25 +41,28 @@ moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry'
             'Uncomfortable', 'Weird', 'Sexy', 'Aggressive']
 
 # https://en.wikipedia.org/wiki/List_of_animal_names
+# list = '';
+# $.each($($('table')[3]).find('tbody td:first-child'), function(){if ($(this).text().length > 2 ) list += ', ' + '"' + $(this).text().replace(' (list) ', '') + '"'});
+# console.log(list)
 animallist = ['Aardvark', 'Albatross', 'Alligator', 'Alpaca', 'Ant', 'Anteater', 'Antelope', 'Ape', 'Armadillo',
               'Badger', 'Barracuda', 'Bat', 'Bear', 'Beaver', 'Bee', 'Bird', 'Bison', 'Boar', 'Buffalo', 'Butterfly',
               'Camel', 'Caribou', 'Cassowary', 'Cat', 'Caterpillar', 'Cattle', 'Chamois', 'Cheetah', 'Chicken',
               'Chimpanzee', 'Chinchilla', 'Chough', 'Coati', 'Cobra', 'Cockroach', 'Cod', 'Cormorant', 'Coyote',
               'Crab', 'Crane', 'Crocodile', 'Crow', 'Curlew', 'Deer', 'Dinosaur', 'Dog', 'Dolphin', 'Donkey', 'Dotterel',
-              'Dove', 'Dragonfly', 'Duck', 'Dugong', 'Dunlin Eagle', 'Echidna', 'Eel', 'Eland', 'Elephant',
+              'Dove', 'Dragonfly', 'Duck', 'Dugong', 'Dunlin', 'Eagle', 'Echidna', 'Eel', 'Eland', 'Elephant',
               'Elephant Seal', 'Elk', 'Emu Falcon', 'Ferret', 'Finch', 'Fish', 'Flamingo', 'Fly', 'Fox', 'FrogGaur',
               'Gazelle', 'Gerbil', 'Giant Panda', 'Giraffe', 'Gnat', 'Gnu', 'Goat', 'Goldfinch', 'Goosander', 'Goose',
-              'Gorilla', 'Goshawk', 'Grasshopper', 'Grouse', 'Guanaco', 'Guinea Pig', 'Gull Hamster', 'Hare', 'Hawk',
+              'Gorilla', 'Goshawk', 'Grasshopper', 'Grouse', 'Guanaco', 'Guinea Pig', 'Gull ', 'Hamster', 'Hare', 'Hawk',
               'Hedgehog', 'Heron', 'Herring', 'Hippopotamus', 'Hornet', 'Horse', 'Hummingbird', 'Hyena', 'Ibex',
-              'IbisJackal', 'Jaguar', 'Jay', 'Jellyfish Kangaroo', 'Kinkajou', 'Koala', 'Komodo Dragon', 'Kouprey',
-              'Kudu Lapwing', 'Lark', 'Lemur', 'Leopard', 'Lion', 'Llama', 'Lobster', 'Locust', 'Loris', 'Louse',
-              'Lyrebird Magpie', 'Mallard', 'Mammoth', 'Manatee', 'Mandrill', 'Mink', 'Mole', 'Mongoose', 'Monkey',
-              'Moose', 'Mouse', 'Mosquito Narwhal', 'Newt', 'Nightingale Octopus', 'Okapi', 'Opossum', 'Ostrich',
-              'Otter', 'Owl', 'Oyster Panther', 'Parrot', 'Partridge', 'Peafowl', 'Pelican', 'Penguin', 'Pheasant',
-              'Pig', 'Pigeon', 'Polar Bear', 'Porcupine', 'Porpoise', 'Quelea', 'Quetzal Rabbit', 'Raccoon', 'Rat',
+              'Ibis', 'Jackal', 'Jaguar', 'Jay', 'Jellyfish', 'Kangaroo', 'Kinkajou', 'Koala', 'Komodo Dragon',
+              'Kouprey', 'Kudu', 'Lapwing', 'Lark', 'Lemur', 'Leopard', 'Lion', 'Llama', 'Lobster', 'Locust', 'Loris',
+              'Louse', 'Lyrebird Magpie', 'Mallard', 'Mammoth', 'Manatee', 'Mandrill', 'Mink', 'Mole', 'Mongoose',
+              'Monkey', 'Moose', 'Mouse', 'Mosquito', 'Narwhal', 'Newt', 'Nightingale', 'Octopus', 'Okapi', 'Opossum', 'Ostrich',
+              'Otter', 'Owl', 'Oyster', 'Panther', 'Parrot', 'Partridge', 'Peafowl', 'Pelican', 'Penguin', 'Pheasant',
+              'Pig', 'Pigeon', 'Polar Bear', 'Porcupine', 'Porpoise', 'Quelea', 'Quetzal', 'Rabbit', 'Raccoon', 'Rat',
               'Raven', 'Red Deer', 'Red Panda', 'Reindeer', 'Rhinoceros', 'RookSalamander', 'Salmon', 'Sand Dollar',
               'Sandpiper', 'Sardine', 'Sea Lion', 'Sea Urchin', 'Seahorse', 'Seal', 'Shark', 'Sheep', 'Shrew', 'Skunk',
-              'Sloth', 'Snail', 'Snake ', 'Spider', 'Squirrel', 'Starling', 'Swan Tapir', 'Tarsier', 'Termite', 'Tiger',
+              'Sloth', 'Snail', 'Snake ', 'Spider', 'Squirrel', 'Starling', 'Swan', 'Tapir', 'Tarsier', 'Termite', 'Tiger',
               'Toad', 'Turkey', 'Turtle', 'Walrus', 'Wasp', 'Water Buffalo', 'Weasel', 'Whale', 'Wolf', 'Wolverine',
               'Wombat', 'Yak', 'Zebra', 'Baboon', 'Eagle']
 
@@ -83,13 +86,41 @@ thingslist = ['Angle', 'Ant', 'Apple', 'Arch', 'Arm', 'Army', 'Baby', 'Bag', 'Ba
               'Town', 'Train', 'Tray', 'Tree', 'Trousers', 'Umbrella', 'Wall', 'Watch', 'Wheel', 'Whip', 'Whistle',
               'Window', 'Wing', 'Wire', 'Worm']
 
+# https://www.randomlists.com/food?qty=200
+foodlist = ['Acorn Squash', 'Adobo', 'Aioli', 'Alfredo Sauce', 'Almond Paste', 'Amaretto', 'Ancho Chile Peppers',
+            'Anchovy Paste', 'Andouille Sausage', 'Apple Butter', 'Apple Pie Spice', 'Apricots', 'Aquavit',
+            'Artificial Sweetener', 'Asiago Cheese', 'Asparagus', 'Avocados', 'Baking Powder', 'Baking Soda', 'Basil',
+            'Bass', 'Bay Leaves', 'Bean Sauce', 'Bean Sprouts', 'Bean Threads', 'Beans', 'Beer', 'Beets', 'Berries',
+            'Black Olives', 'Blackberries', 'Blue Cheese', 'Bok Choy', 'Breadfruit', 'Broccoli', 'Broccoli Raab',
+            'Brown Rice', 'Brown Sugar', 'Bruschetta', 'Buttermilk', 'Cabbage', 'Canadian Bacon', 'Capers',
+            'Cappuccino Latte', 'Cayenne Pepper', 'Celery', 'Chambord', 'Chard', 'Chaurice Sausage', 'Cheddar Cheese',
+            'Cherries', 'Chicory', 'Chile Peppers', 'Chili Powder', 'Chili Sauce', 'Chocolate', 'Cinnamon', 'Cloves',
+            'Cocoa Powder', 'Cod', 'Condensed Milk', 'Cooking Wine', 'Coriander', 'Corn Flour', 'Corn Syrup',
+            'Cornmeal', 'Cornstarch', 'Cottage Cheese', 'Couscous', 'Crabs', 'Cream', 'Cream Cheese', 'Croutons',
+            'Cumin', 'Curry Paste', 'Date Sugar', 'Dates', 'Dill', 'Dried Leeks', 'Eel', 'Eggplants', 'Eggs', 'Figs',
+            'Fish Sauce', 'Flounder', 'Flour', 'French Fries', 'Geese', 'Gouda', 'Grapes', 'Green Beans',
+            'Green Onions', 'Grits', 'Grouper', 'Habanero Chilies', 'Haddock', 'Half-and-half', 'Ham', 'Hash Browns',
+            'Heavy Cream', 'Honey', 'Horseradish', 'Hot Sauce', 'Huckleberries', 'Irish Cream Liqueur', 'Jelly Beans',
+            'Ketchup', 'Kumquats', 'Lamb', 'Leeks', 'Lemon Grass', 'Lemons', 'Lettuce', 'Lima Beans', 'Lobsters',
+            'Mackerel', 'Maple Syrup', 'Margarine', 'Marshmallows', 'Melons', 'Mesclun Greens', 'Monkfish', 'Mushrooms',
+            'Mussels', 'Mustard Seeds', 'Oatmeal', 'Octopus', 'Okra', 'Olives', 'Onion Powder', 'Orange Peels',
+            'Oregano', 'Pancetta', 'Paprika', 'Pea Beans', 'Peanut Butter', 'Peanuts', 'Pears', 'Pecans', 'Pesto',
+            'Pheasants', 'Pickles', 'Pico De Gallo', 'Pineapples', 'Pink Beans', 'Pinto Beans', 'Plum Tomatoes',
+            'Pomegranates', 'Poppy Seeds', 'Pork', 'Portabella Mushrooms', 'Potato Chips', 'Poultry Seasoning',
+            'Prosciutto', 'Raw Sugar', 'Red Chile Powder', 'Red Snapper', 'Remoulade', 'Rhubarb', 'Rice Wine',
+            'Romaine Lettuce', 'Romano Cheese', 'Rosemary', 'Salmon', 'Salt', 'Sardines', 'Sausages', 'Sea Cucumbers',
+            'Shallots', 'Shitakes', 'Shrimp', 'Snow Peas', 'Spaghetti Squash', 'Split Peas', 'Summer Squash', 'Sushi',
+            'Sweet Chili Sauce', 'Sweet Peppers', 'Swiss Cheese', 'Tartar Sauce', 'Tomato Juice', 'Tomato Paste',
+            'Tomato Puree', 'Tomato Sauce', 'Tonic Water', 'Tortillas', 'Tuna', 'Turtle', 'Unsweetened Chocolate',
+            'Vanilla', 'Vanilla Bean', 'Vegemite', 'Venison', 'Wasabi', 'Water Chestnuts', 'Wine Vinegar',
+            'Won Ton Skins', 'Worcestershire Sauce', 'Yogurt', 'Zinfandel Wine']
 
-def update_last_action(transaction, nick):
+
+def update_last_action(nick):
     """
     Updates the last action field of the user-row in database. Returns boolean if the users session
     is older than one hour or True, when she wants to keep the login
 
-    :param transaction: transaction
     :param nick: User.nickname
     :return: Boolean
     """
@@ -117,11 +148,12 @@ def update_last_action(transaction, nick):
 
 def refresh_public_nickname(user):
     """
+    Creates and sets a random public nick for the given user
 
-    :param user:
-    :return:
+    :param user: User
+    :return: the new nickname as string
     """
-    biglist = animallist + thingslist
+    biglist = animallist + thingslist + foodlist
 
     first = moodlist[random.randint(0, len(moodlist) - 1)]
     second = biglist[random.randint(0, len(biglist) - 1)]
@@ -163,25 +195,6 @@ def is_user_admin(nickname):
     return db_user and db_user.groups.name == 'admins'
 
 
-def get_public_profile_picture(user, size=80):
-    """
-    Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
-    If the user doesn want an public profile, an anoynmous image will be returned
-
-    :param user: User
-    :param size: Integer, default 80
-    :return: String
-    """
-    if user:
-        additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
-    else:
-        additional_id = 'y'
-    email = (user.email + additional_id).encode('utf-8') if user else 'unknown@dbas.cs.uni-duesseldorf.de'.encode('utf-8')
-    gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
-    gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
-    return gravatar_url
-
-
 def get_public_information_data(nickname, lang):
     """
     Fetch some public information about the user with given nickname
@@ -209,15 +222,15 @@ def get_public_information_data(nickname, lang):
     data_edit_30 = []
     data_statement_30 = []
 
-    return_dict['label1'] = _tn.get(_tn.decisionIndex7)
-    return_dict['label2'] = _tn.get(_tn.decisionIndex30)
-    return_dict['label3'] = _tn.get(_tn.statementIndex)
-    return_dict['label4'] = _tn.get(_tn.editIndex)
+    return_dict['label1'] = _tn.get(_.decisionIndex7)
+    return_dict['label2'] = _tn.get(_.decisionIndex30)
+    return_dict['label3'] = _tn.get(_.statementIndex)
+    return_dict['label4'] = _tn.get(_.editIndex)
 
-    return_dict['labelinfo1'] = _tn.get(_tn.decisionIndex7Info)
-    return_dict['labelinfo2'] = _tn.get(_tn.decisionIndex30Info)
-    return_dict['labelinfo3'] = _tn.get(_tn.statementIndexInfo)
-    return_dict['labelinfo4'] = _tn.get(_tn.editIndexInfo)
+    return_dict['labelinfo1'] = _tn.get(_.decisionIndex7Info)
+    return_dict['labelinfo2'] = _tn.get(_.decisionIndex30Info)
+    return_dict['labelinfo3'] = _tn.get(_.statementIndexInfo)
+    return_dict['labelinfo4'] = _tn.get(_.editIndexInfo)
 
     for days_diff in range(30, -1, -1):
         date_begin  = date.today() - timedelta(days=days_diff)
@@ -255,8 +268,6 @@ def get_public_information_data(nickname, lang):
     return_dict['data3'] = data_statement_30
     return_dict['data4'] = data_edit_30
 
-    # history = get_reputation_history(nickname)  # TODO REPUTATION CHART
-
     return return_dict
 
 
@@ -279,36 +290,34 @@ def get_random_anti_spam_question(lang):
     """
     _t = Translator(lang)
 
+    signs = [_.plus, _.minus, _.divided_by, _.times]
+    numbers = [_.zero, _.one, _.two, _.three, _.four, _.five, _.six, _.seven, _.eight, _.nine]
+
     int1 = random.randint(0, 9)
     int2 = random.randint(0, 9)
     answer = 0
-    question = _t.get(_t.antispamquestion) + ' '
-    sign = _t.get(_t.signs)[random.randint(0, 3)]
-
-    if sign is '+':
-        sign = _t.get(sign)
+    question = _t.get(_.antispamquestion) + ' '
+    sign = signs[random.randint(0, 3)]
+    if sign is _.plus:
         answer = int1 + int2
 
-    elif sign is '-':
-        sign = _t.get(sign)
+    elif sign is _.minus:
         if int2 > int1:
             tmp = int1
             int1 = int2
             int2 = tmp
         answer = int1 - int2
 
-    elif sign is '*':
-        sign = _t.get(sign)
+    elif sign is _.times:
         answer = int1 * int2
 
-    elif sign is '/':
-        sign = _t.get(sign)
+    elif sign is _.divided_by:
         while int1 == 0 or int2 == 0 or int1 % int2 != 0:
             int1 = random.randint(1, 9)
             int2 = random.randint(1, 9)
         answer = int1 / int2
 
-    question += _t.get(str(int1)) + ' ' + sign + ' ' + _t.get(str(int2)) + '?'
+    question += "{} {} {}?".format(_t.get(numbers[int1]), _t.get(sign), _t.get(numbers[int2]))
     logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question + ', answer: ' + str(answer))
 
     return question, str(int(answer))
@@ -503,10 +512,9 @@ def get_summary_of_today(nickname):
     return ret_dict
 
 
-def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
+def change_password(user, old_pw, new_pw, confirm_pw, lang):
     """
 
-    :param transaction: current database transaction
     :param user: current database user
     :param old_pw: old received password
     :param new_pw: new received password
@@ -523,33 +531,33 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
     # is the old password given?
     if not old_pw:
         logger('UserHandler', 'change_password', 'old pwd is empty')
-        message = _t.get(_t.oldPwdEmpty)  # 'The old password field is empty.'
+        message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
         error = True
     # is the new password given?
     elif not new_pw:
         logger('UserHandler', 'change_password', 'new pwd is empty')
-        message = _t.get(_t.newPwdEmtpy)  # 'The new password field is empty.'
+        message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
         error = True
     # is the confirmation password given?
     elif not confirm_pw:
         logger('UserHandler', 'change_password', 'confirm pwd is empty')
-        message = _t.get(_t.confPwdEmpty)  # 'The password confirmation field is empty.'
+        message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
         error = True
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
         logger('UserHandler', 'change_password', 'new pwds not equal')
-        message = _t.get(_t.newPwdNotEqual)  # 'The new passwords are not equal'
+        message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
         error = True
     # is new old password equals the new one?
     elif old_pw == new_pw:
         logger('UserHandler', 'change_password', 'pwds are the same')
-        message = _t.get(_t.pwdsSame)  # 'The new and old password are the same'
+        message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
         error = True
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
             logger('UserHandler', 'change_password', 'old password is wrong')
-            message = _t.get(_t.oldPwdWrong)  # 'Your old password is wrong.'
+            message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
             error = True
         else:
             hashed_pw = password_handler.get_hashed_password(new_pw)
@@ -560,13 +568,13 @@ def change_password(transaction, user, old_pw, new_pw, confirm_pw, lang):
             transaction.commit()
 
             logger('UserHandler', 'change_password', 'password was changed')
-            message = _t.get(_t.pwdChanged)  # 'Your password was changed'
+            message = _t.get(_.pwdChanged)  # 'Your password was changed'
             success = True
 
     return message, error, success
 
 
-def create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales, transaction):
+def create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales):
     """
 
     :param request:
@@ -578,7 +586,6 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
     :param gender:
     :param db_group_uid:
     :param ui_locales:
-    :param transaction:
     :return:
     """
     success = ''
@@ -607,16 +614,16 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
     checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if checknewuser:
         logger('UserManagement', 'create_new_user', 'New data was added with uid ' + str(checknewuser.uid))
-        success = _t.get(_t.accountWasAdded)
+        success = _t.get(_.accountWasAdded).replace('XXX', nickname)
 
         # sending an email
-        subject = _t.get(_t.accountRegistration)
-        body = _t.get(_t.accountWasRegistered)
+        subject = _t.get(_.accountRegistration)
+        body = _t.get(_.accountWasRegistered).replace('XXX', '"' + nickname + '"')
         email_helper.send_mail(request, subject, body, email, ui_locales)
-        send_welcome_notification(transaction, checknewuser.uid)
+        send_welcome_notification(checknewuser.uid)
 
     else:
         logger('UserManagement', 'create_new_user', 'New data was not added')
-        info = _t.get(_t.accoutErrorTryLateOrContant)
+        info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info

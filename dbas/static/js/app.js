@@ -59,19 +59,6 @@ function goBackToTop() {
 }
 
 /**
- * Changes the navbar on background scrolling events
- */
-function changeBackgroundOnScroll(){
-	$(window).scroll(function () {
-		if (jQuery(this).scrollTop() > 10) {
-			$('#custom-bootstrap-menu').removeClass('navbar-transparent');
-		} else {
-			$('#custom-bootstrap-menu').addClass('navbar-transparent');
-		}
-	});
-}
-
-/**
  * Displays dialog
  * @param titleText
  * @param bodyText
@@ -117,7 +104,7 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
  */
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
 	// display dialog only if the cookie was not set yet
-	if (new Helper().isCookieSet(WARNING_CHANGE_DISCUSSION_POPUP)){
+	if (isCookieSet(WARNING_CHANGE_DISCUSSION_POPUP)){
 		window.location.href = functionForAccept;
 	} else {
 		$('#' + popupConfirmChecbkoxDialogId).modal('show');
@@ -128,7 +115,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 			// maybe set a cookie
 			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-				new Helper().setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7, true);
+				setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7, true);
 			}
 
 			if (isRestartingDiscussion) {
@@ -148,7 +135,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  *
  */
 function displayBubbleInformationDialog(){
-	if (!new Helper().isCookieSet(BUBBLE_INFOS)){
+	if (!isCookieSet(BUBBLE_INFOS)){
 		var img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' .modal-dialog').attr('style', 'width: ' + ($(document).width() > 992? '430' : '200') + 'px;');
@@ -156,7 +143,7 @@ function displayBubbleInformationDialog(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(img);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			new Helper().setCookieForDays(BUBBLE_INFOS, 30, true);
+			setCookieForDays(BUBBLE_INFOS, 30, true);
 		}).removeClass('btn-success');
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 	}
@@ -177,45 +164,6 @@ function setPiwikOptOutLink(lang){
 function setEasterEggs(){
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
-
-	if (window.location.href == mainpage) {
-		/* christmas only
-        var div = $('<div>'),
-        christmas = $('<input>').attr('type','checkbox').data('toggle','toggle').data('onstyle','primary').bootstrapToggle('off'),
-        silvester = $('<input>').attr('type','checkbox').data('toggle','toggle').data('onstyle','primary').bootstrapToggle('off'),
-        spanChristmas = $('<span>').text('Christmas'),
-        spanSilvester = $('<span>').text('Silvester');
-        christmas.attr('style','margin-left: 5px;');
-        silvester.attr('style','margin-left: 5px;');
-        spanSilvester.attr('style','margin-left: 20px;');
-        div.attr('style','padding-right: 50px; z-index: 200; text-align: right;')
-		        .append(spanChristmas)
-		        .append(christmas)
-		        .append(spanSilvester)
-		        .append(silvester);
-		div.prependTo($('.first-container'));
-		$('#cot_tl3_fixed').hide();
-		$('#cot_tl4_fixed').hide();
-		christmas.change(function() {
-			if($(this).is(":checked")) {
-				$('#cot_tl3_fixed').show();
-				$('#cot_tl4_fixed').show();
-			} else {
-				$('#cot_tl3_fixed').hide();
-				$('#cot_tl4_fixed').hide();
-			}
-		});
-		silvester.change(function() {
-			if($(this).is(":checked")) {
-				document.body.appendChild(canvas);
-				window.scrollTo(0,document.body.scrollHeight);
-			} else {
-				canvas.remove();
-			}
-		});
-		*/
-	}
-
 	$('#dbas-logo').click(function(){
 		var counter = parseInt($(this).data('counter'));
 		counter += 1;
@@ -371,7 +319,7 @@ function setTextWatcherInputLength(element){
 		max_length = 1000;
 	var id = element.attr('id') + '-text-counter';
 	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
-	var field = $('<span>').text(msg).attr('id', id).addClass('text-min-counter-input');
+	var field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
 	field.insertBefore(element);
 	
 	element.keyup(function(){
@@ -379,82 +327,25 @@ function setTextWatcherInputLength(element){
 		var current_length = text.length;
 		
 		if (current_length == 0){
-			field.removeClass('text-counter-input');
-			field.addClass('text-min-counter-input');
-			field.removeClass('text-max-counter-input');
+			field.addClass('text-info');
+			field.removeClass('text-danger');
 			field.text(msg)
 		} else if (current_length < min_length) {
-			field.addClass('text-counter-input');
-			field.removeClass('text-max-counter-input');
-			field.removeClass('text-max-counter-input');
+			field.removeClass('text-danger');
 			field.text((min_length - current_length) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
 		} else {
-				field.removeClass('text-min-counter-input');
-			if (current_length * 2 > max_length){
-				field.removeClass('text-counter-input');
-				field.addClass('text-max-counter-input');
+				field.removeClass('text-info');
+			if (current_length > max_length * 3 / 4){
+				field.addClass('text-danger');
 			} else {
-				field.addClass('text-counter-input');
-				field.removeClass('text-max-counter-input');
+				field.removeClass('text-danger');
 			}
 			var left = max_length < current_length ? 0 : max_length - current_length;
 			field.text(left + ' ' + _t_discussion(textMaxCountMessage));
 			if (max_length <= current_length)
 				field.text(field.text() + ' ' + _t_discussion(textMaxCountMessageError));
-				// element.val(element.val().substr(0, maxlength));
 		}
 	});
-}
-
-/**
- * Sets an text watcher for the given element. After every input the attribute 'data-min-length' will be checked
- * and maybe a text is shown
- * @param element
- */
-function setTextWatcherForMinLength(element){
-	var text = element.val().trim();
-	var minlength = element.data('min-length');
-	var offset = parseInt(minlength - text.length);
-	var id = element.attr('id') + '-text-min-counter';
-	var msg = _t_discussion(textMinCountMessage1) + ' ' + offset + ' ' + _t_discussion(textMinCountMessage2);
-	var field = $('#' + id);
-	if (offset > 0) {
-		if (field.length > 0) {
-			field.text(msg);
-		} else {
-			$('<span>').text(msg).attr('id', id).addClass('text-min-counter-input').insertBefore(element);
-		}
-	} else {
-		if (field.length > 0) {
-			field.text(_t_discussion(textMinCountMessageBegin1) + ' ' + minlength + ' ' + _t_discussion(textMinCountMessageBegin2));
-			field.remove();
-		}
-	}
-}
-
-/**
- * Sets an text watcher for the given element. After every input the attribute 'data-min-length' will be checked
- * and maybe a text is shown
- * @param element
- */
-function setTextWatcherForMaxLength(element){
-	var text = element.val().trim();
-	var maxlength = element.data('max-length');
-	var offset = parseInt(maxlength - text.length);
-	var id = element.attr('id') + '-text-max-counter';
-	var msg = _t_discussion(textMaxCountMessage);
-	var field = $('#' + id);
-	if (offset < 0) {
-		if (field.length > 0) {
-			field.text(msg);
-		} else {
-			$('<span>').text(msg).attr('id', id).addClass('text-max-counter-input').insertBefore(element);
-		}
-	} else {
-		if (field.length > 0) {
-			field.remove();
-		}
-	}
 }
 
 /**
@@ -469,7 +360,7 @@ function setGlobalErrorHandler(heading, body){
 	});
 	$('#' + requestFailedContainerHeading).html(heading);
 	$('#' + requestFailedContainerMessage).html(body);
-	new Helper().delay(function(){
+	setTimeout(function(){
 		$('#' + requestFailedContainer).fadeOut();
 	}, 5000);
 }
@@ -486,7 +377,7 @@ function setGlobalSuccessHandler(heading, body){
 	});
 	$('#' + requestSuccessContainerHeading).html(heading);
 	$('#' + requestSuccessContainerMessage).html(body);
-	new Helper().delay(function(){
+	setTimeout(function(){
 		$('#' + requestSuccessContainer).fadeOut();
 	}, 5000);
 }
@@ -503,7 +394,7 @@ function setGlobalInfoHandler(heading, body){
 	});
 	$('#' + requestInfoContainerHeading).html(heading);
 	$('#' + requestInfoContainerMessage).html(body);
-	new Helper().delay(function(){
+	setTimeout(function(){
 		$('#' + requestInfoContainer).fadeOut();
 	}, 5000);
 }
@@ -665,7 +556,7 @@ $(document).ready(function () {
 
 	// session expired popup
 	if ($('#' + sessionExpiredContainer).length == 1)
-		new Helper().delay(function(){
+		setTimeout(function(){
 			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
 

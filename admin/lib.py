@@ -4,19 +4,18 @@
 # @email krautho66@cs.uni-duesseldorf.de
 
 
-import transaction
 import arrow
-from sqlalchemy.exc import IntegrityError, ProgrammingError
-
-from dbas.views import main_page
-from dbas.lib import get_profile_picture, get_public_nickname_based_on_settings, is_user_admin
-from dbas.logger import logger
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
     StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
-    ReviewCanceled, RevokedContent
+    ReviewCanceled, RevokedContent, RevokedContentHistory
+from dbas.lib import get_profile_picture, is_user_admin
+from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
+from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
@@ -48,7 +47,8 @@ table_mapper = {
     'ReputationReason'.lower(): {'table': ReputationReason, 'name': 'ReputationReason'},
     'OptimizationReviewLocks'.lower(): {'table': OptimizationReviewLocks, 'name': 'OptimizationReviewLocks'},
     'ReviewCanceled'.lower(): {'table': ReviewCanceled, 'name': 'ReviewCanceled'},
-    'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'}
+    'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'},
+    'RevokedContentHistory'.lower(): {'table': RevokedContentHistory, 'name': 'RevokedContentHistory'}
 }
 
 google_colors = [
@@ -141,6 +141,7 @@ def get_overview(page):
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(OptimizationReviewLocks).all()), 'OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewCanceled).all()), 'ReviewCanceled', page + 'ReviewCanceled'))
     reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContent).all()), 'RevokedContent', page + 'RevokedContent'))
+    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContentHistory).all()), 'RevokedContentHistory', page + 'RevokedContentHistory'))
 
     # first row
     return_list.append([{'name': 'General', 'content': general},
@@ -155,11 +156,12 @@ def get_overview(page):
     return return_list
 
 
-def get_table_dict(table_name):
+def get_table_dict(table_name, main_page):
     """
     Returns information about a specific table
 
     :param table_name: Name of the table
+    :params main_page: URL
     :return: Dictionary with head, row, count and has_elements
     """
     logger('AdminLib', 'get_table_dict', str(table_name))
@@ -190,7 +192,7 @@ def get_table_dict(table_name):
 
     # getting data
     # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
-    data = __get_rows_of(columns, db_elements)
+    data = __get_rows_of(columns, db_elements, main_page)
 
     # save it
     return_dict['head'] = columns
@@ -210,12 +212,13 @@ def __get_language(uid, query):
     return query.filter_by(uid=uid).first().ui_locales
 
 
-def __get_author_data(uid, query):
+def __get_author_data(uid, query, main_page):
     """
     Returns a-tag with gravatar of current author and users page as href
 
     :param uid: of user
     :param query: of all users
+    :params main_page: URL
     :return: string
     """
     db_user = query.filter_by(uid=int(uid)).first()
@@ -225,7 +228,8 @@ def __get_author_data(uid, query):
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
-    link_begin = '<a href="' + main_page + '/user/' + get_public_nickname_based_on_settings(db_user) + '">'
+
+    link_begin = '<a href="' + main_page + '/user/' + db_user.get_global_nickname() + '">'
     link_end = '</a>'
     return link_begin + db_user.nickname + ' ' + img + link_end, True
 
@@ -242,12 +246,13 @@ def __get_dash_dict(count, name, href):
     return {'count': count, 'name': name, 'href': href}
 
 
-def __get_rows_of(columns, db_elements):
+def __get_rows_of(columns, db_elements, main_page):
     """
     Returns array with all data of a table
 
     :param columns: which should be displayed
     :param db_elements: which should be displayed
+    :params main_page: URL
     :return: []
     """
     db_languages = DBDiscussionSession.query(Language)
@@ -259,7 +264,7 @@ def __get_rows_of(columns, db_elements):
             attribute = getattr(row, column)
             # all keywords for getting a user
             if column in _user_columns:
-                text, success = __get_author_data(attribute, db_users)
+                text, success = __get_author_data(attribute, db_users, main_page)
                 if success:
                     tmp.append(text)
             # resolve language
@@ -287,10 +292,10 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
     :return: Empty string or error message
     """
     if not is_user_admin(nickname):
-        return _tn.get(_tn.noRights)
+        return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
-        return _tn.get(_tn.internalKeyError)
+        return _tn.get(_.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -328,10 +333,10 @@ def delete_row(table_name, uids, nickname, _tn):
     """
     logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
     if not is_user_admin(nickname):
-        return _tn.get(_tn.noRights)
+        return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
-        return _tn.get(_tn.internalKeyError)
+        return _tn.get(_.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -369,10 +374,10 @@ def add_row(table_name, data, nickname, _tn):
     """
     logger('AdminLib', 'add_row', str(data))
     if not is_user_admin(nickname):
-        return _tn.get(_tn.noRights)
+        return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
-        return _tn.get(_tn.internalKeyError)
+        return _tn.get(_.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -407,13 +412,13 @@ def __update_row_dict(table, values, keys, _tn):
             if key in _user_columns:
                 db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
                 if not db_user:
-                    return _tn.get(_tn.userNotFound), False
+                    return _tn.get(_.userNotFound), False
                 update_dict[key] = db_user.uid
 
             elif key == 'lang_uid':
                 db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
                 if not db_lang:
-                    return _tn.get(_tn.userNotFound), False
+                    return _tn.get(_.userNotFound), False
                 update_dict[key] = db_lang.uid
 
             else:

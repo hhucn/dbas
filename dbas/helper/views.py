@@ -11,8 +11,9 @@ from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.input_validator import Validator
+from dbas.input_validator import is_integer
 from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 from validate_email import validate_email
 
 import dbas.recommender_system as RecommenderSystem
@@ -48,9 +49,9 @@ def preparation_for_view(for_api, api_data, request):
     :return: nickname, session_id, session_expired, history
     """
     nickname, session_id = get_nickname_and_session(request, for_api, api_data)
-    session_expired = UserHandler.update_last_action(transaction, nickname)
+    session_expired = UserHandler.update_last_action(nickname)
     history         = request.params['history'] if 'history' in request.params else ''
-    HistoryHelper.save_path_in_database(nickname, request.path, transaction)
+    HistoryHelper.save_path_in_database(nickname, request.path)
     HistoryHelper.save_history_in_cookie(request, request.path, history)
     return nickname, session_id, session_expired, history
 
@@ -75,18 +76,17 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     logged_in = UserHandler.is_user_logged_in(nickname)
     _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request)
 
-    VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive, transaction)
+    VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive)
 
     item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
-    discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict), nickname)
+    discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict['elements']), nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, mode == 't',
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
-    if len(item_dict) == 0 or len(item_dict) == 1 and logged_in:
+    if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
                                     current_premise=get_text_for_statement_uid(statement_or_arg_id),
                                     supportive=supportive)
-
     return item_dict, discussion_dict, extras_dict
 
 
@@ -116,11 +116,11 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     # dont know
     argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
-    item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive)
-    extras_dict     = _dh.prepare_extras_dict(slug, False, True, True, True, request, argument_id=argument_uid,
+    item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname)
+    extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
-    if len(item_dict) == 0:
+    if len(item_dict['elements']) == 0:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
                                     current_premise=get_text_for_statement_uid(statement_or_arg_id))
     return item_dict, discussion_dict, extras_dict
@@ -153,7 +153,7 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request,
                                               argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api)
     # is the discussion at the end?
-    if not logged_in and len(item_dict) == 1 or logged_in and len(item_dict) == 1:
+    if not logged_in and len(item_dict['elements']) == 1 or logged_in and len(item_dict['elements']) == 1:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 
     return item_dict, discussion_dict, extras_dict
@@ -195,7 +195,7 @@ def try_to_contact(request, username, email, phone, content, ui_locales, spamans
     _t = Translator(ui_locales)
     send_message = False
 
-    spamanswer = spamanswer if Validator.is_integer(spamanswer) else '#'
+    spamanswer = spamanswer if is_integer(spamanswer) else '#'
     key = 'contact-antispamanswer'
     antispamanswer = request.session[key] if key in request.session else ''
     spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
@@ -207,35 +207,35 @@ def try_to_contact(request, username, email, phone, content, ui_locales, spamans
     if not username:
         logger('ViewHelper', 'try_to_contact', 'username empty')
         contact_error = True
-        message = _t.get(_t.emptyName)
+        message = _t.get(_.emptyName)
 
     # check for non valid mail
     elif not is_mail_valid:
         logger('ViewHelper', 'try_to_contact', 'mail is not valid')
         contact_error = True
-        message = _t.get(_t.invalidEmail)
+        message = _t.get(_.invalidEmail)
 
     # check for empty content
     elif not content:
         logger('main_contact', 'try_to_contact', 'content is empty')
         contact_error = True
-        message = _t.get(_t.emtpyContent)
+        message = _t.get(_.emtpyContent)
 
     # check for empty spam
     elif str(spamanswer) != str(spamsolution):
         logger('ViewHelper', 'try_to_contact', 'empty or wrong anti-spam answer' + ', given answer ' +
                str(spamanswer) + ', right answer ' + str(antispamanswer))
         contact_error = True
-        message = _t.get(_t.maliciousAntiSpam)
+        message = _t.get(_.maliciousAntiSpam)
 
     else:
-        subject = _t.get(_t.contact) + ' D-BAS'
-        body = _t.get(_t.name) + ': ' + username + '\n'
-        body += _t.get(_t.mail) + ': ' + email + '\n'
-        body += _t.get(_t.phone) + ': ' + phone + '\n'
-        body += _t.get(_t.message) + ':\n' + content
+        subject = _t.get(_.contact) + ' D-BAS'
+        body = _t.get(_.name) + ': ' + username + '\n'
+        body += _t.get(_.mail) + ': ' + email + '\n'
+        body += _t.get(_.phone) + ': ' + phone + '\n'
+        body += _t.get(_.message) + ':\n' + content
         EmailHelper.send_mail(request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
-        body = '* ' + _t.get(_t.thisIsACopyOfMail).upper() + ' *\n\n' + body
+        body = '* ' + _t.get(_.thisIsACopyOfMail).upper() + ' *\n\n' + body
         subject = '[D-BAS INFO] ' + subject
         send_message, message = EmailHelper.send_mail(request, subject, body, email, ui_locales)
         contact_error = not send_message
@@ -271,35 +271,35 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     # are the password equal?
     if not password == passwordconfirm:
         logger('ViewHelper', 'user_registration', 'Passwords are not equal')
-        info = _t.get(_t.pwdNotEqual)
+        info = _t.get(_.pwdNotEqual)
     # is the nick already taken?
     elif db_nick1 or db_nick2:
         logger('ViewHelper', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
-        info = _t.get(_t.nickIsTaken)
+        info = _t.get(_.nickIsTaken)
     # is the email already taken?
     elif db_mail:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is taken')
-        info = _t.get(_t.mailIsTaken)
+        info = _t.get(_.mailIsTaken)
     # is the email valid?
     elif not is_mail_valid:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
-        info = _t.get(_t.mailNotValid)
+        info = _.get(_.mailNotValid)
     # is anti-spam correct?
     elif str(spamanswer) != str(request.session['antispamanswer']):
         logger('ViewHelper', 'user_registration', 'Anti-Spam answer \'' + str(spamanswer) + '\' is not equal ' + str(
             request.session['antispamanswer']))
-        info = _t.get(_t.maliciousAntiSpam)
+        info = _.get(_.maliciousAntiSpam)
     else:
         # getting the authors group
         db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
 
         # does the group exists?
         if not db_group:
-            info = _t.get(_t.errorTryLateOrContant)
+            info = _t.get(_.errorTryLateOrContant)
             logger('ViewHelper', 'user_registration', 'Error occured')
         else:
             success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname,
-                                                        password, gender, db_group.uid, ui_locales, transaction)
+                                                        password, gender, db_group.uid, ui_locales)
     return success, info
 
 
@@ -332,9 +332,9 @@ def request_password(request, ui_locales):
         db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
         db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
-        body = _t.get(_t.nicknameIs) + db_user.nickname + '\n'
-        body += _t.get(_t.newPwdIs) + pwd
-        subject = _t.get(_t.dbasPwdRequest)
+        body = _t.get(_.nicknameIs) + db_user.nickname + '\n'
+        body += _t.get(_.newPwdIs) + pwd
+        subject = _t.get(_.dbasPwdRequest)
         reg_success, message = EmailHelper.send_mail(request, subject, body, email, db_language.ui_locales)
 
         if reg_success:
@@ -343,6 +343,6 @@ def request_password(request, ui_locales):
             error = message
     else:
         logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
-        info = _t.get(_t.emailUnknown)
+        info = _t.get(_.emailUnknown)
 
     return success, error, info

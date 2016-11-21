@@ -16,7 +16,7 @@
             </div>
 
             <div class="col-md-2">
-                <small>Every text is send to the server, which respons with an communication!</small>
+                <small>Every text is send to the server, which responds asynchronously!</small>
             </div>
         </div>
 

@@ -37,3 +37,32 @@ nosetests:
 	# cat nosetests_temp_output.log
 	# grep TOTAL nosetests_temp_output.log | awk '{ print "TOTAL: "$$4; }'
 	# rm nosetests_temp_output.log
+
+reload_dummy:
+	dropdb discussion
+	dropdb news
+	createdb -O dbas discussion
+	createdb -O dbas news
+	initialize_discussion_sql development.ini
+	initialize_news_sql development.ini
+	init_discussion_testvotes development.ini
+	init_review_tests development.ini
+
+
+init_production:
+	sudo -u postgres bash -c "psql -c \"create user dbas_prod with password 'SQL_2016&';\""
+	sudo -u postgres bash -c "psql -c \"create database mysession;\""
+	sudo -u postgres bash -c "psql -c \"create database mycache;\""
+	sudo -u postgres bash -c "psql -c \"alter database mysession owner to dbas_prod;\""
+	sudo -u postgres bash -c "psql -c \"alter database mycache owner to dbas_prod;\""
+
+
+all_production_db:
+	sudo -u postgres bash -c "psql -c \"create database mysession;\""
+	sudo -u postgres bash -c "psql -c \"create database mycache;\""
+	sudo -u postgres bash -c "psql -c \"alter database mysession owner to dbas_prod;\""
+	sudo -u postgres bash -c "psql -c \"alter database mycache owner to dbas_prod;\""
+
+clean_production_db:
+	sudo -u postgres bash -c "psql -c \"drop database mysession;\""
+	sudo -u postgres bash -c "psql -c \"drop database mycache;\""

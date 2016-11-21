@@ -29,6 +29,7 @@ coverage.xml
 *.db
 *.sqlite
 *.sqlite-journal
+*.log
 
 # Sphinx documentation
 # docs/
@@ -38,6 +39,10 @@ coverage.xml
 .python-version
 *.bak
 pull*.sh
+gource.sh
+dbas_timelapse.mp4
+git-delete-history.sh
+*.jar
 
 # Pycharm
 .idea/
@@ -47,6 +52,7 @@ data/
 dbas/static/css/main.css
 dbas/static/css/main.css.map
 dbas/static/js/compiled/*
+.sass-cache/
 
-# Splinter
-C:\\nppdf32Log\\debuglog.txt
+# node
+node_modules/

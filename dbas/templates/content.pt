@@ -8,7 +8,7 @@
                     <span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
                     <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>
                 </div>
-                <div class="col-md-2 center inner">
+                <div class="col-md-2 center inner" tal:condition="len(issues.all)>1">
                     <div class="dropdown">
                         <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
                             <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
@@ -74,12 +74,15 @@
                                 <p class="triangle-l" tal:attributes="id bubble.id">
                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
                                     <span class="triangle-content">${structure:bubble.message}</span>
-                                    <br tal:condition="bubble.is_flaggable and extras.logged_in">
+                                    <br tal:condition="bubble.is_flagable and extras.logged_in">
                                     <span class="triangle-trash pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_author and extras.logged_in" tal:attributes="title extras.title.delete_statement">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                        <i class="fa fa-trash" aria-hidden="true" tal:attributes="title extras.title.delete_statement"></i>
                                     </span>
-                                    <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flaggable and extras.logged_in" tal:attributes="title extras.title.report_argument">
-                                        <i class="fa fa-flag" aria-hidden="true"></i>
+                                    <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" tal:attributes="title extras.title.report_argument">
+                                        <i class="fa fa-flag" aria-hidden="true"  tal:attributes="title extras.buttons.edit_statement"></i>
+                                    </span>
+                                    <span class="triangle-reference pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" >
+                                        <i class="fa fa-link" aria-hidden="true" tal:attributes="title extras.title.reference"></i>
                                     </span>
                                 </p>
                             </div>
@@ -93,37 +96,38 @@
                     </div>
                 <div id="discussions-space">
                     <ul id="discussions-space-list">
-                        <li tal:repeat="item items">
-                            <input type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
+                        <li tal:repeat="item items.elements" tal:attributes="style item.style">
+                            <input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
                             <span tal:repeat="premise item.premises" tal:omit-tag="">
                                 <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
                                 <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
                                 <label tal:condition="repeat.premise.end and item.already_used"><em>${item.already_used_text}</em></label>
                                 <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
-                                    <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flaggable or item.is_deletable"></span>
-                                    <span class="item-edit" tal:condition="item.is_editable " tal:attributes="title extras.buttons.edit_statement">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                    </span>
-                                    <span class="item-flag" tal:condition="item.is_flaggable " tal:attributes="title extras.title.report_statement">
-                                        <i class="fa fa-flag" aria-hidden="true"></i>
-                                    </span>
-                                    <span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.delete_statement">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </span>
+                                    <div tal:omit-tag="" tal:condition="item.is_editable or item.is_flagable or item.is_deletable">
+                                        <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flagable or item.is_deletable"></span>
+                                        <span class="item-edit" tal:condition="item.is_editable" tal:attributes="title extras.buttons.edit_statement">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        </span>
+                                        <span class="item-flag" tal:condition="item.is_flagable " tal:attributes="title extras.title.report_statement">
+                                            <i class="fa fa-flag" aria-hidden="true"></i>
+                                        </span>
+                                        <!--<span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.delete_statement">-->
+                                        <span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.disassociate_statement">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </span>
+                                        <span class="item-reference">
+                                            <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_flagable or item.is_deletable)" tal:attributes="title extras.title.reference"></span>
+                                            <i class="fa fa-link" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
                                 </div>
                             </span>
                         </li>
                     </ul>
-                       <!--
-                       <div id="discussion-space-answer-buttons" class="center" tal:condition="extras.show_island_icon">
-                           <a tal:attributes="id items[0].id; href items[0].url; title items[0].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_attack.svg')}"></a>
-                           <a tal:attributes="id items[1].id; href items[1].url; title items[1].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_support.svg')}"></a>
-                           <a tal:attributes="id items[2].id; href items[2].url; title items[2].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_undercut.svg')}"></a>
-                           <a tal:attributes="id items[3].id; href items[3].url; title items[3].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_rebut.svg')}"></a>
-                           <a tal:condition="items[4].id == 'item_no_opinion'" tal:attributes="id items[4].id; href items[4].url; title items[4].premises[0].title" data-toggle="tooltip" data-placement="top"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_dontknow.svg')}"></a>
-                           <a href="javascript:window.history.back();" data-toggle="tooltip" data-placement="top" tal:attributes="title extras.buttons.go_back"><img class="icon-badge" style="width: 7%; margin: 0 1em 0 1em; cursor: hand" src="${request.static_url('dbas:static/images/rect_back.svg')}"></a>
-                       </div>
-                       -->
+                    <div tal:condition="items.extras.cropped_list" style="padding-left: 40px;">
+                        <a id="show-all-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs"><span i18n:translate="show_all_statements">Show all statements</span></a>
+                        <a id="hide-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs" style="display:none;"><span i18n:translate="hide_statements">Hide statements</span></a>
+                    </div>
                 </div>
             </div>
 
@@ -147,25 +151,15 @@
                     <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
                 </div>
             </div>
-
-            <div class="hidden">
-                <div class="col-md-12 center">
-                    <img class="glyphicon-local navigation-icon" id="navigation-back" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_back"/>
-                    <img class="glyphicon-local navigation-icon" id="navigation-forward" src="${request.static_url('dbas:static/images/transparent.gif')}"  tal:attributes="title extras.buttons.go_forward"/>
-                </div>
-            </div>
         </div>
 
         <div class="container colored-container" id="island-view-container" style="display:none" tal:condition="extras.show_island_icon">
-            <button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <div class="row">
+                <button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <div class="row" id="island-view-container-space">
-                <!--<div class="row">-->
-                <!--    <div class="col-md-11 text-center">-->
-                <!--        <h4><span i18n:translate="island_view_for">${structure:extras.tag.island_view_for}</span>: <span id="island-view-container-space-heading">${structure:extras.island.heading}</span></h4>-->
-                <!--    </div>-->
-                <!--</div>-->
 
                 <div class="row">
                     <div class="col-md-6">
@@ -275,17 +269,17 @@
                 </div>
 
                 <ul class="sidebar">
-                    <li id="start-view"><i class="fa fa-play" aria-hidden="true" tal:attributes="titel extras.buttons.default_view"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
-                    <li id="show-labels"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.labels"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
-                    <li id="hide-labels"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.labels"></i><span class="sidebar-element">${extras.buttons.labels}</span>
-                    <li class="indented-button" id="show-positions"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.positions"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li class="indented-button" id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.positions"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.my_statements"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.my_statements"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                    <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                    <li class="indented-button" id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.supports_on_my_statements"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                    <li class="indented-button" id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true" tal:attributes="titel extras.buttons.attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
-                    <li class="indented-button" id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true" tal:attributes="titel extras.buttons.attacks_on_my_statements"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
+                    <li id="start-view"><i class="fa fa-play" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
+                    <li id="show-labels"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
+                    <li id="hide-labels"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
+                    <li class="indented-button" id="show-positions"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
+                    <li class="indented-button" id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
+                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
+                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
+                    <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
+                    <li class="indented-button" id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
+                    <li class="indented-button" id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
+                    <li class="indented-button" id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
@@ -340,30 +334,6 @@
                 </div>
                 <div class="list-group" id="proposal-premise-list-group"></div>
                 <input id="send-new-premise" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
-            </div>
-        </div>
-
-        <div class="container colored-container" id="display-control-container" tal:condition="extras.show_island_icon" style="display:none">
-            <div class="row">
-                <h4 i18n:translate="change_style">Change display style</h4>
-                <div class="col-md-4">
-                    <input type="radio" id="sc-style-1" checked value="Dialog View">
-                    <label id="label-sc-style-1" for="sc-style-1" data-value="Dialog View" i18n:translate="dialog_view">Dialog View </label>
-                    <br>
-                    <img id="display-control-container-icon-guided" class="icon-badge" alt="icon-guided" src="${request.static_url('dbas:static/images/icon_guided.png')}" />
-                </div>
-                <div class="col-md-4">
-                    <input type="radio" id="sc-style-2" value="Island View">
-                    <label id="label-sc-style-2" for="sc-style-2" data-value="Island View" i18n:translate="island_view">Island View</label>
-                    <br>
-                    <img id="display-control-container-icon-island" class="icon-badge" alt="icon-island" src="${request.static_url('dbas:static/images/icon_island.png')}" />
-                </div>
-                <div class="col-md-4">
-                    <input type="radio" id="sc-style-3" value="Complete View">
-                    <label id="label-sc-style-3" for="sc-style-3" data-value="Complete View" i18n:translate="complete_view">Complete View</label>
-                    <br>
-                    <img id="display-control-container-icon-expert" class="icon-badge" alt="icon-expert" src="${request.static_url('dbas:static/images/icon_expert.png')}" />
-                </div>
             </div>
         </div>
 

@@ -12,7 +12,7 @@ which can then be used in external websites.
 import json
 
 from cornice import Service
-from dbas.views import Dbas
+import dbas.views as dbas
 from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, \
     get_all_arguments_with_text_by_statement_id, resolve_issue_uid_to_slug
 
@@ -122,11 +122,6 @@ jump_to_zargument = Service(name="jump_to_argument",  # Need this 'z' to call th
                             description="Jump to an argument",
                             cors_policy=cors_policy)
 
-jump_to_decision = Service(name="jump_to_decision",
-                           path="/{slug}/jump/decision/{arg_uid}",
-                           description="Persuade the user to make a decision",
-                           cors_policy=cors_policy)
-#
 # Other Services
 #
 news = Service(name='api_news',
@@ -189,7 +184,7 @@ def prepare_data_assign_reference(request, func):
     if api_data:
         data = json_bytes_to_dict(request.body)
         api_data.update(data)
-        return_dict_json = func(for_api=True, api_data=api_data)
+        return_dict_json = func(request, for_api=True, api_data=api_data)
         return_dict = json.loads(return_dict_json)
         statement_uids = return_dict["statement_uids"]
         if statement_uids:
@@ -231,10 +226,10 @@ def discussion_reaction(request):
     Return data from DBas discussion_reaction page.
 
     :param request: request
-    :return: Dbas(request).discussion_reaction(True)
+    :return: dbas.discussion_reaction(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_reaction(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_reaction(request, for_api=True, api_data=api_data))
 
 
 @justify.get(validators=validate_login)
@@ -243,10 +238,10 @@ def discussion_justify(request):
     Return data from DBas discussion_justify page.
 
     :param request: request
-    :return: Dbas(request).discussion_justify(True)
+    :return: dbas.discussion_justify(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_justify(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_justify(request, for_api=True, api_data=api_data))
 
 
 @attitude.get(validators=validate_login)
@@ -255,10 +250,10 @@ def discussion_attitude(request):
     Return data from DBas discussion_attitude page.
 
     :param request: request
-    :return: Dbas(request).discussion_attitude(True)
+    :return: dbas.discussion_attitude(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_attitude(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_attitude(request, for_api=True, api_data=api_data))
 
 
 @zinit.get(validators=validate_login)
@@ -267,10 +262,10 @@ def discussion_init(request):
     Return data from DBas discussion_init page.
 
     :param request: request
-    :return: Dbas(request).discussion_init(True)
+    :return: dbas.discussion_init(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_init(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_init(request, for_api=True, api_data=api_data))
 
 
 @zinit_blank.get(validators=validate_login)
@@ -279,10 +274,10 @@ def discussion_init_blank(request):
     Return data from DBas discussion_init page.
 
     :param request: request
-    :return: Dbas(request).discussion_init(True)
+    :return: dbas.discussion_init(True)
     """
     api_data = prepare_user_information(request)
-    return as_json(Dbas(request).discussion_init(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_init(request, for_api=True, api_data=api_data))
 
 
 #
@@ -296,7 +291,7 @@ def add_start_statement(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_statement))
+    return as_json(prepare_data_assign_reference(request, dbas.set_new_start_statement))
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -307,7 +302,7 @@ def add_start_premise(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_start_premise))
+    return as_json(prepare_data_assign_reference(request, dbas.set_new_start_premise))
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
@@ -318,7 +313,7 @@ def add_justify_premise(request):
     :param request:
     :return:
     """
-    return as_json(prepare_data_assign_reference(request, Dbas(request).set_new_premises_for_argument))
+    return as_json(prepare_data_assign_reference(request, dbas.set_new_premises_for_argument))
 
 
 # =============================================================================
@@ -418,7 +413,7 @@ def find_statements_fn(request):
     api_data["issue"] = request.matchdict["issue"]
     api_data["mode"] = request.matchdict["type"]
     api_data["value"] = request.matchdict["value"]
-    results = Dbas(request).fuzzy_search(for_api=True, api_data=api_data)
+    results = dbas.fuzzy_search(request, for_api=True, api_data=api_data)
 
     issue_uid = api_data["issue"]
 
@@ -463,19 +458,7 @@ def fn_jump_to_argument(request):
     :return: Argument with a list of possible interactions
     """
     api_data = jump_preparation(request)
-    return as_json(Dbas(request).discussion_jump(for_api=True, api_data=api_data))
-
-
-@jump_to_decision.get()
-def fn_jump_to_decision(request):
-    """
-    Persuade a user to make a decision when she previously marked both parts of the argument as invalid.
-
-    :param request:
-    :return: Argument with a list of possible interactions
-    """
-    api_data = jump_preparation(request)
-    return as_json(Dbas(request).discussion_jump_decision(for_api=True, api_data=api_data))
+    return as_json(dbas.discussion_jump(request, for_api=True, api_data=api_data))
 
 
 # =============================================================================
@@ -530,6 +513,6 @@ def get_news(request):
        Unused.
 
     :param request: request
-    :return: Dbas(request).get_news()
+    :return: dbas.get_news()
     """
-    return Dbas(request).get_news()
+    return dbas.get_news()

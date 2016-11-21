@@ -6,12 +6,15 @@
 
 
 function Main () {
+	
 	/**
 	 * Sets all click functions
+	 *
 	 * @param guiHandler
+	 * @param popupHandler
 	 * @param ajaxHandler
 	 */
-	this.setClickFunctions = function (guiHandler, ajaxHandler) {
+	this.setClickFunctions = function (guiHandler, popupHandler, ajaxHandler) {
 		$('.icon-add-premise').each(function () {
 			$(this).click(function () {
 				guiHandler.appendAddPremiseRow($(this));
@@ -73,16 +76,16 @@ function Main () {
 		
 		// close popups
 		$('#' + popupEditStatementCloseButtonXId).click(function popupEditStatementCloseButtonXId() {
-			guiHandler.hideAndClearEditStatementsPopup();
+			popupHandler.hideAndClearEditStatementsPopup();
 		});
 		$('#' + popupEditStatementCloseButtonId).click(function popupEditStatementCloseButtonId() {
-			guiHandler.hideAndClearEditStatementsPopup();
+			popupHandler.hideAndClearEditStatementsPopup();
 		});
 		$('#' + popupUrlSharingCloseButtonXId).click(function popupUrlSharingCloseButtonXId() {
-			guiHandler.hideAndClearUrlSharingPopup();
+			popupHandler.hideAndClearUrlSharingPopup();
 		});
 		$('#' + popupUrlSharingCloseButtonId).click(function popupUrlSharingCloseButtonId() {
-			guiHandler.hideAndClearUrlSharingPopup();
+			popupHandler.hideAndClearUrlSharingPopup();
 		});
 		
 		$('#' + popupEditStatementSubmitButtonId).click(function popupEditStatementSubmitButton() {
@@ -95,7 +98,7 @@ function Main () {
 		
 		// share url for argument blogging
 		$('#' + shareUrlId).click(function shareurlClick() {
-			guiHandler.showUrlSharingPopup();
+			popupHandler.showUrlSharingPopup();
 		});
 		
 		/**
@@ -187,19 +190,24 @@ function Main () {
 		
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			guiHandler.showFlagArgumentPopup(uid);
+			popupHandler.showFlagArgumentPopup(uid);
+		});
+		
+		trianglel.find('.triangle-reference').click(function () {
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			new AjaxReferenceHandler().getReferences(uid, true);
 		});
 		
 		trianglel.find('.triangle-trash').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
-			guiHandler.showDeleteContentPopup(uid, true);
+			popupHandler.showDeleteContentPopup(uid, true);
 		});
 		
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
 			$('#popup-flag-statement-text').text($(this).parent().find('label').text());
-			guiHandler.showFlagStatementPopup(uid, false);
+			popupHandler.showFlagStatementPopup(uid, false);
 		});
 		
 		list.find('.item-edit').click(function () {
@@ -207,17 +215,25 @@ function Main () {
 			$(this).parent().find('label:nth-child(even)').each(function(){
 				uids.push($(this).attr('id'))
 			});
-			guiHandler.showEditStatementsPopup(uids);
+			popupHandler.showEditStatementsPopup(uids);
 		});
 		
 		list.find('.item-trash').click(function () {
 			var uid = $(this).parent().find('label').attr('id');
-			guiHandler.showDeleteContentPopup(uid, false);
+			popupHandler.showDeleteContentPopup(uid, false);
+		});
+		
+		list.find('.item-reference').click(function () {
+			var uids = [];
+			$(this).parent().find('label:nth-child(even)').each(function(){
+				uids.push($(this).attr('id'))
+			});
+			new AjaxReferenceHandler().getReferences(uids, false);
 		});
 		
 		// adding issues
 		$('#' + addTopicButtonId).click(function () {
-			guiHandler.showAddTopicPopup(new InteractionHandler().callbackIfDoneForSendNewIssue);
+			popupHandler.showAddTopicPopup(new InteractionHandler().callbackIfDoneForSendNewIssue);
 		});
 		
 		// user info click
@@ -239,6 +255,50 @@ function Main () {
 			setTimeout("$('body').addClass('loading')", 0);
 		});
 		
+		$('#' + discussionSpaceShowItems).click(function(){
+			$(this).hide();
+			var hide_btn = $('#' + discussionSpaceHideItems);
+			var space = $('#' + discussionSpaceListId);
+			hide_btn.show();
+			// send request if it was not send until now
+			if ($(this).attr('data-send-request') !== 'true'){
+				var uids = [];
+				$.each(space.find('li:not(:visible)'), function(){
+					$.each($(this).find('label:even'), function(){
+						uids.push($(this).attr('id'));
+					})
+				});
+				new AjaxDiscussionHandler().setSeenStatements(uids);
+			}
+			// fade in after we collected the missed id's!
+			space.find('li[style="display: none;"]').addClass('cropped').fadeIn();
+			
+			// guification, resize main container and sidebar
+			var container = $('#' + discussionContainerId);
+			var add_height = space.find('li.cropped').length * space.find('li:visible:first').outerHeight() + hide_btn.outerHeight();
+			var container_height = parseInt(container.css('max-height').replace('px',''));
+			container.css('max-height', (add_height + container_height) + 'px');
+			container.attr('data-add-height', add_height);
+			
+			var sidebar = $('.sidebar-wrapper:first');
+			sidebar.height(sidebar.height() + add_height);
+				
+		});
+		
+		$('#' + discussionSpaceHideItems).click(function(){
+			$(this).hide();
+			$('#' + discussionSpaceShowItems).show();
+			$('#' + discussionSpaceListId).find('li.cropped').fadeOut();
+			var container = $('#' + discussionContainerId);
+			var height = parseInt(container.css('max-height').replace('px',''));
+			var new_height = height - parseInt(container.attr('data-add-height'));
+			// guification, resize main container and sidebar
+			setTimeout(function() {
+				container.css('max-height', new_height + 'px');
+				var sidebar = $('.sidebar-wrapper:first');
+				sidebar.height(sidebar.height() - parseInt(container.attr('data-add-height')));
+			}, 400);
+		});
 	};
 	
 	/**
@@ -247,7 +307,7 @@ function Main () {
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
 	this.setSidebarClicks = function (maincontainer, localStorageId) {
-		var helper = new Helper();
+		var gui = new GuiHandler();
 		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
 		var wrapper = maincontainer.find('.' + contentWrapperClass);
 		var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
@@ -258,6 +318,7 @@ function Main () {
 		$(hamburger).click(function () {
 			$(this).toggleClass('open');
 			var width = wrapper.width();
+			var bg_color = $('#' + discussionBubbleSpaceId).css('background-color');
 			
 			if (sidebar.is(':visible')) {
 				tackwrapper.fadeOut();
@@ -267,19 +328,19 @@ function Main () {
 				maincontainer.css('max-height', '');
 				sidebarwrapper.css('background-color', '')
 					.css('height', '');
-				helper.delay(function () {
+				setTimeout(function () {
 					wrapper.width('');//width + sidebar.outerWidth());
 				}, 300);
-				helper.setLocalStorage(localStorageId, 'false');
+				setLocalStorage(localStorageId, 'false');
 			} else {
 				wrapper.width(width - sidebar.outerWidth());
 				maincontainer.css('max-height', maincontainer.outerHeight() + 'px');
-				helper.delay(function () {
+				setTimeout(function () {
 					sidebar.toggle('slide');
 					hamburger.css('margin-right', (sidebarwrapper.width() - hamburger.width()) / 2 + 'px')
 						.css('margin-left', 'auto')
 						.css('background-color', sidebar.css('background-color'));
-					sidebarwrapper.css('background-color', $('#' + discussionBubbleSpaceId).css('background-color'))
+					sidebarwrapper.css('background-color', bg_color)
 						.css('height', maincontainer.outerHeight() + 'px');
 					tackwrapper.fadeIn();
 				}, 200);
@@ -288,10 +349,10 @@ function Main () {
 		
 		// action for tacking the sidebar
 		tackwrapper.click(function () {
-			var shouldShowSidebar = helper.getLocalStorage(localStorageId) == 'true';
+			var shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
-				helper.rotateElement(tack, '0');
-				helper.setLocalStorage(localStorageId, 'false');
+				gui.rotateElement(tack, '0');
+				setLocalStorage(localStorageId, 'false');
 				
 				tack.data('title', _t_discussion(pinNavigation));
 				
@@ -300,8 +361,8 @@ function Main () {
 					hamburger.click();
 				}
 			} else {
-				helper.rotateElement(tack, '90');
-				helper.setLocalStorage(localStorageId, 'true');
+				gui.rotateElement(tack, '90');
+				setLocalStorage(localStorageId, 'true');
 				tack.data('title', _t_discussion(unpinNavigation));
 			}
 		});
@@ -315,20 +376,21 @@ function Main () {
 	 */
 	this.setSidebarStyle = function (maincontainer, localStorageId) {
 		// read local storage for pinning the bar / set title
-		var shouldShowSidebar = new Helper().getLocalStorage(localStorageId) == 'true';
+		var shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
 		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
 		var wrapper = maincontainer.find('.' + contentWrapperClass);
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
 		var tack = sidebarwrapper.find('.' + sidebarTackClass);
 		var sidebar = sidebarwrapper.find('.' + sidebarClass);
-		var helper = new Helper();
+		var gui = new GuiHandler();
+		
 		if (shouldShowSidebar) {
 			var width = wrapper.width();
 			var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 			
-			helper.rotateElement(tack, '90');
-			helper.setAnimationSpeed(wrapper, '0.0');
-			helper.setAnimationSpeed(hamburger, '0.0');
+			gui.rotateElement(tack, '90');
+			gui.setAnimationSpeed(wrapper, '0.0');
+			gui.setAnimationSpeed(hamburger, '0.0');
 			
 			hamburger.addClass('open');
 			
@@ -342,8 +404,8 @@ function Main () {
 				.css('height', maincontainer.outerHeight() + 'px');
 			tackwrapper.fadeIn();
 			
-			helper.setAnimationSpeed(wrapper, '0.5');
-			helper.setAnimationSpeed(hamburger, '0.5');
+			gui.setAnimationSpeed(wrapper, '0.5');
+			gui.setAnimationSpeed(hamburger, '0.5');
 			
 			tackwrapper.data('title', _t_discussion(unpinNavigation));
 		} else {
@@ -359,8 +421,8 @@ function Main () {
 	this.setKeyUpFunctions = function (guiHandler, ajaxHandler) {
 		// gui for the fuzzy search (statements)
 		$('#' + addStatementContainerMainInputId).keyup(function () {
-			new Helper().delay(function () {
-				var escapedText = new Helper().escapeHtml($('#' + addStatementContainerMainInputId).val());
+			setTimeout(function () {
+				var escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
 				if ($('#' + discussionBubbleSpaceId).find('p:last-child').text().indexOf(_t(initialPositionInterest)) != -1) {
 					// here we have our start statement
 					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
@@ -373,8 +435,8 @@ function Main () {
 		
 		// gui for the fuzzy search (premises)
 		$('#' + addPremiseContainerMainInputId).keyup(function () {
-			new Helper().delay(function () {
-				var escapedText = new Helper().escapeHtml($('#' + addPremiseContainerMainInputId).val());
+			setTimeout(function () {
+				var escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 			}, 200);
 		});
@@ -465,8 +527,22 @@ function Main () {
 		//$(window).load(function windowLoad() {
 		//});
 		
+		var container = $('#' + discussionContainerId);
+		var oldContainerSize = container.width();
+		var burger = $('.hamburger');
+		var wrapper = $('#dialog-wrapper');
+		
 		$(window).resize(function () {
 			new GuiHandler().setMaxHeightForBubbleSpace();
+			
+			// resize main container
+			var difference = oldContainerSize - container.width();
+			if (difference > 0 && burger.hasClass('open')){
+				wrapper.width(wrapper.width() - difference);
+			} else if (difference < 0 && burger.hasClass('open')){
+				wrapper.width(wrapper.width() - difference);
+			}
+			oldContainerSize = container.width();
 		});
 	};
 	
@@ -565,7 +641,6 @@ function Main () {
 			children.eq(0).prop('checked', true).parent().hide();
 		}
 		
-		// TODO CLEAR DESIGN
 		// options for the extra buttons, where the user can add input!
 		
 		if (input.length == 0) {
@@ -621,6 +696,7 @@ $(document).ready(function mainDocumentReady() {
 	var guiHandler = new GuiHandler();
 	var ajaxHandler = new AjaxDiscussionHandler();
 	var interactionHandler = new InteractionHandler();
+	var popupHandler = new PopupHandler();
 	var main = new Main();
 	var tmp;
 	var discussionContainer = $('#' + discussionContainerId);
@@ -630,7 +706,7 @@ $(document).ready(function mainDocumentReady() {
 	main.setSidebarStyle(discussionContainer, tacked_sidebar);
 	main.setSidebarClicks(discussionContainer, tacked_sidebar);
 	// sidebar of the graphview is set in GuiHandler:setDisplayStyleAsGraphView()
-	main.setClickFunctions(guiHandler, ajaxHandler);
+	main.setClickFunctions(guiHandler, popupHandler, ajaxHandler);
 	main.setKeyUpFunctions(guiHandler, ajaxHandler);
 	main.setWindowOptions();
 	main.setGuiOptions();

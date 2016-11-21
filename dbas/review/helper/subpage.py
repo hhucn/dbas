@@ -10,22 +10,22 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement
 from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
-    get_text_for_premisesgroup_uid, get_public_nickname_based_on_settings, get_profile_picture
+    get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
+from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
 
 pages = ['deletes', 'optimizations', 'edits']
 
 
-def get_subpage_elements_for(request, subpage_name, nickname, translator, main_page):
+def get_subpage_elements_for(request, subpage_name, nickname, translator):
     """
 
     :param request:
     :param subpage_name:
     :param nickname:
     :param translator:
-    :param main_page:
     :return:
     """
     logger('ReviewSubpagerHelper', 'get_subpage_elements_for', subpage_name)
@@ -48,25 +48,25 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator, main_p
     ret_dict['page_name'] = subpage_name
 
     # get a random argument for reviewing
-    text = translator.get(translator.internalError)
+    text = translator.get(_.internalError)
     reason = ''
     stats = ''
-    issue = translator.get(translator.internalError)
+    issue = translator.get(_.internalError)
 
     if subpage_name == 'deletes':
-        subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator, main_page)
+        subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator, request.application_url)
         button_set['is_delete'] = True
         button_set['is_optimize'] = False
         button_set['is_edit'] = False
 
     elif subpage_name == 'optimizations':
-        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
+        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, request.application_url)
         button_set['is_delete'] = False
         button_set['is_optimize'] = True
         button_set['is_edit'] = False
 
     elif subpage_name == 'edits':
-        subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, main_page)
+        subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, request.application_url)
         button_set['is_delete'] = False
         button_set['is_optimize'] = False
         button_set['is_edit'] = True
@@ -177,11 +177,11 @@ def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
 
     reason = ''
     if db_reason.reason == 'offtopic':
-        reason = translator.get(translator.argumentFlaggedBecauseOfftopic)
+        reason = translator.get(_.argumentFlaggedBecauseOfftopic)
     if db_reason.reason == 'spam':
-        reason = translator.get(translator.argumentFlaggedBecauseSpam)
+        reason = translator.get(_.argumentFlaggedBecauseSpam)
     if db_reason.reason == 'harmful':
-        reason = translator.get(translator.argumentFlaggedBecauseHarmful)
+        reason = translator.get(_.argumentFlaggedBecauseHarmful)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_deletes'] = already_seen
@@ -238,7 +238,7 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
         issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
         parts = [__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
 
-    reason = translator.get(translator.argumentFlaggedBecauseOptimization)
+    reason = translator.get(_.argumentFlaggedBecauseOptimization)
 
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
 
@@ -296,13 +296,13 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
         db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
         text = get_text_for_statement_uid(db_statement.uid)
         issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
-    reason = translator.get(translator.argumentFlaggedBecauseEdit)
+    reason = translator.get(_.argumentFlaggedBecauseEdit)
 
     # build correction
     correction = '<span class="text-muted">' + text + '</span>'
     db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).all()
     if not db_values:
-        correction = translator.get(translator.internalKeyError)
+        correction = translator.get(_.internalKeyError)
     for value in db_values:
         oem_text = get_text_for_statement_uid(value.statement_uid)
         pos = correction.lower().find(oem_text.lower())
@@ -351,7 +351,7 @@ def __get_stats_for_review(review, ui_locales, main_page):
 
     stats = dict()
     stats['reported'] = sql_timestamp_pretty_print(review.timestamp, ui_locales)
-    stats['reporter'] = get_public_nickname_based_on_settings(db_reporter)
+    stats['reporter'] = db_reporter.get_global_nickname()
     stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
     stats['reporter_url'] = main_page + '/user/' + stats['reporter']
     stats['id'] = str(review.uid)

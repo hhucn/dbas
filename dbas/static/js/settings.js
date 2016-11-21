@@ -21,7 +21,7 @@ function HistoryHandler(){
 	this.getDataFail = function(statuscode){
 		$('#' + historyTableSuccessId).hide();
 		$('#' + historyTableFailureId).fadeIn('slow');
-		new Helper().delay(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
+		setTimeout(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
 
 		if (statuscode == 400) {		$('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
 		} else if (statuscode == 500) {	$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
@@ -79,7 +79,7 @@ function HistoryHandler(){
 		parsedData = $.parseJSON(jsonData);
 		$.each(parsedData, function setDataInHistoryTableEach(index, history) {
 			has_data = true;
-			breaked_url = helper.cutTextOnChar(history.path, 120, '/');
+			breaked_url = cutTextOnChar(history.path, 120, '/');
 			tElement[0] = $('<td>').text(index);
 			tElement[1] = $('<td>').html('<a href="' + history.path + '">' + history.path + '</a>');
 			tElement[2] = $('<td>').text(history.timestamp);
@@ -182,7 +182,7 @@ function SettingsHandler(){
 			$('#value_public_nickname').text(parsedData.public_nick);
 			$('#value_public_page').attr('href', parsedData.public_page_url);
 			$('#user_gravatar').attr('src', parsedData.gravatar_url);
-			new Helper().delay(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
+			setTimeout(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 		} else {
 			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
 		}
@@ -196,7 +196,7 @@ function SettingsHandler(){
 	 */
 	this.callbackFail = function (toggle_element, settings_value, service){
 		$('#' + settingsAlertDialog).fadeIn();
-		new Helper().delay(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
+		setTimeout(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 		toggle_element.off('change').bootstrapToggle(settings_value ? 'off' : 'on').change(function() {
 			new AjaxSettingsHandler().setUserSetting(toggle_element, service);
 		});
@@ -289,7 +289,7 @@ function StatisticsHandler(){
 			$(".scrollarea").slimScroll({destroy:true});
 		}).removeClass('btn-danger').text('Okay');
 
-		new Helper().delay(function() {
+		setTimeout(function() {
 			if (modalBody.height() > (window.innerHeight-250)){
 				modalBody.slimScroll({
 					position: 'right',
@@ -312,7 +312,7 @@ function StatisticsHandler(){
 		if (parsedData.removed_data == 'true') {
 			$('#' + statisticsSuccessDialog).fadeIn();
 			$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
-			new Helper().delay(function () {
+			setTimeout(function () {
 				$('#' + statisticsSuccessDialog).fadeOut();
 			}, 3000);
 			$('#' + editsDoneCountId).text('0');
@@ -330,16 +330,13 @@ function StatisticsHandler(){
 	this.callbackStatisticsFail = function(text){
 		$('#' + statisticsAlertDialog).fadeIn();
 		$('#' + statisticsAlertMessage).text(text);
-		new Helper().delay(function() { $('#' + statisticsAlertDialog).fadeOut(); }, 3000);
+		setTimeout(function() { $('#' + statisticsAlertDialog).fadeOut(); }, 3000);
 	};
 
 }
 
 $(function () {
 	'use strict';
-	if (window.location.href != mainpage + 'settings'){
-		return;
-	}
 	var settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
 
 	$('#' + requestHistoryButtonId).click(function requestTrack() {
@@ -370,7 +367,7 @@ $(function () {
 	});
 
 	$('#' + settingsPasswordInfoIconId).click(function passwordInfoIcon() {
-		new GuiHandler().showGeneratePasswordPopup();
+		new PopupHandler().showGeneratePasswordPopup();
 	});
 
 	$('#' + passwordGeneratorButton).click(function passwordGeneratorButton() {
@@ -429,7 +426,7 @@ $(function () {
 	 * main function
 	 */
 	$(document).ready(function settingsDocumentReady() {
-		$.each($('#current-lang-images').find('img'), function(){ $(this).hide()});
-		$('#indicator-' + $('#current-lang-images').data('lang')).show();
+		var img = $('#current-lang-images');
+		$('#indicator-' + img.data('lang')).show();
 	});
 });

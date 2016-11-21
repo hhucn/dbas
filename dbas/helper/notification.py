@@ -4,19 +4,18 @@ Provides functions for te internal messaging system
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 import dbas.helper.email as EmailHelper
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument
 from dbas.lib import sql_timestamp_pretty_print, escape_string, get_profile_picture
-from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import TextGenerator
-
+from dbas.strings.translator import Translator
+from sqlalchemy import and_
 from websocket.lib import send_request_for_info_popup_to_socketio
 
-from sqlalchemy import and_
-
-# TODO: IMRPOVE TEXT (what happend, which text was added, ...)
+# TODO: IMPROVE TEXT (what happend, which text was added, ...)
 
 
 def send_edit_text_notification(db_user, textversion, path, request):
@@ -66,19 +65,21 @@ def send_edit_text_notification(db_user, textversion, path, request):
     if settings_root_author.should_send_notifications and root_author != db_user.uid:
         _t_user = Translator(user_lang1)
         db_root_author = DBDiscussionSession.query(User).filter_by(uid=root_author).first()
-        send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_user.get(_t_user.textChange), path, increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_user.get(_.textChange), path,
+                                                increase_counter=True)
 
     if last_author != root_author and last_author != new_author and last_author != db_user.uid and settings_last_author.should_send_notifications:
         _t_user = Translator(user_lang2)
         db_last_author = DBDiscussionSession.query(User).filter_by(uid=last_author).first()
-        send_request_for_info_popup_to_socketio(db_last_author.nickname, _t_user.get(_t_user.textChange), path, increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_last_author.nickname, _t_user.get(_.textChange), path,
+                                                increase_counter=True)
 
     _t1 = Translator(user_lang1)
-    topic1 = _t1.get(_t1.textversionChangedTopic)
+    topic1 = _t1.get(_.textversionChangedTopic)
     content1 = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
     _t2 = Translator(user_lang2)
-    topic2 = _t2.get(_t2.textversionChangedTopic)
+    topic2 = _t2.get(_.textversionChangedTopic)
     content2 = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
     notifications = []
@@ -99,7 +100,7 @@ def send_edit_text_notification(db_user, textversion, path, request):
         DBDiscussionSession.flush()
 
 
-def send_add_text_notification(url, conclusion_id, user, request, transaction):
+def send_add_text_notification(url, conclusion_id, user, request):
     """
     Send notifications and mails to related users.
 
@@ -107,7 +108,6 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
     :param conclusion_id: Statement.uid
     :param user: current users nickname
     :param request: self.request
-    :param transaction: transaction
     :return: None
     """
     # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
@@ -132,11 +132,13 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
 
     # send notification via websocket to main author
     if db_root_author_settings.should_send_notifications is True and db_root_author != db_current_user:
-        send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_root.get(_t_root.statementAdded), url, increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_root.get(_.statementAdded), url,
+                                                increase_counter=True)
 
     # send notification via websocket to last author
     if db_last_editor_settings.should_send_notifications is True and db_last_editor != db_root_author and db_last_editor != db_current_user:
-        send_request_for_info_popup_to_socketio(db_last_editor.nickname, _t_editor.get(_t_editor.statementAdded), url, increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_last_editor.nickname, _t_editor.get(_.statementAdded), url,
+                                                increase_counter=True)
 
     # find admin
     db_admin = DBDiscussionSession.query(User).filter(and_(User.firstname == 'admin',
@@ -146,10 +148,10 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
                                                            )).first()
 
     # get topic and content for messages to both authors
-    topic1 = _t_root.get(_t_root.statementAdded)
+    topic1 = _t_root.get(_.statementAdded)
     content1 = TextGenerator.get_text_for_add_text_message(root_lang, url, True)
 
-    topic2 = _t_editor.get(_t_editor.statementAdded)
+    topic2 = _t_editor.get(_.statementAdded)
     content2 = TextGenerator.get_text_for_add_text_message(editor_lang, url, True)
 
     if db_root_author != db_current_user:
@@ -168,15 +170,13 @@ def send_add_text_notification(url, conclusion_id, user, request, transaction):
     transaction.commit()
 
 
-def send_add_argument_notification(url, attacked_argument_uid, user, request, transaction):
+def send_add_argument_notification(url, attacked_argument_uid, user, request):
     """
 
     :param url:
     :param attacked_argument_uid:
-    :param new_argument_uid:
     :param user:
     :param request:
-    :param transaction:
     :return:
     """
     # getting current argument, arguments author, current user and some settings
@@ -192,7 +192,8 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request, tr
     # send notification via websocket to last author
     if db_author_settings.should_send_notifications is True:
         _t_user = Translator(user_lang)
-        send_request_for_info_popup_to_socketio(db_author.nickname, _t_user.get(_t_user.argumentAdded), url, increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_author.nickname, _t_user.get(_.argumentAdded), url,
+                                                increase_counter=True)
 
     # send mail to last author
     if db_author_settings.should_send_mails:
@@ -206,7 +207,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request, tr
                                                            )).first()
 
     _t = Translator(user)
-    topic = _t.get(_t.argumentAdded)
+    topic = _t.get(_.argumentAdded)
     content = TextGenerator.get_text_for_add_argument_message(user_lang, url, True)
 
     DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
@@ -217,25 +218,24 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request, tr
     transaction.commit()
 
 
-def send_welcome_notification(transaction, user, lang='en'):
+def send_welcome_notification(user, lang='en'):
     """
     Creates and send the welcome message to a new user.
 
-    :param transaction: transaction
     :param user: User.uid
     :param lang: ui_locales
     :return: None
     """
     _tn = Translator(lang)
-    topic = _tn.get(_tn.welcome)
-    content = _tn.get(_tn.welcomeMessage)
+    topic = _tn.get(_.welcome)
+    content = _tn.get(_.welcomeMessage)
     notification = Message(from_author_uid=1, to_author_uid=user, topic=topic, content=content, is_inbox=True)
     DBDiscussionSession.add(notification)
     DBDiscussionSession.flush()
     transaction.commit()
 
 
-def send_notification(from_user, to_user, topic, content, mainpage, transaction):
+def send_notification(from_user, to_user, topic, content, mainpage):
     """
     Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
@@ -243,7 +243,6 @@ def send_notification(from_user, to_user, topic, content, mainpage, transaction)
     :param to_user: User
     :param topic: String
     :param content: String
-    :param transaction: transaction
     :return:
     """
     content = escape_string(content)
@@ -257,7 +256,8 @@ def send_notification(from_user, to_user, topic, content, mainpage, transaction)
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first().ui_locales
         _t_user = Translator(user_lang)
-        send_request_for_info_popup_to_socketio(to_user.nickname, _t_user.get(_t_user.newNotification), mainpage + '/notification', increase_counter=True)
+        send_request_for_info_popup_to_socketio(to_user.nickname, _t_user.get(_.newNotification),
+                                                mainpage + '/notification', increase_counter=True)
 
     db_inserted_notification = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == from_user.uid,
                                                                               Message.to_author_uid == to_user.uid,

@@ -11,7 +11,7 @@
                 <div class="col-md-offset-2 col-md-8">
                     <div class="panel panel-danger">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Error!</h3>
+                            <h3 class="panel-title"><span i18n:translate="error">Error</span>!</h3>
                         </div>
                         <div class="panel-body" i18n:translate="no_admin_message">You have no rights for this page!</div>
                     </div>
@@ -47,7 +47,7 @@
     				<div class="col-md-12" id="admin-login-failed">
     					<div class="alert alert-danger" role="alert">
     						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    						<span class="sr-only" i18n:translate="error">Error:</span> <span id="admin-login-failed-message"></span>
+    						<span class="sr-only"><span i18n:translate="error">Error</span>:</span> <span id="admin-login-failed-message"></span>
     					</div>
     				</div>
 
@@ -64,7 +64,7 @@
                     <div class="panel panel-danger">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                Caution!
+                                <span i18n:translate="caution">Caution</span>!
                                 <button id="close-warning-btn" type="button" class="pull-right" data-dismiss="modal" aria-label="Close" style="background: transparent; border: 0; cursor: pointer; color: white;"><span aria-hidden="true">&times;</span></button>
                             </h3>
                         </div>
@@ -88,7 +88,7 @@
                                 <tbody>
                                     <tr tal:attributes="data-href line.href" tal:repeat="line group.content">
                                         <td>${line.name}</td>
-                                        <td><span class=" badge">${line.count}</span></td>
+                                        <td><span class="badge">${line.count}</span></td>
                                     </tr>
                                 </tbody>
                             </table>

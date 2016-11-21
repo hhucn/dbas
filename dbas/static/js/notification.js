@@ -12,8 +12,8 @@ $(function () {
 	not.setClickFunctionsForNewNotification();
 
 	$('#popup-writing-notification-recipient').keyup(function () {
-		new Helper().delay(function () {
-			var escapedText = new Helper().escapeHtml($('#popup-writing-notification-recipient').val());
+		setTimeout(function () {
+			var escapedText = escapeHtml($('#popup-writing-notification-recipient').val());
 			new AjaxDiscussionHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
 		}, 200);
 	});

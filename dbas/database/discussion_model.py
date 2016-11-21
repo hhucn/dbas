@@ -4,15 +4,17 @@ D-BAS database Model
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import arrow
-import time
 import datetime
+import time
+
+import arrow
+from cryptacular.bcrypt import BCRYPTPasswordManager
+from dbas.database import DBDiscussionSession, DiscussionBase
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey
-from sqlalchemy_utils import ArrowType
-from cryptacular.bcrypt import BCRYPTPasswordManager
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from dbas.database import DBDiscussionSession, DiscussionBase
+from sqlalchemy_utils import ArrowType
 
 
 def get_now():
@@ -52,6 +54,10 @@ class Issue(DiscussionBase):
 
     def get_slug(self):
         return slugify(self.title)
+
+    @hybrid_property
+    def lang(self):
+        return DBDiscussionSession.query(Language).get(self.lang_uid).ui_locales
 
 
 class Language(DiscussionBase):
@@ -269,6 +275,10 @@ class Statement(DiscussionBase):
         :return:
         """
         self.is_disabled = is_disabled
+
+    @hybrid_property
+    def lang(self):
+        return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
 
 class StatementReferences(DiscussionBase):
@@ -512,6 +522,10 @@ class Argument(DiscussionBase):
         :return:
         """
         self.is_disabled = is_disabled
+
+    @hybrid_property
+    def lang(self):
+        return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
 
 class History(DiscussionBase):
@@ -1069,3 +1083,23 @@ class RevokedContent(DiscussionBase):
         self.argument_uid = argument
         self.statement_uid = statement
         self.timestamp = get_now()
+
+
+class RevokedContentHistory(DiscussionBase):
+    __tablename__ = 'revoked_content_history'
+    uid = Column(Integer, primary_key=True)
+    old_author_uid = Column(Integer, ForeignKey('users.uid'))
+    new_author_uid = Column(Integer, ForeignKey('users.uid'))
+    textversion_uid = Column(Integer, ForeignKey('textversions.uid'), nullable=True)
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'), nullable=True)
+
+    old_authors = relationship('User', foreign_keys=[old_author_uid])
+    new_authors = relationship('User', foreign_keys=[new_author_uid])
+    textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
+
+    def __init__(self, old_author_uid, new_author_uid, textversion_uid=None, argument_uid=None):
+        self.old_author_uid = old_author_uid
+        self.new_author_uid = new_author_uid
+        self.textversion_uid = textversion_uid
+        self.argument_uid = argument_uid

@@ -4,6 +4,8 @@ Common python logging.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+# -*- coding: utf-8 -*-
+
 import logging
 logging.getLogger('sqlalchemy.dialects.postgresql').setLevel(logging.INFO)
 
@@ -20,6 +22,7 @@ def logger(who, when, what, warn=False, error=False, debug=False):
     :param debug: Boolean, default False
     :return: None
     """
+
     info = not(warn or error or debug)
     logger = logging.getLogger(__name__)
     try:

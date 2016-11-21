@@ -1,5 +1,4 @@
 import unittest
-import transaction
 
 import dbas.review.helper.queues as ReviewQueuesHelper
 from dbas.database import DBDiscussionSession
@@ -31,38 +30,38 @@ class ReviewQueuesHelperTest(unittest.TestCase):
 
     def test_lock(self):
         _tn = Translator('en')
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('nickname', 0, _tn, transaction)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('nickname', 0, _tn)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) == 0)
         self.assertTrue(len(error) > 0)
         self.assertFalse(is_locked)
 
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 0, _tn, transaction)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 0, _tn)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) == 0)
         self.assertTrue(len(error) > 0)
         self.assertFalse(is_locked)
 
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 3, _tn, transaction)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 3, _tn)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) == 0)
         self.assertTrue(len(error) == 0)
         self.assertTrue(is_locked)
 
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 3, _tn, transaction)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 3, _tn)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) > 0)
         self.assertTrue(len(error) == 0)
         self.assertTrue(is_locked)
 
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Martin', 3, _tn, transaction)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Martin', 3, _tn)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) > 0)
         self.assertTrue(len(error) == 0)
         self.assertTrue(is_locked)
 
     def test_unlock(self):
-        ReviewQueuesHelper.unlock_optimization_review(3, transaction)
+        ReviewQueuesHelper.unlock_optimization_review(3)
         self.assertFalse(ReviewQueuesHelper.is_review_locked(3))
 
     def is_review_locked(self):

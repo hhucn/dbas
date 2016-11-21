@@ -1,7 +1,6 @@
 import unittest
 
 from dbas.lib import is_user_author
-import transaction
 
 from sqlalchemy import engine_from_config
 
@@ -20,7 +19,7 @@ class UserManagementTest(unittest.TestCase):
     def test_update_last_action(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str('Tobias')).first()
         last_action_old = db_user.last_action
-        user_management.update_last_action(transaction, 'Tobias')
+        user_management.update_last_action('Tobias')
         last_action_new = db_user.last_action
         self.assertNotEqual(last_action_old, last_action_new)
 

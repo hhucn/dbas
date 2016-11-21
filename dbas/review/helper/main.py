@@ -4,26 +4,26 @@ Provides helping function for the adding task in the review queuees or en-/disab
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
-    LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit, TextVersion
+    LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag
-from dbas.helper.query import QueryHelper
+from dbas.helper.query import correct_statement
 from dbas.logger import logger
-from dbas.helper.notification import send_edit_text_notification
 
 max_votes = 5
 min_difference = 3
 
 
-def __add_vote_for(user, review, is_okay, review_type, transaction):
+def __add_vote_for(user, review, is_okay, review_type):
     """
 
     :param user:
     :param review:
     :param is_okay:
-    :param transaction:
+    :param review_type:
     :return:
     """
     db_new_review = review_type(user.uid, review.uid, is_okay)
@@ -45,14 +45,12 @@ def __get_review_count(review_type, review_uid):
     return count_of_okay, count_of_not_okay
 
 
-def add_review_opinion_for_delete(nickname, should_delete, review_uid, transaction):
+def add_review_opinion_for_delete(nickname, should_delete, review_uid):
     """
 
     :param nickname:
     :param should_delete:
     :param review_uid:
-    :param translator:
-    :param transaction:
     :return:
     """
     logger('review_main_helper', 'add_review_opinion_for_delete', 'main')
@@ -64,7 +62,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
 
     db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
     # add new vote
-    __add_vote_for(db_user, db_review, not should_delete, LastReviewerDelete, transaction)
+    __add_vote_for(db_user, db_review, not should_delete, LastReviewerDelete)
 
     # get all keep and delete votes
     count_of_keep, count_of_delete = __get_review_count(LastReviewerDelete, review_uid)
@@ -73,21 +71,21 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     reached_max = max(count_of_keep, count_of_delete) >= max_votes
     if reached_max:
         if count_of_delete > count_of_keep:  # disable the flagged part
-            en_or_disable_object_of_review(db_review, True, transaction)
-            add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
+            en_or_disable_object_of_review(db_review, True)
+            add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
-            add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
+            add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_delete >= min_difference:  # just close the review
-        add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
+        add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
-        en_or_disable_object_of_review(db_review, True, transaction)
-        add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
+        en_or_disable_object_of_review(db_review, True)
+        add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
@@ -98,14 +96,12 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, transacti
     return ''
 
 
-def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction):
+def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid):
     """
 
     :param nickname:
     :param is_edit_okay:
     :param review_uid:
-    :param translator:
-    :param transaction:
     :return:
     """
     logger('review_main_helper', 'add_review_opinion_for_edit', 'main')
@@ -118,7 +114,7 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction)
     db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
 
     # add new vote
-    __add_vote_for(db_user, db_review, is_edit_okay, LastReviewerEdit, transaction)
+    __add_vote_for(db_user, db_review, is_edit_okay, LastReviewerEdit)
 
     # get all keep and delete votes
     count_of_edit, count_of_dont_edit = __get_review_count(LastReviewerEdit, review_uid)
@@ -127,21 +123,21 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction)
     reached_max = max(count_of_edit, count_of_dont_edit) >= max_votes
     if reached_max:
         if count_of_dont_edit < count_of_edit:  # accept the edit
-            accept_edit_review(db_review, transaction, db_user_created_flag)
-            add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
+            accept_edit_review(db_review, db_user_created_flag)
+            add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
-            add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
+            add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
-        accept_edit_review(db_review, transaction, db_user_created_flag)
-        add_reputation_for(db_user_created_flag, rep_reason_success_flag, transaction)
+        accept_edit_review(db_review, db_user_created_flag)
+        add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
-        add_reputation_for(db_user_created_flag, rep_reason_bad_flag, transaction)
+        add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
@@ -152,15 +148,13 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, transaction)
     return ''
 
 
-def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, transaction):
+def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data):
     """
 
     :param nickname:
     :param should_optimized:
     :param review_uid:
     :param data:
-    :param translator:
-    :param transaction:
     :return:
     """
     logger('review_main_helper', 'add_review_opinion_for_optimization', 'main ' + str(review_uid) + ', optimize ' + str(should_optimized))
@@ -175,9 +169,9 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     transaction.commit()
 
     if not should_optimized:
-        __keep_the_element(db_review, transaction)
+        __keep_the_element(db_review)
     else:
-        __proposal_for_the_element(db_review, data, db_user, transaction)
+        __proposal_for_the_element(db_review, data, db_user)
 
     DBDiscussionSession.add(db_review)
     DBDiscussionSession.flush()
@@ -186,11 +180,10 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     return ''
 
 
-def __keep_the_element(db_review, transaction):
+def __keep_the_element(db_review):
     """
 
     :param db_review:
-    :param transaction:
     :return:
     """
     # add new vote
@@ -202,18 +195,17 @@ def __keep_the_element(db_review, transaction):
              LastReviewerOptimization.is_okay == True)).all()
 
     if len(db_keep_version) > max_votes:
-        add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag, transaction)
+        add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
 
-def __proposal_for_the_element(db_review, data, db_user, transaction):
+def __proposal_for_the_element(db_review, data, db_user):
     """
 
     :param db_review:
     :param data:
     :param db_user:
-    :param transaction:
     :return:
     """
     # add new edit
@@ -263,27 +255,25 @@ def __proposal_for_the_element(db_review, data, db_user, transaction):
     db_review.update_timestamp()
 
 
-def en_or_disable_object_of_review(review, is_disabled, transaction):
+def en_or_disable_object_of_review(review, is_disabled):
     """
 
     :param review:
     :param is_disabled:
-    :param transaction:
     :return:
     """
     logger('review_main_helper', 'en_or_disable_object_of_review', str(review.uid) + ' ' + str(is_disabled))
     if review.statement_uid is not None:
-        en_or_disable_statement_and_premise_of_review(review, is_disabled, transaction)
+        en_or_disable_statement_and_premise_of_review(review, is_disabled)
     else:
-        en_or_disable_arguments_and_premise_of_review(review, is_disabled, transaction)
+        en_or_disable_arguments_and_premise_of_review(review, is_disabled)
 
 
-def en_or_disable_statement_and_premise_of_review(review, is_disabled, transaction):
+def en_or_disable_statement_and_premise_of_review(review, is_disabled):
     """
 
     :param review:
     :param is_disabled:
-    :param transaction:
     :return:
     """
     logger('review_main_helper', 'en_or_disable_statement_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
@@ -298,12 +288,11 @@ def en_or_disable_statement_and_premise_of_review(review, is_disabled, transacti
     transaction.commit()
 
 
-def en_or_disable_arguments_and_premise_of_review(review, is_disabled, transaction):
+def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     """
 
     :param review:
     :param is_disabled:
-    :param transaction:
     :return:
     """
     logger('review_main_helper', 'en_or_disable_arguments_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
@@ -326,17 +315,17 @@ def en_or_disable_arguments_and_premise_of_review(review, is_disabled, transacti
     transaction.commit()
 
 
-def accept_edit_review(review, transaction, db_user_created_flag):
+def accept_edit_review(review, db_user_created_flag):
     """
 
     :param review:
-    :param transaction:
     :param db_user_created_flag:
     :return:
     """
     db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).all()
     db_user = DBDiscussionSession.query(User).filter_by(uid=review.detector_uid).first()
     for value in db_values:
-        val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)
-        db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=val['text']).order_by(TextVersion.uid.desc()).first()
-        send_edit_text_notification(db_user_created_flag, db_textversion, None, None)
+        correct_statement(db_user.nickname, value.statement_uid, value.content)
+        # val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)
+        # db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=val['text']).order_by(TextVersion.uid.desc()).first()
+        # send_edit_text_notification(db_user_created_flag, db_textversion, None, None)

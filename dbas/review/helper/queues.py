@@ -4,14 +4,16 @@ Provides helping function for displaying the review queues and locking entries.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now
+from dbas.lib import get_profile_picture, is_user_author
+from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
-from dbas.lib import get_profile_picture, is_user_author
+from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
-from dbas.logger import logger
 
 max_lock_time_in_sec = 180
 
@@ -55,14 +57,15 @@ def __get_delete_dict(main_page, translator, nickname):
 
     key = 'deletes'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'Deletes',
+    tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-trash-o',
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
-                'is_allowed_text': translator.get(translator.visitDeleteQueue),
-                'is_not_allowed_text': translator.get(translator.visitDeleteQueueLimitation).replace('XX', str(reputation_borders[key])),
+                'is_allowed_text': translator.get(_.visitDeleteQueue),
+                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).replace('XX', str(
+                    reputation_borders[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDelete, main_page)
                 }
     return tmp_dict
@@ -82,14 +85,15 @@ def __get_optimization_dict(main_page, translator, nickname):
 
     key = 'optimizations'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'Optimizations',
+    tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-flag',
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
-                'is_allowed_text': translator.get(translator.visitOptimizationQueue),
-                'is_not_allowed_text': translator.get(translator.visitOptimizationQueueLimitation).replace('XX', str(reputation_borders[key])),
+                'is_allowed_text': translator.get(_.visitOptimizationQueue),
+                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).replace('XX', str(
+                    reputation_borders[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, main_page)
                 }
     return tmp_dict
@@ -109,14 +113,15 @@ def __get_edit_dict(main_page, translator, nickname):
 
     key = 'edits'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'Edits',
+    tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-pencil-square-o',
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
-                'is_allowed_text': translator.get(translator.visitEditQueue),
-                'is_not_allowed_text': translator.get(translator.visitEditQueueLimitation).replace('XX', str(reputation_borders[key])),
+                'is_allowed_text': translator.get(_.visitEditQueue),
+                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).replace('XX',
+                                                                                          str(reputation_borders[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerEdit, main_page)
                 }
     return tmp_dict
@@ -134,14 +139,15 @@ def __get_history_dict(main_page, translator, nickname):
     #  logger('ReviewQueues', '__get_history_dict', 'main')
     key = 'history'
     count, all_rights = get_reputation_of(nickname)
-    tmp_dict = {'task_name': 'History',
+    tmp_dict = {'task_name': translator.get(_.queueHistory),
                 'id': 'flags',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-history',
                 'task_count': __get_review_count_for_history(True),
                 'is_allowed': count >= reputation_borders[key] or all_rights,
-                'is_allowed_text': translator.get(translator.visitHistoryQueue),
-                'is_not_allowed_text': translator.get(translator.visitHistoryQueueLimitation).replace('XX', str(reputation_borders[key])),
+                'is_allowed_text': translator.get(_.visitHistoryQueue),
+                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).replace('XX', str(
+                    reputation_borders[key])),
                 'last_reviews': list()
                 }
     return tmp_dict
@@ -157,13 +163,13 @@ def __get_ongoing_dict(main_page, translator):
     """
     #  logger('ReviewQueues', '__get_ongoing_dict', 'main')
     key = 'ongoing'
-    tmp_dict = {'task_name': 'Ongoing',
+    tmp_dict = {'task_name': translator.get(_.queueOngoing),
                 'id': 'flags',
                 'url': main_page + '/review/' + key,
                 'icon': 'fa fa-clock-o',
                 'task_count': __get_review_count_for_history(False),
                 'is_allowed': True,
-                'is_allowed_text': translator.get(translator.visitOngoingQueue),
+                'is_allowed_text': translator.get(_.visitOngoingQueue),
                 'is_not_allowed_text': '',
                 'last_reviews': list()
                 }
@@ -247,13 +253,12 @@ def __get_last_reviewer_of(reviewer_type, main_page):
     return users_array
 
 
-def add_proposals_for_statement_corrections(elements, nickname, translator, transaction):
+def add_proposals_for_statement_corrections(elements, nickname, translator):
     """
 
     :param elements:
     :param nickname:
     :param translator:
-    :param transaction:
     :return:
     """
     logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
@@ -264,7 +269,7 @@ def add_proposals_for_statement_corrections(elements, nickname, translator, tran
             DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
             counter += 1
     if counter == 0:
-        return translator.get(translator.noCorrections)
+        return translator.get(_.noCorrections)
     DBDiscussionSession.flush()
     transaction.commit()
 
@@ -279,13 +284,12 @@ def add_proposals_for_statement_corrections(elements, nickname, translator, tran
     return ''
 
 
-def lock_optimization_review(nickname, review_uid, translator, transaction):
+def lock_optimization_review(nickname, review_uid, translator):
     """
 
     :param nickname:
     :param review_uid:
     :param translator:
-    :param transaction:
     :return:
     """
     logger('ReviewQueues', 'lock', 'main')
@@ -298,14 +302,14 @@ def lock_optimization_review(nickname, review_uid, translator, transaction):
     db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     if not db_user or int(review_uid) < 1:
-        error = translator.get(translator.internalKeyError)
+        error = translator.get(_.internalKeyError)
         return success, info, error, is_locked
 
     # check if author locked an item and maybe tidy up old locks
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
     if db_locks:
         if is_review_locked(db_locks.review_optimization_uid):
-            info = translator.get(translator.dataAlreadyLockedByYou)
+            info = translator.get(_.dataAlreadyLockedByYou)
             is_locked = True
             return success, info, error, is_locked
         else:
@@ -313,7 +317,7 @@ def lock_optimization_review(nickname, review_uid, translator, transaction):
 
     # is already locked?
     if is_review_locked(review_uid):
-        info = translator.get(translator.dataAlreadyLockedByOthers)
+        info = translator.get(_.dataAlreadyLockedByOthers)
         is_locked = True
         return success, info, error, is_locked
 
@@ -325,11 +329,10 @@ def lock_optimization_review(nickname, review_uid, translator, transaction):
     return success, info, error, is_locked
 
 
-def unlock_optimization_review(review_uid, transaction):
+def unlock_optimization_review(review_uid):
     """
 
     :param review_uid:
-    :param transaction:
     :return:
     """
     tidy_up_optimization_locks()

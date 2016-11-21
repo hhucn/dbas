@@ -14,7 +14,7 @@ Next to this we have a 404 page.
 """
 
 
-from .logger import logger
+# from .logger import logger
 
 
 class UrlManager(object):
@@ -32,7 +32,9 @@ class UrlManager(object):
         :param history: String
         :return: None
         """
-        logger('UrlManager', '__init__', 'application_url: ' + application_url + ', slug: ' + slug + ', for_api: ' + str(for_api) + ', history: ' + str(history))
+        # logger('UrlManager', '__init__',
+        #        'application_url: ' + application_url + ', slug: ' + slug + ', for_api: ' + str(
+        #            for_api) + ', history: ' + str(history))
         self.url = application_url + ('' if application_url.endswith('/') else '/')
         self.discussion_url = self.url + 'discuss/'
         self.review_url = self.url + 'review/'
@@ -148,7 +150,8 @@ class UrlManager(object):
         url = self.slug + '/reaction/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
         return self.__return_discussion_url(as_location_href, url)
 
-    def get_url_for_choosing_premisegroup(self, as_location_href, is_argument, is_supportive, statement_or_argument_id, pgroup_id_list):
+    def get_url_for_choosing_premisegroup(self, as_location_href, is_argument, is_supportive, statement_or_argument_id,
+                                          pgroup_id_list):
         """
 
         :param as_location_href: Set to True if you want to change the location using 'location.href'

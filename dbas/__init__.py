@@ -7,6 +7,8 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 .. sectionauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
+# from wsgiref.simple_server import make_server
+
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -32,7 +34,9 @@ def main(global_config, **settings):
 
     # log settings
     log = logging.getLogger(__name__)
+    development = False
     for k, v in settings.items():
+        development = development or 'testing' in str(v)
         log.debug('__init__() '.upper() + 'main() <' + str(k) + ' : ' + str(v) + '>')
 
     # load database
@@ -46,24 +50,30 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
 
     # creating the configurator
-    settings = {'pyramid.default_locale_name': 'en',
-                'mail.host': 'imap.googlemail.com',
-                'mail.port': '465',
-                'mail.username': 'dbas.hhu@gmail.com',
-                'mail.password': 'orpcihtyuecxhoup',
-                'mail.ssl': 'True',
-                'mail.tls': 'False',
-                'mail.default_sender': 'dbas.hhu@gmail.com'
-                }
+    settings.update({'pyramid.default_locale_name': 'en',
+                     'mail.host': 'imap.googlemail.com',
+                     'mail.port': '465',
+                     'mail.username': 'dbas.hhu@gmail.com',
+                     'mail.password': 'orpcihtyuecxhoup',
+                     'mail.ssl': 'True',
+                     'mail.tls': 'False',
+                     'mail.default_sender': 'dbas.hhu@gmail.com'
+                     })
 
     # creating the configurator    cache_regions = set_cache_regions_from_settings
-    config = Configurator(settings=settings, root_factory='dbas.security.RootFactory')
-    config.add_translation_dirs('dbas:locale')  # add this before the locale negotiator
+    config = Configurator(settings=settings,
+                          authentication_policy=authn_policy,
+                          authorization_policy=authz_policy,
+                          root_factory='dbas.security.RootFactory',
+                          session_factory=session_factory
+                          )
+    config.add_translation_dirs('dbas:locale', 'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)
 
-    config.set_authentication_policy(authn_policy)
-    config.set_authorization_policy(authz_policy)
-    config.set_session_factory(session_factory)
+    # config.set_authentication_policy(authn_policy)
+    # config.set_authorization_policy(authz_policy)
+    # config.set_root_factory('dbas.security.RootFactory')
+    # config.set_session_factory(session_factory)
 
     # Include apps
     config.include('api', route_prefix='/api')
@@ -80,9 +90,9 @@ def main(global_config, **settings):
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
-    config.add_static_view(name='rv', path='review:static/', cache_max_age=3600)
     config.add_static_view(name='admin', path='admin:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
+    config.add_cache_buster('admin:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
     # adding routes
@@ -136,6 +146,9 @@ def main(global_config, **settings):
     config.add_route('ajax_review_lock', '{url:.*}ajax_review_lock')
     config.add_route('ajax_review_unlock', '{url:.*}ajax_review_unlock')
     config.add_route('ajax_revoke_content', '{url:.*}ajax_revoke_content')
+    config.add_route('ajax_get_references', '{url:.*}ajax_get_references')
+    config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
+    config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
 
     # ajax for navigation logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{nickname}')
@@ -154,6 +167,5 @@ def main(global_config, **settings):
     config.add_route('review_ongoing', '/review/ongoing')
     config.add_route('review_content', '/review/{queue}')
 
-    # read the input and start
     config.scan()
     return config.make_wsgi_app()

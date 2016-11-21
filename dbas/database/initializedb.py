@@ -24,6 +24,7 @@ from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config, and_
 
 first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
+nick_of_anonymous_user = 'anonymous'
 
 
 def usage(argv):
@@ -58,7 +59,7 @@ def main_discussion(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user5, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
-        main_author = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
+        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
 
@@ -81,7 +82,7 @@ def main_discussion_reload(argv=sys.argv):
 
     with transaction.manager:
         drop_discussion_database(DBDiscussionSession)
-        main_author = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
+        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
@@ -471,13 +472,12 @@ def set_up_users(session):
     pw2 = password_handler.get_hashed_password('tobias')
     pw3 = password_handler.get_hashed_password('martin')
     pw4 = password_handler.get_hashed_password('christian')
-    pw5 = password_handler.get_hashed_password('raphael')
     pw6 = password_handler.get_hashed_password('alexander')
     pw7 = password_handler.get_hashed_password('R4n0mpw')
     pw8 = password_handler.get_hashed_password('bjoern')
     pw9 = password_handler.get_hashed_password('teresa')
 
-    user0 = User(firstname='anonymous', surname='anonymous', nickname='anonymous', email='', password=pw0, group_uid=group2.uid, gender='m')
+    user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user, email='', password=pw0, group_uid=group2.uid, gender='m')
     user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group_uid=group0.uid, gender='m')
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group_uid=group0.uid, gender='m')
     user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group_uid=group0.uid, gender='m')
@@ -911,8 +911,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     # textversion34 = TextVersion(content="Even overbred races can be taught.", author=user.uid)
     # textversion35 = TextVersion(content="Several pets are nice to have and you do not have to take much care of them, for example turtles or cats, which are living outside.", author=user.uid)
     textversion36 = TextVersion(content="It is much work to take care of both animals.", author=user.uid)
-    textversion101 = TextVersion(content="The city should reduce the number of street festivals.", author=user.uid)
-    textversion102 = TextVersion(content="We should shut down University Park.", author=user.uid)
+    textversion101 = TextVersion(content="The city should reduce the number of street festivals.", author=3)
+    textversion102 = TextVersion(content="We should shut down University Park.", author=3)
     textversion103 = TextVersion(content="We should close public swimming pools.", author=user.uid)
     textversion105 = TextVersion(content="Reducing the number of street festivals can save up to $50.000 a year.", author=user.uid)
     textversion106 = TextVersion(content="Every street festival is funded by large companies.", author=user.uid)
@@ -927,9 +927,9 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion115 = TextVersion(content="The number of police patrols has been increased recently.", author=user.uid)
     textversion116 = TextVersion(content="This is the only park in our city.", author=user.uid)
     textversion117 = TextVersion(content="There are many parks in neighbouring towns.", author=user.uid)
-    textversion118 = TextVersion(content="The city is planing a new park in the upcoming month.", author=user.uid)
-    textversion119 = TextVersion(content="Parks are very important for our climate.", author=user.uid)
-    textversion120 = TextVersion(content="Our swimming pools are very old and it would take a major investment to repair them.", author=user.uid)
+    textversion118 = TextVersion(content="The city is planing a new park in the upcoming month.", author=3)
+    textversion119 = TextVersion(content="Parks are very important for our climate.", author=3)
+    textversion120 = TextVersion(content="Our swimming pools are very old and it would take a major investment to repair them.", author=3)
     textversion121 = TextVersion(content="Schools need the swimming pools for their sports lessons.", author=user.uid)
     textversion122 = TextVersion(content="The rate of non-swimmers is too high.", author=user.uid)
     textversion123 = TextVersion(content="The police cannot patrol in the park for 24/7.", author=user.uid)
@@ -1343,13 +1343,13 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument27 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
     argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
     # argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
-    # argument29 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
-    argument30 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
+    argument29 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
+    # argument30 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
     argument31 = Argument(premisegroup=premisegroup29.uid, issupportive=False, author=user.uid, issue=issue2.uid)
     ####
-    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement101.uid)
-    argument102 = Argument(premisegroup=premisegroup106.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement105.uid)
+    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=3, issue=issue1.uid, conclusion=statement101.uid)
+    argument102 = Argument(premisegroup=premisegroup106.uid, issupportive=False, author=3, issue=issue1.uid)
+    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=3, issue=issue1.uid, conclusion=statement105.uid)
     argument104 = Argument(premisegroup=premisegroup108.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement107.uid)
     argument105 = Argument(premisegroup=premisegroup109.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement101.uid)
     argument106 = Argument(premisegroup=premisegroup110.uid, issupportive=False, author=user.uid, issue=issue1.uid)
@@ -1387,8 +1387,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([argument0, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
     session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
     session.add_all([argument16, argument17, argument18, argument19, argument20, argument21, argument22])
-    session.add_all([argument23, argument24, argument25, argument26, argument27, argument28])  # , argument29])
-    session.add_all([argument30, argument31])
+    session.add_all([argument23, argument24, argument25, argument26, argument27, argument28])
+    session.add_all([argument29, argument31])
     session.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
     session.add_all([argument108, argument109, argument110, argument112, argument113, argument114, argument111])
     session.add_all([argument115, argument116, argument117, argument118, argument119])
@@ -1436,8 +1436,25 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
                                        author_uid=5,
                                        statement_uid=statement213.uid,
                                        issue_uid=issue4.uid)
-    reference201 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist", host="localhost:3449", path="/", author_uid=5, statement_uid=statement213.uid, issue_uid=issue4.uid)
-    session.add_all([reference200, reference201])
+    reference201 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
+                                       host="localhost:3449",
+                                       path="/",
+                                       author_uid=5,
+                                       statement_uid=statement213.uid,
+                                       issue_uid=issue4.uid)
+    reference014 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
+                                       host="http://www.iflscience.com/",
+                                       path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
+                                       author_uid=2,
+                                       statement_uid=statement14.uid,
+                                       issue_uid=issue2.uid)
+    reference015 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
+                                       host="http://www.iflscience.com/",
+                                       path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
+                                       author_uid=2,
+                                       statement_uid=statement15.uid,
+                                       issue_uid=issue2.uid)
+    session.add_all([reference200, reference201, reference014, reference015])
     session.flush()
 
     reason1 = ReviewDeleteReason(reason='offtopic')

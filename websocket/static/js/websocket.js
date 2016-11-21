@@ -4,7 +4,7 @@
  */
 
 var socket = undefined;
-const port = 5001;
+const port = 5100;
 
 $(document).ready(function() {
 	
@@ -29,12 +29,13 @@ $(document).ready(function() {
 function doConnect(){
 	// switch between a local (http) and a global (https) mode
 	var dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
-	var address =  'http://localhost:';
+	var address =  'http://localhost';
 	if (mainpage.indexOf('localhost') == -1) {
-		address = 'https://dbas.cs.uni-duesseldorf.de:';
+		address = location.origin;
 		dict['secure'] = true;
 	}
-	socket = io.connect(address + port, dict);
+
+	socket = io.connect(address + ':' + port, dict);
 	
 	socket.on('publish', function(data){
 		doPublish(data);
