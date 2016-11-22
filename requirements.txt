@@ -36,7 +36,7 @@ pyramid-mailer==0.14.1
 pyramid-mako==1.0.2
 pyramid-redis-sessions==1.0.1
 pyramid-tm==1.1.1
-pyshorteners==2.12.1
+pyshorteners==0.6
 pytest==3.0.4
 python-Levenshtein==0.12.0
 python-slugify==1.2.1
