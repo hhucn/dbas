@@ -6,12 +6,12 @@ Handler for user-accounts
 
 import transaction
 import random
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 
 import arrow
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings
+from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings, get_now
 from dbas.helper import email as email_helper
 from dbas.helper.notification import send_welcome_notification
 from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid,\
@@ -132,11 +132,8 @@ def update_last_action(nick):
     timeout_in_sec = 60 * 60 * 24 * 7
 
     # check difference of
-    # TODO TIME ZONE OF SERVER
-    last_action_object = datetime.strptime(str(db_user.last_action.to('Europe/Berlin').format('YYYY-MM-DD HH:mm:ss', locale='de')), '%Y-%m-%d %H:%M:%S')
-    last_login_object  = datetime.strptime(str(db_user.last_login.to('Europe/Berlin').format('YYYY-MM-DD HH:mm:ss', locale='de')), '%Y-%m-%d %H:%M:%S')
-    diff_action = (datetime.now() - last_action_object).seconds
-    diff_login = (datetime.now() - last_login_object).seconds
+    diff_action = (get_now() - db_user.last_action).seconds
+    diff_login = (get_now() - db_user.last_login).seconds
 
     diff = diff_action if diff_action < diff_login else diff_login
     should_log_out = diff > timeout_in_sec and not db_settings.keep_logged_in
