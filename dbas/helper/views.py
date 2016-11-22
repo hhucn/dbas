@@ -257,15 +257,15 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     """
     success = ''
     _t = Translator(ui_locales)
-    params = request.params
-    firstname = escape_string(params['firstname'] if 'firstname' in params else '')
-    lastname = escape_string(params['lastname'] if 'lastname' in params else '')
-    nickname = escape_string(params['nickname'] if 'nickname' in params else '')
-    email = escape_string(params['email'] if 'email' in params else '')
-    gender = escape_string(params['gender'] if 'gender' in params else '')
-    password = escape_string(params['password'] if 'password' in params else '')
-    passwordconfirm = escape_string(params['passwordconfirm'] if 'passwordconfirm' in params else '')
-    spamanswer = escape_string(params['spamanswer'] if 'spamanswer' in params else '')
+    params          = request.params
+    firstname       = escape_string(params['firstname']) if 'firstname' in params else ''
+    lastname        = escape_string(params['lastname']) if 'lastname' in params else ''
+    nickname        = escape_string(params['nickname']) if 'nickname' in params else ''
+    email           = escape_string(params['email']) if 'email' in params else ''
+    gender          = escape_string(params['gender']) if 'gender' in params else ''
+    password        = escape_string(params['password']) if 'password' in params else ''
+    passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
+    spamanswer      = escape_string(params['spamanswer']) if 'spamanswer' in params else ''
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)

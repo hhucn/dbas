@@ -292,8 +292,11 @@ def save_path_in_database(nickname, path):
         path = path[len('/discuss/'):]
         path = path[path.index('/') if '/' in path else 0:]
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
-    if not nickname or not db_user:
+    if not nickname:
+        return []
+    
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
         return []
 
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path))
