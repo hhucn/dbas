@@ -29,7 +29,7 @@ py3dns==3.1.0
 Pygments==2.1.3
 pyramid==1.7.3
 pyramid-beaker==0.8
-pyramid-chameleon==2.25
+pyramid-chameleon==0.3
 pyramid-debugtoolbar==3.0.5
 pyramid-hsts==1.2.3
 pyramid-mailer==0.14.1
