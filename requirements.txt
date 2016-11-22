@@ -68,6 +68,6 @@ virtualenvwrapper==4.7.1
 waitress==0.9.0
 WebOb==1.6.3
 WebTest==2.0.21
-zope.deprecation==4.1.2
+zope.deprecation==4.2.0
 zope.interface==4.3.2
 zope.sqlalchemy==0.7.7
