@@ -127,6 +127,6 @@ def add_reputation_for(user, reason):
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
 
-    # transaction.commit() # TODO #207
+    # transaction.commit() # # 207
 
     return True

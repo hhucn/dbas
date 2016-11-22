@@ -301,7 +301,7 @@ def save_path_in_database(nickname, path):
 
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path))
     DBDiscussionSession.flush()
-    transaction.commit()
+    # transaction.commit() # 207
 
 
 def get_history_from_database(nickname, lang):

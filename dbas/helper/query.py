@@ -297,7 +297,7 @@ def correct_statement(user, uid, corrected_text, url='', request=None):
         NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
 
     db_statement.set_textversion(textversion.uid)
-    # transaction.commit() # #207
+    # transaction.commit() # # 207
 
     return_dict['uid'] = uid
     return_dict['text'] = corrected_text
@@ -500,7 +500,7 @@ def __set_statement(statement, user, is_start, issue):
                                                                      Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
     textversion.set_statement(new_statement.uid)
 
-    transaction.commit()  # necessary for #207
+    transaction.commit()
 
     return new_statement, False
 
@@ -560,7 +560,7 @@ def __create_argument_by_raw_input(user, text, conclusion_id, is_supportive, iss
     # third, insert the argument
     new_argument = __create_argument_by_uids(user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
 
-    transaction.commit()  # necessary for #207
+    transaction.commit()
     return new_argument, statement_uids
 
 
@@ -601,7 +601,7 @@ def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_u
                                                                        Argument.conclusion_uid == conclusion_uid,
                                                                        Argument.argument_uid == argument_uid,
                                                                        Argument.issue_uid == issue)).first()
-    transaction.commit()  # necessary for #207
+    transaction.commit()
     if new_argument:
         logger('QueryHelper', '__create_argument_by_uids', 'argument was inserted')
         return new_argument
@@ -692,7 +692,7 @@ def revoke_content(uid, is_argument, nickname, translator):
 
     DBDiscussionSession.add(db_element)
     DBDiscussionSession.flush()
-    # transaction.commit()  # #207
+    # transaction.commit()  # # 207
 
     return '', is_deleted
 
@@ -736,7 +736,7 @@ def __revoke_argument(db_user, argument_uid, translator):
 
     DBDiscussionSession.add(db_argument)
     DBDiscussionSession.flush()
-    # transaction.commit()  # #207
+    # transaction.commit()  # # 207
     return db_argument, is_deleted, ''
 
 

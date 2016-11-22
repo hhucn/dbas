@@ -2536,6 +2536,6 @@ def revoke_some_content(request):
     return_dict['error'] = error
     return_dict['success'] = success
     return_dict['is_deleted'] = is_deleted
-    transaction.commit()  # #207
+    transaction.commit()  # # 207
 
     return json.dumps(return_dict, True)
