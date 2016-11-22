@@ -294,7 +294,7 @@ def save_path_in_database(nickname, path):
 
     if not nickname:
         return []
-    
+
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return []

@@ -86,6 +86,7 @@ def main(global_config, **settings):
     # more includes are in the config
     config.include('pyramid_chameleon')
     config.include('pyramid_mailer')
+    config.include('pyramid_tm')
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
     config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
