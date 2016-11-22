@@ -31,7 +31,10 @@ def groupfinder(nick, request):
     :param request: request
     :return: given group as list or empty list
     """
-    logger('security', 'groupfinder', 'parameter nick = ' + nick)
+    # import traceback
+    # traceback.print_stack()
+
+    logger('security', 'groupfinder', 'nick: ' + nick)
     try:
         user = DBDiscussionSession.query(User).filter_by(nickname=nick).first()
     except sqlie:

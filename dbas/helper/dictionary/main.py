@@ -71,17 +71,18 @@ class DictionaryHelper(object):
 
         return return_dict
 
-    def prepare_extras_dict_for_normal_page(self, request, append_notifications=False):
+    def prepare_extras_dict_for_normal_page(self, request, nickname, append_notifications=False):
         """
         Calls self.prepare_extras_dict('', False, False, False, False, False, nickname)
         :param request: Request
+        :param nickname: request_authenticated_userid
         :param append_notifications: Boolean
         :return: dict()
         """
-        return self.prepare_extras_dict('', False, False, False, False, request, append_notifications=append_notifications)
+        return self.prepare_extras_dict('', False, False, False, False, request, append_notifications=append_notifications, nickname=nickname)
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_island_icon,
-                            show_graph_icon, request, argument_id=0, argument_for_island=0, application_url='',
+                            show_graph_icon, request, nickname, argument_id=0, argument_for_island=0, application_url='',
                             for_api=False, append_notifications=False, attack=None):
         """
         Creates the extras.dict() with many options!
@@ -98,17 +99,19 @@ class DictionaryHelper(object):
         :param for_api: Boolean
         :param append_notifications: Boolean
         :param attack: String
+        :param nickname: String
         :return: dict()
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def')
         db_user = None
+        request_authenticated_userid = nickname
         nickname = ''
 
-        if request.authenticated_userid:
-            nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
+        if request_authenticated_userid:
+            nickname = request_authenticated_userid if request_authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-        if not db_user or request.authenticated_userid is None:
+        if not db_user or request_authenticated_userid is None:
             nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         is_logged_in = False if nickname == nick_of_anonymous_user else is_user_logged_in(nickname)

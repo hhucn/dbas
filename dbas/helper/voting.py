@@ -22,7 +22,7 @@ def add_vote_for_argument(argument_uid, user):
     Increases the votes of a given argument.
 
     :param argument_uid: id of the argument
-    :param user: self.request.authenticated_userid
+    :param user: request.authenticated_userid
     :return: increased votes of the argument
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
