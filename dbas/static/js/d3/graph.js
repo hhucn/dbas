@@ -21,15 +21,15 @@ function DiscussionGraph() {
     var dark_green = '#689F38';
     var dark_blue = '#1976D2';
     var light_grey = '#848484';
-    var font_size = 14;
-    var line_height = 1.5;
-    var box_sizes = {};
-    var node_id_prefix = 'node_';
-    var old_scale = 1.0;
-    var statement_size = 6;
-    var other_size = 9;
-    var issue_size = 10;
-    var doj_factor_size = 10;
+    var font_size = 14; // needed for rescaling
+    var line_height = 1.5; // needed for rescaling
+    var box_sizes = {}; // needed for rescaling
+    var node_id_prefix = 'node_'; // needed for rescaling
+    var old_scale = 1.0; // needed for rescaling
+    var statement_size = 6; // base node size of an statement
+    var other_size = 9; // base node size
+    var issue_size = 10; // node size of the issue
+    var doj_factor_size = 10; // additional size for the doj, which is in [0,1]
 
     /**
      * Displays a graph of current discussion
@@ -146,7 +146,7 @@ function DiscussionGraph() {
     this.getD3Graph = function(jsonData){
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
-        var doj_data = 'doj' in jsonData && 'dojs' in jsonData.doj ? jsonData.dojs : {};
+        var doj_data = 'doj' in jsonData && 'dojs' in jsonData.doj ? jsonData.doj.dojs : {};
         
         // height of the header ( offset per line count)
         var offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
