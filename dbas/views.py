@@ -141,10 +141,19 @@ def main_contact(request):
     request.session[key] = answer
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    ui_locales = get_language(request, get_current_registry())
+    _t = Translator(ui_locales)
+    placeholder = {
+        'name': _t.get(_.exampleName),
+        'mail': _t.get(_.exampleMail),
+        'phone': _t.get(_.examplePhone),
+        'message': _t.get(_.exampleMessage)
+    }
+
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'Contact',
+        'title': _t.get(_.contact),
         'project': project_name,
         'extras': extras_dict,
         'was_message_send': send_message,
@@ -155,7 +164,8 @@ def main_contact(request):
         'phone': phone,
         'content': content,
         'spamanswer': '',
-        'spamquestion': spamquestion
+        'spamquestion': spamquestion,
+        'placeholder': placeholder
     }
 
 

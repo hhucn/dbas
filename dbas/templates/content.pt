@@ -303,7 +303,14 @@
                     <span id="add-statement-error-msg"></span>
                 </div>
                 <div id="add-statement-container-body">
-                    <input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="..." value="" data-min-length="10"  data-max-length="160">
+
+            	<div class="form-group">
+            		<div class="col-sm-12 input-group">
+                        <div class="input-group-addon"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></div>
+            			<input id="add-statement-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="160" style="width: 100%">
+            		</div>
+            	</div>
+
                 </div>
                 <div class="list-group" id="proposal-statement-list-group"></div>
                 <input id="send-new-statement" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
@@ -327,7 +334,14 @@
                 <div id="add-premise-container-body">
                     <div class="container-three-divs" style="padding-bottom: 2em;">
                         <div class="flex-div">
-                            <input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="..." value="" data-min-length="10" data-max-length="160">
+
+            	            <div class="form-group">
+            		            <div class="col-sm-12 input-group">
+                                    <div class="input-group-addon"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></div>
+                        			<input id="add-premise-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="160" style="width: 100%">
+            		            </div>
+            	            </div>
+
                         </div>
                         <div><img class="icon-badge icon-rem-premise" src="${request.static_url('dbas:static/images/icon_minus1.png')}" tal:attributes="title extras.title.rem_statement_row_title"/><img class="icon-badge icon-add-premise" src="${request.static_url('dbas:static/images/icon_plus1.png')}" tal:attributes="title extras.title.add_statement_row_title"/></div>
                     </div>

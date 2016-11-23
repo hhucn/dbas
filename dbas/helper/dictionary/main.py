@@ -466,5 +466,10 @@ class DictionaryHelper(object):
             'insert_dont_care': _tn.get(_.insertDontCare),
             'need_help_to_understand_statement': _tn.get(_.needHelpToUnderstandStatement),
             'set_premisegroups_intro1': _tn.get(_.setPremisegroupsIntro1),
-            'set_premisegroups_intro2': _tn.get(_.setPremisegroupsIntro2)
+            'set_premisegroups_intro2': _tn.get(_.setPremisegroupsIntro2),
+            'placeholder_nickname': _tn.get(_.exampleNickname),
+            'placeholder_password': _tn.get(_.examplePassword),
+            'placeholder_firstname': _tn.get(_.exampleFirstname),
+            'placeholder_lastname': _tn.get(_.exampleLastname),
+            'placeholder_mail': _tn.get(_.exampleMail)
         }
