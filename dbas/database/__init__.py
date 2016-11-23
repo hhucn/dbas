@@ -9,8 +9,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 from zope.sqlalchemy import ZopeTransactionExtension as Zte
 
-DBDiscussionSession = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False, autocommit=False))
-DBNewsSession       = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False, autocommit=False))
+DBDiscussionSession = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))
+DBNewsSession       = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))
 DiscussionBase      = declarative_base()
 NewsBase            = declarative_base()
 DBEngine            = None

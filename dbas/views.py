@@ -1059,9 +1059,9 @@ def review_reputation(request):
     }
 
 
-# ####################################
-# ADDTIONAL AJAX STUFF # USER THINGS #
-# ####################################
+# #####################################
+# ADDITIONAL AJAX STUFF # USER THINGS #
+# #####################################
 
 
 # ajax - getting complete track of the user

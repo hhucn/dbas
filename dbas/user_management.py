@@ -139,7 +139,7 @@ def update_last_action(nick):
     should_log_out = diff > timeout_in_sec and not db_settings.keep_logged_in
     db_user.update_last_action()
 
-    # transaction.commit() # 207
+    transaction.commit() # 207
     return should_log_out
 
 

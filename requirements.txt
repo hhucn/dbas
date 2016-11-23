@@ -14,6 +14,7 @@ db==0.1.1
 db-psycopg2==0.0.7
 docutils==0.12
 flake8==3.2.1
+gevent==1.1.2
 html5lib==0.9999999
 lingua==4.9
 mako==1.0.6
