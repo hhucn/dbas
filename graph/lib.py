@@ -54,7 +54,7 @@ def get_d3_data(issue, nickname):
                                 size=issue_size,
                                 x=x,
                                 y=y,
-                                type='position')
+                                type='issue')
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)

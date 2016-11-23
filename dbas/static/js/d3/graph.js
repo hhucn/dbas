@@ -20,11 +20,16 @@ function DiscussionGraph() {
     var dark_red = '#D32F2F';
     var dark_green = '#689F38';
     var dark_blue = '#1976D2';
+    var light_grey = '#848484';
     var font_size = 14;
     var line_height = 1.5;
     var box_sizes = {};
     var node_id_prefix = 'node_';
     var old_scale = 1.0;
+    var statement_size = 6;
+    var other_size = 9;
+    var issue_size = 10;
+    var doj_size = 10;
 
     /**
      * Displays a graph of current discussion
@@ -169,7 +174,7 @@ function DiscussionGraph() {
 
         // node
         var node = createNodes(svg, force, drag);
-        var circle = setNodeProperties(node);
+        var circle = setNodeProperties(node, jsonData);
 
         // tooltip
         // rect as background of label
@@ -211,9 +216,6 @@ function DiscussionGraph() {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";});
         }
         
-        // setting DOJ
-        console.log(jsonData);
-
         //////////////////////////////////////////////////////////////////////////////
         // highlight nodes and edges
         addListenerForNodes(circle, edges);
@@ -342,7 +344,10 @@ function DiscussionGraph() {
      */
     function setNodeColorsForData(jsonData){
         jsonData.nodes.forEach(function(e) {
-            e.color = e.type === 'position' ? blue : e.type === 'statement' ? yellow : black;
+            if (e.type === 'position')       e.color = blue;
+            else if (e.type === 'statement') e.color = yellow;
+            else if (e.type === 'issue')     e.color = light_grey;
+            else                             e.color = black;
         });
     }
     
@@ -393,9 +398,9 @@ function DiscussionGraph() {
             .enter().append("svg:marker")
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
                    refX: function(d){
-                             if(d.target.label === ''){ return 6; }
-                             else if(d.target.id === 'issue'){ return 10; }
-                             else{ return 9; }},
+                       if(d.target.label === ''){ return statement_size; }
+                       else if(d.target.id === 'issue'){ return issue_size; }
+                       else{ return other_size; }},
                    refY: 0,
                    markerWidth: 10, markerHeight: 10,
                    viewBox: '0 -5 10 10',
@@ -577,8 +582,8 @@ function DiscussionGraph() {
         // labels and colors for legend
         var legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")],
             legendLabelRect = [_t_discussion("support"), _t_discussion("attack")],
-            legendColorCircle = ["#3D5AFE", "#3D5AFE", "#FFC107"],
-            legendColorRect = ["#64DD17", "#F44336"];
+            legendColorCircle = [light_grey, blue, yellow],
+            legendColorRect = [green, red];
 
         // set properties for legend
         return d3.svg.legend = function() {
@@ -605,8 +610,8 @@ function DiscussionGraph() {
         .enter().append("circle")
         .attr({fill: function (d,i) {return legendColorCircle[i];},
                r: function (d,i) {
-                   if(i === 0) { return 8; }
-                   else { return 6; }},
+                   if(i === 0) { return issue_size; }
+                   else { return statement_size; }},
                cy: function (d,i) {return i*40;}});
     }
 
@@ -806,8 +811,7 @@ function DiscussionGraph() {
             highlightElements(d);
         });
     }
-
-
+    
     /**
      * Show all supports on the statements, which the current user has created.
      *
@@ -1134,5 +1138,16 @@ function DiscussionGraph() {
         d3.select('#circle-' + edge.target.id).attr('fill', '#E0E0E0');
         // arrows
         d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', '#E0E0E0');
+    }
+    
+    /**
+     * Setting node size in respect to the DOJ
+     * @param data
+     */
+    function setDojForNodeSize(data){
+        var dojs = data.doj.dojs;
+        $.each( dojs, function( node, doj ) {
+            $('#circle-statement_' + node).attr('r', parseInt(statement_size + doj_size * doj));
+        });
     }
 }
