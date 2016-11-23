@@ -49,7 +49,7 @@
 
     				<div class="col-md-12" id="admin-login-failed">
     					<div class="alert alert-danger" role="alert">
-    						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
     						<span class="sr-only"><span i18n:translate="error">Error</span>:</span> <span id="admin-login-failed-message"></span>
     					</div>
     				</div>

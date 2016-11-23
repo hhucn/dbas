@@ -127,14 +127,14 @@ def main_contact(request):
 
     ui_locales = get_language(request, get_current_registry())
 
-    username        = escape_string(request.params['name'] if 'name' in request.params else '')
-    email           = escape_string(request.params['mail'] if 'mail' in request.params else '')
-    phone           = escape_string(request.params['phone'] if 'phone' in request.params else '')
-    content         = escape_string(request.params['content'] if 'content' in request.params else '')
-    spamanswer      = escape_string(request.params['spam'] if 'spam' in request.params else '')
+    username        = escape_string(request.params['name']) if 'name' in request.params else ''
+    email           = escape_string(request.params['mail']) if 'mail' in request.params else ''
+    phone           = escape_string(request.params['phone']) if 'phone' in request.params else ''
+    content         = escape_string(request.params['content']) if 'content' in request.params else ''
+    spamanswer      = escape_string(request.params['spam']) if 'spam' in request.params else ''
 
     if 'form.contact.submitted' in request.params:
-        contact_error, message, sendmessage = try_to_contact(request, username, email, phone, content, ui_locales, spamanswer)
+        contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, spamanswer)
 
     spamquestion, answer = user_manager.get_random_anti_spam_question(ui_locales)
     key = 'contact-antispamanswer'

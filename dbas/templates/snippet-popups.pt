@@ -239,7 +239,14 @@
     				<div id="popup-url-sharing-content">
     				</div>
     				<p id="popup-url-sharing-description-p">${extras.tag.url_sharing_description}</p>
-    				<input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL" data-short-url="" >
+
+                    <div class="form-group">
+            		    <div class="col-sm-12 input-group">
+                            <div class="input-group-addon"><i class="fa fa-share fa-2x" aria-hidden="true"></i></div>
+            		        <input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL" data-short-url="" >
+            		    </div>
+                    </div>
+
     			</div>
     			<div class="modal-footer">
 
@@ -319,21 +326,21 @@
 
     						<div class="col-md-12" id="popup-login-failed">
     							<div class="alert alert-danger" role="alert">
-    								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
     								<span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message"></span>
     							</div>
     						</div>
 
     						<div class="col-md-12" id="popup-login-success">
     							<div class="alert alert-success" role="alert">
-    								<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+    								<i class="fa fa-check-circle" aria-hidden="true"></i>
     								<span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
     							</div>
     						</div>
 
     						<div class="col-md-12" id="popup-login-info">
     							<div class="alert alert-warning" role="alert">
-    								<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    								<i class="fa fa-info-circle" aria-hidden="true"></i>
     								<span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-login-info-message"></span>
     							</div>
     						</div>
@@ -432,7 +439,7 @@
 
     						<div class="col-md-12" id="popup-login-registration-success" role="alert">
     							<div class="alert alert-success alert-dismissible">
-    								<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+    								<i class="fa fa-check-circle" aria-hidden="true"></i>
     								<span class="sr-only" i18n:translate="success">Success:</span>
     								<span id="popup-login-registration-success-message"></span>
     							</div>
@@ -440,7 +447,7 @@
 
     						<div class="col-md-12" id="popup-login-registration-failed" role="alert">
     							<div class="alert alert-danger alert-dismissible">
-    								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
     								<span class="sr-only" i18n:translate="error">Error:</span>
     								<span id="popup-login-registration-failed-message"></span>
     							</div>
@@ -448,7 +455,7 @@
 
     						<div class="col-md-12" id="popup-login-registration-info" role="alert">
     							<div class="alert alert-warning alert-dismissible">
-    								<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    								<i class="fa fa-info-circle" aria-hidden="true"></i>
     								<span class="sr-only" i18n:translate="info">Info:</span>
     								<span id="popup-login-registration-info-message"></span>
     							</div>
@@ -581,7 +588,7 @@
     	    		<div id="popup-set-premisegroups-body-content">
     	    		</div>
                     <div id="insert_statements_page_error" class="alert alert-danger" role="alert" style="display:none">
-    					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
     					<span>${extras.tag.error}</span>:
     					<span>${extras.tag.forgot_input_radio}</span>
     				</div>
@@ -606,8 +613,7 @@
     				</button>
     				<h5 class="modal-title" id="myModalLabel" i18n:translate="writing_message">Writing a new message</h5>
     			</div>
-    			<div id="popup-url-sharing-body">
-
+    			<div id="popup-writing-news-body">
 
                     <div class="form-group">
             		    <div class="col-sm-12 input-group">
@@ -624,12 +630,12 @@
                     </div>
 
                     <div id="popup-writing-news-failed" class="alert alert-danger" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 						<span class="sr-only" i18n:translate="error:">Error:</span> <span id="popup-writing-news-failed-message"></span>
 					</div>
 
 					<div id="popup-writing-news-success" class="alert alert-success" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 						<span class="sr-only" i18n:translate="success:">Success:</span> <span id="popup-writing-news-success-message"></span>
 					</div>
 
@@ -687,12 +693,12 @@
                     </div>
 
                     <div id="popup-writing-notification-failed" class="alert alert-danger" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 						<span class="sr-only" i18n:translate="error:">Error:</span> <span id="popup-writing-notification-failed-message"></span>
 					</div>
 
 					<div id="popup-writing-notification-success" class="alert alert-success" role="alert">
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 						<span class="sr-only" i18n:translate="success:">Success:</span> <span id="popup-writing-notification-success-message"></span>
 					</div>
 

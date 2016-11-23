@@ -27,6 +27,11 @@ function PopupHandler() {
 		// add inputs
 		$.each(statements_uids, function (index, value) {
 			var statement = $('#' + value).text().trim().replace(/\s+/g, ' ');
+			
+			var group = $('<div>').addClass('form-group');
+			var outerInputGroup = $('<div>').addClass('col-md-12').addClass('input-group');
+			var innerInputGroup = $('<div>').addClass('input-group-addon');
+			var group_icon = $('<i>').addClass('fa').addClass('fa-2x').addClass('fa-file-text-o').attr('aria-hidden', '"true"');
 			var input = $('<input>')
 				.addClass('form-control')
 				.attr('id', 'popup-edit-statement-input-' + index)
@@ -35,10 +40,17 @@ function PopupHandler() {
 				.attr('placeholder', statement)
 				.attr('data-statement-uid', value)
 				.val(statement);
-			input_space.append(input);
+			
+			innerInputGroup.append(group_icon);
+			outerInputGroup.append(innerInputGroup).append(input);
+			group.append(outerInputGroup);
+			input_space.append(group);
 		});
-		
+
 		// gui for editing statements
+		var _l = function(s1, s2){
+			return levensthein(s1, s2);
+		};
 		input_space.find('input').each(function () {
 			$(this).keyup(function () {
 				var oem = $(this).attr('placeholder');
@@ -47,7 +59,7 @@ function PopupHandler() {
 				var statement_uid = $(this).data('statement-uid');
 				
 				// reduce noise
-				var levensthein = levensthein(oem, now);
+				var levensthein = _l(oem, now);
 				$('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? _t_discussion(pleaseEditAtLeast) : '');
 				
 				if (now && oem && now.toLowerCase() == oem.toLowerCase() && levensthein < 5)
