@@ -89,7 +89,7 @@ def get_doj_data(issue):
     :return:
     """
     logger('GraphLib', 'get_doj_data', 'main')
-    url = 'http://localhost:5101/evaluate/all?issue=' + str(issue)
+    url = 'http://localhost:5101/evaluate/dojs?issue=' + str(issue)
     try:
         resp = requests.get(url)
     except Exception as e:
@@ -97,8 +97,7 @@ def get_doj_data(issue):
         return {}
 
     if resp.status_code == 200:
-        content = json.loads(resp.text)
-        return content
+        return json.loads(resp.text)
     else:
         logger('GraphLib', 'get_doj_data', 'status ' + str(resp.status_code), error=True)
         return {}

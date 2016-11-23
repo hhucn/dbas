@@ -29,7 +29,7 @@ function DiscussionGraph() {
     var statement_size = 6;
     var other_size = 9;
     var issue_size = 10;
-    var doj_size = 10;
+    var doj_factor_size = 10;
 
     /**
      * Displays a graph of current discussion
@@ -146,6 +146,7 @@ function DiscussionGraph() {
     this.getD3Graph = function(jsonData){
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
+        var doj_data = 'doj' in jsonData && 'dojs' in jsonData.doj ? jsonData.dojs : {};
         
         // height of the header ( offset per line count)
         var offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
@@ -174,7 +175,7 @@ function DiscussionGraph() {
 
         // node
         var node = createNodes(svg, force, drag);
-        var circle = setNodeProperties(node, jsonData);
+        var circle = setNodeProperties(node, doj_data);
 
         // tooltip
         // rect as background of label
@@ -453,14 +454,33 @@ function DiscussionGraph() {
      * Define properties for nodes.
      *
      * @param node
+     * @param doj_data
      * @return circle
      */
-    function setNodeProperties(node){
+    function setNodeProperties(node, doj_data){
         return node.append("circle")
-            .attr({r: function(d){ return d.size; },
+            .attr({r: function(d){ return calculateNodeSize(d, doj_data); },
                    fill: function(d){ return d.color; },
                    id: function (d) { return 'circle-' + d.id; }
             });
+    }
+    
+    /**
+     * Calculates the node size in respect to the DOJ
+     *
+     * @param node
+     * @param doj_data
+     * @returns {*}
+     */
+    function calculateNodeSize(node, doj_data){
+        if (node.id.indexOf('statement_') != -1){
+            var id = node.id.replace('statement_', '');
+            if (id in doj_data)
+                return node.size + doj_factor_size * doj_data[id];
+            else
+                return node.size;
+        }
+        return node.size;
     }
 
     /**
@@ -609,9 +629,7 @@ function DiscussionGraph() {
         .data(legendLabelCircle)
         .enter().append("circle")
         .attr({fill: function (d,i) {return legendColorCircle[i];},
-               r: function (d,i) {
-                   if(i === 0) { return issue_size; }
-                   else { return statement_size; }},
+               r: function (d,i) { return statement_size; },
                cy: function (d,i) {return i*40;}});
     }
 
@@ -1138,16 +1156,5 @@ function DiscussionGraph() {
         d3.select('#circle-' + edge.target.id).attr('fill', '#E0E0E0');
         // arrows
         d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', '#E0E0E0');
-    }
-    
-    /**
-     * Setting node size in respect to the DOJ
-     * @param data
-     */
-    function setDojForNodeSize(data){
-        var dojs = data.doj.dojs;
-        $.each( dojs, function( node, doj ) {
-            $('#circle-statement_' + node).attr('r', parseInt(statement_size + doj_size * doj));
-        });
     }
 }
