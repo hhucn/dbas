@@ -210,6 +210,9 @@ function DiscussionGraph() {
             label.attr("transform", function (d) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";});
         }
+        
+        // setting DOJ
+        console.log(jsonData);
 
         //////////////////////////////////////////////////////////////////////////////
         // highlight nodes and edges

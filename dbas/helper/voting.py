@@ -305,5 +305,5 @@ def __statement_seen_by_user(user_uid, statement_uid):
         DBDiscussionSession.flush()
         return True
 
-    logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid) + ' was already seem')
+    logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid) + ' was already seen')
     return False
