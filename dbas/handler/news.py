@@ -21,7 +21,7 @@ def set_news(title, text, user, lang):
 
     :param title: news title
     :param text: String news text
-    :param user: User.nickname self.request.authenticated_userid
+    :param user: User.nickname request.authenticated_userid
     :param lang: lang
     :return: dictionary {title,date,author,news}
     """

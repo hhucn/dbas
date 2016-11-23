@@ -76,13 +76,14 @@ def main_admin(request):
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_admin', 'def')
-    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path)
-    should_log_out = UserHandler.update_last_action(request.authenticated_userid)
+    request_authenticated_userid = request.authenticated_userid
+    HistoryHelper.save_path_in_database(request_authenticated_userid, request.path)
+    should_log_out = UserHandler.update_last_action(request_authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
 
     ui_locales = get_language(request, get_current_registry())
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
     overview = lib.get_overview(request.path)
 
     return {
@@ -103,14 +104,15 @@ def main_table(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    request_authenticated_userid = request.authenticated_userid
     logger('Admin', 'main_table', 'def')
-    HistoryHelper.save_path_in_database(request.authenticated_userid, request.path)
-    should_log_out = UserHandler.update_last_action(request.authenticated_userid)
+    HistoryHelper.save_path_in_database(request_authenticated_userid, request.path)
+    should_log_out = UserHandler.update_last_action(request_authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
 
     ui_locales = get_language(request, get_current_registry())
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
     table = request.matchdict['table']
     try:
         table_dict = lib.get_table_dict(table, request.application_url)

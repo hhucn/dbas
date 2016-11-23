@@ -31,7 +31,6 @@ requires = [
     'requests',
     'pyshorteners',
     'python-slugify',
-    'validate_email',
     'db-psycopg2',
     'pyramid_redis_sessions',
 ]

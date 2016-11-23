@@ -533,7 +533,7 @@ class History(DiscussionBase):
     History-table with several columns.
     Each user will be tracked
     """
-    __tablename__ = 'bubbles'
+    __tablename__ = 'history'
     uid = Column(Integer, primary_key=True)
     author_uid = Column(Integer, ForeignKey('users.uid'))
     path = Column(Text, nullable=False)

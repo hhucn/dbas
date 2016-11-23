@@ -11,7 +11,7 @@ function AjaxMainHandler(){
 	this.ajaxSwitchDisplayLanguage = function (new_lang){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_switch_language',
+			url: mainpage + 'ajax_switch_language',
 			type: 'POST',
 			data: { lang: new_lang},
 			dataType: 'json',

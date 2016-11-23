@@ -4,6 +4,7 @@
 # @email krauthoff@cs.uni-duesseldorf.de
 
 import requests
+import json
 
 from sqlalchemy import and_
 from dbas.logger import logger
@@ -12,10 +13,6 @@ from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue
 from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
 from dbas.database.initializedb import nick_of_anonymous_user
-
-
-yellow = '#FFC107'
-blue = '#3D5AFE'
 
 
 def get_d3_data(issue, nickname):
@@ -57,7 +54,7 @@ def get_d3_data(issue, nickname):
                                 size=issue_size,
                                 x=x,
                                 y=y,
-                                type='position')
+                                type='issue')
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
@@ -92,13 +89,18 @@ def get_doj_data(issue):
     :return:
     """
     logger('GraphLib', 'get_doj_data', 'main')
-    url = 'http://localhost:5101/evaluate/all?issue=' + str(issue)
+    url = 'http://localhost:5101/evaluate/dojs?issue=' + str(issue)
     try:
         resp = requests.get(url)
     except Exception as e:
         logger('Graph.lib', 'get_doj_data', 'Error: ' + str(e), error=True)
         return {}
-    return resp
+
+    if resp.status_code == 200:
+        return json.loads(resp.text)
+    else:
+        logger('GraphLib', 'get_doj_data', 'status ' + str(resp.status_code), error=True)
+        return {}
 
 
 def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x, y, node_size, position_size, edge_size, edge_type):

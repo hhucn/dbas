@@ -26,29 +26,32 @@ import dbas.helper.voting as VotingHelper
 import transaction
 
 
-def get_nickname_and_session(request, for_api=None, api_data=None):
+def get_nickname_and_session(request, request_authenticated_userid, for_api=None, api_data=None):
     """
     Given data from api, return nickname and session_id.
 
+    :param request:
+    :param request_authenticated_userid:
     :param for_api:
     :param api_data:
     :return:
     """
-    nickname = api_data["nickname"] if api_data and for_api else request.authenticated_userid
+    nickname = api_data["nickname"] if api_data and for_api else request_authenticated_userid
     session_id = api_data["session_id"] if api_data and for_api else request.session.id
     return nickname, session_id
 
 
-def preparation_for_view(for_api, api_data, request):
+def preparation_for_view(for_api, api_data, request, request_authenticated_userid):
     """
-    Does some elementary things like: getting nickname, sessioniod and history. Additionally boolean, if the sesseion is expired
+    Does some elementary things like: getting nickname, session id and history. Additionally boolean, if the sesseion is expired
 
     :param for_api: True, if the values are for the api
     :param api_data: Array with api data
     :param request: Current request
+    :param request_authenticated_userid:
     :return: nickname, session_id, session_expired, history
     """
-    nickname, session_id = get_nickname_and_session(request, for_api, api_data)
+    nickname, session_id = get_nickname_and_session(request, request_authenticated_userid, for_api, api_data)
     session_expired = UserHandler.update_last_action(nickname)
     history         = request.params['history'] if 'history' in request.params else ''
     HistoryHelper.save_path_in_database(nickname, request.path)
@@ -56,7 +59,7 @@ def preparation_for_view(for_api, api_data, request):
     return nickname, session_id, session_expired, history
 
 
-def preparation_for_justify_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, mode, ui_locales):
+def preparation_for_justify_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, mode, ui_locales, request_authenticated_userid):
     """
 
     :param request:
@@ -72,7 +75,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     """
     logger('View Helper', 'preparation_for_justify_statement', 'main')
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
+    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     logged_in = UserHandler.is_user_logged_in(nickname)
     _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request)
 
@@ -80,7 +83,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
 
     item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict['elements']), nickname)
-    extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, mode == 't',
+    extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, request_authenticated_userid, mode == 't',
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
@@ -90,7 +93,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_dont_know_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales):
+def preparation_for_dont_know_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid):
     """
 
     :param request:
@@ -101,11 +104,12 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     :param statement_or_arg_id:
     :param supportive:
     :param ui_locales:
+    :param request_authenticated_userid:
     :return:
     """
     logger('View Helper', 'preparation_for_dont_know_statement', 'main')
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
+    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
 
     issue               = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales     = get_discussion_language(request, issue)
@@ -118,7 +122,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,
-                                              application_url=main_page, for_api=for_api)
+                                              application_url=main_page, for_api=for_api, nickname=request_authenticated_userid)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
@@ -126,7 +130,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, relation, ui_locales):
+def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, relation, ui_locales, request_authenticated_userid):
     """
 
     :param request:
@@ -142,7 +146,7 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     """
     logger('ViewHelper', 'preparation_for_justify_argument', 'main')
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request)
+    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     logged_in = UserHandler.is_user_logged_in(nickname)
     _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request)
 
@@ -151,7 +155,8 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request,
-                                              argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api)
+                                              argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api,
+                                              nickname=request_authenticated_userid)
     # is the discussion at the end?
     if not logged_in and len(item_dict['elements']) == 1 or logged_in and len(item_dict['elements']) == 1:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
@@ -252,15 +257,15 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     """
     success = ''
     _t = Translator(ui_locales)
-    params = request.params
-    firstname = escape_string(params['firstname'] if 'firstname' in params else '')
-    lastname = escape_string(params['lastname'] if 'lastname' in params else '')
-    nickname = escape_string(params['nickname'] if 'nickname' in params else '')
-    email = escape_string(params['email'] if 'email' in params else '')
-    gender = escape_string(params['gender'] if 'gender' in params else '')
-    password = escape_string(params['password'] if 'password' in params else '')
-    passwordconfirm = escape_string(params['passwordconfirm'] if 'passwordconfirm' in params else '')
-    spamanswer = escape_string(params['spamanswer'] if 'spamanswer' in params else '')
+    params          = request.params
+    firstname       = escape_string(params['firstname']) if 'firstname' in params else ''
+    lastname        = escape_string(params['lastname']) if 'lastname' in params else ''
+    nickname        = escape_string(params['nickname']) if 'nickname' in params else ''
+    email           = escape_string(params['email']) if 'email' in params else ''
+    gender          = escape_string(params['gender']) if 'gender' in params else ''
+    password        = escape_string(params['password']) if 'password' in params else ''
+    passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
+    spamanswer      = escape_string(params['spamanswer']) if 'spamanswer' in params else ''
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)

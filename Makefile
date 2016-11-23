@@ -52,17 +52,12 @@ reload_dummy:
 init_production:
 	sudo -u postgres bash -c "psql -c \"create user dbas_prod with password 'SQL_2016&';\""
 	sudo -u postgres bash -c "psql -c \"create database mysession;\""
-	sudo -u postgres bash -c "psql -c \"create database mycache;\""
 	sudo -u postgres bash -c "psql -c \"alter database mysession owner to dbas_prod;\""
-	sudo -u postgres bash -c "psql -c \"alter database mycache owner to dbas_prod;\""
 
 
 all_production_db:
 	sudo -u postgres bash -c "psql -c \"create database mysession;\""
-	sudo -u postgres bash -c "psql -c \"create database mycache;\""
 	sudo -u postgres bash -c "psql -c \"alter database mysession owner to dbas_prod;\""
-	sudo -u postgres bash -c "psql -c \"alter database mycache owner to dbas_prod;\""
 
 clean_production_db:
 	sudo -u postgres bash -c "psql -c \"drop database mysession;\""
-	sudo -u postgres bash -c "psql -c \"drop database mycache;\""

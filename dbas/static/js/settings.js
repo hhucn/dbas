@@ -47,7 +47,7 @@ function HistoryHandler(){
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url, helper = new Helper();
+		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url;
 		tElement = ['', ''];
 		tableElement = $('<table>');
 		tableElement

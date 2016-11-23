@@ -22,7 +22,7 @@ def add_vote_for_argument(argument_uid, user):
     Increases the votes of a given argument.
 
     :param argument_uid: id of the argument
-    :param user: self.request.authenticated_userid
+    :param user: request.authenticated_userid
     :return: increased votes of the argument
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -88,7 +88,6 @@ def add_vote_for_statement(statement_uid, user, supportive):
     :param statement_uid: Statement.uid
     :param user: User.nickname
     :param supportive: boolean
-    :param transaction: Transaction
     :return: Boolean
     """
     logger('VotingHelper', 'add_vote_for_statement', 'increasing statement ' + str(statement_uid) + ' vote')
@@ -112,9 +111,9 @@ def add_seen_statement(statement_uid, user_uid):
     :param statement_uid: uid of the statement
     :return: undefined
     """
-    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(statement_uid) + ', for user ' + str(user_uid))
-    __statement_seen_by_user(user_uid, statement_uid)
-    transaction.commit()
+    logger('VotingHelper', 'add_seen_statement', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid))
+    if __statement_seen_by_user(user_uid, statement_uid):
+        transaction.commit()
 
 
 def add_seen_argument(argument_uid, user_uid):
@@ -298,11 +297,13 @@ def __statement_seen_by_user(user_uid, statement_uid):
     :param statement_uid: uid of the statement
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    logger('VotingHelper', '__statement_seen_by_user', 'argument ' + str(statement_uid) + ', for user ' + str(user_uid))
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter(and_(StatementSeenBy.statement_uid == statement_uid,
                                                                         StatementSeenBy.user_uid == user_uid)).first()
     if not db_seen_by:
+        logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid) + ' is now marked as seen')
         DBDiscussionSession.add(StatementSeenBy(statement_uid=statement_uid, user_uid=user_uid))
         DBDiscussionSession.flush()
         return True
+
+    logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid) + ' was already seen')
     return False

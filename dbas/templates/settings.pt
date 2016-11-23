@@ -21,7 +21,7 @@
 						<tr>
 							<td><span class="lead" i18n:translate="public_nickname">Public Nickname</span></td>
                             <td>
-                                <a id="value_public_page" href="#" target="_blank" tal:attributes="href settings.public_page_url">
+                                <a id="value_public_page" href="#" tal:attributes="href settings.public_page_url">
                                     <span id="value_public_nickname">${settings.db_public_nickname}</span>
                                      (<span i18n:translate="click_here_for_public_page">Click here for your public page</span>)
                                 </a>
@@ -154,7 +154,7 @@
 					</form>
 				</div>
 
-				<div class="col-md-5">
+				<div class="col-md-5" id="statistics">
 					<h4><span class="glyphicon glyphicon-stats" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
 					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
@@ -185,10 +185,17 @@
 							</td>
 							<td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
 						</tr>
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="reputation">Reputation</span>
+								<a href="${request.application_url}/review/reputation"><i class="fa fa-info-circle"></i></a>
+							</td>
+							<td style="text-align: right">${settings.reputation}</td>
+						</tr>
 					</table>
-					<div class="text-center">
-						<input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />
-					</div>
+					<!--<div class="text-center">-->
+					<!--	<input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />-->
+					<!--</div>-->
 				</div>
 			</div>
 

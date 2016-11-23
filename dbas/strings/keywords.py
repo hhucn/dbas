@@ -505,6 +505,7 @@ class Keywords(Enum):
     statement = 'Statement'
     statementAdded = 'Statement was added'
     statementIsAbout = 'Statement ist about added'
+    settings = 'Settings'
     argumentAdded = 'Argument was added'
     statementAddedMessageContent = 'Hey, someone has added his/her opinion regarding your argument!'
     argumentAddedMessageContent = 'Hey, someone has added his/her argument regarding your argument!'
