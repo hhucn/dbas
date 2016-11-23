@@ -366,36 +366,35 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: None
         """
-        _tnd = Translator(self.discussion_lang)
-        _tns = Translator(self.system_lang)
-        return_dict['buttons'] = {'show_all_arguments': _tns.get(_.showAllArguments),
-                                  'show_all_users': _tns.get(_.showAllUsers),
-                                  'delete_track': _tns.get(_.deleteTrack),
-                                  'request_track': _tns.get(_.requestTrack),
-                                  'delete_history': _tns.get(_.deleteHistory),
-                                  'request_history': _tns.get(_.requestHistory),
-                                  'password_submit': _tns.get(_.passwordSubmit),
-                                  'contact_submit': _tns.get(_.contactSubmit),
-                                  'previous': _tns.get(_.previous),
-                                  'next': _tns.get(_.next),
-                                  'clear_statistics': _tns.get(_.clearStatistics),
-                                  'go_home': _tns.get(_.letsGoHome),
-                                  'count_of_posts': _tns.get(_.countOfPosts),
-                                  'default_view': _tns.get(_.defaultView),
-                                  'report': _tns.get(_.report),
-                                  'opinion_barometer': _tns.get(_.opinionBarometer),
-                                  'edit_statement': _tns.get(_.editTitle),
-                                  'save_my_statement': _tnd.get(_.saveMyStatement),
-                                  'share_url': _tns.get(_.shareUrl),
-                                  'positions': _tns.get(_.positions),
-                                  'labels': _tns.get(_.labels),
-                                  'my_statements': _tns.get(_.myStatements),
-                                  'supports_on_my_statements': _tns.get(_.supportsOnMyStatements),
-                                  'attacks_on_my_statements': _tns.get(_.attacksOnMyStatements),
-                                  'lets_go_back': _tns.get(_.letsGoBack),
-                                  'go_back': _tns.get(_.goBack),
-                                  'go_forward': _tns.get(_.goForward),
-                                  'resume_here': _tns.get(_.resumeHere)}
+        _tn_dis = Translator(self.discussion_lang)
+        _tn_sys = Translator(self.system_lang)
+        return_dict['buttons'] = {'show_all_arguments': _tn_sys.get(_.showAllArguments),
+                                  'show_all_users': _tn_sys.get(_.showAllUsers),
+                                  'delete_track': _tn_sys.get(_.deleteTrack),
+                                  'request_track': _tn_sys.get(_.requestTrack),
+                                  'delete_history': _tn_sys.get(_.deleteHistory),
+                                  'request_history': _tn_sys.get(_.requestHistory),
+                                  'password_submit': _tn_sys.get(_.passwordSubmit),
+                                  'contact_submit': _tn_sys.get(_.contactSubmit),
+                                  'previous': _tn_sys.get(_.previous),
+                                  'next': _tn_sys.get(_.next),
+                                  'clear_statistics': _tn_sys.get(_.clearStatistics),
+                                  'go_home': _tn_sys.get(_.letsGoHome),
+                                  'count_of_posts': _tn_sys.get(_.countOfPosts),
+                                  'default_view': _tn_sys.get(_.defaultView),
+                                  'report': _tn_sys.get(_.report),
+                                  'opinion_barometer': _tn_sys.get(_.opinionBarometer),
+                                  'save_my_statement': _tn_dis.get(_.saveMyStatement),
+                                  'share_url': _tn_sys.get(_.shareUrl),
+                                  'positions': _tn_sys.get(_.positions),
+                                  'labels': _tn_sys.get(_.labels),
+                                  'my_statements': _tn_sys.get(_.myStatements),
+                                  'supports_on_my_statements': _tn_sys.get(_.supportsOnMyStatements),
+                                  'attacks_on_my_statements': _tn_sys.get(_.attacksOnMyStatements),
+                                  'lets_go_back': _tn_sys.get(_.letsGoBack),
+                                  'go_back': _tn_sys.get(_.goBack),
+                                  'go_forward': _tn_sys.get(_.goForward),
+                                  'resume_here': _tn_sys.get(_.resumeHere)}
 
     def add_title_text(self, return_dict):
         """
@@ -404,26 +403,27 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: None
         """
-        _tn_dis = Translator(self.system_lang)
-        return_dict['title'] = {'barometer': _tn_dis.get(_.opinionBarometer),
-                                'guided_view': _tn_dis.get(_.displayControlDialogGuidedTitle),
-                                'island_view': _tn_dis.get(_.displayControlDialogIslandTitle),
-                                'graph_view': _tn_dis.get(_.displayControlDialogGraphTitle),
+        _tn_dis = Translator(self.discussion_lang)
+        _tn_sys = Translator(self.system_lang)
+        return_dict['title'] = {'barometer': _tn_sys.get(_.opinionBarometer),
+                                'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
+                                'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
+                                'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
                                 'edit_statement': _tn_dis.get(_.editTitle),
                                 'view_changelog': _tn_dis.get(_.viewChangelog),
                                 'report_statement': _tn_dis.get(_.reportStatement),
                                 'report_argument': _tn_dis.get(_.reportArgument),
                                 'delete_statement': _tn_dis.get(_.deleteStatement),
                                 'disassociate_statement': _tn_dis.get(_.disassociateStatement),
-                                'finish_title': _tn_dis.get(_.finishTitle),
-                                'question_title': _tn_dis.get(_.questionTitle),
+                                'finish_title': _tn_sys.get(_.finishTitle),
+                                'question_title': _tn_sys.get(_.questionTitle),
                                 'more_title': _tn_dis.get(_.more),
                                 'add_statement_row_title': _tn_dis.get(_.addStatementRow),
                                 'rem_statement_row_title': _tn_dis.get(_.remStatementRow),
                                 'recipient': _tn_dis.get(_.recipient),
                                 'topic': _tn_dis.get(_.topicString),
                                 'message': _tn_dis.get(_.message),
-                                'reference': _tn_dis.get(_.reference),
+                                'reference': _tn_dis.get(_.reference)
                                 }
 
     def add_tag_text(self, return_dict):
@@ -433,45 +433,45 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: None
         """
-        _tnd = Translator(self.discussion_lang)
-        _tns = Translator(self.system_lang)
+        _tn_dis = Translator(self.discussion_lang)
+        _tn_sys = Translator(self.system_lang)
 
         return_dict['tag'] = {
-            'add_a_topic': _tnd.get(_.addATopic),
-            'please_enter_topic': _tnd.get(_.pleaseEnterTopic),
-            'please_enter_shorttext_for_topic': _tnd.get(_.pleaseEnterShorttextForTopic),
-            'please_select_language_for_topic': _tnd.get(_.pleaseSelectLanguageForTopic),
-            'edit_issue_view_changelog': _tnd.get(_.editIssueViewChangelog),
-            'edit_title_here': _tnd.get(_.editTitleHere),
-            'edit_info_here': _tnd.get(_.editInfoHere),
-            'edit_statement_here': _tnd.get(_.editStatementHere),
-            'sys_save': _tnd.get(_.save),
-            'sys_cancel': _tnd.get(_.cancel),
-            'save': _tnd.get(_.save),
-            'cancel': _tnd.get(_.cancel),
-            'submit': _tnd.get(_.submit),
-            'delete': _tnd.get(_.delete),
-            'close': _tnd.get(_.close),
-            'url_sharing': _tnd.get(_.urlSharing),
-            'url_sharing_description': _tnd.get(_.urlSharingDescription),
-            'fetchurl': _tnd.get(_.fetchLongUrl),
-            'warning': _tnd.get(_.warning),
-            'island_view_for': _tnd.get(_.islandViewFor),
+            'add_a_topic': _tn_dis.get(_.addATopic),
+            'please_enter_topic': _tn_dis.get(_.pleaseEnterTopic),
+            'please_enter_shorttext_for_topic': _tn_dis.get(_.pleaseEnterShorttextForTopic),
+            'please_select_language_for_topic': _tn_dis.get(_.pleaseSelectLanguageForTopic),
+            'edit_issue_view_changelog': _tn_dis.get(_.editIssueViewChangelog),
+            'edit_title_here': _tn_dis.get(_.editTitleHere),
+            'edit_info_here': _tn_dis.get(_.editInfoHere),
+            'edit_statement_here': _tn_dis.get(_.editStatementHere),
+            'sys_save': _tn_dis.get(_.save),
+            'sys_cancel': _tn_dis.get(_.cancel),
+            'save': _tn_dis.get(_.save),
+            'cancel': _tn_dis.get(_.cancel),
+            'submit': _tn_dis.get(_.submit),
+            'delete': _tn_dis.get(_.delete),
+            'close': _tn_dis.get(_.close),
+            'url_sharing': _tn_dis.get(_.urlSharing),
+            'url_sharing_description': _tn_dis.get(_.urlSharingDescription),
+            'fetchurl': _tn_dis.get(_.fetchLongUrl),
+            'warning': _tn_dis.get(_.warning),
+            'island_view_for': _tn_dis.get(_.islandViewFor),
             'language': self.discussion_lang,
-            'aand': _tnd.get(_.aand),
-            'add_premise_title': _tnd.get(_.addPremiseRadioButtonText),
-            'arguments': _tnd.get(_.arguments),
-            'error': _tnd.get(_.error),
-            'forgot_input_radio': _tnd.get(_.forgotInputRadio),
-            'i_actually_have': _tnd.get(_.iActuallyHave),
-            'insert_one_argument': _tnd.get(_.insertOneArgument),
-            'insert_dont_care': _tnd.get(_.insertDontCare),
-            'need_help_to_understand_statement': _tnd.get(_.needHelpToUnderstandStatement),
-            'set_premisegroups_intro1': _tnd.get(_.setPremisegroupsIntro1),
-            'set_premisegroups_intro2': _tnd.get(_.setPremisegroupsIntro2),
-            'placeholder_nickname': _tnd.get(_.exampleNickname),
-            'placeholder_password': _tnd.get(_.examplePassword),
-            'placeholder_firstname': _tnd.get(_.exampleFirstname),
-            'placeholder_lastname': _tnd.get(_.exampleLastname),
-            'placeholder_mail': _tnd.get(_.exampleMail)
+            'aand': _tn_dis.get(_.aand),
+            'add_premise_title': _tn_dis.get(_.addPremiseRadioButtonText),
+            'arguments': _tn_dis.get(_.arguments),
+            'error': _tn_dis.get(_.error),
+            'forgot_input_radio': _tn_dis.get(_.forgotInputRadio),
+            'i_actually_have': _tn_dis.get(_.iActuallyHave),
+            'insert_one_argument': _tn_dis.get(_.insertOneArgument),
+            'insert_dont_care': _tn_dis.get(_.insertDontCare),
+            'need_help_to_understand_statement': _tn_dis.get(_.needHelpToUnderstandStatement),
+            'set_premisegroups_intro1': _tn_dis.get(_.setPremisegroupsIntro1),
+            'set_premisegroups_intro2': _tn_dis.get(_.setPremisegroupsIntro2),
+            'placeholder_nickname': _tn_dis.get(_.exampleNickname),
+            'placeholder_password': _tn_dis.get(_.examplePassword),
+            'placeholder_firstname': _tn_dis.get(_.exampleFirstname),
+            'placeholder_lastname': _tn_dis.get(_.exampleLastname),
+            'placeholder_mail': _tn_dis.get(_.exampleMail)
         }
