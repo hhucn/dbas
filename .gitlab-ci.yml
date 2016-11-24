@@ -24,9 +24,16 @@ flake8:
 unit-test:
   stage: test
   script:
-    - make nosetests
+    - nosetests -v -w $(pwd) dbas graph admin api export
 
 function-test:
   stage: test
   script:
     - python tests/splinterTests.py --no-input
+  allow_failure: true
+
+nose-acceptance-tests:
+  stage: test
+  script:
+    - nosetests --process-timeout=120 tests/test_frontend
+  allow_failure: true # Until the tests are fine remotely 
