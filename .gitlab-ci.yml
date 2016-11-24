@@ -36,4 +36,4 @@ nose-acceptance-tests:
   stage: test
   script:
     - nosetests --process-timeout=120 tests/test_frontend
-  allow_failure: true # Until the tests are fine remotely 
+  allow_failure: true # Until the tests are fine remotely
