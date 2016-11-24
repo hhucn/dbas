@@ -400,15 +400,16 @@ function DiscussionGraph() {
     function createArrows(svg, edgesTypeArrow) {
         return svg.append("defs").selectAll('marker').data(edgesTypeArrow)
             .enter().append("svg:marker")
-            .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
-                   refX: function(d){
-                       return 6+calculateNodeSize(d.target)/2;
-                   },
-                   refY: 0,
-                   markerWidth: 10, markerHeight: 10,
-                   viewBox: '0 -5 10 10',
-                   orient: "auto",
-                   fill: function(d) { return d.color; }
+            .attr({
+                id: function(d) { return "marker_" + d.edge_type + d.id; },
+                    refX: function(d){
+                        return 6 + calculateNodeSize(d.target)/2;
+                    },
+                    refY: 0,
+                    markerWidth: 10, markerHeight: 10,
+                    viewBox: '0 -5 10 10',
+                    orient: "auto",
+                    fill: function(d) { return d.color; }
             })
             .append("svg:path")
             .attr("d", "M0,-3L7,0L0,3");
@@ -481,28 +482,6 @@ function DiscussionGraph() {
                 return node.size;
         }
         return node.size;
-    }
-    
-    /**
-     * Calculates the arrow size in respect to the DOJ
-     *
-     * @param d
-     * @param rel_node_factor
-     * @returns {*}
-     */
-    function calculateArrowSize(d, rel_node_factor){
-        let id = d.target.id.replace('statement_', '');
-        if (d.target.id.indexOf('statement_') != -1 && id in rel_node_factor) {
-            // d.target.size is equal statement_size
-            // node_factor_size is a global var
-            // rel_node_factor[id] is in [0,1]
-            // target_size is the new size for the node
-            let target_size = d.target.size + node_factor_size * rel_node_factor[id];
-            
-            return target_size;
-        } else {
-            return d.target.size;
-        }
     }
 
     /**
