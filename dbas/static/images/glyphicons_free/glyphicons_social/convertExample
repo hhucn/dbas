@@ -1,1 +1,0 @@
-convert social-40-e-mail.png -fuzz 10% -fill "rgb(255,157,59)" +opaque black -fill "rgb(255,157,59)" -opaque black hover-social-40-e-mail.png

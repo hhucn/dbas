@@ -34,7 +34,7 @@
                  </div>
                 <div class="col-md-2 center inner">
                     <button id="discussion-restart-btn" class="btn btn-primary btn-sm" data-dismiss="modal" type="button" onclick="" tal:attributes="onclick extras.restart_url">
-                        <span i18n:translate="restart_discussion">Restart</span>&#160;&#160;<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                        <span i18n:translate="restart_discussion">Restart</span>&#160;&#160;<i class="fa fa-refresh" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -79,7 +79,7 @@
                                         <i class="fa fa-trash" aria-hidden="true" tal:attributes="title extras.title.delete_statement"></i>
                                     </span>
                                     <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" tal:attributes="title extras.title.report_argument">
-                                        <i class="fa fa-flag" aria-hidden="true"  tal:attributes="title extras.buttons.edit_statement"></i>
+                                        <i class="fa fa-flag" aria-hidden="true"  tal:attributes="title extras.title.edit_statement"></i>
                                     </span>
                                     <span class="triangle-reference pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" >
                                         <i class="fa fa-link" aria-hidden="true" tal:attributes="title extras.title.reference"></i>
@@ -105,7 +105,7 @@
                                 <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
                                     <div tal:omit-tag="" tal:condition="item.is_editable or item.is_flagable or item.is_deletable">
                                         <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flagable or item.is_deletable"></span>
-                                        <span class="item-edit" tal:condition="item.is_editable" tal:attributes="title extras.buttons.edit_statement">
+                                        <span class="item-edit" tal:condition="item.is_editable" tal:attributes="title extras.title.edit_statement">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </span>
                                         <span class="item-flag" tal:condition="item.is_flagable " tal:attributes="title extras.title.report_statement">
@@ -115,8 +115,8 @@
                                         <span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.disassociate_statement">
                                             <i class="fa fa-times" aria-hidden="true"></i>
                                         </span>
-                                        <span class="item-reference">
-                                            <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_flagable or item.is_deletable)" tal:attributes="title extras.title.reference"></span>
+                                        <span class="item-reference" tal:attributes="title extras.title.reference">
+                                            <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_flagable or item.is_deletable)"></span>
                                             <i class="fa fa-link" aria-hidden="true"></i>
                                         </span>
                                     </div>
@@ -299,11 +299,18 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                     <span id="add-statement-error-msg"></span>
                 </div>
                 <div id="add-statement-container-body">
-                    <input id="add-statement-container-main-input" type="text" class="add-statement-container-input form-control" name="" autocomplete="off" placeholder="..." value="" data-min-length="10"  data-max-length="160">
+
+            	<div class="form-group">
+            		<div class="col-sm-12 input-group">
+                        <div class="input-group-addon"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></div>
+            			<input id="add-statement-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="160" style="width: 100%">
+            		</div>
+            	</div>
+
                 </div>
                 <div class="list-group" id="proposal-statement-list-group"></div>
                 <input id="send-new-statement" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
@@ -321,13 +328,20 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                     <span id="add-premise-error-msg"></span>
                 </div>
                 <div id="add-premise-container-body">
                     <div class="container-three-divs" style="padding-bottom: 2em;">
                         <div class="flex-div">
-                            <input id="add-premise-container-main-input" type="text" class="add-preise-container-input form-control" name="" autocomplete="off" placeholder="..." value="" data-min-length="10" data-max-length="160">
+
+            	            <div class="form-group">
+            		            <div class="col-sm-12 input-group">
+                                    <div class="input-group-addon"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></div>
+                        			<input id="add-premise-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="160" style="width: 100%">
+            		            </div>
+            	            </div>
+
                         </div>
                         <div><img class="icon-badge icon-rem-premise" src="${request.static_url('dbas:static/images/icon_minus1.png')}" tal:attributes="title extras.title.rem_statement_row_title"/><img class="icon-badge icon-add-premise" src="${request.static_url('dbas:static/images/icon_plus1.png')}" tal:attributes="title extras.title.add_statement_row_title"/></div>
                     </div>

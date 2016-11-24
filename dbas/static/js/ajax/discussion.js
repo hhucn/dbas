@@ -285,7 +285,7 @@ function AjaxDiscussionHandler() {
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
 		var callback = $('#' + callbackid),
-			pencil = '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>',
+			pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>',
 			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
 			bubbleSpace = $('#' + discussionBubbleSpaceId),
 			csrf_token = $('#' + hiddenCSRFTokenId).val();
@@ -309,8 +309,8 @@ function AjaxDiscussionHandler() {
 						current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
-						$('.glyphicon-pencil').fadeTo('slow', 0.2, function () {
-							$('.glyphicon-pencil').fadeTo('slow', 1.0, function () {
+						$('.fa-pencil').fadeTo('slow', 0.2, function () {
+							$('.fa-pencil').fadeTo('slow', 1.0, function () {
 							});
 						});
 					}, 1000);

@@ -5,7 +5,7 @@
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-6">
 					<h4>
-                        <span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span>
+                        <i class="fa fa-user" aria-hidden="true" style="margin-right: 0.5em;"></i>
                         <span i18n:translate="public_information_of">Public Information of</span> <em id="public_nick">${user.public_nick}</em>
                     </h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
@@ -35,7 +35,7 @@
                     </div>
 				</div>
 				<div class="col-md-6">
-                    <h4><span class="glyphicon glyphicon-stats" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
+                    <h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
 					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>

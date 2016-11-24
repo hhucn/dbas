@@ -216,7 +216,7 @@ function InteractionHandler() {
 					.append($('<td>').html( parsedData.issue.info ))
 					.append($('<td>').html( parsedData.issue.date ))
 			        .append($('<td>').append($('<a>').attr('target', '_blank').attr('href', parsedData.issue.public_url).text(parsedData.issue.author)))
-			        .append($('<td>').append( $('<a>').attr('href', '#').attr('class' , 'btn btn-info btn-lg').append($('<span>').attr('class', 'glyphicon glyphicon-edit'))));
+			        .append($('<td>').append( $('<a>').attr('href', '#').attr('class' , 'btn btn-info btn-lg').append($('<i>').attr('class', 'fa fa-pencil-square-o'))));
            	 space.append(tr);
 		} else {
 			$('#popup-add-topic-error-text').text(parsedData.error);
