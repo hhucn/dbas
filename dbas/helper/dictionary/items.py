@@ -56,9 +56,9 @@ class ItemDictHelper(object):
         :return:
         """
         db_statements = get_not_disabled_statement_as_query()
-        db_statements = db_statements\
-            .filter(and_(Statement.is_startpoint == True, Statement.issue_uid == self.issue_uid))\
-            .join(TextVersion, TextVersion.uid == Statement.textversion_uid).all()
+        db_statements = db_statements.filter(and_(Statement.is_startpoint == True,
+                                                  Statement.issue_uid == self.issue_uid)).all()
+
         uids = RecommenderSystem.get_uids_of_best_positions(db_statements)  # TODO # 166
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
