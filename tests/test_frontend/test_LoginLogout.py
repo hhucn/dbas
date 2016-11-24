@@ -5,6 +5,8 @@ logout_url = ROOT + '/ajax_user_logout'
 
 
 class TestLoginLogout:
+    _multiprocess_can_split_ = False  # test 01 needs to be run before 02 -> meh
+
     def setup(self):
         self.browser = Browser(BROWSER)
         self.browser.driver.set_window_size(1920, 1080)
@@ -27,6 +29,5 @@ class TestLoginLogout:
         assert_true(self.browser.is_text_present('Pascal'), 'There is no \'Pascal\' on the side')
 
     def test_02_logout(self):
-        # self.test_right_login()
         self.browser.visit(logout_url)
         assert_false(self.browser.is_text_present('Pascal'), 'String \'Pascal\' present')

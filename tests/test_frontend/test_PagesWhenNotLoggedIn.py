@@ -3,6 +3,7 @@ from . import *
 ROOT = 'http://localhost:4284'
 error_text = 'test string not present on website'
 browser = Browser(BROWSER)
+_multiprocess_can_split_ = False
 
 
 def setup():

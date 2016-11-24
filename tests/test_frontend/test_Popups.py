@@ -1,7 +1,7 @@
 from tests.test_frontend import *
-from selenium.webdriver.support.wait import WebDriverWait
 from time import sleep
 
+_multiprocess_can_split_ = False
 browser = Browser(BROWSER)
 
 
