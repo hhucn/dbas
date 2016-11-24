@@ -30,6 +30,7 @@ function DiscussionGraph() {
     var other_size = 9; // base node size
     var issue_size = 10; // node size of the issue
     var doj_factor_size = 10; // additional size for the doj, which is in [0,1]
+    var doj_data;
 
     /**
      * Displays a graph of current discussion
@@ -146,7 +147,7 @@ function DiscussionGraph() {
     this.getD3Graph = function(jsonData){
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
-        var doj_data = 'doj' in jsonData && 'dojs' in jsonData.doj ? jsonData.doj.dojs : {};
+        doj_data = 'doj' in jsonData && 'dojs' in jsonData.doj ? jsonData.doj.dojs : {};
         
         // height of the header ( offset per line count)
         var offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
@@ -341,6 +342,7 @@ function DiscussionGraph() {
     
     /**
      * Sets the color in the json Data
+     *
      * @param jsonData: dict with data for nodes and edges
      */
     function setNodeColorsForData(jsonData){
@@ -400,8 +402,8 @@ function DiscussionGraph() {
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
                    refX: function(d){
                        if(d.target.label === ''){ return statement_size; }
-                       else if(d.target.id === 'issue'){ return issue_size; }
-                       else{ return other_size; }},
+                       else if(d.target.id === 'issue'){ return calculateNodeSize(d.target, doj_data) + 2; }
+                       else{ return calculateNodeSize(d.target, doj_data) + 3; }},
                    refY: 0,
                    markerWidth: 10, markerHeight: 10,
                    viewBox: '0 -5 10 10',
