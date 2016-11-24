@@ -147,8 +147,8 @@ function DiscussionGraph() {
     this.getD3Graph = function(jsonData){
         let container = $('#' + graphViewContainerSpaceId);
         container.empty();
-        rel_node_factor = 'node_doj_factors' in jsonData? jsonData.node_doj_factors : {};
-        // rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
+        //rel_node_factor = 'node_doj_factors' in jsonData? jsonData.node_doj_factors : {};
+        rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
         
         // height of the header ( offset per line count)
         let offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
@@ -402,9 +402,8 @@ function DiscussionGraph() {
             .enter().append("svg:marker")
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
                    refX: function(d){
-                       if(d.target.label === ''){ return statement_size; }
-                       else if(d.target.id === 'issue'){ return issue_size; }
-                       else{ return calculateArrowSize(d, rel_node_factor); }},
+                       return 6+calculateNodeSize(d.target)/2;
+                   },
                    refY: 0,
                    markerWidth: 10, markerHeight: 10,
                    viewBox: '0 -5 10 10',
