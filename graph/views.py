@@ -10,7 +10,7 @@ import dbas.helper.issue as IssueHelper
 from cornice import Service
 
 from dbas.logger import logger
-from graph.lib import get_d3_data, get_doj_data
+from graph.lib import get_d3_data, get_doj_data, get_opinion_data
 
 # =============================================================================
 # SERVICES - Define services for several actions of D-BAS
@@ -33,6 +33,7 @@ def get_d3_dump(request):
     issue = IssueHelper.get_issue_id(request)
 
     return_dict = get_d3_data(issue, request.authenticated_userid)
-    return_dict.update({'doj': get_doj_data(issue)})
+    return_dict.update({'node_doj_factors': get_doj_data(issue)})
+    return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
 
     return json.dumps(return_dict, True)
