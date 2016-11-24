@@ -13,6 +13,7 @@ class TestLoginLogout:
         self.browser.visit(ROOT)
 
     def teardown(self):
+        self.browser.driver.service.process.send_signal(15)
         self.browser.quit()
 
     def test_wrong_login(self):

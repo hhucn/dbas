@@ -7,10 +7,13 @@ browser = None
 def setup_func():
     global browser
     browser = Browser(BROWSER)
+    browser.driver.implicitly_wait(10)
+    browser.driver.set_window_size(1920, 1080)
     browser.visit(ROOT + '/contact')
 
 
 def teardown_func():
+    browser.driver.service.process.send_signal(15)
     browser.quit()
 
 

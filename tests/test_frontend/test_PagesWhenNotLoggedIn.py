@@ -7,16 +7,18 @@ _multiprocess_can_split_ = False
 
 
 def setup():
-    browser.visit(ROOT)
-    # TODO switch explicit to english
+    browser.driver.implicitly_wait(10)
+    browser.driver.set_window_size(1920, 1080)
 
 
 def teardown():
+    browser.driver.service.process.send_signal(15)
     browser.quit()
 
 
 def test_main_page():
     browser.visit(ROOT + '/')
+    # TODO use assert_in with browser.driver.page_source
     assert_true(browser.is_text_present('part of the graduate school'), error_text)
 
 
