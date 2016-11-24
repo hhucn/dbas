@@ -29,8 +29,8 @@ function DiscussionGraph() {
     var statement_size = 6; // base node size of an statement
     var other_size = 9; // base node size
     var issue_size = 10; // node size of the issue
-    var doj_factor_size = 10; // additional size for the doj, which is in [0,1]
-    var doj_data;
+    var node_factor_size = 10; // additional size for the doj, which is in [0,1]
+    var rel_node_factor;
 
     /**
      * Displays a graph of current discussion
@@ -147,7 +147,8 @@ function DiscussionGraph() {
     this.getD3Graph = function(jsonData){
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
-        doj_data = 'doj' in jsonData && 'dojs' in jsonData.doj ? jsonData.doj.dojs : {};
+        rel_node_factor = 'node_doj_factors' in jsonData? jsonData.node_doj_factors : {};
+        // rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
         
         // height of the header ( offset per line count)
         var offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
@@ -176,7 +177,7 @@ function DiscussionGraph() {
 
         // node
         var node = createNodes(svg, force, drag);
-        var circle = setNodeProperties(node, doj_data);
+        var circle = setNodeProperties(node);
 
         // tooltip
         // rect as background of label
@@ -402,8 +403,8 @@ function DiscussionGraph() {
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
                    refX: function(d){
                        if(d.target.label === ''){ return statement_size; }
-                       else if(d.target.id === 'issue'){ return calculateNodeSize(d.target, doj_data) + 2; }
-                       else{ return calculateNodeSize(d.target, doj_data) + 3; }},
+                       else if(d.target.id === 'issue'){ return issue_size; }
+                       else{ return calculateArrowSize(d, rel_node_factor); }},
                    refY: 0,
                    markerWidth: 10, markerHeight: 10,
                    viewBox: '0 -5 10 10',
@@ -456,12 +457,11 @@ function DiscussionGraph() {
      * Define properties for nodes.
      *
      * @param node
-     * @param doj_data
      * @return circle
      */
-    function setNodeProperties(node, doj_data){
+    function setNodeProperties(node){
         return node.append("circle")
-            .attr({r: function(d){ return calculateNodeSize(d, doj_data); },
+            .attr({r: function(d){ return calculateNodeSize(d); },
                    fill: function(d){ return d.color; },
                    id: function (d) { return 'circle-' + d.id; }
             });
@@ -471,18 +471,41 @@ function DiscussionGraph() {
      * Calculates the node size in respect to the DOJ
      *
      * @param node
-     * @param doj_data
      * @returns {*}
      */
-    function calculateNodeSize(node, doj_data){
+    function calculateNodeSize(node){
         if (node.id.indexOf('statement_') != -1){
             var id = node.id.replace('statement_', '');
-            if (id in doj_data)
-                return node.size + doj_factor_size * doj_data[id];
+            if (id in rel_node_factor)
+                return node.size + node_factor_size * rel_node_factor[id];
             else
                 return node.size;
         }
         return node.size;
+    }
+    
+    /**
+     * Calculates the arrow size in respect to the DOJ
+     *
+     * @param d
+     * @param rel_node_factor
+     * @returns {*}
+     */
+    function calculateArrowSize(d, rel_node_factor){
+        let id = d.target.id.replace('statement_', '');
+        if (d.target.id.indexOf('statement_') != -1 && id in rel_node_factor) {
+            // d.target.size is equal statement_size
+            // node_factor_size is a global var
+            // rel_node_factor[id] is in [0,1]
+            // target_size is the new size for the node
+            let target_size = d.target.size + node_factor_size * rel_node_factor[id];
+            
+            console.log(d.target.id +': ' + target_size + ' (' + rel_node_factor[id] + ') ');
+            
+            return target_size;
+        } else {
+            return d.target.size;
+        }
     }
 
     /**
