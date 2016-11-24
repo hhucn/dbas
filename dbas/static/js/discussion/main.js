@@ -527,8 +527,22 @@ function Main () {
 		//$(window).load(function windowLoad() {
 		//});
 		
+		var container = $('#' + discussionContainerId);
+		var oldContainerSize = container.width();
+		var burger = $('.hamburger');
+		var wrapper = $('#dialog-wrapper');
+		
 		$(window).resize(function () {
 			new GuiHandler().setMaxHeightForBubbleSpace();
+			
+			// resize main container
+			var difference = oldContainerSize - container.width();
+			if (difference > 0 && burger.hasClass('open')){
+				wrapper.width(wrapper.width() - difference);
+			} else if (difference < 0 && burger.hasClass('open')){
+				wrapper.width(wrapper.width() - difference);
+			}
+			oldContainerSize = container.width();
 		});
 	};
 	

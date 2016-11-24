@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1217.3558"
+   height="200.00003"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="software_logo_de.svg"
+   inkscape:export-filename="/home/tobias/Dokumente/svn/trunk/people/employees/krauthoff/software_logo_de.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="756.88155"
+     inkscape:cy="-86.598608"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3025"
+     showgrid="true"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1871"
+     inkscape:window-height="1176"
+     inkscape:window-x="1969"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3016"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="0.0082080672"
+       originy="-0.0096436226" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0.00820702,-852.35253)">
+    <path
+       style="fill:#006abf;fill-opacity:0.94117647"
+       d="m 75.211928,852.35253 c -38.348001,9.84698 -68.7986681,42.48195 -74.33700706,84.75744 -4.05667774,30.96561 6.11196196,60.54104 25.37269806,81.99673 3.263214,-10.1651 12.648957,-17.5163 23.747846,-17.5163 2.564616,0 5.045108,0.382 7.374331,1.1106 l 23.185397,-35.92116 c -3.473409,-4.35975 -5.561996,-9.91661 -5.561996,-15.96144 0,-11.3667 7.356885,-20.97684 17.498413,-24.21188 l 0,-53.12016 C 83.286441,870.55001 76.40963,862.3396 75.211928,852.35253 Z m 49.558002,0.15866 c -1.25066,9.9162 -8.12254,18.05414 -17.27968,20.97517 l 0,53.12016 c 1.93243,0.61643 3.7697,1.45877 5.46825,2.50687 l 0.0312,0 27.93497,-22.21273 c -0.6012,-2.18136 -0.93737,-4.47794 -0.93737,-6.85422 0,-14.02029 11.19187,-25.38598 24.99773,-25.38598 0.30524,0 0.60359,0.0207 0.90617,0.0317 -11.53894,-10.32985 -25.50553,-18.09144 -41.12127,-22.181 z m -84.773558,42.45805 c 8.28352,0 14.99864,6.81942 14.99864,15.23159 0,8.41218 -6.71512,15.23159 -14.99864,15.23159 -8.283519,0 -14.998639,-6.81941 -14.998639,-15.23159 0,-8.41217 6.71512,-15.23159 14.998639,-15.23159 z m 149.392698,10.63038 c -2.49566,11.34697 -12.47822,19.8328 -24.40404,19.8328 -5.99972,0 -11.5027,-2.16551 -15.81106,-5.74358 l -26.31012,20.91171 c 1.35827,3.12932 2.12481,6.57841 2.12481,10.21785 0,3.56493 -0.72491,6.949 -2.03106,10.02747 l 41.93369,43.94943 c 3.58786,-2.0217 7.69869,-3.2049 12.09266,-3.2049 3.10504,0 6.06869,0.5993 8.8117,1.6501 6.79411,-11.49559 11.45763,-24.5642 13.31129,-38.71367 2.74725,-20.97042 -1.01556,-41.31286 -9.71787,-58.92721 z m -76.30558,66.8286 c -3.80856,2.38352 -8.29055,3.77616 -13.09256,3.77616 -2.405827,0 -4.735195,-0.33952 -6.936871,-0.9837 l -23.341633,36.17502 c 3.298057,4.3014 5.280771,9.7068 5.280771,15.5807 0,7.7324 -3.41087,14.6371 -8.780453,19.2933 6.548208,2.4027 13.418634,4.1474 20.591882,5.1407 24.357214,3.3727 47.830904,-2.4758 67.025174,-14.8826 -1.18268,-2.9514 -1.84359,-6.1685 -1.84359,-9.5514 0,-3.9942 0.91274,-7.7763 2.53102,-11.1382 l -41.43374,-43.40998 z"
+       id="path2987"
+       inkscape:connector-curvature="0" />
+    <g
+       id="g3017">
+      <g
+         id="g3025"
+         transform="translate(0,6.2469693)">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:43.75px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#006abf;fill-opacity:0.94117647;stroke:none"
+           x="229.35277"
+           y="983.46045"
+           id="text3873-8"
+           sodipodi:linespacing="125%"
+           transform="scale(0.98903643,1.0110851)"><tspan
+             sodipodi:role="line"
+             x="229.35277"
+             y="983.46045"
+             id="tspan3898"
+             style="font-size:50px">Dialog-Basiertes Argumentationssystem</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:81.25px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#006abf;fill-opacity:0.94117647;stroke:none"
+           x="234.41425"
+           y="900.19598"
+           id="text3873"
+           sodipodi:linespacing="125%"
+           transform="scale(0.95237333,1.0500084)"><tspan
+             sodipodi:role="line"
+             id="tspan3875"
+             x="234.41425"
+             y="900.19598">D-BAS</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>

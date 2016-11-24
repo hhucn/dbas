@@ -20,11 +20,16 @@ function DiscussionGraph() {
     var dark_red = '#D32F2F';
     var dark_green = '#689F38';
     var dark_blue = '#1976D2';
-    var font_size = 14;
-    var line_height = 1.5;
-    var box_sizes = {};
-    var node_id_prefix = 'node_';
-    var old_scale = 1.0;
+    var light_grey = '#848484';
+    var font_size = 14; // needed for rescaling
+    var line_height = 1.5; // needed for rescaling
+    var box_sizes = {}; // needed for rescaling
+    var node_id_prefix = 'node_'; // needed for rescaling
+    var old_scale = 1.0; // needed for rescaling
+    var statement_size = 6; // base node size of an statement
+    var other_size = 9; // base node size
+    var issue_size = 10; // node size of the issue
+    var doj_factor_size = 10; // additional size for the doj, which is in [0,1]
 
     /**
      * Displays a graph of current discussion
@@ -141,6 +146,7 @@ function DiscussionGraph() {
     this.getD3Graph = function(jsonData){
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
+        var doj_data = 'doj' in jsonData && 'dojs' in jsonData.doj ? jsonData.doj.dojs : {};
         
         // height of the header ( offset per line count)
         var offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
@@ -169,7 +175,7 @@ function DiscussionGraph() {
 
         // node
         var node = createNodes(svg, force, drag);
-        var circle = setNodeProperties(node);
+        var circle = setNodeProperties(node, doj_data);
 
         // tooltip
         // rect as background of label
@@ -210,10 +216,12 @@ function DiscussionGraph() {
             label.attr("transform", function (d) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";});
         }
-
+        
         //////////////////////////////////////////////////////////////////////////////
         // highlight nodes and edges
         addListenerForNodes(circle, edges);
+
+        addListenerForBackgroundOfNodes(edges);
     };
 
     /**
@@ -270,7 +278,7 @@ function DiscussionGraph() {
                     if (id.indexOf('statement') != -1 || id.indexOf('issue') != -1) {
                         $('#label-' + id).css({
                             'font-size': font_size / zoom_scale + 'px',
-                            'line-height': line_height / zoom_scale,
+                            'line-height': line_height / zoom_scale
                         });
                         var width = box_sizes[id].width / zoom_scale;
                         var height = box_sizes[id].height / zoom_scale;
@@ -337,7 +345,10 @@ function DiscussionGraph() {
      */
     function setNodeColorsForData(jsonData){
         jsonData.nodes.forEach(function(e) {
-            e.color = e.type === 'position' ? blue : e.type === 'statement' ? yellow : black;
+            if (e.type === 'position')       e.color = blue;
+            else if (e.type === 'statement') e.color = yellow;
+            else if (e.type === 'issue')     e.color = light_grey;
+            else                             e.color = black;
         });
     }
     
@@ -388,9 +399,9 @@ function DiscussionGraph() {
             .enter().append("svg:marker")
             .attr({id: function(d) { return "marker_" + d.edge_type + d.id; },
                    refX: function(d){
-                             if(d.target.label === ''){ return 6; }
-                             else if(d.target.id === 'issue'){ return 10; }
-                             else{ return 9; }},
+                       if(d.target.label === ''){ return statement_size; }
+                       else if(d.target.id === 'issue'){ return issue_size; }
+                       else{ return other_size; }},
                    refY: 0,
                    markerWidth: 10, markerHeight: 10,
                    viewBox: '0 -5 10 10',
@@ -443,14 +454,33 @@ function DiscussionGraph() {
      * Define properties for nodes.
      *
      * @param node
+     * @param doj_data
      * @return circle
      */
-    function setNodeProperties(node){
+    function setNodeProperties(node, doj_data){
         return node.append("circle")
-            .attr({r: function(d){ return d.size; },
+            .attr({r: function(d){ return calculateNodeSize(d, doj_data); },
                    fill: function(d){ return d.color; },
                    id: function (d) { return 'circle-' + d.id; }
             });
+    }
+    
+    /**
+     * Calculates the node size in respect to the DOJ
+     *
+     * @param node
+     * @param doj_data
+     * @returns {*}
+     */
+    function calculateNodeSize(node, doj_data){
+        if (node.id.indexOf('statement_') != -1){
+            var id = node.id.replace('statement_', '');
+            if (id in doj_data)
+                return node.size + doj_factor_size * doj_data[id];
+            else
+                return node.size;
+        }
+        return node.size;
     }
 
     /**
@@ -537,6 +567,7 @@ function DiscussionGraph() {
      */
     function addListenerForNodes(circle, edges){
         var selectedCircleId;
+
         circle.on("click", function(d)
         {
             // distinguish between click and drag event
@@ -552,14 +583,27 @@ function DiscussionGraph() {
     }
 
     /**
+     * Make whole graph visible if background of graph is clicked.
+     *
+     * @param edges
+     */
+    function addListenerForBackgroundOfNodes(edges) {
+        $(document).on("click", function (d) {
+            if(d.target.id.indexOf("circle") === -1){
+                highlightAllElements(edges);
+            }
+        });
+    }
+
+    /**
      * Create legend and update legend.
      */
     function createLegend(){
         // labels and colors for legend
         var legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")],
             legendLabelRect = [_t_discussion("support"), _t_discussion("attack")],
-            legendColorCircle = ["#3D5AFE", "#3D5AFE", "#FFC107"],
-            legendColorRect = ["#64DD17", "#F44336"];
+            legendColorCircle = [light_grey, blue, yellow],
+            legendColorRect = [green, red];
 
         // set properties for legend
         return d3.svg.legend = function() {
@@ -585,9 +629,7 @@ function DiscussionGraph() {
         .data(legendLabelCircle)
         .enter().append("circle")
         .attr({fill: function (d,i) {return legendColorCircle[i];},
-               r: function (d,i) {
-                   if(i === 0) { return 8; }
-                   else { return 6; }},
+               r: function (d,i) { return statement_size; },
                cy: function (d,i) {return i*40;}});
     }
 
@@ -766,10 +808,8 @@ function DiscussionGraph() {
             isAttackVisible = false;
         }
 
-        // highlight all elements of graph
-        edges.forEach(function(d){
-            highlightElements(d);
-        });
+        highlightAllElements(edges);
+
         // delete border of nodes
         force.nodes().forEach(function(d) {
             d3.select('#circle-' + d.id).attr('stroke', 'none');
@@ -779,6 +819,17 @@ function DiscussionGraph() {
         $('#hide-my-statements').hide();
     }
 
+    /**
+     * Highlight all elements of graph.
+     *
+     * @param edges
+     */
+    function highlightAllElements(edges) {
+        edges.forEach(function(d){
+            highlightElements(d);
+        });
+    }
+    
     /**
      * Show all supports on the statements, which the current user has created.
      *
@@ -817,10 +868,8 @@ function DiscussionGraph() {
         // if attacks are not visible, show the default view of the graph
         // else let them visible
         if(!isAttackVisible){
-            // highlight all elements of graph
-            edges.forEach(function(d){
-                highlightElements(d);
-            });
+            highlightAllElements(edges);
+
             // delete border of nodes
             force.nodes().forEach(function(d) {
                 d3.select('#circle-' + d.id).attr('stroke', 'none');
@@ -874,10 +923,8 @@ function DiscussionGraph() {
         isAttackVisible = false;
 
         if(!isSupportVisible){
-            // highlight all elements of graph
-            edges.forEach(function(d){
-                highlightElements(d);
-            });
+            highlightAllElements(edges);
+
             // delete border of nodes
             force.nodes().forEach(function(d) {
                 d3.select('#circle-' + d.id).attr('stroke', 'none');

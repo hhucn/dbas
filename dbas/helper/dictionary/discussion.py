@@ -26,7 +26,7 @@ class DiscussionDictHelper(object):
 
         :param lang: ui_locales
         :param session_id: request.session_id
-        :param nickname: self.request.authenticated_userid
+        :param nickname: request.authenticated_userid
         :param history: history
         :param main_page: String
         :param slug: String

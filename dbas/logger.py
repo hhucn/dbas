@@ -4,6 +4,8 @@ Common python logging.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+# -*- coding: utf-8 -*-
+
 import logging
 logging.getLogger('sqlalchemy.dialects.postgresql').setLevel(logging.INFO)
 

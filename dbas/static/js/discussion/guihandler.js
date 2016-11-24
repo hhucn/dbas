@@ -22,36 +22,17 @@ function GuiHandler() {
 	this.appendAddPremiseRow = function () {
 		var body = $('#add-premise-container-body');
 		var send = $('#' + sendNewPremiseId);
-		var uid = new Date().getTime();
-		var div = $('<div>').attr('style', 'padding-bottom: 2em').addClass('container-three-divs');
-		//var div_l = $('<div>');
-		var div_m = $('<div>').addClass('flex-div');
-		var div_r = $('<div>');
-		//var h5 = $('<h5>').attr('style', 'float:left; line-height:20px; text-align:center;').text('Because...');
-		var id = 'add-premise-container-main-input-' + uid;
-		var input = $('<input>').attr('id', id)
-			.attr('type', 'text')
-			.attr('class', 'form-control')
-			.attr('autocomplete', 'off')
-			.attr('placeholder', '...')
-			.attr('data-min-length', '10')
-			.attr('data-max-length', '160');
-		var imgm = $('<img>')
-			.attr('class', 'icon-rem-premise')
-			.attr('src', mainpage + 'static/images/icon_minus1.png')
-			.attr('title', body.find('.icon-rem-premise').first().attr('title'));
-		var imgp = $('<img>')
-			.attr('class', 'icon-add-premise')
-			.attr('src', mainpage + 'static/images/icon_plus1.png')
-			.attr('title', body.find('.icon-add-premise').first().attr('title'));
+		var id = 'add-premise-container-main-input-' + new Date().getTime();
 		
-		// div.append(div_l.append(h5))
-		div.append(div_m.append(input))
-			.append(div_r.append(imgm).append(imgp));
-		$('#' + addPremiseContainerBodyId).append(div);
-		setTextWatcherInputLength(input);
+		var copy_div = $('.container-three-divs:first').clone();
+		copy_div.find('input').attr('id', id).val('');
+		copy_div.find('.text-counter-input').remove();
+		var img_plus = copy_div.find('.icon-add-premise');
+		var img_minus = copy_div.find('.icon-rem-premise');
+		$('#' + addPremiseContainerBodyId).append(copy_div);
+		setTextWatcherInputLength(copy_div.find('input'));
 		
-		imgp.click(function () {
+		img_plus.click(function () {
 			new GuiHandler().appendAddPremiseRow();
 			$(this).hide().prev().show(); // hide +, show -
 			send.val(_t(saveMyStatements));
@@ -75,7 +56,7 @@ function GuiHandler() {
 				}
 			});
 		});
-		imgm.show();
+		img_minus.show();
 		
 		// add fuzzy search
 		$('#' + id).keyup(function () {
@@ -158,6 +139,17 @@ function GuiHandler() {
 	};
 	
 	/**
+	 *
+	 * @param resize
+	 */
+	this.setMaxHeightForDiscussionContainer = function(resize){
+		var maincontainer = $('#' + discussionContainerId);
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		maincontainer.css('max-height', maincontainer.outerHeight() + resize + 'px');
+		sidebarwrapper.css('height', maincontainer.outerHeight() + 'px');
+	};
+	
+	/**
 	 * Sets the maximal height for the bubble space. If needed, a scrollbar will be displayed.
 	 */
 	this.setMaxHeightForBubbleSpace = function () {
@@ -167,6 +159,7 @@ function GuiHandler() {
 		var maxHeight = this.getMaxSizeOfDiscussionViewContainer();
 		var start;
 		var nowBubble = speechBubbles.find('*[id*=now]');
+		var oldSize = speechBubbles.height();
 		$.each(speechBubbles.find('div p'), function () {
 			height += $(this).outerHeight(true);
 			// clear unnecessary a tags
@@ -198,13 +191,14 @@ function GuiHandler() {
 				allowPageScroll: true
 			});
 		} else {
-			height += 20;
+			height += 30;
 			if (height < 50)
 				speechBubbles.css('min-height', '100px');
 			else
 				speechBubbles.css('height', height + 'px').css('min-height', '300px');
 			speechBubbles.css('min-height', '100px').css('max-height', maxHeight + 'px');
 		}
+		return speechBubbles.height() - oldSize;
 	};
 	
 	/**

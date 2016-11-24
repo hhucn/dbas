@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-10-25 10:34+0200\n"
+"POT-Creation-Date: 2016-11-17 10:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,11 @@ msgstr ""
 #. Default: Admin
 #: ././templates/table.pt:24
 msgid "Admin"
+msgstr ""
+
+#. Default: Error
+#: ././templates/admin.pt:14 ././templates/admin.pt:50
+msgid "error"
 msgstr ""
 
 #. Default: You have no rights for this page!
@@ -41,14 +46,14 @@ msgstr ""
 msgid "keep_me_logged_in"
 msgstr ""
 
-#. Default: Error:
-#: ././templates/admin.pt:50
-msgid "error"
-msgstr ""
-
 #. Default: Log In
 #: ././templates/admin.pt:54
 msgid "login"
+msgstr ""
+
+#. Default: Caution
+#: ././templates/admin.pt:67
+msgid "caution"
 msgstr ""
 
 #. Default: Every edit and/or delete operation can have far-reaching

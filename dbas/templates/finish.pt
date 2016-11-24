@@ -18,7 +18,7 @@
 
                         <div class="col-md-7">
                             <h5>
-                                <span class="glyphicon glyphicon-stats" aria-hidden="true" style="margin-right: 0.5em;"></span>
+                                <i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i>
                                 <span i18n:translate="todays_summary">Todays Summary</span>
                             </h5>
 					        <table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
@@ -29,6 +29,10 @@
 					        	<tr>
 					        		<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
 					        		<td id="edits-done-count" style="text-align: right">${summary.edits_done}</td>
+					        	</tr>
+					        	<tr>
+					        		<td><span class="lead" i18n:translate="statements_reported">Statements reported</span></td>
+					        		<td id="edits-done-count" style="text-align: right">${summary.statements_reported}</td>
 					        	</tr>
 					        	<tr>
 					        		<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>

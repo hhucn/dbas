@@ -285,7 +285,7 @@ function AjaxDiscussionHandler() {
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
 		var callback = $('#' + callbackid),
-			pencil = '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>',
+			pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>',
 			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
 			bubbleSpace = $('#' + discussionBubbleSpaceId),
 			csrf_token = $('#' + hiddenCSRFTokenId).val();
@@ -309,8 +309,8 @@ function AjaxDiscussionHandler() {
 						current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
-						$('.glyphicon-pencil').fadeTo('slow', 0.2, function () {
-							$('.glyphicon-pencil').fadeTo('slow', 1.0, function () {
+						$('.fa-pencil').fadeTo('slow', 0.2, function () {
+							$('.fa-pencil').fadeTo('slow', 1.0, function () {
 							});
 						});
 					}, 1000);
@@ -318,7 +318,9 @@ function AjaxDiscussionHandler() {
 					$('#current_' + tmpid).html(value + '...' + pencil);
 				}
 			}
-			new GuiHandler().setMaxHeightForBubbleSpace();
+			var gh = new GuiHandler();
+			var resize = gh.setMaxHeightForBubbleSpace();
+			gh.setMaxHeightForDiscussionContainer(resize);
 		}
 
 		$.ajax({
@@ -335,7 +337,7 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
 		}).fail(function ajaxGetAllUsersFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			//new Helper().delay(function ajaxGetAllUsersFailDelay() {
+			//setTimout(function ajaxGetAllUsersFailDelay() {
 			//	new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
 			//			+ _t(doNotHesitateToContact) + '. ');
 			//}, 350);
@@ -362,7 +364,7 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxRevokeContentDone(data) {
-			new InteractionHandler().callbackIfDoneRevokeContent(data, is_argument);
+			new InteractionHandler().callbackIfDoneRevokeContent(data);
 		}).fail(function ajaxRevokeContentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			new PopupHandler().hideAndClearUrlSharingPopup();

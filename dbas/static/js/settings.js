@@ -47,7 +47,7 @@ function HistoryHandler(){
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url, helper = new Helper();
+		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url;
 		tElement = ['', ''];
 		tableElement = $('<table>');
 		tableElement
@@ -256,8 +256,8 @@ function StatisticsHandler(){
 		}
 		table.append(tr);
 
-		span_up = $('<span>').addClass('glyphicon').addClass('glyphicon glyphicon-thumbs-up').attr('aria-hidden', 'true');
-		span_down = $('<span>').addClass('glyphicon').addClass('glyphicon glyphicon-thumbs-down').attr('aria-hidden', 'true');
+		span_up = $('<i>').addClass('fa').addClass('fa-thumbs-o-up').attr('aria-hidden', 'true');
+		span_down = $('<i>').addClass('fa').addClass('fa-thumbs-o-down').attr('aria-hidden', 'true');
 
 		$.each(parsedData, function callbackGetStatisticsDoneTableEach(key, val) {
 			tr = $('<tr>')
