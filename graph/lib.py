@@ -98,7 +98,7 @@ def get_opinion_data(issue):
         db_votes = len(db_all_votes.filter(and_(VoteStatement.statement_uid == statement.uid,
                                                 VoteStatement.is_up_vote == True,
                                                 VoteStatement.is_valid == True)).all())
-        ret_dict[str(statement.uid)] = db_votes / db_seen
+        ret_dict[str(statement.uid)] = (db_votes / db_seen) if db_seen != 0 else 1
 
     return ret_dict
 
