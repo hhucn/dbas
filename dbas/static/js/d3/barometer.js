@@ -72,6 +72,7 @@ function DiscussionBarometer(){
 
         try{
             jsonData = JSON.parse(data);
+            console.log(jsonData);
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             alert('parsing-json: ' + e);
@@ -120,7 +121,7 @@ function DiscussionBarometer(){
             }
             i++;
         });
-    };
+    }
 
     /**
      * Create barometer.
@@ -168,7 +169,7 @@ function DiscussionBarometer(){
 
         // tooltip
         addListenerForTooltip(usersDict, barChartSvg, address, "rect");
-    };
+    }
 
     /**
      * Create svg-element.
@@ -190,19 +191,30 @@ function DiscussionBarometer(){
      * @param usersDict
      */
      function createXAxis(svg, width, height, usersDict){
-        // number of all users
-        var sumUsersNumber = 0;
-        $.each(usersDict, function(key, value){
-            sumUsersNumber += value.usersNumber;
-        });
+        var maxUsersNumber = getMaximum(usersDict);
 
-        var xScale = d3.scale.linear().domain([0, sumUsersNumber]).range([0, width]);
+        var xScale = d3.scale.linear().domain([0, maxUsersNumber]).range([0, width]);
 
         // create y-axis
         var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
         svg.append("g")
             .attr({id: "xAxis", transform: "translate(50," + height + ")"})
             .call(xAxis);
+    }
+
+    /**
+     * Find maximum of userNumber-values.
+     *
+     * @param usersDict
+     */
+    function getMaximum(usersDict) {
+        var maxUsersNumber = 0;
+        $.each(usersDict, function(key, value){
+            if(value.usersNumber > maxUsersNumber){
+                maxUsersNumber = value.usersNumber;
+            }
+        });
+        return maxUsersNumber;
     }
 
     /**
@@ -294,11 +306,7 @@ function DiscussionBarometer(){
             barWidth = 150;
         }
 
-        // sum of users
-        var sumUsersNumber = 0;
-        $.each(usersDict, function(key, value){
-            sumUsersNumber += value.usersNumber;
-        });
+        var maxUsersNumber = getMaximum(usersDict);
 
         barChartSvg.selectAll(selector)
             .data(usersDict)
@@ -306,7 +314,7 @@ function DiscussionBarometer(){
             .attr({
                 width: function (d) {
                     if(address === "argument" || address === "attitude"){
-                        return divideWrapperIfZero(d.usersNumber, sumUsersNumber) * width;
+                        return divideWrapperIfZero(d.usersNumber, maxUsersNumber) * width;
                     }
                     else{
                         return barWidth;
@@ -386,7 +394,7 @@ function DiscussionBarometer(){
         createLegend(usersDict);
         // tooltip
         addListenerForTooltip(usersDict, doughnutChartSvg, address, ".chart-sector");
-    };
+    }
 
     /**
      * Create svg-element.
@@ -701,7 +709,6 @@ function DiscussionBarometer(){
      * @param usersDict
      * @param index: index of bar is selected
      * @param address
-     * @param div: contains the tooltip
      */
     function createTooltipContent(usersDict, index, address){
         // append list elements to div
