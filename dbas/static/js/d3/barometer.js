@@ -734,7 +734,7 @@ function DiscussionBarometer(){
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
-            var avatarImage = $('<img>').attr({'href': e.public_profile_url, 'title': e.nickname,
+            var avatarImage = $('<img>').attr({'data-href': e.public_profile_url, 'title': e.nickname,
                 'class': 'img-circle', 'src': e.avatar_url});
             list.append(avatarImage);
         });
