@@ -58,8 +58,6 @@ function DiscussionBarometer(){
             });
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
         }
-
-        //setAnchor('barometer');
     };
 
     /**
@@ -158,7 +156,7 @@ function DiscussionBarometer(){
         }
 
         // create axis
-        if(address === 'argument'){
+        if(address === 'argument' || address === 'attitude'){
             createXAxis(barChartSvg, width, height+10, usersDict);
         }
         else{
@@ -284,7 +282,7 @@ function DiscussionBarometer(){
         // width of one bar
         // width/height - left padding to y-Axis - space between bars
         var barWidth;
-        if(address === "argument"){
+        if(address === "argument" || address === "attitude"){
             barWidth = (height - 10 - (usersDict.length-1)*10) / usersDict.length;
         }
         else{
@@ -307,7 +305,7 @@ function DiscussionBarometer(){
             .enter().append("rect")
             .attr({
                 width: function (d) {
-                    if(address === 'argument'){
+                    if(address === "argument" || address === "attitude"){
                         return divideWrapperIfZero(d.usersNumber, sumUsersNumber) * width;
                     }
                     else{
@@ -316,10 +314,7 @@ function DiscussionBarometer(){
                 },
                 // height in percent: length/seen_by = x/height
                 height: function (d) {
-                        if(address === 'attitude'){
-                            return divideWrapperIfZero(d.usersNumber, sumUsersNumber) * height;
-                        }
-                        if(address === 'argument'){
+                        if(address === "argument" || address === "attitude"){
                             return barWidth;
                         }
                         if (selector === 'inner-rect')
@@ -328,17 +323,14 @@ function DiscussionBarometer(){
                 },
                 // number of bar * width of bar + padding-left + space between to bars
                 x: function (d, i) {
-                    if(address === 'argument'){
+                    if(address === "argument" || address === "attitude"){
                         return 50;
                     }
                     return i * barWidth + 60 + i * 10;
                 },
                 // y: height - barLength, because d3 starts to draw in left upper corner
                 y: function (d, i) {
-                    if(address === 'attitude'){
-                        return height - (divideWrapperIfZero(d.usersNumber, sumUsersNumber) * height - 50);
-                    }
-                    if(address === 'argument'){
+                    if(address === "argument" || address === "attitude"){
                         return i * barWidth + 60 + i * 10;
                     }
                     if (selector === 'inner-rect')
