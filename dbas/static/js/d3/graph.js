@@ -201,7 +201,7 @@ function DiscussionGraph() {
         // buttons of sidebar
         addListenersForSidebarButtons(jsonData, label, rect, edges, force);
         // add listener to show/hide tooltip on mouse over
-        addListenerForTooltip(node, edges);
+        addListenerForTooltip(edges);
 
         force.start();
 
@@ -781,13 +781,13 @@ function DiscussionGraph() {
             showLabels(label, rect);
         });
         $('#hide-labels').click(function () {
-            hideLabels(label, rect);
+            hideLabels(label, rect, edges);
         });
         $('#show-positions').click(function () {
             showPositions();
         });
         $('#hide-positions').click(function () {
-            hidePositions();
+            hidePositions(edges);
         });
         $('#show-my-statements').click(function () {
             showMyStatements(edges, force);
@@ -830,6 +830,9 @@ function DiscussionGraph() {
         isContentVisible = true;
         label.style("display", 'inline');
         rect.style("display", 'inline');
+        // deactivate hover-effect if labels are visible
+        d3.selectAll('.node').on("mouseover", null);
+        d3.selectAll('.node').on("mouseout", null);
         $('#show-labels').hide();
         $('#hide-labels').show();
         // also show content of positions
@@ -842,13 +845,15 @@ function DiscussionGraph() {
      *
      * @param label
      * @param rect
+     * @param edges
      */
-    function hideLabels(label, rect) {
+    function hideLabels(label, rect, edges) {
         isContentVisible = false;
         label.style("display", 'none');
         rect.style("display", 'none');
         $('#show-labels').show();
         $('#hide-labels').hide();
+        addListenerForTooltip(edges);
         if (isPositionVisible) {
             setDisplayStyleOfNodes('inline');
         } else {
@@ -864,15 +869,21 @@ function DiscussionGraph() {
         isPositionVisible = true;
         // select positions
         setDisplayStyleOfNodes('inline');
+        // deactivate hover-effect if labels are visible
+        d3.selectAll('.node').on("mouseover", null);
+        d3.selectAll('.node').on("mouseout", null);
         $('#show-positions').hide();
         $('#hide-positions').show();
     }
 
     /**
      * Hide labels for positions.
+     *
+     * @param edges
      */
-    function hidePositions() {
+    function hidePositions(edges) {
         isPositionVisible = false;
+        addListenerForTooltip(edges);
         // select positions
         setDisplayStyleOfNodes('none');
         $('#show-positions').show();
@@ -1085,10 +1096,10 @@ function DiscussionGraph() {
     /**
      * Show/hide tooltips on mouse event.
      *
-     * @param circle
+     * @param edges
      */
-    function addListenerForTooltip(node, edges) {
-        node.on("mouseover", function (d) {
+    function addListenerForTooltip(edges) {
+        d3.selectAll('.node').on("mouseover", function (d) {
             d3.select('#label-' + d.id).style('display', 'inline');
             d3.select('#rect-' + d.id).style('display', 'inline');
             d3.select('#circle-' + d.id).attr('fill', '#757575');
