@@ -42,10 +42,9 @@ Then follow these steps:
     $ make init
     $ make all
 
-8. Deploy Sass::
+6. Deploy Sass::
 
     $ sass static/css/main.sass  static/css/main.css --style compressed --no-cache
-
 
 7. Start development web server::
 
@@ -69,3 +68,12 @@ List of all commands of our Makefile.
 
 * make clean
     Drop it all!
+
+
+Mac OS specifc problems you may encounter
+=========================================
+psycopg2 fails 'library not found for -lssl with on install
+-----------------------------------------------------------
+
+    $ env LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib" pip install psycopg2
+
