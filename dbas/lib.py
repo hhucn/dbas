@@ -18,7 +18,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
     VoteArgument, VoteStatement, Group
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import TextGenerator
+from dbas.strings.text_generator import tag_type
 from dbas.strings.translator import Translator, get_translation
 from sqlalchemy import and_, func
 
@@ -198,8 +198,8 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
 
     else:
         # get all pgroups and at last, the conclusion
-        sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
-        se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
+        sb = '<' + tag_type + '>' if with_html_tag else ''
+        se = '</' + tag_type + '>' if with_html_tag else ''
         doesnt_hold_because = ' ' + se + _t.get(_.doesNotHold).lower() + ' ' + _t.get(_.because).lower() + ' ' + sb
         return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
                                        start_with_intro, doesnt_hold_because, lang, minimize_on_undercut)
@@ -237,8 +237,8 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     """
     arguments = get_all_arguments_by_statement(statement_uid)
     results = list()
-    sb = ('<' + TextGenerator.tag_type + ' data-argumentation-type="position">') if color_statement else ''
-    se = ('</' + TextGenerator.tag_type + '>') if color_statement else ''
+    sb = ('<' + tag_type + ' data-argumentation-type="position">') if color_statement else ''
+    se = ('</' + tag_type + '>') if color_statement else ''
     if arguments:
         for argument in arguments:
             statement_text = get_text_for_statement_uid(statement_uid)
@@ -270,9 +270,9 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     """
     from dbas.logger import logger
     logger('x', 'x', str(arg_array))
-    tag_premise = ('<' + TextGenerator.tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
-    tag_conclusion = ('<' + TextGenerator.tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
-    tag_end = ('</' + TextGenerator.tag_type + '>') if with_html_tag else ''
+    tag_premise = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
+    tag_conclusion = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
+    tag_end = ('</' + tag_type + '>') if with_html_tag else ''
     lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     _t = Translator(lang)
 
@@ -332,14 +332,14 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
     sb_tmp = ''
-    se = '</' + TextGenerator.tag_type + '>' if with_html_tag else ''
+    se = '</' + tag_type + '>' if with_html_tag else ''
     if attack_type not in ['dont_know', 'jump']:
-        sb = '<' + TextGenerator.tag_type + '>' if with_html_tag else ''
+        sb = '<' + tag_type + '>' if with_html_tag else ''
         if colored_position:
-            sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
+            sb = '<' + tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
     else:
-        sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
-        sb_tmp = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
+        sb = '<' + tag_type + ' data-argumentation-type="argument">'
+        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">'
 
     # color_everything = attack_type == 'undercut' and False
     if attack_type not in ['dont_know', 'jump']:
@@ -408,8 +408,8 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     uid = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid
     conclusion = get_text_for_statement_uid(uid)
 
-    sb = '<{} data-argumentation-type="position">'.format(TextGenerator.tag_type) if with_html_tag else ''
-    se = '</{}>'.format(TextGenerator.tag_type) if with_html_tag else ''
+    sb = '<{} data-argumentation-type="position">'.format(tag_type) if with_html_tag else ''
+    se = '</{}>'.format(tag_type) if with_html_tag else ''
 
     because = ', ' if local_lang == 'de' else ' '
     because += get_translation(_.because, lang).lower() + ' '
@@ -492,8 +492,8 @@ def get_text_for_statement_uid(uid, colored_position=False):
             while content.endswith(('.', '?', '!')):
                 content = content[:-1]
 
-            sb = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">' if colored_position else ''
-            se = '</' + TextGenerator.tag_type + '>' if colored_position else ''
+            sb = '<' + tag_type + ' data-argumentation-type="position">' if colored_position else ''
+            se = '</' + tag_type + '>' if colored_position else ''
             return sb + content + se
 
     except (ValueError, TypeError):
