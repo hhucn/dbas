@@ -510,6 +510,33 @@ def __get_confrontation_text_for_undermine(premise, _t, start_position, start_ar
     return confrontation_text
 
 
+def __get_confrontation_text_for_undercut(lang, db_votes, _t, premise, conclusion, confrontation, supportive):
+    """
+
+    :param lang: ui_locales
+    :param db_votes:
+    :param _t:
+    :param premise:
+    :param conclusion:
+    :param confrontation:
+    :param supportive:
+    :return:
+    """
+    confrontation_text = _t.get(_.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(
+        _.otherParticipantsDontHaveOpinion)
+    confrontation_text += ' ' + premise + ', '
+    confrontation_text += (
+        _t.get(_.butTheyDoNotBelieveArgument) if supportive else _t.get(_.butTheyDoNotBelieveCounter))
+    confrontation_text += ' ' + conclusion
+    if lang == 'de':
+        confrontation_text += '. ' + _t.get(_.theyThink)
+    else:
+        confrontation_text += ', ' + _t.get(_.because).lower() + ' ' + _t.get(_.theyThink).lower()
+    confrontation_text += ' ' if lang == 'de' else ': '
+    confrontation_text += confrontation
+    return confrontation_text
+
+
 def __get_confrontation_text_for_rebut(lang, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion,
                                        confrontation, premise, conclusion, start_argument, end_tag, db_votes,
                                        color_html=[False, '']):
@@ -567,31 +594,5 @@ def __get_confrontation_text_for_rebut(lang, reply_for_argument, user_arg, user_
         confrontation_text += _t.get(_.theySay)
         confrontation_text += ' ' if lang == 'de' else ': '
         confrontation_text += confrontation
-    return confrontation_text
 
-
-def __get_confrontation_text_for_undercut(lang, db_votes, _t, premise, conclusion, confrontation, supportive):
-    """
-
-    :param lang: ui_locales
-    :param db_votes:
-    :param _t:
-    :param premise:
-    :param conclusion:
-    :param confrontation:
-    :param supportive:
-    :return:
-    """
-    confrontation_text = _t.get(_.otherParticipantsAgreeThat) if len(db_votes) > 1 else _t.get(
-        _.otherParticipantsDontHaveOpinion)
-    confrontation_text += ' ' + premise + ', '
-    confrontation_text += (
-        _t.get(_.butTheyDoNotBelieveArgument) if supportive else _t.get(_.butTheyDoNotBelieveCounter))
-    confrontation_text += ' ' + conclusion
-    if lang == 'de':
-        confrontation_text += '. ' + _t.get(_.theyThink)
-    else:
-        confrontation_text += ', ' + _t.get(_.because).lower() + ' ' + _t.get(_.theyThink).lower()
-    confrontation_text += ' ' if lang == 'de' else ': '
-    confrontation_text += confrontation
     return confrontation_text
