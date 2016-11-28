@@ -201,7 +201,7 @@ function DiscussionGraph() {
         // buttons of sidebar
         addListenersForSidebarButtons(jsonData, label, rect, edges, force);
         // add listener to show/hide tooltip on mouse over
-        addListenerForTooltip(edges);
+        addListenerForTooltip();
 
         force.start();
 
@@ -781,13 +781,13 @@ function DiscussionGraph() {
             showLabels(label, rect);
         });
         $('#hide-labels').click(function () {
-            hideLabels(label, rect, edges);
+            hideLabels(label, rect);
         });
         $('#show-positions').click(function () {
             showPositions();
         });
         $('#hide-positions').click(function () {
-            hidePositions(edges);
+            hidePositions();
         });
         $('#show-my-statements').click(function () {
             showMyStatements(edges, force);
@@ -845,15 +845,14 @@ function DiscussionGraph() {
      *
      * @param label
      * @param rect
-     * @param edges
      */
-    function hideLabels(label, rect, edges) {
+    function hideLabels(label, rect) {
         isContentVisible = false;
         label.style("display", 'none');
         rect.style("display", 'none');
         $('#show-labels').show();
         $('#hide-labels').hide();
-        addListenerForTooltip(edges);
+        addListenerForTooltip();
         if (isPositionVisible) {
             setDisplayStyleOfNodes('inline');
         } else {
@@ -878,12 +877,10 @@ function DiscussionGraph() {
 
     /**
      * Hide labels for positions.
-     *
-     * @param edges
      */
-    function hidePositions(edges) {
+    function hidePositions() {
         isPositionVisible = false;
-        addListenerForTooltip(edges);
+        addListenerForTooltip();
         // select positions
         setDisplayStyleOfNodes('none');
         $('#show-positions').show();
@@ -1095,10 +1092,8 @@ function DiscussionGraph() {
 
     /**
      * Show/hide tooltips on mouse event.
-     *
-     * @param edges
      */
-    function addListenerForTooltip(edges) {
+    function addListenerForTooltip() {
         d3.selectAll('.node').on("mouseover", function (d) {
             d3.select('#label-' + d.id).style('display', 'inline');
             d3.select('#rect-' + d.id).style('display', 'inline');
@@ -1106,7 +1101,7 @@ function DiscussionGraph() {
         }).on("mouseout", function (d) {
             d3.select('#label-' + d.id).style('display', 'none');
             d3.select('#rect-' + d.id).style('display', 'none');
-            highlightAllElements(edges);
+            d3.select('#circle-' + d.id).attr('fill', d.color);
         });
     }
 
