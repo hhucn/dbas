@@ -18,7 +18,7 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, 
     create_speechbubble_dict, get_profile_picture, get_public_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import TextGenerator
+from dbas.strings.text_generator import get_relation_text_dict_with_substitution
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from dbas.review.helper.reputation import get_reputation_of
@@ -177,11 +177,10 @@ class DictionaryHelper(object):
                     island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]
                     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_for_island).first()
                     _tn = Translator(self.discussion_lang)
-                    text_dict = TextGenerator(self.discussion_lang).get_relation_text_dict_with_substitution(False, True,
-                                                                                                             db_argument.is_supportive,
-                                                                                                             first_conclusion=_tn.get(
-                                                                                                                 _.myPosition),
-                                                                                                             attack_type=attack)
+                    text_dict = get_relation_text_dict_with_substitution(db_argument.lang, False, True,
+                                                                         db_argument.is_supportive,
+                                                                         first_conclusion=_tn.get(_.myPosition),
+                                                                         attack_type=attack)
                     for t in text_dict:
                         text_dict[t] = text_dict[t][:-1] + ', ' + _tn.get(_.because).lower() + ' ...'
 
@@ -434,7 +433,6 @@ class DictionaryHelper(object):
         :return: None
         """
         _tn_dis = Translator(self.discussion_lang)
-        _tn_sys = Translator(self.system_lang)
 
         return_dict['tag'] = {
             'add_a_topic': _tn_dis.get(_.addATopic),
