@@ -147,8 +147,8 @@ function DiscussionGraph() {
     this.getD3Graph = function(jsonData){
         let container = $('#' + graphViewContainerSpaceId);
         container.empty();
-        //rel_node_factor = 'node_doj_factors' in jsonData? jsonData.node_doj_factors : {};
-        rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
+        rel_node_factor = 'node_doj_factors' in jsonData? jsonData.node_doj_factors : {};
+        //rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
         
         // height of the header ( offset per line count)
         let offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
@@ -177,12 +177,17 @@ function DiscussionGraph() {
 
         // node
         let node = createNodes(svg, force, drag);
-        let circle = setNodeProperties(node);
+        let circle = setNodeProperties(node).attr('class', 'circle');
 
         // tooltip
         // rect as background of label
-        let rect = node.append('rect').attr('class', 'labelBox');
-        let label = createLabel(node);
+        let tooltip = node.append('g');
+        let rect = tooltip.append('rect').attr('class', 'labelBox');
+        let label = createLabel(tooltip);
+
+        // reorder the elements so that the tooltips appear in front of the nodes
+        tooltip.order();
+
         setRectProperties(rect);
 
         // legend
@@ -195,8 +200,8 @@ function DiscussionGraph() {
 
         // buttons of sidebar
         addListenersForSidebarButtons(jsonData, label, rect, edges, force);
-
-        moveToBack(circle);
+        // add listener to show/hide tooltip on mouse over
+        addListenerForTooltip(node, edges);
 
         force.start();
 
@@ -651,7 +656,7 @@ function DiscussionGraph() {
         .data(legendLabelCircle)
         .enter().append("circle")
         .attr({fill: function (d,i) {return legendColorCircle[i];},
-               r: function (d,i) { return statement_size; },
+               r: statement_size,
                cy: function (d,i) {return i*40;}});
     }
 
@@ -728,8 +733,8 @@ function DiscussionGraph() {
      */
     function showLabels(label, rect){
         isContentVisible = true;
-        label.style("display", "inline");
-        rect.style("display", "inline");
+        label.style("display", 'inline');
+        rect.style("display", 'inline');
         $('#show-labels').hide();
         $('#hide-labels').show();
         // also show content of positions
@@ -745,8 +750,8 @@ function DiscussionGraph() {
      */
     function hideLabels(label, rect) {
         isContentVisible = false;
-        label.style("display", "none");
-        rect.style("display", "none");
+        label.style("display", 'none');
+        rect.style("display", 'none');
         $('#show-labels').show();
         $('#hide-labels').hide();
         if (isPositionVisible){
@@ -983,22 +988,19 @@ function DiscussionGraph() {
     }
 
     /**
-     * Hide nodes on mouse event.
+     * Show/hide tooltips on mouse event.
      *
      * @param circle
      */
-    function moveToBack(circle){
-        circle.on("mouseover", function(d) {
-            d3.selectAll('.node')
-            .sort(function(a, b) {
-                if (a.id === d.id) {
-                    return 1;
-                }
-                else if (b.id === d.id) {
-                    return -1;
-                }
-                return 0;
-            })
+    function addListenerForTooltip(node, edges){
+        node.on("mouseover", function (d) {
+            d3.select('#label-' + d.id).style('display', 'inline');
+            d3.select('#rect-' + d.id).style('display', 'inline');
+            d3.select('#circle-' + d.id).attr('fill', '#757575');
+        }).on("mouseout", function (d) {
+            d3.select('#label-' + d.id).style('display', 'none');
+            d3.select('#rect-' + d.id).style('display', 'none');
+            highlightAllElements(edges);
         });
     }
 
