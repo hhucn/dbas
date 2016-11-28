@@ -11,46 +11,43 @@
 			            <form action="/contact" method="post" class="form-horizontal">
                             <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-                             <!--<div class="form-group">-->
-                             <!--    <label class="col-sm-3 control-label" for="name-input" i18n:translate="name_req">Your Name (required)</label>-->
-                             <!--    <div class="col-sm-9 input-group">-->
-                             <!--        <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>-->
-                             <!--        <input type="text" class="form-control" id="name-input" placeholder="example: Tobias Krauthoff" value="${name}">-->
-                             <!--    </div>-->
-                             <!--</div>-->
-
-            				<div class="form-group">
-            					<label class="col-sm-3 control-label" for="name-input" i18n:translate="name_req">Your Name (required)</label>
-            					<div class="col-sm-9">
-            						<input type="text" id="name-input" class="name active form-control" name="name" placeholder="example: Tobias Krauthoff" tabindex="1" autofocus autocomplete="on" value="${name}">
-            					</div>
-            				</div>
+                             <div class="form-group">
+                                 <label class="col-sm-3 control-label" for="name-input" i18n:translate="name_req">Your Name (required)</label>
+                                 <div class="col-sm-9 input-group">
+                                     <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                                     <input type="text" class="form-control" name="name" id="name-input" tal:attributes="placeholder placeholder.name" placeholder="" value="${name}" required>
+                                 </div>
+                             </div>
 
             				<div class="form-group">
             					<label class="col-sm-3 control-label" for="email-input" i18n:translate="mail_req">Your E-Mail (required)</label>
-            					<div class="col-sm-9">
-            						<input type="email" id="email-input" class="email form-control" name="mail" placeholder="example: krauthoff@cs.uni-duesseldorf.de" tabindex="2" autocomplete="on" value="${mail}">
+            					<div class="col-sm-9 input-group">
+                                    <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+            						<input type="email" id="email-input" name="mail" class="form-control" tal:attributes="placeholder placeholder.mail" placeholder="" autocomplete="on" value="${mail}" required>
             					</div>
             				</div>
 
             				<div class="form-group">
             					<label class="col-sm-3 control-label" for="phone-input" i18n:translate="phone_no">Your Phone Number</label>
-            					<div class="col-sm-9">
-            						<input type="tel" id="phone-input" class="tel form-control" name="phone" autocomplete="on" placeholder="example: +49 (0)211 81-13461" tabindex="3" value="${phone}">
+            					<div class="col-sm-9 input-group">
+                                    <div class="input-group-addon"><i class="fa fa-phone fa-2x" aria-hidden="true"></i></div>
+            						<input type="tel" id="phone-input" name="phone" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.phone" placeholder="" value="${phone}">
             					</div>
             				</div>
 
             				<div class="form-group">
             					<label class="col-sm-3 control-label" for="msg-input" i18n:translate="message_req">Your Notification (required)</label>
-            					<div class="col-sm-9">
-            						<textarea type="text" id="msg-input" class="content form-control" name="content" autocomplete="on" placeholder="example: I’d like to say good job!" tabindex="4" value="${name}"><span tal:replace="content"/></textarea>
+            					<div class="col-sm-9 input-group">
+                                    <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
+            						<textarea type="text" id="msg-input" name="content" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.message" placeholder="" value="${name}"><span tal:replace="content"/></textarea>
             					</div>
             				</div>
 
             				<div class="form-group">
             					<label class="col-sm-3 control-label" for="spam-input" i18n:translate="spam_req">Anti-Spam (required)</label>
-            					<div class="col-sm-9">
-            						<input type="text" id="spam-input" class="spam form-control" name="spam" autocomplete="off" placeholder="${spamquestion}" tabindex="5" value="${spamanswer}">
+            					<div class="col-sm-9 input-group">
+                                    <div class="input-group-addon"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
+            						<input type="text" id="spam-input" name="spam" class="form-control" autocomplete="off" placeholder="${spamquestion}" value="${spamanswer}" required>
             					</div>
             				</div>
 
@@ -71,12 +68,12 @@
 
 
             				<div tal:condition="was_message_send" class="alert alert-success" role="alert">
-            					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
             					<span class="sr-only" i18n:translate="great">Great:</span> <span i18n:translate="message_sent">Your message was sent.</span>
             				</div>
 
             				<div class="text-center">
-            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" onclick="$('body').addClass('loading')" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
+            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
             				</div>
             			</form>
 			            <!--<script type="text/javascript" src="${request.static_url('dbas:static/js/contact.js')}"></script>-->

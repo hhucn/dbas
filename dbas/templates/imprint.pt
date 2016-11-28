@@ -62,14 +62,10 @@
 						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
 						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a></li>
 						<li><a target="_blank" href="https://bootswatch.com/paper/">Paper Theme for Bootstrap</a></li>
-						<li>
-							<span i18n:translate="icons_by">Icons by</span>
-							<a target="_blank" href="http://glyphicons.com/">glyphicons</a>,&thinsp;
-							<a target="_blank" href="https://www.iconfinder.com/iconsets/ballicons-free">iconfinder</a>
-						</li>
-						<li>Tracking by <a target="_blank" href="http://piwik.org/">Piwik</a></li>
-						<li>Avatare by <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
-						<li>Charts and Graphs by <a target="_blank" href="http://d3js.org">D3.js</a></li>
+						<li><span i18n:translate="icons_by">Icons by</span> <a target="_blank" href="https://www.iconfinder.com/iconsets/ballicons-free">iconfinder</a></li>
+						<li><span i18n:translate="tracking_by">Tracking by</span> <a target="_blank" href="http://piwik.org/">Piwik</a></li>
+						<li><span i18n:translate="avatare_by">Avatare by</span> <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
+						<li><span i18n:translate="chart_and_graphs_by">Charts and Graphs by</span> <a target="_blank" href="http://d3js.org">D3.js</a></li>
                         <li>404-<a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">Tumbeasts</a> by Matthew Inman of The Oatmeal</li>
 					</ul>
 				</div>
@@ -81,19 +77,19 @@
 					<ul>
 						<li>
 							<a target="_blank" href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
-								<i class="glyphicon glyphicon-bookmark icon-muted">&thinsp;</i>Docs</a>
+								<i class="fa fa-bookmark" aria-hidden="true">&thinsp;</i>Docs</a>
 						</li>
 						<li>
 							<a target="_blank" href="https://github.com/Pylons/pyramid">
-								<i class="glyphicon glyphicon-cog icon-muted">&thinsp;</i>Github Project</a>
+								<i class="fa fa-cog" aria-hidden="true"></i>&thinsp;Github Project</a>
 						</li>
 						<li>
 							<a target="_blank" href="irc://irc.freenode.net#pyramid">
-								<i class="glyphicon glyphicon-globe icon-muted">&thinsp;</i>IRC Channel</a>
+								<i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a>
 						</li>
 						<li>
 							<a target="_blank" href="http://pylonsproject.org">
-								<i class="glyphicon glyphicon-home icon-muted">&thinsp;</i>Pylons Project</a>
+								<i class="fa fa-home" aria-hidden="true"></i>&thinsp;Pylons Project</a>
 						</li>
 					</ul>
 				</div>

@@ -185,11 +185,11 @@ def __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug,
     return ddh, idh, dh
 
 
-def try_to_contact(request, username, email, phone, content, ui_locales, spamanswer):
+def try_to_contact(request, name, email, phone, content, ui_locales, spamanswer):
     """
 
     :param request:
-    :param username:
+    :param name:
     :param email:
     :param phone:
     :param content:
@@ -197,6 +197,7 @@ def try_to_contact(request, username, email, phone, content, ui_locales, spamans
     :param spamanswer:
     :return:
     """
+    logger('ViewHelper', 'try_to_contact', 'name: ' + name + ', email: ' + email + ', phone: ' + phone + ', content: ' + content)
     _t = Translator(ui_locales)
     send_message = False
 
@@ -209,7 +210,7 @@ def try_to_contact(request, username, email, phone, content, ui_locales, spamans
     is_mail_valid = validate_email(email, check_mx=True)
 
     # check for empty username
-    if not username:
+    if not name:
         logger('ViewHelper', 'try_to_contact', 'username empty')
         contact_error = True
         message = _t.get(_.emptyName)
@@ -235,7 +236,7 @@ def try_to_contact(request, username, email, phone, content, ui_locales, spamans
 
     else:
         subject = _t.get(_.contact) + ' D-BAS'
-        body = _t.get(_.name) + ': ' + username + '\n'
+        body = _t.get(_.name) + ': ' + name + '\n'
         body += _t.get(_.mail) + ': ' + email + '\n'
         body += _t.get(_.phone) + ': ' + phone + '\n'
         body += _t.get(_.message) + ':\n' + content

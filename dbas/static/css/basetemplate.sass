@@ -33,7 +33,6 @@ body.loading
 
 .panel-heading .accordion-toggle
   &:after
-    /* essential for enabling glyphicon
     content: "\e114"
     /* adjust as needed, taken from bootstrap.css
     float: left
@@ -180,7 +179,7 @@ body.loading
   font-size: 18px
 
 .links ul li
-  a, .glyphicon-local
+  a
     color: #000
     font-size: 18px
 
@@ -190,13 +189,6 @@ body.loading
 .project
   text-transform: uppercase
   display: inline
-
-.glyphicon-local
-  width: 35px
-  height: 27px
-  border: none
-  &:hover
-    -webkit-filter: invert(50%)
 
 .icon-badge
   &:hover
@@ -305,9 +297,6 @@ body.loading
       float: right
       opacity: 1.0
 
-.share-def
-  background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 10px 10px
-
 .share-facebook
   background: url('../images/icon_fb.png') no-repeat 4px 4px
 
@@ -332,28 +321,8 @@ body.loading
 .share-mail-small
   background: url('../images/icon_mail_s.png') no-repeat 1px 1px
 
-#popup-url-sharing-input
-  background: url('../images/glyphicons_free/glyphicons/glyphicons-309-share-alt.png') no-repeat 5px 5px
-
-#popup-add-topic-title-input, #popup-add-topic-info-input
-  padding: 12px 10px 0 50px
-  background: url('../images/glyphicons_free/glyphicons/glyphicons-40-notes.png') no-repeat 5px 5px
-
 #popup-login-body, #popup-write-text-body, #popup-generate-password-body, #popup-set-premisegroups-body, #popup-url-sharing-body
   padding: 1em
-
-#popup-writing-news-title, #popup-writing-news-text, #popup-writing-notification-title, #popup-writing-notification-text, #popup-writing-notification-recipient
-  padding-left: 3em
-
-#popup-writing-news-title, #popup-writing-notification-title
-  background: url(../images/glyphicons_free/glyphicons/glyphicons-605-text-size.png) no-repeat 12px 10px
-
-#popup-writing-notification-recipient
-  background: url(../images/glyphicons_free/glyphicons/glyphicons-4-user.png) no-repeat 12px 10px
-
-#popup-writing-news-text, #popup-writing-notification-text
-  background: url(../images/glyphicons_free/glyphicons/glyphicons-609-newspaper.png) no-repeat 12px 10px
-  resize: vertical
 
 #insert_statements_options
   list-style-type: none
@@ -513,10 +482,6 @@ body.loading
     margin-right: 0.5em
   .lead
     font-size: 18px
-  .glyphicon-local
-    visibility: hidden
-    width: 0
-    height: 0
   .links ul li
     display: block
     margin: 0

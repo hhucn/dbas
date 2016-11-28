@@ -11,7 +11,8 @@ from datetime import date, timedelta
 import arrow
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings, get_now
+from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings, \
+    ReviewEdit, ReviewDelete, ReviewOptimization, get_now
 from dbas.helper import email as email_helper
 from dbas.helper.notification import send_welcome_notification
 from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid,\
@@ -320,6 +321,30 @@ def get_random_anti_spam_question(lang):
     return question, str(int(answer))
 
 
+def get_reviews_of(user, only_today):
+    """
+
+    :param user:
+    :param only_today:
+    :return:
+    """
+    db_edits = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=user.uid)
+    db_deletes = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=user.uid)
+    db_optimizations = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=user.uid)
+
+    if only_today:
+        today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
+        db_edits = db_edits.filter(ReviewEdit.timestamp >= today)
+        db_deletes = db_deletes.filter(ReviewDelete.timestamp >= today)
+        db_optimizations = db_optimizations.filter(ReviewOptimization.timestamp >= today)
+
+    db_edits = db_edits.all()
+    db_deletes = db_deletes.all()
+    db_optimizations = db_optimizations.all()
+
+    return len(db_edits) + len(db_deletes) + len(db_optimizations)
+
+
 def get_count_of_statements_of_user(user, only_edits, limit_on_today=False):
     """
     Returns the count of statements of the user
@@ -334,12 +359,11 @@ def get_count_of_statements_of_user(user, only_edits, limit_on_today=False):
 
     edit_count      = 0
     statement_count = 0
+    db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid)
     if limit_on_today:
         today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
-        db_textversions = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.author_uid == user.uid,
-                                                                             TextVersion.timestamp >= today)).all()
-    else:
-        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid).all()
+        db_textversions = db_textversions.filter(TextVersion.timestamp >= today)
+    db_textversions = db_textversions.all()
 
     for tv in db_textversions:
         db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()
@@ -361,17 +385,19 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     """
     if not user:
         return 0
+
+    db_arg_votes = DBDiscussionSession.query(VoteArgument).filter(VoteArgument.author_uid == user.uid)
+    db_stat_votes = DBDiscussionSession.query(VoteStatement).filter(VoteStatement.author_uid == user.uid)
+
     if limit_on_today:
         today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
-        arg_votes = len(DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == user.uid,
-                                                                            VoteArgument.timestamp >= today)).all())
-        stat_votes = len(DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == user.uid,
-                                                                              VoteStatement.timestamp >= today)).all())
-    else:
-        arg_votes = len(DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user.uid).all())
-        stat_votes = len(DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all())
+        db_arg_votes = db_arg_votes.filter(VoteArgument.timestamp >= today)
+        db_stat_votes = db_stat_votes.filter(VoteStatement.timestamp >= today)
 
-    return arg_votes, stat_votes
+    db_arg_votes = db_arg_votes.all()
+    db_stat_votes = db_stat_votes.all()
+
+    return len(db_arg_votes), len(db_stat_votes)
 
 
 def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timestamp_before=None):
@@ -505,6 +531,7 @@ def get_summary_of_today(nickname):
     ret_dict['edits_done']            = get_count_of_statements_of_user(db_user, True, True)
     ret_dict['discussion_arg_votes']  = arg_vote
     ret_dict['discussion_stat_votes'] = stat_vote
+    ret_dict['statements_reported']   = get_reviews_of(db_user, True)
 
     return ret_dict
 

@@ -4,7 +4,7 @@
 		<div class="container colored-container" id="first-settings-container">
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-7">
-					<h4><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="personal_information">Personal Information</span></h4>
+					<h4><i class="fa fa-user" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="personal_information">Personal Information</span></h4>
 					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="firstname">Firstname</span></td>
@@ -38,7 +38,7 @@
 					</table>
 				</div>
 				<div class="col-md-5">
-					<h4><span class="glyphicon glyphicon-cog" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="settings">Settings</span></h4>
+					<h4><i class="fa fa-cogs" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="settings">Settings</span></h4>
 					<table id="settings-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span><i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_notifications"></i></td>
@@ -94,12 +94,12 @@
 				<div class="col-md-12">
 					<div id="settings-alert" class="alert alert-dismissible alert-danger hidden">
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 						<span id="settings-alert-message" i18n:translate="settings_not_set">Settings could not be set. Please try again later.</span>
 					</div>
 					<div id="settings-success" class="alert alert-dismissible alert-success hidden">
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
-						<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+						<i class="fa fa-circle" aria-hidden="true"></i>
 						<span id="settings-success-message" i18n:translate="settings_set">Settings were set successfully.</span>
 					</div>
 				</div>
@@ -109,27 +109,30 @@
 		<div class="container colored-container">
 			<div class="content row">
 				<div class="col-md-7">
-					<h4><span class="glyphicon glyphicon-asterisk" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="change_password">Change your password</span></h4>
+					<h4><i class="fa fa-lock" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="change_password">Change your password</span></h4>
 					<form action="/settings" method="post">
                         <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
 
 						<div class="form-group">
 							<label for="settings-password-old-input" class="col-md-5 control-label lead" i18n:translate="old_password">Old password</label>
-							<div class="col-md-7">
+							<div class="col-md-7 input-group">
+                                <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
 								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${settings.passwordold}">
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label for="settings-password-input" class="col-md-5 control-label lead" i18n:translate="new_password">New Password</label>
-							<div class="col-md-7">
+							<div class="col-md-7 input-group">
+                                <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
 								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${settings.password}">
 							</div>
 						</div>
 
 						<div class="form-group">
 							<p class="col-md-5 control-label lead" i18n:translate="new_password_confirm">New Password (confirm)</p>
-							<div class="col-md-7">
+							<div class="col-md-7 input-group">
+                                <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
 								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
 							</div>
 
@@ -147,7 +150,7 @@
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>${settings.message}
+								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>${settings.message}
 							</div>
 						</div>
 						<input id="settings-password-submit" type="submit" onclick="$('body').addClass('loading')" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
@@ -155,7 +158,7 @@
 				</div>
 
 				<div class="col-md-5" id="statistics">
-					<h4><span class="glyphicon glyphicon-stats" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
+					<h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
 					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td>
@@ -201,20 +204,20 @@
 
 			<div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" class="col-md-12">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 				<span i18n:translate="password_changed">Your password was changed</span>.
 			</div>
 
 			<div class="col-md-12">
 				<div id="statistics-alert" class="alert alert-dismissible alert-danger hidden">
 					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 					<span id="statistics-alert-message" i18n:translate="statistics_not_deleted">Statistics could not be deleted.</span>
 
 				</div>
 				<div id="statistics-success" class="alert alert-dismissible alert-success hidden">
 					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+					<i class="fa fa-circle" aria-hidden="true"></i>
 					<span id="statistics-success-message" i18n:translate="statistics_deletet">Statistics were set successfully deleted.</span>
 
 				</div>
@@ -225,7 +228,7 @@
 		<div class="container colored-container">
 			<div class="content row">
 				<div class="col-md-12">
-					<h4><span class="glyphicon glyphicon-time" aria-hidden="true" style="margin-right: 0.5em;"></span><span i18n:translate="last_history">Your last history</span></h4>
+					<h4><i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="last_history">Your last history</span></h4>
 
 					<div style="text-align:center;">
 						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.request_history" />
@@ -236,7 +239,7 @@
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 						<span class="lead" i18n:translate="success" style="color: white;">Success:</span>
 						<span id="history-success-msg"></span>
 					</div>
@@ -245,7 +248,7 @@
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 						<span id="history-failure-msg"></span>
 					</div>
 

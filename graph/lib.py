@@ -9,7 +9,8 @@ import json
 from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, VoteStatement
+from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, VoteStatement, Statement, \
+    StatementSeenBy
 from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -82,6 +83,26 @@ def get_d3_data(issue, nickname):
     return d3_dict
 
 
+def get_opinion_data(issue):
+    """
+
+    :param issue:
+    :return:
+    """
+    db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
+    db_all_seen = DBDiscussionSession.query(StatementSeenBy)
+    db_all_votes = DBDiscussionSession.query(VoteStatement)
+    ret_dict = dict()
+    for statement in db_statements:
+        db_seen = len(db_all_seen.filter_by(statement_uid=statement.uid).all())
+        db_votes = len(db_all_votes.filter(and_(VoteStatement.statement_uid == statement.uid,
+                                                VoteStatement.is_up_vote == True,
+                                                VoteStatement.is_valid == True)).all())
+        ret_dict[str(statement.uid)] = (db_votes / db_seen) if db_seen != 0 else 1
+
+    return ret_dict
+
+
 def get_doj_data(issue):
     """
 
@@ -97,7 +118,8 @@ def get_doj_data(issue):
         return {}
 
     if resp.status_code == 200:
-        return json.loads(resp.text)
+        doj = json.loads(resp.text)
+        return doj['dojs'] if 'dojs' in doj else {}
     else:
         logger('GraphLib', 'get_doj_data', 'status ' + str(resp.status_code), error=True)
         return {}

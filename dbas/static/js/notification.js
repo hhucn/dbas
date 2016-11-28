@@ -40,7 +40,7 @@ function Notifications() {
 			});
 		}) ;
 
-		$.each($('.glyphicon-trash'), function ajaxLinksDelete() {
+		$.each($('.fa-trash'), function ajaxLinksDelete() {
 			$(this).off('click').click(function(){
 				$(this).parent().parent().attr('href','');
 				new AjaxNotificationHandler().sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
@@ -147,7 +147,7 @@ function Notifications() {
 						'<a class="accordion-toggle panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse' + uid + '">' +
 							'<span class="text-primary notification-title">' + title + '</span>' +
 						'</a>' +
-						'<span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" data-toggle="tooltip" data-placement="bottom" title="Delete"></span>' +
+						'<i style="float: right; margin-left: 1.0em; cursor: pointer;" class="fa center fa-trash"></i>' +
 						'<span style="float: right; padding-right: 1em;"><span>To:</span> ' + recipient + ', ' + timestamp + '</span>' +
 					'</h4>' +
 				'</div>' +
@@ -167,7 +167,7 @@ function Notifications() {
 			'</div>';
 		$('#outbox').find('.panel-group').append(panel_html);
 
-		$.each($('#message-space').find('.glyphicon-trash'), function ajaxLinksDelete() {
+		$.each($('#message-space').find('.fa-trash'), function ajaxLinksDelete() {
 			$(this).off('click').click(function(){
 				$(this).parent().parent().attr('href','');
 				new Notifications().sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));

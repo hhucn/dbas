@@ -38,7 +38,7 @@
                                                 <span class="text-primary" tal:condition="msg.read">${structure:msg.topic}</span>
                                                 <strong class="text-primary" tal:condition="not:msg.read">${msg.topic}</strong>
                                             </a>
-                                            <span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" data-toggle="tooltip" data-placement="bottom" title="Delete"></span>
+                                            <i class="fa fa-trash" aria-hidden="true" style="float: right; margin-left: 1.0em; cursor: pointer;" ></i>
                                             <span style="float: right; padding-right: 1em;"><span i18n:translate="from">From:</span> ${msg.from_author}, ${msg.timestamp}</span>
                                         </h4>
 					        	    </div>
@@ -67,7 +67,7 @@
                                             <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
                                                 <span class="text-primary notification-title" tal:condition="msg.read">${structure:msg.topic}</span>
                                             </a>
-                                            <span style="float: right; margin-left: 1.0em; cursor: pointer;" class="glyphicon center glyphicon-trash" data-toggle="tooltip" data-placement="bottom" title="Delete"></span>
+                                            <i class="fa fa-trash" aria-hidden="true" style="float: right; margin-left: 1.0em; cursor: pointer;" ></i>
                                             <span style="float: right; padding-right: 1em;"><span i18n:translate="to">To:</span> ${msg.to_author}, ${msg.timestamp}</span>
                                         </h4>
 					        	    </div>

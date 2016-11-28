@@ -8,12 +8,12 @@ import random
 
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, TextVersion, Premise, Issue, User
+from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import TextGenerator
+from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from dbas.helper.voting import add_seen_argument, add_seen_statement
@@ -56,9 +56,9 @@ class ItemDictHelper(object):
         :return:
         """
         db_statements = get_not_disabled_statement_as_query()
-        db_statements = db_statements\
-            .filter(and_(Statement.is_startpoint == True, Statement.issue_uid == self.issue_uid))\
-            .join(TextVersion, TextVersion.uid == Statement.textversion_uid).all()
+        db_statements = db_statements.filter(and_(Statement.is_startpoint == True,
+                                                  Statement.issue_uid == self.issue_uid)).all()
+
         uids = RecommenderSystem.get_uids_of_best_positions(db_statements)  # TODO # 166
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
@@ -291,7 +291,6 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
-        _tg = TextGenerator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         statements_array = []
@@ -304,7 +303,7 @@ class ItemDictHelper(object):
         if db_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user.uid)
 
-        rel_dict     = _tg.get_relation_text_dict_with_substitution(False, False, False, is_dont_know=True)
+        rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, False, False, is_dont_know=True)
         mode         = 't' if is_supportive else 't'
         counter_mode = 'f' if is_supportive else 't'
 
@@ -334,7 +333,6 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_reaction', 'def')
-        _tg  = TextGenerator(self.lang)
         _tn  = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
@@ -344,9 +342,9 @@ class ItemDictHelper(object):
         if not db_sys_argument or not db_user_argument:
             return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-        rel_dict = _tg.get_relation_text_dict_with_substitution(False, True, db_user_argument.is_supportive,
-                                                                first_conclusion=_tn.get(_.myPosition),
-                                                                attack_type=attack)
+        rel_dict = get_relation_text_dict_with_substitution(self.lang, False, True, db_user_argument.is_supportive,
+                                                            first_conclusion=_tn.get(_.myPosition),
+                                                            attack_type=attack)
         mode             = 't' if is_supportive else 'f'
         _um              = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         _rh              = RecommenderSystem
@@ -557,7 +555,7 @@ class ItemDictHelper(object):
         # db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: FIX RANDOM FOR PGROUP
 
         # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
-        item_text = TextGenerator(self.lang).get_jump_to_argument_text_list()
+        item_text = get_jump_to_argument_text_list(self.lang)
 
         # which part of the argument should be attacked ?
         base = db_argument.argument_uid if db_argument.conclusion_uid is None else arg_uid
