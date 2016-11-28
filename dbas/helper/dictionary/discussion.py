@@ -72,7 +72,7 @@ class DiscussionDictHelper(object):
         if not statement_text:
             return None
         if self.lang != 'de':
-            l = len('<' + TextGenerator.tag_type + ' data-argumentation-type="position">')
+            l = len('<' + tag_type + ' data-argumentation-type="position">')
             statement_text = statement_text[0:l + 1].lower() + statement_text[l + 1:]
 
         text = _tn.get(_.whatDoYouThinkAbout)
@@ -311,7 +311,7 @@ class DiscussionDictHelper(object):
             user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
             user_text += current_argument if current_argument != '' else premise
 
-            sys_text = get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive, attack, confr,
+            sys_text = get_text_for_confrontation(self.lang, premise, conclusion, sys_conclusion, is_supportive, attack, confr,
                                                   reply_for_argument, user_is_attacking, db_argument, db_confrontation)
 
         bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
