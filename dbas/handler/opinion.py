@@ -11,7 +11,7 @@ from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get
     get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import TextGenerator
+from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_relation_text_dict_without_substitution
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
 
@@ -35,7 +35,6 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
     # preparation
     all_users = []
     _t = Translator(lang)
-    _tg = TextGenerator(lang)
     try:
         db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
     except TypeError:
@@ -74,9 +73,9 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
     first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
 
     if not attack:
-        relation_text = _tg.get_relation_text_dict_with_substitution(False, True, db_user_argument.is_supportive,
-                                                                     first_conclusion=first_conclusion,
-                                                                     attack_type=attack)
+        relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive,
+                                                                 first_conclusion=first_conclusion,
+                                                                 attack_type=attack)
     else:
         if attack == 'undercut':
             db_argument0 = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
@@ -97,10 +96,10 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
             of = _t.get(_.strongerStatementForRecjecting3)
             conclusion = intro + rejection + ' ' + of  + conclusion
 
-        relation_text = _tg.get_relation_text_dict_without_substitution(False, True, db_user_argument.is_supportive,
-                                                                        first_conclusion=first_conclusion,
-                                                                        attack_type=attack, premise=premises,
-                                                                        conclusion=conclusion)
+        relation_text = get_relation_text_dict_without_substitution(lang, False, True, db_user_argument.is_supportive,
+                                                                    first_conclusion=first_conclusion,
+                                                                    attack_type=attack, premise=premises,
+                                                                    conclusion=conclusion)
         relation_text['rebut_text'] = relation_text['rebut_text'].replace(_t.get(_.accepting), _t.get(_.forThat))
 
     # getting votes for every reaction

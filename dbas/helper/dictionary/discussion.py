@@ -10,7 +10,8 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_
     get_text_for_conclusion, create_speechbubble_dict, is_author_of_argument
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import TextGenerator
+from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
+    get_text_for_add_premise_container, get_text_for_confrontation
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
@@ -71,7 +72,7 @@ class DiscussionDictHelper(object):
         if not statement_text:
             return None
         if self.lang != 'de':
-            l = len('<' + TextGenerator.tag_type + ' data-argumentation-type="position">')
+            l = len('<' + tag_type + ' data-argumentation-type="position">')
             statement_text = statement_text[0:l + 1].lower() + statement_text[l + 1:]
 
         text = _tn.get(_.whatDoYouThinkAbout)
@@ -107,8 +108,8 @@ class DiscussionDictHelper(object):
         if not text:
             return None
 
-        tag_start = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">'
-        tag_end = '</' + TextGenerator.tag_type + '>'
+        tag_start = '<' + tag_type + ' data-argumentation-type="position">'
+        tag_end = '</' + tag_type + '>'
         if self.lang == 'de':
             question = _tn.get(
                 _.whatIsYourMostImportantReasonWhyForInColor if is_supportive
@@ -174,7 +175,6 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'prepare_discussion_dict', 'get_dict_for_justify_argument')
         _tn                   = Translator(self.lang)
-        _tg                = TextGenerator(self.lang)
         bubbles_array      = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         add_premise_text   = ''
         save_statement_url = 'ajax_set_new_premises_for_argument'
@@ -187,27 +187,24 @@ class DiscussionDictHelper(object):
         premise, tmp   = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion     = get_text_for_conclusion(db_argument)
 
-        user_msg, sys_msg = _tg.get_header_for_users_confrontation_response(premise, attack, conclusion, False, is_supportive, self.nickname)
+        user_msg, sys_msg = get_header_for_users_confrontation_response(self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
 
         if attack == 'undermine':
-            add_premise_text = _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
-                                                                      db_argument.is_supportive)
+            add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
             add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
 
         elif attack == 'support':
             is_supportive = not is_supportive
             # when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
             # is own premise. so his premise is the conclusion and we need new premises ;-)
-            add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion, is_supportive)
+            add_premise_text += get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, is_supportive)
         elif attack == 'undercut':
-            add_premise_text += _tg.get_text_for_add_premise_container(premise, premise, attack, conclusion,
-                                                                       db_argument.is_supportive)
+            add_premise_text += get_text_for_add_premise_container(self.lang, premise, premise, attack, conclusion, db_argument.is_supportive)
         else:
-            add_premise_text += _tg.get_text_for_add_premise_container(confr, premise, attack, conclusion,
-                                                                       db_argument.is_supportive)
+            add_premise_text += get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
 
-        start = '<' + TextGenerator.tag_type + ' data-argumentation-type="position">'
-        end = '</' + TextGenerator.tag_type + '>'
+        start = '<' + tag_type + ' data-argumentation-type="position">'
+        end = '</' + tag_type + '>'
         user_msg = start + user_msg[:-1] + end
 
         sys_msg = _tn.get(_.whatIsYourMostImportantReasonFor) + ': ' + user_msg + '?<br>' + _tn.get(_.because) + '...'
@@ -272,9 +269,7 @@ class DiscussionDictHelper(object):
         user_changed_opinion = splitted_history[-1].endswith(str(uid))
         statement_list      = list()
         db_confrontation    = ''
-
-        _tg                     = TextGenerator(self.lang)
-        db_argument             = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
 
         if attack.startswith('end'):
             #  user_text        = _tn.get(_.soYourOpinionIsThat) + ': '
@@ -316,8 +311,8 @@ class DiscussionDictHelper(object):
             user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
             user_text += current_argument if current_argument != '' else premise
 
-            sys_text = _tg.get_text_for_confrontation(premise, conclusion, sys_conclusion, is_supportive, attack, confr,
-                                                      reply_for_argument, user_is_attacking, db_argument, db_confrontation)
+            sys_text = get_text_for_confrontation(self.lang, premise, conclusion, sys_conclusion, is_supportive, attack, confr,
+                                                  reply_for_argument, user_is_attacking, db_argument, db_confrontation)
 
         bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
                                                is_supportive=is_supportive, lang=self.lang, nickname=self.nickname)
@@ -326,7 +321,9 @@ class DiscussionDictHelper(object):
             bubble_mid  = create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
         else:
             uid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
-            bubble_sys  = create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True, lang=self.lang, is_flagable=True, is_author=is_author_of_argument(nickname, db_confrontation.uid))
+            bubble_sys  = create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True,
+                                                   lang=self.lang, is_flagable=True,
+                                                   is_author=is_author_of_argument(nickname, db_confrontation.uid))
             statement_list = self.__get_all_statement_by_argument(db_confrontation)
 
         # dirty fixes
@@ -372,9 +369,9 @@ class DiscussionDictHelper(object):
         _tn = Translator(self.lang)
 
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
-        tag_premise = '<' + TextGenerator.tag_type + ' data-argumentation-type="argument">'
-        tag_conclusion = '<' + TextGenerator.tag_type + ' data-argumentation-type="attack">'
-        tag_end = '</' + TextGenerator.tag_type + '>'
+        tag_premise = '<' + tag_type + ' data-argumentation-type="argument">'
+        tag_conclusion = '<' + tag_type + ' data-argumentation-type="attack">'
+        tag_end = '</' + tag_type + '>'
         premise, trash = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         premise = tag_premise + premise + tag_end
         conclusion = tag_conclusion + get_text_for_conclusion(db_argument) + tag_end
