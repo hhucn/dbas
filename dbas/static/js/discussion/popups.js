@@ -167,6 +167,13 @@ function PopupHandler() {
 		// cut the part after <br><br>
 		var text = $('.triangle-l:last-child .triangle-content').html();
 		text = text.substr(0, text.indexOf('<br>'));
+		
+		// cut the author
+		var tmp = text.indexOf('</a>');
+		if (tmp != -1)
+			var author = $('.triangle-l:last-child .triangle-content a').attr('title');
+			text = author + ' ' + text.substr(tmp + '</a>'.length);
+			
 		// cut all spans
 		while (text.indexOf('</span>') != -1)
 			text = text.replace('</span>', '');

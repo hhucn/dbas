@@ -385,11 +385,11 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                            supportive, sys_arg)
 
     elif attack == 'rebut':
-        confrontation_text, gender = __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg,
-                                                                        user_is_attacking, _t, sys_conclusion,
+        confrontation_text, gender = __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument,
+                                                                        user_arg, user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
                                                                         start_argument, end_tag, db_users_premise,
-                                                                        sys_arg)
+                                                                        sys_arg,)
 
     sys_text = confrontation_text + '.<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?'
     return sys_text, gender
@@ -704,7 +704,7 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
     nickname = nickname if nickname is not None else nick_of_anonymous_user
     db_current_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_current_user.uid in statement_agrees:
-        statement_agrees.remove(db_current_user)
+        statement_agrees.remove(db_current_user.uid)
 
     # grep all participants who agree with system counter argument
     db_argument_votes = DBDiscussionSession.query(VoteArgument).filter(and_(
