@@ -278,7 +278,9 @@ class DiscussionDictHelper(object):
             user_text        = text[0:1].upper() + text[1:]
             sys_text = (_tn.get(_.otherParticipantsDontHaveCounterForThat) + '.') if attack == 'end' else _tn.get(
                 _.otherParticipantsDontHaveNewCounterForThat)
-            mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
+            tropy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
+            mid_text = tropy + ' ' + _tn.get(_.congratulation) + ' ' + tropy + '<br>'
+            mid_text += _tn.get(_.discussionCongratulationEnd) + ' ' + _tn.get(_.discussionEndLinkText)
         else:
             premise, tmp     = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
             conclusion       = get_text_for_conclusion(db_argument)
