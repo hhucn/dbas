@@ -167,8 +167,6 @@ function PopupHandler() {
 		// cut the part after <br><br>
 		let text = $('.triangle-l:last-child .triangle-content').html();
 		text = text.substr(0, text.indexOf('<br>'));
-<<<<<<< Updated upstream
-=======
 		
 		// cut the author
 		const tmp = text.indexOf('</a>');
@@ -176,7 +174,6 @@ function PopupHandler() {
 			const a = $('.triangle-l:last-child .triangle-content a').attr('title');
 			text = a + ' ' + text.substr(tmp + '</a>'.length);
 			
->>>>>>> Stashed changes
 		// cut all spans
 		while (text.indexOf('</span>') != -1)
 			text = text.replace('</span>', '');
