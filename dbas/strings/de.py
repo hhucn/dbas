@@ -369,6 +369,7 @@ de_lang = {
     _.jumpAnswer1: 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber ich möchte meine eigene XXPREMISEXX angeben.',
     _.jumpAnswer2: 'Ja, ich halte die XXCONCLUSIONXX für richtig, aber sie wird nicht von der XXPREMISEXX unterstützt.',
     _.jumpAnswer3: 'Nein, ich halte die XXCONCLUSIONXX für falsch.',
+    _.jumpAnswer4: 'Nein, ich finde die XXPREMISEXX nicht gut.',
     _.justLookDontTouch: 'Nur anschauen, nichts anfassen!',
     _.keyword: 'Schlüsselwort',
     _.keywordStart: 'Start',

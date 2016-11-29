@@ -323,6 +323,7 @@ def get_jump_to_argument_text_list(lang):
     answers.append(_t.get(_.jumpAnswer1).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
     answers.append(_t.get(_.jumpAnswer2).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
     answers.append(_t.get(_.jumpAnswer3).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+    answers.append(_t.get(_.jumpAnswer4).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
 
     return answers
 

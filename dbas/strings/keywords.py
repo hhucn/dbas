@@ -348,6 +348,7 @@ class Keywords(Enum):
     jumpAnswer1 = 'Right, I support the XXCONCLUSIONXX, but I want to add my own XXPREMISEXX.'
     jumpAnswer2 = 'Right, I support the XXCONCLUSIONXX, but the XXPREMISEXX does not support it.'
     jumpAnswer3 = 'Wrong, the XXCONCLUSIONXX is false.'
+    jumpAnswer4 = 'Wrong, the XXPREMISEXX does not hold.'
     justLookDontTouch = 'Just look, do not touch anything!'
     keyword = 'Keyword'
     keywordStart = 'Start'
