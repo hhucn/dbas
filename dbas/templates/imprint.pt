@@ -96,6 +96,13 @@
 
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
+                    <span class="project lead">0.9.0 (2016-12-xx)</span>
+                    <ul>
+                        <li>Rework of the discussions sidebar</li>
+                        <li>Improved the page at the end of a discussion</li>
+                        <li>Made the discussion more personal</li>
+                        <li>Minor improvements and bugfix</li>
+                    </ul>
 
                     <span class="project lead">0.8.0 (2016-11-17)</span>
 					<ul>
@@ -125,15 +132,15 @@
 						<li>Review-Mechanisms</li>
 					</ul>
 
-					<span class="project lead">0.6.1 (2016-08-24)</span>
-					<ul>
-						<li>New bootstraping (jump-mechanism)</li>
-					</ul>
-
-					<span class="project lead">0.6.0 (2016-07-02)</span>
-					<ul>
-						<li>Publish / Subscribe</li>
-					</ul>
+					<!--<span class="project lead">0.6.1 (2016-08-24)</span>-->
+					<!--<ul>-->
+<!--						<li>New bootstraping (jump-mechanism)</li>-->
+					<!--</ul>-->
+<!---->
+					<!--<span class="project lead">0.6.0 (2016-07-02)</span>-->
+					<!--<ul>-->
+<!--						<li>Publish / Subscribe</li>-->
+					<!--</ul>-->
 
 					<!--<span class="project lead">0.5.17 (2016-06-12)</span>-->
 					<!--<ul>-->
