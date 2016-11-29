@@ -327,7 +327,7 @@ def get_jump_to_argument_text_list(lang):
     return answers
 
 
-def get_text_for_confrontation(lang, nickname, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
+def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
                                reply_for_argument, user_is_attacking, user_arg, sys_arg, color_html=True):
     """
     Text for the confrontation of the system
@@ -374,17 +374,17 @@ def get_text_for_confrontation(lang, nickname, premise, conclusion, sys_conclusi
 
     # build some confrontation text
     if attack == 'undermine':
-        confrontation_text, gender = __get_confrontation_text_for_undermine(nickname, premise, _t, start_position,
+        confrontation_text, gender = __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, start_position,
                                                                             start_argument, attack, sys_arg, end_tag,
                                                                             confrontation)
 
     elif attack == 'undercut':
-        confrontation_text, gender = __get_confrontation_text_for_undercut(lang, nickname, db_users_premise, _t,
+        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_premise, _t,
                                                                            premise, conclusion, confrontation,
                                                                            supportive, sys_arg)
 
     elif attack == 'rebut':
-        confrontation_text, gender = __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_arg,
+        confrontation_text, gender = __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg,
                                                                         user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
                                                                         start_argument, end_tag, db_users_premise,
@@ -494,7 +494,7 @@ def __get_text_dict_for_attacks_only(lang, premises, conclusion, start_lower_cas
     return ret_dict
 
 
-def __get_confrontation_text_for_undermine(nickname, premise, _t, start_position, start_argument, attack, system_argument,
+def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, start_position, start_argument, attack, system_argument,
                                            end_tag, confrontation):
     """
 
@@ -509,7 +509,7 @@ def __get_confrontation_text_for_undermine(nickname, premise, _t, start_position
     :param confrontation:
     :return:
     """
-    author, gender, is_okay = __get_name_link_of_arguments_author(system_argument, nickname)
+    author, gender, is_okay = __get_name_link_of_arguments_author(main_page, system_argument, nickname)
     if is_okay:
         confrontation_text = author + ' ' + _t.get(_.thinksThat)
     else:
@@ -522,7 +522,7 @@ def __get_confrontation_text_for_undermine(nickname, premise, _t, start_position
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_confrontation_text_for_undercut(lang, nickname, db_users_premise, _t, premise, conclusion, confrontation, supportive, system_argument):
+def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_premise, _t, premise, conclusion, confrontation, supportive, system_argument):
     """
 
     :param lang:
@@ -537,7 +537,7 @@ def __get_confrontation_text_for_undercut(lang, nickname, db_users_premise, _t, 
     :return:
     """
 
-    author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(system_argument,
+    author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
                                                                                        db_users_premise.statements,
                                                                                        nickname)
     if is_okay:
@@ -565,7 +565,7 @@ def __get_confrontation_text_for_undercut(lang, nickname, db_users_premise, _t, 
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion,
+def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion,
                                        confrontation, premise, conclusion, start_argument, end_tag, db_users_premise,
                                        system_argument, color_html=[False, '']):
     """
@@ -588,7 +588,7 @@ def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_
     :param system_argument: Counter argument of the system
     :return: String
     """
-    author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(system_argument,
+    author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
                                                                                        db_users_premise.statements,
                                                                                        nickname)
 
@@ -642,7 +642,7 @@ def __get_confrontation_text_for_rebut(lang, nickname, reply_for_argument, user_
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_name_link_of_arguments_author(argument, nickname):
+def __get_name_link_of_arguments_author(main_page, argument, nickname):
     """
     Get the first author, who wrote or agreed with the argument
 
@@ -650,7 +650,7 @@ def __get_name_link_of_arguments_author(argument, nickname):
     :param nickname:
     :return:
     """
-    text, is_okay = get_author_data(argument.author_uid, False, True)
+    text, is_okay = get_author_data(main_page, argument.author_uid, False, True)
     db_user = DBDiscussionSession.query(User).filter_by(uid=argument.author_uid).first()
     gender = db_user.gender if db_user else 'n'
 
@@ -676,7 +676,7 @@ def __get_name_link_of_arguments_author(argument, nickname):
         db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
 
         if db_vote:
-            text, is_okay = get_author_data(db_vote.author_uid, False, True)
+            text, is_okay = get_author_data(main_page, db_vote.author_uid, False, True)
             db_user = DBDiscussionSession.query(User).filter_by(uid=db_vote.author_uid).first()
             gender = db_user.gender if db_user else 'n'
         else:
@@ -685,7 +685,7 @@ def __get_name_link_of_arguments_author(argument, nickname):
     return text if is_okay else '', gender, is_okay
 
 
-def __get_name_link_of_arguments_author_with_statement_agree(argument, statement, nickname):
+def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument, statement, nickname):
     """
 
     :param argument:
@@ -722,7 +722,7 @@ def __get_name_link_of_arguments_author_with_statement_agree(argument, statement
     is_okay = False
     gender = 'n'
     for vote in votes:
-        text, is_okay = get_author_data(vote.author_uid, False, True)
+        text, is_okay = get_author_data(main_page, vote.author_uid, False, True)
         if is_okay:
             db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
             gender = db_user.gender if db_user else 'n'

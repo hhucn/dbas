@@ -312,7 +312,7 @@ class DiscussionDictHelper(object):
             user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
             user_text += current_argument if current_argument != '' else premise
 
-            sys_text, gender = get_text_for_confrontation(self.lang, nickname, premise, conclusion, sys_conclusion,
+            sys_text, gender = get_text_for_confrontation(self.main_page, self.lang, nickname, premise, conclusion, sys_conclusion,
                                                           is_supportive, attack, confr, reply_for_argument,
                                                           user_is_attacking, db_argument, db_confrontation)
             gender_of_counter_arg = gender

@@ -109,7 +109,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
 
         elif 'reaction/' in step:
             logger('history_helper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
-            bubbles = __reaction_step(step, nickname, lang, splitted_history, url)
+            bubbles = __reaction_step(application_url, step, nickname, lang, splitted_history, url)
             if bubbles:
                 bubble_array += bubbles
 
@@ -202,7 +202,7 @@ def __dont_know_step(step, nickname, lang, url):
                                      is_supportive=True)]
 
 
-def __reaction_step(step, nickname, lang, splitted_history, url):
+def __reaction_step(main_page, step, nickname, lang, splitted_history, url):
     """
     Creates bubbles for the reaction-keyword.
 
@@ -247,7 +247,7 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     user_text += '<' + tag_type + '>'
     user_text += current_argument if current_argument != '' else premise
     user_text += '</' + tag_type + '>.'
-    sys_text, tmp = get_text_for_confrontation(lang, nickname, premise, conclusion, sys_conclusion, is_supportive,
+    sys_text, tmp = get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, is_supportive,
                                                attack, confr, reply_for_argument, user_is_attacking, db_argument,
                                                db_confrontation, color_html=False)
 

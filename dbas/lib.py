@@ -814,7 +814,7 @@ def get_public_profile_picture(user, size=80):
     return gravatar_url
 
 
-def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=True):
+def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_users_page=True):
     """
     Returns a-tag with gravatar of current author and users page as href
 
@@ -830,9 +830,7 @@ def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=Tru
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
-    url = get_global_url()
-    url = url[url.index('//') + 2:]
-    link_begin = ('<a href="' + url + '/user/' + db_user.get_global_nickname() + '">') if linked_with_users_page else ''
+    link_begin = ('<a href="' + main_page + '/user/' + db_user.get_global_nickname() + '">') if linked_with_users_page else ''
     link_end = ('</a>') if linked_with_users_page else ''
     if gravatar_on_right_side:
         return link_begin + db_user.nickname + ' ' + img + link_end, True
