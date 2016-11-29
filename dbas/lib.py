@@ -814,14 +814,16 @@ def get_public_profile_picture(user, size=80):
     return gravatar_url
 
 
-def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_users_page=True):
+def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20):
     """
     Returns a-tag with gravatar of current author and users page as href
 
-    :param uid: of user
-    :param gravatar_on_right_side: Boolean
-    :param linked_with_users_page: Boolean
-    :return: string
+    :param main_page: Current mainpage
+    :param uid: Uid of the author
+    :param gravatar_on_right_side: True, if the gravatar is on the right of authors name
+    :param linked_with_users_page: True, if the text is a link to the authors site
+    :param profile_picture_size: Integer
+    :return: HTML-String
     """
     db_user = DBDiscussionSession.query(User).filter_by(uid=int(uid)).first()
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
@@ -829,7 +831,7 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
         return 'Missing author with uid ' + str(uid), False
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
-    img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, profile_picture_size, True) + '">'
     nick = db_user.get_global_nickname()
     link_begin = ('<a href="' + main_page + '/user/' + nick + ' " title="' + nick + '">') if linked_with_users_page else ''
     link_end = ('</a>') if linked_with_users_page else ''

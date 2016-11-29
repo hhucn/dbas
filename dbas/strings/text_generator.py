@@ -646,6 +646,7 @@ def __get_name_link_of_arguments_author(main_page, argument, nickname):
     """
     Get the first author, who wrote or agreed with the argument
 
+    :param main_page:
     :param argument:
     :param nickname:
     :return:
@@ -688,6 +689,7 @@ def __get_name_link_of_arguments_author(main_page, argument, nickname):
 def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument, statement, nickname):
     """
 
+    :param main_page:
     :param argument:
     :param statement:
     :param nickname:
