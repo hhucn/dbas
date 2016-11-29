@@ -415,11 +415,16 @@ def setup_news_db(session):
                        'Computational Models of Argument (COMMA16) in Potsdam. There we are going to show the first demo '
                        'of D-BAS and present the paper of Krauthoff T., Betz G., Baurmann M. & Mauve, M. (2016) "Dialog-Based '
                        'Online Argumentation". Looking forward to see you!')
+    news53 = News(title='Work goes on',
+                  date=arrow.get('2016-11-29'),
+                  author='Tobias Krauthoff',
+                  news='After the positive feedback at COMMA16, we decided to do a first field tests with D-BAS at our '
+                       'university. Therefore we are working on current issues, so that we will realsing v1.0. soon.')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52]
+                  news50, news51, news52, news53]
     session.add_all(news_array[::-1])
     session.flush()
 
