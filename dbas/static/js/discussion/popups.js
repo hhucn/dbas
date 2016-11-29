@@ -170,9 +170,10 @@ function PopupHandler() {
 		
 		// cut the author
 		const tmp = text.indexOf('</a>');
-		if (tmp != -1)
+		if (tmp != -1) {
 			const a = $('.triangle-l:last-child .triangle-content a').attr('title');
 			text = a + ' ' + text.substr(tmp + '</a>'.length);
+		}
 			
 		// cut all spans
 		while (text.indexOf('</span>') != -1)
