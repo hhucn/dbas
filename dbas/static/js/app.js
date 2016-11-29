@@ -59,6 +59,15 @@ function goBackToTop() {
 }
 
 /**
+ * Display smiley as fallback
+ */
+function setGravatarFallback() {
+	$('body').find('.img-circle').each(function (){
+		$(this).attr('onerror', 'this.src="' + mainpage + 'static/images/fallback_smiley.png"');
+	});
+}
+
+/**
  * Displays dialog
  * @param titleText
  * @param bodyText
@@ -503,6 +512,7 @@ $(document).ready(function () {
 	goBackToTop();
 	setPiwikOptOutLink(lang);
 	setEasterEggs();
+	setGravatarFallback();
 
 	// set current file to active
 		 if (path.indexOf(urlContact) != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
