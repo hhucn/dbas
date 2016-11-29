@@ -21,7 +21,7 @@ import dbas.user_management as user_manager
 import requests
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason, sql_timestamp_pretty_print
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
@@ -39,7 +39,7 @@ from dbas.helper.views import preparation_for_view, get_nickname_and_session, pr
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.input_validator import is_integer, is_position, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
-from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
+from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
     get_user_by_case_insensitive_nickname
@@ -698,7 +698,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)
     _idh            = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
-    item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
+    item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
     extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
                                                                                         True, request,
                                                                                         argument_id=arg_id_sys,
