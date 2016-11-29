@@ -133,7 +133,7 @@ class DiscussionDictHelper(object):
         add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
 
         if self.lang == 'de':
-            intro = _tn.get(_.youAgreeWith if is_supportive else _.iyouDisagreeWith) + ' '
+            intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
         else:
             intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
 

@@ -568,7 +568,7 @@ class ItemDictHelper(object):
         if len(db_premises) == 1:
             url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
         else:
-            url4 = 'js:alert("quack quack");'
+            url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
 
         answers = list()
         answers.append({'text': item_text[0], 'url': url0})
