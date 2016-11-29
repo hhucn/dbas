@@ -347,6 +347,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     :return: String
     """
     _t = Translator(lang)
+    gender = ''
 
     #  build some confrontation text
     if lang != 'de':
@@ -388,7 +389,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                         user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
                                                                         start_argument, end_tag, db_users_premise,
-                                                                        sys_arg, [color_html, start_argument])
+                                                                        sys_arg)
 
     sys_text = confrontation_text + '.<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?'
     return sys_text, gender
@@ -567,7 +568,7 @@ def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_pr
 
 def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion,
                                        confrontation, premise, conclusion, start_argument, end_tag, db_users_premise,
-                                       system_argument, color_html=[False, '']):
+                                       system_argument):
     """
     Builds the string for a rebut of the system.
 
@@ -584,7 +585,6 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     :param start_argument: String
     :param end_tag: String
     :param db_users_premise: Premise of the user
-    :param color_html: [Boolean, String]
     :param system_argument: Counter argument of the system
     :return: String
     """
@@ -605,8 +605,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
         else:
             bind = _t.get(_.otherUsersClaimStrongerArgumentP)
         confrontation_text += bind.replace('XXX', _t.get(_.reject if user_is_attacking else _.accept))
-        confrontation_text += color_html[1] if color_html[0] else ''
-        confrontation_text += ' ' + conclusion + (end_tag if color_html[0] else '') + '.' + ' '
+        confrontation_text += ' ' + conclusion + '.' + ' '
         if is_okay:
             confrontation_text += _t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)
         else:

@@ -830,9 +830,10 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
-    link_begin = ('<a href="' + main_page + '/user/' + db_user.get_global_nickname() + '">') if linked_with_users_page else ''
+    nick = db_user.get_global_nickname()
+    link_begin = ('<a href="' + main_page + '/user/' + nick + ' " title="' + nick + '">') if linked_with_users_page else ''
     link_end = ('</a>') if linked_with_users_page else ''
     if gravatar_on_right_side:
-        return link_begin + db_user.nickname + ' ' + img + link_end, True
+        return link_begin + nick + ' ' + img + link_end, True
     else:
-        return link_begin + img + ' ' + db_user.nickname + link_end, True
+        return link_begin + img + ' ' + nick + link_end, True
