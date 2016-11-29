@@ -322,7 +322,7 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack):
+    def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):
         """
         Prepares the dict with all items for the argumentation window.
 
@@ -330,6 +330,7 @@ class ItemDictHelper(object):
         :param argument_uid_user: Argument.uid
         :param is_supportive: Boolean
         :param attack: String
+        :param gender: Gender of the author of the attack
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_reaction', 'def')
@@ -344,20 +345,15 @@ class ItemDictHelper(object):
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, False, True, db_user_argument.is_supportive,
                                                             first_conclusion=_tn.get(_.myPosition),
-                                                            attack_type=attack)
-        mode             = 't' if is_supportive else 'f'
-        _um              = UrlManager(self.application_url, slug, self.for_api, history=self.path)
-        _rh              = RecommenderSystem
+                                                            attack_type=attack, gender=gender)
+        mode = 't' if is_supportive else 'f'
+        _um  = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        _rh  = RecommenderSystem
 
-        # based in the relation, we will fetch different url's for the items
-        # relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO overbid
-        # TODO COMMA16 Special Case (forbid: undercuts of undercuts)
-        # if attack == 'undercut':
-        #     relations = ['undermine', 'support', 'rebut']
-        # else:
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
-            url = self.__get_url_based_on_relation(relation, attack, _rh, _um, argument_uid_user, argument_uid_sys, mode, db_user_argument, db_sys_argument)
+            url = self.__get_url_based_on_relation(relation, attack, _rh, _um, argument_uid_user, argument_uid_sys,
+                                                   mode, db_user_argument, db_sys_argument)
 
             # TODO PREVENT LOOPING
             # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]

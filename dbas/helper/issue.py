@@ -6,9 +6,8 @@ Provides helping function for issues.
 
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Language, Statement
+from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print
 from dbas.lib import is_user_author
-from dbas.lib import sql_timestamp_pretty_print
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator

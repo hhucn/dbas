@@ -17,6 +17,30 @@ from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
 
 
+def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
+    """
+    Pretty printing for sql timestamp in dependence of the language.
+
+    :param ts: timestamp (arrow) as string
+    :param lang: language
+    :param humanize: Boolean
+    :param with_exact_time: Boolean
+    :return:
+    """
+    ts = ts.replace(hours=-2)
+    if humanize:
+        # if lang == 'de':
+        ts = ts.to('Europe/Berlin')
+        # else:
+        #    ts = ts.to('US/Pacific')
+        return ts.humanize(locale=lang)
+    else:
+        if lang == 'de':
+            return ts.format('DD.MM.YYYY' + (', HH:mm:ss ' if with_exact_time else ''))
+        else:
+            return ts.format('YYYY-MM-DD' + (', HH:mm:ss ' if with_exact_time else ''))
+
+
 def get_now():
     # return arrow.utcnow()
     return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))

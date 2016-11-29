@@ -5,9 +5,9 @@ Provides helping function for getting some opinions.
 """
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings, StatementSeenBy
+from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings, StatementSeenBy, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, get_undermines_for_argument_uid, get_supports_for_argument_uid
-from dbas.lib import sql_timestamp_pretty_print, get_text_for_statement_uid, get_text_for_argument_uid,\
+from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -100,7 +100,7 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
                                                                     first_conclusion=first_conclusion,
                                                                     attack_type=attack, premise=premises,
                                                                     conclusion=conclusion)
-        relation_text['rebut_text'] = relation_text['rebut_text'].replace(_t.get(_.accepting), _t.get(_.forThat))
+        relation_text['rebut_text'] = relation_text['rebut_text'].replace(_t.get(_.accept), _t.get(_.forThat))
 
     # getting votes for every reaction
     ret_list = __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page)

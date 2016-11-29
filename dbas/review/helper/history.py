@@ -6,9 +6,10 @@ Provides helping function for the managing the queue with all executed decisions
 
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, LastReviewerOptimization, \
-    User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled
-from dbas.lib import sql_timestamp_pretty_print, get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
+from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, \
+    LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit,\
+    LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print
+from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons

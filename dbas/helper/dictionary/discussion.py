@@ -260,7 +260,7 @@ class DiscussionDictHelper(object):
         """
         logger('DictionaryHelper', 'get_dict_for_argumentation', 'at_argumentation')
         _tn                    = Translator(self.lang)
-        bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
+        bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, nickname, self. lang, self.main_page, self.slug)
         add_premise_text    = ''
         save_statement_url  = 'ajax_set_new_start_statement'
         mid_text            = ''
@@ -270,6 +270,7 @@ class DiscussionDictHelper(object):
         statement_list      = list()
         db_confrontation    = ''
         db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        gender_of_counter_arg = ''
 
         if attack.startswith('end'):
             #  user_text        = _tn.get(_.soYourOpinionIsThat) + ': '
@@ -311,11 +312,13 @@ class DiscussionDictHelper(object):
             user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
             user_text += current_argument if current_argument != '' else premise
 
-            sys_text = get_text_for_confrontation(self.lang, premise, conclusion, sys_conclusion, is_supportive, attack, confr,
-                                                  reply_for_argument, user_is_attacking, db_argument, db_confrontation)
+            sys_text, gender = get_text_for_confrontation(self.lang, nickname, premise, conclusion, sys_conclusion,
+                                                          is_supportive, attack, confr, reply_for_argument,
+                                                          user_is_attacking, db_argument, db_confrontation)
+            gender_of_counter_arg = gender
 
         bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
-                                               is_supportive=is_supportive, lang=self.lang, nickname=self.nickname)
+                                               is_supportive=is_supportive, lang=self.lang, nickname=nickname)
         if attack.startswith('end'):
             bubble_sys  = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, lang=self.lang)
             bubble_mid  = create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
@@ -337,7 +340,12 @@ class DiscussionDictHelper(object):
         if attack.startswith('end'):
             bubbles_array.append(bubble_mid)
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'extras': statement_list}
+        return {'bubbles': bubbles_array,
+                'add_premise_text': add_premise_text,
+                'save_statement_url': save_statement_url,
+                'mode': '',
+                'extras': statement_list,
+                'gender': gender_of_counter_arg}
 
     def get_dict_for_jump(self, uid):
         """
