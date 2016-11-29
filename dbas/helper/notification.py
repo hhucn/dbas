@@ -7,8 +7,8 @@ Provides functions for te internal messaging system
 import transaction
 import dbas.helper.email as EmailHelper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument
-from dbas.lib import sql_timestamp_pretty_print, escape_string, get_profile_picture
+from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, sql_timestamp_pretty_print
+from dbas.lib import escape_string, get_profile_picture
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, get_text_for_add_argument_message
 from dbas.strings.translator import Translator

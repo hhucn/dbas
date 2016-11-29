@@ -11,13 +11,13 @@ import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
-    RevokedContent, RevokedContentHistory, VoteStatement
+    RevokedContent, RevokedContentHistory, VoteStatement, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
     set_new_undercut_or_overbid, set_new_undermine_or_support
 from dbas.helper.voting import add_seen_statement, add_seen_argument
 from dbas.input_validator import get_relation_between_arguments
-from dbas.lib import escape_string, sql_timestamp_pretty_print, get_text_for_premisesgroup_uid, \
+from dbas.lib import escape_string, get_text_for_premisesgroup_uid, \
     get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid,\
     is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement
 from dbas.logger import logger

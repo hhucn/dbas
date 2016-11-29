@@ -6,11 +6,10 @@ Provides helping function for creating the history as bubbles.
 
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, History, Settings
+from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print
 from dbas.input_validator import check_reaction
-from dbas.lib import create_speechbubble_dict
-from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
-    get_text_for_conclusion, sql_timestamp_pretty_print
+from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid,\
+    get_text_for_premisesgroup_uid, get_text_for_conclusion
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation
@@ -110,7 +109,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
 
         elif 'reaction/' in step:
             logger('history_helper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
-            bubbles = __reaction_step(step, nickname, lang, splitted_history, url)
+            bubbles = __reaction_step(application_url, step, nickname, lang, splitted_history, url)
             if bubbles:
                 bubble_array += bubbles
 
@@ -203,7 +202,7 @@ def __dont_know_step(step, nickname, lang, url):
                                      is_supportive=True)]
 
 
-def __reaction_step(step, nickname, lang, splitted_history, url):
+def __reaction_step(main_page, step, nickname, lang, splitted_history, url):
     """
     Creates bubbles for the reaction-keyword.
 
@@ -248,16 +247,15 @@ def __reaction_step(step, nickname, lang, splitted_history, url):
     user_text += '<' + tag_type + '>'
     user_text += current_argument if current_argument != '' else premise
     user_text += '</' + tag_type + '>.'
-    sys_text = get_text_for_confrontation(lang, premise, conclusion, sys_conclusion, is_supportive, attack, confr,
-                                          reply_for_argument, user_is_attacking, db_argument, db_confrontation,
-                                          color_html=False)
+    sys_text, tmp = get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, is_supportive,
+                                               attack, confr, reply_for_argument, user_is_attacking, db_argument,
+                                               db_confrontation, color_html=False)
 
-    bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=False,
-                                           argument_uid=uid, is_supportive=is_supportive,
-                                           nickname=nickname, lang=lang, url=url)
+    bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=False, argument_uid=uid,
+                                           is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
     if attack == 'end':
-        bubble_syst = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True,
-                                               nickname=nickname, lang=lang)
+        bubble_syst = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, nickname=nickname,
+                                               lang=lang)
     else:
         bubble_syst = create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(additional_uid),
                                                message=sys_text, omit_url=True, nickname=nickname, lang=lang)
