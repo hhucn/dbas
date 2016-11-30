@@ -11,9 +11,11 @@
 
 		<div class="container colored-container first-container jumbotron" id="home-template">
 			<div class="content">
-				<img id="dbas-logo" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
-				<img id="dbas-logo" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
-				<br>
+				<img id="logo_dbas" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
+				<img id="logo_dbas" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
+				<img id="logo_dbas_s" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_s.png')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
+				<img id="logo_dbas_s" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de_s.png')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
+                <br>
 				<p class="lead">
 					<span i18n:translate="welcome_text1">Welcome to D-BAS! This is an early prototype of our dialog-based argumentation system. There will be bugs. Please feel free to</span>
 					<a href="${request.application_url}/contact"><span i18n:translate="welcome_text2">contact</span></a>
@@ -35,7 +37,7 @@
 				<div class="list-logos center">
 						<a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>
 						<a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img id="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}"/><img id="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/></a>
-						<a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img id="logo_diid" src="${request.static_url('dbas:static/images/logo_diid.jpg')}"/><img id="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
+						<a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img id="logo_diid" src="${request.static_url('dbas:static/images/logo_diid.jpg')}"/><img id="logo_diid_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
                     	<a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img id="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" /><img id="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/></a>
 				</div>
 			</div>

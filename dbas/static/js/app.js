@@ -59,11 +59,31 @@ function goBackToTop() {
 }
 
 /**
- * Display smiley as fallback
+ * Display smiley as fallback on (connection) errors
  */
 function setGravatarFallback() {
+	const img = $('body').find('.img-circle');
+	if (img.length == 0)
+		return true;
+	
+	const src = $('body').find('.img-circle')[0].src;
+	let jqxhr = $.get(src, function() {
+    	__replace_gravtar_with_default_image(true);
+    }).fail(function() {
+    	__replace_gravtar_with_default_image(false);
+    });
+}
+
+function __replace_gravtar_with_default_image(only_on_error){
 	$('body').find('.img-circle').each(function (){
-		$(this).attr('onerror', 'this.src="' + mainpage + 'static/images/fallback_smiley.png"');
+		const no = Math.floor(Math.random() * 35);
+		const src = mainpage + 'static/images/fallback/' + no + '.svg';
+		const width = $(this).width();
+		if (only_on_error)
+			$(this).attr('onerror', 'this.src="' + src + '"');
+		else
+			$(this).attr('src', src);
+		$(this).css('width', width + 'px');
 	});
 }
 
@@ -173,7 +193,7 @@ function setPiwikOptOutLink(lang){
 function setEasterEggs(){
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
-	$('#dbas-logo').click(function(){
+	$('#logo_dbas,#logo_dbas_s').click(function(){
 		var counter = parseInt($(this).data('counter'));
 		counter += 1;
 		if (counter == 7){
