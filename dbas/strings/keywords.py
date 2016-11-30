@@ -214,7 +214,7 @@ class Keywords(Enum):
     displayControlDialogGraphBody = 'Presentation of the discusion as graph.'
     discussionEnd = 'The discussion ends here.'
     discussionCongratulationEnd = 'The discussion ends here, because their is no other counter argument at the moment.'
-    discussionEndLinkText = 'You can click <a id="discussionEndStepBack" data-href="back" onclick="window.history.back();" style="cursor = pointer;">here</a> to go one step back or you can use the button above or <a id="discussionEndRestart" data-href="restart" >this link</a> to restart the discussion.'
+    discussionEndLinkText = 'Are you looking for things to do? Take a look at the <a id="discussionEndReview">review section</a>. Alternatively you can use the button above or <a id="discussionEndRestart" data-href="restart" >this link</a> to restart the discussion.'
     discussionInfoTooltip1 = 'The discussion was started'
     discussionInfoTooltip2 = 'and already has'
     discussionInfoTooltip3sg = 'argument.'

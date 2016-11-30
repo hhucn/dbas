@@ -719,6 +719,7 @@ $(document).ready(function mainDocumentReady() {
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
 	tmp = tmp.substr(1, tmp.length - 2);
 	$('#' + discussionEndRestart).attr('href', tmp);
+	$('#' + discussionEndReview).attr('href', mainpage + 'review');
 
 	//
 	tmp = window.location.href.split('?');

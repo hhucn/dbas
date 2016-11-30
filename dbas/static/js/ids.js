@@ -41,6 +41,7 @@ var discussionBubbleSpaceId                   = 'dialog-speech-bubbles-space';
 var discussionContainerId                     = 'discussion-container';
 var discussionEndStepBack                     = 'discussionEndStepBack';
 var discussionEndRestart                      = 'discussionEndRestart';
+var discussionEndReview                       = 'discussionEndReview';
 var discussionSpaceId                         = 'discussions-space';
 var discussionSpaceListId                     = 'discussions-space-list';
 var displayStyleIconGuidedId                  = 'display-style-icon-guided-img';
