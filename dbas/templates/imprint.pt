@@ -62,7 +62,7 @@
 						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
 						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a></li>
 						<li><a target="_blank" href="https://bootswatch.com/paper/">Paper Theme for Bootstrap</a></li>
-						<li><span i18n:translate="icons_by">Icons by</span> <a target="_blank" href="https://www.iconfinder.com/">iconfinder</a> and <a target="_blank" href="http://www.flaticon.com/">flaticon</a></li>
+						<li><span i18n:translate="icons_by">Icons by</span> <a target="_blank" href="https://www.iconfinder.com/">iconfinder</a> <span i18n:target="and">and</span> <a target="_blank" href="http://www.flaticon.com/">flaticon (<span i18n:translate="designed_by">designed by</span> Roundicons <span i18n:translate="or">or</span> MadebyOliver)</a></li>
 						<li><span i18n:translate="tracking_by">Tracking by</span> <a target="_blank" href="http://piwik.org/">Piwik</a></li>
 						<li><span i18n:translate="avatare_by">Avatare by</span> <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
 						<li><span i18n:translate="chart_and_graphs_by">Charts and Graphs by</span> <a target="_blank" href="http://d3js.org">D3.js</a></li>

@@ -68,16 +68,23 @@ function setGravatarFallback() {
 	
 	const src = $('body').find('.img-circle')[0].src;
 	let jqxhr = $.get(src, function() {
-    	__replace_gravtar_with_default_image(true);
+    	replace_gravtar_with_default_image(true);
     }).fail(function() {
-    	__replace_gravtar_with_default_image(false);
+    	replace_gravtar_with_default_image(false);
     });
 }
 
-function __replace_gravtar_with_default_image(only_on_error){
+function replace_gravtar_with_default_image(only_on_error){
 	$('body').find('.img-circle').each(function (){
-		const no = Math.floor(Math.random() * 35);
-		const src = mainpage + 'static/images/fallback/' + no + '.svg';
+		const icons =
+			[  { 'name': 'faces', 'length': 98
+			}, { 'name': 'flat-smileys', 'length': 32
+			}, { 'name': 'human', 'length': 81
+			}, { 'name': 'lego', 'length': 10 }];
+		const t = 3;
+		const no = Math.floor(Math.random() * icons[t].length);
+		const src = mainpage + 'static/images/fallback-' + icons[t].name + '/' +  no + '.svg';
+		
 		const width = $(this).width();
 		if (only_on_error)
 			$(this).attr('onerror', 'this.src="' + src + '"');
