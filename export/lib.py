@@ -3,12 +3,11 @@
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
-from dbas.lib import sql_timestamp_pretty_print
 from dbas.input_validator import is_integer
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument,\
-    VoteStatement, Issue
+    VoteStatement, Issue, sql_timestamp_pretty_print
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
 
 

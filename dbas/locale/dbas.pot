@@ -6,15 +6,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-11-24 16:46+0100\n"
+"POT-Creation-Date: 2016-11-30 16:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Lingua 4.11\n"
+"Language: \n"
+"Generated-By: Lingua 4.9\n"
 
 #. Default: 404 Error
 #: ././templates/404.pt:8
@@ -47,7 +47,7 @@ msgid "go-home"
 msgstr ""
 
 #. Default: or
-#: ././templates/404.pt:17
+#: ././templates/404.pt:17 ././templates/imprint.pt:65
 msgid "or"
 msgstr ""
 
@@ -68,43 +68,43 @@ msgstr ""
 
 #. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
 #. argumentation system. There will be bugs. Please feel free to
-#: ././templates/index.pt:18
+#: ././templates/index.pt:20
 msgid "welcome_text1"
 msgstr ""
 
 #. Default: contact
-#: ././templates/index.pt:19
+#: ././templates/index.pt:21
 msgid "welcome_text2"
 msgstr ""
 
 #. Default: us to report bugs or provide feedback.
-#: ././templates/index.pt:20
+#: ././templates/index.pt:22
 msgid "welcome_text3"
 msgstr ""
 
 #. Default: Click here to start now!
-#: ././templates/index.pt:26
+#: ././templates/index.pt:28
 msgid "lets_start_now"
 msgstr ""
 
 #. Default: This work is part of the graduate school on
-#: ././templates/index.pt:32
+#: ././templates/index.pt:34
 msgid "work_based_on"
 msgstr ""
 
 #. Default: Online-Participation
-#: ././templates/index.pt:32
+#: ././templates/index.pt:34
 msgid "online_participation"
 msgstr ""
 
 #. Default: It is funded by the
-#: ././templates/index.pt:33
+#: ././templates/index.pt:35
 msgid "funded_by"
 msgstr ""
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: ././templates/index.pt:33
+#: ././templates/index.pt:35
 msgid "ministry_of_innovation"
 msgstr ""
 
@@ -329,6 +329,11 @@ msgstr ""
 #. Default: Icons by
 #: ././templates/imprint.pt:65
 msgid "icons_by"
+msgstr ""
+
+#. Default: designed by
+#: ././templates/imprint.pt:65
+msgid "designed_by"
 msgstr ""
 
 #. Default: Tracking by

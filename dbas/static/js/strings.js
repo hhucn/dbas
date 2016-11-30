@@ -337,7 +337,7 @@ var dbas_en = {
 	'doNotHesitateToContact': 'Do not hesitate to <b><span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span></b>',
 	'deleteStatisticsTitle': 'Delete Statistics',
 	'deleteStatisticsBody': 'Are you sure? This will delete all stored information about clicks respectively votes you have done.',
-	'euCookiePopupTitle': 'This website is using cookies and Piwik.',
+	'euCookiePopupTitle': 'This website uses cookies and Piwik.',
 	'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. All tracked data are saved anonymously with reduced masked IP-adresses.',
 	'euCookiePopoupButton1': 'Continue',
 	'euCookiePopoupButton2': 'Learn&nbsp;more',

@@ -643,7 +643,7 @@ class FrontendTests:
 
         # confrontation - give feedback
         success = success and Helper.check_for_present_text(b, 'Other participants', 'check for confronting question')
-        success = success and Helper.check_for_present_text(b, 'stronger argument for accepting my point', 'check for accepting formulation of rebut')
+        success = success and Helper.check_for_present_text(b, 'stronger argument for accept my point', 'check for accept formulation of rebut')
 
         # earlier used argument
         time.sleep(wait_time * 5)
@@ -679,7 +679,7 @@ class FrontendTests:
         time.sleep(wait_time)
 
         # rebut of confrontation
-        success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for accepting', 'check for formulation on rebut')
+        success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for accept', 'check for formulation on rebut')
         b.find_by_css('#discussion-restart-btn').click()
         time.sleep(wait_time)
 
@@ -697,16 +697,16 @@ class FrontendTests:
         time.sleep(wait_time)
 
         # confrontation - give feedback
-        success = success and Helper.check_for_present_text(b, 'does not hold', 'check for rejecting opinion')
-        tmp_success1 = b.is_text_present('stronger statement for accepting')
+        success = success and Helper.check_for_present_text(b, 'does not hold', 'check for reject opinion')
+        tmp_success1 = b.is_text_present('stronger statement for accept')
         tmp_success2 = b.is_text_present('good counter-argument for')
-        Helper.print_success(tmp_success1 or tmp_success2, 'check for rejecting formulation of rebut')
+        Helper.print_success(tmp_success1 or tmp_success2, 'check for reject formulation of rebut')
         success = success and (tmp_success1 or tmp_success2)
         time.sleep(wait_time * 5)
         b.find_by_css('#discussions-space-list li:nth-child(4) input').click()
 
         # rebut of confrontation
-        success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for rejecting', 'check for formulation on rebut again')
+        success = success and Helper.check_for_present_text(b, 'You have a much stronger argument for reject', 'check for formulation on rebut again')
         success = success and Helper.check_for_present_text(b, 'is not a good idea', 'check for question again')
 
         b = Helper.logout(b)

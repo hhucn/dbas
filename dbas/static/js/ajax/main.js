@@ -79,7 +79,7 @@ function AjaxMainHandler(){
 					setGlobalErrorHandler('Ohh!', errorMsg);
 				} else {
 					$('#' + popupLoginFailed).show();
-					$('#' + popupLoginFailed + '-message').text(errorMsg);
+					$('#' + popupLoginFailed + '-message').html(errorMsg);
 				}
 			}
 		}).always(function ajaxLoginAlways(){

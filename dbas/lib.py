@@ -18,11 +18,11 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
     VoteArgument, VoteStatement, Group
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import tag_type
 from dbas.strings.translator import Translator, get_translation
 from sqlalchemy import and_, func
 
 fallback_lang = 'en'
+tag_type = 'span'
 
 
 def get_global_url():
@@ -80,30 +80,6 @@ def get_discussion_language(request, current_issue_uid=1):
     db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
 
     return db_lang.languages.ui_locales if db_lang else 'en'
-
-
-def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
-    """
-    Pretty printing for sql timestamp in dependence of the language.
-
-    :param ts: timestamp (arrow) as string
-    :param lang: language
-    :param humanize: Boolean
-    :param with_exact_time: Boolean
-    :return:
-    """
-    ts = ts.replace(hours=-2)
-    if humanize:
-        # if lang == 'de':
-        ts = ts.to('Europe/Berlin')
-        # else:
-        #    ts = ts.to('US/Pacific')
-        return ts.humanize(locale=lang)
-    else:
-        if lang == 'de':
-            return ts.format('DD.MM.YYYY' + (', HH:mm:ss ' if with_exact_time else ''))
-        else:
-            return ts.format('YYYY-MM-DD' + (', HH:mm:ss ' if with_exact_time else ''))
 
 
 def python_datetime_pretty_print(ts, lang):
@@ -838,12 +814,16 @@ def get_public_profile_picture(user, size=80):
     return gravatar_url
 
 
-def get_author_data(main_page, uid):
+def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20):
     """
     Returns a-tag with gravatar of current author and users page as href
 
-    :param uid: of user
-    :return: string
+    :param main_page: Current mainpage
+    :param uid: Uid of the author
+    :param gravatar_on_right_side: True, if the gravatar is on the right of authors name
+    :param linked_with_users_page: True, if the text is a link to the authors site
+    :param profile_picture_size: Integer
+    :return: HTML-String
     """
     db_user = DBDiscussionSession.query(User).filter_by(uid=int(uid)).first()
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
@@ -851,7 +831,11 @@ def get_author_data(main_page, uid):
         return 'Missing author with uid ' + str(uid), False
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
-    img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
-    link_begin = '<a href="' + main_page + '/user/' + db_user.get_global_nickname() + '">'
-    link_end = '</a>'
-    return link_begin + db_user.nickname + ' ' + img + link_end, True
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, profile_picture_size, True) + '">'
+    nick = db_user.get_global_nickname()
+    link_begin = ('<a href="' + main_page + '/user/' + nick + ' " title="' + nick + '">') if linked_with_users_page else ''
+    link_end = ('</a>') if linked_with_users_page else ''
+    if gravatar_on_right_side:
+        return link_begin + nick + ' ' + img + link_end, True
+    else:
+        return link_begin + img + ' ' + nick + link_end, True

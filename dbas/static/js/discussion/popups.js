@@ -10,8 +10,8 @@ function PopupHandler() {
 	 * @param statements_uids
 	 */
 	this.showEditStatementsPopup = function (statements_uids) {
-		var input_space = $('#' + popupEditStatementInputSpaceId);
-		var ajaxHandler = new AjaxDiscussionHandler();
+		const input_space = $('#' + popupEditStatementInputSpaceId);
+		const ajaxHandler = new AjaxDiscussionHandler();
 		$('#' + popupEditStatementId).modal('show');
 		input_space.empty();
 		$('#' + popupEditStatementLogfileSpaceId).empty();
@@ -26,13 +26,13 @@ function PopupHandler() {
 		
 		// add inputs
 		$.each(statements_uids, function (index, value) {
-			var statement = $('#' + value).text().trim().replace(/\s+/g, ' ');
+			const statement = $('#' + value).text().trim().replace(/\s+/g, ' ');
 			
-			var group = $('<div>').addClass('form-group');
-			var outerInputGroup = $('<div>').addClass('col-md-12').addClass('input-group');
-			var innerInputGroup = $('<div>').addClass('input-group-addon');
-			var group_icon = $('<i>').addClass('fa').addClass('fa-2x').addClass('fa-file-text-o').attr('aria-hidden', '"true"');
-			var input = $('<input>')
+			const group = $('<div>').addClass('form-group');
+			const outerInputGroup = $('<div>').addClass('col-md-12').addClass('input-group');
+			const innerInputGroup = $('<div>').addClass('input-group-addon');
+			const group_icon = $('<i>').addClass('fa').addClass('fa-2x').addClass('fa-file-text-o').attr('aria-hidden', '"true"');
+			const input = $('<input>')
 				.addClass('form-control')
 				.attr('id', 'popup-edit-statement-input-' + index)
 				.attr('name', 'popup-edit-statement-input-' + index)
@@ -48,18 +48,18 @@ function PopupHandler() {
 		});
 
 		// gui for editing statements
-		var _l = function(s1, s2){
+		const _l = function(s1, s2){
 			return levensthein(s1, s2);
 		};
 		input_space.find('input').each(function () {
 			$(this).keyup(function () {
-				var oem = $(this).attr('placeholder');
-				var now = $(this).val();
-				var id = $(this).attr('id');
-				var statement_uid = $(this).data('statement-uid');
+				const oem = $(this).attr('placeholder');
+				const now = $(this).val();
+				const id = $(this).attr('id');
+				const statement_uid = $(this).data('statement-uid');
 				
 				// reduce noise
-				var levensthein = _l(oem, now);
+				const levensthein = _l(oem, now);
 				$('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? _t_discussion(pleaseEditAtLeast) : '');
 				
 				if (now && oem && now.toLowerCase() == oem.toLowerCase() && levensthein < 5)
@@ -117,9 +117,9 @@ function PopupHandler() {
 	this.showAddTopicPopup = function (callbackFunctionOnDone) {
 		$('#popup-add-topic').modal('show');
 		$('#popup-add-topic-accept-btn').click(function () {
-			var info = $('#popup-add-topic-info-input').val(),
-				title = $('#popup-add-topic-title-input').val(),
-				lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
+			const info = $('#popup-add-topic-info-input').val();
+			const title = $('#popup-add-topic-title-input').val();
+			const lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
 			new AjaxDiscussionHandler().sendNewIssue(info, title, lang, callbackFunctionOnDone);
 		});
 		$('#popup-add-topic-refuse-btn').click(function () {
@@ -134,7 +134,7 @@ function PopupHandler() {
 	 * @param is_argument is true if the statement is a complete argument
 	 */
 	this.showFlagStatementPopup = function (uid, is_argument) {
-		var popup = $('#popup-flag-statement');
+		const popup = $('#popup-flag-statement');
 		if (is_argument) {
 			popup.find('.statement_text').hide();
 			popup.find('.argument_text').show();
@@ -147,7 +147,7 @@ function PopupHandler() {
 			popup.find('input').off('click').unbind('click');
 		});
 		popup.find('input').click(function () {
-			var reason = $(this).attr('value');
+			const reason = $(this).attr('value');
 			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
@@ -160,13 +160,21 @@ function PopupHandler() {
 	 * @param uid of the argument
 	 */
 	this.showFlagArgumentPopup = function (uid) {
-		var popup = $('#popup-flag-argument');
+		const popup = $('#popup-flag-argument');
 		// var text = $('.triangle-l:last-child .triangle-content').text();
 		
 		// clean text
 		// cut the part after <br><br>
-		var text = $('.triangle-l:last-child .triangle-content').html();
+		let text = $('.triangle-l:last-child .triangle-content').html();
 		text = text.substr(0, text.indexOf('<br>'));
+		
+		// cut the author
+		const tmp = text.indexOf('</a>');
+		if (tmp != -1) {
+			const a = $('.triangle-l:last-child .triangle-content a').attr('title');
+			text = a + ' ' + text.substr(tmp + '</a>'.length);
+		}
+			
 		// cut all spans
 		while (text.indexOf('</span>') != -1)
 			text = text.replace('</span>', '');
@@ -197,9 +205,9 @@ function PopupHandler() {
 		// pretty stuff on hovering
 		popup.find('input').each(function () {
 			if ($(this).data('special') === '') {
-				var current = $(this).next().find('em').text().trim();
+				const current = $(this).next().find('em').text().trim();
 				$(this).hover(function () {
-					var modded_text = text.replace(new RegExp("(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+					const modded_text = text.replace(new RegExp("(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
 					$('#popup-flag-argument-text').html(modded_text);
 					$(this).next().find('em').html("<span class='text-primary'>" + current + "</span>");
 				}, function () {
@@ -210,9 +218,9 @@ function PopupHandler() {
 		});
 		popup.find('label').each(function () {
 			if ($(this).prev().data('special') === '') {
-				var current = $(this).find('em').text().trim();
+				const current = $(this).find('em').text().trim();
 				$(this).hover(function () {
-					var modded_text = text.replace(new RegExp("(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+					const modded_text = text.replace(new RegExp("(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
 					$('#popup-flag-argument-text').html(modded_text);
 					$(this).find('em').html("<span class='text-primary'>" + current + "</span>");
 				}, function () {
@@ -230,7 +238,7 @@ function PopupHandler() {
 	 * @param is_argument boolean
 	 */
 	this.showDeleteContentPopup = function (uid, is_argument) {
-		var popup = $('#popup-delete-content');
+		const popup = $('#popup-delete-content');
 		popup.modal('show');
 		
 		$('#popup-delete-content-submit').click(function () {
@@ -249,16 +257,16 @@ function PopupHandler() {
 	 * @param data in json-format
 	 */
 	this.showReferencesPopup = function (data) {
-		var popup = $('#' + popupReferences);
-		var references_body = $('#popup-references-body');
-		var references_body_add = $('#popup-references-body-add').hide();
-		var add_button = $('#popup-reference-add-btn');
-		var send_button = $('#popup-reference-send-btn');
-		var dropdown = $('#popup-references-cite-dropdown');
-		var dropdown_list = $('#popup-references-cite-dropdown-list');
-		var reference_text = $('#popup-references-add-text');
-		var reference_source = $('#popup-references-add-source');
-		var info_text = $('#choose_reference_text');
+		const popup = $('#' + popupReferences);
+		const references_body = $('#popup-references-body');
+		const references_body_add = $('#popup-references-body-add').hide();
+		const add_button = $('#popup-reference-add-btn');
+		const send_button = $('#popup-reference-send-btn');
+		const dropdown = $('#popup-references-cite-dropdown');
+		const dropdown_list = $('#popup-references-cite-dropdown-list');
+		const reference_text = $('#popup-references-add-text');
+		const reference_source = $('#popup-references-add-source');
+		const info_text = $('#choose_reference_text');
 		
 		dropdown.hide();
 		info_text.hide();
@@ -285,9 +293,9 @@ function PopupHandler() {
 		});
 		
 		send_button.off('click').click(function () {
-			var uid = $(this).data('id');
-			var reference = reference_text.val();
-			var ref_source = reference_source.val();
+			const uid = $(this).data('id');
+			const reference = reference_text.val();
+			const ref_source = reference_source.val();
 			new AjaxReferenceHandler().setReference(uid, reference, ref_source);
 		});
 		
@@ -314,42 +322,42 @@ function PopupHandler() {
 	 * @param data in json-format
 	 */
 	this.createReferencesPopupBody = function (data) {
-		var popup = $('#' + popupReferences);
-		var references_body = $('#popup-references-body');
-		var send_button = $('#popup-reference-send-btn');
-		var dropdown = $('#popup-references-cite-dropdown');
-		var dropdown_list = $('#popup-references-cite-dropdown-list');
-		var dropdown_title = $('#popup-references-cite-dropdown-title');
+		const popup = $('#' + popupReferences);
+		const references_body = $('#popup-references-body');
+		const send_button = $('#popup-reference-send-btn');
+		const dropdown = $('#popup-references-cite-dropdown');
+		const dropdown_list = $('#popup-references-cite-dropdown-list');
+		const dropdown_title = $('#popup-references-cite-dropdown-title');
 		
 		// data is an dictionary with all statement uid's as key
 		// the value of every key is an array with dictionaries for every reference
 		$.each(data.data, function (statement_uid, array) {
-			var statements_div = $('<div>');
-			var text = '';
+			const statements_div = $('<div>');
+			let text = '';
 			// build a callout for every reference
 			array.forEach(function (dict) {
 				text = dict.statement_text;
-				var author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
+				const author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
 					.append($('<span>').text(dict.author.name))
 					.append($('<img>').addClass('img-circle').attr('src', dict.author.img));
 				
-				var link = $('<a>').attr({
+				const link = $('<a>').attr({
 					'href': dict.host + dict.path,
 					'target': '_blank'
 				}).text('(' + dict.host + dict.path + ')');
-				var span = $('<span>').text(dict.reference + ' ');
+				const span = $('<span>').text(dict.reference + ' ');
 				
-				var label = $('<label>').addClass('bs-callout').addClass('bs-callout-primary');
-				var body = $('<p>').append(span).append(link).append(author);
+				const label = $('<label>').addClass('bs-callout').addClass('bs-callout-primary');
+				const body = $('<p>').append(span).append(link).append(author);
 				label.append(body);
 				
 				statements_div.append(label);
 			});
 			// add the statemet itself
-			var glqq = $.parseHTML('<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
-			var grqq = $.parseHTML('<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
-			var statement = $('<span>').addClass('lead').text(text);
-			var wrapper = $('<p>').append(glqq).append(statement).append(grqq);
+			const glqq = $.parseHTML('<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
+			const grqq = $.parseHTML('<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
+			const statement = $('<span>').addClass('lead').text(text);
+			const wrapper = $('<p>').append(glqq).append(statement).append(grqq);
 			
 			// add elements for the dropdown
 			if (text.length > 0) {
@@ -358,7 +366,7 @@ function PopupHandler() {
 				text = data.text[statement_uid];
 			}
 			console.log(text);
-			var tmp = $('<a>').attr('href', '#').attr('data-id', statement_uid).text(text).click(function () {
+			const tmp = $('<a>').attr('href', '#').attr('data-id', statement_uid).text(text).click(function () {
 				// set text, remove popup
 				dropdown_title.text($(this).text()).parent().attr('aria-expanded', false);
 				dropdown.removeClass('open');

@@ -322,7 +322,7 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack):
+    def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):
         """
         Prepares the dict with all items for the argumentation window.
 
@@ -330,6 +330,7 @@ class ItemDictHelper(object):
         :param argument_uid_user: Argument.uid
         :param is_supportive: Boolean
         :param attack: String
+        :param gender: Gender of the author of the attack
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_reaction', 'def')
@@ -344,20 +345,15 @@ class ItemDictHelper(object):
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, False, True, db_user_argument.is_supportive,
                                                             first_conclusion=_tn.get(_.myPosition),
-                                                            attack_type=attack)
-        mode             = 't' if is_supportive else 'f'
-        _um              = UrlManager(self.application_url, slug, self.for_api, history=self.path)
-        _rh              = RecommenderSystem
+                                                            attack_type=attack, gender=gender)
+        mode = 't' if is_supportive else 'f'
+        _um  = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        _rh  = RecommenderSystem
 
-        # based in the relation, we will fetch different url's for the items
-        # relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO overbid
-        # TODO COMMA16 Special Case (forbid: undercuts of undercuts)
-        # if attack == 'undercut':
-        #     relations = ['undermine', 'support', 'rebut']
-        # else:
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
-            url = self.__get_url_based_on_relation(relation, attack, _rh, _um, argument_uid_user, argument_uid_sys, mode, db_user_argument, db_sys_argument)
+            url = self.__get_url_based_on_relation(relation, attack, _rh, _um, argument_uid_user, argument_uid_sys,
+                                                   mode, db_user_argument, db_sys_argument)
 
             # TODO PREVENT LOOPING
             # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
@@ -526,6 +522,7 @@ class ItemDictHelper(object):
                                                                           Argument.argument_uid == argument,
                                                                           Argument.is_supportive == is_supportive)).first()
             if not db_argument:
+                logger('ItemDictHelper', 'get_array_for_choosing', 'No argument found', error=True)
                 return None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
             arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.lang,
@@ -551,8 +548,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
-        # db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-        # db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: FIX RANDOM FOR PGROUP
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 
         # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
         item_text = get_jump_to_argument_text_list(self.lang)
@@ -568,14 +564,18 @@ class ItemDictHelper(object):
         else:
             url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
             url3 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
-        # url3 = _um.get_url_for_justifying_statement(not for_api, db_premise.statement_uid, 'f')
         url2 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undercut')
+        if len(db_premises) == 1:
+            url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
+        else:
+            url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
 
         answers = list()
         answers.append({'text': item_text[0], 'url': url0})
         answers.append({'text': item_text[1], 'url': url1})
         answers.append({'text': item_text[2], 'url': url2})
         answers.append({'text': item_text[3], 'url': url3})
+        answers.append({'text': item_text[4], 'url': url4})
 
         statements_array = []
         for no in range(0, len(answers)):

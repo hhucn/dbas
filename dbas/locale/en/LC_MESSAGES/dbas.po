@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-11-24 16:46+0100\n"
+"POT-Creation-Date: 2016-11-30 16:21+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -47,7 +47,7 @@ msgid "go-home"
 msgstr "Go home"
 
 #. Default: or
-#: templates/404.pt:17
+#: templates/404.pt:17 templates/imprint.pt:65
 msgid "or"
 msgstr "oder"
 
@@ -68,45 +68,45 @@ msgstr "You have to log in again."
 
 #. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
 #. argumentation system. There will be bugs. Please feel free to
-#: templates/index.pt:18
+#: templates/index.pt:20
 msgid "welcome_text1"
 msgstr ""
 "Welcome to D-BAS! This is an early prototype of our dialog-based "
 "argumentation system. There will be bugs. Please feel free to"
 
 #. Default: contact
-#: templates/index.pt:19
+#: templates/index.pt:21
 msgid "welcome_text2"
 msgstr "contact"
 
 #. Default: us to report bugs or provide feedback.
-#: templates/index.pt:20
+#: templates/index.pt:22
 msgid "welcome_text3"
 msgstr "us to report bugs or provide feedback."
 
 #. Default: Click here to start now!
-#: templates/index.pt:26
+#: templates/index.pt:28
 msgid "lets_start_now"
 msgstr "Click here to start now!"
 
 #. Default: This work is part of the graduate school on
-#: templates/index.pt:32
+#: templates/index.pt:34
 msgid "work_based_on"
 msgstr "This work is part of the graduate school on"
 
 #. Default: Online-Participation
-#: templates/index.pt:32
+#: templates/index.pt:34
 msgid "online_participation"
 msgstr "Online-Participation"
 
 #. Default: It is funded by the
-#: templates/index.pt:33
+#: templates/index.pt:35
 msgid "funded_by"
 msgstr "It is funded by the"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:33
+#: templates/index.pt:35
 msgid "ministry_of_innovation"
 msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
@@ -393,6 +393,11 @@ msgstr "Copyright and used Software"
 #: templates/imprint.pt:65
 msgid "icons_by"
 msgstr "Icons by"
+
+#. Default: designed by
+#: templates/imprint.pt:65
+msgid "designed_by"
+msgstr "designed by"
 
 #. Default: Tracking by
 #: templates/imprint.pt:66

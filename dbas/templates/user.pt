@@ -80,7 +80,6 @@
 
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/user.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>
 
 	</tal:block>
 </tal:block>
