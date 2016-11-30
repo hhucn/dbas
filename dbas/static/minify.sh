@@ -9,12 +9,14 @@ path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # files which are minifed (has to be in the same order as paths!
 files=($path"/js/compiled/main.min.js"
        $path"/js/compiled/main_discussion.min.js"
-       $path"/js/compiled/main_ajax.min.js")
+       $path"/js/compiled/main_ajax.min.js"
+       $path"/js/compiled/main_review.min.js")
 
 # path for files, which should be minified
 paths=($path"/js/*.js"
        $path"/js/discussion/*.js"
-       $path"/js/ajax/*.js")
+       $path"/js/ajax/*.js"
+       $path"/js/review/*.js")
 
 # path for files, which should be appended for the final file
 appends=($path"/js/compiled/main.min.js"
@@ -26,14 +28,15 @@ appends=($path"/js/compiled/main.min.js"
          $path"/js/bootstrap/bootstrap-toggle.min.js")
 
 final_file=$path"/js/compiled/dbas.min.js"
-rm ${final_file};
+rm -f ${final_file};
 
+mkdir -p $path"/js/compiled"
 
 length=${#files[@]}
 max_iter=$(expr $length - 1)
 for i in `seq 0 $max_iter`;
     do
-    rm ${files[i]}
+    rm -f ${files[i]}
     touch ${files[i]}
 
     old_size=$(find . -name "*.css" -ls | awk '{total += $7} END {print total}')
