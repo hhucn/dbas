@@ -790,6 +790,10 @@ def discussion_choose(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
+    for pgroup in pgroup_ids:
+        if not is_integer(pgroup):
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+
     if not check_belonging_of_premisegroups(issue, pgroup_ids) or not is_integer(uid):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 

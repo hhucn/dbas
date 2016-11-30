@@ -522,6 +522,7 @@ class ItemDictHelper(object):
                                                                           Argument.argument_uid == argument,
                                                                           Argument.is_supportive == is_supportive)).first()
             if not db_argument:
+                logger('ItemDictHelper', 'get_array_for_choosing', 'No argument found', error=True)
                 return None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
             arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.lang,
@@ -567,8 +568,7 @@ class ItemDictHelper(object):
         if len(db_premises) == 1:
             url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
         else:
-            # url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
-            url4 = _um.get_url_for_choosing_premisegroup(not for_api, 't', 't' if db_argument.is_supportive else 'f', db_argument.uid, [p.statement_uid for p in db_premises])
+            url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
 
         answers = list()
         answers.append({'text': item_text[0], 'url': url0})
