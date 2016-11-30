@@ -357,7 +357,5 @@
         <script tal:condition="extras.show_graph_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}"></script>
         <script tal:condition="extras.show_graph_icon or extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/d3.min.js')}"></script>
 
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>
-
     </tal:block>
 </tal:block>
