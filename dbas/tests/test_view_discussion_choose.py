@@ -23,10 +23,10 @@ class DiscussionChhoseViewTests(unittest.TestCase):
 
         matchdict = {
             'slug': 'cat-or-dog',
-            'is_argument': 't',
+            'is_argument': 'f',
             'supportive': 't',
-            'id': 1,
-            'pgroup_ids': [12],
+            'id': 5,
+            'pgroup_ids': [15, 17],
         }
         request = testing.DummyRequest()
         request.matchdict = matchdict

@@ -606,6 +606,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     issue_dict          = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
+        logger('discussion_justify', 'def', 'justify statement')
         if not get_text_for_statement_uid(statement_or_arg_id)\
                 or not check_belonging_of_statement(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
@@ -614,6 +615,7 @@ def discussion_justify(request, for_api=False, api_data=None):
                                                                                     supportive, mode, ui_locales, request_authenticated_userid)
 
     elif 'd' in mode and relation == '':
+        logger('discussion_justify', 'def', 'do not know')
         if not check_belonging_of_argument(issue, statement_or_arg_id) and \
                 not check_belonging_of_statement(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
@@ -622,6 +624,7 @@ def discussion_justify(request, for_api=False, api_data=None):
                                                                                       supportive, ui_locales, request_authenticated_userid)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
+        logger('discussion_justify', 'def', 'justify argument')
         if not check_belonging_of_argument(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
         item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, api_data,

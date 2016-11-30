@@ -21,7 +21,11 @@ class MainUserViewTests(unittest.TestCase):
     def test_main_user_page(self):
         from dbas.views import main_user as d
 
+        matchdict = {
+            'nickname': 'tobias',
+        }
         request = testing.DummyRequest()
+        request.matchdict = matchdict
         response = d(request)
         verify_dictionary_of_view(self, response)
 

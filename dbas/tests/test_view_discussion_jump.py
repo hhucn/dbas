@@ -21,7 +21,12 @@ class DiscussionJumpViewTests(unittest.TestCase):
     def test_discussion_justifypage(self):
         from dbas.views import discussion_jump as d
 
+        matchdict = {
+            'slug': 'cat-or-dog',
+            'arg_id': 12,
+        }
         request = testing.DummyRequest()
+        request.matchdict = matchdict
         response = d(request)
         verify_dictionary_of_view(self, response)
 

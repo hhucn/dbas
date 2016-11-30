@@ -1,6 +1,8 @@
 import unittest
 
 from pyramid import testing
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
 
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
@@ -14,6 +16,7 @@ class MainSettingsViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
     def tearDown(self):
         testing.tearDown()
