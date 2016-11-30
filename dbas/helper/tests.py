@@ -2,6 +2,7 @@
 Utility functions for testing.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
 
@@ -33,3 +34,20 @@ def add_settings_to_appconfig(ini_file="development.ini"):
     if os.path.isfile("/.dockerenv") and not ini_file:
         return appconfig("config:" + path_to_settings("docker.ini"))
     return appconfig("config:" + path_to_settings(ini_file))
+
+
+def verify_dictionary_of_view(_self, some_dict):
+    """
+    Check for keys in the dict
+
+    :param _self: Instance of unittest.TestCase
+    :param some_dict: a dictioary
+    :return: None
+    :rtype: None
+    """
+    _self.assertIn('layout', some_dict)
+    _self.assertIn('language', some_dict)
+    _self.assertIn('title', some_dict)
+    _self.assertIn('project', some_dict)
+    _self.assertIn('extras', some_dict)
+    _self.assertIn('session_expired', some_dict)
