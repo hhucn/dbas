@@ -548,7 +548,6 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-        # db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: FIX RANDOM FOR PGROUP
 
         # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
         item_text = get_jump_to_argument_text_list(self.lang)
@@ -568,7 +567,8 @@ class ItemDictHelper(object):
         if len(db_premises) == 1:
             url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
         else:
-            url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+            # url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+            url4 = _um.get_url_for_choosing_premisegroup(not for_api, 't', 't' if db_argument.is_supportive else 'f', db_argument.uid, [p.statement_uid for p in db_premises])
 
         answers = list()
         answers.append({'text': item_text[0], 'url': url0})

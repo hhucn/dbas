@@ -21,12 +21,11 @@ class DiscussionDictHelper(object):
     Provides all functions for creating the discussion dictionaries with all bubbles.
     """
 
-    def __init__(self, lang, session_id, nickname=None, history='', main_page='', slug=''):
+    def __init__(self, lang, nickname=None, history='', main_page='', slug=''):
         """
         Initialize default values
 
         :param lang: ui_locales
-        :param session_id: request.session_id
         :param nickname: request.authenticated_userid
         :param history: history
         :param main_page: String
@@ -34,7 +33,6 @@ class DiscussionDictHelper(object):
         :return:
         """
         self.lang = lang
-        self.session_id = session_id
         self.nickname = nickname
         self.history = history
         self.main_page = main_page
@@ -80,9 +78,6 @@ class DiscussionDictHelper(object):
         # select_bubble = history_helper.create_speechbubble_dict(is_user=True, '', '', _tn.get(_.youAreInterestedIn) + ': <strong>' + statement_text + '</strong>', lang=self.lang)
         bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
 
-        # if save_crumb:
-        #     bubbles_array.append(select_bubble)
-        #     self.__save_speechbubble(select_bubble, db_user, self.session_id, transaction, statement_uid=uid)
         bubbles_array = [bubble]
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
@@ -213,14 +208,6 @@ class DiscussionDictHelper(object):
         self.__append_now_bubble(bubbles_array)
         bubbles_array.append(
             create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang))
-
-        # if save_crumb:
-        #     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        #     self.__save_speechbubble(bubble_user, db_user, self.session_id, transaction, argument_uid=uid)
-        #     self.__save_speechbubble(bubble_question, db_user, self.session_id, transaction)
-
-        # if not self.nickname and count_of_items == 1:
-        #     bubbles_array.append(history_helper.create_speechbubble_dict(is_status=True, 'now', '', _tn.get(_.onlyOneItemWithLink), True))
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
 
