@@ -33,7 +33,7 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
     process_seen_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
-from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
+from dbas.helper.views import preparation_for_view, get_nickname, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
     try_to_register_new_user_via_ajax, request_password
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
@@ -451,7 +451,7 @@ def discussion_init(request, for_api=False, api_data=None):
     logger('discussion_init', 'def', 'main, request.params: ' + str(params))
     request_authenticated_userid = request.authenticated_userid
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -476,7 +476,7 @@ def discussion_init(request, for_api=False, api_data=None):
     item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
     history_helper.save_issue_uid(issue, nickname)
 
-    discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, main_page=request.application_url, slug=slug)\
+    discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=request.application_url, slug=slug)\
         .get_dict_for_start()
     extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                         False, True, request,
@@ -521,7 +521,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     logger('discussion_attitude', 'def', 'main, request.matchdict: ' + str(match_dict))
     logger('discussion_attitude', 'def', 'main, request.params: ' + str(params))
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -540,7 +540,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)\
+    discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)\
         .get_dict_for_attitude(statement_id)
     if not discussion_dict:
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_id]))
@@ -586,7 +586,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     logger('discussion_justify', 'def', 'main, request.params: ' + str(params))
     request_authenticated_userid = request.authenticated_userid
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -679,7 +679,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     supportive = tmp_argument.is_supportive
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -695,7 +695,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)
+    _ddh            = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh            = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
     item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
@@ -790,14 +790,18 @@ def discussion_choose(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    if not check_belonging_of_premisegroups(issue, pgroup_ids):
+    for pgroup in pgroup_ids:
+        if not is_integer(pgroup):
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+
+    if not check_belonging_of_premisegroups(issue, pgroup_ids) or not is_integer(uid):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
-    discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)\
+    discussion_dict = DiscussionDictHelper(ui_locales, nickname, history, main_page=request.application_url, slug=slug)\
         .get_dict_for_choosing(uid, is_argument, is_supportive)
     item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)\
         .get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, nickname)
@@ -844,7 +848,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     logger('discussion_jump', 'def', 'main, request.matchdict: ' + str(match_dict))
     logger('discussion_jump', 'def', 'main, request.params: ' + str(params))
 
-    nickname, session_id = get_nickname_and_session(request, request_authenticated_userid, for_api, api_data)
+    nickname = get_nickname(request_authenticated_userid, for_api, api_data)
     history = params['history'] if 'history' in params else ''
 
     if for_api and api_data:
@@ -868,7 +872,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     if not check_belonging_of_argument(issue, arg_uid):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
@@ -2223,7 +2227,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
         elif mode == '4':  # getting text
             return_dict = fuzzy_string_matcher.get_strings_for_search(value)
         elif mode == '5':  # getting public nicknames
-            nickname, session_id = get_nickname_and_session(request, request_authenticated_userid, for_api, api_data)
+            nickname = get_nickname(request_authenticated_userid, for_api, api_data)
             return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_public_nickname(value, nickname)
         else:
             logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))

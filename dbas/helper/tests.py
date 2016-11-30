@@ -50,4 +50,3 @@ def verify_dictionary_of_view(_self, some_dict):
     _self.assertIn('title', some_dict)
     _self.assertIn('project', some_dict)
     _self.assertIn('extras', some_dict)
-    _self.assertIn('session_expired', some_dict)
