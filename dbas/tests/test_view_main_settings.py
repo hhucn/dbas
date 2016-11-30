@@ -1,8 +1,6 @@
 import unittest
 
 from pyramid import testing
-from pyramid.authentication import AuthTktAuthenticationPolicy
-from pyramid.authorization import ACLAuthorizationPolicy
 
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
