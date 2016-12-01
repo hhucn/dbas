@@ -1,4 +1,5 @@
 import unittest
+import json
 
 from pyramid import testing
 
@@ -10,7 +11,24 @@ settings = add_settings_to_appconfig()
 DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
-class MainSettingsViewTests(unittest.TestCase):
+class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_main_settings_page(self):
+        from dbas.views import main_settings as d
+
+        request = testing.DummyRequest()
+        response = d(request)
+        from pyramid.httpexceptions import HTTPFound
+        self.assertTrue(type(response) is HTTPFound)
+
+
+class MainSettingsViewTestsLoggedIn(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
@@ -26,4 +44,97 @@ class MainSettingsViewTests(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(self, response)
 
+        # check settings
+        self.assertIn('send_notifications', response['settings'])
+        self.assertIn('send_mails', response['settings'])
+        self.assertIn('public_nick', response['settings'])
+
         # place for additional stuff
+        # do ajax things
+
+
+class MainSettingsViewTestsAjax(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_set_user_language(self):
+        from dbas.views import set_user_language as ajax
+
+        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        response = json.loads(ajax(request))
+        self.assertIn('error', response)
+        self.assertIn('ui_locales', response)
+        self.assertIn('current_lang', response)
+        self.assertTrue(response['error'] == '')
+        self.assertTrue(response['ui_locales'] == 'en')
+        self.assertTrue(response['current_lang'] == 'English')
+
+        request = testing.DummyRequest(params={'ui_locales': 'de'})
+        response = json.loads(ajax(request))
+        self.assertIn('error', response)
+        self.assertIn('ui_locales', response)
+        self.assertIn('current_lang', response)
+        self.assertTrue(response['error'] == '')
+        self.assertTrue(response['ui_locales'] == 'de')
+        self.assertTrue(response['current_lang'] == 'Deutsch')
+
+        request = testing.DummyRequest(params={'ui_locales': 'li'})
+        response = json.loads(ajax(request))
+        self.assertIn('error', response)
+        self.assertIn('ui_locales', response)
+        self.assertIn('current_lang', response)
+        self.assertTrue(response['error'] != '')
+        self.assertTrue(response['ui_locales'] == 'li')
+        self.assertTrue(response['current_lang'] == '')
+
+    def test_set_user_setting(self):
+        from dbas.views import set_user_settings as ajax
+
+        request = testing.DummyRequest(params={'service': 'mail', 'settings_value': False})
+        response = json.loads(ajax(request))
+        self.assertIn('error', response)
+        self.assertIn('public_nick', response)
+        self.assertIn('public_page_url', response)
+        self.assertIn('gravatar_url', response)
+        self.assertTrue(response['error'] == '')
+        self.assertTrue(response['public_nick'] != '')
+        self.assertTrue(response['public_page_url'] != '')
+        self.assertTrue(response['gravatar_url'] != '')
+
+        request = testing.DummyRequest(params={'service': 'notification', 'settings_value': True})
+        response = json.loads(ajax(request))
+        self.assertIn('error', response)
+        self.assertIn('public_nick', response)
+        self.assertIn('public_page_url', response)
+        self.assertIn('gravatar_url', response)
+        self.assertTrue(response['error'] == '')
+        self.assertTrue(response['public_nick'] != '')
+        self.assertTrue(response['public_page_url'] != '')
+        self.assertTrue(response['gravatar_url'] != '')
+
+        request = testing.DummyRequest(params={'service': 'public_nick', 'settings_value': False})
+        response = json.loads(ajax(request))
+        self.assertIn('error', response)
+        self.assertIn('public_nick', response)
+        self.assertIn('public_page_url', response)
+        self.assertIn('gravatar_url', response)
+        self.assertTrue(response['error'] == '')
+        self.assertTrue(response['public_nick'] != '')
+        self.assertTrue(response['public_page_url'] != '')
+        self.assertTrue(response['gravatar_url'] != '')
+
+        request = testing.DummyRequest(params={'service': 'oha', 'settings_value': False})
+        response = json.loads(ajax(request))
+        self.assertIn('error', response)
+        self.assertIn('public_nick', response)
+        self.assertIn('public_page_url', response)
+        self.assertIn('gravatar_url', response)
+        self.assertTrue(response['error'] != '')
+        self.assertTrue(response['public_nick'] != '')
+        self.assertTrue(response['public_page_url'] != '')
+        self.assertTrue(response['gravatar_url'] != '')

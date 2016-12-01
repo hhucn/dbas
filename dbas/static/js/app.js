@@ -7,7 +7,7 @@
 
 /**
  *
- * @param linkname
+ * @param linkname name of the link
  */
 function setLinkActive(linkname) {
 	'use strict';

@@ -5,7 +5,6 @@
 
 function AjaxDiscussionHandler() {
 	'use strict';
-
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid

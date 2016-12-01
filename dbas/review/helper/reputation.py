@@ -87,14 +87,15 @@ def get_reputation_of(nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     count = 0
 
-    if db_user:
-        db_reputation = DBDiscussionSession.query(ReputationHistory) \
-            .filter_by(reputator_uid=db_user.uid) \
-            .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
-            .all()
+    if not db_user:
+        return count, False
+    db_reputation = DBDiscussionSession.query(ReputationHistory) \
+        .filter_by(reputator_uid=db_user.uid) \
+        .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
+        .all()
 
-        for reputation in db_reputation:
-            count += reputation.reputations.points
+    for reputation in db_reputation:
+        count += reputation.reputations.points
 
     return count, is_user_author(nickname)
 

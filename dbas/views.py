@@ -196,6 +196,9 @@ def main_settings(request):
     _uh         = user_manager
     _t          = Translator(ui_locales)
 
+    if not db_user:
+        return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
+
     if db_user and 'form.passwordchange.submitted' in request.params:
         old_pw = escape_string(request.params['passwordold'])
         new_pw = escape_string(request.params['password'])
