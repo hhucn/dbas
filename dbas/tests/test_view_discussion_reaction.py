@@ -33,3 +33,4 @@ class DiscussionReactionViewTests(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         # TODO test votes and seen
+        # wo kommen die votes ins spiel?

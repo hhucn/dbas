@@ -16,7 +16,6 @@ class DiscussionInitViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        # self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
     def tearDown(self):
         testing.tearDown()
@@ -32,6 +31,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         len_db_seen2 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        # not logged in, no change
         self.assertEqual(len_db_seen1, len_db_seen2)
 
     def test_discussion_init_page_logged_in(self):

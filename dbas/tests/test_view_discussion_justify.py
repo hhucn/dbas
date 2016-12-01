@@ -32,6 +32,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(self, response)
 
+        # TODO VOTES ???
+        # wo kommen die votes ins spiel?
+
     def test_discussion_dont_know_statement_page(self):
         from dbas.views import discussion_justify as d
 
