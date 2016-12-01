@@ -3,7 +3,7 @@ import json
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
+from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -15,6 +15,8 @@ class AjaxText(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+
+        # test every ajax method, which is not used in other classes
 
     def tearDown(self):
         testing.tearDown()
