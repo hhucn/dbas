@@ -2,7 +2,7 @@
 
 [![build status](https://gitlab.cs.uni-duesseldorf.de/project/dbas/badges/master/build.svg)](https://gitlab.cs.uni-duesseldorf.de/project/dbas/commits/master)
 
-D-BAS is pased on [Pyramid](http://www.pylonsproject.org/), 
+D-BAS is based on [Pyramid](http://www.pylonsproject.org/), 
 [Bootstrap](http://getbootstrap.com/) and [jQuery](https://jquery.com/).
 It is a novel approach to online argumentation. It avoids the 
 pitfalls of  unstructured systems such as asynchronous threaded 
