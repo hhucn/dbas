@@ -1,9 +1,11 @@
 import unittest
 import json
+import transaction
 
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Settings
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
 from sqlalchemy import engine_from_config
 
@@ -49,9 +51,6 @@ class MainSettingsViewTestsLoggedIn(unittest.TestCase):
         self.assertIn('send_mails', response['settings'])
         self.assertIn('public_nick', response['settings'])
 
-        # place for additional stuff
-        # do ajax things
-
 
 class MainSettingsViewTestsAjax(unittest.TestCase):
     def setUp(self):
@@ -61,6 +60,14 @@ class MainSettingsViewTestsAjax(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+        db_settings.set_send_notifications(True)
+        db_settings.set_show_public_nickname(True)
+        db_settings.set_send_mails(False)
+
+        transaction.commit()
 
     def test_set_user_language(self):
         from dbas.views import set_user_language as ajax
@@ -92,9 +99,8 @@ class MainSettingsViewTestsAjax(unittest.TestCase):
         self.assertTrue(response['ui_locales'] == 'li')
         self.assertTrue(response['current_lang'] == '')
 
-    def test_set_user_setting(self):
+    def test_set_user_setting_mail(self):
         from dbas.views import set_user_settings as ajax
-
         request = testing.DummyRequest(params={'service': 'mail', 'settings_value': False})
         response = json.loads(ajax(request))
         self.assertIn('error', response)
@@ -106,6 +112,8 @@ class MainSettingsViewTestsAjax(unittest.TestCase):
         self.assertTrue(response['public_page_url'] != '')
         self.assertTrue(response['gravatar_url'] != '')
 
+    def test_set_user_setting_notification(self):
+        from dbas.views import set_user_settings as ajax
         request = testing.DummyRequest(params={'service': 'notification', 'settings_value': True})
         response = json.loads(ajax(request))
         self.assertIn('error', response)
@@ -117,6 +125,8 @@ class MainSettingsViewTestsAjax(unittest.TestCase):
         self.assertTrue(response['public_page_url'] != '')
         self.assertTrue(response['gravatar_url'] != '')
 
+    def test_set_user_setting_nick(self):
+        from dbas.views import set_user_settings as ajax
         request = testing.DummyRequest(params={'service': 'public_nick', 'settings_value': False})
         response = json.loads(ajax(request))
         self.assertIn('error', response)
@@ -128,6 +138,8 @@ class MainSettingsViewTestsAjax(unittest.TestCase):
         self.assertTrue(response['public_page_url'] != '')
         self.assertTrue(response['gravatar_url'] != '')
 
+    def test_set_user_setting_no_service(self):
+        from dbas.views import set_user_settings as ajax
         request = testing.DummyRequest(params={'service': 'oha', 'settings_value': False})
         response = json.loads(ajax(request))
         self.assertIn('error', response)

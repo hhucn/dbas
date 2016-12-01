@@ -15,6 +15,8 @@ class ReviewContentViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
+        # TODO test review system
+
     def tearDown(self):
         testing.tearDown()
 

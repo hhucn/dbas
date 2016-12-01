@@ -29,3 +29,5 @@ class DiscussionAttitudeViewTests(unittest.TestCase):
         request.matchdict = matchdict
         response = d(request)
         verify_dictionary_of_view(self, response)
+
+        # TODO test votes and seen

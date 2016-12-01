@@ -1005,7 +1005,6 @@ def review_history(request):
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
@@ -1036,6 +1035,8 @@ def ongoing_history(request):
 
     history = review_history_helper.get_ongoing_reviews(request.application_url, request_authenticated_userid, _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+
+    logger('X', 'X', str(history))
 
     return {
         'layout': base_layout(),

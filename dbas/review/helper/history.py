@@ -19,10 +19,14 @@ from sqlalchemy import and_
 
 
 def get_review_history(main_page, nickname, translator):
+    if not DBDiscussionSession.query(User).filter_by(nickname=nickname).first():
+        return dict()
     return __get_data(main_page, nickname, translator, True)
 
 
 def get_ongoing_reviews(main_page, nickname, translator):
+    if not DBDiscussionSession.query(User).filter_by(nickname=nickname).first():
+        return dict()
     return __get_data(main_page, nickname, translator, False)
 
 

@@ -15,14 +15,26 @@ class ReviewReputationViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
+        # TODO test review system
+
     def tearDown(self):
         testing.tearDown()
 
-    def test_review_content_page(self):
+    def test_review_reputation_page(self):
         from dbas.views import review_reputation as d
 
         request = testing.DummyRequest()
         response = d(request)
         verify_dictionary_of_view(self, response)
+        self.assertIn('reputation', response)
+        self.assertTrue(len(response['reputation']) == 0)
 
-        # place for additional stuff
+    def test_review_reputation_page_logged_in(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        from dbas.views import review_reputation as d
+
+        request = testing.DummyRequest()
+        response = d(request)
+        verify_dictionary_of_view(self, response)
+        self.assertIn('reputation', response)
+        self.assertTrue(len(response['reputation']) != 0)
