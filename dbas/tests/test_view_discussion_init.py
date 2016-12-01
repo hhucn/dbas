@@ -24,5 +24,3 @@ class DiscussionInitViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         response = d(request)
         verify_dictionary_of_view(self, response)
-
-        # place for additional stuff

@@ -29,5 +29,3 @@ class DiscussionJumpViewTests(unittest.TestCase):
         request.matchdict = matchdict
         response = d(request)
         verify_dictionary_of_view(self, response)
-
-        # place for additional stuff
