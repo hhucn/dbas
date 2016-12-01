@@ -1,6 +1,7 @@
 import unittest
 
 from pyramid import testing
+from pyramid.httpexceptions import HTTPFound
 
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
@@ -18,16 +19,24 @@ class DiscussionJumpViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_discussion_justifypage(self):
+    def test_discussion_jump_page(self):
         from dbas.views import discussion_jump as d
 
         matchdict = {
             'slug': 'cat-or-dog',
             'arg_id': 12,
         }
-        request = testing.DummyRequest()
-        request.matchdict = matchdict
+        request = testing.DummyRequest(matchdict=matchdict)
         response = d(request)
         verify_dictionary_of_view(self, response)
 
-        # TODO test votes and seen
+    def test_discussion_jump_page_on_failure(self):
+        from dbas.views import discussion_jump as d
+
+        matchdict = {
+            'slug': 'cat-or-dog',
+            'arg_id': 35,
+        }
+        request = testing.DummyRequest(matchdict=matchdict)
+        response = d(request)
+        self.assertTrue(type(response) is HTTPFound)

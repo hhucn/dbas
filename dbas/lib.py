@@ -245,7 +245,6 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     :return:
     """
     from dbas.logger import logger
-    logger('x', 'x', str(arg_array))
     tag_premise = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
     tag_conclusion = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_end = ('</' + tag_type + '>') if with_html_tag else ''
