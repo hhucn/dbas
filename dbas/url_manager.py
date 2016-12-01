@@ -64,7 +64,7 @@ class UrlManager(object):
         url = self.url + '404'
         for p in params:
             if p != '':
-                url += '/' + p
+                url += '/' + str(p)
         params = '&' if '?' in url else '?'
         params += 'param_error=true' if is_param_error else ''
         params += 'revoked_content=true' if revoked_content else ''
