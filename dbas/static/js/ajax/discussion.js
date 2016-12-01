@@ -308,8 +308,8 @@ function AjaxDiscussionHandler() {
 						current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
-						$('.fa-pencil').fadeTo('slow', 0.2, function () {
-							$('.fa-pencil').fadeTo('slow', 1.0, function () {
+						bubbleSpace.find('.fa-pencil').fadeTo('slow', 0.2, function () {
+							bubbleSpace.find('.fa-pencil').fadeTo('slow', 1.0, function () {
 							});
 						});
 					}, 1000);
