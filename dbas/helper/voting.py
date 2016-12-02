@@ -39,6 +39,7 @@ def add_vote_for_argument(argument_uid, user):
     # user has seen this argument
     if db_user:
         __argument_seen_by_user(db_user.uid, argument_uid)
+        __premisegroup_seen_by_user(db_user.uid, db_argument.premisesgroup_uid)
 
     if db_argument.argument_uid is None:
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
@@ -240,14 +241,19 @@ def __vote_statement(statement, user, is_up_vote):
         db_old_votes.remove(db_vote)
 
     for old_vote in db_old_votes:
+        logger('VotingHelper', '__vote_statement', 'setting old votes as invalid')
         old_vote.set_valid(False)
         old_vote.update_timestamp()
     DBDiscussionSession.flush()
 
     if not db_vote:
+        logger('VotingHelper', '__vote_statement', 'add vote for statement ' + str(statement.uid))
         db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_up_vote, is_valid=True)
         DBDiscussionSession.add(db_new_vote)
-        DBDiscussionSession.flush()
+    else:
+        logger('VotingHelper', '__vote_statement', 'update vote for statement ' + str(statement.uid))
+        db_vote.update_timestamp()
+    DBDiscussionSession.flush()
 
 
 def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
@@ -307,3 +313,17 @@ def __statement_seen_by_user(user_uid, statement_uid):
 
     logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid) + ' was already seen')
     return False
+
+
+def __premisegroup_seen_by_user(user_uid, premisesgroup_uid):
+    """
+    Adds an reference for an seen premisesgroup
+
+    :param user_uid: uid of current user
+    :param premsiegroup_uid: uid of the premisesgroup
+    :return: True if the statement was not seen by the user (until now), false otherwise
+    """
+    logger('VotingHelper', '__premisegroup_seen_by_user', 'Check premises of group ' + str(premisesgroup_uid))
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
+    for premise in db_premises:
+        __statement_seen_by_user(user_uid, premise.statement_uid)

@@ -5,8 +5,11 @@ Utility functions for testing.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
+import transaction
 
 from paste.deploy import appconfig
+from dbas.database import DBDiscussionSession as dbs
+from dbas.database.discussion_model import StatementSeenBy, VoteStatement, ArgumentSeenBy, VoteArgument, User
 
 
 def path_to_settings(ini_file):
@@ -50,3 +53,17 @@ def verify_dictionary_of_view(_self, some_dict):
     _self.assertIn('title', some_dict)
     _self.assertIn('project', some_dict)
     _self.assertIn('extras', some_dict)
+
+
+def clear_seen_by():
+    db_user = dbs.query(User).filter_by(nickname='Tobias').first()
+    dbs.query(StatementSeenBy).filter_by(user_uid=db_user.uid).delete()
+    dbs.query(ArgumentSeenBy).filter_by(user_uid=db_user.uid).delete()
+    transaction.commit()
+
+
+def clear_votes():
+    db_user = dbs.query(User).filter_by(nickname='Tobias').first()
+    dbs.query(VoteStatement).filter_by(author_uid=db_user.uid).delete()
+    dbs.query(VoteArgument).filter_by(author_uid=db_user.uid).delete()
+    transaction.commit()

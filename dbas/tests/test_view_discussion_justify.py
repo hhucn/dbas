@@ -4,10 +4,10 @@ from sqlalchemy import and_
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
-from dbas.database.discussion_model import StatementSeenBy, VoteStatement, ArgumentSeenBy, VoteArgument, User
+from dbas.database.discussion_model import StatementSeenBy, VoteStatement, ArgumentSeenBy, VoteArgument
 
 from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
+from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by, clear_votes
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -18,25 +18,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        self.clear_seen_by()
-        self.clear_votes()
+        clear_seen_by()
+        clear_votes()
 
     def tearDown(self):
         testing.tearDown()
-
-    @staticmethod
-    def clear_seen_by():
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        DBDiscussionSession.query(StatementSeenBy).filter_by(user_uid=db_user.uid).delete()
-        DBDiscussionSession.query(ArgumentSeenBy).filter_by(user_uid=db_user.uid).delete()
-        transaction.commit()
-
-    @staticmethod
-    def clear_votes():
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        DBDiscussionSession.query(VoteStatement).filter_by(author_uid=db_user.uid).delete()
-        DBDiscussionSession.query(VoteArgument).filter_by(author_uid=db_user.uid).delete()
-        transaction.commit()
 
     def test_justify_statement_page(self):
         from dbas.views import discussion_justify as d
@@ -89,8 +75,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         count = sum([len(el['premises']) for el in response['items']['elements']])
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
-        self.clear_seen_by()
-        self.clear_votes()
+        clear_seen_by()
+        clear_votes()
 
     def test_attack_statement_page(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -116,12 +102,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         count = sum([len(el['premises']) for el in response['items']['elements']])
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
-        self.clear_seen_by()
-        self.clear_votes()
+        clear_seen_by()
+        clear_votes()
 
     def test_dont_know_statement_page(self):
         from dbas.views import discussion_justify as d
-
 
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
         len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
