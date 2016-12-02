@@ -17,7 +17,7 @@ from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsS
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
-    ReputationHistory
+    ReputationHistory, ReviewEdit, ReviewEditValue
 from dbas.database.news_model import News
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
@@ -1571,4 +1571,8 @@ def setup_review_database(session):
     history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation10.uid, timestamp=today)
     history17 = ReputationHistory(reputator=tobias.uid, reputation=reputation08.uid, timestamp=today)
 
-    session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09, history10, history11, history12, history13, history14, history15, history16, history17])
+    session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09,
+                     history10, history11, history12, history13, history14, history15, history16, history17])
+
+    session.add(ReviewEdit(detector=martin.uid, statement=2))
+    session.add(ReviewEditValue(1, 2, '', 'as'))
