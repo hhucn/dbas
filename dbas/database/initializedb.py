@@ -1575,4 +1575,5 @@ def setup_review_database(session):
                      history10, history11, history12, history13, history14, history15, history16, history17])
 
     session.add(ReviewEdit(detector=martin.uid, statement=2))
+    session.flush()
     session.add(ReviewEditValue(1, 2, '', 'as'))

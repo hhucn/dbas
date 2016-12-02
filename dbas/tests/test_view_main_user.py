@@ -1,8 +1,10 @@
 import unittest
+import transaction
 
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Settings
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
 from sqlalchemy import engine_from_config
 
@@ -15,6 +17,10 @@ class MainUserView(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+        db_settings.set_show_public_nickname(True)
+        transaction.commit()
 
     def tearDown(self):
         testing.tearDown()
@@ -33,11 +39,7 @@ class MainUserView(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import main_user as d
 
-        matchdict = {
-            'nickname': 'tobias',
-        }
-        request = testing.DummyRequest()
-        request.matchdict = matchdict
+        request = testing.DummyRequest(matchdict={'nickname': 'tobias'})
         response = d(request)
         verify_dictionary_of_view(self, response)
         self.assertIn('user', response)
@@ -48,11 +50,7 @@ class MainUserView(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import main_user as d
 
-        matchdict = {
-            'nickname': 'christian',
-        }
-        request = testing.DummyRequest()
-        request.matchdict = matchdict
+        request = testing.DummyRequest(matchdict={'nickname': 'christian'})
         response = d(request)
         verify_dictionary_of_view(self, response)
         self.assertIn('user', response)

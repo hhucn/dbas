@@ -15,8 +15,6 @@ class ReviewHistoryViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
 
-        # TODO test review system
-
     def tearDown(self):
         testing.tearDown()
 

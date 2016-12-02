@@ -301,6 +301,7 @@ def main_user(request):
 
     current_user = get_user_by_private_or_public_nickname(nickname)
     if current_user is None:
+        logger('main_user', 'def', 'no user: ' + str(nickname), error=True)
         return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
     session_expired = user_manager.update_last_action(request_authenticated_userid)
