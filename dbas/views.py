@@ -702,17 +702,15 @@ def discussion_reaction(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
+    _dh             = DictionaryHelper(ui_locales, disc_ui_locales)
     _ddh            = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh            = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
     item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
-    extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
-                                                                                        True, request,
-                                                                                        argument_id=arg_id_sys,
-                                                                                        application_url=request.application_url,
-                                                                                        for_api=for_api,
-                                                                                        argument_for_island=arg_id_user,
-                                                                                        attack=attack, nickname=request_authenticated_userid)
+    extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, request, argument_id=arg_id_sys,
+                                              application_url=request.application_url, for_api=for_api,
+                                              argument_for_island=arg_id_user, attack=attack,
+                                              nickname=request_authenticated_userid)
 
     return_dict = dict()
     return_dict['issues'] = issue_dict
@@ -1862,7 +1860,7 @@ def set_seen_statements(request):
 
 
 # ajax - getting changelog of a statement
-@view_config(route_name='ajax_get_logfile_for_statements', renderer='json')
+@view_config(route_name='ajax_get_logfile_for_premisegroups', renderer='json')
 def get_logfile_for_premisegroup(request):
     """
     Returns the changelog of a statement
@@ -2260,15 +2258,19 @@ def additional_service(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('additional_service', 'def', 'main, request.params: ' + str(request.params))
 
-    rtype = request.params['type']
+    try:
+        rtype = request.params['type']
+        if rtype == "chuck":
+            data = requests.get('http://api.icndb.com/jokes/random')
+        else:
+            data = requests.get('http://api.yomomma.info/')
 
-    if rtype == "chuck":
-        data = requests.get('http://api.icndb.com/jokes/random')
-    else:
-        data = requests.get('http://api.yomomma.info/')
+        for a in data.json():
+            logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
 
-    for a in data.json():
-        logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
+    except KeyError as e:
+        logger('additional_service', 'error', repr(e))
+        return json.dumps(dict())
 
     return data.json()
 

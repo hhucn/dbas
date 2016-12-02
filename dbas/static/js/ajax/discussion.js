@@ -132,7 +132,7 @@ function AjaxDiscussionHandler() {
 	this.getLogfileForStatements = function (statements_uids) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_logfile_for_statements',
+			url: 'ajax_get_logfile_for_premisegroups',
 			method: 'GET',
 			data: {
 				uids: JSON.stringify(statements_uids),
