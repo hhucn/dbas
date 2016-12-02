@@ -3,9 +3,10 @@ import transaction
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
+from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementSeenBy, VoteStatement, ArgumentSeenBy, VoteArgument
+from dbas.database.discussion_model import StatementSeenBy, VoteStatement, ArgumentSeenBy, VoteArgument, User
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by, clear_votes
 from sqlalchemy import engine_from_config
 
@@ -51,14 +52,19 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertEqual(len_db_seen_a1, len_db_seen_a2)
         self.assertEqual(len_db_votes_a1, len_db_votes_a2)
 
-    def test_page_logged_inb(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+    def test_page_logged_in(self):
         from dbas.views import discussion_reaction as d
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
         len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
         len_db_votes_a1 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_vote_arg1 = len(DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == db_user.uid,
+                                                                                   VoteArgument.argument_uid == 2,
+                                                                                   VoteArgument.is_valid == True,
+                                                                                   VoteArgument.is_up_vote == True)).all())
 
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
@@ -74,10 +80,16 @@ class DiscussionReactionViewTests(unittest.TestCase):
         len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())
         len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
         len_db_votes_a2 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_vote_arg2 = len(DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == db_user.uid,
+                                                                                   VoteArgument.argument_uid == 2,
+                                                                                   VoteArgument.is_valid == True,
+                                                                                   VoteArgument.is_up_vote == True)).all())
+
         self.assertLess(len_db_seen_s1, len_db_seen_s2)
         self.assertLess(len_db_votes_s1, len_db_votes_s2)
         self.assertLess(len_db_seen_a1, len_db_seen_a2)
         self.assertLess(len_db_votes_a1, len_db_votes_a2)
+        self.assertEqual(len_db_vote_arg1 + 1, len_db_vote_arg2)
 
         clear_seen_by()
         clear_votes()

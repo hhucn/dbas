@@ -7,7 +7,7 @@ Provides helping function for dictionaries.
 import random
 
 import arrow
-from dbas.user_management import get_random_anti_spam_question, is_user_in_group, is_user_logged_in, \
+from dbas.user_management import get_random_anti_spam_question, is_user_in_group, \
     get_count_of_statements_of_user, get_count_of_votes_of_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
@@ -114,7 +114,7 @@ class DictionaryHelper(object):
         if not db_user or request_authenticated_userid is None:
             nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        is_logged_in = False if nickname == nick_of_anonymous_user else is_user_logged_in(nickname)
+        is_logged_in = False if nickname == nick_of_anonymous_user else db_user is not None
 
         # get anti-spam-question
         spamquestion, answer = get_random_anti_spam_question(self.system_lang)

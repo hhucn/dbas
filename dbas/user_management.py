@@ -269,16 +269,6 @@ def get_public_information_data(nickname, lang):
     return return_dict
 
 
-def is_user_logged_in(user):
-    """
-    Checks if the user is logged in
-
-    :param user: current user name
-    :return: user or None
-    """
-    return True if DBDiscussionSession.query(User).filter_by(nickname=str(user)).first() else False
-
-
 def get_random_anti_spam_question(lang):
     """
     Returns a random math question

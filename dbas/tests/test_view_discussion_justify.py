@@ -135,7 +135,6 @@ class DiscussionJustifyViewTests(unittest.TestCase):
     def test_justify_argument_page(self):
         from dbas.views import discussion_justify as d
 
-
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
         len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())

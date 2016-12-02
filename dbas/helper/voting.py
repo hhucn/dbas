@@ -8,7 +8,6 @@ We are not deleting opposite votes for detecting opinion changes!
 """
 
 
-import dbas.user_management as UserHandler
 import transaction
 
 from sqlalchemy import and_
@@ -26,15 +25,12 @@ def add_vote_for_argument(argument_uid, user):
     :return: increased votes of the argument
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    if not UserHandler.is_user_logged_in(user) or not db_user:
+    if not db_user:
+        logger('VotingHelper', 'add_vote_for_argument', 'User does not exists', error=True)
         return None
 
     logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
-
-    # set vote for the argument (relation), its premisegroup and conclusion
-    __vote_argument(db_argument, db_user, True)
-    __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
 
     # user has seen this argument
     if db_user:
@@ -43,35 +39,21 @@ def add_vote_for_argument(argument_uid, user):
 
     if db_argument.argument_uid is None:
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+        # set vote for the argument (relation), its premisegroup and conclusion
+        __vote_argument(db_argument, db_user, True)
+        __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
         __vote_statement(db_conclusion, db_user, True)
+
     else:
-        # check for inconsequences
         db_conclusion_argument = DBDiscussionSession.query(Argument).filter_by(argument_uid=db_argument.argument_uid).first()
         db_conclusion_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_conclusion_argument.conclusion_uid).first()
-        if db_argument.is_supportive:
-            if db_conclusion_argument.is_supportive:
-                # argument supportive -> conclusion supportive
-                __vote_argument(db_conclusion_argument, db_user, True)
-                __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-                __vote_statement(db_conclusion_conclusion, db_user, True)
-            else:
-                # argument supportive -> conclusion attacking
-                __vote_argument(db_conclusion_argument, db_user, True)
-                __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-                __vote_statement(db_conclusion_conclusion, db_user, False)
-        else:
-            if db_conclusion_argument.is_supportive:
-                # argument attacking -> conclusion supportive
-                __vote_argument(db_conclusion_argument, db_user, False)
-                __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-                __vote_statement(db_conclusion_conclusion, db_user, False)
-            else:
-                # argument attacking -> conclusion attacking
-                __vote_argument(db_conclusion_argument, db_user, False)
-                __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-                __vote_statement(db_conclusion_conclusion, db_user, True)
 
-    # vote redundancy will be handled in the accept and decline methods!
+        # vote for conclusions argument based on support property of current argument
+        __vote_argument(db_conclusion_argument, db_user, db_argument.is_supportive)
+        # vote for conclusions pgroup is always true based on the language of the reaction
+        __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+        # vote vor conclusions conclusion is always false
+        __vote_statement(db_conclusion_conclusion, db_user, False)
 
     # return count of votes for this argument
     db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == db_argument.uid,
