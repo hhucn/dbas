@@ -173,7 +173,6 @@ class ItemDictHelper(object):
                                                               'justify',
                                                               'add'))
         else:
-            # elif len(statements_array) == 1:
             statements_array.append(
                 self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
 

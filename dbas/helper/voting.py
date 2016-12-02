@@ -130,9 +130,9 @@ def add_seen_argument(argument_uid, user_uid):
     # getting all statements out of the premise
     db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-    logger('VotingHelper', 'add_seen_argument', 'premise count ' + str(len(db_premises)))
+    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', premise count ' + str(len(db_premises)))
     for p in db_premises:
-        logger('VotingHelper', 'add_seen_argument', 'premise ' + str(p.statement_uid))
+        logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', add premise ' + str(p.statement_uid))
         __statement_seen_by_user(user_uid, p.statement_uid)
 
     # find the conclusion and mark all arguments on the way
