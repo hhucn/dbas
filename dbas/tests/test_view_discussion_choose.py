@@ -21,7 +21,7 @@ class DiscussionChhoseViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_discussion_choose_page(self):
+    def test_page(self):
         from dbas.views import discussion_choose as d
 
         len_db_seen1 = len(DBDiscussionSession.query(StatementSeenBy).all())
@@ -41,7 +41,7 @@ class DiscussionChhoseViewTests(unittest.TestCase):
         # not logged in, no change
         self.assertEqual(len_db_seen1, len_db_seen2)
 
-    def test_discussion_choose_page_logged_in(self):
+    def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import discussion_choose as d
 
@@ -66,7 +66,7 @@ class DiscussionChhoseViewTests(unittest.TestCase):
 
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
 
-    def test_discussion_choose_page_fail(self):
+    def test_page_fail(self):
         from dbas.views import discussion_choose as d
 
         request = testing.DummyRequest()

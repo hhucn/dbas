@@ -20,7 +20,7 @@ class DiscussionInitViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_discussion_init_page(self):
+    def test_page(self):
         from dbas.views import discussion_init as d
 
         # check count of seen by statements
@@ -34,7 +34,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         # not logged in, no change
         self.assertEqual(len_db_seen1, len_db_seen2)
 
-    def test_discussion_init_page_logged_in(self):
+    def test_page_logged_in(self):
         from dbas.views import discussion_init as d
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
@@ -53,7 +53,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         self.assertEqual(len_db_seen1 + el_count, len_db_seen2)
         transaction.commit()  # normally pyramid_tm does this
 
-    def test_discussion_init_page_logged_in_again(self):
+    def test_page_logged_in_again(self):
         from dbas.views import discussion_init as d
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 

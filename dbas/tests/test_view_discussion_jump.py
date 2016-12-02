@@ -19,7 +19,7 @@ class DiscussionJumpViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_discussion_jump_page(self):
+    def test_page(self):
         from dbas.views import discussion_jump as d
 
         matchdict = {
@@ -30,7 +30,7 @@ class DiscussionJumpViewTests(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(self, response)
 
-    def test_discussion_jump_page_on_failure(self):
+    def test_page_on_failure(self):
         from dbas.views import discussion_jump as d
 
         matchdict = {

@@ -10,7 +10,7 @@ settings = add_settings_to_appconfig()
 DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
-class MainUserViewTestsNotLoggedIn(unittest.TestCase):
+class MainUserView(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
@@ -19,7 +19,7 @@ class MainUserViewTestsNotLoggedIn(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_main_user_page(self):
+    def test_page(self):
         from dbas.views import main_user as d
 
         request = testing.DummyRequest(matchdict={'nickname': 'tobias'})
@@ -29,17 +29,8 @@ class MainUserViewTestsNotLoggedIn(unittest.TestCase):
         self.assertIn('can_send_notification', response)
         self.assertFalse(response['can_send_notification'])
 
-
-class MainUserViewTestsLoggedIn(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
+    def test_page_myself(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_main_user_page_myself(self):
         from dbas.views import main_user as d
 
         matchdict = {
@@ -53,7 +44,8 @@ class MainUserViewTestsLoggedIn(unittest.TestCase):
         self.assertIn('can_send_notification', response)
         self.assertFalse(response['can_send_notification'])
 
-    def test_main_user_page_other(self):
+    def test_page_other(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import main_user as d
 
         matchdict = {

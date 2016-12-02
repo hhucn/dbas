@@ -18,7 +18,7 @@ class MainContactViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_main_contact_page(self):
+    def test_page(self):
         from dbas.views import main_contact as d
 
         request = testing.DummyRequest()

@@ -18,7 +18,7 @@ class MainImprintViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_main_imprint_page(self):
+    def test_page(self):
         from dbas.views import main_imprint as d
 
         request = testing.DummyRequest()

@@ -20,7 +20,7 @@ class ReviewContentViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_review_content_page_deletes(self):
+    def test_page_deletes(self):
         from dbas.views import review_content as d
 
         matchdict = {'queue': 'deletes'}
@@ -31,7 +31,7 @@ class ReviewContentViewTests(unittest.TestCase):
 
         # place for additional stuff
 
-    def test_review_content_page_edits(self):
+    def test_page_edits(self):
         from dbas.views import review_content as d
 
         matchdict = {'queue': 'edits'}
@@ -42,7 +42,7 @@ class ReviewContentViewTests(unittest.TestCase):
 
         # place for additional stuff
 
-    def test_review_content_page_optimizations(self):
+    def test_page_optimizations(self):
         from dbas.views import review_content as d
 
         matchdict = {'queue': 'optimizations'}
@@ -53,7 +53,7 @@ class ReviewContentViewTests(unittest.TestCase):
 
         # place for additional stuff
 
-    def test_review_content_page_history(self):
+    def test_page_history(self):
         from dbas.views import review_content as d
 
         matchdict = {'queue': 'history'}

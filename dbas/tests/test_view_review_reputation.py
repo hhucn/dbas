@@ -20,7 +20,7 @@ class ReviewReputationViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_review_reputation_page(self):
+    def test_page(self):
         from dbas.views import review_reputation as d
 
         request = testing.DummyRequest()
@@ -29,7 +29,7 @@ class ReviewReputationViewTests(unittest.TestCase):
         self.assertIn('reputation', response)
         self.assertTrue(len(response['reputation']) == 0)
 
-    def test_review_reputation_page_logged_in(self):
+    def test_page_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import review_reputation as d
 

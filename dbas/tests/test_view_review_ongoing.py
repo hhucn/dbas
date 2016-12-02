@@ -20,7 +20,7 @@ class ReviewOngoingViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_review_ongoing_page(self):
+    def test_page(self):
         from dbas.views import ongoing_history as d
 
         request = testing.DummyRequest()
@@ -30,7 +30,7 @@ class ReviewOngoingViewTests(unittest.TestCase):
         self.assertIn('history', response)
         self.assertTrue(len(response['history']) == 0)
 
-    def test_review_ongoing_page_logged_in(self):
+    def test_page_logged_in(self):
         from dbas.views import ongoing_history as d
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 

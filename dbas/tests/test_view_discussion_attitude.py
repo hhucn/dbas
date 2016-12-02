@@ -18,7 +18,7 @@ class DiscussionAttitudeViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_discussion_attitude_page(self):
+    def test_page(self):
         from dbas.views import discussion_attitude as d
 
         matchdict = {
