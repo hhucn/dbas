@@ -319,7 +319,7 @@ def request_password(request, ui_locales):
     info = ''
 
     _t = Translator(ui_locales)
-    email = escape_string(request.params['email'] if 'email' in request.params else '')
+    email = escape_string(request.params['email'])
     db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
     # does the user exists?

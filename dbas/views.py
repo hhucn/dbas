@@ -2157,11 +2157,15 @@ def switch_language(request):
     ui_locales = None
     try:
         ui_locales = request.params['lang'] if 'lang' in request.params else None
+        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+        if not db_lang:
+            ui_locales = get_language(request, get_current_registry())
         if not ui_locales:
             ui_locales = get_language(request, get_current_registry())
         request.response.set_cookie('_LOCALE_', str(ui_locales))
         request._LOCALE_ = ui_locales
         return_dict['error'] = ''
+        return_dict['ui_locales'] = ui_locales
     except KeyError as e:
         logger('swich_language', 'error', repr(e))
         if not ui_locales:
@@ -2215,9 +2219,9 @@ def fuzzy_search(request, for_api=False, api_data=None):
     request_authenticated_userid = request.authenticated_userid
 
     try:
-        value = api_data["value"] if for_api else request.params['value']
-        mode = str(api_data["mode"]) if for_api else str(request.params['type'])
-        issue = api_data["issue"] if for_api else issue_helper.get_issue_id(request)
+        value = api_data['value'] if for_api else request.params['value']
+        mode = str(api_data['mode']) if for_api else str(request.params['type'])
+        issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
 
         return_dict = dict()
 

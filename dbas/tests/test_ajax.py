@@ -1,10 +1,15 @@
 import unittest
 import json
+import transaction
+
 from pyramid import testing
 from pyramid.response import Response
+from pyramid.httpexceptions import HTTPFound
 
 from dbas.database import DBDiscussionSession, DBNewsSession
+from dbas.database.discussion_model import User
 from dbas.helper.tests import add_settings_to_appconfig
+from dbas.handler.password import get_hashed_password
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -23,41 +28,168 @@ class AjaxTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_user_login(self):
+    def test_user_login_wrong_nick(self):
         from dbas.views import user_login as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(params={
+            'user': 'Tobiass',
+            'password': 'tobias',
+            'keep_login': 'false',
+            'url': ''
+        }, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
+        self.assertTrue(len(response['error']) != 0)
+
+    def test_user_login_wrong_password(self):
+        from dbas.views import user_login as ajax
+        request = testing.DummyRequest(params={
+            'user': 'Tobias',
+            'password': 'tobiass',
+            'keep_login': 'false',
+            'url': ''
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertTrue(len(response['error']) != 0)
+
+    def test_user_login(self):
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        db_user.password = get_hashed_password('tobias')
+        transaction.commit()
+        from dbas.views import user_login as ajax
+        request = testing.DummyRequest(params={
+            'user': 'Tobias',
+            'password': 'tobias',
+            'keep_login': 'false',
+            'url': ''
+        }, matchdict={})
+        response = ajax(request)
+        self.assertTrue(type(response) is HTTPFound)
 
     def test_user_logout(self):
         from dbas.views import user_logout as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
         self.assertTrue(type(response) is Response)
+        self.assertTrue(type(response) is not HTTPFound)
 
-    def test_user_registration(self):
-        from dbas.views import user_registration as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+    # cannot be testted, because we have no request.session['antispamanswer']
+    # def test_user_registration(self):
+    #     from dbas.views import user_registration as ajax
+    #     request = testing.DummyRequest(params={
+    #         'firstname': 'ThisIsAWebTestAndSoItIsNotSpam',
+    #         'lastname': 'Allo',
+    #         'nickname': 'SomeoneNew',
+    #         'email': 'tobias.krauthoff@web.de',
+    #         'gender': 'm',
+    #         'password': 'somepassword',
+    #         'passwordconfirm': 'somepassword',
+    #         'spamanswer': ''
+    #     }, matchdict={})
+    #     response = json.loads(ajax(request))
+    #     self.assertIsNotNone(response)
+    #     self.assertTrue(len(response['success']) != 0)
+    #     self.assertTrue(len(response['error']) == 0)
+    #     self.assertTrue(len(response['info']) == 0)
+    #     self.assertTrue(len(response['spamquestion']) != 0)
+
+    def test_user_password_request_failure1(self):
+        from dbas.views import user_password_request as ajax
+        request = testing.DummyRequest(params={'email': 'krauthof@cs.uni-duesseldorf.de'}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
+        self.assertTrue(len(response['success']) == 0)
+        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(len(response['info']) != 0)
+
+    def test_user_password_request_failure2(self):
+        from dbas.views import user_password_request as ajax
+        request = testing.DummyRequest(params={'emai': 'krauthoff@cs.uni-duesseldorf.de'}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertTrue(len(response['success']) == 0)
+        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(len(response['info']) == 0)
 
     def test_user_password_request(self):
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         from dbas.views import user_password_request as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(params={'email': 'krauthoff@cs.uni-duesseldorf.de'}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
+        self.assertTrue(db_user.password != get_hashed_password('tobias'))
+        db_user.password = get_hashed_password('tobias')
+        transaction.commit()
 
-    def test_fuzzy_search(self):
+    def test_fuzzy_search_mode_0(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(params={'value': 'cat', 'type': 0}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
+        self.assertNotIn('error', response)
 
-    def test_switch_language(self):
-        from dbas.views import switch_language as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+    def test_fuzzy_search_mode_1(self):
+        from dbas.views import fuzzy_search as ajax
+        request = testing.DummyRequest(params={'value': 'cat', 'type': 1, 'extra': 1}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
+        self.assertNotIn('error', response)
+
+    def test_fuzzy_search_mode_2(self):
+        from dbas.views import fuzzy_search as ajax
+        request = testing.DummyRequest(params={'value': 'cat', 'type': 2}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertNotIn('error', response)
+
+    def test_fuzzy_search_mode_3(self):
+        from dbas.views import fuzzy_search as ajax
+        request = testing.DummyRequest(params={'value': 'cat', 'type': 3}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertNotIn('error', response)
+
+    def test_fuzzy_search_mode_4(self):
+        from dbas.views import fuzzy_search as ajax
+        request = testing.DummyRequest(params={'value': 'cat', 'type': 4}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertNotIn('error', response)
+
+    def test_fuzzy_search_mode_5(self):
+        from dbas.views import fuzzy_search as ajax
+        request = testing.DummyRequest(params={'value': 'cat', 'type': 5}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertNotIn('error', response)
+
+    def test_fuzzy_search_failure_mode(self):
+        from dbas.views import fuzzy_search as ajax
+        request = testing.DummyRequest(params={'value': 'cat', 'type': 6}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertTrue(len(response['error']) != 0)
+
+    def test_switch_language_de(self):
+        from dbas.views import switch_language as ajax
+        request = testing.DummyRequest(params={'lang': 'de'}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertTrue(response['ui_locales'] == 'de')
+
+    def test_switch_language_en(self):
+        from dbas.views import switch_language as ajax
+        request = testing.DummyRequest(params={'lang': 'en'}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertTrue(response['ui_locales'] == 'en')
+
+    def test_switch_language_failure(self):
+        from dbas.views import switch_language as ajax
+        request = testing.DummyRequest(params={'lang': 'sw'}, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertTrue(response['ui_locales'] != 'sw')
 
     def test_delete_user_history(self):
         from dbas.views import delete_user_history as ajax
@@ -180,271 +312,3 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['public_nick'] != '')
         self.assertTrue(response['public_page_url'] != '')
         self.assertTrue(response['gravatar_url'] != '')
-
-
-class AjaxAddThingsTest(unittest.TestCase):
-
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-        # test every ajax method, which is not used in other classes
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_set_new_start_statement(self):
-        from dbas.views import set_new_start_statement as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_set_new_start_premise(self):
-        from dbas.views import set_new_start_premise as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_set_new_premises_for_argument(self):
-        from dbas.views import set_new_premises_for_argument as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_set_correction_of_statement(self):
-        from dbas.views import set_correction_of_statement as ajax
-        request = testing.DummyRequest(selfparams={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_set_new_issue(self):
-        from dbas.views import set_new_issue as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-
-class AjaxGetInfosTest(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-        # test every ajax method, which is not used in other classes
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_get_logfile_for_statements(self):
-        from dbas.views import get_logfile_for_premisegroup as ajax # todo rename ajax route
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_shortened_url(self):
-        from dbas.views import get_shortened_url as ajax
-        request = testing.DummyRequest(selfparams={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_arguments_by_statement_uid(self):
-        from dbas.views import get_arguments_by_statement_uid as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_infos_about_argument(self):
-        from dbas.views import get_all_infos_about_argument as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_user_with_same_opinion(self):
-        from dbas.views import get_users_with_same_opinion as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_public_user_data(self):
-        from dbas.views import get_public_user_data as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_user_history(self):
-        from dbas.views import get_user_history as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_all_edits(self):
-        from dbas.views import get_all_edits as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_all_posted_statements(self):
-        from dbas.views import get_all_posted_statements as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_all_argument_votes(self):
-        from dbas.views import get_all_argument_votes as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_get_all_statement_votes(self):
-        from dbas.views import get_all_statement_votes as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-
-class AjaxNewsTest(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-        # test every ajax method, which is not used in other classes
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_get_news(self):
-        from dbas.views import get_news as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response) > 0)
-
-    def test_send_news(self):
-        from dbas.views import send_news as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-
-class AjaxNotificationTest(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-        # test every ajax method, which is not used in other classes
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_notification_read(self):
-        from dbas.views import set_notification_read as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_notification_delete(self):
-        from dbas.views import set_notification_delete as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_send_notification(self):
-        from dbas.views import send_some_notification as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-
-class AjaxReviewTest(unittest.TestCase):
-
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-        # test every ajax method, which is not used in other classes
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_flag_argument_or_statement(self):
-        from dbas.views import flag_argument_or_statement as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_review_delete_argument(self):
-        from dbas.views import review_delete_argument as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_review_optimization_argument(self):
-        from dbas.views import review_optimization_argument as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_review_edit_argument(self):
-        from dbas.views import review_edit_argument as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_undo_review(self):
-        from dbas.views import undo_review as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_cancel_review(self):
-        from dbas.views import cancel_review as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_review_lock(self):
-        from dbas.views import review_lock as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_revoke_content(self):
-        from dbas.views import revoke_some_content as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-
-class AjaxReferencesTest(unittest.TestCase):
-
-    def setUp(self):
-        self.config = testing.setUp()
-        self.config.include('pyramid_chameleon')
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-
-        # test every ajax method, which is not used in other classes
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_get_references(self):
-        from dbas.views import get_references as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_set_references(self):
-        from dbas.views import set_references as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_set_seen_statements(self):
-        from dbas.views import set_seen_statements as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
