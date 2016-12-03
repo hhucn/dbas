@@ -10,26 +10,25 @@ import logging
 logging.getLogger('sqlalchemy.dialects.postgresql').setLevel(logging.INFO)
 
 
-def logger(who, when, what, warn=False, error=False, debug=False):
+def logger(who, when, what, warning=False, error=False, debug=False):
     """
     Log for the console and logfile on disk. Logged format: [who.upper()] when <what>
 
     :param who: which class
     :param when: which method
     :param what: what mesage
-    :param warn: Boolean, default False
+    :param warning: Boolean, default False
     :param error: Boolean, default False
     :param debug: Boolean, default False
     :return: None
     """
-
-    info = not(warn or error or debug)
+    info = not(warning or error or debug)
     logger = logging.getLogger(__name__)
     try:
         if info:
             logger.info('[' + who.upper() + '] ' + when + ': ' + what)
-        if warn:
-            logger.warn('[' + who.upper() + '] ' + when + ': ' + what)
+        if warning:
+            logger.warning('[' + who.upper() + '] ' + when + ': ' + what)
         if error:
             logger.error('[' + who.upper() + '] ' + when + ': ' + what)
         if debug:

@@ -42,12 +42,6 @@ def groupfinder(nick, request):
     except InternalError as i:
         logger('security', 'InternalError', str(i), error=True)
         return []
-    # except OperationalError as o:
-        # logger('security', 'OperationalError', str(o), error=True)
-        # return []
-    # except StatementError as s:
-        # logger('security', 'StatementError', str(s), error=True)
-        # return []
 
     if user:
         group = DBDiscussionSession.query(Group).filter_by(uid=user.group_uid).first()

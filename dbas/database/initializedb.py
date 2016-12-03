@@ -17,13 +17,15 @@ from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsS
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
-    ReputationHistory
+    ReputationHistory, ReviewEdit, ReviewEditValue
 from dbas.database.news_model import News
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config, and_
 
-first_names = ['Tobias', 'Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin', 'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze', 'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
+first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
+               'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
+               'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
 nick_of_anonymous_user = 'anonymous'
 
 
@@ -415,11 +417,16 @@ def setup_news_db(session):
                        'Computational Models of Argument (COMMA16) in Potsdam. There we are going to show the first demo '
                        'of D-BAS and present the paper of Krauthoff T., Betz G., Baurmann M. & Mauve, M. (2016) "Dialog-Based '
                        'Online Argumentation". Looking forward to see you!')
+    news53 = News(title='Work goes on',
+                  date=arrow.get('2016-11-29'),
+                  author='Tobias Krauthoff',
+                  news='After the positive feedback at COMMA16, we decided to do a first field tests with D-BAS at our '
+                       'university. Therefore we are working on current issues, so that we will realsing v1.0. soon.')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52]
+                  news50, news51, news52, news53]
     session.add_all(news_array[::-1])
     session.flush()
 
@@ -1564,4 +1571,9 @@ def setup_review_database(session):
     history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation10.uid, timestamp=today)
     history17 = ReputationHistory(reputator=tobias.uid, reputation=reputation08.uid, timestamp=today)
 
-    session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09, history10, history11, history12, history13, history14, history15, history16, history17])
+    session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09,
+                     history10, history11, history12, history13, history14, history15, history16, history17])
+
+    session.add(ReviewEdit(detector=martin.uid, statement=2))
+    session.flush()
+    session.add(ReviewEditValue(1, 2, '', 'as'))

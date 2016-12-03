@@ -8,8 +8,9 @@ import random
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
-    Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement
-from dbas.lib import get_text_for_argument_uid, sql_timestamp_pretty_print, get_text_for_statement_uid,\
+    Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
+    sql_timestamp_pretty_print
+from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
@@ -36,12 +37,14 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
 
     # does the subpage exists
     if subpage_name not in pages and subpage_name != 'history':
+        logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'No page found', error=True)
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     rep_count, all_rights = get_reputation_of(nickname)
     user_has_access = rep_count >= reputation_borders[subpage_name] or all_rights
     # does the user exists and does he has the rights for this queue?
     if not db_user or not user_has_access:
+        logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'No user found', error=True)
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
     ret_dict = dict()

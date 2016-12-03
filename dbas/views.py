@@ -21,7 +21,7 @@ import dbas.user_management as user_manager
 import requests
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason, sql_timestamp_pretty_print
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
@@ -33,13 +33,13 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
     process_seen_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
-from dbas.helper.views import preparation_for_view, get_nickname_and_session, preparation_for_justify_statement, \
+from dbas.helper.views import preparation_for_view, get_nickname, preparation_for_justify_statement, \
     preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
     try_to_register_new_user_via_ajax, request_password
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.input_validator import is_integer, is_position, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
-from dbas.lib import get_language, escape_string, sql_timestamp_pretty_print, get_discussion_language, \
+from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
     get_user_by_case_insensitive_nickname
@@ -196,6 +196,9 @@ def main_settings(request):
     _uh         = user_manager
     _t          = Translator(ui_locales)
 
+    if not db_user:
+        return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
+
     if db_user and 'form.passwordchange.submitted' in request.params:
         old_pw = escape_string(request.params['passwordold'])
         new_pw = escape_string(request.params['password'])
@@ -298,6 +301,7 @@ def main_user(request):
 
     current_user = get_user_by_private_or_public_nickname(nickname)
     if current_user is None:
+        logger('main_user', 'def', 'no user: ' + str(nickname), error=True)
         return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
     session_expired = user_manager.update_last_action(request_authenticated_userid)
@@ -451,7 +455,7 @@ def discussion_init(request, for_api=False, api_data=None):
     logger('discussion_init', 'def', 'main, request.params: ' + str(params))
     request_authenticated_userid = request.authenticated_userid
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -476,7 +480,7 @@ def discussion_init(request, for_api=False, api_data=None):
     item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
     history_helper.save_issue_uid(issue, nickname)
 
-    discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, main_page=request.application_url, slug=slug)\
+    discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=request.application_url, slug=slug)\
         .get_dict_for_start()
     extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                         False, True, request,
@@ -521,7 +525,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     logger('discussion_attitude', 'def', 'main, request.matchdict: ' + str(match_dict))
     logger('discussion_attitude', 'def', 'main, request.params: ' + str(params))
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -540,7 +544,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    discussion_dict = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)\
+    discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)\
         .get_dict_for_attitude(statement_id)
     if not discussion_dict:
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_id]))
@@ -586,7 +590,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     logger('discussion_justify', 'def', 'main, request.params: ' + str(params))
     request_authenticated_userid = request.authenticated_userid
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -606,6 +610,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     issue_dict          = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
+        logger('discussion_justify', 'def', 'justify statement')
         if not get_text_for_statement_uid(statement_or_arg_id)\
                 or not check_belonging_of_statement(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
@@ -614,6 +619,7 @@ def discussion_justify(request, for_api=False, api_data=None):
                                                                                     supportive, mode, ui_locales, request_authenticated_userid)
 
     elif 'd' in mode and relation == '':
+        logger('discussion_justify', 'def', 'do not know')
         if not check_belonging_of_argument(issue, statement_or_arg_id) and \
                 not check_belonging_of_statement(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
@@ -622,6 +628,7 @@ def discussion_justify(request, for_api=False, api_data=None):
                                                                                       supportive, ui_locales, request_authenticated_userid)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
+        logger('discussion_justify', 'def', 'justify argument')
         if not check_belonging_of_argument(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
         item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, api_data,
@@ -679,7 +686,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     supportive = tmp_argument.is_supportive
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -695,17 +702,15 @@ def discussion_reaction(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    _ddh            = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)
+    _dh             = DictionaryHelper(ui_locales, disc_ui_locales)
+    _ddh            = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh            = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
-    item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack)
-    extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, True, True, True,
-                                                                                        True, request,
-                                                                                        argument_id=arg_id_sys,
-                                                                                        application_url=request.application_url,
-                                                                                        for_api=for_api,
-                                                                                        argument_for_island=arg_id_user,
-                                                                                        attack=attack, nickname=request_authenticated_userid)
+    item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
+    extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, request, argument_id=arg_id_sys,
+                                              application_url=request.application_url, for_api=for_api,
+                                              argument_for_island=arg_id_user, attack=attack,
+                                              nickname=request_authenticated_userid)
 
     return_dict = dict()
     return_dict['issues'] = issue_dict
@@ -790,14 +795,18 @@ def discussion_choose(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    if not check_belonging_of_premisegroups(issue, pgroup_ids):
+    for pgroup in pgroup_ids:
+        if not is_integer(pgroup):
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+
+    if not check_belonging_of_premisegroups(issue, pgroup_ids) or not is_integer(uid):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
-    discussion_dict = DiscussionDictHelper(ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)\
+    discussion_dict = DiscussionDictHelper(ui_locales, nickname, history, main_page=request.application_url, slug=slug)\
         .get_dict_for_choosing(uid, is_argument, is_supportive)
     item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)\
         .get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, nickname)
@@ -844,7 +853,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     logger('discussion_jump', 'def', 'main, request.matchdict: ' + str(match_dict))
     logger('discussion_jump', 'def', 'main, request.params: ' + str(params))
 
-    nickname, session_id = get_nickname_and_session(request, request_authenticated_userid, for_api, api_data)
+    nickname = get_nickname(request_authenticated_userid, for_api, api_data)
     history = params['history'] if 'history' in params else ''
 
     if for_api and api_data:
@@ -868,7 +877,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     if not check_belonging_of_argument(issue, arg_uid):
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=request.application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
@@ -995,7 +1004,6 @@ def review_history(request):
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
@@ -1026,6 +1034,8 @@ def ongoing_history(request):
 
     history = review_history_helper.get_ongoing_reviews(request.application_url, request_authenticated_userid, _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+
+    logger('X', 'X', str(history))
 
     return {
         'layout': base_layout(),
@@ -1850,7 +1860,7 @@ def set_seen_statements(request):
 
 
 # ajax - getting changelog of a statement
-@view_config(route_name='ajax_get_logfile_for_statements', renderer='json')
+@view_config(route_name='ajax_get_logfile_for_premisegroups', renderer='json')
 def get_logfile_for_premisegroup(request):
     """
     Returns the changelog of a statement
@@ -2223,7 +2233,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
         elif mode == '4':  # getting text
             return_dict = fuzzy_string_matcher.get_strings_for_search(value)
         elif mode == '5':  # getting public nicknames
-            nickname, session_id = get_nickname_and_session(request, request_authenticated_userid, for_api, api_data)
+            nickname = get_nickname(request_authenticated_userid, for_api, api_data)
             return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_public_nickname(value, nickname)
         else:
             logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
@@ -2248,15 +2258,19 @@ def additional_service(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('additional_service', 'def', 'main, request.params: ' + str(request.params))
 
-    rtype = request.params['type']
+    try:
+        rtype = request.params['type']
+        if rtype == "chuck":
+            data = requests.get('http://api.icndb.com/jokes/random')
+        else:
+            data = requests.get('http://api.yomomma.info/')
 
-    if rtype == "chuck":
-        data = requests.get('http://api.icndb.com/jokes/random')
-    else:
-        data = requests.get('http://api.yomomma.info/')
+        for a in data.json():
+            logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
 
-    for a in data.json():
-        logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
+    except KeyError as e:
+        logger('additional_service', 'error', repr(e))
+        return json.dumps(dict())
 
     return data.json()
 

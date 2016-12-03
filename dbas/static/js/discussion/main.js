@@ -181,7 +181,7 @@ function Main () {
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		var trianglel = $('.triangle-l');
-		trianglel.find('.triangle-content').click(function () {
+		trianglel.find('.triangle-content :not(a)').click(function () {
 			if ($(this).parent().attr('id').indexOf(questionBubbleId) != -1) {
 				var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
@@ -719,6 +719,7 @@ $(document).ready(function mainDocumentReady() {
 	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
 	tmp = tmp.substr(1, tmp.length - 2);
 	$('#' + discussionEndRestart).attr('href', tmp);
+	$('#' + discussionEndReview).attr('href', mainpage + 'review');
 
 	//
 	tmp = window.location.href.split('?');

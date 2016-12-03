@@ -7,7 +7,7 @@
 
 /**
  *
- * @param linkname
+ * @param linkname name of the link
  */
 function setLinkActive(linkname) {
 	'use strict';
@@ -55,6 +55,42 @@ function goBackToTop() {
 			scrollTop: 0
 		}, 500);
 		return false;
+	});
+}
+
+/**
+ * Display smiley as fallback on (connection) errors
+ */
+function setGravatarFallback() {
+	const img = $('body').find('.img-circle');
+	if (img.length == 0)
+		return true;
+	
+	const src = $('body').find('.img-circle')[0].src;
+	let jqxhr = $.get(src, function() {
+    	replace_gravtar_with_default_image(true);
+    }).fail(function() {
+    	replace_gravtar_with_default_image(false);
+    });
+}
+
+function replace_gravtar_with_default_image(only_on_error){
+	$('body').find('.img-circle').each(function (){
+		const icons =
+			[  { 'name': 'faces', 'length': 98
+			}, { 'name': 'flat-smileys', 'length': 32
+			}, { 'name': 'human', 'length': 81
+			}, { 'name': 'lego', 'length': 10 }];
+		const t = 3;
+		const no = Math.floor(Math.random() * icons[t].length);
+		const src = mainpage + 'static/images/fallback-' + icons[t].name + '/' +  no + '.svg';
+		
+		const width = $(this).width();
+		if (only_on_error)
+			$(this).attr('onerror', 'this.src="' + src + '"');
+		else
+			$(this).attr('src', src);
+		$(this).css('width', width + 'px');
 	});
 }
 
@@ -164,7 +200,7 @@ function setPiwikOptOutLink(lang){
 function setEasterEggs(){
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
-	$('#dbas-logo').click(function(){
+	$('#logo_dbas,#logo_dbas_s').click(function(){
 		var counter = parseInt($(this).data('counter'));
 		counter += 1;
 		if (counter == 7){
@@ -503,6 +539,7 @@ $(document).ready(function () {
 	goBackToTop();
 	setPiwikOptOutLink(lang);
 	setEasterEggs();
+	setGravatarFallback();
 
 	// set current file to active
 		 if (path.indexOf(urlContact) != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }

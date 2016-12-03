@@ -12,7 +12,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Settings, Language, Statement
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import TextGenerator
+from dbas.strings.text_generator import get_text_for_add_text_message, get_text_for_edit_text_message, get_text_for_add_argument_message
 from dbas.strings.translator import Translator
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
@@ -50,7 +50,7 @@ def send_mail_due_to_added_text(lang, url, recipient, request):
     """
     _t = Translator(lang)
     subject = _t.get(_.statementAdded)
-    body = TextGenerator.get_text_for_add_text_message(lang, url, False)
+    body = get_text_for_add_text_message(lang, url, False)
 
     return send_mail(request, subject, body, recipient.email, lang)
 
@@ -67,7 +67,7 @@ def send_mail_due_to_added_argument(lang, url, recipient, request):
     """
     _t = Translator(lang)
     subject = _t.get(_.argumentAdded)
-    body = TextGenerator.get_text_for_add_argument_message(lang, url, False)
+    body = get_text_for_add_argument_message(lang, url, False)
 
     return send_mail(request, subject, body, recipient.email, lang)
 
@@ -95,8 +95,8 @@ def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, u
 
     _t = Translator(db_language.ui_locales)
     subject = _t.get(_.textversionChangedTopic)
-    body = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_current_author.public_nickname,
-                                                        db_textversion_old.content, db_textversion_new.content, url, False)
+    body = get_text_for_edit_text_message(db_language.ui_locales, db_current_author.public_nickname,
+                                          db_textversion_old.content, db_textversion_new.content, url, False)
     recipient = db_previous_author.email
 
     return send_mail(request, subject, body, recipient, db_language.ui_locales)

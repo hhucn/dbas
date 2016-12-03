@@ -54,11 +54,12 @@ function User() {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 			return;
 		}
-		this.createChart(parsedData, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
-		this.createChart(parsedData, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
-		this.createChart(parsedData, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
-		this.createChart(parsedData, $('#user-edit-chart-space'), 'user-edit-canvas', 3);
-		this.setLegendCSS();
+		
+		// this.createChart(parsedData, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
+		// this.createChart(parsedData, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
+		// this.createChart(parsedData, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
+		// this.createChart(parsedData, $('#user-edit-chart-space'), 'user-edit-canvas', 3);
+		// this.setLegendCSS();
 	};
 
 	/**

@@ -9,31 +9,33 @@ path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # files which are minifed (has to be in the same order as paths!
 files=($path"/js/compiled/main.min.js"
        $path"/js/compiled/main_discussion.min.js"
-       $path"/js/compiled/main_ajax.min.js")
+       $path"/js/compiled/main_ajax.min.js"
+       $path"/js/compiled/main_review.min.js")
 
-# path for files, which should be minified
+# path for files, which should be minimized
 paths=($path"/js/*.js"
        $path"/js/discussion/*.js"
-       $path"/js/ajax/*.js")
+       $path"/js/ajax/*.js"
+       $path"/js/review/*.js")
 
 # path for files, which should be appended for the final file
-appends=($path"/js/compiled/main.min.js"
-         $path"/js/compiled/main_discussion.min.js"
-         $path"/js/socketio/socket.io-1.4.5.js"
-         $path"/js/jquery/jquery.slimscroll-1.3.8.min.js"
-         $path"/js/jquery/jquery-2.2.3.min.js"
-         $path"/js/bootstrap/bootstrap-3.3.6.min.js"
-         $path"/js/bootstrap/bootstrap-toggle.min.js")
+appends=($path"/js/min/main_ajax.min.js"
+         $path"/js/min/main.min.js"
+         $path"/js/min/main_discussion.min.js"
+         $path"/js/min/main_review.min.js"
+         )
 
 final_file=$path"/js/compiled/dbas.min.js"
-rm ${final_file};
+rm -f ${final_file};
 
+mkdir -p $path"/js/min"
 
+# minimize
 length=${#files[@]}
 max_iter=$(expr $length - 1)
 for i in `seq 0 $max_iter`;
     do
-    rm ${files[i]}
+    rm -f ${files[i]}
     touch ${files[i]}
 
     old_size=$(find . -name "*.css" -ls | awk '{total += $7} END {print total}')
@@ -42,9 +44,9 @@ for i in `seq 0 $max_iter`;
 
     for file in ${paths[i]}
         do if [ "$file" != "${files[i]}" ]; then
-            if [[ "$file" != *'.min.js' && "$file" != 'socket.io-1.4.5.js' ]]; then
+            if [[ "$file" != *'.min.js' ]]; then
                 echo "  Compressing" $file;
-    	        java -jar ~/node_modules/yuicompressor/build/yuicompressor-2.4.8.jar $file >> ${files[i]};
+    	        java -jar ~/node_modules/yuicompressor/build/2-2.4.8.jar $file >> ${files[i]};
     	    else
                 echo "  Appending  " $file;
     	        cat  $file >> ${files[i]};
@@ -59,6 +61,7 @@ for i in `seq 0 $max_iter`;
     echo ""
 done
 
+# append
 for j in `seq 0 $max_iter`;
     do
     for file in ${appends[j]}
@@ -67,5 +70,12 @@ for j in `seq 0 $max_iter`;
         cat $file >> ${final_file};
     done
 done
+
+#tidy up
+for i in `seq 0 $max_iter`;
+    do
+    rm -f ${files[i]}
+done
+
 echo ""
 echo "Final size: " $(du ${final_file} | cut -f 1)"K"

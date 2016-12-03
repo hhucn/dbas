@@ -1,6 +1,12 @@
 ## 0.x.0 (unreleased)
 - Improved recommendation of the next confrontation
 
+## 0.9.0 (2016-12-xx)
+- Rework of the discussions sidebar
+- Improved the page at the end of a discussion
+- Made the discussion more personal
+- Minor improvements and bugfix
+
 ## 0.8.0 (2016-11-17)
 - Minor improvements and bugfix
 - Reworked the opinion barometer and argument graph

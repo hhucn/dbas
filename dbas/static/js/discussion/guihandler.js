@@ -125,19 +125,6 @@ function GuiHandler() {
 		setAnchor('graph');
 	};
 	
-	/*
-	 * Add/Removes the inactive-image-class, which includes a grayfilter and blur
-	 *
-	 * @param imageElement
-	 * @param isActive
-	 */
-	this.setActivityOfImage = function(imageElement, isActive){
-		if (isActive)
-			imageElement.addClass('inactive-image').css('cursor', 'not-allowed');//.removeClass('icon-badge');
-		else
-			imageElement.removeClass('inactive-image').css('cursor', 'pointer');//.addClass('icon-badge');
-	};
-	
 	/**
 	 *
 	 * @param resize

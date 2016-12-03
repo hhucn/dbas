@@ -12,10 +12,10 @@ import arrow
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings, \
-    ReviewEdit, ReviewDelete, ReviewOptimization, get_now
+    ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print
 from dbas.helper import email as email_helper
 from dbas.helper.notification import send_welcome_notification
-from dbas.lib import sql_timestamp_pretty_print, python_datetime_pretty_print, get_text_for_argument_uid,\
+from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid,\
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
@@ -267,16 +267,6 @@ def get_public_information_data(nickname, lang):
     return_dict['data4'] = data_edit_30
 
     return return_dict
-
-
-def is_user_logged_in(user):
-    """
-    Checks if the user is logged in
-
-    :param user: current user name
-    :return: user or None
-    """
-    return True if DBDiscussionSession.query(User).filter_by(nickname=str(user)).first() else False
 
 
 def get_random_anti_spam_question(lang):

@@ -89,7 +89,7 @@
 		<div class="ajaxloader"></div>
 	</div>
 
-	<div class="eupopup eupopup-bottomleft"></div>
+	<div class="eupopup eupopup-fixedtop"></div>
 
 	<!-- Placed at the end of the document so the pages load faster -->
 	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>-->

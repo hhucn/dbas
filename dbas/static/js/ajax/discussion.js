@@ -5,7 +5,6 @@
 
 function AjaxDiscussionHandler() {
 	'use strict';
-
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
@@ -133,7 +132,7 @@ function AjaxDiscussionHandler() {
 	this.getLogfileForStatements = function (statements_uids) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_logfile_for_statements',
+			url: 'ajax_get_logfile_for_premisegroups',
 			method: 'GET',
 			data: {
 				uids: JSON.stringify(statements_uids),
@@ -309,8 +308,8 @@ function AjaxDiscussionHandler() {
 						current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
-						$('.fa-pencil').fadeTo('slow', 0.2, function () {
-							$('.fa-pencil').fadeTo('slow', 1.0, function () {
+						bubbleSpace.find('.fa-pencil').fadeTo('slow', 0.2, function () {
+							bubbleSpace.find('.fa-pencil').fadeTo('slow', 1.0, function () {
 							});
 						});
 					}, 1000);

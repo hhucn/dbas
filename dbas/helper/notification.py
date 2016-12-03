@@ -7,10 +7,10 @@ Provides functions for te internal messaging system
 import transaction
 import dbas.helper.email as EmailHelper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument
-from dbas.lib import sql_timestamp_pretty_print, escape_string, get_profile_picture
+from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, sql_timestamp_pretty_print
+from dbas.lib import escape_string, get_profile_picture
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import TextGenerator
+from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, get_text_for_add_argument_message
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
 from websocket.lib import send_request_for_info_popup_to_socketio
@@ -76,11 +76,11 @@ def send_edit_text_notification(db_user, textversion, path, request):
 
     _t1 = Translator(user_lang1)
     topic1 = _t1.get(_.textversionChangedTopic)
-    content1 = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
+    content1 = get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
     _t2 = Translator(user_lang2)
     topic2 = _t2.get(_.textversionChangedTopic)
-    content2 = TextGenerator.get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
+    content2 = get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content, oem.content, path)
 
     notifications = []
     if new_author != root_author:
@@ -149,10 +149,10 @@ def send_add_text_notification(url, conclusion_id, user, request):
 
     # get topic and content for messages to both authors
     topic1 = _t_root.get(_.statementAdded)
-    content1 = TextGenerator.get_text_for_add_text_message(root_lang, url, True)
+    content1 = get_text_for_add_text_message(root_lang, url, True)
 
     topic2 = _t_editor.get(_.statementAdded)
-    content2 = TextGenerator.get_text_for_add_text_message(editor_lang, url, True)
+    content2 = get_text_for_add_text_message(editor_lang, url, True)
 
     if db_root_author != db_current_user:
         DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
@@ -208,7 +208,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
 
     _t = Translator(user)
     topic = _t.get(_.argumentAdded)
-    content = TextGenerator.get_text_for_add_argument_message(user_lang, url, True)
+    content = get_text_for_add_argument_message(user_lang, url, True)
 
     DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
                                     to_author_uid=db_author.uid,

@@ -26,19 +26,17 @@ import dbas.helper.voting as VotingHelper
 import transaction
 
 
-def get_nickname_and_session(request, request_authenticated_userid, for_api=None, api_data=None):
+def get_nickname(request_authenticated_userid, for_api=None, api_data=None):
     """
     Given data from api, return nickname and session_id.
 
-    :param request:
     :param request_authenticated_userid:
     :param for_api:
     :param api_data:
     :return:
     """
     nickname = api_data["nickname"] if api_data and for_api else request_authenticated_userid
-    session_id = api_data["session_id"] if api_data and for_api else request.session.id
-    return nickname, session_id
+    return nickname
 
 
 def preparation_for_view(for_api, api_data, request, request_authenticated_userid):
@@ -51,12 +49,12 @@ def preparation_for_view(for_api, api_data, request, request_authenticated_useri
     :param request_authenticated_userid:
     :return: nickname, session_id, session_expired, history
     """
-    nickname, session_id = get_nickname_and_session(request, request_authenticated_userid, for_api, api_data)
+    nickname = get_nickname(request_authenticated_userid, for_api, api_data)
     session_expired = UserHandler.update_last_action(nickname)
     history         = request.params['history'] if 'history' in request.params else ''
     HistoryHelper.save_path_in_database(nickname, request.path)
     HistoryHelper.save_history_in_cookie(request, request.path, history)
-    return nickname, session_id, session_expired, history
+    return nickname, session_expired, history
 
 
 def preparation_for_justify_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, mode, ui_locales, request_authenticated_userid):
@@ -75,9 +73,9 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     """
     logger('View Helper', 'preparation_for_justify_statement', 'main')
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    logged_in = UserHandler.is_user_logged_in(nickname)
-    _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
+    _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
     VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive)
 
@@ -109,11 +107,11 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     """
     logger('View Helper', 'preparation_for_dont_know_statement', 'main')
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
 
     issue               = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales     = get_discussion_language(request, issue)
-    _ddh                = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)
+    _ddh                = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
     _idh                = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     _dh                 = DictionaryHelper(ui_locales, disc_ui_locales)
 
@@ -146,9 +144,10 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     """
     logger('ViewHelper', 'preparation_for_justify_argument', 'main')
 
-    nickname, session_id, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    logged_in = UserHandler.is_user_logged_in(nickname)
-    _ddh, _idh, _dh = __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    logged_in = db_user is not None
+    _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
     # justifying argument
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
@@ -164,11 +163,10 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     return item_dict, discussion_dict, extras_dict
 
 
-def __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug, for_api, request):
+def __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request):
     """
 
     :param ui_locales:
-    :param session_id:
     :param nickname:
     :param history:
     :param main_page:
@@ -179,7 +177,7 @@ def __prepare_helper(ui_locales, session_id, nickname, history, main_page, slug,
     """
     issue           = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    ddh = DiscussionDictHelper(disc_ui_locales, session_id, nickname, history, main_page=main_page, slug=slug)
+    ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
     idh = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     dh  = DictionaryHelper(ui_locales, disc_ui_locales)
     return ddh, idh, dh
