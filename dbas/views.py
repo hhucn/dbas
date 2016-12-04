@@ -1505,7 +1505,7 @@ def send_some_notification(request):
     _tn = Translator(ui_locales)
 
     try:
-        recipient = request.params['recipient'].replace('%20', ' ')
+        recipient = str(request.params['recipient']).replace('%20', ' ')
         title     = request.params['title']
         text      = request.params['text']
         db_recipient = get_user_by_private_or_public_nickname(recipient)
@@ -1517,13 +1517,15 @@ def send_some_notification(request):
             db_author = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
             if not db_author:
                 error = _tn.get(_.notLoggedIn)
+            if db_author.uid == db_recipient.uid:
+                error = _tn.get(_.senderReceiverSame)
             else:
                 db_notification = send_notification(db_author, db_recipient, title, text, request.application_url)
                 uid = db_notification.uid
                 ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
                 gravatar = get_profile_picture(db_recipient, 20)
 
-    except KeyError:
+    except (KeyError, AttributeError):
         error = _tn.get(_.internalKeyError)
 
     return_dict = {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
@@ -1750,10 +1752,16 @@ def set_notification_read(request):
     _t = Translator(ui_locales)
 
     try:
-        DBDiscussionSession.query(Message).filter_by(uid=request.params['id']).first().set_read(True)
-        transaction.commit()
-        return_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
-        return_dict['error'] = ''
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=request_authenticated_userid).first()
+        if db_user:
+            DBDiscussionSession.query(Message).filter(and_(Message.uid == request.params['id'],
+                                                           Message.to_author_uid == db_user.uid,
+                                                           Message.is_inbox == True)).first().set_read(True)
+            transaction.commit()
+            return_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
+            return_dict['error'] = ''
+        else:
+            return_dict['error'] = _t.get(_.noRights)
     except KeyError as e:
         logger('set_message_read', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
@@ -1779,13 +1787,25 @@ def set_notification_delete(request):
     _t = Translator(ui_locales)
 
     try:
-        DBDiscussionSession.query(Message).filter_by(uid=request.params['id']).delete()
-        transaction.commit()
-        return_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
-        return_dict['total_in_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, True)))
-        return_dict['total_out_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, False)))
-        return_dict['error'] = ''
-        return_dict['success'] = _t.get(_.messageDeleted)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=request_authenticated_userid).first()
+        if db_user:
+            # inbox
+            DBDiscussionSession.query(Message).filter(and_(Message.uid == request.params['id'],
+                                                           Message.to_author_uid == db_user.uid,
+                                                           Message.is_inbox == True)).delete()
+            # send
+            DBDiscussionSession.query(Message).filter(and_(Message.uid == request.params['id'],
+                                                           Message.from_author_uid == db_user.uid,
+                                                           Message.is_inbox == False)).delete()
+            transaction.commit()
+            return_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
+            return_dict['total_in_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, True)))
+            return_dict['total_out_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, False)))
+            return_dict['error'] = ''
+            return_dict['success'] = _t.get(_.messageDeleted)
+        else:
+            return_dict['error'] = _t.get(_.noRights)
+            return_dict['success'] = ''
     except KeyError as e:
         logger('set_message_read', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
