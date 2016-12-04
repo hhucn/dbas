@@ -2093,21 +2093,30 @@ def get_references(request):
     _tn = Translator(ui_locales)
 
     try:
+        # uid is an integer if it is an argument and a list otherwise
         uid = json.loads(request.params['uid'])
         is_argument = True if str(request.params['is_argument']) == 'true' else False
+        are_all_integer = all(is_integer(id) for id in uid) if isinstance(uid, list) else is_integer(uid)
 
-        if is_argument:
-            data, text = get_references_for_argument(uid, request.application_url)
+        error = ''
+        if are_all_integer:
+            if is_argument:
+                data, text = get_references_for_argument(uid, request.application_url)
+            else:
+                data, text = get_references_for_statements(uid, request.application_url)
         else:
-            data, text = get_references_for_statements(uid, request.application_url)
-
-        return_dict = {'error': '',
-                       'data': data,
-                       'text': text}
+            logger('get_references', 'def', 'uid is not an integer')
+            data = ''
+            text = ''
+            error = _tn.get(_.internalKeyError)
 
     except KeyError as e:
         logger('get_references', 'error', repr(e))
-        return_dict = {'error': _tn.get(_.internalKeyError)}
+        error = _tn.get(_.internalKeyError)
+
+    return_dict = {'error': error,
+                   'data': data,
+                   'text': text}
 
     return json.dumps(return_dict, True)
 
@@ -2186,16 +2195,16 @@ def send_news(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('send_news', 'def', 'main, request.params: ' + str(request.params))
+    _tn = Translator(get_language(request, get_current_registry()))
 
     try:
         title = escape_string(request.params['title'])
         text = escape_string(request.params['text'])
-        return_dict = news_handler.set_news(title, text, request.authenticated_userid, get_language(request, get_current_registry()))
-        return_dict['error'] = ''
+        return_dict, success = news_handler.set_news(title, text, request.authenticated_userid, get_language(request, get_current_registry()))
+        return_dict['error'] = '' if success else _tn.get(_.noRights)
     except KeyError as e:
         return_dict = dict()
         logger('send_news', 'error', repr(e))
-        _tn = Translator(get_language(request, get_current_registry()))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
     return json.dumps(return_dict, True)
