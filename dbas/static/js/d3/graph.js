@@ -204,7 +204,7 @@ function DiscussionGraph() {
         addListenerForTooltip();
 
         force.start();
-
+        
         // update force layout calculations
         function forceTick() {
             // update position of edges
@@ -215,9 +215,9 @@ function DiscussionGraph() {
                     return d.source.y;
                 },
                 x2: function (d) {
-                    return d.target.x;
+                    return getPositionOfLink("x2", d.target.x, edges, d);
                 }, y2: function (d) {
-                    return d.target.y;
+                    return getPositionOfLink("y2", d.target.y, edges, d);
                 }
             });
 
@@ -248,6 +248,33 @@ function DiscussionGraph() {
 
         addListenerForBackgroundOfNodes(edges);
     };
+
+    /**
+     * Calculate coordinate of link for undercuts.
+     *
+     * @param linkTargetCoordinate
+     * @param nodeCoordinate
+     * @param edges
+     * @param d
+     * @returns {*}
+     */
+    function getPositionOfLink(linkTargetCoordinate, nodeCoordinate, edges, d) {
+        let position;
+        let edge;
+        if (d.is_attacking && d.edge_type === 'arrow' && d.target.id.indexOf('argument_') != -1) {
+            edges.forEach(function (e) {
+                if (e.source.id === d.target.id) {
+                    edge = e;
+                }
+            });
+                position = (parseInt(d3.select('#link-' + edge.id).attr(linkTargetCoordinate)) + nodeCoordinate)/2;
+            }
+            else
+            {
+                position = nodeCoordinate;
+            }
+        return position;
+    }
 
     /**
      * Create svg-element.
@@ -402,7 +429,8 @@ function DiscussionGraph() {
                 color: color,
                 edge_type: e.edge_type,
                 size: e.size,
-                id: e.id
+                id: e.id,
+                is_attacking: e.is_attacking
             });
         });
         return edges;
@@ -538,28 +566,6 @@ function DiscussionGraph() {
                 return node.size;
         }
         return node.size;
-    }
-
-    /**
-     * Calculates the arrow size in respect to the DOJ
-     *
-     * @param d
-     * @param rel_node_factor
-     * @returns {*}
-     */
-    function calculateArrowSize(d, rel_node_factor) {
-        let id = d.target.id.replace('statement_', '');
-        if (d.target.id.indexOf('statement_') != -1 && id in rel_node_factor) {
-            // d.target.size is equal statement_size
-            // node_factor_size is a global var
-            // rel_node_factor[id] is in [0,1]
-            // target_size is the new size for the node
-            let target_size = d.target.size + node_factor_size * rel_node_factor[id];
-
-            return target_size;
-        } else {
-            return d.target.size;
-        }
     }
 
     /**
