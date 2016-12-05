@@ -63,7 +63,7 @@ from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
 from dbas.database.initializedb import nick_of_anonymous_user
 
 name = 'D-BAS'
-version = '0.8.0'
+version = '0.9.0'
 full_version = version + 'a'
 project_name = name + ' ' + full_version
 
