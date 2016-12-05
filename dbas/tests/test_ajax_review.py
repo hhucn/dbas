@@ -24,6 +24,7 @@ class AjaxReviewTest(unittest.TestCase):
         testing.tearDown()
 
     def test_flag_argument_or_statement(self):
+        # self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import flag_argument_or_statement as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = json.loads(ajax(request))
