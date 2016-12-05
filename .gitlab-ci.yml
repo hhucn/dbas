@@ -13,6 +13,7 @@ before_script:
   - init_discussion_testvotes docker.ini > /dev/null 2>&1
   - init_review_tests docker.ini > /dev/null 2>&1
   - cp docker.ini development.ini
+  - pserve development.ini --daemon
 
 flake8:
   stage: test

@@ -30,5 +30,9 @@ class TestLoginLogout:
         assert_true(self.browser.is_text_present('Pascal'), 'There is no \'Pascal\' on the side')
 
     def test_02_logout(self):
+        """
+        Test logout
+        must run after test_01_right_login will pass if not!
+        """
         self.browser.visit(logout_url)
         assert_false(self.browser.is_text_present('Pascal'), 'String \'Pascal\' present')

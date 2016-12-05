@@ -26,7 +26,7 @@ class TestAuthorPopup:
 
     # requires open popup
     def test_01_close_author_popup(self):
-        sleep(1) # skip animation :-/
+        sleep(1)  # skip animation :-/
         self.browser.click_link_by_id('popup_author_btn_close')
         sleep(0.5)
         assert_false(self.browser.is_text_present('About me'))
