@@ -178,8 +178,8 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
         all_ids.append('argument_' + str(argument.uid))
 
         # we have an argument with:
-        # 1) with one premise and no undercut is done on this argument
-        # 2) with at least two premises  one conclusion or an undercut is done on this argument
+        # 1) with one premise and no undercuts for this argument
+        # 2) with at least two premises, one conclusion or an undercut is done on this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
 

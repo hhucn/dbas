@@ -9,15 +9,12 @@
                         <li class="active" i18n:translate="reputation">Reputation</li>
                     </ul>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <h5 class="center">
                         <span tal:condition="reputation.all_rights" i18n:translate="unlimited_right_based_on_group">Based on your user group, you have all rights!</span>
                         <span i18n:translate="reputation_count">Reputation count</span>:
                         <i class="text-info">${reputation.count}</i>
                     </h5>
-                </div>
-                <div class="col-md-2">
-                    <img tal:attributes="src extras.users_avatar" class="pull-right img-circle">
                 </div>
             </div>
             <div class="row">

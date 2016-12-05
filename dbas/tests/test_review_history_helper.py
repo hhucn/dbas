@@ -15,9 +15,9 @@ class TestReviewHistoryHelper(unittest.TestCase):
 
     def test_flag_argument(self):
         history = ReviewHistoryHelper.get_review_history('mainpage', 'nickname', Translator('en'))
-        self.assertTrue('has_access' in history)
-        self.assertTrue('past_decision' in history)
-        self.assertFalse(history['has_access'])
+        self.assertNotIn('has_access', history)
+        self.assertNotIn('past_decision', history)
+        self.assertNotIn('has_access', history)
 
         history = ReviewHistoryHelper.get_review_history('mainpage', 'Tobias', Translator('en'))
         self.assertTrue('has_access' in history)
@@ -35,6 +35,7 @@ class TestReviewHistoryHelper(unittest.TestCase):
         self.assertTrue(len(history) > 0)
         self.assertTrue('count' in history)
         self.assertTrue('history' in history)
+
         for h in history['history']:
             self.assertTrue('date' in h)
             self.assertTrue('action' in h)

@@ -176,6 +176,24 @@ def related_with_rebut(attacked_arg_uid, attacking_arg_uid):
     return True if same_conclusion and not_none and attacking else False
 
 
+def related_with_support(attacked_arg_uid, attacking_arg_uid):
+    """
+
+    :param attacked_arg_uid: Argument.uid
+    :param attacking_arg_uid: Argument.uid
+    :return: Boolean
+    """
+    db_first_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).first()
+    db_second_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacked_arg_uid).first()
+    if not db_first_arg or not db_second_arg:
+        return False
+
+    not_none = db_first_arg.conclusion_uid is not None
+    same_conclusion = db_first_arg.conclusion_uid == db_second_arg.conclusion_uid
+    supportive = db_first_arg.is_supportive and db_second_arg.is_supportive
+    return True if same_conclusion and not_none and supportive else False
+
+
 def get_relation_between_arguments(arg1_uid, arg2_uid):
     """
 
@@ -185,14 +203,22 @@ def get_relation_between_arguments(arg1_uid, arg2_uid):
     """
 
     if related_with_undermine(arg1_uid, arg2_uid):
+        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'undermine'
 
     elif related_with_undercut(arg1_uid, arg2_uid):
+        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'undercut'
 
     elif related_with_rebut(arg1_uid, arg2_uid):
+        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'rebut'
 
+    elif related_with_support(arg1_uid, arg2_uid):
+        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' support ' + str(arg2_uid))
+        return 'support'
+
+    logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' NONE ' + str(arg2_uid))
     return None
 
 
