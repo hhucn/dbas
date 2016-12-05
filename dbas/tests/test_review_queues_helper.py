@@ -42,27 +42,27 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         self.assertTrue(len(error) > 0)
         self.assertFalse(is_locked)
 
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 3, _tn)
-        self.assertTrue(len(success) == 0)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 2, _tn)
+        self.assertTrue(len(success) != 0)
         self.assertTrue(len(info) == 0)
         self.assertTrue(len(error) == 0)
         self.assertTrue(is_locked)
 
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 3, _tn)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Tobias', 2, _tn)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) > 0)
         self.assertTrue(len(error) == 0)
         self.assertTrue(is_locked)
 
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Martin', 3, _tn)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Martin', 2, _tn)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) > 0)
         self.assertTrue(len(error) == 0)
         self.assertTrue(is_locked)
 
     def test_unlock(self):
-        ReviewQueuesHelper.unlock_optimization_review(3)
-        self.assertFalse(ReviewQueuesHelper.is_review_locked(3))
+        ReviewQueuesHelper.unlock_optimization_review(2)
+        self.assertFalse(ReviewQueuesHelper.is_review_locked(2))
 
     def is_review_locked(self):
-        self.assertFalse(ReviewQueuesHelper.is_review_locked(3))
+        self.assertFalse(ReviewQueuesHelper.is_review_locked(2))

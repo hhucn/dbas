@@ -247,6 +247,8 @@ de_lang = {
     _.deleteHistory: 'History löschen',
     _.doYouWantToEnterYourStatements: 'Möchten Sie Ihre eigenen Gründe angeben?',
     _.doNotHesitateToContact: 'Zögern Sie nicht, uns zu <span style="cursor: pointer;" id="contact-on-error"><strong>kontaktieren (hier klicken)</strong></span>',
+    _.dataNowLocked: 'Sie können die Daten nun bearbeiten!',
+    _.dataUnlocked: 'Daten wurden freigegeben!',
     _.dataAlreadyLockedByYou: 'Sie bearbeiten schon einen Datensatz. Schließen Sie diese Bearbeitung bitte zuerst ab!',
     _.dataAlreadyLockedByOthers: 'Dieser Datensatz wird gerade durch andere Teilnehmer bearbeitet.',
     _.earlierYouArguedThat: 'Zuerst haben Sie argumentiert, dass',

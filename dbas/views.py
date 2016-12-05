@@ -1035,8 +1035,6 @@ def ongoing_history(request):
     history = review_history_helper.get_ongoing_reviews(request.application_url, request_authenticated_userid, _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
 
-    logger('X', 'X', str(history))
-
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
@@ -2333,20 +2331,22 @@ def flag_argument_or_statement(request):
         is_argument = True if request.params['is_argument'] == 'true' else False
         nickname = request.authenticated_userid
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
-        db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
-
-        if not is_integer(uid):
-            logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
-        elif db_reason is None and reason != 'optimization':
-            logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
+        if not db_user:
+            return_dict = {'error': _t.get(_.noRights)}
         else:
-            success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument)
-            return_dict = {
-                'success': '' if isinstance(success, str) else _t.get(success),
-                'info': '' if isinstance(info, str) else _t.get(info),
-                'error': '' if isinstance(error, str) else _t.get(error)
-            }
+            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
+
+            if not is_integer(uid):
+                logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
+            elif db_reason is None and reason != 'optimization':
+                logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
+            else:
+                success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument)
+                return_dict = {
+                    'success': '' if isinstance(success, str) else _t.get(success),
+                    'info': '' if isinstance(info, str) else _t.get(info),
+                    'error': '' if isinstance(error, str) else _t.get(error)
+                }
     except KeyError as e:
         logger('flag_argument', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
@@ -2375,8 +2375,9 @@ def review_delete_argument(request):
             logger('review_delete_argument', 'def', 'invalid uid', error=True)
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_delete(nickname, should_delete, review_uid)
-            send_request_for_recent_delete_review_to_socketio(nickname, request.application_url)
+            error = review_main_helper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t)
+            if len(error) == 0:
+                send_request_for_recent_delete_review_to_socketio(nickname, request.application_url)
     except KeyError as e:
         logger('review_delete_argument', 'error', repr(e))
         error = _t.get(_.internalKeyError)
@@ -2406,8 +2407,9 @@ def review_edit_argument(request):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid)
-            send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
+            error = review_main_helper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t)
+            if len(error) == 0:
+                send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
     except KeyError as e:
         logger('review_delete_argument', 'error', repr(e))
         error = _t.get(_.internalKeyError)
@@ -2439,7 +2441,7 @@ def review_optimization_argument(request):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data)
+            error = review_main_helper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t)
 
             if len(error) == 0:
                 send_request_for_recent_optimization_review_to_socketio(nickname, request.application_url)
@@ -2503,7 +2505,7 @@ def cancel_review(request):
         nickname = request.authenticated_userid
 
         if is_user_author(nickname):
-            success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales)
+            success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales, nickname)
             return_dict['success'] = success
             return_dict['error'] = error
         else:
@@ -2547,6 +2549,7 @@ def review_lock(request):
             else:
                 review_queue_helper.unlock_optimization_review(review_uid)
                 is_locked = False
+                success = _t.get(_.dataUnlocked)
 
     except KeyError as e:
         logger('review_lock', 'error', repr(e))
@@ -2594,6 +2597,6 @@ def revoke_some_content(request):
     return_dict['error'] = error
     return_dict['success'] = success
     return_dict['is_deleted'] = is_deleted
-    transaction.commit()  # # 207
+    transaction.commit()
 
     return json.dumps(return_dict, True)

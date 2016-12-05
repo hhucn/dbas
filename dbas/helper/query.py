@@ -11,7 +11,7 @@ import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
-    RevokedContent, RevokedContentHistory, VoteStatement, sql_timestamp_pretty_print
+    RevokedContent, RevokedContentHistory, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
     set_new_undercut_or_overbid, set_new_undermine_or_support
@@ -688,7 +688,7 @@ def revoke_content(uid, is_argument, nickname, translator):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         logger('QueryHelper', 'revoke_content', 'User not found')
-        return translator.get(_.userNotFound)
+        return translator.get(_.userNotFound), False
 
     # get element, which should be revoked
     if is_argument:
@@ -708,7 +708,6 @@ def revoke_content(uid, is_argument, nickname, translator):
 
     DBDiscussionSession.add(db_element)
     DBDiscussionSession.flush()
-    # transaction.commit()  # # 207
 
     return '', is_deleted
 
@@ -768,47 +767,49 @@ def __revoke_statement(db_user, statement_uid, translator):
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
     is_author = is_author_of_statement(db_user.nickname, statement_uid)
 
+    is_revoked = False
     # exists the statement
     if not db_statement:
         logger('QueryHelper', '__revoke_statement', 'Statement does not exists')
-        return None, False, translator.get(_.internalError)
+        return None, is_revoked, translator.get(_.internalError)
 
     if not is_author:
         logger('QueryHelper', '__revoke_statement', db_user.nickname + ' is not the author')
-        return None, False, translator.get(_.userIsNotAuthorOfStatement)
+        return None, is_revoked, translator.get(_.userIsNotAuthorOfStatement)
 
-    db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-    logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(db_new_author.uid) + ' (old author ' + str(db_user.uid) + ')')
-    db_statement.author_uid = db_new_author.uid
-    __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_new_author.uid)
+    db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+    logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' will get a new author ' + str(db_anonymous.uid) + ' (old author ' + str(db_user.uid) + ')')
+    db_statement.author_uid = db_anonymous.uid
+    __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_anonymous.uid)
+    is_revoked = True
 
-    # transfer the responsibility to the next author (NOW ANONYMOUS), who used this statement
-    db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == statement_uid,
-                                                                                 Argument.is_supportive == True,
-                                                                                 Argument.author_uid != db_user.uid)).first()
-    db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid != db_user.uid,
-                                                                    VoteStatement.is_up_vote == True,
-                                                                    VoteStatement.is_valid == True)).first()
-    # search new author who supported this statement
-    if db_statement_as_conclusion or db_votes:  # TODO 197 DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
-        db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        new_author_uid = db_new_author.uid  # db_statement_as_conclusion.author_uid
-        logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(new_author_uid) + ' (old author ' + str(db_user.uid) + ')')
-        db_statement.author_uid = new_author_uid
-        __transfer_textversion_to_new_author(statement_uid, db_user.uid, new_author_uid)
-        is_deleted = False
-    else:
-        logger('QueryHelper', '__revoke_statement',
-               'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ') and all arguments with this statement, cause we have no new author')
-        db_statement.set_disable(True)
-        __disable_textversions(statement_uid, db_user.uid)
-        __disable_arguments_with_statement(db_user, statement_uid, translator)
-        is_deleted = True
+    # # transfer the responsibility to the next author (NOW ANONYMOUS), who used this statement
+    # db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == statement_uid,
+    #                                                                              Argument.is_supportive == True,
+    #                                                                              Argument.author_uid != db_user.uid)).first()
+    # db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid != db_user.uid,
+    #                                                                 VoteStatement.is_up_vote == True,
+    #                                                                 VoteStatement.is_valid == True)).first()
+    # # search new author who supported this statement
+    # if db_statement_as_conclusion or db_votes:  # TODO 197 DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
+    #     db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+    #     new_author_uid = db_anonymous.uid  # db_statement_as_conclusion.author_uid
+    #     logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' has a new author ' + str(new_author_uid) + ' (old author ' + str(db_user.uid) + ')')
+    #     db_statement.author_uid = new_author_uid
+    #     __transfer_textversion_to_new_author(statement_uid, db_user.uid, new_author_uid)
+    #     is_revoked = False
+    # else:
+    #     logger('QueryHelper', '__revoke_statement',
+    #            'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ') and all arguments with this statement, cause we have no new author')
+    #     db_statement.set_disable(True)
+    #     __disable_textversions(statement_uid, db_user.uid)
+    #     __disable_arguments_with_statement(db_user, statement_uid, translator)
+    #     is_revoked = True
 
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
 
-    return db_statement, is_deleted, ''
+    return db_statement, is_revoked, ''
 
 
 def __disable_textversions(statement_uid, author):
