@@ -1113,13 +1113,13 @@ def get_all_posted_statements(request):
     user_manager.update_last_action(request_authenticated_userid)
     logger('get_all_posted_statements', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
-    return_array, tmp = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
+    return_array, edits = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
     return json.dumps(return_array, True)
 
 
 # ajax - getting all text edits
 @view_config(route_name='ajax_get_all_edits', renderer='json')
-def get_all_edits(request):
+def get_all_edits_of_user(request):
     """
 
     :return:
@@ -1127,9 +1127,9 @@ def get_all_edits(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_edits', 'def', 'main')
+    logger('get_all_edits_of_user', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
-    tmp, return_array = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
+    statements, return_array = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
     return json.dumps(return_array, True)
 
 
@@ -1880,8 +1880,8 @@ def set_seen_statements(request):
 
 
 # ajax - getting changelog of a statement
-@view_config(route_name='ajax_get_logfile_for_premisegroups', renderer='json')
-def get_logfile_for_premisegroup(request):
+@view_config(route_name='ajax_get_logfile_for_statements', renderer='json')
+def get_logfile_for_some_statements(request):
     """
     Returns the changelog of a statement
 
@@ -2022,7 +2022,6 @@ def get_users_with_same_opinion(request):
         params = request.params
         ui_locales  = params['lang'] if 'lang' in params else 'en'
         uids        = params['uids']
-        attack      = params['attack'] if len(params['attack']) > 0 else None
         is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
         is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
         is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
@@ -2034,7 +2033,7 @@ def get_users_with_same_opinion(request):
                 return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
             else:
                 uids = json.loads(uids)
-                return_dict = get_user_and_opinions_for_argument(uids, attack, ui_locales, request.application_url)
+                return_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, request.application_url)
         elif is_pos:
             uids = json.loads(uids)
             ids = uids if isinstance(uids, list) else [uids]

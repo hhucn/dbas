@@ -395,6 +395,8 @@ def get_logfile_for_statements(uids, lang, main_page):
     main_dict = dict()
     for uid in uids:
         db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
+        if len(db_textversions) == 0:
+            continue
         return_dict = dict()
         content_dict = dict()
         # add all corrections

@@ -191,18 +191,6 @@ class AjaxTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(response['ui_locales'] != 'sw')
 
-    def test_delete_user_history(self):
-        from dbas.views import delete_user_history as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
-    def test_delete_statistics(self):
-        from dbas.views import delete_statistics as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-
     def test_additional_service(self):
         from dbas.views import additional_service as ajax
         request = testing.DummyRequest(params={}, matchdict={})

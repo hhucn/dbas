@@ -132,7 +132,7 @@ function AjaxDiscussionHandler() {
 	this.getLogfileForStatements = function (statements_uids) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_logfile_for_premisegroups',
+			url: 'ajax_get_logfile_for_statements',
 			method: 'GET',
 			data: {
 				uids: JSON.stringify(statements_uids),
@@ -245,10 +245,6 @@ function AjaxDiscussionHandler() {
 		var is_position = type == 'position' || type == 'statement';
 		var uid = argument_uid == 'None' ? statement_uid : argument_uid;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var attack = '';
-		var splitted = window.location.href.split('?')[0].split('/');
-		if (splitted.indexOf('reaction') != -1)
-			attack = splitted[splitted.indexOf('reaction') + 2];
 		
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
