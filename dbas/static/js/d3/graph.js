@@ -828,11 +828,9 @@ function DiscussionGraph() {
      */
     function showLabels(label, rect) {
         isContentVisible = true;
+        isPositionVisible = true;
         label.style("display", 'inline');
         rect.style("display", 'inline');
-        // deactivate hover-effect if labels are visible
-        d3.selectAll('.node').on("mouseover", null);
-        d3.selectAll('.node').on("mouseout", null);
         $('#show-labels').hide();
         $('#hide-labels').show();
         // also show content of positions
@@ -854,11 +852,10 @@ function DiscussionGraph() {
         $('#hide-labels').hide();
         addListenerForTooltip();
         if (isPositionVisible) {
-            setDisplayStyleOfNodes('inline');
-        } else {
             $('#show-positions').show();
             $('#hide-positions').hide();
         }
+        isPositionVisible = false;
     }
 
     /**
@@ -868,9 +865,6 @@ function DiscussionGraph() {
         isPositionVisible = true;
         // select positions
         setDisplayStyleOfNodes('inline');
-        // deactivate hover-effect if labels are visible
-        d3.selectAll('.node').on("mouseover", null);
-        d3.selectAll('.node').on("mouseout", null);
         $('#show-positions').hide();
         $('#hide-positions').show();
     }
@@ -1095,14 +1089,67 @@ function DiscussionGraph() {
      */
     function addListenerForTooltip() {
         d3.selectAll('.node').on("mouseover", function (d) {
+            determineShowOrHidTooltip(d, true);
+        }).on("mouseout", function (d) {
+            determineShowOrHidTooltip(d, false);
+        });
+    }
+
+    /**
+     * Show or hide tooltip of node dependent on selected side-bar buttons.
+     *
+     * @param d: current node
+     * @param mouseover
+     */
+    function determineShowOrHidTooltip(d, mouseover) {
+        var isPosition = testNodePosition(d);
+        if(isPositionVisible && isContentVisible){
+        }
+        else if(!isPositionVisible && !isContentVisible){
+            showHideTooltip(d, mouseover);
+        }
+        else if(!isPosition && isPositionVisible){
+            showHideTooltip(d, mouseover);
+        }
+        else if(isPosition && isContentVisible){
+            showHideTooltip(d, mouseover);
+        }
+    }
+
+    /**
+     * Test whether the selected node is a position.
+     *
+     * @param d
+     */
+    function testNodePosition(d){
+        var isPosition = false;
+        d3.selectAll(".link").each(function (e) {
+            if (e.source.id === d.id && e.target.id === 'issue') {
+                isPosition = true;
+            }
+        });
+        return isPosition;
+    }
+
+    /**
+     * Show or hide tooltip of node dependent on mouse event.
+     *
+     * @param d
+     * @param mouseover
+     */
+    function showHideTooltip(d, mouseover) {
+        // if there is a mouseover-event show the tooltip
+        if(mouseover){
             d3.select('#label-' + d.id).style('display', 'inline');
             d3.select('#rect-' + d.id).style('display', 'inline');
             d3.select('#circle-' + d.id).attr('fill', '#757575');
-        }).on("mouseout", function (d) {
+        }
+        // otherwise there is a mouseout-out, then hide the tooltip
+        else{
             d3.select('#label-' + d.id).style('display', 'none');
             d3.select('#rect-' + d.id).style('display', 'none');
             d3.select('#circle-' + d.id).attr('fill', d.color);
-        });
+        }
     }
 
     /**
