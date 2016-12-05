@@ -5,7 +5,6 @@
 
 function AjaxDiscussionHandler() {
 	'use strict';
-
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
@@ -246,10 +245,6 @@ function AjaxDiscussionHandler() {
 		var is_position = type == 'position' || type == 'statement';
 		var uid = argument_uid == 'None' ? statement_uid : argument_uid;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var attack = '';
-		var splitted = window.location.href.split('?')[0].split('/');
-		if (splitted.indexOf('reaction') != -1)
-			attack = splitted[splitted.indexOf('reaction') + 2];
 		
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
@@ -309,8 +304,8 @@ function AjaxDiscussionHandler() {
 						current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
-						$('.fa-pencil').fadeTo('slow', 0.2, function () {
-							$('.fa-pencil').fadeTo('slow', 1.0, function () {
+						bubbleSpace.find('.fa-pencil').fadeTo('slow', 0.2, function () {
+							bubbleSpace.find('.fa-pencil').fadeTo('slow', 1.0, function () {
 							});
 						});
 					}, 1000);

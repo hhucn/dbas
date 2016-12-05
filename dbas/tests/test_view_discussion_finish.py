@@ -18,11 +18,11 @@ class DiscussionFinishViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_discussion_finish_page(self):
+    def test_page(self):
         from dbas.views import discussion_finish as d
 
         request = testing.DummyRequest()
         response = d(request)
         verify_dictionary_of_view(self, response)
 
-        # place for additional stuff
+        # TODO test votes and seen

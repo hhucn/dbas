@@ -74,7 +74,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     logger('View Helper', 'preparation_for_justify_statement', 'main')
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    logged_in = UserHandler.is_user_logged_in(nickname)
+    logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
     VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive)
@@ -145,7 +145,8 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     logger('ViewHelper', 'preparation_for_justify_argument', 'main')
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    logged_in = UserHandler.is_user_logged_in(nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    logged_in = db_user is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
     # justifying argument
@@ -318,7 +319,7 @@ def request_password(request, ui_locales):
     info = ''
 
     _t = Translator(ui_locales)
-    email = escape_string(request.params['email'] if 'email' in request.params else '')
+    email = escape_string(request.params['email'])
     db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
 
     # does the user exists?

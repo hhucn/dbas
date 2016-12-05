@@ -39,6 +39,7 @@ function DiscussionBarometer(){
         if (url.indexOf('/attitude/') != -1){
             address = 'attitude';
             uid = splitted[splitted.length-1];
+            
             new AjaxGraphHandler().getUserGraphData(uid, address);
         } else if (url.indexOf('/justify/') != -1 || window.location.href.indexOf('/choose/') != -1) {
             address = 'justify';

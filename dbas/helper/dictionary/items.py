@@ -6,7 +6,7 @@ Provides helping function for dictionaries, which are used for the radio buttons
 
 import random
 
-import dbas.recommender_system as RecommenderSystem
+import dbas.recommender_system as rs
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
@@ -59,7 +59,7 @@ class ItemDictHelper(object):
         db_statements = db_statements.filter(and_(Statement.is_startpoint == True,
                                                   Statement.issue_uid == self.issue_uid)).all()
 
-        uids = RecommenderSystem.get_uids_of_best_positions(db_statements)  # TODO # 166
+        uids = rs.get_uids_of_best_positions(db_statements)  # TODO # 166
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
 
         statements_array = []
@@ -133,10 +133,9 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')
         statements_array = []
         _tn = Translator(self.lang)
-        _rh = RecommenderSystem
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
-        db_arguments = RecommenderSystem.get_arguments_by_conclusion(statement_uid, is_supportive)
-        uids = RecommenderSystem.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
+        db_arguments = rs.get_arguments_by_conclusion(statement_uid, is_supportive)
+        uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -153,7 +152,7 @@ class ItemDictHelper(object):
                     premise_array.append({'title': text, 'id': premise.statement_uid})
 
                 # get attack for each premise, so the urls will be unique
-                arg_id_sys, attack = _rh.get_attack_for_argument(argument.uid, self.lang, history=self.path)
+                arg_id_sys, attack = rs.get_attack_for_argument(argument.uid, self.lang, history=self.path)
                 already_used = 'reaction/' + str(argument.uid) + '/' in self.path
                 additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
                 statements_array.append(self.__create_answer_dict(str(argument.uid),
@@ -174,7 +173,6 @@ class ItemDictHelper(object):
                                                               'justify',
                                                               'add'))
         else:
-            # elif len(statements_array) == 1:
             statements_array.append(
                 self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
 
@@ -196,7 +194,7 @@ class ItemDictHelper(object):
         slug = DBDiscussionSession.query(Issue).filter_by(uid=self.issue_uid).first().get_slug()
         # description in docs: dbas/logic
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
-        uids = RecommenderSystem.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
+        uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -215,10 +213,9 @@ class ItemDictHelper(object):
             is_undermine = 'undermine' if attack_type == 'undermine' else None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
 
-            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(argument.uid, self.lang,
-                                                                           last_attack=is_undermine,
-                                                                           restriction_on_arg_uids=attacking_arg_uids,
-                                                                           history=self.path)
+            arg_id_sys, attack = rs.get_attack_for_argument(argument.uid, self.lang, last_attack=is_undermine,
+                                                            restriction_on_arg_uids=attacking_arg_uids,
+                                                            history=self.path)
 
             url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
@@ -311,7 +308,7 @@ class ItemDictHelper(object):
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
             if relation == 'support':
-                arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(argument_uid, self.lang)
+                arg_id_sys, sys_attack = rs.get_attack_for_argument(argument_uid, self.lang)
                 url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
 
             else:
@@ -348,11 +345,10 @@ class ItemDictHelper(object):
                                                             attack_type=attack, gender=gender)
         mode = 't' if is_supportive else 'f'
         _um  = UrlManager(self.application_url, slug, self.for_api, history=self.path)
-        _rh  = RecommenderSystem
 
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
-            url = self.__get_url_based_on_relation(relation, attack, _rh, _um, argument_uid_user, argument_uid_sys,
+            url = self.__get_url_based_on_relation(relation, attack, _um, argument_uid_user, argument_uid_sys,
                                                    mode, db_user_argument, db_sys_argument)
 
             # TODO PREVENT LOOPING
@@ -364,9 +360,9 @@ class ItemDictHelper(object):
         # last item is the change attack button or step back, if we have bno other attack
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
         attacking_arg_uids.append(argument_uid_sys)
-        arg_id_sys, new_attack = _rh.get_attack_for_argument(argument_uid_user, self.lang,
-                                                             restriction_on_attacks=attack,
-                                                             restriction_on_arg_uids=attacking_arg_uids)
+        arg_id_sys, new_attack = rs.get_attack_for_argument(argument_uid_user, self.lang,
+                                                            restriction_on_attacks=attack,
+                                                            restriction_on_arg_uids=attacking_arg_uids)
 
         if new_attack == 'no_other_attack' or new_attack.startswith('end'):
             relation = 'step_back'
@@ -378,12 +374,12 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def __get_url_based_on_relation(self, relation, attack, _rh, _um, argument_uid_user, argument_uid_sys, mode, db_user_argument, db_sys_argument):
+    def __get_url_based_on_relation(self, relation, attack, _um, argument_uid_user, argument_uid_sys, mode, db_user_argument, db_sys_argument):
         """
 
         :param relation:
         :param attack:
-        :param _rh:
+        :param rs:
         :param _um:
         :param argument_uid_user:
         :param argument_uid_sys:
@@ -394,7 +390,7 @@ class ItemDictHelper(object):
         """
         # special case, when the user selects the support, because this does not need to be justified!
         if relation == 'support':
-            return self.__get_url_for_support(attack, _rh, _um, argument_uid_sys, db_sys_argument)
+            return self.__get_url_for_support(attack, _um, argument_uid_sys, db_sys_argument)
         elif relation == 'undermine' or relation == 'undercut':  # easy cases
             return self.__get_url_for_undermine(relation, _um, argument_uid_sys, mode)
         elif relation == 'overbid':  # it will be the attack again
@@ -404,19 +400,18 @@ class ItemDictHelper(object):
         else:
             return _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
-    def __get_url_for_support(self, attack, _rh, _um, argument_uid_sys, db_sys_argument):
+    def __get_url_for_support(self, attack, _um, argument_uid_sys, db_sys_argument):
         """
 
         :param attack:
-        :param _rh:
         :param _um:
         :param argument_uid_sys:
         :param db_sys_argument:
         :return:
         """
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-        arg_id_sys, sys_attack = _rh.get_attack_for_argument(argument_uid_sys, self.lang,
-                                                             restriction_on_arg_uids=attacking_arg_uids)
+        arg_id_sys, sys_attack = rs.get_attack_for_argument(argument_uid_sys, self.lang,
+                                                            restriction_on_arg_uids=attacking_arg_uids)
         if sys_attack == 'rebut' and attack == 'undercut':
             # case: system makes an undercut and the user supports this new attack can be an rebut, so another
             # undercut for the users argument therefore now the users opinion is the new undercut (e.g. rebut)
@@ -525,16 +520,14 @@ class ItemDictHelper(object):
                 logger('ItemDictHelper', 'get_array_for_choosing', 'No argument found', error=True)
                 return None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-            arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(db_argument.uid, self.lang,
-                                                                           restriction_on_arg_uids=attacking_arg_uids)
+            arg_id_sys, attack = rs.get_attack_for_argument(db_argument.uid, self.lang,
+                                                            restriction_on_arg_uids=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
             is_author = is_author_of_argument(nickname, argument) if is_argument else is_author_of_statement(nickname, conclusion)
             statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
                                                               is_flagable=True, is_author=is_author))
-        # url = 'back' if self.for_api else 'window.history.go(-1)'
-        # text = _t.get(_iHaveNoOpinion) + '. ' + _t.get(_goStepBack) + '.'
-        # statements_array.append(self.__create_answer_dict('no_opinion', text, [{'title': text, 'id': 'no_opinion'}], 'no_opinion', url))
+
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     def get_array_for_jump(self, arg_uid, slug, for_api):
@@ -555,7 +548,7 @@ class ItemDictHelper(object):
 
         # which part of the argument should be attacked ?
         base = db_argument.argument_uid if db_argument.conclusion_uid is None else arg_uid
-        arg_id_sys, sys_attack = RecommenderSystem.get_attack_for_argument(base, self.lang)
+        arg_id_sys, sys_attack = rs.get_attack_for_argument(base, self.lang)
 
         url0 = _um.get_url_for_reaction_on_argument(not for_api, arg_uid, sys_attack, arg_id_sys)
         if db_argument.conclusion_uid is None:  # conclusion is an argument

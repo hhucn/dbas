@@ -28,7 +28,7 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
     :return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
     """
 
-    logger('OpinionHandler', 'get_user_and_opinions_for_argument', 'Arguments ' + str(argument_uids))
+    logger('OpinionHandler', 'get_user_and_opinions_for_argument', 'Arguments ' + str(argument_uids) + ', nickname ' + str(nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_user_uid = db_user.uid if db_user else 0
 

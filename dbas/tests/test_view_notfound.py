@@ -18,7 +18,7 @@ class NotFoundViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_notfound_page(self):
+    def test_page(self):
         from dbas.views import notfound as d
 
         request = testing.DummyRequest()

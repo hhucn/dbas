@@ -18,7 +18,7 @@ class MainPublicationsViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_main_publications_page(self):
+    def test_page(self):
         from dbas.views import main_publications as d
 
         request = testing.DummyRequest()

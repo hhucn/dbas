@@ -531,6 +531,7 @@ class Keywords(Enum):
     statementAdded = 'Statement was added'
     statementIsAbout = 'Statement ist about added'
     settings = 'Settings'
+    senderReceiverSame = 'Sender and reveicer are equal'
     argumentAdded = 'Argument was added'
     statementAddedMessageContent = 'Hey, someone has added his/her opinion regarding your argument!'
     argumentAddedMessageContent = 'Hey, someone has added his/her argument regarding your argument!'

@@ -338,7 +338,7 @@ function PopupHandler() {
 			array.forEach(function (dict) {
 				text = dict.statement_text;
 				const author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
-					.append($('<span>').text(dict.author.name))
+					.append($('<span>').text(dict.author.name).css('padding-right', '0.5em'))
 					.append($('<img>').addClass('img-circle').attr('src', dict.author.img));
 				
 				const link = $('<a>').attr({
