@@ -1575,6 +1575,8 @@ def set_new_start_statement(request, for_api=False, api_data=None):
         new_statement = insert_as_statements(statement, nickname, issue, is_start=True)
         if new_statement == -1:
             return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
+        if new_statement == -2:
+            return_dict['error'] = _tn.get(_.noRights)
         else:
             url = UrlManager(request.application_url, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
             return_dict['url'] = url

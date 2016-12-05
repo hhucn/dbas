@@ -3,7 +3,7 @@ import unittest
 from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_votes, clear_seen_by
+from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_votes_of, clear_seen_by_of
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -14,13 +14,13 @@ class ReviewContentViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        clear_votes()
-        clear_seen_by()
+        clear_votes_of('Tobias')
+        clear_seen_by_of('Tobias')
 
     def tearDown(self):
         testing.tearDown()
-        clear_votes()
-        clear_seen_by()
+        clear_votes_of('Tobias')
+        clear_seen_by_of('Tobias')
 
     def test_page_deletes(self):
         from dbas.views import review_content as d

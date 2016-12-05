@@ -48,7 +48,11 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     :return: URL, [Statement.uids], String
     """
     logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     _tn = Translator(lang)
+    if not db_user:
+        return '', '', _tn.get(_.userNotFound)
+
     slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
     error = ''
     url = ''
@@ -115,7 +119,11 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     :return: URL, [Statement.uids], String
     """
     logger('QueryHelper', 'process_input_of_premises_for_arguments_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     _tn = Translator(lang)
+    if not db_user:
+        return '', '', _tn.get(_.userNotFound)
+
     slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
     error = ''
     history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
@@ -159,7 +167,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
-        new_uid = new_argument_uids[0] if len(new_argument_uids) == 1 else random.choice(new_argument_uids)   # TODO eliminate random
+        new_uid = random.choice(new_argument_uids)   # TODO eliminate random
         attack = get_relation_between_arguments(arg_id, new_uid)
 
         tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
@@ -314,20 +322,20 @@ def insert_as_statements(text_list, user, issue, is_start=False):
     :param is_start: Boolean
     :return: [Statement]
     """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    if not db_user:
+        return -2
+
     statements = []
-    if isinstance(text_list, list):
-        for text in text_list:
-            if len(text) < statement_min_length:
-                return -1
-            else:
-                new_statement, is_duplicate = __set_statement(text, user, is_start, issue)
-                statements.append(new_statement)
-    else:
-        if len(text_list) < statement_min_length:
+    input_list = text_list if isinstance(text_list, list) else [text_list]
+    for text in input_list:
+        if len(text) < statement_min_length:
             return -1
         else:
-            new_statement, is_duplicate = __set_statement(text_list, user, is_start, issue)
-            statements.append(new_statement)
+            new_statement, is_duplicate = __set_statement(text, user, is_start, issue)
+            if new_statement:
+                statements.append(new_statement)
+
     return statements
 
 
@@ -454,6 +462,7 @@ def __insert_new_premises_for_argument(text, current_attack, arg_uid, issue, use
     elif current_attack == 'rebut':
         new_argument, duplicate = set_new_rebut(new_pgroup_uid, current_argument, db_user, issue)
 
+    logger('QueryHelper', '__insert_new_premises_for_argument', 'Returning argument ' + str(new_argument.uid))
     return new_argument
 
 
@@ -468,6 +477,9 @@ def __set_statement(statement, user, is_start, issue):
     :return: Statement, is_duplicate or -1, False on error
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    if not db_user:
+        return None, False
+
     logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) +
            ', statement: ' + str(statement) + ', issue: ' + str(issue))
 
@@ -546,7 +558,8 @@ def __create_argument_by_raw_input(user, text, conclusion_id, is_supportive, iss
     :param issue: Issue
     :return:
     """
-    logger('QueryHelper', 'set_premises_as_group_for_conclusion', 'main with text ' + str(text))
+    logger('QueryHelper', '__create_argument_by_raw_input', 'main with text ' + str(text) + ' as premisegroup, ' +
+           'conclusion ' + str(conclusion_id) + ' in issue ' + str(issue))
     # current conclusion
     db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                      Statement.issue_uid == issue)).first()
@@ -558,6 +571,7 @@ def __create_argument_by_raw_input(user, text, conclusion_id, is_supportive, iss
 
     # second, set the new statements as premisegroup
     new_premisegroup_uid = __set_statements_as_new_premisegroup(statements, user, issue)
+    logger('QueryHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup_uid))
 
     # third, insert the argument
     new_argument = __create_argument_by_uids(user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)

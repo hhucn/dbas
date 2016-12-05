@@ -109,10 +109,11 @@ def add_reputation_for(user, reason):
     :param reason: reason as string, as given in reputation.py
     :return: True, if the user gained reputation
     """
-    logger('ReputationPointHelper', 'add_reputation_for', 'main')
+    logger('ReputationPointHelper', 'add_reputation_for', 'main ' + reason)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first() if isinstance(user, str) else user
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
     if not db_reason or not db_user:
+        logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')
         return False
 
     # special case:
@@ -121,6 +122,7 @@ def add_reputation_for(user, reason):
             and_(ReputationHistory.reputation_uid == db_reason.uid,
                  ReputationHistory.reputator_uid == db_user.uid)).first()
         if db_already_farmed:
+            logger('ReputationPointHelper', 'add_reputation_for', 'karma already farmed')
             return False
 
     logger('ReputationPointHelper', 'add_reputation_for', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
