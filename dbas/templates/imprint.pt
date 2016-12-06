@@ -96,6 +96,11 @@
 
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
+                    <span class="project lead">0.9.1 (2016-12-06)</span>
+                    <ul>
+                        <li>Notification if a user is able to review</li>
+                    </ul>
+
                     <span class="project lead">0.9.0 (2016-12-05)</span>
                     <ul>
                         <li>Rework of the discussions sidebar</li>
