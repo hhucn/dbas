@@ -29,7 +29,6 @@ def test_contact_page():
 
 def test_news_page():
     browser.visit(ROOT + '/news')
-    print(browser.driver.page_source)
     assert_true(browser.is_text_present('COMMA16'), error_text)
 
 
