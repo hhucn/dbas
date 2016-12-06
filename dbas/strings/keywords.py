@@ -630,7 +630,7 @@ class Keywords(Enum):
     youHaveMuchStrongerArgumentForAccepting = 'You have a much stronger argument for accept'
     youHaveMuchStrongerArgumentForRejecting = 'You have a much stronger argument for reject'
     # insertDontCare = 'I don’t care about this, leave me alone and take my statement as it is!'
-    youAreAbleToReviewNow = 'You are not able to visit the review section.'
+    youAreAbleToReviewNow = 'You are now able to visit the review section.'
 
     sentencesOpenersArguingWithAgreeing = [agreeBecause, therefore]
     sentencesOpenersArguingWithDisagreeing = [disagreeBecause, alternatively]
