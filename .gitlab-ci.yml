@@ -36,10 +36,10 @@ unit-test:
 #    - python tests/splinterTests.py --no-input
 #  allow_failure: true
 
-nose-acceptance-tests:
-  <<: *job-definition
-  stage: test
-  script:
-    - pserve development.ini --daemon
-    - sleep 10
-    - nosetests -v --process-timeout=120 tests/test_frontend
+#nose-acceptance-tests:
+#  <<: *job-definition
+#  stage: test
+#  script:
+#    - pserve development.ini --daemon
+#    - sleep 10
+#    - nosetests -v --process-timeout=120 tests/test_frontend
