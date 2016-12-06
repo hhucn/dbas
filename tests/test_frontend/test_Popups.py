@@ -1,4 +1,4 @@
-from tests.test_frontend import *
+from . import *
 from time import sleep
 
 _multiprocess_can_split_ = True

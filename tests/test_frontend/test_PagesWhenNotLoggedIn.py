@@ -29,12 +29,13 @@ def test_contact_page():
 
 def test_news_page():
     browser.visit(ROOT + '/news')
+    print(browser.driver.page_source)
     assert_true(browser.is_text_present('COMMA16'), error_text)
 
 
 def test_imprint_page():
     browser.visit(ROOT + '/imprint')
-    assert_true(browser.is_text_present('Haftung für Inhalte'), error_text)
+    assert_true(browser.is_text_present('Disclaimer'), error_text)
 
 
 def test_discuss_page():
