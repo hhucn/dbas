@@ -113,10 +113,10 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
 
     def test_get_all_arguments_by_statement(self):
-        argument_list = lib.get_all_arguments_by_statement(2)
-        self.assertEqual(len(argument_list), 4)
+        argument_list = lib.get_all_arguments_by_statement(3)
+        self.assertEqual(len(argument_list), 2)
         for argument in argument_list:
-            self.assertTrue(argument.uid in [2, 3, 11, 12])
+            self.assertTrue(argument.uid in [4, 5])
 
         self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 4)
         self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)
