@@ -82,7 +82,7 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
 
     try:
         https = 'https' if use_https else 'http'
-        resp = requests.get(https + '://localhost:' + str(port) + '/recent_review' + params)
+        resp = requests.get(https + '://localhost:' + str(port) + '/publish' + params)
     except:
         return None
     logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')

@@ -286,7 +286,6 @@ def __get_node_dict(id, label, size, x, y, type='', author=dict(), editor=dict()
     """
     return {'id': id,
             'label': label,
-            'color': '',
             'size': size,
             'x': x,
             'y': y,

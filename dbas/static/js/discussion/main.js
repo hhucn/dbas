@@ -738,6 +738,9 @@ $(document).ready(function mainDocumentReady() {
 		guiHandler.setDisplayStyleAsIsland();
 	} else if (location.hash.indexOf('barometer') != -1){
 		new DiscussionBarometer().showBarometer();
+	} else if (location.hash.indexOf('access-review') != -1){
+		const link = $('<a>').attr('href', mainpage + 'review').text(_t(youAreAbleToReviewNow));
+		setGlobalInfoHandler('Hey!', link)
 	}
 
 	$(document).delegate('.open', 'click', function(event){

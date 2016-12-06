@@ -1595,9 +1595,11 @@ def set_new_start_statement(request, for_api=False, api_data=None):
                 add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
                 # send message if the user is now able to review
             if broke_limit:
-                ui_locales = get_language(request, get_current_registry())
-                _t = Translator(ui_locales)
-                send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+                # ui_locales = get_language(request, get_current_registry())
+                # _t = Translator(ui_locales)
+                # send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+                url += '#access-review'
+                return_dict['url'] = url
 
     except KeyError as e:
         logger('set_new_start_statement', 'error', repr(e))
@@ -1650,13 +1652,15 @@ def set_new_start_premise(request, for_api=False, api_data=None):
 
         # add reputation
         add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_justification)
-        if not add_reputation_for(nickname, rep_reason_first_justification):
+        if not add_rep:
             add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
             # send message if the user is now able to review
         if broke_limit:
             ui_locales = get_language(request, get_current_registry())
             _t = Translator(ui_locales)
             send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
+            url += '#access-review'
+            return_dict['url'] = url
 
         if url == -1:
             return json.dumps(return_dict, True)
@@ -1717,10 +1721,12 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
         if not add_rep:
             add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
             # send message if the user is now able to review
-            if broke_limit:
-                ui_locales = get_language(request, get_current_registry())
-                _t = Translator(ui_locales)
-                send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+        if broke_limit:
+            # ui_locales = get_language(request, get_current_registry())
+            # _t = Translator(ui_locales)
+            # send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+            url += '#access-review'
+            return_dict['url'] = url
 
         if url == -1:
             return json.dumps(return_dict, True)
