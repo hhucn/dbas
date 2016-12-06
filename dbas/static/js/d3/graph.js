@@ -211,12 +211,14 @@ function DiscussionGraph() {
             link.attr({
                 x1: function (d) {
                     return d.source.x;
-                }, y1: function (d) {
+                },
+                y1: function (d) {
                     return d.source.y;
                 },
                 x2: function (d) {
                     return getPositionOfLink("x2", d.target.x, edges, d);
-                }, y2: function (d) {
+                },
+                y2: function (d) {
                     return getPositionOfLink("y2", d.target.y, edges, d);
                 }
             });
@@ -267,12 +269,10 @@ function DiscussionGraph() {
                     edge = e;
                 }
             });
-                position = (parseInt(d3.select('#link-' + edge.id).attr(linkTargetCoordinate)) + nodeCoordinate)/2;
-            }
-            else
-            {
-                position = nodeCoordinate;
-            }
+            position = (parseInt(d3.select('#link-' + edge.id).attr(linkTargetCoordinate)) + nodeCoordinate)/2;
+        } else {
+            position = nodeCoordinate;
+        }
         return position;
     }
 
@@ -1108,7 +1108,7 @@ function DiscussionGraph() {
      * @param mouseover
      */
     function determineShowOrHidTooltip(d, mouseover) {
-        var isPosition = testNodePosition(d);
+        let isPosition = testNodePosition(d);
         if(isPositionVisible && isContentVisible){
         }
         else if(!isPositionVisible && !isContentVisible){
@@ -1128,7 +1128,7 @@ function DiscussionGraph() {
      * @param d
      */
     function testNodePosition(d){
-        var isPosition = false;
+        let isPosition = false;
         d3.selectAll(".link").each(function (e) {
             if (e.source.id === d.id && e.target.id === 'issue') {
                 isPosition = true;

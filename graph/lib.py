@@ -214,7 +214,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
             edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_0',
                                         source='argument_' + str(argument.uid),
                                         target=target,
-                                        is_attacking= not argument.is_supportive,
+                                        is_attacking=not argument.is_supportive,
                                         size=edge_size_from_virtual_nodes,
                                         edge_type=edge_type)
             edges.append(edge_dict)

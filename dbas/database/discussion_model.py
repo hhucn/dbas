@@ -58,11 +58,12 @@ class Issue(DiscussionBase):
     date = Column(ArrowType, default=get_now())
     author_uid = Column(Integer, ForeignKey('users.uid'))
     lang_uid = Column(Integer, ForeignKey('languages.uid'))
+    is_disabled = Column(Boolean, nullable=False)
 
     users = relationship('User', foreign_keys=[author_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
 
-    def __init__(self, title, info, author_uid, lang_uid):
+    def __init__(self, title, info, author_uid, lang_uid, is_disabled=False):
         """
         Initializes a row in current position-table
         """
@@ -70,6 +71,7 @@ class Issue(DiscussionBase):
         self.info = info
         self.author_uid = author_uid
         self.lang_uid = lang_uid
+        self.is_disabled = is_disabled
 
     @classmethod
     def by_text(cls):
@@ -82,6 +84,14 @@ class Issue(DiscussionBase):
     @hybrid_property
     def lang(self):
         return DBDiscussionSession.query(Language).get(self.lang_uid).ui_locales
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class Language(DiscussionBase):
