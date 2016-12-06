@@ -42,4 +42,4 @@ nose-acceptance-tests:
   script:
     - pserve development.ini --daemon
     - sleep 10
-    - nosetests --process-timeout=120 tests/test_frontend
+    - nosetests -v --process-timeout=120 tests/test_frontend
