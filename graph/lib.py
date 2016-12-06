@@ -192,7 +192,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
             edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
                                         source='statement_' + str(db_premises[0].statement_uid),
                                         target=target,
-                                        is_attacking=argument.is_supportive,
+                                        is_attacking= not argument.is_supportive,
                                         size=edge_size,
                                         edge_type=edge_type)
             edges.append(edge_dict)
@@ -203,7 +203,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                 edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
                                             source='statement_' + str(premise.statement_uid),
                                             target='argument_' + str(argument.uid),
-                                            is_attacking=argument.is_supportive,
+                                            is_attacking= not argument.is_supportive,
                                             size=edge_size_on_virtual_nodes,
                                             edge_type='')
                 edges.append(edge_dict)
@@ -213,7 +213,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
             edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_0',
                                         source='argument_' + str(argument.uid),
                                         target=target,
-                                        is_attacking=argument.is_supportive,
+                                        is_attacking= not argument.is_supportive,
                                         size=edge_size_on_virtual_nodes,
                                         edge_type=edge_type)
             edges.append(edge_dict)

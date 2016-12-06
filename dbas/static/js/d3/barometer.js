@@ -615,7 +615,7 @@ function DiscussionBarometer(){
 
         // add click-event-listener for avatar-icons
         $(document).on('click', '.img-circle', function () {
-            window.location = $(this).attr('href');
+            window.location = $(this).attr('data-href');
         });
 
         // add click-event-listener for popup

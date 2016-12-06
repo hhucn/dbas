@@ -204,6 +204,8 @@ function DiscussionGraph() {
         addListenerForTooltip();
 
         force.start();
+        let edge;
+        let position;
 
         // update force layout calculations
         function forceTick() {
@@ -215,9 +217,33 @@ function DiscussionGraph() {
                     return d.source.y;
                 },
                 x2: function (d) {
-                    return d.target.x;
+                    if (d.is_attacking && d.edge_type === 'arrow' && d.target.id.indexOf('argument_') != -1) {
+                        edges.forEach(function (e) {
+                            if (e.source.id === d.target.id) {
+                                edge = e;
+                            }
+                        });
+                        position = (edge.target.x + d.target.x) / 2;
+                    }
+                    else
+                    {
+                        position = d.target.x;
+                    }
+                    return position;
                 }, y2: function (d) {
-                    return d.target.y;
+                    if (d.is_attacking && d.edge_type === 'arrow' && d.target.id.indexOf('argument_') != -1) {
+                        edges.forEach(function (e) {
+                            if (e.source.id === d.target.id) {
+                                edge = e;
+                            }
+                        });
+                        position = (edge.target.y + d.target.y) / 2;
+                    }
+                    else
+                    {
+                        position = d.target.y;
+                    }
+                    return position;
                 }
             });
 
@@ -402,7 +428,8 @@ function DiscussionGraph() {
                 color: color,
                 edge_type: e.edge_type,
                 size: e.size,
-                id: e.id
+                id: e.id,
+                is_attacking: e.is_attacking
             });
         });
         return edges;
