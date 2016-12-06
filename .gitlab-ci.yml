@@ -1,18 +1,18 @@
 image: hhucn/dbas-build
 
-services:
-  - hhucn/docker-dbas-postgres
-
-before_script:
-  - export PIP_CACHE_DIR="pip-cache"
-  - pip install --quiet -U pip
-  - pip install --quiet -r requirements.txt
-  - python setup.py --quiet develop
-  - initialize_discussion_sql docker.ini > /dev/null 2>&1
-  - initialize_news_sql docker.ini > /dev/null 2>&1
-  - init_discussion_testvotes docker.ini > /dev/null 2>&1
-  - init_review_tests docker.ini > /dev/null 2>&1
-  - cp docker.ini development.ini
+.job-template: &job-definition
+  services:
+    - hhucn/docker-dbas-postgres
+  before_script:
+    - export PIP_CACHE_DIR="pip-cache"
+    - pip install --quiet -U pip
+    - pip install --quiet -r requirements.txt
+    - python setup.py --quiet develop
+    - initialize_discussion_sql docker.ini > /dev/null 2>&1
+    - initialize_news_sql docker.ini > /dev/null 2>&1
+    - init_discussion_testvotes docker.ini > /dev/null 2>&1
+    - init_review_tests docker.ini > /dev/null 2>&1
+    - cp docker.ini development.ini
 
 flake8:
   stage: test
@@ -22,11 +22,24 @@ flake8:
   allow_failure: true
 
 unit-test:
+  <<: *job-definition
   stage: test
   script:
-    - make nosetests
+    - nosetests -v -w $(pwd) dbas graph admin api export
 
-function-test:
+#function-test:
+#  <<: *job-definition
+#  stage: test
+#  script:
+#    - pserve development.ini --daemon
+#    - sleep 10
+#    - python tests/splinterTests.py --no-input
+#  allow_failure: true
+
+nose-acceptance-tests:
+  <<: *job-definition
   stage: test
   script:
-    - python tests/splinterTests.py --no-input
+    - pserve development.ini --daemon
+    - sleep 10
+    - nosetests -v --process-timeout=120 tests/test_frontend
