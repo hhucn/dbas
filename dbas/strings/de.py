@@ -539,6 +539,7 @@ de_lang = {
     _.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion: 'sodass andere Teilnehmer haben keine Meinung bezüglich ihrer Eingabe',
     _.shortenedBy: 'welche gekürzt wurde mit',
     _.shareUrl: 'Link teilen',
+    _.senderReceiverSame: 'Sender und Empfänger sind gleich',
     _.showMeAnotherArgument: 'Zeige mir ein weiteres Argument',
     _.switchDiscussion: 'Diskussionsthema ändern',
     _.switchDiscussionTitle: 'Diskussionsthema ändern',

@@ -403,9 +403,10 @@ def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timest
     statement_array = []
     edit_array = []
 
-    db_user = DBDiscussionSession.query(User).filter_by(public_nickname=public_nickname).first()
+    db_user = get_user_by_private_or_public_nickname(public_nickname)
 
     if not db_user:
+        logger('UserManagement', 'get_textversions_of_user', 'no user found', error=True)
         return statement_array, edit_array
 
     if not timestamp_after:
@@ -417,6 +418,7 @@ def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timest
                                                                   TextVersion.timestamp >= timestamp_after,
                                                                   TextVersion.timestamp < timestamp_before)).all()
 
+    logger('UserManagement', 'get_textversions_of_user', 'count of edits: ' + str(len(db_edits)))
     for edit in db_edits:
         db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()
         edit_dict = dict()

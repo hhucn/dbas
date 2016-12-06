@@ -55,15 +55,15 @@ def verify_dictionary_of_view(_self, some_dict):
     _self.assertIn('extras', some_dict)
 
 
-def clear_seen_by():
-    db_user = dbs.query(User).filter_by(nickname='Tobias').first()
+def clear_seen_by_of(nickname):
+    db_user = dbs.query(User).filter_by(nickname=nickname).first()
     dbs.query(StatementSeenBy).filter_by(user_uid=db_user.uid).delete()
     dbs.query(ArgumentSeenBy).filter_by(user_uid=db_user.uid).delete()
     transaction.commit()
 
 
-def clear_votes():
-    db_user = dbs.query(User).filter_by(nickname='Tobias').first()
+def clear_votes_of(nickname):
+    db_user = dbs.query(User).filter_by(nickname=nickname).first()
     dbs.query(VoteStatement).filter_by(author_uid=db_user.uid).delete()
     dbs.query(VoteArgument).filter_by(author_uid=db_user.uid).delete()
     transaction.commit()

@@ -12,6 +12,7 @@ from dbas.database import DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, sql_timestamp_pretty_print
 from dbas.database.news_model import News
 from dbas.logger import logger
+from dbas.user_management import is_user_in_group
 
 
 def set_news(title, text, user, lang):
@@ -26,7 +27,13 @@ def set_news(title, text, user, lang):
     """
     logger('QueryHelper', 'set_news', 'def')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    author = db_user.firstname if db_user.firstname == 'admin' else db_user.firstname + ' ' + db_user.surname
+
+    if not db_user or is_user_in_group(user, 'author'):
+        return {}, False
+
+    author = db_user.firstname
+    if db_user.firstname != 'admin':
+        author += db_user.surname
     # now = datetime.now()
     # day = str(now.day) if now.day > 9 else ('0' + str(now.day))
     # month = str(now.month) if now.month > 9 else ('0' + str(now.month))
@@ -53,7 +60,7 @@ def set_news(title, text, user, lang):
     return_dict['author'] = author
     return_dict['news'] = text
 
-    return return_dict
+    return return_dict, True
 
 
 def get_news(ui_locales):

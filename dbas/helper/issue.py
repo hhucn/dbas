@@ -30,18 +30,22 @@ def set_issue(info, title, lang, nickname, ui_locales):
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not is_user_author(nickname):
+        logger('IssueHelper', 'set_issue', 'User has no rights', error=True)
         return False, _tn.get(_.noRights)
 
     if len(info) < 10:
+        logger('IssueHelper', 'set_issue', 'Short text', error=True)
         return False, (_tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)')
 
     db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
     db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
     if db_duplicates1 or db_duplicates2:
+        logger('IssueHelper', 'set_issue', 'Duplicates', error=True)
         return False, _tn.get(_.duplicate)
 
     db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
     if not db_lang:
+        logger('IssueHelper', 'set_issue', 'No language', error=True)
         return False, _tn.get(_.internalError)
 
     DBDiscussionSession.add(Issue(title=title, info=info, author_uid=db_user.uid, lang_uid=db_lang.uid))

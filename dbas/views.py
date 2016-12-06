@@ -1113,13 +1113,13 @@ def get_all_posted_statements(request):
     user_manager.update_last_action(request_authenticated_userid)
     logger('get_all_posted_statements', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
-    return_array, tmp = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
+    return_array, edits = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
     return json.dumps(return_array, True)
 
 
 # ajax - getting all text edits
 @view_config(route_name='ajax_get_all_edits', renderer='json')
-def get_all_edits(request):
+def get_all_edits_of_user(request):
     """
 
     :return:
@@ -1127,9 +1127,9 @@ def get_all_edits(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_edits', 'def', 'main')
+    logger('get_all_edits_of_user', 'def', 'main')
     ui_locales = get_language(request, get_current_registry())
-    tmp, return_array = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
+    statements, return_array = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
     return json.dumps(return_array, True)
 
 
@@ -1505,7 +1505,7 @@ def send_some_notification(request):
     _tn = Translator(ui_locales)
 
     try:
-        recipient = request.params['recipient'].replace('%20', ' ')
+        recipient = str(request.params['recipient']).replace('%20', ' ')
         title     = request.params['title']
         text      = request.params['text']
         db_recipient = get_user_by_private_or_public_nickname(recipient)
@@ -1517,13 +1517,15 @@ def send_some_notification(request):
             db_author = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
             if not db_author:
                 error = _tn.get(_.notLoggedIn)
+            if db_author.uid == db_recipient.uid:
+                error = _tn.get(_.senderReceiverSame)
             else:
                 db_notification = send_notification(db_author, db_recipient, title, text, request.application_url)
                 uid = db_notification.uid
                 ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
                 gravatar = get_profile_picture(db_recipient, 20)
 
-    except KeyError:
+    except (KeyError, AttributeError):
         error = _tn.get(_.internalKeyError)
 
     return_dict = {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
@@ -1573,6 +1575,8 @@ def set_new_start_statement(request, for_api=False, api_data=None):
         new_statement = insert_as_statements(statement, nickname, issue, is_start=True)
         if new_statement == -1:
             return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
+        if new_statement == -2:
+            return_dict['error'] = _tn.get(_.noRights)
         else:
             url = UrlManager(request.application_url, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
             return_dict['url'] = url
@@ -1750,10 +1754,16 @@ def set_notification_read(request):
     _t = Translator(ui_locales)
 
     try:
-        DBDiscussionSession.query(Message).filter_by(uid=request.params['id']).first().set_read(True)
-        transaction.commit()
-        return_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
-        return_dict['error'] = ''
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=request_authenticated_userid).first()
+        if db_user:
+            DBDiscussionSession.query(Message).filter(and_(Message.uid == request.params['id'],
+                                                           Message.to_author_uid == db_user.uid,
+                                                           Message.is_inbox == True)).first().set_read(True)
+            transaction.commit()
+            return_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
+            return_dict['error'] = ''
+        else:
+            return_dict['error'] = _t.get(_.noRights)
     except KeyError as e:
         logger('set_message_read', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
@@ -1779,13 +1789,25 @@ def set_notification_delete(request):
     _t = Translator(ui_locales)
 
     try:
-        DBDiscussionSession.query(Message).filter_by(uid=request.params['id']).delete()
-        transaction.commit()
-        return_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
-        return_dict['total_in_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, True)))
-        return_dict['total_out_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, False)))
-        return_dict['error'] = ''
-        return_dict['success'] = _t.get(_.messageDeleted)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=request_authenticated_userid).first()
+        if db_user:
+            # inbox
+            DBDiscussionSession.query(Message).filter(and_(Message.uid == request.params['id'],
+                                                           Message.to_author_uid == db_user.uid,
+                                                           Message.is_inbox == True)).delete()
+            # send
+            DBDiscussionSession.query(Message).filter(and_(Message.uid == request.params['id'],
+                                                           Message.from_author_uid == db_user.uid,
+                                                           Message.is_inbox == False)).delete()
+            transaction.commit()
+            return_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
+            return_dict['total_in_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, True)))
+            return_dict['total_out_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, False)))
+            return_dict['error'] = ''
+            return_dict['success'] = _t.get(_.messageDeleted)
+        else:
+            return_dict['error'] = _t.get(_.noRights)
+            return_dict['success'] = ''
     except KeyError as e:
         logger('set_message_read', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
@@ -1860,8 +1882,8 @@ def set_seen_statements(request):
 
 
 # ajax - getting changelog of a statement
-@view_config(route_name='ajax_get_logfile_for_premisegroups', renderer='json')
-def get_logfile_for_premisegroup(request):
+@view_config(route_name='ajax_get_logfile_for_statements', renderer='json')
+def get_logfile_for_some_statements(request):
     """
     Returns the changelog of a statement
 
@@ -2002,7 +2024,6 @@ def get_users_with_same_opinion(request):
         params = request.params
         ui_locales  = params['lang'] if 'lang' in params else 'en'
         uids        = params['uids']
-        attack      = params['attack'] if len(params['attack']) > 0 else None
         is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
         is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
         is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
@@ -2014,7 +2035,7 @@ def get_users_with_same_opinion(request):
                 return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
             else:
                 uids = json.loads(uids)
-                return_dict = get_user_and_opinions_for_argument(uids, attack, ui_locales, request.application_url)
+                return_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, request.application_url)
         elif is_pos:
             uids = json.loads(uids)
             ids = uids if isinstance(uids, list) else [uids]
@@ -2093,21 +2114,30 @@ def get_references(request):
     _tn = Translator(ui_locales)
 
     try:
+        # uid is an integer if it is an argument and a list otherwise
         uid = json.loads(request.params['uid'])
         is_argument = True if str(request.params['is_argument']) == 'true' else False
+        are_all_integer = all(is_integer(id) for id in uid) if isinstance(uid, list) else is_integer(uid)
 
-        if is_argument:
-            data, text = get_references_for_argument(uid, request.application_url)
+        error = ''
+        if are_all_integer:
+            if is_argument:
+                data, text = get_references_for_argument(uid, request.application_url)
+            else:
+                data, text = get_references_for_statements(uid, request.application_url)
         else:
-            data, text = get_references_for_statements(uid, request.application_url)
-
-        return_dict = {'error': '',
-                       'data': data,
-                       'text': text}
+            logger('get_references', 'def', 'uid is not an integer')
+            data = ''
+            text = ''
+            error = _tn.get(_.internalKeyError)
 
     except KeyError as e:
         logger('get_references', 'error', repr(e))
-        return_dict = {'error': _tn.get(_.internalKeyError)}
+        error = _tn.get(_.internalKeyError)
+
+    return_dict = {'error': error,
+                   'data': data,
+                   'text': text}
 
     return json.dumps(return_dict, True)
 
@@ -2157,11 +2187,15 @@ def switch_language(request):
     ui_locales = None
     try:
         ui_locales = request.params['lang'] if 'lang' in request.params else None
+        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+        if not db_lang:
+            ui_locales = get_language(request, get_current_registry())
         if not ui_locales:
             ui_locales = get_language(request, get_current_registry())
         request.response.set_cookie('_LOCALE_', str(ui_locales))
         request._LOCALE_ = ui_locales
         return_dict['error'] = ''
+        return_dict['ui_locales'] = ui_locales
     except KeyError as e:
         logger('swich_language', 'error', repr(e))
         if not ui_locales:
@@ -2182,16 +2216,16 @@ def send_news(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('send_news', 'def', 'main, request.params: ' + str(request.params))
+    _tn = Translator(get_language(request, get_current_registry()))
 
     try:
         title = escape_string(request.params['title'])
         text = escape_string(request.params['text'])
-        return_dict = news_handler.set_news(title, text, request.authenticated_userid, get_language(request, get_current_registry()))
-        return_dict['error'] = ''
+        return_dict, success = news_handler.set_news(title, text, request.authenticated_userid, get_language(request, get_current_registry()))
+        return_dict['error'] = '' if success else _tn.get(_.noRights)
     except KeyError as e:
         return_dict = dict()
         logger('send_news', 'error', repr(e))
-        _tn = Translator(get_language(request, get_current_registry()))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
     return json.dumps(return_dict, True)
@@ -2215,9 +2249,9 @@ def fuzzy_search(request, for_api=False, api_data=None):
     request_authenticated_userid = request.authenticated_userid
 
     try:
-        value = api_data["value"] if for_api else request.params['value']
-        mode = str(api_data["mode"]) if for_api else str(request.params['type'])
-        issue = api_data["issue"] if for_api else issue_helper.get_issue_id(request)
+        value = api_data['value'] if for_api else request.params['value']
+        mode = str(api_data['mode']) if for_api else str(request.params['type'])
+        issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
 
         return_dict = dict()
 

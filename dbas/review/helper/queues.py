@@ -263,6 +263,8 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     """
     logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return translator.get(_.noRights)
     counter = 0
     for el in elements:
         if len(el['text']) > 0:
