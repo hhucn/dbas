@@ -97,12 +97,12 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
     main_page = request.application_url
 
     if not is_integer(statement_or_arg_id, True):
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
+        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True)), None, None
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
         logger('ViewHelper', 'handle_justification_step', 'justify statement')
         if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
         item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, api_data,
                                                                                     main_page, slug,
                                                                                     statement_or_arg_id,
@@ -113,7 +113,7 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
         logger('ViewHelper', 'handle_justification_step', 'do not know')
         if not check_belonging_of_argument(issue, statement_or_arg_id) and \
                 not check_belonging_of_statement(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
         item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, api_data,
                                                                                       main_page, slug,
                                                                                       statement_or_arg_id,
@@ -123,7 +123,7 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
         logger('ViewHelper', 'handle_justification_step', 'justify argument')
         if not check_belonging_of_argument(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
         item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, api_data,
                                                                                    main_page, slug,
                                                                                    statement_or_arg_id,
@@ -137,7 +137,7 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
             send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
     else:
         logger('ViewHelper', 'handle_justification_step', '404')
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
+        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation])), None, None
 
     return item_dict, discussion_dict, extras_dict
 
