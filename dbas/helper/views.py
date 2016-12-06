@@ -11,11 +11,18 @@ from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.input_validator import is_integer
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 from validate_email import validate_email
 
+from dbas.url_manager import UrlManager
+from pyramid.httpexceptions import HTTPFound
+from dbas.review.helper.reputation import add_reputation_for
+from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
+from websocket.lib import send_request_for_info_popup_to_socketio
+from dbas.review.helper.reputation import rep_reason_first_confrontation
+
+import dbas.helper.issue as issue_helper
 import dbas.recommender_system as RecommenderSystem
 import dbas.helper.email as EmailHelper
 import dbas.helper.history as HistoryHelper
@@ -57,7 +64,85 @@ def preparation_for_view(for_api, api_data, request, request_authenticated_useri
     return nickname, session_expired, history
 
 
-def preparation_for_justify_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, mode, ui_locales, request_authenticated_userid):
+def prepare_parameter_for_justification(request, for_api):
+    """
+
+    :param request:
+    :param for_api:
+    :return:
+    """
+    slug                = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+    statement_or_arg_id = request.matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in request.matchdict else ''
+    mode                = request.matchdict['mode'] if 'mode' in request.matchdict else ''
+    supportive          = mode == 't' or mode == 'd'  # supportive = t or do not know mode
+    relation            = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
+    issue               = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    disc_ui_locales     = get_discussion_language(request, issue)
+    issue_dict          = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+
+    return slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict
+
+
+def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
+    """
+
+    :param request:
+    :param for_api:
+    :param api_data:
+    :param ui_locales:
+    :param nickname:
+    :return:
+    """
+    slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
+    main_page = request.application_url
+
+    if not is_integer(statement_or_arg_id, True):
+        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
+
+    if [c for c in ('t', 'f') if c in mode] and relation == '':
+        logger('ViewHelper', 'handle_justification_step', 'justify statement')
+        if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue, statement_or_arg_id):
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
+        item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, api_data,
+                                                                                    main_page, slug,
+                                                                                    statement_or_arg_id,
+                                                                                    supportive, ui_locales,
+                                                                                    nickname, mode)
+
+    elif 'd' in mode and relation == '':
+        logger('ViewHelper', 'handle_justification_step', 'do not know')
+        if not check_belonging_of_argument(issue, statement_or_arg_id) and \
+                not check_belonging_of_statement(issue, statement_or_arg_id):
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
+        item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, api_data,
+                                                                                      main_page, slug,
+                                                                                      statement_or_arg_id,
+                                                                                      supportive, ui_locales,
+                                                                                      nickname)
+
+    elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
+        logger('ViewHelper', 'handle_justification_step', 'justify argument')
+        if not check_belonging_of_argument(issue, statement_or_arg_id):
+            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
+        item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, api_data,
+                                                                                   main_page, slug,
+                                                                                   statement_or_arg_id,
+                                                                                   supportive, ui_locales,
+                                                                                   nickname, relation)
+        # add reputation
+        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
+        # send message if the user is now able to review
+        if broke_limit:
+            _t = Translator(ui_locales)
+            send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+    else:
+        logger('ViewHelper', 'handle_justification_step', '404')
+        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
+
+    return item_dict, discussion_dict, extras_dict
+
+
+def preparation_for_justify_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, mode):
     """
 
     :param request:
@@ -71,7 +156,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     :param ui_locales:
     :return:
     """
-    logger('View Helper', 'preparation_for_justify_statement', 'main')
+    logger('ViewHelper', 'preparation_for_justify_statement', 'main')
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
@@ -105,7 +190,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     :param request_authenticated_userid:
     :return:
     """
-    logger('View Helper', 'preparation_for_dont_know_statement', 'main')
+    logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
 
@@ -128,8 +213,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive,
-                                     relation, ui_locales, request_authenticated_userid):
+def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, relation):
     """
 
     :param request:

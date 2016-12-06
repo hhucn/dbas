@@ -33,19 +33,18 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
     process_seen_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
-from dbas.helper.views import preparation_for_view, get_nickname, preparation_for_justify_statement, \
-    preparation_for_dont_know_statement, preparation_for_justify_argument, try_to_contact, \
-    try_to_register_new_user_via_ajax, request_password
+from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
+    try_to_register_new_user_via_ajax, request_password, prepare_parameter_for_justification
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.input_validator import is_integer, is_position, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
 from dbas.lib import get_language, escape_string, get_discussion_language, \
-    get_user_by_private_or_public_nickname, get_text_for_statement_uid, is_user_author, \
+    get_user_by_private_or_public_nickname, is_user_author, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
     get_user_by_case_insensitive_nickname
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
-    rep_reason_first_justification, rep_reason_first_argument_click, rep_reason_first_confrontation, \
+    rep_reason_first_justification, rep_reason_first_argument_click, \
     rep_reason_first_new_argument, rep_reason_new_statement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -585,10 +584,8 @@ def discussion_justify(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    match_dict = request.matchdict
-    params = request.params
-    logger('discussion_justify', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_justify', 'def', 'main, request.params: ' + str(params))
+    logger('discussion_justify', 'def', 'main, request.matchdict: ' + str(request.matchdict))
+    logger('discussion_justify', 'def', 'main, request.params: ' + str(request.params))
     request_authenticated_userid = request.authenticated_userid
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
@@ -596,54 +593,11 @@ def discussion_justify(request, for_api=False, api_data=None):
         return user_logout(request, True)
 
     ui_locales = get_language(request, get_current_registry())
+    slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
 
-    slug                = match_dict['slug'] if 'slug' in match_dict else ''
-    statement_or_arg_id = match_dict['statement_or_arg_id'] if 'statement_or_arg_id' in match_dict else ''
-    mode                = match_dict['mode'] if 'mode' in match_dict else ''
-    supportive          = mode == 't' or mode == 'd'  # supportive = t or do not know mode
-    relation            = match_dict['relation'][0] if len(match_dict['relation']) > 0 else ''
-
-    if not is_integer(statement_or_arg_id, True):
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
-
-    issue               = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales     = get_discussion_language(request, issue)
-    issue_dict          = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-
-    if [c for c in ('t', 'f') if c in mode] and relation == '':
-        logger('discussion_justify', 'def', 'justify statement')
-        if not get_text_for_statement_uid(statement_or_arg_id)\
-                or not check_belonging_of_statement(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
-        item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, api_data,
-                                                                                    request.application_url, slug, statement_or_arg_id,
-                                                                                    supportive, mode, ui_locales, request_authenticated_userid)
-
-    elif 'd' in mode and relation == '':
-        logger('discussion_justify', 'def', 'do not know')
-        if not check_belonging_of_argument(issue, statement_or_arg_id) and \
-                not check_belonging_of_statement(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
-        item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, api_data,
-                                                                                      request.application_url, slug, statement_or_arg_id,
-                                                                                      supportive, ui_locales, request_authenticated_userid)
-
-    elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
-        logger('discussion_justify', 'def', 'justify argument')
-        if not check_belonging_of_argument(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id]))
-        item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, api_data,
-                                                                                   request.application_url, slug, statement_or_arg_id,
-                                                                                   supportive, relation, ui_locales, request_authenticated_userid)
-        # add reputation
-        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
-        # send message if the user is now able to review
-        if broke_limit:
-            _t = Translator(ui_locales)
-            send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
-    else:
-        logger('discussion_justify', 'def', '404')
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
+    item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, api_data, ui_locales, nickname)
+    if type(item_dict) is HTTPFound:
+        return item_dict
 
     return_dict = dict()
     return_dict['issues'] = issue_dict
