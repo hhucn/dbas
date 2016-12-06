@@ -128,7 +128,8 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, relation, ui_locales, request_authenticated_userid):
+def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive,
+                                     relation, ui_locales, request_authenticated_userid):
     """
 
     :param request:

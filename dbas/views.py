@@ -59,7 +59,8 @@ from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
-    send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio
+    send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
+    send_request_for_info_popup_to_socketio
 from dbas.database.initializedb import nick_of_anonymous_user
 
 name = 'D-BAS'
@@ -635,7 +636,11 @@ def discussion_justify(request, for_api=False, api_data=None):
                                                                                    request.application_url, slug, statement_or_arg_id,
                                                                                    supportive, relation, ui_locales, request_authenticated_userid)
         # add reputation
-        add_reputation_for(nickname, rep_reason_first_confrontation)
+        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
+        # send message if the user is now able to review
+        if broke_limit:
+            _t = Translator(ui_locales)
+            send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
     else:
         logger('discussion_justify', 'def', '404')
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation]))
@@ -693,12 +698,16 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # sanity check
     if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
+    ui_locales      = get_language(request, get_current_registry())
 
     # set votes and reputation
-    add_reputation_for(nickname, rep_reason_first_argument_click)
+    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
+    # send message if the user is now able to review
+    if broke_limit:
+        _t = Translator(ui_locales)
+        send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
     add_vote_for_argument(arg_id_user, nickname)
 
-    ui_locales      = get_language(request, get_current_registry())
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
@@ -1581,8 +1590,14 @@ def set_new_start_statement(request, for_api=False, api_data=None):
             return_dict['statement_uids'].append(new_statement[0].uid)
 
             # add reputation
-            if not add_reputation_for(nickname, rep_reason_first_position):
-                add_reputation_for(nickname, rep_reason_new_statement)
+            add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_position)
+            if not add_rep:
+                add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
+                # send message if the user is now able to review
+            if broke_limit:
+                ui_locales = get_language(request, get_current_registry())
+                _t = Translator(ui_locales)
+                send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
 
     except KeyError as e:
         logger('set_new_start_statement', 'error', repr(e))
@@ -1634,8 +1649,14 @@ def set_new_start_premise(request, for_api=False, api_data=None):
         return_dict['statement_uids'] = statement_uids
 
         # add reputation
+        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_justification)
         if not add_reputation_for(nickname, rep_reason_first_justification):
-            add_reputation_for(nickname, rep_reason_new_statement)
+            add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
+            # send message if the user is now able to review
+        if broke_limit:
+            ui_locales = get_language(request, get_current_registry())
+            _t = Translator(ui_locales)
+            send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
 
         if url == -1:
             return json.dumps(return_dict, True)
@@ -1692,8 +1713,14 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
         return_dict['statement_uids'] = statement_uids
 
         # add reputation
-        if not add_reputation_for(nickname, rep_reason_first_new_argument):
-            add_reputation_for(nickname, rep_reason_new_statement)
+        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_new_argument)
+        if not add_rep:
+            add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
+            # send message if the user is now able to review
+            if broke_limit:
+                ui_locales = get_language(request, get_current_registry())
+                _t = Translator(ui_locales)
+                send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
 
         if url == -1:
             return json.dumps(return_dict, True)
@@ -2375,7 +2402,7 @@ def review_delete_argument(request):
             logger('review_delete_argument', 'def', 'invalid uid', error=True)
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t)
+            error = review_main_helper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, request.application_url)
             if len(error) == 0:
                 send_request_for_recent_delete_review_to_socketio(nickname, request.application_url)
     except KeyError as e:
@@ -2407,7 +2434,7 @@ def review_edit_argument(request):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t)
+            error = review_main_helper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, request.application_url)
             if len(error) == 0:
                 send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
     except KeyError as e:
@@ -2441,7 +2468,7 @@ def review_optimization_argument(request):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t)
+            error = review_main_helper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t, request.application_url)
 
             if len(error) == 0:
                 send_request_for_recent_optimization_review_to_socketio(nickname, request.application_url)

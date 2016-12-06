@@ -14,6 +14,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_success
 from dbas.helper.query import correct_statement
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 max_votes = 5
 min_difference = 3
@@ -53,13 +54,14 @@ def __get_review_count(review_type, review_uid):
     return count_of_okay, count_of_not_okay
 
 
-def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t):
+def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, application_url):
     """
 
     :param nickname:
     :param should_delete:
     :param review_uid:
     :param _t:
+    :param application_url:
     :return:
     """
     logger('review_main_helper', 'add_review_opinion_for_delete', 'main')
@@ -77,6 +79,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t):
     db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
     # add new vote
     __add_vote_for(db_user, db_review, not should_delete, LastReviewerDelete)
+    broke_limit = False
 
     # get all keep and delete votes
     count_of_keep, count_of_delete = __get_review_count(LastReviewerDelete, review_uid)
@@ -88,23 +91,23 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t):
         if count_of_delete > count_of_keep:  # disable the flagged part
             logger('review_main_helper', 'add_review_opinion_for_delete', 'max reached / delete for review ' + str(review_uid))
             en_or_disable_object_of_review(db_review, True)
-            add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
             logger('review_main_helper', 'add_review_opinion_for_delete', 'max reached / keep for review ' + str(review_uid))
-            add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_delete >= min_difference:  # just close the review
         logger('review_main_helper', 'add_review_opinion_for_delete', 'vote says keep for review ' + str(review_uid))
-        add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
         logger('review_main_helper', 'add_review_opinion_for_delete', 'vote says delete for review ' + str(review_uid))
         en_or_disable_object_of_review(db_review, True)
-        add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
@@ -112,16 +115,21 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t):
     DBDiscussionSession.flush()
     transaction.commit()
 
+    if broke_limit:
+        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+                                                application_url + '/review')
+
     return ''
 
 
-def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t):
+def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, application_url):
     """
 
     :param nickname:
     :param is_edit_okay:
     :param review_uid:
     :param _t:
+    :param application_url:
     :return:
     """
     logger('review_main_helper', 'add_review_opinion_for_edit', 'main')
@@ -137,6 +145,7 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t):
         return _t.get(_.justLookDontTouch)
 
     db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
+    broke_limit = False
 
     # add new vote
     __add_vote_for(db_user, db_review, is_edit_okay, LastReviewerEdit)
@@ -149,20 +158,20 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t):
     if reached_max:
         if count_of_dont_edit < count_of_edit:  # accept the edit
             accept_edit_review(db_review, db_user_created_flag)
-            add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
-            add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
         accept_edit_review(db_review, db_user_created_flag)
-        add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
-        add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
@@ -170,10 +179,14 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t):
     DBDiscussionSession.flush()
     transaction.commit()
 
+    if broke_limit:
+        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+                                                application_url + '/review')
+
     return ''
 
 
-def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, _t):
+def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, _t, application_url):
     """
 
     :param nickname:
@@ -181,6 +194,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     :param review_uid:
     :param data:
     :param _t:
+    :param application_url:
     :return:
     """
     logger('review_main_helper', 'add_review_opinion_for_optimization',
@@ -202,7 +216,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     transaction.commit()
 
     if not should_optimized:
-        __keep_the_element(db_review)
+        __keep_the_element(db_review, application_url, _t)
     else:
         __proposal_for_the_element(db_review, data, db_user)
 
@@ -213,10 +227,12 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     return ''
 
 
-def __keep_the_element(db_review):
+def __keep_the_element(db_review, application_url, _t):
     """
 
     :param db_review:
+    :param application_url:
+    :param _t:
     :return:
     """
     # add new vote
@@ -228,7 +244,11 @@ def __keep_the_element(db_review):
              LastReviewerOptimization.is_okay == True)).all()
 
     if len(db_keep_version) > max_votes:
-        add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag)
+        add_rep, broke_limit = add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag)
+        if broke_limit:
+            send_request_for_info_popup_to_socketio(db_user_who_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+                                                    application_url + '/review')
+
         db_review.set_executed(True)
         db_review.update_timestamp()
         DBDiscussionSession.add(db_review)
