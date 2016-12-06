@@ -91,7 +91,6 @@ function GuiHandler() {
 		$('#' + islandViewContainerId).fadeIn('slow');
 		//$('#' + graphViewContainerId).hide();
 		//$('#' + discussionContainerId).hide();
-		setAnchor('island');
 	};
 	
 	/**
@@ -122,7 +121,6 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 		main.setSidebarStyle(graphViewContainer, tacked_sidebar);
 		main.setSidebarClicks(graphViewContainer, tacked_sidebar);
-		setAnchor('graph');
 	};
 	
 	/**

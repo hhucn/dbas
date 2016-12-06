@@ -375,7 +375,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
     _t = Translator(lang)
-    title = _t.get(_.agreeVsDisagree)
+    title = _t.get(_.agreeVsDisagree) + ': ' + get_text_for_statement_uid(statement_uid)
 
     if not db_statement:
         return {'text': None,
@@ -411,6 +411,12 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
         pro_array.append(users_dict)
     ret_dict['agree_users'] = pro_array
     ret_dict['agree_text'] = _t.get(_.iAgreeWith)
+    if len(db_pro_votes) == 0:
+        ret_dict['agree_message'] = _t.get(_.agreeToThis0) + '.'
+    else:
+        ret_dict['agree_message'] = str(len(db_pro_votes)) + ' ' + _t.get(_.agreeToThis1) + '.'
+        ret_dict['agree_message'] += _t.get(_.agreeToThis1) if len(db_pro_votes) == 1 else _t.get(_.agreeToThis1)
+        ret_dict['agree_message'] += '.'
 
     con_array = []
     for vote in db_con_votes:
@@ -419,6 +425,12 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
         con_array.append(users_dict)
     ret_dict['disagree_users'] = con_array
     ret_dict['disagree_text'] = _t.get(_.iDisagreeWith)
+    if len(db_pro_votes) == 0:
+        ret_dict['disagree_message'] = _t.get(_.disagreeToThis0) + '.'
+    else:
+        ret_dict['disagree_message'] = str(len(db_pro_votes)) + ' ' + _t.get(_.disagreeToThis1) + '.'
+        ret_dict['disagree_message'] += _t.get(_.disagreeToThis1) if len(db_pro_votes) == 1 else _t.get(_.disagreeToThis1)
+        ret_dict['disagree_message'] += '.'
 
     ret_dict['title'] = title
 

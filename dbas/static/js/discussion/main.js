@@ -149,17 +149,21 @@ function Main () {
 		//guiHandler.setDisplayStyleAsDiscussion();
 		$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct() {
 			guiHandler.setDisplayStyleAsDiscussion();
+			clearAnchor();
 		});
 		$('#' + displayStyleIconIslandId).click(function displayStyleIconIslandFct() {
 			guiHandler.setDisplayStyleAsIsland();
+			setAnchor('island');
 		});
 		$('#' + displayStyleIconGraphId).click(function displayStyleIconExpertFct() {
 			guiHandler.setDisplayStyleAsGraphView();
+			setAnchor('graph');
 		});
 		
 		// opinion barometer
 		$('#' + opinionBarometerImageId).show().click(function opinionBarometerFunction() {
 			new DiscussionBarometer().showBarometer();
+			setAnchor('barometer');
 		});
 		
 		// issues
