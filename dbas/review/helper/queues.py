@@ -294,7 +294,7 @@ def lock_optimization_review(nickname, review_uid, translator):
     :param translator:
     :return:
     """
-    logger('ReviewQueues', 'lock', 'main')
+    logger('ReviewQueues', 'lock_optimization_review', 'main')
     success = ''
     info = ''
     error = ''
@@ -302,8 +302,10 @@ def lock_optimization_review(nickname, review_uid, translator):
 
     # has user already locked an item?
     db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_lock = DBDiscussionSession.query(ReviewOptimization).filter_by(uid=review_uid).first()
 
-    if not db_user or int(review_uid) < 1:
+    if not db_user or int(review_uid) < 1 or not db_lock:
+        logger('ReviewQueues', 'lock_optimization_review', 'no user or no review (' + str(not db_user) + ',' + str(not db_lock) + ')', error=True)
         error = translator.get(_.internalKeyError)
         return success, info, error, is_locked
 
@@ -313,12 +315,14 @@ def lock_optimization_review(nickname, review_uid, translator):
         if is_review_locked(db_locks.review_optimization_uid):
             info = translator.get(_.dataAlreadyLockedByYou)
             is_locked = True
+            logger('ReviewQueues', 'lock_optimization_review', 'review already locked')
             return success, info, error, is_locked
         else:
             DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).delete()
 
     # is already locked?
     if is_review_locked(review_uid):
+        logger('ReviewQueues', 'lock_optimization_review', 'already locked', warning=True)
         info = translator.get(_.dataAlreadyLockedByOthers)
         is_locked = True
         return success, info, error, is_locked
@@ -327,7 +331,9 @@ def lock_optimization_review(nickname, review_uid, translator):
     DBDiscussionSession.flush()
     transaction.commit()
     is_locked = True
+    success = translator.get(_.dataAlreadyLockedByYou)
 
+    logger('ReviewQueues', 'lock_optimization_review', 'review locked')
     return success, info, error, is_locked
 
 

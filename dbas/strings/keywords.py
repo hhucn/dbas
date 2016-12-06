@@ -227,6 +227,8 @@ class Keywords(Enum):
     doesJustify = 'does justify that'
     doesNotJustify = 'does not justify that'
     doYouWantToEnterYourStatements = 'Do you want to enter your statement(s)?'
+    dataNowLocked = 'You locked the data.'
+    dataUnlocked = 'Data unlocked!'
     dataAlreadyLockedByYou = 'You are already editing data. Please finish your work first!'
     dataAlreadyLockedByOthers = 'Sorry, this data edited by other participants.'
     earlierYouArguedThat = 'Earlier you argued that'

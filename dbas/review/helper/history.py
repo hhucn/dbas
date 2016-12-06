@@ -272,7 +272,7 @@ def revoke_old_decision(queue, uid, lang, nickname):
     return success, error
 
 
-def cancel_ongoing_decision(queue, uid, lang):
+def cancel_ongoing_decision(queue, uid, lang, nickname):
     """
 
     :param queue:
@@ -283,23 +283,27 @@ def cancel_ongoing_decision(queue, uid, lang):
     logger('review_history_helper', 'cancel_ongoing_decision', 'queue: ' + queue + ', uid: ' + str(uid))
     success = ''
     error = ''
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     _t = Translator(lang)
     if queue == 'deletes':
-        DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).first().set_revoked(True)
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_delete=uid, was_ongoing=True))
 
     elif queue == 'optimizations':
-        DBDiscussionSession.query(ReviewOptimization).filter_by(uid=uid).delete()
+        DBDiscussionSession.query(ReviewOptimization).filter_by(uid=uid).first().set_revoked(True)
         DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_optimization=uid, was_ongoing=True))
 
     elif queue == 'edits':
         DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).delete()
-        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).first().set_revoked(True)
         DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=uid).delete()
         success = _t.get(_.dataRemoved)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_edit=uid, was_ongoing=True))
 
     else:
         error = _t.get(_.internalKeyError)
