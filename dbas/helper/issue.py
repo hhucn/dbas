@@ -201,7 +201,7 @@ def get_id_of_slug(slug, request, save_id_in_session):
     :param save_id_in_session: Boolean
     :return: uid
     """
-    db_issues = DBDiscussionSession.query(Issue).all()
+    db_issues = get_not_disabled_issues_as_query().all()
     for issue in db_issues:
         if str(slugify(issue.title)) == str(slug):
             if save_id_in_session:
@@ -221,7 +221,7 @@ def get_issue_id(request):
     issue = request.matchdict['issue'] if 'issue' in request.matchdict \
         else request.params['issue'] if 'issue' in request.params \
         else request.session['issue'] if 'issue' in request.session \
-        else DBDiscussionSession.query(Issue).first().uid
+        else get_not_disabled_issues_as_query().first().uid
 
     # save issue in session
     request.session['issue'] = 1 if str(issue) is 'undefined' else issue
