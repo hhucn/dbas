@@ -96,12 +96,13 @@
 
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
-                    <span class="project lead">0.9.0 (2016-12-xx)</span>
+                    <span class="project lead">0.9.0 (2016-12-05)</span>
                     <ul>
                         <li>Rework of the discussions sidebar</li>
                         <li>Improved the page at the end of a discussion</li>
-                        <li>Made the discussion more personal</li>
+                        <li>Made the discussion more personal with new sentence openers</li>
                         <li>Minor improvements and bugfix</li>
+                        <li>Added webtests</li>
                     </ul>
 
                     <span class="project lead">0.8.0 (2016-11-17)</span>

@@ -58,11 +58,12 @@ class Issue(DiscussionBase):
     date = Column(ArrowType, default=get_now())
     author_uid = Column(Integer, ForeignKey('users.uid'))
     lang_uid = Column(Integer, ForeignKey('languages.uid'))
+    is_disabled = Column(Boolean, nullable=False)
 
     users = relationship('User', foreign_keys=[author_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
 
-    def __init__(self, title, info, author_uid, lang_uid):
+    def __init__(self, title, info, author_uid, lang_uid, is_disabled=False):
         """
         Initializes a row in current position-table
         """
@@ -70,6 +71,7 @@ class Issue(DiscussionBase):
         self.info = info
         self.author_uid = author_uid
         self.lang_uid = lang_uid
+        self.is_disabled = is_disabled
 
     @classmethod
     def by_text(cls):
@@ -82,6 +84,14 @@ class Issue(DiscussionBase):
     @hybrid_property
     def lang(self):
         return DBDiscussionSession.query(Language).get(self.lang_uid).ui_locales
+
+    def set_disable(self, is_disabled):
+        """
+
+        :param is_disabled:
+        :return:
+        """
+        self.is_disabled = is_disabled
 
 
 class Language(DiscussionBase):
@@ -1068,6 +1078,7 @@ class ReviewCanceled(DiscussionBase):
     review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'), nullable=True)
     review_delete_uid = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
     review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
+    was_ongoing = Column(Boolean)
     timestamp = Column(ArrowType, default=get_now())
 
     authors = relationship('User', foreign_keys=[author_uid])
@@ -1075,7 +1086,7 @@ class ReviewCanceled(DiscussionBase):
     deletes = relationship('ReviewDelete', foreign_keys=[review_delete_uid])
     optimizations = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
 
-    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None):
+    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, was_ongoing=False):
         """
 
         :param author:
@@ -1087,6 +1098,7 @@ class ReviewCanceled(DiscussionBase):
         self.review_edit_uid = review_edit
         self.review_delete_uid = review_delete
         self.review_optimization_uid = review_optimization
+        self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 
 

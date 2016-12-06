@@ -67,7 +67,7 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_text_for_statement_uid(uid="str"), None)
 
         # id for statement, which ends with '.'
-        self.assertEqual(lib.get_text_for_statement_uid(uid=2), 'We should get a cat')
+        self.assertEqual(lib.get_text_for_statement_uid(uid=3), 'We should get a dog')
 
         # id for statement, which ends with '!'
         self.assertEqual(lib.get_text_for_statement_uid(uid=31), 'It is important, that pets are small and fluffy')
@@ -76,11 +76,11 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_text_for_statement_uid(uid=-30), None)
 
     def test_get_text_for_conclusion(self):
-        argument1 = Argument(premisegroup=1, issupportive=True, author=1, conclusion=2, issue=1)
+        argument1 = Argument(premisegroup=4, issupportive=True, author=1, conclusion=3, issue=1)
         # 'argument' is an argument
         self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
                                                      start_with_intro=False,
-                                                     rearrange_intro=False), 'We should get a cat')
+                                                     rearrange_intro=False), 'We should get a dog')
 
         argument2 = Argument(premisegroup=1, issupportive=False, author=1, issue=1)
         # 'argument' is a statement
@@ -113,10 +113,10 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
 
     def test_get_all_arguments_by_statement(self):
-        argument_list = lib.get_all_arguments_by_statement(2)
-        self.assertEqual(len(argument_list), 4)
+        argument_list = lib.get_all_arguments_by_statement(3)
+        self.assertEqual(len(argument_list), 2)
         for argument in argument_list:
-            self.assertTrue(argument.uid in [2, 3, 11, 12])
+            self.assertTrue(argument.uid in [4, 5])
 
         self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 4)
         self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)

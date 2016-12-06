@@ -32,7 +32,7 @@ def flag_argument(uid, reason, db_user, is_argument):
 
     # sanity check
     if None in [db_element, db_user, db_reason] and not reason == 'optimization':
-        return '', '', _.internalKeyError  # translator.internalKeyError
+        return '', '', _.internalKeyError
 
     argument_uid = uid if is_argument else None
     statement_uid = uid if not is_argument else None

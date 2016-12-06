@@ -9,6 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print
 from dbas.lib import is_user_author
 from dbas.logger import logger
+from dbas.query_wrapper import get_not_disabled_issues_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -122,7 +123,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     stat_count = get_number_of_statements(uid)
     date = __get_date_for_issue_uid(uid, lang)
 
-    db_issues = DBDiscussionSession.query(Issue).all()
+    db_issues = get_not_disabled_issues_as_query().all()
     all_array = []
     for issue in db_issues:
         issue_dict = get_issue_dict_for(issue, application_url, for_api, uid, lang)
@@ -200,7 +201,7 @@ def get_id_of_slug(slug, request, save_id_in_session):
     :param save_id_in_session: Boolean
     :return: uid
     """
-    db_issues = DBDiscussionSession.query(Issue).all()
+    db_issues = get_not_disabled_issues_as_query().all()
     for issue in db_issues:
         if str(slugify(issue.title)) == str(slug):
             if save_id_in_session:
@@ -220,7 +221,7 @@ def get_issue_id(request):
     issue = request.matchdict['issue'] if 'issue' in request.matchdict \
         else request.params['issue'] if 'issue' in request.params \
         else request.session['issue'] if 'issue' in request.session \
-        else DBDiscussionSession.query(Issue).first().uid
+        else get_not_disabled_issues_as_query().first().uid
 
     # save issue in session
     request.session['issue'] = 1 if str(issue) is 'undefined' else issue

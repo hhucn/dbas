@@ -102,19 +102,19 @@ def get_reputation_of(nickname):
 
 def add_reputation_for(user, reason):
     """
-    Add reputation for the given nickname with the reason only iff the reason can be added. (For example all reputataion
+    Add reputation for the given nickname with the reason only iff the reason can be added. (For example all reputation
     for 'first' things cannot be given twice.
 
     :param user: current user oder his nickname
     :param reason: reason as string, as given in reputation.py
-    :return: True, if the user gained reputation
+    :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
     """
     logger('ReputationPointHelper', 'add_reputation_for', 'main ' + reason)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first() if isinstance(user, str) else user
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
     if not db_reason or not db_user:
         logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')
-        return False
+        return False, False
 
     # special case:
     if '_first_' in reason:
@@ -123,13 +123,25 @@ def add_reputation_for(user, reason):
                  ReputationHistory.reputator_uid == db_user.uid)).first()
         if db_already_farmed:
             logger('ReputationPointHelper', 'add_reputation_for', 'karma already farmed')
-            return False
+            return False, False
 
     logger('ReputationPointHelper', 'add_reputation_for', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
+    db_old_points = __collect_points(DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()
 
     transaction.commit()
+    db_new_points = db_old_points + db_reason.points
 
-    return True
+    return True, db_old_points < 30 and db_new_points > 30
+
+
+def __collect_points(reputation_history):
+    """
+    Sums up the points
+
+    :param reputation_history: List of ReputationHistory joined with ReputationReason
+    :return:
+    """
+    return sum([history.reputations.points for history in reputation_history])
