@@ -15,24 +15,22 @@ class NewsHandlerTests(unittest.TestCase):
         # correct id
         response_correct_id = news.get_news(1)
         # access elements in OrderedDict
-        items = list(response_correct_id.items())
-        self.assertTrue(verify_structure_news_dictionary(self, items[0][1]))
+        verify_structure_news_list(self, response_correct_id)
 
         response_correct_id2 = news.get_news(70)
         # access elements in OrderedDict
-        items2 = list(response_correct_id2.items())
-        self.assertTrue(verify_structure_news_dictionary(self, items2[0][1]))
+        verify_structure_news_list(self, response_correct_id2)
 
         response = news.get_news(None)
         # access elements in OrderedDict
-        items3 = list(response.items())
-        self.assertTrue(verify_structure_news_dictionary(self, items3[0][1]))
+        verify_structure_news_list(self, response)
 
 
-def verify_structure_news_dictionary(self, response):
-    self.assertTrue('title' in response)
-    self.assertTrue('author' in response)
-    self.assertTrue('date' in response)
-    self.assertTrue('news' in response)
-    self.assertTrue('uid' in response)
+def verify_structure_news_list(self, response):
+    for element in response:
+        self.assertTrue('title' in element)
+        self.assertTrue('author' in element)
+        self.assertTrue('date' in element)
+        self.assertTrue('news' in element)
+        self.assertTrue('uid' in element)
     return True

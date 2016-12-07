@@ -36,7 +36,8 @@ def test_news_page():
 
 def test_imprint_page():
     browser.visit(ROOT + '/imprint')
-    assert_true(browser.is_text_present('Disclaimer'), error_text)
+    disclaimer_text = browser.is_text_present('Disclaimer') or browser.is_text_present('Haftung')
+    assert_true(disclaimer_text, error_text)
 
 
 def test_discuss_page():

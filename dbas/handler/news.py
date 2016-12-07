@@ -6,7 +6,6 @@ Provides helping function round about the news.
 
 import transaction
 import arrow
-import collections
 
 from dbas.database import DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, sql_timestamp_pretty_print
