@@ -309,7 +309,7 @@ class Keywords(Enum):
     iDoNotKnow = 'I do not know'
     iDoNotKnowInColor = 'I <span class=\'text-info\'>do not know</span>'
     iHaveNoOpinionYet = 'I have no opinion yet about'
-    iHaveNoOpinion = 'I have no opinion, show me an argument'
+    iHaveNoOpinion = 'I have no opinion'
     iHaveNoOpinionYetInColor = 'I have <span class=\'text-info\'>no opinion yet</span>, show me an argument'
     informationForExperts = 'Information for experts'
     internalFailureWhileDeletingTrack = 'Internal failure, please try again or did you have deleted your track recently?'
