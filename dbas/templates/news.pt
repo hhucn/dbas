@@ -1,7 +1,45 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div id="news-body"></div>
+		<div id="news-body">
+            <div id="dummy-news" class="container">
+                <div class="row">
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="raw-elements" style="display: none">
+
+            <div class="col-md-4" tal:repeat="n news">
+                <div class="panel panel-default">
+                    <div class="panel-heading" tal:attributes="id n.uid">
+                        <a class="share-icon-small share-mail-small" data-toggle="tooltip" data-placement="bottom" title="Mail"></a>
+                        <a class="share-icon-small share-twitter-small" data-toggle="tooltip" data-placement="bottom" title="Twitter"></a>
+                        <a class="share-icon-small share-google-small" data-toggle="tooltip" data-placement="bottom" title="Google+"></a>
+                        <a class="share-icon-small share-facebook-small" data-toggle="tooltip" data-placement="bottom" title="Facebook"></a>
+                        <h5>
+                            <span class="font-semi-bold" id="news_' + no + '_title"> ${n.title} </span>
+                        </h5>
+                    </div>
+                    <div class="panel-body" style="text-align: justify;">
+                        <h6>
+                            <span id="news_' + no + '_author">${n.author}</span>
+                            <span id="news_' + no + '_date">${n.date}</span>
+                        </h6>
+                        <span style="margin-top: 1em;">${structure:n.news}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
 		<div id="news-navigation-container" class="container">
 			<div class="row">
@@ -9,18 +47,8 @@
 
 					<nav id="news-navigation">
 						<ul class="pagination">
-							<li class="disabled">
-								<a href="#">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
 							<li class="active"><a href="#">1</a></li>
 							<li><a href="#">2</a></li>
-							<li>
-								<a href="#">
-									<span aria-hidden="true">&raquo;</span>
-								</a>
-							</li>
 						</ul>
 					</nav>
 

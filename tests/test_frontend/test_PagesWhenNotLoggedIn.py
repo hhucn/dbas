@@ -29,7 +29,9 @@ def test_contact_page():
 
 def test_news_page():
     browser.visit(ROOT + '/news')
-    assert_true(browser.is_text_present('COMMA16'), error_text)
+    xpath = '//span[text()=" COMMA16 "]'
+    description = browser.find_by_xpath(xpath).first
+    assert_true(description is not None, error_text)
 
 
 def test_imprint_page():

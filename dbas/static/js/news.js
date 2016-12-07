@@ -5,66 +5,20 @@
 
 function News() {
 	let BOOTSTRAP_COLLAPSE = 990;
-
-	/***
-	 *
-	 * @param title
-	 * @param date
-	 * @param author
-	 * @param news
-	 * @param no
-	 * @returns {string}
-	 */
-	this.getNewsContainerAsHtml = function (title, date, author, news, no) {
-		return '<div class="col-md-4">'
-				+ '<div class="panel panel-default">'
-				+ '<div class="panel-heading" id="news_' + no + '">'
-				+ '<a class="share-icon-small share-mail-small" data-toggle="tooltip" data-placement="bottom" title="Mail"></a>'
-				+ '<a class="share-icon-small share-twitter-small" data-toggle="tooltip" data-placement="bottom" title="Twitter"></a>'
-				+ '<a class="share-icon-small share-google-small" data-toggle="tooltip" data-placement="bottom" title="Google+"></a>'
-				+ '<a class="share-icon-small share-facebook-small" data-toggle="tooltip" data-placement="bottom" title="Facebook"></a>'
-				+ '<h5><span class="font-semi-bold" id="news_' + no + '_title">' + title + '</span></h5>'
-				+ '</div>'
-				+ '<div class="panel-body" style="text-align: justify;">'
-				+ '<h6>'
-					//+ '<span i18n:translate="author">Author</span>: '
-				+ '<span id="news_' + no + '_author">' + author + '</span>' + ', '
-				+ '<span id="news_' + no + '_date">' + date + '</span>'
-				+ '</h6>'
-				+ '<br>'
-				+ news
-				+ '</div>'
-				+ '</div>'
-				+ '</div>';
-	};
-
-	// *********************
-	//	CALLBACKS
-	// *********************
-
+	
 	/**
 	 *
-	 * @param data
 	 */
-	this.callbackIfDoneForGettingNews = function (data) {
-		let parsedData = $.parseJSON(data);
-		let counter = 1;
-		let div = '';
-		let row = 0;
-		let id;
-		let length = Object.keys(parsedData).length;
-		let array = new Array(length);
-		let container = '';
-		let news = new News();
-
-		// add every news in reverted order
-		$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
-			array[length - counter] = news.getNewsContainerAsHtml(val.title, val.date, val.author, val.news, val.uid);
-			counter += 1;
-		});
-		counter = 0;
+	this.setNewsInRow = function()  {
+		const input = $('#raw-elements');
+		let array = input.find('.col-md-4');
+		let length = array.length;
 
 		// build rows
+		let div = '';
+		let counter;
+		let row = 0;
+		let container = '';
 		for (counter = 0; counter < length; counter++) {
 			if (counter % 3 == 0) {
 				if (div !== '') {
@@ -90,10 +44,8 @@ function News() {
 			$('#' + newsBodyId).append(container);
 		}
 
-		//news.setMaxHeightOfNewsRows();
-		news.setSlimscrollForNewsRows();
-		news.setPageNavigation();
-		news.setSharingClasses();
+		input.remove();
+		$('#dummy-news').remove();
 	};
 
 	/**
@@ -108,7 +60,7 @@ function News() {
 			// $('#' + writingNewNewsTitleId).val('');
 			// $('#' + writingNewNewsTextId).val('');
 			// $('#' + newsBodyId).prepend(new News().getNewsContainerAsHtml(parsedData.title, parsedData.date, parsedData.author, parsedData.news));
-			// new News().setSharingClasses();
+			// new News().setSharingClickEvents();
 			// window.scrollTo(0, 0);
 			location.reload();
 		} else {
@@ -146,7 +98,10 @@ function News() {
 	 *
 	 */
 	this.setSlimscrollForNewsRows = function () {
-		let placeholders = [], h, wrapperContent = $('#wrapper-content'), footer = $('#footer');
+		let placeholders = [];
+		let h;
+		const wrapperContent = $('#wrapper-content');
+		const footer = $('#footer');
 		placeholders.push($('.navbar-collapse').height());
 		placeholders.push(parseInt(wrapperContent.css('padding-top').replace('px','')));
 		placeholders.push(parseInt(wrapperContent.css('padding-bottom').replace('px','')));
@@ -166,11 +121,17 @@ function News() {
 		wrapperContent.attr('style', 'padding-bottom: 0px');
 
 		$('.panel-heading').height(67);
-		$('.panel-body').slimScroll({
-            position: 'right',
-            height: h + 'px',
-            railVisible: true,
-            alwaysVisible: false
+		$('.panel-body').each(function() {
+			if ($(this).height() <= h) {
+				$(this).height(h);
+				return true;
+			}
+			$(this).slimScroll({
+				position: 'right',
+				height: h + 'px',
+				railVisible: true,
+				alwaysVisible: false
+			});
 		});
 	};
 
@@ -178,8 +139,16 @@ function News() {
 	 *
 	 */
 	this.setPageNavigation = function () {
-		let counter, row = $('#' + newsBodyId).children().length, pagebreak = 2, _this = this,
-			pagecounter = 1, newsNavigator = $('#news-navigation'), html, back, forth, pages='';
+		let counter;
+		const row = $('#' + newsBodyId).children().length;
+		const pagebreak = 2;
+		const _this = this;
+		let pagecounter = 1;
+		const newsNavigator = $('#news-navigation');
+		let html;
+		let back;
+		let forth;
+		let pages='';
 
 		newsNavigator.empty();
 
@@ -204,7 +173,7 @@ function News() {
 		// click events
 		for (counter = 0; counter <= pagecounter; counter++) {
 			$('#news-' + (counter + 1)).click(function () {
-				$('#news-navigation').children().eq(0).children().removeClass('active');
+				newsNavigator.children().eq(0).children().removeClass('active');
 				$(this).parent().addClass('active');
 
 				$('#' + newsBodyId).children().hide();
@@ -299,7 +268,7 @@ function News() {
 	// *********************
 	//	SHARING IS CARING
 	// *********************
-	this.setSharingClasses = function () {
+	this.setSharingClickEvents = function () {
 		let news = new News();
 		/**
 		 * Sharing shortened url with mail
@@ -399,15 +368,19 @@ function News() {
 }
 
 $(document).ready(function () {
-	if (window.location.href != mainpage + 'news'){
+	if (window.location.href.indexOf(mainpage + 'news') == -1){
 		return;
 	}
-	new AjaxNewsHandler().ajaxGetNews();
+	const news = new News();
+	news.setNewsInRow();
+	news.setSharingClickEvents();
+	news.setSlimscrollForNewsRows();
+	news.setPageNavigation();
+	news.setSharingClickEvents();
 
 	$('#' + writingNewsFailedId).hide();
 	$('#' + writingNewsSuccessId).hide();
 
-	new News().setSharingClasses();
 
 	/**
 	 * Sharing shortened url on google

@@ -276,7 +276,8 @@ def main_news(request):
         'title': 'News',
         'project': project_name,
         'extras': extras_dict,
-        'is_author': is_author
+        'is_author': is_author,
+        'news': news_handler.get_news(get_language(request, get_current_registry()))
     }
 
 
