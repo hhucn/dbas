@@ -11,8 +11,8 @@ function AjaxGraphHandler(){
 	 * @param address: keyword in url
 	 */
 	this.getUserGraphData = function(uid, address){
-		var dataString;
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		let dataString;
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		
 		switch(address){
 			case 'attitude':
@@ -46,7 +46,7 @@ function AjaxGraphHandler(){
 	 * Displays a graph of current discussion
 	 */
 	this.getDiscussionGraphData = function (url) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: url,
 			type: 'GET',
@@ -65,7 +65,7 @@ function AjaxGraphHandler(){
 	 * @param uid
      */
 	this.getJumpDataForGraph = function (uid) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: '/ajax_get_arguments_by_statement/' + uid,
 			type: 'GET',

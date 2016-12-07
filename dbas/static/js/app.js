@@ -24,7 +24,7 @@ function jmpToChapter() {
 	// jump to chapter-function
 	$('a[href^="#"]').on('click', function (e) {
 		try {
-			var href = $(this).attr('href');
+			const href = $(this).attr('href');
 			$('html, body').animate({
 				scrollTop: ($(href).offset().top - 100)
 			}, 'slow');
@@ -62,12 +62,13 @@ function goBackToTop() {
  * Display smiley as fallback on (connection) errors
  */
 function setGravatarFallback() {
-	const img = $('body').find('.img-circle');
+	const body = $('body');
+	const img = body.find('.img-circle');
 	if (img.length == 0)
 		return true;
 	
-	const src = $('body').find('.img-circle')[0].src;
-	let jqxhr = $.get(src, function() {
+	const src = body.find('.img-circle')[0].src;
+	const jqxhr = $.get(src, function() {
     	replace_gravtar_with_default_image(true);
     }).fail(function() {
     	replace_gravtar_with_default_image(false);
@@ -172,7 +173,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  */
 function displayBubbleInformationDialog(){
 	if (!isCookieSet(BUBBLE_INFOS)){
-		var img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
+		const img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' .modal-dialog').attr('style', 'width: ' + ($(document).width() > 992? '430' : '200') + 'px;');
 		$('#' + popupConfirmDialogId + ' h4.modal-title').html('Introduction');
@@ -190,7 +191,7 @@ function displayBubbleInformationDialog(){
  * @param lang
  */
 function setPiwikOptOutLink(lang){
-	var src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
+	const src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
 	$('#piwik-opt-out-iframe').attr('src', src);
 }
 
@@ -201,7 +202,7 @@ function setEasterEggs(){
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
 	$('#logo_dbas,#logo_dbas_s').click(function(){
-		var counter = parseInt($(this).data('counter'));
+		let counter = parseInt($(this).data('counter'));
 		counter += 1;
 		if (counter == 7){
 			$(this).attr('src', mainpage + 'static/images/dabas.png');
@@ -235,7 +236,7 @@ function hideExtraViewsOfLoginPopup(){
  * Prepares the login popup
  */
 function prepareLoginRegistrationPopup(){
-	var popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
+	const popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
 	// hide on startup
 	hideExtraViewsOfLoginPopup();
 	popupLoginGeneratePasswordBody.hide();
@@ -245,7 +246,7 @@ function prepareLoginRegistrationPopup(){
 		e.preventDefault();
 		$(this).parent().addClass('active');
 		$(this).parent().siblings().removeClass('active');
-		var target = $(this).attr('href');
+		const target = $(this).attr('href');
 		$('.tab-content > div').not(target).hide();
 		$(target).fadeIn(600);
 
@@ -263,7 +264,7 @@ function prepareLoginRegistrationPopup(){
 	}).keypress(function(e) { if (e.which == 13) { new AjaxMainHandler().ajaxRegistration() } });
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
-		var body = $('#' + popupLoginForgotPasswordBody);
+		const body = $('#' + popupLoginForgotPasswordBody);
 		if (body.is(':visible')){
 			body.fadeOut();
 			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
@@ -298,16 +299,16 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonRegister).click(function(){
-		var userfirstname   = $('#' + popupLoginUserfirstnameInputId).val(),
-			userlastname    = $('#' + popupLoginUserlastnameInputId).val(),
-			nick            = $('#' + popupLoginNickInputId).val(),
-			email           = $('#' + popupLoginEmailInputId).val(),
-			password        = $('#' + popupLoginPasswordInputId).val(),
-			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
-			text = '',
-			i,
-			fields = [userfirstname, userlastname, nick, email, password, passwordconfirm],
-			tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword),
+		const userfirstname   = $('#' + popupLoginUserfirstnameInputId).val();
+		const userlastname    = $('#' + popupLoginUserlastnameInputId).val();
+		const nick            = $('#' + popupLoginNickInputId).val();
+		const email           = $('#' + popupLoginEmailInputId).val();
+		const password        = $('#' + popupLoginPasswordInputId).val();
+		const passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
+		let text = '';
+		let i;
+		const fields = [userfirstname, userlastname, nick, email, password, passwordconfirm];
+		const tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword),
 				_t(checkConfirmation), _t(checkPasswordConfirm)];
 
 		// check all vields for obivously errors
@@ -349,18 +350,18 @@ function prepareLoginRegistrationPopup(){
  * @param element
  */
 function setTextWatcherInputLength(element){
-	var min_length = element.data('min-length');
-	var max_length = element.data('max-length');
+	const min_length = element.data('min-length');
+	let max_length = element.data('max-length');
 	if (!max_length)
 		max_length = 1000;
-	var id = element.attr('id') + '-text-counter';
-	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
-	var field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
+	const id = element.attr('id') + '-text-counter';
+	const msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
+	const field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
 	field.insertBefore(element);
 	
 	element.keyup(function(){
-		var text = element.val().trim();
-		var current_length = text.length;
+		const text = element.val().trim();
+		const current_length = text.length;
 		
 		if (current_length == 0){
 			field.addClass('text-info');
@@ -376,7 +377,7 @@ function setTextWatcherInputLength(element){
 			} else {
 				field.removeClass('text-danger');
 			}
-			var left = max_length < current_length ? 0 : max_length - current_length;
+			const left = max_length < current_length ? 0 : max_length - current_length;
 			field.text(left + ' ' + _t_discussion(textMaxCountMessage));
 			if (max_length <= current_length)
 				field.text(field.text() + ' ' + _t_discussion(textMaxCountMessageError));
@@ -446,7 +447,7 @@ function setGlobalInfoHandler(heading, body){
  */
 function callbackIfDoneForLogin(data, showGlobalError){
 	try {
-		var parsedData = $.parseJSON(data);
+		const parsedData = $.parseJSON(data);
 		
 		if (parsedData.error.length != 0) {
 			if (showGlobalError) {
@@ -462,7 +463,7 @@ function callbackIfDoneForLogin(data, showGlobalError){
 	} catch(err){
 		console.log('ERROR');
 		//console.log(err);
-		var url = location.href;
+		let url = location.href;
 		if (url.indexOf('?session_expired=true') != -1)
 			url = url.substr(0, url.length - '?session_expired=true'.length);
 		location.href = url;
@@ -475,10 +476,10 @@ function callbackIfDoneForLogin(data, showGlobalError){
  * @param data
  */
 function callbackIfDoneForRegistration(data){
-	var parsedData = $.parseJSON(data);
-	var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
-	var failed = $('#' + popupLoginRegistrationFailed);
-	var info = $('#' + popupLoginRegistrationInfo);
+	const parsedData = $.parseJSON(data);
+	const success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
+	const failed = $('#' + popupLoginRegistrationFailed);
+	const info = $('#' + popupLoginRegistrationInfo);
 	success.hide();
 	failed.hide();
 	info.hide();
@@ -505,10 +506,10 @@ function callbackIfDoneForRegistration(data){
  * @param data
  */
 function callbackIfDoneForPasswordRequest(data){
-	var parsedData = $.parseJSON(data);
-	var success = $('#' + popupLoginSuccess);
-	var failed = $('#' + popupLoginFailed);
-	var info = $('#' + popupLoginInfo);
+	const parsedData = $.parseJSON(data);
+	const success = $('#' + popupLoginSuccess);
+	const failed = $('#' + popupLoginFailed);
+	const info = $('#' + popupLoginInfo);
 	success.hide();
 	failed.hide();
 	info.hide();
@@ -533,7 +534,8 @@ function callbackIfDoneForPasswordRequest(data){
 // *********************
 $(document).ready(function () {
 	'use strict';
-	var path = window.location.href, lang = $('#hidden_language').val();
+	const path = window.location.href;
+	const lang = $('#hidden_language').val();
 
 	jmpToChapter();
 	goBackToTop();

@@ -6,14 +6,14 @@
 $(function () {
 	'use strict';
 
-	var not = new Notifications();
+	const not = new Notifications();
 	not.setPanelClickFunctions();
 	not.setClickFunctionsForAnswerNotification();
 	not.setClickFunctionsForNewNotification();
 
 	$('#popup-writing-notification-recipient').keyup(function () {
 		setTimeout(function () {
-			var escapedText = escapeHtml($('#popup-writing-notification-recipient').val());
+			const escapedText = escapeHtml($('#popup-writing-notification-recipient').val());
 			new AjaxDiscussionHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
 		}, 200);
 	});
@@ -33,7 +33,7 @@ function Notifications() {
 	this.setPanelClickFunctions = function(){
 		$.each($('.panel-title-link'), function ajaxLinksRead() {
 			$(this).click(function(){
-				var id = $(this).parent().parent().parent().attr('id');
+				const id = $(this).parent().parent().parent().attr('id');
 				if ($(this).html().indexOf('<strong') != -1) {
 					new AjaxNotificationHandler().sendAjaxForReadMessage(id, this);
 				}
@@ -71,14 +71,14 @@ function Notifications() {
 		// send notification to users
 		$('.answer-notification').each(function () {
 			$(this).click(function(){
-				var _this = $(this);
+				const _this = $(this);
 				$('#popup-writing-notification-recipient').show().val(_this.prev().text().trim());
 				$('#popup-writing-notification').modal('show');
 				$('#popup-writing-notification-success').hide();
 				$('#popup-writing-notification-failed').hide();
-				var panel = $(this).parent().parent().parent().parent(),
-					title = panel.find('.notification-title').text(),
-					content = panel.find('.notification-content').text();
+				const panel = $(this).parent().parent().parent().parent();
+				const title = panel.find('.notification-title').text();
+				const content = panel.find('.notification-content').text();
 				$('#popup-writing-notification-title').val(title);
 				$('#popup-writing-notification-text').text(content);
 				$('#popup-writing-notification-send').click(function() {
@@ -89,15 +89,15 @@ function Notifications() {
 
 		$('.new-notification').each(function () {
 			$(this).click(function(){
-				var _this = $(this);
+				const _this = $(this);
 				$('#popup-writing-notification-recipient').hide();
 				$('#popup-writing-notification').modal('show');
 				$('#popup-writing-notification-success').hide();
 				$('#popup-writing-notification-failed').hide();
 				$('#popup-writing-notification-send').click(function(){
-					var url = window.location.href,
-						splitted = url.split('/'),
-						recipient;
+					const url = window.location.href;
+					const splitted = url.split('/');
+					let recipient;
 					if (url.indexOf('/user/') != -1){
 						recipient = splitted[splitted.length - 1];
 					} else {
@@ -140,7 +140,7 @@ function Notifications() {
     * @param uid
     */
 	this.appendMessageInOutbox = function(recipient, recipient_avatar, title, text, timestamp, uid) {
-		var panel_html = '' +
+		const panel_html = '' +
 			'<div class="panel panel-default" style="margin-bottom: 1em;" id="' + uid + '">' +
 				'<div class="panel-heading">' +
 					'<h4 class="panel-title">' +

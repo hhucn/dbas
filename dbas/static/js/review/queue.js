@@ -5,22 +5,22 @@
 
 $(document).ready(function () {
 	// buttons
-	var optimization_ack = $('#opti_ack');
-	var optimization_nack = $('#opti_nack');
-	var optimization_skip = $('#opti_skip');
-	var delete_ack = $('#del_ack');
-	var delete_nack = $('#del_nack');
-	var delete_skip = $('#del_skip');
-	var edit_ack = $('#edit_ack');
-	var edit_nack = $('#edit_nack');
-	var edit_skip = $('#edit_skip');
-	var request_lock = $('#request-lock');
-	var send_edit  = $('#send_edit');
+	const optimization_ack = $('#opti_ack');
+	const optimization_nack = $('#opti_nack');
+	const optimization_skip = $('#opti_skip');
+	const delete_ack = $('#del_ack');
+	const delete_nack = $('#del_nack');
+	const delete_skip = $('#del_skip');
+	const edit_ack = $('#edit_ack');
+	const edit_nack = $('#edit_nack');
+	const edit_skip = $('#edit_skip');
+	const request_lock = $('#request-lock');
+	const send_edit  = $('#send_edit');
 	
 	// text
-	var more_about_reason = $('#more_about_reason');
-	var less_about_reason = $('#less_about_reason');
-	var more_about_reason_content = $('#more_about_reason_content');
+	const more_about_reason = $('#more_about_reason');
+	const less_about_reason = $('#less_about_reason');
+	const more_about_reason_content = $('#more_about_reason_content');
 	
 	/**
 	 * OPTIMIZATION
@@ -91,8 +91,8 @@ $(document).ready(function () {
 	});
 	
 	// align buttons
-	var max = 0;
-	var elements = $("*[class^='review-btn-']");
+	let max = 0;
+	let elements = $("*[class^='review-btn-']");
 	elements.each(function(){
 		max = $(this).outerWidth() > max ? $(this).outerWidth() : max;
 	});

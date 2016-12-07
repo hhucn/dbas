@@ -12,15 +12,15 @@ $(function () {
 	// send notification to users
 	$('#send-notification').each(function () {
 		$(this).click(function () {
-			var _this = $(this);
+			const _this = $(this);
 			$('#' + popupWritingNotificationRecipient).hide();
 			$('#' + popupWritingNotification).modal('show');
 			$('#' + popupWritingNotificationSuccess).hide();
 			$('#' + popupWritingNotificationFailed).hide();
 			$('#' + popupWritingNotificationSend).click(function () {
-				var url = window.location.href,
-					splitted = url.split('/'),
-					recipient;
+				const url = window.location.href;
+				const splitted = url.split('/');
+				let recipient;
 				if (url.indexOf('/user/') != -1) {
 					recipient = splitted[splitted.length - 1];
 				} else {
@@ -40,19 +40,18 @@ function User() {
 	// 1 is Teal
 	// 2 is Deep Orange
 	// 3 is Brown
-	var fillColorSet = ['rgba(187,222,251,0.4)', 'rgba(178,223,219,0.4)', 'rgba(255,204,188,0.4)', 'rgba(215,204,200,0.4']; //100
-	var strokeColorSet = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
-	var pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
+	const fillColorSet = ['rgba(187,222,251,0.4)', 'rgba(178,223,219,0.4)', 'rgba(255,204,188,0.4)', 'rgba(215,204,200,0.4']; //100
+	const strokeColorSet = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
+	const pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
 
 	/**
 	 *
 	 * @param jsonData
 	 */
 	this.callbackDone = function(jsonData){
-		var parsedData = $.parseJSON(jsonData);
+		const parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-			return;
 		}
 		
 		// this.createChart(parsedData, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
@@ -70,7 +69,7 @@ function User() {
 	 * @param count
 	 */
 	this.createChart = function(parsedData, space, id, count){
-		var chart, data, div_legend;
+		let chart, data, div_legend;
 		space.append('<canvas id="' + id + '" width="500" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 		data = {
 			labels : parsedData['labels' + (count+1)],
@@ -95,7 +94,7 @@ function User() {
 	 *
 	 */
 	this.setLegendCSS = function() {
-		var legend = $('.chart-legend');
+		const legend = $('.chart-legend');
 
 		legend.find('ul').css({
 			'list-style-type': 'none'

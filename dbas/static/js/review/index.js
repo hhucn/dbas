@@ -4,8 +4,8 @@
  */
 
 $(document).ready(function () {
-	var tabs = $('#review-tabs');
-	var id;
+	let tabs = $('#review-tabs');
+	let id;
 	
 	// action for each tab
 	$.each(tabs.find('a'), function(){
@@ -26,8 +26,8 @@ $(document).ready(function () {
  *
  */
 function hideAll(){
-	var tabs = $('#review-tabs');
-	var id;
+	let tabs = $('#review-tabs');
+	let id;
 	$.each(tabs.find('a'), function(){
 		id = $(this).attr('href');
 		$(id).hide();

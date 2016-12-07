@@ -12,7 +12,7 @@
  * @returns {String}
  */
 function cutTextOnChar (text, maxTextWidth, pattern) {
-	var i, p, l;
+	let i, p, l;
 		i = 1;
 		l = text.length;
 	while (i * maxTextWidth < l) {
@@ -31,7 +31,7 @@ function cutTextOnChar (text, maxTextWidth, pattern) {
  * @returns {*} escaped string
  */
 function escapeHtml (text) {
-	var div = document.createElement('div');
+	let div = document.createElement('div');
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
 }
@@ -53,10 +53,10 @@ function getCurrentIssueId (){
  * @param content value
  */
 function setCookieForDays (cookie_name, days, content){
-	var d = new Date();
-	var expiresInDays = days * 24 * 60 * 60 * 1000;
+	let d = new Date();
+	let expiresInDays = days * 24 * 60 * 60 * 1000;
 	d.setTime( d.getTime() + expiresInDays );
-	var expires = 'expires=' + d.toGMTString();
+	let expires = 'expires=' + d.toGMTString();
 	document.cookie = cookie_name + '=' + content + '; ' + expires + ';path=/';
 
 	$(document).trigger('user_cookie_consent_changed', {'consent' : content});
@@ -69,9 +69,9 @@ function setCookieForDays (cookie_name, days, content){
  * @returns {boolean}
  */
 function isCookieSet (cookie_name){
-	var cookies = document.cookie.split(";"), userAcceptedCookies = false;
-	for (var i = 0; i < cookies.length; i++) {
-		var c = cookies[i].trim();
+	let cookies = document.cookie.split(";"), userAcceptedCookies = false;
+	for (let i = 0; i < cookies.length; i++) {
+		let c = cookies[i].trim();
 		if (c.indexOf(cookie_name) == 0) {
 			userAcceptedCookies = c.substring(cookie_name.length + 1, c.length);
 		}
@@ -85,11 +85,11 @@ function isCookieSet (cookie_name){
  * @param params dictionary with at least {'name': ?, 'content': ?}
  */
 function redirectInNewTabForContact (params){
-	var csrfToken = $('#' + hiddenCSRFTokenId).val();
-	var csrfField = '<input type="hidden" name="csrf_token" value="' + csrfToken + '">';
-	var f = $("<form target='_blank' method='POST' style='display:none;'>" + csrfField + "</form>").attr('action', mainpage + 'contact');
+	let csrfToken = $('#' + hiddenCSRFTokenId).val();
+	let csrfField = '<input type="hidden" name="csrf_token" value="' + csrfToken + '">';
+	let f = $("<form target='_blank' method='POST' style='display:none;'>" + csrfField + "</form>").attr('action', mainpage + 'contact');
 	f.appendTo(document.body);
-	for (var prms in params) {
+	for (let prms in params) {
 		if (params.hasOwnProperty(prms)) {
 			f.append($('<input type="hidden" />').attr('name', prms).attr('value', params[prms]));
 		}

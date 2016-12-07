@@ -47,7 +47,7 @@ function HistoryHandler(){
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
 		'use strict';
-		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url;
+		let tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url;
 		tElement = ['', ''];
 		tableElement = $('<table>');
 		tableElement
@@ -75,7 +75,7 @@ function HistoryHandler(){
 		tableElement.append(thead);
 
 		// adding the historys
-		var has_data = false;
+		let has_data = false;
 		parsedData = $.parseJSON(jsonData);
 		$.each(parsedData, function setDataInHistoryTableEach(index, history) {
 			has_data = true;
@@ -109,11 +109,11 @@ function HistoryHandler(){
 function PasswordHandler(){
 	// check password strength
 	// based on http://git.aaronlumsden.com/strength.js/
-	var upperCase = new RegExp('[A-Z]'),
-		lowerCase = new RegExp('[a-z]'),
-		numbers = new RegExp('[0-9]'),
-		keylist = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%&@#$?_~<>+-*/',
-		specialchars = new RegExp('([!,%,&,@,#,$,^,*,?,_,~])');
+	const upperCase = new RegExp('[A-Z]');
+	const lowerCase = new RegExp('[a-z]');
+	const numbers = new RegExp('[0-9]');
+	const keylist = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%&@#$?_~<>+-*/';
+	const specialchars = new RegExp('([!,%,&,@,#,$,^,*,?,_,~])');
 
 	this.set_total = function (total, passwordMeter, passwordStrength, passwordExtras) {
 		'use strict';
@@ -137,8 +137,8 @@ function PasswordHandler(){
 	 */
 	this.check_strength = function (passwordInput, passwordMeter, passwordStrength, passwordExtras) {
 		'use strict';
-		var total = 0,
-			pw = passwordInput.val();
+		let total = 0;
+		const pw = passwordInput.val();
 		if (pw.length > 8) {			total = total + 1;	}
 		if (upperCase.test(pw)) {		total = total + 1;	}
 		if (lowerCase.test(pw)) {		total = total + 1;	}
@@ -153,8 +153,8 @@ function PasswordHandler(){
 	 */
 	this.generate_password = function (output) {
 		'use strict';
-		var password = '',
-			i = 0;
+		let password = '';
+		let i = 0;
 		while (!(upperCase.test(password) && lowerCase.test(password) && numbers.test(password) && specialchars.test(password))) {
 			i = 0;
 			password = '';
@@ -176,7 +176,7 @@ function SettingsHandler(){
 	 * @param service
 	 */
 	this.callbackDone = function (jsonData, toggle_element, settings_value, service){
-		var parsedData = $.parseJSON(jsonData);
+		const parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length == 0){
 			$('#' + settingsSuccessDialog).fadeIn();
 			$('#value_public_nickname').text(parsedData.public_nick);
@@ -236,13 +236,13 @@ function StatisticsHandler(){
 	 * @param is_vote
 	 */
 	this.callbackGetStatisticsDone = function(jsonData, titleText, is_vote){
-		var parsedData = $.parseJSON(jsonData);
+		const parsedData = $.parseJSON(jsonData);
 		if (parsedData.length == 0){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
 
-		var table, tr, span_up, span_down, modalBody;
+		let table, tr, span_up, span_down, modalBody;
 		table = $('<table>');
 		table.attr('class', 'table table-condensed table-hover')
 			.attr('border', '0')
@@ -270,13 +270,14 @@ function StatisticsHandler(){
 			table.append(tr);
 		});
 
-		$('#' + popupConfirmDialogId).off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+		$('#' + popupConfirmDialogId).off('hidden.bs.modal').on('hidden.bs.modal', function () {
 			// re-hanging our modal body and delete the slimscrolldiv
-			var modalbody = $('.slimScrollDiv').children().eq(0);
+			const div = $('.slimScrollDiv');
+			const modalbody = div.children().eq(0);
 			modalbody.children().eq(1).remove();
 			modalbody.children().eq(2).remove();
 			$('.modal-header').after(modalbody);
-			$('.slimScrollDiv').remove();
+			div.remove();
 		}).modal('show').find('.modal-dialog').addClass('modal-lg');
 
 		$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
@@ -308,7 +309,7 @@ function StatisticsHandler(){
 	 * @param jsonData
 	 */
 	this.callbackDeleteStatisticsDone = function(jsonData) {
-		var parsedData = $.parseJSON(jsonData);
+		const parsedData = $.parseJSON(jsonData);
 		if (parsedData.removed_data == 'true') {
 			$('#' + statisticsSuccessDialog).fadeIn();
 			$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
@@ -337,7 +338,7 @@ function StatisticsHandler(){
 
 $(function () {
 	'use strict';
-	var settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
+	const settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
 
 	$('#' + requestHistoryButtonId).click(function requestTrack() {
 		new AjaxSettingsHandler().getUserHistoryData();
@@ -426,7 +427,7 @@ $(function () {
 	 * main function
 	 */
 	$(document).ready(function settingsDocumentReady() {
-		var img = $('#current-lang-images');
+		const img = $('#current-lang-images');
 		$('#indicator-' + img.data('lang')).show();
 	});
 });

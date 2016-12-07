@@ -161,7 +161,7 @@ function PopupHandler() {
 	 */
 	this.showFlagArgumentPopup = function (uid) {
 		const popup = $('#popup-flag-argument');
-		// var text = $('.triangle-l:last-child .triangle-content').text();
+		// let text = $('.triangle-l:last-child .triangle-content').text();
 		
 		// clean text
 		// cut the part after <br><br>

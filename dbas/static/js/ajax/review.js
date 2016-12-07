@@ -12,7 +12,7 @@ function AjaxReviewHandler(){
 	 * @param review_instance
 	 */
 	this.un_lockOptimizationReview = function (review_uid, should_lock, review_instance) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_lock',
 			method: 'POST',
@@ -37,7 +37,7 @@ function AjaxReviewHandler(){
 	 * @param review_uid
 	 */
 	this.reviewDeleteArgument = function(should_delete, review_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_delete_argument',
 			method: 'POST',
@@ -58,7 +58,7 @@ function AjaxReviewHandler(){
 	 * @param review_uid
 	 */
 	this.reviewEditArgument = function(is_edit_okay, review_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_edit_argument',
 			method: 'POST',
@@ -80,7 +80,7 @@ function AjaxReviewHandler(){
 	 * @param new_data (Important: must be JSON.stringify(...))
 	 */
 	this.reviewOptimizationArgument = function(should_optimized, review_uid, new_data){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_optimization_argument',
 			type: 'POST',
@@ -102,7 +102,7 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.undoReview = function(queue, uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_undo_review',
 			method: 'GET',
@@ -123,7 +123,7 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.cancelReview = function(queue, uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_cancel_review',
 			method: 'GET',

@@ -11,14 +11,14 @@ $(document).ready(function () {
 	$('#warning-message').hide();
 	$('#contact-submit').onclick = function () {
 		// getting input
-		var name = $('#name-input').val(),
-				phone = $('#phone-input').val(),
-				email = $('#email-input').val(),
-				message = $('#message-input').val(),
-				spam = $('#spam-input').val();
+		const name = $('#name-input').val();
+		const phone = $('#phone-input').val();
+		const email = $('#email-input').val();
+		const message = $('#message-input').val();
+		const spam = $('#spam-input').val();
 
-		var mail_regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i,
-				valid_mail = mail_regex.test(email);
+		const mail_regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+		const valid_mail = mail_regex.test(email);
 
 		// check name
 		if (!name || /^\s*$/.test(name) || 0 === name.length) {

@@ -14,7 +14,7 @@ function Sharing(){
 	 */
 	this.facebookShare = function(url, title, descr, image) {
 		'use strict';
-		var winTop, winLeft, winWidth, winHeight;
+		let winTop, winLeft, winWidth, winHeight;
 		winWidth = 520;
 		winHeight = 350;
 		winTop = (screen.height / 2) - (winHeight / 2);
@@ -31,7 +31,7 @@ function Sharing(){
 	 */
 	this.twitterShare = function(text, link){
 		'use strict';
-		var winWidth = 550,
+		let winWidth = 550,
 		winHeight = 420,
 		winTop = (screen.height / 2) - (winHeight / 2),
 		winLeft = (screen.width / 2) - (winWidth / 2);
@@ -57,7 +57,7 @@ function Sharing(){
 	 */
 	this.googlePlusShare = function(url){
 		'use strict';
-		var winTop, winLeft, winWidth, winHeight;
+		let winTop, winLeft, winWidth, winHeight;
 		winWidth = 600;
 		winHeight = 400;
 		winTop = (screen.height / 2) - (winHeight / 2);

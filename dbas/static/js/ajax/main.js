@@ -9,7 +9,7 @@ function AjaxMainHandler(){
 	 * @param new_lang is the shortcut for the language
 	 */
 	this.ajaxSwitchDisplayLanguage = function (new_lang){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: mainpage + 'ajax_switch_language',
 			type: 'POST',
@@ -20,7 +20,7 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSwitchDisplayLanguageDone(data) {
-			var parsedData = $.parseJSON(data);
+			const parsedData = $.parseJSON(data);
 			if (parsedData.error.length != 0) {
 				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 			} else {
@@ -42,9 +42,9 @@ function AjaxMainHandler(){
 	 *
 	 */
 	this.ajaxLogin = function(user, password, showGlobalError){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var url = window.location.href;
-		var keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const url = window.location.href;
+		const keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginFailed + '-message').text('');
 
@@ -65,7 +65,7 @@ function AjaxMainHandler(){
 		}).done(function ajaxLoginDone(data) {
 			callbackIfDoneForLogin(data, showGlobalError);
 		}).fail(function ajaxLoginFail(xhr) {
-			var errorMsg = '';
+			let errorMsg = '';
 			
 			if (xhr.status == 200) {			location.reload(true);
 			} else if (xhr.status == 302) {		location.href = xhr.getResponseHeader('Location');
@@ -91,7 +91,7 @@ function AjaxMainHandler(){
 	 *
 	 */
 	this.ajaxLogout = function(){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: mainpage + 'ajax_user_logout',
 			type: 'POST',
@@ -100,7 +100,7 @@ function AjaxMainHandler(){
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxLogoutDone(data) {
+		}).done(function ajaxLogoutDone() {
 			location.reload();
 		}).fail(function ajaxLogoutFail(xhr) {
 			if (xhr.status == 200) {
@@ -121,8 +121,8 @@ function AjaxMainHandler(){
 	 *
 	 */
 	this.ajaxRegistration = function(){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var firstname = $('#userfirstname-input').val(),
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		let firstname = $('#userfirstname-input').val(),
 			lastname = $('#userlastname-input').val(),
 			nickname = $('#nick-input').val(),
 			email = $('#email-input').val(),
@@ -170,8 +170,8 @@ function AjaxMainHandler(){
 	 *
 	 */
 	this.ajaxPasswordRequest = function(){
-		var email = $('#password-request-email-input').val();
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const email = $('#password-request-email-input').val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_user_password_request',
 			type: 'POST',
@@ -196,7 +196,7 @@ function AjaxMainHandler(){
 	 * Get-Request for an roundhouse kick
 	 */
 	this.ajaxRoundhouseKick = function(){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'additional_service',
 			type: 'POST',
@@ -220,7 +220,7 @@ function AjaxMainHandler(){
 	 * Get your mama
 	 */
 	this.ajaxMama = function(){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'additional_service',
 			type: 'POST',
@@ -243,7 +243,7 @@ function AjaxMainHandler(){
 	 * @param is_argument
 	 */
 	this.ajaxFlagArgumentOrStatement = function(uid, reason, is_argument){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_flag_argument_or_statement',
 			method: 'POST',
@@ -258,7 +258,7 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxFlagArgumentDone(data) {
-			var parsedData = $.parseJSON(data);
+			const parsedData = $.parseJSON(data);
 			if (parsedData['error'].length != 0){
 				setGlobalErrorHandler('', parsedData['error']);
 			} else if (parsedData['info'].length != 0) {

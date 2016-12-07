@@ -11,7 +11,7 @@
  * @returns {*}
  */
 function swapElements (from, to) {
-    var copy_to = $(to).clone(true),
+    const copy_to = $(to).clone(true),
 	    copy_from = $(from).clone(true);
 	$(to).replaceWith(copy_from);
 	$(from).replaceWith(copy_to);
@@ -24,13 +24,13 @@ function swapElements (from, to) {
  * @param s2
  */
 function levensthein (s1, s2){
-	var row2=[];
+	let row2=[];
 	if (s1 === s2) {
 		return 0;
 	} else {
-		var s1_len = s1.length, s2_len = s2.length;
+		const s1_len = s1.length, s2_len = s2.length;
 		if (s1_len && s2_len) {
-			var i1 = 0, i2 = 0, a, b, c, c2, row = row2;
+			let i1 = 0, i2 = 0, a, b, c, c2, row = row2;
 			while (i1 < s1_len)
 				row[i1] = ++i1;
 			while (i2 < s2_len) {
