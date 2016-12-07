@@ -463,7 +463,7 @@ function startGuidedTour(){
 		setLocalStorage(GUIDED_TOUR_RUNNING, 'false');
 		const url = window.location.href;
 		if (url != mainpage && url.indexOf('#tour2') == -1) {
-			window.location.href = mainpage;
+			// window.location.href = mainpage;
 			setCookieForDays(GUIDED_TOUR, 180, 'true');
 		}
 	};
