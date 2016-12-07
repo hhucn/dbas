@@ -75,6 +75,10 @@ function setGravatarFallback() {
     });
 }
 
+/**
+ *
+ * @param only_on_error
+ */
 function replace_gravtar_with_default_image(only_on_error){
 	$('body').find('.img-circle').each(function (){
 		const icons =
@@ -96,14 +100,18 @@ function replace_gravtar_with_default_image(only_on_error){
 }
 
 /**
- * Displays dialog
+ *
  * @param titleText
  * @param bodyText
  * @param functionForAccept
+ * @param small_dialog
  */
-function displayConfirmationDialog(titleText, bodyText, functionForAccept) {
+function displayConfirmationDialog(titleText, bodyText, functionForAccept, small_dialog) {
 	// display dialog
-	$('#' + popupConfirmDialogId).modal('show');
+	const dialog = $('#' + popupConfirmDialogId);
+	if (small_dialog)
+		dialog.find('.modal-dialog').addClass('modal-sm');
+	dialog.modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
@@ -112,6 +120,10 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept) {
 	});
 	$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
+	});
+	dialog.on('hidden.bs.modal', function () {
+		$('#' + popupConfirmDialogRefuseBtn).show();
+		dialog.find('.modal-dialog').removeClass('modal-sm');
 	});
 }
 
@@ -436,6 +448,124 @@ function setGlobalInfoHandler(heading, body){
 	}, 5000);
 }
 
+/**
+ *
+ */
+function startGuidedTour(){
+	
+	if (isCookieSet(GUIDED_TOUR))
+		return;
+	
+	//displayBubbleInformationDialog();
+	const end_function = function(){
+		console.log('tour end');
+		const url = window.location.href;
+		if (url != mainpage && url.indexOf('#tour2') == -1) {
+			window.location.href = mainpage;
+			//setCookieForDays(GUIDED_TOUR, 180, 'true');
+		}
+	};
+	
+	// override default template for i18n
+	const template =
+    '<div class="popover tour">' +
+		'<div class="arrow"></div>' +
+		'<h3 class="popover-title"></h3>' +
+        '<div class="popover-content"></div>' +
+		'<div class="popover-navigation">' +
+			'<div class="btn-group">' +
+				'<button class="btn btn-sm btn-default" data-role="prev">&#xab; ' + _t(prev) + '</button>' +
+				'<button class="btn btn-sm btn-success" data-role="next">' + _t(next) + ' &#xbb;</button>' +
+		'</div>' +
+		'<button class="btn btn-sm btn-default" data-role="end">' + _t(tourEnd) + '</button>' +
+	'</div>';
+	
+	
+	const welcome = {
+		element: '#logo_dbas',
+		title: _t(tourWelcomeTitle),
+		content: _t(tourWelcomeContent),
+		placement: 'bottom',
+	};
+	const start_button = {
+		element: '#start-discussion-button',
+		title: _t(tourStartButtonTitle),
+		content: _t(tourStartButtonContent),
+		placement: 'bottom',
+	};
+	const login_button = {
+		element: '#login-link',
+		title: _t(tourLoginTitle),
+		content: _t(tourLoginContent),
+		placement: 'bottom',
+	};
+	const start_discussion = {
+		element: '#dialog-speech-bubbles-space',
+		title: _t(tourStartDiscussionTitle),
+		content: _t(tourStartDiscussionContent),
+		placement: 'bottom',
+		path: '/discuss'
+	};
+	const choose_answer = {
+		element: '#discussions-space-list',
+		title: _t(tourSelectAnswertTitle),
+		content: _t(tourSelectAnswertContent),
+		placement: 'bottom',
+		path: '/discuss'
+	};
+	const set_input = {
+		element: '#discussions-space-list li:last-child',
+		title: _t(tourEnterStatementTitle),
+		content: _t(tourEnterStatementContent),
+		placement: 'bottom',
+		path: '/discuss'
+	};
+	const have_fun = {
+		element: '.jumbotron',
+		title: _t(tourHaveFunTitle),
+		content: _t(tourHaveFunContent),
+		placement: 'bottom',
+		path: '/#tour2'
+	};
+	//data-placement="bottom"
+	const tour = new Tour({
+		steps: [
+			welcome,
+			start_button,
+			login_button,
+			start_discussion,
+			choose_answer,
+			set_input,
+			have_fun,
+			],
+		backdrop: true,
+		backdropPadding: 5,
+		template: template,
+		// basePath: mainpage,
+		// duration: 5000,
+		// smartPlacement: true,
+		onEnd: end_function
+	});
+	
+	const start = function () {
+		tour.init(); // Initialize the tour
+		tour.restart(); // Start the tour
+	};
+	const url = window.location.href;
+	if (url.indexOf('/discuss') == -1 && url.indexOf('#tour2') == -1) {
+		$('#' + popupConfirmDialogRefuseBtn).hide();
+		displayConfirmationDialog('Welcome', 'It seems that you are the first time here. Would you like to start a short, guided tour?', start, true);
+	} else {
+		if (url.indexOf('#tour2') != -1) {
+			tour.init(); // Initialize the tour
+			tour.goTo(6); // Start the tour
+		} else {
+			start();
+		}
+	}
+	
+}
+
 // *********************
 //	CALLBACKS
 // *********************
@@ -598,6 +728,8 @@ $(document).ready(function () {
 		setTimeout(function(){
 			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
+	
+	startGuidedTour();
 
 	// testing with gremlins
 	//var horde = gremlins.createHorde()

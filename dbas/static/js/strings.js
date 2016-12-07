@@ -273,9 +273,30 @@ const votes                           = 'votes';
 const youAreAbleToReviewNow           = 'youAreAbleToReviewNow';
 const weak                            = 'weak';
 
+const next                            = 'next';
+const prev                            = 'prev';
+const tourEnd                         = 'tourEnd';
+const tourWelcomeTitle                = 'tourWelcomeTitle';
+const tourStartButtonTitle            = 'tourStartButtonTitle';
+const tourStartHeaderTitle            = 'tourStartHeaderTitle';
+const tourLoginTitle                  = 'tourLoginTitle';
+const tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
+const tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
+const tourWelcomeContent              = 'tourWelcomeContent';
+const tourStartButtonContent          = 'tourStartButtonContent';
+const tourStartHeaderContent          = 'tourStartHeaderContent';
+const tourLoginContent                = 'tourLoginContent';
+const tourStartDiscussionContent      = 'tourStartDiscussionContent';
+const tourSelectAnswertContent        = 'tourSelectAnswertContent';
+const tourEnterStatementTitle         = 'tourEnterStatementTitle';
+const tourEnterStatementContent       = 'tourEnterStatementContent';
+const tourHaveFunTitle                = 'tourHaveFunTitle';
+const tourHaveFunContent              = 'tourHaveFunContent';
+
 // cookies
 const WARNING_CHANGE_DISCUSSION_POPUP = 'WARNING_CHANGE_DISCUSSION_POPUP';
 const BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
+const GUIDED_TOUR = 'GUIDED_TOUR';
 
 /**
  * URL's
@@ -481,7 +502,26 @@ const dbas_en = {
     'veryweak': 'very weak',
     'vote': 'vote',
     'votes': 'votes',
-    'weak': 'weak'
+    'weak': 'weak',
+    'next': 'Next',
+    'prev': 'Prev',
+    'tourEnd': 'End Tour',
+    'tourWelcomeTitle': 'Welcome!',
+    'tourWelcomeContent': 'Welcome to D-BAS. You will be shown a short introduction now.',
+    'tourStartButtonTitle': 'Starting the discussion',
+    'tourStartButtonContent': 'You can start the discussion here.',
+    'tourStartHeaderTitle': 'Starting the discussion',
+    'tourStartHeaderContent': '.. or here!',
+    'tourLoginTitle': 'Login',
+    'tourLoginContent': 'In every case you should register yourself for enter your own statements.',
+    'tourStartDiscussionTitle': 'First steps',
+    'tourStartDiscussionContent': 'On the left side there are messages of the system and on the right side there are your answers.',
+    'tourSelectAnswertTitle': 'First selection',
+    'tourSelectAnswertContent': 'In the lower part you can choose your answers ...',
+    'tourEnterStatementTitle': 'Your own response',
+    'tourEnterStatementContent': '... or enter new statement, if you are logged in.',
+    'tourHaveFunTitle': 'And now ...',
+    'tourHaveFunContent': '... have fun!',
 };
 
 const dbas_de = {
@@ -676,5 +716,24 @@ const dbas_de = {
     'youAreAbleToReviewNow': 'Sie können nun andere Beiträge begutachten.',
     'vote': 'Stimme',
     'votes': 'Stimmen',
-    'weak': 'schwach'
+    'weak': 'schwach',
+    'next': 'Nächster',
+    'prev': 'Zurück',
+    'tourEnd': 'Tour beenden',
+    'tourWelcomeTitle': 'Willkommen!',
+    'tourWelcomeContent': 'Willkommen bei D-BAS! Sie werden nun eine Kurze Einführung gezeigt bekommen.',
+    'tourStartButtonTitle': 'Diskussion starten',
+    'tourStartButtonContent': 'Sie können die Diskussion direkt hier starten.',
+    'tourStartHeaderTitle': 'Diskussion starten',
+    'tourStartHeaderContent': '... oder auch hier.',
+    'tourLoginTitle': 'Anmeldung',
+    'tourLoginContent': 'Sie sollten sich aber anmelden, um Beiträge verfassen zu können.',
+    'tourStartDiscussionTitle': 'Erste Schritte',
+    'tourStartDiscussionContent': 'In diesem teil sehen Sie links Nachrichten des System und rechts Ihre eigenen.',
+    'tourSelectAnswertTitle': 'Erste Auswahl',
+    'tourSelectAnswertContent': 'Im unteren Teil können Sie Antworten auswählen ...',
+    'tourEnterStatementTitle': 'Eigene Antworten',
+    'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie eingeloggt sind.',
+    'tourHaveFunTitle': 'Und nun ...',
+    'tourHaveFunContent': '... viel Spaß!',
 };

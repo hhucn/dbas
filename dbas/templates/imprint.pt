@@ -60,7 +60,7 @@
 					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
 					<ul>
 						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
-						<li><a target="_blank" href="http://www.bootstrap.com/">Bootstrap</a></li>
+						<li><a target="_blank" href="http://www.getbootstrap.com/">Bootstrap</a></li>
 						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button</a> <span i18n:translate="for">for</span> Bootstrap</li>
 						<li><a target="_blank" href="https://bootswatch.com/paper/">Paper Theme</a> <span i18n:translate="for">for</span> Bootstrap</li>
 						<li><a target="_blank" href="http://bootstraptour.com/">Guided Tour</a> <span i18n:translate="for">for</span> Bootstrap</li>

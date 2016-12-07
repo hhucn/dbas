@@ -125,6 +125,7 @@ def update_last_action(nick):
     :param nick: User.nickname
     :return: Boolean
     """
+    logger('UserManager', 'update_last_action', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
     if not db_user:
         return False

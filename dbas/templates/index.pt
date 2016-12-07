@@ -25,7 +25,7 @@
 				<br>
                 <div class="text-center">
                 <a class="btn btn-lg btn-primary" href="${request.application_url}/discuss" name="Submit" id="start-discussion-button" data-toggle="tooltip" data-placement="bottom">
-                    <span id="start-button" i18n:translate="lets_start_now">Click here to start now!</span>
+                    <span i18n:translate="lets_start_now">Click here to start now!</span>
                 </a>
                 </div>
 				<br>

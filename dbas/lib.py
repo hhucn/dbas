@@ -38,6 +38,32 @@ def get_global_url():
     return str([l[l.index('htt'):-2] for l in lines if 'url=' in l])
 
 
+def get_changelog(no):
+    """
+    Returns the c last entries from the changelog
+
+    :return: list
+    """
+    path = str(os.path.realpath(__file__ + '/../../CHANGELOG.md'))
+    lines = [line.rstrip('\n').strip() for line in open(path) if len(line.rstrip('\n').strip()) > 0]
+    from dbas.logger import logger
+    changelog = []
+    title = ''
+    body = []
+    for l in lines:
+        if l.startswith('#'):
+            if len(title) > 0:
+                changelog.append({'title': title, 'body': body})
+                body = []
+            title = l.replace('## ', '')
+        else:
+            body.append(l.replace('- ', ''))
+
+        logger('X', str(len(l)), str(l))
+
+    return changelog[0:no]
+
+
 def escape_string(text):
     """
     Escapes all html special chars.

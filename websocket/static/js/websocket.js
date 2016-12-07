@@ -3,7 +3,7 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  */
 
-var socket = undefined;
+let socket = undefined;
 const port = 5100;
 
 $(document).ready(function() {
@@ -28,8 +28,8 @@ $(document).ready(function() {
  */
 function doConnect(){
 	// switch between a local (http) and a global (https) mode
-	var dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
-	var address =  'http://localhost';
+	let dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
+	let address =  'http://localhost';
 	if (mainpage.indexOf('localhost') == -1) {
 		address = location.origin;
 		dict['secure'] = true;
@@ -69,7 +69,7 @@ function doPublish(data){
  * @param func
  */
 function handleMessage(data, intro, func){
-	var msg = 'url' in data ? '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>' : data.msg;
+	let msg = 'url' in data ? '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>' : data.msg;
 	func(intro, msg);
 	if ('increase_counter' in data) {
 		incrementCounter($('#' + headerBadgeCountNotificationsId));
@@ -112,7 +112,7 @@ function doRecentReview(data){
 	if (window.location.href.indexOf('review') == -1)
 		return;
 	
-	var queue = $('#' + data.queue);
+	let queue = $('#' + data.queue);
 	if (queue.length != 0){
 		// just push, if given user is not the last reviwer
 		console.log(data.img_url);
@@ -122,8 +122,8 @@ function doRecentReview(data){
 		if (queue.find('img[src^="' + data.img_url + '"]').length == 0) {
 			console.log(data.reviewer_name + ' is a new reviewer');
 			queue.find('a:last-child').remove();
-			var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
-			var img = $('<img>').addClass('img-circle').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
+			let link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
+			let img = $('<img>').addClass('img-circle').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
 			link.append(img);
 			queue.prepend(link);
 		} else {
@@ -145,20 +145,20 @@ function incrementCounter(element){
  */
 function enableTesting(){
 	socket.on('connect', function() {
-		var field = $('#socketStatus');
+		let field = $('#socketStatus');
 		if (field)
 			field.text('Connected!');
 	});
 
     socket.on('disconnect', function() {
-		var field = $('#socketStatus');
+		let field = $('#socketStatus');
 		if (field)
 			field.text('Disconnected!');
     });
 
     socket.on('pong', function(ms){
-    	var testCount = $('#testCount');
-		var latency = $('#latency');
+    	let testCount = $('#testCount');
+		let latency = $('#latency');
 		if (latency)
 			latency.text(ms + 'ms');
 	    if (testCount)
@@ -179,7 +179,7 @@ function enableTesting(){
 	
 	// getting socket id from server
 	socket.on('push_socketid', function(id){
-		var field = $('#socketioId');
+		let field = $('#socketioId');
 		
 		if (field)
 			field.text(id);
