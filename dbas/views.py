@@ -41,7 +41,7 @@ from dbas.input_validator import is_integer, is_position, is_statement_forbidden
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
-    get_user_by_case_insensitive_nickname
+    get_user_by_case_insensitive_nickname, get_changelog
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
     rep_reason_first_justification, rep_reason_first_argument_click, \
@@ -358,7 +358,8 @@ def main_imprint(request):
         'language': str(ui_locales),
         'title': _tn.get(_.imprint),
         'project': project_name,
-        'extras': extras_dict
+        'extras': extras_dict,
+        'imprint': get_changelog(5)
     }
 
 

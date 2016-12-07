@@ -60,8 +60,10 @@
 					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
 					<ul>
 						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
-						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button for Bootstrap</a></li>
-						<li><a target="_blank" href="https://bootswatch.com/paper/">Paper Theme for Bootstrap</a></li>
+						<li><a target="_blank" href="http://www.bootstrap.com/">Bootstrap</a></li>
+						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button</a> <span i18n:translate="for">for</span> Bootstrap</li>
+						<li><a target="_blank" href="https://bootswatch.com/paper/">Paper Theme</a> <span i18n:translate="for">for</span> Bootstrap</li>
+						<li><a target="_blank" href="http://bootstraptour.com/">Guided Tour</a> <span i18n:translate="for">for</span> Bootstrap</li>
 						<li><span i18n:translate="icons_by">Icons by</span> <a target="_blank" href="https://www.iconfinder.com/">iconfinder</a> <span i18n:target="and">and</span> <a target="_blank" href="http://www.flaticon.com/">flaticon (<span i18n:translate="designed_by">designed by</span> Roundicons <span i18n:translate="or">or</span> MadebyOliver)</a></li>
 						<li><span i18n:translate="tracking_by">Tracking by</span> <a target="_blank" href="http://piwik.org/">Piwik</a></li>
 						<li><span i18n:translate="avatare_by">Avatare by</span> <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
@@ -96,164 +98,13 @@
 
 				<div class="colored-container imprint-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
-                    <span class="project lead">0.9.1 (2016-12-06)</span>
-                    <ul>
-                        <li>Notification if a user is able to review</li>
-                    </ul>
 
-                    <span class="project lead">0.9.0 (2016-12-05)</span>
-                    <ul>
-                        <li>Rework of the discussions sidebar</li>
-                        <li>Improved the page at the end of a discussion</li>
-                        <li>Made the discussion more personal with new sentence openers</li>
-                        <li>Minor improvements and bugfix</li>
-                        <li>Added webtests</li>
-                    </ul>
-
-                    <span class="project lead">0.8.0 (2016-11-17)</span>
-					<ul>
-						<li>Minor improvements and bugfix</li>
-                        <li>Reworked the opinion barometer and argument graph</li>
-                    </ul>
-
-                    <span class="project lead">0.7.3 (2016-11-02)</span>
-					<ul>
-						<li>Add references for statements from the 'outside world'</li>
-						<li>Barometer for the behaviour of all users</li>
-                        <li>Improvements of the graph view</li>
-                    </ul>
-
-					<span class="project lead">0.7.2 (2016-09-28)</span>
-					<ul>
-						<li>Additional functions for the review mechanisms</li>
-                    </ul>
-
-					<span class="project lead">0.7.1 (2016-09-22)</span>
-					<ul>
-						<li>Fixes for the review mechanisms</li>
-                    </ul>
-
-					<span class="project lead">0.7.0 (2016-09-06)</span>
-					<ul>
-						<li>Review-Mechanisms</li>
-					</ul>
-
-					<!--<span class="project lead">0.6.1 (2016-08-24)</span>-->
-					<!--<ul>-->
-<!--						<li>New bootstraping (jump-mechanism)</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.6.0 (2016-07-02)</span>-->
-					<!--<ul>-->
-<!--						<li>Publish / Subscribe</li>-->
-					<!--</ul>-->
-
-					<!--<span class="project lead">0.5.17 (2016-06-12)</span>-->
-					<!--<ul>-->
-					<!--	<li>Color coding for feedback mechanisms</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.16 (2016-06-05)</span>-->
-					<!--<ul>-->
-					<!--	<li>Improved sidebar</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.15 (2016-06-28)</span>-->
-					<!--<ul>-->
-					<!--	<li>Island view</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.14 (2016-06-07)</span>-->
-					<!--<ul>-->
-					<!--	<li>Many bugfixes</li>-->
-                    <!--    <li>Security fixes</li>-->
-                    <!--    <li>Docker integration</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.13 (2016-05-09)</span>-->
-					<!--<ul>-->
-					<!--	<li>Many fixes for the german language</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.12 (2016-05-04)</span>-->
-					<!--<ul>-->
-                    <!--    <li>Seperated site and discussion language</li>-->
-                    <!--    <li>Checking CSRF tokens automatically</li>-->
-                    <!--    <li>Updated island view and the opinon barometer</li>-->
-                    <!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.11 (2016-04-27)</span>-->
-					<!--<ul>-->
-					<!--	<li>Public user page</li>-->
-                    <!--    <li>Settings for hiding your real nickname behind a fake one</li>-->
-                    <!--    <li>Participants are able to send notifications to each other</li>-->
-                    <!--    <li>Revised timestamps with humanized texts</li>-->
-                    <!--    <li>Revised discussion finished page</li>-->
-					<!--</ul>-->
-					<!--<span class="project lead">0.5.10 (2016-04-26)</span>-->
-					<!--<ul>-->
-					<!--	<li>Bugfixes</li>-->
-                    <!--    <li>History management via url parameter</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.9 (2016-04-05)</span>-->
-					<!--<ul>-->
-					<!--	<li>Lot of fixes for <a href="http://www.ling.uni-potsdam.de/comma2016/" target="_blank">COMMA16</a></li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.8 (2016-03-08)</span>-->
-					<!--<ul>-->
-					<!--	<li>Switched to PostgreSQL-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.7 (2016-03-16)</span>-->
-					<!--<ul>-->
-					<!--	<li>Bunch of fixes</li>-->
-					<!--	<li>Improved log in and log out</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.6 (2016-03-11)</span>-->
-					<!--<ul>-->
-					<!--	<li>Bunch of fixes</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.5 (2016-03-02)</span>-->
-					<!--<ul>-->
-					<!--	<li>SpeechBubbles instead of text</li>-->
-					<!--	<li>History for anonymous users</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.4 (2016-02-24)</span>-->
-					<!--<ul>-->
-					<!--	<li>Improvements for the settings page</li>-->
-					<!--	<li>Bugfixes</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.3 (2016-02-15)</span>-->
-					<!--<ul>-->
-					<!--	<li>Simple notification system</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.2 (2016-02-09)</span>-->
-					<!--<ul>-->
-					<!--	<li>Popup for inserting unclear statements</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.1 (2016-02-05)</span>-->
-					<!--<ul>-->
-					<!--	<li>Improving voting helper</li>-->
-					<!--</ul>-->
-<!---->
-					<!--<span class="project lead">0.5.0 (2016-01-28)</span>-->
-					<!--<ul>-->
-					<!--	<li>Refactoring:-->
-					<!--		<ul>-->
-					<!--			<li>Less Ajax, more HTML</li>-->
-					<!--			<li>Using Chameleon and TAL</li>-->
-					<!--			<li>Reduced loading time</li>-->
-					<!--		</ul>-->
-					<!--	</li>-->
-					<!--</ul>-->
+                    <div tal:omit-tag="" tal:repeat="imp imprint">
+                        <span class="project lead">${imp.title}</span>
+                        <ul>
+                            <li tal:repeat="imp_bo imp.body">${imp_bo}</li>
+                        </ul>
+                    </div>
 				</div>
 			</div>
 		</div>
