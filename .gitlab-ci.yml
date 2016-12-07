@@ -43,4 +43,3 @@ nose-acceptance-tests:
     - pserve development.ini --daemon
     - sleep 10
     - nosetests -v --process-timeout=120 tests/test_frontend
-  allow_failure: true
