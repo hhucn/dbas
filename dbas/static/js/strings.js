@@ -276,17 +276,18 @@ const weak                            = 'weak';
 const next                            = 'next';
 const prev                            = 'prev';
 const tourEnd                         = 'tourEnd';
+const welcomeDialogBody               = 'welcomeDialogBody';
 const tourWelcomeTitle                = 'tourWelcomeTitle';
-const tourStartButtonTitle            = 'tourStartButtonTitle';
-const tourStartHeaderTitle            = 'tourStartHeaderTitle';
-const tourLoginTitle                  = 'tourLoginTitle';
-const tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
-const tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
 const tourWelcomeContent              = 'tourWelcomeContent';
+const tourStartButtonTitle            = 'tourStartButtonTitle';
 const tourStartButtonContent          = 'tourStartButtonContent';
+const tourStartHeaderTitle            = 'tourStartHeaderTitle';
 const tourStartHeaderContent          = 'tourStartHeaderContent';
+const tourLoginTitle                  = 'tourLoginTitle';
 const tourLoginContent                = 'tourLoginContent';
+const tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
 const tourStartDiscussionContent      = 'tourStartDiscussionContent';
+const tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
 const tourSelectAnswertContent        = 'tourSelectAnswertContent';
 const tourEnterStatementTitle         = 'tourEnterStatementTitle';
 const tourEnterStatementContent       = 'tourEnterStatementContent';
@@ -297,6 +298,7 @@ const tourHaveFunContent              = 'tourHaveFunContent';
 const WARNING_CHANGE_DISCUSSION_POPUP = 'WARNING_CHANGE_DISCUSSION_POPUP';
 const BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
 const GUIDED_TOUR = 'GUIDED_TOUR';
+const GUIDED_TOUR_RUNNING = 'GUIDED_TOUR_RUNNING';
 
 /**
  * URL's
@@ -506,6 +508,7 @@ const dbas_en = {
     'next': 'Next',
     'prev': 'Prev',
     'tourEnd': 'End Tour',
+    'welcomeDialogBody': 'It seems that you are the first time here. Would you like to start a short, guided tour?',
     'tourWelcomeTitle': 'Welcome!',
     'tourWelcomeContent': 'Welcome to D-BAS. You will be shown a short introduction now.',
     'tourStartButtonTitle': 'Starting the discussion',
@@ -720,6 +723,7 @@ const dbas_de = {
     'next': 'Nächster',
     'prev': 'Zurück',
     'tourEnd': 'Tour beenden',
+    'welcomeDialogBody': 'Es scheint, dass Sie zum ersten mal hier sind. Möchsten Sie eine kurze Einführung sehen?',
     'tourWelcomeTitle': 'Willkommen!',
     'tourWelcomeContent': 'Willkommen bei D-BAS! Sie werden nun eine Kurze Einführung gezeigt bekommen.',
     'tourStartButtonTitle': 'Diskussion starten',

@@ -104,9 +104,10 @@ function replace_gravtar_with_default_image(only_on_error){
  * @param titleText
  * @param bodyText
  * @param functionForAccept
+ * @param functionForRefuse
  * @param small_dialog
  */
-function displayConfirmationDialog(titleText, bodyText, functionForAccept, small_dialog) {
+function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, small_dialog) {
 	// display dialog
 	const dialog = $('#' + popupConfirmDialogId);
 	if (small_dialog)
@@ -120,6 +121,7 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, small
 	});
 	$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
+		functionForRefuse();
 	});
 	dialog.on('hidden.bs.modal', function () {
 		$('#' + popupConfirmDialogRefuseBtn).show();
@@ -457,8 +459,8 @@ function startGuidedTour(){
 		return;
 	
 	//displayBubbleInformationDialog();
-	const end_function = function(){
-		console.log('tour end');
+	const end_fct = function(){
+		setLocalStorage(GUIDED_TOUR_RUNNING, 'false');
 		const url = window.location.href;
 		if (url != mainpage && url.indexOf('#tour2') == -1) {
 			window.location.href = mainpage;
@@ -541,29 +543,32 @@ function startGuidedTour(){
 		backdrop: true,
 		backdropPadding: 5,
 		template: template,
-		// basePath: mainpage,
-		// duration: 5000,
-		// smartPlacement: true,
-		onEnd: end_function
+		onEnd: end_fct
 	});
 	
-	const start = function () {
+	const start_fct = function () {
 		tour.init(); // Initialize the tour
 		tour.restart(); // Start the tour
+		setLocalStorage(GUIDED_TOUR_RUNNING, 'true');
 	};
-	const url = window.location.href;
-	if (url.indexOf('/discuss') == -1 && url.indexOf('#tour2') == -1) {
-		$('#' + popupConfirmDialogRefuseBtn).hide();
-		displayConfirmationDialog('Welcome', 'It seems that you are the first time here. Would you like to start a short, guided tour?', start, true);
-	} else {
-		if (url.indexOf('#tour2') != -1) {
-			tour.init(); // Initialize the tour
-			tour.goTo(6); // Start the tour
-		} else {
-			start();
-		}
-	}
 	
+	const url = window.location.href;
+	const part0 = url == mainpage || url == location.origin;
+	const part1 = url.indexOf('/discuss') != -1;
+	const part2 = url == mainpage + '#tour2' || url == location.origin + '#tour2';
+	
+	if (part0 && !part1 && !part2){
+		$('#' + popupConfirmDialogRefuseBtn).hide();
+		const title = _t(tourWelcomeTitle);
+		const text = _t(welcomeDialogBody);
+		displayConfirmationDialog(title, text, start_fct, end_fct, true);
+	} else if(!part0 && part1 && !part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){
+		tour.init();
+		tour.goTo(3);
+	} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){
+		tour.init();
+		tour.goTo(6);
+	}
 }
 
 // *********************
