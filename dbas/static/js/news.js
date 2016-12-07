@@ -4,7 +4,7 @@
  */
 
 function News() {
-	var BOOTSTRAP_COLLAPSE = 990;
+	let BOOTSTRAP_COLLAPSE = 990;
 
 	/***
 	 *
@@ -47,15 +47,15 @@ function News() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingNews = function (data) {
-		var parsedData = $.parseJSON(data),
-				counter = 1,
-				div = '',
-				row = 0,
-				id,
-				length = Object.keys(parsedData).length,
-				array = new Array(length),
-				container = '',
-				news = new News();
+		let parsedData = $.parseJSON(data);
+		let counter = 1;
+		let div = '';
+		let row = 0;
+		let id;
+		let length = Object.keys(parsedData).length;
+		let array = new Array(length);
+		let container = '';
+		let news = new News();
 
 		// add every news in reverted order
 		$.each(parsedData, function callbackIfDoneForGettingNewsEach(key, val) {
@@ -101,7 +101,7 @@ function News() {
 	 * @param data
 	 */
 	this.callbackIfDoneForSendingNews = function (data) {
-		var parsedData = $.parseJSON(data);
+		let parsedData = $.parseJSON(data);
 		if (parsedData.error.length == 0) {
 			// $('#' + writingNewsSuccessId).show();
 			// $('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
@@ -122,7 +122,7 @@ function News() {
 	 *
 	 */
 	this.setMaxHeightOfNewsRows = function () {
-		var counter, row = $('#' + newsBodyId).children().length, heights, maxHeight;
+		let counter, row = $('#' + newsBodyId).children().length, heights, maxHeight;
 
 		// bootstrap collapse
 		if ($(window).width() < BOOTSTRAP_COLLAPSE) {
@@ -146,7 +146,7 @@ function News() {
 	 *
 	 */
 	this.setSlimscrollForNewsRows = function () {
-		var placeholders = [], h, wrapperContent = $('#wrapper-content'), footer = $('#footer');
+		let placeholders = [], h, wrapperContent = $('#wrapper-content'), footer = $('#footer');
 		placeholders.push($('.navbar-collapse').height());
 		placeholders.push(parseInt(wrapperContent.css('padding-top').replace('px','')));
 		placeholders.push(parseInt(wrapperContent.css('padding-bottom').replace('px','')));
@@ -178,7 +178,7 @@ function News() {
 	 *
 	 */
 	this.setPageNavigation = function () {
-		var counter, row = $('#' + newsBodyId).children().length, pagebreak = 2, _this = this,
+		let counter, row = $('#' + newsBodyId).children().length, pagebreak = 2, _this = this,
 			pagecounter = 1, newsNavigator = $('#news-navigation'), html, back, forth, pages='';
 
 		newsNavigator.empty();
@@ -194,7 +194,7 @@ function News() {
 		// create navbar
 		back = '<li><a href="#" id="news-back"><span aria-hidden="true">&laquo;</span></a></li>';
 		for (counter = 1; counter <= pagecounter; counter++) {
-			pages += '<li><a href="#" counter="' + counter + '" id="news-' + counter + '">' + counter + '</a></li>';
+			pages += '<li><a href="#" data-counter="' + counter + '" id="news-' + counter + '">' + counter + '</a></li>';
 		}
 
 		forth= '<li><a href="#" id="news-forth"><span aria-hidden="true">&raquo;</span></a></li>';
@@ -208,23 +208,25 @@ function News() {
 				$(this).parent().addClass('active');
 
 				$('#' + newsBodyId).children().hide();
-				$('.news-page-' + $(this).attr('counter')).show();
-				_this.checkNewsForthAndBackButtons($(this).attr('counter'), pagecounter);
+				$('.news-page-' + $(this).data('counter')).show();
+				_this.checkNewsForthAndBackButtons($(this).data('counter'), pagecounter);
 			});
 		}
 
-		$('#news-1').parent().addClass('active');
+		let news1 = $('#news-1');
+		let news_back = $('#news-back');
+		news1.parent().addClass('active');
 		$('.news-page-1').show();
-		$('#news-back').parent().addClass('disabled');
-		_this.setPlaceholder($('#news-1').attr('counter'), pagecounter);
+		news_back.parent().addClass('disabled');
+		_this.setPlaceholder(news1.data('counter'), pagecounter);
 
 		// add page limitation to each click
 		$('.pagination a').click(function(){
 			if (!$(this).hasClass('news-placeholder'))
-				_this.setPlaceholder($(this).attr('counter'), pagecounter);
+				_this.setPlaceholder($(this).data('counter'), pagecounter);
 		});
 
-		$('#news-back').off('click').click(function () {
+		news_back.off('click').click(function () {
 			if (!$(this).parent().hasClass('disabled')) {
 				_this.turnThePage(true, pagecounter);
 			}
@@ -238,7 +240,7 @@ function News() {
 	};
 
 	this.setPlaceholder = function(index, pagecounter){
-		var i, p, s,
+		let i, p, s,
 			placeholder = $('<li>').addClass('disabled').append($('<a>').addClass('news-placeholder').text('...'));
 		$('.news-placeholder').remove();
 
@@ -266,16 +268,17 @@ function News() {
 	 * @param pagecounter
 	 */
 	this.turnThePage = function (isBack, pagecounter){
-		var activeElement = $('#news-navigation .active'),
-			counter = parseInt(activeElement.children().eq(0).attr('counter'));
+		let activeElement = $('#news-navigation').find('.active');
+		let counter = parseInt(activeElement.children().eq(0).data('counter'));
 		activeElement.removeClass('active');
 		if (isBack)
 			activeElement.prev().addClass('active');
 		else
 			activeElement.next().addClass('active');
-		$('.news-page-' + counter).hide();
+		let news_counter = $('.news-page-' + counter);
+		news_counter.hide();
 		counter = isBack ? counter-1 : counter+1;
-		$('.news-page-' + counter).show();
+		news_counter.show();
 		this.checkNewsForthAndBackButtons(counter, pagecounter);
 		this.setPlaceholder(counter, pagecounter);
 	};
@@ -297,7 +300,7 @@ function News() {
 	//	SHARING IS CARING
 	// *********************
 	this.setSharingClasses = function () {
-		var news = new News();
+		let news = new News();
 		/**
 		 * Sharing shortened url with mail
 		 */
@@ -346,7 +349,7 @@ function News() {
 		if ($(_this).attr('id') === shareUrlButtonMail) {
 			return;
 		}
-		var id = $(_this).parent().attr('id'),
+		let id = $(_this).parent().attr('id'),
 				title = $('#' + id + '_title').text(),
 				date = $('#' + id + '_date').text(),
 				author = $('#' + id + '_author').text();
@@ -373,7 +376,7 @@ function News() {
 			return;
 		}
 
-		var id = $(_this).parent().attr('id'),
+		let id = $(_this).parent().attr('id'),
 				title = $('#' + id + '_title').text(),
 				date = $('#' + id + '_date').text(),
 				author = $('#' + id + '_author').text(),
@@ -388,7 +391,7 @@ function News() {
 		if ($(_this).attr('id') === shareUrlButtonTwitter) {
 			return;
 		}
-		var id = $(_this).parent().attr('id'),
+		let id = $(_this).parent().attr('id'),
 				title = $('#' + id + '_title').text();
 		new Sharing().twitterShare(title, window.location.href);
 	};
