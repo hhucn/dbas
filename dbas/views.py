@@ -64,7 +64,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 
 name = 'D-BAS'
 version = '0.9.1'
-full_version = version + 'a'
+full_version = version + 'b'
 project_name = name + ' ' + full_version
 
 

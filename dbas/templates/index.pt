@@ -2,7 +2,7 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-        <img id="prototype_img" src="${request.static_url('dbas:static/images/alpha.svg')}" style="position:fixed; z-index:10; top:65px; width:100px;">
+        <img id="prototype_img" src="${request.static_url('dbas:static/images/beta.svg')}" style="position:fixed; z-index:10; top:65px; width:100px;">
 
 	    <div class="blocked session_expired center alert-warning" id="session_expired_container" tal:condition="session_expired">
 	    	<span i18n:translate="session_expired">Your session has expired!</span>
