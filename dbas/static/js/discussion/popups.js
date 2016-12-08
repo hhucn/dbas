@@ -21,10 +21,10 @@ function PopupHandler() {
 		$('#' + popupEditStatementInfoDescriptionId).text('');
 		$('#' + popupEditStatementSubmitButtonId).addClass('disabled');
 		
-		// getting logfile
+		// Get logfile
 		ajaxHandler.getLogfileForStatements(statements_uids);
 		
-		// add inputs
+		// Add inputs
 		$.each(statements_uids, function (index, value) {
 			const statement = $('#' + value).text().trim().replace(/\s+/g, ' ');
 			
@@ -47,7 +47,7 @@ function PopupHandler() {
 			input_space.append(group);
 		});
 
-		// gui for editing statements
+		// GUI for editing statements
 		const _l = function(s1, s2){
 			return levensthein(s1, s2);
 		};
@@ -353,13 +353,13 @@ function PopupHandler() {
 				
 				statements_div.append(label);
 			});
-			// add the statemet itself
+			// Add the statement itself
 			const glqq = $.parseHTML('<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
 			const grqq = $.parseHTML('<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
 			const statement = $('<span>').addClass('lead').text(text);
 			const wrapper = $('<p>').append(glqq).append(statement).append(grqq);
 			
-			// add elements for the dropdown
+			// Add elements for the drop-down
 			if (text.length > 0) {
 				references_body.append(wrapper.append(statements_div));
 			} else {
@@ -374,13 +374,13 @@ function PopupHandler() {
 			});
 			dropdown_list.append($('<li>').append(tmp));
 			
-			// default id
+			// Default id
 			send_button.attr('data-id', statement_uid);
 		});
 	};
 	
 	/**
-	 * Closes the popup and deletes all of its content
+	 * Closes the popup and deletes all of its contents
 	 */
 	this.hideAndClearUrlSharingPopup = function () {
 		$('#' + popupUrlSharingId).modal('hide');
