@@ -5,7 +5,6 @@ Core component of D-BAS.
 """
 
 import json
-import time
 
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
@@ -34,14 +33,14 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
     process_seen_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
-    try_to_register_new_user_via_ajax, request_password, prepare_parameter_for_justification
+    try_to_register_new_user_via_ajax, request_password, prepare_parameter_for_justification, login_user
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.input_validator import is_integer, is_position, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
-    get_user_by_case_insensitive_nickname, get_changelog
+    get_changelog, is_usage_with_ldap
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
     rep_reason_first_justification, rep_reason_first_argument_click, \
@@ -51,7 +50,7 @@ from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
-from pyramid.security import remember, forget
+from pyramid.security import forget
 from pyramid.threadlocal import get_current_registry
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyshorteners.shorteners import Shortener
@@ -1183,63 +1182,25 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('user_login', 'def', 'main, request.params: ' + str(request.params))
 
-    lang = get_language(request, get_current_registry())
+    reg = get_current_registry()
+    lang = get_language(request, reg)
     _tn = Translator(lang)
+    error = ''
 
     try:
-        if not nickname and not password:
-            nickname = escape_string(request.params['user'])
-            password = escape_string(request.params['password'])
-            keep_login = escape_string(request.params['keep_login'])
-            keep_login = True if keep_login == 'true' else False
-            url = request.params['url']
-        else:
-            nickname = escape_string(nickname)
-            password = escape_string(password)
-            url = ''
-
-        db_user = get_user_by_case_insensitive_nickname(nickname)
-
-        # check for user and password validations
-        if not db_user:
-            logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
-            error = _tn.get(_.userPasswordNotMatch)
-        elif not db_user.validate_password(password):
-            logger('user_login', 'password not valid', 'wrong password')
-            error = _tn.get(_.userPasswordNotMatch)
-        else:
-            logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-            db_settings.should_hold_the_login(keep_login)
-            headers = remember(request, db_user.nickname)
-
-            # update timestamp
-            logger('user_login', 'login', 'update login timestamp')
-            db_user.update_last_login()
-            db_user.update_last_action()
-            transaction.commit()
-            ending = ['/?session_expired=true', '/?session_expired=false']
-            for e in ending:
-                if url.endswith(e):
-                    url = url[0:-len(e)]
-
-            if for_api:
-                logger('user_login', 'return', 'for api: success')
-                return {'status': 'success'}
-            else:
-                logger('user_login', 'return', 'success: ' + url)
-                time.sleep(0.5)
-                return HTTPFound(
-                    location=url,
-                    headers=headers,
-                )
+        value = login_user(request, nickname, password, for_api, keep_login, _tn, is_usage_with_ldap())
+        if type(value) == str:  # error
+            error = value
+        elif type(value) == dict:  # api
+            return value
+        elif type(value) == HTTPFound:  # success
+            return value
 
     except KeyError as e:
         error = _tn.get(_.internalKeyError)
         logger('user_login', 'error', repr(e))
 
-    return_dict = dict()
-    return_dict['error'] = error
+    return_dict = {'error': error}
 
     logger('user_login', 'return', str(return_dict))
     return json.dumps(return_dict, True)

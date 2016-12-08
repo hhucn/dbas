@@ -15,13 +15,14 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.query import get_every_attack_for_island_view
 from dbas.helper.notification import count_of_new_notifications, get_box_for
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, \
-    create_speechbubble_dict, get_profile_picture, get_public_profile_picture
+    create_speechbubble_dict, get_profile_picture, get_public_profile_picture, is_usage_with_ldap
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from dbas.review.helper.reputation import get_reputation_of
+from pyramid.threadlocal import get_current_registry
 
 
 class DictionaryHelper(object):
@@ -134,6 +135,7 @@ class DictionaryHelper(object):
         return_dict['is_user_female']                = db_user.gender == 'f' if db_user else False
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit']                   = 'true' if broke_limit else 'false'
+        return_dict['use_with_ldap']                 = is_usage_with_ldap()
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:

@@ -64,6 +64,14 @@ def get_changelog(no):
     return changelog[0:no]
 
 
+def is_usage_with_ldap():
+    """
+
+    :return:
+    """
+    return True
+
+
 def escape_string(text):
     """
     Escapes all html special chars.
