@@ -131,6 +131,7 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 
 /**
  * Displays dialog
+ *
  * @param titleText
  * @param bodyText
  */
@@ -401,6 +402,7 @@ function setTextWatcherInputLength(element){
 
 /**
  * Sets data for the global sucess field
+ *
  * @param heading text
  * @param body text
  */
@@ -418,6 +420,7 @@ function setGlobalErrorHandler(heading, body){
 
 /**
  * Sets data for the global success field
+ *
  * @param heading text
  * @param body text
  */
@@ -435,6 +438,7 @@ function setGlobalSuccessHandler(heading, body){
 
 /**
  * Sets data for the global info field
+ *
  * @param heading text
  * @param body text
  */
@@ -464,17 +468,17 @@ function startGuidedTour(){
 	const start_fct = function () {
 		tour.init(); // Initialize the tour
 		tour.restart(); // Start the tour
-		setLocalStorage(GUIDED_TOUR_RUNNING, 'true');
+		setLocalStorage(GUIDED_TOUR_RUNNING, true);
 		set_lang_click();
 	};
 	
 	// function on end
 	const end_fct = function(){
-		setLocalStorage(GUIDED_TOUR_RUNNING, 'false');
+		setLocalStorage(GUIDED_TOUR_RUNNING, false);
 		const url = window.location.href;
+		Cookies.set(GUIDED_TOUR, true, { expires: 180 });
 		if (url != mainpage && url.indexOf('#tour2') == -1) {
 			// window.location.href = mainpage;
-			Cookies.set(GUIDED_TOUR, true, { expires: 180 });
 		}
 	};
 	
@@ -522,6 +526,12 @@ function startGuidedTour(){
 		content: _t(tourLoginContent),
 		placement: 'bottom',
 	};
+	const issue = {
+		element: '#header-container',
+		title: _t(tourIssueTitle),
+		content: _t(tourIssueContent),
+		placement: 'bottom',
+	};
 	const start_discussion = {
 		element: '#dialog-speech-bubbles-space',
 		title: _t(tourStartDiscussionTitle) + lang_switcher,
@@ -556,7 +566,8 @@ function startGuidedTour(){
 		steps: [
 			welcome,
 			start_button,
-			login_button,
+			//login_button,
+			issue,
 			start_discussion,
 			choose_answer,
 			set_input,
@@ -601,16 +612,18 @@ function startGuidedTour(){
 			const switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
 			switcher.remove();
 		});
-		displayConfirmationDialog(title, text, start_fct, end_fct, true);
+		displayConfirmationDialog(title, text, start_fct, end_fct, false);
 		set_lang_click();
 	} else if(!part0 && part1 && !part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){ // part 2: discussion
 		tour.init();
-		tour.goTo(3);
+		tour.goTo(2);
 		set_lang_click();
+		setLocalStorage(GUIDED_TOUR_RUNNING, true);
 	} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){ // part 3, the end
 		tour.init();
 		tour.goTo(6);
 		set_lang_click();
+		setLocalStorage(GUIDED_TOUR_RUNNING, true);
 	}
 }
 

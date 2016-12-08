@@ -413,14 +413,11 @@ $(function () {
 	
 	const guided_toggle = $('#' + settingsGuidedTour);
 	guided_toggle.bootstrapToggle(Cookies.get(GUIDED_TOUR) ? 'off' : 'on');
-	console.log(Cookies.get(GUIDED_TOUR) + ' ' + (Cookies.get(GUIDED_TOUR) ? 'off' : 'on'));
 	guided_toggle.change(function guidedTourChange() {
 		if ($(this).prop('checked')) {
 			Cookies.remove(GUIDED_TOUR);
-			console.log('we will do a guided tour');
 		} else {
 			Cookies.set(GUIDED_TOUR, true, { expires: 180 });
-			console.log('no guided tour');
 		}
 	});
 

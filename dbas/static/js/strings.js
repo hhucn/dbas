@@ -285,6 +285,8 @@ const tourStartHeaderTitle            = 'tourStartHeaderTitle';
 const tourStartHeaderContent          = 'tourStartHeaderContent';
 const tourLoginTitle                  = 'tourLoginTitle';
 const tourLoginContent                = 'tourLoginContent';
+const tourIssueTitle                  = 'tourIssueTitle';
+const tourIssueContent                = 'tourIssueContent';
 const tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
 const tourStartDiscussionContent      = 'tourStartDiscussionContent';
 const tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
@@ -518,6 +520,8 @@ const dbas_en = {
     'tourStartHeaderContent': '.. or here!',
     'tourLoginTitle': 'Login',
     'tourLoginContent': 'In every case you should register yourself for enter your own statements.',
+    'tourIssueTitle': 'Topic',
+    'tourIssueContent': 'Here you can the topic, which the current discussion is about.',
     'tourStartDiscussionTitle': 'First steps',
     'tourStartDiscussionContent': 'On the left side there are messages of the system and on the right side there are your answers.',
     'tourSelectAnswertTitle': 'First selection',
@@ -733,6 +737,8 @@ const dbas_de = {
     'tourStartHeaderContent': '... oder auch hier.',
     'tourLoginTitle': 'Anmeldung',
     'tourLoginContent': 'Sie sollten sich aber anmelden, um Beiträge verfassen zu können.',
+    'tourIssueTitle': 'Thema',
+    'tourIssueContent': 'Hier sehen Sie das aktuelel Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',
     'tourStartDiscussionContent': 'In diesem teil sehen Sie links Nachrichten des System und rechts Ihre eigenen.',
     'tourSelectAnswertTitle': 'Erste Auswahl',
