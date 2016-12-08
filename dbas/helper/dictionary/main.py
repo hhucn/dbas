@@ -83,7 +83,7 @@ class DictionaryHelper(object):
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_island_icon,
                             show_graph_icon, request, nickname, argument_id=0, argument_for_island=0, application_url='',
-                            for_api=False, append_notifications=False, attack=None):
+                            for_api=False, append_notifications=False, attack=None, broke_limit=False):
         """
         Creates the extras.dict() with many options!
 
@@ -133,6 +133,7 @@ class DictionaryHelper(object):
         return_dict['is_user_male']                  = db_user.gender == 'm' if db_user else False
         return_dict['is_user_female']                = db_user.gender == 'f' if db_user else False
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']
+        return_dict['broke_limit']                   = 'true' if broke_limit else 'false'
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:

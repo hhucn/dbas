@@ -1336,6 +1336,41 @@ class FrontendTests:
         b.quit()
         return 1 if success else 0
 
+    @staticmethod
+    def test_review_popup(browser):
+        """
+        Testing the admin interface
+        :param browser: current browser
+        :return: 1 if success else 0
+        """
+        print('Starting tests the review popup:')
+        b = Helper.open_browser(browser)
+        b = Helper.login(b, nickname_test_user1, password, main_page  + 'discuss')
+
+        position = 'this is a new position'
+        reason = 'this is a new reason'
+
+        b.find_by_css('#discussions-space-list li:last-child input').click()
+        time.sleep(wait_time)
+        b.find_by_id('add-statement-container-main-input').fill(position)
+        b.find_by_id('send-new-statement').click()
+        time.sleep(wait_time)
+
+        b.find_by_css('#discussions-space-list li:first-child input').click()
+        time.sleep(wait_time).click()
+
+        # b.find_by_css('#discussions-space-list li:last-child input').click()
+        # time.sleep(wait_time)
+        b.find_by_id('add-premise-container-main-input').fill(reason)
+        b.find_by_id('send-new-statement').click()
+        time.sleep(wait_time)
+
+        success = Helper.check_for_present_text(b, 'Hey', 'check for review notificaiton')
+
+        b = Helper.logout(b)
+        b.quit()
+        return 1 if success else 0
+
 
 test_list = [
     {'console_description': 'tests for normal/not logged in pages',
@@ -1429,7 +1464,11 @@ test_list = [
     {'console_description': 'tests for the admin interface',
      'test_description': 'test for the admin interface',
      'test_call': FrontendTests.test_admin_interface,
-     'test_id': 22}
+     'test_id': 22},
+    {'console_description': 'tests for review popup',
+     'test_description': 'test for the review popup',
+     'test_call': FrontendTests.test_review_popup,
+     'test_id': 23}
 ]
 
 if __name__ == "__main__":

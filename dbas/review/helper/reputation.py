@@ -134,7 +134,7 @@ def add_reputation_for(user, reason):
     transaction.commit()
     db_new_points = db_old_points + db_reason.points
 
-    return True, db_old_points < 30 and db_new_points > 30
+    return True, db_old_points < 30 and db_new_points >= 30
 
 
 def __collect_points(reputation_history):

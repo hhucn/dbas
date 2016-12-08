@@ -672,7 +672,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, request, argument_id=arg_id_sys,
                                               application_url=request.application_url, for_api=for_api,
                                               argument_for_island=arg_id_user, attack=attack,
-                                              nickname=request_authenticated_userid)
+                                              nickname=request_authenticated_userid, broke_limit=broke_limit)
 
     return_dict = dict()
     return_dict['issues'] = issue_dict

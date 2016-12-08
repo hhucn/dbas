@@ -738,11 +738,14 @@ $(document).ready(function mainDocumentReady() {
 	// console.log('read hash: ' + location.hash);
 	if (location.hash.indexOf('graph') != -1){
 		guiHandler.setDisplayStyleAsGraphView();
-	} else if (location.hash.indexOf('island') != -1){
+	}
+	if (location.hash.indexOf('island') != -1){
 		guiHandler.setDisplayStyleAsIsland();
-	} else if (location.hash.indexOf('barometer') != -1){
+	}
+	if (location.hash.indexOf('barometer') != -1){
 		new DiscussionBarometer().showBarometer();
-	} else if (location.hash.indexOf('access-review') != -1){
+	}
+	if (location.hash.indexOf('access-review') != -1 || $('#review-link').attr('data-broke-limit') == 'true'){
 		const link = $('<a>').attr('href', mainpage + 'review').text(_t(youAreAbleToReviewNow));
 		setGlobalInfoHandler('Hey!', link)
 	}
