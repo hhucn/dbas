@@ -297,8 +297,9 @@ const tourHaveFunContent              = 'tourHaveFunContent';
 // cookies
 const WARNING_CHANGE_DISCUSSION_POPUP = 'WARNING_CHANGE_DISCUSSION_POPUP';
 const BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
-const GUIDED_TOUR = 'GUIDED_TOUR';
+const GUIDED_TOUR = 'DID_GUIDED_TOUR';
 const GUIDED_TOUR_RUNNING = 'GUIDED_TOUR_RUNNING';
+const ADMIN_WARNING = 'hide-admin-caution-warning';
 
 /**
  * URL's

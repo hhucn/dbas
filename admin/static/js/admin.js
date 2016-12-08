@@ -9,14 +9,14 @@ $(document).ready(function () {
 		new AjaxMainHandler().ajaxLogin($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
 	});
 	
-	var data = $('#data');
+	const data = $('#data');
 	
 	// gui modification for the caution row
-	if (!isCookieSet('hide-admin-caution-warning')) {
+	if (!Cookies.get(ADMIN_WARNING)) {
 		$('#close-warning').fadeIn();
 		$('#close-warning-btn').click(function(){
 			$('#close-warning').fadeOut();
-			setCookieForDays('hide-admin-caution-warning', 7, 'true')
+			Cookies.set(ADMIN_WARNING, true, { expires: 7 });
 		});
 	}
 	

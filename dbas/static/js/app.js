@@ -155,7 +155,7 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
  */
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
 	// display dialog only if the cookie was not set yet
-	if (isCookieSet(WARNING_CHANGE_DISCUSSION_POPUP)){
+	if (Cookies.get(WARNING_CHANGE_DISCUSSION_POPUP)){
 		window.location.href = functionForAccept;
 	} else {
 		$('#' + popupConfirmChecbkoxDialogId).modal('show');
@@ -166,7 +166,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
 			// maybe set a cookie
 			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-				setCookieForDays(WARNING_CHANGE_DISCUSSION_POPUP, 7, true);
+				Cookies.set(WARNING_CHANGE_DISCUSSION_POPUP, true, { expires: 7 });
 			}
 
 			if (isRestartingDiscussion) {
@@ -186,7 +186,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  *
  */
 function displayBubbleInformationDialog(){
-	if (!isCookieSet(BUBBLE_INFOS)){
+	if (!Cookies.get(BUBBLE_INFOS)){
 		const img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' .modal-dialog').attr('style', 'width: ' + ($(document).width() > 992? '430' : '200') + 'px;');
@@ -194,7 +194,7 @@ function displayBubbleInformationDialog(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(img);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			setCookieForDays(BUBBLE_INFOS, 30, true);
+			Cookies.set(BUBBLE_INFOS, true, { expires: 180 });
 		}).removeClass('btn-success');
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 	}
@@ -455,19 +455,30 @@ function setGlobalInfoHandler(heading, body){
  */
 function startGuidedTour(){
 	
-	if (isCookieSet(GUIDED_TOUR))
+	if (Cookies.get(GUIDED_TOUR))
 		return;
 	
 	//displayBubbleInformationDialog();
+	
+	// function on start
+	const start_fct = function () {
+		tour.init(); // Initialize the tour
+		tour.restart(); // Start the tour
+		setLocalStorage(GUIDED_TOUR_RUNNING, 'true');
+		set_lang_click();
+	};
+	
+	// function on end
 	const end_fct = function(){
 		setLocalStorage(GUIDED_TOUR_RUNNING, 'false');
 		const url = window.location.href;
 		if (url != mainpage && url.indexOf('#tour2') == -1) {
 			// window.location.href = mainpage;
-			setCookieForDays(GUIDED_TOUR, 180, 'true');
+			Cookies.set(GUIDED_TOUR, true, { expires: 180 });
 		}
 	};
-	const style = ' width: 30px;';
+	
+	// lang switcher
 	let lang_switcher = '';
 	if (getLanguage() == 'en'){
 		const de_flag = $('#' + translationLinkDe).find('img').attr('src');
@@ -492,6 +503,7 @@ function startGuidedTour(){
 	'</div>';
 	
 	
+	// steps
 	const welcome = {
 		element: '#logo_dbas',
 		title: _t(tourWelcomeTitle) + lang_switcher,
@@ -538,6 +550,7 @@ function startGuidedTour(){
 		placement: 'bottom',
 		path: '/#tour2'
 	};
+	
 	//data-placement="bottom"
 	const tour = new Tour({
 		steps: [
@@ -555,41 +568,46 @@ function startGuidedTour(){
 		onEnd: end_fct,
 	});
 	
-	const start_fct = function () {
-		tour.init(); // Initialize the tour
-		tour.restart(); // Start the tour
-		setLocalStorage(GUIDED_TOUR_RUNNING, 'true');
-		set_lang_click();
-	};
-	
+	// click function for lang switch
 	const set_lang_click = function () {
 		setTimeout(function () {
 			// language switch
-			const en = $('#switch-to-en');
-			const de = $('#switch-to-de');
-			en.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
-			de.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
-			en.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
-			de.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
+			const switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
+			const lang = getLanguage() == 'en' ? 'de' : 'en';
+			switcher.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang) });
+			switcher.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang) });
 		}, 500);
 	};
 	
+	// params
 	const url = window.location.href;
 	const part0 = url == mainpage || url == location.origin;
 	const part1 = url.indexOf('/discuss') != -1;
 	const part2 = url == mainpage + '#tour2' || url == location.origin + '#tour2';
 	
-	if (part0 && !part1 && !part2){
-		$('#' + popupConfirmDialogRefuseBtn).hide();
+	// decision where we are
+	if (part0 && !part1 && !part2){ // first part on the start page, where we ask the user for a tour
+		// build dialog
 		const title = _t(tourWelcomeTitle);
-		const text = _t(welcomeDialogBody) + lang_switcher;
+		const text = _t(welcomeDialogBody) + lang_switcher.replace('style="', 'style="display: none; ');
+		const dialog = $('#' + popupConfirmDialogId);
+		dialog.on('shown.bs.modal', function (){
+			const switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
+			switcher.detach();
+			switcher.removeClass('pull-right').addClass('pull-left');
+			switcher.insertBefore($('#' + popupConfirmDialogAcceptBtn)).show();
+		});
+		dialog.on('hide.bs.modal', function (){
+			const switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
+			switcher.remove();
+		});
 		displayConfirmationDialog(title, text, start_fct, end_fct, true);
 		set_lang_click();
-	} else if(!part0 && part1 && !part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){
+	} else if(!part0 && part1 && !part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){ // part 2: discussion
 		tour.init();
 		tour.goTo(3);
 		set_lang_click();
-	} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){
+	} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){ // part 3, the end
 		tour.init();
 		tour.goTo(6);
 		set_lang_click();

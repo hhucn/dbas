@@ -77,6 +77,12 @@
 
 							</td>
 						</tr>
+						<tr>
+							<td><span i18n:translate="guided_tour_on_start_up" class="lead">Guided tour on startup</span></td>
+							<td class="text-center">
+								<input id="guided-tour-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="data-on settings.on; data-off settings.off">
+							</td>
+						</tr>
 					</table>
 					<div>
                         <div class="center text-center" style="float:left; margin: 2em;">

@@ -23,6 +23,7 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap/bootstrap-3.3.7.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap/bootstrap-toggle.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap/bootstrap-tour-0.11.0.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.js')}"></script>
 
 	<!--
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ads.js')}"></script>

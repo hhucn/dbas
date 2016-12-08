@@ -46,40 +46,6 @@ function getCurrentIssueId (){
 }
 
 /**
- * Sets Cookie with given name for given days
- *
- * @param cookie_name string
- * @param days int
- * @param content value
- */
-function setCookieForDays (cookie_name, days, content){
-	let d = new Date();
-	let expiresInDays = days * 24 * 60 * 60 * 1000;
-	d.setTime( d.getTime() + expiresInDays );
-	let expires = 'expires=' + d.toGMTString();
-	document.cookie = cookie_name + '=' + content + '; ' + expires + ';path=/';
-
-	$(document).trigger('user_cookie_consent_changed', {'consent' : content});
-}
-
-/**
- * Returns true if the cookie with given name is set.
- *
- * @param cookie_name string
- * @returns {boolean}
- */
-function isCookieSet (cookie_name){
-	let cookies = document.cookie.split(";"), userAcceptedCookies = false;
-	for (let i = 0; i < cookies.length; i++) {
-		let c = cookies[i].trim();
-		if (c.indexOf(cookie_name) == 0) {
-			userAcceptedCookies = c.substring(cookie_name.length + 1, c.length);
-		}
-	}
-	return userAcceptedCookies;
-}
-
-/**
  * Opens a new tab with the contact form. Given params should contain name and content
  *
  * @param params dictionary with at least {'name': ?, 'content': ?}

@@ -237,6 +237,7 @@ const statisticsAlertMessage                    = 'statistics-alert-message';
 const settingsReceiveNotifications              = 'receive-notifications-toggle';
 const settingsReceiveMails                      = 'receive-mails-toggle';
 const settingsPublicNick                        = 'public-nick-toggle';
+const settingsGuidedTour                        = 'guided-tour-toggle';
 const settingsPasswordInfoIconId                = 'settings-password-info-icon';
 const settingsPasswordInputId                   = 'settings-password-input';
 const settingsPasswordOldInputId                = 'settings-password-old-input';
