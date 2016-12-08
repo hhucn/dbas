@@ -170,8 +170,8 @@ function Main () {
 		$('#' + issueDropdownListID + ' .enabled').each(function () {
 			if ($(this).children().length > 0) {
 				$(this).children().click(function () {
-					let href = $(this).attr('href'),
-						text = _t(switchDiscussionText1) + ' <strong>' + $(this).attr('value') + '</strong> ';
+					const href = $(this).attr('href');
+					let text = _t(switchDiscussionText1) + ' <strong>' + $(this).attr('value') + '</strong> ';
 					text += _t(switchDiscussionText2);
 					text += '<br><br>';
 					text += _t(switchDiscussionText3);
@@ -180,7 +180,7 @@ function Main () {
 				});
 			}
 		});
-		$('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click');
+		$('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click').removeAttr('href');
 		
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {

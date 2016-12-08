@@ -471,11 +471,8 @@ def discussion_init(request, for_api=False, api_data=None):
     else:
         slug = match_dict['slug'][0] if 'slug' in match_dict and len(match_dict['slug']) > 0 else ''
 
-    last_topic      = history_helper.get_saved_issue(nickname)
-    if len(slug) == 0 and last_topic != 0:
-        issue      = last_topic
-    else:
-        issue      = issue_helper.get_id_of_slug(slug, request, True)
+    last_topic = history_helper.get_saved_issue(nickname)
+    issue      = last_topic if len(slug) == 0 and last_topic != 0 else issue_helper.get_id_of_slug(slug, request, True)
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
