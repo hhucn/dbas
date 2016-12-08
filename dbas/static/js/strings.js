@@ -57,7 +57,7 @@ getLanguage = function(){
     $('#' + languageDropdownId).children().each(function(){
         if ($(this).hasClass('active')){
             this_id = $(this).children().first().attr('id');
-            if (this_id.indexOf('en') != -1){            value = 'en';
+            if (this_id.indexOf('en') != -1){           value = 'en';
             } else if (this_id.indexOf('de') != -1){    value = 'de';
             } else {                                    value = 'unknown value';
             }

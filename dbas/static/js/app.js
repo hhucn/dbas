@@ -467,6 +467,15 @@ function startGuidedTour(){
 			setCookieForDays(GUIDED_TOUR, 180, 'true');
 		}
 	};
+	const style = ' width: 30px;';
+	let lang_switcher = '';
+	if (getLanguage() == 'en'){
+		const de_flag = $('#' + translationLinkDe).find('img').attr('src');
+		lang_switcher = '<a id="switch-to-de" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + de_flag + '" alt="flag_ge" style="width:25px;"></a>';
+	} else {
+		const en_flag = $('#' + translationLinkEn).find('img').attr('src');
+		lang_switcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + en_flag + '" alt="flag_en" style="width:25px;"></a>';
+	}
 	
 	// override default template for i18n
 	const template =
@@ -485,13 +494,13 @@ function startGuidedTour(){
 	
 	const welcome = {
 		element: '#logo_dbas',
-		title: _t(tourWelcomeTitle),
+		title: _t(tourWelcomeTitle) + lang_switcher,
 		content: _t(tourWelcomeContent),
 		placement: 'bottom',
 	};
 	const start_button = {
 		element: '#start-discussion-button',
-		title: _t(tourStartButtonTitle),
+		title: _t(tourStartButtonTitle) + lang_switcher,
 		content: _t(tourStartButtonContent),
 		placement: 'bottom',
 	};
@@ -503,28 +512,28 @@ function startGuidedTour(){
 	};
 	const start_discussion = {
 		element: '#dialog-speech-bubbles-space',
-		title: _t(tourStartDiscussionTitle),
+		title: _t(tourStartDiscussionTitle) + lang_switcher,
 		content: _t(tourStartDiscussionContent),
 		placement: 'bottom',
 		path: '/discuss'
 	};
 	const choose_answer = {
 		element: '#discussions-space-list',
-		title: _t(tourSelectAnswertTitle),
+		title: _t(tourSelectAnswertTitle) + lang_switcher,
 		content: _t(tourSelectAnswertContent),
 		placement: 'bottom',
 		path: '/discuss'
 	};
 	const set_input = {
 		element: '#discussions-space-list li:last-child',
-		title: _t(tourEnterStatementTitle),
+		title: _t(tourEnterStatementTitle) + lang_switcher,
 		content: _t(tourEnterStatementContent),
 		placement: 'bottom',
 		path: '/discuss'
 	};
 	const have_fun = {
 		element: '.jumbotron',
-		title: _t(tourHaveFunTitle),
+		title: _t(tourHaveFunTitle) + lang_switcher,
 		content: _t(tourHaveFunContent),
 		placement: 'bottom',
 		path: '/#tour2'
@@ -543,13 +552,26 @@ function startGuidedTour(){
 		backdrop: true,
 		backdropPadding: 5,
 		template: template,
-		onEnd: end_fct
+		onEnd: end_fct,
 	});
 	
 	const start_fct = function () {
 		tour.init(); // Initialize the tour
 		tour.restart(); // Start the tour
 		setLocalStorage(GUIDED_TOUR_RUNNING, 'true');
+		set_lang_click();
+	};
+	
+	const set_lang_click = function () {
+		setTimeout(function () {
+			// language switch
+			const en = $('#switch-to-en');
+			const de = $('#switch-to-de');
+			en.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
+			de.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
+			en.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
+			de.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
+		}, 500);
 	};
 	
 	const url = window.location.href;
@@ -560,14 +582,17 @@ function startGuidedTour(){
 	if (part0 && !part1 && !part2){
 		$('#' + popupConfirmDialogRefuseBtn).hide();
 		const title = _t(tourWelcomeTitle);
-		const text = _t(welcomeDialogBody);
+		const text = _t(welcomeDialogBody) + lang_switcher;
 		displayConfirmationDialog(title, text, start_fct, end_fct, true);
+		set_lang_click();
 	} else if(!part0 && part1 && !part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){
 		tour.init();
 		tour.goTo(3);
+		set_lang_click();
 	} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){
 		tour.init();
 		tour.goTo(6);
+		set_lang_click();
 	}
 }
 
@@ -689,16 +714,6 @@ $(document).ready(function () {
 			 path.indexOf(urlLogout) != -1){										$('#' + navbarLeft).hide(); }
 	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
-	// language switch
-	$('#' + translationLinkDe).click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
-	$('#' + translationLinkEn).click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
-	$('#' + translationLinkDe + ' img').click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
-	$('#' + translationLinkEn + ' img').click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
-	$('#' + logoutLinkId).click(function(e){
-		e.preventDefault();
-		new AjaxMainHandler().ajaxLogout();
-	});
-
 	// gui preperation
 	prepareLoginRegistrationPopup();
 
@@ -735,6 +750,16 @@ $(document).ready(function () {
 		}, 3000);
 	
 	startGuidedTour();
+
+	// language switch
+	$('#' + translationLinkDe).click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
+	$('#' + translationLinkEn).click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
+	$('#' + translationLinkDe + ' img').click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
+	$('#' + translationLinkEn + ' img').click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
+	$('#' + logoutLinkId).click(function(e){
+		e.preventDefault();
+		new AjaxMainHandler().ajaxLogout();
+	});
 
 	// testing with gremlins
 	//var horde = gremlins.createHorde()
