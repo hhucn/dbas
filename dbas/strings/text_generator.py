@@ -626,7 +626,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
         confrontation_text = confrontation_text.replace('XYZZYX', premise)
 
-        confrontation_text += start_argument
+        confrontation_text += ' ' + start_argument
         confrontation_text += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
 
         tmp = _t.get(_.strongerStatementEnd)
