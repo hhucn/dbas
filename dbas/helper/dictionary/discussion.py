@@ -103,23 +103,25 @@ class DiscussionDictHelper(object):
         if not text:
             return None
 
+        # system bubble
         tag_start = '<' + tag_type + ' data-argumentation-type="position">'
         tag_end = '</' + tag_type + '>'
         if self.lang == 'de':
-            question = _tn.get(
-                _.whatIsYourMostImportantReasonWhyForInColor if is_supportive
-                else _.whatIsYourMostImportantReasonWhyAgainstInColor)
+            if is_supportive:
+                question = _tn.get(_.whatIsYourMostImportantReasonWhyForInColor)
+            else:
+                question = _tn.get(_.whatIsYourMostImportantReasonWhyAgainstInColor)
         else:
             question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
-        question += ' ' + tag_start
-        question += text[0:1].lower() if self.lang != 'de' else text[0:1].upper()
-        question += text[1:] + tag_end
+
+        question += ' ' + tag_start + text + tag_end
 
         if self.lang != 'de':
             question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
         question += '?'
         because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
 
+        # user bubble
         if self.lang == 'de':
             intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
             add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
@@ -132,6 +134,7 @@ class DiscussionDictHelper(object):
         else:
             intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
 
+        # additional stuff
         splitted_history = self.history.split('-')
         if len(splitted_history) > 0:
             if '/undercut' in splitted_history[-1] or '/undermine' in splitted_history[-1] or '/rebut' in splitted_history[-1]:
