@@ -261,8 +261,10 @@ def __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_at
     ret_dict['support_text'] = r + premise + _t.get(_.itIsTrue2) + '.'
 
     # tmp = _t.get(_.butIDoNotBelieveCounter) if is_attacking else _t.get(_.butIDoNotBelieveArgument)
-    tmp = _t.get(_.butIDoNotBelieveArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(
-        _.butIDoNotBelieveCounter)
+    if not is_attacking or not attack_type == 'undercut':
+        tmp = _t.get(_.butIDoNotBelieveArgument)
+    else:
+        tmp = _t.get(_.butIDoNotBelieveCounter)
     ret_dict['undercut_text'] = r + premise + _t.get(_.itIsTrue2) + ', '
     ret_dict['undercut_text'] += (_t.get(_.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)
     ret_dict['undercut_text'] += ' ' + conclusion + (' ist.' if lang == 'de' else '.')
@@ -271,15 +273,13 @@ def __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_at
     ret_dict['overbid_text'] += (
         _t.get(_.andIDoBelieveArgument) if is_dont_know else _t.get(_.andIDoBelieveCounterFor))
     ret_dict['overbid_text'] += ' ' + conclusion + '. '
-    ret_dict['overbid_text'] += (_t.get(_.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(
-        _.howeverIHaveEvenStrongerArgumentAccepting))
+    ret_dict['overbid_text'] += (_t.get(_.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_.howeverIHaveEvenStrongerArgumentAccepting))
     ret_dict['overbid_text'] += ' ' + conclusion + '.'
 
     ret_dict['rebut_text'] = r + premise + _t.get(_.itIsTrue2) + ' '
     # ret_dict['rebut_text'] += (_t.get(_.iAcceptCounter) if is_attacking else _t.get(_.iAcceptArgument))
-    ret_dict['rebut_text'] += _t.get(
-        _.iAcceptArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(_.iAcceptCounter)
-    ret_dict['rebut_text'] += ' ' + conclusion + (' ist. ' if lang == 'de' else '. ')
+    ret_dict['rebut_text'] += _t.get(_.iAcceptArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(_.iAcceptCounter)
+    ret_dict['rebut_text'] += ' ' + conclusion + (' gilt. ' if lang == 'de' else '. ')
     ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgument) + ' '
     ret_dict['rebut_text'] += start_argument if is_dont_know else start_position
     ret_dict['rebut_text'] += _t.get(_.reject if is_dont_know else _.accept)
@@ -626,7 +626,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
         confrontation_text = confrontation_text.replace('XYZZYX', premise)
 
-        confrontation_text += start_argument
+        confrontation_text += ' ' + start_argument
         confrontation_text += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
 
         tmp = _t.get(_.strongerStatementEnd)
