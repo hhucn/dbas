@@ -304,12 +304,12 @@
     						    </div>
                             </form>
 
-    						<div tal:condition="not:extras.use_with_ldap" style="padding-left: 15px;">
+    						<div style="padding-left: 15px;">
                                 <label>
                                     <input id="keep-login-box" type="checkbox" style="float:left;">
                                     <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
                                 </label>
-    							<a id="popup-login-forgot-password-text" i18n:translate="forgot_password" style="cursor: pointer; float:right;">Forgot your password?</a>
+    							<a tal:condition="not:extras.use_with_ldap" id="popup-login-forgot-password-text" i18n:translate="forgot_password" style="cursor: pointer; float:right;">Forgot your password?</a>
                             </div>
 
     						<div tal:condition="not:extras.use_with_ldap" id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">

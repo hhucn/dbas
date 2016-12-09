@@ -32,6 +32,7 @@ import dbas.user_management as UserHandler
 import dbas.handler.password as PasswordHandler
 import dbas.helper.voting as VotingHelper
 import transaction
+import ldap
 from time import sleep
 
 
@@ -345,35 +346,6 @@ def login_user(request, nickname, password, for_api, keep_login, _tn, is_usage_w
     :param _tn:
     :return:
     """
-    if is_usage_with_ldap:
-        return login_ldap_user(request, nickname, password, _tn)
-    else:
-        return login_normal_user(request, nickname, password, for_api, keep_login, _tn)
-
-
-def login_ldap_user(request, nickname, password, _tn):
-    # 1. check ldap data
-    # 2. is user in database
-    # return success ?
-    nickname = escape_string(request.params['user'])
-    password = escape_string(request.params['password'])
-
-    # db_user = get_user_by_case_insensitive_nickname(nickname)
-
-    return ''
-
-
-def login_normal_user(request, nickname, password, for_api, keep_login, _tn):
-    """
-
-    :param request:
-    :param nickname:
-    :param password:
-    :param for_api:
-    :param keep_login:
-    :param _tn:
-    :return:
-    """
     if not nickname and not password:
         nickname = escape_string(request.params['user'])
         password = escape_string(request.params['password'])
@@ -390,38 +362,84 @@ def login_normal_user(request, nickname, password, for_api, keep_login, _tn):
     # check for user and password validations
     if not db_user:
         logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
-        error = _tn.get(_.userPasswordNotMatch)
-        return error
+
+        success, db_user = catch_user_from_ldap(nickname, password)
+
+        if not success:
+            error = _tn.get(_.userPasswordNotMatch)
+            return error
+
     elif not db_user.validate_password(password):
         logger('user_login', 'password not valid', 'wrong password')
         error = _tn.get(_.userPasswordNotMatch)
         return error
+
+    logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_settings.should_hold_the_login(keep_login)
+    headers = remember(request, db_user.nickname)
+
+    # update timestamp
+    logger('user_login', 'login', 'update login timestamp')
+    db_user.update_last_login()
+    db_user.update_last_action()
+    transaction.commit()
+    ending = ['/?session_expired=true', '/?session_expired=false']
+    for e in ending:
+        if url.endswith(e):
+            url = url[0:-len(e)]
+
+    if for_api:
+        logger('user_login', 'return', 'for api: success')
+        return {'status': 'success'}
     else:
-        logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-        db_settings.should_hold_the_login(keep_login)
-        headers = remember(request, db_user.nickname)
+        logger('user_login', 'return', 'success: ' + url)
+        sleep(0.5)
+        return HTTPFound(
+            location=url,
+            headers=headers,
+        )
 
-        # update timestamp
-        logger('user_login', 'login', 'update login timestamp')
-        db_user.update_last_login()
-        db_user.update_last_action()
-        transaction.commit()
-        ending = ['/?session_expired=true', '/?session_expired=false']
-        for e in ending:
-            if url.endswith(e):
-                url = url[0:-len(e)]
 
-        if for_api:
-            logger('user_login', 'return', 'for api: success')
-            return {'status': 'success'}
-        else:
-            logger('user_login', 'return', 'success: ' + url)
-            sleep(0.5)
-            return HTTPFound(
-                location=url,
-                headers=headers,
-            )
+def catch_user_from_ldap(request, nickname, password, _tn):
+    """
+
+    :param nickname:
+    :param password:
+    :return:
+    """
+    try:
+        l = ldap.initialize("ldap://SVR-HHU-DC-1.ad.hhu.de")
+        l.simple_bind_s(nickname + "@ad.hhu.de", password)
+        user = l.search_s("ou=IDMUsers,DC=AD,DC=hhu,DC=de", ldap.SCOPE_SUBTREE, ("sAMAccountName=" + nickname))[0][1]
+
+        firstname = user['givenName'][0].decode('utf-8')
+        lastname = user['sn'][0].decode('utf-8')
+        title = user['personalTitle'][0].decode('utf-8')
+        gender = 'm' if 'Herr' in title else 'f' if 'Frau' in title else 'n'
+        email = user['mail'][0].decode('utf-8')
+
+        # getting the authors group
+        db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
+
+        # does the group exists?
+        if not db_group:
+            info = _tn.get(_.errorTryLateOrContant)
+            logger('user_ldap_login', 'ldap', 'Error occured')
+            return False, info
+
+        success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group.uid, _tn.get_lang())
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if db_user:
+            return success, db_user
+
+        logger('user_ldap_login', 'ldap', 'new user not found in db')
+        return False, _tn.get(_.errorTryLateOrContant)
+
+    except ldap.ldap.INVALID_CREDENTIALS:
+        logger('user_ldap_login', 'ldap', 'credential error')
+        return False, None
 
 
 def try_to_register_new_user_via_ajax(request, ui_locales):
