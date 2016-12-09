@@ -142,7 +142,7 @@
                 <ul class="sidebar">
                     <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
                     <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
-                    <li id="display-style-icon-island-img" tal:condition="extras.show_island_icon"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
+                    <li id="display-style-icon-island-img" tal:condition="extras.show_island_icon and False"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
                     <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true" tal:attributes="titel extras.title.graph_view"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
                     <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
                 </ul>
