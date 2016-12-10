@@ -7,7 +7,7 @@ Helper for D-BAS Views
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings, Language
 from dbas.logger import logger
-from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname
+from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -32,7 +32,7 @@ import dbas.user_management as UserHandler
 import dbas.handler.password as PasswordHandler
 import dbas.helper.voting as VotingHelper
 import transaction
-import ldap
+
 from time import sleep
 
 
@@ -335,7 +335,7 @@ def try_to_contact(request, name, email, phone, content, ui_locales, spamanswer)
     return contact_error, message, send_message
 
 
-def login_user(request, nickname, password, for_api, keep_login, _tn, is_usage_with_ldap):
+def login_user(request, nickname, password, for_api, keep_login, _tn):
     """
 
     :param request:
@@ -362,8 +362,11 @@ def login_user(request, nickname, password, for_api, keep_login, _tn, is_usage_w
     # check for user and password validations
     if not db_user:
         logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
+        success = False
+        is_ldap = is_usage_with_ldap(request)
 
-        success, db_user = catch_user_from_ldap(nickname, password)
+        if is_ldap:
+            success, db_user = catch_user_from_ldap(request, nickname, password, _tn)
 
         if not success:
             error = _tn.get(_.userPasswordNotMatch)
@@ -408,16 +411,26 @@ def catch_user_from_ldap(request, nickname, password, _tn):
     :param password:
     :return:
     """
+    import ldap
     try:
-        l = ldap.initialize("ldap://SVR-HHU-DC-1.ad.hhu.de")
-        l.simple_bind_s(nickname + "@ad.hhu.de", password)
-        user = l.search_s("ou=IDMUsers,DC=AD,DC=hhu,DC=de", ldap.SCOPE_SUBTREE, ("sAMAccountName=" + nickname))[0][1]
+        server      = request.registry.settings['settings:ldap:server']
+        base        = request.registry.settings['settings:ldap:base']
+        scope       = request.registry.settings['settings:ldap:account.scope']
+        filter      = request.registry.settings['settings:ldap:account.filter']
+        firstname   = request.registry.settings['settings:ldap:account.firstname']
+        lastname    = request.registry.settings['settings:ldap:account.lastname']
+        title       = request.registry.settings['settings:ldap:account.title']
+        email       = request.registry.settings['settings:ldap:account.email']
 
-        firstname = user['givenName'][0].decode('utf-8')
-        lastname = user['sn'][0].decode('utf-8')
-        title = user['personalTitle'][0].decode('utf-8')
+        l = ldap.initialize(server)
+        l.simple_bind_s(nickname + scope, password)
+        user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
+
+        firstname = user[firstname][0].decode('utf-8')
+        lastname = user[lastname][0].decode('utf-8')
+        title = user[title][0].decode('utf-8')
         gender = 'm' if 'Herr' in title else 'f' if 'Frau' in title else 'n'
-        email = user['mail'][0].decode('utf-8')
+        email = user[email][0].decode('utf-8')
 
         # getting the authors group
         db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
@@ -437,7 +450,7 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         logger('user_ldap_login', 'ldap', 'new user not found in db')
         return False, _tn.get(_.errorTryLateOrContant)
 
-    except ldap.ldap.INVALID_CREDENTIALS:
+    except ldap.INVALID_CREDENTIALS:
         logger('user_ldap_login', 'ldap', 'credential error')
         return False, None
 

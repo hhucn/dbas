@@ -40,7 +40,7 @@ from dbas.input_validator import is_integer, is_position, is_statement_forbidden
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
-    get_changelog, is_usage_with_ldap
+    get_changelog
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
     rep_reason_first_justification, rep_reason_first_argument_click, \
@@ -1188,7 +1188,7 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     error = ''
 
     try:
-        value = login_user(request, nickname, password, for_api, keep_login, _tn, is_usage_with_ldap())
+        value = login_user(request, nickname, password, for_api, keep_login, _tn)
         if type(value) == str:  # error
             error = value
         elif type(value) == dict:  # api
