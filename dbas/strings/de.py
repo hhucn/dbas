@@ -281,6 +281,7 @@ de_lang = {
     _.examplePhone: 'Beispiel: +49 (0)211 81-13461',
     _.exampleMessage: 'Beispiel: Sehr gute Arbeit!',
     _.exampleNickname: 'Beispiel: Democrator',
+    _.exampleNicknameLdap: 'Beispiel: tokra100',
     _.examplePassword: 'Beispiel: ********',
     _.exampleFirstname: 'Tobias',
     _.exampleLastname: 'Krauthoff',

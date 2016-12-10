@@ -259,6 +259,7 @@ class Keywords(Enum):
     exampleMessage = 'example: I\'d like to say good job!'
     exampleNickname = 'example: Democrator'
     examplePassword = 'example: ********'
+    exampleNicknameLdap = 'example: tokra100'
     exampleFirstname = 'Tobias'
     exampleLastname = 'Krauthoff'
     error_code = 'Error code'

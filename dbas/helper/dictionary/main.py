@@ -116,6 +116,7 @@ class DictionaryHelper(object):
             nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         is_logged_in = False if nickname == nick_of_anonymous_user else db_user is not None
+        is_ldap = is_usage_with_ldap(request)
 
         # get anti-spam-question
         spamquestion, answer = get_random_anti_spam_question(self.system_lang)
@@ -135,7 +136,7 @@ class DictionaryHelper(object):
         return_dict['is_user_female']                = db_user.gender == 'f' if db_user else False
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit']                   = 'true' if broke_limit else 'false'
-        return_dict['use_with_ldap']                 = is_usage_with_ldap()
+        return_dict['use_with_ldap']                 = is_ldap
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:
@@ -150,7 +151,7 @@ class DictionaryHelper(object):
             return_dict['date']                      = arrow.utcnow().format('DD-MM-YYYY')
             self.add_title_text(return_dict)
             self.add_button_text(return_dict)
-            self.add_tag_text(return_dict)
+            self.add_tag_text(is_ldap, return_dict)
 
             message_dict = dict()
             message_dict['new_count']    = count_of_new_notifications(nickname)
@@ -427,7 +428,7 @@ class DictionaryHelper(object):
                                 'reference': _tn_dis.get(_.reference)
                                 }
 
-    def add_tag_text(self, return_dict):
+    def add_tag_text(self, is_ldap, return_dict):
         """
         Adds string-map in the return dict with the key 'tag'
 
@@ -469,7 +470,7 @@ class DictionaryHelper(object):
             'need_help_to_understand_statement': _tn_dis.get(_.needHelpToUnderstandStatement),
             'set_premisegroups_intro1': _tn_dis.get(_.setPremisegroupsIntro1),
             'set_premisegroups_intro2': _tn_dis.get(_.setPremisegroupsIntro2),
-            'placeholder_nickname': _tn_dis.get(_.exampleNickname),
+            'placeholder_nickname': _tn_dis.get(_.exampleNicknameLdap) if is_ldap else _tn_dis.get(_.exampleNickname),
             'placeholder_password': _tn_dis.get(_.examplePassword),
             'placeholder_firstname': _tn_dis.get(_.exampleFirstname),
             'placeholder_lastname': _tn_dis.get(_.exampleLastname),
