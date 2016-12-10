@@ -64,12 +64,12 @@ def get_changelog(no):
     return changelog[0:no]
 
 
-def is_usage_with_ldap():
+def is_usage_with_ldap(request):
     """
 
     :return:
     """
-    return True
+    return True if request.registry.settings['settings:ldap:usage'] == 'true' else False
 
 
 def escape_string(text):
