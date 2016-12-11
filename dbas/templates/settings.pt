@@ -92,7 +92,7 @@
                         </div>
                         <span i18n:translate="change_gravatar">Change your profile picture on the</span>
                         <a style="color: #2196f3;" href="https://en.gravatar.com/site/login">Gravatar-Website</a>.
-                        <span i18n:translate="what_is_gravatar">A Gravatar is a Globally Recognized Avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
+                        <span i18n:translate="what_is_gravatar">A Gravatar is a globally recognized avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
 					</div>
 				</div>
             </div>
@@ -115,7 +115,10 @@
 		<div class="container colored-container">
 			<div class="content row">
 				<div class="col-md-7">
-					<h4><i class="fa fa-lock" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="change_password">Change your password</span></h4>
+					<h4><i class="fa fa-lock" aria-hidden="true" style="margin-right: 0.5em;"></i>
+                        <span tal:condition="not:extras.use_with_ldap" i18n:translate="change_password">Change your password</span>
+                        <span tal:condition="extras.use_with_ldap" i18n:translate="change_dbas_password">Change your password in D-BAS</span>
+                    </h4>
 					<form action="/settings" method="post">
                         <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
 
