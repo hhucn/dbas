@@ -346,6 +346,8 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     :param _tn:
     :return:
     """
+
+    # getting params from request or api
     if not nickname and not password:
         nickname = escape_string(request.params['user'])
         password = escape_string(request.params['password'])
@@ -358,13 +360,12 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         url = ''
 
     db_user = get_user_by_case_insensitive_nickname(nickname)
-
-    # check for user and password validations
-    if not db_user:
-        logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
+    if not db_user:  # check if the user exists
+        logger('ViewHelper', 'user_login', 'user \'' + nickname + '\' does not exists')
         success = False
         is_ldap = is_usage_with_ldap(request)
 
+        # if the user does not exists and we are using LDAP, we'll grep the user
         if is_ldap:
             success, db_user = catch_user_from_ldap(request, nickname, password, _tn)
 
@@ -372,31 +373,32 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
             error = _tn.get(_.userPasswordNotMatch)
             return error
 
-    elif not db_user.validate_password(password):
-        logger('user_login', 'password not valid', 'wrong password')
+    elif not db_user.validate_password(password):  # check password
+        logger('ViewHelper', 'user_login', 'wrong password')
         error = _tn.get(_.userPasswordNotMatch)
         return error
 
-    logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
+    logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
     db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
     db_settings.should_hold_the_login(keep_login)
     headers = remember(request, db_user.nickname)
 
     # update timestamp
-    logger('user_login', 'login', 'update login timestamp')
+    logger('ViewHelper', 'user_login', 'update login timestamp')
     db_user.update_last_login()
     db_user.update_last_action()
     transaction.commit()
+
     ending = ['/?session_expired=true', '/?session_expired=false']
     for e in ending:
         if url.endswith(e):
             url = url[0:-len(e)]
 
     if for_api:
-        logger('user_login', 'return', 'for api: success')
+        logger('ViewHelper', 'user_login', 'return for api: success')
         return {'status': 'success'}
     else:
-        logger('user_login', 'return', 'success: ' + url)
+        logger('ViewHelper', 'user_login', 'return success: ' + url)
         sleep(0.5)
         return HTTPFound(
             location=url,
@@ -421,8 +423,11 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         lastname    = request.registry.settings['settings:ldap:account.lastname']
         title       = request.registry.settings['settings:ldap:account.title']
         email       = request.registry.settings['settings:ldap:account.email']
+        logger('ViewHelper', 'catch_user_from_ldap', 'parsed data')
 
+        logger('ViewHelper', 'catch_user_from_ldap', 'connect ldap')
         l = ldap.initialize(server)
+        l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
         l.simple_bind_s(nickname + scope, password)
         user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
 
@@ -438,7 +443,7 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         # does the group exists?
         if not db_group:
             info = _tn.get(_.errorTryLateOrContant)
-            logger('user_ldap_login', 'ldap', 'Error occured')
+            logger('ViewHelper', 'user_ldap_login', 'Internal error occured')
             return False, info
 
         success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group.uid, _tn.get_lang())
@@ -447,11 +452,15 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         if db_user:
             return success, db_user
 
-        logger('user_ldap_login', 'ldap', 'new user not found in db')
+        logger('ViewHelper', 'user_ldap_login', 'new user not found in db')
         return False, _tn.get(_.errorTryLateOrContant)
 
     except ldap.INVALID_CREDENTIALS:
-        logger('user_ldap_login', 'ldap', 'credential error')
+        logger('ViewHelper', 'user_ldap_login', 'ldap credential error')
+        return False, None
+
+    except ldap.SERVER_DOWN:
+        logger('ViewHelper', 'user_ldap_login', 'can\'t reach server withn 5s')
         return False, None
 
 

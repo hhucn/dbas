@@ -44,7 +44,7 @@ def get_database_dump(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Export', 'get_database_dump', 'main')
     issue = IssueHelper.get_issue_id(request)
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
 
     return_dict = get_dump(issue, ui_locales)
 

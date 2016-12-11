@@ -59,8 +59,6 @@ def get_changelog(no):
         else:
             body.append(l.replace('- ', ''))
 
-        logger('X', str(len(l)), str(l))
-
     return changelog[0:no]
 
 
@@ -69,7 +67,9 @@ def is_usage_with_ldap(request):
 
     :return:
     """
-    return True if request.registry.settings['settings:ldap:usage'] == 'true' else False
+    if 'settings:ldap:usage' in request.registry.settings:
+        return True if request.registry.settings['settings:ldap:usage'] == 'true' else False
+    return False
 
 
 def escape_string(text):
@@ -82,18 +82,18 @@ def escape_string(text):
     return escape(text)
 
 
-def get_language(request, current_registry):
+def get_language(request):
     """
     Returns current ui locales code which is saved in current cookie or the registry.
 
     :param request: request
     :param current_registry: get_current_registry()
-    :return: language abrreviation
+    :return: ui_locales
     """
     try:
         lang = request.cookies['_LOCALE_']
     except (KeyError, AttributeError):
-        lang = current_registry.settings['pyramid.default_locale_name']
+        lang = request.registry.settings['pyramid.default_locale_name']
     return str(lang)
 
 
