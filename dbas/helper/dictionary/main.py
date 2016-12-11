@@ -22,7 +22,6 @@ from dbas.strings.text_generator import get_relation_text_dict_with_substitution
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from dbas.review.helper.reputation import get_reputation_of
-from pyramid.threadlocal import get_current_registry
 
 
 class DictionaryHelper(object):

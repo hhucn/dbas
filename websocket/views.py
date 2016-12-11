@@ -9,7 +9,6 @@ from dbas.logger import logger
 from dbas.views import base_layout
 from dbas.views import project_name
 from dbas.helper.dictionary.main import DictionaryHelper
-from pyramid.threadlocal import get_current_registry
 
 # =============================================================================
 # CORS configuration

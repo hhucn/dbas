@@ -46,7 +46,6 @@ def get_changelog(no):
     """
     path = str(os.path.realpath(__file__ + '/../../CHANGELOG.md'))
     lines = [line.rstrip('\n').strip() for line in open(path) if len(line.rstrip('\n').strip()) > 0]
-    from dbas.logger import logger
     changelog = []
     title = ''
     body = []

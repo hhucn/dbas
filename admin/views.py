@@ -16,7 +16,6 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.views import user_logout, base_layout, project_name
-from pyramid.threadlocal import get_current_registry
 
 #
 # CORS configuration

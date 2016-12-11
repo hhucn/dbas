@@ -103,36 +103,14 @@ class DiscussionDictHelper(object):
         if not text:
             return None
 
-        # system bubble
         tag_start = '<' + tag_type + ' data-argumentation-type="position">'
-        tag_end = '</' + tag_type + '>'
-        if self.lang == 'de':
-            if is_supportive:
-                question = _tn.get(_.whatIsYourMostImportantReasonWhyForInColor)
-            else:
-                question = _tn.get(_.whatIsYourMostImportantReasonWhyAgainstInColor)
-        else:
-            question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
+        tag_end = '</' + tag_type + '/>'
 
-        question += ' ' + tag_start + text + tag_end
-
-        if self.lang != 'de':
-            question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
-        question += '?'
-        because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
+        # system bubble
+        system_question = self.get_system_bubble_for_justify_statement(is_supportive, _tn, tag_start, text, tag_end)
 
         # user bubble
-        if self.lang == 'de':
-            intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
-            add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
-        else:
-            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea)
-        add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
-
-        if self.lang == 'de':
-            intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
-        else:
-            intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
+        user_text, add_premise_text = self.get_user_bubble_for_justify_statement(_tn, is_supportive, text)
 
         # additional stuff
         splitted_history = self.history.split('-')
@@ -143,10 +121,10 @@ class DiscussionDictHelper(object):
                 intro += ': '
 
         url = UrlManager(application_url, slug).get_slug_url(False)
-        question_bubble = create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True, lang=self.lang)
+        question_bubble = create_speechbubble_dict(is_system=True, message=system_question, omit_url=True, lang=self.lang)
         if not text.endswith(('.', '?', '!')):
             text += '.'
-        select_bubble = create_speechbubble_dict(is_user=True, url=url, message=intro + text, omit_url=False,
+        select_bubble = create_speechbubble_dict(is_user=True, url=url, message=user_text, omit_url=False,
                                                  statement_uid=uid, is_supportive=is_supportive, nickname=nickname,
                                                  lang=self.lang)
 
@@ -161,6 +139,56 @@ class DiscussionDictHelper(object):
                                                           omit_url=True, lang=self.lang))
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
+
+    def get_user_bubble_for_justify_statement(self, _tn, is_supportive, text):
+        """
+
+        :param _tn:
+        :param is_supportive:
+        :param text:
+        :return:
+        """
+        if self.lang == 'de':
+            intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
+            add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
+        else:
+            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea)
+        add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
+
+        if self.lang == 'de':
+            intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
+        else:
+            intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
+        text = intro + text
+
+        return text, add_premise_text
+
+    def get_system_bubble_for_justify_statement(self, is_supportive, _tn, tag_start, text, tag_end):
+        """
+
+        :param is_supportive:
+        :param _tn:
+        :param tag_start:
+        :param text:
+        :param tag_end:
+        :return:
+        """
+        if self.lang == 'de':
+            if is_supportive:
+                question = _tn.get(_.whatIsYourMostImportantReasonWhyForInColor)
+            else:
+                question = _tn.get(_.whatIsYourMostImportantReasonWhyAgainstInColor)
+        else:
+            question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
+
+        question += ' ' + tag_start + text + tag_end
+
+        if self.lang != 'de':
+            question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
+        because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
+        question += '?' + ' <br>' + because
+
+        return question
 
     def get_dict_for_justify_argument(self, uid, is_supportive, attack):
         """

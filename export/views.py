@@ -8,7 +8,6 @@ import json
 import dbas.helper.issue as IssueHelper
 
 from cornice import Service
-from pyramid.threadlocal import get_current_registry
 
 from dbas.lib import get_language
 from dbas.logger import logger
