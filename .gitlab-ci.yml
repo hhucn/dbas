@@ -40,6 +40,6 @@ nose-acceptance-tests:
   <<: *job-definition
   stage: test
   script:
-    - pserve development.ini --daemon
+    - pserve test.ini --daemon
     - sleep 10
     - nosetests -v --process-timeout=120 tests/test_frontend
