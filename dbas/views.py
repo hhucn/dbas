@@ -1182,7 +1182,6 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('user_login', 'def', 'main, request.params: ' + str(request.params))
 
-    reg = get_current_registry()
     lang = get_language(request)
     _tn = Translator(lang)
     error = ''
