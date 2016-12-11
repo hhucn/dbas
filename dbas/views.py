@@ -51,7 +51,6 @@ from dbas.url_manager import UrlManager
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
-from pyramid.threadlocal import get_current_registry
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
