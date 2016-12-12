@@ -96,7 +96,7 @@
 
 	<!-- Placed at the end of the document so the pages load faster -->
 	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>-->
-    <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery/jquery.slimscroll-1.3.8.min.js')}"></script>
 
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>

@@ -3,7 +3,12 @@
 
         <div class="container colored-container" id="header-container">
             <div class="row cn">
-                <div class="col-md-8 center">
+                <div class="col-md-8 center" tal:condition="len(issues.all)>1">
+                    <span>${structure:issues.intro}</span>:<br>
+                    <span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
+                    <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>
+                </div>
+                <div class="col-md-10 center" tal:condition="len(issues.all)<2">
                     <span>${structure:issues.intro}</span>:<br>
                     <span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
                     <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>

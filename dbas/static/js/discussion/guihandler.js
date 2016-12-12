@@ -180,7 +180,7 @@ function GuiHandler() {
 			if (height < 50)
 				speechBubbles.css('min-height', '100px');
 			else
-				speechBubbles.css('height', height + 'px').css('min-height', '300px');
+				speechBubbles.css('height', height + 'px').css('min-height', '200px');
 			speechBubbles.css('min-height', '100px').css('max-height', maxHeight + 'px');
 		}
 		return speechBubbles.height() - oldSize;

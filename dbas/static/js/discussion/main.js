@@ -241,10 +241,10 @@ function Main () {
 		$('.triangle-r-info').each(function () {
 			if ($(this).data('votecount') > 0) {
 				$(this).click(function () {
-					let data_type = $(this).data('type'),
-						data_argument_uid = $(this).data('argument-uid'),
-						data_statement_uid = $(this).data('statement-uid'),
-						data_is_supportive = $(this).data('is-supportive');
+					const data_type = $(this).data('type');
+					const data_argument_uid = $(this).data('argument-uid');
+					const data_statement_uid = $(this).data('statement-uid');
+					const data_is_supportive = $(this).data('is-supportive');
 					new AjaxDiscussionHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid, data_is_supportive);
 				});
 			} else {
