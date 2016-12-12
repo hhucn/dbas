@@ -24,8 +24,8 @@
 					<a href="${request.application_url}/contact"><i class="fa fa-comment" aria-hidden="true"></i><span i18n:translate="contact">Contact</span></a>
 				</li>
 			</ul>
-            <img id="roundhousekick" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}">
-            <img id="yomamma" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}">
+            <img id="roundhousekick" alt=".r" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}">
+            <img id="yomamma" alt=".y" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}">
 		</div>
 	</div>
 </div>

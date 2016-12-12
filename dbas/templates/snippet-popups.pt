@@ -596,7 +596,7 @@
     				<div id="insert_statements_page_" style="display: none;">
     					<ul id="insert_statements_options">
     						<li>
-    							<label for="insert_more_arguments" class="bs-callout bs-callout-primary">
+    							<label class="bs-callout bs-callout-primary">
     								<input type="radio" name="insert_statements" id="insert_more_arguments">
     								<span>${extras.tag.i_actually_have}</span>&#160;<span id="insert_statements_count"></span>&#160;<span>${extras.tag.arguments}:</span>
     							    <span id="insert_statements_list_more_arguments" style="font-weight: 300;">
@@ -604,14 +604,14 @@
     							</label>
     						</li>
     						<li>
-    							<label for="insert_one" class="bs-callout bs-callout-primary">
+    							<label class="bs-callout bs-callout-primary">
     								<input type="radio" name="insert_statements" id="insert_one_argument">${extras.tag.insert_one_argument}
     							    <br>
     							    <span id="insert_statements_one_argument" style="font-weight: 300;"></span>
     							</label>
     						</li>
     						<li>
-    							<label for="insert_dont_care" class="bs-callout bs-callout-primary">
+    							<label class="bs-callout bs-callout-primary">
     								<input type="radio" name="insert_statements" id="insert_dont_care" style="font-weight: 300;">${extras.tag.insert_dont_care}
     							</label>
     						</li>
