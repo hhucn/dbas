@@ -39,7 +39,7 @@
             					<label class="col-sm-3 control-label" i18n:translate="message_req">Your Notification (required)</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            						<textarea type="text" id="msg-input" name="content" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.message" placeholder="" value="${name}"><span tal:replace="content"/></textarea>
+            						<textarea id="msg-input" name="content" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.message" placeholder=""><span tal:replace="content"/></textarea>
             					</div>
             				</div>
 
