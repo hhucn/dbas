@@ -203,16 +203,15 @@ def get_relation_text_dict_with_substitution(lang, start_lower_case, with_no_opi
     :return:
     """
     _t = Translator(lang)
+    premise = _t.get(_.herArgument) if gender is 'f' else (_t.get(_.hisArgument) if gender is 'm' else _t.get(_.theirArgument))
 
     if not is_dont_know:
-        premise = _t.get(_.herArgument) if gender is 'f' else (_t.get(_.hisArgument) if gender is 'm' else _t.get(_.theirArgument))
         if attack_type == 'undermine' or attack_type == 'rebut':
             conclusion = _t.get(_.herPosition) if gender is 'f' else (_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition))
         else:
             conclusion = _t.get(_.myArgument)
     else:
-        premise = _t.get(_.thisArgument)
-        conclusion = _t.get(_.opinion)
+        conclusion = _t.get(_.opinion_her) if gender is 'f' else (_t.get(_.opinion_his) if gender is 'm' else _t.get(_.opinion))
 
     return __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
                                     is_dont_know, first_conclusion, for_island_view, attack_type)
@@ -511,7 +510,7 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sta
     :param confrontation:
     :return:
     """
-    author, gender, is_okay = __get_name_link_of_arguments_author(main_page, system_argument, nickname)
+    author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     if is_okay:
         confrontation_text = author + ' ' + _t.get(_.thinksThat)
     else:
@@ -642,7 +641,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_name_link_of_arguments_author(main_page, argument, nickname):
+def get_name_link_of_arguments_author(main_page, argument, nickname):
     """
     Get the first author, who wrote or agreed with the argument
 

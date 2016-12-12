@@ -440,6 +440,8 @@ de_lang = {
     _.notLoggedIn: 'Sie sind nicht angemeldet!',
     _.on: 'An',
     _.off: 'Aus',
+    _.opinion_his: 'ihre Meinung',
+    _.opinion_her: 'seine Meinung',
     _.opinion: 'die Meinung',
     _.onlyOneItem: 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte hier um sich anzumelden.',
     _.onlyOneItemWithLink: 'Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> um sich anzumelden.',

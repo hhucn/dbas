@@ -226,7 +226,7 @@ class ItemDictHelper(object):
 
         if logged_in:
             if len(statements_array) == 0:
-                text = _tn.get(_.newPremisesRadioButtonTextAsFirstOne)
+                text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
             else:
                 text = _tn.get(_.newPremiseRadioButtonText)
             statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
@@ -279,7 +279,7 @@ class ItemDictHelper(object):
                                                                  Argument.issue_uid == self.issue_uid)).all()
         return db_arguments
 
-    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive, nickname):
+    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive, nickname, gender):
         """
         Prepares the dict with all items for the third step, where a supportive argument will be presented.
 
@@ -301,7 +301,7 @@ class ItemDictHelper(object):
         if db_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user.uid)
 
-        rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, False, False, is_dont_know=True)
+        rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, False, False, is_dont_know=True, gender=gender)
         mode         = 't' if is_supportive else 't'
         counter_mode = 'f' if is_supportive else 't'
 

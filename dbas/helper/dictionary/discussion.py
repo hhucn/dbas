@@ -14,6 +14,7 @@ from dbas.strings.text_generator import tag_type, get_header_for_users_confronta
     get_text_for_add_premise_container, get_text_for_confrontation
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from dbas.strings.text_generator import get_name_link_of_arguments_author
 
 
 class DiscussionDictHelper(object):
@@ -242,7 +243,7 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
 
-    def get_dict_for_dont_know_reaction(self, uid):
+    def get_dict_for_dont_know_reaction(self, uid, main_page, nickname):
         """
         Prepares the discussion dict with all bubbles for the third step, where an supportive argument will be presented.
 
@@ -254,15 +255,28 @@ class DiscussionDictHelper(object):
         bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         add_premise_text = ''
         save_statement_url = 'ajax_set_new_start_statement'
+        gender = ''
 
         if uid != 0:
-            text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True)
-            sys_text = _tn.get(_.otherParticipantsThinkThat) + ' ' + text[0:1].lower() + text[1:] + '. '
+            text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True, start_with_intro=True)
+            db_argument = DBDiscussionSession.query(Argument).get(uid)
+            if not db_argument:
+                text = ''
+            author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_argument, nickname)
+            if is_okay:
+                intro = author + ' ' + _tn.get(_.thinksThat)
+            else:
+                intro = _tn.get(_.otherParticipantsThinkThat)
+            sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
             sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
             bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text)
             bubbles_array.append(bubble_sys)
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+        return {'bubbles': bubbles_array,
+                'add_premise_text': add_premise_text,
+                'save_statement_url': save_statement_url,
+                'mode': '',
+                'gender': gender}
 
     def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history, nickname):
         """

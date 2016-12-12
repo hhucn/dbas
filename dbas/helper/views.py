@@ -138,6 +138,7 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
         if broke_limit:
             _t = Translator(ui_locales)
             send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+
     else:
         logger('ViewHelper', 'handle_justification_step', '404')
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation])), None, None
@@ -205,8 +206,8 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
 
     # dont know
     argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
-    item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname)
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
+    item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,
                                               application_url=main_page, for_api=for_api, nickname=request_authenticated_userid)
     # is the discussion at the end?
@@ -416,14 +417,15 @@ def catch_user_from_ldap(request, nickname, password, _tn):
     import ldap
 
     try:
-        server      = request.registry.settings['settings:ldap:server']
-        base        = request.registry.settings['settings:ldap:base']
-        scope       = request.registry.settings['settings:ldap:account.scope']
-        filter      = request.registry.settings['settings:ldap:account.filter']
-        firstname   = request.registry.settings['settings:ldap:account.firstname']
-        lastname    = request.registry.settings['settings:ldap:account.lastname']
-        title       = request.registry.settings['settings:ldap:account.title']
-        email       = request.registry.settings['settings:ldap:account.email']
+        r = request.registry.settings
+        server      = r['settings:ldap:server']
+        base        = r['settings:ldap:base']
+        scope       = r['settings:ldap:account.scope']
+        filter      = r['settings:ldap:account.filter']
+        firstname   = r['settings:ldap:account.firstname']
+        lastname    = r['settings:ldap:account.lastname']
+        title       = r['settings:ldap:account.title']
+        email       = r['settings:ldap:account.email']
         logger('ViewHelper', 'catch_user_from_ldap', 'parsed data')
 
         logger('ViewHelper', 'catch_user_from_ldap', 'connect ldap')

@@ -419,6 +419,8 @@ class Keywords(Enum):
     notLoggedIn = 'You are not logged in.'
     on = 'On'
     off = 'Off'
+    opinion_his = 'his opinion'
+    opinion_her = 'her opinion'
     opinion = 'the opinion'
     onlyOneItem = 'If you want to state a new reason, please click here to log in.'
     onlyOneItemWithLink = 'If you want to state a new reason, please click <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">here</a> to log in.'
