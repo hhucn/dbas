@@ -262,6 +262,8 @@ class Keywords(Enum):
     exampleNicknameLdap = 'example: tokra100'
     exampleFirstname = 'Tobias'
     exampleLastname = 'Krauthoff'
+    exampleStatement = 'Please enter the source here'
+    exampleSource = 'Please enter the cite here'
     error_code = 'Error code'
     edit = 'Edit'
     editTitle = 'Edit statement'

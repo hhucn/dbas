@@ -872,7 +872,7 @@
                             <div tal:repeat="statement discussion.extras" tal:omit-tag="">
                                 <br>
                                 <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument" data-special="">
-                                <label for="a" tal:attributes="for statement.uid">
+                                <label for="a" tal:attributes="for statement.uid" style="width: 90%">
                                     <span i18n:translate="report">Report</span>: &quot;<em>${statement.text}</em> &quot;
                                 </label>
                             </div>
@@ -884,7 +884,7 @@
                             <!--</label>-->
                             <br>
                             <input type="radio" id="flag_interference" value="interference" name="flag-argument" data-special="argument">
-                            <label for="flag_interference">
+                            <label for="flag_interference" style="width: 90%">
                                 <span i18n:translate="report_whole_argument">Report the whole argument.</span><br>
                                 <!--<small i18n:translate="statement_harmful_description">Content is inappropriate, harmful or abusive.</small>-->
                             </label>
@@ -956,15 +956,15 @@
                         <p class="text-info" i18n:translate="statement_reference_definition">Statement is a cite from a website like a newspaper article, which underpins the opinion. The source is the website as link.</p>
 
                         <div class="form-group">
-					        <label class="col-md-2 control-label" for="popup-references-add-text">Statement</label>
+					        <label class="col-md-2 control-label" for="popup-references-add-text" i18n:translate="statement">Statement</label>
                             <div class="col-md-10">
-						        <input type="text" id="popup-references-add-text" class="col-md-9 form-control" placeholder="Please cite here">
+						        <input type="text" id="popup-references-add-text" class="col-md-9 form-control" placeholder="Please cite here" tal:attributes="placeholder extras.tag.placeholder_statement">
                             </div>
 					    </div>
                         <div class="form-group">
-					        <label class="col-md-2 control-label" for="popup-references-add-source">Source</label>
+					        <label class="col-md-2 control-label" for="popup-references-add-source" i18n:translate="source">Source</label>
                             <div class="col-md-10">
-						        <input type="text" id="popup-references-add-source" class="form-control" placeholder="Please enter the source here">
+						        <input type="text" id="popup-references-add-source" class="form-control" placeholder="Please enter the source here" tal:attributes="placeholder extras.tag.placeholder_source">
                             </div>
 					    </div>
                         <p id="choose_reference_text" class="text-info" i18n:translate="please_choose_a_reference">Please choose a statement for your reference!</p>
@@ -982,7 +982,7 @@
                         <ul class="dropdown-menu" id="popup-references-cite-dropdown-list">
                         </ul>
                     </div>
-    				<button type="button" class="btn btn-sm btn-success" id="popup-reference-send-btn">Add reference</button>
+    				<button type="button" class="btn btn-sm btn-success" id="popup-reference-send-btn" i18n:translate="add_reference">Add reference</button>
                 </div>
     		</div>
     	</div>

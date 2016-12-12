@@ -473,5 +473,7 @@ class DictionaryHelper(object):
             'placeholder_password': _tn_dis.get(_.examplePassword),
             'placeholder_firstname': _tn_dis.get(_.exampleFirstname),
             'placeholder_lastname': _tn_dis.get(_.exampleLastname),
-            'placeholder_mail': _tn_dis.get(_.exampleMail)
+            'placeholder_mail': _tn_dis.get(_.exampleMail),
+            'placeholder_statement': _tn_dis.get(_.exampleStatement),
+            'placeholder_source': _tn_dis.get(_.exampleSource)
         }
