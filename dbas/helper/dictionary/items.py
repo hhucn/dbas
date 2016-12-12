@@ -55,6 +55,7 @@ class ItemDictHelper(object):
         :param nickname: Boolean or String
         :return:
         """
+        logger('ItemDictHelper', 'get_array_for_start', 'def user: ' + str(nickname))
         db_statements = get_not_disabled_statement_as_query()
         db_statements = db_statements.filter(and_(Statement.is_startpoint == True,
                                                   Statement.issue_uid == self.issue_uid)).all()
@@ -80,15 +81,15 @@ class ItemDictHelper(object):
 
         _tn = Translator(self.lang)
         if nickname:
-                statements_array.append(self.__create_answer_dict('start_statement',
-                                                                  [{'title': _tn.get(_.newConclusionRadioButtonText),
-                                                                    'id': 0}],
-                                                                  'start',
-                                                                  'add'))
+            statements_array.append(self.__create_answer_dict('start_statement',
+                                                              [{'title': _tn.get(_.newConclusionRadioButtonText),
+                                                                'id': 0}],
+                                                              'start',
+                                                              'add'))
         else:
-                statements_array.append(
-                    self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
-                                              'justify', 'login'))
+            statements_array.append(
+                self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
+                                          'justify', 'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
