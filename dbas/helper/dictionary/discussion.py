@@ -336,8 +336,6 @@ class DiscussionDictHelper(object):
                                                             user_changed_opinion=user_changed_opinion, attack_type=attack,
                                                             minimize_on_undercut=True)
 
-            user_is_attacking   = not db_argument.is_supportive
-
             current_argument = current_argument[0:1].upper() + current_argument[1:]
             if self.lang != 'de':
                 premise = premise[0:1].lower() + premise[1:]
@@ -348,7 +346,7 @@ class DiscussionDictHelper(object):
 
             sys_text, gender = get_text_for_confrontation(self.main_page, self.lang, nickname, premise, conclusion, sys_conclusion,
                                                           is_supportive, attack, confr, reply_for_argument,
-                                                          user_is_attacking, db_argument, db_confrontation)
+                                                          not db_argument.is_supportive, db_argument, db_confrontation)
             gender_of_counter_arg = gender
 
         bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,

@@ -207,7 +207,7 @@ def get_relation_text_dict_with_substitution(lang, start_lower_case, with_no_opi
 
     if not is_dont_know:
         if attack_type == 'undermine' or attack_type == 'rebut':
-            conclusion = _t.get(_.herPosition) if gender is 'f' else (_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition))
+            conclusion = _t.get(_.herPosition) if gender is 'f' else ((_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition)))
         else:
             conclusion = _t.get(_.myArgument)
     else:
@@ -627,6 +627,9 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
         confrontation_text += ' ' + start_argument
         confrontation_text += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
+
+        if lang == 'de':
+            confrontation_text += end_tag + ' ' + _t.get(_.of) + ': ' + start_argument
 
         tmp = _t.get(_.strongerStatementEnd)
         if tmp == '':

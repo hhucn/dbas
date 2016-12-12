@@ -60,7 +60,7 @@ def main_discussion(argv=sys.argv):
         user0, user1, user2, user3, user4, user6, user7, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
-        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
+        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30, use_anonyme_nicks=False)
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
@@ -86,7 +86,7 @@ def field_test(argv=sys.argv):
         user0, user1, user2, user3, user4, user6, user7 = set_up_users(DBDiscussionSession, include_dummy_users=False)
         lang1, lang2 = set_up_language(DBDiscussionSession)
         set_up_issue(DBDiscussionSession, user0, lang1, lang2, is_field_test=True)
-        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7)
+        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, use_anonyme_nicks=False)
         transaction.commit()
 
 
@@ -567,7 +567,7 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, us
                     usert09=None, usert10=None, usert11=None, usert12=None, usert13=None, usert14=None, usert15=None,
                     usert16=None, usert17=None, usert18=None, usert19=None, usert20=None, usert21=None, usert22=None,
                     usert23=None, usert24=None, usert25=None, usert26=None, usert27=None, usert28=None, usert29=None,
-                    usert30=None):
+                    usert30=None, use_anonyme_nicks=False):
     # adding settings
     settings0 = Settings(author_uid=user0.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settings1 = Settings(author_uid=user1.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
@@ -619,23 +619,24 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, us
         session.add_all([settingst28, settingst29, settingst30])
         session.flush()
 
-        import dbas.user_management as user_hander
-        user_hander.refresh_public_nickname(usert07)
-        user_hander.refresh_public_nickname(usert08)
-        user_hander.refresh_public_nickname(usert09)
-        user_hander.refresh_public_nickname(usert10)
-        user_hander.refresh_public_nickname(usert11)
-        user_hander.refresh_public_nickname(usert12)
-        user_hander.refresh_public_nickname(usert13)
-        user_hander.refresh_public_nickname(usert14)
-        user_hander.refresh_public_nickname(usert15)
-        user_hander.refresh_public_nickname(usert16)
-        user_hander.refresh_public_nickname(usert17)
-        user_hander.refresh_public_nickname(usert18)
-        user_hander.refresh_public_nickname(usert19)
-        user_hander.refresh_public_nickname(usert20)
-        user_hander.refresh_public_nickname(usert21)
-        user_hander.refresh_public_nickname(usert22)
+        if use_anonyme_nicks:
+            import dbas.user_management as user_hander
+            user_hander.refresh_public_nickname(usert07)
+            user_hander.refresh_public_nickname(usert08)
+            user_hander.refresh_public_nickname(usert09)
+            user_hander.refresh_public_nickname(usert10)
+            user_hander.refresh_public_nickname(usert11)
+            user_hander.refresh_public_nickname(usert12)
+            user_hander.refresh_public_nickname(usert13)
+            user_hander.refresh_public_nickname(usert14)
+            user_hander.refresh_public_nickname(usert15)
+            user_hander.refresh_public_nickname(usert16)
+            user_hander.refresh_public_nickname(usert17)
+            user_hander.refresh_public_nickname(usert18)
+            user_hander.refresh_public_nickname(usert19)
+            user_hander.refresh_public_nickname(usert20)
+            user_hander.refresh_public_nickname(usert21)
+            user_hander.refresh_public_nickname(usert22)
 
     # Adding welcome notifications
     notification0 = Message(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
@@ -892,7 +893,7 @@ def __set_upvotes_for_statements(firstnames, up_votes, statement_uid, new_votes_
     :return:
     """
     tmp_firstname = list(firstnames)
-    for i in range(0, up_votes):
+    for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
         db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
         if not session.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,

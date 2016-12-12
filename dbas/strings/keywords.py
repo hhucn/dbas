@@ -420,6 +420,7 @@ class Keywords(Enum):
     noRights = 'You have no rights for this action!'
     notLoggedIn = 'You are not logged in.'
     on = 'On'
+    of = 'of'
     off = 'Off'
     opinion_his = 'his opinion'
     opinion_her = 'her opinion'
