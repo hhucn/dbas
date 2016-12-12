@@ -80,13 +80,13 @@
                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
                                     <span class="triangle-content">${structure:bubble.message}</span>
                                     <br tal:condition="bubble.is_flagable and extras.logged_in">
-                                    <span class="triangle-trash pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_author and extras.logged_in" tal:attributes="title extras.title.delete_statement">
+                                    <span class="triangle-trash pull-right" tal:condition="bubble.is_author and extras.logged_in">
                                         <i class="fa fa-trash" aria-hidden="true" tal:attributes="title extras.title.delete_statement"></i>
                                     </span>
-                                    <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" tal:attributes="title extras.title.report_argument">
+                                    <span class="triangle-flag pull-right" tal:condition="bubble.is_flagable and extras.logged_in">
                                         <i class="fa fa-flag" aria-hidden="true"  tal:attributes="title extras.title.edit_statement"></i>
                                     </span>
-                                    <span class="triangle-reference pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" >
+                                    <span class="triangle-reference pull-right" tal:condition="bubble.is_flagable and extras.logged_in" >
                                         <i class="fa fa-link" aria-hidden="true" tal:attributes="title extras.title.reference"></i>
                                     </span>
                                 </p>
