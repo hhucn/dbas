@@ -4,7 +4,7 @@
  */
 
 let socket = undefined;
-const port = 5100;
+const port = 5222;
 
 $(document).ready(function() {
 	
