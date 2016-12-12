@@ -12,7 +12,7 @@
     			<div class="modal-body">
     				<div class="container-fluid">
     					<div class="row">
-    						<div class="col-md-8">
+    						<div class="col-md-9">
     							<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
     								<tr>
     									<td>
@@ -29,13 +29,9 @@
     										<br>
                                             <a tal:condition="not:extras.lang_is_en" href="www.tsn.hhu.de/ourgroup/scientists/tobias-krauthoff.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
     										<a tal:condition="extras.lang_is_en" href="www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
-    										<br><span i18n:translate="role_value_2">Member of the graduation school</span>
-                                            <a tal:condition="extras.lang_is_en" href="http://www.fortschrittskolleg.de/en/participants/phd-students/#krauthoff" target="_blank">
-    											<span i18n:translate="role_value_3">Online Participation</span>
-    										</a>
-                                            <a tal:condition="not:extras.lang_is_en" href="http://www.fortschrittskolleg.de/beteiligte/kollegiatinnen/#krauthoff" target="_blank">
-    											<span i18n:translate="role_value_3">Online Participation</span>
-    										</a>
+    										<br><span i18n:translate="role_value_2">Member of the graduation school</span> <a tal:condition="extras.lang_is_en" href="http://www.fortschrittskolleg.de/en/participants/phd-students/#krauthoff" target="_blank"><span i18n:translate="role_value_3">Online Participation</span></a><a tal:condition="not:extras.lang_is_en" href="http://www.fortschrittskolleg.de/beteiligte/kollegiatinnen/#krauthoff" target="_blank"><span i18n:translate="role_value_3">Online Participation</span></a>
+                                            <br><span i18n:translate="role_value_4">Vorstandsmitglied des DIID - Düsseldorfer Institut für Internet und Demokratie</span>
+
     									</td>
     								</tr>
     								<tr>
@@ -71,8 +67,8 @@
     							</table>
     						</div>
 
-    						<div class="col-md-3 col-md-offset-1">
-    							<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author" style="border-radius: 5px;">
+    						<div class="col-md-2">
+    							<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author" style="border-radius: 5px; width: 100%">
     						</div>
     					</div>
     				</div>
