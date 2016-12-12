@@ -34,7 +34,7 @@
                     <div tal:switch="len(past.content)>0">
                         <p tal:case="False" class="lead" i18n:translate="no_decision_for_this_queue">No decisions for this queue.</p>
                         <div tal:case="True">
-                            <table class="table table-condensed" border="0">
+                            <table class="table table-condensed">
                                 <thead>
                                     <tr>
                                         <td tal:condition="not:past.has_oem_text" i18n:translate="argument">Argument</td>

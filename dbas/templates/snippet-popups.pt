@@ -1,18 +1,19 @@
 <div i18n:domain="dbas" metal:define-macro="layout">
+
     <!-- ABOUT POPUP IN -->
-    <div class="modal fade" id="popup_author" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup_author" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAbout" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button name="popup_author_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="about_me">About me</h4>
+    				<h4 class="modal-title" id="myModalLabelAbout" i18n:translate="about_me">About me</h4>
     			</div>
     			<div class="modal-body">
     				<div class="container-fluid">
     					<div class="row">
     						<div class="col-md-8">
-    							<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+    							<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
     								<tr>
     									<td>
     										<strong i18n:translate="name">Name</strong>
@@ -84,13 +85,13 @@
     </div>
 
     <!-- COPYRIGHT POPUP IN -->
-    <div class="modal fade" id="popup_license" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup_license" tabindex="-1" role="dialog" aria-labelledby="myModalLabelCopyright" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button name="popup_license_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="mit_license">MIT License (MIT)</h4>
+    				<h4 class="modal-title" id="myModalLabelCopyright" i18n:translate="mit_license">MIT License (MIT)</h4>
     			</div>
     			<div class="modal-body">
     				<span>
@@ -129,13 +130,13 @@
     </div>
 
     <!-- EDIT STATEMENTS -->
-    <div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelEditStatements" aria-hidden="true">
     	<div class="modal-dialog modal-lg">
     		<div class="modal-content">
     			<div class="modal-header" style="display: none">
     				<button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h5 class="modal-title" id="myModalLabel">${extras.title.edit_statement}</h5>
+    				<h5 class="modal-title" id="myModalLabelEditStatements">${extras.title.edit_statement}</h5>
     			</div>
     			<div id="popup-edit-statement-body">
     				<p id="popup-edit-statement-success-description" class="text-success"></p>
@@ -160,13 +161,13 @@
     </div>
 
     <!-- CONFIRM DIALOG POPUP -->
-    <div class="modal fade" id="confirm-dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirm-dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelConfirmDialog" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel"></h4>
+    				<h4 class="modal-title" id="myModalLabelConfirmDialog">...</h4>
     			</div>
     			<div class="modal-body">
     			</div>
@@ -178,14 +179,14 @@
     	</div>
     </div>
 
-    <!-- CONFIRM DIALOG POPUP -->
-    <div class="modal fade" id="confirm-row-dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- CONFIRM ROW DIALOG POPUP -->
+    <div class="modal fade" id="confirm-row-dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelConfirmRowDialog" aria-hidden="true">
     	<div class="modal-dialog modal-lg">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel"></h4>
+    				<h4 class="modal-title" id="myModalLabelConfirmRowDialog">...</h4>
     			</div>
     			<div class="modal-body">
                     <div class="row">
@@ -202,13 +203,13 @@
     </div>
 
     <!-- CONFIRM DIALOG POPUP WITH CHECKBOX -->
-    <div class="modal fade" id="confirm-dialog-checkbox-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirm-dialog-checkbox-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelConfirmDialogCheckbox" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel"></h4>
+    				<h4 class="modal-title" id="myModalLabelConfirmDialogCheckbox">...</h4>
     			</div>
     			<div class="modal-body">
     			</div>
@@ -227,13 +228,13 @@
     </div>
 
     <!-- URL SHARING POPUP -->
-    <div class="modal fade" id="popup-url-sharing" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-url-sharing" tabindex="-1" role="dialog" aria-labelledby="myModalLabelURL" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" id="popup-url-sharing-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h5 class="modal-title" id="myModalLabel">${extras.tag.url_sharing}</h5>
+    				<h5 class="modal-title" id="myModalLabelURL">${extras.tag.url_sharing}</h5>
     			</div>
     			<div id="popup-url-sharing-body">
     				<div id="popup-url-sharing-content">
@@ -263,14 +264,14 @@
     </div>
 
     <!-- LOGIN POPUP for LDAP-->
-    <div tal:condition="extras.use_with_ldap" class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div tal:condition="extras.use_with_ldap" class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLoginLDAP" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
     				<br>
-                    <h4 class="text-primary center" i18n:translate="login">Log In</h4>
+                    <h4 id="myModalLabelLoginLDAP" class="text-primary center" i18n:translate="login">Log In</h4>
     			</div>
     			<div id="popup-login-body">
                     <form autocomplete="on">
@@ -323,7 +324,7 @@
     </div>
 
     <!-- LOGIN POPUP without LDAP-->
-    <div tal:condition="not:extras.use_with_ldap" class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div tal:condition="not:extras.use_with_ldap" class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
@@ -498,7 +499,7 @@
     							</div>
     						</div>
     						<div id="popup-login-generate-password-body">
-    							<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
+    							<h4 class="modal-title" i18n:translate="select_password">How to select a strong password</h4>
     							<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
                                 <table>
                                     <tr>
@@ -539,13 +540,13 @@
     </div>
 
     <!-- HOW TO PASSWORD -->
-    <div class="modal fade" id="popup-generate-password" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-generate-password" tabindex="-1" role="dialog" aria-labelledby="myModalLabelPassword" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" id="popup-generate-password-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="select_password">How to select a strong password</h4>
+    				<h4 class="modal-title" id="myModalLabelPassword" i18n:translate="select_password">How to select a strong password</h4>
     			</div>
     			<div id="popup-generate-password-body">
     				<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
@@ -578,7 +579,7 @@
     </div>
 
     <!-- HOW TO SET PREMISSEGROUPS POPUP -->
-    <div class="modal fade" id="popup-set-premisegroups" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-set-premisegroups" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSetPGroup" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
@@ -586,7 +587,7 @@
     					<span aria-hidden="true">&times;</span>
     				</button>
     				<span id="popup-set-premisegroups-counter" class="lead badge" style="float:right; margin: 1em;">1/4</span>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="need-help-to-understand-statement">${extras.tag.need_help_to_understand_statement}</h4>
+    				<h4 class="modal-title" id="myModalLabelSetPGroup" i18n:translate="need-help-to-understand-statement">${extras.tag.need_help_to_understand_statement}</h4>
     			</div>
     			<div id="popup-set-premisegroups-body" class="lead">
     				<span id="popup-set-premisegroups-body-intro1">${extras.tag.set_premisegroups_intro1}</span><strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong><span id="popup-set-premisegroups-body-intro2">${extras.tag.set_premisegroups_intro2}</span>
@@ -598,12 +599,12 @@
     							<label for="insert_more_arguments" class="bs-callout bs-callout-primary">
     								<input type="radio" name="insert_statements" id="insert_more_arguments">
     								<span>${extras.tag.i_actually_have}</span>&#160;<span id="insert_statements_count"></span>&#160;<span>${extras.tag.arguments}:</span>
-    							    <ul id="insert_statements_list_more_arguments" style="font-weight: 300;">
-    							    </ul>
+    							    <span id="insert_statements_list_more_arguments" style="font-weight: 300;">
+    							    </span>
     							</label>
     						</li>
     						<li>
-    							<label for="insert_one_argument" class="bs-callout bs-callout-primary">
+    							<label for="insert_one" class="bs-callout bs-callout-primary">
     								<input type="radio" name="insert_statements" id="insert_one_argument">${extras.tag.insert_one_argument}
     							    <br>
     							    <span id="insert_statements_one_argument" style="font-weight: 300;"></span>
@@ -611,7 +612,7 @@
     						</li>
     						<li>
     							<label for="insert_dont_care" class="bs-callout bs-callout-primary">
-    								<input type="radio" name="insert_statements" id="insert_dont_care">${extras.tag.insert_dont_care}
+    								<input type="radio" name="insert_statements" id="insert_dont_care" style="font-weight: 300;">${extras.tag.insert_dont_care}
     							</label>
     						</li>
     					</ul>
@@ -636,13 +637,13 @@
     </div>
 
     <!-- WRITE NEWS -->
-    <div class="modal fade" id="popup-writing-news" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-writing-news" tabindex="-1" role="dialog" aria-labelledby="myModalLabelNews" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" id="popup-write-news-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h5 class="modal-title" id="myModalLabel" i18n:translate="writing_message">Writing a new message</h5>
+    				<h5 class="modal-title" id="myModalLabelNews" i18n:translate="writing_message">Writing a new message</h5>
     			</div>
     			<div id="popup-writing-news-body">
 
@@ -656,7 +657,7 @@
             		<div class="form-group">
             		    <div class="col-sm-12 input-group">
                             <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            		        <textarea data-min-length="10" type="text" id="popup-writing-news-text" class="form-control" tal:attributes="placeholder extras.title.message; title extras.title.message" title=""></textarea>
+            		        <textarea data-min-length="10" id="popup-writing-news-text" class="form-control" tal:attributes="placeholder extras.title.message; title extras.title.message" title=""></textarea>
             		    </div>
                     </div>
 
@@ -689,15 +690,15 @@
     </div>
 
     <!-- WRITE NOTIFICATION -->
-    <div class="modal fade" id="popup-writing-notification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-writing-notification" tabindex="-1" role="dialog" aria-labelledby="myModalLabelNotification" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
-    				<button type="button" id="popup-write-news-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				<button type="button" id="popup-write-notification-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h5 class="modal-title" id="myModalLabel" i18n:translate="writing_message">Writing a new message</h5>
+    				<h5 class="modal-title" id="myModalLabelNotification" i18n:translate="writing_message">Writing a new message</h5>
     			</div>
-    			<div id="popup-url-sharing-body">
+    			<div id="popup-notification-body">
 
             		<div class="form-group">
                         <div class="col-sm-12 input-group">
@@ -719,7 +720,7 @@
             		<div class="form-group">
             		    <div class="col-sm-12 input-group">
                             <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            		        <textarea data-min-length="5" type="text" id="popup-writing-notification-text" class="form-control" tal:attributes="placeholder extras.title.message; title extras.title.message" title=""></textarea>
+            		        <textarea data-min-length="5" id="popup-writing-notification-text" class="form-control" tal:attributes="placeholder extras.title.message; title extras.title.message" title=""></textarea>
             		    </div>
                     </div>
 
@@ -743,13 +744,13 @@
     </div>
 
     <!-- ADD TOPIC -->
-    <div class="modal fade in" id="popup-add-topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade in" id="popup-add-topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddTopic" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
     				</button>
-    				<h4 class="modal-title">${structure:extras.tag.add_a_topic}</h4>
+    				<h4 id="myModalLabelAddTopic" class="modal-title">${structure:extras.tag.add_a_topic}</h4>
     			</div>
     			<div class="modal-body">
                     <p>${structure:extras.tag.please_enter_topic}</p>
@@ -804,13 +805,13 @@
     </div>
 
     <!-- FLAG STATEMENT -->
-    <div class="modal fade" id="popup-flag-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-flag-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagStatement" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button name="popup-flag-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="select-reason">Selecting a reason</h4>
+    				<h4 class="modal-title" id="myModalLabelFlagStatement" i18n:translate="select-reason">Selecting a reason</h4>
     			</div>
     			<div class="modal-body">
                     <p class="statement_text lead"><span i18n:translate="statement_under_consideration_is">The statement under consideration is as follows</span>:</p>
@@ -854,13 +855,13 @@
     </div>
 
     <!-- FLAG ARGUMENTS -->
-    <div tal:condition="extras.is_reportable" class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div tal:condition="extras.is_reportable" class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagArgument" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="reporting_parts_argument">Reporting (parts of) an argument</h4>
+    				<h4 class="modal-title" id="myModalLabelFlagArgument" i18n:translate="reporting_parts_argument">Reporting (parts of) an argument</h4>
     			</div>
     			<div class="modal-body">
                     <p class="lead"><span i18n:translate="argument_under_consideration_is">The argument under consideration is as follows</span>:</p>
@@ -895,13 +896,13 @@
     </div>
 
     <!-- DELETE CONTENT-->
-    <div class="modal fade" id="popup-delete-content" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-delete-content" tabindex="-1" role="dialog" aria-labelledby="myModalLabelDelete" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel">
+    				<h4 class="modal-title" id="myModalLabelDelete">
                         <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i> <span i18n:translate="caution">Caution</span>
                     </h4>
     			</div>
@@ -918,13 +919,13 @@
     </div>
 
     <!-- SHOW POSITIONS -->
-    <div class="modal fade" id="popup-jump-graph" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-jump-graph" tabindex="-1" role="dialog" aria-labelledby="myModalLabelPositions" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button name="popup-jump-graph-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="choose_a_step_to_jump_in">Please choose a step to jump in</h4>
+    				<h4 class="modal-title" id="myModalLabelPositions" i18n:translate="choose_a_step_to_jump_in">Please choose a step to jump in</h4>
     			</div>
     			<div class="modal-body">
                     <p class="lead" i18n:translate="below_you_will_find_list_with_jump_arguments">Below you find a list with all arguments, where your selected text is used:</p>
@@ -937,14 +938,14 @@
     </div>
 
     <!-- SET AND GET REFERENCES -->
-    <div class="modal fade" id="popup-references" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popup-references" tabindex="-1" role="dialog" aria-labelledby="myModalLabelReferences" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button name="popup-references-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel" i18n:translate="refereces">References</h4>
+    				<h4 class="modal-title" id="myModalLabelReferences" i18n:translate="refereces">References</h4>
     			</div>
     			<div class="modal-body">
                     <div id="popup-references-body">
@@ -988,13 +989,13 @@
     </div>
 
     <!-- BAROMETER POPUP -->
-    <div class="modal fade" id="barometer-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="barometer-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelBarometer" aria-hidden="true">
     	<div class="modal-dialog modal-lg">
     		<div class="modal-content">
     			<div class="modal-header">
     				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabel"></h4>
+    				<h4 class="modal-title" id="myModalLabelBarometer">...</h4>
     			</div>
     			<div class="modal-body">
                     <div class="row">

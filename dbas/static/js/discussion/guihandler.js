@@ -394,8 +394,12 @@ function GuiHandler() {
 		else
 			bigText = topic + ' ' + connection; //supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
 		
+		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
-			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
+			let nl = i < splitted.length - 1 ? '<br>' : '';
+			let tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('padding-left', '20px');
+			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
+			list.append(tmp);
 			infix = i == 0 ? '' : ('<em>' + _t_discussion(andAtTheSameTime) + '</em> ' + connection + ' ');
 			bigText += ' ' + infix + splitted[i];
 		}

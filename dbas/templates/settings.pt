@@ -5,7 +5,7 @@
 			<div class="row" style="margin: 1em;">
 				<div class="col-md-7">
 					<h4><i class="fa fa-user" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="personal_information">Personal Information</span></h4>
-					<table id="info-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+					<table id="info-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span class="lead" i18n:translate="firstname">Firstname</span></td>
 							<td>${settings.db_firstname}</td>
@@ -39,7 +39,7 @@
 				</div>
 				<div class="col-md-5">
 					<h4><i class="fa fa-cogs" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="settings">Settings</span></h4>
-					<table id="settings-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+					<table id="settings-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td><span i18n:translate="receive_notifications" class="lead">Receive Notifications</span><i class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;" data-toggle="tooltip" data-placement="bottom" tal:attributes="title settings.title_notifications"></i></td>
 							<td class="text-center">
@@ -168,7 +168,7 @@
 
 				<div class="col-md-5" id="statistics">
 					<h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
-					<table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+					<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
 						<tr>
 							<td>
 								<span class="lead" i18n:translate="statements_posted">Statements posted</span>
@@ -262,7 +262,7 @@
 					</div>
 
 					<div id="history-table-space">
-						<table id="history-table" class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<table id="history-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
 							<tr>
 							</tr>
 						</table>

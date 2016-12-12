@@ -414,6 +414,7 @@ def catch_user_from_ldap(request, nickname, password, _tn):
     :return:
     """
     import ldap
+
     try:
         server      = request.registry.settings['settings:ldap:server']
         base        = request.registry.settings['settings:ldap:base']

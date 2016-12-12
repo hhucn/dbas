@@ -12,7 +12,7 @@
                             <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
 
                              <div class="form-group">
-                                 <label class="col-sm-3 control-label" for="name-input" i18n:translate="name_req">Your Name (required)</label>
+                                 <label class="col-sm-3 control-label" i18n:translate="name_req">Your Name (required)</label>
                                  <div class="col-sm-9 input-group">
                                      <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
                                      <input type="text" class="form-control" name="name" id="name-input" tal:attributes="placeholder placeholder.name" placeholder="" value="${name}" required>
@@ -20,7 +20,7 @@
                              </div>
 
             				<div class="form-group">
-            					<label class="col-sm-3 control-label" for="email-input" i18n:translate="mail_req">Your E-Mail (required)</label>
+            					<label class="col-sm-3 control-label" i18n:translate="mail_req">Your E-Mail (required)</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
             						<input type="email" id="email-input" name="mail" class="form-control" tal:attributes="placeholder placeholder.mail" placeholder="" autocomplete="on" value="${mail}" required>
@@ -28,7 +28,7 @@
             				</div>
 
             				<div class="form-group">
-            					<label class="col-sm-3 control-label" for="phone-input" i18n:translate="phone_no">Your Phone Number</label>
+            					<label class="col-sm-3 control-label" i18n:translate="phone_no">Your Phone Number</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-phone fa-2x" aria-hidden="true"></i></div>
             						<input type="tel" id="phone-input" name="phone" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.phone" placeholder="" value="${phone}">
@@ -36,7 +36,7 @@
             				</div>
 
             				<div class="form-group">
-            					<label class="col-sm-3 control-label" for="msg-input" i18n:translate="message_req">Your Notification (required)</label>
+            					<label class="col-sm-3 control-label" i18n:translate="message_req">Your Notification (required)</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
             						<textarea type="text" id="msg-input" name="content" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.message" placeholder="" value="${name}"><span tal:replace="content"/></textarea>
@@ -44,7 +44,7 @@
             				</div>
 
             				<div class="form-group">
-            					<label class="col-sm-3 control-label" for="spam-input" i18n:translate="spam_req">Anti-Spam (required)</label>
+            					<label class="col-sm-3 control-label" i18n:translate="spam_req">Anti-Spam (required)</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
             						<input type="text" id="spam-input" name="spam" class="form-control" autocomplete="off" placeholder="${spamquestion}" value="${spamanswer}" required>
@@ -63,7 +63,7 @@
             						<span aria-hidden="true">&times;</span>
             					</button>
             					<strong i18n:translate="warning">Warning!</strong>
-            					<div id="warning-message-text"><span tal:replace="message" /></div>
+                                <div id="warning-message-text"><span tal:replace="message">..</span></div>
             				</div>
 
 
