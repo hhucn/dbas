@@ -171,10 +171,7 @@ function Main () {
 			if ($(this).children().length > 0) {
 				$(this).children().click(function () {
 					const href = $(this).attr('href');
-					let text = _t(switchDiscussionText1) + ' <strong>' + $(this).attr('value') + '</strong> ';
-					text += _t(switchDiscussionText2);
-					text += '<br><br>';
-					text += _t(switchDiscussionText3);
+					let text = _t(switchDiscussionText).replace('XXX', $(this).attr('data-value'));
 					$(this).attr('href', '#');
 					displayConfirmationDialogWithCheckbox(_t(switchDiscussion), text, _t.keepSetting, href, true);
 				});

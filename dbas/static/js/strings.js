@@ -247,9 +247,7 @@ const statisticsNotDeleted            = 'statisticsNotDeleted';
 const statisticsNotFetched            = 'statisticsNotFetched';
 const statisticsNotThere              = 'statisticsNotThere';
 const switchDiscussion                = 'switchDiscussion';
-const switchDiscussionText1           = 'switchDiscussionText1';
-const switchDiscussionText2           = 'switchDiscussionText2';
-const switchDiscussionText3           = 'switchDiscussionText3';
+const switchDiscussionText            = 'switchDiscussionText';
 const surname                         = 'surname';
 const sureToDeleteReview              = 'sureToDeleteReview';
 const showAllAttacksTitle             = 'showAllAttacksTitle';
@@ -486,9 +484,7 @@ const dbas_en = {
     'sureToDeleteReview': 'Are you sure, that you want to revoke this decision? This revoke cannot be undone!',
     'shortenedBy': 'which was shortened by',
     'switchDiscussion': 'Change of discussion\'s topic',
-    'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
-    'switchDiscussionText2': 'and the discussion will be restarted.',
-    'switchDiscussionText3': 'Please keep in mind, that the discussion language is without reference to the system language.',
+    'switchDiscussionText': 'If you accept, the discussions topic will change to <strong>XXX</strong> and the discussion will be restarted.<br><br>Please keep in mind, that the discussion language is without reference to the system language.',
     'showMeAnArgumentFor': 'Show me an argument for',
     'text': 'Text',
     'to': 'To',
@@ -699,9 +695,7 @@ const dbas_de = {
     'statement': 'Aussage',
     'shortenedBy': 'gekürzt mit',
     'switchDiscussion': 'Diskussionsthema ändern',
-    'switchDiscussionText1': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',
-    'switchDiscussionText2': 'und die Diskussion neugestartet.',
-    'switchDiscussionText3': 'Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
+    'switchDiscussionText': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu <strong>XXX</strong> wechseln und die Diskussion neugestartet.<br><br>Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
     'support': 'Unterstützung',
     'surname': 'Nachname',
     'sureToDeleteReview': 'Sind Sie sicher, dass sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann nicht rückgangig gemacht werden!',
