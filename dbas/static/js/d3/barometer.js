@@ -155,7 +155,6 @@ function DiscussionBarometer(){
         // selector = inner-rect: clicks on statement relative to seen_by value
         createBar(width, height-50, usersDict, barChartSvg, "inner-rect", address);
         if(address != 'argument' && address != 'attitude'){
-            // selector = outer-rect: seen_by value
             createBar(width, height-50, usersDict, barChartSvg, "outer-rect", address);
         }
 
@@ -195,8 +194,10 @@ function DiscussionBarometer(){
      */
      function createXAxis(svg, width, height, usersDict){
         let maxUsersNumber = getMaximum(usersDict);
+        // add offset on scale
+        let offset = 5/100 * maxUsersNumber;
 
-        let xScale = d3.scale.linear().domain([0, maxUsersNumber]).range([0, width]);
+        let xScale = d3.scale.linear().domain([0, maxUsersNumber + offset]).range([0, width]);
 
         // create y-axis
         let xAxis = d3.svg.axis().scale(xScale).orient("bottom");
@@ -296,6 +297,12 @@ function DiscussionBarometer(){
      * @param address
      */
     function createBar(width, height, usersDict, barChartSvg, selector, address) {
+        // if the chart is a bar chart, subtract offset on scale from width
+        if(address === "argument" || address === "attitude"){
+            let maxUsersNumber = getMaximum(usersDict);
+            let offset = 5/100 * maxUsersNumber;
+            width = width - (width/(maxUsersNumber+offset) * offset);
+        }
         // width of one bar
         // width/height - left padding to y-Axis - space between bars
         let barWidth;
