@@ -19,7 +19,7 @@ from dbas.security import groupfinder
 
 from sqlalchemy import engine_from_config
 from dbas.database import load_discussion_database, load_news_database
-from configparser import ConfigParser
+from configparser import ConfigParser, NoSectionError
 
 import logging
 import time
@@ -63,14 +63,15 @@ def main(global_config, **settings):
     # all_settings = {**settings, **mail_settings}
 
     # include custom parts
-    for a in global_config:
-        log.debug(str(a) + '  ' + global_config[a])
-    parser = ConfigParser()
-    parser.read(global_config['__file__'])
-    custom_settings = dict()
-    for k, v in parser.items('settings:ldap'):
-        custom_settings['settings:ldap:' + k] = v
-    mail_settings.update(custom_settings)
+    try:
+        parser = ConfigParser()
+        parser.read(global_config['__file__'])
+        custom_settings = dict()
+        for k, v in parser.items('settings:ldap'):
+            custom_settings['settings:ldap:' + k] = v
+        mail_settings.update(custom_settings)
+    except NoSectionError as e:
+        log.debug('__init__() '.upper() + 'main() <No LDAP-Section>')
 
     # creating the configurator
     config = Configurator(settings=mail_settings,
