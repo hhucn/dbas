@@ -269,17 +269,17 @@
                 </div>
 
                 <ul class="sidebar">
-                    <li id="start-view"><i class="fa fa-play" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
-                    <li id="show-labels"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
-                    <li id="hide-labels"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
-                    <li class="indented-button" id="show-positions"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li class="indented-button" id="hide-positions"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                    <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                    <li class="indented-button" id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                    <li class="indented-button" id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
-                    <li class="indented-button" id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-eye-slash" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
+                    <li id="start-view"><i class="fa fa-fast-backward" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
+                    <li id="show-labels"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
+                    <li id="hide-labels"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
+                    <li class="indented-button" id="show-positions"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
+                    <li class="indented-button" id="hide-positions"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
+                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
+                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
+                    <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
+                    <li class="indented-button" id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
+                    <li class="indented-button" id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
+                    <li class="indented-button" id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
