@@ -730,16 +730,13 @@ function DiscussionBarometer(){
         let userList = $('<li>').html(_t_discussion(users) + ': ');
 
         let list;
-        if(usersDict[index].message != null){
-            if (is_attitude)
-                list = messageList.append(userList);
-            else
-                list = messageList.append(seenByList).append(userList);
+        if (!is_attitude){
+            list = messageList.append(seenByList);
         } else {
-            if (is_attitude)
-                list = userList;
-            else
-                list = seenByList.append(userList);
+            list = messageList;
+        }
+        if (usersDict[index].seenBy != 0){
+            list.append(userList);
         }
 
         // add images of avatars
