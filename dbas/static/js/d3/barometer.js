@@ -313,9 +313,11 @@ function DiscussionBarometer(){
             barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
         }
 
+        let y_offset_height = 60;
         // set max-width of bar
-        if(barWidth > 150){
-            barWidth = 150;
+        if(barWidth > 100){
+            barWidth = 100;
+            y_offset_height = height - usersDict.length * barWidth;
         }
 
         let maxUsersNumber = getMaximum(usersDict);
@@ -351,7 +353,7 @@ function DiscussionBarometer(){
                 // y: height - barLength, because d3 starts to draw in left upper corner
                 y: function (d, i) {
                     if(address === "argument" || address === "attitude"){
-                        return i * barWidth + 60 + i * 10;
+                        return i * barWidth + y_offset_height + i * 10;
                     }
                     if (selector === 'inner-rect')
                         return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);
