@@ -153,7 +153,9 @@ def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x,
                                         target='issue',
                                         is_attacking='none',
                                         size=edge_size,
-                                        edge_type=edge_type)
+                                        edge_type=edge_type,
+                                        target_edge='none',
+                                        is_undercut='none')
             edges.append(edge_dict)
 
     return all_ids, nodes, edges, extras
@@ -164,40 +166,78 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
     nodes = []
     edges = []
     extras = {}
+    i = 0
+
+    statement_array = []
+    edge_target_array = []
+
+    counter2 = 0
+    counter = 0
+    for argument in db_arguments:
+        db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
+
+        for undercut in db_undercuts:
+            if argument.conclusion_uid is not None:
+                statement_array.append(argument.conclusion_uid)
+                edge_target_array.append(argument.uid)
+            else:
+                statement_array.append(statement_array[counter])
+                edge_target_array.append(argument.uid)
+            counter += 1
+
+        if argument.conclusion_uid is None:
+            counter2 +=1
+
     for argument in db_arguments:
         counter = 1
-        # add invisible point in the middle of the edge (to enable pgroups and undercuts)
-        node_dict = __get_node_dict(id='argument_' + str(argument.uid),
-                                    label='',
-                                    size=0,
-                                    x=x,
-                                    y=y)
-        x = (x + 1) % 10
-        y += 1 if x == 0 else 0
-        nodes.append(node_dict)
-        all_ids.append('argument_' + str(argument.uid))
 
         # we have an argument with:
         # 1) with one premise and no undercuts for this argument
         # 2) with at least two premises, one conclusion or an undercut is done on this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
-        db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
+
+        if len(db_premises) > 1:
+            # add invisible point in the middle of the edge (to enable pgroups and undercuts)
+            node_dict = __get_node_dict(id='argument_' + str(argument.uid),
+                                        label='',
+                                        size=0,
+                                        x=x,
+                                        y=y)
+            x = (x + 1) % 10
+            y += 1 if x == 0 else 0
+            nodes.append(node_dict)
+            all_ids.append('argument_' + str(argument.uid))
 
         # target of the edge (case 1) or last edge (case 2)
-        if argument.conclusion_uid is not None:
-            target = 'statement_' + str(argument.conclusion_uid)
+        if len(db_premises) < 2:
+            if argument.conclusion_uid is not None:
+                target = 'statement_' + str(argument.conclusion_uid)
+            else:
+                target = 'statement_' + str(statement_array[i])
         else:
-            target = 'argument_' + str(argument.argument_uid)
+            if argument.conclusion_uid is not None:
+                target = 'statement_' + str(argument.conclusion_uid)
+            else:
+                target = 'argument_' + str(argument.argument_uid)
 
-        if len(db_premises) == 1 and len(db_undercuts) == 0:
+        if len(db_premises) < 2:
+            is_undercut = 'none'
+            if argument.conclusion_uid is None:
+                target_edge = 'edge_' + str(edge_target_array[i]) + '_' + str(counter)
+                is_undercut = True
+                i += 1
+            else:
+                target_edge = 'none'
+
             edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
                                         source='statement_' + str(db_premises[0].statement_uid),
                                         target=target,
                                         is_attacking=not argument.is_supportive,
                                         size=edge_size,
-                                        edge_type=edge_type)
+                                        edge_type=edge_type,
+                                        target_edge=target_edge,
+                                        is_undercut=is_undercut)
             edges.append(edge_dict)
-
         else:
             # edge from premisegroup to the middle point
             for premise in db_premises:
@@ -206,7 +246,9 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                                             target='argument_' + str(argument.uid),
                                             is_attacking=not argument.is_supportive,
                                             size=edge_size_on_virtual_nodes,
-                                            edge_type='')
+                                            edge_type='',
+                                            target_edge='none',
+                                            is_undercut='none')
                 edges.append(edge_dict)
                 counter += 1
 
@@ -216,9 +258,10 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                                         target=target,
                                         is_attacking=not argument.is_supportive,
                                         size=edge_size_from_virtual_nodes,
-                                        edge_type=edge_type)
+                                        edge_type=edge_type,
+                                        target_edge='none',
+                                        is_undercut='none')
             edges.append(edge_dict)
-
     return all_ids, nodes, edges, extras
 
 
@@ -294,7 +337,7 @@ def __get_node_dict(id, label, size, x, y, type='', author=dict(), editor=dict()
             'editor': editor}
 
 
-def __get_edge_dict(id, source, target, is_attacking, size, edge_type):
+def __get_edge_dict(id, source, target, is_attacking, size, edge_type, target_edge, is_undercut):
     """
     Create dictionary for edges
 
@@ -304,6 +347,8 @@ def __get_edge_dict(id, source, target, is_attacking, size, edge_type):
     :param is_attacking:
     :param size:
     :param edge_type:
+    :param target_edge: for undercuts, id of edge which is attacked by an undercut
+    :param is_undercut:
     :return:
     """
     return {'id': id,
@@ -311,7 +356,9 @@ def __get_edge_dict(id, source, target, is_attacking, size, edge_type):
             'target': target,
             'is_attacking': is_attacking,
             'size': size,
-            'edge_type': edge_type}
+            'edge_type': edge_type,
+            'target_edge': target_edge,
+            'is_undercut': is_undercut}
 
 
 def __get_extras_dict(statement):
