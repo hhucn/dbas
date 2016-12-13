@@ -34,7 +34,6 @@ def get_d3_data(issue, nickname):
     issue_size = 8
     edge_size = 90
     edge_size_on_virtual_nodes = 45
-    edge_size_from_virtual_nodes = 60
     edge_type = 'arrow'
 
     nodes_array = []
@@ -71,8 +70,7 @@ def get_d3_data(issue, nickname):
     extras_dict.update(extras)
 
     # for each argument edges will be added as well as the premises
-    all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes,
-                                                                    edge_size_from_virtual_nodes, edge_size, edge_type)
+    all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes, edge_size, edge_type)
     all_node_ids += all_ids
     nodes_array += nodes
     edges_array += edges
@@ -161,7 +159,7 @@ def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x,
     return all_ids, nodes, edges, extras
 
 
-def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes, edge_size_from_virtual_nodes, edge_size, edge_type):
+def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes, edge_size, edge_type):
     all_ids = []
     nodes = []
     edges = []
@@ -171,7 +169,6 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
     statement_array = []
     edge_target_array = []
 
-    counter2 = 0
     counter = 0
     for argument in db_arguments:
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
@@ -183,10 +180,9 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
             else:
                 statement_array.append(statement_array[counter])
                 edge_target_array.append(argument.uid)
-            counter += 1
 
         if argument.conclusion_uid is None:
-            counter2 +=1
+            counter +=1
 
     for argument in db_arguments:
         counter = 1
@@ -257,7 +253,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                                         source='argument_' + str(argument.uid),
                                         target=target,
                                         is_attacking=not argument.is_supportive,
-                                        size=edge_size_from_virtual_nodes,
+                                        size=edge_size_on_virtual_nodes,
                                         edge_type=edge_type,
                                         target_edge='none',
                                         is_undercut='none')
