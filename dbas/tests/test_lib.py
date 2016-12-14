@@ -43,12 +43,12 @@ class LibTests(unittest.TestCase):
 
     def test_get_text_for_premisesgroup_uid(self):
         # premise, which is in db_premises and premise_group contains only one premise
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=2), ('Cats are very independent', ['5']))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=2), ('cats are very independent', ['5']))
 
         # premise_group with more than one premises
-        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=13), ('Cats are fluffy und Cats are small', ['14', '15']))
+        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=13), ('cats are fluffy und cats are small', ['14', '15']))
 
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=12), ('Cats are fluffy and Cats are small', ['15', '16']))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=12), ('cats are fluffy and cats are small', ['15', '16']))
 
         # premise, which is not in db_premises
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), ('', []))
@@ -67,10 +67,10 @@ class LibTests(unittest.TestCase):
         self.assertEqual(lib.get_text_for_statement_uid(uid="str"), None)
 
         # id for statement, which ends with '.'
-        self.assertEqual(lib.get_text_for_statement_uid(uid=3), 'We should get a dog')
+        self.assertEqual(lib.get_text_for_statement_uid(uid=3), 'we should get a dog')
 
         # id for statement, which ends with '!'
-        self.assertEqual(lib.get_text_for_statement_uid(uid=31), 'It is important, that pets are small and fluffy')
+        self.assertEqual(lib.get_text_for_statement_uid(uid=31), 'it is important, that pets are small and fluffy')
 
         # negative uid
         self.assertEqual(lib.get_text_for_statement_uid(uid=-30), None)
@@ -80,7 +80,7 @@ class LibTests(unittest.TestCase):
         # 'argument' is an argument
         self.assertEqual(lib.get_text_for_conclusion(argument=argument1,
                                                      start_with_intro=False,
-                                                     rearrange_intro=False), 'We should get a dog')
+                                                     rearrange_intro=False), 'we should get a dog')
 
         argument2 = Argument(premisegroup=1, issupportive=False, author=1, issue=1)
         # 'argument' is a statement
@@ -97,7 +97,7 @@ class LibTests(unittest.TestCase):
     def test_resolve_issue_uid_to_slug(self):
         # id for issue
         self.assertEqual(lib.resolve_issue_uid_to_slug(uid=1), 'town-has-to-cut-spending')
-        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=4), 'unterstutzung-der-sekretariate')
+        self.assertEqual(lib.resolve_issue_uid_to_slug(uid=5), 'unterstutzung-der-sekretariate')
 
         # id for no issue
         self.assertEqual(lib.resolve_issue_uid_to_slug(uid=0), None)
