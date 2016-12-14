@@ -2162,7 +2162,7 @@ def send_news(request):
     try:
         title = escape_string(request.params['title'])
         text = escape_string(request.params['text'])
-        return_dict, success = news_handler.set_news(title, text, request.authenticated_userid, get_language(request))
+        return_dict, success = news_handler.set_news(title, text, request.authenticated_userid, get_language(request), request.application_url)
         return_dict['error'] = '' if success else _tn.get(_.noRights)
     except KeyError as e:
         return_dict = dict()

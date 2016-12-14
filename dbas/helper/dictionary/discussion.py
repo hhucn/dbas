@@ -312,7 +312,8 @@ class DiscussionDictHelper(object):
                 _.otherParticipantsDontHaveNewCounterForThat)
             tropy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
             mid_text = tropy + ' ' + _tn.get(_.congratulation) + ' ' + tropy + '<br>'
-            mid_text += _tn.get(_.discussionCongratulationEnd) + ' ' + _tn.get(_.discussionEndLinkText)
+            mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
+            mid_text += _tn.get(_.discussionEndLinkTextLoggedIn) if nickname is not None else _tn.get(_.discussionEndLinkTextNotLoggedIn)
         else:
             premise, tmp     = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
             conclusion       = get_text_for_conclusion(db_argument)
