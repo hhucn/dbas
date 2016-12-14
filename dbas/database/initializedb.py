@@ -19,6 +19,8 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
     ReputationHistory, ReviewEdit, ReviewEditValue
 from dbas.database.news_model import News
+from dbas.handler.rss import create_rss
+from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config, and_
@@ -453,6 +455,8 @@ def setup_news_db(session):
                   news50, news51, news52, news53]
     session.add_all(news_array[::-1])
     session.flush()
+
+    create_rss(get_global_url())
 
 
 def drop_discussion_database(session):

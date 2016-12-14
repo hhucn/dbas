@@ -12,9 +12,10 @@ from dbas.database.discussion_model import User, sql_timestamp_pretty_print
 from dbas.database.news_model import News
 from dbas.logger import logger
 from dbas.user_management import is_user_in_group
+from dbas.handler.rss import create_rss
 
 
-def set_news(title, text, user, lang):
+def set_news(title, text, user, lang, main_page):
     """
     Sets a new news into the news table
 
@@ -51,6 +52,8 @@ def set_news(title, text, user, lang):
     return_dict['author'] = author
     return_dict['news'] = text
     transaction.commit()
+
+    create_rss(main_page)
 
     return return_dict, True
 
