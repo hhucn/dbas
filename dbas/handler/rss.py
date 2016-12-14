@@ -24,7 +24,7 @@ def create_rss(main_page):
 
     rss = PyRSS2Gen.RSS2(
         title='D-BAS Feed',
-        link=main_page + 'static/rss.xml',
+        link=main_page + '/static/rss.xml',
         description='The latest news about D-BAS, a Dialog-Based Argumentation System',
         lastBuildDate=datetime.now(),
         items=items

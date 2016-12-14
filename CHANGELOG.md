@@ -1,5 +1,6 @@
 ## 0.9.1 (2016-12-06)
 - Notification if a user is able to review
+- RSS-Feed
 
 ## 0.9.0 (2016-12-05)
 - Rework of the discussions sidebar
