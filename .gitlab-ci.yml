@@ -8,11 +8,11 @@ image: hhucn/dbas-build
     - pip install --quiet -U pip
     - pip install --quiet -r requirements.txt
     - python setup.py --quiet develop
-    - initialize_discussion_sql docker.ini > /dev/null 2>&1
-    - initialize_news_sql docker.ini > /dev/null 2>&1
-    - init_discussion_testvotes docker.ini > /dev/null 2>&1
-    - init_review_tests docker.ini > /dev/null 2>&1
     - cp docker.ini development.ini
+    - initialize_discussion_sql development.ini > /dev/null 2>&1
+    - initialize_news_sql development.ini > /dev/null 2>&1
+    - init_discussion_testvotes development.ini > /dev/null 2>&1
+    - init_review_tests development.ini > /dev/null 2>&1
 
 flake8:
   stage: test
@@ -40,6 +40,6 @@ nose-acceptance-tests:
   <<: *job-definition
   stage: test
   script:
-    - pserve test.ini --daemon
+    - pserve development.ini --daemon
     - sleep 10
     - nosetests -v --process-timeout=120 tests/test_frontend
