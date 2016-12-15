@@ -120,7 +120,7 @@ def main_discussion_reload(argv=sys.argv):
         setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
-        create_initial_issue_rss(get_global_url())
+        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
 def main_dummy_votes(argv=sys.argv):
@@ -187,7 +187,7 @@ def main_news(argv=sys.argv):
         transaction.commit()
 
 
-def setup_news_db(session):
+def setup_news_db(session, ui_locale):
     """
 
     :param session:
@@ -459,7 +459,7 @@ def setup_news_db(session):
     session.add_all(news_array[::-1])
     session.flush()
 
-    create_news_rss(get_global_url())
+    create_news_rss(get_global_url(), ui_locale)
 
 
 def drop_discussion_database(session):
@@ -682,8 +682,8 @@ def set_up_issue(session, user, lang1, lang2, is_field_test=False):
     :return:
     """
     if is_field_test:
-        issue1 = Issue(title='Studiengang',
-                       info='Die WE Informatik sucht nach weiteren Möglichkeiten zur Verbesserung des Informatik-Studiengangs. Welche Maßnahme sollten dabei umgesetzt werden? Bitte diskutieren Sie hier bis zum 13.01.2017.',
+        issue1 = Issue(title='Verbesserung des Informatik-Studiengangs',
+                       info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu einladen gemeinsam mit den Dozenten der Informatik darüber zu diskutieren, wie der Studiengang verbessert und die Probleme, die durchdie große Anzahl der Studierenden entstanden sind, gelöst werden können.<br><br>Diese Diskussion wird voraussichtlich bis zum xx.xx.2017 aktiv sein.',
                        author_uid=user.uid,
                        lang_uid=lang2.uid)
         session.add_all([issue1])

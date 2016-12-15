@@ -409,7 +409,7 @@ def main_rss(request):
         return user_logout(request, True)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-    rss = get_list_of_all_feeds()
+    rss = get_list_of_all_feeds(request.registry.settings['pyramid.default_locale_name'])
 
     return {
         'layout': base_layout(),
@@ -1522,7 +1522,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
 
         # escaping will be done in QueryHelper().set_statement(...)
         user_manager.update_last_action(nickname)
-        new_statement = insert_as_statements(statement, nickname, issue, is_start=True)
+        new_statement = insert_as_statements(request, statement, nickname, issue, is_start=True)
         if new_statement == -1:
             return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
         if new_statement == -2:
@@ -2193,7 +2193,7 @@ def send_news(request):
     try:
         title = escape_string(request.params['title'])
         text = escape_string(request.params['text'])
-        return_dict, success = news_handler.set_news(title, text, request.authenticated_userid, get_language(request), request.application_url)
+        return_dict, success = news_handler.set_news(request, title, text, request.authenticated_userid, get_language(request), request.application_url)
         return_dict['error'] = '' if success else _tn.get(_.noRights)
     except KeyError as e:
         return_dict = dict()

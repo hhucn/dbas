@@ -15,10 +15,11 @@ from dbas.user_management import is_user_in_group
 from dbas.handler.rss import create_news_rss
 
 
-def set_news(title, text, user, lang, main_page):
+def set_news(request, title, text, user, lang, main_page):
     """
     Sets a new news into the news table
 
+    :param request:
     :param title: news title
     :param text: String news text
     :param user: User.nickname request.authenticated_userid
@@ -53,7 +54,7 @@ def set_news(title, text, user, lang, main_page):
     return_dict['news'] = text
     transaction.commit()
 
-    create_news_rss(main_page)
+    create_news_rss(main_page, request.registry.settings['pyramid.default_locale_name'])
 
     return return_dict, True
 

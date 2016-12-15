@@ -14,12 +14,15 @@ from dbas.database.news_model import News
 from dbas.database.discussion_model import Issue, RSS, User
 from dbas.lib import get_global_url
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
-def create_news_rss(main_page):
+def create_news_rss(main_page, ui_locale):
     """
 
     :param main_page:
+    :param ui_locale:
     :return:
     """
     logger('RSS-Handler', 'create_news_rss', 'def')
@@ -33,10 +36,11 @@ def create_news_rss(main_page):
             author=news.author
         ))
 
+    _tn = Translator(ui_locale)
     rss = PyRSS2Gen.RSS2(
         title='D-BAS Feed',
         link=main_page + '/static/rss/rss.xml',
-        description='Latest news about D-BAS, a Dialog-Based Argumentation System',
+        description=_tn.get(_.latestNewsFromDBAS),
         lastBuildDate=datetime.now(),
         items=items
     )
@@ -65,14 +69,14 @@ def create_initial_issue_rss(main_page):
         rss.write_xml(open('dbas/static/rss/' + issue.get_slug() + '.xml', 'w'))
 
 
-def append_action_to_issue_rss(issue_uid, author_uid, title, description):
+def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_locale):
     """
 
-    :param main_page:
     :param issue_uid:
     :param author_uid:
     :param title:
     :param description:
+    :param ui_locale:
     :return:
     """
     logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(issue_uid))
@@ -101,38 +105,41 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description):
             author=db_author.get_global_nickname()
         ))
 
-    rss = __get_issue_rss_gen(get_global_url(), db_issue, items)
+    rss = __get_issue_rss_gen(get_global_url(), db_issue, items, ui_locale)
     rss.write_xml(open('dbas/static/rss/' + db_issue.get_slug() + '.xml', 'w'))
 
 
-def get_list_of_all_feeds():
+def get_list_of_all_feeds(ui_locale):
     """
 
     :param _tn:
     :return:
     """
-    logger('RSS-Handler', 'get_list_of_all_feeds', 'def')
+    logger('RSS-Handler', 'get_list_of_all_feeds', 'def with ' + str(ui_locale))
+
     feeds = []
     feed = {'title': 'News',
             'description': 'Latest news about D-BAS, a Dialog-Based Argumentation System',
             'link': '/static/rss/news.xml'}
     feeds.append(feed)
 
+    _tn = Translator(ui_locale)
     db_issues = DBDiscussionSession.query(Issue).all()
     for issue in db_issues:
         feed = {'title': issue.title,
-                'description': 'Latest news about actions in the discussion: ' + issue.title + ' - ' + issue.info,
+                'description': _tn.get(_.latestNewsFromDiscussion) + ': <em>' + issue.title + ' - ' + issue.info + '</em>',
                 'link': '/static/rss/' + issue.get_slug() + '.xml'}
         feeds.append(feed)
 
     return feeds
 
 
-def __get_issue_rss_gen(main_page, issue, items):
+def __get_issue_rss_gen(main_page, issue, items, ui_locale):
+    _tn = Translator(ui_locale)
     return PyRSS2Gen.RSS2(
         title='D-BAS Feed',
         link=main_page + '/static/rss/' + issue.get_slug() + '.xml',
-        description='Latest news about actions in the discussion: ' + issue.title + ' - ' + issue.info,
+        description=_tn.get(_.latestNewsFromDiscussion) + ': ' + issue.title + ' - ' + issue.info,
         lastBuildDate=datetime.now(),
         items=items
     )
