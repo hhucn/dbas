@@ -121,6 +121,7 @@ class DictionaryHelper(object):
         spamquestion, answer = get_random_anti_spam_question(self.system_lang)
         # save answer in session
         request.session['antispamanswer'] = answer
+        rrs = request.registry.settings
 
         return_dict = dict()
         return_dict['spamquestion']                  = spamquestion
@@ -136,6 +137,8 @@ class DictionaryHelper(object):
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit']                   = 'true' if broke_limit else 'false'
         return_dict['use_with_ldap']                 = is_ldap
+        return_dict['is_development']                = rrs['mode'] == 'development' if 'mode' in rrs else ''
+        return_dict['is_production']                 = rrs['mode'] == 'production' if 'mode' in rrs else ''
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:
