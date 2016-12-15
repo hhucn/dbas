@@ -14,6 +14,13 @@ image: hhucn/dbas-build
     - init_discussion_testvotes development.ini > /dev/null 2>&1
     - init_review_tests development.ini > /dev/null 2>&1
 
+start-server:
+  <<: *job-definition
+  stage: build
+  script:
+    - pserve development.ini --daemon
+    - pserve development.ini --status
+
 flake8:
   stage: test
   script:
