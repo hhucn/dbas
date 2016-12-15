@@ -60,7 +60,7 @@ def main(global_config, **settings):
                      'mail.tls': 'False',
                      'mail.default_sender': 'dbas.hhu@gmail.com'
                      }
-    # all_settings = {**settings, **mail_settings}
+    all_settings = {**settings, **mail_settings}
 
     # include custom parts
     try:
@@ -74,7 +74,7 @@ def main(global_config, **settings):
         log.debug('__init__() '.upper() + 'main() <No LDAP-Section>')
 
     # creating the configurator
-    config = Configurator(settings=mail_settings,
+    config = Configurator(settings=all_settings,
                           authentication_policy=authn_policy,
                           authorization_policy=authz_policy,
                           root_factory='dbas.security.RootFactory',
