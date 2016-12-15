@@ -12,7 +12,7 @@ from dbas.database.discussion_model import User, sql_timestamp_pretty_print
 from dbas.database.news_model import News
 from dbas.logger import logger
 from dbas.user_management import is_user_in_group
-from dbas.handler.rss import create_rss
+from dbas.handler.rss import create_news_rss
 
 
 def set_news(title, text, user, lang, main_page):
@@ -25,7 +25,7 @@ def set_news(title, text, user, lang, main_page):
     :param lang: lang
     :return: dictionary {title,date,author,news}
     """
-    logger('QueryHelper', 'set_news', 'def')
+    logger('NewsHelper', 'set_news', 'def')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
     if not db_user or is_user_in_group(user, 'author'):
@@ -53,7 +53,7 @@ def set_news(title, text, user, lang, main_page):
     return_dict['news'] = text
     transaction.commit()
 
-    create_rss(main_page)
+    create_news_rss(main_page)
 
     return return_dict, True
 
@@ -64,7 +64,7 @@ def get_news(ui_locales):
 
     :return: dict()
     """
-    logger('QueryHelper', 'get_news', 'main')
+    logger('NewsHelper', 'get_news', 'main')
     db_news = DBNewsSession.query(News).order_by(News.date.desc()).all()
     ret_news = []
     for index, news in enumerate(db_news):

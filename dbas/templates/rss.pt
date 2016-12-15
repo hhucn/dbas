@@ -1,0 +1,14 @@
+<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<div class="container" tal:repeat="r rss">
+			<div class="row">
+				<div class="col-md-offset-2 col-md-8 colored-container col-md-offset-2">
+                    <p class="lead"><a href="" tal:attributes="href r.link">${r.title}</a></p>
+                    <p>${r.description}</p>
+				</div>
+			</div>
+		</div>
+
+	</tal:block>
+</tal:block>

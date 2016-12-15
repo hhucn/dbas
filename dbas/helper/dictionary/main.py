@@ -168,7 +168,7 @@ class DictionaryHelper(object):
             return_dict['notifications'] = message_dict
 
             # add everything for the island view
-            if return_dict['show_island_icon']:
+            if show_island_icon:
                 # does an argument exists?
                 db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
                 if db_argument:

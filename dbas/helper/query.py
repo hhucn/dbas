@@ -19,7 +19,7 @@ from dbas.helper.voting import add_seen_statement, add_seen_argument
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import escape_string, get_text_for_premisesgroup_uid, \
     get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid,\
-    is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement
+    is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement, get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -27,6 +27,7 @@ from dbas.url_manager import UrlManager
 from sqlalchemy import and_, func
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.input_validator import is_integer
+from dbas.handler.rss import append_action_to_issue_rss
 
 statement_min_length = 10
 
@@ -513,8 +514,12 @@ def __set_statement(statement, user, is_start, issue):
     new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == textversion.uid,
                                                                      Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
     textversion.set_statement(new_statement.uid)
-
     transaction.commit()
+
+    append_action_to_issue_rss(issue_uid=issue,
+                               author_uid=db_user.uid,
+                               title='Statement added',
+                               description='...' + textversion.content + '...')
 
     return new_statement, False
 
@@ -575,8 +580,15 @@ def __create_argument_by_raw_input(user, text, conclusion_id, is_supportive, iss
 
     # third, insert the argument
     new_argument = __create_argument_by_uids(user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
-
     transaction.commit()
+
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    if new_argument and db_user:
+        append_action_to_issue_rss(issue_uid=issue,
+                                   author_uid=db_user.uid,
+                                   title='Argument added',
+                                   description='...' + get_text_for_argument_uid(new_argument.uid) + '...')
+
     return new_argument, statement_uids
 
 

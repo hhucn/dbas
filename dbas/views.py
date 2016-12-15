@@ -59,6 +59,7 @@ from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
     send_request_for_info_popup_to_socketio
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
 version = '0.9.1'
@@ -387,6 +388,36 @@ def main_publications(request):
         'title': _tn.get(_.publications),
         'project': project_name,
         'extras': extras_dict
+    }
+
+
+# imprint
+@view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody')
+def main_rss(request):
+    """
+    View configuration for the publications.
+
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('main_rss', 'def', 'main')
+    ui_locales = get_language(request)
+    request_authenticated_userid = request.authenticated_userid
+    session_expired = user_manager.update_last_action(request_authenticated_userid)
+    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    if session_expired:
+        return user_logout(request, True)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    rss = get_list_of_all_feeds()
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': 'RSS',
+        'project': project_name,
+        'extras': extras_dict,
+        'rss': rss
     }
 
 

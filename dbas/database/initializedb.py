@@ -19,7 +19,7 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
     ReputationHistory, ReviewEdit, ReviewEditValue
 from dbas.database.news_model import News
-from dbas.handler.rss import create_rss
+from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
@@ -66,6 +66,7 @@ def main_discussion(argv=sys.argv):
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
+        create_initial_issue_rss(get_global_url())
 
 
 def field_test(argv=sys.argv):
@@ -90,6 +91,7 @@ def field_test(argv=sys.argv):
         set_up_issue(DBDiscussionSession, user0, lang1, lang2, is_field_test=True)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, use_anonyme_nicks=False)
         transaction.commit()
+        create_initial_issue_rss(get_global_url())
 
 
 def main_discussion_reload(argv=sys.argv):
@@ -118,6 +120,7 @@ def main_discussion_reload(argv=sys.argv):
         setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
+        create_initial_issue_rss(get_global_url())
 
 
 def main_dummy_votes(argv=sys.argv):
@@ -456,7 +459,7 @@ def setup_news_db(session):
     session.add_all(news_array[::-1])
     session.flush()
 
-    create_rss(get_global_url())
+    create_news_rss(get_global_url())
 
 
 def drop_discussion_database(session):

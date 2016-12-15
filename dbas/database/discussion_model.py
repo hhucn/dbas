@@ -1139,3 +1139,23 @@ class RevokedContentHistory(DiscussionBase):
         self.new_author_uid = new_author_uid
         self.textversion_uid = textversion_uid
         self.argument_uid = argument_uid
+
+
+class RSS(DiscussionBase):
+    __tablename__ = 'rss'
+    uid = Column(Integer, primary_key=True)
+    author_uid = Column(Integer, ForeignKey('users.uid'))
+    issue_uid = Column(Integer, ForeignKey('issues.uid'))
+    title = Column(Text, nullable=False)
+    description = Column(Text, nullable=False)
+    timestamp = Column(ArrowType, default=get_now())
+
+    authors = relationship('User', foreign_keys=[author_uid])
+    issues = relationship('Issue', foreign_keys=[issue_uid])
+
+    def __init__(self, author, issue, title, description):
+        self.author_uid = author
+        self.issue_uid = issue
+        self.title = title
+        self.description = description
+        self.timestamp = get_now()

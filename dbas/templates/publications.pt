@@ -1,13 +1,24 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container first-container">
+		<div class="container">
 			<div class="row">
 				<div class="col-md-offset-2 col-md-8 colored-container col-md-offset-2 ">
-                    <p class="lead"><a href="http://ebooks.iospress.nl/publication/45243" target="_blank">Dialog-Based Online Argumentation</a></p>
+                    <p class="lead text-primary">discuss: Embedding dialog-based Discussions into Websites (In Press)</p>
+                    <p>Christian Meter, Tobias Krauthoff, Martin Mauve</p>
+                    <p><i>Human Computer Interaction International: Proceedings of HCI 2017</i></p>
+                    <p><span>Abstract: </span>Many websites and online news media provide their readers with the opportunity to comment and discuss their content. In fact, the ability to participate in such a discussion or to read what others think about an article is a major reason to prefer online content over offline media. While current solutions used to support reader feedback are quite suitable to provide simple feedback, they do a rather poor job at fostering meaningful discussions among the readers. This is especially true in those cases where this would be most needed: for articles that receive a lot of reader-feedback due to their popularity or controversial nature...</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-offset-2 col-md-8 colored-container col-md-offset-2 ">
+                    <p class="lead">Dialog-Based Online Argumentation <a href="http://ebooks.iospress.nl/publication/45243" target="_blank">(link)</a></p>
                     <p>Tobias Krauthoff, Michael Baurmann, Gregor Betz, Martin Mauve</p>
                     <p><i>Proceedings of Computational Model of Arguments 2016</i></p>
-                    <p><span>Abstract: </span>In this position paper we propose a novel approach to online argumentation. It avoids the pitfalls of unstructured systems such as asynchronous threaded discussions and it is usable by any participant without training while still supporting the full complexity of real-world argumentation. The key idea is to let users exchange arguments with each other in the form of a time-shifted dialog where arguments are presented and acted upon one-at-a-time. We highlight the key research challenges that need to be addressed in order to realize such a system and provide first solutions for those challenges.</p>
+                    <p><span>Abstract: </span>In this position paper we propose a novel approach to online argumentation. It avoids the pitfalls of unstructured systems such as asynchronous threaded discussions and it is usable by any participant without training while still supporting the full complexity of real-world argumentation. The key idea is to let users exchange arguments with each other in the form of a time-shifted dialog where arguments are presented and acted upon one-at-a-time. We highlight the key research challenges that need to be addressed in order to realize such a system and provide first solutions for those challenges...</p>
 				</div>
 			</div>
 		</div>
