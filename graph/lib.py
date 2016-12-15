@@ -166,19 +166,24 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
     extras = {}
     i = 0
 
-    statement_array = []
+    # conclusion-uids of target nodes of undercuts
+    conclusion_uids_array = []
+    # ids of edges on which the undercuts should show
     edge_target_array = []
 
+    # counter for the nodes of the graph
     counter = 0
+    # determine target-node and target-edge of all undercuts
     for argument in db_arguments:
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
 
         for undercut in db_undercuts:
             if argument.conclusion_uid is not None:
-                statement_array.append(argument.conclusion_uid)
+                conclusion_uids_array.append(argument.conclusion_uid)
                 edge_target_array.append(argument.uid)
+            # target of undercuts on undercuts
             else:
-                statement_array.append(statement_array[counter])
+                conclusion_uids_array.append(conclusion_uids_array[counter])
                 edge_target_array.append(argument.uid)
 
         if argument.conclusion_uid is None:
@@ -192,6 +197,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
         # 2) with at least two premises, one conclusion or an undercut is done on this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 
+        # if there are different premises for one argument add invisible nodes
         if len(db_premises) > 1:
             # add invisible point in the middle of the edge (to enable pgroups and undercuts)
             node_dict = __get_node_dict(id='argument_' + str(argument.uid),
@@ -204,22 +210,18 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
             nodes.append(node_dict)
             all_ids.append('argument_' + str(argument.uid))
 
-        # target of the edge (case 1) or last edge (case 2)
+        # if there is at most one premise create edge without virtual nodes
         if len(db_premises) < 2:
             if argument.conclusion_uid is not None:
                 target = 'statement_' + str(argument.conclusion_uid)
+            # target of undercut
             else:
-                target = 'statement_' + str(statement_array[i])
-        else:
-            if argument.conclusion_uid is not None:
-                target = 'statement_' + str(argument.conclusion_uid)
-            else:
-                target = 'argument_' + str(argument.argument_uid)
+                target = 'statement_' + str(conclusion_uids_array[i])
 
-        if len(db_premises) < 2:
             is_undercut = 'none'
             if argument.conclusion_uid is None:
                 target_edge = 'edge_' + str(edge_target_array[i]) + '_' + str(counter)
+                # the edge on the argument is an undercut
                 is_undercut = True
                 i += 1
             else:
@@ -234,7 +236,13 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                                         target_edge=target_edge,
                                         is_undercut=is_undercut)
             edges.append(edge_dict)
+        # target of the edge (case 1) or last edge (case 2)
         else:
+            if argument.conclusion_uid is not None:
+                target = 'statement_' + str(argument.conclusion_uid)
+            else:
+                target = 'argument_' + str(argument.argument_uid)
+
             # edge from premisegroup to the middle point
             for premise in db_premises:
                 edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
