@@ -180,7 +180,7 @@ function GuiHandler() {
 			if (height < 50)
 				speechBubbles.css('min-height', '100px');
 			else
-				speechBubbles.css('height', height + 'px').css('min-height', '300px');
+				speechBubbles.css('height', height + 'px').css('min-height', '200px');
 			speechBubbles.css('min-height', '100px').css('max-height', maxHeight + 'px');
 		}
 		return speechBubbles.height() - oldSize;
@@ -394,8 +394,12 @@ function GuiHandler() {
 		else
 			bigText = topic + ' ' + connection; //supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
 		
+		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
-			list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
+			let nl = i < splitted.length - 1 ? '<br>' : '';
+			let tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('padding-left', '20px');
+			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
+			list.append(tmp);
 			infix = i == 0 ? '' : ('<em>' + _t_discussion(andAtTheSameTime) + '</em> ' + connection + ' ');
 			bigText += ' ' + infix + splitted[i];
 		}

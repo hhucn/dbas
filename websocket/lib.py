@@ -11,7 +11,7 @@ from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 
-port = 5100
+port = 5222
 
 
 def send_request_for_info_popup_to_socketio(nickname, message='', url=None, increase_counter=False):

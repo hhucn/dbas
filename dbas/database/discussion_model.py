@@ -233,7 +233,7 @@ class Settings(DiscussionBase):
     issues = relationship('Issue', foreign_keys=[last_topic_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
 
-    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=1, keep_logged_in=False):
+    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=2, keep_logged_in=False):
         """
         Initializes a row in current settings-table
 
@@ -248,7 +248,7 @@ class Settings(DiscussionBase):
         self.should_send_mails = send_mails
         self.should_send_notifications = send_notifications
         self.should_show_public_nickname = should_show_public_nickname
-        self.last_topic_uid = 1
+        self.last_topic_uid = DBDiscussionSession.query(Issue).first().uid
         self.lang_uid = lang_uid
         self.keep_logged_in = keep_logged_in
 
@@ -1139,3 +1139,23 @@ class RevokedContentHistory(DiscussionBase):
         self.new_author_uid = new_author_uid
         self.textversion_uid = textversion_uid
         self.argument_uid = argument_uid
+
+
+class RSS(DiscussionBase):
+    __tablename__ = 'rss'
+    uid = Column(Integer, primary_key=True)
+    author_uid = Column(Integer, ForeignKey('users.uid'))
+    issue_uid = Column(Integer, ForeignKey('issues.uid'))
+    title = Column(Text, nullable=False)
+    description = Column(Text, nullable=False)
+    timestamp = Column(ArrowType, default=get_now())
+
+    authors = relationship('User', foreign_keys=[author_uid])
+    issues = relationship('Issue', foreign_keys=[issue_uid])
+
+    def __init__(self, author, issue, title, description):
+        self.author_uid = author
+        self.issue_uid = issue
+        self.title = title
+        self.description = description
+        self.timestamp = get_now()

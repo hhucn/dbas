@@ -37,7 +37,7 @@
 
 			    <div class="row">
                     <div class="col-md-offset-1 col-md-10 col-md-offset-1">
-                        <table class="table table-condensed" border="0" id="review-table">
+                        <table class="table table-condensed" id="review-table">
                             <thead>
                                 <tr>
                                     <th i18n:translate="open_tasks">Open Tasks</th>
@@ -108,7 +108,7 @@
                         <span i18n:translate="privileges_explanation">Privileges control what you can see in the review queues of D-BAS. Gain more privileges by increasing your reputation.</span>
                         <div class="row"  style="margin-top: 1em;">
                             <div class="col-md-offset-2 col-md-8">
-                                <table class="table table-condensed" border="0">
+                                <table class="table table-condensed">
                                     <tbody>
                                         <tr class="review-table-row" tal:repeat="privilege privilege_list">
                                             <td class="text-info pull right">${privilege.points}</td>

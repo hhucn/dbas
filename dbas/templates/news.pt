@@ -4,14 +4,14 @@
 		<div id="news-body">
             <div id="dummy-news" class="container">
                 <div class="row">
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
+                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
                 </div>
             </div>
         </div>

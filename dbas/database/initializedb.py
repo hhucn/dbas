@@ -19,6 +19,8 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
     ReputationHistory, ReviewEdit, ReviewEditValue
 from dbas.database.news_model import News
+from dbas.handler.rss import create_news_rss, create_initial_issue_rss
+from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config, and_
@@ -57,13 +59,39 @@ def main_discussion(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-        user0, user1, user2, user3, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
+        user0, user1, user2, user3, user4, user6, user7, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, user8, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
-        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30)
+        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30, use_anonyme_nicks=False)
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
+        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
+
+
+def field_test(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
+
+    with transaction.manager:
+        user0, user1, user2, user3, user4, user6, user7, user8 = set_up_users(DBDiscussionSession, include_dummy_users=False)
+        lang1, lang2 = set_up_language(DBDiscussionSession)
+        set_up_issue(DBDiscussionSession, user0, lang1, lang2, is_field_test=True)
+        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, use_anonyme_nicks=False)
+        transaction.commit()
+        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
 def main_discussion_reload(argv=sys.argv):
@@ -92,6 +120,7 @@ def main_discussion_reload(argv=sys.argv):
         setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
+        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
 def main_dummy_votes(argv=sys.argv):
@@ -154,11 +183,11 @@ def main_news(argv=sys.argv):
     NewsBase.metadata.create_all(news_engine)
 
     with transaction.manager:
-        setup_news_db(DBNewsSession)
+        setup_news_db(DBNewsSession, settings['pyramid.default_locale_name'])
         transaction.commit()
 
 
-def setup_news_db(session):
+def setup_news_db(session, ui_locale):
     """
 
     :param session:
@@ -430,6 +459,8 @@ def setup_news_db(session):
     session.add_all(news_array[::-1])
     session.flush()
 
+    create_news_rss(get_global_url(), ui_locale)
+
 
 def drop_discussion_database(session):
     """
@@ -457,7 +488,7 @@ def drop_discussion_database(session):
     session.flush()
 
 
-def set_up_users(session):
+def set_up_users(session, include_dummy_users=True):
     """
     Creates all users
 
@@ -479,7 +510,6 @@ def set_up_users(session):
     pw2 = password_handler.get_hashed_password('tobias')
     pw3 = password_handler.get_hashed_password('martin')
     pw4 = password_handler.get_hashed_password('christian')
-    pw7 = password_handler.get_hashed_password('R4n0mpw')
     pw8 = password_handler.get_hashed_password('bjoern')
     pw9 = password_handler.get_hashed_password('teresa')
 
@@ -490,7 +520,13 @@ def set_up_users(session):
     user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group_uid=group0.uid, gender='m')
     user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn', email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
     user7 = User(firstname='Teresa', surname='Uebber', nickname='Teresa', email='teresa.uebber@uni-duesseldorf.de', password=pw9, group_uid=group0.uid, gender='f')
-    user8 = User(firstname='Katharina', surname='Esau', nickname='katesa', email='katharina.esau@hhu.de', password=pw7, group_uid=group1.uid, gender='f')
+    user8 = User(firstname='Bob', surname='Bubbles', nickname='Bob', email='krauthoff@cs.uni-duesseldorf.de', password=pwt, group_uid=group0.uid, gender='n')
+
+    session.add_all([user0, user1, user2, user3, user4, user6, user7, user8])
+    session.flush()
+
+    if not include_dummy_users:
+        return user0, user1, user2, user3, user4, user6, user7, user8
 
     usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='tobias.krauthoff+dbas.usert00@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
     usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='tobias.krauthoff+dbas.usert01@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
@@ -524,20 +560,22 @@ def set_up_users(session):
     usert29 = User(firstname='Sybille', surname='Redlich', nickname='Sybille', email='tobias.krauthoff+dbas.usert29@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
     usert30 = User(firstname='Ingeburg', surname='Fischer', nickname='Ingeburg', email='tobias.krauthoff+dbas.usert30@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
 
-    session.add_all([user0, user1, user2, user3, user4, user6, user7, user8, usert00])
+    session.add_all([usert00])
     session.add_all([usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10])
     session.add_all([usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20])
     session.add_all([usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30])
+
     session.flush()
 
     return user0, user1, user2, user3, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
 
 
-def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, user8,
-                    usert00, usert01, usert02, usert03, usert04, usert05,
-                    usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16,
-                    usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27,
-                    usert28, usert29, usert30):
+def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, user8, usert00=None, usert01=None,
+                    usert02=None, usert03=None, usert04=None, usert05=None, usert06=None, usert07=None, usert08=None,
+                    usert09=None, usert10=None, usert11=None, usert12=None, usert13=None, usert14=None, usert15=None,
+                    usert16=None, usert17=None, usert18=None, usert19=None, usert20=None, usert21=None, usert22=None,
+                    usert23=None, usert24=None, usert25=None, usert26=None, usert27=None, usert28=None, usert29=None,
+                    usert30=None, use_anonyme_nicks=False):
     # adding settings
     settings0 = Settings(author_uid=user0.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settings1 = Settings(author_uid=user1.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
@@ -546,63 +584,68 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, us
     settings4 = Settings(author_uid=user4.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settings6 = Settings(author_uid=user6.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settings7 = Settings(author_uid=user7.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settings8 = Settings(author_uid=user8.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst00 = Settings(author_uid=usert00.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst01 = Settings(author_uid=usert01.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst02 = Settings(author_uid=usert02.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst03 = Settings(author_uid=usert03.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst04 = Settings(author_uid=usert04.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst05 = Settings(author_uid=usert05.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst06 = Settings(author_uid=usert06.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst07 = Settings(author_uid=usert07.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst08 = Settings(author_uid=usert08.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst09 = Settings(author_uid=usert09.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst10 = Settings(author_uid=usert10.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst11 = Settings(author_uid=usert11.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst12 = Settings(author_uid=usert12.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst13 = Settings(author_uid=usert13.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst14 = Settings(author_uid=usert14.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst15 = Settings(author_uid=usert15.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst16 = Settings(author_uid=usert16.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst17 = Settings(author_uid=usert17.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst18 = Settings(author_uid=usert18.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst19 = Settings(author_uid=usert19.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst20 = Settings(author_uid=usert20.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst21 = Settings(author_uid=usert21.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst22 = Settings(author_uid=usert22.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-    settingst23 = Settings(author_uid=usert23.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst24 = Settings(author_uid=usert24.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst25 = Settings(author_uid=usert25.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst26 = Settings(author_uid=usert26.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst27 = Settings(author_uid=usert27.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst28 = Settings(author_uid=usert28.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst29 = Settings(author_uid=usert29.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settingst30 = Settings(author_uid=usert30.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+    settings8 = Settings(author_uid=user8.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
     session.add_all([settings0, settings1, settings2, settings3, settings4, settings6, settings7, settings8])
-    session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
-    session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
-    session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
-    session.add_all([settingst21, settingst22, settingst23, settingst24, settingst25, settingst26, settingst27])
-    session.add_all([settingst28, settingst29, settingst30])
     session.flush()
 
-    import dbas.user_management as user_hander
-    user_hander.refresh_public_nickname(usert07)
-    user_hander.refresh_public_nickname(usert08)
-    user_hander.refresh_public_nickname(usert09)
-    user_hander.refresh_public_nickname(usert10)
-    user_hander.refresh_public_nickname(usert11)
-    user_hander.refresh_public_nickname(usert12)
-    user_hander.refresh_public_nickname(usert13)
-    user_hander.refresh_public_nickname(usert14)
-    user_hander.refresh_public_nickname(usert15)
-    user_hander.refresh_public_nickname(usert16)
-    user_hander.refresh_public_nickname(usert17)
-    user_hander.refresh_public_nickname(usert18)
-    user_hander.refresh_public_nickname(usert19)
-    user_hander.refresh_public_nickname(usert20)
-    user_hander.refresh_public_nickname(usert21)
-    user_hander.refresh_public_nickname(usert22)
+    if usert00 is not None:
+        settingst00 = Settings(author_uid=usert00.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst01 = Settings(author_uid=usert01.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst02 = Settings(author_uid=usert02.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst03 = Settings(author_uid=usert03.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst04 = Settings(author_uid=usert04.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst05 = Settings(author_uid=usert05.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst06 = Settings(author_uid=usert06.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst07 = Settings(author_uid=usert07.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst08 = Settings(author_uid=usert08.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst09 = Settings(author_uid=usert09.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst10 = Settings(author_uid=usert10.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst11 = Settings(author_uid=usert11.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst12 = Settings(author_uid=usert12.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst13 = Settings(author_uid=usert13.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst14 = Settings(author_uid=usert14.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst15 = Settings(author_uid=usert15.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst16 = Settings(author_uid=usert16.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst17 = Settings(author_uid=usert17.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst18 = Settings(author_uid=usert18.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst19 = Settings(author_uid=usert19.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst20 = Settings(author_uid=usert20.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst21 = Settings(author_uid=usert21.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst22 = Settings(author_uid=usert22.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
+        settingst23 = Settings(author_uid=usert23.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst24 = Settings(author_uid=usert24.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst25 = Settings(author_uid=usert25.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst26 = Settings(author_uid=usert26.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst27 = Settings(author_uid=usert27.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst28 = Settings(author_uid=usert28.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst29 = Settings(author_uid=usert29.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settingst30 = Settings(author_uid=usert30.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+
+        session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
+        session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
+        session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
+        session.add_all([settingst21, settingst22, settingst23, settingst24, settingst25, settingst26, settingst27])
+        session.add_all([settingst28, settingst29, settingst30])
+        session.flush()
+
+        if use_anonyme_nicks:
+            import dbas.user_management as user_hander
+            user_hander.refresh_public_nickname(usert07)
+            user_hander.refresh_public_nickname(usert08)
+            user_hander.refresh_public_nickname(usert09)
+            user_hander.refresh_public_nickname(usert10)
+            user_hander.refresh_public_nickname(usert11)
+            user_hander.refresh_public_nickname(usert12)
+            user_hander.refresh_public_nickname(usert13)
+            user_hander.refresh_public_nickname(usert14)
+            user_hander.refresh_public_nickname(usert15)
+            user_hander.refresh_public_nickname(usert16)
+            user_hander.refresh_public_nickname(usert17)
+            user_hander.refresh_public_nickname(usert18)
+            user_hander.refresh_public_nickname(usert19)
+            user_hander.refresh_public_nickname(usert20)
+            user_hander.refresh_public_nickname(usert21)
+            user_hander.refresh_public_nickname(usert22)
 
     # Adding welcome notifications
     notification0 = Message(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
@@ -629,7 +672,7 @@ def set_up_language(session):
     return lang1, lang2
 
 
-def set_up_issue(session, user, lang1, lang2):
+def set_up_issue(session, user, lang1, lang2, is_field_test=False):
     """
 
     :param session:
@@ -638,15 +681,39 @@ def set_up_issue(session, user, lang1, lang2):
     :param lang2:
     :return:
     """
-    # adding our main issue
-    issue1 = Issue(title='Town has to cut spending ', info='Our town needs to cut spending. Please discuss ideas how this should be done.', author_uid=user.uid, lang_uid=lang1.uid)
-    issue2 = Issue(title='Cat or Dog', info='Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!', author_uid=user.uid, lang_uid=lang1.uid)
-    #  issue3 = Issue(title='Make the world better', info='How can we make this world a better place?', author_uid=user.uid, lang='en')
-    issue4 = Issue(title='Elektroautos', info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.', author_uid=user.uid, lang_uid=lang2.uid)
-    issue5 = Issue(title='Unterstützung der Sekretariate', info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.', author_uid=user.uid, lang_uid=lang2.uid)
-    session.add_all([issue1, issue2, issue4, issue5])
-    session.flush()
-    return issue1, issue2, issue4, issue5
+    if is_field_test:
+        issue1 = Issue(title='Verbesserung des Informatik-Studiengangs',
+                       info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu einladen gemeinsam mit den Dozenten der Informatik darüber zu diskutieren, wie der Studiengang verbessert und die Probleme, die durchdie große Anzahl der Studierenden entstanden sind, gelöst werden können.<br><br>Diese Diskussion wird voraussichtlich bis zum xx.xx.2017 aktiv sein.',
+                       author_uid=user.uid,
+                       lang_uid=lang2.uid)
+        session.add_all([issue1])
+        session.flush()
+        return issue1
+    else:
+        # adding our main issue
+        issue1 = Issue(title='Town has to cut spending ',
+                       info='Our town needs to cut spending. Please discuss ideas how this should be done.',
+                       author_uid=user.uid,
+                       lang_uid=lang1.uid)
+        issue2 = Issue(title='Cat or Dog',
+                       info='Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!',
+                       author_uid=user.uid,
+                       lang_uid=lang1.uid)
+        issue3 = Issue(title='Make the world better',
+                       info='How can we make this world a better place?',
+                       author_uid=user.uid,
+                       lang_uid=lang1.uid)
+        issue4 = Issue(title='Elektroautos',
+                       info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.',
+                       author_uid=user.uid,
+                       lang_uid=lang2.uid)
+        issue5 = Issue(title='Unterstützung der Sekretariate',
+                       info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.',
+                       author_uid=user.uid,
+                       lang_uid=lang2.uid)
+        session.add_all([issue1, issue2, issue3, issue4, issue5])
+        session.flush()
+        return issue1, issue2, issue4, issue5
 
 
 def setup_dummy_seen_by(session):
@@ -836,7 +903,7 @@ def __set_upvotes_for_statements(firstnames, up_votes, statement_uid, new_votes_
     :return:
     """
     tmp_firstname = list(firstnames)
-    for i in range(0, up_votes):
+    for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
         db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
         if not session.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
@@ -879,63 +946,63 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
 
     # Adding all textversions
     textversion0 = TextVersion(content="Cars are fucking stupid and bloody fuzzy critters!", author=user.uid)
-    textversion1 = TextVersion(content="We should get a cat.", author=user.uid)
-    textversion2 = TextVersion(content="We should get a dog.", author=user.uid)
-    textversion3 = TextVersion(content="We could get both, a cat and a dog.", author=user.uid)
-    textversion4 = TextVersion(content="Cats are very independent.", author=user.uid)
-    textversion5 = TextVersion(content="Cats are capricious.", author=user.uid)
-    textversion6 = TextVersion(content="Dogs can act as watch dogs.", author=user.uid)
-    textversion7 = TextVersion(content="You have to take the dog for a walk every day, which is tedious.", author=user.uid)
-    textversion8 = TextVersion(content="We have no use for a watch dog.", author=user.uid)
-    textversion9 = TextVersion(content="Going for a walk with the dog every day is good for social interaction and physical exercise.", author=user.uid)
-    textversion10 = TextVersion(content="It would be no problem.", author=user.uid)
-    textversion11 = TextVersion(content="A cat and a dog will generally not get along well.", author=user.uid)
-    textversion12 = TextVersion(content="We do not have enough money for two pets.", author=user.uid)
-    textversion13 = TextVersion(content="A dog costs taxes and will be more expensive than a cat.", author=user.uid)
-    textversion14 = TextVersion(content="Cats are fluffy.", author=user.uid)
-    textversion15 = TextVersion(content="Cats are small.", author=user.uid)
-    textversion16 = TextVersion(content="Fluffy animals losing much hair and I'm allergic to animal hair.", author=user.uid)
-    textversion17 = TextVersion(content="You could use a automatic vacuum cleaner.", author=user.uid)
-    textversion18 = TextVersion(content="Cats ancestors are animals in wildlife, who are hunting alone and not in groups.", author=user.uid)
-    textversion19 = TextVersion(content="This is not true for overbred races.", author=user.uid)
-    textversion20 = TextVersion(content="This lies in their the natural conditions.", author=user.uid)
-    textversion21 = TextVersion(content="The purpose of a pet is to have something to take care of.", author=user.uid)
-    textversion22 = TextVersion(content="Several cats of friends of mine are real as*holes.", author=user.uid)
-    textversion23 = TextVersion(content="The fact, that cats are capricious, is based on the cats race.", author=user.uid)
-    textversion24 = TextVersion(content="Not every cat is capricious.", author=user.uid)
-    textversion25 = TextVersion(content="This is based on the cats race and a little bit on the breeding.", author=user.uid)
-    textversion26 = TextVersion(content="Next to the taxes you will need equipment like a dog lead, anti-flea-spray, and so on.", author=user.uid)
-    textversion27 = TextVersion(content="The equipment for running costs of cats and dogs are nearly the same.", author=user.uid)
-    textversion29 = TextVersion(content="This is just a claim without any justification.", author=user.uid)
-    textversion30 = TextVersion(content="In Germany you have to pay for your second dog even more taxes!", author=user.uid)
-    textversion31 = TextVersion(content="It is important, that pets are small and fluffy!", author=user.uid)
-    textversion32 = TextVersion(content="Cats are little, sweet and innocent cuddle toys.", author=user.uid)
-    textversion33 = TextVersion(content="Do you have ever seen a sphinx cat or savannah cats?", author=user.uid)
+    textversion1 = TextVersion(content="we should get a cat.", author=user.uid)
+    textversion2 = TextVersion(content="we should get a dog.", author=user.uid)
+    textversion3 = TextVersion(content="we could get both, a cat and a dog.", author=user.uid)
+    textversion4 = TextVersion(content="cats are very independent.", author=user.uid)
+    textversion5 = TextVersion(content="cats are capricious.", author=user.uid)
+    textversion6 = TextVersion(content="dogs can act as watch dogs.", author=user.uid)
+    textversion7 = TextVersion(content="you have to take the dog for a walk every day, which is tedious.", author=user.uid)
+    textversion8 = TextVersion(content="we have no use for a watch dog.", author=user.uid)
+    textversion9 = TextVersion(content="going for a walk with the dog every day is good for social interaction and physical exercise.", author=user.uid)
+    textversion10 = TextVersion(content="it would be no problem.", author=user.uid)
+    textversion11 = TextVersion(content="a cat and a dog will generally not get along well.", author=user.uid)
+    textversion12 = TextVersion(content="we do not have enough money for two pets.", author=user.uid)
+    textversion13 = TextVersion(content="a dog costs taxes and will be more expensive than a cat.", author=user.uid)
+    textversion14 = TextVersion(content="cats are fluffy.", author=user.uid)
+    textversion15 = TextVersion(content="cats are small.", author=user.uid)
+    textversion16 = TextVersion(content="fluffy animals losing much hair and I'm allergic to animal hair.", author=user.uid)
+    textversion17 = TextVersion(content="you could use a automatic vacuum cleaner.", author=user.uid)
+    textversion18 = TextVersion(content="cats ancestors are animals in wildlife, who are hunting alone and not in groups.", author=user.uid)
+    textversion19 = TextVersion(content="this is not true for overbred races.", author=user.uid)
+    textversion20 = TextVersion(content="this lies in their the natural conditions.", author=user.uid)
+    textversion21 = TextVersion(content="the purpose of a pet is to have something to take care of.", author=user.uid)
+    textversion22 = TextVersion(content="several cats of friends of mine are real as*holes.", author=user.uid)
+    textversion23 = TextVersion(content="the fact, that cats are capricious, is based on the cats race.", author=user.uid)
+    textversion24 = TextVersion(content="not every cat is capricious.", author=user.uid)
+    textversion25 = TextVersion(content="this is based on the cats race and a little bit on the breeding.", author=user.uid)
+    textversion26 = TextVersion(content="next to the taxes you will need equipment like a dog lead, anti-flea-spray, and so on.", author=user.uid)
+    textversion27 = TextVersion(content="the equipment for running costs of cats and dogs are nearly the same.", author=user.uid)
+    textversion29 = TextVersion(content="this is just a claim without any justification.", author=user.uid)
+    textversion30 = TextVersion(content="in Germany you have to pay for your second dog even more taxes!", author=user.uid)
+    textversion31 = TextVersion(content="it is important, that pets are small and fluffy!", author=user.uid)
+    textversion32 = TextVersion(content="cats are little, sweet and innocent cuddle toys.", author=user.uid)
+    textversion33 = TextVersion(content="do you have ever seen a sphinx cat or savannah cats?", author=user.uid)
     # textversion34 = TextVersion(content="Even overbred races can be taught.", author=user.uid)
     # textversion35 = TextVersion(content="Several pets are nice to have and you do not have to take much care of them, for example turtles or cats, which are living outside.", author=user.uid)
-    textversion36 = TextVersion(content="It is much work to take care of both animals.", author=user.uid)
-    textversion101 = TextVersion(content="The city should reduce the number of street festivals.", author=3)
-    textversion102 = TextVersion(content="We should shut down University Park.", author=3)
-    textversion103 = TextVersion(content="We should close public swimming pools.", author=user.uid)
-    textversion105 = TextVersion(content="Reducing the number of street festivals can save up to $50.000 a year.", author=user.uid)
-    textversion106 = TextVersion(content="Every street festival is funded by large companies.", author=user.uid)
-    textversion107 = TextVersion(content="Then we will have more money to expand out pedestrian zone", author=user.uid)
-    textversion108 = TextVersion(content="Our city will get more attractive for shopping.", author=user.uid)
-    textversion109 = TextVersion(content="Street festivals attract many people, which will increase the citys income.", author=user.uid)
-    textversion110 = TextVersion(content="Spending of the city for these festivals are higher than the earnings.", author=user.uid)
-    textversion111 = TextVersion(content="Money does not solve problems of our society.", author=user.uid)
-    textversion112 = TextVersion(content="Criminals use University Park to sell drugs.", author=user.uid)
-    textversion113 = TextVersion(content="Shutting down University Park will save $100.000 a year.", author=user.uid)
-    textversion114 = TextVersion(content="We should not give in to criminals.", author=user.uid)
-    textversion115 = TextVersion(content="The number of police patrols has been increased recently.", author=user.uid)
-    textversion116 = TextVersion(content="This is the only park in our city.", author=user.uid)
-    textversion117 = TextVersion(content="There are many parks in neighbouring towns.", author=user.uid)
-    textversion118 = TextVersion(content="The city is planing a new park in the upcoming month.", author=3)
-    textversion119 = TextVersion(content="Parks are very important for our climate.", author=3)
-    textversion120 = TextVersion(content="Our swimming pools are very old and it would take a major investment to repair them.", author=3)
-    textversion121 = TextVersion(content="Schools need the swimming pools for their sports lessons.", author=user.uid)
-    textversion122 = TextVersion(content="The rate of non-swimmers is too high.", author=user.uid)
-    textversion123 = TextVersion(content="The police cannot patrol in the park for 24/7.", author=user.uid)
+    textversion36 = TextVersion(content="it is much work to take care of both animals.", author=user.uid)
+    textversion101 = TextVersion(content="the city should reduce the number of street festivals.", author=3)
+    textversion102 = TextVersion(content="we should shut down University Park.", author=3)
+    textversion103 = TextVersion(content="we should close public swimming pools.", author=user.uid)
+    textversion105 = TextVersion(content="reducing the number of street festivals can save up to $50.000 a year.", author=user.uid)
+    textversion106 = TextVersion(content="every street festival is funded by large companies.", author=user.uid)
+    textversion107 = TextVersion(content="then we will have more money to expand out pedestrian zone", author=user.uid)
+    textversion108 = TextVersion(content="our city will get more attractive for shopping.", author=user.uid)
+    textversion109 = TextVersion(content="street festivals attract many people, which will increase the citys income.", author=user.uid)
+    textversion110 = TextVersion(content="spending of the city for these festivals are higher than the earnings.", author=user.uid)
+    textversion111 = TextVersion(content="money does not solve problems of our society.", author=user.uid)
+    textversion112 = TextVersion(content="criminals use University Park to sell drugs.", author=user.uid)
+    textversion113 = TextVersion(content="shutting down University Park will save $100.000 a year.", author=user.uid)
+    textversion114 = TextVersion(content="we should not give in to criminals.", author=user.uid)
+    textversion115 = TextVersion(content="the number of police patrols has been increased recently.", author=user.uid)
+    textversion116 = TextVersion(content="this is the only park in our city.", author=user.uid)
+    textversion117 = TextVersion(content="there are many parks in neighbouring towns.", author=user.uid)
+    textversion118 = TextVersion(content="the city is planing a new park in the upcoming month.", author=3)
+    textversion119 = TextVersion(content="parks are very important for our climate.", author=3)
+    textversion120 = TextVersion(content="our swimming pools are very old and it would take a major investment to repair them.", author=3)
+    textversion121 = TextVersion(content="schools need the swimming pools for their sports lessons.", author=user.uid)
+    textversion122 = TextVersion(content="the rate of non-swimmers is too high.", author=user.uid)
+    textversion123 = TextVersion(content="the police cannot patrol in the park for 24/7.", author=user.uid)
     textversion200 = TextVersion(content="E-Autos keine Emissionen verursachen.", author=user.uid)
     textversion201 = TextVersion(content="Elektroautos sehr günstig im Unterhalt sind", author=user.uid)
     textversion202 = TextVersion(content="E-Autos optimal für den Stadtverkehr sind.", author=user.uid)

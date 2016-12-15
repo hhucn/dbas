@@ -19,13 +19,15 @@ from dbas.security import groupfinder
 
 from sqlalchemy import engine_from_config
 from dbas.database import load_discussion_database, load_news_database
+from configparser import ConfigParser, NoSectionError
 
 import logging
 import time
 
 
 def main(global_config, **settings):
-    """ This function returns a Pyramid WSGI application.
+    """
+    This function returns a Pyramid WSGI application.
     """
 
     # authentication and authorization
@@ -58,10 +60,21 @@ def main(global_config, **settings):
                      'mail.tls': 'False',
                      'mail.default_sender': 'dbas.hhu@gmail.com'
                      }
-    # all_settings = {**settings, **mail_settings}
+    all_settings = {**settings, **mail_settings}
+
+    # include custom parts
+    try:
+        parser = ConfigParser()
+        parser.read(global_config['__file__'])
+        custom_settings = dict()
+        for k, v in parser.items('settings:ldap'):
+            custom_settings['settings:ldap:' + k] = v
+        mail_settings.update(custom_settings)
+    except NoSectionError as e:
+        log.debug('__init__() '.upper() + 'main() <No LDAP-Section>')
 
     # creating the configurator
-    config = Configurator(settings=mail_settings,
+    config = Configurator(settings=all_settings,
                           authentication_policy=authn_policy,
                           authorization_policy=authz_policy,
                           root_factory='dbas.security.RootFactory',
@@ -103,6 +116,7 @@ def main(global_config, **settings):
     config.add_route('main_news', '/news')
     config.add_route('main_imprint', '/imprint')
     config.add_route('main_publications', '/publications')
+    config.add_route('main_rss', '/rss')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')

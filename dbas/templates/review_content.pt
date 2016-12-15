@@ -115,7 +115,7 @@
                         </div>
                     </div>
                     <div class="col-md-offset-2 col-md-3">
-                        <table id="stats-table" class="table table-condensed pull-right" border="0" style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_argument.extra_info">
+                        <table id="stats-table" class="table table-condensed pull-right" style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_argument.extra_info">
                             <tbody>
                                 <tr>
                                     <td i18n:translate="reported">Reported</td>
@@ -168,7 +168,7 @@
                         <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
                     </p>
 
-                    <table class="table table-condensed" border="0" id="argument-part-table">
+                    <table class="table table-condensed" id="argument-part-table">
                         <thead>
                             <tr class="success">
                                 <th i18n:translate="original">Original</th>

@@ -9,7 +9,6 @@ from dbas.logger import logger
 from dbas.views import base_layout
 from dbas.views import project_name
 from dbas.helper.dictionary.main import DictionaryHelper
-from pyramid.threadlocal import get_current_registry
 
 # =============================================================================
 # CORS configuration
@@ -41,7 +40,7 @@ def debug_function(request):
     logger('Websocket', 'socketio', 'debug_function')
 
     request_authenticated_userid = request.authenticated_userid
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
 
     return {

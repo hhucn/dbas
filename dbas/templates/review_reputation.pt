@@ -19,7 +19,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12" id="reputation_table">
-                    <table class="table table-condensed" border="0" id="review-table">
+                    <table class="table table-condensed" id="review-table">
                     <thead>
                         <tr class="review-table-row">
                             <td i18n:translate="date" class="center">Date</td>

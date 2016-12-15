@@ -8,24 +8,31 @@ image: hhucn/dbas-build
     - pip install --quiet -U pip
     - pip install --quiet -r requirements.txt
     - python setup.py --quiet develop
-    - initialize_discussion_sql docker.ini > /dev/null 2>&1
-    - initialize_news_sql docker.ini > /dev/null 2>&1
-    - init_discussion_testvotes docker.ini > /dev/null 2>&1
-    - init_review_tests docker.ini > /dev/null 2>&1
     - cp docker.ini development.ini
+    - initialize_discussion_sql development.ini > /dev/null 2>&1
+    - initialize_news_sql development.ini > /dev/null 2>&1
+    - init_discussion_testvotes development.ini > /dev/null 2>&1
+    - init_review_tests development.ini > /dev/null 2>&1
+
+start-server:
+  <<: *job-definition
+  stage: build
+  script:
+    - pserve development.ini --daemon
+    - pserve development.ini --status
 
 flake8:
-  stage: test
+  stage: build
   script:
     - pip install --quiet flake8
     - flake8 .
   allow_failure: true
 
-unit-test:
+unit:
   <<: *job-definition
   stage: test
   script:
-    - nosetests -v -w $(pwd) dbas graph admin api export
+    - nosetests -v --with-timer -w $(pwd) dbas graph admin api export
 
 #function-test:
 #  <<: *job-definition
@@ -36,10 +43,10 @@ unit-test:
 #    - python tests/splinterTests.py --no-input
 #  allow_failure: true
 
-nose-acceptance-tests:
+acceptance:
   <<: *job-definition
   stage: test
   script:
     - pserve development.ini --daemon
     - sleep 10
-    - nosetests -v --process-timeout=120 tests/test_frontend
+    - nosetests -v --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend

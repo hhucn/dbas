@@ -3,7 +3,12 @@
 
         <div class="container colored-container" id="header-container">
             <div class="row cn">
-                <div class="col-md-8 center">
+                <div class="col-md-8 center" tal:condition="len(issues.all)>1">
+                    <span>${structure:issues.intro}</span>:<br>
+                    <span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
+                    <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>
+                </div>
+                <div class="col-md-10 center" tal:condition="len(issues.all)<2">
                     <span>${structure:issues.intro}</span>:<br>
                     <span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language">${structure:issues.info}</span>
                     <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>
@@ -15,7 +20,7 @@
                         </button>
                         <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
                             <li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
-                                <a href="#" tal:attributes="href issue.url; value issue.title">
+                                <a href="#" tal:attributes="href issue.url; data-value issue.title">
                                 <div class="row" style="padding: 0;">
                                     <div class="col-md-10" style="white-space: pre-wrap;">${structure:issue.title}</div>
                                     <div class="col-md-2">
@@ -75,13 +80,13 @@
                                     <!--<img class="triangle-gravatar-l"  tal:attributes="src extras.users_avatar">-->
                                     <span class="triangle-content">${structure:bubble.message}</span>
                                     <br tal:condition="bubble.is_flagable and extras.logged_in">
-                                    <span class="triangle-trash pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_author and extras.logged_in" tal:attributes="title extras.title.delete_statement">
+                                    <span class="triangle-trash pull-right" tal:condition="bubble.is_author and extras.logged_in">
                                         <i class="fa fa-trash" aria-hidden="true" tal:attributes="title extras.title.delete_statement"></i>
                                     </span>
-                                    <span class="triangle-flag pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" tal:attributes="title extras.title.report_argument">
+                                    <span class="triangle-flag pull-right" tal:condition="bubble.is_flagable and extras.logged_in">
                                         <i class="fa fa-flag" aria-hidden="true"  tal:attributes="title extras.title.edit_statement"></i>
                                     </span>
-                                    <span class="triangle-reference pull-right" data-toggle="tooltip" data-placement="bottom" tal:condition="bubble.is_flagable and extras.logged_in" >
+                                    <span class="triangle-reference pull-right" tal:condition="bubble.is_flagable and extras.logged_in" >
                                         <i class="fa fa-link" aria-hidden="true" tal:attributes="title extras.title.reference"></i>
                                     </span>
                                 </p>
@@ -140,11 +145,11 @@
                 </div>
 
                 <ul class="sidebar">
-                    <li id="share-url"><i class="fa fa-share" aria-hidden="true" tal:attributes="titel extras.buttons.share_url"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
-                    <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true" tal:attributes="titel extras.title.barometer"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
-                    <li id="display-style-icon-island-img" tal:condition="extras.show_island_icon and False"><i class="fa fa-map-o" aria-hidden="true" tal:attributes="titel extras.title.island_view"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
-                    <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true" tal:attributes="titel extras.title.graph_view"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
-                    <li onclick="window.location='/discuss/finish'" id="finish-button"><i class="fa fa-sign-out" aria-hidden="true" tal:attributes="titel extras.title.finish_title"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
+                    <li id="share-url" tal:attributes="titel extras.buttons.share_url"><i class="fa fa-share" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
+                    <li id="opinion-barometer-img" tal:attributes="titel extras.title.barometer" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
+                    <li id="display-style-icon-island-img" tal:attributes="titel extras.title.island_view"  tal:condition="extras.show_island_icon and False"><i class="fa fa-map-o" aria-hidden="true"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
+                    <li id="display-style-icon-graph-img" tal:attributes="titel extras.title.graph_view" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
+                    <li id="finish-button" tal:attributes="titel extras.title.finish_title" onclick="window.location='/discuss/finish'"><i class="fa fa-sign-out" aria-hidden="true"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
@@ -343,7 +348,7 @@
             	            </div>
 
                         </div>
-                        <div><img class="icon-badge icon-rem-premise" src="${request.static_url('dbas:static/images/icon_minus1.png')}" tal:attributes="title extras.title.rem_statement_row_title"/><img class="icon-badge icon-add-premise" src="${request.static_url('dbas:static/images/icon_plus1.png')}" tal:attributes="title extras.title.add_statement_row_title"/></div>
+                        <div><img class="icon-badge icon-rem-premise" alt="rem" src="${request.static_url('dbas:static/images/icon_minus1.png')}" tal:attributes="title extras.title.rem_statement_row_title"/><img class="icon-badge icon-add-premise" alt="add" src="${request.static_url('dbas:static/images/icon_plus1.png')}" tal:attributes="title extras.title.add_statement_row_title"/></div>
                     </div>
                 </div>
                 <div class="list-group" id="proposal-premise-list-group"></div>
