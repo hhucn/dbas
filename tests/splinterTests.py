@@ -258,7 +258,7 @@ class FrontendTests:
                  'user']
         texts = ['part of the graduate school',
                  'Feel free to drop us a',
-                 'COMMA16',
+                 '1',
                  'Liability for content',
                  'discussion is about',
                  'part of the graduate school',
