@@ -48,7 +48,7 @@ def create_news_rss(main_page, ui_locale):
     rss.write_xml(open('dbas/static/rss/news.xml', 'w'))
 
 
-def create_initial_issue_rss(main_page):
+def create_initial_issue_rss(main_page, ui_locale):
     logger('RSS-Handler', 'create_initial_issue_rss', 'def')
     db_issues = DBDiscussionSession.query(Issue).all()
     for issue in db_issues:
@@ -65,7 +65,7 @@ def create_initial_issue_rss(main_page):
                 author=db_author.get_global_nickname()
             ))
 
-        rss = __get_issue_rss_gen(main_page, issue, items)
+        rss = __get_issue_rss_gen(main_page, issue, items, ui_locale)
         rss.write_xml(open('dbas/static/rss/' + issue.get_slug() + '.xml', 'w'))
 
 

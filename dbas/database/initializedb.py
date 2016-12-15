@@ -66,7 +66,7 @@ def main_discussion(argv=sys.argv):
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
-        create_initial_issue_rss(get_global_url())
+        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
 def field_test(argv=sys.argv):
@@ -91,7 +91,7 @@ def field_test(argv=sys.argv):
         set_up_issue(DBDiscussionSession, user0, lang1, lang2, is_field_test=True)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, use_anonyme_nicks=False)
         transaction.commit()
-        create_initial_issue_rss(get_global_url())
+        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
 def main_discussion_reload(argv=sys.argv):
@@ -183,7 +183,7 @@ def main_news(argv=sys.argv):
     NewsBase.metadata.create_all(news_engine)
 
     with transaction.manager:
-        setup_news_db(DBNewsSession)
+        setup_news_db(DBNewsSession, settings['pyramid.default_locale_name'])
         transaction.commit()
 
 
