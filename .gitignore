@@ -53,7 +53,7 @@ dbas/static/css/main.css
 dbas/static/css/main.css.map
 dbas/static/js/compiled/*
 dbas/static/js/min/*
-dbas/static/rss.xml
+dbas/static/rss/*
 .sass-cache/
 
 # node
