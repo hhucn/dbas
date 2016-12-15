@@ -407,6 +407,8 @@ de_lang = {
     _.letsGoBack: 'Ab geht\'s zurück!',
     _.letsGoHome: 'Ab zur Startseite!',
     _.langNotFound: 'Sprache nicht gefunden',
+    _.latestNewsFromDiscussion: 'Die aktuellen Neuigkeit aus der Discussion über',
+    _.latestNewsFromDBAS: 'Die aktuellen Neugkeiten von D-BAS, einem Dialog-Basierten Argumentationssystem',
     _.more: 'Mehr',
     _.medium: 'mittel',
     _.minLength: 'Mindestlänge',

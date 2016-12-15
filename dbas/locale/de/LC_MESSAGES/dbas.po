@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-12-12 21:13+0100\n"
+"POT-Creation-Date: 2016-12-15 18:25+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -71,7 +71,7 @@ msgstr "Sie müssen sich erneut anmelden."
 #: templates/index.pt:20
 msgid "welcome_text1"
 msgstr ""
-"Willkommen bei D-BAS! Dies ist ein früher Prototyp unseres Dialog-Basierten "
+"Willkommen bei D-BAS! Dies ist ein Prototyp unseres Dialog-Basierten "
 "Argumentationssystem. Falls Fehler auftreten, "
 
 #. Default: contact
@@ -683,6 +683,11 @@ msgstr "Autor"
 #: templates/snippet-footer.pt:20
 msgid "license"
 msgstr "Lizenz"
+
+#. Default: RSS
+#: templates/snippet-footer.pt:28
+msgid "rss"
+msgstr "RSS"
 
 #. Default: About me
 #: templates/snippet-popups.pt:10
