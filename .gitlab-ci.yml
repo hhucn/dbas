@@ -32,7 +32,7 @@ unit:
   <<: *job-definition
   stage: test
   script:
-    - nosetests -v -w $(pwd) dbas graph admin api export
+    - nosetests -v --with-timer -w $(pwd) dbas graph admin api export
 
 #function-test:
 #  <<: *job-definition
@@ -49,4 +49,4 @@ acceptance:
   script:
     - pserve development.ini --daemon
     - sleep 10
-    - nosetests -v --process-timeout=120 tests/test_frontend
+    - nosetests -v --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
