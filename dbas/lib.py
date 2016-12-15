@@ -35,7 +35,7 @@ def get_global_url():
     path = str(os.path.realpath(__file__ + '/../../setup.py'))
     lines = [line.rstrip('\n').strip() for line in open(path)]
 
-    return str([l[l.index('htt'):-2] for l in lines if 'url=' in l])
+    return str([l[l.index('htt'):-2] for l in lines if 'url=' in l][0])
 
 
 def get_changelog(no):
@@ -46,7 +46,6 @@ def get_changelog(no):
     """
     path = str(os.path.realpath(__file__ + '/../../CHANGELOG.md'))
     lines = [line.rstrip('\n').strip() for line in open(path) if len(line.rstrip('\n').strip()) > 0]
-    from dbas.logger import logger
     changelog = []
     title = ''
     body = []
@@ -59,9 +58,17 @@ def get_changelog(no):
         else:
             body.append(l.replace('- ', ''))
 
-        logger('X', str(len(l)), str(l))
-
     return changelog[0:no]
+
+
+def is_usage_with_ldap(request):
+    """
+
+    :return:
+    """
+    if 'settings:ldap:usage' in request.registry.settings:
+        return True if request.registry.settings['settings:ldap:usage'] == 'true' else False
+    return False
 
 
 def escape_string(text):
@@ -74,18 +81,18 @@ def escape_string(text):
     return escape(text)
 
 
-def get_language(request, current_registry):
+def get_language(request):
     """
     Returns current ui locales code which is saved in current cookie or the registry.
 
     :param request: request
     :param current_registry: get_current_registry()
-    :return: language abrreviation
+    :return: ui_locales
     """
     try:
         lang = request.cookies['_LOCALE_']
     except (KeyError, AttributeError):
-        lang = current_registry.settings['pyramid.default_locale_name']
+        lang = request.registry.settings['pyramid.default_locale_name']
     return str(lang)
 
 
@@ -403,7 +410,8 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     for uid in arg_array:
         db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
         text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        pgroups.append((text[0:1].lower() + text[1:]) if local_lang != 'de' else text)
+
+        pgroups.append(text)
         supportive.append(db_argument.is_supportive)
     uid = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid
     conclusion = get_text_for_statement_uid(uid)
@@ -415,11 +423,9 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     because += get_translation(_.because, lang).lower() + ' '
 
     if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
-        ret_value = get_translation(_.earlierYouArguedThat, lang) if user_changed_opinion else get_translation(
-            _.otherUsersSaidThat, lang) + ' '
+        ret_value = get_translation(_.earlierYouArguedThat if user_changed_opinion else _.otherUsersSaidThat, lang)
+        ret_value += ' '
         users_opinion = True  # user after system
-        if local_lang != 'de':
-            conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
     else:  # user starts
         ret_value = (get_translation(_.soYourOpinionIsThat, lang) + ': ') if start_with_intro else ''
         users_opinion = False  # system after user
@@ -433,12 +439,12 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     for i, pgroup in enumerate(pgroups):
         ret_value += ' '
         if users_opinion:
-            ret_value += get_translation(
-                _.otherParticipantsConvincedYouThat if user_changed_opinion else _.butYouCounteredWith, lang)
+            ret_value += get_translation(_.otherParticipantsConvincedYouThat if user_changed_opinion else _.butYouCounteredWith, lang)
         else:
-            ret_value += get_translation(_.otherUsersHaveCounterArgument, lang)
+            # ret_value += get_translation(_.otherUsersHaveCounterArgument, lang)
+            ret_value += get_translation(_.youAgreeWithThatNow, lang)
 
-        ret_value += ' {}{}{}.'.format(sb, pgroup, se) if i == len(pgroups) - 1 else ' {} '.format(pgroup)
+        ret_value += sb + ' ' + pgroups[i] + '.'
         users_opinion = not users_opinion
 
     return ret_value
@@ -463,8 +469,6 @@ def get_text_for_premisesgroup_uid(uid):
 
     for premise in db_premises:
         tmp = get_text_for_statement_uid(premise.statements.uid)
-        if lang != 'de':
-            tmp[0:1].lower() + tmp[1:]
         uids.append(str(premise.statements.uid))
         texts.append(str(tmp))
 
@@ -630,6 +634,23 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param lang: String
     :return: dict()
     """
+
+    # check for html
+    if message[0:1] == '<':
+        pos = message.index('>')
+        message = message[0:pos + 1] + message[pos + 1:pos + 2].upper() + message[pos + 2:]
+    else:
+        message = message[0:1].upper() + message[1:]
+
+    # check for html
+    if message[-1] == '>':
+        pos = message.rfind('<')
+        if message[pos:pos + 1] not in ['.', '?']:
+            message = message[0:pos + 1] + '.' + message[pos + 2:]
+    else:
+        if not message.endswith(tuple(['.', '?'])):
+            message += '.'
+
     speech = {'is_user': is_user,
               'is_system': is_system,
               'is_status': is_status,

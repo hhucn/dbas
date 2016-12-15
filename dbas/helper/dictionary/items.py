@@ -55,6 +55,7 @@ class ItemDictHelper(object):
         :param nickname: Boolean or String
         :return:
         """
+        logger('ItemDictHelper', 'get_array_for_start', 'def user: ' + str(nickname))
         db_statements = get_not_disabled_statement_as_query()
         db_statements = db_statements.filter(and_(Statement.is_startpoint == True,
                                                   Statement.issue_uid == self.issue_uid)).all()
@@ -80,15 +81,15 @@ class ItemDictHelper(object):
 
         _tn = Translator(self.lang)
         if nickname:
-                statements_array.append(self.__create_answer_dict('start_statement',
-                                                                  [{'title': _tn.get(_.newConclusionRadioButtonText),
-                                                                    'id': 0}],
-                                                                  'start',
-                                                                  'add'))
+            statements_array.append(self.__create_answer_dict('start_statement',
+                                                              [{'title': _tn.get(_.newConclusionRadioButtonText),
+                                                                'id': 0}],
+                                                              'start',
+                                                              'add'))
         else:
-                statements_array.append(
-                    self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
-                                              'justify', 'login'))
+            statements_array.append(
+                self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
+                                          'justify', 'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
@@ -225,7 +226,7 @@ class ItemDictHelper(object):
 
         if logged_in:
             if len(statements_array) == 0:
-                text = _tn.get(_.newPremisesRadioButtonTextAsFirstOne)
+                text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
             else:
                 text = _tn.get(_.newPremiseRadioButtonText)
             statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
@@ -278,7 +279,7 @@ class ItemDictHelper(object):
                                                                  Argument.issue_uid == self.issue_uid)).all()
         return db_arguments
 
-    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive, nickname):
+    def get_array_for_dont_know_reaction(self, argument_uid, is_supportive, nickname, gender):
         """
         Prepares the dict with all items for the third step, where a supportive argument will be presented.
 
@@ -300,7 +301,7 @@ class ItemDictHelper(object):
         if db_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user.uid)
 
-        rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, False, False, is_dont_know=True)
+        rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, False, False, is_dont_know=True, gender=gender)
         mode         = 't' if is_supportive else 't'
         counter_mode = 'f' if is_supportive else 't'
 

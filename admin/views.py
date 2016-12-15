@@ -16,7 +16,6 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.views import user_logout, base_layout, project_name
-from pyramid.threadlocal import get_current_registry
 
 #
 # CORS configuration
@@ -82,7 +81,7 @@ def main_admin(request):
     if should_log_out:
         return user_logout(request, True)
 
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
     overview = lib.get_overview(request.path)
 
@@ -111,7 +110,7 @@ def main_table(request):
     if should_log_out:
         return user_logout(request, True)
 
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
     table = request.matchdict['table']
     try:
@@ -140,7 +139,7 @@ def main_update(request):
     logger('Admin', 'main_update', 'def ' + str(request.params))
 
     nickname = request.authenticated_userid
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     return_dict = dict()
@@ -163,7 +162,7 @@ def main_delete(request):
     logger('Admin', 'main_delete', 'def ' + str(request.params))
 
     nickname = request.authenticated_userid
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     return_dict = dict()
@@ -184,7 +183,7 @@ def main_add(request):
     logger('Admin', 'main_add', 'def ' + str(request.params))
 
     nickname = request.authenticated_userid
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     return_dict = dict()

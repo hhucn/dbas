@@ -64,5 +64,6 @@ setup(name='dbas',
       init_discussion_testvotes = dbas.database.initializedb:main_dummy_votes
       init_review_tests = dbas.database.initializedb:main_dummy_reviews
       initialize_news_sql = dbas.database.initializedb:main_news
+      init_field_test_sql = dbas.database.initializedb:field_test
       """,
       )

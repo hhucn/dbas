@@ -23,13 +23,13 @@
 				<li id="contact-link">
 					<a href="${request.application_url}/contact"><i class="fa fa-comment" aria-hidden="true"></i><span i18n:translate="contact">Contact</span></a>
 				</li>
-					<img id="roundhousekick"
-							 style="width: 25px; height: 25px; border: none; opacity: 0;"
-							 src="${request.static_url('dbas:static/images/transparent.gif')}">
-					<img id="yomamma"
-							 style="width: 25px; height: 25px; border: none; opacity: 0;"
-							 src="${request.static_url('dbas:static/images/transparent.gif')}">
+
+				<li>
+					<a href="${request.application_url}/rss"><i class="fa fa-rss" aria-hidden="true"></i><span i18n:translate="rss">RSS</span></a>
+				</li>
 			</ul>
+            <img id="roundhousekick" alt=".r" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}">
+            <img id="yomamma" alt=".y" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}">
 		</div>
 	</div>
 </div>

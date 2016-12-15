@@ -14,6 +14,7 @@ from dbas.strings.text_generator import tag_type, get_header_for_users_confronta
     get_text_for_add_premise_container, get_text_for_confrontation
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from dbas.strings.text_generator import get_name_link_of_arguments_author
 
 
 class DiscussionDictHelper(object):
@@ -103,36 +104,14 @@ class DiscussionDictHelper(object):
         if not text:
             return None
 
-        # system bubble
         tag_start = '<' + tag_type + ' data-argumentation-type="position">'
-        tag_end = '</' + tag_type + '>'
-        if self.lang == 'de':
-            if is_supportive:
-                question = _tn.get(_.whatIsYourMostImportantReasonWhyForInColor)
-            else:
-                question = _tn.get(_.whatIsYourMostImportantReasonWhyAgainstInColor)
-        else:
-            question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
+        tag_end = '</' + tag_type + '/>'
 
-        question += ' ' + tag_start + text + tag_end
-
-        if self.lang != 'de':
-            question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
-        question += '?'
-        because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
+        # system bubble
+        system_question = self.get_system_bubble_for_justify_statement(is_supportive, _tn, tag_start, text, tag_end)
 
         # user bubble
-        if self.lang == 'de':
-            intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
-            add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
-        else:
-            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea)
-        add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
-
-        if self.lang == 'de':
-            intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
-        else:
-            intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
+        user_text, add_premise_text = self.get_user_bubble_for_justify_statement(_tn, is_supportive, text)
 
         # additional stuff
         splitted_history = self.history.split('-')
@@ -143,10 +122,10 @@ class DiscussionDictHelper(object):
                 intro += ': '
 
         url = UrlManager(application_url, slug).get_slug_url(False)
-        question_bubble = create_speechbubble_dict(is_system=True, message=question + ' <br>' + because, omit_url=True, lang=self.lang)
+        question_bubble = create_speechbubble_dict(is_system=True, message=system_question, omit_url=True, lang=self.lang)
         if not text.endswith(('.', '?', '!')):
             text += '.'
-        select_bubble = create_speechbubble_dict(is_user=True, url=url, message=intro + text, omit_url=False,
+        select_bubble = create_speechbubble_dict(is_user=True, url=url, message=user_text, omit_url=False,
                                                  statement_uid=uid, is_supportive=is_supportive, nickname=nickname,
                                                  lang=self.lang)
 
@@ -161,6 +140,56 @@ class DiscussionDictHelper(object):
                                                           omit_url=True, lang=self.lang))
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
+
+    def get_user_bubble_for_justify_statement(self, _tn, is_supportive, text):
+        """
+
+        :param _tn:
+        :param is_supportive:
+        :param text:
+        :return:
+        """
+        if self.lang == 'de':
+            intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
+            add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
+        else:
+            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea)
+        add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
+
+        if self.lang == 'de':
+            intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
+        else:
+            intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
+        text = intro + text
+
+        return text, add_premise_text
+
+    def get_system_bubble_for_justify_statement(self, is_supportive, _tn, tag_start, text, tag_end):
+        """
+
+        :param is_supportive:
+        :param _tn:
+        :param tag_start:
+        :param text:
+        :param tag_end:
+        :return:
+        """
+        if self.lang == 'de':
+            if is_supportive:
+                question = _tn.get(_.whatIsYourMostImportantReasonWhyForInColor)
+            else:
+                question = _tn.get(_.whatIsYourMostImportantReasonWhyAgainstInColor)
+        else:
+            question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
+
+        question += ' ' + tag_start + text + tag_end
+
+        if self.lang != 'de':
+            question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
+        because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
+        question += '?' + ' <br>' + because
+
+        return question
 
     def get_dict_for_justify_argument(self, uid, is_supportive, attack):
         """
@@ -214,7 +243,7 @@ class DiscussionDictHelper(object):
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
 
-    def get_dict_for_dont_know_reaction(self, uid):
+    def get_dict_for_dont_know_reaction(self, uid, main_page, nickname):
         """
         Prepares the discussion dict with all bubbles for the third step, where an supportive argument will be presented.
 
@@ -226,15 +255,28 @@ class DiscussionDictHelper(object):
         bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         add_premise_text = ''
         save_statement_url = 'ajax_set_new_start_statement'
+        gender = ''
 
         if uid != 0:
-            text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True)
-            sys_text = _tn.get(_.otherParticipantsThinkThat) + ' ' + text[0:1].lower() + text[1:] + '. '
+            text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True, start_with_intro=True)
+            db_argument = DBDiscussionSession.query(Argument).get(uid)
+            if not db_argument:
+                text = ''
+            author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_argument, nickname)
+            if is_okay:
+                intro = author + ' ' + _tn.get(_.thinksThat)
+            else:
+                intro = _tn.get(_.otherParticipantsThinkThat)
+            sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
             sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
             bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text)
             bubbles_array.append(bubble_sys)
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
+        return {'bubbles': bubbles_array,
+                'add_premise_text': add_premise_text,
+                'save_statement_url': save_statement_url,
+                'mode': '',
+                'gender': gender}
 
     def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history, nickname):
         """
@@ -270,7 +312,8 @@ class DiscussionDictHelper(object):
                 _.otherParticipantsDontHaveNewCounterForThat)
             tropy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
             mid_text = tropy + ' ' + _tn.get(_.congratulation) + ' ' + tropy + '<br>'
-            mid_text += _tn.get(_.discussionCongratulationEnd) + ' ' + _tn.get(_.discussionEndLinkText)
+            mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
+            mid_text += _tn.get(_.discussionEndLinkTextLoggedIn) if nickname is not None else _tn.get(_.discussionEndLinkTextNotLoggedIn)
         else:
             premise, tmp     = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
             conclusion       = get_text_for_conclusion(db_argument)
@@ -294,8 +337,6 @@ class DiscussionDictHelper(object):
                                                             user_changed_opinion=user_changed_opinion, attack_type=attack,
                                                             minimize_on_undercut=True)
 
-            user_is_attacking   = not db_argument.is_supportive
-
             current_argument = current_argument[0:1].upper() + current_argument[1:]
             if self.lang != 'de':
                 premise = premise[0:1].lower() + premise[1:]
@@ -306,7 +347,7 @@ class DiscussionDictHelper(object):
 
             sys_text, gender = get_text_for_confrontation(self.main_page, self.lang, nickname, premise, conclusion, sys_conclusion,
                                                           is_supportive, attack, confr, reply_for_argument,
-                                                          user_is_attacking, db_argument, db_confrontation)
+                                                          not db_argument.is_supportive, db_argument, db_confrontation)
             gender_of_counter_arg = gender
 
         bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,

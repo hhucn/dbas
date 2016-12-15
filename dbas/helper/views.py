@@ -7,7 +7,7 @@ Helper for D-BAS Views
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings, Language
 from dbas.logger import logger
-from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname
+from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -17,6 +17,7 @@ from validate_email import validate_email
 
 from dbas.url_manager import UrlManager
 from pyramid.httpexceptions import HTTPFound
+from pyramid.security import remember
 from dbas.review.helper.reputation import add_reputation_for
 from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
 from websocket.lib import send_request_for_info_popup_to_socketio
@@ -31,6 +32,8 @@ import dbas.user_management as UserHandler
 import dbas.handler.password as PasswordHandler
 import dbas.helper.voting as VotingHelper
 import transaction
+
+from time import sleep
 
 
 def get_nickname(request_authenticated_userid, for_api=None, api_data=None):
@@ -135,6 +138,7 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
         if broke_limit:
             _t = Translator(ui_locales)
             send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+
     else:
         logger('ViewHelper', 'handle_justification_step', '404')
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation])), None, None
@@ -202,8 +206,8 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
 
     # dont know
     argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid)
-    item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname)
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
+    item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,
                                               application_url=main_page, for_api=for_api, nickname=request_authenticated_userid)
     # is the discussion at the end?
@@ -330,6 +334,137 @@ def try_to_contact(request, name, email, phone, content, ui_locales, spamanswer)
         contact_error = not send_message
 
     return contact_error, message, send_message
+
+
+def login_user(request, nickname, password, for_api, keep_login, _tn):
+    """
+
+    :param request:
+    :param nickname:
+    :param password:
+    :param for_api:
+    :param keep_login:
+    :param _tn:
+    :return:
+    """
+
+    # getting params from request or api
+    if not nickname and not password:
+        nickname = escape_string(request.params['user'])
+        password = escape_string(request.params['password'])
+        keep_login = escape_string(request.params['keep_login'])
+        keep_login = True if keep_login == 'true' else False
+        url = request.params['url']
+    else:
+        nickname = escape_string(nickname)
+        password = escape_string(password)
+        url = ''
+
+    db_user = get_user_by_case_insensitive_nickname(nickname)
+    if not db_user:  # check if the user exists
+        logger('ViewHelper', 'user_login', 'user \'' + nickname + '\' does not exists')
+        success = False
+        is_ldap = is_usage_with_ldap(request)
+
+        # if the user does not exists and we are using LDAP, we'll grep the user
+        if is_ldap:
+            success, db_user = catch_user_from_ldap(request, nickname, password, _tn)
+
+        if not success:
+            error = _tn.get(_.userPasswordNotMatch)
+            return error
+
+    elif not db_user.validate_password(password):  # check password
+        logger('ViewHelper', 'user_login', 'wrong password')
+        error = _tn.get(_.userPasswordNotMatch)
+        return error
+
+    logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_settings.should_hold_the_login(keep_login)
+    headers = remember(request, db_user.nickname)
+
+    # update timestamp
+    logger('ViewHelper', 'user_login', 'update login timestamp')
+    db_user.update_last_login()
+    db_user.update_last_action()
+    transaction.commit()
+
+    ending = ['/?session_expired=true', '/?session_expired=false']
+    for e in ending:
+        if url.endswith(e):
+            url = url[0:-len(e)]
+
+    if for_api:
+        logger('ViewHelper', 'user_login', 'return for api: success')
+        return {'status': 'success'}
+    else:
+        logger('ViewHelper', 'user_login', 'return success: ' + url)
+        sleep(0.5)
+        return HTTPFound(
+            location=url,
+            headers=headers,
+        )
+
+
+def catch_user_from_ldap(request, nickname, password, _tn):
+    """
+
+    :param nickname:
+    :param password:
+    :return:
+    """
+    import ldap
+
+    try:
+        r = request.registry.settings
+        server      = r['settings:ldap:server']
+        base        = r['settings:ldap:base']
+        scope       = r['settings:ldap:account.scope']
+        filter      = r['settings:ldap:account.filter']
+        firstname   = r['settings:ldap:account.firstname']
+        lastname    = r['settings:ldap:account.lastname']
+        title       = r['settings:ldap:account.title']
+        email       = r['settings:ldap:account.email']
+        logger('ViewHelper', 'catch_user_from_ldap', 'parsed data')
+
+        logger('ViewHelper', 'catch_user_from_ldap', 'connect ldap')
+        l = ldap.initialize(server)
+        l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
+        l.simple_bind_s(nickname + scope, password)
+        user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
+
+        firstname = user[firstname][0].decode('utf-8')
+        lastname = user[lastname][0].decode('utf-8')
+        title = user[title][0].decode('utf-8')
+        gender = 'm' if 'Herr' in title else 'f' if 'Frau' in title else 'n'
+        email = user[email][0].decode('utf-8')
+
+        # getting the authors group
+        db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
+
+        # does the group exists?
+        if not db_group:
+            info = _tn.get(_.errorTryLateOrContant)
+            logger('ViewHelper', 'user_ldap_login', 'Internal error occured')
+            return False, info
+
+        success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group.uid, _tn.get_lang())
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        if db_user:
+            return success, db_user
+
+        logger('ViewHelper', 'user_ldap_login', 'new user not found in db')
+        return False, _tn.get(_.errorTryLateOrContant)
+
+    except ldap.INVALID_CREDENTIALS:
+        logger('ViewHelper', 'user_ldap_login', 'ldap credential error')
+        return False, None
+
+    except ldap.SERVER_DOWN:
+        logger('ViewHelper', 'user_ldap_login', 'can\'t reach server withn 5s')
+        return False, None
 
 
 def try_to_register_new_user_via_ajax(request, ui_locales):

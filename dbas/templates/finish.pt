@@ -21,7 +21,7 @@
                                 <i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i>
                                 <span i18n:translate="todays_summary">Todays Summary</span>
                             </h5>
-					        <table class="table table-condensed" border="0" style="border-collapse: separate; border-spacing: 5px 5px;">
+					        <table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
 					        	<tr>
 					        		<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
 					        		<td id="statements-done-count" style="text-align: right">${summary.statements_posted}</td>

@@ -15,7 +15,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.query import get_every_attack_for_island_view
 from dbas.helper.notification import count_of_new_notifications, get_box_for
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, \
-    create_speechbubble_dict, get_profile_picture, get_public_profile_picture
+    create_speechbubble_dict, get_profile_picture, get_public_profile_picture, is_usage_with_ldap
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution
@@ -115,11 +115,13 @@ class DictionaryHelper(object):
             nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         is_logged_in = False if nickname == nick_of_anonymous_user else db_user is not None
+        is_ldap = is_usage_with_ldap(request)
 
         # get anti-spam-question
         spamquestion, answer = get_random_anti_spam_question(self.system_lang)
         # save answer in session
         request.session['antispamanswer'] = answer
+        rrs = request.registry.settings
 
         return_dict = dict()
         return_dict['spamquestion']                  = spamquestion
@@ -134,6 +136,9 @@ class DictionaryHelper(object):
         return_dict['is_user_female']                = db_user.gender == 'f' if db_user else False
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit']                   = 'true' if broke_limit else 'false'
+        return_dict['use_with_ldap']                 = is_ldap
+        return_dict['is_development']                = rrs['mode'] == 'development' if 'mode' in rrs else ''
+        return_dict['is_production']                 = rrs['mode'] == 'production' if 'mode' in rrs else ''
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:
@@ -148,7 +153,7 @@ class DictionaryHelper(object):
             return_dict['date']                      = arrow.utcnow().format('DD-MM-YYYY')
             self.add_title_text(return_dict)
             self.add_button_text(return_dict)
-            self.add_tag_text(return_dict)
+            self.add_tag_text(is_ldap, return_dict)
 
             message_dict = dict()
             message_dict['new_count']    = count_of_new_notifications(nickname)
@@ -163,7 +168,7 @@ class DictionaryHelper(object):
             return_dict['notifications'] = message_dict
 
             # add everything for the island view
-            if return_dict['show_island_icon']:
+            if show_island_icon:
                 # does an argument exists?
                 db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
                 if db_argument:
@@ -425,7 +430,7 @@ class DictionaryHelper(object):
                                 'reference': _tn_dis.get(_.reference)
                                 }
 
-    def add_tag_text(self, return_dict):
+    def add_tag_text(self, is_ldap, return_dict):
         """
         Adds string-map in the return dict with the key 'tag'
 
@@ -467,9 +472,11 @@ class DictionaryHelper(object):
             'need_help_to_understand_statement': _tn_dis.get(_.needHelpToUnderstandStatement),
             'set_premisegroups_intro1': _tn_dis.get(_.setPremisegroupsIntro1),
             'set_premisegroups_intro2': _tn_dis.get(_.setPremisegroupsIntro2),
-            'placeholder_nickname': _tn_dis.get(_.exampleNickname),
+            'placeholder_nickname': _tn_dis.get(_.exampleNicknameLdap) if is_ldap else _tn_dis.get(_.exampleNickname),
             'placeholder_password': _tn_dis.get(_.examplePassword),
             'placeholder_firstname': _tn_dis.get(_.exampleFirstname),
             'placeholder_lastname': _tn_dis.get(_.exampleLastname),
-            'placeholder_mail': _tn_dis.get(_.exampleMail)
+            'placeholder_mail': _tn_dis.get(_.exampleMail),
+            'placeholder_statement': _tn_dis.get(_.exampleStatement),
+            'placeholder_source': _tn_dis.get(_.exampleSource)
         }

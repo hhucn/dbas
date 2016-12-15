@@ -27,6 +27,14 @@ all:
 	init_discussion_testvotes development.ini
 	init_review_tests development.ini
 
+field:
+	sudo -u postgres bash -c "psql -c \"create database discussion;\""
+	sudo -u postgres bash -c "psql -c \"create database news;\""
+	sudo -u postgres bash -c "psql -c \"alter database discussion owner to dbas;\""
+	sudo -u postgres bash -c "psql -c \"alter database news owner to dbas;\""
+	init_field_test_sql development.ini
+	initialize_news_sql development.ini
+
 clean:
 	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
 	sudo -u postgres bash -c "psql -c \"drop database news;\""

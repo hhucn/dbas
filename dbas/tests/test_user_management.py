@@ -31,23 +31,18 @@ class UserManagementTest(unittest.TestCase):
 
     def test_is_user_in_group(self):
         self.assertTrue(user_management.is_user_in_group('Tobias', 'admins'))
-        self.assertFalse(user_management.is_user_in_group('katesa', 'admins'))
         self.assertFalse(user_management.is_user_in_group('Torben', 'admins'))
 
         self.assertFalse(user_management.is_user_in_group('Tobias', 'authors'))
-        self.assertTrue(user_management.is_user_in_group('katesa', 'authors'))
         self.assertFalse(user_management.is_user_in_group('Torben', 'authors'))
 
         self.assertFalse(user_management.is_user_in_group('Tobias', 'users'))
-        self.assertFalse(user_management.is_user_in_group('katesa', 'users'))
         self.assertTrue(user_management.is_user_in_group('Torben', 'users'))
 
     def test_is_user_admin(self):
         self.assertTrue(user_management.is_user_admin('Tobias'))
-        self.assertFalse(user_management.is_user_admin('katesa'))
         self.assertFalse(user_management.is_user_admin('Torben'))
 
     def test_is_user_author(self):
         self.assertTrue(is_user_author('Tobias'))
-        self.assertTrue(is_user_author('katesa'))
         self.assertFalse(is_user_author('Torben'))

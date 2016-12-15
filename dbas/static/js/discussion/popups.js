@@ -60,7 +60,8 @@ function PopupHandler() {
 				
 				// reduce noise
 				const levensthein = _l(oem, now);
-				$('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? _t_discussion(pleaseEditAtLeast) : '');
+				const tmp = _t_discussion(pleaseEditAtLeast).replace('X', 5 - levensthein);
+				$('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? tmp : '');
 				
 				if (now && oem && now.toLowerCase() == oem.toLowerCase() && levensthein < 5)
 					$('#' + popupEditStatementSubmitButtonId).addClass('disabled');

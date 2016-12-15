@@ -247,9 +247,7 @@ const statisticsNotDeleted            = 'statisticsNotDeleted';
 const statisticsNotFetched            = 'statisticsNotFetched';
 const statisticsNotThere              = 'statisticsNotThere';
 const switchDiscussion                = 'switchDiscussion';
-const switchDiscussionText1           = 'switchDiscussionText1';
-const switchDiscussionText2           = 'switchDiscussionText2';
-const switchDiscussionText3           = 'switchDiscussionText3';
+const switchDiscussionText            = 'switchDiscussionText';
 const surname                         = 'surname';
 const sureToDeleteReview              = 'sureToDeleteReview';
 const showAllAttacksTitle             = 'showAllAttacksTitle';
@@ -449,7 +447,7 @@ const dbas_en = {
     'passwordSubmit': 'Change Password',
     'proposalsWereForwarded': 'Your proposals were forwarded!',
     'pinNavigation': 'Pin Navigation',
-    'pleaseEditAtLeast': 'Please edit at least 5 chars to reduce noise!',
+    'pleaseEditAtLeast': 'Please edit at least X chars to reduce noise!',
     'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
     'position': 'Position',
     'revokedArgument': 'revoked argument',
@@ -486,9 +484,7 @@ const dbas_en = {
     'sureToDeleteReview': 'Are you sure, that you want to revoke this decision? This revoke cannot be undone!',
     'shortenedBy': 'which was shortened by',
     'switchDiscussion': 'Change of discussion\'s topic',
-    'switchDiscussionText1': 'If you accept, you will change the topic of the discussion to',
-    'switchDiscussionText2': 'and the discussion will be restarted.',
-    'switchDiscussionText3': 'Please keep in mind, that the discussion language is without reference to the system language.',
+    'switchDiscussionText': 'If you accept, the discussions topic will change to <strong>XXX</strong> and the discussion will be restarted.<br><br>Please keep in mind, that the discussion language is without reference to the system language.',
     'showMeAnArgumentFor': 'Show me an argument for',
     'text': 'Text',
     'to': 'To',
@@ -666,7 +662,7 @@ const dbas_de = {
     'passwordSubmit': 'Passwort ändern',
     'proposalsWereForwarded': 'Ihre Vorschläge wurden eingereicht!',
     'pinNavigation': 'Navigation anheften',
-    'pleaseEditAtLeast': 'Bitte ändern Sie mindestens 5 Zeichen um unnötige Änderungen zu vermeiden.',
+    'pleaseEditAtLeast': 'Bitte ändern Sie mindestens X Zeichen um unnötige Änderungen zu vermeiden.',
     'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
     'position': 'Position',
     'report': 'Melden',
@@ -699,9 +695,7 @@ const dbas_de = {
     'statement': 'Aussage',
     'shortenedBy': 'gekürzt mit',
     'switchDiscussion': 'Diskussionsthema ändern',
-    'switchDiscussionText1': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu',
-    'switchDiscussionText2': 'und die Diskussion neugestartet.',
-    'switchDiscussionText3': 'Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
+    'switchDiscussionText': 'Wenn Sie akzeptieren, wird das Diskussionsthema gewechselt zu <strong>XXX</strong> wechseln und die Diskussion neugestartet.<br><br>Bitte beachten Sie dabei, dass die Diskussionssprache unabhängig von der Systemsprache ist.',
     'support': 'Unterstützung',
     'surname': 'Nachname',
     'sureToDeleteReview': 'Sind Sie sicher, dass sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann nicht rückgangig gemacht werden!',
@@ -727,20 +721,20 @@ const dbas_de = {
     'weak': 'schwach',
     'next': 'Nächster',
     'prev': 'Zurück',
-    'tourEnd': 'Tour beenden',
-    'welcomeDialogBody': 'Es scheint, dass Sie zum ersten mal hier sind. Möchsten Sie eine kurze Einführung sehen?',
+    'tourEnd': 'Beenden',
+    'welcomeDialogBody': 'Es scheint, dass Sie zum ersten mal hier sind. Möchten Sie eine kurze Einführung sehen?',
     'tourWelcomeTitle': 'Willkommen!',
-    'tourWelcomeContent': 'Willkommen bei D-BAS! Sie werden nun eine Kurze Einführung gezeigt bekommen.',
+    'tourWelcomeContent': 'Willkommen bei D-BAS! Sie werden nun eine kurze Einführung bekommen.',
     'tourStartButtonTitle': 'Diskussion starten',
-    'tourStartButtonContent': 'Sie können die Diskussion direkt hier starten.',
+    'tourStartButtonContent': 'Hier können Sie die Diskussion direkt starten.',
     'tourStartHeaderTitle': 'Diskussion starten',
     'tourStartHeaderContent': '... oder auch hier.',
     'tourLoginTitle': 'Anmeldung',
     'tourLoginContent': 'Sie sollten sich aber anmelden, um Beiträge verfassen zu können.',
     'tourIssueTitle': 'Thema',
-    'tourIssueContent': 'Hier sehen Sie das aktuelel Diskussionsthema.',
+    'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',
-    'tourStartDiscussionContent': 'In diesem teil sehen Sie links Nachrichten des System und rechts Ihre eigenen.',
+    'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des System und rechts Ihre eigenen Nachrichten.',
     'tourSelectAnswertTitle': 'Erste Auswahl',
     'tourSelectAnswertContent': 'Im unteren Teil können Sie Antworten auswählen ...',
     'tourEnterStatementTitle': 'Eigene Antworten',

@@ -5,7 +5,6 @@ Core component of D-BAS.
 """
 
 import json
-import time
 
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
@@ -34,14 +33,14 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
     process_seen_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
-    try_to_register_new_user_via_ajax, request_password, prepare_parameter_for_justification
+    try_to_register_new_user_via_ajax, request_password, prepare_parameter_for_justification, login_user
 from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
 from dbas.input_validator import is_integer, is_position, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
-    get_user_by_case_insensitive_nickname, get_changelog
+    get_changelog
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
     rep_reason_first_justification, rep_reason_first_argument_click, \
@@ -51,8 +50,7 @@ from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import get_renderer
-from pyramid.security import remember, forget
-from pyramid.threadlocal import get_current_registry
+from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyshorteners.shorteners import Shortener
 from requests.exceptions import ReadTimeout
@@ -61,6 +59,7 @@ from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
     send_request_for_info_popup_to_socketio
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
 version = '0.9.1'
@@ -90,7 +89,7 @@ def main_page(request):
         return user_logout(request, True)
 
     session_expired = True if 'session_expired' in request.params and request.params['session_expired'] == 'true' else False
-    ui_locales      = get_language(request, get_current_registry())
+    ui_locales      = get_language(request)
     _dh             = DictionaryHelper(ui_locales, ui_locales)
     extras_dict     = _dh.prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
     _dh.add_language_options_for_extra_dict(extras_dict)
@@ -125,7 +124,7 @@ def main_contact(request):
     send_message = False
     message = ''
 
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
 
     username        = escape_string(request.params['name']) if 'name' in request.params else ''
     email           = escape_string(request.params['mail']) if 'mail' in request.params else ''
@@ -141,7 +140,7 @@ def main_contact(request):
     request.session[key] = answer
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _t = Translator(ui_locales)
     placeholder = {
         'name': _t.get(_.exampleName),
@@ -185,7 +184,7 @@ def main_settings(request):
     if session_expired:
         return user_logout(request, True)
 
-    ui_locales  = get_language(request, get_current_registry())
+    ui_locales  = get_language(request)
     old_pw      = ''
     new_pw      = ''
     confirm_pw  = ''
@@ -230,7 +229,7 @@ def main_notifications(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_notifications', 'def', 'main')
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     history_helper.save_path_in_database(request_authenticated_userid, request.path)
@@ -265,7 +264,7 @@ def main_news(request):
     if session_expired:
         return user_logout(request, True)
 
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     is_author = is_user_author(request_authenticated_userid)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
@@ -277,7 +276,7 @@ def main_news(request):
         'project': project_name,
         'extras': extras_dict,
         'is_author': is_author,
-        'news': news_handler.get_news(get_language(request, get_current_registry()))
+        'news': news_handler.get_news(get_language(request))
     }
 
 
@@ -310,7 +309,7 @@ def main_user(request):
     if session_expired:
         return user_logout(request, True)
 
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
 
     user_dict = user_manager.get_information_of(current_user, ui_locales)
@@ -341,7 +340,7 @@ def main_imprint(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_imprint', 'def', 'main')
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     history_helper.save_path_in_database(request_authenticated_userid, request.path)
@@ -373,7 +372,7 @@ def main_publications(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_publications', 'def', 'main')
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     history_helper.save_path_in_database(request_authenticated_userid, request.path)
@@ -389,6 +388,36 @@ def main_publications(request):
         'title': _tn.get(_.publications),
         'project': project_name,
         'extras': extras_dict
+    }
+
+
+# imprint
+@view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody')
+def main_rss(request):
+    """
+    View configuration for the publications.
+
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('main_rss', 'def', 'main')
+    ui_locales = get_language(request)
+    request_authenticated_userid = request.authenticated_userid
+    session_expired = user_manager.update_last_action(request_authenticated_userid)
+    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    if session_expired:
+        return user_logout(request, True)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    rss = get_list_of_all_feeds(request.registry.settings['pyramid.default_locale_name'])
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': 'RSS',
+        'project': project_name,
+        'extras': extras_dict,
+        'rss': rss
     }
 
 
@@ -415,7 +444,7 @@ def notfound(request):
     revoked_content = True if 'revoked_content' in request.params and request.params['revoked_content'] == 'true' else False
 
     request.response.status = 404
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
 
@@ -465,7 +494,7 @@ def discussion_init(request, for_api=False, api_data=None):
     if count_of_slugs > 1:
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
 
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     if for_api:
         slug = match_dict['slug'] if 'slug' in match_dict else ''
     else:
@@ -528,7 +557,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     if session_expired:
         return user_logout(request, True)
 
-    ui_locales      = get_language(request, get_current_registry())
+    ui_locales      = get_language(request)
     slug            = match_dict['slug'] if 'slug' in match_dict else ''
     statement_id    = match_dict['statement_id'][0] if 'statement_id' in match_dict else ''
     issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
@@ -591,7 +620,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     if session_expired:
         return user_logout(request, True)
 
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
 
     item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, api_data, ui_locales, nickname)
@@ -651,7 +680,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # sanity check
     if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
-    ui_locales      = get_language(request, get_current_registry())
+    ui_locales      = get_language(request)
 
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
@@ -703,7 +732,7 @@ def discussion_finish(request):
     params = request.params
     logger('discussion_finish', 'def', 'main, request.matchdict: ' + str(match_dict))
     logger('discussion_finish', 'def', 'main, request.params: ' + str(params))
-    ui_locales      = get_language(request, get_current_registry())
+    ui_locales      = get_language(request)
     nickname        = request.authenticated_userid
     session_expired = user_manager.update_last_action(nickname)
     history_helper.save_path_in_database(nickname, request.path)
@@ -752,7 +781,7 @@ def discussion_choose(request, for_api=False, api_data=None):
     is_argument = True if is_argument is 't' else False
     is_supportive = True if is_supportive is 't' else False
 
-    ui_locales      = get_language(request, get_current_registry())
+    ui_locales      = get_language(request)
     issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
@@ -831,7 +860,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     if session_expired:
         return user_logout(request, True)
 
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
@@ -878,7 +907,7 @@ def main_review(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_review', 'main', 'def ' + str(request.matchdict))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     nickname = request.authenticated_userid
     session_expired = user_manager.update_last_action(nickname)
     history_helper.save_path_in_database(nickname, request.path)
@@ -919,7 +948,7 @@ def review_content(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_content', 'main', 'def ' + str(request.matchdict))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     history_helper.save_path_in_database(request_authenticated_userid, request.path)
@@ -956,7 +985,7 @@ def review_history(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_history', 'main', 'def ' + str(request.matchdict))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     history_helper.save_path_in_database(request_authenticated_userid, request.path)
@@ -986,7 +1015,7 @@ def ongoing_history(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('ongoing_history', 'main', 'def ' + str(request.matchdict))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     history_helper.save_path_in_database(request_authenticated_userid, request.path)
@@ -1017,7 +1046,7 @@ def review_reputation(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_reputation', 'main', 'def ' + str(request.matchdict))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     history_helper.save_path_in_database(request_authenticated_userid, request.path)
@@ -1056,7 +1085,7 @@ def get_user_history(request):
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
     logger('get_user_history', 'def', 'main')
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     return_list = history_helper.get_history_from_database(request_authenticated_userid, ui_locales)
     return json.dumps(return_list, True)
 
@@ -1072,7 +1101,7 @@ def get_all_posted_statements(request):
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
     logger('get_all_posted_statements', 'def', 'main')
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     return_array, edits = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
     return json.dumps(return_array, True)
 
@@ -1088,7 +1117,7 @@ def get_all_edits_of_user(request):
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
     logger('get_all_edits_of_user', 'def', 'main')
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     statements, return_array = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
     return json.dumps(return_array, True)
 
@@ -1104,7 +1133,7 @@ def get_all_argument_votes(request):
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
     logger('get_all_argument_votes', 'def', 'main')
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     return_array = user_manager.get_votes_of_user(request_authenticated_userid, True, ui_locales)
     return json.dumps(return_array, True)
 
@@ -1120,7 +1149,7 @@ def get_all_statement_votes(request):
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
     logger('get_all_statement_votes', 'def', 'main')
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     return_array = user_manager.get_votes_of_user(request_authenticated_userid, False, ui_locales)
     return json.dumps(return_array, True)
 
@@ -1183,63 +1212,24 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('user_login', 'def', 'main, request.params: ' + str(request.params))
 
-    lang = get_language(request, get_current_registry())
+    lang = get_language(request)
     _tn = Translator(lang)
+    error = ''
 
     try:
-        if not nickname and not password:
-            nickname = escape_string(request.params['user'])
-            password = escape_string(request.params['password'])
-            keep_login = escape_string(request.params['keep_login'])
-            keep_login = True if keep_login == 'true' else False
-            url = request.params['url']
-        else:
-            nickname = escape_string(nickname)
-            password = escape_string(password)
-            url = ''
-
-        db_user = get_user_by_case_insensitive_nickname(nickname)
-
-        # check for user and password validations
-        if not db_user:
-            logger('user_login', 'no user', 'user \'' + nickname + '\' does not exists')
-            error = _tn.get(_.userPasswordNotMatch)
-        elif not db_user.validate_password(password):
-            logger('user_login', 'password not valid', 'wrong password')
-            error = _tn.get(_.userPasswordNotMatch)
-        else:
-            logger('user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-            db_settings.should_hold_the_login(keep_login)
-            headers = remember(request, db_user.nickname)
-
-            # update timestamp
-            logger('user_login', 'login', 'update login timestamp')
-            db_user.update_last_login()
-            db_user.update_last_action()
-            transaction.commit()
-            ending = ['/?session_expired=true', '/?session_expired=false']
-            for e in ending:
-                if url.endswith(e):
-                    url = url[0:-len(e)]
-
-            if for_api:
-                logger('user_login', 'return', 'for api: success')
-                return {'status': 'success'}
-            else:
-                logger('user_login', 'return', 'success: ' + url)
-                time.sleep(0.5)
-                return HTTPFound(
-                    location=url,
-                    headers=headers,
-                )
+        value = login_user(request, nickname, password, for_api, keep_login, _tn)
+        if type(value) == str:  # error
+            error = value
+        elif type(value) == dict:  # api
+            return value
+        elif type(value) == HTTPFound:  # success
+            return value
 
     except KeyError as e:
         error = _tn.get(_.internalKeyError)
         logger('user_login', 'error', repr(e))
 
-    return_dict = dict()
-    return_dict['error'] = error
+    return_dict = {'error': error}
 
     logger('user_login', 'return', str(return_dict))
     return json.dumps(return_dict, True)
@@ -1288,7 +1278,7 @@ def user_registration(request):
 
     ui_locales = request.params['lang'] if 'lang' in request.params else None
     if not ui_locales:
-        ui_locales = get_language(request, get_current_registry())
+        ui_locales = get_language(request)
     _t = Translator(ui_locales)
 
     # getting params
@@ -1328,7 +1318,7 @@ def user_password_request(request):
     return_dict = dict()
     ui_locales = request.params['lang'] if 'lang' in request.params else None
     if not ui_locales:
-        ui_locales = get_language(request, get_current_registry())
+        ui_locales = get_language(request)
     _t = Translator(ui_locales)
 
     try:
@@ -1359,7 +1349,7 @@ def set_user_settings(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('set_user_settings', 'def', 'main, request.params: ' + str(request.params))
-    _tn = Translator(get_language(request, get_current_registry()))
+    _tn = Translator(get_language(request))
 
     try:
         error = ''
@@ -1415,7 +1405,7 @@ def set_user_language(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('set_user_language', 'def', 'main, request.params: ' + str(request.params))
-    _tn = Translator(get_language(request, get_current_registry()))
+    _tn = Translator(get_language(request))
 
     try:
         error = ''
@@ -1461,7 +1451,7 @@ def send_some_notification(request):
     ts = ''
     uid = ''
     gravatar = ''
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     try:
@@ -1532,7 +1522,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
 
         # escaping will be done in QueryHelper().set_statement(...)
         user_manager.update_last_action(nickname)
-        new_statement = insert_as_statements(statement, nickname, issue, is_start=True)
+        new_statement = insert_as_statements(request, statement, nickname, issue, is_start=True)
         if new_statement == -1:
             return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
         if new_statement == -2:
@@ -1548,7 +1538,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
                 add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
                 # send message if the user is now able to review
             if broke_limit:
-                # ui_locales = get_language(request, get_current_registry())
+                # ui_locales = get_language(request)
                 # _t = Translator(ui_locales)
                 # send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
                 url += '#access-review'
@@ -1576,7 +1566,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
     logger('set_new_start_premise', 'def', 'main, request.params: ' + str(request.params))
 
     return_dict = dict()
-    lang = get_language(request, get_current_registry())
+    lang = get_language(request)
     _tn = Translator(lang)
     try:
         if for_api and api_data:
@@ -1609,7 +1599,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
             add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
             # send message if the user is now able to review
         if broke_limit:
-            ui_locales = get_language(request, get_current_registry())
+            ui_locales = get_language(request)
             _t = Translator(ui_locales)
             send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
             url += '#access-review'
@@ -1641,7 +1631,7 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
     logger('set_new_premises_for_argument', 'def', 'main, request.params: ' + str(request.params))
 
     return_dict = dict()
-    lang = get_language(request, get_current_registry())
+    lang = get_language(request)
     _tn = Translator(lang)
 
     try:
@@ -1675,7 +1665,7 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
             add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
             # send message if the user is now able to review
         if broke_limit:
-            # ui_locales = get_language(request, get_current_registry())
+            # ui_locales = get_language(request)
             # _t = Translator(ui_locales)
             # send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
             url += '#access-review'
@@ -1707,7 +1697,7 @@ def set_correction_of_statement(request):
     nickname = request.authenticated_userid
     user_manager.update_last_action(nickname)
 
-    _tn = Translator(get_language(request, get_current_registry()))
+    _tn = Translator(get_language(request))
 
     return_dict = dict()
     try:
@@ -1734,7 +1724,7 @@ def set_notification_read(request):
 
     logger('set_notification_read', 'def', 'main ' + str(request.params))
     return_dict = dict()
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _t = Translator(ui_locales)
 
     try:
@@ -1769,7 +1759,7 @@ def set_notification_delete(request):
 
     logger('set_notification_delete', 'def', 'main ' + str(request.params))
     return_dict = dict()
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _t = Translator(ui_locales)
 
     try:
@@ -1809,7 +1799,7 @@ def set_new_issue(request):
 
     logger('set_new_issue', 'def', 'main ' + str(request.params))
     return_dict = dict()
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     try:
@@ -1840,7 +1830,7 @@ def set_seen_statements(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('set_seen_statements', 'def', 'main ' + str(request.params))
     return_dict = dict()
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _t = Translator(ui_locales)
 
     try:
@@ -1878,7 +1868,7 @@ def get_logfile_for_some_statements(request):
     user_manager.update_last_action(request.authenticated_userid)
 
     return_dict = dict()
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
 
     try:
         uids = json.loads(request.params['uids'])
@@ -1958,7 +1948,7 @@ def get_news(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_news', 'def', 'main')
-    return_dict = news_handler.get_news(get_language(request, get_current_registry()))
+    return_dict = news_handler.get_news(get_language(request))
     return json.dumps(return_dict, True)
 
 
@@ -2000,7 +1990,7 @@ def get_users_with_same_opinion(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_users_with_same_opinion', 'def', 'main: ' + str(request.params))
     nickname = request.authenticated_userid
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     return_dict = dict()
@@ -2049,7 +2039,7 @@ def get_public_user_data(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_public_user_data', 'def', 'main: ' + str(request.params))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     return_dict = dict()
@@ -2069,7 +2059,7 @@ def get_public_user_data(request):
 def get_arguments_by_statement_uid(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_arguments_by_statement_uid', 'def', 'main: ' + str(request.matchdict))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     return_dict = dict()
@@ -2094,7 +2084,7 @@ def get_arguments_by_statement_uid(request):
 def get_references(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_references', 'def', 'main: ' + str(request.params))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     try:
@@ -2130,7 +2120,7 @@ def get_references(request):
 def set_references(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('set_references', 'def', 'main: ' + str(request.params))
-    ui_locales = get_language(request, get_current_registry())
+    ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
     try:
@@ -2172,10 +2162,8 @@ def switch_language(request):
     try:
         ui_locales = request.params['lang'] if 'lang' in request.params else None
         db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
-        if not db_lang:
-            ui_locales = get_language(request, get_current_registry())
-        if not ui_locales:
-            ui_locales = get_language(request, get_current_registry())
+        if not db_lang or not ui_locales:
+            ui_locales = get_language(request)
         request.response.set_cookie('_LOCALE_', str(ui_locales))
         request._LOCALE_ = ui_locales
         return_dict['error'] = ''
@@ -2200,12 +2188,12 @@ def send_news(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('send_news', 'def', 'main, request.params: ' + str(request.params))
-    _tn = Translator(get_language(request, get_current_registry()))
+    _tn = Translator(get_language(request))
 
     try:
         title = escape_string(request.params['title'])
         text = escape_string(request.params['text'])
-        return_dict, success = news_handler.set_news(title, text, request.authenticated_userid, get_language(request, get_current_registry()))
+        return_dict, success = news_handler.set_news(request, title, text, request.authenticated_userid, get_language(request), request.application_url)
         return_dict['error'] = '' if success else _tn.get(_.noRights)
     except KeyError as e:
         return_dict = dict()
@@ -2229,7 +2217,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('fuzzy_search', 'def', 'main, for_api: ' + str(for_api) + ', request.params: ' + str(request.params))
 
-    _tn = Translator(get_language(request, get_current_registry()))
+    _tn = Translator(get_language(request))
     request_authenticated_userid = request.authenticated_userid
 
     try:

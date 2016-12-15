@@ -117,23 +117,21 @@ def send_mail(request, subject, body, recipient, lang):
     _t = Translator(lang)
     send_message = False
     mailer = get_mailer(request)
-    body = body + "\n\n---\n" + _t.get(_.emailBodyText).replace('XXXXX', get_global_url())
+    body = body + '\n\n---\n' + _t.get(_.emailBodyText).replace('XXXXX', get_global_url())
     message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
+
     # try sending an catching errors
     try:
         mailer.send_immediately(message, fail_silently=False)
         send_message = True
         message = _t.get(_.emailWasSent)
     except smtplib.SMTPConnectError as exception:
-        logger('email_helper', 'send_mail', 'error while sending')
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
-        logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_code ' + code)
-        logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp_error ' + error)
+        logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp code / error ' + code + '/' + error)
         message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
-        logger('email_helper', 'send_mail', 'error while sending')
-        logger('email_helper', 'send_mail', 'socket_error ' + str(serr))
+        logger('email_helper', 'send_mail', 'socket error while sending ' + str(serr))
         message = _t.get(_.emailWasNotSent)
 
     return send_message, message

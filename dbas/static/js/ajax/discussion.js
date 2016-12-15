@@ -185,7 +185,7 @@ function AjaxDiscussionHandler() {
 	 * @param long_url for shortening
 	 */
 	this.getShortenUrl = function (long_url) {
-		var encoded_url = encodeURI(long_url);
+		const encoded_url = encodeURI(long_url);
 		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_shortened_url',
@@ -241,9 +241,9 @@ function AjaxDiscussionHandler() {
 	 * @param is_supportive
 	 */
 	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
-		var is_argument = type == 'argument';
-		var is_position = type == 'position' || type == 'statement';
-		var uid = argument_uid == 'None' ? statement_uid : argument_uid;
+		const is_argument = type == 'argument';
+		const is_position = type == 'position' || type == 'statement';
+		const uid = argument_uid == 'None' ? statement_uid : argument_uid;
 		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		
 		$.ajax({
@@ -254,8 +254,7 @@ function AjaxDiscussionHandler() {
 				uids: uid,
 				is_position: is_position,
 				is_supporti: is_supportive,
-				lang: $('#issue_info').data('discussion-language'),
-				attack: attack
+				lang: $('#issue_info').data('discussion-language')
 			},
 			dataType: 'json',
 			headers: {
@@ -279,11 +278,11 @@ function AjaxDiscussionHandler() {
 	 * @param extra optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
-		var callback = $('#' + callbackid),
-			pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>',
-			tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0',
-			bubbleSpace = $('#' + discussionBubbleSpaceId),
-			csrf_token = $('#' + hiddenCSRFTokenId).val();
+		const callback = $('#' + callbackid);
+		const pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>';
+		const tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0';
+		const bubbleSpace = $('#' + discussionBubbleSpaceId);
+		const csrf_token = $('#' + hiddenCSRFTokenId).val();
 		// clear lists if input is empty
 		if(callback.val().length==0) {
 			$('#' + proposalStatementListGroupId).empty();
@@ -300,8 +299,8 @@ function AjaxDiscussionHandler() {
 			// add or remove bubble only iff we are not in an popup
 			if (type != fuzzy_statement_popup) {
 				if (bubbleSpace.find('#current_' + tmpid).length == 0) {
-					var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil),
-						current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
+					const text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil);
+					const current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
 						bubbleSpace.find('.fa-pencil').fadeTo('slow', 0.2, function () {
@@ -313,8 +312,8 @@ function AjaxDiscussionHandler() {
 					$('#current_' + tmpid).html(value + '...' + pencil);
 				}
 			}
-			var gh = new GuiHandler();
-			var resize = gh.setMaxHeightForBubbleSpace();
+			const gh = new GuiHandler();
+			const resize = gh.setMaxHeightForBubbleSpace();
 			gh.setMaxHeightForDiscussionContainer(resize);
 		}
 
@@ -386,7 +385,7 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function (data) {
-			var parsedData = $.parseJSON(data);
+			const parsedData = $.parseJSON(data);
 			// note that we already send data
 			if (parsedData.error.length == 0){
 				$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
