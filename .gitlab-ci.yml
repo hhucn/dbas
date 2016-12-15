@@ -22,13 +22,13 @@ start-server:
     - pserve development.ini --status
 
 flake8:
-  stage: test
+  stage: build
   script:
     - pip install --quiet flake8
     - flake8 .
   allow_failure: true
 
-unit-test:
+unit:
   <<: *job-definition
   stage: test
   script:
@@ -43,7 +43,7 @@ unit-test:
 #    - python tests/splinterTests.py --no-input
 #  allow_failure: true
 
-nose-acceptance-tests:
+acceptance:
   <<: *job-definition
   stage: test
   script:
