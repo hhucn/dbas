@@ -46,8 +46,8 @@ def get_d3_data(issue, nickname):
     logger('GraphLib', 'get_d3_data', 'issue: ' + db_issue.info)
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
-    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
-    db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
+    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).order_by(Statement.uid.asc()).all()
+    db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).order_by(Argument.uid.asc()).all()
 
     # issue
     node_dict = __get_node_dict(id='issue',
@@ -164,30 +164,33 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
     nodes = []
     edges = []
     extras = {}
-    i = 0
 
     # conclusion-uids of target nodes of undercuts
-    conclusion_uids_array = []
+    conclusion_uids_dict = {}
     # ids of edges on which the undercuts should show
-    edge_target_array = []
+    edge_target_dict = {}
 
-    # counter for the nodes of the graph
-    counter = 0
     # determine target-node and target-edge of all undercuts
     for argument in db_arguments:
-        db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
 
-        for undercut in db_undercuts:
-            if argument.conclusion_uid is not None:
-                conclusion_uids_array.append(argument.conclusion_uid)
-                edge_target_array.append(argument.uid)
+        if argument.conclusion_uid is None:  # argument is undercut
+            db_target = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+            db_undercut = argument
+
+            if db_target.conclusion_uid is not None:  # first-order
+                logger('X', '1st order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_target.conclusion_uid))
+                logger('X', '1st order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
+                conclusion_uids_dict[db_undercut.uid] = db_target.conclusion_uid
+                edge_target_dict[db_undercut.uid] = db_target.uid
             # target of undercuts on undercuts
-            else:
-                conclusion_uids_array.append(conclusion_uids_array[counter])
-                edge_target_array.append(argument.uid)
+            else:  # second-order
+                db_targets_target = DBDiscussionSession.query(Argument).filter_by(uid=db_target.argument_uid).first()
 
-        if argument.conclusion_uid is None:
-            counter +=1
+                logger('X', '2nd order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_targets_target.uid))
+                logger('X', '2nd order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
+
+                conclusion_uids_dict[db_undercut.uid] = db_targets_target.uid
+                edge_target_dict[db_undercut.uid] = db_target.uid
 
     for argument in db_arguments:
         counter = 1
@@ -216,14 +219,13 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                 target = 'statement_' + str(argument.conclusion_uid)
             # target of undercut
             else:
-                target = 'statement_' + str(conclusion_uids_array[i])
+                target = 'statement_' + str(conclusion_uids_dict[argument.uid])
 
             is_undercut = 'none'
             if argument.conclusion_uid is None:
-                target_edge = 'edge_' + str(edge_target_array[i]) + '_' + str(counter)
+                target_edge = 'edge_' + str(edge_target_dict[argument.uid]) + '_' + str(counter)
                 # the edge on the argument is an undercut
                 is_undercut = True
-                i += 1
             else:
                 target_edge = 'none'
 
