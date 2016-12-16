@@ -155,7 +155,6 @@ function DiscussionBarometer(){
         // selector = inner-rect: clicks on statement relative to seen_by value
         createBar(width, height-50, usersDict, barChartSvg, "inner-rect", address);
         if(address != 'argument' && address != 'attitude'){
-            // selector = outer-rect: seen_by value
             createBar(width, height-50, usersDict, barChartSvg, "outer-rect", address);
         }
 
@@ -195,8 +194,10 @@ function DiscussionBarometer(){
      */
      function createXAxis(svg, width, height, usersDict){
         let maxUsersNumber = getMaximum(usersDict);
+        // add offset on scale
+        let offset = 5/100 * maxUsersNumber;
 
-        let xScale = d3.scale.linear().domain([0, maxUsersNumber]).range([0, width]);
+        let xScale = d3.scale.linear().domain([0, maxUsersNumber + offset]).range([0, width]);
 
         // create y-axis
         let xAxis = d3.svg.axis().scale(xScale).orient("bottom");
@@ -296,6 +297,12 @@ function DiscussionBarometer(){
      * @param address
      */
     function createBar(width, height, usersDict, barChartSvg, selector, address) {
+        // if the chart is a bar chart, subtract offset on scale from width
+        if(address === "argument" || address === "attitude"){
+            let maxUsersNumber = getMaximum(usersDict);
+            let offset = 5/100 * maxUsersNumber;
+            width = width - (width/(maxUsersNumber+offset) * offset);
+        }
         // width of one bar
         // width/height - left padding to y-Axis - space between bars
         let barWidth;
@@ -306,9 +313,11 @@ function DiscussionBarometer(){
             barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
         }
 
+        let y_offset_height = 60;
         // set max-width of bar
-        if(barWidth > 150){
-            barWidth = 150;
+        if(barWidth > 100){
+            barWidth = 100;
+            y_offset_height = height - usersDict.length * barWidth;
         }
 
         let maxUsersNumber = getMaximum(usersDict);
@@ -344,7 +353,7 @@ function DiscussionBarometer(){
                 // y: height - barLength, because d3 starts to draw in left upper corner
                 y: function (d, i) {
                     if(address === "argument" || address === "attitude"){
-                        return i * barWidth + 60 + i * 10;
+                        return i * barWidth + y_offset_height + i * 10;
                     }
                     if (selector === 'inner-rect')
                         return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);
@@ -730,16 +739,13 @@ function DiscussionBarometer(){
         let userList = $('<li>').html(_t_discussion(users) + ': ');
 
         let list;
-        if(usersDict[index].message != null){
-            if (is_attitude)
-                list = messageList.append(userList);
-            else
-                list = messageList.append(seenByList).append(userList);
+        if (!is_attitude){
+            list = messageList.append(seenByList);
         } else {
-            if (is_attitude)
-                list = userList;
-            else
-                list = seenByList.append(userList);
+            list = messageList;
+        }
+        if (usersDict[index].seenBy != 0){
+            list.append(userList);
         }
 
         // add images of avatars
