@@ -20,16 +20,16 @@ function GuiHandler() {
 	 * Adds a premise row in the 'add premise'-container
 	 */
 	this.appendAddPremiseRow = function () {
-		let body = $('#add-premise-container-body');
+		let body = $('#' + addPremiseContainerBodyId);
 		let send = $('#' + sendNewPremiseId);
-		let id = 'add-premise-container-main-input-' + new Date().getTime();
+		let id = addPremiseContainerMainInputId + '-' + new Date().getTime();
 		
 		let copy_div = $('.container-three-divs:first').clone();
 		copy_div.find('input').attr('id', id).val('');
 		copy_div.find('.text-counter-input').remove();
 		let img_plus = copy_div.find('.icon-add-premise');
 		let img_minus = copy_div.find('.icon-rem-premise');
-		$('#' + addPremiseContainerBodyId).append(copy_div);
+		body.append(copy_div);
 		setTextWatcherInputLength(copy_div.find('input'));
 		
 		img_plus.click(function () {

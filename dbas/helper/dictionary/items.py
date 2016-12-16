@@ -81,8 +81,9 @@ class ItemDictHelper(object):
 
         _tn = Translator(self.lang)
         if nickname:
+            title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(_.newConclusionRadioButtonTextNewIdea)
             statements_array.append(self.__create_answer_dict('start_statement',
-                                                              [{'title': _tn.get(_.newConclusionRadioButtonText),
+                                                              [{'title': title,
                                                                 'id': 0}],
                                                               'start',
                                                               'add'))

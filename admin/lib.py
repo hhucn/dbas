@@ -11,7 +11,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
-    ReviewCanceled, RevokedContent, RevokedContentHistory
+    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS
 from dbas.lib import get_profile_picture, is_user_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -48,7 +48,8 @@ table_mapper = {
     'OptimizationReviewLocks'.lower(): {'table': OptimizationReviewLocks, 'name': 'OptimizationReviewLocks'},
     'ReviewCanceled'.lower(): {'table': ReviewCanceled, 'name': 'ReviewCanceled'},
     'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'},
-    'RevokedContentHistory'.lower(): {'table': RevokedContentHistory, 'name': 'RevokedContentHistory'}
+    'RevokedContentHistory'.lower(): {'table': RevokedContentHistory, 'name': 'RevokedContentHistory'},
+    'RSS'.lower(): {'table': RSS, 'name': 'RSS'}
 }
 
 google_colors = [
@@ -93,55 +94,56 @@ def get_overview(page):
 
     # all tables for the 'general' group
     general = list()
-    general.append(__get_dash_dict(len(DBDiscussionSession.query(Issue).all()), 'Issue', page + 'Issue'))
-    general.append(__get_dash_dict(len(DBDiscussionSession.query(Language).all()), 'Language', page + 'Language'))
-    general.append(__get_dash_dict(len(DBDiscussionSession.query(History).all()), 'History', page + 'History'))
+    general.append(__get_dash_dict(DBDiscussionSession.query(Issue).count(), 'Issue', page + 'Issue'))
+    general.append(__get_dash_dict(DBDiscussionSession.query(Language).count(), 'Language', page + 'Language'))
+    general.append(__get_dash_dict(DBDiscussionSession.query(History).count(), 'History', page + 'History'))
+    general.append(__get_dash_dict(DBDiscussionSession.query(RSS).count(), 'RSS', page + 'RSS'))
 
     # all tables for the 'users' group
     users = list()
-    users.append(__get_dash_dict(len(DBDiscussionSession.query(Group).all()), 'Group', page + 'Group'))
-    users.append(__get_dash_dict(len(DBDiscussionSession.query(User).all()), 'User', page + 'User'))
-    users.append(__get_dash_dict(len(DBDiscussionSession.query(Settings).all()), 'Settings', page + 'Settings'))
-    users.append(__get_dash_dict(len(DBDiscussionSession.query(Message).all()), 'Message', page + 'Message'))
+    users.append(__get_dash_dict(DBDiscussionSession.query(Group).count(), 'Group', page + 'Group'))
+    users.append(__get_dash_dict(DBDiscussionSession.query(User).count(), 'User', page + 'User'))
+    users.append(__get_dash_dict(DBDiscussionSession.query(Settings).count(), 'Settings', page + 'Settings'))
+    users.append(__get_dash_dict(DBDiscussionSession.query(Message).count(), 'Message', page + 'Message'))
 
     # all tables for the 'content' group
     content = list()
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(Statement).all()), 'Statement', page + 'Statement'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(TextVersion).all()), 'TextVersion', page + 'TextVersion'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(StatementReferences).all()), 'StatementReferences', page + 'StatementReferences'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(PremiseGroup).all()), 'PremiseGroup', page + 'PremiseGroup'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(Premise).all()), 'Premise', page + 'Premise'))
-    content.append(__get_dash_dict(len(DBDiscussionSession.query(Argument).all()), 'Argument', page + 'Argument'))
+    content.append(__get_dash_dict(DBDiscussionSession.query(Statement).count(), 'Statement', page + 'Statement'))
+    content.append(__get_dash_dict(DBDiscussionSession.query(TextVersion).count(), 'TextVersion', page + 'TextVersion'))
+    content.append(__get_dash_dict(DBDiscussionSession.query(StatementReferences).count(), 'StatementReferences', page + 'StatementReferences'))
+    content.append(__get_dash_dict(DBDiscussionSession.query(PremiseGroup).count(), 'PremiseGroup', page + 'PremiseGroup'))
+    content.append(__get_dash_dict(DBDiscussionSession.query(Premise).count(), 'Premise', page + 'Premise'))
+    content.append(__get_dash_dict(DBDiscussionSession.query(Argument).count(), 'Argument', page + 'Argument'))
 
     # all tables for the 'voting' group
     voting = list()
-    voting.append(__get_dash_dict(len(DBDiscussionSession.query(VoteArgument).all()), 'VoteArgument', page + 'VoteArgument'))
-    voting.append(__get_dash_dict(len(DBDiscussionSession.query(VoteStatement).all()), 'VoteStatement', page + 'VoteStatement'))
-    voting.append(__get_dash_dict(len(DBDiscussionSession.query(StatementSeenBy).all()), 'StatementSeenBy', page + 'StatementSeenBy'))
-    voting.append(__get_dash_dict(len(DBDiscussionSession.query(ArgumentSeenBy).all()), 'ArgumentSeenBy', page + 'ArgumentSeenBy'))
+    voting.append(__get_dash_dict(DBDiscussionSession.query(VoteArgument).count(), 'VoteArgument', page + 'VoteArgument'))
+    voting.append(__get_dash_dict(DBDiscussionSession.query(VoteStatement).count(), 'VoteStatement', page + 'VoteStatement'))
+    voting.append(__get_dash_dict(DBDiscussionSession.query(StatementSeenBy).count(), 'StatementSeenBy', page + 'StatementSeenBy'))
+    voting.append(__get_dash_dict(DBDiscussionSession.query(ArgumentSeenBy).count(), 'ArgumentSeenBy', page + 'ArgumentSeenBy'))
 
     # all tables for the 'reviews' group
     reviews = list()
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewDelete).all()), 'ReviewDelete', page + 'ReviewDelete'))
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewEdit).all()), 'ReviewEdit', page + 'ReviewEdit'))
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewEditValue).all()), 'ReviewEditValue', page + 'ReviewEditValue'))
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewOptimization).all()), 'ReviewOptimization', page + 'ReviewOptimization'))
-    reviews.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewDeleteReason).all()), 'ReviewDeleteReason', page + 'ReviewDeleteReason'))
+    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewDelete).count(), 'ReviewDelete', page + 'ReviewDelete'))
+    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewEdit).count(), 'ReviewEdit', page + 'ReviewEdit'))
+    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewEditValue).count(), 'ReviewEditValue', page + 'ReviewEditValue'))
+    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewOptimization).count(), 'ReviewOptimization', page + 'ReviewOptimization'))
+    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewDeleteReason).count(), 'ReviewDeleteReason', page + 'ReviewDeleteReason'))
 
     # all tables for the 'reviewer' group
     reviewer = list()
-    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerDelete).all()), 'LastReviewerDelete', page + 'LastReviewerDelete'))
-    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerEdit).all()), 'LastReviewerEdit', page + 'LastReviewerEdit'))
-    reviewer.append(__get_dash_dict(len(DBDiscussionSession.query(LastReviewerOptimization).all()), 'LastReviewerOptimization', page + 'LastReviewerOptimization'))
+    reviewer.append(__get_dash_dict(DBDiscussionSession.query(LastReviewerDelete).count(), 'LastReviewerDelete', page + 'LastReviewerDelete'))
+    reviewer.append(__get_dash_dict(DBDiscussionSession.query(LastReviewerEdit).count(), 'LastReviewerEdit', page + 'LastReviewerEdit'))
+    reviewer.append(__get_dash_dict(DBDiscussionSession.query(LastReviewerOptimization).count(), 'LastReviewerOptimization', page + 'LastReviewerOptimization'))
 
     # all tables for the 'reputation' group
     reputation = list()
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReputationHistory).all()), 'ReputationHistory', page + 'ReputationHistory'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReputationReason).all()), 'ReputationReason', page + 'ReputationReason'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(OptimizationReviewLocks).all()), 'OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(ReviewCanceled).all()), 'ReviewCanceled', page + 'ReviewCanceled'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContent).all()), 'RevokedContent', page + 'RevokedContent'))
-    reputation.append(__get_dash_dict(len(DBDiscussionSession.query(RevokedContentHistory).all()), 'RevokedContentHistory', page + 'RevokedContentHistory'))
+    reputation.append(__get_dash_dict(DBDiscussionSession.query(ReputationHistory).count(), 'ReputationHistory', page + 'ReputationHistory'))
+    reputation.append(__get_dash_dict(DBDiscussionSession.query(ReputationReason).count(), 'ReputationReason', page + 'ReputationReason'))
+    reputation.append(__get_dash_dict(DBDiscussionSession.query(OptimizationReviewLocks).count(), 'OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
+    reputation.append(__get_dash_dict(DBDiscussionSession.query(ReviewCanceled).count(), 'ReviewCanceled', page + 'ReviewCanceled'))
+    reputation.append(__get_dash_dict(DBDiscussionSession.query(RevokedContent).count(), 'RevokedContent', page + 'RevokedContent'))
+    reputation.append(__get_dash_dict(DBDiscussionSession.query(RevokedContentHistory).count(), 'RevokedContentHistory', page + 'RevokedContentHistory'))
 
     # first row
     return_list.append([{'name': 'General', 'content': general},
