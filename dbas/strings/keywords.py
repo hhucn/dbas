@@ -404,6 +404,7 @@ class Keywords(Enum):
     newStatementRadioButtonTextAsFirstOne = 'Let me state my own statement!'
     newStatementsRadioButtonTextAsFirstOne = 'Let me state my own statement(s)!'
     newConclusionRadioButtonText = 'Neither of the above, I have a different idea!'
+    newConclusionRadioButtonTextNewIdea = 'I have a new idea!'
     newsAboutDbas = 'News about D-BAS'
     nickname = 'Nickname'
     noOtherAttack = 'The system has no other counter-argument'

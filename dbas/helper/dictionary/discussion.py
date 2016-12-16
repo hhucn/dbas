@@ -39,20 +39,21 @@ class DiscussionDictHelper(object):
         self.main_page = main_page
         self.slug = slug
 
-    def get_dict_for_start(self):
+    def get_dict_for_start(self, position_count):
         """
         Prepares the discussion dict with all bubbles for the first step in discussion, where the user chooses a position.
 
+        :position_count:
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_start', 'at_start')
+        logger('DictionaryHelper', 'get_dict_for_start', 'at_start with positions: ' + str(position_count))
         _tn                    = Translator(self.lang)
         add_premise_text = _tn.get(_.whatIsYourIdea)
         intro = _tn.get(_.initialPositionInterest)
         save_statement_url  = 'ajax_set_new_start_premise'
 
         start_bubble = create_speechbubble_dict(is_system=True, uid='start', message=intro, omit_url=True, lang=self.lang)
-        bubbles_array = [start_bubble]
+        bubbles_array = [] if position_count == 1 else  [start_bubble]
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 

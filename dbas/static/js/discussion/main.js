@@ -581,11 +581,11 @@ function Main () {
 		let text = [], splits, conclusion, supportive, arg, relation;
 		splits = window.location.href.split('?');
 		splits = splits[0].split('/');
-		let sendStartStatement = function () {
+		const sendStartStatement = function () {
 			text = $('#' + addStatementContainerMainInputId).val();
 			interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
 		};
-		let sendStartPremise = function () {
+		const sendStartPremise = function () {
 			conclusion = splits[splits.length - 2];
 			supportive = splits[splits.length - 1] == 't';
 			text = [];
@@ -595,7 +595,7 @@ function Main () {
 			});
 			interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
 		};
-		let sendArgumentsPremise = function () {
+		const sendArgumentsPremise = function () {
 			text = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
 				if ($(this).val().length > 0)
