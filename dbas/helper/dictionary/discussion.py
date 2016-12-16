@@ -53,7 +53,7 @@ class DiscussionDictHelper(object):
         save_statement_url  = 'ajax_set_new_start_premise'
 
         start_bubble = create_speechbubble_dict(is_system=True, uid='start', message=intro, omit_url=True, lang=self.lang)
-        bubbles_array = [] if position_count == 1 else  [start_bubble]
+        bubbles_array = [] if position_count == 1 else [start_bubble]
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
