@@ -19,8 +19,8 @@ start-server:
   <<: *job-definition
   stage: build
   script:
-    - pserve development.ini --daemon
-    - pserve development.ini --status
+    - pserve $INIFILE --daemon
+    - pserve $INIFILE --status
 
 flake8:
   stage: build
