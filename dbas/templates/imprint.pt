@@ -1,7 +1,8 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
-		<div class="row">
-			<div class="col-md-7 first-container colored-container imprint-container">
+		<div class="row" style="width: 95%">
+            <div class="col-md-1"></div>
+			<div class="col-md-6 colored-container imprint-container">
 				<h3><span i18n:translate="imprint">Impressum</span> ${project}</h3>
 				<p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
 				<br>
@@ -63,7 +64,7 @@
 						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button</a> <span i18n:translate="for">for</span> Bootstrap</li>
 						<li><a target="_blank" href="https://bootswatch.com/paper/">Paper Theme</a> <span i18n:translate="for">for</span> Bootstrap</li>
 						<li><a target="_blank" href="http://bootstraptour.com/">Guided Tour</a> <span i18n:translate="for">for</span> Bootstrap</li>
-						<li><span i18n:translate="icons_by">Icons by</span> <a target="_blank" href="https://www.iconfinder.com/">iconfinder</a> <span i18n:target="and">and</span> <a target="_blank" href="http://www.flaticon.com/">flaticon (<span i18n:translate="designed_by">designed by</span> Roundicons <span i18n:translate="or">or</span> MadebyOliver)</a></li>
+                        <li><span i18n:translate="icons_by">Icons by</span> <a target="_blank" href="https://www.iconfinder.com/">iconfinder</a> <span i18n:target="and">and</span> <a target="_blank" href="http://www.flaticon.com/">flaticon</a> (<span i18n:translate="designed_by">designed by</span> Roundicons <span i18n:translate="or">or</span> MadebyOliver)</li>
 						<li><span i18n:translate="tracking_by">Tracking by</span> <a target="_blank" href="http://piwik.org/">Piwik</a></li>
 						<li><span i18n:translate="avatare_by">Avatare by</span> <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
 						<li><span i18n:translate="chart_and_graphs_by">Charts and Graphs by</span> <a target="_blank" href="http://d3js.org">D3.js</a></li>
@@ -77,22 +78,10 @@
 					<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework </span> ${extras.pyramid_version}
 					<br>
 					<ul>
-						<li>
-							<a target="_blank" href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/">
-								<i class="fa fa-bookmark" aria-hidden="true">&thinsp;</i>Docs</a>
-						</li>
-						<li>
-							<a target="_blank" href="https://github.com/Pylons/pyramid">
-								<i class="fa fa-cog" aria-hidden="true"></i>&thinsp;Github Project</a>
-						</li>
-						<li>
-							<a target="_blank" href="irc://irc.freenode.net#pyramid">
-								<i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a>
-						</li>
-						<li>
-							<a target="_blank" href="http://pylonsproject.org">
-								<i class="fa fa-home" aria-hidden="true"></i>&thinsp;Pylons Project</a>
-						</li>
+						<li><a target="_blank" href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/"><i class="fa fa-bookmark" aria-hidden="true">&thinsp;</i>Docs</a></li>
+						<li><a target="_blank" href="https://github.com/Pylons/pyramid"><i class="fa fa-cog" aria-hidden="true"></i>&thinsp;Github Project</a></li>
+						<li><a target="_blank" href="irc://irc.freenode.net#pyramid"><i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a></li>
+						<li><a target="_blank" href="http://pylonsproject.org"><i class="fa fa-home" aria-hidden="true"></i>&thinsp;Pylons Project</a></li>
 					</ul>
 				</div>
 

@@ -268,7 +268,7 @@ class Keywords(Enum):
     error_code = 'Error code'
     edit = 'Edit'
     editTitle = 'Edit statement'
-    feelFreeToLogin = 'If you want to proceed, please feel free to <a  data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">login</a>< yourself :)'
+    feelFreeToLogin = 'If you want to proceed, please feel free to <a  data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">login</a>.'
     forText = 'for'
     forThat = 'accept that'
     firstConclusionRadioButtonText = 'Let me enter my idea!'

@@ -288,7 +288,7 @@ de_lang = {
     _.exampleLastname: 'Krauthoff',
     _.exampleStatement: 'Bitte fügen Sie hiere Ihr Zitat ein',
     _.exampleSource: 'Bitte fügen Sie hiere Ihre Quelle ein',
-    _.feelFreeToLogin: 'Wenn Sie weiter machen möchten, <u><a data-href="login" data-toggle="modal" data-target="#popup-login" title="Anmelden">melden</a></u> Sie sich bitte an :)',
+    _.feelFreeToLogin: 'Wenn Sie weiter machen möchten, <u><a data-href="login" data-toggle="modal" data-target="#popup-login" title="Anmelden">melden</a></u> Sie sich bitte an.',
     _.forText: 'für',
     _.forThat: 'dafür, dass',
     _.fillLine: 'Bitte, füllen Sie diese Zeilen mit Ihrer Meldung',
