@@ -83,7 +83,8 @@ class DictionaryHelper(object):
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_island_icon,
                             show_graph_icon, request, nickname, argument_id=0, argument_for_island=0, application_url='',
-                            for_api=False, append_notifications=False, attack=None, broke_limit=False):
+                            for_api=False, append_notifications=False, attack=None, broke_limit=False,
+                            add_premise_container_style='display: none', add_statement_container_style='display: none'):
         """
         Creates the extras.dict() with many options!
 
@@ -100,6 +101,8 @@ class DictionaryHelper(object):
         :param append_notifications: Boolean
         :param attack: String
         :param nickname: String
+        :param add_premise_container_style: style string, default 'display:none;'
+        :param add_statement_container_style: style string, default 'display:none;'
         :return: dict()
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def')
@@ -129,8 +132,8 @@ class DictionaryHelper(object):
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = nickname
-        return_dict['add_premise_container_style']   = 'display: none'
-        return_dict['add_statement_container_style'] = 'display: none'
+        return_dict['add_premise_container_style']   = add_premise_container_style
+        return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar']                  = get_profile_picture(db_user, 25)
         return_dict['is_user_male']                  = db_user.gender == 'm' if db_user else False
         return_dict['is_user_female']                = db_user.gender == 'f' if db_user else False

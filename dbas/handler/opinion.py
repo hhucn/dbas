@@ -5,7 +5,7 @@ Provides helping function for getting some opinions.
 """
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, Settings, StatementSeenBy, sql_timestamp_pretty_print
+from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, StatementSeenBy, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, get_undermines_for_argument_uid, get_supports_for_argument_uid
 from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture, get_text_for_conclusion
@@ -451,10 +451,9 @@ def create_users_dict(db_user, timestamp, main_page, lang):
     :param lang: language
     :return: dict()
     """
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-    name = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
-    return {'nickname': name,
-            'public_profile_url': main_page + '/user/' + name,
+    tmp = db_user.get_global_nickname()
+    return {'nickname': tmp,
+            'public_profile_url': main_page + '/user/' + tmp,
             'avatar_url': get_profile_picture(db_user),
             'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}
 
