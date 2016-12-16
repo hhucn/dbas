@@ -451,10 +451,9 @@ def create_users_dict(db_user, timestamp, main_page, lang):
     :param lang: language
     :return: dict()
     """
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
-    name = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
-    return {'nickname': name,
-            'public_profile_url': main_page + '/user/' + name,
+    tmp = db_user.get_global_nickname()
+    return {'nickname': tmp,
+            'public_profile_url': main_page + '/user/' + tmp,
             'avatar_url': get_profile_picture(db_user),
             'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}
 
