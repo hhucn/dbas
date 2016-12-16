@@ -43,7 +43,7 @@ def get_d3_data(issue, nickname):
     if not db_issue:
         return {}
 
-    logger('GraphLib', 'get_d3_data', 'issue: ' + db_issue.info)
+    logger('GraphLib', 'get_d3_data', 'title: ' + db_issue.title)
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).order_by(Statement.uid.asc()).all()

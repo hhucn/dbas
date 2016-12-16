@@ -151,7 +151,7 @@ function DiscussionGraph() {
         //rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
 
         // height of the header (offset per line count)
-        let offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
+        let offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
 
         let width = container.width();
         let height = container.outerHeight() - offset;
