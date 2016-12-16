@@ -83,14 +83,14 @@ class ItemDictHelper(object):
         if nickname:
             title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(_.newConclusionRadioButtonTextNewIdea)
             statements_array.append(self.__create_answer_dict('start_statement',
-                                                              [{'title': title,
-                                                                'id': 0}],
+                                                              [{'title': title, 'id': 0}],
                                                               'start',
                                                               'add'))
         else:
-            statements_array.append(
-                self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
-                                          'justify', 'login'))
+            statements_array.append(self.__create_answer_dict('login',
+                                                              [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
+                                                              'justify',
+                                                              'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 

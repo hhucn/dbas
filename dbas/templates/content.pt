@@ -102,7 +102,7 @@
                 <div id="discussions-space">
                     <ul id="discussions-space-list">
                         <li tal:repeat="item items.elements" tal:attributes="style item.style">
-                            <input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
+                            <input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url; data-url item.url">
                             <span tal:repeat="premise item.premises" tal:omit-tag="">
                                 <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
                                 <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
