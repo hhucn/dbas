@@ -94,56 +94,56 @@ def get_overview(page):
 
     # all tables for the 'general' group
     general = list()
-    general.append(__get_dash_dict(DBDiscussionSession.query(Issue).count(), 'Issue', page + 'Issue'))
-    general.append(__get_dash_dict(DBDiscussionSession.query(Language).count(), 'Language', page + 'Language'))
-    general.append(__get_dash_dict(DBDiscussionSession.query(History).count(), 'History', page + 'History'))
-    general.append(__get_dash_dict(DBDiscussionSession.query(RSS).count(), 'RSS', page + 'RSS'))
+    general.append(__get_dash_dict('Issue', page + 'Issue'))
+    general.append(__get_dash_dict('Language', page + 'Language'))
+    general.append(__get_dash_dict('History', page + 'History'))
+    general.append(__get_dash_dict('RSS', page + 'RSS'))
 
     # all tables for the 'users' group
     users = list()
-    users.append(__get_dash_dict(DBDiscussionSession.query(Group).count(), 'Group', page + 'Group'))
-    users.append(__get_dash_dict(DBDiscussionSession.query(User).count(), 'User', page + 'User'))
-    users.append(__get_dash_dict(DBDiscussionSession.query(Settings).count(), 'Settings', page + 'Settings'))
-    users.append(__get_dash_dict(DBDiscussionSession.query(Message).count(), 'Message', page + 'Message'))
+    users.append(__get_dash_dict('Group', page + 'Group'))
+    users.append(__get_dash_dict('User', page + 'User'))
+    users.append(__get_dash_dict('Settings', page + 'Settings'))
+    users.append(__get_dash_dict('Message', page + 'Message'))
 
     # all tables for the 'content' group
     content = list()
-    content.append(__get_dash_dict(DBDiscussionSession.query(Statement).count(), 'Statement', page + 'Statement'))
-    content.append(__get_dash_dict(DBDiscussionSession.query(TextVersion).count(), 'TextVersion', page + 'TextVersion'))
-    content.append(__get_dash_dict(DBDiscussionSession.query(StatementReferences).count(), 'StatementReferences', page + 'StatementReferences'))
-    content.append(__get_dash_dict(DBDiscussionSession.query(PremiseGroup).count(), 'PremiseGroup', page + 'PremiseGroup'))
-    content.append(__get_dash_dict(DBDiscussionSession.query(Premise).count(), 'Premise', page + 'Premise'))
-    content.append(__get_dash_dict(DBDiscussionSession.query(Argument).count(), 'Argument', page + 'Argument'))
+    content.append(__get_dash_dict('Statement', page + 'Statement'))
+    content.append(__get_dash_dict('TextVersion', page + 'TextVersion'))
+    content.append(__get_dash_dict('StatementReferences', page + 'StatementReferences'))
+    content.append(__get_dash_dict('PremiseGroup', page + 'PremiseGroup'))
+    content.append(__get_dash_dict('Premise', page + 'Premise'))
+    content.append(__get_dash_dict('Argument', page + 'Argument'))
 
     # all tables for the 'voting' group
     voting = list()
-    voting.append(__get_dash_dict(DBDiscussionSession.query(VoteArgument).count(), 'VoteArgument', page + 'VoteArgument'))
-    voting.append(__get_dash_dict(DBDiscussionSession.query(VoteStatement).count(), 'VoteStatement', page + 'VoteStatement'))
-    voting.append(__get_dash_dict(DBDiscussionSession.query(StatementSeenBy).count(), 'StatementSeenBy', page + 'StatementSeenBy'))
-    voting.append(__get_dash_dict(DBDiscussionSession.query(ArgumentSeenBy).count(), 'ArgumentSeenBy', page + 'ArgumentSeenBy'))
+    voting.append(__get_dash_dict('VoteArgument', page + 'VoteArgument'))
+    voting.append(__get_dash_dict('VoteStatement', page + 'VoteStatement'))
+    voting.append(__get_dash_dict('StatementSeenBy', page + 'StatementSeenBy'))
+    voting.append(__get_dash_dict('ArgumentSeenBy', page + 'ArgumentSeenBy'))
 
     # all tables for the 'reviews' group
     reviews = list()
-    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewDelete).count(), 'ReviewDelete', page + 'ReviewDelete'))
-    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewEdit).count(), 'ReviewEdit', page + 'ReviewEdit'))
-    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewEditValue).count(), 'ReviewEditValue', page + 'ReviewEditValue'))
-    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewOptimization).count(), 'ReviewOptimization', page + 'ReviewOptimization'))
-    reviews.append(__get_dash_dict(DBDiscussionSession.query(ReviewDeleteReason).count(), 'ReviewDeleteReason', page + 'ReviewDeleteReason'))
+    reviews.append(__get_dash_dict('ReviewDelete', page + 'ReviewDelete'))
+    reviews.append(__get_dash_dict('ReviewEdit', page + 'ReviewEdit'))
+    reviews.append(__get_dash_dict('ReviewEditValue', page + 'ReviewEditValue'))
+    reviews.append(__get_dash_dict('ReviewOptimization', page + 'ReviewOptimization'))
+    reviews.append(__get_dash_dict('ReviewDeleteReason', page + 'ReviewDeleteReason'))
 
     # all tables for the 'reviewer' group
     reviewer = list()
-    reviewer.append(__get_dash_dict(DBDiscussionSession.query(LastReviewerDelete).count(), 'LastReviewerDelete', page + 'LastReviewerDelete'))
-    reviewer.append(__get_dash_dict(DBDiscussionSession.query(LastReviewerEdit).count(), 'LastReviewerEdit', page + 'LastReviewerEdit'))
-    reviewer.append(__get_dash_dict(DBDiscussionSession.query(LastReviewerOptimization).count(), 'LastReviewerOptimization', page + 'LastReviewerOptimization'))
+    reviewer.append(__get_dash_dict('LastReviewerDelete', page + 'LastReviewerDelete'))
+    reviewer.append(__get_dash_dict('LastReviewerEdit', page + 'LastReviewerEdit'))
+    reviewer.append(__get_dash_dict('LastReviewerOptimization', page + 'LastReviewerOptimization'))
 
     # all tables for the 'reputation' group
     reputation = list()
-    reputation.append(__get_dash_dict(DBDiscussionSession.query(ReputationHistory).count(), 'ReputationHistory', page + 'ReputationHistory'))
-    reputation.append(__get_dash_dict(DBDiscussionSession.query(ReputationReason).count(), 'ReputationReason', page + 'ReputationReason'))
-    reputation.append(__get_dash_dict(DBDiscussionSession.query(OptimizationReviewLocks).count(), 'OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
-    reputation.append(__get_dash_dict(DBDiscussionSession.query(ReviewCanceled).count(), 'ReviewCanceled', page + 'ReviewCanceled'))
-    reputation.append(__get_dash_dict(DBDiscussionSession.query(RevokedContent).count(), 'RevokedContent', page + 'RevokedContent'))
-    reputation.append(__get_dash_dict(DBDiscussionSession.query(RevokedContentHistory).count(), 'RevokedContentHistory', page + 'RevokedContentHistory'))
+    reputation.append(__get_dash_dict('ReputationHistory', page + 'ReputationHistory'))
+    reputation.append(__get_dash_dict('ReputationReason', page + 'ReputationReason'))
+    reputation.append(__get_dash_dict('OptimizationReviewLocks', page + 'OptimizationReviewLocks'))
+    reputation.append(__get_dash_dict('ReviewCanceled', page + 'ReviewCanceled'))
+    reputation.append(__get_dash_dict('RevokedContent', page + 'RevokedContent'))
+    reputation.append(__get_dash_dict('RevokedContentHistory', page + 'RevokedContentHistory'))
 
     # first row
     return_list.append([{'name': 'General', 'content': general},
@@ -236,16 +236,15 @@ def __get_author_data(uid, query, main_page):
     return link_begin + db_user.nickname + ' ' + img + link_end, True
 
 
-def __get_dash_dict(count, name, href):
+def __get_dash_dict(name, href):
     """
     Returns dictionary with all attributes
 
-    :param count: number of element in current table
     :param name: name of current table
     :param href: link for current table
     :return: {'count': count, 'name': name, 'href': href}
     """
-    return {'count': count, 'name': name, 'href': href}
+    return {'name': name, 'href': href}
 
 
 def __get_rows_of(columns, db_elements, main_page):
@@ -394,6 +393,26 @@ def add_row(table_name, data, nickname, _tn):
     DBDiscussionSession.flush()
     transaction.commit()
     return ''
+
+
+def update_badge(nickname, _tn):
+    """
+
+    :param nickname: Current nickname of the user
+    :param _tn: Translator
+    :return:
+    """
+    logger('AdminLib', 'update_badge', '')
+    if not is_user_admin(nickname):
+        return None, _tn.get(_.noRights)
+    ret_array = []
+    for t in table_mapper:
+        ret_array.append({
+            'name': table_mapper[t]['name'],
+            'count': DBDiscussionSession.query(table_mapper[t]['table']).count()
+        })
+
+    return ret_array, ''
 
 
 def __update_row_dict(table, values, keys, _tn):
