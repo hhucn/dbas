@@ -645,8 +645,8 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     # check for html
     if message[-1] == '>':
         pos = message.rfind('<')
-        if message[pos:pos + 1] not in ['.', '?', '!']:
-            message = message[0:pos + 1] + '.' + message[pos + 2:]
+        if message[pos-1:pos] not in ['.', '?', '!']:
+            message = message[0:pos] + '.' + message[pos:]
     else:
         if not message.endswith(tuple(['.', '?', '!'])):
             message += '.'

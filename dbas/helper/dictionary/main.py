@@ -441,6 +441,7 @@ class DictionaryHelper(object):
         :return: None
         """
         _tn_dis = Translator(self.discussion_lang)
+        _tn_sys = Translator(self.system_lang)
 
         return_dict['tag'] = {
             'add_a_topic': _tn_dis.get(_.addATopic),
@@ -475,11 +476,11 @@ class DictionaryHelper(object):
             'need_help_to_understand_statement': _tn_dis.get(_.needHelpToUnderstandStatement),
             'set_premisegroups_intro1': _tn_dis.get(_.setPremisegroupsIntro1),
             'set_premisegroups_intro2': _tn_dis.get(_.setPremisegroupsIntro2),
-            'placeholder_nickname': _tn_dis.get(_.exampleNicknameLdap) if is_ldap else _tn_dis.get(_.exampleNickname),
-            'placeholder_password': _tn_dis.get(_.examplePassword),
-            'placeholder_firstname': _tn_dis.get(_.exampleFirstname),
-            'placeholder_lastname': _tn_dis.get(_.exampleLastname),
-            'placeholder_mail': _tn_dis.get(_.exampleMail),
-            'placeholder_statement': _tn_dis.get(_.exampleStatement),
-            'placeholder_source': _tn_dis.get(_.exampleSource)
+            'placeholder_nickname': _tn_sys.get(_.exampleNicknameLdap) if is_ldap else _tn_sys.get(_.exampleNickname),
+            'placeholder_password': _tn_sys.get(_.examplePassword),
+            'placeholder_firstname': _tn_sys.get(_.exampleFirstname),
+            'placeholder_lastname': _tn_sys.get(_.exampleLastname),
+            'placeholder_mail': _tn_sys.get(_.exampleMail),
+            'placeholder_statement': _tn_sys.get(_.exampleStatement),
+            'placeholder_source': _tn_sys.get(_.exampleSource)
         }

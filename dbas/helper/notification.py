@@ -111,32 +111,32 @@ def send_add_text_notification(url, conclusion_id, user, request):
     :return: None
     """
     # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
-    db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()
-    db_root_author = DBDiscussionSession.query(User).filter_by(uid=db_textversions[0].author_uid).first()
-    db_last_editor = DBDiscussionSession.query(User).filter_by(uid=db_textversions[-1].author_uid).first()
-    db_current_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_textversions         = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()
+    db_root_author          = DBDiscussionSession.query(User).filter_by(uid=db_textversions[0].author_uid).first()
+    db_last_editor          = DBDiscussionSession.query(User).filter_by(uid=db_textversions[-1].author_uid).first()
+    db_current_user         = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     db_root_author_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_root_author.uid).first()
     db_last_editor_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_last_editor.uid).first()
-    root_lang = DBDiscussionSession.query(Language).filter_by(uid=db_root_author_settings.lang_uid).first().ui_locales
-    editor_lang = DBDiscussionSession.query(Language).filter_by(uid=db_last_editor_settings.lang_uid).first().ui_locales
-    _t_editor = Translator(editor_lang)
-    _t_root = Translator(root_lang)
+    root_lang               = DBDiscussionSession.query(Language).filter_by(uid=db_root_author_settings.lang_uid).first().ui_locales
+    editor_lang             = DBDiscussionSession.query(Language).filter_by(uid=db_last_editor_settings.lang_uid).first().ui_locales
+    _t_editor               = Translator(editor_lang)
+    _t_root                 = Translator(root_lang)
 
     # send mail to main author
-    if db_root_author_settings.should_send_mails is True and db_current_user != db_root_author:
+    if db_root_author_settings.should_send_mails and db_current_user != db_root_author:
         EmailHelper.send_mail_due_to_added_text(root_lang, url, db_root_author, request)
 
     # send mail to last author
-    if db_last_editor_settings.should_send_mails is True and db_last_editor != db_root_author and db_last_editor != db_current_user:
+    if db_last_editor_settings.should_send_mails and db_last_editor != db_root_author and db_last_editor != db_current_user:
         EmailHelper.send_mail_due_to_added_text(editor_lang, url, db_last_editor, request)
 
     # send notification via websocket to main author
-    if db_root_author_settings.should_send_notifications is True and db_root_author != db_current_user:
+    if db_root_author_settings.should_send_notifications and db_root_author != db_current_user:
         send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_root.get(_.statementAdded), url,
                                                 increase_counter=True)
 
     # send notification via websocket to last author
-    if db_last_editor_settings.should_send_notifications is True and db_last_editor != db_root_author and db_last_editor != db_current_user:
+    if db_last_editor_settings.should_send_notifications and db_last_editor != db_root_author and db_last_editor != db_current_user:
         send_request_for_info_popup_to_socketio(db_last_editor.nickname, _t_editor.get(_.statementAdded), url,
                                                 increase_counter=True)
 
@@ -190,10 +190,9 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
     user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_author_settings.lang_uid).first().ui_locales
 
     # send notification via websocket to last author
-    if db_author_settings.should_send_notifications is True:
+    if db_author_settings.should_send_notifications:
         _t_user = Translator(user_lang)
-        send_request_for_info_popup_to_socketio(db_author.nickname, _t_user.get(_.argumentAdded), url,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_author.nickname, _t_user.get(_.argumentAdded), url)
 
     # send mail to last author
     if db_author_settings.should_send_mails:
