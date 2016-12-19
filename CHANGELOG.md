@@ -1,4 +1,4 @@
-## 0.9.1 (2016-12-06)
+## 0.9.1 (2016-12-18)
 - Notification if a user is able to review
 - RSS-Feed
 

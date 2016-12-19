@@ -23,7 +23,7 @@ def get_d3_data(issue, nickname):
     :param issue: Current uid of issue
     :return: dictionary
     """
-    logger('GraphLib', 'get_d3_data', 'main')
+    logger('Graph.lib', 'get_d3_data', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     # default values
@@ -43,7 +43,7 @@ def get_d3_data(issue, nickname):
     if not db_issue:
         return {}
 
-    logger('GraphLib', 'get_d3_data', 'title: ' + db_issue.title)
+    logger('Graph.lib', 'get_d3_data', 'title: ' + db_issue.title)
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).order_by(Statement.uid.asc()).all()
@@ -108,19 +108,21 @@ def get_doj_data(issue):
     :param issue:
     :return:
     """
-    logger('GraphLib', 'get_doj_data', 'main')
+    logger('Graph.lib', 'get_doj_data', 'main')
     url = 'http://localhost:5101/evaluate/dojs?issue=' + str(issue)
     try:
         resp = requests.get(url)
     except Exception as e:
         logger('Graph.lib', 'get_doj_data', 'Error: ' + str(e), error=True)
+        logger('Graph.lib', 'get_doj_data', 'return empty doj')
         return {}
 
     if resp.status_code == 200:
         doj = json.loads(resp.text)
         return doj['dojs'] if 'dojs' in doj else {}
     else:
-        logger('GraphLib', 'get_doj_data', 'status ' + str(resp.status_code), error=True)
+        logger('Graph.lib', 'get_doj_data', 'status ' + str(resp.status_code), error=True)
+        logger('Graph.lib', 'get_doj_data', 'return empty doj')
         return {}
 
 
@@ -282,9 +284,9 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
     for edge in edges_array:
         error = error or edge['source'] not in all_node_ids or edge['target'] not in all_node_ids
     if error:
-        logger('GraphLib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
+        logger('Graph.lib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
     else:
-        logger('GraphLib', 'get_d3_data', 'All nodes are connected well')
+        logger('Graph.lib', 'get_d3_data', 'All nodes are connected well')
 
 
 def __get_author_of_statement(uid, db_user):
