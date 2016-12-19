@@ -37,7 +37,6 @@ class AdminTest(unittest.TestCase):
             for category in row:
                 for table in category['content']:
                     self.assertTrue(table['name'].lower() in table_mapper)
-                    self.assertTrue(table['count'] >= 0)
                     self.assertTrue('some_main_page' + table['name'] == table['href'])
 
     def test_get_table_dict(self):

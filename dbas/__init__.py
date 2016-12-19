@@ -60,7 +60,7 @@ def main(global_config, **settings):
                      'mail.tls': 'False',
                      'mail.default_sender': 'dbas.hhu@gmail.com'
                      }
-    
+
     all_settings = settings
     all_settings.update(mail_settings)
     # all_settings = {**settings, **mail_settings}
