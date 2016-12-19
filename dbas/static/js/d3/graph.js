@@ -147,7 +147,7 @@ function DiscussionGraph() {
     this.getD3Graph = function (jsonData) {
         let container = $('#' + graphViewContainerSpaceId);
         container.empty();
-        rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
+        //rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
         //rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
 
         // height of the header (offset per line count)
