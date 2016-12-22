@@ -111,9 +111,9 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
         # colon = ' ' if self.lang == 'de' else ': '
-        titleT = _tn.get(_.iAgreeWithInColor)  # + colon + text
-        titleF = _tn.get(_.iDisagreeWithInColor)  # + colon + text
-        titleD = _tn.get(_.iHaveNoOpinionYetInColor)  # + colon + text
+        titleT = _tn.get(_.iAgreeWithInColor) + '.'  # + colon + text
+        titleF = _tn.get(_.iDisagreeWithInColor) + '.'  # + colon + text
+        titleD = _tn.get(_.iHaveNoOpinionYetInColor) + '.'  # + colon + text
         urlT = _um.get_url_for_justifying_statement(True, statement_uid, 't')
         urlF = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
         urlD = _um.get_url_for_justifying_statement(True, statement_uid, 'd')

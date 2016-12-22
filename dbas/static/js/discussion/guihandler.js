@@ -180,7 +180,7 @@ function GuiHandler() {
 				allowPageScroll: true
 			});
 		} else {
-			height += 30;
+			height += 60;
 			if (height < 50)
 				speechBubbles.css('min-height', '100px');
 			else

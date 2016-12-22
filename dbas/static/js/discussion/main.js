@@ -651,7 +651,7 @@ function Main () {
 			});
 			el.off('click');
 		} else {
-			if (spaceList.find('li') == 1 && input.data('url') == 'add'){
+			if (spaceList.find('li').length == 1 && input.data('url') == 'add'){
 				input.prop('checked', true);
 			}
 			id = input.attr('id').indexOf('item_' == 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
