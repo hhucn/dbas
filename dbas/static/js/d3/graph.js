@@ -46,12 +46,7 @@ function DiscussionGraph() {
      */
     this.callbackIfDoneForDiscussionGraph = function (data) {
         let jsonData = $.parseJSON(data);
-        try {
-            s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
-        } catch (err) {
-            new DiscussionGraph().setDefaultViewParams(false, null, s);
-            setGlobalErrorHandler(_t(ohsnap), _t(internalError));
-        }
+        s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
     };
 
     /**
@@ -111,13 +106,9 @@ function DiscussionGraph() {
         container.empty();
 
         if (startD3) {
-            try {
-                return this.getD3Graph(jsonData);
-            } catch (err) {
+            if (!this.getD3Graph(jsonData))
                 new DiscussionGraph().setDefaultViewParams(false, null, d3);
-                setGlobalErrorHandler('Oh Snap!', _t(internalError));
-                console.log('D3: ' + err.message);
-            }
+            
         } else {
             container.empty();
         }
@@ -147,11 +138,12 @@ function DiscussionGraph() {
     this.getD3Graph = function (jsonData) {
         let container = $('#' + graphViewContainerSpaceId);
         container.empty();
-        rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
+        rel_node_factor = {};
+        //rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
         //rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
 
         // height of the header (offset per line count)
-        let offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
+        let offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
 
         let width = container.width();
         let height = container.outerHeight() - offset;
@@ -249,6 +241,8 @@ function DiscussionGraph() {
         addListenerForNodes(circle, edges);
 
         addListenerForBackgroundOfNodes(edges);
+        
+        return true;
     };
 
     /**

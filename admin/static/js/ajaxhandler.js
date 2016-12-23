@@ -10,8 +10,8 @@ function AdminAjaxHandler(){
 	 * @param element
 	 */
 	this.deleteSomething = function(uids, element){
-		var table = $('#table_name').text();
-		var csrf_token = $('#hidden_csrf_token').val();
+		const table = $('#table_name').text();
+		const csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_admin_delete',
 			dataType: 'json',
@@ -34,8 +34,8 @@ function AdminAjaxHandler(){
 	 */
 	this.addSomething = function(new_data){
 		console.log(JSON.stringify(new_data));
-		var table = $('#table_name').text();
-		var csrf_token = $('#hidden_csrf_token').val();
+		const table = $('#table_name').text();
+		const csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_admin_add',
 			dataType: 'json',
@@ -60,8 +60,8 @@ function AdminAjaxHandler(){
 	 * @param values
 	 */
 	this.updateSomething = function(element, uids, keys, values){
-		var table = $('#table_name').text();
-		var csrf_token = $('#hidden_csrf_token').val();
+		const table = $('#table_name').text();
+		const csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_admin_update',
 			dataType: 'json',
@@ -79,6 +79,24 @@ function AdminAjaxHandler(){
 			new AdminCallbackHandler().doSomethingOnFail();
 		});
 	};
+	
+	/**
+	 *
+	 */
+	this.updateCountBadges = function () {
+		const csrf_token = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_admin_update_badges',
+			dataType: 'json',
+			data: {},
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function (data) {
+			new AdminCallbackHandler().doUpdateBadges(data);
+		}).fail(function () {
+			new AdminCallbackHandler().doSomethingOnFail();
+		});
+	}
 }
 
 function AdminCallbackHandler(){
@@ -96,12 +114,13 @@ function AdminCallbackHandler(){
 	 * @param data
 	 */
 	this.doUpdateDone = function(element, data){
-        var jsonData = $.parseJSON(data);
+        const jsonData = $.parseJSON(data);
         if (jsonData.error.length === 0) {
-	        var gui = new AdminGui();
+	        const gui = new AdminGui();
 	        gui.deactivateElement(element, 'floppy', 'text-success');
 	        gui.deactivateElement(element, 'square', 'text-danger');
 	        gui.activateElement(element, 'pencil', '');
+			setGlobalSuccessHandler('Yeah!', _t(dataAdded));
         } else {
 			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
         }
@@ -113,7 +132,7 @@ function AdminCallbackHandler(){
 	 * @param element
 	 */
 	this.doDeleteDone = function(data, element){
-        var jsonData = $.parseJSON(data);
+        const jsonData = $.parseJSON(data);
         if (jsonData.error.length === 0) {
 	        element.remove();
 			setGlobalSuccessHandler('Yehaw!', _t(dataRemoved));
@@ -128,20 +147,20 @@ function AdminCallbackHandler(){
 	 * @param new_data
 	 */
 	this.doAddDone = function(data, new_data){
-        var jsonData = $.parseJSON(data);
+        const jsonData = $.parseJSON(data);
         if (jsonData.error.length === 0) {
 			setGlobalSuccessHandler('Yehaw!', _t(addedEverything));
 	        $('#' + popupConfirmRowDialogId).modal('hide');
-	        var data = $('#data');
-	        var tbody = data.find('tbody');
-	        var tr = $('<tr>');
+	        const data = $('#data');
+	        const tbody = data.find('tbody');
+	        const tr = $('<tr>');
 	        $.each( new_data, function( key, value ) {
 		        tr.append($('<td>').append($('<span>').text(value)));
 	        });
-	        var modify = data.find('.pencil:first').parent().parent().clone();
+	        const modify = data.find('.pencil:first').parent().parent().clone();
 	        tr.append(modify);
 	        tbody.append(tr);
-	        var gui = new AdminGui();
+	        const gui = new AdminGui();
 			gui.setEditClickEvent(modify);
 			gui.setDeleteClickEvent(modify);
 			gui.setSaveClickEvent(modify);
@@ -150,4 +169,21 @@ function AdminCallbackHandler(){
 			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
         }
 	};
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.doUpdateBadges = function(data){
+        const jsonData = $.parseJSON(data);
+        if (jsonData.error.length === 0) {
+        	console.log(jsonData);
+        	$.each(jsonData.data, function(index, element){
+        		console.log(element);
+        		$('#' + element['name']).find('.badge').text(element['count']);
+	        });
+        } else {
+			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
+        }
+	}
 }

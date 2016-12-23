@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-12-15 18:25+0100\n"
+"POT-Creation-Date: 2016-12-19 09:13+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -47,7 +47,7 @@ msgid "go-home"
 msgstr "Zur Startseite"
 
 #. Default: or
-#: templates/404.pt:17 templates/imprint.pt:66
+#: templates/404.pt:17 templates/imprint.pt:67
 msgid "or"
 msgstr "oder"
 
@@ -161,38 +161,38 @@ msgid "review"
 msgstr "Prüfen"
 
 #. Default: Impressum
-#: templates/imprint.pt:5
+#: templates/imprint.pt:6
 msgid "imprint"
 msgstr "Impressum"
 
 #. Default: Angaben gemäß § 5 TMG
-#: templates/imprint.pt:6
+#: templates/imprint.pt:7
 msgid "data_tmg"
 msgstr "Angaben gemäß § 5 TMG"
 
 #. Default: Kontakt:
 #. Default: Contact
-#: templates/imprint.pt:9 templates/snippet-footer.pt:24
+#: templates/imprint.pt:10 templates/snippet-footer.pt:24
 msgid "contact"
 msgstr "Kontakt"
 
 #. Default: Institut für Informatik
-#: templates/imprint.pt:11
+#: templates/imprint.pt:12
 msgid "department"
 msgstr "Institut für Informatik"
 
 #. Default: Telefon:
-#: templates/imprint.pt:15
+#: templates/imprint.pt:16
 msgid "phone"
 msgstr "Telefonnr.:"
 
 #. Default: Haftungsausschluss:
-#: templates/imprint.pt:18
+#: templates/imprint.pt:19
 msgid "disclaimer"
 msgstr "Haftungsausschluss:"
 
 #. Default: Haftung für Inhalte
-#: templates/imprint.pt:19
+#: templates/imprint.pt:20
 msgid "disclaimer_content"
 msgstr "Haftung für Inhalte"
 
@@ -209,7 +209,7 @@ msgstr "Haftung für Inhalte"
 #. Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von
 #. entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
 #. entfernen.
-#: templates/imprint.pt:20
+#: templates/imprint.pt:21
 msgid "disclaimer_content_content"
 msgstr ""
 "Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die "
@@ -227,7 +227,7 @@ msgstr ""
 "entfernen."
 
 #. Default: Haftung für Links
-#: templates/imprint.pt:23
+#: templates/imprint.pt:24
 msgid "disclaimer_links"
 msgstr "Haftung für Links"
 
@@ -241,7 +241,7 @@ msgstr "Haftung für Links"
 #. Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer
 #. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
 #. werden wir derartige Links umgehend entfernen.
-#: templates/imprint.pt:24
+#: templates/imprint.pt:25
 msgid "disclaimer_links_content"
 msgstr ""
 "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte "
@@ -258,7 +258,7 @@ msgstr ""
 "einschränkend"
 
 #. Default: Urheberrecht
-#: templates/imprint.pt:27
+#: templates/imprint.pt:28
 msgid "disclaimer_copyright"
 msgstr "Urheberrecht"
 
@@ -274,7 +274,7 @@ msgstr "Urheberrecht"
 #. aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei
 #. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
 #. entfernen.
-#: templates/imprint.pt:28
+#: templates/imprint.pt:29
 msgid "disclaimer_copyright_content"
 msgstr ""
 "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten "
@@ -291,7 +291,7 @@ msgstr ""
 "entfernen."
 
 #. Default: Datenschutz
-#: templates/imprint.pt:31
+#: templates/imprint.pt:32
 msgid "disclaimer_dataprotection"
 msgstr "Datenschutz"
 
@@ -309,7 +309,7 @@ msgstr "Datenschutz"
 #. ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich
 #. ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von
 #. Werbeinformationen, etwa durch Spam-Mails, vor.
-#: templates/imprint.pt:32
+#: templates/imprint.pt:33
 msgid "disclaimer_dataprotection_content"
 msgstr ""
 "Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener "
@@ -327,7 +327,7 @@ msgstr ""
 "von Werbeinformationen, etwa durch Spam-Mails, vor."
 
 #. Default: Session-Cookies
-#: templates/imprint.pt:37
+#: templates/imprint.pt:38
 msgid "disclaimer_session_cookie"
 msgstr "Session-Cookies"
 
@@ -337,7 +337,7 @@ msgstr "Session-Cookies"
 #. Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf
 #. Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung
 #. beenden.
-#: templates/imprint.pt:38
+#: templates/imprint.pt:39
 msgid "disclaimer_session_cookie_content"
 msgstr ""
 "Diese erlauben Ihnen notwendige Funktionen auf unseren Websites auszuführen, "
@@ -346,7 +346,7 @@ msgstr ""
 "des Internets zu minimieren."
 
 #. Default: Tracking-Cookies
-#: templates/imprint.pt:42
+#: templates/imprint.pt:43
 msgid "disclaimer_tracking_cookie"
 msgstr "Tracking-Cookies"
 
@@ -356,7 +356,7 @@ msgstr "Tracking-Cookies"
 #. Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen
 #. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
 #. Überwachen dieser Informationen können wir unsere Websites verbessern.
-#: templates/imprint.pt:43
+#: templates/imprint.pt:44
 msgid "disclaimer_tracking_cookie_content"
 msgstr ""
 "Diese erlauben uns Ihre wiederholten Besuche unserer Website wahrzunehmen. "
@@ -367,7 +367,7 @@ msgstr ""
 "Überwachen dieser Informationen können wir unsere Websites verbessern. "
 
 #. Default: Piwik
-#: templates/imprint.pt:48
+#: templates/imprint.pt:49
 msgid "disclaimer_piwik"
 msgstr "Piwik"
 
@@ -382,7 +382,7 @@ msgstr "Piwik"
 #. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
 #. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
 #. Funktionen dieser Website vollumfänglich nutzen können.
-#: templates/imprint.pt:49
+#: templates/imprint.pt:50
 msgid "disclaimer_piwik_content"
 msgstr ""
 "Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur "
@@ -398,52 +398,52 @@ msgstr ""
 "Funktionen dieser Website vollumfänglich nutzen können."
 
 #. Default: Copyrights and used Software
-#: templates/imprint.pt:59
+#: templates/imprint.pt:60
 msgid "copyright_and_used_software"
 msgstr "Copyright und benutze Software"
 
 #. Default: for
-#: templates/imprint.pt:63 templates/imprint.pt:64 templates/imprint.pt:65
+#: templates/imprint.pt:64 templates/imprint.pt:65 templates/imprint.pt:66
 msgid "for"
 msgstr "für"
 
 #. Default: Icons by
-#: templates/imprint.pt:66
+#: templates/imprint.pt:67
 msgid "icons_by"
 msgstr "Icons von"
 
 #. Default: designed by
-#: templates/imprint.pt:66
+#: templates/imprint.pt:67
 msgid "designed_by"
 msgstr "erstellt von"
 
 #. Default: Tracking by
-#: templates/imprint.pt:67
+#: templates/imprint.pt:68
 msgid "tracking_by"
 msgstr "Tracking von"
 
 #. Default: Avatare by
-#: templates/imprint.pt:68
+#: templates/imprint.pt:69
 msgid "avatare_by"
 msgstr "Avatar"
 
 #. Default: Charts and Graphs by
-#: templates/imprint.pt:69
+#: templates/imprint.pt:70
 msgid "chart_and_graphs_by"
 msgstr "Charts und Graphen von"
 
 #. Default: Cookie Manager by
-#: templates/imprint.pt:71
+#: templates/imprint.pt:72
 msgid "cookie_manager_by"
 msgstr "Cookie Manager von"
 
 #. Default: is generated with Pyramid Web Framework
-#: templates/imprint.pt:77
+#: templates/imprint.pt:78
 msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework"
 
 #. Default: Changes
-#: templates/imprint.pt:100
+#: templates/imprint.pt:89
 msgid "changes"
 msgstr "Änderungen in der Version"
 
@@ -488,7 +488,7 @@ msgstr "Abstimmen, ob Aussagen gelöscht werden sollen"
 #. Default: Choose a task to get started.
 #: templates/review.pt:22
 msgid "choose_task"
-msgstr "Wählen Sie eine Aufgaben und los geht's"
+msgstr "Wählen Sie eine Aufgaben und los geht's!"
 
 #. Default: Based on your user group, you have all rights!
 #: templates/review.pt:30 templates/review_reputation.pt:14

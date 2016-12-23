@@ -44,26 +44,33 @@ z_table = Service(name='table_page',
                   permission='use',
                   cors_policy=cors_policy)
 
-update = Service(name='update_row',
-                 path='/{url:.*}ajax_admin_update',
-                 description="Update",
-                 renderer='json',
-                 permission='use',
-                 cors_policy=cors_policy)
+update_row = Service(name='update_table_row',
+                     path='/{url:.*}ajax_admin_update',
+                     description="Update",
+                     renderer='json',
+                     permission='use',
+                     cors_policy=cors_policy)
 
-delete = Service(name='delete_row',
-                 path='/{url:.*}ajax_admin_delete',
-                 description="Delete",
-                 renderer='json',
-                 permission='use',
-                 cors_policy=cors_policy)
+delete_row = Service(name='delete_table_row',
+                     path='/{url:.*}ajax_admin_delete',
+                     description="Delete",
+                     renderer='json',
+                     permission='use',
+                     cors_policy=cors_policy)
 
-add = Service(name='add_row',
-              path='/{url:.*}ajax_admin_add',
-              description="Add",
-              renderer='json',
-              permission='use',
-              cors_policy=cors_policy)
+add_row = Service(name='add_table_row',
+                  path='/{url:.*}ajax_admin_add',
+                  description="Add",
+                  renderer='json',
+                  permission='use',
+                  cors_policy=cors_policy)
+
+update_badge = Service(name='update_badge_counter',
+                       path='/{url:.*}ajax_admin_update_badges',
+                       description="Update",
+                       renderer='json',
+                       permission='use',
+                       cors_policy=cors_policy)
 
 
 @dashboard.get()
@@ -133,7 +140,7 @@ def main_table(request):
     }
 
 
-@update.get()
+@update_row.get()
 def main_update(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_update', 'def ' + str(request.params))
@@ -156,7 +163,7 @@ def main_update(request):
     return json.dumps(return_dict, True)
 
 
-@delete.get()
+@delete_row.get()
 def main_delete(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_delete', 'def ' + str(request.params))
@@ -177,7 +184,7 @@ def main_delete(request):
     return json.dumps(return_dict, True)
 
 
-@add.get()
+@add_row.get()
 def main_add(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_add', 'def ' + str(request.params))
@@ -193,6 +200,27 @@ def main_add(request):
         return_dict['error'] = lib.add_row(table, new_data, nickname, _tn)
     except KeyError as e:
         logger('Admin', 'main_add error', repr(e))
+        return_dict['error'] = _tn.get(_.internalKeyError)
+
+    return json.dumps(return_dict, True)
+
+
+@update_badge.get()
+def main_update_badge(request):
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Admin', 'main_update_badge', 'def ' + str(request.params))
+
+    nickname = request.authenticated_userid
+    ui_locales = get_language(request)
+    _tn = Translator(ui_locales)
+
+    return_dict = dict()
+    try:
+        data, error = lib.update_badge(nickname, _tn)
+        return_dict['error'] = error
+        return_dict['data'] = data
+    except KeyError as e:
+        logger('Admin', 'main_add main_update_badge', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
     return json.dumps(return_dict, True)

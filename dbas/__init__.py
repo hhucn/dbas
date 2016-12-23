@@ -60,7 +60,7 @@ def main(global_config, **settings):
                      'mail.tls': 'False',
                      'mail.default_sender': 'dbas.hhu@gmail.com'
                      }
-    
+
     all_settings = settings
     all_settings.update(mail_settings)
     # all_settings = {**settings, **mail_settings}
@@ -71,10 +71,11 @@ def main(global_config, **settings):
         parser.read(global_config['__file__'])
         custom_settings = dict()
         for k, v in parser.items('settings:ldap'):
+            log.debug('__init__() '.upper() + 'main() <settings:ldap:' + str(k) + ' : ' + str(v) + '>')
             custom_settings['settings:ldap:' + k] = v
-        mail_settings.update(custom_settings)
+        all_settings.update(custom_settings)
     except NoSectionError as e:
-        log.debug('__init__() '.upper() + 'main() <No LDAP-Section>')
+        log.debug('__init__() '.upper() + 'main() <No LDAP-Section> ' + str(e))
 
     # creating the configurator
     config = Configurator(settings=all_settings,

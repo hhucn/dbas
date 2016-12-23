@@ -445,14 +445,14 @@
     							<label class="col-md-3 control-label" for="popup-login-password-input" i18n:translate="password">Your Password</label>
     							<div class="col-md-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-    								<input id="popup-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_mail">
+    								<input id="popup-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_password">
     							</div>
     						</div>
     						<div class="form-group">
     							<label class="col-md-3 control-label" for="popup-login-passwordconfirm-input" i18n:translate="password-confirm">Password (confirm)</label>
     							<div class="col-md-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
-    								<input id="popup-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_mail">
+    								<input id="popup-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_password">
     							</div>
     						</div>
     						<div class="form-group">

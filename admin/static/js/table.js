@@ -13,7 +13,7 @@ function AdminGui() {
 	 * @param text_class class which should be added
 	 */
 	this.activateElement = function(_this, elements_class, text_class) {
-		var element = $(_this).parents('td:first').find('.' + elements_class);
+		const element = $(_this).parents('td:first').find('.' + elements_class);
 		element.removeClass('text-muted').addClass(text_class);
 		element.parent().css('pointer-events', '');
 	};
@@ -26,7 +26,7 @@ function AdminGui() {
 	 * @param text_class class which should be removed
 	 */
 	this.deactivateElement = function(_this, elements_class, text_class) {
-		var element = $(_this).parents('td:first').find('.' + elements_class);
+		const element = $(_this).parents('td:first').find('.' + elements_class);
 		element.addClass('text-muted').removeClass(text_class);
 		element.parent().css('pointer-events', 'none');
 	};
@@ -35,11 +35,11 @@ function AdminGui() {
 	 * Open a dialog with every column for adding a new row
 	 */
 	this.setAddClickEvent = function() {
-		var _this = this;
+		const _this = this;
 		$('body').find('.add').each(function () {
 			$(this).click(function () {
-				var dialog = $('#' + popupConfirmRowDialogId);
-				var body = dialog.find('.modal-body');
+				const dialog = $('#' + popupConfirmRowDialogId);
+				let body = dialog.find('.modal-body');
 				body.children().remove();
 				body.append($('<span>').addClass('col-sm-5').addClass('lead').text('Column'));
 				body.append($('<span>').addClass('col-sm-7').addClass('lead').text('Value'));
@@ -53,7 +53,7 @@ function AdminGui() {
 					dialog.modal('hide');
 				});
 				dialog.find('.btn-success').off('click').click(function (){
-					var data = {};
+					const data = {};
 					body.find('input').each(function (){
 						data[$(this).data('for')] = $(this).val();
 					});
@@ -69,10 +69,10 @@ function AdminGui() {
 	 * @param table: current html table as element
 	 */
 	this.setEditClickEvent = function(table) {
-		var _this = this;
+		const _this = this;
 		table.find('.pencil').each(function () {
 			$(this).click(function () {
-				var parent = $(this).parents('tr:first');
+				const parent = $(this).parents('tr:first');
 				// var uid = parent.find('td:first').text();
 				_this.activateElement(this, 'floppy', 'text-success');
 				_this.activateElement(this, 'square', 'text-danger');
@@ -91,10 +91,10 @@ function AdminGui() {
 	 * @param table: current html table as element
 	 */
 	this.setDeleteClickEvent = function(table) {
-		var _this = this;
+		const _this = this;
 		table.find('.trash').each(function () {
 			$(this).click(function () {
-				var uids = _this.getUids($(this).parents('tr:first'));
+				const uids = _this.getUids($(this).parents('tr:first'));
 				new AdminAjaxHandler().deleteSomething(uids, $(this).parents('tr:first'));
 			})
 		});
@@ -106,13 +106,13 @@ function AdminGui() {
 	 * @param table: current html table as element
 	 */
 	this.setSaveClickEvent = function(table) {
-		var _this = this;
+		const _this = this;
 		table.find('.floppy').each(function () {
 			$(this).click(function () {
-				var tmp = $(this).parents('tr:first');
-				var uids = _this.getUids(tmp);
-				var keys = [];
-				var values = [];
+				const tmp = $(this).parents('tr:first');
+				const uids = _this.getUids(tmp);
+				const keys = [];
+				const values = [];
 				tmp.find('input').each(function (){
 					values.push($(this).val());
 				});
@@ -132,10 +132,10 @@ function AdminGui() {
 	 * @param table: current html table as element
 	 */
 	this.setCancelClickEvent = function(table) {
-		var _this = this;
+		const _this = this;
 		table.find('.square').each(function () {
 			$(this).click(function () {
-				var tmp = $(this).parents('tr:first');
+				const tmp = $(this).parents('tr:first');
 				// var uid = tmp.find('td:first').text();
 				_this.deactivateElement(this, 'floppy', 'text-success');
 				_this.deactivateElement(this, 'square', 'text-danger');
@@ -153,7 +153,7 @@ function AdminGui() {
 	 * @returns {Array}
 	 */
 	this.getUids = function(element){
-		var uids = [];
+		const uids = [];
 		// Premise has two columns as PK
 		if ($('#table_name').text().toLowerCase() === 'premise'){
 			uids.push(element.find('td:nth-child(1)').text().trim());
@@ -173,13 +173,13 @@ function AdminGui() {
 		if ($.inArray(column, ['uid', 'last_action', 'last_login', 'registered', 'public_nickname']) != -1) {
 			return body;
 		}
-		var form = $('<div>').addClass('form-group');
-		var label = $('<label>')
+		const form = $('<div>').addClass('form-group');
+		const label = $('<label>')
 			.addClass('col-sm-5')
 			.addClass('control-label')
 			.attr('for', column)
 			.text(column);
-		var div = $('<div>')
+		const div = $('<div>')
 			.addClass('col-sm-7')
 			.append($('<input>').attr({
 				'class': 'form-control',
@@ -197,8 +197,8 @@ $(document).ready(function () {
 		new AjaxMainHandler().ajaxLogin($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
 	});
 	
-	var data = $('#data');
-	var gui = new AdminGui();
+	const data = $('#data');
+	const gui = new AdminGui();
 	
 	// events for edit, delete, save, cancel, add
 	gui.setEditClickEvent(data);

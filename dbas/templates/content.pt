@@ -5,12 +5,12 @@
             <div class="row cn">
                 <div class="col-md-8" tal:condition="len(issues.all)>1">
                     <p class="center">${structure:issues.intro}:</p>
-                    <span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language" style="text-align: justify;">${structure:issues.info}</span>
+                    <span class="lead" id="issue_info" tal:attributes="data-discussion-language extras.tag.language; data-title issues.title" style="text-align: justify;">${structure:issues.info}</span>
                     <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>
                 </div>
                 <div class="col-md-10" tal:condition="len(issues.all)<2">
                     <p class="center">${structure:issues.intro}:</p>
-                    <span class="lead" id="issue_info" data-discussion-language="" tal:attributes="data-discussion-language extras.tag.language" style="text-align: justify;">${structure:issues.info}</span>
+                    <span class="lead" id="issue_info" tal:attributes="data-discussion-language extras.tag.language; data-title issues.title" style="text-align: justify;">${structure:issues.info}</span>
                     <i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip"></i>
                 </div>
                 <div class="col-md-2 center inner" tal:condition="len(issues.all)>1">
@@ -84,7 +84,7 @@
                                         <i class="fa fa-trash" aria-hidden="true" tal:attributes="title extras.title.delete_statement"></i>
                                     </span>
                                     <span class="triangle-flag pull-right" tal:condition="bubble.is_flagable and extras.logged_in">
-                                        <i class="fa fa-flag" aria-hidden="true"  tal:attributes="title extras.title.edit_statement"></i>
+                                        <i class="fa fa-flag" aria-hidden="true"  tal:attributes="title extras.title.report_statement"></i>
                                     </span>
                                     <span class="triangle-reference pull-right" tal:condition="bubble.is_flagable and extras.logged_in" >
                                         <i class="fa fa-link" aria-hidden="true" tal:attributes="title extras.title.reference"></i>
@@ -102,7 +102,7 @@
                 <div id="discussions-space">
                     <ul id="discussions-space-list">
                         <li tal:repeat="item items.elements" tal:attributes="style item.style">
-                            <input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url">
+                            <input id="tmp" type="radio" name="discussion-button-group" onclick="" tal:attributes="id item.id; onclick item.url; data-url item.url">
                             <span tal:repeat="premise item.premises" tal:omit-tag="">
                                 <label for="tmp" tal:attributes="for item.id; id premise.id" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
                                 <label tal:attributes="for item.id" tal:condition="not:repeat.premise.end"><em>${extras.tag.aand}</em></label>
