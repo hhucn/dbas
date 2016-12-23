@@ -83,14 +83,14 @@ class ItemDictHelper(object):
         if nickname:
             title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(_.newConclusionRadioButtonTextNewIdea)
             statements_array.append(self.__create_answer_dict('start_statement',
-                                                              [{'title': title,
-                                                                'id': 0}],
+                                                              [{'title': title, 'id': 0}],
                                                               'start',
                                                               'add'))
         else:
-            statements_array.append(
-                self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
-                                          'justify', 'login'))
+            statements_array.append(self.__create_answer_dict('login',
+                                                              [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
+                                                              'justify',
+                                                              'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
@@ -111,9 +111,9 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
         # colon = ' ' if self.lang == 'de' else ': '
-        titleT = _tn.get(_.iAgreeWithInColor)  # + colon + text
-        titleF = _tn.get(_.iDisagreeWithInColor)  # + colon + text
-        titleD = _tn.get(_.iHaveNoOpinionYetInColor)  # + colon + text
+        titleT = _tn.get(_.iAgreeWithInColor) + '.'  # + colon + text
+        titleF = _tn.get(_.iDisagreeWithInColor) + '.'  # + colon + text
+        titleD = _tn.get(_.iHaveNoOpinionYetInColor) + '.'  # + colon + text
         urlT = _um.get_url_for_justifying_statement(True, statement_uid, 't')
         urlF = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
         urlD = _um.get_url_for_justifying_statement(True, statement_uid, 'd')

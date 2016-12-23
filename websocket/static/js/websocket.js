@@ -59,7 +59,7 @@ function doPublish(data){
 	} else if (data.type == 'info') {	    handleMessage(data, 'Ooh!', doInfo);
 	} else {                                setGlobalInfoHandler('Mhhh!', data.msg);
 	}
-	console.log('publish ' + data.type + ' ' + data.msg);
+	// console.log('publish ' + data.type + ' ' + data.msg);
 }
 
 /**

@@ -46,12 +46,7 @@ function DiscussionGraph() {
      */
     this.callbackIfDoneForDiscussionGraph = function (data) {
         let jsonData = $.parseJSON(data);
-        try {
-            s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
-        } catch (err) {
-            new DiscussionGraph().setDefaultViewParams(false, null, s);
-            setGlobalErrorHandler(_t(ohsnap), _t(internalError));
-        }
+        s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
     };
 
     /**
@@ -111,13 +106,9 @@ function DiscussionGraph() {
         container.empty();
 
         if (startD3) {
-            try {
-                return this.getD3Graph(jsonData);
-            } catch (err) {
+            if (!this.getD3Graph(jsonData))
                 new DiscussionGraph().setDefaultViewParams(false, null, d3);
-                setGlobalErrorHandler('Oh Snap!', _t(internalError));
-                console.log('D3: ' + err.message);
-            }
+            
         } else {
             container.empty();
         }
@@ -147,11 +138,12 @@ function DiscussionGraph() {
     this.getD3Graph = function (jsonData) {
         let container = $('#' + graphViewContainerSpaceId);
         container.empty();
+        rel_node_factor = {};
         //rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
-        rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
+        //rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
 
-        // height of the header ( offset per line count)
-        let offset = ($('#graph-view-container-header').outerHeight() / 26 - 1 ) * 26;
+        // height of the header (offset per line count)
+        let offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
 
         let width = container.width();
         let height = container.outerHeight() - offset;
@@ -249,6 +241,8 @@ function DiscussionGraph() {
         addListenerForNodes(circle, edges);
 
         addListenerForBackgroundOfNodes(edges);
+        
+        return true;
     };
 
     /**
@@ -263,13 +257,18 @@ function DiscussionGraph() {
     function getPositionOfLink(linkTargetCoordinate, nodeCoordinate, edges, d) {
         let position;
         let edge;
-        if (d.is_attacking && d.edge_type === 'arrow' && d.target.id.indexOf('argument_') != -1) {
+        if (d.is_undercut === true) {
             edges.forEach(function (e) {
-                if (e.source.id === d.target.id) {
+                if (e.id === d.target_edge) {
                     edge = e;
                 }
             });
-            position = (parseInt(d3.select('#link-' + edge.id).attr(linkTargetCoordinate)) + nodeCoordinate)/2;
+            if(linkTargetCoordinate === 'x2'){
+                position = (parseInt(d3.select('#link-' + edge.id).attr('x2')) + parseInt(d3.select('#link-' + edge.id).attr('x1')))/2;
+            }
+            else{
+                position = (parseInt(d3.select('#link-' + edge.id).attr('y2')) + parseInt(d3.select('#link-' + edge.id).attr('y1')))/2;
+            }
         } else {
             position = nodeCoordinate;
         }
@@ -422,7 +421,7 @@ function DiscussionGraph() {
                     return d.id === e.target;
                 })[0];
             // add edge, color, type, size and id to array
-            let color = e.is_attacking === 'none' ? grey : e.is_attacking ? green : red;
+            let color = e.is_attacking === 'none' ? grey : e.is_attacking ? red : green;
             edges.push({
                 source: sourceNode,
                 target: targetNode,
@@ -430,7 +429,9 @@ function DiscussionGraph() {
                 edge_type: e.edge_type,
                 size: e.size,
                 id: e.id,
-                is_attacking: e.is_attacking
+                is_attacking: e.is_attacking,
+                target_edge: e.target_edge,
+                is_undercut: e.is_undercut
             });
         });
         return edges;
@@ -467,6 +468,9 @@ function DiscussionGraph() {
                     return "marker_" + d.edge_type + d.id;
                 },
                 refX: function (d) {
+                    if(d.is_undercut === true){
+                        return 6;
+                    }
                     return 6 + calculateNodeSize(d.target) / 2;
                 },
                 refY: 0,

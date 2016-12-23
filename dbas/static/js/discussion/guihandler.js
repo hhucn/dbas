@@ -91,6 +91,8 @@ function GuiHandler() {
 		$('#' + islandViewContainerId).fadeIn('slow');
 		//$('#' + graphViewContainerId).hide();
 		//$('#' + discussionContainerId).hide();
+		this.hideAddPositionContainer();
+		this.hideAddPremiseContainer();
 	};
 	
 	/**
@@ -100,7 +102,7 @@ function GuiHandler() {
 		const graphViewContainer = $('#' + graphViewContainerId);
 		const main = new Main();
 		const tacked_sidebar = 'tacked_graph_sidebar';
-		const header = $('#graph-view-container-header');
+		const header = $('#' + graphViewContainerHeaderId);
 		
 		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
 		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
@@ -111,7 +113,7 @@ function GuiHandler() {
 		$('#' + addPremiseContainerId).hide();
 		
 		// text
-		$('#' + graphViewContainerHeaderId).html($('#issue_info').html());
+		header.html($('#issue_info').data('title'));
 		
 		// height
 		let innerHeight = this.getMaxSizeOfGraphViewContainer();
@@ -121,6 +123,8 @@ function GuiHandler() {
 		new DiscussionGraph().showGraph();
 		main.setSidebarStyle(graphViewContainer, tacked_sidebar);
 		main.setSidebarClicks(graphViewContainer, tacked_sidebar);
+		this.hideAddPositionContainer();
+		this.hideAddPremiseContainer();
 	};
 	
 	/**
@@ -176,7 +180,7 @@ function GuiHandler() {
 				allowPageScroll: true
 			});
 		} else {
-			height += 30;
+			height += 60;
 			if (height < 50)
 				speechBubbles.css('min-height', '100px');
 			else
@@ -198,6 +202,22 @@ function GuiHandler() {
 	 */
 	this.showAddPremiseContainer = function () {
 		$('#' + addPremiseContainerId).show();
+	};
+	
+	/**
+	 * Hides the 'add position'-container
+	 */
+	this.hideAddPositionContainer = function () {
+		$('#' + addStatementContainerId).hide();
+		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
+	};
+	
+	/**
+	 * Hides the 'add premise'-container
+	 */
+	this.hideAddPremiseContainer = function () {
+		$('#' + addPremiseContainerId).hide();
+		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};
 	
 	/**

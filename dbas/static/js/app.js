@@ -412,8 +412,8 @@ function setGlobalErrorHandler(heading, body){
 	$('#' + requestFailedContainerClose).click(function(){
 		$('#' + requestFailedContainer).fadeOut();
 	});
-	$('#' + requestFailedContainerHeading).html(heading);
-	$('#' + requestFailedContainerMessage).html(body);
+	$('#' + requestFailedContainerHeading).html(decodeString(heading));
+	$('#' + requestFailedContainerMessage).html(decodeString(body));
 	setTimeout(function(){
 		$('#' + requestFailedContainer).fadeOut();
 	}, 5000);
@@ -430,8 +430,8 @@ function setGlobalSuccessHandler(heading, body){
 	$('#' + requestSuccessContainerClose).click(function(){
 		$('#' + requestSuccessContainer).fadeOut();
 	});
-	$('#' + requestSuccessContainerHeading).html(heading);
-	$('#' + requestSuccessContainerMessage).html(body);
+	$('#' + requestSuccessContainerHeading).html(decodeString(heading));
+	$('#' + requestSuccessContainerMessage).html(decodeString(body));
 	setTimeout(function(){
 		$('#' + requestSuccessContainer).fadeOut();
 	}, 5000);
@@ -448,11 +448,24 @@ function setGlobalInfoHandler(heading, body){
 	$('#' + requestInfoContainerClose).click(function(){
 		$('#' + requestInfoContainer).fadeOut();
 	});
-	$('#' + requestInfoContainerHeading).html(heading);
-	$('#' + requestInfoContainerMessage).html(body);
+	$('#' + requestInfoContainerHeading).html(decodeString(heading));
+	console.log(body);
+	$('#' + requestInfoContainerMessage).html(decodeString(body));
+	console.log(decodeString(body));
 	setTimeout(function(){
 		$('#' + requestInfoContainer).fadeOut();
 	}, 5000);
+}
+
+/**
+ *
+ * @param encodedString
+ */
+function decodeString(encodedString){
+	// const textArea = document.createElement('textarea');
+    // textArea.innerHTML = encodedString;
+    // return textArea.value;
+	return decodeURIComponent(encodedString);
 }
 
 /**

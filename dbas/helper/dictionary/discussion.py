@@ -213,7 +213,7 @@ class DiscussionDictHelper(object):
 
         confr          = get_text_for_argument_uid(uid)
         premise, tmp   = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        conclusion     = get_text_for_conclusion(db_argument)
+        conclusion     = get_text_for_conclusion(db_argument, is_users_opinion=False)
 
         user_msg, sys_msg = get_header_for_users_confrontation_response(self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
 
@@ -225,11 +225,13 @@ class DiscussionDictHelper(object):
             is_supportive = not is_supportive
             # when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
             # is own premise. so his premise is the conclusion and we need new premises ;-)
-            add_premise_text += get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, is_supportive)
+            add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, is_supportive)
         elif attack == 'undercut':
-            add_premise_text += get_text_for_add_premise_container(self.lang, premise, premise, attack, conclusion, db_argument.is_supportive)
+            intro = _tn.get(_.statementIsAbout) if self.lang == 'de' else ''
+            text = get_text_for_add_premise_container(self.lang, premise, premise, attack, conclusion, db_argument.is_supportive)
+            add_premise_text = intro + text
         else:
-            add_premise_text += get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
+            add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
 
         start = '<' + tag_type + ' data-argumentation-type="position">'
         end = '</' + tag_type + '>'

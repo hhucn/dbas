@@ -260,14 +260,14 @@ class DictionaryHelper(object):
             'reputation': reputation
         }
 
-    def add_discussion_end_text(self, discussion_dict, extras_dict, logged_in, at_start=False, at_dont_know=False,
-                                at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False,):
+    def add_discussion_end_text(self, discussion_dict, extras_dict, nickname, at_start=False, at_dont_know=False,
+                                at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False, ):
         """
         Adds a speicif text when the discussion is at the end
 
         :param discussion_dict: dict()
         :param extras_dict: dict()
-        :param logged_in: Boolean
+        :param nickname: String or None
         :param at_start: Boolean
         :param at_dont_know: Boolean
         :param at_justify_argumentation: Boolean
@@ -278,15 +278,22 @@ class DictionaryHelper(object):
         """
         logger('DictionaryHelper', 'add_discussion_end_text', 'main')
         _tn = Translator(self.discussion_lang)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        gender = db_user.gender if db_user else ''
 
         if at_start:
             discussion_dict['mode'] = 'start'
-            user_text = _tn.get(_.firstPositionText) + '<br>'
-            user_text += _tn.get(_.pleaseAddYourSuggestion) if logged_in else (
+            if gender == 'f':
+                user_text = _tn.get(_.firstPositionTextF).rstrip()
+            elif gender == 'm':
+                user_text = _tn.get(_.firstPositionTextM).rstrip()
+            else:
+                user_text = _tn.get(_.firstPositionText).rstrip()
+            user_text += '<br>' + _tn.get(_.pleaseAddYourSuggestion) if nickname else (
                 _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin))
             discussion_dict['bubbles'].append(
                 create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
-            if logged_in:
+            if nickname:
                 extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
                 extras_dict['close_statement_container'] = False
             extras_dict['show_display_style']    = False
@@ -296,20 +303,31 @@ class DictionaryHelper(object):
 
         elif at_justify_argumentation:
             discussion_dict['mode'] = 'justify_argumentation'
-            if logged_in:
+            if nickname:
                 extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
             extras_dict['close_premise_container'] = False
             extras_dict['show_display_style'] = False
-            if logged_in:
-                mid_text = _tn.get(_.firstOneReason)
-                discussion_dict['bubbles'].append(
-                    create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
+            if nickname:
+                if gender == 'f':
+                    mid_text = _tn.get(_.firstOneReasonF).rstrip()
+                elif gender == 'm':
+                    mid_text = _tn.get(_.firstOneReasonM).rstrip()
+                else:
+                    mid_text = _tn.get(_.firstOneReason).rstrip()
+                sdict = create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang)
+                discussion_dict['bubbles'].append(sdict)
             # else:
                 #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
 
         elif at_dont_know:
             discussion_dict['mode'] = 'dont_know'
-            sys_text = _tn.get(_.firstOneInformationText) + ' <em>' + current_premise + '</em>, '
+            if gender == 'f':
+                sys_text = _tn.get(_.firstOneInformationTextF).rstrip()
+            elif gender == 'm':
+                sys_text = _tn.get(_.firstOneInformationTextM).rstrip()
+            else:
+                sys_text = _tn.get(_.firstOneInformationText).rstrip()
+            sys_text += ' <em>' + current_premise + '</em>, '
             sys_text += _tn.get(_.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
             mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
             discussion_dict['bubbles'].append(
@@ -320,13 +338,19 @@ class DictionaryHelper(object):
         elif at_justify:
             discussion_dict['mode'] = 'justify'
             current_premise = current_premise[0:1].lower() + current_premise[1:]
-            mid_text = _tn.get(_.firstPremiseText1) + ' <em>' + current_premise + '</em>'
+            if gender == 'f':
+                mid_text = _tn.get(_.firstPremiseText1F).rstrip()
+            elif gender == 'm':
+                mid_text = _tn.get(_.firstPremiseText1M).rstrip()
+            else:
+                mid_text = _tn.get(_.firstOneInformationText).rstrip()
+            mid_text += ' <em>' + current_premise + '</em>'
 
             if not supportive:
                 mid_text += ' ' + _tn.get(_.doesNotHold)
             mid_text += '.<br>'
 
-            if logged_in:
+            if nickname:
                 extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
                 mid_text += _tn.get(_.firstPremiseText2)
             else:
@@ -342,7 +366,7 @@ class DictionaryHelper(object):
 
         else:
             mid_text = _tn.get(_.discussionEnd) + ' ' + (
-                _tn.get(_.discussionEndLinkText) if logged_in else _tn.get(_.feelFreeToLogin))
+                _tn.get(_.discussionEndLinkText) if nickname else _tn.get(_.feelFreeToLogin))
             discussion_dict['bubbles'].append(
                 create_speechbubble_dict(is_info=True, message=mid_text, lang=self.system_lang))
 
@@ -441,6 +465,7 @@ class DictionaryHelper(object):
         :return: None
         """
         _tn_dis = Translator(self.discussion_lang)
+        _tn_sys = Translator(self.system_lang)
 
         return_dict['tag'] = {
             'add_a_topic': _tn_dis.get(_.addATopic),
@@ -475,11 +500,11 @@ class DictionaryHelper(object):
             'need_help_to_understand_statement': _tn_dis.get(_.needHelpToUnderstandStatement),
             'set_premisegroups_intro1': _tn_dis.get(_.setPremisegroupsIntro1),
             'set_premisegroups_intro2': _tn_dis.get(_.setPremisegroupsIntro2),
-            'placeholder_nickname': _tn_dis.get(_.exampleNicknameLdap) if is_ldap else _tn_dis.get(_.exampleNickname),
-            'placeholder_password': _tn_dis.get(_.examplePassword),
-            'placeholder_firstname': _tn_dis.get(_.exampleFirstname),
-            'placeholder_lastname': _tn_dis.get(_.exampleLastname),
-            'placeholder_mail': _tn_dis.get(_.exampleMail),
-            'placeholder_statement': _tn_dis.get(_.exampleStatement),
-            'placeholder_source': _tn_dis.get(_.exampleSource)
+            'placeholder_nickname': _tn_sys.get(_.exampleNicknameLdap) if is_ldap else _tn_sys.get(_.exampleNickname),
+            'placeholder_password': _tn_sys.get(_.examplePassword),
+            'placeholder_firstname': _tn_sys.get(_.exampleFirstname),
+            'placeholder_lastname': _tn_sys.get(_.exampleLastname),
+            'placeholder_mail': _tn_sys.get(_.exampleMail),
+            'placeholder_statement': _tn_sys.get(_.exampleStatement),
+            'placeholder_source': _tn_sys.get(_.exampleSource)
         }

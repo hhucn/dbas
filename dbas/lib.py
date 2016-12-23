@@ -167,7 +167,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
 
 def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
-                              attack_type=None, minimize_on_undercut=False):
+                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -203,7 +203,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     if len(arg_array) == 1:
         # build one argument only
         return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
-                                       start_with_intro)
+                                       start_with_intro, is_users_opinion=is_users_opinion)
 
     else:
         # get all pgroups and at last, the conclusion
@@ -317,7 +317,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     return ret_value
 
 
-def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro):
+def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro, is_users_opinion):
     """
 
     :param uid:
@@ -370,8 +370,12 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         # else:
         if start_with_intro:
             ret_value = intro[0:1].upper() + intro[1:] + ' '
+        elif is_users_opinion:
+            ret_value = (_t.get(_.youArgue) + ' ') if lang == 'de' else ''
         else:
-            ret_value = (_t.get(_.statementIsAbout) + ' ') if lang == 'de' else ''
+            tmp = _t.get(_.statementIsAbout)
+            tmp = tmp[0:1].lower() + tmp[1:] + ' '
+            ret_value = tmp if lang == 'de' else ''
         ret_value += conclusion
         ret_value += ', ' if lang == 'de' else ' '
         ret_value += _t.get(_.because).lower() + ' ' + premises
@@ -519,7 +523,7 @@ def get_text_for_premise(uid, colored_position=False):
         return None
 
 
-def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=False):
+def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=False, is_users_opinion=True):
     """
     Check the arguments conclusion whether it is an statement or an argument and returns the text
 
@@ -530,7 +534,7 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
     :return: String
     """
     if argument.argument_uid:
-        return get_text_for_argument_uid(argument.argument_uid, start_with_intro, rearrange_intro=rearrange_intro)
+        return get_text_for_argument_uid(argument.argument_uid, start_with_intro, rearrange_intro=rearrange_intro, is_users_opinion=is_users_opinion)
     else:
         return get_text_for_statement_uid(argument.conclusion_uid)
 
@@ -645,8 +649,8 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     # check for html
     if message[-1] == '>':
         pos = message.rfind('<')
-        if message[pos:pos + 1] not in ['.', '?', '!']:
-            message = message[0:pos + 1] + '.' + message[pos + 2:]
+        if message[pos-1:pos] not in ['.', '?', '!']:
+            message = message[0:pos] + '.' + message[pos:]
     else:
         if not message.endswith(tuple(['.', '?', '!'])):
             message += '.'

@@ -45,20 +45,19 @@ class OpinionHandlerTests(unittest.TestCase):
         main_page = 'url'
 
         # correct statement id
-        response_correct_id_supportive_true = get_user_with_same_opinion_for_statements(statement_uids=[1, 1],
-                                                                                        is_supportive=True,
-                                                                                        nickname=nickname,
-                                                                                        lang=lang,
-                                                                                        main_page=main_page)
-        self.assertTrue(
-            verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supportive_true))
-        response_correct_id_supportive_false = get_user_with_same_opinion_for_statements(statement_uids=[2, 3],
-                                                                                         is_supportive=False,
-                                                                                         nickname=nickname,
-                                                                                         lang=lang,
-                                                                                         main_page=main_page)
-        self.assertTrue(
-            verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supportive_false))
+        response_correct_id_supp_true = get_user_with_same_opinion_for_statements(statement_uids=[1, 1],
+                                                                                  is_supportive=True,
+                                                                                  nickname=nickname,
+                                                                                  lang=lang,
+                                                                                  main_page=main_page)
+        self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supp_true))
+
+        response_correct_id_supp_false = get_user_with_same_opinion_for_statements(statement_uids=[2, 3],
+                                                                                   is_supportive=False,
+                                                                                   nickname=nickname,
+                                                                                   lang=lang,
+                                                                                   main_page=main_page)
+        self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supp_false))
 
     def test_get_user_with_same_opinion_for_premisegroups(self):
         lang = 'en'
@@ -167,7 +166,8 @@ def verify_structure_of_statement_premisgroup_argument_dictionary(self, response
     self.assertTrue('seen_by' in response['opinions'][0])
 
     # ... value of key 'users' in 'opinions'
-    self.assertTrue('nickname' in response['opinions'][0]['users'][0])
+    if len(response['opinions'][0]['users']) > 0:
+        self.assertTrue('nickname' in response['opinions'][0]['users'][0])
 
     # wrong structure
     self.assertTrue('' not in response)

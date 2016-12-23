@@ -23,7 +23,7 @@ def get_d3_data(issue, nickname):
     :param issue: Current uid of issue
     :return: dictionary
     """
-    logger('GraphLib', 'get_d3_data', 'main')
+    logger('Graph.lib', 'get_d3_data', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     # default values
@@ -34,7 +34,6 @@ def get_d3_data(issue, nickname):
     issue_size = 8
     edge_size = 90
     edge_size_on_virtual_nodes = 45
-    edge_size_from_virtual_nodes = 60
     edge_type = 'arrow'
 
     nodes_array = []
@@ -44,11 +43,11 @@ def get_d3_data(issue, nickname):
     if not db_issue:
         return {}
 
-    logger('GraphLib', 'get_d3_data', 'issue: ' + db_issue.info)
+    logger('Graph.lib', 'get_d3_data', 'title: ' + db_issue.title)
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
-    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
-    db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
+    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).order_by(Statement.uid.asc()).all()
+    db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).order_by(Argument.uid.asc()).all()
 
     # issue
     node_dict = __get_node_dict(id='issue',
@@ -71,8 +70,7 @@ def get_d3_data(issue, nickname):
     extras_dict.update(extras)
 
     # for each argument edges will be added as well as the premises
-    all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes,
-                                                                    edge_size_from_virtual_nodes, edge_size, edge_type)
+    all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes, edge_size, edge_type)
     all_node_ids += all_ids
     nodes_array += nodes
     edges_array += edges
@@ -110,19 +108,21 @@ def get_doj_data(issue):
     :param issue:
     :return:
     """
-    logger('GraphLib', 'get_doj_data', 'main')
+    logger('Graph.lib', 'get_doj_data', 'main')
     url = 'http://localhost:5101/evaluate/dojs?issue=' + str(issue)
     try:
         resp = requests.get(url)
     except Exception as e:
         logger('Graph.lib', 'get_doj_data', 'Error: ' + str(e), error=True)
+        logger('Graph.lib', 'get_doj_data', 'return empty doj')
         return {}
 
     if resp.status_code == 200:
         doj = json.loads(resp.text)
         return doj['dojs'] if 'dojs' in doj else {}
     else:
-        logger('GraphLib', 'get_doj_data', 'status ' + str(resp.status_code), error=True)
+        logger('Graph.lib', 'get_doj_data', 'status ' + str(resp.status_code), error=True)
+        logger('Graph.lib', 'get_doj_data', 'return empty doj')
         return {}
 
 
@@ -153,52 +153,100 @@ def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x,
                                         target='issue',
                                         is_attacking='none',
                                         size=edge_size,
-                                        edge_type=edge_type)
+                                        edge_type=edge_type,
+                                        target_edge='none',
+                                        is_undercut='none')
             edges.append(edge_dict)
 
     return all_ids, nodes, edges, extras
 
 
-def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes, edge_size_from_virtual_nodes, edge_size, edge_type):
+def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nodes, edge_size, edge_type):
     all_ids = []
     nodes = []
     edges = []
     extras = {}
+
+    # conclusion-uids of target nodes of undercuts
+    conclusion_uids_dict = {}
+    # ids of edges on which the undercuts should show
+    edge_target_dict = {}
+
+    # determine target-node and target-edge of all undercuts
+    for argument in db_arguments:
+
+        if argument.conclusion_uid is None:  # argument is undercut
+            db_target = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+            db_undercut = argument
+
+            if db_target.conclusion_uid is not None:  # first-order
+                logger('X', '1st order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_target.conclusion_uid))
+                logger('X', '1st order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
+                conclusion_uids_dict[db_undercut.uid] = db_target.conclusion_uid
+                edge_target_dict[db_undercut.uid] = db_target.uid
+            # target of undercuts on undercuts
+            else:  # second-order
+                db_targets_target = DBDiscussionSession.query(Argument).filter_by(uid=db_target.argument_uid).first()
+
+                logger('X', '2nd order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_targets_target.uid))
+                logger('X', '2nd order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
+
+                conclusion_uids_dict[db_undercut.uid] = db_targets_target.uid
+                edge_target_dict[db_undercut.uid] = db_target.uid
+
     for argument in db_arguments:
         counter = 1
-        # add invisible point in the middle of the edge (to enable pgroups and undercuts)
-        node_dict = __get_node_dict(id='argument_' + str(argument.uid),
-                                    label='',
-                                    size=0,
-                                    x=x,
-                                    y=y)
-        x = (x + 1) % 10
-        y += 1 if x == 0 else 0
-        nodes.append(node_dict)
-        all_ids.append('argument_' + str(argument.uid))
 
         # we have an argument with:
         # 1) with one premise and no undercuts for this argument
         # 2) with at least two premises, one conclusion or an undercut is done on this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
-        db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
 
-        # target of the edge (case 1) or last edge (case 2)
-        if argument.conclusion_uid is not None:
-            target = 'statement_' + str(argument.conclusion_uid)
-        else:
-            target = 'argument_' + str(argument.argument_uid)
+        # if there are different premises for one argument add invisible nodes
+        if len(db_premises) > 1:
+            # add invisible point in the middle of the edge (to enable pgroups and undercuts)
+            node_dict = __get_node_dict(id='argument_' + str(argument.uid),
+                                        label='',
+                                        size=0,
+                                        x=x,
+                                        y=y)
+            x = (x + 1) % 10
+            y += 1 if x == 0 else 0
+            nodes.append(node_dict)
+            all_ids.append('argument_' + str(argument.uid))
 
-        if len(db_premises) == 1 and len(db_undercuts) == 0:
+        # if there is at most one premise create edge without virtual nodes
+        if len(db_premises) < 2:
+            if argument.conclusion_uid is not None:
+                target = 'statement_' + str(argument.conclusion_uid)
+            # target of undercut
+            else:
+                target = 'statement_' + str(conclusion_uids_dict[argument.uid])
+
+            is_undercut = 'none'
+            if argument.conclusion_uid is None:
+                target_edge = 'edge_' + str(edge_target_dict[argument.uid]) + '_' + str(counter)
+                # the edge on the argument is an undercut
+                is_undercut = True
+            else:
+                target_edge = 'none'
+
             edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
                                         source='statement_' + str(db_premises[0].statement_uid),
                                         target=target,
                                         is_attacking=not argument.is_supportive,
                                         size=edge_size,
-                                        edge_type=edge_type)
+                                        edge_type=edge_type,
+                                        target_edge=target_edge,
+                                        is_undercut=is_undercut)
             edges.append(edge_dict)
-
+        # target of the edge (case 1) or last edge (case 2)
         else:
+            if argument.conclusion_uid is not None:
+                target = 'statement_' + str(argument.conclusion_uid)
+            else:
+                target = 'argument_' + str(argument.argument_uid)
+
             # edge from premisegroup to the middle point
             for premise in db_premises:
                 edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
@@ -206,7 +254,9 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                                             target='argument_' + str(argument.uid),
                                             is_attacking=not argument.is_supportive,
                                             size=edge_size_on_virtual_nodes,
-                                            edge_type='')
+                                            edge_type='',
+                                            target_edge='none',
+                                            is_undercut='none')
                 edges.append(edge_dict)
                 counter += 1
 
@@ -215,10 +265,11 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                                         source='argument_' + str(argument.uid),
                                         target=target,
                                         is_attacking=not argument.is_supportive,
-                                        size=edge_size_from_virtual_nodes,
-                                        edge_type=edge_type)
+                                        size=edge_size_on_virtual_nodes,
+                                        edge_type=edge_type,
+                                        target_edge='none',
+                                        is_undercut='none')
             edges.append(edge_dict)
-
     return all_ids, nodes, edges, extras
 
 
@@ -233,9 +284,9 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
     for edge in edges_array:
         error = error or edge['source'] not in all_node_ids or edge['target'] not in all_node_ids
     if error:
-        logger('GraphLib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
+        logger('Graph.lib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
     else:
-        logger('GraphLib', 'get_d3_data', 'All nodes are connected well')
+        logger('Graph.lib', 'get_d3_data', 'All nodes are connected well')
 
 
 def __get_author_of_statement(uid, db_user):
@@ -294,7 +345,7 @@ def __get_node_dict(id, label, size, x, y, type='', author=dict(), editor=dict()
             'editor': editor}
 
 
-def __get_edge_dict(id, source, target, is_attacking, size, edge_type):
+def __get_edge_dict(id, source, target, is_attacking, size, edge_type, target_edge, is_undercut):
     """
     Create dictionary for edges
 
@@ -304,6 +355,8 @@ def __get_edge_dict(id, source, target, is_attacking, size, edge_type):
     :param is_attacking:
     :param size:
     :param edge_type:
+    :param target_edge: for undercuts, id of edge which is attacked by an undercut
+    :param is_undercut:
     :return:
     """
     return {'id': id,
@@ -311,7 +364,9 @@ def __get_edge_dict(id, source, target, is_attacking, size, edge_type):
             'target': target,
             'is_attacking': is_attacking,
             'size': size,
-            'edge_type': edge_type}
+            'edge_type': edge_type,
+            'target_edge': target_edge,
+            'is_undercut': is_undercut}
 
 
 def __get_extras_dict(statement):

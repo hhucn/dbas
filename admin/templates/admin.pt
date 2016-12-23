@@ -89,9 +89,9 @@
                         <div class="panel-body">
                             <table class="table table-striped table-hover">
                                 <tbody>
-                                    <tr tal:attributes="data-href line.href" tal:repeat="line group.content">
+                                    <tr tal:attributes="data-href line.href; id line.name" tal:repeat="line group.content">
                                         <td>${line.name}</td>
-                                        <td><span class="badge">${line.count}</span></td>
+                                        <td><span class="badge">-</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -103,10 +103,9 @@
             </div>
         </div>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('admin:static/js/admin.js')}"></script>
 		<script type="text/javascript" src="${request.static_url('admin:static/js/ajaxhandler.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('admin:static/js/admin.js')}"></script>
 
 	</tal:block>
 </tal:block>

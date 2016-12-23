@@ -302,8 +302,8 @@ def correct_statement(user, uid, corrected_text, url='', request=None):
         DBDiscussionSession.add(textversion)
         DBDiscussionSession.flush()
 
-    if request:
-        NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
+    # if request:
+    #     NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
 
     db_statement.set_textversion(textversion.uid)
     # transaction.commit() # # 207

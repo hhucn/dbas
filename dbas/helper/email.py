@@ -18,26 +18,6 @@ from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 
 
-def send_mail_due_to_new_argument(current_user, url, request):
-    """
-    Will send an email to the author of the argument.
-
-    :param current_user: User.nickname
-    :param url: current url
-    :param request: self.request
-    :return: duple with boolean for sent message, message-string
-    """
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=current_user.uid).first()
-    db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
-
-    _t = Translator(db_language.ui_locales)
-    subject = _t.get(_.emailArgumentAddTitle)
-    body = _t.get(_.emailArgumentAddBody) + '\n' + url
-    recipient = current_user.email
-
-    return send_mail(request, subject, body, recipient, db_language.ui_locales)
-
-
 def send_mail_due_to_added_text(lang, url, recipient, request):
     """
     Will send an email to the recipient
