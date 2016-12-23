@@ -10,17 +10,17 @@ function DiscussionGraph() {
     let isStatementVisible = false;
     let isSupportVisible = false;
     let isAttackVisible = false;
-    let grey = '#424242';
+    let light_grey = '#E0E0E0';
+    let grey = '#848484';
     let yellow = '#FFC107';
     let red = '#F44336';
     let green = '#64DD17';
     let blue = '#3D5AFE';
     let black = '#000000';
-    let dark_grey = '#616161';
+    let dark_grey = '#424242';
     let dark_red = '#D32F2F';
     let dark_green = '#689F38';
     let dark_blue = '#1976D2';
-    let light_grey = '#848484';
     let font_size = 14; // needed for rescaling
     let line_height = 1.5; // needed for rescaling
     let box_sizes = {}; // needed for rescaling
@@ -31,6 +31,8 @@ function DiscussionGraph() {
     let issue_size = 10; // node size of the issue
     let node_factor_size = 10; // additional size for the doj, which is in [0,1]
     let rel_node_factor;
+    let currentColorOfCircle;
+    let selectedCircleId;
 
     /**
      * Displays a graph of current discussion
@@ -399,7 +401,7 @@ function DiscussionGraph() {
         jsonData.nodes.forEach(function (e) {
             if (e.type === 'position')       e.color = blue;
             else if (e.type === 'statement') e.color = yellow;
-            else if (e.type === 'issue')     e.color = light_grey;
+            else if (e.type === 'issue')     e.color = grey;
             else                             e.color = black;
         });
     }
@@ -421,7 +423,7 @@ function DiscussionGraph() {
                     return d.id === e.target;
                 })[0];
             // add edge, color, type, size and id to array
-            let color = e.is_attacking === 'none' ? grey : e.is_attacking ? red : green;
+            let color = e.is_attacking === 'none' ? dark_grey : e.is_attacking ? red : green;
             edges.push({
                 source: sourceNode,
                 target: targetNode,
@@ -441,7 +443,7 @@ function DiscussionGraph() {
      * Select edges with type of arrow.
      *
      * @param edges: edges of graph
-     * @return edgesTypeArrow: array, which contains edges of type arrow
+     * @return Array array, which contains edges of type arrow
      */
     function createArrowDict(edges) {
         let edgesTypeArrow = [];
@@ -660,18 +662,19 @@ function DiscussionGraph() {
      * @param edges
      */
     function addListenerForNodes(circle, edges) {
-        let selectedCircleId;
-
+        selectedCircleId;
+        let counter = 0;
         circle.on("click", function (d) {
             // distinguish between click and drag event
             if (d3.event.defaultPrevented) return;
             // show modal when node clicked twice
-            if (d.id === selectedCircleId) {
+            if (d.id === selectedCircleId && counter % 2 === 0) {
                 showModal(d);
             }
             let circleId = this.id;
             showPartOfGraph(edges, circleId);
             selectedCircleId = d.id;
+            counter++;
         });
     }
 
@@ -695,7 +698,7 @@ function DiscussionGraph() {
         // labels and colors for legend
         let legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")],
             legendLabelRect = [_t_discussion("support"), _t_discussion("attack")],
-            legendColorCircle = [light_grey, blue, yellow],
+            legendColorCircle = [grey, blue, yellow],
             legendColorRect = [green, red];
 
         // set properties for legend
@@ -1099,9 +1102,9 @@ function DiscussionGraph() {
      */
     function addListenerForTooltip() {
         d3.selectAll('.node').on("mouseover", function (d) {
-            determineShowOrHidTooltip(d, true);
+            determineShowOrHideTooltip(d, true);
         }).on("mouseout", function (d) {
-            determineShowOrHidTooltip(d, false);
+            determineShowOrHideTooltip(d, false);
         });
     }
 
@@ -1111,7 +1114,7 @@ function DiscussionGraph() {
      * @param d: current node
      * @param mouseover
      */
-    function determineShowOrHidTooltip(d, mouseover) {
+    function determineShowOrHideTooltip(d, mouseover) {
         let isPosition = testNodePosition(d);
         if(isPositionVisible && isContentVisible){
         }
@@ -1148,17 +1151,28 @@ function DiscussionGraph() {
      * @param mouseover
      */
     function showHideTooltip(d, mouseover) {
+
+
         // if there is a mouseover-event show the tooltip
         if(mouseover){
             d3.select('#label-' + d.id).style('display', 'inline');
             d3.select('#rect-' + d.id).style('display', 'inline');
+            // determine color of circle before mouse over
+            // to restore color on mouse out
+            currentColorOfCircle = d3.select('#circle-' + d.id).attr('fill');
             d3.select('#circle-' + d.id).attr('fill', '#757575');
         }
         // otherwise there is a mouseout-out, then hide the tooltip
         else{
             d3.select('#label-' + d.id).style('display', 'none');
             d3.select('#rect-' + d.id).style('display', 'none');
-            d3.select('#circle-' + d.id).attr('fill', d.color);
+            // if circle d is currently clicked restore originally color of circle
+            if(d.id === selectedCircleId){
+                d3.select('#circle-' + d.id).attr('fill', d.color);
+            }
+            else{
+                d3.select('#circle-' + d.id).attr('fill', currentColorOfCircle);
+            }
         }
     }
 
@@ -1195,6 +1209,14 @@ function DiscussionGraph() {
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function (d) {
             let circleUid = selectUid(circleId);
+            if(circleUid === selectUid(d.source.id) && d.is_undercut){
+                console.log(d.target_edge);
+                edges.forEach(function (e) {
+                    if(e.id === d.target_edge){
+                        edgesCircleId.push(e);
+                    }
+                });
+            }
             if (isSupportVisible && selectUid(d.target.id) === circleUid && d.color === green) {
                 edgesCircleId.push(d);
             }
@@ -1333,11 +1355,11 @@ function DiscussionGraph() {
      */
     function grayingElements(edge) {
         // edges
-        d3.select('#link-' + edge.id).style('stroke', '#E0E0E0');
+        d3.select('#link-' + edge.id).style('stroke', light_grey);
         // nodes
-        d3.select('#circle-' + edge.source.id).attr('fill', '#E0E0E0');
-        d3.select('#circle-' + edge.target.id).attr('fill', '#E0E0E0');
+        d3.select('#circle-' + edge.source.id).attr('fill', light_grey);
+        d3.select('#circle-' + edge.target.id).attr('fill', light_grey);
         // arrows
-        d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', '#E0E0E0');
+        d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', light_grey);
     }
 }
