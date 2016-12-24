@@ -16,147 +16,124 @@ msgstr ""
 "Generated-By: Lingua 3.10\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. Default: 404 Error
-#: templates/404.pt:8
-msgid "404"
-msgstr "404 Error"
-
-#. Default: The page
-#: templates/404.pt:10
-msgid "404_text_part1"
-msgstr "The page"
-
-#. Default: could not be found
-#: templates/404.pt:12
-msgid "404_text_part2"
-msgstr "could not be found"
-
-#. Default: , because the input parameter seems to be wrong.
-#: templates/404.pt:12
-msgid "wrong_input_params"
-msgstr ", because the input parameter seems to be wrong."
-
-#. Default: , because the author revoked the content.
-#: templates/404.pt:12
-msgid "author_revoked_content"
-msgstr ", because the author revoked the content."
-
-#. Default: Go home
-#: templates/404.pt:15
-msgid "go-home"
-msgstr "Go home"
+#. Default: Queues
+#: templates/review.pt:7
+msgid "queues"
+msgstr "Queues"
 
 #. Default: or
 #: templates/404.pt:17 templates/imprint.pt:67
 msgid "or"
 msgstr "oder"
 
-#. Default: go back to the discussion
-#: templates/404.pt:18
-msgid "go_back_to_the_discussion"
-msgstr "go back to the discussion!"
+#. Default: Help improve the dialog
+#: templates/review.pt:15
+msgid "help_to_improve"
+msgstr "Help improve the dialog"
 
-#. Default: Your session has expired!
-#: templates/index.pt:8
-msgid "session_expired"
-msgstr "Your session has expired!"
-
-#. Default: You have to log in again.
-#: templates/index.pt:9
-msgid "login_again"
-msgstr "You have to log in again."
-
-#. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
-#. argumentation system. There will be bugs. Please feel free to
-#: templates/index.pt:20
-msgid "welcome_text1"
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: templates/review.pt:16
+msgid "dbas_is_moderated_by"
 msgstr ""
-"Welcome to D-BAS! This is an prototype of our dialog-based argumentation "
-"system. There will be bugs. Please feel free to"
+"D-BAS is moderated by you. Help your discussion members learn to argue and "
+"raise the quality of argumenty by:"
 
-#. Default: contact
-#: templates/index.pt:21
-msgid "welcome_text2"
-msgstr "contact"
+#. Default: Evaluate new statements
+#: templates/review.pt:18
+msgid "evaluate_new_statements"
+msgstr "Evaluate new statements"
 
-#. Default: us to report bugs or provide feedback.
-#: templates/index.pt:22
-msgid "welcome_text3"
-msgstr "us to report bugs or provide feedback."
+#. Default: Reviewing suspicious statements
+#: templates/review.pt:19
+msgid "reviewing_suspicious_statements"
+msgstr "Reviewing suspicious statements"
 
-#. Default: Click here to start now!
-#: templates/index.pt:28
-msgid "lets_start_now"
-msgstr "Click here to start now!"
+#. Default: Voting to close or reopen statements
+#: templates/review.pt:20
+msgid "voting_to_close"
+msgstr "Voting to close or reopen statements"
 
-#. Default: This work is part of the graduate school on
-#: templates/index.pt:34
-msgid "work_based_on"
-msgstr "This work is part of the graduate school on"
+#. Default: Choose a task to get started.
+#: templates/review.pt:22
+msgid "choose_task"
+msgstr "Choose a task to get started."
 
-#. Default: Online-Participation
-#: templates/index.pt:34
-msgid "online_participation"
-msgstr "Online-Participation"
+#. Default: Based on your user group, you have all rights!
+#: templates/review.pt:30 templates/review_reputation.pt:14
+msgid "unlimited_right_based_on_group"
+msgstr "Based on your user group, you have all rights!"
 
-#. Default: It is funded by the
-#: templates/index.pt:35
-msgid "funded_by"
-msgstr "It is funded by the"
+#. Default: Your current reputation count is
+#: templates/review.pt:33
+msgid "current_reputation_os"
+msgstr "Your current reputation count is"
 
-#. Default: Ministry of Innovation, Science and Research in North Rhine-
-#. Westphalia
-#: templates/index.pt:35
-msgid "ministry_of_innovation"
-msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
+#. Default: Open Tasks
+#: templates/review.pt:43
+msgid "open_tasks"
+msgstr "Open Tasks"
 
-#. Default: Toggle navigation
-#: templates/snippet-header.pt:8
-msgid "Toggle Navigation"
-msgstr "Toggle navigation"
+#. Default: Topic
+#: templates/review.pt:44
+msgid "topic"
+msgstr "Topic"
 
-#. Default: Let's go
-#: templates/snippet-header.pt:43
-msgid "lets_go"
-msgstr "Let's go"
+#. Default: Recent Reviews
+#: templates/review.pt:45
+msgid "recent_reviews"
+msgstr "Recent Reviews"
 
-#. Default: News
-#: templates/snippet-header.pt:49
-msgid "news"
-msgstr "News"
+#. Default: None
+#: templates/review.pt:68
+msgid "None"
+msgstr "None"
 
-#. Default: Login
-#. Default: Log In
-#: templates/snippet-header.pt:55 templates/snippet-popups.pt:270
-#: templates/snippet-popups.pt:315 templates/snippet-popups.pt:331
-#: templates/snippet-popups.pt:530
-msgid "login"
-msgstr "Log In"
+#. Default: What is reputation? How do I earn (and lose) it?
+#: templates/review.pt:80
+msgid "what_is_reputation"
+msgstr "What is reputation? How do I earn (and lose) it?"
 
-#. Default: Settings
-#: templates/snippet-header.pt:74 templates/settings.pt:41
-msgid "settings"
-msgstr "Settings"
+#. Default: Reputation is a rough measurement of how work you are doing for the
+#. discussion and the community;
+#: templates/review.pt:81
+msgid "what_is_reputation_def"
+msgstr ""
+"Reputation is a rough measurement of how work you are doing for the "
+"discussion and the community;"
 
-#. Default: Notifications
-#: templates/snippet-header.pt:81
-msgid "notifications"
-msgstr "Notifications"
+#. Default: you can earn it by using D-BAS and all of its great functions.
+#: templates/review.pt:82
+msgid "what_is_reputation_earn"
+msgstr "you can earn it by using D-BAS and all of its great functions."
 
-#. Default: Admin
-#: templates/snippet-header.pt:86
-msgid "Admin"
-msgstr "Admin"
+#. Default: Basic use of D-BAS, does not require any reputation at all.
+#: templates/review.pt:83
+msgid "what_is_reputation_use"
+msgstr "Basic use of D-BAS, does not require any reputation at all."
 
-#. Default: Logout
-#: templates/snippet-header.pt:91
-msgid "logout"
-msgstr "Logout"
+#. Default: You gain reputation when:
+#: templates/review.pt:86
+msgid "gain_rep_when"
+msgstr "You gain reputation when:"
 
-#. Default: Review
-#: templates/snippet-header.pt:98
-msgid "review"
-msgstr "Review"
+#. Default: You lose reputation when:
+#: templates/review.pt:95
+msgid "lose_rep_when"
+msgstr "You lose reputation when:"
+
+#. Default: Privileges
+#: templates/review.pt:107
+msgid "privileges"
+msgstr "Privileges"
+
+#. Default: Privileges control what you can see in the review queues of D-BAS.
+#. Gain more privileges by increasing your reputation.
+#: templates/review.pt:108
+msgid "privileges_explanation"
+msgstr ""
+"Privileges control what you can see in the review queues of D-BAS. Gain more "
+"privileges by increasing your reputation."
 
 #. Default: Impressum
 #: templates/imprint.pt:6
@@ -405,6 +382,11 @@ msgstr "Icons by"
 msgid "designed_by"
 msgstr "designed by"
 
+#. Default: or
+#: templates/imprint.pt:66 templates/404.pt:17
+msgid "or"
+msgstr "oder"
+
 #. Default: Tracking by
 #: templates/imprint.pt:68
 msgid "tracking_by"
@@ -435,247 +417,308 @@ msgstr "is generated with Pyramid Web Framework"
 msgid "changes"
 msgstr "Changes in Version"
 
-#. Default: Queues
-#: templates/review.pt:7
-msgid "queues"
-msgstr "Queues"
+#. Default: Public Information of
+#: templates/user.pt:9
+msgid "public_information_of"
+msgstr "Public Information of"
 
-#. Default: How To
-#: templates/review.pt:8
-msgid "howto"
-msgstr "How To"
+#. Default: Last Action
+#: templates/user.pt:13
+msgid "last_action"
+msgstr "Last Action"
 
-#. Default: Help improve the dialog
-#: templates/review.pt:15
-msgid "help_to_improve"
-msgstr "Help improve the dialog"
+#. Default: Last Login
+#: templates/user.pt:17
+msgid "last_login"
+msgstr "Last Login"
 
-#. Default: D-BAS is moderated by you. Help your discussion members learn to
-#. argue and raise the quality of argumenty by:
-#: templates/review.pt:16
-msgid "dbas_is_moderated_by"
-msgstr ""
-"D-BAS is moderated by you. Help your discussion members learn to argue and "
-"raise the quality of argumenty by:"
+#. Default: Registered
+#: templates/user.pt:21
+msgid "registered"
+msgstr "Registered"
 
-#. Default: Evaluate new statements
-#: templates/review.pt:18
-msgid "evaluate_new_statements"
-msgstr "Evaluate new statements"
+#. Default: User group
+#: templates/user.pt:25
+msgid "user_group"
+msgstr "User group"
 
-#. Default: Reviewing suspicious statements
-#: templates/review.pt:19
-msgid "reviewing_suspicious_statements"
-msgstr "Reviewing suspicious statements"
-
-#. Default: Voting to close or reopen statements
-#: templates/review.pt:20
-msgid "voting_to_close"
-msgstr "Voting to close or reopen statements"
+#. Default: Profile Picture of
+#: templates/user.pt:33
+msgid "profile_picture_of"
+msgstr "Profile Picture of"
 
 #. Default: Choose a task to get started.
 #: templates/review.pt:22
 msgid "choose_task"
 msgstr "Choose a task to get started!"
 
-#. Default: Based on your user group, you have all rights!
-#: templates/review.pt:30 templates/review_reputation.pt:14
-msgid "unlimited_right_based_on_group"
-msgstr "Based on your user group, you have all rights!"
+#. Default: Statements posted
+#: templates/user.pt:41 templates/settings.pt:174 templates/finish.pt:26
+msgid "statements_posted"
+msgstr "Statements posted"
 
-#. Default: Your current reputation count is
-#: templates/review.pt:33
-msgid "current_reputation_os"
-msgstr "Your current reputation count is"
+#. Default: Edits done
+#: templates/user.pt:45 templates/settings.pt:181 templates/finish.pt:30
+msgid "edits_done"
+msgstr "Edits done"
 
-#. Default: Open Tasks
-#: templates/review.pt:43
-msgid "open_tasks"
-msgstr "Open Tasks"
+#. Default: Votes for Arguments
+#: templates/user.pt:49 templates/settings.pt:188 templates/finish.pt:38
+msgid "discussion_votes_statements"
+msgstr "Votes for Arguments"
 
-#. Default: Topic
-#: templates/review.pt:44
-msgid "topic"
-msgstr "Topic"
+#. Default: Votes for Statements
+#: templates/user.pt:53 templates/settings.pt:195 templates/finish.pt:42
+msgid "discussion_votes_arguments"
+msgstr "Votes for Statements"
 
-#. Default: Recent Reviews
-#: templates/review.pt:45
-msgid "recent_reviews"
-msgstr "Recent Reviews"
+#. Default: Reputation
+#: templates/user.pt:57 templates/settings.pt:202
+#: templates/review_reputation.pt:9 templates/review_reputation.pt:27
+msgid "reputation"
+msgstr "Reputation"
 
-#. Default: None
-#: templates/review.pt:68
-msgid "None"
-msgstr "None"
+#. Default: Personal Information
+#: templates/settings.pt:7
+msgid "personal_information"
+msgstr "Personal Information"
 
-#. Default: What is reputation? How do I earn (and lose) it?
-#: templates/review.pt:80
-msgid "what_is_reputation"
-msgstr "What is reputation? How do I earn (and lose) it?"
+#. Default: Firstname
+#: templates/settings.pt:10
+msgid "firstname"
+msgstr "Firstname"
 
-#. Default: Reputation is a rough measurement of how work you are doing for the
-#. discussion and the community;
-#: templates/review.pt:81
-msgid "what_is_reputation_def"
+#. Default: Surname
+#: templates/settings.pt:14
+msgid "surname"
+msgstr "Surname"
+
+#. Default: Nickname
+#. Default: Your Nickname
+#: templates/settings.pt:18 templates/snippet-popups.pt:411
+msgid "nickname"
+msgstr "Nickname"
+
+#. Default: Public Nickname
+#: templates/settings.pt:22
+msgid "public_nickname"
+msgstr "Public Nickname"
+
+#. Default: Click here for your public page
+#: templates/settings.pt:26
+msgid "click_here_for_public_page"
+msgstr "Click here for your public page"
+
+#. Default: Group
+#: templates/settings.pt:35
+msgid "group"
+msgstr "Group"
+
+#. Default: Settings
+#: templates/settings.pt:41 templates/snippet-header.pt:74
+msgid "settings"
+msgstr "Settings"
+
+#. Default: Receive Notifications
+#: templates/settings.pt:44
+msgid "receive_notifications"
+msgstr "Receive Notifications"
+
+#. Default: Receive E-Mails
+#: templates/settings.pt:50
+msgid "receive_mails"
+msgstr "Receive E-Mails"
+
+#. Default: Nickname is public
+#: templates/settings.pt:56
+msgid "nickname_is_public"
+msgstr "Nickname is public"
+
+#. Default: Prefered message language
+#: templates/settings.pt:62
+msgid "message_language"
+msgstr "Prefered message language"
+
+#. Default: Guided tour on startup
+#: templates/settings.pt:81
+msgid "guided_tour_on_start_up"
+msgstr "Guided tour on startup"
+
+#. Default: Profile Picture
+#: templates/settings.pt:91
+msgid "profile_picture"
+msgstr "Profile Picture"
+
+#. Default: Change your profile picture on the
+#: templates/settings.pt:93
+msgid "change_gravatar"
+msgstr "Change your profile picture on the"
+
+#. Default: A Gravatar is a globally recognized avatar. You upload it and
+#. create your profile just once, and then when you participate in any
+#. Gravatar-enabled site, your Gravatar image will automatically follow you
+#. there.
+#: templates/settings.pt:95
+msgid "what_is_gravatar"
 msgstr ""
-"Reputation is a rough measurement of how work you are doing for the "
-"discussion and the community;"
+"A Gravatar is a Globally Recognized Avatar. You upload it and create your "
+"profile just once, and then when you participate in any Gravatar-enabled "
+"site, your Gravatar image will automatically follow you there."
 
-#. Default: you can earn it by using D-BAS and all of its great functions.
-#: templates/review.pt:82
-msgid "what_is_reputation_earn"
-msgstr "you can earn it by using D-BAS and all of its great functions."
+#. Default: Settings could not be set. Please try again later.
+#: templates/settings.pt:104
+msgid "settings_not_set"
+msgstr "Settings could not be set. Please try again later."
 
-#. Default: Basic use of D-BAS, does not require any reputation at all.
-#: templates/review.pt:83
-msgid "what_is_reputation_use"
-msgstr "Basic use of D-BAS, does not require any reputation at all."
+#. Default: Settings were set successfully.
+#: templates/settings.pt:109
+msgid "settings_set"
+msgstr "Settings were set successfully."
 
-#. Default: You gain reputation when:
-#: templates/review.pt:86
-msgid "gain_rep_when"
-msgstr "You gain reputation when:"
+#. Default: Change your password
+#: templates/settings.pt:119
+msgid "change_password"
+msgstr "Change your password"
 
-#. Default: You lose reputation when:
-#: templates/review.pt:95
-msgid "lose_rep_when"
-msgstr "You lose reputation when:"
+#. Default: Change your password in D-BAS
+#: templates/settings.pt:120
+msgid "change_dbas_password"
+msgstr "Change your password in D-BAS"
 
-#. Default: Privileges
-#: templates/review.pt:107
-msgid "privileges"
-msgstr "Privileges"
+#. Default: Old password
+#: templates/settings.pt:126
+msgid "old_password"
+msgstr "Old password"
 
-#. Default: Privileges control what you can see in the review queues of D-BAS.
-#. Gain more privileges by increasing your reputation.
-#: templates/review.pt:108
-msgid "privileges_explanation"
+#. Default: New Password
+#: templates/settings.pt:134
+msgid "new_password"
+msgstr "New Password"
+
+#. Default: New Password (confirm)
+#: templates/settings.pt:142
+msgid "new_password_confirm"
+msgstr "New Password (confirm)"
+
+#. Default: Strength
+#: templates/settings.pt:150
+msgid "strength"
+msgstr "Strength"
+
+#. Default: Your password was changed
+#: templates/settings.pt:217
+msgid "password_changed"
+msgstr "Your password was changed"
+
+#. Default: Statistics could not be deleted.
+#: templates/settings.pt:224
+msgid "statistics_not_deleted"
+msgstr "Statistics could not be deleted."
+
+#. Default: Statistics were set successfully deleted.
+#: templates/settings.pt:230
+msgid "statistics_deletet"
+msgstr "Statistics were set successfully deleted."
+
+#. Default: Your last history
+#: templates/settings.pt:240
+msgid "last_history"
+msgstr "Your last History"
+
+#. Default: Success:
+#. Default: Success
+#: templates/settings.pt:252 templates/snippet-popups.pt:304
+#: templates/snippet-popups.pt:384 templates/snippet-popups.pt:479
+#: templates/content.pt:62
+msgid "success"
+msgstr "Success:"
+
+#. Default: Get In Touch With Us
+#: templates/contact.pt:8
+msgid "contact_header_1"
+msgstr "Get In Touch With Us"
+
+#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
+#. hours max!
+#: templates/contact.pt:9
+msgid "contact_header_2"
 msgstr ""
-"Privileges control what you can see in the review queues of D-BAS. Gain more "
-"privileges by increasing your reputation."
+"Feel free to drop us a line and we’ll try to get back to you in 48 hours max!"
 
-#. Default: You have to earn more reputation for this queue
-#: templates/review_history.pt:6
-msgid "earn_more_reputation_for_queue"
-msgstr "You have to earn more reputation for this queue"
+#. Default: Your Name (required)
+#: templates/contact.pt:15
+msgid "name_req"
+msgstr "Your Name (required)"
 
-#. Default: You have no access to this site
-#: templates/review_history.pt:7
-msgid "you_have_no_access"
-msgstr "You have no access to this site"
+#. Default: Your E-Mail (required)
+#: templates/contact.pt:23
+msgid "mail_req"
+msgstr "Your E-Mail (required)"
 
-#. Default: History
-#: templates/review_history.pt:15
-msgid "history"
-msgstr "History"
+#. Default: Your Phone Number
+#: templates/contact.pt:31
+msgid "phone_no"
+msgstr "Your Phone Number"
 
-#. Default: Current Decisions
-#. Default: Current decisions
-#: templates/review_history.pt:16 templates/review_history.pt:23
-msgid "current_decisions"
-msgstr "Current decisions"
+#. Default: Your Notification (required)
+#: templates/contact.pt:39
+msgid "message_req"
+msgstr "Your Notification (required)"
 
-#. Default: The history of votes
-#: templates/review_history.pt:22
-msgid "history_of_votes"
-msgstr "The history of votes"
+#. Default: Anti-Spam (required)
+#: templates/contact.pt:47
+msgid "spam_req"
+msgstr "Anti-Spam (required)"
 
-#. Default: No decisions for this queue.
-#: templates/review_history.pt:35
-msgid "no_decision_for_this_queue"
-msgstr "No decisions for this queue."
+#. Default: Warning!
+#: templates/contact.pt:65
+msgid "warning"
+msgstr "Warning!"
 
-#. Default: Argument
-#: templates/review_history.pt:40
-msgid "argument"
-msgstr "Argument"
+#. Default: Great:
+#: templates/contact.pt:72
+msgid "great"
+msgstr "Great:"
 
-#. Default: Edit
-#: templates/review_history.pt:41
-msgid "edit"
-msgstr "Edit"
+#. Default: Your message was sent.
+#: templates/contact.pt:72
+msgid "message_sent"
+msgstr "Your message was sent."
 
-#. Default: Reason
-#: templates/review_history.pt:42
-msgid "reason"
-msgstr "Reason"
+#. Default: 404 Error
+#: templates/404.pt:8
+msgid "404"
+msgstr "404 Error"
 
-#. Default: Original
-#: templates/review_history.pt:43 templates/review_content.pt:174
-msgid "original"
-msgstr "Original"
+#. Default: The page
+#: templates/404.pt:10
+msgid "404_text_part1"
+msgstr "The page"
 
-#. Default: Votes
-#: templates/review_history.pt:44
-msgid "votes"
-msgstr "Votes"
+#. Default: could not be found
+#: templates/404.pt:12
+msgid "404_text_part2"
+msgstr "could not be found"
 
-#. Default: Accepted
-#: templates/review_history.pt:45
-msgid "accepted"
-msgstr "Accepted"
+#. Default: , because the input parameter seems to be wrong.
+#: templates/404.pt:12
+msgid "wrong_input_params"
+msgstr ", because the input parameter seems to be wrong."
 
-#. Default: Voters Pro
-#: templates/review_history.pt:46
-msgid "voters_pro"
-msgstr "Voters Pro"
+#. Default: , because the author revoked the content.
+#: templates/404.pt:12
+msgid "author_revoked_content"
+msgstr ", because the author revoked the content."
 
-#. Default: Voters Con
-#: templates/review_history.pt:47
-msgid "voters_con"
-msgstr "Voters Con"
+#. Default: Go home
+#: templates/404.pt:15
+msgid "go-home"
+msgstr "Go home"
 
-#. Default: Timestamp
-#: templates/review_history.pt:48
-msgid "timestamp"
-msgstr "Timestamp"
-
-#. Default: Reporter
-#: templates/review_history.pt:49
-msgid "reporter"
-msgstr "Reporter"
-
-#. Default: Action
-#: templates/review_history.pt:50
-msgid "actions"
-msgstr "Action"
-
-#. Default: Undo
-#: templates/review_history.pt:91
-msgid "undo"
-msgstr "Undo"
-
-#. Default: Cancel
-#: templates/review_history.pt:94 templates/snippet-popups.pt:172
-#: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1009
-msgid "cancel"
-msgstr "Cancel"
-
-#. Default: Imprint and Copyrights
-#: templates/snippet-footer.pt:11
-msgid "imprint_copyright"
-msgstr "Imprint and Copyright"
-
-#. Default: Publications
-#: templates/snippet-footer.pt:14
-msgid "publications"
-msgstr "Publications"
-
-#. Default: Author
-#: templates/snippet-footer.pt:17 templates/snippet-popups.pt:674
-msgid "author"
-msgstr "Author"
-
-#. Default: license
-#: templates/snippet-footer.pt:20
-msgid "license"
-msgstr "License"
-
-#. Default: RSS
-#: templates/snippet-footer.pt:28
-msgid "rss"
-msgstr "RSS"
+#. Default: go back to the discussion
+#: templates/404.pt:18
+msgid "go_back_to_the_discussion"
+msgstr "go back to the discussion!"
 
 #. Default: About me
 #: templates/snippet-popups.pt:10
@@ -821,10 +864,25 @@ msgstr ""
 msgid "okay"
 msgstr "Okay"
 
+#. Default: Cancel
+#: templates/snippet-popups.pt:172 templates/snippet-popups.pt:195
+#: templates/snippet-popups.pt:220 templates/snippet-popups.pt:1009
+#: templates/review_history.pt:94
+msgid "cancel"
+msgstr "Cancel"
+
 #. Default: Do not remind me again
 #: templates/snippet-popups.pt:214
 msgid "do_not_remind_me_again"
 msgstr "Do not remind me again"
+
+#. Default: Log In
+#. Default: Login
+#: templates/snippet-popups.pt:270 templates/snippet-popups.pt:315
+#: templates/snippet-popups.pt:331 templates/snippet-popups.pt:530
+#: templates/snippet-header.pt:55
+msgid "login"
+msgstr "Log In"
 
 #. Default: Your University-ID
 #: templates/snippet-popups.pt:275
@@ -846,14 +904,6 @@ msgstr "Keep me logged in"
 #: templates/snippet-popups.pt:486
 msgid "error"
 msgstr "Error:"
-
-#. Default: Success:
-#. Default: Success
-#: templates/snippet-popups.pt:304 templates/snippet-popups.pt:384
-#: templates/snippet-popups.pt:479 templates/settings.pt:252
-#: templates/content.pt:62
-msgid "success"
-msgstr "Success:"
 
 #. Default: Info:
 #: templates/snippet-popups.pt:310 templates/snippet-popups.pt:390
@@ -897,12 +947,6 @@ msgstr "Your First Name"
 #: templates/snippet-popups.pt:404
 msgid "last_name"
 msgstr "Your Last Name"
-
-#. Default: Your Nickname
-#. Default: Nickname
-#: templates/snippet-popups.pt:411 templates/settings.pt:18
-msgid "nickname"
-msgstr "Nickname"
 
 #. Default: Your Gender
 #: templates/snippet-popups.pt:418
@@ -1047,6 +1091,11 @@ msgstr "Error:"
 #: templates/snippet-popups.pt:667 templates/snippet-popups.pt:730
 msgid "success:"
 msgstr "Success:"
+
+#. Default: Author
+#: templates/snippet-popups.pt:674 templates/snippet-footer.pt:17
+msgid "author"
+msgstr "Author"
 
 #. Default: Date
 #: templates/snippet-popups.pt:676 templates/review_reputation.pt:25
@@ -1210,224 +1259,30 @@ msgstr "Please choose a statement for your reference!"
 msgid "add_reference"
 msgstr "Add reference"
 
-#. Default: Personal Information
-#: templates/settings.pt:7
-msgid "personal_information"
-msgstr "Personal Information"
+#. Default: Switch Topic
+#: templates/content.pt:19
+msgid "switch_topc"
+msgstr "Switch Topic"
 
-#. Default: Firstname
-#: templates/settings.pt:10
-msgid "firstname"
-msgstr "Firstname"
+#. Default: Add a Topic
+#: templates/content.pt:35
+msgid "add_topic"
+msgstr "Add a topic"
 
-#. Default: Surname
-#: templates/settings.pt:14
-msgid "surname"
-msgstr "Surname"
+#. Default: Restart
+#: templates/content.pt:42
+msgid "restart_discussion"
+msgstr "Restart"
 
-#. Default: Public Nickname
-#: templates/settings.pt:22
-msgid "public_nickname"
-msgstr "Public Nickname"
+#. Default: Show all statements
+#: templates/content.pt:133
+msgid "show_all_statements"
+msgstr "Show all statements"
 
-#. Default: Click here for your public page
-#: templates/settings.pt:26
-msgid "click_here_for_public_page"
-msgstr "Click here for your public page"
-
-#. Default: Group
-#: templates/settings.pt:35
-msgid "group"
-msgstr "Group"
-
-#. Default: Receive Notifications
-#: templates/settings.pt:44
-msgid "receive_notifications"
-msgstr "Receive Notifications"
-
-#. Default: Receive E-Mails
-#: templates/settings.pt:50
-msgid "receive_mails"
-msgstr "Receive E-Mails"
-
-#. Default: Nickname is public
-#: templates/settings.pt:56
-msgid "nickname_is_public"
-msgstr "Nickname is public"
-
-#. Default: Prefered message language
-#: templates/settings.pt:62
-msgid "message_language"
-msgstr "Prefered message language"
-
-#. Default: Guided tour on startup
-#: templates/settings.pt:81
-msgid "guided_tour_on_start_up"
-msgstr "Guided tour on startup"
-
-#. Default: Profile Picture
-#: templates/settings.pt:91
-msgid "profile_picture"
-msgstr "Profile Picture"
-
-#. Default: Change your profile picture on the
-#: templates/settings.pt:93
-msgid "change_gravatar"
-msgstr "Change your profile picture on the"
-
-#. Default: A Gravatar is a globally recognized avatar. You upload it and
-#. create your profile just once, and then when you participate in any
-#. Gravatar-enabled site, your Gravatar image will automatically follow you
-#. there.
-#: templates/settings.pt:95
-msgid "what_is_gravatar"
-msgstr ""
-"A Gravatar is a Globally Recognized Avatar. You upload it and create your "
-"profile just once, and then when you participate in any Gravatar-enabled "
-"site, your Gravatar image will automatically follow you there."
-
-#. Default: Settings could not be set. Please try again later.
-#: templates/settings.pt:104
-msgid "settings_not_set"
-msgstr "Settings could not be set. Please try again later."
-
-#. Default: Settings were set successfully.
-#: templates/settings.pt:109
-msgid "settings_set"
-msgstr "Settings were set successfully."
-
-#. Default: Change your password
-#: templates/settings.pt:119
-msgid "change_password"
-msgstr "Change your password"
-
-#. Default: Change your password in D-BAS
-#: templates/settings.pt:120
-msgid "change_dbas_password"
-msgstr "Change your password in D-BAS"
-
-#. Default: Old password
-#: templates/settings.pt:126
-msgid "old_password"
-msgstr "Old password"
-
-#. Default: New Password
-#: templates/settings.pt:134
-msgid "new_password"
-msgstr "New Password"
-
-#. Default: New Password (confirm)
-#: templates/settings.pt:142
-msgid "new_password_confirm"
-msgstr "New Password (confirm)"
-
-#. Default: Strength
-#: templates/settings.pt:150
-msgid "strength"
-msgstr "Strength"
-
-#. Default: Discussion Statistics
-#: templates/settings.pt:170 templates/user.pt:38
-msgid "discussion_stat"
-msgstr "Discussion Statistics"
-
-#. Default: Statements posted
-#: templates/settings.pt:174 templates/finish.pt:26 templates/user.pt:41
-msgid "statements_posted"
-msgstr "Statements posted"
-
-#. Default: Edits done
-#: templates/settings.pt:181 templates/finish.pt:30 templates/user.pt:45
-msgid "edits_done"
-msgstr "Edits done"
-
-#. Default: Votes for Arguments
-#: templates/settings.pt:188 templates/finish.pt:38 templates/user.pt:49
-msgid "discussion_votes_statements"
-msgstr "Votes for Arguments"
-
-#. Default: Votes for Statements
-#: templates/settings.pt:195 templates/finish.pt:42 templates/user.pt:53
-msgid "discussion_votes_arguments"
-msgstr "Votes for Statements"
-
-#. Default: Reputation
-#: templates/settings.pt:202 templates/review_reputation.pt:9
-#: templates/review_reputation.pt:27 templates/user.pt:57
-msgid "reputation"
-msgstr "Reputation"
-
-#. Default: Your password was changed
-#: templates/settings.pt:217
-msgid "password_changed"
-msgstr "Your password was changed"
-
-#. Default: Statistics could not be deleted.
-#: templates/settings.pt:224
-msgid "statistics_not_deleted"
-msgstr "Statistics could not be deleted."
-
-#. Default: Statistics were set successfully deleted.
-#: templates/settings.pt:230
-msgid "statistics_deletet"
-msgstr "Statistics were set successfully deleted."
-
-#. Default: Your last history
-#: templates/settings.pt:240
-msgid "last_history"
-msgstr "Your last History"
-
-#. Default: Get In Touch With Us
-#: templates/contact.pt:8
-msgid "contact_header_1"
-msgstr "Get In Touch With Us"
-
-#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
-#. hours max!
-#: templates/contact.pt:9
-msgid "contact_header_2"
-msgstr ""
-"Feel free to drop us a line and we’ll try to get back to you in 48 hours max!"
-
-#. Default: Your Name (required)
-#: templates/contact.pt:15
-msgid "name_req"
-msgstr "Your Name (required)"
-
-#. Default: Your E-Mail (required)
-#: templates/contact.pt:23
-msgid "mail_req"
-msgstr "Your E-Mail (required)"
-
-#. Default: Your Phone Number
-#: templates/contact.pt:31
-msgid "phone_no"
-msgstr "Your Phone Number"
-
-#. Default: Your Notification (required)
-#: templates/contact.pt:39
-msgid "message_req"
-msgstr "Your Notification (required)"
-
-#. Default: Anti-Spam (required)
-#: templates/contact.pt:47
-msgid "spam_req"
-msgstr "Anti-Spam (required)"
-
-#. Default: Warning!
-#: templates/contact.pt:65
-msgid "warning"
-msgstr "Warning!"
-
-#. Default: Great:
-#: templates/contact.pt:72
-msgid "great"
-msgstr "Great:"
-
-#. Default: Your message was sent.
-#: templates/contact.pt:72
-msgid "message_sent"
-msgstr "Your message was sent."
+#. Default: Hide statements
+#: templates/content.pt:134
+msgid "hide_statements"
+msgstr "Hide statements"
 
 #. Default: Thank you!
 #: templates/finish.pt:7
@@ -1467,6 +1322,60 @@ msgstr "Let's go home!"
 msgid "back_to_the_discussion"
 msgstr "Back to the discussion!"
 
+#. Default: Your session has expired!
+#: templates/index.pt:8
+msgid "session_expired"
+msgstr "Your session has expired!"
+
+#. Default: You have to log in again.
+#: templates/index.pt:9
+msgid "login_again"
+msgstr "You have to log in again."
+
+#. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
+#. argumentation system. There will be bugs. Please feel free to
+#: templates/index.pt:20
+msgid "welcome_text1"
+msgstr ""
+"Welcome to D-BAS! This is an prototype of our dialog-based argumentation "
+"system. There will be bugs. Please feel free to"
+
+#. Default: contact
+#: templates/index.pt:21
+msgid "welcome_text2"
+msgstr "contact"
+
+#. Default: us to report bugs or provide feedback.
+#: templates/index.pt:22
+msgid "welcome_text3"
+msgstr "us to report bugs or provide feedback."
+
+#. Default: Click here to start now!
+#: templates/index.pt:28
+msgid "lets_start_now"
+msgstr "Click here to start now!"
+
+#. Default: This work is part of the graduate school on
+#: templates/index.pt:34
+msgid "work_based_on"
+msgstr "This work is part of the graduate school on"
+
+#. Default: Online-Participation
+#: templates/index.pt:34
+msgid "online_participation"
+msgstr "Online-Participation"
+
+#. Default: It is funded by the
+#: templates/index.pt:35
+msgid "funded_by"
+msgstr "It is funded by the"
+
+#. Default: Ministry of Innovation, Science and Research in North Rhine-
+#. Westphalia
+#: templates/index.pt:35
+msgid "ministry_of_innovation"
+msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
+
 #. Default: Reputation count
 #: templates/review_reputation.pt:15
 msgid "reputation_count"
@@ -1476,6 +1385,62 @@ msgstr "Reputation count"
 #: templates/review_reputation.pt:26
 msgid "action"
 msgstr "Action"
+
+#. Default: You have got
+#: templates/notifications.pt:8
+msgid "youHaveGot"
+msgstr "You have got"
+
+#. Default: unread notifications and
+#: templates/notifications.pt:10
+msgid "unreadNotificationAnd"
+msgstr "unread notifications and"
+
+#. Default: total in the inbox.
+#: templates/notifications.pt:12
+msgid "totalInTheInbox"
+msgstr "total in the inbox."
+
+#. Default: There are
+#: templates/notifications.pt:13
+msgid "thereAre"
+msgstr "There are"
+
+#. Default: in the outbox.
+#: templates/notifications.pt:15
+msgid "inTheOutbox"
+msgstr "in the outbox."
+
+#. Default: Inbox
+#: templates/notifications.pt:20
+msgid "inbox"
+msgstr "Inbox"
+
+#. Default: Outbox
+#: templates/notifications.pt:21
+msgid "outbox"
+msgstr "Outbox"
+
+#. Default: NEW
+#: templates/notifications.pt:37
+msgid "new"
+msgstr "NEW"
+
+#. Default: From:
+#: templates/notifications.pt:42 templates/notifications.pt:49
+msgid "from"
+msgstr "From:"
+
+#. Default: answer
+#: templates/notifications.pt:54 templates/notifications.pt:83
+msgid "answer"
+msgstr "answer"
+
+#. Default: To:
+#. Default: to:
+#: templates/notifications.pt:71 templates/notifications.pt:78
+msgid "to"
+msgstr "To:"
 
 #. Default: (more)
 #: templates/review_content.pt:30
@@ -1650,6 +1615,11 @@ msgstr "minutes"
 msgid "please_make_your_edits"
 msgstr "Please make your edits in grammar and/or spelling here:"
 
+#. Default: Original
+#: templates/review_content.pt:174 templates/review_history.pt:43
+msgid "original"
+msgstr "Original"
+
 #. Default: Your correcture
 #: templates/review_content.pt:175
 msgid "your correcture"
@@ -1660,61 +1630,111 @@ msgstr "Your correcture"
 msgid "send"
 msgstr "Send"
 
-#. Default: You have got
-#: templates/notifications.pt:8
-msgid "youHaveGot"
-msgstr "You have got"
+#. Default: Imprint and Copyrights
+#: templates/snippet-footer.pt:11
+msgid "imprint_copyright"
+msgstr "Imprint and Copyright"
 
-#. Default: unread notifications and
-#: templates/notifications.pt:10
-msgid "unreadNotificationAnd"
-msgstr "unread notifications and"
+#. Default: Publications
+#: templates/snippet-footer.pt:14
+msgid "publications"
+msgstr "Publications"
 
-#. Default: total in the inbox.
-#: templates/notifications.pt:12
-msgid "totalInTheInbox"
-msgstr "total in the inbox."
+#. Default: license
+#: templates/snippet-footer.pt:20
+msgid "license"
+msgstr "License"
 
-#. Default: There are
-#: templates/notifications.pt:13
-msgid "thereAre"
-msgstr "There are"
+#. Default: RSS
+#: templates/snippet-footer.pt:28
+msgid "rss"
+msgstr "RSS"
 
-#. Default: in the outbox.
-#: templates/notifications.pt:15
-msgid "inTheOutbox"
-msgstr "in the outbox."
+#. Default: You have to earn more reputation for this queue
+#: templates/review_history.pt:6
+msgid "earn_more_reputation_for_queue"
+msgstr "You have to earn more reputation for this queue"
 
-#. Default: Inbox
-#: templates/notifications.pt:20
-msgid "inbox"
-msgstr "Inbox"
+#. Default: You have no access to this site
+#: templates/review_history.pt:7
+msgid "you_have_no_access"
+msgstr "You have no access to this site"
 
-#. Default: Outbox
-#: templates/notifications.pt:21
-msgid "outbox"
-msgstr "Outbox"
+#. Default: History
+#: templates/review_history.pt:15
+msgid "history"
+msgstr "History"
 
-#. Default: NEW
-#: templates/notifications.pt:37
-msgid "new"
-msgstr "NEW"
+#. Default: Current Decisions
+#. Default: Current decisions
+#: templates/review_history.pt:16 templates/review_history.pt:23
+msgid "current_decisions"
+msgstr "Current decisions"
 
-#. Default: From:
-#: templates/notifications.pt:42 templates/notifications.pt:49
-msgid "from"
-msgstr "From:"
+#. Default: The history of votes
+#: templates/review_history.pt:22
+msgid "history_of_votes"
+msgstr "The history of votes"
 
-#. Default: answer
-#: templates/notifications.pt:54 templates/notifications.pt:83
-msgid "answer"
-msgstr "answer"
+#. Default: No decisions for this queue.
+#: templates/review_history.pt:35
+msgid "no_decision_for_this_queue"
+msgstr "No decisions for this queue."
 
-#. Default: To:
-#. Default: to:
-#: templates/notifications.pt:71 templates/notifications.pt:78
-msgid "to"
-msgstr "To:"
+#. Default: Argument
+#: templates/review_history.pt:40
+msgid "argument"
+msgstr "Argument"
+
+#. Default: Edit
+#: templates/review_history.pt:41
+msgid "edit"
+msgstr "Edit"
+
+#. Default: Reason
+#: templates/review_history.pt:42
+msgid "reason"
+msgstr "Reason"
+
+#. Default: Votes
+#: templates/review_history.pt:44
+msgid "votes"
+msgstr "Votes"
+
+#. Default: Accepted
+#: templates/review_history.pt:45
+msgid "accepted"
+msgstr "Accepted"
+
+#. Default: Voters Pro
+#: templates/review_history.pt:46
+msgid "voters_pro"
+msgstr "Voters Pro"
+
+#. Default: Voters Con
+#: templates/review_history.pt:47
+msgid "voters_con"
+msgstr "Voters Con"
+
+#. Default: Timestamp
+#: templates/review_history.pt:48
+msgid "timestamp"
+msgstr "Timestamp"
+
+#. Default: Reporter
+#: templates/review_history.pt:49
+msgid "reporter"
+msgstr "Reporter"
+
+#. Default: Action
+#: templates/review_history.pt:50
+msgid "actions"
+msgstr "Action"
+
+#. Default: Undo
+#: templates/review_history.pt:91
+msgid "undo"
+msgstr "Undo"
 
 #. Default: JavaScript is not enabled:
 #: templates/basetemplate.pt:36
@@ -1741,60 +1761,40 @@ msgstr "Please reload the page."
 msgid "request_success"
 msgstr "Your request succeded!"
 
-#. Default: Public Information of
-#: templates/user.pt:9
-msgid "public_information_of"
-msgstr "Public Information of"
+#. Default: Toggle navigation
+#: templates/snippet-header.pt:8
+msgid "Toggle Navigation"
+msgstr "Toggle navigation"
 
-#. Default: Last Action
-#: templates/user.pt:13
-msgid "last_action"
-msgstr "Last Action"
+#. Default: Let's go
+#: templates/snippet-header.pt:43
+msgid "lets_go"
+msgstr "Let's go"
 
-#. Default: Last Login
-#: templates/user.pt:17
-msgid "last_login"
-msgstr "Last Login"
+#. Default: News
+#: templates/snippet-header.pt:49
+msgid "news"
+msgstr "News"
 
-#. Default: Registered
-#: templates/user.pt:21
-msgid "registered"
-msgstr "Registered"
+#. Default: Notifications
+#: templates/snippet-header.pt:81
+msgid "notifications"
+msgstr "Notifications"
 
-#. Default: User group
-#: templates/user.pt:25
-msgid "user_group"
-msgstr "User group"
+#. Default: Admin
+#: templates/snippet-header.pt:86
+msgid "Admin"
+msgstr "Admin"
 
-#. Default: Profile Picture of
-#: templates/user.pt:33
-msgid "profile_picture_of"
-msgstr "Profile Picture of"
+#. Default: Logout
+#: templates/snippet-header.pt:91
+msgid "logout"
+msgstr "Logout"
 
-#. Default: Switch Topic
-#: templates/content.pt:19
-msgid "switch_topc"
-msgstr "Switch Topic"
-
-#. Default: Add a Topic
-#: templates/content.pt:35
-msgid "add_topic"
-msgstr "Add a topic"
-
-#. Default: Restart
-#: templates/content.pt:42
-msgid "restart_discussion"
-msgstr "Restart"
-
-#. Default: Show all statements
-#: templates/content.pt:133
-msgid "show_all_statements"
-msgstr "Show all statements"
-
-#. Default: Hide statements
-#: templates/content.pt:134
-msgid "hide_statements"
-msgstr "Hide statements"
+#. Default: Review
+#: templates/snippet-header.pt:98
+msgid "review"
+msgstr "Review"
 
 #~ msgid "bar_chart"
 #~ msgstr "Bar chart"
