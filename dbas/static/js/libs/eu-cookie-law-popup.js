@@ -208,7 +208,7 @@ $(document).ready( function() {
 		$(document).euCookieLawPopup().init({
 			'info' : 'YOU_CAN_ADD_MORE_SETTINGS_HERE',
 			'popupTitle' : _t(euCookiePopupTitle),
-			'popupText' : _t(euCookiePopupText)
+			'popupText' : '' // _t(euCookiePopupText)
 		});
 	}
 });
