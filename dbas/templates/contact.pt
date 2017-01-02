@@ -51,6 +51,10 @@
             					</div>
             				</div>
 
+                            <div class="center">
+                                <div class="g-recaptcha" data-sitekey="6Lc0eQ4TAAAAAI9EAByXR8_6yBBc_Xy-lO2WJtAf"></div>
+                            </div>
+
             				<!--
             			    <div id="alert-message" class="alert alert-danger alert-error">
             				    <a href="" class="close" data-dismiss="alert">&times;</a>
