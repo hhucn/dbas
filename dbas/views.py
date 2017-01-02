@@ -133,7 +133,13 @@ def main_contact(request):
     spamanswer      = escape_string(request.params['spam']) if 'spam' in request.params else ''
 
     if 'form.contact.submitted' in request.params:
-        contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, spamanswer)
+        recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+        logger('X', 'recaptcha', str(recaptcha))
+        logger('X', 'recaptcha', str(recaptcha))
+        logger('X', 'recaptcha', str(recaptcha))
+        logger('X', 'recaptcha', str(recaptcha))
+        logger('X', 'recaptcha', str(recaptcha))
+        # contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, spamanswer)
 
     spamquestion, answer = user_manager.get_random_anti_spam_question(ui_locales)
     key = 'contact-antispamanswer'
