@@ -10,7 +10,7 @@ class TestLoginLogout:
     def setup(self):
         self.browser = Browser(BROWSER)
         self.browser.driver.set_window_size(1920, 1080)
-        browser.visit(ROOT + '/ajax_switch_language?lang=en')
+        self.browser.visit(ROOT + '/ajax_switch_language?lang=en')
         self.browser.visit(ROOT)
 
     def teardown(self):
