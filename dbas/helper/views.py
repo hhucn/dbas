@@ -7,7 +7,7 @@ Helper for D-BAS Views
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings, Language
 from dbas.logger import logger
-from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap
+from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap, validate_recaptcha
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -272,7 +272,7 @@ def __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, re
     return ddh, idh, dh
 
 
-def try_to_contact(request, name, email, phone, content, ui_locales, spamanswer):
+def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
     """
 
     :param request:
@@ -288,10 +288,7 @@ def try_to_contact(request, name, email, phone, content, ui_locales, spamanswer)
     _t = Translator(ui_locales)
     send_message = False
 
-    spamanswer = spamanswer if is_integer(spamanswer) else '#'
-    key = 'contact-antispamanswer'
-    antispamanswer = request.session[key] if key in request.session else ''
-    spamsolution = int(antispamanswer) if len(antispamanswer) > 0 else '*#*'
+    is_human = validate_recaptcha(recaptcha)
 
     logger('ViewHelper', 'try_to_contact', 'validating email')
     is_mail_valid = validate_email(email, check_mx=True)
@@ -315,9 +312,8 @@ def try_to_contact(request, name, email, phone, content, ui_locales, spamanswer)
         message = _t.get(_.emtpyContent)
 
     # check for empty spam
-    elif str(spamanswer) != str(spamsolution):
-        logger('ViewHelper', 'try_to_contact', 'empty or wrong anti-spam answer' + ', given answer ' +
-               str(spamanswer) + ', right answer ' + str(antispamanswer))
+    elif not is_human:
+        logger('ViewHelper', 'try_to_contact', 'recaptcha error')
         contact_error = True
         message = _t.get(_.maliciousAntiSpam)
 
@@ -484,7 +480,8 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     gender          = escape_string(params['gender']) if 'gender' in params else ''
     password        = escape_string(params['password']) if 'password' in params else ''
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    spamanswer      = escape_string(params['spamanswer']) if 'spamanswer' in params else ''
+    recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+    is_human = validate_recaptcha(recaptcha)
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
@@ -509,9 +506,8 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
         info = _.get(_.mailNotValid)
     # is anti-spam correct?
-    elif str(spamanswer) != str(request.session['antispamanswer']):
-        logger('ViewHelper', 'user_registration', 'Anti-Spam answer \'' + str(spamanswer) + '\' is not equal ' + str(
-            request.session['antispamanswer']))
+    elif not is_human:
+        logger('ViewHelper', 'user_registration', 'recaptcha error')
         info = _.get(_.maliciousAntiSpam)
     else:
         # getting the authors group

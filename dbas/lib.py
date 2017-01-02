@@ -9,6 +9,8 @@ import locale
 import time
 import os
 
+import requests
+
 from collections import defaultdict
 from datetime import datetime
 from html import escape
@@ -20,6 +22,7 @@ from dbas.database.discussion_model import Argument, Premise, Statement, TextVer
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator, get_translation
 from sqlalchemy import and_, func
+from dbas.logger import logger
 
 fallback_lang = 'en'
 tag_type = 'span'
@@ -888,3 +891,12 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
         return link_begin + nick + ' ' + img + link_end, True
     else:
         return link_begin + img + ' ' + nick + link_end, True
+
+
+def validate_recaptcha(recaptcha):
+    logger('Lib', 'validate_recaptcha', 'recaptcha ' + str(recaptcha))
+    r = requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': '6Lc0eQ4TAAAAAJBcq97lYwM8byadNWmUYuTZaPzz',
+                                                                               'response': recaptcha})
+    logger('Lib', 'validate_recaptcha', 'answer ' + str(r.json()))
+
+    return r.json()['success']

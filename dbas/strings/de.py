@@ -8,20 +8,6 @@ TODO
 from .keywords import Keywords as _
 
 de_lang = {
-    _.zero: 'null',
-    _.one: 'eins',
-    _.two: 'zwei',
-    _.three: 'drei',
-    _.four: 'vier',
-    _.five: 'fünf',
-    _.six: 'sechs',
-    _.seven: 'sieben',
-    _.eight: 'acht',
-    _.nine: 'neun',
-    _.plus: 'plus',
-    _.minus: 'minus',
-    _.times: 'mal',
-    _.divided_by: 'durch',
     _.arguments: 'Argumente',
     _.error: 'Fehler',
     _.iActuallyHave: 'Ich habe',

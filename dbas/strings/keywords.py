@@ -662,21 +662,6 @@ class Keywords(Enum):
     sentencesOpenersArguingWithDisagreeing = [disagreeBecause, alternatively]
     sentencesOpenersInforming = [thinkWeShould, letMeExplain, sureThat]
 
-    zero = 'zero'
-    one = 'one'
-    two = 'two'
-    three = 'three'
-    four = 'four'
-    five = 'five'
-    six = 'six'
-    seven = 'seven'
-    eight = 'eight'
-    nine = 'nine'
-    plus = 'plus'
-    minus = 'minus'
-    times = 'times'
-    divided_by = 'divided by'
-
     @staticmethod
     def get_key_by_string(string):
         """

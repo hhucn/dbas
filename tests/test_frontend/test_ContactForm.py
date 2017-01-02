@@ -9,6 +9,7 @@ def setup_func():
     browser = Browser(BROWSER)
     browser.driver.implicitly_wait(10)
     browser.driver.set_window_size(1920, 1080)
+    browser.visit(ROOT + '/ajax_switch_language?lang=en')
     browser.visit(ROOT + '/contact')
 
 

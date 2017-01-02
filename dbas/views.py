@@ -62,7 +62,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
-version = '0.9.1'
+version = '0.9.2'
 full_version = version + 'b'
 project_name = name + ' ' + full_version
 
@@ -130,14 +130,10 @@ def main_contact(request):
     email           = escape_string(request.params['mail']) if 'mail' in request.params else ''
     phone           = escape_string(request.params['phone']) if 'phone' in request.params else ''
     content         = escape_string(request.params['content']) if 'content' in request.params else ''
-    spamanswer      = escape_string(request.params['spam']) if 'spam' in request.params else ''
+    recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
 
     if 'form.contact.submitted' in request.params:
-        contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, spamanswer)
-
-    spamquestion, answer = user_manager.get_random_anti_spam_question(ui_locales)
-    key = 'contact-antispamanswer'
-    request.session[key] = answer
+        contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, recaptcha)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
     ui_locales = get_language(request)
@@ -163,7 +159,6 @@ def main_contact(request):
         'phone': phone,
         'content': content,
         'spamanswer': '',
-        'spamquestion': spamquestion,
         'placeholder': placeholder
     }
 
@@ -1289,15 +1284,9 @@ def user_registration(request):
         logger('user_registration', 'error', repr(e))
         error = _t.get(_.internalKeyError)
 
-    # get anti-spam-question
-    spamquestion, answer = user_manager.get_random_anti_spam_question(ui_locales)
-    # save answer in session
-    request.session['antispamanswer'] = answer
-
     return_dict['success']      = str(success)
     return_dict['error']        = str(error)
     return_dict['info']         = str(info)
-    return_dict['spamquestion'] = str(spamquestion)
 
     return json.dumps(return_dict)
 
