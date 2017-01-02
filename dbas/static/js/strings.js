@@ -577,7 +577,7 @@ const dbas_de = {
     'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Piwik.',
     'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
     'euCookiePopoupButton1': 'Weiter',
-    'euCookiePopoupButton2': 'Lerne&nbsp;mehr',
+    'euCookiePopoupButton2': 'Mehr&nbsp;Infos',
     'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
     'email': 'E-Mail',
     'emailWasSent': 'Eine E-Mail wurde zu der genannten Adresse gesendet.',
