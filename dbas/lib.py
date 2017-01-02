@@ -10,7 +10,6 @@ import time
 import os
 
 import requests
-import json
 
 from collections import defaultdict
 from datetime import datetime
@@ -898,7 +897,6 @@ def validate_recaptcha(recaptcha):
     logger('Lib', 'validate_recaptcha', 'recaptcha ' + str(recaptcha))
     r = requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': '6Lc0eQ4TAAAAAJBcq97lYwM8byadNWmUYuTZaPzz',
                                                                                'response': recaptcha})
-    logger('Lib', 'validate_recaptcha', 'answer ' + str(r))
-    r = json.loads(r)
+    logger('Lib', 'validate_recaptcha', 'answer ' + str(r.json()))
 
-    return r['success']
+    return r.json()['success']
