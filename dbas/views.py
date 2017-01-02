@@ -130,20 +130,10 @@ def main_contact(request):
     email           = escape_string(request.params['mail']) if 'mail' in request.params else ''
     phone           = escape_string(request.params['phone']) if 'phone' in request.params else ''
     content         = escape_string(request.params['content']) if 'content' in request.params else ''
-    spamanswer      = escape_string(request.params['spam']) if 'spam' in request.params else ''
+    recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
 
     if 'form.contact.submitted' in request.params:
-        recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
-        logger('X', 'recaptcha', str(recaptcha))
-        logger('X', 'recaptcha', str(recaptcha))
-        logger('X', 'recaptcha', str(recaptcha))
-        logger('X', 'recaptcha', str(recaptcha))
-        logger('X', 'recaptcha', str(recaptcha))
-        # contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, spamanswer)
-
-    spamquestion, answer = user_manager.get_random_anti_spam_question(ui_locales)
-    key = 'contact-antispamanswer'
-    request.session[key] = answer
+        contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, recaptcha)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
     ui_locales = get_language(request)
@@ -1295,15 +1285,9 @@ def user_registration(request):
         logger('user_registration', 'error', repr(e))
         error = _t.get(_.internalKeyError)
 
-    # get anti-spam-question
-    spamquestion, answer = user_manager.get_random_anti_spam_question(ui_locales)
-    # save answer in session
-    request.session['antispamanswer'] = answer
-
     return_dict['success']      = str(success)
     return_dict['error']        = str(error)
     return_dict['info']         = str(info)
-    return_dict['spamquestion'] = str(spamquestion)
 
     return json.dumps(return_dict)
 

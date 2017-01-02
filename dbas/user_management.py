@@ -270,48 +270,6 @@ def get_public_information_data(nickname, lang):
     return return_dict
 
 
-def get_random_anti_spam_question(lang):
-    """
-    Returns a random math question
-
-    :param lang: string
-    :return: question, answer
-    """
-    _t = Translator(lang)
-
-    signs = [_.plus, _.minus, _.divided_by, _.times]
-    numbers = [_.zero, _.one, _.two, _.three, _.four, _.five, _.six, _.seven, _.eight, _.nine]
-
-    int1 = random.randint(0, 9)
-    int2 = random.randint(0, 9)
-    answer = 0
-    question = _t.get(_.antispamquestion) + ' '
-    sign = signs[random.randint(0, 3)]
-    if sign is _.plus:
-        answer = int1 + int2
-
-    elif sign is _.minus:
-        if int2 > int1:
-            tmp = int1
-            int1 = int2
-            int2 = tmp
-        answer = int1 - int2
-
-    elif sign is _.times:
-        answer = int1 * int2
-
-    elif sign is _.divided_by:
-        while int1 == 0 or int2 == 0 or int1 % int2 != 0:
-            int1 = random.randint(1, 9)
-            int2 = random.randint(1, 9)
-        answer = int1 / int2
-
-    question += "{} {} {}?".format(_t.get(numbers[int1]), _t.get(sign), _t.get(numbers[int2]))
-    logger('UserHandler', 'get_random_anti_spam_question', 'question: ' + question + ', answer: ' + str(answer))
-
-    return question, str(int(answer))
-
-
 def get_reviews_of(user, only_today):
     """
 

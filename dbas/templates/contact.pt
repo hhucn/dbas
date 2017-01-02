@@ -43,15 +43,7 @@
             					</div>
             				</div>
 
-            				<div class="form-group">
-            					<label class="col-sm-3 control-label" i18n:translate="spam_req">Anti-Spam (required)</label>
-            					<div class="col-sm-9 input-group">
-                                    <div class="input-group-addon"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i></div>
-            						<input type="text" id="spam-input" name="spam" class="form-control" autocomplete="off" placeholder="${spamquestion}" value="${spamanswer}" required>
-            					</div>
-            				</div>
-
-                            <div class="center">
+                            <div class="text-center">
                                 <div class="g-recaptcha" data-sitekey="6Lc0eQ4TAAAAAI9EAByXR8_6yBBc_Xy-lO2WJtAf"></div>
                             </div>
 
