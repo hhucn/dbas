@@ -18,6 +18,6 @@ class TranslatorTest(unittest.TestCase):
         trans_de = Translator('de')
         trans_en = Translator('en')
 
-        self.assertIn('one', trans_fr.get(_.one))
-        self.assertIn('one', trans_en.get(_.one))
-        self.assertNotIn('one', trans_de.get(_.one))
+        self.assertIn('haben eine', trans_de.get(_.forgotInputRadio))
+        self.assertIn('forgot to', trans_en.get(_.forgotInputRadio))
+        self.assertIn('forgot to', trans_fr.get(_.forgotInputRadio))
