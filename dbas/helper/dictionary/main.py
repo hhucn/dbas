@@ -7,8 +7,7 @@ Provides helping function for dictionaries.
 import random
 
 import arrow
-from dbas.user_management import get_random_anti_spam_question, is_user_in_group, \
-    get_count_of_statements_of_user, get_count_of_votes_of_user
+from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.database.initializedb import nick_of_anonymous_user

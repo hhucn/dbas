@@ -159,7 +159,6 @@ def main_contact(request):
         'phone': phone,
         'content': content,
         'spamanswer': '',
-        'spamquestion': spamquestion,
         'placeholder': placeholder
     }
 
