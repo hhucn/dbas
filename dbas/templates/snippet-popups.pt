@@ -467,8 +467,8 @@
     							</div>
     						</div>
     						<div class="form-group">
-                                <div class="col-md-12 text-center">
-                                    <div class="g-recaptcha" data-sitekey="6Lc0eQ4TAAAAAI9EAByXR8_6yBBc_Xy-lO2WJtAf"></div>
+                                <div class="col-md-12">
+                                    <div align="center" class="g-recaptcha" data-sitekey="6Lc0eQ4TAAAAAI9EAByXR8_6yBBc_Xy-lO2WJtAf"></div>
                                 </div>
     						</div>
     						<div class="col-md-12" id="popup-login-registration-success" role="alert">
