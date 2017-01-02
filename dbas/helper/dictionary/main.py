@@ -261,7 +261,7 @@ class DictionaryHelper(object):
         }
 
     def add_discussion_end_text(self, discussion_dict, extras_dict, nickname, at_start=False, at_dont_know=False,
-                                at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False, ):
+                                at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False):
         """
         Adds a speicif text when the discussion is at the end
 
@@ -282,93 +282,105 @@ class DictionaryHelper(object):
         gender = db_user.gender if db_user else ''
 
         if at_start:
-            discussion_dict['mode'] = 'start'
-            if gender == 'f':
-                user_text = _tn.get(_.firstPositionTextF).rstrip()
-            elif gender == 'm':
-                user_text = _tn.get(_.firstPositionTextM).rstrip()
-            else:
-                user_text = _tn.get(_.firstPositionText).rstrip()
-            user_text += '<br>' + _tn.get(_.pleaseAddYourSuggestion) if nickname else (
-                _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin))
-            discussion_dict['bubbles'].append(
-                create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
-            if nickname:
-                extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
-                extras_dict['close_statement_container'] = False
-            extras_dict['show_display_style']    = False
-            extras_dict['show_bar_icon']        = False
-            extras_dict['is_editable']            = False
-            extras_dict['is_reportable']        = False
+            self.__add_discussion_end_text_at_start(discussion_dict, extras_dict, nickname, gender, _tn)
 
         elif at_justify_argumentation:
-            discussion_dict['mode'] = 'justify_argumentation'
-            if nickname:
-                extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
-            extras_dict['close_premise_container'] = False
-            extras_dict['show_display_style'] = False
-            if nickname:
-                if gender == 'f':
-                    mid_text = _tn.get(_.firstOneReasonF).rstrip()
-                elif gender == 'm':
-                    mid_text = _tn.get(_.firstOneReasonM).rstrip()
-                else:
-                    mid_text = _tn.get(_.firstOneReason).rstrip()
-                sdict = create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang)
-                discussion_dict['bubbles'].append(sdict)
-            # else:
-                #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
+            self.__add_discussion_end_text_at_justify_argumentation(discussion_dict, extras_dict, nickname, gender, _tn)
 
         elif at_dont_know:
-            discussion_dict['mode'] = 'dont_know'
-            if gender == 'f':
-                sys_text = _tn.get(_.firstOneInformationTextF).rstrip()
-            elif gender == 'm':
-                sys_text = _tn.get(_.firstOneInformationTextM).rstrip()
-            else:
-                sys_text = _tn.get(_.firstOneInformationText).rstrip()
-            sys_text += ' <em>' + current_premise + '</em>, '
-            sys_text += _tn.get(_.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
-            mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
-            discussion_dict['bubbles'].append(
-                create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=self.system_lang))
-            discussion_dict['bubbles'].append(
-                create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
+            self.__add_discussion_end_text_at_dont_know(discussion_dict, current_premise, gender, _tn)
 
         elif at_justify:
-            discussion_dict['mode'] = 'justify'
-            current_premise = current_premise[0:1].lower() + current_premise[1:]
-            if gender == 'f':
-                mid_text = _tn.get(_.firstPremiseText1F).rstrip()
-            elif gender == 'm':
-                mid_text = _tn.get(_.firstPremiseText1M).rstrip()
-            else:
-                mid_text = _tn.get(_.firstOneInformationText).rstrip()
-            mid_text += ' <em>' + current_premise + '</em>'
-
-            if not supportive:
-                mid_text += ' ' + _tn.get(_.doesNotHold)
-            mid_text += '.<br>'
-
-            if nickname:
-                extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
-                mid_text += _tn.get(_.firstPremiseText2)
-            else:
-                mid_text += _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
-
-            discussion_dict['bubbles'].append(
-                create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
-            extras_dict['close_premise_container'] = False
-            extras_dict['show_display_style']       = False
-            extras_dict['show_bar_icon']           = False
-            extras_dict['is_editable']               = False
-            extras_dict['is_reportable']           = False
+            self.__add_discussion_end_text_at_at_justify(discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn)
 
         else:
             mid_text = _tn.get(_.discussionEnd) + ' ' + (
                 _tn.get(_.discussionEndLinkText) if nickname else _tn.get(_.feelFreeToLogin))
             discussion_dict['bubbles'].append(
                 create_speechbubble_dict(is_info=True, message=mid_text, lang=self.system_lang))
+
+    def __add_discussion_end_text_at_start(self, discussion_dict, extras_dict, nickname, gender, _tn):
+        discussion_dict['mode'] = 'start'
+        if gender == 'f':
+            user_text = _tn.get(_.firstPositionTextF).rstrip()
+        elif gender == 'm':
+            user_text = _tn.get(_.firstPositionTextM).rstrip()
+        else:
+            user_text = _tn.get(_.firstPositionText).rstrip()
+        user_text += '<br>' + _tn.get(_.pleaseAddYourSuggestion) if nickname else (
+            _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin))
+        discussion_dict['bubbles'].append(
+            create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
+        if nickname:
+            extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
+            extras_dict['close_statement_container'] = False
+        extras_dict['show_display_style']    = False
+        extras_dict['show_bar_icon']        = False
+        extras_dict['is_editable']            = False
+        extras_dict['is_reportable']        = False
+
+    def __add_discussion_end_text_at_justify_argumentation(self, discussion_dict, extras_dict, nickname, gender, _tn):
+        discussion_dict['mode'] = 'justify_argumentation'
+        if nickname:
+            extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
+        extras_dict['close_premise_container'] = False
+        extras_dict['show_display_style'] = False
+        if nickname:
+            if gender == 'f':
+                mid_text = _tn.get(_.firstOneReasonF).rstrip()
+            elif gender == 'm':
+                mid_text = _tn.get(_.firstOneReasonM).rstrip()
+            else:
+                mid_text = _tn.get(_.firstOneReason).rstrip()
+            sdict = create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang)
+            discussion_dict['bubbles'].append(sdict)
+        # else:
+            #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
+
+    def __add_discussion_end_text_at_dont_know(self, discussion_dict, current_premise, gender, _tn):
+        discussion_dict['mode'] = 'dont_know'
+        if gender == 'f':
+            sys_text = _tn.get(_.firstOneInformationTextF).rstrip()
+        elif gender == 'm':
+            sys_text = _tn.get(_.firstOneInformationTextM).rstrip()
+        else:
+            sys_text = _tn.get(_.firstOneInformationText).rstrip()
+        sys_text += ' <em>' + current_premise + '</em>, '
+        sys_text += _tn.get(_.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
+        mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
+        discussion_dict['bubbles'].append(
+            create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=self.system_lang))
+        discussion_dict['bubbles'].append(
+            create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
+
+    def __add_discussion_end_text_at_at_justify(self, discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn):
+        discussion_dict['mode'] = 'justify'
+        current_premise = current_premise[0:1].lower() + current_premise[1:]
+        if gender == 'f':
+            mid_text = _tn.get(_.firstPremiseText1F).rstrip()
+        elif gender == 'm':
+            mid_text = _tn.get(_.firstPremiseText1M).rstrip()
+        else:
+            mid_text = _tn.get(_.firstOneInformationText).rstrip()
+        mid_text += ' <em>' + current_premise + '</em>'
+
+        if not supportive:
+            mid_text += ' ' + _tn.get(_.doesNotHold)
+        mid_text += '.<br>'
+
+        if nickname:
+            extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
+            mid_text += _tn.get(_.firstPremiseText2)
+        else:
+            mid_text += _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
+
+        discussion_dict['bubbles'].append(
+            create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))
+        extras_dict['close_premise_container'] = False
+        extras_dict['show_display_style']      = False
+        extras_dict['show_bar_icon']           = False
+        extras_dict['is_editable']             = False
+        extras_dict['is_reportable']           = False
 
     def add_language_options_for_extra_dict(self, extras_dict):
         """
