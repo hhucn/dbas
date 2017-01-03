@@ -5,6 +5,7 @@ Provides functions
 """
 
 import requests
+import time
 
 from dbas.lib import get_profile_picture, get_global_url
 from dbas.logger import logger
@@ -24,6 +25,22 @@ def send_request_for_info_popup_to_socketio(nickname, message='', url=None, incr
     :param increase_counter:
     :return:
     """
+    if url:
+        use_https = 'dbas.cs' in url
+        __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
+
+
+def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url=None, increase_counter=False, delay=5):
+    """
+
+    :param nickname:
+    :param message:
+    :param url:
+    :param increase_counter:
+    :param delay:
+    :return:
+    """
+    time.sleep(delay)
     if url:
         use_https = 'dbas.cs' in url
         __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)

@@ -5,6 +5,7 @@ Core component of D-BAS.
 """
 
 import json
+import _thread
 
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
@@ -57,7 +58,7 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
-    send_request_for_info_popup_to_socketio
+    send_request_for_info_popup_to_socketio, send_request_for_info_popup_to_socketio_with_delay
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.rss import get_list_of_all_feeds
 
@@ -682,7 +683,12 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # send message if the user is now able to review
     if broke_limit:
         _t = Translator(ui_locales)
-        send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+        try:
+            args = (nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review', False, 5, )
+            _thread.start_new_thread(send_request_for_info_popup_to_socketio_with_delay, args)
+        except:
+            logger('discussion_reaction', 'def', 'unable to start thread', error=True)
+
     add_vote_for_argument(arg_id_user, nickname)
 
     disc_ui_locales = get_discussion_language(request, issue)
