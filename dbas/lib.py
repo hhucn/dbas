@@ -831,10 +831,8 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     :param ignore_privacy_settings:
     :return: String
     """
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first()
-    additional_id = '' if db_settings.should_show_public_nickname else 'x'
-    if ignore_privacy_settings:
-        additional_id = ''
+    db_settings = DBDiscussionSession.query(Settings).get(user.uid)
+    additional_id = '' if db_settings.should_show_public_nickname or ignore_privacy_settings else 'x'
     url = get_global_url()
     url = url[url.index('//') + 2:]
     unknown = 'unknown@' + url

@@ -167,22 +167,20 @@ def get_table_dict(table_name, main_page):
     :return: Dictionary with head, row, count and has_elements
     """
     logger('AdminLib', 'get_table_dict', str(table_name))
-    return_dict = dict()
 
     # check for table
     if not table_name.lower() in table_mapper:
-        return_dict['is_existing'] = False
-        return return_dict
-    return_dict['is_existing'] = True
-    return_dict['name'] = table_name
+        return {'is_existing': False}
 
     # check for elements
     db_elements = DBDiscussionSession.query(table_mapper[table_name.lower()]['table']).all()
-    return_dict['count'] = len(db_elements)
-    if len(db_elements) == 0:
-        return_dict['has_elements'] = False
-        return return_dict
-    return_dict['has_elements'] = True
+
+    count = len(db_elements)
+    if count == 0:
+        return {'is_existing': True,
+                'has_elements': False,
+                'name': table_name,
+                'count': count}
 
     # getting all keys
     table = table_mapper[table_name.lower()]['table']
@@ -197,10 +195,14 @@ def get_table_dict(table_name, main_page):
     data = __get_rows_of(columns, db_elements, main_page)
 
     # save it
-    return_dict['head'] = columns
-    return_dict['row'] = data
-
-    return return_dict
+    return {
+        'is_existing': True,
+        'name': table_name,
+        'has_elements': True,
+        'count': count,
+        'head': columns,
+        'row': data,
+    }
 
 
 def __get_language(uid, query):
@@ -223,15 +225,17 @@ def __get_author_data(uid, query, main_page):
     :params main_page: URL
     :return: string
     """
-    db_user = query.filter_by(uid=int(uid)).first()
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
+    db_user = query.get(uid)
     if not db_user:
         return 'Missing author with uid ' + str(uid), False
+
+    db_settings = DBDiscussionSession.query(Settings).get(uid)
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
-    img = '<img class="img-circle" src="' + get_profile_picture(db_user, 20, True) + '">'
 
-    link_begin = '<a href="' + main_page + '/user/' + db_user.get_global_nickname() + '">'
+    img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
+
+    link_begin = '<a href="{}/user/{}">'.format(main_page, db_user.get_global_nickname())
     link_end = '</a>'
     return link_begin + db_user.nickname + ' ' + img + link_end, True
 
