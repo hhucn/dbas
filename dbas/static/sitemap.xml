@@ -11,10 +11,6 @@
   <changefreq>daily</changefreq>
 </url>
 <url>
-  <loc>https://dbas.cs.uni-duesseldorf.de/discuss</loc>
-  <changefreq>daily</changefreq>
-</url>
-<url>
   <loc>https://dbas.cs.uni-duesseldorf.de/news</loc>
   <changefreq>daily</changefreq>
 </url>
@@ -28,26 +24,6 @@
 </url>
 <url>
   <loc>https://dbas.cs.uni-duesseldorf.de/publications</loc>
-  <changefreq>daily</changefreq>
-</url>
-<url>
-  <loc>https://dbas.cs.uni-duesseldorf.de/discuss/cat-or-dog</loc>
-  <changefreq>daily</changefreq>
-</url>
-<url>
-  <loc>https://dbas.cs.uni-duesseldorf.de/discuss/elektroautos</loc>
-  <changefreq>daily</changefreq>
-</url>
-<url>
-  <loc>https://dbas.cs.uni-duesseldorf.de/discuss/unterstutzung-der-sekretariate</loc>
-  <changefreq>daily</changefreq>
-</url>
-<url>
-  <loc>https://dbas.cs.uni-duesseldorf.de/discuss/www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html</loc>
-  <changefreq>daily</changefreq>
-</url>
-<url>
-  <loc>https://dbas.cs.uni-duesseldorf.de/discuss/town-has-to-cut-spending</loc>
   <changefreq>daily</changefreq>
 </url>
 </urlset>
