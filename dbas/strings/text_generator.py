@@ -318,11 +318,11 @@ def get_jump_to_argument_text_list(lang):
 
     answers = list()
 
-    answers.append(_t.get(_.jumpAnswer0).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
-    answers.append(_t.get(_.jumpAnswer1).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
-    answers.append(_t.get(_.jumpAnswer2).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
-    answers.append(_t.get(_.jumpAnswer3).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
-    answers.append(_t.get(_.jumpAnswer4).replace('XXCONCLUSIONXX', conclusion).replace('XXPREMISEXX', premise))
+    answers.append(_t.get(_.jumpAnswer0).format(conclusion, premise))
+    answers.append(_t.get(_.jumpAnswer1).format(conclusion, premise))
+    answers.append(_t.get(_.jumpAnswer2).format(conclusion, premise))
+    answers.append(_t.get(_.jumpAnswer3).format(conclusion, premise))
+    answers.append(_t.get(_.jumpAnswer4).format(conclusion))
 
     return answers
 
@@ -604,7 +604,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             bind = _t.get(_.otherUsersClaimStrongerArgumentS)
         else:
             bind = _t.get(_.otherUsersClaimStrongerArgumentP)
-        confrontation_text += bind.replace('XXX', _t.get(_.reject if user_is_attacking else _.accept))
+        confrontation_text += bind.format(_t.get(_.reject if user_is_attacking else _.accept))
         confrontation_text += ' ' + conclusion + '.' + ' '
         if is_okay:
             confrontation_text += _t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)

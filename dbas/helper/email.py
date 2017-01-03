@@ -97,7 +97,7 @@ def send_mail(request, subject, body, recipient, lang):
     _t = Translator(lang)
     send_message = False
     mailer = get_mailer(request)
-    body = body + '\n\n---\n' + _t.get(_.emailBodyText).replace('XXXXX', get_global_url())
+    body = body + '\n\n---\n' + _t.get(_.emailBodyText).format(get_global_url())
     message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
 
     # try sending an catching errors

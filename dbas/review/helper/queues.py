@@ -64,7 +64,7 @@ def __get_delete_dict(main_page, translator, nickname):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(_.visitDeleteQueue),
-                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).replace('XX', str(
+                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).format(str(
                     reputation_borders[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDelete, main_page)
                 }
@@ -92,8 +92,7 @@ def __get_optimization_dict(main_page, translator, nickname):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(_.visitOptimizationQueue),
-                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).replace('XX', str(
-                    reputation_borders[key])),
+                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).format(str(reputation_borders[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, main_page)
                 }
     return tmp_dict
@@ -120,8 +119,7 @@ def __get_edit_dict(main_page, translator, nickname):
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(_.visitEditQueue),
-                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).replace('XX',
-                                                                                          str(reputation_borders[key])),
+                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(str(reputation_borders[key])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerEdit, main_page)
                 }
     return tmp_dict
@@ -146,8 +144,7 @@ def __get_history_dict(main_page, translator, nickname):
                 'task_count': __get_review_count_for_history(True),
                 'is_allowed': count >= reputation_borders[key] or all_rights,
                 'is_allowed_text': translator.get(_.visitHistoryQueue),
-                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).replace('XX', str(
-                    reputation_borders[key])),
+                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).format(str(reputation_borders[key])),
                 'last_reviews': list()
                 }
     return tmp_dict
