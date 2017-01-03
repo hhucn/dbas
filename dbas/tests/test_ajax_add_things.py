@@ -51,7 +51,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertTrue(len(response['url']) != 0)
         self.assertTrue(len(response['statement_uids']) != 0)
         for uid in response['statement_uids']:
-            DBDiscussionSession.query(Statement).filter_by(uid=uid).first().textversion_uid = 1
+            DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         transaction.commit()
@@ -66,7 +66,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertTrue(len(response['url']) != 0)
         self.assertTrue(len(response['statement_uids']) != 0)
         for uid in response['statement_uids']:
-            DBDiscussionSession.query(Statement).filter_by(uid=uid).first().textversion_uid = 1
+            DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()

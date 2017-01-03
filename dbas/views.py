@@ -1350,7 +1350,7 @@ def set_user_settings(request):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
         if db_user:
             public_nick = db_user.public_nickname
-            db_setting = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+            db_setting = DBDiscussionSession.query(Settings).get(db_user.uid)
 
             if service == 'mail':
                 db_setting.set_send_mails(settings_value)
@@ -1402,7 +1402,7 @@ def set_user_language(request):
         ui_locales = request.params['ui_locales']
         db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
         if db_user:
-            db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+            db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
             if db_settings:
                 db_language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
                 if db_language:

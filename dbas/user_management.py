@@ -129,7 +129,7 @@ def update_last_action(nick):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
     if not db_user:
         return False
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
 
     timeout_in_sec = 60 * 60 * 24 * 7
 
@@ -437,7 +437,7 @@ def get_information_of(db_user, lang):
     :param lang: ui_locales
     :return:
     """
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_group = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first()
     ret_dict = dict()
     ret_dict['public_nick'] = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname

@@ -207,7 +207,7 @@ class DiscussionDictHelper(object):
         add_premise_text   = ''
         save_statement_url = 'ajax_set_new_premises_for_argument'
 
-        db_argument        = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        db_argument        = DBDiscussionSession.query(Argument).get(uid)
         if not db_argument:
             return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
@@ -304,7 +304,7 @@ class DiscussionDictHelper(object):
         user_changed_opinion = splitted_history[-1].endswith(str(uid))
         statement_list      = list()
         db_confrontation    = ''
-        db_argument         = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        db_argument         = DBDiscussionSession.query(Argument).get(uid)
         gender_of_counter_arg = ''
 
         if attack.startswith('end'):
@@ -412,7 +412,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'get_dict_for_jump_decision', 'at_attitude')
         _tn = Translator(self.lang)
 
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(uid)
         tag_premise = '<' + tag_type + ' data-argumentation-type="argument">'
         tag_conclusion = '<' + tag_type + ' data-argumentation-type="attack">'
         tag_end = '</' + tag_type + '>'

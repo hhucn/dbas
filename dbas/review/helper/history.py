@@ -246,7 +246,7 @@ def revoke_old_decision(queue, uid, lang, nickname):
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_optimization=uid))
 
     elif queue == 'edits':
-        db_review = DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).first()
+        db_review = DBDiscussionSession.query(ReviewEdit).get(uid)
         db_review.set_revoked(True)
         DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
         db_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=uid)
@@ -287,13 +287,13 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
 
     _t = Translator(lang)
     if queue == 'deletes':
-        DBDiscussionSession.query(ReviewDelete).filter_by(uid=uid).first().set_revoked(True)
+        DBDiscussionSession.query(ReviewDelete).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_delete=uid, was_ongoing=True))
 
     elif queue == 'optimizations':
-        DBDiscussionSession.query(ReviewOptimization).filter_by(uid=uid).first().set_revoked(True)
+        DBDiscussionSession.query(ReviewOptimization).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_optimization=uid, was_ongoing=True))
@@ -325,7 +325,7 @@ def __revoke_decision_and_implications(type, reviewer_type, uid):
     """
     DBDiscussionSession.query(reviewer_type).filter_by(review_uid=uid).delete()
 
-    db_review = DBDiscussionSession.query(type).filter_by(uid=uid).first()
+    db_review = DBDiscussionSession.query(type).get(uid)
     db_review.set_revoked(True)
     en_or_disable_object_of_review(db_review, False)
 

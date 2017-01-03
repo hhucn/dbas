@@ -213,7 +213,7 @@ def __get_language(uid, query):
     :param query: of all languages
     :return: string
     """
-    return query.filter_by(uid=uid).first().ui_locales
+    return query.get(uid).ui_locales
 
 
 def __get_author_data(uid, query, main_page):

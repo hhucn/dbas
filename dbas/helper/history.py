@@ -28,7 +28,7 @@ def save_issue_uid(issue_uid, nickname):
     if not db_user:
         return False
 
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     if not db_settings:
         return False
 
@@ -46,7 +46,7 @@ def get_saved_issue(nickname):
     if not db_user:
         return 0
 
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     if not db_settings:
         return 0
 
@@ -222,12 +222,12 @@ def __reaction_step(main_page, step, nickname, lang, splitted_history, url):
     if not check_reaction(uid, additional_uid, attack, is_history=True):
         return None
 
-    is_supportive = DBDiscussionSession.query(Argument).filter_by(uid=uid).first().is_supportive
+    is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
     last_relation = splitted_history[-1].split('/')[2]
 
     user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
     current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion)
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_uid).first()
     db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
 

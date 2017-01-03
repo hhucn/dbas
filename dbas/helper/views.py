@@ -376,7 +376,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         return error
 
     logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_settings.should_hold_the_login(keep_login)
     headers = remember(request, db_user.nickname)
 
@@ -550,7 +550,7 @@ def request_password(request, ui_locales):
         DBDiscussionSession.add(db_user)
         transaction.commit()
 
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
         db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
 
         body = _t.get(_.nicknameIs) + db_user.nickname + '\n'

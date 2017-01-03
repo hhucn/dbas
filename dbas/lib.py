@@ -332,7 +332,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param start_with_intro:
     :return:
     """
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
     lang = DBDiscussionSession.query(Argument).get(uid).lang
@@ -415,7 +415,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     arg_array = arg_array[::-1]
     local_lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     for uid in arg_array:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(uid)
         text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 
         pgroups.append(text)
@@ -492,7 +492,7 @@ def get_text_for_statement_uid(uid, colored_position=False):
     """
     try:
         if isinstance(int(uid), int):
-            db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+            db_statement = DBDiscussionSession.query(Statement).get(uid)
             if not db_statement:
                 return None
 
@@ -551,7 +551,7 @@ def resolve_issue_uid_to_slug(uid):
     :return: Slug of issue
     :rtype: str
     """
-    issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
+    issue = DBDiscussionSession.query(Issue).get(uid)
     return issue.get_slug() if issue else None
 
 
@@ -589,7 +589,7 @@ def get_user_by_private_or_public_nickname(nickname):
     current_user = None
 
     if db_user:
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     elif db_public_user:
         db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
 

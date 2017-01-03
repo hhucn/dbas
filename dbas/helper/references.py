@@ -19,7 +19,7 @@ def get_references_for_argument(uid, main_page):
     """
     logger('ReferenceHelper', 'get_references_for_argument', str(uid))
     db_arguments = get_not_disabled_arguments_as_query()
-    db_argument = db_arguments.filter_by(uid=uid).first()
+    db_argument = db_arguments.get(uid)
 
     db_premises = get_not_disabled_premises_as_query()
     db_premises = db_premises.filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
