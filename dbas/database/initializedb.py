@@ -525,7 +525,7 @@ def set_up_users(session, include_dummy_users=True):
     user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group_uid=group0.uid, gender='m')
     user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn', email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
     user7 = User(firstname='Teresa', surname='Uebber', nickname='Teresa', email='teresa.uebber@uni-duesseldorf.de', password=pw9, group_uid=group0.uid, gender='f')
-    user8 = User(firstname='Bob', surname='Bubbles', nickname='Bob', email='krauthoff@cs.uni-duesseldorf.de', password=pwt, group_uid=group0.uid, gender='n')
+    user8 = User(firstname='Bob', surname='Bubbles', nickname='Bob', email='tobias.krauthoff+dbas.usert31@gmail.com', password=pwt, group_uid=group0.uid, gender='n')
 
     session.add_all([user0, user1, user2, user3, user4, user6, user7, user8])
     session.flush()

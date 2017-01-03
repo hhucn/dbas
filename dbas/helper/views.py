@@ -424,10 +424,12 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         email       = r['settings:ldap:account.email']
         logger('ViewHelper', 'catch_user_from_ldap', 'parsed data')
 
-        logger('ViewHelper', 'catch_user_from_ldap', 'connect ldap')
+        logger('ViewHelper', 'catch_user_from_ldap', 'ldap.initialize(\'' + server + '\')')
         l = ldap.initialize(server)
         l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
+        logger('ViewHelper', 'catch_user_from_ldap', 'simple_bind_s(\'' + nickname + scope + '\', \'***\')')
         l.simple_bind_s(nickname + scope, password)
+        logger('ViewHelper', 'catch_user_from_ldap', 'l.search_s(' + base + ', ldap.SCOPE_SUBTREE, (\'' + filter + '=' + nickname + '\'))[0][1]')
         user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
 
         firstname = user[firstname][0].decode('utf-8')
@@ -459,7 +461,7 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         return False, None
 
     except ldap.SERVER_DOWN:
-        logger('ViewHelper', 'user_ldap_login', 'can\'t reach server withn 5s')
+        logger('ViewHelper', 'user_ldap_login', 'can\'t reach server within 5s')
         return False, None
 
 
