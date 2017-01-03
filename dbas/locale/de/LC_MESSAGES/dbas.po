@@ -895,7 +895,7 @@ msgstr "Passwort vergessen?"
 #: templates/snippet-popups.pt:364
 msgid "fill_in_mail_for_password"
 msgstr ""
-"Bitte trage unten deine E-Mail-Adresse ein. Ein neues Passwort wird an diese "
+"Bitte trage Sie unten Ihre E-Mail-Adresse ein. Ein neues Passwort wird an diese "
 "Adresse gesendet."
 
 #. Default: We will never display your real name to other users!
@@ -1403,15 +1403,14 @@ msgstr "Ihre letzte URL-History"
 #. Default: Get In Touch With Us
 #: templates/contact.pt:8
 msgid "contact_header_1"
-msgstr "Tritt mit uns in Kontakt"
+msgstr "Treten Sie mit uns in den Kontakt"
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
 #: templates/contact.pt:9
 msgid "contact_header_2"
 msgstr ""
-"Trau dich, hinterlass uns eine Nachricht und wir werden uns innerhalb von 48 "
-"Stunden bei dir melden"
+"Wenn Sie uns eine Nachricht hinterlassen, werden wir uns zeitnah bei Ihnen melden"
 
 #. Default: Your Name (required)
 #: templates/contact.pt:15

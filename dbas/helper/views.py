@@ -288,7 +288,7 @@ def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
     _t = Translator(ui_locales)
     send_message = False
 
-    is_human = validate_recaptcha(recaptcha)
+    is_human, error = validate_recaptcha(recaptcha)
 
     logger('ViewHelper', 'try_to_contact', 'validating email')
     is_mail_valid = validate_email(email, check_mx=True)
@@ -312,7 +312,7 @@ def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
         message = _t.get(_.emtpyContent)
 
     # check for empty spam
-    elif not is_human:
+    elif not is_human or error:
         logger('ViewHelper', 'try_to_contact', 'recaptcha error')
         contact_error = True
         message = _t.get(_.maliciousAntiSpam)
@@ -481,7 +481,7 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     password        = escape_string(params['password']) if 'password' in params else ''
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
     recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
-    is_human = validate_recaptcha(recaptcha)
+    is_human, error = validate_recaptcha(recaptcha)
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
@@ -506,9 +506,10 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
         info = _.get(_.mailNotValid)
     # is anti-spam correct?
-    elif not is_human:
+    elif not is_human or error:
         logger('ViewHelper', 'user_registration', 'recaptcha error')
         info = _.get(_.maliciousAntiSpam)
+    # lets go
     else:
         # getting the authors group
         db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()

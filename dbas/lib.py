@@ -895,8 +895,28 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
 
 def validate_recaptcha(recaptcha):
     logger('Lib', 'validate_recaptcha', 'recaptcha ' + str(recaptcha))
-    r = requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': '6Lc0eQ4TAAAAAJBcq97lYwM8byadNWmUYuTZaPzz',
-                                                                               'response': recaptcha})
-    logger('Lib', 'validate_recaptcha', 'answer ' + str(r.json()))
+    try:
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': '6Lc0eQ4TAAAAAJBcq97lYwM8byadNWmUYuTZaPzz',
+                                                                                   'response': recaptcha})
+        json = r.json()
+    except:
+        logger('Lib', 'validate_recaptcha', 'Unexcepcted error', error=True)
+        return False, True
 
-    return r.json()['success']
+    logger('Lib', 'validate_recaptcha', 'answer ' + str(json))
+    error = False
+
+    if 'missing-input-secret' in json['error-codes']:
+        logger('Lib', 'validate_recaptcha', 'The secret parameter is missing.', error=True)
+        error = True
+    if 'invalid-input-secret' in json['error-codes']:
+        logger('Lib', 'validate_recaptcha', 'The secret parameter is invalid or malformed.', error=True)
+        error = True
+    if 'missing-input-response' in json['error-codes']:
+        logger('Lib', 'validate_recaptcha', 'The response parameter is missing.', error=True)
+        error = True
+    if 'invalid-input-response' in json['error-codes']:
+        logger('Lib', 'validate_recaptcha', 'The response parameter is invalid or malformed.', error=True)
+        error = True
+
+    return json['success'], error
