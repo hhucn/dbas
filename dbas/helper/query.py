@@ -148,7 +148,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
         # Query all recently stored premises (internally: statements) and collect their ids
         # This is a bad workaround, let's just think about it in future.
         for uid in new_argument_uids:
-            current_pgroup = DBDiscussionSession.query(Argument).filter_by(uid=uid).first().premisesgroup_uid
+            current_pgroup = DBDiscussionSession.query(Argument).get(uid).premisesgroup_uid
             current_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_pgroup).all()
             for premise in current_premises:
                 statement_uids.append(premise.statement_uid)
@@ -223,7 +223,7 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
     pgroups = []
     url = ''
     for uid in new_argument_uids:
-        pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=uid).first().premisesgroup_uid)
+        pgroups.append(DBDiscussionSession.query(Argument).get(uid).premisesgroup_uid)
 
     current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
     # relation to the arguments premise group
@@ -290,7 +290,7 @@ def correct_statement(user, uid, corrected_text, url='', request=None):
 
     # duplicate check
     return_dict = dict()
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
     db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(TextVersion.uid.desc()).all()
 
     # duplicate or not?

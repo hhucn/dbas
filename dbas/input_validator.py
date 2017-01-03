@@ -228,7 +228,7 @@ def is_argument_forbidden(uid):
     :param uid:
     :return:
     """
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return False
     return db_argument.is_disabled
@@ -240,7 +240,7 @@ def is_statement_forbidden(uid):
     :param uid:
     :return:
     """
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
     if not db_statement:
         return False
     return db_statement.is_disabled

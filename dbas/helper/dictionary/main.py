@@ -217,7 +217,7 @@ class DictionaryHelper(object):
         gravatar_public_url = get_public_profile_picture(db_user)
         reputation, tmp = get_reputation_of(db_user.nickname)
 
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first() if db_user else None
+        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid) if db_user else None
         db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None
 
         return {

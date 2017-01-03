@@ -65,7 +65,7 @@ def __get_title_for_issue_uid(uid):
     :return: String
     """
     #  logger('QueryHelper', 'get_title_for_issue_uid', str(uid))
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
+    db_issue = DBDiscussionSession.query(Issue).get(uid)
     return db_issue.title if db_issue else 'none'
 
 
@@ -77,7 +77,7 @@ def __get_slug_for_issue_uid(uid):
     :return: String
     """
     #  logger('QueryHelper', 'get_slug_for_issue_uid', str(uid))
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
+    db_issue = DBDiscussionSession.query(Issue).get(uid)
     return slugify(db_issue.title) if db_issue else 'none'
 
 
@@ -89,7 +89,7 @@ def __get_info_for_issue_uid(uid):
     :return: String
     """
     #  logger('QueryHelper', 'get_info_for_issue_uid', str(uid))
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
+    db_issue = DBDiscussionSession.query(Issue).get(uid)
     return db_issue.info if db_issue else 'none'
 
 
@@ -102,7 +102,7 @@ def __get_date_for_issue_uid(uid, lang):
     :return: String
     """
     #  logger('QueryHelper', 'get_date_for_issue_uid', str(uid))
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=uid).first()
+    db_issue = DBDiscussionSession.query(Issue).get(uid)
     return sql_timestamp_pretty_print(db_issue.date, lang) if db_issue else 'none'
 
 

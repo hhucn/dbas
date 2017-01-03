@@ -42,11 +42,11 @@ class AdminTest(unittest.TestCase):
     def test_get_table_dict(self):
         for table in table_mapper:
             return_dict = get_table_dict(table_mapper[table]['name'], 'some_main_page')
-            self.assertTrue('is_existing' in return_dict)
-            self.assertTrue('name' in return_dict)
-            self.assertFalse('password' in return_dict)
-            self.assertFalse('token' in return_dict)
-            self.assertFalse('token_timestamp' in return_dict)
+            self.assertIn('is_existing', return_dict)
+            self.assertIn('name', return_dict)
+            self.assertNotIn('password', return_dict)
+            self.assertNotIn('token', return_dict)
+            self.assertNotIn('token_timestamp', return_dict)
 
     def test_add_row(self):
         translator = Translator('en')

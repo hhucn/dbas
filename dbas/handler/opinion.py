@@ -184,7 +184,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
     for uid in statement_uids:
         statement_dict = dict()
         all_users = []
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(uid)
         if not db_statement:
             statement_dict['uid']       = None
             statement_dict['text']      = None
@@ -259,7 +259,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
         logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'argument ' + str(uid))
         statement_dict = dict()
         all_users = []
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(uid)
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
         if not db_premises:
             statement_dict['uid']       = None
@@ -470,7 +470,7 @@ def get_infos_about_argument(uid, main_page):
     db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
                                                                    VoteArgument.is_valid == True,
                                                                    VoteStatement.is_up_vote == True)).all()
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return return_dict
 

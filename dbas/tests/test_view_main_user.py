@@ -18,7 +18,7 @@ class MainUserView(unittest.TestCase):
         self.config.include('pyramid_chameleon')
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
         db_settings.set_show_public_nickname(True)
         transaction.commit()
 
