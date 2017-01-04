@@ -479,13 +479,11 @@ class Keywords(Enum):
     queueHistory = 'History'
     queueOngoing = 'Ongoing'
     myPosition = 'my point of view'
+    myPositionGenitiv = 'my point of view '
     the_der = 'the'
     the_die = 'the '
     the_das = 'the  '
     reference = 'Reference'
-    theirPosition = 'their point of view'
-    hisPosition = 'his point of view'
-    herPosition = 'her point of view'
     registered = 'Registered'
     restartDiscussion = 'Restart Discussion'
     restartDiscussionTitle = 'Restart Discussion'
@@ -521,6 +519,14 @@ class Keywords(Enum):
     rep_reason_success_edit = 'You send your first edit'
     rep_reason_bad_flag = 'You misused the flag function'
     rep_reason_bad_edit = 'You made a bad edit'
+
+    reaction_text_undermine = 'reaction_text_undermine_german_only'
+    reaction_text_support = 'reaction_text_support_german_only'
+    reaction_text_undercut = 'reaction_text_undercut_german_only'
+    reaction_text_undercut_for_dont_know = 'reaction_text_undercut_for_dont_know_german_only'
+    reaction_text_rebut = 'reaction_text_rebut_german_only'
+    reaction_text_rebut_for_dont_know = 'reaction_text_rebut_for_dont_know_german_only'
+
     questionTitle = 'Get more information about the statement!'
     saveMyStatement = 'Save my Statement!'
     selectStatement = 'Please select a statement!'
@@ -587,13 +593,25 @@ class Keywords(Enum):
     sheThinks = 'she thinks'
     thisIsACopyOfMail = 'This is a copy of your mail'
     thisConfrontationIs = 'This confrontation is a'
+    thisArgument = 'this argument'
+
     theirArgument = 'their argument'
     hisArgument = 'his argument'
     herArgument = 'her argument'
     theirStatement = 'their statement'
     hisStatement = 'his statement'
     herStatement = 'her statement'
-    thisArgument = 'this argument'
+    theirAssertion = 'their assertion'
+    herAssertion = 'her assertion'
+    hisAssertion = 'his assertion'
+    theirPosition = 'their point of view'
+    hisPosition = 'his point of view'
+    herPosition = 'her point of view'
+    theirReason = 'their reason'
+    herReason = 'her reason'
+    herReasonGenitiv = 'her reason '
+    hisReason = 'his reason'
+
     textChange = 'Some statement of yours was edited.'
     thxForFlagText = 'Thanks for reporting, we will have a look at it!'
     veryweak = 'very weak'
@@ -660,10 +678,6 @@ class Keywords(Enum):
     # insertDontCare = 'I don’t care about this, leave me alone and take my statement as it is!'
     youAreAbleToReviewNow = 'You are now able to visit the review section.'
     youArgue = 'You argue about'
-
-    sentencesOpenersArguingWithAgreeing = [agreeBecause, therefore]
-    sentencesOpenersArguingWithDisagreeing = [disagreeBecause, alternatively]
-    sentencesOpenersInforming = [thinkWeShould, letMeExplain, sureThat]
 
     @staticmethod
     def get_key_by_string(string):

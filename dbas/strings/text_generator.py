@@ -167,10 +167,10 @@ def __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportiv
 
 
 def get_relation_text_dict_without_substitution(lang, start_lower_case, with_no_opinion_text, is_attacking, premise,
-                                                conclusion, is_dont_know=False, first_conclusion=None,
-                                                for_island_view=False, attack_type=None):
+                                                conclusion, is_dont_know=False, first_conclusion=None, attack_type=None):
     """
 
+    :param lang:
     :param start_lower_case:
     :param with_no_opinion_text:
     :param is_attacking:
@@ -178,47 +178,56 @@ def get_relation_text_dict_without_substitution(lang, start_lower_case, with_no_
     :param conclusion:
     :param is_dont_know:
     :param first_conclusion:
-    :param for_island_view:
     :param attack_type:
     :return:
     """
     return __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
-                                    is_dont_know, first_conclusion, for_island_view, attack_type)
+                                    is_dont_know, first_conclusion, attack_type)
 
 
 def get_relation_text_dict_with_substitution(lang, start_lower_case, with_no_opinion_text, is_attacking,
-                                             is_dont_know=False, first_conclusion=None, for_island_view=False,
-                                             attack_type=None, gender=''):
+                                             is_dont_know=False, first_conclusion=None, attack_type=None, gender=''):
     """
 
-    :param lang: ui_locales
+    :param lang:
     :param start_lower_case:
     :param with_no_opinion_text:
     :param is_attacking:
     :param is_dont_know:
     :param first_conclusion:
-    :param for_island_view:
     :param attack_type:
     :param gender:
     :return:
     """
     _t = Translator(lang)
-    premise = _t.get(_.herArgument) if gender is 'f' else (_t.get(_.hisArgument) if gender is 'm' else _t.get(_.theirArgument))
-
-    if not is_dont_know:
-        if attack_type == 'undermine' or attack_type == 'rebut':
-            conclusion = _t.get(_.herPosition) if gender is 'f' else ((_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition)))
+    if lang == 'de':
+        if is_dont_know:
+            premise = _t.get(_.herAssertion) if gender is 'f' else (_t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion))
         else:
-            conclusion = _t.get(_.myArgument)
+            premise = _t.get(_.herStatement) if gender is 'f' else (_t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement))
+
+        if is_dont_know:
+            conclusion = _t.get(_.herReason) if gender is 'f' else (_t.get(_.hisReason) if gender is 'm' else _t.get(_.theirReason))
+        else:
+            conclusion = _t.get(_.herAssertion) if gender is 'f' else (_t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion))
+
     else:
-        conclusion = _t.get(_.opinion_her) if gender is 'f' else (_t.get(_.opinion_his) if gender is 'm' else _t.get(_.opinion))
+        premise = _t.get(_.herArgument) if gender is 'f' else (_t.get(_.hisArgument) if gender is 'm' else _t.get(_.theirArgument))
+
+        if not is_dont_know:
+            if attack_type == 'undermine' or attack_type == 'rebut':
+                conclusion = _t.get(_.herPosition) if gender is 'f' else ((_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition)))
+            else:
+                conclusion = _t.get(_.myArgument)
+        else:
+            conclusion = _t.get(_.opinion_her) if gender is 'f' else (_t.get(_.opinion_his) if gender is 'm' else _t.get(_.opinion))
 
     return __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
-                                    is_dont_know, first_conclusion, for_island_view, attack_type)
+                                    is_dont_know, first_conclusion, attack_type)
 
 
 def __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
-                             is_dont_know=False, first_conclusion=None, for_island_view=False, attack_type=None):
+                             is_dont_know=False, first_conclusion=None, attack_type=None):
     """
     Text of the different reaction types for an given argument
 
@@ -230,13 +239,10 @@ def __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_at
     :param conclusion:
     :param is_dont_know:
     :param first_conclusion:
-    :param for_island_view:
     :param attack_type:
     :return:
     """
     _t = Translator(lang)
-
-    ret_dict = dict()
 
     if first_conclusion and first_conclusion[-1] == '.':
         first_conclusion = first_conclusion[:-1]
@@ -249,36 +255,60 @@ def __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_at
     premise = start_attack + premise + end_tag
     conclusion = start_argument + conclusion + end_tag
 
-    w = (_t.get(_.wrong)[0:1].lower() if start_lower_case else _t.get(_.wrong)[0:1].upper()) + _t.get(_.wrong)[1:]
-    r = (_t.get(_.right)[0:1].lower() if start_lower_case else _t.get(_.right)[0:1].upper()) + _t.get(_.right)[1:]
+    w = (_t.get(_.wrong)[0:1].lower() if start_lower_case else _t.get(_.wrong)[0:1].upper()) + _t.get(_.wrong)[1:] + ', ' + _t.get(_.itIsFalse1) + ' '
+    r = (_t.get(_.right)[0:1].lower() if start_lower_case else _t.get(_.right)[0:1].upper()) + _t.get(_.right)[1:] + ', ' + _t.get(_.itIsTrue1) + ' '
 
-    w += ', ' + _t.get(_.itIsFalse1) + ' '
-    r += ', ' + _t.get(_.itIsTrue1) + ' '
+    if lang == 'de':
+        ret_dict = __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_position, end_tag,
+                                                   is_dont_know, _t,)
+    else:
+        ret_dict = __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, start_position, end_tag,
+                                                   first_conclusion, is_dont_know, is_attacking, attack_type, _t)
+
+    if with_no_opinion_text:
+        ret_dict['step_back_text'] = _t.get(_.goStepBack) + '. (' + _t.get(_.noOtherAttack) + ')'
+        ret_dict['no_opinion_text'] = _t.get(_.showMeAnotherArgument) + '.'
+
+    return ret_dict
+
+
+def __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, start_position, end_tag,
+                                    first_conclusion, is_dont_know, is_attacking, attack_type, _t):
+    """
+
+    :param r:
+    :param w:
+    :param premise:
+    :param conclusion:
+    :param start_argument:
+    :param start_position:
+    :param end_tag:
+    :param first_conclusion:
+    :param is_dont_know:
+    :param is_attacking:
+    :param attack_type:
+    :param _t:
+    :return:
+    """
+    ret_dict = dict()
 
     ret_dict['undermine_text'] = w + premise + ' ' + _t.get(_.itIsFalse2) + '.'
 
     ret_dict['support_text'] = r + premise + _t.get(_.itIsTrue2) + '.'
 
-    # tmp = _t.get(_.butIDoNotBelieveCounter) if is_attacking else _t.get(_.butIDoNotBelieveArgument)
-    if not is_attacking or not attack_type == 'undercut':
-        tmp = _t.get(_.butIDoNotBelieveArgument)
-    else:
-        tmp = _t.get(_.butIDoNotBelieveCounter)
     ret_dict['undercut_text'] = r + premise + _t.get(_.itIsTrue2) + ', '
-    ret_dict['undercut_text'] += (_t.get(_.butIDoNotBelieveArgumentFor) if is_dont_know else tmp)
-    ret_dict['undercut_text'] += ' ' + conclusion + (' ist.' if lang == 'de' else '.')
-
-    ret_dict['overbid_text'] = r + premise + _t.get(_.itIsTrue2) + ', '
-    ret_dict['overbid_text'] += (
-        _t.get(_.andIDoBelieveArgument) if is_dont_know else _t.get(_.andIDoBelieveCounterFor))
-    ret_dict['overbid_text'] += ' ' + conclusion + '. '
-    ret_dict['overbid_text'] += (_t.get(_.howeverIHaveEvenStrongerArgumentRejecting) if is_attacking else _t.get(_.howeverIHaveEvenStrongerArgumentAccepting))
-    ret_dict['overbid_text'] += ' ' + conclusion + '.'
+    if is_dont_know:
+        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgumentFor)
+    elif not is_attacking or not attack_type == 'undercut':
+        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgument)
+    else:
+        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveCounter)
+    ret_dict['undercut_text'] += ' ' + conclusion + '.'
 
     ret_dict['rebut_text'] = r + premise + _t.get(_.itIsTrue2) + ' '
     # ret_dict['rebut_text'] += (_t.get(_.iAcceptCounter) if is_attacking else _t.get(_.iAcceptArgument))
     ret_dict['rebut_text'] += _t.get(_.iAcceptArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(_.iAcceptCounter)
-    ret_dict['rebut_text'] += ' ' + conclusion + (' gilt. ' if lang == 'de' else '. ')
+    ret_dict['rebut_text'] += ' ' + conclusion + '. '
     ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgument) + ' '
     ret_dict['rebut_text'] += start_argument if is_dont_know else start_position
     ret_dict['rebut_text'] += _t.get(_.reject if is_dont_know else _.accept)
@@ -286,17 +316,43 @@ def __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_at
     ret_dict['rebut_text'] += ' ' + (first_conclusion if first_conclusion else conclusion) + end_tag + '.'
     # + (_t.get(_.doesNotHold) if is_attacking else _t.get(_.hold)) + '.'
 
-    if for_island_view and lang == 'de':
-        ret_dict['undermine_text'] = ret_dict['undermine_text'][:-1] + ', ' + _t.get(_.because).lower()
-        ret_dict['support_text'] = ret_dict['support_text'][:-1] + ', ' + _t.get(_.because).lower()
-        ret_dict['undercut_text'] = ret_dict['undercut_text'][:-1] + ', ' + _t.get(_.because).lower()
-        ret_dict['overbid_text'] = ret_dict['overbid_text'][:-1] + ', ' + _t.get(_.because).lower()
-        ret_dict['rebut_text'] = ret_dict['rebut_text'][:-1] + ', ' + _t.get(_.because).lower()
+    return ret_dict
 
-    if with_no_opinion_text:
-        ret_dict['step_back_text'] = _t.get(_.iHaveNoOpinion) + '. ' + _t.get(_.goStepBack) + '. (' + _t.get(
-            _.noOtherAttack) + ')'
-        ret_dict['no_opinion_text'] = _t.get(_.iHaveNoOpinion) + '. ' + _t.get(_.showMeAnotherArgument) + '.'
+
+def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_position, end_tag,
+                                    is_dont_know, _t):
+    """
+
+    :param premise:
+    :param conclusion:
+    :param start_argument:
+    :param start_position:
+    :param end_tag:
+    :param first_conclusion:
+    :param is_dont_know:
+    :param is_attacking:
+    :param attack_type:
+    :param _t:
+    :return:
+    """
+    ret_dict = dict()
+
+    ret_dict['undermine_text'] = _t.get(_.reaction_text_undermine).format(premise)
+
+    ret_dict['support_text'] = _t.get(_.reaction_text_support).format(premise)
+
+    if is_dont_know:
+        tmp = start_argument + _t.get(_.reason) + end_tag
+        ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut_for_dont_know).format(premise, tmp)
+    else:
+        tmp = start_position + _t.get(_.myPositionGenitiv) + end_tag
+        ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut).format(premise, tmp)
+
+    if is_dont_know:
+        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut_for_dont_know).format(premise, conclusion, conclusion.replace('ihre', 'ihrer'))
+    else:
+        conclusion_user = start_position + _t.get(_.myPosition) + end_tag
+        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut).format(premise, conclusion, conclusion_user)
 
     return ret_dict
 

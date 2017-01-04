@@ -986,6 +986,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     # textversion34 = TextVersion(content="Even overbred races can be taught.", author=user.uid)
     # textversion35 = TextVersion(content="Several pets are nice to have and you do not have to take much care of them, for example turtles or cats, which are living outside.", author=user.uid)
     textversion36 = TextVersion(content="it is much work to take care of both animals.", author=user.uid)
+
     textversion101 = TextVersion(content="the city should reduce the number of street festivals.", author=3)
     textversion102 = TextVersion(content="we should shut down University Park.", author=3)
     textversion103 = TextVersion(content="we should close public swimming pools.", author=user.uid)
@@ -1008,6 +1009,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion121 = TextVersion(content="schools need the swimming pools for their sports lessons.", author=user.uid)
     textversion122 = TextVersion(content="the rate of non-swimmers is too high.", author=user.uid)
     textversion123 = TextVersion(content="the police cannot patrol in the park for 24/7.", author=user.uid)
+
     textversion200 = TextVersion(content="E-Autos keine Emissionen verursachen.", author=user.uid)
     textversion201 = TextVersion(content="Elektroautos sehr günstig im Unterhalt sind", author=user.uid)
     textversion202 = TextVersion(content="E-Autos optimal für den Stadtverkehr sind.", author=user.uid)

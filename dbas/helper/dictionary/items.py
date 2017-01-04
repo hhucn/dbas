@@ -372,7 +372,7 @@ class ItemDictHelper(object):
         else:
             relation = 'no_opinion'
             url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
-        statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+        statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url))
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
