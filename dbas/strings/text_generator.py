@@ -447,7 +447,9 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                         start_argument, end_tag, db_users_premise,
                                                                         sys_arg,)
 
-    sys_text = confrontation_text + '.<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?'
+    b = '<' + tag_type + '>'
+    e = '</' + tag_type + '>'
+    sys_text = confrontation_text + b + '.<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?' + e
     return sys_text, gender
 
 
@@ -566,16 +568,18 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sta
     :param confrontation:
     :return:
     """
+    b = '<' + tag_type + '>'
+    e = '</' + tag_type + '>'
     author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     if is_okay:
-        confrontation_text = author + ' ' + _t.get(_.thinksThat)
+        confrontation_text = author + ' ' + b + _t.get(_.thinksThat)
     else:
-        confrontation_text = _t.get(_.otherParticipantsThinkThat)
-    confrontation_text += ' ' + premise + ' '
+        confrontation_text = b + _t.get(_.otherParticipantsThinkThat)
+    confrontation_text += e + ' ' + premise + ' '
     confrontation_text += start_position if attack != 'undermine' else start_argument
     confrontation_text += _t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)
     confrontation_text += end_tag
-    confrontation_text += ', ' + _t.get(_.because).lower() + ' ' + confrontation
+    confrontation_text += b + ', ' + _t.get(_.because).lower() + e + ' ' + confrontation
     return confrontation_text, gender if is_okay else ''
 
 
@@ -597,10 +601,12 @@ def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_pr
     author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
                                                                                        db_users_premise.statements,
                                                                                        nickname)
+    b = '<' + tag_type + '>'
+    e = '</' + tag_type + '>'
     if is_okay:
-        confrontation_text = author + ' ' + _t.get(_.agreesThat)
+        confrontation_text = author + ' ' + b + _t.get(_.agreesThat)
     else:
-        confrontation_text = _t.get(_.otherParticipantsDontHaveOpinion)
+        confrontation_text = b + _t.get(_.otherParticipantsDontHaveOpinion)
 
     confrontation_text += ' ' + premise + ', '
     if supportive:
@@ -609,7 +615,7 @@ def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_pr
     else:
         confrontation_text += (_t.get(_.butHeDoesNotBelieveCounter) if gender is 'm' else _t.get(_.butSheDoesNotBelieveCounter)) \
             if is_okay else _t.get(_.butTheyDoNotBelieveCounter)
-    confrontation_text += ' ' + conclusion
+    confrontation_text += e + ' ' + conclusion + b
 
     gender_think = (_t.get(_.heThinks) if gender is 'm' else _t.get(_.sheThinks)) if is_okay else _t.get(_.theyThink)
     if lang == 'de':
@@ -618,7 +624,7 @@ def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_pr
         confrontation_text += ', ' + _t.get(_.because).lower() + ' ' + gender_think.lower()
 
     confrontation_text += ' ' if lang == 'de' else ': '
-    confrontation_text += confrontation
+    confrontation_text += e + confrontation
     return confrontation_text, gender if is_okay else ''
 
 
@@ -647,6 +653,8 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
                                                                                        db_users_premise.statements,
                                                                                        nickname)
+    b = '<' + tag_type + '>'
+    e = '</' + tag_type + '>'
 
     # distinguish between reply for argument and reply for premise group
     if reply_for_argument:  # reply for argument
@@ -655,11 +663,11 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             user_is_attacking = not user_is_attacking
             conclusion = sys_conclusion
 
-        confrontation_text = author + ' ' if is_okay else ''
+        confrontation_text = (author + ' ' + b) if is_okay else b
         if is_okay:
-            bind = _t.get(_.otherUsersClaimStrongerArgumentS)
+            bind = b + _t.get(_.otherUsersClaimStrongerArgumentS)
         else:
-            bind = _t.get(_.otherUsersClaimStrongerArgumentP)
+            bind = b + _t.get(_.otherUsersClaimStrongerArgumentP)
         confrontation_text += bind.format(_t.get(_.reject if user_is_attacking else _.accept))
         confrontation_text += ' ' + conclusion + '.' + ' '
         if is_okay:
@@ -667,34 +675,38 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
         else:
             confrontation_text += _t.get(_.theySay)
         confrontation_text += ' ' if lang == 'de' else ': '
-        confrontation_text += confrontation
+        confrontation_text += confrontation + e
 
     else:  # reply for premise group
         if is_okay:
-            confrontation_text = author + ' ' + _t.get(_.agreesThat)
-            confrontation_text += ' XYZZYX, '
+            confrontation_text = author + ' ' + b + _t.get(_.agreesThat)
+            confrontation_text += ' {}, '
             confrontation_text += _t.get(_.strongerStatementForM) if gender is 'm' else _t.get(_.strongerStatementForF)
         else:
-            confrontation_text = _t.get(_.otherParticipantsDontHaveOpinion)
-            confrontation_text += ' XYZZYX, '
+            confrontation_text = b + _t.get(_.otherParticipantsDontHaveOpinion)
+            confrontation_text += ' {}, '
             confrontation_text += _t.get(_.strongerStatementForP)
 
-        confrontation_text = confrontation_text.replace('XYZZYX', premise)
+        confrontation_text = confrontation_text.format(premise) + e
 
         confrontation_text += ' ' + start_argument
+        confrontation_text += b
         confrontation_text += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
+        confrontation_text += e
 
         if lang == 'de':
-            confrontation_text += end_tag + ' ' + _t.get(_.of) + ': ' + start_argument
+            confrontation_text += end_tag + ' ' + b + _t.get(_.of) + ': ' + e
 
         tmp = _t.get(_.strongerStatementEnd)
         if tmp == '':
             tmp += ' '
             conclusion = conclusion[len(start_argument):]
 
-        confrontation_text += ' ' + conclusion + end_tag + '. '
+        confrontation_text += ' ' + conclusion + '. '
+        confrontation_text += b
         confrontation_text += (_t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)) if is_okay else _t.get(_.theySay)
         confrontation_text += ' ' if lang == 'de' else ': '
+        confrontation_text += e
         confrontation_text += confrontation
 
     return confrontation_text, gender if is_okay else ''

@@ -129,11 +129,17 @@ function InteractionHandler() {
 		}
 
 		// supporters = parsedData.supporter.join(', ');
-		text = parsedData.text + '<br><br>';
-		text += _t_discussion(messageInfoStatementCreatedBy) + ' ' + parsedData.author  + ', ';
-		text += parsedData.timestamp + '.<br>';
+		let author = parsedData.author;
+		if (parsedData.author != 'anonymous'){
+			let img = '<img class="img-circle" style="height: 1em;" src="' + parsedData.gravatar + '">';
+			author = '<a href="' + mainpage + 'user/' + parsedData.author + '">' + img + ' ' + parsedData.author + '</a>';
+		} else {
+			author = _t_discussion(an_anonymous_user);
+		}
+		text = _t_discussion(messageInfoStatementCreatedBy) + ' ' + author  + ', ';
+		text += parsedData.timestamp + '. ';
 		text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
-		text +=_t_discussion(messageInfoParticipant) + (parsedData.vote_count==1 ? '' : _t_discussion(messageInfoParticipantPl)) + '.';
+		text +=_t_discussion(messageInfoParticipant) + '.';
 
 		let users_array = [];
 		$.each(parsedData.supporter, function (index, val) {

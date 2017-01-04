@@ -95,6 +95,7 @@ const addTopicTitleText               = 'addTopicTitleText';
 const addTopicShortText               = 'addTopicShortText';
 const addTopicLangText                = 'addTopicLangText';
 const acceptIt                        = 'acceptIt';
+const an_anonymous_user               = 'an_anonymous_user';
 const allEditsDone                    = 'allEditsDone';
 const allStatementsPosted             = 'allStatementsPosted';
 const allGivenVotes                   = 'allGivenVotes';
@@ -316,6 +317,7 @@ const urlReview   = 'review';
 
 
 const dbas_en = {
+    'an_anonymous_user': 'an anonymous user',
     'avatar': 'Avatar',
     'and': 'and',
     'answer': 'antworten',
@@ -410,11 +412,11 @@ const dbas_en = {
     'listOfDoneEdits': 'This is a list of all edits:',
     'listOfGivenVotes': 'This is a list of all votes:',
     'medium': 'medium',
-    'messageInfoTitle': 'Infos about message',
+    'messageInfoTitle': 'Infos about an argument',
     'messageInfoStatementCreatedBy': 'This was created by',
     'messageInfoAt': 'at',
     'messageInfoMessage': 'Message',
-    'messageInfoCurrentlySupported': 'Currently it is supported by',
+    'messageInfoCurrentlySupported': 'This argument is supported by',
     'messageInfoParticipant': 'participant',
     'messageInfoParticipantPl': 's',
     'messageInfoSupporterSg': 'Supporter is',
@@ -529,6 +531,7 @@ const dbas_en = {
 };
 
 const dbas_de = {
+    'an_anonymous_user': 'einem anonymen Nutzer',
     'avatar': 'Avatar',
     'and': 'und',
     'answer': 'antworten',
@@ -624,11 +627,11 @@ const dbas_de = {
     'listOfDoneEdits': 'Dies ist eine Liste von allen Änderungen:',
     'listOfGivenVotes': 'Dies ist eine Liste von allen Stimmen:',
     'medium': 'mittel',
-    'messageInfoTitle': 'Informationen über eine Aussage',
-    'messageInfoStatementCreatedBy': 'Diese Aussage stammt von',
+    'messageInfoTitle': 'Informationen über ein Argument',
+    'messageInfoStatementCreatedBy': 'Dieses Argument stammt von',
     'messageInfoAt': 'am',
     'messageInfoMessage': 'Aussage',
-    'messageInfoCurrentlySupported': 'Sie wird aktuell von',
+    'messageInfoCurrentlySupported': 'Das Argument wird aktuell von',
     'messageInfoParticipant': 'Teilnehmer/in unterstützt',
     'messageInfoParticipantPl': '/n/nen',
     'messageInfoSupporterSg': 'Unterstützer/in ist',

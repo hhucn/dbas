@@ -183,8 +183,8 @@ function Main () {
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		let trianglel = $('.triangle-l');
 		trianglel.find('.triangle-content :not(a)').click(function () {
-			if ($(this).parent().attr('id').indexOf(questionBubbleId) != -1) {
-				let uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			if ($(this).closest('p').attr('id').indexOf(questionBubbleId) != -1) {
+				let uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			}
 		});

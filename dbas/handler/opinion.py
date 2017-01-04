@@ -36,10 +36,10 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
     all_users = []
     _t = Translator(lang)
     try:
-        db_user_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
+        db_user_argument = DBDiscussionSession.query(Argument).get(argument_uids[0])
     except TypeError:
         return None
-    db_syst_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
+    db_syst_argument = DBDiscussionSession.query(Argument).get(argument_uids[1])
 
     # sanity check
     if not db_user_argument or not db_syst_argument:
@@ -67,7 +67,7 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
     # getting the text of all reactions
     db_tmp_argument = db_syst_argument
     while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
-        db_tmp_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_tmp_argument.argument_uid).first()
+        db_tmp_argument = DBDiscussionSession.query(Argument).get(db_tmp_argument.argument_uid)
 
     first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
     first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
@@ -78,12 +78,12 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
                                                                  attack_type=attack)
     else:
         if attack == 'undercut':
-            db_argument0 = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[0]).first()
-            db_argument1 = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
+            db_argument0 = DBDiscussionSession.query(Argument).get(argument_uids[0])
+            db_argument1 = DBDiscussionSession.query(Argument).get(argument_uids[1])
             premises, trash = get_text_for_premisesgroup_uid(db_argument1.premisesgroup_uid)
             conclusion = get_text_for_conclusion(db_argument0)
         else:
-            db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uids[1]).first()
+            db_argument = DBDiscussionSession.query(Argument).get(argument_uids[1])
             premises, trash = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
             conclusion = get_text_for_conclusion(db_argument)
 
@@ -141,7 +141,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
                                                                            VoteArgument.author_uid != db_user_uid)).all()
 
             for vote in db_votes:
-                voted_user = user_query.filter_by(uid=vote.author_uid).first()
+                voted_user = user_query.get(vote.author_uid)
                 users_dict = create_users_dict(voted_user, vote.timestamp, main_page, _t.get_lang())
                 all_users.append(users_dict)
 
@@ -217,7 +217,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
                                                                         VoteStatement.author_uid != db_user_uid)).all()
 
         for vote in db_votes:
-            voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+            voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
             users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
             all_users.append(users_dict)
         statement_dict['users'] = all_users
@@ -282,7 +282,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
                                                                              VoteStatement.author_uid != db_user_uid)).all()
 
         for vote in db_votes:
-            voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+            voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
             users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
             all_users.append(users_dict)
         statement_dict['users'] = all_users
@@ -325,7 +325,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
     text = get_text_for_argument_uid(argument_uid, lang)
     title = _t.get(_.reactionFor) + ': ' + text[0:1].upper() + text[1:]
 
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     if not db_argument:
         opinions['uid']       = None
         opinions['text']      = None
@@ -343,7 +343,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
                                                                    VoteArgument.author_uid != db_user_uid)).all()
 
     for vote in db_votes:
-        voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+        voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         all_users.append(users_dict)
     opinions['users'] = all_users
@@ -373,7 +373,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     """
 
     logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
     _t = Translator(lang)
     title = _t.get(_.agreeVsDisagree)
 
@@ -407,7 +407,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
                                                                         VoteStatement.author_uid != db_user_uid)).all()
     pro_array = []
     for vote in db_pro_votes:
-        voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+        voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         pro_array.append(users_dict)
     ret_dict['agree_users'] = pro_array
@@ -421,7 +421,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
 
     con_array = []
     for vote in db_con_votes:
-        voted_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+        voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         con_array.append(users_dict)
     ret_dict['disagree_users'] = con_array
@@ -474,9 +474,10 @@ def get_infos_about_argument(uid, main_page):
     if not db_argument:
         return return_dict
 
-    db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
+    db_author = DBDiscussionSession.query(User).get(db_argument.author_uid)
     return_dict['vote_count'] = str(len(db_votes))
     return_dict['author'] = db_author.public_nickname
+    return_dict['gravatar'] = get_profile_picture(db_author)
     return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
     text = get_text_for_argument_uid(uid)
     return_dict['text'] = text[0:1].upper() + text[1:] + '.'
@@ -485,7 +486,7 @@ def get_infos_about_argument(uid, main_page):
     gravatars = dict()
     public_page = dict()
     for vote in db_votes:
-        db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+        db_user = DBDiscussionSession.query(User).get(vote.author_uid)
         name = db_user.get_global_nickname()
         supporters.append(name)
         gravatars[name] = get_profile_picture(db_user)
