@@ -680,14 +680,15 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
+    # ATM NOT NEEDED, BECASE BROKE LIMIT WILL BE SET AS DATA TAG INTO THE TEMPLATE
     # send message if the user is now able to review
-    if broke_limit:
-        _t = Translator(ui_locales)
-        try:
-            args = (nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review', False, 5, )
-            _thread.start_new_thread(send_request_for_info_popup_to_socketio_with_delay, args)
-        except:
-            logger('discussion_reaction', 'def', 'unable to start thread', error=True)
+    # if broke_limit:
+    #     _t = Translator(ui_locales)
+    #     try:
+    #         args = (nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review', False, 5, )
+    #         _thread.start_new_thread(send_request_for_info_popup_to_socketio_with_delay, args)
+    #     except:
+    #         logger('discussion_reaction', 'def', 'unable to start thread', error=True)
 
     add_vote_for_argument(arg_id_user, nickname)
 

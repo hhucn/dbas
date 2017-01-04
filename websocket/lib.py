@@ -25,6 +25,7 @@ def send_request_for_info_popup_to_socketio(nickname, message='', url=None, incr
     :param increase_counter:
     :return:
     """
+    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio', 'main')
     if url:
         use_https = 'dbas.cs' in url
         __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
@@ -40,7 +41,11 @@ def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url
     :param delay:
     :return:
     """
+    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'main sleeping for ' + str(delay))
     time.sleep(delay)
+    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
+    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
+    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
     if url:
         use_https = 'dbas.cs' in url
         __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
@@ -56,6 +61,7 @@ def send_request_for_success_popup_to_socketio(nickname, message='', url=None, i
     :param increase_counter:
     :return:
     """
+    logger('Websocket.lib', 'send_request_for_success_popup_to_socketio', 'main')
     if url:
         use_https = 'dbas.cs' in url
         __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter, use_https)
@@ -70,6 +76,7 @@ def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, i
     :param increase_counter:
     :return:
     """
+    logger('Websocket.lib', 'send_request_for_warning_popup_to_socketio', 'main')
     __send_request_for_popup_to_socketio(nickname, 'warning', message, url, increase_counter)
 
 
@@ -85,6 +92,7 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
     :param use_https: Boolean
     :return: Status code of the request
     """
+    logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'main')
     if type not in ['success', 'warning', 'info']:
         type = 'info'
 
@@ -102,7 +110,7 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
         resp = requests.get(https + '://localhost:' + str(port) + '/publish' + params)
     except:
         return None
-    logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')
+    logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')
 
     return resp.status_code
 
@@ -113,6 +121,7 @@ def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
     :param nickname:
     :return:
     """
+    logger('Websocket.lib', 'send_request_for_recent_delete_review_to_socketio', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
@@ -126,6 +135,7 @@ def send_request_for_recent_edit_review_to_socketio(nickname, main_page):
     :param nickname:
     :return:
     """
+    logger('Websocket.lib', 'send_request_for_recent_edit_review_to_socketio', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
@@ -140,6 +150,7 @@ def send_request_for_recent_optimization_review_to_socketio(nickname, main_page)
     :param main_page:
     :return:
     """
+    logger('Websocket.lib', 'send_request_for_recent_optimization_review_to_socketio', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
@@ -156,6 +167,7 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
     :param use_https
     :return: Status code of the request
     """
+    logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'main')
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
     try:

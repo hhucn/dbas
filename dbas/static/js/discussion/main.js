@@ -746,7 +746,7 @@ $(document).ready(function mainDocumentReady() {
 		new DiscussionBarometer().showBarometer();
 	}
 	if (location.hash.indexOf('access-review') != -1 || $('#review-link').attr('data-broke-limit') == 'true'){
-		const link = $('<a>').attr('href', mainpage + 'review').text(_t(youAreAbleToReviewNow));
+		const link = '<a href="' + mainpage + 'review">'  + _t(youAreAbleToReviewNow) + '</a>';
 		setGlobalInfoHandler('Hey!', link)
 	}
 
