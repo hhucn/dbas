@@ -230,6 +230,7 @@ class Keywords(Enum):
     duplicateDialog = 'This textversion is deprecated, because it was already edited to this version.\nDo you want to set this version as the current one once again?'
     doesNotHold = 'does not hold'
     isNotRight = 'does not hold'
+    isNoGoodJustification = 'is not a good justification'
     doNotHesitateToContact = 'Do not hesitate to <span style="cursor: pointer;" id="contact-on-error"><strong>contact us (click here)</strong></span>'
     doesJustify = 'does justify that'
     doesNotJustify = 'does not justify that'

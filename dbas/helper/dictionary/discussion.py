@@ -242,8 +242,7 @@ class DiscussionDictHelper(object):
         # bubble_user = history_helper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() + user_msg[1:], omit_url=True, lang=self.lang)
 
         self.__append_now_bubble(bubbles_array)
-        bubbles_array.append(
-            create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang))
+        bubbles_array.append(create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang))
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'attack_type': attack, 'arg_uid': uid}
 
