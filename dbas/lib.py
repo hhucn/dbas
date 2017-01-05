@@ -150,8 +150,6 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
         is_disabled=include_disabled,
         conclusion_uid=statement_uid
     ).all()
-    logger('DBAS.LIB', 'get_all_arguments_by_statement', 'arguments with statement ' + str(statement_uid) +
-           ' as conclusion: ' + str(len(db_arguments)))
 
     premises = DBDiscussionSession.query(Premise).filter_by(
         is_disabled=include_disabled,
@@ -165,15 +163,14 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
                                                                      premisesgroup_uid=premise.premisesgroup_uid).all()
         if db_arguments:
             return_array = return_array + db_arguments
-        logger('DBAS.LIB', 'get_all_arguments_by_statement', 'arguments with statement ' + str(statement_uid) +
-               ' included in premisegroup ' + str(premise.premisesgroup_uid) + ': ' + str(len(db_arguments)))
+
     logger('DBAS.LIB', 'get_all_arguments_by_statement', 'returning arguments ' + str([arg.uid for arg in return_array]))
     return return_array if len(return_array) > 0 else None
 
 
 def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
-                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True):
+                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True, anonymous_style=False):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -184,8 +181,9 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     :param user_changed_opinion: Boolean
     :param rearrange_intro: Boolean
     :param colored_position: Boolean
-    :param attack_type: Boolean
+    :param attack_type: String
     :param minimize_on_undercut: Boolean
+    :param anonymous_style: Boolean
     :return: String
     """
     logger('DBAS.LIB', 'get_text_for_argument_uid', 'main ' + str(uid))
@@ -210,7 +208,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     if len(arg_array) == 1:
         # build one argument only
         return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
-                                       start_with_intro, is_users_opinion)
+                                       start_with_intro, is_users_opinion, anonymous_style)
 
     else:
         # get all pgroups and at last, the conclusion
@@ -218,7 +216,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
         se = '</' + tag_type + '>' if with_html_tag else ''
         doesnt_hold_because = ' ' + se + _t.get(_.doesNotHold).lower() + ' ' + _t.get(_.because).lower() + ' ' + sb
         return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
-                                       start_with_intro, doesnt_hold_because, minimize_on_undercut, is_users_opinion, _t)
+                                       start_with_intro, doesnt_hold_because, minimize_on_undercut, anonymous_style, _t)
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
@@ -260,9 +258,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     if arguments:
         for argument in arguments:
             statement_text = get_text_for_statement_uid(statement_uid)
-            argument_text = get_text_for_argument_uid(argument.uid,
-                                                      is_users_opinion=False,
-                                                      start_with_intro=False)
+            argument_text = get_text_for_argument_uid(argument.uid, anonymous_style=True)
             pos = argument_text.lower().find(statement_text.lower())
             argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
             results.append({'uid': argument.uid,
@@ -329,7 +325,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
 
 
 def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
-                            is_users_opinion):
+                            is_users_opinion, anonymous_style):
     """
 
     :param uid:
@@ -381,12 +377,12 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         # if color_everything:
         #     ret_value = sb + intro[0:1].upper() + intro[1:] + ' ' + conclusion + se
         # else:
-        if start_with_intro:
+        if start_with_intro and not anonymous_style:
             ret_value = intro[0:1].upper() + intro[1:] + ' '
-        elif is_users_opinion:
+        elif is_users_opinion and not anonymous_style:
             ret_value = _t.get(_.youArgue) + ' '
         else:
-            ret_value = _t.get(_.someoneArgued) + ' '
+            ret_value = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + ' '
         ret_value += conclusion
         ret_value += ', ' if lang == 'de' else ' '
         ret_value += _t.get(_.because).lower() + ' ' + premises
@@ -403,7 +399,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
 
 def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
-                            doesnt_hold_because, minimize_on_undercut, is_users_opinion, _t):
+                            doesnt_hold_because, minimize_on_undercut, anonymous_style, _t):
     """
 
     :param arg_array:
@@ -412,13 +408,12 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     :param with_html_tag:
     :param start_with_intro:
     :param doesnt_hold_because:
-    :param lang:
     :param minimize_on_undercut:
-    :param is_users_opinion:
+    :param _t:
+    :param anonymous_style:
     :return:
     """
     logger('DBAS.LIB', '__build_nested_argument', 'main ' + str(arg_array))
-    anonymous_style = not start_with_intro and not is_users_opinion
 
     # get all pgroups and at last, the conclusion
     pgroups = []
@@ -468,7 +463,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
         elif not anonymous_style:
             ret_value += _t.get(_.youAgreeWithThatNow)
         else:
-            ret_value += _t.get(_.otherUsersSaidThat)
+            ret_value += _t.get(_.otherUsersSaidThat) if i == 0 else _t.get(_.thenOtherUsersSaidThat)
 
         ret_value += sb + ' ' + pgroups[i] + '.'
         tmp_users_opinion = not tmp_users_opinion
