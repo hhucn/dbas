@@ -1484,8 +1484,6 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument111.conclusions_argument(argument108.uid)
     argument113.conclusions_argument(argument112.uid)
     argument117.conclusions_argument(argument116.uid)
-    argument206.conclusions_argument(argument201.uid)
-    argument207.conclusions_argument(argument202.uid)
     argument202.conclusions_argument(argument200.uid)
     argument203.conclusions_argument(argument201.uid)
     session.flush()

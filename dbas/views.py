@@ -5,7 +5,6 @@ Core component of D-BAS.
 """
 
 import json
-import _thread
 
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
@@ -58,7 +57,7 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
-    send_request_for_info_popup_to_socketio, send_request_for_info_popup_to_socketio_with_delay
+    send_request_for_info_popup_to_socketio
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.rss import get_list_of_all_feeds
 

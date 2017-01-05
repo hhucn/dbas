@@ -20,7 +20,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
     VoteArgument, VoteStatement, Group
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.translator import Translator, get_translation
+from dbas.strings.translator import Translator
 from sqlalchemy import and_, func
 from dbas.logger import logger
 
@@ -145,26 +145,29 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-
+    logger('DBAS.LIB', 'get_all_arguments_by_statement', 'main ' + str(statement_uid))
     db_arguments = DBDiscussionSession.query(Argument).filter_by(
         is_disabled=include_disabled,
         conclusion_uid=statement_uid
     ).all()
+    logger('DBAS.LIB', 'get_all_arguments_by_statement', 'arguments with statement ' + str(statement_uid) +
+           ' as conclusion: ' + str(len(db_arguments)))
 
     premises = DBDiscussionSession.query(Premise).filter_by(
         is_disabled=include_disabled,
         statement_uid=statement_uid
     ).all()
 
-    return_array = db_arguments if db_arguments else []
+    return_array = [arg for arg in db_arguments] if db_arguments else []
 
     for premise in premises:
         db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=include_disabled,
                                                                      premisesgroup_uid=premise.premisesgroup_uid).all()
-
         if db_arguments:
             return_array = return_array + db_arguments
-
+        logger('DBAS.LIB', 'get_all_arguments_by_statement', 'arguments with statement ' + str(statement_uid) +
+               ' included in premisegroup ' + str(premise.premisesgroup_uid) + ': ' + str(len(db_arguments)))
+    logger('DBAS.LIB', 'get_all_arguments_by_statement', 'returning arguments ' + str([arg.uid for arg in return_array]))
     return return_array if len(return_array) > 0 else None
 
 
@@ -185,6 +188,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     :param minimize_on_undercut: Boolean
     :return: String
     """
+    logger('DBAS.LIB', 'get_text_for_argument_uid', 'main ' + str(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None
@@ -206,7 +210,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     if len(arg_array) == 1:
         # build one argument only
         return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
-                                       start_with_intro, is_users_opinion=is_users_opinion)
+                                       start_with_intro, is_users_opinion)
 
     else:
         # get all pgroups and at last, the conclusion
@@ -214,7 +218,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
         se = '</' + tag_type + '>' if with_html_tag else ''
         doesnt_hold_because = ' ' + se + _t.get(_.doesNotHold).lower() + ' ' + _t.get(_.because).lower() + ' ' + sb
         return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
-                                       start_with_intro, doesnt_hold_because, lang, minimize_on_undercut)
+                                       start_with_intro, doesnt_hold_because, minimize_on_undercut, is_users_opinion, _t)
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
@@ -227,12 +231,13 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
+    logger('DBAS.LIB', 'get_all_arguments_with_text_by_statement_id', 'main ' + str(statement_uid))
     arguments = get_all_arguments_by_statement(statement_uid)
     results = list()
     if arguments:
         for argument in arguments:
-            results.append({"uid": argument.uid,
-                            "text": get_text_for_argument_uid(argument.uid)})
+            results.append({'uid': argument.uid,
+                            'text': get_text_for_argument_uid(argument.uid)})
         return results
 
 
@@ -247,14 +252,17 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
+    logger('DBAS.LIB', 'get_all_arguments_with_text_by_statement_id', 'main ' + str(statement_uid))
     arguments = get_all_arguments_by_statement(statement_uid)
     results = list()
-    sb = ('<' + tag_type + ' data-argumentation-type="position">') if color_statement else ''
-    se = ('</' + tag_type + '>') if color_statement else ''
+    sb = '<{} data-argumentation-type="position">'.format(tag_type) if color_statement else ''
+    se = '</{}>'.format(tag_type) if color_statement else ''
     if arguments:
         for argument in arguments:
             statement_text = get_text_for_statement_uid(statement_uid)
-            argument_text = get_text_for_argument_uid(argument.uid)
+            argument_text = get_text_for_argument_uid(argument.uid,
+                                                      is_users_opinion=False,
+                                                      start_with_intro=False)
             pos = argument_text.lower().find(statement_text.lower())
             argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
             results.append({'uid': argument.uid,
@@ -320,7 +328,8 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     return ret_value
 
 
-def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro, is_users_opinion):
+def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
+                            is_users_opinion):
     """
 
     :param uid:
@@ -332,6 +341,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param start_with_intro:
     :return:
     """
+    logger('DBAS.LIB', '__build_single_argument', 'main ' + str(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
@@ -374,11 +384,9 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         if start_with_intro:
             ret_value = intro[0:1].upper() + intro[1:] + ' '
         elif is_users_opinion:
-            ret_value = (_t.get(_.youArgue) + ' ') if lang == 'de' else ''
+            ret_value = _t.get(_.youArgue) + ' '
         else:
-            tmp = _t.get(_.statementIsAbout)
-            tmp = tmp[0:1].lower() + tmp[1:] + ' '
-            ret_value = tmp if lang == 'de' else ''
+            ret_value = _t.get(_.someoneArgued) + ' '
         ret_value += conclusion
         ret_value += ', ' if lang == 'de' else ' '
         ret_value += _t.get(_.because).lower() + ' ' + premises
@@ -395,64 +403,75 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
 
 def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
-                            doesnt_hold_because, lang, minimize_on_undercut):
+                            doesnt_hold_because, minimize_on_undercut, is_users_opinion, _t):
     """
 
     :param arg_array:
-    :param local_lang:
     :param first_arg_by_user:
     :param user_changed_opinion:
     :param with_html_tag:
     :param start_with_intro:
     :param doesnt_hold_because:
-    :param _t:
+    :param lang:
+    :param minimize_on_undercut:
+    :param is_users_opinion:
     :return:
     """
+    logger('DBAS.LIB', '__build_nested_argument', 'main ' + str(arg_array))
+    anonymous_style = not start_with_intro and not is_users_opinion
 
     # get all pgroups and at last, the conclusion
     pgroups = []
     supportive = []
     arg_array = arg_array[::-1]
     local_lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
+
+    # grepping all arguments in the chain
     for uid in arg_array:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 
         pgroups.append(text)
         supportive.append(db_argument.is_supportive)
+
     uid = DBDiscussionSession.query(Argument).get(arg_array[0]).conclusion_uid
     conclusion = get_text_for_statement_uid(uid)
 
+    # html tags for framing
     sb = '<{} data-argumentation-type="position">'.format(tag_type) if with_html_tag else ''
     se = '</{}>'.format(tag_type) if with_html_tag else ''
 
-    because = ', ' if local_lang == 'de' else ' '
-    because += get_translation(_.because, lang).lower() + ' '
+    because = (', ' if local_lang == 'de' else ' ') + _t.get(_.because).lower() + ' '
 
-    if len(arg_array) % 2 is 0 and not first_arg_by_user:  # system starts
-        ret_value = get_translation(_.earlierYouArguedThat if user_changed_opinion else _.otherUsersSaidThat, lang)
-        ret_value += ' '
-        users_opinion = True  # user after system
-    else:  # user starts
-        ret_value = (get_translation(_.soYourOpinionIsThat, lang) + ': ') if start_with_intro else ''
-        users_opinion = False  # system after user
+    if len(arg_array) % 2 is 0 and not first_arg_by_user and not anonymous_style:  # system starts
+        ret_value = _t.get(_.earlierYouArguedThat if user_changed_opinion else _.otherUsersSaidThat) + ' '
+        tmp_users_opinion = True  # user after system
+
+    elif not anonymous_style:  # user starts
+        ret_value = (_t.get(_.soYourOpinionIsThat) + ': ') if start_with_intro else ''
+        tmp_users_opinion = False  # system after user
         conclusion = se + conclusion[0:1].upper() + conclusion[1:]  # pretty print
+    else:
+        ret_value = _t.get(_.someoneArgued) + ' '
+        tmp_users_opinion = False
+
     ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
-        return get_translation(_.butYouCounteredWith, lang) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        return _t.get(_.butYouCounteredWith) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 
     for i, pgroup in enumerate(pgroups):
         ret_value += ' '
-        if users_opinion:
-            ret_value += get_translation(_.otherParticipantsConvincedYouThat if user_changed_opinion else _.butYouCounteredWith, lang)
+        if tmp_users_opinion and not anonymous_style:
+            ret_value += _t.get(_.otherParticipantsConvincedYouThat if user_changed_opinion else _.butYouCounteredWith)
+        elif not anonymous_style:
+            ret_value += _t.get(_.youAgreeWithThatNow)
         else:
-            # ret_value += get_translation(_.otherUsersHaveCounterArgument, lang)
-            ret_value += get_translation(_.youAgreeWithThatNow, lang)
+            ret_value += _t.get(_.otherUsersSaidThat)
 
         ret_value += sb + ' ' + pgroups[i] + '.'
-        users_opinion = not users_opinion
+        tmp_users_opinion = not tmp_users_opinion
 
     return ret_value
 

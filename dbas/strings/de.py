@@ -552,6 +552,7 @@ de_lang = {
     _.rejecting: 'Ablehnung',
     _.strongerStatementEnd: 'davon, dass',
 
+    _.someoneArgued: 'Es wurde gesagt, dass',
     _.soYouEnteredMultipleReasons: 'Sie haben mehrere Gründe eingegeben',
     _.soYourOpinionIsThat: 'Ihre Meinung ist, dass',
     _.soYouWantToArgueAgainst: 'Sie möchten ein Gegenargument bringen für',

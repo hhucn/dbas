@@ -548,6 +548,7 @@ class Keywords(Enum):
     rejecting = 'rejecting'
     strongerStatementEnd = '   '
 
+    someoneArgued = 'Someone argued that'
     soYouEnteredMultipleReasons = 'So you entered multiple reasons'
     soYourOpinionIsThat = 'So your opinion is that'
     soYouWantToArgueAgainst = 'So you want to counter-argue against'
