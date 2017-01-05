@@ -1,3 +1,7 @@
+## 1.1.0 (2017-01-05)
+- Huge update for the german language
+- Minor improvements and bugfix
+
 ## 1.0.0 (2017-01-02)
 - reCAPTCHAS
 - Minor improvements and bugfix
