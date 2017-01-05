@@ -116,7 +116,7 @@ def is_position(statement_uid):
     :param statement_uid: Statement.uid
     :return: Boolean
     """
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
     return True if db_statement.is_startpoint else False
 
 
@@ -162,8 +162,8 @@ def related_with_rebut(attacked_arg_uid, attacking_arg_uid):
     :param attacking_arg_uid: Argument.uid
     :return: Boolean
     """
-    db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).first()
-    db_attacked_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacked_arg_uid).first()
+    db_attacking_arg = DBDiscussionSession.query(Argument).get(attacking_arg_uid)
+    db_attacked_arg = DBDiscussionSession.query(Argument).get(attacked_arg_uid)
     if not db_attacked_arg or not db_attacking_arg:
         return False
 
@@ -183,8 +183,8 @@ def related_with_support(attacked_arg_uid, attacking_arg_uid):
     :param attacking_arg_uid: Argument.uid
     :return: Boolean
     """
-    db_first_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).first()
-    db_second_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacked_arg_uid).first()
+    db_first_arg = DBDiscussionSession.query(Argument).get(attacking_arg_uid)
+    db_second_arg = DBDiscussionSession.query(Argument).get(attacked_arg_uid)
     if not db_first_arg or not db_second_arg:
         return False
 

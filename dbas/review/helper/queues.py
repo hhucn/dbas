@@ -233,7 +233,7 @@ def __get_last_reviewer_of(reviewer_type, main_page):
     index = 0
     while index < limit:
         db_review = db_reviews[index]
-        db_user = DBDiscussionSession.query(User).filter_by(uid=db_review.reviewer_uid).first()
+        db_user = DBDiscussionSession.query(User).get(db_review.reviewer_uid)
         if db_user:
             tmp_dict = dict()
             tmp_dict['img_src'] = get_profile_picture(db_user, 40)
@@ -299,7 +299,7 @@ def lock_optimization_review(nickname, review_uid, translator):
 
     # has user already locked an item?
     db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_lock = DBDiscussionSession.query(ReviewOptimization).filter_by(uid=review_uid).first()
+    db_lock = DBDiscussionSession.query(ReviewOptimization).get(review_uid)
 
     if not db_user or int(review_uid) < 1 or not db_lock:
         logger('ReviewQueues', 'lock_optimization_review', 'no user or no review (' + str(not db_user) + ',' + str(not db_lock) + ')', error=True)

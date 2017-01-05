@@ -212,7 +212,7 @@ class User(DiscussionBase):
         self.public_nickname = nick
 
     def get_global_nickname(self):
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=self.uid).first()
+        db_settings = DBDiscussionSession.query(Settings).get(self.uid)
         return self.nickname if db_settings.should_show_public_nickname else self.public_nickname
 
 

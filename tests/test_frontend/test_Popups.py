@@ -42,6 +42,7 @@ class TestlicensePopup:
         cls.browser = Browser(BROWSER)
         cls.browser.driver.implicitly_wait(10)
         cls.browser.driver.set_window_size(1920, 1080)
+        cls.browser.visit(ROOT + '/ajax_switch_language?lang=en')
         cls.browser.visit(ROOT)
 
     @classmethod

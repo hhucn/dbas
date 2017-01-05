@@ -197,7 +197,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     # getting all argument id
     arg_array = [db_argument.uid]
     while db_argument.argument_uid:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_argument.argument_uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
         arg_array.append(db_argument.uid)
 
     if attack_type == 'jump':
@@ -302,14 +302,14 @@ def __build_argument_for_jump(arg_array, with_html_tag):
             ret_value += tag_premise + premises + tag_end
 
     else:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[1]).first()
+        db_argument = DBDiscussionSession.query(Argument).get(arg_array[1])
         conclusions_premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         if db_argument.conclusion_uid:
             conclusions_conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
         else:
             conclusions_conclusion = get_text_for_argument_uid(db_argument.argument_uid)
 
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first()
+        db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
 
         ret_value = tag_conclusion + conclusions_premises + ' '
@@ -420,7 +420,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
 
         pgroups.append(text)
         supportive.append(db_argument.is_supportive)
-    uid = DBDiscussionSession.query(Argument).filter_by(uid=arg_array[0]).first().conclusion_uid
+    uid = DBDiscussionSession.query(Argument).get(arg_array[0]).conclusion_uid
     conclusion = get_text_for_statement_uid(uid)
 
     sb = '<{} data-argumentation-type="position">'.format(tag_type) if with_html_tag else ''
@@ -591,7 +591,7 @@ def get_user_by_private_or_public_nickname(nickname):
     if db_user:
         db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     elif db_public_user:
-        db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_public_user.uid).first()
+        db_settings = DBDiscussionSession.query(Settings).get(db_public_user.uid)
 
     if db_settings:
         if db_settings.should_show_public_nickname and db_user:
@@ -751,8 +751,8 @@ def is_argument_disabled_due_to_disabled_statements(argument):
     """
     if argument.conclusion_uid is None:
         # check conclusion of given arguments conclusion
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
-        conclusion = DBDiscussionSession(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(argument.argument_uid)
+        conclusion = DBDiscussionSession(Statement).get(db_argument.conclusion_uid)
         if conclusion.is_disabled:
             return True
         # check premisegroup of given arguments conclusion
@@ -762,7 +762,7 @@ def is_argument_disabled_due_to_disabled_statements(argument):
                 return True
     else:
         # check conclusion of given argument
-        conclusion = DBDiscussionSession(Statement).filter_by(uid=argument.conclusion_uid).first()
+        conclusion = DBDiscussionSession(Statement).get(argument.conclusion_uid)
         if conclusion.is_disabled:
             return True
 
@@ -853,7 +853,7 @@ def get_public_profile_picture(user, size=80):
     :return: String
     """
     if user:
-        additional_id = '' if DBDiscussionSession.query(Settings).filter_by(author_uid=user.uid).first().should_show_public_nickname else 'x'
+        additional_id = '' if DBDiscussionSession.query(Settings).get(user.uid).should_show_public_nickname else 'x'
     else:
         additional_id = 'y'
     url = get_global_url()
@@ -875,8 +875,8 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
     :param profile_picture_size: Integer
     :return: HTML-String
     """
-    db_user = DBDiscussionSession.query(User).filter_by(uid=int(uid)).first()
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=int(uid)).first()
+    db_user = DBDiscussionSession.query(User).get(int(uid))
+    db_settings = DBDiscussionSession.query(Settings).get(int(uid))
     if not db_user:
         return 'Missing author with uid ' + str(uid), False
     if not db_settings:

@@ -106,10 +106,10 @@ def get_complete_reference(ref_id=None):
     :rtype: tuple
     """
     if ref_id:
-        reference = DBDiscussionSession.query(StatementReferences).filter_by(uid=ref_id).first()
-        user = DBDiscussionSession.query(User).filter_by(uid=reference.author_uid).first()
-        issue = DBDiscussionSession.query(Issue).filter_by(uid=reference.issue_uid).first()
-        textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=reference.statement_uid).first()
+        reference = DBDiscussionSession.query(StatementReferences).get(ref_id)
+        user = DBDiscussionSession.query(User).get(reference.author_uid)
+        issue = DBDiscussionSession.query(Issue).get(reference.issue_uid)
+        textversion = DBDiscussionSession.query(TextVersion).get(reference.statement_uid)
         return reference, user, issue, textversion
 
 
@@ -125,9 +125,9 @@ def get_all_references_by_reference_text(ref_text=None):
         refs = list()
         matched = DBDiscussionSession.query(StatementReferences).filter_by(reference=ref_text).all()
         for reference in matched:
-            user = DBDiscussionSession.query(User).filter_by(uid=reference.author_uid).first()
-            issue = DBDiscussionSession.query(Issue).filter_by(uid=reference.issue_uid).first()
-            textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=reference.statement_uid).first()
+            user = DBDiscussionSession.query(User).get(reference.author_uid)
+            issue = DBDiscussionSession.query(Issue).get(reference.issue_uid)
+            textversion = DBDiscussionSession.query(TextVersion).get(reference.statement_uid)
             statement_url = url_to_statement(issue.uid, reference.statement_uid)
             refs.append({"reference": extract_reference_information(reference),
                          "author": extract_author_information(user),
@@ -162,4 +162,4 @@ def get_reference_by_id(ref_id=None):
     :return: StatementReference
     """
     if ref_id:
-        return DBDiscussionSession.query(StatementReferences).filter_by(uid=ref_id).first()
+        return DBDiscussionSession.query(StatementReferences).get(ref_id)

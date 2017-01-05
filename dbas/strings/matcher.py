@@ -38,7 +38,7 @@ def get_strings_for_start(value, issue, is_startpoint):
     return_array = []
     index = 1
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(uid=stat.textversion_uid).first()
+        db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             return_array.append(rd)
@@ -86,7 +86,7 @@ def get_strings_for_reasons(value, issue):
 
     index = 1
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(uid=stat.textversion_uid).first()
+        db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             return_array.append(rd)

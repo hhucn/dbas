@@ -553,7 +553,7 @@ def request_password(request, ui_locales):
         transaction.commit()
 
         db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-        db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
+        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         body = _t.get(_.nicknameIs) + db_user.nickname + '\n'
         body += _t.get(_.newPwdIs) + pwd

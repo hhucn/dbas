@@ -39,7 +39,7 @@ def get_d3_data(issue, nickname):
     nodes_array = []
     edges_array = []
     extras_dict = {}
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=issue).first()
+    db_issue = DBDiscussionSession.query(Issue).get(issue)
     if not db_issue:
         return {}
 
@@ -176,7 +176,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
     for argument in db_arguments:
 
         if argument.conclusion_uid is None:  # argument is undercut
-            db_target = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+            db_target = DBDiscussionSession.query(Argument).get(argument.argument_uid)
             db_undercut = argument
 
             if db_target.conclusion_uid is not None:  # first-order
@@ -186,7 +186,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
                 edge_target_dict[db_undercut.uid] = db_target.uid
             # target of undercuts on undercuts
             else:  # second-order
-                db_targets_target = DBDiscussionSession.query(Argument).filter_by(uid=db_target.argument_uid).first()
+                db_targets_target = DBDiscussionSession.query(Argument).get(db_target.argument_uid)
 
                 logger('X', '2nd order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_targets_target.uid))
                 logger('X', '2nd order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
@@ -299,7 +299,7 @@ def __get_author_of_statement(uid, db_user):
     if not db_user:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
-    db_author = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
+    db_author = DBDiscussionSession.query(User).get(db_statement.author_uid)
     gravatar = get_profile_picture(db_author, 40)
     name = db_author.get_global_nickname() if db_user.uid != db_author.uid else db_user.nickname
     return {'name': name, 'gravatar_url': gravatar}
@@ -315,7 +315,7 @@ def __get_editor_of_statement(uid, db_user):
     if not db_user:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()
-    db_editor = DBDiscussionSession.query(User).filter_by(uid=db_statement.author_uid).first()
+    db_editor = DBDiscussionSession.query(User).get(db_statement.author_uid)
     gravatar = get_profile_picture(db_editor, 40)
     name = db_editor.get_global_nickname() if db_user.uid != db_editor.uid else db_user.nickname
     return {'name': name, 'gravatar': gravatar}
@@ -378,8 +378,8 @@ def __get_extras_dict(statement):
     db_textversion_author = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).order_by(TextVersion.uid.asc()).first()
     db_textversion_modifier = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).order_by(TextVersion.uid.desc()).first()
 
-    db_author   = DBDiscussionSession.query(User).filter_by(uid=db_textversion_author.author_uid).first()
-    db_modifier = DBDiscussionSession.query(User).filter_by(uid=db_textversion_modifier.author_uid).first()
+    db_author   = DBDiscussionSession.query(User).get(db_textversion_author.author_uid)
+    db_modifier = DBDiscussionSession.query(User).get(db_textversion_modifier.author_uid)
 
     db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
                                                                     VoteStatement.is_up_vote == True,

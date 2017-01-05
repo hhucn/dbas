@@ -55,7 +55,7 @@ def create_initial_issue_rss(main_page, ui_locale):
         db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=issue.uid).all()
         items = []
         for rss in db_rss:
-            db_author = DBDiscussionSession.query(User).filter_by(uid=rss.author_uid).first()
+            db_author = DBDiscussionSession.query(User).get(rss.author_uid)
             if not db_author:
                 continue
             items.append(PyRSS2Gen.RSSItem(
@@ -80,11 +80,11 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
     :return:
     """
     logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(issue_uid))
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=issue_uid).first()
+    db_issue = DBDiscussionSession.query(Issue).get(issue_uid)
     if not db_issue:
         return None
 
-    db_author = DBDiscussionSession.query(User).filter_by(uid=author_uid).first()
+    db_author = DBDiscussionSession.query(User).get(author_uid)
     if not db_author:
         return None
 
@@ -95,7 +95,7 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
     db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=issue_uid).all()
     items = []
     for rss in db_rss:
-        db_author = DBDiscussionSession.query(User).filter_by(uid=rss.author_uid).first()
+        db_author = DBDiscussionSession.query(User).get(rss.author_uid)
         if not db_author:
             continue
         items.append(PyRSS2Gen.RSSItem(

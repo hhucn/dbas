@@ -21,7 +21,7 @@ def get_dump(issue, lang):
     ret_dict = dict()
     logger('ExportLib', 'get_dump', 'main')
 
-    db_issue = DBDiscussionSession.query(Issue).filter_by(uid=issue).first()
+    db_issue = DBDiscussionSession.query(Issue).get(issue)
     if not db_issue:
         return ret_dict
 

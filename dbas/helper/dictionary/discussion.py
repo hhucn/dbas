@@ -320,7 +320,7 @@ class DiscussionDictHelper(object):
         else:
             premise, tmp     = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
             conclusion       = get_text_for_conclusion(db_argument)
-            db_confrontation = DBDiscussionSession.query(Argument).filter_by(uid=additional_uid).first()
+            db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
             confr, tmp       = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
             sys_conclusion   = get_text_for_conclusion(db_confrontation)
             if attack == 'undermine':
@@ -334,7 +334,7 @@ class DiscussionDictHelper(object):
             user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
 
             # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
-            db_statement        = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+            db_statement        = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
             reply_for_argument  = not (db_statement and db_statement.is_startpoint)
             current_argument    = get_text_for_argument_uid(uid, with_html_tag=True, colored_position=True,
                                                             user_changed_opinion=user_changed_opinion, attack_type=attack,
@@ -479,7 +479,7 @@ class DiscussionDictHelper(object):
                                    'uid': argument.conclusion_uid})
 
         else:
-            db_conclusion_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+            db_conclusion_argument = DBDiscussionSession.query(Argument).get(argument.argument_uid)
             db_conclusion_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_conclusion_argument.premisesgroup_uid).all()
             for conclusion_premise in db_conclusion_premises:
                 statement_list.append({'text': get_text_for_statement_uid(conclusion_premise.statement_uid),

@@ -33,13 +33,13 @@ def send_edit_text_notification(db_user, textversion, path, request):
     root_author = oem.author_uid
     new_author = textversion.author_uid
     last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
-    settings_root_author = DBDiscussionSession.query(Settings).filter_by(author_uid=root_author).first()
-    settings_last_author = DBDiscussionSession.query(Settings).filter_by(author_uid=last_author).first()
+    settings_root_author = DBDiscussionSession.query(Settings).get(root_author)
+    settings_last_author = DBDiscussionSession.query(Settings).get(last_author)
 
     # create content
-    db_editor = DBDiscussionSession.query(User).filter_by(uid=new_author).first()
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_editor.uid).first()
-    db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
+    db_editor = DBDiscussionSession.query(User).get(new_author)
+    db_settings = DBDiscussionSession.query(Settings).get(db_editor.uid)
+    db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
     # logger('NotificationHelper', 'send_edit_text_notification', 'root author: ' + str(oem.author_uid))
     # logger('NotificationHelper', 'send_edit_text_notification', 'last author: ' + str(last_author))
@@ -60,17 +60,17 @@ def send_edit_text_notification(db_user, textversion, path, request):
         return None
 
     # send notifications
-    user_lang1 = DBDiscussionSession.query(Language).filter_by(uid=settings_root_author.lang_uid).first().ui_locales
-    user_lang2 = DBDiscussionSession.query(Language).filter_by(uid=settings_last_author.lang_uid).first().ui_locales
+    user_lang1 = DBDiscussionSession.query(Language).get(settings_root_author.lang_uid).ui_locales
+    user_lang2 = DBDiscussionSession.query(Language).get(settings_last_author.lang_uid).ui_locales
     if settings_root_author.should_send_notifications and root_author != db_user.uid:
         _t_user = Translator(user_lang1)
-        db_root_author = DBDiscussionSession.query(User).filter_by(uid=root_author).first()
+        db_root_author = DBDiscussionSession.query(User).get(root_author)
         send_request_for_info_popup_to_socketio(db_root_author.nickname, _t_user.get(_.textChange), path,
                                                 increase_counter=True)
 
     if last_author != root_author and last_author != new_author and last_author != db_user.uid and settings_last_author.should_send_notifications:
         _t_user = Translator(user_lang2)
-        db_last_author = DBDiscussionSession.query(User).filter_by(uid=last_author).first()
+        db_last_author = DBDiscussionSession.query(User).get(last_author)
         send_request_for_info_popup_to_socketio(db_last_author.nickname, _t_user.get(_.textChange), path,
                                                 increase_counter=True)
 
@@ -112,13 +112,13 @@ def send_add_text_notification(url, conclusion_id, user, request):
     """
     # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
     db_textversions         = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()
-    db_root_author          = DBDiscussionSession.query(User).filter_by(uid=db_textversions[0].author_uid).first()
-    db_last_editor          = DBDiscussionSession.query(User).filter_by(uid=db_textversions[-1].author_uid).first()
+    db_root_author          = DBDiscussionSession.query(User).get(db_textversions[0].author_uid)
+    db_last_editor          = DBDiscussionSession.query(User).get(db_textversions[-1].author_uid)
     db_current_user         = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    db_root_author_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_root_author.uid).first()
-    db_last_editor_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_last_editor.uid).first()
-    root_lang               = DBDiscussionSession.query(Language).filter_by(uid=db_root_author_settings.lang_uid).first().ui_locales
-    editor_lang             = DBDiscussionSession.query(Language).filter_by(uid=db_last_editor_settings.lang_uid).first().ui_locales
+    db_root_author_settings = DBDiscussionSession.query(Settings).get(db_root_author.uid)
+    db_last_editor_settings = DBDiscussionSession.query(Settings).get(db_last_editor.uid)
+    root_lang               = DBDiscussionSession.query(Language).get(db_root_author_settings.lang_uid).ui_locales
+    editor_lang             = DBDiscussionSession.query(Language).get(db_last_editor_settings.lang_uid).ui_locales
     _t_editor               = Translator(editor_lang)
     _t_root                 = Translator(root_lang)
 
@@ -180,14 +180,14 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
     :return:
     """
     # getting current argument, arguments author, current user and some settings
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=attacked_argument_uid).first()
-    db_author = DBDiscussionSession.query(User).filter_by(uid=db_argument.author_uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(attacked_argument_uid)
+    db_author = DBDiscussionSession.query(User).get(db_argument.author_uid)
     db_current_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     if db_author == db_current_user:
         return None
 
-    db_author_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_author.uid).first()
-    user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_author_settings.lang_uid).first().ui_locales
+    db_author_settings = DBDiscussionSession.query(Settings).get(db_author.uid)
+    user_lang = DBDiscussionSession.query(Language).get(db_author_settings.lang_uid).ui_locales
 
     # send notification via websocket to last author
     if db_author_settings.should_send_notifications:
@@ -251,9 +251,9 @@ def send_notification(from_user, to_user, topic, content, mainpage):
     DBDiscussionSession.flush()
     transaction.commit()
 
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=to_user.uid).first()
+    db_settings = DBDiscussionSession.query(Settings).get(to_user.uid)
     if db_settings.should_send_notifications:
-        user_lang = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first().ui_locales
+        user_lang = DBDiscussionSession.query(Language).get(db_settings.lang_uid).ui_locales
         _t_user = Translator(user_lang)
         send_request_for_info_popup_to_socketio(to_user.nickname, _t_user.get(_.newNotification),
                                                 mainpage + '/notification', increase_counter=True)
@@ -308,13 +308,13 @@ def get_box_for(user, lang, mainpage, is_inbox):
     for message in db_messages:
         tmp_dict = dict()
         if is_inbox:
-            db_from_user                   = DBDiscussionSession.query(User).filter_by(uid=message.from_author_uid).first()
+            db_from_user                   = DBDiscussionSession.query(User).get(message.from_author_uid)
             tmp_dict['show_from_author']   = db_from_user.get_global_nickname() != 'admin'
             tmp_dict['from_author']        = db_from_user.get_global_nickname()
             tmp_dict['from_author_avatar'] = get_profile_picture(db_from_user, size=30)
             tmp_dict['from_author_url']    = mainpage + '/user/' + db_from_user.public_nickname
         else:
-            db_to_user                   = DBDiscussionSession.query(User).filter_by(uid=message.to_author_uid).first()
+            db_to_user                   = DBDiscussionSession.query(User).get(message.to_author_uid)
             tmp_dict['to_author']        = db_to_user.get_global_nickname()
             tmp_dict['to_author_avatar'] = get_profile_picture(db_to_user, size=30)
             tmp_dict['to_author_url']    = mainpage + '/user/' + db_to_user.get_global_nickname()

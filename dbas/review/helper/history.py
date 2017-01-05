@@ -166,7 +166,7 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
         entry = dict()
         entry['entry_id'] = review.uid
         if table == 'deletes':
-            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=review.reason_uid).first()
+            db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(review.reason_uid)
             entry['reason'] = db_reason.reason
         entry['row_id'] = table + str(review.uid)
         entry['argument_shorttext'] = short_text
@@ -200,7 +200,7 @@ def __get_user_dict_for_review(user_id, main_page):
     :param main_page: main_page of D-BAS
     :return: dict with gravatar, users page and nickname
     """
-    db_user = DBDiscussionSession.query(User).filter_by(uid=user_id).first()
+    db_user = DBDiscussionSession.query(User).get(user_id)
     image_url = get_profile_picture(db_user, 20)
     return {
         'gravatar_url': image_url,
@@ -251,7 +251,7 @@ def revoke_old_decision(queue, uid, lang, nickname):
         DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
         db_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=uid)
         content = db_value.first().content
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_value.first().statement_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(db_value.first().statement_uid)
         db_value.delete()
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_edit=uid))
 

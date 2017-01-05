@@ -438,7 +438,7 @@ def get_information_of(db_user, lang):
     :return:
     """
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-    db_group = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first()
+    db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
     ret_dict = dict()
     ret_dict['public_nick'] = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
     ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)

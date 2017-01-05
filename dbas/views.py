@@ -659,7 +659,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     arg_id_user     = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
     attack          = match_dict['mode'] if 'mode' in match_dict else ''
     arg_id_sys      = match_dict['arg_id_sys'] if 'arg_id_sys' in match_dict else ''
-    tmp_argument    = DBDiscussionSession.query(Argument).filter_by(uid=arg_id_user).first()
+    tmp_argument    = DBDiscussionSession.query(Argument).get(arg_id_user)
     issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
 
     valid_reaction = check_reaction(arg_id_user, arg_id_sys, attack)
@@ -1514,7 +1514,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
             nickname    = request.authenticated_userid
             statement   = request.params['statement']
             issue       = issue_helper.get_issue_id(request)
-            slug        = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+            slug        = DBDiscussionSession.query(Issue).get(issue).get_slug()
 
         # escaping will be done in QueryHelper().set_statement(...)
         user_manager.update_last_action(nickname)

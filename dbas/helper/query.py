@@ -54,7 +54,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     if not db_user:
         return '', '', _tn.get(_.userNotFound)
 
-    slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+    slug = DBDiscussionSession.query(Issue).get(issue).get_slug()
     error = ''
     url = ''
     history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
@@ -88,7 +88,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     else:
         pgroups = []
         for arg_uid in new_argument_uids:
-            pgroups.append(DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first().premisesgroup_uid)
+            pgroups.append(DBDiscussionSession.query(Argument).get(arg_uid).premisesgroup_uid)
         url = _um.get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
 
     # send notifications and mails
@@ -125,7 +125,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     if not db_user:
         return '', '', _tn.get(_.userNotFound)
 
-    slug = DBDiscussionSession.query(Issue).filter_by(uid=issue).first().get_slug()
+    slug = DBDiscussionSession.query(Issue).get(issue).get_slug()
     error = ''
     history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
     supportive = attack_type == 'support' or attack_type == 'overbid'
@@ -225,12 +225,12 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
     for uid in new_argument_uids:
         pgroups.append(DBDiscussionSession.query(Argument).get(uid).premisesgroup_uid)
 
-    current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_id).first()
+    current_argument = DBDiscussionSession.query(Argument).get(arg_id)
     # relation to the arguments premise group
     if attack_type == 'undermine' or attack_type == 'support':  # TODO WHAT IS WITH PGROUPS > 1 ? CAN THIS EVEN HAPPEN IN THE WoR?
         db_premise = DBDiscussionSession.query(Premise).filter_by(
             premisesgroup_uid=current_argument.premisesgroup_uid).first()
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_premise.statement_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(db_premise.statement_uid)
         url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
 
     # relation to the arguments relation
@@ -295,7 +295,7 @@ def correct_statement(user, uid, corrected_text, url='', request=None):
 
     # duplicate or not?
     if db_textversion:
-        textversion = DBDiscussionSession.query(TextVersion).filter_by(uid=db_textversion[0].uid).first()
+        textversion = DBDiscussionSession.query(TextVersion).get(db_textversion[0].uid)
     else:
         textversion = TextVersion(content=corrected_text, author=db_user.uid)
         textversion.set_statement(db_statement.uid)
@@ -419,7 +419,7 @@ def get_logfile_for_statements(uids, lang, main_page):
 
 
 def __get_logfile_dict(textversion, main_page, lang):
-    db_author = DBDiscussionSession.query(User).filter_by(uid=textversion.author_uid).first()
+    db_author = DBDiscussionSession.query(User).get(textversion.author_uid)
     corr_dict = dict()
     corr_dict['uid'] = str(textversion.uid)
     corr_dict['author'] = str(db_author.get_global_nickname())
@@ -449,7 +449,7 @@ def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, i
     # set the new statements as premise group and get current user as well as current argument
     new_pgroup_uid = __set_statements_as_new_premisegroup(statements, user, issue)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    current_argument = DBDiscussionSession.query(Argument).filter_by(uid=arg_uid).first()
+    current_argument = DBDiscussionSession.query(Argument).get(arg_uid)
 
     new_argument = None
     if current_attack == 'undermine':
@@ -737,7 +737,7 @@ def __revoke_argument(db_user, argument_uid, translator):
     :param translator:
     :return:
     """
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     is_author = is_author_of_argument(db_user.nickname, argument_uid)
 
     # exists the argument
@@ -781,7 +781,7 @@ def __revoke_statement(db_user, statement_uid, translator):
     :return:
     """
     logger('QueryHelper', 'revoke_content', 'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
     is_author = is_author_of_statement(db_user.nickname, statement_uid)
 
     is_revoked = False

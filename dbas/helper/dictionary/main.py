@@ -166,7 +166,7 @@ class DictionaryHelper(object):
             # add everything for the island view
             if show_island_icon:
                 # does an argument exists?
-                db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_id).first()
+                db_argument = DBDiscussionSession.query(Argument).get(argument_id)
                 if db_argument:
                     island_dict = get_every_attack_for_island_view(argument_id)
 
@@ -176,7 +176,7 @@ class DictionaryHelper(object):
 
                     island_dict['premise'] = premise[0:1].lower() + premise[1:]
                     island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]
-                    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_for_island).first()
+                    db_argument = DBDiscussionSession.query(Argument).get(argument_for_island)
                     _tn = Translator(self.discussion_lang)
                     text_dict = get_relation_text_dict_with_substitution(db_argument.lang, False, True,
                                                                          db_argument.is_supportive,
@@ -212,13 +212,13 @@ class DictionaryHelper(object):
         statements  = get_count_of_statements_of_user(db_user, False) if db_user else 0
         arg_vote, stat_vote = get_count_of_votes_of_user(db_user) if db_user else (0, 0)
         public_nick = db_user.get_global_nickname() if db_user else ''
-        db_group    = DBDiscussionSession.query(Group).filter_by(uid=db_user.group_uid).first() if db_user else None
+        db_group    = DBDiscussionSession.query(Group).get(db_user.group_uid) if db_user else None
         group       = db_group.name if db_group else '-'
         gravatar_public_url = get_public_profile_picture(db_user)
         reputation, tmp = get_reputation_of(db_user.nickname)
 
         db_settings = DBDiscussionSession.query(Settings).get(db_user.uid) if db_user else None
-        db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first() if db_settings else None
+        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid) if db_settings else None
 
         return {
             'passwordold': '' if success else old_pw,

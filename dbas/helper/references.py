@@ -73,7 +73,7 @@ def __get_values_of_reference(reference, main_page):
     :param main_page: current main page
     :return: Dictionary with all columns
     """
-    db_user = DBDiscussionSession.query(User).filter_by(uid=int(reference.author_uid)).first()
+    db_user = DBDiscussionSession.query(User).get(int(reference.author_uid))
 
     img = get_profile_picture(db_user, 20, True)
     name = db_user.get_global_nickname()

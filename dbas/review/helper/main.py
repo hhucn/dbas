@@ -67,7 +67,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, appli
     logger('review_main_helper', 'add_review_opinion_for_delete', 'main')
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_review = DBDiscussionSession.query(ReviewDelete).filter_by(uid=review_uid).first()
+    db_review = DBDiscussionSession.query(ReviewDelete).get(review_uid)
     if db_review.is_executed:
         logger('review_main_helper', 'add_review_opinion_for_delete', 'already executed')
         return ''
@@ -76,7 +76,7 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, appli
         logger('review_main_helper', 'add_review_opinion_for_delete', 'already executed')
         return _t.get(_.justLookDontTouch)
 
-    db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
+    db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
     # add new vote
     __add_vote_for(db_user, db_review, not should_delete, LastReviewerDelete)
     broke_limit = False
@@ -135,7 +135,7 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, applicat
     logger('review_main_helper', 'add_review_opinion_for_edit', 'main')
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_review = DBDiscussionSession.query(ReviewEdit).filter_by(uid=review_uid).first()
+    db_review = DBDiscussionSession.query(ReviewEdit).get(review_uid)
     if db_review.is_executed:
         logger('review_main_helper', 'add_review_opinion_for_delete', 'already executed')
         return ''
@@ -144,7 +144,7 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, applicat
         logger('review_main_helper', 'add_review_opinion_for_delete', 'already executed')
         return _t.get(_.justLookDontTouch)
 
-    db_user_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
+    db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
     broke_limit = False
 
     # add new vote
@@ -200,7 +200,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     logger('review_main_helper', 'add_review_opinion_for_optimization',
            'main ' + str(review_uid) + ', optimize ' + str(should_optimized))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_review = DBDiscussionSession.query(ReviewOptimization).filter_by(uid=review_uid).first()
+    db_review = DBDiscussionSession.query(ReviewOptimization).get(review_uid)
     if not db_review or db_review.is_executed:
         logger('review_main_helper', 'add_review_opinion_for_delete', 'not found / already executed')
         return ''
@@ -236,7 +236,7 @@ def __keep_the_element(db_review, application_url, _t):
     :return:
     """
     # add new vote
-    db_user_who_created_flag = DBDiscussionSession.query(User).filter_by(uid=db_review.detector_uid).first()
+    db_user_who_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
 
     # get all keep and delete votes
     db_keep_version = DBDiscussionSession.query(LastReviewerOptimization).filter(
@@ -352,7 +352,7 @@ def en_or_disable_statement_and_premise_of_review(review, is_disabled):
     :return:
     """
     logger('review_main_helper', 'en_or_disable_statement_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=review.statement_uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(review.statement_uid)
     db_statement.set_disable(is_disabled)
     DBDiscussionSession.add(db_statement)
     db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).all()
@@ -371,19 +371,19 @@ def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     :return:
     """
     logger('review_main_helper', 'en_or_disable_arguments_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=review.argument_uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(review.argument_uid)
     db_argument.set_disable(is_disabled)
     DBDiscussionSession.add(db_argument)
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 
     for premise in db_premises:
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(premise.statement_uid)
         db_statement.set_disable(is_disabled)
         premise.set_disable(is_disabled)
         DBDiscussionSession.add(premise)
 
     if db_argument.conclusion_uid is not None:
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
         db_statement.set_disable(is_disabled)
         DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
@@ -398,7 +398,7 @@ def accept_edit_review(review, db_user_created_flag):
     :return:
     """
     db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).all()
-    db_user = DBDiscussionSession.query(User).filter_by(uid=review.detector_uid).first()
+    db_user = DBDiscussionSession.query(User).get(review.detector_uid)
     for value in db_values:
         correct_statement(db_user.nickname, value.statement_uid, value.content)
         # val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)

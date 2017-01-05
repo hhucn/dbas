@@ -167,15 +167,15 @@ def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     if rnd_review.statement_uid is None:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
         text = get_text_for_argument_uid(db_argument.uid)
-        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+        issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
     else:
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = get_text_for_statement_uid(db_statement.uid)
-        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
+        issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
 
-    db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(uid=rnd_review.reason_uid).first()
+    db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(rnd_review.reason_uid)
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
 
     reason = ''
@@ -231,14 +231,14 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     if rnd_review.statement_uid is None:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
         text = get_text_for_argument_uid(db_argument.uid)
-        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+        issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
         parts = __get_text_parts_of_argument(db_argument)
     else:
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = get_text_for_statement_uid(db_statement.uid)
-        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
+        issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
         parts = [__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
 
     reason = translator.get(_.argumentFlaggedBecauseOptimization)
@@ -292,13 +292,13 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     if rnd_review.statement_uid is None:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=rnd_review.argument_uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
         text = get_text_for_argument_uid(db_argument.uid)
-        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_argument.issue_uid).first().title
+        issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
     else:
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=rnd_review.statement_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = get_text_for_statement_uid(db_statement.uid)
-        issue = DBDiscussionSession.query(Issue).filter_by(uid=db_statement.issue_uid).first().title
+        issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseEdit)
 
     # build correction
@@ -350,7 +350,7 @@ def __get_stats_for_review(review, ui_locales, main_page):
     # len_supports = len(supports) if supports else 0
     # attacks = len_undermines + len_undercuts + len_rebuts
 
-    db_reporter = DBDiscussionSession.query(User).filter_by(uid=review.detector_uid).first()
+    db_reporter = DBDiscussionSession.query(User).get(review.detector_uid)
 
     stats = dict()
     stats['reported'] = sql_timestamp_pretty_print(review.timestamp, ui_locales)
@@ -386,7 +386,7 @@ def __get_text_parts_of_argument(argument):
         logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add statement of argument ' + str(argument.uid))
         ret_list.append(__get_part_dict('conclusion', conclusion, argument.uid, argument.conclusion_uid))
     else:  # or get the conclusions argument
-        db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument.argument_uid).first()
+        db_conclusions_argument = DBDiscussionSession.query(Argument).get(argument.argument_uid)
 
         while db_conclusions_argument.argument_uid is not None:  # get further conclusions arguments
 
@@ -397,7 +397,7 @@ def __get_text_parts_of_argument(argument):
                 logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'add premise of argument ' + str(db_conclusions_argument.uid))
                 ret_list.append(__get_part_dict('premise', text, db_conclusions_argument.uid, uid))
 
-            db_conclusions_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_conclusions_argument.argument_uid).first()
+            db_conclusions_argument = DBDiscussionSession.query(Argument).get(db_conclusions_argument.argument_uid)
 
         # get the last conclusion of the chain
         conclusion = get_text_for_statement_uid(db_conclusions_argument.conclusion_uid)
@@ -416,8 +416,6 @@ def __get_part_dict(typeof, text, argument, uid):
     :param uid:
     :return:
     """
-    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
-    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
     logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
     return {'type': typeof,
             'text': text,

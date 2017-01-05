@@ -165,7 +165,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=db_review.statement_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(db_review.statement_uid)
         self.assertTrue(db_statement.is_disabled)
         self.assertEquals(db_reputation1 + 1, db_reputation2)
 

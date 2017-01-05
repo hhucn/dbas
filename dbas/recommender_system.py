@@ -91,7 +91,7 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
         history = history.split('-')
         redirected_from_jump = 'jump' in history[-2 if len(history) > 1 else -1]
     # TODO COMMA16 Special Case (forbid: undercuts of undercuts)
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     is_current_arg_undercut = db_argument.argument_uid is not None
     tmp = restriction_on_attacks if restriction_on_attacks else ''
     restriction_on_attacks = [tmp, 'undercut' if is_current_arg_undercut and not redirected_from_jump else '']

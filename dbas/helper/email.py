@@ -63,15 +63,15 @@ def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, u
     :param request: self.request
     :return: duple with boolean for sent message, message-string
     """
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
-    db_textversion_old = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).first()
-    db_textversion_new = DBDiscussionSession.query(TextVersion).filter_by(uid=db_statement.uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
+    db_textversion_old = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid)
+    db_textversion_new = DBDiscussionSession.query(TextVersion).get(db_statement.uid)
 
-    db_previous_author = DBDiscussionSession.query(User).filter_by(uid=previous_author).first() if isinstance(previous_author, int) else previous_author
-    db_current_author = DBDiscussionSession.query(User).filter_by(uid=current_author).first() if isinstance(current_author, int) else current_author
+    db_previous_author = DBDiscussionSession.query(User).get(previous_author) if isinstance(previous_author, int) else previous_author
+    db_current_author = DBDiscussionSession.query(User).get(current_author) if isinstance(current_author, int) else current_author
 
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_previous_author.uid).first()
-    db_language = DBDiscussionSession.query(Language).filter_by(uid=db_settings.lang_uid).first()
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_previous_author.uid)
+    db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
     _t = Translator(db_language.ui_locales)
     subject = _t.get(_.textversionChangedTopic)

@@ -30,7 +30,7 @@ def add_vote_for_argument(argument_uid, user):
         return None
 
     logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
 
     # user has seen this argument
     if db_user:
@@ -38,7 +38,7 @@ def add_vote_for_argument(argument_uid, user):
         __premisegroup_seen_by_user(db_user.uid, db_argument.premisesgroup_uid)
 
     if db_argument.argument_uid is None:
-        db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_argument.conclusion_uid).first()
+        db_conclusion = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
         # set vote for the argument (relation), its premisegroup and conclusion
         __vote_argument(db_argument, db_user, True)
         __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
@@ -46,7 +46,7 @@ def add_vote_for_argument(argument_uid, user):
 
     else:
         db_conclusion_argument = DBDiscussionSession.query(Argument).filter_by(argument_uid=db_argument.argument_uid).first()
-        db_conclusion_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=db_conclusion_argument.conclusion_uid).first()
+        db_conclusion_conclusion = DBDiscussionSession.query(Statement).get(db_conclusion_argument.conclusion_uid)
 
         # vote for conclusions argument based on support property of current argument
         __vote_argument(db_conclusion_argument, db_user, db_argument.is_supportive)
@@ -75,7 +75,7 @@ def add_vote_for_statement(statement_uid, user, supportive):
     """
     logger('VotingHelper', 'add_vote_for_statement', 'increasing statement ' + str(statement_uid) + ' vote')
 
-    db_statement = DBDiscussionSession.query(Statement).filter_by(uid=statement_uid).first()
+    db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     if db_user:
         __vote_statement(db_statement, db_user, supportive)
@@ -111,7 +111,7 @@ def add_seen_argument(argument_uid, user_uid):
     __argument_seen_by_user(user_uid, argument_uid)
 
     # getting all statements out of the premise
-    db_argument = DBDiscussionSession.query(Argument).filter_by(uid=argument_uid).first()
+    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
     logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', premise count ' + str(len(db_premises)))
     for p in db_premises:
@@ -120,7 +120,7 @@ def add_seen_argument(argument_uid, user_uid):
 
     # find the conclusion and mark all arguments on the way
     while db_argument.conclusion_uid is None:
-        db_argument = DBDiscussionSession.query(Argument).filter_by(uid=db_argument.argument_uid).first()
+        db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
         __argument_seen_by_user(user_uid, argument_uid)
     logger('VotingHelper', 'add_seen_argument', 'conclusion ' + str(db_argument.conclusion_uid))
     __statement_seen_by_user(user_uid, db_argument.conclusion_uid)
@@ -255,7 +255,7 @@ def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
     for premise in db_premises:
-        db_statement = DBDiscussionSession.query(Statement).filter_by(uid=premise.statement_uid).first()
+        db_statement = DBDiscussionSession.query(Statement).get(premise.statement_uid)
         __vote_statement(db_statement, user, is_up_vote)
 
 

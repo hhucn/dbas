@@ -373,7 +373,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     """
 
     logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
-    db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
+    db_statement = DBDiscussionSession.query(Statement).get(statement_uid) if statement_uid else None
     _t = Translator(lang)
     title = _t.get(_.agreeVsDisagree)
 

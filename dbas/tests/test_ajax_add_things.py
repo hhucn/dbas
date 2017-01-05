@@ -30,7 +30,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         for premise in db_premises:
             tmp = premise.statement_uid
             premise.statement_uid = 1
-            DBDiscussionSession.query(Statement).filter_by(uid=tmp).first().textversion_uid = 1
+            DBDiscussionSession.query(Statement).get(tmp).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=tmp).delete()
         # delete premisegroup

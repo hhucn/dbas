@@ -722,7 +722,7 @@ def get_name_link_of_arguments_author(main_page, argument, nickname):
     :return:
     """
     text, is_okay = get_author_data(main_page, argument.author_uid, False, True)
-    db_user = DBDiscussionSession.query(User).filter_by(uid=argument.author_uid).first()
+    db_user = DBDiscussionSession.query(User).get(argument.author_uid)
     gender = db_user.gender if db_user else 'n'
 
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
@@ -748,7 +748,7 @@ def get_name_link_of_arguments_author(main_page, argument, nickname):
 
         if db_vote:
             text, is_okay = get_author_data(main_page, db_vote.author_uid, False, True)
-            db_user = DBDiscussionSession.query(User).filter_by(uid=db_vote.author_uid).first()
+            db_user = DBDiscussionSession.query(User).get(db_vote.author_uid)
             gender = db_user.gender if db_user else 'n'
         else:
             return '', '', False
@@ -796,7 +796,7 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
     for vote in votes:
         text, is_okay = get_author_data(main_page, vote.author_uid, False, True)
         if is_okay:
-            db_user = DBDiscussionSession.query(User).filter_by(uid=vote.author_uid).first()
+            db_user = DBDiscussionSession.query(User).get(vote.author_uid)
             gender = db_user.gender if db_user else 'n'
             break
 
