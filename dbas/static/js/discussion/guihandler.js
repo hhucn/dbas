@@ -657,7 +657,7 @@ function GuiHandler() {
 		let rows = [];
 		
 		$.each(users_array, function (index, val) {
-			let img = $.parseHTML('<img class="img-circle" style="height: 40%; padding-left: 0.5em;" src="' + val.avatar_url + '">');
+			let img = $.parseHTML('<img class="img-circle" style="height: 40%; margin-left: 0.5em;" src="' + val.avatar_url + '">');
 			let span = $('<span>').text(val.nickname);
 			let link = $('<td>').append($('<a>').attr({
 				'target': '_blank',

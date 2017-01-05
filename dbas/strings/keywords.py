@@ -594,6 +594,7 @@ class Keywords(Enum):
     heSays = 'He says'
     sheSays = 'She says'
     theyThink = 'They think'
+    participantsThink = 'Other participants think'
     heThinks = 'he thinks'
     sheThinks = 'she thinks'
     thisIsACopyOfMail = 'This is a copy of your mail'

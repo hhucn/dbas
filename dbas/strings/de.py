@@ -602,6 +602,7 @@ de_lang = {
     _.heSays: 'Er sagt, dass',
     _.sheSays: 'Sie sagt, dass',
     _.theyThink: 'Sie denken, dass',
+    _.participantsThink: 'Die anderen Teilnehmer denken, dass',
     _.heThinks: 'Er denkt, dass',
     _.sheThinks: 'Sie denkt, dass',
     _.thisIsACopyOfMail: 'Dies ist eine Kopie Ihrer Mail',
