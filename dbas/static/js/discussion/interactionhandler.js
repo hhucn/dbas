@@ -245,9 +245,9 @@ function InteractionHandler() {
 		} else {
 			console.log(parsedData['is_deleted']);
 			if (parsedData['is_deleted'])
-				setGlobalSuccessHandler('Yeah', _t_discussion(dataRemoved));
+				setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
 			else
-				setGlobalSuccessHandler('Yeah', _t_discussion(contentWillBeRevoked));
+				setGlobalSuccessHandler('Yeah!', _t_discussion(contentWillBeRevoked));
 		}
 	};
 

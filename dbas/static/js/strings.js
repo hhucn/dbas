@@ -270,6 +270,7 @@ const valid                           = 'valid';
 const vote                            = 'vote';
 const votes                           = 'votes';
 const youAreAbleToReviewNow           = 'youAreAbleToReviewNow';
+const yourAreNotTheAuthorOfThisAnymore = 'yourAreNotTheAuthorOfThisAnymore'
 const weak                            = 'weak';
 
 const next                            = 'next';
@@ -501,6 +502,7 @@ const dbas_en = {
     'usersWithSameOpinion': 'Users with same opinion',
     'unpinNavigation': 'Unpin Navigation',
     'youAreAbleToReviewNow': 'You are now able to visit the review section.',
+    'yourAreNotTheAuthorOfThisAnymore': 'You are not the author of this post anymore.',
     'valid': 'Valid',
     'veryweak': 'very weak',
     'vote': 'vote',
@@ -719,6 +721,7 @@ const dbas_de = {
     'valid': 'Gültigkeit',
     'veryweak': 'sehr schwach',
     'youAreAbleToReviewNow': 'Sie können nun andere Beiträge begutachten.',
+    'yourAreNotTheAuthorOfThisAnymore': 'Sie werden nicht mehr als Autor des Beitrags angezeigt.',
     'vote': 'Stimme',
     'votes': 'Stimmen',
     'weak': 'schwach',

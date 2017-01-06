@@ -52,7 +52,7 @@ class Keywords(Enum):
     errorTryLateOrContant = 'An error occurred, please try again later or contact the author'
     accountWasAdded = 'Your account {} was added and you are now able to log in.'
     accountRegistration = 'D-BAS Account Registration'
-    accountWasRegistered = 'Your account {} was successfully registered for this e-mail.'
+    accountWasRegistered = 'Your account {} was successfully registered for this e-mail ({}).'
     accoutErrorTryLateOrContant = 'Your account could not be added. Please try again or contact the author.'
     nicknameIs = 'Your nickname is = '
     newPwdIs = 'Your new password is = '

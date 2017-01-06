@@ -75,6 +75,7 @@ def __get_all_statements(issue):
         tmp_dict['uid']             = statement.uid
         tmp_dict['textversion_uid'] = statement.textversion_uid
         tmp_dict['is_startpoint']   = statement.is_startpoint
+        tmp_dict['is_disabled']     = statement.is_disabled
         statement_dict[str(index)]  = tmp_dict
     return statement_dict, statement_uid_set
 
@@ -89,6 +90,7 @@ def __get_all_textversions(statement_uid_set, lang):
             tmp_dict['statement_uid']    = textversion.statement_uid
             tmp_dict['content']          = textversion.content
             tmp_dict['author_uid']       = textversion.author_uid
+            tmp_dict['is_disabled']      = textversion.is_disabled
             tmp_dict['timestamp']        = sql_timestamp_pretty_print(textversion.timestamp, lang)
             textversion_dict[str(index)] = tmp_dict
     return textversion_dict
@@ -108,6 +110,7 @@ def __get_all_arguments(issue, lang):
         tmp_dict['conclusion_uid']      = argument.conclusion_uid if argument.conclusion_uid else 0
         tmp_dict['argument_uid']        = argument.argument_uid if argument.argument_uid else 0
         tmp_dict['is_supportive']       = argument.is_supportive
+        tmp_dict['is_disabled']         = argument.is_disabled
         tmp_dict['author_uid']          = argument.author_uid
         tmp_dict['timestamp']           = sql_timestamp_pretty_print(argument.timestamp, lang)
         argument_dict[str(index)]       = tmp_dict
@@ -137,6 +140,7 @@ def __get_all_premises(issue, premisegroup_uid_set, lang):
             tmp_dict['premisesgroup_uid'] = premise.premisesgroup_uid
             tmp_dict['statement_uid']     = premise.statement_uid
             tmp_dict['is_negated']        = premise.is_negated
+            tmp_dict['is_disabled']       = premise.is_disabled
             tmp_dict['author_uid']        = premise.author_uid
             tmp_dict['timestamp']         = sql_timestamp_pretty_print(premise.timestamp, lang)
             premise_dict[str(index)]      = tmp_dict
@@ -177,8 +181,7 @@ def get_minimal_graph_export(issue):
     """
     Returns type of tables column
 
-    :param table: current table
-    :param col_name: current columns name
+    :param issue: current issue
     :return: String or raise NameError
     """
     if is_integer(issue):

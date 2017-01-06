@@ -4,7 +4,8 @@
 
 ## 1.0.0 (2017-01-02)
 - reCAPTCHAS
-- Minor improvements and bugfix
+- Minor improvements and language bugfix
+- Guided tour at the beginning
 
 ## 0.9.1 (2016-12-18)
 - Notification if a user is able to review

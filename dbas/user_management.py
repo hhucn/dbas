@@ -588,16 +588,16 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
     transaction.commit()
 
     # sanity check, whether the user exists
-    checknewuser = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if checknewuser:
-        logger('UserManagement', 'create_new_user', 'New data was added with uid ' + str(checknewuser.uid))
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user:
+        logger('UserManagement', 'create_new_user', 'New data was added with uid ' + str(db_user.uid))
         success = _t.get(_.accountWasAdded).format(nickname)
 
         # sending an email
         subject = _t.get(_.accountRegistration)
-        body = _t.get(_.accountWasRegistered).format('"' + nickname + '"')
+        body = _t.get(_.accountWasRegistered).format('"' + nickname + '"', email)
         email_helper.send_mail(request, subject, body, email, ui_locales)
-        send_welcome_notification(checknewuser.uid)
+        send_welcome_notification(db_user.uid)
 
     else:
         logger('UserManagement', 'create_new_user', 'New data was not added')
