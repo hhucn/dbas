@@ -48,7 +48,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
         ret_text += ' ' + conclusion + ' '
         ret_text += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
     if attack_type == 'undercut':
-        ret_text = confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor) + ' ' + conclusion
+        ret_text = confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(conclusion)
     if attack_type == 'overbid':
         ret_text = confrontation + ', ' + _t.get(_.andIDoBelieveCounterFor) + ' ' + conclusion
     # + '.' + _t.get(_.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
@@ -76,11 +76,6 @@ def get_header_for_users_confrontation_response(lang, premise, attack_type, conc
     """
     _t = Translator(lang)
 
-    system_msg = ''
-    premise    = premise[0:1].lower() + premise[1:]
-    if lang != 'de':
-        conclusion = conclusion[0:1].lower() + conclusion[1:]
-
     if premise[-1] == '.':
         premise = premise[:-1]
 
@@ -103,8 +98,7 @@ def get_header_for_users_confrontation_response(lang, premise, attack_type, conc
         user_msg = ''
 
     # is logged in?
-    if is_logged_in:
-        system_msg = _t.get(_.canYouGiveAReasonForThat)
+    system_msg = _t.get(_.canYouGiveAReasonForThat) if is_logged_in else ''
 
     return user_msg, system_msg
 
@@ -140,10 +134,10 @@ def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _
 
 
 def __get_user_msg_for_users_undercut_response(premise, conclusion, r, is_supportive, _t):
-    user_msg = r + premise + ', '
-    user_msg += _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
-    user_msg += ' ' + conclusion + '.'
-    return user_msg
+    tmp = _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
+    tmp = tmp.format(conclusion)
+
+    return r + premise + ', ' + tmp + '.'
 
 
 def __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t):
@@ -298,12 +292,11 @@ def __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, s
 
     ret_dict['undercut_text'] = r + premise + _t.get(_.itIsTrue2) + ', '
     if is_dont_know:
-        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgumentFor)
+        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgumentFor).format(conclusion) + '.'
     elif not is_attacking or not attack_type == 'undercut':
-        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgument)
+        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgument).format(conclusion) + '.'
     else:
-        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveCounter)
-    ret_dict['undercut_text'] += ' ' + conclusion + '.'
+        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveCounter).format(conclusion) + '.'
 
     ret_dict['rebut_text'] = r + premise + _t.get(_.itIsTrue2) + ' '
     # ret_dict['rebut_text'] += (_t.get(_.iAcceptCounter) if is_attacking else _t.get(_.iAcceptArgument))
@@ -543,8 +536,7 @@ def __get_text_dict_for_attacks_only(lang, premises, conclusion, start_lower_cas
     counter_justi = ' ' + conclusion + ', ' + _t.get(_.because).toLocaleLowerCase() + ' ' + premise
 
     ret_dict['undermine_text'] = w + ', ' + premise + '.'
-    ret_dict['undercut_text'] = r + ', ' + conclusion + ', ' + _t.get(
-        _.butIDoNotBelieveArgumentFor) + ' ' + counter_justi + '.'
+    ret_dict['undercut_text'] = r + ', ' + conclusion + ', ' + _t.get(_.butIDoNotBelieveArgumentFor).format(counter_justi) + '.'
     ret_dict['rebut_text'] = r + ', ' + premise + ' ' + _t.get(_.iAcceptArgumentThat) + ' ' + conclusion + '. '
     ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgumentRejectingThat) + ' ' + conclusion + '.'
     ret_dict['no_opinion_text'] = _t.get(_.iNoOpinion) + ': ' + conclusion + ', ' + _t.get(

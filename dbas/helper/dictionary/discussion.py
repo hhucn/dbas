@@ -238,7 +238,8 @@ class DiscussionDictHelper(object):
         end = '</' + tag_type + '>'
         user_msg = start + user_msg[:-1] + end
 
-        sys_msg = _tn.get(_.whatIsYourMostImportantReasonFor) + ': ' + user_msg + '?<br>' + _tn.get(_.because) + '...'
+        sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument) if attack == 'undercut' else _tn.get(_.whatIsYourMostImportantReasonFor)
+        sys_msg += ': ' + user_msg + '?<br>' + _tn.get(_.because) + '...'
         # bubble_user = history_helper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() + user_msg[1:], omit_url=True, lang=self.lang)
 
         self.__append_now_bubble(bubbles_array)
