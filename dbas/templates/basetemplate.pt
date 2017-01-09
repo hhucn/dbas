@@ -3,6 +3,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout" tal:attributes="xml:lang extras.ui_locales">
 
 <head>
+	<meta name="google-site-verification" content="u3fQwV9ImqboTAEyPUoNlS7LNF0gAGaIb67qg-aD9JY" />
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
