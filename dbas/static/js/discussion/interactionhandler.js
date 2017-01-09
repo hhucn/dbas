@@ -136,8 +136,8 @@ function InteractionHandler() {
 		} else {
 			author = _t_discussion(an_anonymous_user);
 		}
-		text = _t_discussion(messageInfoStatementCreatedBy) + ' ' + author  + ', ';
-		text += parsedData.timestamp + '. ';
+		text = _t_discussion(messageInfoStatementCreatedBy) + ' ' + author;
+		text += ' (' + parsedData.timestamp + '). ';
 		text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
 		text +=_t_discussion(messageInfoParticipant) + '.';
 

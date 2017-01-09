@@ -183,9 +183,17 @@ function Main () {
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		let trianglel = $('.triangle-l');
 		trianglel.find('.triangle-content :not(a)').click(function () {
-			if ($(this).closest('p').attr('id').indexOf(questionBubbleId) != -1) {
-				let uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
+			let url = window.location.href;
+			if (url.indexOf('/d?history') != -1) {
+				url = url.split('/d?history');
+				url = url[0].split('/');
+				let uid = url[url.length - 1];
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
+			} else {
+				if ($(this).closest('p').attr('id').indexOf(questionBubbleId) != -1) {
+					let uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
+					ajaxHandler.getMoreInfosAboutArgument(uid, true);
+				}
 			}
 		});
 		// do not hover the other spans on hovering the name

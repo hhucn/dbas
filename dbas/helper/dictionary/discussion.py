@@ -260,6 +260,8 @@ class DiscussionDictHelper(object):
         add_premise_text = ''
         save_statement_url = 'ajax_set_new_start_statement'
         gender = ''
+        b = '<' + tag_type + '>'
+        e = '</' + tag_type + '>'
 
         if uid != 0:
             text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True, start_with_intro=True)
@@ -268,11 +270,11 @@ class DiscussionDictHelper(object):
                 text = ''
             author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_argument, nickname)
             if is_okay:
-                intro = author + ' ' + _tn.get(_.thinksThat)
+                intro = author + ' ' + b + _tn.get(_.thinksThat) + e
             else:
-                intro = _tn.get(_.otherParticipantsThinkThat)
+                intro = b + _tn.get(_.otherParticipantsThinkThat) + e
             sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
-            sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
+            sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
             bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text)
             bubbles_array.append(bubble_sys)
 
