@@ -615,7 +615,6 @@ class Keywords(Enum):
     herPosition = 'her point of view'
     theirReason = 'their reason'
     herReason = 'her reason'
-    herReasonGenitiv = 'her reason '
     hisReason = 'his reason'
 
     textChange = 'Some statement of yours was edited.'

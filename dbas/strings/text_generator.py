@@ -342,7 +342,8 @@ def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_p
         ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut).format(premise, tmp)
 
     if is_dont_know:
-        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut_for_dont_know).format(premise, conclusion, conclusion.replace('ihre', 'ihrer'))
+        conclusion_genitiv = conclusion.replace('ihre', 'ihrer').replace('seine', 'seiner')
+        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut_for_dont_know).format(premise, conclusion, conclusion_genitiv)
     else:
         conclusion_user = start_position + _t.get(_.myPosition) + end_tag
         ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut).format(premise, conclusion, conclusion_user)
@@ -658,17 +659,17 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
         confrontation_text = (author + ' ' + b) if is_okay else b
         if is_okay:
-            bind = b + _t.get(_.otherUsersClaimStrongerArgumentS)
+            bind = b + _t.get(_.otherUsersClaimStrongerArgumentS) + e
         else:
-            bind = b + _t.get(_.otherUsersClaimStrongerArgumentP)
+            bind = b + _t.get(_.otherUsersClaimStrongerArgumentP) + e
         confrontation_text += bind.format(_t.get(_.reject if user_is_attacking else _.accept))
-        confrontation_text += ' ' + conclusion + '.' + ' '
+        confrontation_text += ' ' + conclusion + '.' + ' ' + b
         if is_okay:
             confrontation_text += _t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)
         else:
             confrontation_text += _t.get(_.theySay)
         confrontation_text += ' ' if lang == 'de' else ': '
-        confrontation_text += confrontation + e
+        confrontation_text += e + confrontation
 
     else:  # reply for premise group
         if is_okay:
@@ -684,10 +685,10 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
         confrontation_text += ' ' + start_argument
         confrontation_text += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
-        confrontation_text += e
+        confrontation_text += end_tag
 
         if lang == 'de':
-            confrontation_text += end_tag + ' ' + b + _t.get(_.of) + ': ' + e
+            confrontation_text += ' ' + b + _t.get(_.of) + ': ' + e
 
         tmp = _t.get(_.strongerStatementEnd)
         if tmp == '':

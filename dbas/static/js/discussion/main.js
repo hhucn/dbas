@@ -188,6 +188,20 @@ function Main () {
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			}
 		});
+		// do not hover the other spans on hovering the name
+		trianglel.find('.triangle-content a').hover(function() {
+			trianglel.find('.triangle-content :not(a)').each(function(){
+				if (!('argumentationType' in $(this).data())){
+					$(this).css('color', '#000');
+				}
+			});
+		}, function() {
+			trianglel.find('.triangle-content :not(a)').each(function(){
+				if (!('argumentationType' in $(this).data())){
+					$(this).css('color', '');
+				}
+			});
+		});
 		
 		trianglel.find('.triangle-flag').click(function () {
 			let uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
@@ -509,7 +523,7 @@ function Main () {
 	};
 	
 	/**
-	 *
+	 * Sets some style options for the window
 	 */
 	this.setWindowOptions = function () {
 		// ajax loading animation
@@ -643,7 +657,6 @@ function Main () {
 		}
 		
 		// options for the extra buttons, where the user can add input!
-		
 		if (input.length == 0) {
 			let el = $('.line-wrapper-l').last().find('span');
 			el.hover(function () {
