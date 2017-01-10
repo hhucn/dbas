@@ -51,7 +51,7 @@ function AjaxGraphHandler(){
 			url: url,
 			type: 'GET',
 			dataType: 'json',
-			data: {issue: getCurrentIssueId()},
+			data: {issue: getCurrentIssueId(), path: window.location.href},
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);

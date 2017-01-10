@@ -126,6 +126,76 @@ def get_doj_data(issue):
         return {}
 
 
+def get_path_of_user(base_url, path, issue):
+    """
+
+    :param base_url:
+    :param path:
+    :param issue:
+    :return:
+    """
+    logger('Graph.lib', 'get_path_of_user', 'main ' + path)
+
+    # replace everything what we do not need
+    db_issue = DBDiscussionSession.query(Issue).get(issue)
+    kill_it = [base_url, '/discuss/', '/discuss', db_issue.get_slug(), '#graph']
+    for k in kill_it:
+        path = path.replace(k, '')
+
+    # split in current step and history
+    if '?history=' in path:
+        current, history = path.split('?history=')
+        history = history.split('-')
+        history += [current]
+    else:
+        history = [path]
+
+    tmp_list = []
+    for h in history:
+        steps = __get_statements_of_path_step(h)
+        if steps:
+            tmp_list += steps
+
+    logger('Graph.lib', 'get_path_of_user', 'returning tmp statement ' + str(tmp_list))
+    # return same neighbours
+    if len(tmp_list) > 1:
+        ret_list = [x for index, x in enumerate(tmp_list[:-1]) if tmp_list[index] != tmp_list[index+1]] + [tmp_list[-1]]
+    else:
+        ret_list = tmp_list
+
+    logger('Graph.lib', 'get_path_of_user', 'returning statement ' + str(ret_list))
+    return ret_list
+
+
+def __get_statements_of_path_step(step):
+    statements = []
+    splitted = step.split('/')
+
+    if 'attitude' in step:
+        statements.append([int(splitted[2])])
+
+    elif 'justify' in step:
+        if len(splitted) == 4:  # statement
+            statements.append([int(splitted[2])])
+        else:  # argument
+            db_argument = DBDiscussionSession.query(Argument).get(splitted[2])
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid)
+            statements.append([premise.statement_uid for premise in db_premises])
+
+    elif 'reaction' in step:
+        db_argument = DBDiscussionSession.query(Argument).get(splitted[2])
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid)
+        statements.append([premise.statement_uid for premise in db_premises])
+
+    # reaction / {arg_id_user}
+    # justify / {statement_or_arg_id}
+    # attitude / * statement_id
+    # choose / {is_argument}
+    # jump / {arg_id}
+
+    return statements if len(statements) > 0 else None
+
+
 def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x, y, node_size, position_size, edge_size, edge_type):
     all_ids = []
     nodes = []
