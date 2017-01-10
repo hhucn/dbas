@@ -133,17 +133,16 @@ def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
         return False
 
     # which pgroups has the conclusion as premise
-    db_attacked_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=db_attacking_arg.conclusion_uid).all()
-    if not db_attacked_premise:
+    db_attacked_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=db_attacking_arg.conclusion_uid).all()
+    if not db_attacked_premises:
         return False
 
-    # and does the attacked argument has this premisegroup as premisegroup
-    for premise in db_attacked_premise:
+    for premise in db_attacked_premises:
         db_attacked_arg = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == attacked_arg_uid,
-                                                                          Argument.premisesgroup_uid == premise.premisesgroup_uid,
-                                                                          Argument.is_supportive == False)).first()
+                                                                          Argument.premisesgroup_uid == premise.premisesgroup_uid)).first()
         if db_attacked_arg:
             return True
+
     return False
 
 
