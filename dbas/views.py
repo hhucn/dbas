@@ -1818,7 +1818,7 @@ def set_new_issue(request):
 @view_config(route_name='ajax_set_seen_statements', renderer='json')
 def set_seen_statements(request):
     """
-    Set statements as seen
+    Set statements as seen, when they were hidden
 
     :return: json
     """

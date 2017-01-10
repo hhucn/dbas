@@ -102,7 +102,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
 def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, attack_type, premisegroups,
                                                             issue, user, for_api, mainpage, lang):
     """
-    Inserts the given text in premisegroups as new arguments in dependence of the input paramters and returns a URL for forwarding.
+    Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
     .. note::
 

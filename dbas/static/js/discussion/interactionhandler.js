@@ -163,18 +163,18 @@ function InteractionHandler() {
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function () {
 			$(this).removeClass('modal-lg');
 		});
-		setTimeout(function(){
-				let popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
-				if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
-					popup_table.slimScroll({
-						position: 'right',
-						railVisible: true,
-						alwaysVisible: true,
-						height: ($( window ).height() / 3 * 2) + 'px'
-					});
-				}
-			}, 300);
 		
+		setTimeout(function(){
+			let popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
+			if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
+				popup_table.slimScroll({
+					position: 'right',
+					railVisible: true,
+					alwaysVisible: true,
+					height: ($( window ).height() / 3 * 2) + 'px'
+				});
+			}
+		}, 300);
 	};
 
 	/**

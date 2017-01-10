@@ -128,19 +128,23 @@ def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
     :return: Boolean
     """
     # conclusion of the attacking argument
-    db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).join(Statement).first()
+    db_attacking_arg = DBDiscussionSession.query(Argument).filter_by(uid=attacking_arg_uid).first()
     if not db_attacking_arg:
         return False
 
     # which pgroups has the conclusion as premise
-    db_attacked_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=db_attacking_arg.statements.uid).first()
+    db_attacked_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=db_attacking_arg.conclusion_uid).all()
     if not db_attacked_premise:
         return False
 
     # and does the attacked argument has this premisegroup as premisegroup
-    db_attacked_arg = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == attacked_arg_uid,
-                                                                      Argument.premisesgroup_uid == db_attacked_premise.premisesgroup_uid)).first()
-    return True if db_attacked_arg else False
+    for premise in db_attacked_premise:
+        db_attacked_arg = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == attacked_arg_uid,
+                                                                          Argument.premisesgroup_uid == premise.premisesgroup_uid,
+                                                                          Argument.is_supportive == False)).first()
+        if db_attacked_arg:
+            return True
+    return False
 
 
 def related_with_undercut(attacked_arg_uid, attacking_arg_uid):

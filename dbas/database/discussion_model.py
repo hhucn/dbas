@@ -520,7 +520,7 @@ class Argument(DiscussionBase):
     is_disabled = Column(Boolean, nullable=False)
 
     premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
-    statements = relationship('Statement', foreign_keys=[conclusion_uid])
+    conclusion = relationship('Statement', foreign_keys=[conclusion_uid])
     users = relationship('User', foreign_keys=[author_uid])
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
     issues = relationship('Issue', foreign_keys=[issue_uid])

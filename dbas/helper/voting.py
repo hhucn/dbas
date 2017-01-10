@@ -45,7 +45,7 @@ def add_vote_for_argument(argument_uid, user):
         __vote_statement(db_conclusion, db_user, True)
 
     else:
-        db_conclusion_argument = DBDiscussionSession.query(Argument).filter_by(argument_uid=db_argument.argument_uid).first()
+        db_conclusion_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
         db_conclusion_conclusion = DBDiscussionSession.query(Statement).get(db_conclusion_argument.conclusion_uid)
 
         # vote for conclusions argument based on support property of current argument
