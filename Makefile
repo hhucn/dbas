@@ -2,6 +2,8 @@
 
 init:
 	sudo -u postgres bash -c "psql -c \"create user dbas with password 'SQL_2015&';\""
+	sudo -u postgres bash -c "psql -c \"create user dolan with password 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
+	sudo -u postgres bash -c "psql -c \"GRANT SELECT ON ALL TABLES IN SCHEMA public TO dolan;\""
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
 	sudo -u postgres bash -c "psql -c \"create database news;\""
 
@@ -38,6 +40,12 @@ field:
 clean:
 	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
 	sudo -u postgres bash -c "psql -c \"drop database news;\""
+
+clean_all:
+	sudo -u postgres bash -c "psql -c \"drop database discussion;\""
+	sudo -u postgres bash -c "psql -c \"drop database news;\""
+	sudo -u postgres bash -c "psql -c \"drop user dbas;\""
+	sudo -u postgres bash -c "psql -c \"drop user dolan;\""
 
 nosetests:
 	nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export
