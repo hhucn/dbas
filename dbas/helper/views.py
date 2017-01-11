@@ -414,14 +414,14 @@ def catch_user_from_ldap(request, nickname, password, _tn):
 
     try:
         r = request.registry.settings
-        server      = r['settings:ldap:server']
-        base        = r['settings:ldap:base']
-        scope       = r['settings:ldap:account.scope']
-        filter      = r['settings:ldap:account.filter']
-        firstname   = r['settings:ldap:account.firstname']
-        lastname    = r['settings:ldap:account.lastname']
-        title       = r['settings:ldap:account.title']
-        email       = r['settings:ldap:account.email']
+        server    = r['settings:ldap:server']
+        base      = r['settings:ldap:base']
+        scope     = r['settings:ldap:account.scope']
+        filter    = r['settings:ldap:account.filter']
+        firstname = r['settings:ldap:account.firstname']
+        lastname  = r['settings:ldap:account.lastname']
+        title     = r['settings:ldap:account.title']
+        email     = r['settings:ldap:account.email']
         logger('ViewHelper', 'catch_user_from_ldap', 'parsed data')
 
         logger('ViewHelper', 'catch_user_from_ldap', 'ldap.initialize(\'' + server + '\')')
