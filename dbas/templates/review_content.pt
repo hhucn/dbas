@@ -16,7 +16,7 @@
                 <div class="row" style="margin-bottom: 1em;">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
-                            <li><a href="${request.application_url}/review" i18n:attributes="review">Review</a></li>
+                            <li><a href="${request.application_url}/review" i18n:translate="review">Review</a></li>
                             <li tal:condition="subpage.button_set.is_delete" class="active" i18n:attributes="deletes">Deletes</li>
                             <li tal:condition="subpage.button_set.is_optimize" class="active" i18n:attributes="optimizations">Optimizations</li>
                             <li tal:condition="subpage.button_set.is_edit" class="active" i18n:attributes="edits">Edits</li>

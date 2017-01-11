@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <ul class="breadcrumb">
-                        <li><a href="${request.application_url}/review" i18n:attributes="review">Review</a></li>
+                        <li><a href="${request.application_url}/review" i18n:translate="review">Review</a></li>
                         <li class="active" i18n:translate="reputation">Reputation</li>
                     </ul>
                 </div>
