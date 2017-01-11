@@ -416,9 +416,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
         conclusion = start_argument + conclusion + end_tag
         if attack == 'undermine':
             premise = start_argument + premise + end_tag
-            sys_conclusion = start_argument + sys_conclusion + end_tag
-        elif attack == 'undercut':
-            sys_conclusion = start_argument + sys_conclusion + end_tag
+        sys_conclusion = start_argument + sys_conclusion + end_tag
 
     confrontation_text = ''
     db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
@@ -662,12 +660,17 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             bind = b + _t.get(_.otherUsersClaimStrongerArgumentS) + e
         else:
             bind = b + _t.get(_.otherUsersClaimStrongerArgumentP) + e
-        confrontation_text += bind.format(_t.get(_.reject if user_is_attacking else _.accept))
-        confrontation_text += ' ' + conclusion + '.' + ' ' + b
+
+        start_tag = ('<' + tag_type + ' data-argumentation-type="argument">') if tag_type in confrontation else ''
+        end_tag = '</' + tag_type + '>' if tag_type in confrontation else ''
+        tmp = start_tag + _t.get(_.reject if user_is_attacking else _.accept) + ' ' + end_tag
+        confrontation_text += bind.format(tmp) + conclusion + '.' + ' ' + b
+
         if is_okay:
             confrontation_text += _t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)
         else:
             confrontation_text += _t.get(_.theySay)
+
         confrontation_text += ' ' if lang == 'de' else ': '
         confrontation_text += e + confrontation
 
