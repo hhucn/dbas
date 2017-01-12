@@ -3,9 +3,9 @@
 init:
 	sudo -u postgres bash -c "psql -c \"create user dbas with password 'SQL_2015&';\""
 	sudo -u postgres bash -c "psql -c \"create user dolan with password 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
-	sudo -u postgres bash -c "psql -c \"GRANT SELECT ON ALL TABLES IN SCHEMA public TO dolan;\""
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
 	sudo -u postgres bash -c "psql -c \"create database news;\""
+	sudo -u postgres bash -c "psql -d discussion -c \"grant select on all tables in schema public to dolan;\""
 
 database:
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
@@ -22,6 +22,7 @@ refresh:
 all:
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
 	sudo -u postgres bash -c "psql -c \"create database news;\""
+	sudo -u postgres bash -c "psql -d discussion -c \"grant select on all tables in schema public to dolan;\""
 	sudo -u postgres bash -c "psql -c \"alter database discussion owner to dbas;\""
 	sudo -u postgres bash -c "psql -c \"alter database news owner to dbas;\""
 	initialize_discussion_sql development.ini
