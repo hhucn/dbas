@@ -452,7 +452,7 @@ def setup_news_db(session, ui_locale):
                   news='After the positive feedback at COMMA16, we decided to do a first field tests with D-BAS at our '
                        'university. Therefore we are working on current issues, so that we will releasing v1.0. soon.')
     news54 = News(title='Final version and Recaptachs',
-                  date=arrow.get('2016-11-29'),
+                  date=arrow.get('2016-01-02'),
                   author='Tobias Krauthoff',
                   news='We have a delayed christmas present for you. D-BAS reached it\'s first final version 1.0 '
                        'including reCAPTCHAS and several minor fixes!')
