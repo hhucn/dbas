@@ -5,7 +5,6 @@ init:
 	sudo -u postgres bash -c "psql -c \"create user dolan with password 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
 	sudo -u postgres bash -c "psql -c \"create database news;\""
-	sudo -u postgres bash -c "psql -d discussion -c \"grant select on all tables in schema public to dolan;\""
 
 database:
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
@@ -14,6 +13,7 @@ database:
 	sudo -u postgres bash -c "psql -c \"alter database news owner to dbas;\""
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
+	sudo -u postgres bash -c "psql -d discussion -c \"grant select on all tables in schema public to dolan;\""
 
 refresh:
 	reload_discussion_sql development.ini
@@ -22,13 +22,13 @@ refresh:
 all:
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
 	sudo -u postgres bash -c "psql -c \"create database news;\""
-	sudo -u postgres bash -c "psql -d discussion -c \"grant select on all tables in schema public to dolan;\""
 	sudo -u postgres bash -c "psql -c \"alter database discussion owner to dbas;\""
 	sudo -u postgres bash -c "psql -c \"alter database news owner to dbas;\""
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
 	init_discussion_testvotes development.ini
 	init_review_tests development.ini
+	sudo -u postgres bash -c "psql -d discussion -c \"grant select on all tables in schema public to dolan;\""
 
 field:
 	sudo -u postgres bash -c "psql -c \"create database discussion;\""
@@ -64,6 +64,7 @@ reload_dummy:
 	initialize_news_sql development.ini
 	init_discussion_testvotes development.ini
 	init_review_tests development.ini
+	sudo -u postgres bash -c "psql -d discussion -c \"grant select on all tables in schema public to dolan;\""
 
 
 init_production:
