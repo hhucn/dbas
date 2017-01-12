@@ -335,7 +335,7 @@ def insert_as_statements(request, text_list, user, issue, is_start=False):
         if len(text) < statement_min_length:
             return -1
         else:
-            new_statement, is_duplicate = __set_statement(request, text, user, is_start, issue)
+            new_statement, is_duplicate = __set_statement(text, user, is_start, issue)
             if new_statement:
                 statements.append(new_statement)
 
@@ -480,7 +480,7 @@ def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, i
     return new_argument
 
 
-def __set_statement(request, statement, user, is_start, issue):
+def __set_statement(statement, user, is_start, issue):
     """
     Saves statement for user
 
@@ -501,6 +501,9 @@ def __set_statement(request, statement, user, is_start, issue):
     statement = escape_string(statement)
 
     # check for dot at the end
+    while statement.endswith(','):
+        statement = statement[:-1]
+        
     if not statement.endswith(('.', '?', '!')):
         statement += '.'
     if statement.lower().startswith('because '):

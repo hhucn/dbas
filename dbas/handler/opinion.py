@@ -16,7 +16,7 @@ from dbas.strings.translator import Translator
 from sqlalchemy import and_
 
 
-def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page, attack=None):
+def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page):
     """
     Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
     these attacks.
@@ -39,10 +39,9 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         db_user_argument = DBDiscussionSession.query(Argument).get(argument_uids[0])
     except TypeError:
         return None
-    db_syst_argument = DBDiscussionSession.query(Argument).get(argument_uids[1])
 
     # sanity check
-    if not db_user_argument or not db_syst_argument:
+    if not db_user_argument:
         ret_dict = dict()
         ret_dict['message'] = _t.get(_.internalError) + '.'
         ret_dict['users'] = all_users
@@ -51,10 +50,8 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         return ret_dict
 
     title = _t.get(_.attitudesOfOpinions)
-    # For) + ': ' + get_text_for_argument_uid(argument_uids[0], with_html_tag=True, attack_type='for_modal')
 
     # getting uids of all reactions
-
     arg_uids_for_reactions = [
         get_undermines_for_argument_uid(argument_uids[0]),
         get_supports_for_argument_uid(argument_uids[0]),
@@ -62,45 +59,9 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         get_rebuts_for_argument_uid(argument_uids[0])
     ]
 
-    relation = ['undermine', 'support', 'undercut', 'rebut']
-
     # getting the text of all reactions
-    db_tmp_argument = db_syst_argument
-    while db_tmp_argument.argument_uid and not db_tmp_argument.conclusion_uid:
-        db_tmp_argument = DBDiscussionSession.query(Argument).get(db_tmp_argument.argument_uid)
-
-    first_conclusion = get_text_for_statement_uid(db_tmp_argument.conclusion_uid)
-    first_conclusion = first_conclusion[0:1].lower() + first_conclusion[1:]
-
-    if not attack:
-        relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive,
-                                                                 first_conclusion=first_conclusion,
-                                                                 attack_type=attack)
-    else:
-        if attack == 'undercut':
-            db_argument0 = DBDiscussionSession.query(Argument).get(argument_uids[0])
-            db_argument1 = DBDiscussionSession.query(Argument).get(argument_uids[1])
-            premises, trash = get_text_for_premisesgroup_uid(db_argument1.premisesgroup_uid)
-            conclusion = get_text_for_conclusion(db_argument0)
-        else:
-            db_argument = DBDiscussionSession.query(Argument).get(argument_uids[1])
-            premises, trash = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-            conclusion = get_text_for_conclusion(db_argument)
-
-            intro = ''
-            if not db_argument.is_supportive:
-                forr = _t.get(_.forText)
-                the = _t.get(_.the_die)
-                intro = forr + ' ' + the + ' '
-            rejection = _t.get(_.strongerStatementForRecjecting2)
-            of = _t.get(_.strongerStatementForRecjecting3)
-            conclusion = intro + rejection + ' ' + of  + conclusion
-
-        relation_text = get_relation_text_dict_without_substitution(lang, False, True, db_user_argument.is_supportive,
-                                                                    first_conclusion=first_conclusion,
-                                                                    attack_type=attack, premise=premises,
-                                                                    conclusion=conclusion)
-        relation_text['rebut_text'] = relation_text['rebut_text'].replace(_t.get(_.accept), _t.get(_.forThat))
+    relation = ['undermine', 'support', 'undercut', 'rebut']
+    relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive)
 
     # getting votes for every reaction
     ret_list = __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page)

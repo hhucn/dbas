@@ -49,9 +49,16 @@ function DiscussionBarometer(){
             new AjaxGraphHandler().getUserGraphData(uid, address);
         } else if (url.indexOf('/justify/') != -1 || url.indexOf('/choose/') != -1) {
             address = 'justify';
-            inputs.each(function(){
-                uid_array.push($(this).attr('id').substr(5));
-            });
+            // dont know step
+            let tmp = url.split('/');
+            if (tmp[tmp.length - 1] == 'd'){
+                address = 'dont_know';
+                uid_array.push(tmp[tmp.length - 2]);
+            } else {
+                inputs.each(function(){
+                   uid_array.push($(this).attr('id').substr(5));
+                });
+            }
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
         } else if (url.indexOf('/reaction/') != -1){
             address = 'argument';

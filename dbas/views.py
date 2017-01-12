@@ -679,7 +679,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
-    # ATM NOT NEEDED, BECASE BROKE LIMIT WILL BE SET AS DATA TAG INTO THE TEMPLATE
+    # ATM NOT NEEDED, BECAUSE BROKE LIMIT WILL BE SET AS DATA TAG INTO THE TEMPLATE
     # send message if the user is now able to review
     # if broke_limit:
     #     _t = Translator(ui_locales)

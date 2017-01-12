@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-11 15:30+0100\n"
+"POT-Creation-Date: 2017-01-12 15:50+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1378,7 +1378,7 @@ msgstr "Stimmen für Argumente"
 #: templates/settings.pt:202 templates/review_reputation.pt:9
 #: templates/review_reputation.pt:27 templates/user.pt:57
 msgid "reputation"
-msgstr "Repuation"
+msgstr "Reputation"
 
 #. Default: Your password was changed
 #: templates/settings.pt:217

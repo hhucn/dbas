@@ -345,6 +345,7 @@ de_lang = {
     _.isTrue: 'richtig ist',
     _.areTrue: 'sind richtig',
     _.isNotAGoodIdea: 'falsch ist',
+    _.itIsNotRight: 'nicht richtig ist',
     _.isNotAGoodIdeaInColor: '<span class=\'text-danger\'>falsch ist</span>',
     _.initialPosition: 'Anfangs-interesse',
     _.initialPositionSupport: 'Was ist Ihre Meinung, die Sie unterstützen?',

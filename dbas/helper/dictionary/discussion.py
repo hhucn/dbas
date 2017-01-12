@@ -124,8 +124,6 @@ class DiscussionDictHelper(object):
 
         url = UrlManager(application_url, slug).get_slug_url(False)
         question_bubble = create_speechbubble_dict(is_system=True, message=system_question, omit_url=True, lang=self.lang)
-        if not text.endswith(('.', '?', '!')):
-            text += '.'
         select_bubble = create_speechbubble_dict(is_user=True, url=url, message=user_text, omit_url=False,
                                                  statement_uid=uid, is_supportive=is_supportive, nickname=nickname,
                                                  lang=self.lang)

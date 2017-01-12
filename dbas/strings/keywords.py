@@ -345,6 +345,7 @@ class Keywords(Enum):
     itFalseIsThat = 'it is false that '
     isFalse = 'is false '
     isNotAGoodIdea = 'is not a good idea'
+    itIsNotRight = 'is not a good idea'
     isNotAGoodIdeaInColor = '<span class=\'text-danger\'>is not a good idea</span>'
     isTrue = 'is true'
     areTrue = 'are true'

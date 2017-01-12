@@ -367,23 +367,23 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     else:
         premises = sb + premises + se
         conclusion = sb_tmp + conclusion + se
-    # if not color_everything:
 
     if lang == 'de':
-        if rearrange_intro:
-            intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
-        else:
-            intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
-
         if start_with_intro and not anonymous_style:
+            if rearrange_intro:
+                intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
+            else:
+                intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
+
             ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
             ret_value = se + _t.get(_.youArgue) + se + ' '
         else:
             ret_value = se + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
         ret_value += conclusion
+        ret_value += (', ' + _t.get(_.itIsNotRight)) if not db_argument.is_supportive else ''
         ret_value += ', ' if lang == 'de' else ' '
-        ret_value += (sb_none if attack_type in ['dont_know'] else sb) + _t.get(_.because).lower() + se + ' ' + premises
+        ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
         ret_value = conclusion + ' '
