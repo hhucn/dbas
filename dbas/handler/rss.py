@@ -47,8 +47,16 @@ def create_news_rss(main_page, ui_locale):
 
     rss.write_xml(open('dbas/static/rss/news.xml', 'w'))
 
+    return True
+
 
 def create_initial_issue_rss(main_page, ui_locale):
+    """
+
+    :param main_page:
+    :param ui_locale:
+    :return:
+    """
     logger('RSS-Handler', 'create_initial_issue_rss', 'def')
     db_issues = DBDiscussionSession.query(Issue).all()
     for issue in db_issues:
@@ -68,8 +76,10 @@ def create_initial_issue_rss(main_page, ui_locale):
         rss = __get_issue_rss_gen(main_page, issue, items, ui_locale)
         rss.write_xml(open('dbas/static/rss/' + issue.get_slug() + '.xml', 'w'))
 
+    return True
 
-def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_locale):
+
+def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_locale, url):
     """
 
     :param issue_uid:
@@ -77,22 +87,23 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
     :param title:
     :param description:
     :param ui_locale:
+    :param url:
     :return:
     """
     logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(issue_uid))
     db_issue = DBDiscussionSession.query(Issue).get(issue_uid)
     if not db_issue:
-        return None
+        return False
 
     db_author = DBDiscussionSession.query(User).get(author_uid)
     if not db_author:
-        return None
+        return False
 
     DBDiscussionSession.add(RSS(author=author_uid, issue=issue_uid, title=title, description=description))
     DBDiscussionSession.flush()
     transaction.commit()
 
-    db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=issue_uid).all()
+    db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=issue_uid).order_by(RSS.uid.desc()).all()
     items = []
     for rss in db_rss:
         db_author = DBDiscussionSession.query(User).get(rss.author_uid)
@@ -102,17 +113,20 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
             title=rss.title,
             description=rss.description,
             pubDate=rss.timestamp.datetime,
-            author=db_author.get_global_nickname()
+            author=db_author.get_global_nickname(),
+            link=url
         ))
 
     rss = __get_issue_rss_gen(get_global_url(), db_issue, items, ui_locale)
     rss.write_xml(open('dbas/static/rss/' + db_issue.get_slug() + '.xml', 'w'))
 
+    return True
+
 
 def get_list_of_all_feeds(ui_locale):
     """
 
-    :param _tn:
+    :param ui_locale:
     :return:
     """
     logger('RSS-Handler', 'get_list_of_all_feeds', 'def with ' + str(ui_locale))
@@ -135,6 +149,14 @@ def get_list_of_all_feeds(ui_locale):
 
 
 def __get_issue_rss_gen(main_page, issue, items, ui_locale):
+    """
+
+    :param main_page:
+    :param issue:
+    :param items:
+    :param ui_locale:
+    :return:
+    """
     _tn = Translator(ui_locale)
     return PyRSS2Gen.RSS2(
         title='D-BAS Feed',

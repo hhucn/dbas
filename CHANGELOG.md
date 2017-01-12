@@ -1,3 +1,9 @@
+## 1.1.0 (2017-01-xx)
+- Update for the german language
+- Minor improvements and bugfix
+- Corrections for color coding mechanisms
+- Improvements for our RSS feeds
+
 ## 1.1.0 (2017-01-05)
 - Huge update for the german language
 - Minor improvements and bugfix

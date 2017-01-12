@@ -348,6 +348,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
     sb_tmp = ''
+    sb_none = '<' + tag_type + '>'
     se = '</' + tag_type + '>' if with_html_tag else ''
     if attack_type not in ['dont_know', 'jump']:
         sb = '<' + tag_type + '>' if with_html_tag else ''
@@ -374,20 +375,15 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         else:
             intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
 
-        if attack_type in ['dont_know']:
-            intro[0:1].lower() + intro[1:]
-        else:
-            intro[0:1].upper() + intro[1:]
-
         if start_with_intro and not anonymous_style:
-            ret_value = sb + intro + se + ' '
+            ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
             ret_value = se + _t.get(_.youArgue) + se + ' '
         else:
             ret_value = se + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
         ret_value += conclusion
         ret_value += ', ' if lang == 'de' else ' '
-        ret_value += sb + _t.get(_.because).lower() + se + ' ' + premises
+        ret_value += (sb_none if attack_type in ['dont_know'] else sb) + _t.get(_.because).lower() + se + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
         ret_value = conclusion + ' '

@@ -272,7 +272,7 @@ class DictionaryHelper(object):
         logger('DictionaryHelper', 'add_discussion_end_text', 'main')
         _tn = Translator(self.discussion_lang)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        gender = db_user.gender if db_user else ''
+        gender = db_user.gender if db_user else None
 
         if at_start:
             self.__add_discussion_end_text_at_start(discussion_dict, extras_dict, nickname, gender, _tn)
@@ -287,8 +287,7 @@ class DictionaryHelper(object):
             self.__add_discussion_end_text_at_at_justify(discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn)
 
         else:
-            mid_text = _tn.get(_.discussionEnd) + ' ' + (
-                _tn.get(_.discussionEndLinkText) if nickname else _tn.get(_.feelFreeToLogin))
+            mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if nickname else _.feelFreeToLogin)
             discussion_dict['bubbles'].append(
                 create_speechbubble_dict(is_info=True, message=mid_text, lang=self.system_lang))
 
@@ -338,9 +337,9 @@ class DictionaryHelper(object):
             sys_text = _tn.get(_.firstOneInformationTextM).rstrip()
         else:
             sys_text = _tn.get(_.firstOneInformationText).rstrip()
-        sys_text += ' <em>' + current_premise + '</em>, '
-        sys_text += _tn.get(_.soThatOtherParticipantsDontHaveOpinionRegardingYourOpinion) + '.'
-        mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
+        sys_text = sys_text.format('<em>' + current_premise + '</em>') + ' '
+        sys_text += _tn.get(_.untilNowThereAreNoMoreInformation)
+        mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=self.system_lang))
         discussion_dict['bubbles'].append(
@@ -355,7 +354,7 @@ class DictionaryHelper(object):
             mid_text = _tn.get(_.firstPremiseText1M).rstrip()
         else:
             mid_text = _tn.get(_.firstOneInformationText).rstrip()
-        mid_text += ' <em>' + current_premise + '</em>'
+        mid_text = mid_text.format('<em>' + current_premise + '</em>')
 
         if not supportive:
             mid_text += ' ' + _tn.get(_.doesNotHold)
@@ -365,7 +364,7 @@ class DictionaryHelper(object):
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
             mid_text += _tn.get(_.firstPremiseText2)
         else:
-            mid_text += _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkText)
+            mid_text += _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
 
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang))

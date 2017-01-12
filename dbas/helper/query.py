@@ -330,6 +330,7 @@ def insert_as_statements(request, text_list, user, issue, is_start=False):
 
     statements = []
     input_list = text_list if isinstance(text_list, list) else [text_list]
+    _tn = None
     for text in input_list:
         if len(text) < statement_min_length:
             return -1
@@ -337,6 +338,17 @@ def insert_as_statements(request, text_list, user, issue, is_start=False):
             new_statement, is_duplicate = __set_statement(request, text, user, is_start, issue)
             if new_statement:
                 statements.append(new_statement)
+
+                if not is_duplicate:
+                    _tn = Translator(new_statement.lang) if _tn is None else _tn
+                    db_issue = DBDiscussionSession.query(Issue).get(issue)
+                    _um = UrlManager(request.application_url, db_issue.get_slug())
+                    append_action_to_issue_rss(issue_uid=issue,
+                                               author_uid=db_user.uid,
+                                               title=_tn.get(_.positionAdded if is_start else _.statementAdded),
+                                               description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
+                                               ui_locale=request.registry.settings['pyramid.default_locale_name'],
+                                               url=_um.get_url_for_statement_attitude(False, new_statement.uid))
 
     return statements
 
@@ -517,13 +529,6 @@ def __set_statement(request, statement, user, is_start, issue):
     textversion.set_statement(new_statement.uid)
     transaction.commit()
 
-    _tn = Translator(request.registry.settings['pyramid.default_locale_name'])
-    append_action_to_issue_rss(issue_uid=issue,
-                               author_uid=db_user.uid,
-                               title=_tn.get(_.statementAdded),
-                               description='...' + textversion.content + '...',
-                               ui_locale=request.registry.settings['pyramid.default_locale_name'])
-
     return new_statement, False
 
 
@@ -588,11 +593,14 @@ def __create_argument_by_raw_input(request, user, text, conclusion_id, is_suppor
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     if new_argument and db_user:
         _tn = Translator(request.registry.settings['pyramid.default_locale_name'])
+        db_issue = DBDiscussionSession.query(Issue).get(issue)
+        _um = UrlManager(request.application_url, db_issue.get_slug())
         append_action_to_issue_rss(issue_uid=issue,
                                    author_uid=db_user.uid,
                                    title=_tn.get(_.argumentAdded),
-                                   description='...' + get_text_for_argument_uid(new_argument.uid) + '...',
-                                   ui_locale=request.registry.settings['pyramid.default_locale_name'])
+                                   description='...' + get_text_for_argument_uid(new_argument.uid, anonymous_style=True) + '...',
+                                   ui_locale=request.registry.settings['pyramid.default_locale_name'],
+                                   url=_um.get_url_for_justifying_statement(False, new_argument.uid, 'd'))
 
     return new_argument, statement_uids
 
