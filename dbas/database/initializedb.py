@@ -140,8 +140,10 @@ def main_dummy_votes(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-        setup_dummy_seen_by(DBDiscussionSession)
-        setup_dummy_votes(DBDiscussionSession)
+        db_users = DBDiscussionSession.query(User).all()
+        users = {user.nickname: user for user in db_users}
+        setup_dummy_seen_by(DBDiscussionSession, users)
+        setup_dummy_votes(DBDiscussionSession, users)
         transaction.commit()
 
 
@@ -727,7 +729,7 @@ def set_up_issue(session, user, lang1, lang2, is_field_test=False):
         return issue1, issue2, issue4, issue5
 
 
-def setup_dummy_seen_by(session):
+def setup_dummy_seen_by(session, users):
     DBDiscussionSession.query(ArgumentSeenBy).delete()
     DBDiscussionSession.query(StatementSeenBy).delete()
 
@@ -737,48 +739,38 @@ def setup_dummy_seen_by(session):
     argument_count = 0
     statement_count = 0
 
+    elements = []
     for argument in db_arguments:
         tmp_first_names = list(first_names)
-        db_votes = session.query(ArgumentSeenBy).filter_by(argument_uid=argument.uid).all()
-        max = len(tmp_first_names) - 1 if len(tmp_first_names) - 1 > len(db_votes) else len(db_votes)
-        min = 5 if max > 5 else 0
-        max_interval = random.randint(min, max)
-        elements = []
+        max_interval = random.randint(5, len(tmp_first_names) - 1)
         for i in range(1, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
-            db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
-            elements.append(ArgumentSeenBy(argument_uid=argument.uid, user_uid=db_rnd_tst_user.uid))
+            elements.append(ArgumentSeenBy(argument_uid=argument.uid, user_uid=users[nick].uid))
             tmp_first_names.remove(nick)
             argument_count += 1
-        session.add_all(elements)
-        session.flush()
 
     for statement in db_statements:
         # how many votes does this statement have?
         tmp_first_names = list(first_names)
-        db_votes = session.query(StatementSeenBy).filter_by(statement_uid=statement.uid).all()
-        max = len(tmp_first_names) - 1 if len(tmp_first_names) - 1 > len(db_votes) else len(db_votes)
-        min = 5 if max > 5 else 0
-        max_interval = random.randint(min, max)
-        elements = []
+        max_interval = random.randint(5, len(tmp_first_names) - 1)
         for i in range(1, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
-            db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
-            elements.append(StatementSeenBy(statement_uid=statement.uid, user_uid=db_rnd_tst_user.uid))
+            elements.append(StatementSeenBy(statement_uid=statement.uid, user_uid=users[nick].uid))
             tmp_first_names.remove(nick)
             statement_count += 1
-        session.add_all(elements)
-        session.flush()
+    session.add_all(elements)
+    session.flush()
 
     logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
     logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
-def setup_dummy_votes(session):
+def setup_dummy_votes(session, users):
     """
     Drops all votes and init new dummy votes
 
     :param session: DBDiscussionSession
+    :param users:
     :return:
     """
     DBDiscussionSession.query(VoteStatement).delete()
@@ -787,8 +779,8 @@ def setup_dummy_votes(session):
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
 
-    new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, first_names, session)
-    new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, first_names, session)
+    new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, first_names, users)
+    new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, first_names, users)
 
     rat_arg_up = str(trunc(arg_up / len(db_arguments) * 100) / 100)
     rat_arg_down = str(trunc(arg_down / len(db_arguments) * 100) / 100)
@@ -814,12 +806,12 @@ def setup_dummy_votes(session):
         va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
 
-def __set_votes_for_arguments(db_arguments, firstnames, session):
+def __set_votes_for_arguments(db_arguments, firstnames, users):
     """
 
     :param db_arguments:
     :param firstnames:
-    :param session:
+    :param users:
     :return:
     """
     arg_up = 0
@@ -832,65 +824,53 @@ def __set_votes_for_arguments(db_arguments, firstnames, session):
         arg_up += up_votes
         arg_down += down_votes
 
-        new_votes_for_arguments = __set_upvotes_for_arguments(firstnames, up_votes, argument.uid, new_votes_for_arguments, session)
-        new_votes_for_arguments = __set_downvotes_for_arguments(firstnames, down_votes, argument.uid, new_votes_for_arguments, session)
+        new_votes_for_arguments = __set_upvotes_for_arguments(firstnames, up_votes, argument.uid, new_votes_for_arguments, users)
+        new_votes_for_arguments = __set_downvotes_for_arguments(firstnames, down_votes, argument.uid, new_votes_for_arguments, users)
 
     return new_votes_for_arguments, arg_up, arg_down
 
 
-def __set_upvotes_for_arguments(firstnames, up_votes, argument_uid, new_votes_for_arguments, session):
+def __set_upvotes_for_arguments(firstnames, up_votes, argument_uid, new_votes_for_arguments, users):
     """
 
     :param firstnames:
     :param up_votes:
     :param argument_uid:
     :param new_votes_for_arguments:
-    :param session:
+    :param users:
     :return:
     """
     tmp_firstname = list(firstnames)
     for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
-        if not session.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                       VoteArgument.author_uid == db_rnd_tst_user.uid,
-                                                       VoteArgument.is_up_vote == True,
-                                                       VoteArgument.is_valid == True)).first():
-            new_votes_for_arguments.append(VoteArgument(argument_uid=argument_uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
-            tmp_firstname.remove(nick)
+        new_votes_for_arguments.append(VoteArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=True, is_valid=True))
+        tmp_firstname.remove(nick)
     return new_votes_for_arguments
 
 
-def __set_downvotes_for_arguments(firstnames, down_votes, argument_uid, new_votes_for_arguments, session):
+def __set_downvotes_for_arguments(firstnames, down_votes, argument_uid, new_votes_for_arguments, users):
     """
 
     :param firstnames:
     :param down_votes:
     :param argument_uid:
     :param new_votes_for_arguments:
-    :param session:
+    :param users:
     :return:
     """
     tmp_firstname = list(firstnames)
     for i in range(1, down_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
-        if not session.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                       VoteArgument.author_uid == db_rnd_tst_user.uid,
-                                                       VoteArgument.is_up_vote == False,
-                                                       VoteArgument.is_valid == True)).first():
-            new_votes_for_arguments.append(VoteArgument(argument_uid=argument_uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False, is_valid=True))
-            tmp_firstname.remove(nick)
+        new_votes_for_arguments.append(VoteArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
     return new_votes_for_arguments
 
 
-def __set_votes_for_statements(db_statements, firstnames, session):
+def __set_votes_for_statements(db_statements, firstnames, users):
     """
 
     :param db_statements:
-    :param max_interval:
     :param firstnames:
-    :param session:
+    :param users:
     :return:
     """
     stat_up = 0
@@ -903,48 +883,43 @@ def __set_votes_for_statements(db_statements, firstnames, session):
         stat_up += up_votes
         stat_down += down_votes
 
-        new_votes_for_statement = __set_upvotes_for_statements(firstnames, up_votes, statement.uid, new_votes_for_statement, session)
-        new_votes_for_statement = __set_downvotes_for_statements(firstnames, down_votes, statement.uid, new_votes_for_statement, session)
+        new_votes_for_statement = __set_upvotes_for_statements(firstnames, up_votes, statement.uid, new_votes_for_statement, users)
+        new_votes_for_statement = __set_downvotes_for_statements(firstnames, down_votes, statement.uid, new_votes_for_statement, users)
 
     return new_votes_for_statement, stat_up, stat_down
 
 
-def __set_upvotes_for_statements(firstnames, up_votes, statement_uid, new_votes_for_statement, session):
+def __set_upvotes_for_statements(firstnames, up_votes, statement_uid, new_votes_for_statement, users):
     """
 
     :param firstnames:
     :param up_votes:
     :param statement_uid:
     :param new_votes_for_statement:
-    :param session:
+    :param users:
     :return:
     """
     tmp_firstname = list(firstnames)
     for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
-        if not session.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                        VoteStatement.author_uid == db_rnd_tst_user.uid,
-                                                        VoteStatement.is_up_vote == True,
-                                                        VoteStatement.is_valid == True)).first():
-            new_votes_for_statement.append(VoteStatement(statement_uid=statement_uid, author_uid=db_rnd_tst_user.uid, is_up_vote=True, is_valid=True))
-            tmp_firstname.remove(nick)
+        new_votes_for_statement.append(VoteStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=True, is_valid=True))
     return new_votes_for_statement
 
 
-def __set_downvotes_for_statements(firstnames, down_votes, statement_uid, new_votes_for_statement, session):
+def __set_downvotes_for_statements(firstnames, down_votes, statement_uid, new_votes_for_statement, users):
+    """
+
+    :param firstnames:
+    :param down_votes:
+    :param statement_uid:
+    :param new_votes_for_statement:
+    :param users:
+    :return:
+    """
     tmp_firstname = list(firstnames)
     for i in range(0, down_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        db_rnd_tst_user = DBDiscussionSession.query(User).filter_by(firstname=nick).first()
-        if not session.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                        VoteStatement.author_uid == db_rnd_tst_user.uid,
-                                                        VoteStatement.is_up_vote == False,
-                                                        VoteStatement.is_valid == True)).first():
-            new_votes_for_statement.append(
-                VoteStatement(statement_uid=statement_uid, author_uid=db_rnd_tst_user.uid, is_up_vote=False,
-                              is_valid=True))
-            tmp_firstname.remove(nick)
+        new_votes_for_statement.append(VoteStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
     return new_votes_for_statement
 
 
