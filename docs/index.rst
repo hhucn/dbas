@@ -19,8 +19,8 @@ Makefile
 .. toctree::
     makefile
 
-Core Documentation
-==================
+Core
+====
 
 .. toctree::
     :maxdepth: 2
@@ -28,8 +28,8 @@ Core Documentation
 
     dbas/index
 
-Server Documentation
-====================
+Server
+======
 
 .. toctree::
     :maxdepth: 2
@@ -38,8 +38,8 @@ Server Documentation
     server/index
 
 
-Components Documentation
-========================
+Components
+==========
 
 .. toctree::
     :maxdepth: 2

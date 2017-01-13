@@ -506,11 +506,11 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     # is the email valid?
     elif not is_mail_valid:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
-        info = _.get(_.mailNotValid)
+        info = _t.get(_.mailNotValid)
     # is anti-spam correct?
     elif not is_human or error:
         logger('ViewHelper', 'user_registration', 'recaptcha error')
-        info = _.get(_.maliciousAntiSpam)
+        info = _t.get(_.maliciousAntiSpam)
     # lets go
     else:
         # getting the authors group

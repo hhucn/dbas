@@ -27,8 +27,8 @@ Advantage: Easy and fast setup; your local machine stays clean
 
 Disadvantage: A bit more complicated to debug
 
-Starting the Container
-======================
+Container handling
+==================
 
 Requirements
 ------------
@@ -36,6 +36,7 @@ Requirements
 * `Docker <https://docs.docker.com/engine/installation/>`_
 
   * Use your package manager! :code:`$ sudo pacman -S docker` -- that's it!
+    (sometimes it is called `docker-engine`)
 
 * `docker-compose <https://docs.docker.com/compose/install/>`_
 
@@ -59,18 +60,35 @@ You only need to build the containers once. Afterwards you can start your contai
 
    $ docker-compose up
 
-You can find a connect-string in your console, which has to be copied to your web browser. It looks like this::
+Open your browser at `http://localhost:4284/ <http://localhost:4284/>`_ to see
+your local D-BAS instance.
 
-   web_1  | ###################################################
-   web_1  | # Connect to this client via http://172.18.0.3/
-   web_1  | ###################################################
+Remove old containers
+---------------------
 
-Open your browser at `http://172.18.0.3/ <http://172.18.0.3/>`_ to see your local D-BAS instance. Keep in mind: your
-ip address might be a different one than this. But each time you start the containers, the local ip address is printed
-to the console.
+docker-compose provides a shortcut to remove its containers::
+
+   $ docker-compose rm
+
+This removes the containers of D-BAS.
+
+Rebuild images
+--------------
+
+If there are any changes in the images, you'd best remove the affected images of
+this project, e.g.::
+
+   $ docker rmi dbas_db_1 dbas_web_1
+
+The next call to `docker-compose up` will pull the latest image and create fresh
+containers.
+
+
+Docker Tips and Tricks
+======================
 
 Connect to a running Container
-==============================
+------------------------------
 
 Sometimes it is useful to connect to running containers with a shell. See your running containers with
 :code:`docker ps`::
