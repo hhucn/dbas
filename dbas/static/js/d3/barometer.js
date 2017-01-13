@@ -471,10 +471,14 @@ function DiscussionBarometer(){
 
         // create doughnut of chart
         createDoughnutChart(doughnutChartSvg, usersDict);
-        // create legend for chart
-        createLegend(usersDict);
-        // tooltip
-        addListenerForTooltip(usersDict, doughnutChartSvg, ".chart-sector");
+
+        // if length of usersDict is greater then 0 add legend and tooltip
+        if(usersDict.length > 0){
+            // create legend for chart
+            createLegend(usersDict);
+            // tooltip
+            addListenerForTooltip(usersDict, doughnutChartSvg, ".chart-sector");
+        }
     }
 
     /**
@@ -490,22 +494,34 @@ function DiscussionBarometer(){
 
         let doughnut = getDoughnut(usersDict);
 
-        let innerCircle = getInnerCircle(innerRadius, outerRadius, usersDict);
-        let outerCircle = getOuterCircle(innerRadius, outerRadius);
+        let data = [];
+        // if there is no argument create donut-chart with one sector with small radius
+        if(usersDict.length == 0){
+            console.log("Test");
+            data.push({
+                usersNumber: 0,
+                seenBy: 0
+            });
+        }
+        else{
+            data = usersDict;
+        }
 
-        createOuterPath(doughnutChartSvg, outerCircle, doughnut, usersDict);
-        createInnerPath(doughnutChartSvg, innerCircle, doughnut, usersDict);
+        let innerCircle = getInnerCircle(innerRadius, outerRadius, data);
+        let outerCircle = getOuterCircle(innerRadius, outerRadius);
+        createOuterPath(doughnutChartSvg, outerCircle, doughnut, data);
+        createInnerPath(doughnutChartSvg, innerCircle, doughnut, data);
     }
 
     /**
      * Choose layout of d3.
      *
-     * @usersDict
+     * @data
      * @returns {*}
      */
-    function getDoughnut(usersDict){
+    function getDoughnut(data){
         let sumUsersNumber = 0;
-        $.each(usersDict, function (key, value) {
+        $.each(data, function (key, value) {
             sumUsersNumber += value.usersNumber;
         });
         return d3.layout.pie()
@@ -518,10 +534,10 @@ function DiscussionBarometer(){
                 }
                 // if the argument has not been seen by anyone,
                 // then the height of the sector is 2% of the number of all users
-                else if(usersDict[i].usersNumber === 0){
+                else if(data[i].usersNumber === 0){
                     return (sumUsersNumber*2)/100;
                 }
-                return usersDict[i].usersNumber;
+                return data[i].usersNumber;
             });
     }
 
@@ -530,10 +546,10 @@ function DiscussionBarometer(){
      *
      * @param innerRadius
      * @param outerRadius
-     * @param usersDict
+     * @param data
      * @returns {*}
      */
-    function getInnerCircle(innerRadius, outerRadius, usersDict){
+    function getInnerCircle(innerRadius, outerRadius, data){
         return d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(function (d, i) {
@@ -542,10 +558,10 @@ function DiscussionBarometer(){
                     return (outerRadius - innerRadius) + innerRadius;
                 }
                 // if nobody has chosen the argument then the height of the sector is 2% of the difference between innerRadius and outerRadius
-                if(usersDict[i].usersNumber === 0){
+                if(data[i].usersNumber === 0){
                     return ((outerRadius-innerRadius)*2)/100 + innerRadius;
                 }
-                return (outerRadius - innerRadius) * (usersDict[i].usersNumber/usersDict[i].seenBy) + innerRadius;
+                return (outerRadius - innerRadius) * (data[i].usersNumber/data[i].seenBy) + innerRadius;
             });
     }
 
@@ -568,11 +584,11 @@ function DiscussionBarometer(){
      * @param doughnutChartSvg
      * @param innerCircle
      * @param doughnut
-     * @param usersDict
+     * @param data
      */
-    function createInnerPath(doughnutChartSvg, innerCircle, doughnut, usersDict){
+    function createInnerPath(doughnutChartSvg, innerCircle, doughnut, data){
         doughnutChartSvg.selectAll(".innerCircle")
-            .data(doughnut(usersDict))
+            .data(doughnut(data))
             .enter().append("path")
             .attr({fill: function (d, i) { return getNormalColorFor(i); },
                    stroke: "gray", d: innerCircle, transform: "translate(240,230)",
@@ -585,11 +601,11 @@ function DiscussionBarometer(){
      * @param doughnutChartSvg
      * @param outerCircle
      * @param doughnut
-     * @param usersDict
+     * @param data
      */
-    function createOuterPath(doughnutChartSvg, outerCircle, doughnut, usersDict){
+    function createOuterPath(doughnutChartSvg, outerCircle, doughnut, data){
         doughnutChartSvg.selectAll(".outerCircle")
-            .data(doughnut(usersDict))
+            .data(doughnut(data))
             .enter().append("path")
             .attr({'fill': function (d, i) { return getLightColorFor(i); },
                    stroke: "gray", d: outerCircle, transform: "translate(240,230)",
