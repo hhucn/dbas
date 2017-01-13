@@ -110,7 +110,6 @@ function DiscussionGraph() {
         if (startD3) {
             if (!this.getD3Graph(jsonData))
                 new DiscussionGraph().setDefaultViewParams(false, null, d3);
-            
         } else {
             container.empty();
         }
@@ -215,6 +214,13 @@ function DiscussionGraph() {
                 y2: function (d) {
                     return getPositionOfLink("y2", d.target.y, edges, d);
                 }
+            });
+
+            force
+            // nodes push each other away
+            .charge(-350)
+            .linkDistance(function (d) {
+                return d.size;
             });
 
             // update position of rect
@@ -1151,8 +1157,6 @@ function DiscussionGraph() {
      * @param mouseover
      */
     function showHideTooltip(d, mouseover) {
-
-
         // if there is a mouseover-event show the tooltip
         if(mouseover){
             d3.select('#label-' + d.id).style('display', 'inline');
@@ -1209,18 +1213,46 @@ function DiscussionGraph() {
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function (d) {
             let circleUid = selectUid(circleId);
-            if(circleUid === selectUid(d.source.id) && d.is_undercut){
-                console.log(d.target_edge);
+            // if the edge is an undercut highlight all incoming and outgoing edges of target node
+            if(circleUid === selectUid(d.source.id) && (d.is_undercut == true)){
+                let undercutTargetEdge;
+                // search for target_edge of undercut
                 edges.forEach(function (e) {
                     if(e.id === d.target_edge){
-                        edgesCircleId.push(e);
+                        edgesCircleId.push(undercutTargetEdge);
+                    }
+                });
+                // if there is an undercut on the undercut d highlight it
+                edges.forEach(function (e) {
+                    if((e.is_undercut == true) && (e.target_edge === d)) {
+                        edgesCircleId.push(d);
                     }
                 });
             }
+            if(circleUid === selectUid(d.source.id) && !(d.is_undercut == true)){
+                // search for target_edge of undercut
+                let targetUndercuts = [];
+                // undercuts
+                edges.forEach(function (e) {
+                    if((e.is_undercut == true) && (e.target_edge === d.id)) {
+                        targetUndercuts.push(e);
+                        edgesCircleId.push(e);
+                    }
+                });
+                // undercuts on undercuts
+                targetUndercuts.forEach(function (k){
+                    edges.forEach(function (e) {
+                        if ((e.is_undercut == true) && (e.target_edge === k.id)) {
+                            edgesCircleId.push(e);
+                        }
+                    });
+                });
+            }
+
             if (isSupportVisible && selectUid(d.target.id) === circleUid && d.color === green) {
                 edgesCircleId.push(d);
             }
-            else if (isAttackVisible && selectUid(d.target.id) === circleUid && d.color === 'red') {
+            else if (isAttackVisible && selectUid(d.target.id) === circleUid && d.color === red) {
                 edgesCircleId.push(d);
             }
             else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid)
