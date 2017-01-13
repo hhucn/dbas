@@ -338,28 +338,55 @@ function DiscussionBarometer(){
 
         maxUsersNumber = getMaximum(usersDict);
 
+        testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
+        createRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
+    }
+
+    /**
+     * If there are no arguments create one thin bar.
+     *
+     * @param usersDict
+     * @param barChartSvg
+     * @param width
+     * @param height
+     * @param y_offset_height
+     * @param selector
+     */
+    function testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector){
         // if there are no arguments show one thin bar
         if(usersDict.length === 0){
             barChartSvg.append("rect")
                 .attr({
-                    width: getBarWidth(0, width),
-                    height: getBarHeight(0, 0, height, selector),
-                    x: getBarX(0),
-                    y: getBarY(0, 0, 0, y_offset_height, height, selector),
-                    fill: getBarColor(0, selector),
+                    width: getRectWidth(0, width),
+                    height: getRectHeight(0, 0, height, selector),
+                    x: getRectX(0),
+                    y: getRectY(0, 0, 0, y_offset_height, height, selector),
+                    fill: getRectColor(0, selector),
                     id: selector + "-" + 0
                 });
         }
+    }
 
+    /**
+     * Create bars.
+     *
+     * @param usersDict
+     * @param barChartSvg
+     * @param width
+     * @param height
+     * @param y_offset_height
+     * @param selector
+     */
+    function createRects(usersDict, barChartSvg, width, height, y_offset_height, selector){
         barChartSvg.selectAll(selector)
             .data(usersDict)
             .enter().append("rect")
             .attr({
-                width: function (d) { return getBarWidth(d.usersNumber, width); },
-                height: function (d) { return getBarHeight(d.usersNumber, d.seenBy, height, selector); },
-                x: function (d, i) { return getBarX(i);},
-                y: function (d, i) { return getBarY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector); },
-                fill: function (d, i) { return getBarColor(i, selector); },
+                width: function (d) { return getRectWidth(d.usersNumber, width); },
+                height: function (d) { return getRectHeight(d.usersNumber, d.seenBy, height, selector); },
+                x: function (d, i) { return getRectX(i);},
+                y: function (d, i) { return getRectY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector); },
+                fill: function (d, i) { return getRectColor(i, selector); },
                 id: function (d, i) { return selector + "-" + i; }
             });
     }
@@ -371,7 +398,7 @@ function DiscussionBarometer(){
      * @param width
      * @returns {*}
      */
-    function getBarWidth(usersNumber, width) {
+    function getRectWidth(usersNumber, width) {
         // height in percent: length/seen_by = x/height
         if(address === "argument" || address === "attitude"){
             return divideWrapperIfZero(usersNumber, maxUsersNumber) * width;
@@ -390,7 +417,7 @@ function DiscussionBarometer(){
      * @param selector
      * @returns {*}
      */
-    function getBarHeight(usersNumber, seenBy, height, selector) {
+    function getRectHeight(usersNumber, seenBy, height, selector) {
         // number of bar * width of bar + padding-left + space between to bars
         if(address === "argument" || address === "attitude"){
             return barWidth;
@@ -406,7 +433,7 @@ function DiscussionBarometer(){
      * @param i
      * @returns {number}
      */
-    function getBarX(i) {
+    function getRectX(i) {
         if(address === "argument" || address === "attitude"){
             return 50;
         }
@@ -424,7 +451,7 @@ function DiscussionBarometer(){
      * @param selector
      * @returns {*}
      */
-    function getBarY(usersNumber, seenBy, i, y_offset_height, height, selector) {
+    function getRectY(usersNumber, seenBy, i, y_offset_height, height, selector) {
         // y: height - barLength, because d3 starts to draw in left upper corner
         if(address === "argument" || address === "attitude"){
             return i * barWidth + y_offset_height + i * 10;
@@ -441,7 +468,7 @@ function DiscussionBarometer(){
      * @param selector
      * @returns {*}
      */
-    function getBarColor(i, selector){
+    function getRectColor(i, selector){
         if (selector === 'inner-rect')
             return getNormalColorFor(i);
         return getLightColorFor(i);
@@ -497,7 +524,6 @@ function DiscussionBarometer(){
         let data = [];
         // if there is no argument create donut-chart with one sector with small radius
         if(usersDict.length == 0){
-            console.log("Test");
             data.push({
                 usersNumber: 0,
                 seenBy: 0
