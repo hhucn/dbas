@@ -84,6 +84,7 @@ function DiscussionBarometer(){
         address = addressUrl;
         try{
             jsonData = JSON.parse(data);
+            console.log(jsonData);
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             alert('parsing-json: ' + e);
@@ -166,11 +167,13 @@ function DiscussionBarometer(){
             createYAxis(barChartSvg, height-50);
         }
 
-        // create legend for chart
-        createLegend(usersDict);
-
-        // tooltip
-        addListenerForTooltip(usersDict, barChartSvg, "rect");
+        // if length of usersDict is greater then 0 add legend and tooltip
+        if(usersDict.length > 0) {
+            // create legend for chart
+            createLegend(usersDict);
+            // tooltip
+            addListenerForTooltip(usersDict, barChartSvg, "rect");
+        }
     }
 
     /**
@@ -335,14 +338,27 @@ function DiscussionBarometer(){
 
         maxUsersNumber = getMaximum(usersDict);
 
+        // if there are no arguments show one thin bar
+        if(usersDict.length === 0){
+            barChartSvg.append("rect")
+                .attr({
+                    width: getBarWidth(0, width),
+                    height: getBarHeight(0, 0, height, selector),
+                    x: getBarX(0),
+                    y: getBarY(0, 0, 0, y_offset_height, height, selector),
+                    fill: getBarColor(0, selector),
+                    id: selector + "-" + 0
+                });
+        }
+
         barChartSvg.selectAll(selector)
             .data(usersDict)
             .enter().append("rect")
             .attr({
-                width: function (d) { return getBarWidth(d, width); },
-                height: function (d) { return getBarHeight(d, height, selector); },
+                width: function (d) { return getBarWidth(d.usersNumber, width); },
+                height: function (d) { return getBarHeight(d.usersNumber, d.seenBy, height, selector); },
                 x: function (d, i) { return getBarX(i);},
-                y: function (d, i) { return getBarY(d, i, y_offset_height, height, selector); },
+                y: function (d, i) { return getBarY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector); },
                 fill: function (d, i) { return getBarColor(i, selector); },
                 id: function (d, i) { return selector + "-" + i; }
             });
@@ -351,14 +367,14 @@ function DiscussionBarometer(){
     /**
      * Calculate width of one bar.
      *
-     * @param d
+     * @param usersNumber
      * @param width
      * @returns {*}
      */
-    function getBarWidth(d, width) {
+    function getBarWidth(usersNumber, width) {
         // height in percent: length/seen_by = x/height
         if(address === "argument" || address === "attitude"){
-            return divideWrapperIfZero(d.usersNumber, maxUsersNumber) * width;
+            return divideWrapperIfZero(usersNumber, maxUsersNumber) * width;
         }
         else{
             return barWidth;
@@ -368,19 +384,20 @@ function DiscussionBarometer(){
     /**
      * Calculate height of one bar.
      *
-     * @param d
+     * @param usersNumber
+     * @param seenBy
      * @param height
      * @param selector
      * @returns {*}
      */
-    function getBarHeight(d, height, selector) {
+    function getBarHeight(usersNumber, seenBy, height, selector) {
         // number of bar * width of bar + padding-left + space between to bars
         if(address === "argument" || address === "attitude"){
             return barWidth;
         }
         if (selector === 'inner-rect')
-            return divideWrapperIfZero(d.usersNumber, d.seenBy) * height;
-        return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height);
+            return divideWrapperIfZero(usersNumber, seenBy) * height;
+        return height - (divideWrapperIfZero(usersNumber, seenBy) * height);
     }
 
     /**
@@ -399,20 +416,21 @@ function DiscussionBarometer(){
     /**
      * Calculate y coordinate of bar.
      *
-     * @param d
+     * @param usersNumber
+     * @param seenBy
      * @param i
      * @param y_offset_height
      * @param height
      * @param selector
      * @returns {*}
      */
-    function getBarY(d, i, y_offset_height, height, selector) {
+    function getBarY(usersNumber, seenBy, i, y_offset_height, height, selector) {
         // y: height - barLength, because d3 starts to draw in left upper corner
         if(address === "argument" || address === "attitude"){
             return i * barWidth + y_offset_height + i * 10;
         }
         if (selector === 'inner-rect')
-           return height - (divideWrapperIfZero(d.usersNumber, d.seenBy) * height - 50);
+           return height - (divideWrapperIfZero(usersNumber, seenBy) * height - 50);
         return 50;
     }
 
