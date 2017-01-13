@@ -739,7 +739,10 @@ def setup_dummy_seen_by(session):
 
     for argument in db_arguments:
         tmp_first_names = list(first_names)
-        max_interval = random.randint(5, len(tmp_first_names) - 1)
+        db_votes = session.query(ArgumentSeenBy).filter_by(argument_uid=argument.uid).all()
+        max = len(tmp_first_names) - 1 if len(tmp_first_names) - 1 > len(db_votes) else len(db_votes)
+        min = 5 if max > 5 else 0
+        max_interval = random.randint(min, max)
         elements = []
         for i in range(1, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
@@ -753,7 +756,10 @@ def setup_dummy_seen_by(session):
     for statement in db_statements:
         # how many votes does this statement have?
         tmp_first_names = list(first_names)
-        max_interval = random.randint(5, len(tmp_first_names) - 1)
+        db_votes = session.query(StatementSeenBy).filter_by(statement_uid=statement.uid).all()
+        max = len(tmp_first_names) - 1 if len(tmp_first_names) - 1 > len(db_votes) else len(db_votes)
+        min = 5 if max > 5 else 0
+        max_interval = random.randint(min, max)
         elements = []
         for i in range(1, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
