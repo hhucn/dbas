@@ -124,6 +124,8 @@ function DiscussionGraph() {
         $('#hide-labels').hide();
         $('#show-attacks-on-my-statements').show();
         $('#hide-attacks-on-my-statements').hide();
+        $('#show-my-path').show();
+        $('#hide-my-path').hide();
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
         $('#show-supports-on-my-statements').show();
@@ -802,6 +804,12 @@ function DiscussionGraph() {
         $('#hide-positions').click(function () {
             hidePositions();
         });
+        $('#show-my-path').click(function () {
+            showPath(jsonData, edges);
+        });
+        $('#hide-my-path').click(function () {
+            hidePath();
+        });
         $('#show-my-statements').click(function () {
             showMyStatements(edges, force);
         });
@@ -892,6 +900,23 @@ function DiscussionGraph() {
         setDisplayStyleOfNodes('none');
         $('#show-positions').show();
         $('#hide-positions').hide();
+    }
+
+    function showPath(jsonData, edges){
+        $('#show-my-path').hide();
+        $('#hide-my-path').show();
+        let edgesCircleId = [];
+        edges.forEach(function (d) {
+            grayingElements(d);
+        });
+        edgesCircleId.forEach(function (d) {
+            highlightElements(d);
+        });
+    }
+
+    function hidePath() {
+        $('#show-my-path').show();
+        $('#hide-my-path').hide();
     }
 
     /**
