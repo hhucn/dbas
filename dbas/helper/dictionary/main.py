@@ -5,8 +5,9 @@ Provides helping function for dictionaries.
 """
 
 import random
-
 import arrow
+import datetime
+
 from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
@@ -122,6 +123,7 @@ class DictionaryHelper(object):
         rrs = request.registry.settings
 
         return_dict = dict()
+        return_dict['year']                          = datetime.datetime.now().year
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = nickname

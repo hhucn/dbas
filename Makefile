@@ -1,18 +1,22 @@
 # DBAS Makefile
 
+database = discussion
+writer = dbas
+reader = dolan
+
 users:
-	sudo -u postgres bash -c "psql -c \"CREATE USER dbas WITH PASSWORD 'SQL_2015&';\""
-	sudo -u postgres bash -c "psql -c \"CREATE USER dolan WITH PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
-	sudo -u postgres bash -c "psql -c \"ALTER role dolan with nologin;\""
+	sudo -u postgres bash -c "psql -c \"CREATE USER $(writer) WITH PASSWORD 'SQL_2015&';\""
+	sudo -u postgres bash -c "psql -c \"CREATE USER $(reader) WITH PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
+	sudo -u postgres bash -c "psql -c \"ALTER ROLE $(reader) WITH NOLOGIN;\""
 
 db:
 	sudo -u postgres bash -c "createdb -O dbas discussion"
 	sudo -u postgres bash -c "createdb -O dbas news"
+	sudo -u postgres bash -c "psql -d ${database} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE ${writer} IN SCHEMA public GRANT SELECT ON tables TO ${reader};\""
 
 dummy_discussion:
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
-	sudo -u postgres bash -c "psql -d discussion -c \"GRANT SELECT ON ALL TABLES IN SCHEMA public TO dolan;\""
 
 dummy_votes:
 	init_discussion_testvotes development.ini
@@ -29,8 +33,8 @@ clean_db:
 	sudo -u postgres bash -c "psql -c \"DROP DATABASE news;\""
 
 clean_users:
-	sudo -u postgres bash -c "psql -c \"DROP USER dbas;\""
-	sudo -u postgres bash -c "psql -c \"DROP USER dolan;\""
+	sudo -u postgres bash -c "psql -c \"DROP USER $(reader);\""
+	sudo -u postgres bash -c "psql -c \"DROP USER $(writer);\""
 
 clean:
 	make clean_db
