@@ -1,49 +1,38 @@
-# DBAS Makefile
+reload: drop users dummys
 
 users:
-	sudo -u postgres bash -c "psql -c \"CREATE USER dbas WITH PASSWORD 'SQL_2015&';\""
-	sudo -u postgres bash -c "psql -c \"CREATE USER dolan WITH PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
-	sudo -u postgres bash -c "psql -c \"ALTER role dolan with nologin;\""
+	psql -U postgres -c "CREATE USER dbas PASSWORD 'SQL_2015&';" && echo "dbas";\
+	psql -U postgres -c "CREATE ROLE dolan PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';" && echo "dolan" || true
 
 db:
-	sudo -u postgres bash -c "createdb -O dbas discussion"
-	sudo -u postgres bash -c "createdb -O dbas news"
+	createdb -U postgres -O dbas discussion
+	createdb -U postgres -O dbas news
 
-dummy_discussion:
+dummys: dummy_discussion dummy_votes dummy_reviews
+
+dummy_discussion: db
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
-	sudo -u postgres bash -c "psql -d discussion -c \"GRANT SELECT ON ALL TABLES IN SCHEMA public TO dolan;\""
+	psql -U postgres -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO dolan;"
 
-dummy_votes:
+dummy_votes: dummy_discussion
 	init_discussion_testvotes development.ini
 
-all:
-	make users
-	make db
-	make dummy_discussion
-	make dummy_votes
+dummy_reviews: dummy_discussion
+	init_review_tests development.ini
 
+drop: drop_db drop_users
 
-clean_db:
-	sudo -u postgres bash -c "psql -c \"DROP DATABASE discussion;\""
-	sudo -u postgres bash -c "psql -c \"DROP DATABASE news;\""
+drop_db:
+	dropdb -U postgres discussion --if-exists
+	dropdb -U postgres news --if-exists
 
-clean_users:
-	sudo -u postgres bash -c "psql -c \"DROP USER dbas;\""
-	sudo -u postgres bash -c "psql -c \"DROP USER dolan;\""
+drop_users:
+	dropuser -U postgres dbas --if-exists
+	dropuser -U postgres dolan --if-exists
 
-clean:
-	make clean_db
-	make clean_users
-
-
-refresh:
-	reload_discussion_sql development.ini
-	initialize_news_sql development.ini
-
-
-nosetests:
-	nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export
+unit-coverage: drop_db dummys
+	nosetests --with-coverage dbas graph admin api export
 	# -nosetests -s --with-coverage --cover-package=dbas > nosetests_temp_output.log 2>&1
 	# cat nosetests_temp_output.log
 	# grep TOTAL nosetests_temp_output.log | awk '{ print "TOTAL: "$$4; }'
