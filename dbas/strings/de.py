@@ -68,6 +68,7 @@ de_lang = {
     _.defaultView: 'Standardansicht',
     _.positions: 'Positionen',
     _.labels: 'Beschriftungen',
+    _.myPath: 'Mein Pfad',
     _.myStatements: 'Meine Aussagen',
     _.supportsOnMyStatements: 'Unterstützungen',
     _.attacksOnMyStatements: 'Angriffe',

@@ -423,6 +423,7 @@ class DictionaryHelper(object):
                                   'share_url': _tn_sys.get(_.shareUrl),
                                   'positions': _tn_sys.get(_.positions),
                                   'labels': _tn_sys.get(_.labels),
+                                  'my_path': _tn_sys.get(_.myPath),
                                   'my_statements': _tn_sys.get(_.myStatements),
                                   'supports_on_my_statements': _tn_sys.get(_.supportsOnMyStatements),
                                   'attacks_on_my_statements': _tn_sys.get(_.attacksOnMyStatements),
