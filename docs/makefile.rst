@@ -1,21 +1,26 @@
 ========
 Makefile
 ========
+make reload (default)
+    Drop everything, init dummy data for the discussion, the votes and reviews.
 
-* make init
-    Creates a user for postgres as well as both databases (discussion and news).
+make users
+    Create the users *dbas* and *dolan*.
 
-* make databases
-    Remove old databases and initialize new ones
+make db
+    Initialize new databases. You have to run *make users* once before!
 
-* make refresh
-    Will drop both databases, create them, assign them to the owner and fills them with data.
+make dummys
+    Create dummy data for all databases.
 
-* make votes
-    Creats dummy data for the voting tables
+make drop
+    Drop all SQLite databases.
 
-* make all
-    Drops everything, inits dummy data for the discussion and the votes.
+make drop_db
+    Drop the *discussion* and the *news* databases.
 
-* make clean
-    Drops all SQLite databases.
+make drop_users
+    Drop all users if they exist.
+
+make unit-coverage
+    Run all unit tests with coverage

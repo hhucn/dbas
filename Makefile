@@ -21,24 +21,26 @@ dummy_discussion:
 dummy_votes:
 	init_discussion_testvotes development.ini
 
-all:
-	make users
-	make db
-	make dummy_discussion
-	make dummy_votes
+dummy_reviews:
+	init_review_tests development.ini
+
+dummys:
+	dummy_discussion
+	dummy_votes
+	dummy_reviews
+
+all: users db dummy_discussion dummy_votes dummy_reviews
 
 
 clean_db:
-	sudo -u postgres bash -c "psql -c \"DROP DATABASE discussion;\""
-	sudo -u postgres bash -c "psql -c \"DROP DATABASE news;\""
+	sudo -u postgres bash -c "dropdb -U postgres discussion --if-exists"
+	sudo -u postgres bash -c "dropdb -U postgres news --if-exists"
 
 clean_users:
-	sudo -u postgres bash -c "psql -c \"DROP USER $(reader);\""
-	sudo -u postgres bash -c "psql -c \"DROP USER $(writer);\""
+	sudo -u postgres bash -c "dropuser -U postgres $(reader) --if-exists"
+	sudo -u postgres bash -c "dropuser -U postgres $(writer) --if-exists"
 
-clean:
-	make clean_db
-	make clean_users
+clean: clean_db clean_users
 
 
 refresh:

@@ -782,15 +782,26 @@ def setup_dummy_votes(session, users):
     new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, first_names, users)
     new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, first_names, users)
 
-    rat_arg_up = str(trunc(arg_up / len(db_arguments) * 100) / 100)
-    rat_arg_down = str(trunc(arg_down / len(db_arguments) * 100) / 100)
-    rat_stat_up = str(trunc(stat_up / len(db_statements) * 100) / 100)
-    rat_stat_down = str(trunc(stat_down / len(db_statements) * 100) / 100)
+    argument_count = len(db_arguments)
+    statement_count = len(db_statements)
 
-    logger('INIT_DB', 'Dummy Votes', 'Created ' + str(arg_up) + ' up votes for ' + str(len(db_arguments)) + ' arguments (' + rat_arg_up + ' votes/argument)')
-    logger('INIT_DB', 'Dummy Votes', 'Created ' + str(arg_down) + ' down votes for ' + str(len(db_arguments)) + ' arguments (' + rat_arg_down + ' votes/argument)')
-    logger('INIT_DB', 'Dummy Votes', 'Created ' + str(stat_up) + ' up votes for ' + str(len(db_statements)) + ' statements (' + rat_stat_up + ' votes/statement)')
-    logger('INIT_DB', 'Dummy Votes', 'Created ' + str(stat_down) + ' down votes for ' + str(len(db_statements)) + ' statements (' + rat_stat_down + ' votes/statement)')
+    if argument_count <= 0 or statement_count <= 0:
+        logger('INIT_DB', 'Dummy Votes', 'No arguments or statements! Do you forget to init discussions?', warning=True)
+        return
+
+    rat_arg_up = arg_up / argument_count
+    rat_arg_down = arg_down / argument_count
+    rat_stat_up = stat_up / statement_count
+    rat_stat_down = stat_down / statement_count
+
+    logger('INIT_DB', 'Dummy Votes',
+           'Created {} up votes for {} arguments ({:.2f} votes/argument)'.format(arg_up, argument_count, rat_arg_up))
+    logger('INIT_DB', 'Dummy Votes',
+           'Created {} down votes for {} arguments ({:.2f} votes/argument)'.format(arg_down, argument_count, rat_arg_down))
+    logger('INIT_DB', 'Dummy Votes',
+           'Created {} up votes for {} statements ({:.2f} votes/statement)'.format(stat_up, statement_count, rat_stat_up))
+    logger('INIT_DB', 'Dummy Votes',
+           'Created {} down votes for {} statements ({:.2f} votes/statement)'.format(stat_down, statement_count, rat_stat_down))
 
     session.add_all(new_votes_for_arguments)
     session.add_all(new_votes_for_statements)
