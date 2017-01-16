@@ -16,7 +16,7 @@ from dbas.strings.translator import Translator
 from sqlalchemy import and_
 
 
-def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page):
+def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page, path):
     """
     Returns nested dictionary with all kinds of attacks for the argument as well as the users who are supporting
     these attacks.
@@ -24,7 +24,8 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page)
     :param argument_uids: Argument.uid
     :param nickname: of the user
     :param lang: current language
-    :param main_page: url
+    :param main_page: main_page
+    :param path: path
     :return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
     """
 
@@ -61,7 +62,12 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page)
 
     # getting the text of all reactions
     relation = ['undermine', 'support', 'undercut', 'rebut']
-    relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive)
+    if '/d' in path.split('?')[0]:
+        db_user = DBDiscussionSession.query(User).get(db_user_argument.author_uid)
+        gender = db_user.gender if db_user else 'n'
+        relation_text = get_relation_text_dict_with_substitution(lang, False, False, False, is_dont_know=True, gender=gender)
+    else:
+        relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive)
 
     # getting votes for every reaction
     ret_list = __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page)
@@ -231,7 +237,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
 
         statement_dict['uid'] = str(uid)
         text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        statement_dict['text'] = _t.get(_.because) + ' ' + text
+        statement_dict['text'] = '... {} {}'.format(_t.get(_.because).lower(), text)
 
         db_votes = []
         for premise in db_premises:
@@ -376,8 +382,8 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     if len(db_pro_votes) == 0:
         ret_dict['agree_message'] = _t.get(_.agreeToThis0) + '.'
     else:
-        ret_dict['agree_message'] = str(len(db_pro_votes)) + ' ' + _t.get(_.agreeToThis1) + '.'
-        ret_dict['agree_message'] += _t.get(_.agreeToThis1) if len(db_pro_votes) == 1 else _t.get(_.agreeToThis1)
+        ret_dict['agree_message'] = str(len(db_pro_votes)) + ' '
+        ret_dict['agree_message'] += _t.get(_.agreeToThis1) if len(db_pro_votes) == 1 else _t.get(_.agreeToThis2)
         ret_dict['agree_message'] += '.'
 
     con_array = []
@@ -390,8 +396,8 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     if len(db_pro_votes) == 0:
         ret_dict['disagree_message'] = _t.get(_.disagreeToThis0) + '.'
     else:
-        ret_dict['disagree_message'] = str(len(db_pro_votes)) + ' ' + _t.get(_.disagreeToThis1) + '.'
-        ret_dict['disagree_message'] += _t.get(_.disagreeToThis1) if len(db_pro_votes) == 1 else _t.get(_.disagreeToThis1)
+        ret_dict['disagree_message'] = str(len(db_con_votes)) + ' '
+        ret_dict['disagree_message'] += _t.get(_.disagreeToThis1) if len(db_con_votes) == 1 else _t.get(_.disagreeToThis2)
         ret_dict['disagree_message'] += '.'
 
     ret_dict['title'] = title

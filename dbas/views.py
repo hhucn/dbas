@@ -2005,7 +2005,7 @@ def get_users_with_same_opinion(request):
         if is_arg:
             if is_rea:
                 uids = json.loads(uids)
-                return_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, request.application_url)
+                return_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, request.application_url, request.path)
             else:
                 return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
         elif is_pos:

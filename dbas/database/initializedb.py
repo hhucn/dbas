@@ -806,6 +806,17 @@ def setup_dummy_votes(session, users):
     session.add_all(new_votes_for_statements)
     session.flush()
 
+    db_statements = session.query(Statement).all()
+    for sta in db_statements:
+        seen = len(session.query(StatementSeenBy).filter_by(statement_uid=sta.uid).all())
+        vote = len(session.query(VoteStatement).filter_by(statement_uid=sta.uid).all())
+        logger('STA ' + str(sta.uid), str(seen), str(vote) + ('     <--' if vote > seen else ''))
+    db_arguments = session.query(Argument).all()
+    for arg in db_arguments:
+        seen = len(session.query(ArgumentSeenBy).filter_by(argument_uid=arg.uid).all())
+        vote = len(session.query(VoteArgument).filter_by(argument_uid=arg.uid).all())
+        logger('ARG ' + str(arg.uid), str(seen), str(vote) + ('     <--' if vote > seen else ''))
+
     # random timestamps
     db_votestatements = session.query(VoteStatement).all()
     for vs in db_votestatements:
@@ -828,9 +839,9 @@ def __set_votes_for_arguments(db_arguments, firstnames, users):
     arg_down = 0
     new_votes_for_arguments = list()
     for argument in db_arguments:
-        max_interval = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument.uid).all()
-        up_votes = random.randint(1, len(max_interval) - 1)
-        down_votes = random.randint(1, len(max_interval) - 1)
+        max_interval = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument.uid).all())
+        up_votes = random.randint(1, max_interval - 1)
+        down_votes = random.randint(1, max_interval - 1)
         arg_up += up_votes
         arg_down += down_votes
 
@@ -887,9 +898,9 @@ def __set_votes_for_statements(db_statements, firstnames, users):
     stat_down = 0
     new_votes_for_statement = list()
     for statement in db_statements:
-        max_interval = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=statement.uid).all()
-        up_votes = random.randint(1, len(max_interval) - 1)
-        down_votes = random.randint(1, len(max_interval) - 1)
+        max_interval = len(DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=statement.uid).all())
+        up_votes = random.randint(1, max_interval - 1)
+        down_votes = random.randint(1, max_interval - 1)
         stat_up += up_votes
         stat_down += down_votes
 

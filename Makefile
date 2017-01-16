@@ -5,7 +5,7 @@ writer = dbas
 reader = dolan
 
 users:
-	sudo -u postgres bash -c "psql -c \"CREATE USER $(writer) WITH PASSWORD 'SQL_2015&';\""
+	sudo -u postgres bash -c "psql -c \"CREATE USER $(writer) WITH PASSWORD 'DoimBomrylpOytAfVin0';\""
 	sudo -u postgres bash -c "psql -c \"CREATE USER $(reader) WITH PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
 	sudo -u postgres bash -c "psql -c \"ALTER ROLE $(reader) WITH NOLOGIN;\""
 

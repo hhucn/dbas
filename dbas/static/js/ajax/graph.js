@@ -22,11 +22,17 @@ function AjaxGraphHandler(){
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'false', uids: JSON.stringify(uid)};
 				break;
 			case 'argument':
+			case 'dont_know':
 				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', is_position: 'false', uids: JSON.stringify(uid)};
 				break;
 			case 'position':
 				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'true', uids: JSON.stringify(uid)};
+				break;
+			default:
+				setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+				return;
 		}
+		
 		dataString['lang'] = $('#issue_info').data('discussion-language');
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
