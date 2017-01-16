@@ -15,6 +15,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.lib import get_public_profile_picture
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.helper.views import get_nickname
 
 list_length = 5
 max_count_zeros = 5
@@ -24,7 +25,41 @@ mechanism = 'Levensthein'
 # mechanism = 'SequenceMatcher'
 
 
-def get_strings_for_start(value, issue, is_startpoint):
+def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra=None):
+    """
+
+    :param _tn:
+    :param for_api:
+    :param api_data:
+    :param request_authenticated_userid:
+    :param value:
+    :param mode:
+    :param issue:
+    :param extra:
+    :return:
+    """
+
+    return_dict = {}
+    if mode == '0':  # start statement
+        return_dict['distance_name'], return_dict['values'] = __get_strings_for_start(value, issue, True)
+    elif mode == '1':  # edit statement popup
+        return_dict['distance_name'], return_dict['values'] = __get_strings_for_edits(value, extra)
+    elif mode == '2':  # start premise
+        return_dict['distance_name'], return_dict['values'] = __get_strings_for_start(value, issue, False)
+    elif mode == '3':  # adding reasons
+        return_dict['distance_name'], return_dict['values'] = __get_strings_for_reasons(value, issue)
+    elif mode == '4':  # getting text
+        return_dict = get_strings_for_search(value)
+    elif mode == '5':  # getting public nicknames
+        nickname = get_nickname(request_authenticated_userid, for_api, api_data)
+        return_dict['distance_name'], return_dict['values'] = get_strings_for_public_nickname(value, nickname)
+    else:
+        return_dict = {'error': _tn.get(_.internalError)}
+
+    return return_dict
+
+
+def __get_strings_for_start(value, issue, is_startpoint):
     """
     Checks different position-strings for a match with given value
 
@@ -49,7 +84,7 @@ def get_strings_for_start(value, issue, is_startpoint):
     return mechanism, return_array[:list_length]
 
 
-def get_strings_for_edits(value, statement_uid):
+def __get_strings_for_edits(value, statement_uid):
     """
     Checks different textversion-strings for a match with given value
 
@@ -73,7 +108,7 @@ def get_strings_for_edits(value, statement_uid):
     return mechanism, return_array[:list_length]
 
 
-def get_strings_for_reasons(value, issue):
+def __get_strings_for_reasons(value, issue):
     """
     Checks different textversion-strings for a match with given value
 
@@ -94,7 +129,7 @@ def get_strings_for_reasons(value, issue):
 
     return_array = __sort_array(return_array)
 
-    # logger('fuzzy_string_matcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
+    # logger('fuzzy_string_matcher', '__get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
     #        ', dictionary length: ' + str(len(return_array)), debug=True)
 
     return mechanism, return_array[:list_length]
@@ -180,6 +215,11 @@ def get_strings_for_public_nickname(value, nickname):
 
 
 def __sort_array(list):
+    """
+
+    :param list:
+    :return:
+    """
     return_list = []
     newlist = sorted(list, key=lambda k: k['distance'])
 
@@ -196,6 +236,8 @@ def __sort_array(list):
 
 def __sort_dict(dictionary):
     """
+
+    :param dictionary:
     :return:
     """
     dictionary = OrderedDict(sorted(dictionary.items()))

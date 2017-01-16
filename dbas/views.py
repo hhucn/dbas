@@ -2222,6 +2222,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
         value = api_data['value'] if for_api else request.params['value']
         mode = str(api_data['mode']) if for_api else str(request.params['type'])
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
+        extra = request.params['extra'] if 'extra' in request.params else None
 
         logger('Graph.lib', 'get_doj_data', 'main')
 
@@ -2237,25 +2238,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
         except Exception as e:
             logger('fuzzy_search', 'def', 'Error grepping data via microserver: ' + str(e))
 
-        return_dict = dict()
-
-        if mode == '0':  # start statement
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_start(value, issue, True)
-        elif mode == '1':  # edit statement popup
-            statement_uid = request.params['extra']
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_edits(value, statement_uid)
-        elif mode == '2':  # start premise
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_start(value, issue, False)
-        elif mode == '3':  # adding reasons
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_reasons(value, issue)
-        elif mode == '4':  # getting text
-            return_dict = fuzzy_string_matcher.get_strings_for_search(value)
-        elif mode == '5':  # getting public nicknames
-            nickname = get_nickname(request_authenticated_userid, for_api, api_data)
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_public_nickname(value, nickname)
-        else:
-            logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
-            return_dict = {'error': _tn.get(_.internalError)}
+        return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 
     except KeyError as e:
         return_dict = {'error': _tn.get(_.internalKeyError)}

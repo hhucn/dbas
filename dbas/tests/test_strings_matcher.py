@@ -15,14 +15,14 @@ class StringMatcherTest(unittest.TestCase):
     matcher.mechanism = 'Levensthein'
 
     def test_get_strings_for_start(self):
-        mechanism, return_array = matcher.get_strings_for_start('cat', 2, True)
+        mechanism, return_array = matcher.__get_strings_for_start('cat', 2, True)
         self.check_string_matcher_array(return_array)
 
-        mechanism, return_array = matcher.get_strings_for_start('cat', 2, False)
+        mechanism, return_array = matcher.__get_strings_for_start('cat', 2, False)
         self.check_string_matcher_array(return_array)
 
     def test_get_strings_for_reasons(self):
-        mechanism, return_array = matcher.get_strings_for_reasons('cat', 2)
+        mechanism, return_array = matcher.__get_strings_for_reasons('cat', 2)
         self.check_string_matcher_array(return_array)
 
     def test_get_strings_for_issues(self):
