@@ -335,8 +335,13 @@ class DiscussionDictHelper(object):
             user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
 
             # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
-            tmp_uid            = db_argument.conclusion_uid if db_argument.conclusion_uid else db_argument.argument_uid
-            db_statement       = DBDiscussionSession.query(Statement).get(tmp_uid)
+            conclusion_uid     = db_argument.conclusion_uid
+            tmp_arg = db_argument
+            while not conclusion_uid:
+                tmp_arg = DBDiscussionSession.query(Argument).get(tmp_arg.argument_uid)
+                conclusion_uid = tmp_arg.conclusion_uid
+
+            db_statement       = DBDiscussionSession.query(Statement).get(conclusion_uid)
             reply_for_argument = not (db_statement and db_statement.is_startpoint)
             current_argument   = get_text_for_argument_uid(uid, with_html_tag=True, colored_position=True,
                                                            user_changed_opinion=user_changed_opinion, attack_type=attack,
