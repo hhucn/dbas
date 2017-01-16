@@ -294,7 +294,8 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         statements_array = []
 
-        db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
+        db_arguments = get_not_disabled_arguments_as_query()
+        db_argument = db_arguments.filter_by(uid=argument_uid).first()
         if not db_argument:
             return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
@@ -303,19 +304,35 @@ class ItemDictHelper(object):
             add_seen_argument(argument_uid, db_user.uid)
 
         rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, False, False, is_dont_know=True, gender=gender)
-        mode         = 't' if is_supportive else 't'
-        counter_mode = 'f' if is_supportive else 't'
+        current_mode = 't' if is_supportive else 'f'
+        not_current_mode = 'f' if is_supportive else 't'
 
         # relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO 'overbid'
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
-            if relation == 'support':
+            if relation == 'undermine':
+                if db_argument.conclusion_uid is not None:
+                    url = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, not_current_mode)
+                else:
+                    url = _um.get_url_for_justifying_argument(True, db_argument.argument_uid, not_current_mode, relation)
+            elif relation == 'support':
                 arg_id_sys, sys_attack = rs.get_attack_for_argument(argument_uid, self.lang)
                 url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
+            elif relation == 'undercut':
+                url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, relation)
+            elif relation == 'rebut':
+                db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+                if len(db_premises) == 1:
+                    url = _um.get_url_for_justifying_statement(True, db_premises[0].statement_uid, not_current_mode)
+                else:
+                    uids = [db_argument.premisesgroup_uid]
+                    if db_argument.conclusion_uid is not None:
+                        url = _um.get_url_for_choosing_premisegroup(True, False, db_argument.is_supportive, db_argument.conclusion_uid, uids)
+                    else:
+                        url = _um.get_url_for_choosing_premisegroup(True, True, db_argument.is_supportive, db_argument.argument_uid, uids)
 
             else:
-                current_mode = mode if relation == 'overbid' else counter_mode
-                url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, relation)
+                url = _um.get_url_for_justifying_argument(True, argument_uid, not_current_mode, relation)
 
             statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url))
 
