@@ -120,6 +120,7 @@ class Keywords(Enum):
     at = 'at'
     assertion = 'assertion'
     accept = 'accept'
+    assistance = 'assistance'
     agreeToThis0 = 'Nobody agrees to this statement'
     agreeToThis1 = 'agrees to this statement'
     agreeToThis2 = 'agree to this statement'

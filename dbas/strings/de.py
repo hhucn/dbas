@@ -115,6 +115,7 @@ de_lang = {
     _.alternatively: 'Alternativ',
     _.argument: 'Argument',
     _.accept: 'für',
+    _.assistance: 'Unterstützung',
     _.andIDoNotBelieveCounter: 'und ich glaube, dass ist kein gutes Gegenargument für',
     _.andIDoNotBelieveArgument: 'und ich glaube, dass ist kein gutes Argument für',
     _.andTheyDoNotBelieveCounter: 'und sie glauben, dass ist kein gutes Gegenargument für',

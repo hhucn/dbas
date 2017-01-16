@@ -664,8 +664,9 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
         start_tag = ('<' + tag_type + ' data-argumentation-type="argument">') if tag_type in confrontation else ''
         end_tag = '</' + tag_type + '>' if tag_type in confrontation else ''
-        tmp = start_tag + _t.get(_.reject if user_is_attacking else _.accept) + ' ' + end_tag
-        confrontation_text += bind.format(tmp) + conclusion + '.' + ' ' + b
+        accept = _.assistance if lang == 'de' else _.accept
+        tmp = start_tag + _t.get(_.reject if user_is_attacking else accept) + ' ' + end_tag
+        confrontation_text += bind.format(tmp) + ' ' + conclusion + '.' + ' ' + b
 
         if is_okay:
             confrontation_text += _t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)
