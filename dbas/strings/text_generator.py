@@ -733,8 +733,8 @@ def get_name_link_of_arguments_author(main_page, argument, nickname):
         db_user = get_first_supporter_of_argument(argument.uid, db_current_user)
 
         if db_user:
-            text, is_okay = get_author_data(main_page, db_user.author_uid, False, True)
-            db_user = DBDiscussionSession.query(User).get(db_user.author_uid)
+            text, is_okay = get_author_data(main_page, db_user.uid, False, True)
+            db_user = DBDiscussionSession.query(User).get(db_user.uid)
             gender = db_user.gender if db_user else 'n'
         else:
             return '', '', False

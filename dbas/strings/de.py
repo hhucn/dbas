@@ -210,7 +210,7 @@ de_lang = {
     _.didYouMean: 'Top 10 der Aussagen, die Sie eventuell meinten:',
     _.discussionEnd: 'Die Diskussion endet hier.',
     _.discussionCongratulationEnd: 'Die Diskussion endet hier, da weitere Teilnehmer aktuell kein Gegenargument mehr haben.',
-    _.discussionEndLinkTextLoggedIn: 'Suchen Sie nach weiteren Aufgaben? Schauen Sie doch einmal in unsere <a id="discussionEndReview">Prüfsektion</a>. Alternativ können Sie den oben den Button nutzen um die Diskussion neu zustarten.',
+    _.discussionEndLinkTextLoggedIn: 'Suchen Sie nach weiteren Aufgaben? Schauen Sie doch einmal in unsere <a id="discussionEndReview">Prüfsektion</a>. Alternativ können Sie oben den Button nutzen um die Diskussion neu zustarten.',
     _.discussionEndLinkTextNotLoggedIn: 'Suchen Sie nach weiteren Aufgaben? <a  data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">Login</a> und schauen Sie doch einmal in unsere <a id="discussionEndReview">Prüfsektion</a>. Alternativ können Sie den oben den Button nutzen um die Diskussion neu zustarten.',
     _.duplicateDialog: 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
     _.duplicate: 'Duplikat',
