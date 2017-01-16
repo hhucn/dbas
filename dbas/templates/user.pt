@@ -21,10 +21,10 @@
 							<td><span class="lead" i18n:translate="registered">Registered</span></td>
                             <td>${user.registered}</td>
 						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="user_group">User group</span></td>
-                            <td>${user.group}</td>
-						</tr>
+						<!--<tr>-->
+						<!--	<td><span class="lead" i18n:translate="user_group">User group</span></td>-->
+                        <!--    <td>${user.group}</td>-->
+						<!--</tr>-->
 					</table>
                     <div>
                         <div class="center text-center" style="margin: 2em;">
