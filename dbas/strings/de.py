@@ -317,6 +317,7 @@ de_lang = {
     _.history: 'Geschichte',
     _.howeverIHaveMuchStrongerArgumentRejectingThat: 'Jedoch habe ich ein viel stärkeres Argument dagegen, dass',
     _.howeverIHaveMuchStrongerArgumentAcceptingThat: 'Jedoch habe ich ein viel stärkeres Argument dafür, dass',
+    _.howeverIHaveMuchStrongerArgumentTo: 'Jedoch habe ich ein viel stärkeres Argument',
     _.howeverIHaveMuchStrongerArgument: 'Jedoch habe ich ein viel stärkeres Argument',
     _.howeverIHaveEvenStrongerArgumentRejecting: 'Jedoch habe ich ein stärkeres Argument gegen:',
     _.howeverIHaveEvenStrongerArgumentAccepting: 'Jedoch habe ich ein stärkeres Argument für:',

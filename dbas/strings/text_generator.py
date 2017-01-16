@@ -302,9 +302,9 @@ def __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, s
     # ret_dict['rebut_text'] += (_t.get(_.iAcceptCounter) if is_attacking else _t.get(_.iAcceptArgument))
     ret_dict['rebut_text'] += _t.get(_.iAcceptArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(_.iAcceptCounter)
     ret_dict['rebut_text'] += ' ' + conclusion + '. '
-    ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgument) + ' '
+    ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgumentTo if is_dont_know else _.howeverIHaveMuchStrongerArgument) + ' '
     ret_dict['rebut_text'] += start_argument if is_dont_know else start_position
-    ret_dict['rebut_text'] += _t.get(_.reject if is_dont_know else _.accept)
+    ret_dict['rebut_text'] += _t.get(_.reject if is_dont_know else _.forText)
     # ret_dict['rebut_text'] += _t.get(_.accept if is_attacking else _.reject)
     ret_dict['rebut_text'] += ' ' + (first_conclusion if first_conclusion else conclusion) + end_tag + '.'
     # + (_t.get(_.doesNotHold) if is_attacking else _t.get(_.hold)) + '.'
