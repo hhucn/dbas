@@ -893,7 +893,8 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
         return 'Missing author with uid ' + str(uid), False
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
-    img = '<img class="img-circle" src="' + get_profile_picture(db_user, profile_picture_size, True) + '">'
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, profile_picture_size) + '">'
+
     nick = db_user.get_global_nickname()
     link_begin = ('<a href="' + main_page + '/user/' + nick + ' " title="' + nick + '">') if linked_with_users_page else ''
     link_end = ('</a>') if linked_with_users_page else ''
@@ -930,5 +931,3 @@ def validate_recaptcha(recaptcha):
         error = True
 
     return json['success'], error
-
-
