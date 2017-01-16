@@ -2003,22 +2003,22 @@ def get_users_with_same_opinion(request):
         is_sup = params['is_supporti'] if 'is_supporti' in params else None
 
         if is_arg:
-            if not is_rea:
-                return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
-            else:
+            if is_rea:
                 uids = json.loads(uids)
                 return_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, request.application_url)
+            else:
+                return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
         elif is_pos:
             uids = json.loads(uids)
             ids = uids if isinstance(uids, list) else [uids]
             return_dict = get_user_with_same_opinion_for_statements(ids, is_sup, nickname, ui_locales, request.application_url)
         else:
-            if not is_att:
+            if is_att:
+                return_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, request.application_url)
+            else:
                 uids = json.loads(uids)
                 ids = uids if isinstance(uids, list) else [uids]
                 return_dict = get_user_with_same_opinion_for_premisegroups(ids, nickname, ui_locales, request.application_url)
-            else:
-                return_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, request.application_url)
         return_dict['error'] = ''
     except KeyError as e:
         logger('get_users_with_same_opinion', 'error', repr(e))

@@ -360,7 +360,7 @@ de_lang = {
     _.iAcceptArgumentThat: 'und ich akzeptiere, dass es ein Argument dafür ist, dass',
     _.iAgreeWith: 'Ich find das richtig',
     _.iAgreeWithInColor: 'Ich finde das <span class=\'text-success\'>richtig</span>',
-    _.iDisagreeWith: 'Ich finde das ',
+    _.iDisagreeWith: 'Ich finde das falsch',
     _.iDisagreeWithInColor: 'Ich finde das <span class=\'text-danger\'>falsch</span>',
     _.iDoNotKnow: 'Ich weiß es nicht, dass',
     _.iDoNotKnowInColor: 'Ich <span class=\'text-info\'>weiß es nicht</span>',
