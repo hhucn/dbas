@@ -806,17 +806,6 @@ def setup_dummy_votes(session, users):
     session.add_all(new_votes_for_statements)
     session.flush()
 
-    db_statements = session.query(Statement).all()
-    for sta in db_statements:
-        seen = len(session.query(StatementSeenBy).filter_by(statement_uid=sta.uid).all())
-        vote = len(session.query(VoteStatement).filter_by(statement_uid=sta.uid).all())
-        logger('STA ' + str(sta.uid), str(seen), str(vote) + ('     <--' if vote > seen else ''))
-    db_arguments = session.query(Argument).all()
-    for arg in db_arguments:
-        seen = len(session.query(ArgumentSeenBy).filter_by(argument_uid=arg.uid).all())
-        vote = len(session.query(VoteArgument).filter_by(argument_uid=arg.uid).all())
-        logger('ARG ' + str(arg.uid), str(seen), str(vote) + ('     <--' if vote > seen else ''))
-
     # random timestamps
     db_votestatements = session.query(VoteStatement).all()
     for vs in db_votestatements:
