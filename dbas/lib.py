@@ -930,3 +930,5 @@ def validate_recaptcha(recaptcha):
         error = True
 
     return json['success'], error
+
+

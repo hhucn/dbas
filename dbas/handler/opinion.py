@@ -11,7 +11,7 @@ from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_relation_text_dict_with_substitution
+from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_first_supporter_of_argument
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
 
@@ -62,12 +62,15 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
 
     # getting the text of all reactions
     relation = ['undermine', 'support', 'undercut', 'rebut']
+
+    # get gender of counter user
+    db_user = get_first_supporter_of_argument(argument_uids[1], db_user)
+    gender = db_user.gender if db_user else 'n'
+
     if '/d' in path.split('?')[0]:
-        db_user = DBDiscussionSession.query(User).get(db_user_argument.author_uid)
-        gender = db_user.gender if db_user else 'n'
         relation_text = get_relation_text_dict_with_substitution(lang, False, False, False, is_dont_know=True, gender=gender)
     else:
-        relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive)
+        relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive, gender=gender)
 
     # getting votes for every reaction
     ret_list = __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page)

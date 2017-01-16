@@ -8,6 +8,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from sqlalchemy import and_
 from .keywords import Keywords as _
 from .translator import Translator
+from dbas.database.initializedb import nick_of_anonymous_user
 
 
 tag_type = 'span'
@@ -729,22 +730,11 @@ def get_name_link_of_arguments_author(main_page, argument, nickname):
         nickname = nickname if nickname is not None else nick_of_anonymous_user
         db_current_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-        # get all valid up votes
-        db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(
-            VoteArgument.author_uid != db_anonymous_user.uid,
-            VoteArgument.argument_uid == argument.uid,
-            VoteArgument.is_valid == True,
-            VoteArgument.is_up_vote == True
-        ))
+        db_user = get_first_supporter_of_argument(argument.uid, db_current_user)
 
-        if db_current_user:
-            db_vote = db_vote.filter(VoteArgument.author_uid != db_current_user.uid)
-
-        db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
-
-        if db_vote:
-            text, is_okay = get_author_data(main_page, db_vote.author_uid, False, True)
-            db_user = DBDiscussionSession.query(User).get(db_vote.author_uid)
+        if db_user:
+            text, is_okay = get_author_data(main_page, db_user.author_uid, False, True)
+            db_user = DBDiscussionSession.query(User).get(db_user.author_uid)
             gender = db_user.gender if db_user else 'n'
         else:
             return '', '', False
@@ -797,3 +787,28 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
             break
 
     return text, gender, is_okay
+
+
+def get_first_supporter_of_argument(argument_uid, current_user):
+    """
+
+    :param argument_uid:
+    :param current_user:
+    :return:
+    """
+
+    db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+    db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(
+        VoteArgument.author_uid != db_anonymous_user.uid,
+        VoteArgument.argument_uid == argument_uid,
+        VoteArgument.is_valid == True,
+        VoteArgument.is_up_vote == True
+    ))
+
+    if current_user:
+        db_vote = db_vote.filter(VoteArgument.author_uid != current_user.uid)
+
+    db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
+    db_user = DBDiscussionSession.query(User).get(db_vote.author_uid)
+
+    return db_user

@@ -226,9 +226,9 @@ class DiscussionDictHelper(object):
             add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, is_supportive)
 
         elif attack == 'undercut':
-            intro = _tn.get(_.statementIsAbout) if self.lang == 'de' else ''
-            text = get_text_for_add_premise_container(self.lang, premise, premise, attack, conclusion, db_argument.is_supportive)
-            add_premise_text = intro + text
+            tmp = user_msg[:-1] if user_msg[-1] == '.' else user_msg
+            add_premise_text = tmp + ', ' + _tn.get(_.because).lower() + '...'
+
         else:
             add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
 
