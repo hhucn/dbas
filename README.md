@@ -26,7 +26,7 @@ The documentation requires [Sphinx](http://www.sphinx-doc.org/en/stable/).
 
 Ensure that the following tools are installed:
 
-* Python >= 3.4
+* Python >= 3.5
 * `pip <https://pip.pypa.io/en/stable/installing/>`_
 * `virtualenv <http://virtualenv.readthedocs.org/en/latest/installation.html>`_
 * `virtualenvwrapper <http://virtualenvwrapper.readthedocs.org/en/latest/install.html>`_
@@ -35,23 +35,27 @@ Ensure that the following tools are installed:
 Then follow these steps:
 
 1. Create virtualenv with python3:
+    
+        mkvirtualenv "--python=$(which python3)" dbas
 
 2. Install all requirements:
 
+        pip install -r requirements.txt
+
 3. Develop application:
+        
+        python setup.py develop
 
 4. Install PostgreSQL and configure it:
 
-6. Create database:
+        apt-get install libpq-dev python-dev postgresql
+        
+6. Create dummy database:
+
+        make
 
 7. Start development web server:
 
-        mkvirtualenv "--python=$(which python3)" dbas
-        pip install -r requirements.txt
-        python setup.py develop
-        apt-get install libpq-dev python-dev postgresql
-        make init
-        make all
         pserve development.ini --reload
 
 or using Docker containers:
@@ -71,9 +75,9 @@ Frontend tests can be found in `dbas/tests` and are executable with:
 These tests require [splinter](https://splinter.readthedocs.org/en/latest/) 
 and [selenium](https://pypi.python.org/pypi/selenium).
 
-Backend tests can be executed with:
+Backend unit tests can be executed with:
 
-    nosetests dbas
+    make unit-coverage
 
 Therefore a D-BAS instance is required.
 
