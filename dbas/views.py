@@ -66,6 +66,8 @@ version = '1.1.0'
 full_version = version + 'b'
 project_name = name + ' ' + full_version
 
+auto_completion_url = 'http://localhost:5103'
+
 
 def base_layout():
     return get_renderer('templates/basetemplate.pt').implementation().macros['layout']
@@ -2220,6 +2222,20 @@ def fuzzy_search(request, for_api=False, api_data=None):
         value = api_data['value'] if for_api else request.params['value']
         mode = str(api_data['mode']) if for_api else str(request.params['type'])
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
+
+        logger('Graph.lib', 'get_doj_data', 'main')
+
+        try:
+            url = auto_completion_url + '?issue={}&mode={}&value={}'.format(str(issue), str(mode), str(value))
+            resp = requests.get(url)
+            if resp.status_code == 200:
+                return_dict = json.loads(resp.text)
+                if for_api:
+                    return return_dict
+                return json.dumps(return_dict)
+
+        except Exception as e:
+            logger('fuzzy_search', 'def', 'Error grepping data via microserver: ' + str(e))
 
         return_dict = dict()
 
