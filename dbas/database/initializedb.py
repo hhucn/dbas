@@ -8,7 +8,6 @@ TODO
 import os
 import random
 import sys
-from math import trunc
 
 import arrow
 import dbas.handler.password as password_handler
@@ -23,7 +22,7 @@ from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
-from sqlalchemy import engine_from_config, and_
+from sqlalchemy import engine_from_config
 
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
