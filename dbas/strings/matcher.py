@@ -16,6 +16,7 @@ from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.lib import get_public_profile_picture
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.views import get_nickname
+from dbas.strings.keywords import Keywords as _
 
 list_length = 5
 max_count_zeros = 5
@@ -41,13 +42,13 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, 
 
     return_dict = {}
     if mode == '0':  # start statement
-        return_dict['distance_name'], return_dict['values'] = __get_strings_for_start(value, issue, True)
+        return_dict['distance_name'], return_dict['values'] = get_strings_for_start(value, issue, True)
     elif mode == '1':  # edit statement popup
-        return_dict['distance_name'], return_dict['values'] = __get_strings_for_edits(value, extra)
+        return_dict['distance_name'], return_dict['values'] = get_strings_for_edits(value, extra)
     elif mode == '2':  # start premise
-        return_dict['distance_name'], return_dict['values'] = __get_strings_for_start(value, issue, False)
+        return_dict['distance_name'], return_dict['values'] = get_strings_for_start(value, issue, False)
     elif mode == '3':  # adding reasons
-        return_dict['distance_name'], return_dict['values'] = __get_strings_for_reasons(value, issue)
+        return_dict['distance_name'], return_dict['values'] = get_strings_for_reasons(value, issue)
     elif mode == '4':  # getting text
         return_dict = get_strings_for_search(value)
     elif mode == '5':  # getting public nicknames
@@ -59,7 +60,7 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, 
     return return_dict
 
 
-def __get_strings_for_start(value, issue, is_startpoint):
+def get_strings_for_start(value, issue, is_startpoint):
     """
     Checks different position-strings for a match with given value
 
@@ -84,7 +85,7 @@ def __get_strings_for_start(value, issue, is_startpoint):
     return mechanism, return_array[:list_length]
 
 
-def __get_strings_for_edits(value, statement_uid):
+def get_strings_for_edits(value, statement_uid):
     """
     Checks different textversion-strings for a match with given value
 
@@ -108,7 +109,7 @@ def __get_strings_for_edits(value, statement_uid):
     return mechanism, return_array[:list_length]
 
 
-def __get_strings_for_reasons(value, issue):
+def get_strings_for_reasons(value, issue):
     """
     Checks different textversion-strings for a match with given value
 
@@ -129,7 +130,7 @@ def __get_strings_for_reasons(value, issue):
 
     return_array = __sort_array(return_array)
 
-    # logger('fuzzy_string_matcher', '__get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
+    # logger('fuzzy_string_matcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
     #        ', dictionary length: ' + str(len(return_array)), debug=True)
 
     return mechanism, return_array[:list_length]
