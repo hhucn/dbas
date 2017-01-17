@@ -914,17 +914,18 @@ def validate_recaptcha(recaptcha):
     logger('Lib', 'validate_recaptcha', 'answer ' + str(json))
     error = False
 
-    if 'missing-input-secret' in json['error-codes']:
-        logger('Lib', 'validate_recaptcha', 'The secret parameter is missing.', error=True)
-        error = True
-    if 'invalid-input-secret' in json['error-codes']:
-        logger('Lib', 'validate_recaptcha', 'The secret parameter is invalid or malformed.', error=True)
-        error = True
-    if 'missing-input-response' in json['error-codes']:
-        logger('Lib', 'validate_recaptcha', 'The response parameter is missing.', error=True)
-        error = True
-    if 'invalid-input-response' in json['error-codes']:
-        logger('Lib', 'validate_recaptcha', 'The response parameter is invalid or malformed.', error=True)
-        error = True
+    if 'error-codes' in json:
+        if 'missing-input-secret' in json['error-codes']:
+            logger('Lib', 'validate_recaptcha', 'The secret parameter is missing.', error=True)
+            error = True
+        if 'invalid-input-secret' in json['error-codes']:
+            logger('Lib', 'validate_recaptcha', 'The secret parameter is invalid or malformed.', error=True)
+            error = True
+        if 'missing-input-response' in json['error-codes']:
+            logger('Lib', 'validate_recaptcha', 'The response parameter is missing.', error=True)
+            error = True
+        if 'invalid-input-response' in json['error-codes']:
+            logger('Lib', 'validate_recaptcha', 'The response parameter is invalid or malformed.', error=True)
+            error = True
 
     return json['success'], error
