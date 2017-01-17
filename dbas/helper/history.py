@@ -213,9 +213,12 @@ def __dont_know_step(step, nickname, lang, url):
         intro = _tn.get(_.otherParticipantsThinkThat)
     sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
     sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
-    bubble = create_speechbubble_dict(is_system=True, message=sys_text)
+    sys_bubble = create_speechbubble_dict(is_system=True, message=sys_text)
 
-    return [bubble]
+    text = _tn.get(_.showMeAnArgumentFor) + (' ' if lang == 'de' else ': ') + get_text_for_conclusion(db_argument)
+    user_bubble = create_speechbubble_dict(is_user=True, message=text)
+
+    return [user_bubble, sys_bubble]
 
 
 def __reaction_step(main_page, step, nickname, lang, splitted_history, url):

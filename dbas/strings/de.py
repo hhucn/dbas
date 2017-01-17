@@ -587,7 +587,7 @@ de_lang = {
     _.sureThat: 'Ich bin sehr sicher, dass ',
     _.surname: 'Nachname',
     _.myStatement: 'meine Aussage',
-    _.showMeAnArgumentFor: 'Zeig\' mir ein Argument für',
+    _.showMeAnArgumentFor: 'Zeige mir ein Argument dafür, dass',
     _.textAreaReasonHintText: 'Bitte nutzen Sie ein Feld für jeden Grund. Schreiben Sie kurz und prägnant!',
     _.theCounterArgument: 'dem Gegenargument',
     _.therefore: 'Daher',

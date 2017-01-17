@@ -100,6 +100,7 @@ class DiscussionDictHelper(object):
         _tn = Translator(self.lang)
 
         bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
+
         save_statement_url  = 'ajax_set_new_start_statement'
         text                = get_text_for_statement_uid(uid)
         if not text:
@@ -137,7 +138,6 @@ class DiscussionDictHelper(object):
                                                           message=_tn.get(_.voteCountTextFirst) + '. ' + _tn.get(
                                                               _.onlyOneItemWithLink),
                                                           omit_url=True, lang=self.lang))
-
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
     def get_user_bubble_for_justify_statement(self, _tn, is_supportive, text):
