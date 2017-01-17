@@ -206,6 +206,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
 
     # dont know
     argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
+
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,

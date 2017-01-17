@@ -111,15 +111,18 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
         # colon = ' ' if self.lang == 'de' else ': '
-        titleT = _tn.get(_.iAgreeWithInColor) + '.'  # + colon + text
-        titleF = _tn.get(_.iDisagreeWithInColor) + '.'  # + colon + text
-        titleD = _tn.get(_.iHaveNoOpinionYetInColor) + '.'  # + colon + text
-        urlT = _um.get_url_for_justifying_statement(True, statement_uid, 't')
-        urlF = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
-        urlD = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
-        statements_array.append(self.__create_answer_dict('agree', [{'title': titleT, 'id': 'agree'}], 'agree', urlT))
-        statements_array.append(self.__create_answer_dict('disagree', [{'title': titleF, 'id': 'disagree'}], 'disagree', urlF))
-        statements_array.append(self.__create_answer_dict('dontknow', [{'title': titleD, 'id': 'dontknow'}], 'dontknow', urlD))
+        title_t = _tn.get(_.iAgreeWithInColor) + '.'  # + colon + text
+        title_f = _tn.get(_.iDisagreeWithInColor) + '.'  # + colon + text
+        title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'  # + colon + text
+        url_t = _um.get_url_for_justifying_statement(True, statement_uid, 't')
+        url_f = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
+        url_d = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
+        d_t = self.__create_answer_dict('agree', [{'title': title_t, 'id': 'agree'}], 'agree', url_t)
+        d_f = self.__create_answer_dict('disagree', [{'title': title_f, 'id': 'disagree'}], 'disagree', url_f)
+        d_d = self.__create_answer_dict('dontknow', [{'title': title_d, 'id': 'dontknow'}], 'dontknow', url_d)
+        statements_array.append(d_t)
+        statements_array.append(d_f)
+        statements_array.append(d_d)
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
@@ -287,17 +290,21 @@ class ItemDictHelper(object):
         :param argument_uid: Argument.uid
         :param is_supportive: Boolean
         :param nickname: nickname
+        :param gender: m, f or n
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
         slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
-        _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         statements_array = []
 
         db_arguments = get_not_disabled_arguments_as_query()
         db_argument = db_arguments.filter_by(uid=argument_uid).first()
         if not db_argument:
             return {'elements': statements_array, 'extras': {'cropped_list': False}}
+
+        # set real argument in history
+        tmp_path = self.path.replace('/justify/{}/d'.format(db_argument.conclusion_uid), '/justify/{}/d'.format(argument_uid))
+        _um = UrlManager(self.application_url, slug, self.for_api, history=tmp_path)
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         if db_user:  # add seen by if the statement is visible
@@ -307,36 +314,87 @@ class ItemDictHelper(object):
         current_mode = 't' if is_supportive else 'f'
         not_current_mode = 'f' if is_supportive else 't'
 
-        # relations = ['undermine', 'support', 'undercut', 'overbid', 'rebut'] # TODO 'overbid'
-        relations = ['undermine', 'support', 'undercut', 'rebut']
-        for relation in relations:
-            if relation == 'undermine':
-                if db_argument.conclusion_uid is not None:
-                    url = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, not_current_mode)
-                else:
-                    url = _um.get_url_for_justifying_argument(True, db_argument.argument_uid, not_current_mode, relation)
-            elif relation == 'support':
-                arg_id_sys, sys_attack = rs.get_attack_for_argument(argument_uid, self.lang)
-                url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
-            elif relation == 'undercut':
-                url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, relation)
-            elif relation == 'rebut':
-                db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-                if len(db_premises) == 1:
-                    url = _um.get_url_for_justifying_statement(True, db_premises[0].statement_uid, not_current_mode)
-                else:
-                    uids = [db_argument.premisesgroup_uid]
-                    if db_argument.conclusion_uid is not None:
-                        url = _um.get_url_for_choosing_premisegroup(True, False, db_argument.is_supportive, db_argument.conclusion_uid, uids)
-                    else:
-                        url = _um.get_url_for_choosing_premisegroup(True, True, db_argument.is_supportive, db_argument.argument_uid, uids)
+        relation = 'undermine'
+        url = self.__get_dont_know_item_for_undermine(db_argument, not_current_mode, _um)
+        d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url)
+        statements_array.append(d)
 
-            else:
-                url = _um.get_url_for_justifying_argument(True, argument_uid, not_current_mode, relation)
+        relation = 'support'
+        url = self.__get_dont_know_item_for_support(argument_uid, self.lang, _um)
+        d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url)
+        statements_array.append(d)
 
-            statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url))
+        relation = 'undercut'
+        url = self.__get_dont_know_item_for_undercut(argument_uid, current_mode, _um)
+        d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url)
+        statements_array.append(d)
+
+        relation = 'rebut'
+        url = self.__get_dont_know_item_for_rebut(db_argument, not_current_mode, _um)
+        d = self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation, url)
+        statements_array.append(d)
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
+
+    @staticmethod
+    def __get_dont_know_item_for_undermine(db_argument, not_current_mode, _um):
+        """
+
+        :param db_argument:
+        :param not_current_mode:
+        :param _um:
+        :return:
+        """
+        if db_argument.conclusion_uid is not None:
+            url = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, not_current_mode)
+        else:
+            url = _um.get_url_for_justifying_argument(True, db_argument.argument_uid, not_current_mode, 'undermine')
+        return url
+
+    @staticmethod
+    def __get_dont_know_item_for_support(argument_uid, lang, _um):
+        """
+
+        :param argument_uid:
+        :param lang:
+        :param _um:
+        :return:
+        """
+        arg_id_sys, sys_attack = rs.get_attack_for_argument(argument_uid, lang)
+        url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
+        return url
+
+    @staticmethod
+    def __get_dont_know_item_for_undercut(argument_uid, current_mode, _um):
+        """
+
+        :param argument_uid:
+        :param current_mode:
+        :param _um:
+        :return:
+        """
+        url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, 'undercut')
+        return url
+
+    @staticmethod
+    def __get_dont_know_item_for_rebut(db_argument, not_current_mode, _um):
+        """
+
+        :param db_argument:
+        :param not_current_mode:
+        :param _um:
+        :return:
+        """
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+        if len(db_premises) == 1:
+            url = _um.get_url_for_justifying_statement(True, db_premises[0].statement_uid, not_current_mode)
+        else:
+            uids = [db_argument.premisesgroup_uid]
+            if db_argument.conclusion_uid is not None:
+                url = _um.get_url_for_choosing_premisegroup(True, False, db_argument.is_supportive, db_argument.conclusion_uid, uids)
+            else:
+                url = _um.get_url_for_choosing_premisegroup(True, True, db_argument.is_supportive, db_argument.argument_uid, uids)
+        return url
 
     def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):
         """
@@ -398,7 +456,6 @@ class ItemDictHelper(object):
 
         :param relation:
         :param attack:
-        :param rs:
         :param _um:
         :param argument_uid_user:
         :param argument_uid_sys:
@@ -440,7 +497,8 @@ class ItemDictHelper(object):
             url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
         return url
 
-    def __get_url_for_undermine(self, relation, _um, argument_uid_sys, mode):
+    @staticmethod
+    def __get_url_for_undermine(relation, _um, argument_uid_sys, mode):
         """
 
         :param relation:
@@ -451,7 +509,8 @@ class ItemDictHelper(object):
         """
         return _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
-    def __get_url_for_overbid(self, attack, _um, argument_uid_user, mode):
+    @staticmethod
+    def __get_url_for_overbid(attack, _um, argument_uid_user, mode):
         """
 
         :param attack:
@@ -462,7 +521,8 @@ class ItemDictHelper(object):
         """
         return _um.get_url_for_justifying_argument(True, argument_uid_user, mode, attack)
 
-    def __get_url_for_rebut(self, attack, _um, mode, db_user_argument, db_sys_argument):
+    @staticmethod
+    def __get_url_for_rebut(attack, _um, mode, db_user_argument, db_sys_argument):
         """
 
         :param attack:

@@ -107,6 +107,11 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
                 if bubbles:
                     bubble_array += bubbles
 
+            elif 'd' in mode and relation == '':
+                bubbles = __dont_know_step(step, nickname, lang, url)
+                if bubbles:
+                    bubble_array += bubbles
+
         elif 'reaction/' in step:
             logger('history_helper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
             bubbles = __reaction_step(application_url, step, nickname, lang, splitted_history, url)
@@ -192,14 +197,25 @@ def __dont_know_step(step, nickname, lang, url):
     steps = step.split('/')
     uid = int(steps[1])
 
+    text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=False,
+                                     start_with_intro=True)
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
+    if not db_argument:
+        text = ''
+
+    from dbas.strings.text_generator import get_name_link_of_arguments_author
     _tn = Translator(lang)
-    text = get_text_for_argument_uid(uid)
-    text = text.replace(_tn.get(_.because).lower(), '</' + tag_type + '>' + _tn.get(
-        _.because).lower() + '<' + tag_type + '>')
-    sys_text = _tn.get(_.otherParticipantsThinkThat) + ' <' + tag_type + '>'
-    sys_text += text[0:1].lower() + text[1:] + '</' + tag_type + '>. '
-    return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url,
-                                     is_supportive=True)]
+
+    author, gender, is_okay = get_name_link_of_arguments_author(url, db_argument, nickname, False)
+    if is_okay:
+        intro = author + ' ' + _tn.get(_.thinksThat)
+    else:
+        intro = _tn.get(_.otherParticipantsThinkThat)
+    sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
+    sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
+    bubble = create_speechbubble_dict(is_system=True, message=sys_text)
+
+    return [bubble]
 
 
 def __reaction_step(main_page, step, nickname, lang, splitted_history, url):

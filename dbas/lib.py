@@ -348,15 +348,15 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
     sb_tmp = ''
-    sb_none = '<' + tag_type + '>'
+    sb_none = '<' + tag_type + '>' if with_html_tag else ''
     se = '</' + tag_type + '>' if with_html_tag else ''
     if attack_type not in ['dont_know', 'jump']:
         sb = '<' + tag_type + '>' if with_html_tag else ''
         if colored_position:
             sb = '<' + tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
     else:
-        sb = '<' + tag_type + ' data-argumentation-type="argument">'
-        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">'
+        sb = '<' + tag_type + ' data-argumentation-type="argument">' if with_html_tag else ''
+        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">' if with_html_tag else ''
 
     # color_everything = attack_type == 'undercut' and False
     if attack_type not in ['dont_know', 'jump']:
@@ -390,9 +390,6 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
-    # if color_everything:
-    #     return sb + ret_value + se
-    # else:
     return ret_value
 
 

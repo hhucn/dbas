@@ -8,7 +8,6 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from sqlalchemy import and_
 from .keywords import Keywords as _
 from .translator import Translator
-from dbas.database.initializedb import nick_of_anonymous_user
 
 
 tag_type = 'span'
@@ -710,7 +709,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     return confrontation_text, gender if is_okay else ''
 
 
-def get_name_link_of_arguments_author(main_page, argument, nickname):
+def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=True):
     """
     Get the first author, who wrote or agreed with the argument
 
@@ -734,7 +733,7 @@ def get_name_link_of_arguments_author(main_page, argument, nickname):
         db_user = get_first_supporter_of_argument(argument.uid, db_current_user)
 
         if db_user:
-            text, is_okay = get_author_data(main_page, db_user.uid, False, True)
+            text, is_okay = get_author_data(main_page, db_user.uid, gravatar_on_right_side=False, linked_with_users_page=with_link)
             db_user = DBDiscussionSession.query(User).get(db_user.uid)
             gender = db_user.gender if db_user else 'n'
         else:

@@ -403,7 +403,7 @@ de_lang = {
     _.login: 'Login',
     _.logfile: 'Logdatei für',
     _.letsGo: 'Klicken Sie hier um direkt zu starten!',
-    _.letsGoBack: 'Ab geht\'s zurück!',
+    _.letsGoBack: 'Zurück!',
     _.letsGoHome: 'Ab zur Startseite!',
     _.langNotFound: 'Sprache nicht gefunden',
     _.latestNewsFromDiscussion: 'Die aktuellen Neuigkeit aus der Diskussion über',
