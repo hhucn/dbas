@@ -738,7 +738,7 @@ def get_name_link_of_arguments_author(main_page, argument, nickname):
             db_user = DBDiscussionSession.query(User).get(db_user.uid)
             gender = db_user.gender if db_user else 'n'
         else:
-            return '', '', False
+            return '', 'n', False
 
     return text if is_okay else '', gender, is_okay
 
@@ -810,6 +810,4 @@ def get_first_supporter_of_argument(argument_uid, current_user):
         db_vote = db_vote.filter(VoteArgument.author_uid != current_user.uid)
 
     db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
-    db_user = DBDiscussionSession.query(User).get(db_vote.author_uid)
-
-    return db_user
+    return DBDiscussionSession.query(User).get(db_vote.author_uid) if db_vote else None
