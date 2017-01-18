@@ -84,6 +84,6 @@ Therefore a D-BAS instance is required.
 
 ## License
 
-Copyright © 2016 Tobias Krauthoff, Christian Meter
+Copyright © 2016 - 2017 Tobias Krauthoff, Christian Meter
 
 Distributed under the [MIT License](https://gitlab.cs.uni-duesseldorf.de/project/dbas/raw/master/LICENSE).
