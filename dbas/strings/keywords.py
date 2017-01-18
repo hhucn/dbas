@@ -61,6 +61,8 @@ class Keywords(Enum):
     defaultView = 'Default View'
     positions = 'Positions'
     labels = 'Labels'
+    hideMyPath = 'Hide my path'
+    showMyPath = 'Show my path'
     myStatements = 'My statements'
     supportsOnMyStatements = 'Supports'
     attacksOnMyStatements = 'Attacks'
