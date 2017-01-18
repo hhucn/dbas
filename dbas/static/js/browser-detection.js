@@ -23,7 +23,7 @@ var splitted = navigator.sayswho.split(' ');
 var browser = splitted[0];
 var version = splitted[1];
 
-if (browser == 'Chrome' && version < 54){
+if (browser == 'Chrome' && version < 53){
 	setTimeout(function() {
 	    setGlobalErrorHandlerWithoutIds();
 	}, 1500);

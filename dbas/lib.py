@@ -902,13 +902,18 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
 
 
 def validate_recaptcha(recaptcha):
+    """
+
+    :param recaptcha:
+    :return:
+    """
     logger('Lib', 'validate_recaptcha', 'recaptcha ' + str(recaptcha))
     try:
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': '6Lc0eQ4TAAAAAJBcq97lYwM8byadNWmUYuTZaPzz',
                                                                                    'response': recaptcha})
         json = r.json()
     except:
-        logger('Lib', 'validate_recaptcha', 'Unexcepcted error', error=True)
+        logger('Lib', 'validate_recaptcha', 'Unexpected error', error=True)
         return False, True
 
     logger('Lib', 'validate_recaptcha', 'answer ' + str(json))
