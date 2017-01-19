@@ -279,8 +279,8 @@
                     <li id="hide-labels"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
                     <li class="indented-button" id="show-positions"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
                     <li class="indented-button" id="hide-positions"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li id="show-my-path"><i class="fa fa-map-signs" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.show_my_path}</span></li>
-                    <li id="hide-my-path"><i class="fa fa-map-signs" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.hide_my_path}</span></li>
+                    <!--<li id="show-my-path"><i class="fa fa-map-signs" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.show_my_path}</span></li>-->
+                    <!--<li id="hide-my-path"><i class="fa fa-map-signs" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.hide_my_path}</span></li>-->
                     <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
                     <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
                     <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>

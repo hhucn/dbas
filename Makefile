@@ -47,6 +47,9 @@ refresh:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
 
+fieldtest: users db
+	init_field_test_sql development.ini
+
 
 nosetests:
 	nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export
