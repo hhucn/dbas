@@ -89,6 +89,7 @@ def field_test(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         set_up_issue(DBDiscussionSession, user0, lang1, lang2, is_field_test=True)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, use_anonyme_nicks=False)
+        setup_fieltest_discussion_database(DBDiscussionSession)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
@@ -931,6 +932,66 @@ def __set_downvotes_for_statements(firstnames, down_votes, statement_uid, new_vo
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
         new_votes_for_statement.append(VoteStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
     return new_votes_for_statement
+
+
+def setup_fieltest_discussion_database(session):
+    """
+    Minimal discussion for a field test
+    :param session:
+    :return:
+    """
+    db_user = session.query(User).filter_by(nickname='Tobias').first()
+    db_issue = session.query(Issue).all()[0]
+
+    textversion0 = TextVersion(content="eine Zulassungsbeschränkung eingeführt werden soll", author=db_user.uid)
+    textversion1 = TextVersion(content="die Nachfrage nach dem Fach zu groß ist, sodass eine Beschränkung eingeführt werden muss", author=db_user.uid)
+    textversion2 = TextVersion(content="die Vergleichbarkeit des Abiturschnitts nicht gegeben ist", author=db_user.uid)
+    session.add_all([textversion0, textversion1, textversion2])
+    session.flush()
+
+    # adding all statements
+    statement0 = Statement(textversion=textversion0.uid, is_position=True, issue=db_issue.uid)
+    statement1 = Statement(textversion=textversion1.uid, is_position=False, issue=db_issue.uid)
+    statement2 = Statement(textversion=textversion2.uid, is_position=False, issue=db_issue.uid)
+    session.add_all([statement0, statement1, statement2])
+    session.flush()
+
+    # set textversions
+    textversion0.set_statement(statement0.uid)
+    textversion1.set_statement(statement1.uid)
+    textversion2.set_statement(statement2.uid)
+
+    # adding all premisegroups
+    premisegroup1 = PremiseGroup(author=db_user.uid)
+    premisegroup2 = PremiseGroup(author=db_user.uid)
+    session.add_all([premisegroup1, premisegroup2])
+    session.flush()
+
+    premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement1.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement2.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    session.add_all([premise1, premise2])
+    session.flush()
+
+    # adding all arguments and set the adjacency list
+    argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
+    argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=False, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
+    session.add_all([argument1, argument2])
+    session.flush()
+
+    reference1 = StatementReferences(reference="das Interesse bei den Abiturientinnen und Abiturienten das Angebot an Studienplätzen",
+                                     host="http://www.faz.net/",
+                                     path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
+                                     author_uid=db_user.uid,
+                                     statement_uid=statement1.uid,
+                                     issue_uid=db_issue.uid)
+    reference2 = StatementReferences(reference="Kern der Kritik am Numerus clausus ist seit jeher die mangelnde Vergleichbarkeit des Abiturschnitts",
+                                     host="http://www.faz.net/",
+                                     path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
+                                     author_uid=db_user.uid,
+                                     statement_uid=statement2.uid,
+                                     issue_uid=db_issue.uid)
+    session.add_all([reference1, reference2])
+    session.flush()
 
 
 def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):

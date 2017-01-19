@@ -239,7 +239,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
         return results
 
 
-def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager, color_statement=False):
+def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager, color_statement=False, is_jump=False):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
@@ -258,7 +258,8 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     if arguments:
         for argument in arguments:
             statement_text = get_text_for_statement_uid(statement_uid)
-            argument_text = get_text_for_argument_uid(argument.uid, anonymous_style=True)
+            attack_type = 'jump' if is_jump else ''
+            argument_text = get_text_for_argument_uid(argument.uid, anonymous_style=True, attack_type=attack_type)
             pos = argument_text.lower().find(statement_text.lower())
             argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
             results.append({'uid': argument.uid,
@@ -293,16 +294,18 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     if len(arg_array) == 1:
         db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        if premises[-1] != '.':
+            premises += '.'
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
         if lang == 'de':
-            intro = _t.get(_.rebut1) if db_argument.is_supportive else _t.get(_.overbid1)
+            intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
             ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end
-            ret_value += ' ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
+            ret_value += ', ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
         else:
-            ret_value = tag_conclusion + conclusion + ' ' + (
-                _t.get(_.isNotRight).lower() if not db_argument.is_supportive else '') + tag_end
-            ret_value += ' ' + _t.get(_.because).lower() + ' '
+            ret_value = tag_conclusion + conclusion + ' '
+            ret_value += _t.get(_.isNotRight).lower() if not db_argument.is_supportive else ''
+            ret_value += tag_end + ' ' + _t.get(_.because).lower() + ' '
             ret_value += tag_premise + premises + tag_end
 
     else:

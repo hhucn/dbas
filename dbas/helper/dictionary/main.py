@@ -304,13 +304,15 @@ class DictionaryHelper(object):
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
+
         if nickname:
             extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
             extras_dict['close_statement_container'] = False
-        extras_dict['show_display_style']    = False
-        extras_dict['show_bar_icon']        = False
-        extras_dict['is_editable']            = False
-        extras_dict['is_reportable']        = False
+
+        extras_dict['show_display_style'] = False
+        extras_dict['show_bar_icon']      = False
+        extras_dict['is_editable']        = False
+        extras_dict['is_reportable']      = False
 
     def __add_discussion_end_text_at_justify_argumentation(self, discussion_dict, extras_dict, nickname, gender, _tn):
         discussion_dict['mode'] = 'justify_argumentation'
