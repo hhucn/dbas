@@ -978,7 +978,7 @@ def setup_fieltest_discussion_database(session):
     session.add_all([argument1, argument2])
     session.flush()
 
-    reference1 = StatementReferences(reference="das Interesse bei den Abiturientinnen und Abiturienten das Angebot an Studienplätzen",
+    reference1 = StatementReferences(reference="In anderen Fächern übersteigt das Interesse bei den Abiturientinnen und Abiturienten das Angebot an Studienplätzen, in manchen Fällen um ein Vielfaches.",
                                      host="http://www.faz.net/",
                                      path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
                                      author_uid=db_user.uid,
