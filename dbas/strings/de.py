@@ -167,6 +167,8 @@ de_lang = {
     _.butYouAgreedWith: 'Und Sie haben zugestimmt, weil',
     _.but: 'aber',
     _.butWhich: 'aber welches',
+    _.butThisDoesNotRejectArgument: 'Jedoch widerspricht das nicht dem Argument, dass {}',
+    _.butThisDoesNotRejectStatement: 'Jedoch widerspricht das nicht der Aussage, dass {}',
     _.clickHereForRegistration: 'Klick <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> für die Anmeldung oder eine Registrierung!',
     _.clickForMore: 'Klick hier!',
     _.confirmation: 'Bestätigung',

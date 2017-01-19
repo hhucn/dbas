@@ -16,15 +16,15 @@ from dbas.database.discussion_model import Argument, Statement, Premise, VoteArg
 from dbas.logger import logger
 
 
-def add_vote_for_argument(argument_uid, user):
+def add_vote_for_argument(argument_uid, nickname):
     """
     Increases the votes of a given argument.
 
     :param argument_uid: id of the argument
-    :param user: request.authenticated_userid
+    :param nickname: request.authenticated_userid
     :return: increased votes of the argument
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         logger('VotingHelper', 'add_vote_for_argument', 'User does not exists', error=True)
         return None
@@ -32,7 +32,7 @@ def add_vote_for_argument(argument_uid, user):
     logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
 
-    # user has seen this argument
+    # nickname has seen this argument
     if db_user:
         __argument_seen_by_user(db_user.uid, argument_uid)
         __premisegroup_seen_by_user(db_user.uid, db_argument.premisesgroup_uid)
@@ -46,14 +46,34 @@ def add_vote_for_argument(argument_uid, user):
 
     else:
         db_conclusion_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-        db_conclusion_conclusion = DBDiscussionSession.query(Statement).get(db_conclusion_argument.conclusion_uid)
 
-        # vote for conclusions argument based on support property of current argument
-        __vote_argument(db_conclusion_argument, db_user, db_argument.is_supportive)
-        # vote for conclusions pgroup is always true based on the language of the reaction
-        __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
-        # vote vor conclusions conclusion is always false
-        __vote_statement(db_conclusion_conclusion, db_user, False)
+        if db_conclusion_argument.argument_uid is None:
+            db_conclusion_conclusion = DBDiscussionSession.query(Statement).get(db_conclusion_argument.conclusion_uid)
+
+            # vote for conclusions argument based on support property of current argument
+            __vote_argument(db_conclusion_argument, db_user, db_argument.is_supportive)
+            # vote for conclusions pgroup is always true based on the language of the reaction
+            __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, True)
+            # vote vor conclusions conclusion is always false
+            __vote_statement(db_conclusion_conclusion, db_user, False)
+
+        else:
+            # we are undercutting an undercut
+            db_conclusion_conclusion = DBDiscussionSession.query(Argument).get(db_conclusion_argument.argument_uid)
+
+            # vote for the current argument
+            __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
+            __vote_argument(db_argument, db_user, True)
+
+            # vote against the undercutted argument
+            __vote_argument(db_conclusion_argument, db_user, False)
+            __vote_premisesgroup(db_conclusion_argument.premisesgroup_uid, db_user, False)
+
+            # vote fot the undercutted undercut
+            db_last_conclusion_conclusion = DBDiscussionSession.query(Statement).get(db_conclusion_conclusion.conclusion_uid)
+            __vote_argument(db_conclusion_conclusion, db_user, True)
+            __vote_premisesgroup(db_conclusion_conclusion.premisesgroup_uid, db_user, True)
+            __vote_statement(db_last_conclusion_conclusion, db_user, True)
 
     # return count of votes for this argument
     db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == db_argument.uid,

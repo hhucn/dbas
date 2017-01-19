@@ -157,6 +157,8 @@ class Keywords(Enum):
     butOtherParticipantsDontHaveArgument = 'but other participants do not have any argument for that.'
     butOtherParticipantsDontHaveCounterArgument = 'but other participants do not have any counter argument for that.'
     butWhich = 'but which one'
+    butThisDoesNotRejectArgument = 'But this does not rejects the argument that',
+    butThisDoesNotRejectStatement = 'But this does not rejects the statement that'
     but = 'but'
     butThenYouCounteredWith = 'But then you did not agree with this because'
     butYouCounteredWith = 'You did not agree with this because'
