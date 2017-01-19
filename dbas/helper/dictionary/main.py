@@ -425,6 +425,8 @@ class DictionaryHelper(object):
                                   'share_url': _tn_sys.get(_.shareUrl),
                                   'positions': _tn_sys.get(_.positions),
                                   'labels': _tn_sys.get(_.labels),
+                                  'show_my_path': _tn_sys.get(_.showMyPath),
+                                  'hide_my_path': _tn_sys.get(_.hideMyPath),
                                   'my_statements': _tn_sys.get(_.myStatements),
                                   'supports_on_my_statements': _tn_sys.get(_.supportsOnMyStatements),
                                   'attacks_on_my_statements': _tn_sys.get(_.attacksOnMyStatements),

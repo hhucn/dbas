@@ -21,7 +21,7 @@ start-server:
   stage: build
   script:
     - pserve $INIFILE --daemon
-    - pserve $INIFILE --status
+#    - pserve $INIFILE --status
 
 flake8:
   stage: build

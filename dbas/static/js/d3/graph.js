@@ -48,6 +48,7 @@ function DiscussionGraph() {
      */
     this.callbackIfDoneForDiscussionGraph = function (data) {
         let jsonData = $.parseJSON(data);
+        console.log(jsonData);
         s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
     };
 
@@ -110,7 +111,6 @@ function DiscussionGraph() {
         if (startD3) {
             if (!this.getD3Graph(jsonData))
                 new DiscussionGraph().setDefaultViewParams(false, null, d3);
-            
         } else {
             container.empty();
         }
@@ -124,6 +124,8 @@ function DiscussionGraph() {
         $('#hide-labels').hide();
         $('#show-attacks-on-my-statements').show();
         $('#hide-attacks-on-my-statements').hide();
+        $('#show-my-path').show();
+        $('#hide-my-path').hide();
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
         $('#show-supports-on-my-statements').show();
@@ -198,7 +200,7 @@ function DiscussionGraph() {
         addListenerForTooltip();
 
         force.start();
-        
+
         // update force layout calculations
         function forceTick() {
             // update position of edges
@@ -802,6 +804,12 @@ function DiscussionGraph() {
         $('#hide-positions').click(function () {
             hidePositions();
         });
+        $('#show-my-path').click(function () {
+            showPath(jsonData, edges);
+        });
+        $('#hide-my-path').click(function () {
+            hidePath();
+        });
         $('#show-my-statements').click(function () {
             showMyStatements(edges, force);
         });
@@ -892,6 +900,23 @@ function DiscussionGraph() {
         setDisplayStyleOfNodes('none');
         $('#show-positions').show();
         $('#hide-positions').hide();
+    }
+
+    function showPath(jsonData, edges){
+        $('#show-my-path').hide();
+        $('#hide-my-path').show();
+        let edgesCircleId = [];
+        edges.forEach(function (d) {
+            grayingElements(d);
+        });
+        edgesCircleId.forEach(function (d) {
+            highlightElements(d);
+        });
+    }
+
+    function hidePath() {
+        $('#show-my-path').show();
+        $('#hide-my-path').hide();
     }
 
     /**
@@ -1151,8 +1176,6 @@ function DiscussionGraph() {
      * @param mouseover
      */
     function showHideTooltip(d, mouseover) {
-
-
         // if there is a mouseover-event show the tooltip
         if(mouseover){
             d3.select('#label-' + d.id).style('display', 'inline');
@@ -1206,28 +1229,31 @@ function DiscussionGraph() {
     function showPartOfGraph(edges, circleId) {
         // edges with selected circle as source or as target
         let edgesCircleId = [];
-        // select all incoming and outgoing edges of selected circle
-        edges.forEach(function (d) {
-            let circleUid = selectUid(circleId);
-            if(circleUid === selectUid(d.source.id) && d.is_undercut){
-                console.log(d.target_edge);
-                edges.forEach(function (e) {
-                    if(e.id === d.target_edge){
-                        edgesCircleId.push(e);
-                    }
-                });
-            }
-            if (isSupportVisible && selectUid(d.target.id) === circleUid && d.color === green) {
-                edgesCircleId.push(d);
-            }
-            else if (isAttackVisible && selectUid(d.target.id) === circleUid && d.color === 'red') {
-                edgesCircleId.push(d);
-            }
-            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid)
-                && ((!isAttackVisible && !isSupportVisible) || isStatementVisible)) {
-                edgesCircleId.push(d);
+        let circleUid = selectUid(circleId);
+
+        // edge with circleUid as source
+        let edge;
+        edges.forEach(function (e) {
+            if(e.source.id === circleUid){
+                edge = e;
             }
         });
+
+        if(circleUid == 'issue'){
+            // circleUid is equal to 'issue'
+            edges.forEach(function (e) {
+                if (e.target.id === circleUid) {
+                    edgesCircleId.push(e);
+                }
+            });
+        }
+        else {
+            // edge is an undercut
+            testEdgeUndercut(edges, edgesCircleId, edge);
+
+            // undercuts on edge of circleUid to target or of source to circleUid
+            findUndercuts(edges, edgesCircleId, circleUid);
+        }
 
         // if isMyStatementsClicked is false gray all elements at each function call,
         // else the graph is colored once gray
@@ -1239,98 +1265,130 @@ function DiscussionGraph() {
         edgesCircleId.forEach(function (d) {
             highlightElements(d);
         });
-
-        highlightElementsVirtualNodes(edges, edgesCircleId);
     }
 
     /**
-     * Highlight incoming and outgoing edges of virtual node.
+     * Test if edge is an undercut.
      *
      * @param edges
-     * @param edgesVirtualNodes
+     * @param edgesCircleId
+     * @param edge
      */
-    function highlightElementsVirtualNodes(edges, edgesVirtualNodes) {
-        // array with edges from last loop pass
-        let edgesVirtualNodesLast = edgesVirtualNodes;
-        let isVirtualNodeLeft;
-        do {
-            // virtual nodes
-            let virtualNodes = createVirtualNodesArray(edgesVirtualNodes);
-            // edges with a virtual node as source or as target
-            edgesVirtualNodes = createVirtualNodesEdgesArray(edges, virtualNodes);
-            isVirtualNodeLeft = testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast);
-            // save array with edges for next loop pass
-            edgesVirtualNodesLast = edgesVirtualNodes;
+    function testEdgeUndercut(edges, edgesCircleId, edge) {
+        if (edge.is_undercut == true) {
+            // highlight undercut on edge
+            edges.forEach(function (e) {
+                if (e.target_edge === edge.id) {
+                    edgesCircleId.push(e);
+                }
+            });
+            // target edge of undercut
+            let targetEdge = getTargetEdgeOfEdge(edges, edgesCircleId, edge);
 
+            // edge is an undercut on an undercut
+            if (targetEdge.is_undercut === true) {
+                // find target edge of target edge of edge
+                getTargetEdgeOfEdge(edges, edgesCircleId, targetEdge);
+            }
         }
-        while (isVirtualNodeLeft);
     }
 
     /**
-     * Create array with virtual nodes.
+     * Find all undercuts on edges.
      *
-     * @param edgesVirtualNodes
-     * @return Array
+     * @param edges
+     * @param edgesCircleId
+     * @param circleUid
      */
-    function createVirtualNodesArray(edgesVirtualNodes) {
-        let virtualNodes = [];
-        edgesVirtualNodes.forEach(function (d) {
-            if (d.source.label === '') {
-                virtualNodes.push(d.source);
-            }
-            if (d.target.label === '') {
-                virtualNodes.push(d.target);
+    function findUndercuts(edges, edgesCircleId, circleUid){
+        // incoming or outgoing edges of node
+        let sourceTargetEdges = [];
+        // undercuts
+        // highlight all incoming and outgoing edges
+        edges.forEach(function (e) {
+            if((e.target.id == circleUid) || (e.source.id == circleUid)) {
+                sourceTargetEdges.push(e);
+                // test if source or target of e is a virtual node
+                findVirtualNodes(edges, edgesCircleId, e);
+                edgesCircleId.push(e);
             }
         });
-        return virtualNodes;
+        sourceTargetEdges.forEach(function (k) {
+            findUndercutsForEdge(edges, edgesCircleId, k);
+        });
     }
 
     /**
-     * Create array which contains edges with virtual node as source or as target.
+     * Highlight all undercuts on given edge.
      *
      * @param edges
-     * @param virtualNodes
-     * @return Array
+     * @param edgesCircleId
+     * @param edge
      */
-    function createVirtualNodesEdgesArray(edges, virtualNodes) {
-        let edgesVirtualNodes = [];
-        edges.forEach(function (d) {
-            virtualNodes.forEach(function (e) {
-                if (d.source.id === e.id || d.target.id === e.id) {
-                    // if button supports or attacks is clicked do not highlight supports or attacks on premise groups
-                    if (!((isSupportVisible || isAttackVisible) && (d.edge_type === 'arrow') && !isStatementVisible)) {
-                        edgesVirtualNodes.push(d);
-                    }
+    function findUndercutsForEdge(edges, edgesCircleId, edge){
+        let undercuts = [];
+        // undercuts on edge
+        edges.forEach(function (e) {
+            if ((e.is_undercut == true) && (e.target_edge === edge.id)) {
+                undercuts.push(e);
+                edgesCircleId.push(e);
+            }
+        });
+        // undercuts on undercuts on edge
+        undercuts.forEach(function (k) {
+            edges.forEach(function (e) {
+                if ((e.is_undercut == true) && (e.target_edge === k.id)) {
+                    edgesCircleId.push(e);
                 }
             });
         });
-        edgesVirtualNodes.forEach(function (d) {
-            highlightElements(d);
-        });
-        return edgesVirtualNodes;
+    }
+
+
+    /**
+     * Test if target or source of edge is a virtual node.
+     *
+     * @param edges
+     * @param edgesCircleId
+     * @param edge
+     */
+    function findVirtualNodes(edges, edgesCircleId, edge){
+        if(edge.target.label === '' || edge.source.label === '') {
+            edges.forEach(function (e) {
+                // source of edge is virtual node or target of edge is virtual node
+                if (((e.source.id === edge.target.id) || (e.target.id === edge.target.id)) && (edge.target.label === '')) {
+                    findUndercutsForEdge(edges, edgesCircleId, e);
+                    edgesCircleId.push(e);
+                }
+                if ((e.source.id === edge.source.id) || (e.target.id === edge.source.id) && (edge.source.label === '')) {
+                    findUndercutsForEdge(edges, edgesCircleId, e);
+                    edgesCircleId.push(e);
+                }
+            });
+        }
     }
 
     /**
-     * Test whether virtual nodes are left, where not all incoming and outgoing edges are highlighted.
+     * Find target edge of edge and add it to array edgesCircleId.
      *
-     * @param edgesVirtualNodes
-     * @param edgesVirtualNodesLast
-     * @return boolean
+     * @param edges
+     * @param edgesCircleId
+     * @param d
      */
-    function testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast) {
-        let isVirtualNodeLeft = false;
-        edgesVirtualNodes.forEach(function (d) {
-            if (d.source.label === '') {
-                isVirtualNodeLeft = true;
-                // if the edge is already highlighted terminate loop
-                edgesVirtualNodesLast.forEach(function (e) {
-                    if (d.id === e.id) {
-                        isVirtualNodeLeft = false;
-                    }
-                });
+    function getTargetEdgeOfEdge(edges, edgesCircleId, d){
+        let targetEdge;
+        edges.forEach(function (e) {
+            // highlight all undercuts on undercut d
+            if (e.target_edge === d.target_edge) {
+                edgesCircleId.push(e);
+            }
+            if (e.id === d.target_edge) {
+                targetEdge = e;
+                findVirtualNodes(edges, edgesCircleId, targetEdge);
+                edgesCircleId.push(e);
             }
         });
-        return isVirtualNodeLeft;
+        return targetEdge;
     }
 
     /**

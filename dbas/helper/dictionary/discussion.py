@@ -212,8 +212,10 @@ class DiscussionDictHelper(object):
         confr          = get_text_for_argument_uid(uid)
         premise, tmp   = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion     = get_text_for_conclusion(db_argument, is_users_opinion=False)
+        if db_argument.conclusion_uid is None:
+            conclusion = conclusion[0:1].lower() + conclusion[1:]
 
-        user_msg, sys_msg = get_header_for_users_confrontation_response(self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
+        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
 
         if attack == 'undermine':
             add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
@@ -226,8 +228,7 @@ class DiscussionDictHelper(object):
             add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, is_supportive)
 
         elif attack == 'undercut':
-            tmp = user_msg[:-1] if user_msg[-1] == '.' else user_msg
-            add_premise_text = tmp + ', ' + _tn.get(_.because).lower() + '...'
+            add_premise_text = user_msg + ' ' + _tn.get(_.because) + '...'
 
         else:
             add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)

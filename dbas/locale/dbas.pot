@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-12 15:50+0100\n"
+"POT-Creation-Date: 2017-01-19 13:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1657,11 +1657,6 @@ msgstr ""
 #. Default: Registered
 #: ././templates/user.pt:21
 msgid "registered"
-msgstr ""
-
-#. Default: User group
-#: ././templates/user.pt:25
-msgid "user_group"
 msgstr ""
 
 #. Default: Profile Picture of

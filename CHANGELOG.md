@@ -1,4 +1,4 @@
-## 1.1.0 (2017-01-xx)
+## 1.1.1 (2017-01-16)
 - Update for the german language
 - Minor improvements and bugfix
 - Corrections for color coding mechanisms

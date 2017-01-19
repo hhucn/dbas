@@ -97,32 +97,10 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
         consumed_history += step if len(consumed_history) == 0 else '-' + step
 
         if 'justify/' in step:
-            logger('history_helper', 'create_bubbles_from_history', str(index) + ': justify case -> ' + step)
-            steps = step.split('/')
-            mode = steps[2]
-            relation = steps[3] if len(steps) > 3 else ''
-
-            if [c for c in ('t', 'f') if c in mode] and relation == '':
-                bubbles = __justify_statement_step(step, nickname, lang, url)
-                if bubbles:
-                    bubble_array += bubbles
-
-            elif 'd' in mode and relation == '':
-                bubbles = __dont_know_step(step, nickname, lang, url)
-                if bubbles:
-                    bubble_array += bubbles
+            __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, url)
 
         elif 'reaction/' in step:
-            logger('history_helper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
-            bubbles = __reaction_step(application_url, step, nickname, lang, splitted_history, url)
-            if bubbles:
-                bubble_array += bubbles
-
-        # elif 'attitude/' in step:
-        #    logger('history_helper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
-        #    bubbles = __attitude_step(step, nickname, lang, url)
-        #    if bubbles:
-        #        bubble_array += bubbles
+            __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url)
 
         else:
             logger('history_helper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
@@ -130,7 +108,31 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     return bubble_array
 
 
-def __justify_statement_step(step, nickname, lang, url):
+def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, url):
+    logger('history_helper', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
+    steps = step.split('/')
+    mode = steps[2]
+    relation = steps[3] if len(steps) > 3 else ''
+
+    if [c for c in ('t', 'f') if c in mode] and relation == '':
+        bubbles = __get_bubble_from_justify_statement_step(step, nickname, lang, url)
+        if bubbles:
+            bubble_array += bubbles
+
+    elif 'd' in mode and relation == '':
+        bubbles = __get_bubble_from_dont_know_step(step, nickname, lang, url)
+        if bubbles:
+            bubble_array += bubbles
+
+
+def __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url):
+    logger('history_helper', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
+    bubbles = __get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
+    if bubbles:
+        bubble_array += bubbles
+
+
+def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
     """
     Creates bubbles for the justify-keyword for an statement.
 
@@ -162,7 +164,7 @@ def __justify_statement_step(step, nickname, lang, url):
     return [bubbsle_user]
 
 
-def __attitude_step(step, nickname, lang, url):
+def __get_bubble_from_attitude_step(step, nickname, lang, url):
     """
     Creates bubbles for the attitude-keyword for an statement.
 
@@ -184,7 +186,7 @@ def __attitude_step(step, nickname, lang, url):
     return [bubble]
 
 
-def __dont_know_step(step, nickname, lang, url):
+def __get_bubble_from_dont_know_step(step, nickname, lang, url):
     """
     Creates bubbles for the dont-know-reaction for a statement.
 
@@ -221,7 +223,7 @@ def __dont_know_step(step, nickname, lang, url):
     return [user_bubble, sys_bubble]
 
 
-def __reaction_step(main_page, step, nickname, lang, splitted_history, url):
+def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_history, url):
     """
     Creates bubbles for the reaction-keyword.
 

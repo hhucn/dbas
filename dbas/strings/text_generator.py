@@ -60,7 +60,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     return ret_text + ', ' + _t.get(_.because).lower() + '...'
 
 
-def get_header_for_users_confrontation_response(lang, premise, attack_type, conclusion, start_lower_case, is_supportive, is_logged_in):
+def get_header_for_users_confrontation_response(db_argument, lang, premise, attack_type, conclusion, start_lower_case, is_supportive, is_logged_in):
     """
     Based on the users reaction, text will be build. This text can be used for the speech bubbles where users
     justify an argument they have chosen.
@@ -93,7 +93,7 @@ def get_header_for_users_confrontation_response(lang, premise, attack_type, conc
         f = _t.get(_.wrong) + ', ' + _t.get(_.itIsFalseThat)[0:1].lower() + _t.get(_.itIsFalseThat)[1:] + ' '
 
     # different cases
-    user_msg = __get_user_msg_for_users_confrontation_response(attack_type, premise, conclusion, f, t, r, is_supportive, _t)
+    user_msg = __get_user_msg_for_users_confrontation_response(db_argument, attack_type, premise, conclusion, f, t, r, is_supportive, _t)
     if not user_msg:
         user_msg = ''
 
@@ -103,7 +103,7 @@ def get_header_for_users_confrontation_response(lang, premise, attack_type, conc
     return user_msg, system_msg
 
 
-def __get_user_msg_for_users_confrontation_response(attack_type, premise, conclusion, f, t, r, is_supportive, _t):
+def __get_user_msg_for_users_confrontation_response(db_argument, attack_type, premise, conclusion, f, t, r, is_supportive, _t):
     # different cases
     if attack_type == 'undermine':
         return __get_user_msg_for_users_undermine_response(premise, f)
@@ -112,7 +112,7 @@ def __get_user_msg_for_users_confrontation_response(attack_type, premise, conclu
         return __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t)
 
     if attack_type == 'undercut':
-        return __get_user_msg_for_users_undercut_response(premise, conclusion, r, is_supportive, _t)
+        return __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t)
 
     if attack_type == 'overbid':
         return __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t)
@@ -133,11 +133,20 @@ def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _
     return user_msg
 
 
-def __get_user_msg_for_users_undercut_response(premise, conclusion, r, is_supportive, _t):
-    tmp = _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
+def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t):
+    tmp = None
+    if db_argument.conclusion_uid is None and _t.get_lang() == 'de':
+        # undercutting an undercut
+        start_text = _t.get(_.itIsTrueThatAnonymous)
+        if conclusion.lower().startswith(start_text.lower()):
+            conclusion = conclusion[len(start_text):]
+            tmp = _t.get(_.butThisDoesNotRejectArgument)
+
+    if tmp is None:
+        tmp = _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
     tmp = tmp.format(conclusion)
 
-    return r + premise + ', ' + tmp + '.'
+    return r + premise + '. ' + tmp + '.'
 
 
 def __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t):

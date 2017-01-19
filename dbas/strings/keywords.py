@@ -61,6 +61,8 @@ class Keywords(Enum):
     defaultView = 'Default View'
     positions = 'Positions'
     labels = 'Labels'
+    hideMyPath = 'Hide my path'
+    showMyPath = 'Show my path'
     myStatements = 'My statements'
     supportsOnMyStatements = 'Supports'
     attacksOnMyStatements = 'Attacks'
@@ -155,6 +157,8 @@ class Keywords(Enum):
     butOtherParticipantsDontHaveArgument = 'but other participants do not have any argument for that.'
     butOtherParticipantsDontHaveCounterArgument = 'but other participants do not have any counter argument for that.'
     butWhich = 'but which one'
+    butThisDoesNotRejectArgument = 'But this does not rejects the argument that',
+    butThisDoesNotRejectStatement = 'But this does not rejects the statement that'
     but = 'but'
     butThenYouCounteredWith = 'But then you did not agree with this because'
     butYouCounteredWith = 'You did not agree with this because'

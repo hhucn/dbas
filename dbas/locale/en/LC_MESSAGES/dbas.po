@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-12 15:50+0100\n"
+"POT-Creation-Date: 2017-01-19 13:20+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -1756,11 +1756,6 @@ msgstr "Last Login"
 msgid "registered"
 msgstr "Registered"
 
-#. Default: User group
-#: templates/user.pt:25
-msgid "user_group"
-msgstr "User group"
-
 #. Default: Profile Picture of
 #: templates/user.pt:33
 msgid "profile_picture_of"
@@ -1790,6 +1785,9 @@ msgstr "Show all statements"
 #: templates/content.pt:134
 msgid "hide_statements"
 msgstr "Hide statements"
+
+#~ msgid "user_group"
+#~ msgstr "User group"
 
 #~ msgid "anti-spam"
 #~ msgstr "Anti-Spam (required)"
