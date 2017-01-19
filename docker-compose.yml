@@ -2,18 +2,10 @@ version: '2'
 services:
   db:
     image: hhucn/docker-dbas-postgres
-#  node:
-#    image: hhucn/dbas-nodejs
-#    ports:
-#      - "5222:5222"
-#  auto-completion:
-#    image: hhucn/dbas-auto-completion
-#    ports:
-#      - "5103:5103"
-#  ai:
-#    image: hhucn/dbas-ai
-#    ports:
-#      - "5102:5102"
+  notifications:
+    image: hhucn/dbas-notifications
+    ports:
+      - "5222:5222"
   web:
     build: .
     command: /bin/bash docker_init.sh
@@ -21,6 +13,8 @@ services:
       - .:/code
     ports:
       - "4284:4284"
+      - "5222:5222"
     links:
       - db:hhucn__docker-dbas-postgres
+      - notifications:hhucn__docker-dbas-notifications
     tmpfs: /tmp
