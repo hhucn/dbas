@@ -13,7 +13,6 @@ services:
       - .:/code
     ports:
       - "4284:4284"
-      - "5222:5222"
     links:
       - db:hhucn__docker-dbas-postgres
       - notifications:hhucn__docker-dbas-notifications
