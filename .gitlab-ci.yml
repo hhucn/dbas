@@ -20,7 +20,7 @@ start-server:
   <<: *job-definition
   stage: build
   script:
-    - pserve $INIFILE --daemon
+    - pserve $INIFILE --daemon --pid-file pyramid.pid
     - pserve $INIFILE --status
 
 flake8:
