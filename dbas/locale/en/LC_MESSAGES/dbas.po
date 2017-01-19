@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-19 13:20+0100\n"
+"POT-Creation-Date: 2017-01-19 15:15+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -1786,6 +1786,46 @@ msgstr "Show all statements"
 msgid "hide_statements"
 msgstr "Hide statements"
 
+#. Default: Default View
+#: templates/content.pt:277
+msgid "default_view"
+msgstr "Default View"
+
+#. Default: Labels
+#: templates/content.pt:278 templates/content.pt:279
+msgid "labels"
+msgstr "Lables"
+
+#. Default: Positions
+#: templates/content.pt:280 templates/content.pt:281
+msgid "positions"
+msgstr "Positions"
+
+#. Default: Show my path
+#: templates/content.pt:282
+msgid "show_my_path"
+msgstr "Show my path"
+
+#. Default: Hide my path
+#: templates/content.pt:283
+msgid "hide_my_path"
+msgstr "Hide my path"
+
+#. Default: My statements
+#: templates/content.pt:284 templates/content.pt:285
+msgid "my_statements"
+msgstr "My statements"
+
+#. Default: Supports
+#: templates/content.pt:286 templates/content.pt:287
+msgid "supports_on_my_statements"
+msgstr "Supports"
+
+#. Default: Attacks
+#: templates/content.pt:288 templates/content.pt:289
+msgid "attacks_on_my_statements"
+msgstr "Attacks"
+
 #~ msgid "user_group"
 #~ msgstr "User group"
 
@@ -1803,9 +1843,6 @@ msgstr "Hide statements"
 
 #~ msgid "change_style"
 #~ msgstr "Change display style"
-
-#~ msgid "dialog_view"
-#~ msgstr "Dialog View"
 
 #~ msgid "island_view"
 #~ msgstr "Island View"

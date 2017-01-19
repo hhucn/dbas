@@ -301,8 +301,7 @@ class DictionaryHelper(object):
             user_text = _tn.get(_.firstPositionTextM).rstrip()
         else:
             user_text = _tn.get(_.firstPositionText).rstrip()
-        user_text += '<br>' + _tn.get(_.pleaseAddYourSuggestion) if nickname else (
-            _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin))
+        user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
         if nickname:
@@ -418,18 +417,10 @@ class DictionaryHelper(object):
                                   'clear_statistics': _tn_sys.get(_.clearStatistics),
                                   'go_home': _tn_sys.get(_.letsGoHome),
                                   'count_of_posts': _tn_sys.get(_.countOfPosts),
-                                  'default_view': _tn_sys.get(_.defaultView),
                                   'report': _tn_sys.get(_.report),
                                   'opinion_barometer': _tn_sys.get(_.opinionBarometer),
                                   'save_my_statement': _tn_dis.get(_.saveMyStatement),
                                   'share_url': _tn_sys.get(_.shareUrl),
-                                  'positions': _tn_sys.get(_.positions),
-                                  'labels': _tn_sys.get(_.labels),
-                                  'show_my_path': _tn_sys.get(_.showMyPath),
-                                  'hide_my_path': _tn_sys.get(_.hideMyPath),
-                                  'my_statements': _tn_sys.get(_.myStatements),
-                                  'supports_on_my_statements': _tn_sys.get(_.supportsOnMyStatements),
-                                  'attacks_on_my_statements': _tn_sys.get(_.attacksOnMyStatements),
                                   'lets_go_back': _tn_sys.get(_.letsGoBack),
                                   'go_back': _tn_sys.get(_.goBack),
                                   'go_forward': _tn_sys.get(_.goForward),
