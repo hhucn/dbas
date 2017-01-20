@@ -5,8 +5,9 @@ Provides helping function for dictionaries.
 """
 
 import random
-
 import arrow
+import datetime
+
 from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
@@ -122,6 +123,7 @@ class DictionaryHelper(object):
         rrs = request.registry.settings
 
         return_dict = dict()
+        return_dict['year']                          = datetime.datetime.now().year
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = nickname
@@ -299,17 +301,18 @@ class DictionaryHelper(object):
             user_text = _tn.get(_.firstPositionTextM).rstrip()
         else:
             user_text = _tn.get(_.firstPositionText).rstrip()
-        user_text += '<br>' + _tn.get(_.pleaseAddYourSuggestion) if nickname else (
-            _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin))
+        user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang))
+
         if nickname:
             extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
             extras_dict['close_statement_container'] = False
-        extras_dict['show_display_style']    = False
-        extras_dict['show_bar_icon']        = False
-        extras_dict['is_editable']            = False
-        extras_dict['is_reportable']        = False
+
+        extras_dict['show_display_style'] = False
+        extras_dict['show_bar_icon']      = False
+        extras_dict['is_editable']        = False
+        extras_dict['is_reportable']      = False
 
     def __add_discussion_end_text_at_justify_argumentation(self, discussion_dict, extras_dict, nickname, gender, _tn):
         discussion_dict['mode'] = 'justify_argumentation'
@@ -416,18 +419,10 @@ class DictionaryHelper(object):
                                   'clear_statistics': _tn_sys.get(_.clearStatistics),
                                   'go_home': _tn_sys.get(_.letsGoHome),
                                   'count_of_posts': _tn_sys.get(_.countOfPosts),
-                                  'default_view': _tn_sys.get(_.defaultView),
                                   'report': _tn_sys.get(_.report),
                                   'opinion_barometer': _tn_sys.get(_.opinionBarometer),
                                   'save_my_statement': _tn_dis.get(_.saveMyStatement),
                                   'share_url': _tn_sys.get(_.shareUrl),
-                                  'positions': _tn_sys.get(_.positions),
-                                  'labels': _tn_sys.get(_.labels),
-                                  'show_my_path': _tn_sys.get(_.showMyPath),
-                                  'hide_my_path': _tn_sys.get(_.hideMyPath),
-                                  'my_statements': _tn_sys.get(_.myStatements),
-                                  'supports_on_my_statements': _tn_sys.get(_.supportsOnMyStatements),
-                                  'attacks_on_my_statements': _tn_sys.get(_.attacksOnMyStatements),
                                   'lets_go_back': _tn_sys.get(_.letsGoBack),
                                   'go_back': _tn_sys.get(_.goBack),
                                   'go_forward': _tn_sys.get(_.goForward),

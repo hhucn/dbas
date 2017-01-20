@@ -97,27 +97,10 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
         consumed_history += step if len(consumed_history) == 0 else '-' + step
 
         if 'justify/' in step:
-            logger('history_helper', 'create_bubbles_from_history', str(index) + ': justify case -> ' + step)
-            steps = step.split('/')
-            mode = steps[2]
-            relation = steps[3] if len(steps) > 3 else ''
-
-            if [c for c in ('t', 'f') if c in mode] and relation == '':
-                bubbles = __justify_statement_step(step, nickname, lang, url)
-                if bubbles:
-                    bubble_array += bubbles
+            __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, url)
 
         elif 'reaction/' in step:
-            logger('history_helper', 'create_bubbles_from_history', str(index) + ': reaction case -> ' + step)
-            bubbles = __reaction_step(application_url, step, nickname, lang, splitted_history, url)
-            if bubbles:
-                bubble_array += bubbles
-
-        # elif 'attitude/' in step:
-        #    logger('history_helper', 'create_bubbles_from_history', str(index) + ': attitude case -> ' + step)
-        #    bubbles = __attitude_step(step, nickname, lang, url)
-        #    if bubbles:
-        #        bubble_array += bubbles
+            __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url)
 
         else:
             logger('history_helper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
@@ -125,7 +108,31 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     return bubble_array
 
 
-def __justify_statement_step(step, nickname, lang, url):
+def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, url):
+    logger('history_helper', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
+    steps = step.split('/')
+    mode = steps[2]
+    relation = steps[3] if len(steps) > 3 else ''
+
+    if [c for c in ('t', 'f') if c in mode] and relation == '':
+        bubbles = __get_bubble_from_justify_statement_step(step, nickname, lang, url)
+        if bubbles:
+            bubble_array += bubbles
+
+    elif 'd' in mode and relation == '':
+        bubbles = __get_bubble_from_dont_know_step(step, nickname, lang, url)
+        if bubbles:
+            bubble_array += bubbles
+
+
+def __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url):
+    logger('history_helper', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
+    bubbles = __get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
+    if bubbles:
+        bubble_array += bubbles
+
+
+def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
     """
     Creates bubbles for the justify-keyword for an statement.
 
@@ -157,7 +164,7 @@ def __justify_statement_step(step, nickname, lang, url):
     return [bubbsle_user]
 
 
-def __attitude_step(step, nickname, lang, url):
+def __get_bubble_from_attitude_step(step, nickname, lang, url):
     """
     Creates bubbles for the attitude-keyword for an statement.
 
@@ -179,7 +186,7 @@ def __attitude_step(step, nickname, lang, url):
     return [bubble]
 
 
-def __dont_know_step(step, nickname, lang, url):
+def __get_bubble_from_dont_know_step(step, nickname, lang, url):
     """
     Creates bubbles for the dont-know-reaction for a statement.
 
@@ -192,17 +199,31 @@ def __dont_know_step(step, nickname, lang, url):
     steps = step.split('/')
     uid = int(steps[1])
 
+    text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=False,
+                                     start_with_intro=True)
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
+    if not db_argument:
+        text = ''
+
+    from dbas.strings.text_generator import get_name_link_of_arguments_author
     _tn = Translator(lang)
-    text = get_text_for_argument_uid(uid)
-    text = text.replace(_tn.get(_.because).lower(), '</' + tag_type + '>' + _tn.get(
-        _.because).lower() + '<' + tag_type + '>')
-    sys_text = _tn.get(_.otherParticipantsThinkThat) + ' <' + tag_type + '>'
-    sys_text += text[0:1].lower() + text[1:] + '</' + tag_type + '>. '
-    return [create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname, lang=lang, url=url,
-                                     is_supportive=True)]
+
+    author, gender, is_okay = get_name_link_of_arguments_author(url, db_argument, nickname, False)
+    if is_okay:
+        intro = author + ' ' + _tn.get(_.thinksThat)
+    else:
+        intro = _tn.get(_.otherParticipantsThinkThat)
+    sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
+    sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
+    sys_bubble = create_speechbubble_dict(is_system=True, message=sys_text)
+
+    text = _tn.get(_.showMeAnArgumentFor) + (' ' if lang == 'de' else ': ') + get_text_for_conclusion(db_argument)
+    user_bubble = create_speechbubble_dict(is_user=True, message=text)
+
+    return [user_bubble, sys_bubble]
 
 
-def __reaction_step(main_page, step, nickname, lang, splitted_history, url):
+def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_history, url):
     """
     Creates bubbles for the reaction-keyword.
 

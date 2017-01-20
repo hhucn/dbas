@@ -503,7 +503,7 @@ def __set_statement(statement, user, is_start, issue):
     # check for dot at the end
     while statement.endswith(','):
         statement = statement[:-1]
-        
+
     if not statement.endswith(('.', '?', '!')):
         statement += '.'
     if statement.lower().startswith('because '):

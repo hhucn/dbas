@@ -484,6 +484,19 @@ function Main () {
 		// restart.attr('style', restartWidth<issueWidth ? 'width: ' + issueWidth + 'px;' : '');
 		// issues.attr('style', restartWidth>issueWidth ? 'width: ' + restartWidth + 'px;' : '');
 		
+		// no hover action on the systems bubble during the attitude question
+		let trianglel = $('.triangle-l');
+		const url = window.location.href.split('?')[0];
+		if (url.indexOf('attitude') != -1 || url.indexOf('justify') != -1) {
+			trianglel.find('.triangle-content').each(function () {
+				$(this).hover(function () {
+					$(this).css({'color': '#000', 'cursor': 'auto'});
+				}, function () {
+					$(this).css({'color': '#000', 'cursor': 'auto'});
+				});
+			});
+		}
+		
 		// focus text of input elements
 		// $('input[type='text']'').on("click", function () {
 		$('#' + popupUrlSharingInputId).on("click", function () {

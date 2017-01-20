@@ -8,7 +8,6 @@ TODO
 import os
 import random
 import sys
-from math import trunc
 
 import arrow
 import dbas.handler.password as password_handler
@@ -23,7 +22,7 @@ from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
-from sqlalchemy import engine_from_config, and_
+from sqlalchemy import engine_from_config
 
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
@@ -90,6 +89,7 @@ def field_test(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         set_up_issue(DBDiscussionSession, user0, lang1, lang2, is_field_test=True)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, use_anonyme_nicks=False)
+        setup_fieltest_discussion_database(DBDiscussionSession)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
@@ -782,15 +782,26 @@ def setup_dummy_votes(session, users):
     new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, first_names, users)
     new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, first_names, users)
 
-    rat_arg_up = str(trunc(arg_up / len(db_arguments) * 100) / 100)
-    rat_arg_down = str(trunc(arg_down / len(db_arguments) * 100) / 100)
-    rat_stat_up = str(trunc(stat_up / len(db_statements) * 100) / 100)
-    rat_stat_down = str(trunc(stat_down / len(db_statements) * 100) / 100)
+    argument_count = len(db_arguments)
+    statement_count = len(db_statements)
 
-    logger('INIT_DB', 'Dummy Votes', 'Created ' + str(arg_up) + ' up votes for ' + str(len(db_arguments)) + ' arguments (' + rat_arg_up + ' votes/argument)')
-    logger('INIT_DB', 'Dummy Votes', 'Created ' + str(arg_down) + ' down votes for ' + str(len(db_arguments)) + ' arguments (' + rat_arg_down + ' votes/argument)')
-    logger('INIT_DB', 'Dummy Votes', 'Created ' + str(stat_up) + ' up votes for ' + str(len(db_statements)) + ' statements (' + rat_stat_up + ' votes/statement)')
-    logger('INIT_DB', 'Dummy Votes', 'Created ' + str(stat_down) + ' down votes for ' + str(len(db_statements)) + ' statements (' + rat_stat_down + ' votes/statement)')
+    if argument_count <= 0 or statement_count <= 0:
+        logger('INIT_DB', 'Dummy Votes', 'No arguments or statements! Do you forget to init discussions?', warning=True)
+        return
+
+    rat_arg_up = arg_up / argument_count
+    rat_arg_down = arg_down / argument_count
+    rat_stat_up = stat_up / statement_count
+    rat_stat_down = stat_down / statement_count
+
+    logger('INIT_DB', 'Dummy Votes',
+           'Created {} up votes for {} arguments ({:.2f} votes/argument)'.format(arg_up, argument_count, rat_arg_up))
+    logger('INIT_DB', 'Dummy Votes',
+           'Created {} down votes for {} arguments ({:.2f} votes/argument)'.format(arg_down, argument_count, rat_arg_down))
+    logger('INIT_DB', 'Dummy Votes',
+           'Created {} up votes for {} statements ({:.2f} votes/statement)'.format(stat_up, statement_count, rat_stat_up))
+    logger('INIT_DB', 'Dummy Votes',
+           'Created {} down votes for {} statements ({:.2f} votes/statement)'.format(stat_down, statement_count, rat_stat_down))
 
     session.add_all(new_votes_for_arguments)
     session.add_all(new_votes_for_statements)
@@ -818,9 +829,9 @@ def __set_votes_for_arguments(db_arguments, firstnames, users):
     arg_down = 0
     new_votes_for_arguments = list()
     for argument in db_arguments:
-        max_interval = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument.uid).all()
-        up_votes = random.randint(1, len(max_interval) - 1)
-        down_votes = random.randint(1, len(max_interval) - 1)
+        max_interval = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument.uid).all())
+        up_votes = random.randint(1, max_interval - 1)
+        down_votes = random.randint(1, max_interval - 1)
         arg_up += up_votes
         arg_down += down_votes
 
@@ -877,9 +888,9 @@ def __set_votes_for_statements(db_statements, firstnames, users):
     stat_down = 0
     new_votes_for_statement = list()
     for statement in db_statements:
-        max_interval = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=statement.uid).all()
-        up_votes = random.randint(1, len(max_interval) - 1)
-        down_votes = random.randint(1, len(max_interval) - 1)
+        max_interval = len(DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=statement.uid).all())
+        up_votes = random.randint(1, max_interval - 1)
+        down_votes = random.randint(1, max_interval - 1)
         stat_up += up_votes
         stat_down += down_votes
 
@@ -921,6 +932,66 @@ def __set_downvotes_for_statements(firstnames, down_votes, statement_uid, new_vo
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
         new_votes_for_statement.append(VoteStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
     return new_votes_for_statement
+
+
+def setup_fieltest_discussion_database(session):
+    """
+    Minimal discussion for a field test
+    :param session:
+    :return:
+    """
+    db_user = session.query(User).filter_by(nickname='Tobias').first()
+    db_issue = session.query(Issue).all()[0]
+
+    textversion0 = TextVersion(content="eine Zulassungsbeschränkung eingeführt werden soll", author=db_user.uid)
+    textversion1 = TextVersion(content="die Nachfrage nach dem Fach zu groß ist, sodass eine Beschränkung eingeführt werden muss", author=db_user.uid)
+    textversion2 = TextVersion(content="die Vergleichbarkeit des Abiturschnitts nicht gegeben ist", author=db_user.uid)
+    session.add_all([textversion0, textversion1, textversion2])
+    session.flush()
+
+    # adding all statements
+    statement0 = Statement(textversion=textversion0.uid, is_position=True, issue=db_issue.uid)
+    statement1 = Statement(textversion=textversion1.uid, is_position=False, issue=db_issue.uid)
+    statement2 = Statement(textversion=textversion2.uid, is_position=False, issue=db_issue.uid)
+    session.add_all([statement0, statement1, statement2])
+    session.flush()
+
+    # set textversions
+    textversion0.set_statement(statement0.uid)
+    textversion1.set_statement(statement1.uid)
+    textversion2.set_statement(statement2.uid)
+
+    # adding all premisegroups
+    premisegroup1 = PremiseGroup(author=db_user.uid)
+    premisegroup2 = PremiseGroup(author=db_user.uid)
+    session.add_all([premisegroup1, premisegroup2])
+    session.flush()
+
+    premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement1.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement2.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    session.add_all([premise1, premise2])
+    session.flush()
+
+    # adding all arguments and set the adjacency list
+    argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
+    argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=False, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
+    session.add_all([argument1, argument2])
+    session.flush()
+
+    reference1 = StatementReferences(reference="In anderen Fächern übersteigt das Interesse bei den Abiturientinnen und Abiturienten das Angebot an Studienplätzen, in manchen Fällen um ein Vielfaches.",
+                                     host="http://www.faz.net/",
+                                     path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
+                                     author_uid=db_user.uid,
+                                     statement_uid=statement1.uid,
+                                     issue_uid=db_issue.uid)
+    reference2 = StatementReferences(reference="Kern der Kritik am Numerus clausus ist seit jeher die mangelnde Vergleichbarkeit des Abiturschnitts",
+                                     host="http://www.faz.net/",
+                                     path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
+                                     author_uid=db_user.uid,
+                                     statement_uid=statement2.uid,
+                                     issue_uid=db_issue.uid)
+    session.add_all([reference1, reference2])
+    session.flush()
 
 
 def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):

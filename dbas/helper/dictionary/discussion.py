@@ -100,6 +100,7 @@ class DiscussionDictHelper(object):
         _tn = Translator(self.lang)
 
         bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
+
         save_statement_url  = 'ajax_set_new_start_statement'
         text                = get_text_for_statement_uid(uid)
         if not text:
@@ -137,7 +138,6 @@ class DiscussionDictHelper(object):
                                                           message=_tn.get(_.voteCountTextFirst) + '. ' + _tn.get(
                                                               _.onlyOneItemWithLink),
                                                           omit_url=True, lang=self.lang))
-
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
     def get_user_bubble_for_justify_statement(self, _tn, is_supportive, text):
@@ -212,8 +212,10 @@ class DiscussionDictHelper(object):
         confr          = get_text_for_argument_uid(uid)
         premise, tmp   = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion     = get_text_for_conclusion(db_argument, is_users_opinion=False)
+        if db_argument.conclusion_uid is None:
+            conclusion = conclusion[0:1].lower() + conclusion[1:]
 
-        user_msg, sys_msg = get_header_for_users_confrontation_response(self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
+        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
 
         if attack == 'undermine':
             add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
@@ -226,9 +228,8 @@ class DiscussionDictHelper(object):
             add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, is_supportive)
 
         elif attack == 'undercut':
-            intro = _tn.get(_.statementIsAbout) if self.lang == 'de' else ''
-            text = get_text_for_add_premise_container(self.lang, premise, premise, attack, conclusion, db_argument.is_supportive)
-            add_premise_text = intro + text
+            add_premise_text = user_msg + ' ' + _tn.get(_.because) + '...'
+
         else:
             add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
 
@@ -236,7 +237,7 @@ class DiscussionDictHelper(object):
         end = '</' + tag_type + '>'
         user_msg = start + user_msg[:-1] + end
 
-        sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument) if attack == 'undercut' else _tn.get(_.whatIsYourMostImportantReasonFor)
+        sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument) if attack == 'undercut' else _tn.get(_.whatIsYourMostImportantReasonForStatement)
         sys_msg += ': ' + user_msg + '?<br>' + _tn.get(_.because) + '...'
         # bubble_user = history_helper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() + user_msg[1:], omit_url=True, lang=self.lang)
 
@@ -335,8 +336,13 @@ class DiscussionDictHelper(object):
             user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
 
             # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
-            tmp_uid            = db_argument.conclusion_uid if db_argument.conclusion_uid else db_argument.argument_uid
-            db_statement       = DBDiscussionSession.query(Statement).get(tmp_uid)
+            conclusion_uid     = db_argument.conclusion_uid
+            tmp_arg = db_argument
+            while not conclusion_uid:
+                tmp_arg = DBDiscussionSession.query(Argument).get(tmp_arg.argument_uid)
+                conclusion_uid = tmp_arg.conclusion_uid
+
+            db_statement       = DBDiscussionSession.query(Statement).get(conclusion_uid)
             reply_for_argument = not (db_statement and db_statement.is_startpoint)
             current_argument   = get_text_for_argument_uid(uid, with_html_tag=True, colored_position=True,
                                                            user_changed_opinion=user_changed_opinion, attack_type=attack,

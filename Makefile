@@ -1,45 +1,54 @@
 # DBAS Makefile
 
+database = discussion
+writer = dbas
+reader = dolan
+
 users:
-	sudo -u postgres bash -c "psql -c \"CREATE USER dbas WITH PASSWORD 'SQL_2015&';\""
-	sudo -u postgres bash -c "psql -c \"CREATE USER dolan WITH PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
-	sudo -u postgres bash -c "psql -c \"ALTER role dolan with nologin;\""
+	sudo -u postgres bash -c "psql -c \"CREATE USER $(writer) WITH PASSWORD 'DoimBomrylpOytAfVin0';\""
+	sudo -u postgres bash -c "psql -c \"CREATE USER $(reader) WITH PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
+	sudo -u postgres bash -c "psql -c \"ALTER ROLE $(reader) WITH NOLOGIN;\""
 
 db:
 	sudo -u postgres bash -c "createdb -O dbas discussion"
 	sudo -u postgres bash -c "createdb -O dbas news"
+	sudo -u postgres bash -c "psql -d ${database} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE ${writer} IN SCHEMA public GRANT SELECT ON tables TO ${reader};\""
 
 dummy_discussion:
 	initialize_discussion_sql development.ini
 	initialize_news_sql development.ini
-	sudo -u postgres bash -c "psql -d discussion -c \"GRANT SELECT ON ALL TABLES IN SCHEMA public TO dolan;\""
 
 dummy_votes:
 	init_discussion_testvotes development.ini
 
-all:
-	make users
-	make db
-	make dummy_discussion
-	make dummy_votes
+dummy_reviews:
+	init_review_tests development.ini
+
+dummys:
+	dummy_discussion
+	dummy_votes
+	dummy_reviews
+
+all: users db dummy_discussion dummy_votes dummy_reviews
 
 
 clean_db:
-	sudo -u postgres bash -c "psql -c \"DROP DATABASE discussion;\""
-	sudo -u postgres bash -c "psql -c \"DROP DATABASE news;\""
+	sudo -u postgres bash -c "dropdb -U postgres discussion --if-exists"
+	sudo -u postgres bash -c "dropdb -U postgres news --if-exists"
 
 clean_users:
-	sudo -u postgres bash -c "psql -c \"DROP USER dbas;\""
-	sudo -u postgres bash -c "psql -c \"DROP USER dolan;\""
+	sudo -u postgres bash -c "dropuser -U postgres $(reader) --if-exists"
+	sudo -u postgres bash -c "dropuser -U postgres $(writer) --if-exists"
 
-clean:
-	make clean_db
-	make clean_users
+clean: clean_db clean_users
 
 
 refresh:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
+
+fieldtest: users db
+	init_field_test_sql development.ini
 
 
 nosetests:

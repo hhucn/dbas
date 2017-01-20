@@ -20,23 +20,23 @@ class OpinionHandlerTests(unittest.TestCase):
 
         # correct argument id
         response_correct_id = get_user_and_opinions_for_argument(argument_uids=[11, 12], nickname=nickname,
-                                                                 lang=lang, main_page=main_page)
+                                                                 lang=lang, main_page=main_page, path='')
         self.assertTrue(verify_structure_of_argument_dictionary(self, response_correct_id))
         response_correct_id_2 = get_user_and_opinions_for_argument(argument_uids=[11, 13], nickname=nickname,
-                                                                   lang=lang, main_page=main_page)
+                                                                   lang=lang, main_page=main_page, path='')
         self.assertTrue(verify_structure_of_argument_dictionary(self, response_correct_id_2))
 
         # unknown argument id
         response_wrong_id = get_user_and_opinions_for_argument(argument_uids=[0, 0], nickname=nickname,
-                                                               lang=lang, main_page=main_page)
+                                                               lang=lang, main_page=main_page, path='')
         self.assertIn('Internal Error', response_wrong_id['title'])
 
         # none id
         response_single_id = get_user_and_opinions_for_argument(argument_uids=1, nickname=nickname, lang=lang,
-                                                                main_page=main_page)
+                                                                main_page=main_page, path='')
         self.assertEqual(response_single_id, None)
         response_none_id = get_user_and_opinions_for_argument(argument_uids=None, nickname=nickname,
-                                                              lang=lang, main_page=main_page)
+                                                              lang=lang, main_page=main_page, path='')
         self.assertEqual(response_none_id, None)
 
     def test_get_user_with_same_opinion_for_statements(self):

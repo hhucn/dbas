@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-12 15:50+0100\n"
+"POT-Creation-Date: 2017-01-19 15:15+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -71,7 +71,7 @@ msgstr "Sie müssen sich erneut anmelden."
 #: templates/index.pt:20
 msgid "welcome_text1"
 msgstr ""
-"Willkommen bei D-BAS! Dies ist ein Prototyp unseres Dialog-Basierten "
+"Willkommen bei D-BAS! Dies ist ein Prototyp unseres Dialogbasierten "
 "Argumentationssystem. Falls Fehler auftreten, "
 
 #. Default: contact
@@ -1782,11 +1782,6 @@ msgstr "Letze Anmeldung"
 msgid "registered"
 msgstr "Registierung"
 
-#. Default: User group
-#: templates/user.pt:25
-msgid "user_group"
-msgstr "Benutzergruppe"
-
 #. Default: Profile Picture of
 #: templates/user.pt:33
 msgid "profile_picture_of"
@@ -1817,6 +1812,49 @@ msgstr "Alle Aussagen anzeigen"
 msgid "hide_statements"
 msgstr "Aussage ausblenden"
 
+#. Default: Default View
+#: templates/content.pt:277
+msgid "default_view"
+msgstr "Standardansicht"
+
+#. Default: Labels
+#: templates/content.pt:278 templates/content.pt:279
+msgid "labels"
+msgstr "Beschriftungen"
+
+#. Default: Positions
+#: templates/content.pt:280 templates/content.pt:281
+msgid "positions"
+msgstr "Positionen"
+
+#. Default: Show my path
+#: templates/content.pt:282
+msgid "show_my_path"
+msgstr "Meinen Pfad einblenden"
+
+#. Default: Hide my path
+#: templates/content.pt:283
+msgid "hide_my_path"
+msgstr "Meinen Pfad ausblenden"
+
+#. Default: My statements
+#: templates/content.pt:284 templates/content.pt:285
+msgid "my_statements"
+msgstr "Meine Aussagen"
+
+#. Default: Supports
+#: templates/content.pt:286 templates/content.pt:287
+msgid "supports_on_my_statements"
+msgstr "Unterstützungen"
+
+#. Default: Attacks
+#: templates/content.pt:288 templates/content.pt:289
+msgid "attacks_on_my_statements"
+msgstr "Angriffe"
+
+#~ msgid "user_group"
+#~ msgstr "Benutzergruppe"
+
 #~ msgid "anti-spam"
 #~ msgstr "Anti-Spam (notwendig)"
 
@@ -1831,9 +1869,6 @@ msgstr "Aussage ausblenden"
 
 #~ msgid "change_style"
 #~ msgstr "Wechsel die Darstellung"
-
-#~ msgid "dialog_view"
-#~ msgstr "Dialog-Ansicht"
 
 #~ msgid "island_view"
 #~ msgstr "Insel-Ansicht"

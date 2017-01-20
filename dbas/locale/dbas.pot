@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-12 15:50+0100\n"
+"POT-Creation-Date: 2017-01-19 15:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1659,11 +1659,6 @@ msgstr ""
 msgid "registered"
 msgstr ""
 
-#. Default: User group
-#: ././templates/user.pt:25
-msgid "user_group"
-msgstr ""
-
 #. Default: Profile Picture of
 #: ././templates/user.pt:33
 msgid "profile_picture_of"
@@ -1692,4 +1687,44 @@ msgstr ""
 #. Default: Hide statements
 #: ././templates/content.pt:134
 msgid "hide_statements"
+msgstr ""
+
+#. Default: Default View
+#: ././templates/content.pt:277
+msgid "default_view"
+msgstr ""
+
+#. Default: Labels
+#: ././templates/content.pt:278 ././templates/content.pt:279
+msgid "labels"
+msgstr ""
+
+#. Default: Positions
+#: ././templates/content.pt:280 ././templates/content.pt:281
+msgid "positions"
+msgstr ""
+
+#. Default: Show my path
+#: ././templates/content.pt:282
+msgid "show_my_path"
+msgstr ""
+
+#. Default: Hide my path
+#: ././templates/content.pt:283
+msgid "hide_my_path"
+msgstr ""
+
+#. Default: My statements
+#: ././templates/content.pt:284 ././templates/content.pt:285
+msgid "my_statements"
+msgstr ""
+
+#. Default: Supports
+#: ././templates/content.pt:286 ././templates/content.pt:287
+msgid "supports_on_my_statements"
+msgstr ""
+
+#. Default: Attacks
+#: ././templates/content.pt:288 ././templates/content.pt:289
+msgid "attacks_on_my_statements"
 msgstr ""

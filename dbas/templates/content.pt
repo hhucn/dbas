@@ -274,19 +274,19 @@
                 </div>
 
                 <ul class="sidebar">
-                    <li id="start-view"><i class="fa fa-fast-backward" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.default_view}</span></li>
-                    <li id="show-labels"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
-                    <li id="hide-labels"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.labels}</span></li>
-                    <li class="indented-button" id="show-positions"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li class="indented-button" id="hide-positions"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.positions}</span></li>
-                    <li id="show-my-path"><i class="fa fa-map-signs" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.show_my_path}</span></li>
-                    <li id="hide-my-path"><i class="fa fa-map-signs" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.hide_my_path}</span></li>
-                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.my_statements}</span></li>
-                    <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                    <li class="indented-button" id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.supports_on_my_statements}</span></li>
-                    <li class="indented-button" id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
-                    <li class="indented-button" id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.attacks_on_my_statements}</span></li>
+                    <li id="start-view"><i class="fa fa-fast-backward" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="default_view">Default View</span></li>
+                    <li id="show-labels"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="labels">Labels</span></li>
+                    <li id="hide-labels"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="labels">Labels</span></li>
+                    <li class="indented-button" id="show-positions"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="positions">Positions</span></li>
+                    <li class="indented-button" id="hide-positions"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="positions">Positions</span></li>
+                    <!--<li id="show-my-path"><i class="fa fa-map-signs" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="show_my_path">Show my path</span></li>-->
+                    <!--<li id="hide-my-path"><i class="fa fa-map-signs" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="hide_my_path">Hide my path</span></li>-->
+                    <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
+                    <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
+                    <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
+                    <li class="indented-button" id="hide-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
+                    <li class="indented-button" id="show-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
+                    <li class="indented-button" id="hide-attacks-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">

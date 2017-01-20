@@ -138,7 +138,7 @@ def get_path_of_user(base_url, path, issue):
 
     # replace everything what we do not need
     db_issue = DBDiscussionSession.query(Issue).get(issue)
-    kill_it = [base_url, '/discuss/', '/discuss', db_issue.get_slug(), '#graph']
+    kill_it = [base_url, '/discuss/', '/discuss', db_issue.get_slug(), '#graph', '#']
     for k in kill_it:
         path = path.replace(k, '')
 
@@ -159,7 +159,7 @@ def get_path_of_user(base_url, path, issue):
     logger('Graph.lib', 'get_path_of_user', 'returning tmp statement ' + str(tmp_list))
     # return same neighbours
     if len(tmp_list) > 1:
-        ret_list = [x for index, x in enumerate(tmp_list[:-1]) if tmp_list[index] != tmp_list[index+1]] + [tmp_list[-1]]
+        ret_list = [x for index, x in enumerate(tmp_list[: - 1]) if tmp_list[index] != tmp_list[index + 1]] + [tmp_list[- 1]]
     else:
         ret_list = tmp_list
 

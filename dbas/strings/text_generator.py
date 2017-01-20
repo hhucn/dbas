@@ -60,7 +60,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     return ret_text + ', ' + _t.get(_.because).lower() + '...'
 
 
-def get_header_for_users_confrontation_response(lang, premise, attack_type, conclusion, start_lower_case, is_supportive, is_logged_in):
+def get_header_for_users_confrontation_response(db_argument, lang, premise, attack_type, conclusion, start_lower_case, is_supportive, is_logged_in):
     """
     Based on the users reaction, text will be build. This text can be used for the speech bubbles where users
     justify an argument they have chosen.
@@ -93,7 +93,7 @@ def get_header_for_users_confrontation_response(lang, premise, attack_type, conc
         f = _t.get(_.wrong) + ', ' + _t.get(_.itIsFalseThat)[0:1].lower() + _t.get(_.itIsFalseThat)[1:] + ' '
 
     # different cases
-    user_msg = __get_user_msg_for_users_confrontation_response(attack_type, premise, conclusion, f, t, r, is_supportive, _t)
+    user_msg = __get_user_msg_for_users_confrontation_response(db_argument, attack_type, premise, conclusion, f, t, r, is_supportive, _t)
     if not user_msg:
         user_msg = ''
 
@@ -103,7 +103,7 @@ def get_header_for_users_confrontation_response(lang, premise, attack_type, conc
     return user_msg, system_msg
 
 
-def __get_user_msg_for_users_confrontation_response(attack_type, premise, conclusion, f, t, r, is_supportive, _t):
+def __get_user_msg_for_users_confrontation_response(db_argument, attack_type, premise, conclusion, f, t, r, is_supportive, _t):
     # different cases
     if attack_type == 'undermine':
         return __get_user_msg_for_users_undermine_response(premise, f)
@@ -112,7 +112,7 @@ def __get_user_msg_for_users_confrontation_response(attack_type, premise, conclu
         return __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t)
 
     if attack_type == 'undercut':
-        return __get_user_msg_for_users_undercut_response(premise, conclusion, r, is_supportive, _t)
+        return __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t)
 
     if attack_type == 'overbid':
         return __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t)
@@ -133,11 +133,20 @@ def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _
     return user_msg
 
 
-def __get_user_msg_for_users_undercut_response(premise, conclusion, r, is_supportive, _t):
-    tmp = _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
+def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t):
+    tmp = None
+    if db_argument.conclusion_uid is None and _t.get_lang() == 'de':
+        # undercutting an undercut
+        start_text = _t.get(_.itIsTrueThatAnonymous)
+        if conclusion.lower().startswith(start_text.lower()):
+            conclusion = conclusion[len(start_text):]
+            tmp = _t.get(_.butThisDoesNotRejectArgument)
+
+    if tmp is None:
+        tmp = _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
     tmp = tmp.format(conclusion)
 
-    return r + premise + ', ' + tmp + '.'
+    return r + premise + '. ' + tmp + '.'
 
 
 def __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t):
@@ -302,9 +311,9 @@ def __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, s
     # ret_dict['rebut_text'] += (_t.get(_.iAcceptCounter) if is_attacking else _t.get(_.iAcceptArgument))
     ret_dict['rebut_text'] += _t.get(_.iAcceptArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(_.iAcceptCounter)
     ret_dict['rebut_text'] += ' ' + conclusion + '. '
-    ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgument) + ' '
+    ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgumentTo if is_dont_know else _.howeverIHaveMuchStrongerArgument) + ' '
     ret_dict['rebut_text'] += start_argument if is_dont_know else start_position
-    ret_dict['rebut_text'] += _t.get(_.reject if is_dont_know else _.accept)
+    ret_dict['rebut_text'] += _t.get(_.reject if is_dont_know else _.forText)
     # ret_dict['rebut_text'] += _t.get(_.accept if is_attacking else _.reject)
     ret_dict['rebut_text'] += ' ' + (first_conclusion if first_conclusion else conclusion) + end_tag + '.'
     # + (_t.get(_.doesNotHold) if is_attacking else _t.get(_.hold)) + '.'
@@ -663,8 +672,9 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
         start_tag = ('<' + tag_type + ' data-argumentation-type="argument">') if tag_type in confrontation else ''
         end_tag = '</' + tag_type + '>' if tag_type in confrontation else ''
-        tmp = start_tag + _t.get(_.reject if user_is_attacking else _.accept) + ' ' + end_tag
-        confrontation_text += bind.format(tmp) + conclusion + '.' + ' ' + b
+        accept = _.assistance if lang == 'de' else _.accept
+        tmp = start_tag + _t.get(_.reject if user_is_attacking else accept) + ' ' + end_tag
+        confrontation_text += bind.format(tmp) + ' ' + conclusion + '.' + ' ' + b
 
         if is_okay:
             confrontation_text += _t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)
@@ -708,7 +718,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     return confrontation_text, gender if is_okay else ''
 
 
-def get_name_link_of_arguments_author(main_page, argument, nickname):
+def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=True):
     """
     Get the first author, who wrote or agreed with the argument
 
@@ -729,25 +739,14 @@ def get_name_link_of_arguments_author(main_page, argument, nickname):
         nickname = nickname if nickname is not None else nick_of_anonymous_user
         db_current_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-        # get all valid up votes
-        db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(
-            VoteArgument.author_uid != db_anonymous_user.uid,
-            VoteArgument.argument_uid == argument.uid,
-            VoteArgument.is_valid == True,
-            VoteArgument.is_up_vote == True
-        ))
+        db_user = get_first_supporter_of_argument(argument.uid, db_current_user)
 
-        if db_current_user:
-            db_vote = db_vote.filter(VoteArgument.author_uid != db_current_user.uid)
-
-        db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
-
-        if db_vote:
-            text, is_okay = get_author_data(main_page, db_vote.author_uid, False, True)
-            db_user = DBDiscussionSession.query(User).get(db_vote.author_uid)
+        if db_user:
+            text, is_okay = get_author_data(main_page, db_user.uid, gravatar_on_right_side=False, linked_with_users_page=with_link)
+            db_user = DBDiscussionSession.query(User).get(db_user.uid)
             gender = db_user.gender if db_user else 'n'
         else:
-            return '', '', False
+            return '', 'n', False
 
     return text if is_okay else '', gender, is_okay
 
@@ -797,3 +796,26 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
             break
 
     return text, gender, is_okay
+
+
+def get_first_supporter_of_argument(argument_uid, current_user):
+    """
+
+    :param argument_uid:
+    :param current_user:
+    :return:
+    """
+
+    db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+    db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(
+        VoteArgument.author_uid != db_anonymous_user.uid,
+        VoteArgument.argument_uid == argument_uid,
+        VoteArgument.is_valid == True,
+        VoteArgument.is_up_vote == True
+    ))
+
+    if current_user:
+        db_vote = db_vote.filter(VoteArgument.author_uid != current_user.uid)
+
+    db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
+    return DBDiscussionSession.query(User).get(db_vote.author_uid) if db_vote else None

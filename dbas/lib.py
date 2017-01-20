@@ -239,7 +239,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
         return results
 
 
-def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager, color_statement=False):
+def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager, color_statement=False, is_jump=False):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
@@ -258,7 +258,8 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     if arguments:
         for argument in arguments:
             statement_text = get_text_for_statement_uid(statement_uid)
-            argument_text = get_text_for_argument_uid(argument.uid, anonymous_style=True)
+            attack_type = 'jump' if is_jump else ''
+            argument_text = get_text_for_argument_uid(argument.uid, anonymous_style=True, attack_type=attack_type)
             pos = argument_text.lower().find(statement_text.lower())
             argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
             results.append({'uid': argument.uid,
@@ -293,16 +294,18 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     if len(arg_array) == 1:
         db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
         premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        if premises[-1] != '.':
+            premises += '.'
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
         if lang == 'de':
-            intro = _t.get(_.rebut1) if db_argument.is_supportive else _t.get(_.overbid1)
+            intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
             ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end
-            ret_value += ' ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
+            ret_value += ', ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
         else:
-            ret_value = tag_conclusion + conclusion + ' ' + (
-                _t.get(_.isNotRight).lower() if not db_argument.is_supportive else '') + tag_end
-            ret_value += ' ' + _t.get(_.because).lower() + ' '
+            ret_value = tag_conclusion + conclusion + ' '
+            ret_value += _t.get(_.isNotRight).lower() if not db_argument.is_supportive else ''
+            ret_value += tag_end + ' ' + _t.get(_.because).lower() + ' '
             ret_value += tag_premise + premises + tag_end
 
     else:
@@ -348,15 +351,15 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
     sb_tmp = ''
-    sb_none = '<' + tag_type + '>'
+    sb_none = '<' + tag_type + '>' if with_html_tag else ''
     se = '</' + tag_type + '>' if with_html_tag else ''
     if attack_type not in ['dont_know', 'jump']:
         sb = '<' + tag_type + '>' if with_html_tag else ''
         if colored_position:
             sb = '<' + tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
     else:
-        sb = '<' + tag_type + ' data-argumentation-type="argument">'
-        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">'
+        sb = '<' + tag_type + ' data-argumentation-type="argument">' if with_html_tag else ''
+        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">' if with_html_tag else ''
 
     # color_everything = attack_type == 'undercut' and False
     if attack_type not in ['dont_know', 'jump']:
@@ -390,9 +393,6 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
-    # if color_everything:
-    #     return sb + ret_value + se
-    # else:
     return ret_value
 
 
@@ -893,7 +893,8 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
         return 'Missing author with uid ' + str(uid), False
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
-    img = '<img class="img-circle" src="' + get_profile_picture(db_user, profile_picture_size, True) + '">'
+    img = '<img class="img-circle" src="' + get_profile_picture(db_user, profile_picture_size) + '">'
+
     nick = db_user.get_global_nickname()
     link_begin = ('<a href="' + main_page + '/user/' + nick + ' " title="' + nick + '">') if linked_with_users_page else ''
     link_end = ('</a>') if linked_with_users_page else ''
@@ -904,29 +905,35 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
 
 
 def validate_recaptcha(recaptcha):
+    """
+
+    :param recaptcha:
+    :return:
+    """
     logger('Lib', 'validate_recaptcha', 'recaptcha ' + str(recaptcha))
     try:
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': '6Lc0eQ4TAAAAAJBcq97lYwM8byadNWmUYuTZaPzz',
                                                                                    'response': recaptcha})
         json = r.json()
     except:
-        logger('Lib', 'validate_recaptcha', 'Unexcepcted error', error=True)
+        logger('Lib', 'validate_recaptcha', 'Unexpected error', error=True)
         return False, True
 
     logger('Lib', 'validate_recaptcha', 'answer ' + str(json))
     error = False
 
-    if 'missing-input-secret' in json['error-codes']:
-        logger('Lib', 'validate_recaptcha', 'The secret parameter is missing.', error=True)
-        error = True
-    if 'invalid-input-secret' in json['error-codes']:
-        logger('Lib', 'validate_recaptcha', 'The secret parameter is invalid or malformed.', error=True)
-        error = True
-    if 'missing-input-response' in json['error-codes']:
-        logger('Lib', 'validate_recaptcha', 'The response parameter is missing.', error=True)
-        error = True
-    if 'invalid-input-response' in json['error-codes']:
-        logger('Lib', 'validate_recaptcha', 'The response parameter is invalid or malformed.', error=True)
-        error = True
+    if 'error-codes' in json:
+        if 'missing-input-secret' in json['error-codes']:
+            logger('Lib', 'validate_recaptcha', 'The secret parameter is missing.', error=True)
+            error = True
+        if 'invalid-input-secret' in json['error-codes']:
+            logger('Lib', 'validate_recaptcha', 'The secret parameter is invalid or malformed.', error=True)
+            error = True
+        if 'missing-input-response' in json['error-codes']:
+            logger('Lib', 'validate_recaptcha', 'The response parameter is missing.', error=True)
+            error = True
+        if 'invalid-input-response' in json['error-codes']:
+            logger('Lib', 'validate_recaptcha', 'The response parameter is invalid or malformed.', error=True)
+            error = True
 
     return json['success'], error

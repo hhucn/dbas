@@ -5,7 +5,7 @@
 		<div class="row links">
 			<ul>
 				<li>
-					&copy; 2017 Krauthoff&#160;&#160;&#160;
+                    &sect; 2015-<span tal:replace="extras.year"></span> Krauthoff
 				</li>
 				<li>
 					<a href="${request.application_url}/imprint"><i class="fa fa-copyright" aria-hidden="true"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a>

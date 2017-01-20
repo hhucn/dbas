@@ -62,9 +62,11 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
-version = '1.1.0'
+version = '1.1.1'
 full_version = version + 'b'
 project_name = name + ' ' + full_version
+
+auto_completion_url = 'http://localhost:5103'
 
 
 def base_layout():
@@ -2001,22 +2003,22 @@ def get_users_with_same_opinion(request):
         is_sup = params['is_supporti'] if 'is_supporti' in params else None
 
         if is_arg:
-            if not is_rea:
-                return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
-            else:
+            if is_rea:
                 uids = json.loads(uids)
-                return_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, request.application_url)
+                return_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, request.application_url, request.path)
+            else:
+                return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
         elif is_pos:
             uids = json.loads(uids)
             ids = uids if isinstance(uids, list) else [uids]
             return_dict = get_user_with_same_opinion_for_statements(ids, is_sup, nickname, ui_locales, request.application_url)
         else:
-            if not is_att:
+            if is_att:
+                return_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, request.application_url)
+            else:
                 uids = json.loads(uids)
                 ids = uids if isinstance(uids, list) else [uids]
                 return_dict = get_user_with_same_opinion_for_premisegroups(ids, nickname, ui_locales, request.application_url)
-            else:
-                return_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, request.application_url)
         return_dict['error'] = ''
     except KeyError as e:
         logger('get_users_with_same_opinion', 'error', repr(e))
@@ -2066,7 +2068,7 @@ def get_arguments_by_statement_uid(request):
         else:
             slug = get_slug_by_statement_uid(uid)
             _um = UrlManager(request.application_url, slug)
-            return_dict['arguments'] = get_all_arguments_with_text_and_url_by_statement_id(uid, _um, True)
+            return_dict['arguments'] = get_all_arguments_with_text_and_url_by_statement_id(uid, _um, True, is_jump=True)
             return_dict['error'] = ''
 
     except KeyError as e:
@@ -2220,26 +2222,23 @@ def fuzzy_search(request, for_api=False, api_data=None):
         value = api_data['value'] if for_api else request.params['value']
         mode = str(api_data['mode']) if for_api else str(request.params['type'])
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
+        extra = request.params['extra'] if 'extra' in request.params else None
 
-        return_dict = dict()
+        logger('Graph.lib', 'get_doj_data', 'main')
 
-        if mode == '0':  # start statement
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_start(value, issue, True)
-        elif mode == '1':  # edit statement popup
-            statement_uid = request.params['extra']
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_edits(value, statement_uid)
-        elif mode == '2':  # start premise
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_start(value, issue, False)
-        elif mode == '3':  # adding reasons
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_reasons(value, issue)
-        elif mode == '4':  # getting text
-            return_dict = fuzzy_string_matcher.get_strings_for_search(value)
-        elif mode == '5':  # getting public nicknames
-            nickname = get_nickname(request_authenticated_userid, for_api, api_data)
-            return_dict['distance_name'], return_dict['values'] = fuzzy_string_matcher.get_strings_for_public_nickname(value, nickname)
-        else:
-            logger('fuzzy_search', 'main', 'unknown mode: ' + str(mode))
-            return_dict = {'error': _tn.get(_.internalError)}
+        try:
+            url = auto_completion_url + '?issue={}&mode={}&value={}'.format(str(issue), str(mode), str(value))
+            resp = requests.get(url)
+            if resp.status_code == 200:
+                return_dict = json.loads(resp.text)
+                if for_api:
+                    return return_dict
+                return json.dumps(return_dict)
+
+        except Exception as e:
+            logger('fuzzy_search', 'def', 'Error grepping data via microserver: ' + str(e))
+
+        return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 
     except KeyError as e:
         return_dict = {'error': _tn.get(_.internalKeyError)}
