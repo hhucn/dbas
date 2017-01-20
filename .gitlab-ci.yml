@@ -15,13 +15,19 @@ variables:
     - initialize_news_sql $INIFILE > /dev/null 2>&1
     - init_discussion_testvotes $INIFILE > /dev/null 2>&1
     - init_review_tests $INIFILE > /dev/null 2>&1
+  artifacts:
+    name: "$CI_BUILD_NAME pserve log"
+    paths:
+        - ./pserve.log
+    when: on_failure
 
 start-server:
   <<: *job-definition
   stage: build
   script:
-    - pserve $INIFILE --daemon
-#    - pserve $INIFILE --status
+    - pserve $INIFILE --daemon --log-file pserve.log
+    - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
+    - pserve $INIFILE --status
 
 flake8:
   stage: build
@@ -34,21 +40,14 @@ unit:
   <<: *job-definition
   stage: test
   script:
-    - nosetests -v --with-timer -w $(pwd) dbas graph admin api export
-
-#function-test:
-#  <<: *job-definition
-#  stage: test
-#  script:
-#    - pserve development.ini --daemon
-#    - sleep 10
-#    - python tests/splinterTests.py --no-input
-#  allow_failure: true
+    - pserve $INIFILE --daemon --log-file pserve.log
+    - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
+    - nosetests --with-timer -w $(pwd) dbas graph admin api export
 
 acceptance:
   <<: *job-definition
   stage: test
   script:
-    - pserve $INIFILE --daemon
-    - sleep 10
-    - nosetests -v --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
+    - pserve $INIFILE --daemon --log-file pserve.log
+    - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
+    - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
