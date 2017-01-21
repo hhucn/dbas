@@ -186,7 +186,6 @@ def main_settings(request):
     new_pw      = ''
     confirm_pw  = ''
     message     = ''
-    error       = False
     success     = False
     db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).join(Group).first()
     _uh         = user_manager
@@ -200,11 +199,11 @@ def main_settings(request):
         new_pw = escape_string(request.params['password'])
         confirm_pw = escape_string(request.params['passwordconfirm'])
 
-        message, error, success = _uh.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
+        message, success = _uh.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
     _dh = DictionaryHelper(ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-    settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, request.application_url)
+    settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, not success, message, db_user, request.application_url)
 
     return {
         'layout': base_layout(),
