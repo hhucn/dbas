@@ -686,7 +686,8 @@ function DiscussionGraph() {
      * @param edges
      */
     function addListenerForBackgroundOfNodes(edges) {
-        $(document).on("click", function (d) {
+        $('#graph-svg').on("click", function (d) {
+            console.log("TestBackground");
             if (d.target.id.indexOf("circle") === -1) {
                 highlightAllElements(edges);
             }
