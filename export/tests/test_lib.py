@@ -32,8 +32,8 @@ class LibTest(unittest.TestCase):
         self.assertTrue(len(ret_dict['argument']) > 0)
         self.assertTrue(len(ret_dict['premisegroup']) > 0)
         self.assertTrue(len(ret_dict['premise']) > 0)
-        self.assertTrue(len(ret_dict['vote_argument']) > 0)
-        self.assertTrue(len(ret_dict['vote_statement']) > 0)
+        self.assertTrue(len(ret_dict['vote_argument']) >= 0)
+        self.assertTrue(len(ret_dict['vote_statement']) >= 0)
 
     def test_get_minimal_graph_export(self):
         ret_dict = get_minimal_graph_export(1)
