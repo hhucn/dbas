@@ -211,33 +211,38 @@ class DiscussionDictHelper(object):
         if not db_argument:
             return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 
-        confr          = get_text_for_argument_uid(uid)
-        premise, tmp   = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        conclusion     = get_text_for_conclusion(db_argument, is_users_opinion=False)
+        confrontation = get_text_for_argument_uid(uid)
+        premise, tmp  = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        conclusion    = get_text_for_conclusion(db_argument, is_users_opinion=False)
         if db_argument.conclusion_uid is None:
             conclusion = conclusion[0:1].lower() + conclusion[1:]
+
+        while premise.endswith(('.', '?', '!')):
+            premise = premise[:-1]
+        while conclusion.endswith(('.', '?', '!')):
+            conclusion = premise[:-1]
 
         user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
 
         if attack == 'undermine':
-            add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
+            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack, conclusion, db_argument.is_supportive)
             add_premise_text = add_premise_text[0:1].upper() + add_premise_text[1:]
 
         elif attack == 'support':
             is_supportive = not is_supportive
             # when the user rebuts a system confrontation, he attacks his own negated premise, therefore he supports
             # is own premise. so his premise is the conclusion and we need new premises ;-)
-            add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, is_supportive)
+            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack, conclusion, is_supportive)
 
         elif attack == 'undercut':
-            add_premise_text = user_msg + ' ' + _tn.get(_.because) + '...'
+            add_premise_text = user_msg.format('', '') + '. ' + _tn.get(_.because) + '...'
 
         else:
-            add_premise_text = get_text_for_add_premise_container(self.lang, confr, premise, attack, conclusion, db_argument.is_supportive)
+            add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack, conclusion, db_argument.is_supportive)
 
         start = '<' + tag_type + ' data-argumentation-type="position">'
         end = '</' + tag_type + '>'
-        user_msg = start + user_msg[:-1] + end
+        user_msg = user_msg.format(start, end)
 
         sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument) if attack == 'undercut' else _tn.get(_.whatIsYourMostImportantReasonForStatement)
         sys_msg += ': ' + user_msg + '?<br>' + _tn.get(_.because) + '...'

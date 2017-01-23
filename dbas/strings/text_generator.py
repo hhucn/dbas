@@ -122,7 +122,7 @@ def __get_user_msg_for_users_confrontation_response(db_argument, attack_type, pr
 
 
 def __get_user_msg_for_users_undermine_response(premise, f):
-    return f + ' ' + premise + '.'
+    return '{}' + f + ' ' + premise + '{}'
 
 
 def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t):
@@ -130,7 +130,7 @@ def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _
     user_msg += ' ' + conclusion + ' '
     user_msg += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
     user_msg += '.'
-    return user_msg
+    return '{}' + user_msg + '{}'
 
 
 def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t):
@@ -146,7 +146,7 @@ def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion,
         tmp = _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
     tmp = tmp.format(conclusion)
 
-    return r + premise + '. ' + tmp + '.'
+    return r + premise + '. {}' + tmp + '{}'
 
 
 def __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t):
@@ -156,7 +156,7 @@ def __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_support
     user_msg += _t.get(_.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(
         _.howeverIHaveEvenStrongerArgumentRejecting)
     user_msg += ' ' + conclusion + '.'
-    return user_msg
+    return '{}' + user_msg + '{}'
 
 
 def __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportive, _t):
@@ -166,7 +166,7 @@ def __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportiv
     user_msg += _t.get(_.howeverIHaveMuchStrongerArgumentRejectingThat) if is_supportive else _t.get(
         _.howeverIHaveMuchStrongerArgumentAcceptingThat)
     user_msg += ' ' + conclusion + '.'
-    return user_msg
+    return '{}' + user_msg + '{}'
 
 
 def get_relation_text_dict_without_substitution(lang, start_lower_case, with_no_opinion_text, is_attacking, premise,
@@ -299,7 +299,7 @@ def __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, s
 
     ret_dict['support_text'] = r + premise + _t.get(_.itIsTrue2) + '.'
 
-    ret_dict['undercut_text'] = r + premise + _t.get(_.itIsTrue2) + ', '
+    ret_dict['undercut_text'] = r + premise + _t.get(_.itIsTrue2) + '. '
     if is_dont_know:
         ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgumentFor).format(conclusion) + '.'
     elif not is_attacking or not attack_type == 'undercut':
