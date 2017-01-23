@@ -553,7 +553,7 @@ function GuiHandler() {
 			}
 			space.append(table.append(tbody));
 		});
-		
+
 		if (!at_least_one_history) {
 			space.hide();
 			space.prev().hide();

@@ -500,40 +500,33 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     logger('UserHandler', 'change_password', 'def')
     _t = Translator(lang)
 
-    error = False
     success = False
 
     # is the old password given?
     if not old_pw:
         logger('UserHandler', 'change_password', 'old pwd is empty')
         message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
-        error = True
     # is the new password given?
     elif not new_pw:
         logger('UserHandler', 'change_password', 'new pwd is empty')
         message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
-        error = True
     # is the confirmation password given?
     elif not confirm_pw:
         logger('UserHandler', 'change_password', 'confirm pwd is empty')
         message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
-        error = True
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
         logger('UserHandler', 'change_password', 'new pwds not equal')
         message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
-        error = True
     # is new old password equals the new one?
     elif old_pw == new_pw:
         logger('UserHandler', 'change_password', 'pwds are the same')
         message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
-        error = True
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
             logger('UserHandler', 'change_password', 'old password is wrong')
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
-            error = True
         else:
             hashed_pw = password_handler.get_hashed_password(new_pw)
 
@@ -546,7 +539,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             message = _t.get(_.pwdChanged)  # 'Your password was changed'
             success = True
 
-    return message, error, success
+    return message, success
 
 
 def create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales):

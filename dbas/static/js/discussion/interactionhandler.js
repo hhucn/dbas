@@ -56,10 +56,12 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingLogfile = function (data) {
 		let parsedData = $.parseJSON(data);
 		// status is the length of the content
+		console.log(parsedData.error.length)
 		if (parsedData.error.length == 0) {
 			new GuiHandler().showLogfileOfPremisegroup(parsedData);
 		} else {
 			$('#' + popupEditStatementErrorDescriptionId).text(parsedData.error);
+			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
 		}
 	};
 

@@ -380,11 +380,11 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
             ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
-            ret_value = se + _t.get(_.youArgue) + se + ' '
+            ret_value = sb_none + _t.get(_.youArgue) + se + ' '
         else:
-            ret_value = se + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
+            ret_value = sb_none + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
+        ret_value += ' {}{}{} '.format(sb, _t.get(_.itIsNotRight), se) if not db_argument.is_supportive else ''
         ret_value += conclusion
-        ret_value += (', ' + _t.get(_.itIsNotRight)) if not db_argument.is_supportive else ''
         ret_value += ', ' if lang == 'de' else ' '
         ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
     else:
@@ -517,6 +517,7 @@ def get_text_for_statement_uid(uid, colored_position=False):
 
             sb = '<' + tag_type + ' data-argumentation-type="position">' if colored_position else ''
             se = '</' + tag_type + '>' if colored_position else ''
+
             return sb + content + se
 
     except (ValueError, TypeError):

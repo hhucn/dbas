@@ -34,7 +34,7 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     try_to_register_new_user_via_ajax, request_password, prepare_parameter_for_justification, login_user
-from dbas.helper.voting import add_vote_for_argument, clear_votes_of_user
+from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer, is_position, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
 from dbas.lib import get_language, escape_string, get_discussion_language, \
@@ -67,6 +67,7 @@ full_version = version + 'b'
 project_name = name + ' ' + full_version
 
 auto_completion_url = 'http://localhost:5103'
+recommender_system_url = 'http://localhost:5104'
 
 
 def base_layout():
@@ -186,7 +187,6 @@ def main_settings(request):
     new_pw      = ''
     confirm_pw  = ''
     message     = ''
-    error       = False
     success     = False
     db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).join(Group).first()
     _uh         = user_manager
@@ -200,11 +200,11 @@ def main_settings(request):
         new_pw = escape_string(request.params['password'])
         confirm_pw = escape_string(request.params['passwordconfirm'])
 
-        message, error, success = _uh.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
+        message, success = _uh.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
 
     _dh = DictionaryHelper(ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-    settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, request.application_url)
+    settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, not success, message, db_user, request.application_url)
 
     return {
         'layout': base_layout(),
@@ -1194,7 +1194,7 @@ def delete_statistics(request):
     logger('delete_statistics', 'def', 'main')
 
     return_dict = dict()
-    return_dict['removed_data'] = 'true' if clear_votes_of_user(request_authenticated_userid) else 'false'
+    return_dict['removed_data'] = 'true' if clear_vote_and_seen_values_of_user(request_authenticated_userid) else 'false'
 
     return json.dumps(return_dict)
 

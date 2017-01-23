@@ -50,6 +50,9 @@ refresh:
 fieldtest: users db
 	init_field_test_sql development.ini
 
+minimal_db: users db
+	init_empty_sql development.ini
+
 
 nosetests:
 	nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export

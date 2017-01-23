@@ -8,6 +8,8 @@ from dbas import user_management
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.helper.tests import add_settings_to_appconfig
+from dbas.strings.translator import Translator
+from dbas.strings import keywords as _
 
 settings = add_settings_to_appconfig()
 
@@ -46,3 +48,34 @@ class UserManagementTest(unittest.TestCase):
     def test_is_user_author(self):
         self.assertTrue(is_user_author('Tobias'))
         self.assertFalse(is_user_author('Torben'))
+
+    def change_password(self):
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=str('Tobias')).first()
+        _t = Translator('en')
+
+        msg1, success1 = user_management.change_password(db_user, None, 'tobiass', 'tobias', 'en')  # not old pw
+        msg2, success2 = user_management.change_password(db_user, 'tobias', None, 'tobias', 'en')  # not new pw
+        msg3, success3 = user_management.change_password(db_user, 'tobias', 'tobiass', None, 'en')  # not confirm_pw
+        msg4, success4 = user_management.change_password(db_user, 'tobias', 'tobias1', 'tobias2', 'en')  # not new == confirm
+        msg5, success5 = user_management.change_password(db_user, 'tobias', 'tobias', 'tobias', 'en')  # old == new
+        msg6, success6 = user_management.change_password(db_user, 'tobiaS', 'tobiass', 'tobias', 'en')  # old wrong
+        msg7, success7 = user_management.change_password(db_user, 'tobias', '123456', '123456', 'en')
+        msg8, success8 = user_management.change_password(db_user, '123456', 'tobias', 'tobias', 'en')
+
+        self.assertFalse(success1)
+        self.assertFalse(success2)
+        self.assertFalse(success3)
+        self.assertFalse(success4)
+        self.assertFalse(success5)
+        self.assertFalse(success6)
+        self.assertTrue(success7)
+        self.assertTrue(success8)
+
+        self.assertEquals(msg1, _t.get(_.oldPwdEmpty))
+        self.assertEquals(msg2, _t.get(_.newPwdEmtpy))
+        self.assertEquals(msg3, _t.get(_.confPwdEmpty))
+        self.assertEquals(msg4, _t.get(_.newPwdNotEqual))
+        self.assertEquals(msg5, _t.get(_.pwdsSame))
+        self.assertEquals(msg6, _t.get(_.oldPwdWrong))
+        self.assertEquals(msg7, _t.get(_.pwdChanged))
+        self.assertEquals(msg8, _t.get(_.pwdChanged))

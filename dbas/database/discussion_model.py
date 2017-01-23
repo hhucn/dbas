@@ -356,8 +356,9 @@ class StatementReferences(DiscussionBase):
 class StatementSeenBy(DiscussionBase):
     """
     List of users, which have seen a statement
+    A statement is marked as seen, if it is/was selectable during the justification steps
     """
-    __tablename__ = 'statement_seen_by'
+    __tablename__ = 'seen_statements'
     uid = Column(Integer, primary_key=True)
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
     user_uid = Column(Integer, ForeignKey('users.uid'))
@@ -373,8 +374,9 @@ class StatementSeenBy(DiscussionBase):
 class ArgumentSeenBy(DiscussionBase):
     """
     List of users, which have seen a argument
+    An argument is marked as seen, if the user has vote for it or if the argument is presented as attack
     """
-    __tablename__ = 'argument_seen_by'
+    __tablename__ = 'seen_arguments'
     uid = Column(Integer, primary_key=True)
     argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     user_uid = Column(Integer, ForeignKey('users.uid'))
@@ -590,7 +592,7 @@ class History(DiscussionBase):
 class VoteArgument(DiscussionBase):
     """
     Vote-table with several columns for arguments.
-    The combination of the both FK is a PK
+    An argument will be voted, if the user has selected the premise and conclusion of this argument.
     """
     __tablename__ = 'vote_arguments'
     uid = Column(Integer, primary_key=True)
@@ -647,7 +649,7 @@ class VoteArgument(DiscussionBase):
 class VoteStatement(DiscussionBase):
     """
     Vote-table with several columns for statements.
-    The combination of the both FK is a PK
+    A statement will be voted, if the user has selected the statement as justification or if the statement is used as part of an argument.
     """
     __tablename__ = 'vote_statements'
     uid = Column(Integer, primary_key=True)

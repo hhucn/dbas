@@ -71,6 +71,7 @@ class DiscussionDictHelper(object):
         statement_text      = get_text_for_statement_uid(uid, True)
         if not statement_text:
             return None
+
         if self.lang != 'de':
             l = len('<' + tag_type + ' data-argumentation-type="position">')
             statement_text = statement_text[0:l + 1].lower() + statement_text[l + 1:]
@@ -403,6 +404,10 @@ class DiscussionDictHelper(object):
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
 
         text = _tn.get(_.whatDoYouThinkAbout)
+        offset = len('</' + tag_type + '>') if tag_type in argument_text else 1
+        while argument_text[:-offset].endswith(('.', '?', '!')):
+            argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
+        logger('X', 'X', argument_text)
         text += ': ' + argument_text + '?'
         bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
 

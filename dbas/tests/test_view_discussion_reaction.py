@@ -89,7 +89,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
                                                                                    VoteArgument.is_valid == True,
                                                                                    VoteArgument.is_up_vote == True)).all())
 
-        self.assertLess(len_db_seen_s1, len_db_seen_s2)
+        self.assertEqual(len_db_seen_s1, len_db_seen_s2)
         self.assertLess(len_db_votes_s1, len_db_votes_s2)
         self.assertLess(len_db_seen_a1, len_db_seen_a2)
         self.assertLess(len_db_votes_a1, len_db_votes_a2)
@@ -133,7 +133,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
                                                                                    VoteArgument.is_up_vote == True)).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
 
-        self.assertLess(len_db_seen_s1, len_db_seen_s2)
+        self.assertEqual(len_db_seen_s1, len_db_seen_s2)
         self.assertLess(len_db_votes_s1, len_db_votes_s2)
         self.assertLess(len_db_seen_a1, len_db_seen_a2)
         self.assertLess(len_db_votes_a1, len_db_votes_a2)
@@ -178,7 +178,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
                                                                                    VoteArgument.is_up_vote == True)).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
 
-        self.assertLess(len_db_seen_s1, len_db_seen_s2)
+        self.assertEqual(len_db_seen_s1, len_db_seen_s2)
         self.assertLess(len_db_votes_s1, len_db_votes_s2)
         self.assertLess(len_db_seen_a1, len_db_seen_a2)
         self.assertLess(len_db_votes_a1, len_db_votes_a2)
