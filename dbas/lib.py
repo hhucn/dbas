@@ -212,11 +212,8 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
 
     else:
         # get all pgroups and at last, the conclusion
-        sb = '<' + tag_type + '>' if with_html_tag else ''
-        se = '</' + tag_type + '>' if with_html_tag else ''
-        doesnt_hold_because = ' ' + se + _t.get(_.doesNotHold).lower() + ' ' + _t.get(_.because).lower() + ' ' + sb
         return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
-                                       start_with_intro, doesnt_hold_because, minimize_on_undercut, anonymous_style, _t)
+                                       start_with_intro, minimize_on_undercut, anonymous_style, _t)
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
@@ -397,7 +394,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
 
 def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
-                            doesnt_hold_because, minimize_on_undercut, anonymous_style, _t):
+                            minimize_on_undercut, anonymous_style, _t):
     """
 
     :param arg_array:
@@ -448,9 +445,12 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
         ret_value = _t.get(_.someoneArgued) + ' '
         tmp_users_opinion = False
 
-    ret_value += conclusion + (because if supportive[0] else doesnt_hold_because) + pgroups[0] + '.'
+    tmp = _t.get(_.itFalseIsThat) + ' ' if not supportive[0] else ''
+    ret_value += tmp + conclusion + because + pgroups[0] + '.'
+    del pgroups[0]
 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
+
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
         return _t.get(_.butYouCounteredWith) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 

@@ -688,7 +688,7 @@ de_lang = {
     _.welcomeMessage: 'Willkommen im neuen dialog-basierten Argumentations-System.<br>Wir wünschen viel Spaß beim Diskutieren!',
     _.youAreInterestedIn: 'Sie interessieren sich für',
     _.youAgreeWith: 'Ich bin der Meinung, dass',
-    _.youAgreeWithThatNow: 'Nun akzeptieren Sie, dass',
+    _.youAgreeWithThatNow: 'Nun geben Sie an, dass',
     _.youDisagreeWith: 'Ich widerspreche, dass',
     _.youSaidThat: 'Sie haben gesagt, dass',
     _.youUsedThisEarlier: 'Sie haben diese Aussage schon benutzt.',
