@@ -303,13 +303,13 @@ function DiscussionGraph() {
     function getForce(width, height) {
         return d3.layout.force()
             .size([width, height])
-            // gravity of nodes
-            .gravity(0.11)
             // nodes push each other away
-            .charge(-350)
+            .charge(-500)
             .linkDistance(function (d) {
                   return d.size;
             })
+            // modify linkDistance
+            .linkStrength(0.7);
     }
 
     /**
@@ -1002,7 +1002,7 @@ function DiscussionGraph() {
         });
         // highlight incoming and outgoing edges of all statements, which the current user has created
         force.nodes().forEach(function (d) {
-            if (d.author.name === 'anonymous' /*$('#header_nickname')[0].innerText*/) {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
                 showAttacksSupports(edges, d.id);
             }
@@ -1075,7 +1075,7 @@ function DiscussionGraph() {
             });
         }
         force.nodes().forEach(function (d) {
-            if (d.author.name === 'anonymous' /*$('#header_nickname')[0].innerText*/) {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
                 showAttacksSupports(edges, d.id);
             }
@@ -1132,7 +1132,7 @@ function DiscussionGraph() {
             });
         }
         force.nodes().forEach(function (d) {
-            if (d.author.name === 'anonymous' /*$('#header_nickname')[0].innerText*/) {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
                 showAttacksSupports(edges, d.id);
             }
