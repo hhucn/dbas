@@ -610,7 +610,7 @@ def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_pr
         confrontation_text = b + _t.get(_.otherParticipantsDontHaveOpinion)
         gender_think = _t.get(_.participantsThink)
 
-    confrontation_text += ' ' + premise + ', '
+    confrontation_text += ' ' + premise + '. '
     if supportive:
         confrontation_text += (_t.get(_.butHeDoesNotBelieveArgument) if gender is 'm' else _t.get(_.butSheDoesNotBelieveArgument)) \
             if is_okay else _t.get(_.butTheyDoNotBelieveArgument)
@@ -619,13 +619,9 @@ def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_pr
             if is_okay else _t.get(_.butTheyDoNotBelieveCounter)
     confrontation_text += e + ' ' + conclusion + b
 
-    if lang == 'de':
-        confrontation_text += '. ' + gender_think
-    else:
-        confrontation_text += ', ' + _t.get(_.because).lower() + ' ' + gender_think.lower()
+    confrontation_text += '. ' + gender_think
 
-    confrontation_text += ' ' if lang == 'de' else ': '
-    confrontation_text += e + confrontation
+    confrontation_text += ' ' + e + confrontation
     return confrontation_text, gender if is_okay else ''
 
 
