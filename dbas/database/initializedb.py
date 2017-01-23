@@ -766,9 +766,9 @@ def set_up_issue(session, user, lang1, lang2, is_field_test=False):
     if is_field_test:
         issue1 = Issue(title='Verbesserung des Informatik-Studiengangs',
                        info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark '
-                            'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B.Raumknappheit, überfüllte '
+                            'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte '
                             'Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu '
-                            'einladen gemeinsam mit den Dozenten der Informatik über Lösungsmöglicheiten zu '
+                            'einladen gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu '
                             'diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die '
                             'große Anzahl der Studierenden entstanden sind, gelöst werden?',
                        author_uid=user.uid,

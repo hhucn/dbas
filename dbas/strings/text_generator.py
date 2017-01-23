@@ -330,10 +330,7 @@ def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_p
     :param start_argument:
     :param start_position:
     :param end_tag:
-    :param first_conclusion:
     :param is_dont_know:
-    :param is_attacking:
-    :param attack_type:
     :param _t:
     :return:
     """
@@ -391,7 +388,9 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     """
     Text for the confrontation of the system
 
+    :param main_page: main_page
     :param lang: ui_locales
+    :param nickname: nickname
     :param premise: String
     :param conclusion: String
     :param sys_conclusion: String
@@ -437,7 +436,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                             confrontation)
 
     elif attack == 'undercut':
-        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_premise, _t,
+        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, nickname, db_users_premise, _t,
                                                                            premise, conclusion, confrontation,
                                                                            supportive, sys_arg)
 
@@ -583,18 +582,18 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sta
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_premise, _t, premise, conclusion, confrontation, supportive, system_argument):
+def __get_confrontation_text_for_undercut(main_page, nickname, db_users_premise, _t, premise, conclusion, confrontation, supportive, system_argument):
     """
 
-    :param lang:
-    :param: nickname of current user
+    :param main_page:
+    :param nickname:
     :param db_users_premise:
     :param _t:
     :param premise:
     :param conclusion:
     :param confrontation:
     :param supportive:
-    :param system_argument: Counter argument of the system
+    :param system_argument:
     :return:
     """
 
@@ -617,11 +616,8 @@ def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_pr
     else:
         confrontation_text += (_t.get(_.butHeDoesNotBelieveCounter) if gender is 'm' else _t.get(_.butSheDoesNotBelieveCounter)) \
             if is_okay else _t.get(_.butTheyDoNotBelieveCounter)
-    confrontation_text += e + ' ' + conclusion + b
 
-    confrontation_text += '. ' + gender_think
-
-    confrontation_text += ' ' + e + confrontation
+    confrontation_text += e + ' ' + conclusion + b + '. ' + gender_think + ' ' + e + confrontation
     return confrontation_text, gender if is_okay else ''
 
 
@@ -710,11 +706,12 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
 def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=True):
     """
-    Get the first author, who wrote or agreed with the argument
+    Will return author of the argument, if the first supporting user
 
     :param main_page:
     :param argument:
     :param nickname:
+    :param with_link:
     :return:
     """
     text, is_okay = get_author_data(main_page, argument.author_uid, False, True)
