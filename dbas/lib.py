@@ -517,6 +517,7 @@ def get_text_for_statement_uid(uid, colored_position=False):
 
             sb = '<' + tag_type + ' data-argumentation-type="position">' if colored_position else ''
             se = '</' + tag_type + '>' if colored_position else ''
+
             return sb + content + se
 
     except (ValueError, TypeError):

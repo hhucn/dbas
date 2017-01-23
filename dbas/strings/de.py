@@ -431,7 +431,7 @@ de_lang = {
     _.nickname: 'Spitzname',
     _.noOtherAttack: 'Das System hat kein anderes Gegenargument',
     _.noIslandView: 'Daten für die Island View konnten nicht geladen werden. Tschuldigung!',
-    _.noCorrections: 'Keine Korrekturen für die aktuelle Aussage.',
+    _.noCorrections: 'Es liegen noch keine Korrekturen für die aktuelle Aussage vor.',
     _.noDecisionDone: 'Es liegt keine Entscheidung vor.',
     _.noCorrectionsSet: 'Korrektur wurde nicht gespeichert, da der Benutzer unbekannt ist. Sind Sie angemeldet?',
     _.notInsertedErrorBecauseEmpty: 'Ihre Idee wurde nicht gespeichert, da das Feld leer oder der Inhalt zu kurz ist.',
