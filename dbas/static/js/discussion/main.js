@@ -671,9 +671,18 @@ function Main () {
 		// hide one line options
 		let children = spaceList.find('input');
 		let id = children.eq(0).attr('id');
+		id = id.replace('item_', '');
 		let ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
 		// if we have just one list element AND the list element has a special function AND we are logged in
+		console.log(children.length);
+		console.log(id);
+		console.log(($.inArray(id, ids)));
 		if (children.length == 1 && ($.inArray(id, ids) != -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
+			console.log(children.eq(0).outerHeight(true));
+			let container = $('#' + discussionContainerId);
+			let sidebar = $('.sidebar-wrapper');
+			container.height(container.height() - 50);
+			sidebar.height(sidebar.height() - 50);
 			children.eq(0).prop('checked', true).parent().hide();
 		}
 		
@@ -788,7 +797,7 @@ $(document).ready(function mainDocumentReady() {
 		$(this).addClass('opened');
 		event.stopPropagation();
 	});
-	$(document).delegate('body', 'click', function(event) {
+	$(document).delegate('body', 'click', function() {
 		$('.open').removeClass('opened');
 	});
 	$(document).delegate('.cls', 'click', function(event){

@@ -357,11 +357,11 @@ class DictionaryHelper(object):
             mid_text = _tn.get(_.firstPremiseText1M).rstrip()
         else:
             mid_text = _tn.get(_.firstOneInformationText).rstrip()
-        mid_text = mid_text.format('<em>' + current_premise + '</em>')
+        mid_text = mid_text.format('<em>{}</em>'.format(current_premise))
 
         if not supportive:
             mid_text += ' ' + _tn.get(_.doesNotHold)
-        mid_text += '.<br>'
+        mid_text += '. '
 
         if nickname:
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
