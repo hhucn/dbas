@@ -526,7 +526,7 @@ def setup_news_db(session, ui_locale):
                   news='After the positive feedback at COMMA16, we decided to do a first field tests with D-BAS at our '
                        'university. Therefore we are working on current issues, so that we will releasing v1.0. soon.')
     news54 = News(title='Final version and Recaptachs',
-                  date=arrow.get('2016-01-02'),
+                  date=arrow.get('2017-01-02'),
                   author='Tobias Krauthoff',
                   news='We have a delayed christmas present for you. D-BAS reached it\'s first final version 1.0 '
                        'including reCAPTCHAS and several minor fixes!')
@@ -769,7 +769,7 @@ def set_up_issue(session, user, lang1, lang2, is_field_test=False):
                        info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark '
                             'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte '
                             'Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu '
-                            'einladen gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu '
+                            'einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu '
                             'diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die '
                             'große Anzahl der Studierenden entstanden sind, gelöst werden?',
                        author_uid=user.uid,
