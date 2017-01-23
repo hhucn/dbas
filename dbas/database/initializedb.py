@@ -85,11 +85,82 @@ def field_test(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-        user0, user1, user2, user3, user4, user6, user7, user8 = set_up_users(DBDiscussionSession, include_dummy_users=False)
+        user0, user1, user2, user3, user4 = set_up_users(DBDiscussionSession, include_dummy_users=False)
         lang1, lang2 = set_up_language(DBDiscussionSession)
         set_up_issue(DBDiscussionSession, user0, lang1, lang2, is_field_test=True)
-        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, use_anonyme_nicks=False)
+        set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, use_anonyme_nicks=False)
         setup_fieltest_discussion_database(DBDiscussionSession)
+        transaction.commit()
+        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
+
+
+def blank_file(argv=sys.argv):
+    """
+    Minimal database
+
+    :param argv:
+    :return:
+    """
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
+
+    with transaction.manager:
+
+        # adding groups
+        group0 = Group(name='admins')
+        group1 = Group(name='authors')
+        group2 = Group(name='users')
+        DBDiscussionSession.add_all([group0, group1, group2])
+        DBDiscussionSession.flush()
+
+        # adding some dummy users
+        pw0 = password_handler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+        pw1 = password_handler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
+
+        user0 = User(firstname=nick_of_anonymous_user,
+                     surname=nick_of_anonymous_user,
+                     nickname=nick_of_anonymous_user,
+                     email='',
+                     password=pw0,
+                     group_uid=group2.uid,
+                     gender='m')
+        user1 = User(firstname='admin',
+                     surname='admin',
+                     nickname='admin',
+                     email='dbas.hhu@gmail.com',
+                     password=pw1,
+                     group_uid=group0.uid,
+                     gender='m')
+
+        DBDiscussionSession.add_all([user0, user1])
+        DBDiscussionSession.flush()
+
+        lang1, lang2 = set_up_language(DBDiscussionSession)
+
+        issue1 = Issue(title='ONE TITLE',
+                       info='A INFO TO RULE THEM ALL',
+                       author_uid=user1.uid,
+                       lang_uid=lang2.uid)
+        DBDiscussionSession.add_all([issue1])
+        DBDiscussionSession.flush()
+
+        settings0 = Settings(author_uid=user0.uid,
+                             send_mails=False,
+                             send_notifications=True,
+                             should_show_public_nickname=True)
+        settings1 = Settings(author_uid=user1.uid,
+                             send_mails=False,
+                             send_notifications=True,
+                             should_show_public_nickname=True)
+        DBDiscussionSession.add_all([settings0, settings1])
+
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
@@ -525,15 +596,17 @@ def set_up_users(session, include_dummy_users=True):
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group_uid=group0.uid, gender='m')
     user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group_uid=group0.uid, gender='m')
     user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group_uid=group0.uid, gender='m')
-    user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn', email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
-    user7 = User(firstname='Teresa', surname='Uebber', nickname='Teresa', email='teresa.uebber@uni-duesseldorf.de', password=pw9, group_uid=group0.uid, gender='f')
-    user8 = User(firstname='Bob', surname='Bubbles', nickname='Bob', email='tobias.krauthoff+dbas.usert31@gmail.com', password=pwt, group_uid=group0.uid, gender='n')
 
-    session.add_all([user0, user1, user2, user3, user4, user6, user7, user8])
+    session.add_all([user0, user1, user2, user3, user4])
     session.flush()
 
     if not include_dummy_users:
-        return user0, user1, user2, user3, user4, user6, user7, user8
+        return user0, user1, user2, user3, user4
+
+    user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn', email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
+    user7 = User(firstname='Teresa', surname='Uebber', nickname='Teresa', email='teresa.uebber@uni-duesseldorf.de', password=pw9, group_uid=group0.uid, gender='f')
+    user8 = User(firstname='Bob', surname='Bubbles', nickname='Bob', email='tobias.krauthoff+dbas.usert31@gmail.com', password=pwt, group_uid=group0.uid, gender='n')
+    session.add_all([user6, user7, user8])
 
     usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='tobias.krauthoff+dbas.usert00@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
     usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='tobias.krauthoff+dbas.usert01@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
@@ -577,7 +650,7 @@ def set_up_users(session, include_dummy_users=True):
     return user0, user1, user2, user3, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
 
 
-def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, user8, usert00=None, usert01=None,
+def set_up_settings(session, user0, user1, user2, user3, user4, user6=None, user7=None, user8=None, usert00=None, usert01=None,
                     usert02=None, usert03=None, usert04=None, usert05=None, usert06=None, usert07=None, usert08=None,
                     usert09=None, usert10=None, usert11=None, usert12=None, usert13=None, usert14=None, usert15=None,
                     usert16=None, usert17=None, usert18=None, usert19=None, usert20=None, usert21=None, usert22=None,
@@ -589,13 +662,13 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, us
     settings2 = Settings(author_uid=user2.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
     settings3 = Settings(author_uid=user3.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
     settings4 = Settings(author_uid=user4.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settings6 = Settings(author_uid=user6.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settings7 = Settings(author_uid=user7.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settings8 = Settings(author_uid=user8.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
-    session.add_all([settings0, settings1, settings2, settings3, settings4, settings6, settings7, settings8])
+    session.add_all([settings0, settings1, settings2, settings3, settings4])
     session.flush()
 
     if usert00 is not None:
+        settings6 = Settings(author_uid=user6.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settings7 = Settings(author_uid=user7.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
+        settings8 = Settings(author_uid=user8.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
         settingst00 = Settings(author_uid=usert00.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
         settingst01 = Settings(author_uid=usert01.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
         settingst02 = Settings(author_uid=usert02.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
@@ -632,7 +705,7 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, us
         session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
         session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
         session.add_all([settingst21, settingst22, settingst23, settingst24, settingst25, settingst26, settingst27])
-        session.add_all([settingst28, settingst29, settingst30])
+        session.add_all([settingst28, settingst29, settingst30, settings6, settings7, settings8])
         session.flush()
 
         if use_anonyme_nicks:
@@ -658,10 +731,12 @@ def set_up_settings(session, user0, user1, user2, user3, user4, user6, user7, us
     notification0 = Message(from_author_uid=user1.uid, to_author_uid=user2.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
     notification1 = Message(from_author_uid=user1.uid, to_author_uid=user3.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
     notification2 = Message(from_author_uid=user1.uid, to_author_uid=user4.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification4 = Message(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification5 = Message(from_author_uid=user1.uid, to_author_uid=user7.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    notification6 = Message(from_author_uid=user1.uid, to_author_uid=user8.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
-    session.add_all([notification0, notification1, notification2, notification4, notification5, notification6])
+    session.add_all([notification0, notification1, notification2])
+    if usert00 is not None:
+        notification4 = Message(from_author_uid=user1.uid, to_author_uid=user6.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+        notification5 = Message(from_author_uid=user1.uid, to_author_uid=user7.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+        notification6 = Message(from_author_uid=user1.uid, to_author_uid=user8.uid, topic='Welcome', content='Welcome to the novel dialog-based argumentation system...')
+        session.add_all([notification4, notification5, notification6])
     session.flush()
 
 
@@ -691,12 +766,11 @@ def set_up_issue(session, user, lang1, lang2, is_field_test=False):
     if is_field_test:
         issue1 = Issue(title='Verbesserung des Informatik-Studiengangs',
                        info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark '
-                            'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte '
+                            'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B.Raumknappheit, überfüllte '
                             'Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu '
-                            'einladen gemeinsam mit den Dozenten der Informatik darüber zu diskutieren, wie der '
-                            'Studiengang verbessert und die Probleme, die durchdie große Anzahl der Studierenden '
-                            'entstanden sind, gelöst werden können.<br>Diese Diskussion wird voraussichtlich bis '
-                            'zum 29.01.2017 aktiv sein.',
+                            'einladen gemeinsam mit den Dozenten der Informatik über Lösungsmöglicheiten zu '
+                            'diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die '
+                            'große Anzahl der Studierenden entstanden sind, gelöst werden?',
                        author_uid=user.uid,
                        lang_uid=lang2.uid)
         session.add_all([issue1])
