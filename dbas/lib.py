@@ -668,7 +668,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         if message[pos - 1:pos] not in ['.', '?', '!']:
             message = message[0:pos] + '.' + message[pos:]
     else:
-        if not message.endswith(tuple(['.', '?', '!'])):
+        if not message.endswith(tuple(['.', '?', '!'])) and uid is not 'now':
             message += '.'
 
     speech = {'is_user': is_user,

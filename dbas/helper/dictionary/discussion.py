@@ -201,7 +201,7 @@ class DiscussionDictHelper(object):
         :return: dict()
         """
         logger('DictionaryHelper', 'prepare_discussion_dict', 'get_dict_for_justify_argument')
-        _tn                   = Translator(self.lang)
+        _tn                = Translator(self.lang)
         bubbles_array      = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
         add_premise_text   = ''
         save_statement_url = 'ajax_set_new_premises_for_argument'
@@ -506,6 +506,9 @@ class DiscussionDictHelper(object):
     def __append_now_bubble(self, bubbles_array):
         if len(bubbles_array) > 0:
             _tn = Translator(self.lang)
-            bubbles_array.append(
-                create_speechbubble_dict(is_status=True, uid='now', message=_tn.get(_.now), lang=self.lang,
-                                         omit_url=True))
+            bubble = create_speechbubble_dict(is_status=True,
+                                              uid='now',
+                                              message=_tn.get(_.now),
+                                              lang=self.lang,
+                                              omit_url=True)
+            bubbles_array.append(bubble)
