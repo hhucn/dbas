@@ -217,17 +217,16 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
     transaction.commit()
 
 
-def send_welcome_notification(user, lang='en'):
+def send_welcome_notification(user, translator):
     """
     Creates and send the welcome message to a new user.
 
     :param user: User.uid
-    :param lang: ui_locales
+    :param translator: translator
     :return: None
     """
-    _tn = Translator(lang)
-    topic = _tn.get(_.welcome)
-    content = _tn.get(_.welcomeMessage)
+    topic = translator.get(_.welcome)
+    content = translator.get(_.welcomeMessage)
     notification = Message(from_author_uid=1, to_author_uid=user, topic=topic, content=content, is_inbox=True)
     DBDiscussionSession.add(notification)
     DBDiscussionSession.flush()
