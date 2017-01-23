@@ -4,7 +4,7 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, VoteArgument, VoteStatement, StatementSeenBy, ArgumentSeenBy
-from dbas.helper.voting import add_seen_argument, add_seen_statement, add_vote_for_argument, add_vote_for_statement, clear_votes_of_user
+from dbas.helper.voting import add_seen_argument, add_seen_statement, add_vote_for_argument, add_vote_for_statement
 
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config, and_
@@ -164,36 +164,52 @@ class VotingHelperTest(unittest.TestCase):
 
         val = add_vote_for_argument(1, self.user.nickname)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user, 2, 1, 2, 1)
+        self.check_tables_of_user_for_n_rows(self.user, 2, 1, 0, 1)
 
         val = add_vote_for_argument(2, self.user.nickname)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user, 4, 2, 3, 2)
+        self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
 
-        db_votes1 = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid,
-                                                                        VoteArgument.is_up_vote == True)).all()
-        db_votes2 = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid,
-                                                                        VoteArgument.is_up_vote == False)).all()
-        self.assertEquals(len(db_votes1), 2)
-        self.assertEquals(len(db_votes2), 0)
-
-        db_votes1 = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == self.user.uid,
-                                                                         VoteStatement.is_up_vote == True)).all()
-        db_votes2 = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == self.user.uid,
-                                                                         VoteStatement.is_up_vote == False)).all()
-        self.assertEquals(len(db_votes1), 3)
-        self.assertEquals(len(db_votes2), 1)
+        db_votes_arg_pro = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid, VoteArgument.is_up_vote == True)).all()
+        db_votes_arg_con = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid, VoteArgument.is_up_vote == False)).all()
+        db_votes_sta_pro = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == self.user.uid, VoteStatement.is_up_vote == True)).all()
+        db_votes_sta_con = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == self.user.uid, VoteStatement.is_up_vote == False)).all()
+        self.assertEquals(len(db_votes_arg_pro), 2)
+        self.assertEquals(len(db_votes_arg_con), 0)
+        self.assertEquals(len(db_votes_sta_pro), 3)
+        self.assertEquals(len(db_votes_sta_con), 1)
 
         # double
         val = add_vote_for_argument(2, self.user.nickname)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user, 4, 2, 3, 2)
+        self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
+
+        db_votes_arg_pro = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid, VoteArgument.is_up_vote == True)).all()
+        db_votes_arg_con = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid, VoteArgument.is_up_vote == False)).all()
+        db_votes_sta_pro = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == self.user.uid, VoteStatement.is_up_vote == True)).all()
+        db_votes_sta_con = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == self.user.uid, VoteStatement.is_up_vote == False)).all()
+        self.assertEquals(len(db_votes_arg_pro), 2)
+        self.assertEquals(len(db_votes_arg_con), 0)
+        self.assertEquals(len(db_votes_sta_pro), 3)
+        self.assertEquals(len(db_votes_sta_con), 1)
 
         # vote for undercut
-        val = add_vote_for_argument(6, self.user.nickname)
+        val = add_vote_for_argument(18, self.user.nickname)
         self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user, 7, 4, 6, 4)
-        # TODO TEST UP AND DOWN VOTES
+        self.check_tables_of_user_for_n_rows(self.user, 5, 4, 0, 3)
+
+        db_votes_arg_pro = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid, VoteArgument.is_up_vote == True)).all()
+        db_votes_arg_con = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid, VoteArgument.is_up_vote == False)).all()
+        db_votes_arg_val = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid, VoteArgument.is_valid == True)).all()
+        db_votes_arg_nva = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.author_uid == self.user.uid, VoteArgument.is_valid == False)).all()
+        db_votes_sta_pro = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == self.user.uid, VoteStatement.is_up_vote == True)).all()
+        db_votes_sta_con = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid == self.user.uid, VoteStatement.is_up_vote == False)).all()
+        self.assertEquals(len(db_votes_arg_pro), 3)
+        self.assertEquals(len(db_votes_arg_con), 1)
+        self.assertEquals(len(db_votes_sta_pro), 4)
+        self.assertEquals(len(db_votes_sta_con), 1)
+        self.assertEquals(len(db_votes_arg_val), 2)
+        self.assertEquals(len(db_votes_arg_nva), 2)
 
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
@@ -208,13 +224,13 @@ class VotingHelperTest(unittest.TestCase):
 
     def check_tables_of_user_for_n_rows(self, user, count_of_vote_statement, count_of_vote_argument, count_of_seen_statements, count_of_seen_arguments):
         """
-        
-        :param user: 
-        :param count_of_vote_argument: 
-        :param count_of_vote_statement: 
-        :param count_of_seen_statements: 
-        :param count_of_seen_arguments: 
-        :return: 
+
+        :param user:
+        :param count_of_vote_argument:
+        :param count_of_vote_statement:
+        :param count_of_seen_statements:
+        :param count_of_seen_arguments:
+        :return:
         """
         db_vote_argument = DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user.uid).all()
         db_vote_statement = DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user.uid).all()
