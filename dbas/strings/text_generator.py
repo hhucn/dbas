@@ -112,10 +112,7 @@ def __get_user_msg_for_users_confrontation_response(db_argument, attack_type, pr
         return __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t)
 
     if attack_type == 'undercut':
-        return __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t)
-
-    if attack_type == 'overbid':
-        return __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t)
+        return __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, _t)
 
     if attack_type == 'rebut':
         return __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportive, _t)
@@ -133,7 +130,7 @@ def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _
     return '{}' + user_msg + '{}'
 
 
-def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t):
+def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, _t):
     tmp = None
     if db_argument.conclusion_uid is None and _t.get_lang() == 'de':
         # undercutting an undercut
@@ -143,20 +140,10 @@ def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion,
             tmp = _t.get(_.butThisDoesNotRejectArgument)
 
     if tmp is None:
-        tmp = _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
+        tmp = _t.get(_.butIDoNotBelieveArgumentFor) if db_argument.is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
     tmp = tmp.format(conclusion)
 
     return r + premise + '. {}' + tmp + '{}'
-
-
-def __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t):
-    user_msg = r + premise + ', '
-    user_msg += _t.get(_.andIDoBelieveCounterFor) if is_supportive else _t.get(_.andIDoBelieveArgument)
-    user_msg += ' ' + conclusion + '. '
-    user_msg += _t.get(_.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(
-        _.howeverIHaveEvenStrongerArgumentRejecting)
-    user_msg += ' ' + conclusion + '.'
-    return '{}' + user_msg + '{}'
 
 
 def __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportive, _t):
