@@ -67,6 +67,7 @@ full_version = version + 'b'
 project_name = name + ' ' + full_version
 
 auto_completion_url = 'http://localhost:5103'
+recommender_system_url = 'http://localhost:5104'
 
 
 def base_layout():

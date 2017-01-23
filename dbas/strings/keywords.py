@@ -551,9 +551,9 @@ class Keywords(Enum):
     strength = 'Strength'
     strong = 'strong'
 
-    strongerStatementForF = 'but she claims to have a stronger statement for '
-    strongerStatementForM = 'but he claims to have a stronger statement for '
-    strongerStatementForP = 'but they claim to have a stronger statement for '
+    strongerStatementF = 'but she claims to have a stronger statement for {}'
+    strongerStatementM = 'but he claims to have a stronger statement for {}'
+    strongerStatementP = 'but they claim to have a stronger statement for {}'
     accepting = 'accepting'
     rejecting = 'rejecting'
     strongerStatementEnd = '   '

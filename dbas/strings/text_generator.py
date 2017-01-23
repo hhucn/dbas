@@ -686,22 +686,16 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
     else:  # reply for premise group
         if is_okay:
-            confrontation_text = author + ' ' + b + _t.get(_.agreesThat)
-            confrontation_text += ' {}, '
-            confrontation_text += _t.get(_.strongerStatementForM) if gender is 'm' else _t.get(_.strongerStatementForF)
+            confrontation_text = author + ' ' + b + _t.get(_.agreesThat) + ' {}. '
+            confrontation_text += _t.get(_.strongerStatementM) if gender is 'm' else _t.get(_.strongerStatementF)
         else:
-            confrontation_text = b + _t.get(_.otherParticipantsDontHaveOpinion)
-            confrontation_text += ' {}, '
-            confrontation_text += _t.get(_.strongerStatementForP)
+            confrontation_text = b + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. '
+            confrontation_text += _t.get(_.strongerStatementP)
 
-        confrontation_text = confrontation_text.format(premise) + e
-
-        confrontation_text += ' ' + start_argument
-        confrontation_text += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
-        confrontation_text += end_tag
-
-        if lang == 'de':
-            confrontation_text += ' ' + b + _t.get(_.of) + ': ' + e
+        tmp = start_argument
+        tmp += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
+        tmp += end_tag
+        confrontation_text = confrontation_text.format(premise, tmp) + e + ' '
 
         tmp = _t.get(_.strongerStatementEnd)
         if tmp == '':
