@@ -219,8 +219,65 @@ class VotingHelperTest(unittest.TestCase):
 
         :return:
         """
-        # self.clear_every_vote()
-        # self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
+        self.clear_every_vote()
+        self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
+
+        val = add_vote_for_statement([], 1100, True)
+        self.assertFalse(val)
+
+        val = add_vote_for_statement([], self.user.nickname, True)
+        self.assertFalse(val)
+
+        val = add_vote_for_statement([0], self.user.nickname, True)
+        self.assertFalse(val)
+
+        val = add_vote_for_statement([1], self.user.nickname, True)
+        self.assertFalse(val)
+
+        val = add_vote_for_statement(None, self.user.nickname, True)
+        self.assertFalse(val)
+
+        val = add_vote_for_statement('a', self.user.nickname, True)
+        self.assertFalse(val)
+
+        val = add_vote_for_statement(1, self.user.nickname + '#', True)
+        self.assertFalse(val)
+
+        val = add_vote_for_statement(0, 1, True)
+        self.assertFalse(val)
+
+        self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
+
+        val = add_vote_for_statement(1, self.user.nickname, True)
+        self.assertTrue(val)
+        self.check_tables_of_user_for_n_rows(self.user, 1, 0, 1, 0)
+
+        val = add_vote_for_statement(2, self.user.nickname, True)
+        self.assertTrue(val)
+        self.check_tables_of_user_for_n_rows(self.user, 2, 0, 2, 0)
+
+        # duplicate
+        val = add_vote_for_statement(2, self.user.nickname, True)
+        self.assertTrue(val)
+        self.check_tables_of_user_for_n_rows(self.user, 2, 0, 2, 0)
+
+        # opinion change
+        val = add_vote_for_statement(2, self.user.nickname, False)
+        self.assertTrue(val)
+        self.check_tables_of_user_for_n_rows(self.user, 3, 0, 2, 0)
+
+        # duplicate
+        val = add_vote_for_statement(2, self.user.nickname, False)
+        self.assertTrue(val)
+        self.check_tables_of_user_for_n_rows(self.user, 3, 0, 2, 0)
+
+        # opinion change
+        val = add_vote_for_statement(2, self.user.nickname, True)
+        self.assertTrue(val)
+        self.check_tables_of_user_for_n_rows(self.user, 4, 0, 2, 0)
+
+        self.clear_every_vote()
+        self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
     def check_tables_of_user_for_n_rows(self, user, count_of_vote_statement, count_of_vote_argument, count_of_seen_statements, count_of_seen_arguments):
         """

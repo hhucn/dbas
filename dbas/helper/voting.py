@@ -150,13 +150,13 @@ def add_vote_for_statement(statement_uid, nickname, supportive):
 
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if db_user:
-        __vote_statement(db_statement, db_user, supportive)
-        __statement_seen_by_user(db_user.uid, statement_uid)
-        transaction.commit()
-        return True
+    if not db_user or not db_statement:
+        return False
 
-    return False
+    __vote_statement(db_statement, db_user, supportive)
+    __statement_seen_by_user(db_user.uid, statement_uid)
+    transaction.commit()
+    return True
 
 
 def add_seen_statement(statement_uid, user_uid):
