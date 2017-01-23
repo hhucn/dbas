@@ -15,6 +15,7 @@ from dbas.strings.text_generator import tag_type, get_header_for_users_confronta
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from dbas.strings.text_generator import get_name_link_of_arguments_author
+from dbas.review.helper.queues import get_complete_review_count
 
 
 class DiscussionDictHelper(object):
@@ -319,7 +320,18 @@ class DiscussionDictHelper(object):
             tropy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
             mid_text = tropy + ' ' + _tn.get(_.congratulation) + ' ' + tropy + '<br>'
             mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
-            mid_text += _tn.get(_.discussionEndLinkTextLoggedIn) if nickname is not None else _tn.get(_.discussionEndLinkTextNotLoggedIn)
+
+            # do we have task in the queue?
+            if get_complete_review_count(nickname) > 0:
+                if nickname is not None:
+                    mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
+                else:
+                    mid_text += _tn.get(_.discussionEndLinkTextWithQueueNotLoggedIn)
+            else:
+                if nickname is not None:
+                    mid_text += _tn.get(_.discussionEndLinkTextLoggedIn)
+                else:
+                    mid_text += _tn.get(_.discussionEndLinkTextNotLoggedIn)
         else:
             premise, tmp     = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
             conclusion       = get_text_for_conclusion(db_argument)
