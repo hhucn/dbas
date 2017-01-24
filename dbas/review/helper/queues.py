@@ -43,6 +43,18 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     return review_list
 
 
+def get_complete_review_count(nickname):
+    """
+
+    :param nickname:
+    :return:
+    """
+    count1 = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
+    count2 = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
+    count3 = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname)
+    return count1 + count2 + count3
+
+
 def __get_delete_dict(main_page, translator, nickname):
     """
     Prepares dictionary for the a section.

@@ -24,7 +24,7 @@ function jmpToChapter() {
 	// jump to chapter-function
 	$('a[href^="#"]').on('click', function (e) {
 		try {
-			const href = $(this).attr('href');
+			var href = $(this).attr('href');
 			$('html, body').animate({
 				scrollTop: ($(href).offset().top - 100)
 			}, 'slow');
@@ -62,13 +62,13 @@ function goBackToTop() {
  * Display smiley as fallback on (connection) errors
  */
 function setGravatarFallback() {
-	const body = $('body');
-	const img = body.find('.img-circle');
+	var body = $('body');
+	var img = body.find('.img-circle');
 	if (img.length == 0)
 		return true;
 	
-	const src = body.find('.img-circle')[0].src;
-	const jqxhr = $.get(src, function() {
+	var src = body.find('.img-circle')[0].src;
+	var jqxhr = $.get(src, function() {
     	replace_gravtar_with_default_image(true);
     }).fail(function() {
     	replace_gravtar_with_default_image(false);
@@ -81,16 +81,16 @@ function setGravatarFallback() {
  */
 function replace_gravtar_with_default_image(only_on_error){
 	$('body').find('.img-circle').each(function (){
-		const icons =
+		var icons =
 			[  { 'name': 'faces', 'length': 98
 			}, { 'name': 'flat-smileys', 'length': 32
 			}, { 'name': 'human', 'length': 81
 			}, { 'name': 'lego', 'length': 10 }];
-		const t = 3;
-		const no = Math.floor(Math.random() * icons[t].length);
-		const src = mainpage + 'static/images/fallback-' + icons[t].name + '/' +  no + '.svg';
+		var t = 3;
+		var no = Math.floor(Math.random() * icons[t].length);
+		var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' +  no + '.svg';
 		
-		const width = $(this).width();
+		var width = $(this).width();
 		if (only_on_error)
 			$(this).attr('onerror', 'this.src="' + src + '"');
 		else
@@ -110,7 +110,7 @@ function replace_gravtar_with_default_image(only_on_error){
  */
 function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, small_dialog) {
 	// display dialog
-	const dialog = $('#' + popupConfirmDialogId);
+	var dialog = $('#' + popupConfirmDialogId);
 	if (small_dialog)
 		dialog.find('.modal-dialog').addClass('modal-sm');
 	dialog.modal('show');
@@ -189,7 +189,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  */
 function displayBubbleInformationDialog(){
 	if (!Cookies.get(BUBBLE_INFOS)){
-		const img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
+		var img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' .modal-dialog').attr('style', 'width: ' + ($(document).width() > 992? '430' : '200') + 'px;');
 		$('#' + popupConfirmDialogId + ' h4.modal-title').html('Introduction');
@@ -207,7 +207,7 @@ function displayBubbleInformationDialog(){
  * @param lang
  */
 function setPiwikOptOutLink(lang){
-	const src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
+	var src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
 	$('#piwik-opt-out-iframe').attr('src', src);
 }
 
@@ -218,7 +218,7 @@ function setEasterEggs(){
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
 	$('#logo_dbas,#logo_dbas_s').click(function(){
-		let counter = parseInt($(this).data('counter'));
+		var counter = parseInt($(this).data('counter'));
 		counter += 1;
 		if (counter == 7){
 			$(this).attr('src', mainpage + 'static/images/dabas.png');
@@ -252,7 +252,7 @@ function hideExtraViewsOfLoginPopup(){
  * Prepares the login popup
  */
 function prepareLoginRegistrationPopup(){
-	const popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
+	var popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
 	// hide on startup
 	hideExtraViewsOfLoginPopup();
 	popupLoginGeneratePasswordBody.hide();
@@ -262,7 +262,7 @@ function prepareLoginRegistrationPopup(){
 		e.preventDefault();
 		$(this).parent().addClass('active');
 		$(this).parent().siblings().removeClass('active');
-		const target = $(this).attr('href');
+		var target = $(this).attr('href');
 		$('.tab-content > div').not(target).hide();
 		$(target).fadeIn(600);
 
@@ -280,7 +280,7 @@ function prepareLoginRegistrationPopup(){
 	}).keypress(function(e) { if (e.which == 13) { new AjaxMainHandler().ajaxRegistration() } });
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
-		const body = $('#' + popupLoginForgotPasswordBody);
+		var body = $('#' + popupLoginForgotPasswordBody);
 		if (body.is(':visible')){
 			body.fadeOut();
 			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
@@ -315,16 +315,16 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonRegister).click(function(){
-		const userfirstname   = $('#' + popupLoginUserfirstnameInputId).val();
-		const userlastname    = $('#' + popupLoginUserlastnameInputId).val();
-		const nick            = $('#' + popupLoginNickInputId).val();
-		const email           = $('#' + popupLoginEmailInputId).val();
-		const password        = $('#' + popupLoginPasswordInputId).val();
-		const passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
-		let text = '';
-		let i;
-		const fields = [userfirstname, userlastname, nick, email, password, passwordconfirm];
-		const tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword),
+		var userfirstname   = $('#' + popupLoginUserfirstnameInputId).val();
+		var userlastname    = $('#' + popupLoginUserlastnameInputId).val();
+		var nick            = $('#' + popupLoginNickInputId).val();
+		var email           = $('#' + popupLoginEmailInputId).val();
+		var password        = $('#' + popupLoginPasswordInputId).val();
+		var passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
+		var text = '';
+		var i;
+		var fields = [userfirstname, userlastname, nick, email, password, passwordconfirm];
+		var tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword),
 				_t(checkConfirmation), _t(checkPasswordConfirm)];
 
 		// check all vields for obivously errors
@@ -366,18 +366,18 @@ function prepareLoginRegistrationPopup(){
  * @param element
  */
 function setTextWatcherInputLength(element){
-	const min_length = element.data('min-length');
-	let max_length = element.data('max-length');
+	var min_length = element.data('min-length');
+	var max_length = element.data('max-length');
 	if (!max_length)
 		max_length = 1000;
-	const id = element.attr('id') + '-text-counter';
-	const msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
-	const field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
+	var id = element.attr('id') + '-text-counter';
+	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
+	var field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
 	field.insertBefore(element);
 	
 	element.keyup(function(){
-		const text = element.val().trim();
-		const current_length = text.length;
+		var text = element.val().trim();
+		var current_length = text.length;
 		
 		if (current_length == 0){
 			field.addClass('text-info');
@@ -393,7 +393,7 @@ function setTextWatcherInputLength(element){
 			} else {
 				field.removeClass('text-danger');
 			}
-			const left = max_length < current_length ? 0 : max_length - current_length;
+			var left = max_length < current_length ? 0 : max_length - current_length;
 			field.text(left + ' ' + _t_discussion(textMaxCountMessage));
 			if (max_length <= current_length)
 				field.text(field.text() + ' ' + _t_discussion(textMaxCountMessageError));
@@ -462,7 +462,7 @@ function setGlobalInfoHandler(heading, body){
  * @param encodedString
  */
 function decodeString(encodedString){
-	// const textArea = document.createElement('textarea');
+	// var textArea = document.createElement('textarea');
     // textArea.innerHTML = encodedString;
     // return textArea.value;
 	return decodeURIComponent(encodedString);
@@ -479,7 +479,7 @@ function startGuidedTour(){
 	//displayBubbleInformationDialog();
 	
 	// function on start
-	const start_fct = function () {
+	var start_fct = function () {
 		tour.init(); // Initialize the tour
 		tour.restart(); // Start the tour
 		setLocalStorage(GUIDED_TOUR_RUNNING, true);
@@ -487,9 +487,9 @@ function startGuidedTour(){
 	};
 	
 	// function on end
-	const end_fct = function(){
+	var end_fct = function(){
 		setLocalStorage(GUIDED_TOUR_RUNNING, false);
-		const url = window.location.href;
+		var url = window.location.href;
 		Cookies.set(GUIDED_TOUR, true, { expires: 180 });
 		if (url != mainpage && url.indexOf('#tour2') == -1) {
 			// window.location.href = mainpage;
@@ -497,17 +497,17 @@ function startGuidedTour(){
 	};
 	
 	// lang switcher
-	let lang_switcher = '';
+	var lang_switcher = '';
 	if (getLanguage() == 'en'){
-		const de_flag = $('#' + translationLinkDe).find('img').attr('src');
+		var de_flag = $('#' + translationLinkDe).find('img').attr('src');
 		lang_switcher = '<a id="switch-to-de" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + de_flag + '" alt="flag_ge" style="width:25px;"></a>';
 	} else {
-		const en_flag = $('#' + translationLinkEn).find('img').attr('src');
+		var en_flag = $('#' + translationLinkEn).find('img').attr('src');
 		lang_switcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + en_flag + '" alt="flag_en" style="width:25px;"></a>';
 	}
 	
 	// override default template for i18n
-	const template =
+	var template =
     '<div class="popover tour">' +
 		'<div class="arrow"></div>' +
 		'<h3 class="popover-title"></h3>' +
@@ -522,52 +522,52 @@ function startGuidedTour(){
 	
 	
 	// steps
-	const welcome = {
+	var welcome = {
 		element: '#logo_dbas',
 		title: _t(tourWelcomeTitle) + lang_switcher,
 		content: _t(tourWelcomeContent),
 		placement: 'bottom',
 	};
-	const start_button = {
+	var start_button = {
 		element: '#start-discussion-button',
 		title: _t(tourStartButtonTitle) + lang_switcher,
 		content: _t(tourStartButtonContent),
 		placement: 'bottom',
 	};
-	const login_button = {
+	var login_button = {
 		element: '#login-link',
 		title: _t(tourLoginTitle),
 		content: _t(tourLoginContent),
 		placement: 'bottom',
 	};
-	const issue = {
+	var issue = {
 		element: '#header-container',
 		title: _t(tourIssueTitle),
 		content: _t(tourIssueContent),
 		placement: 'bottom',
 	};
-	const start_discussion = {
+	var start_discussion = {
 		element: '#dialog-speech-bubbles-space',
 		title: _t(tourStartDiscussionTitle) + lang_switcher,
 		content: _t(tourStartDiscussionContent),
 		placement: 'bottom',
 		path: '/discuss'
 	};
-	const choose_answer = {
+	var choose_answer = {
 		element: '#discussions-space-list',
 		title: _t(tourSelectAnswertTitle) + lang_switcher,
 		content: _t(tourSelectAnswertContent),
 		placement: 'bottom',
 		path: '/discuss'
 	};
-	const set_input = {
+	var set_input = {
 		element: '#discussions-space-list li:last-child',
 		title: _t(tourEnterStatementTitle) + lang_switcher,
 		content: _t(tourEnterStatementContent),
 		placement: 'bottom',
 		path: '/discuss'
 	};
-	const have_fun = {
+	var have_fun = {
 		element: '.jumbotron',
 		title: _t(tourHaveFunTitle) + lang_switcher,
 		content: _t(tourHaveFunContent),
@@ -576,7 +576,7 @@ function startGuidedTour(){
 	};
 	
 	//data-placement="bottom"
-	const tour = new Tour({
+	var tour = new Tour({
 		steps: [
 			welcome,
 			start_button,
@@ -594,36 +594,36 @@ function startGuidedTour(){
 	});
 	
 	// click function for lang switch
-	const set_lang_click = function () {
+	var set_lang_click = function () {
 		setTimeout(function () {
 			// language switch
-			const switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
-			const lang = getLanguage() == 'en' ? 'de' : 'en';
+			var switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
+			var lang = getLanguage() == 'en' ? 'de' : 'en';
 			switcher.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang) });
 			switcher.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang) });
 		}, 500);
 	};
 	
 	// params
-	const url = window.location.href;
-	const part0 = url == mainpage || url == location.origin;
-	const part1 = url.indexOf('/discuss') != -1;
-	const part2 = url == mainpage + '#tour2' || url == location.origin + '#tour2';
+	var url = window.location.href;
+	var part0 = url == mainpage || url == location.origin;
+	var part1 = url.indexOf('/discuss') != -1;
+	var part2 = url == mainpage + '#tour2' || url == location.origin + '#tour2';
 	
 	// decision where we are
 	if (part0 && !part1 && !part2){ // first part on the start page, where we ask the user for a tour
 		// build dialog
-		const title = _t(tourWelcomeTitle);
-		const text = _t(welcomeDialogBody) + lang_switcher.replace('style="', 'style="display: none; ');
-		const dialog = $('#' + popupConfirmDialogId);
+		var title = _t(tourWelcomeTitle);
+		var text = _t(welcomeDialogBody) + lang_switcher.replace('style="', 'style="display: none; ');
+		var dialog = $('#' + popupConfirmDialogId);
 		dialog.on('shown.bs.modal', function (){
-			const switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
+			var switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
 			switcher.detach();
 			switcher.removeClass('pull-right').addClass('pull-left');
 			switcher.insertBefore($('#' + popupConfirmDialogAcceptBtn)).show();
 		});
 		dialog.on('hide.bs.modal', function (){
-			const switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
+			var switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
 			switcher.remove();
 		});
 		displayConfirmationDialog(title, text, start_fct, end_fct, false);
@@ -652,7 +652,7 @@ function startGuidedTour(){
  */
 function callbackIfDoneForLogin(data, showGlobalError){
 	try {
-		const parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		
 		if (parsedData.error.length != 0) {
 			if (showGlobalError) {
@@ -668,7 +668,7 @@ function callbackIfDoneForLogin(data, showGlobalError){
 	} catch(err){
 		console.log('ERROR');
 		//console.log(err);
-		let url = location.href;
+		var url = location.href;
 		if (url.indexOf('?session_expired=true') != -1)
 			url = url.substr(0, url.length - '?session_expired=true'.length);
 		location.href = url;
@@ -681,10 +681,10 @@ function callbackIfDoneForLogin(data, showGlobalError){
  * @param data
  */
 function callbackIfDoneForRegistration(data){
-	const parsedData = $.parseJSON(data);
-	const success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
-	const failed = $('#' + popupLoginRegistrationFailed);
-	const info = $('#' + popupLoginRegistrationInfo);
+	var parsedData = $.parseJSON(data);
+	var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
+	var failed = $('#' + popupLoginRegistrationFailed);
+	var info = $('#' + popupLoginRegistrationInfo);
 	success.hide();
 	failed.hide();
 	info.hide();
@@ -711,10 +711,10 @@ function callbackIfDoneForRegistration(data){
  * @param data
  */
 function callbackIfDoneForPasswordRequest(data){
-	const parsedData = $.parseJSON(data);
-	const success = $('#' + popupLoginSuccess);
-	const failed = $('#' + popupLoginFailed);
-	const info = $('#' + popupLoginInfo);
+	var parsedData = $.parseJSON(data);
+	var success = $('#' + popupLoginSuccess);
+	var failed = $('#' + popupLoginFailed);
+	var info = $('#' + popupLoginInfo);
 	success.hide();
 	failed.hide();
 	info.hide();
@@ -739,8 +739,8 @@ function callbackIfDoneForPasswordRequest(data){
 // *********************
 $(document).ready(function () {
 	'use strict';
-	const path = window.location.href;
-	const lang = $('#hidden_language').val();
+	var path = window.location.href;
+	var lang = $('#hidden_language').val();
 
 	jmpToChapter();
 	goBackToTop();

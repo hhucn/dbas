@@ -49,6 +49,7 @@ refresh:
 
 fieldtest: users db
 	init_field_test_sql development.ini
+	initialize_news_sql development.ini
 
 minimal_db: users db
 	init_empty_sql development.ini

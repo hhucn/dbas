@@ -31,8 +31,7 @@
                     </div>
                     <div class="panel-body" style="text-align: justify;">
                         <h6>
-                            <span id="news_' + no + '_author">${n.author}</span>
-                            <span id="news_' + no + '_date">${n.date}</span>
+                            <span id="news_' + no + '_author">${n.author}</span>, <span id="news_' + no + '_date">${n.date}</span>
                         </h6>
                         <span style="margin-top: 1em;">${structure:n.news}</span>
                     </div>

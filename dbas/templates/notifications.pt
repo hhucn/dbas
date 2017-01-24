@@ -49,7 +49,7 @@
                                                 <span i18n:translate="from">From:</span>
                                                 <a href="#" tal:attributes="href msg.from_author_url" target="_blank" class="from_author_value">
                                                     ${msg.from_author}
-                                                    <img src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src msg.from_author_avatar">
+                                                    <img class="img-circle"  src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src msg.from_author_avatar">
                                                 </a>
                                                 <a href="#" class="answer-notification btn btn-primary btn-xs" i18n:translate="answer">answer</a>
                                             </div>

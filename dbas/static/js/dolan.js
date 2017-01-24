@@ -6,10 +6,10 @@
 "use strict";
 
 function dolan_translate(dictionary, inputText) {
-    let translatedText;
-    let replacement;
-    let key;
-    let regex;
+    var translatedText;
+    var replacement;
+    var key;
+    var regex;
 
     translatedText = inputText;
 
@@ -22,7 +22,7 @@ function dolan_translate(dictionary, inputText) {
     return translatedText;
 }
 
-const dolan_dictionary = {
+var dolan_dictionary = {
     "about":               ["abt", "abot"],
     "above":               ["aboev"],
     "accept":              ["acept"],

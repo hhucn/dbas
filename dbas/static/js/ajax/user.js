@@ -8,7 +8,7 @@ function AjaxUserHandler(){
 	 * Ajax call for user data
 	 */
 	this.getPublicUserData = function () {
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_public_user_data',
 			method: 'GET',
