@@ -27,12 +27,14 @@ function DiscussionGraph() {
     var node_id_prefix = 'node_'; // needed for rescaling
     var old_scale = 1.0; // needed for rescaling
     var statement_size = 6; // base node size of an statement
-    var other_size = 9; // base node size
-    var issue_size = 10; // node size of the issue
     var node_factor_size = 10; // additional size for the doj, which is in [0,1]
     var rel_node_factor;
     var currentColorOfCircle;
     var selectedCircleId;
+    var node_size = 6;
+    var issue_size = 8;
+    var edge_size = 90;
+    var edge_size_on_virtual_nodes = 45;
 
     /**
      * Displays a graph of current discussion
@@ -431,7 +433,7 @@ function DiscussionGraph() {
                 target: targetNode,
                 color: color,
                 edge_type: e.edge_type,
-                size: e.size,
+                size: edge_size,
                 id: e.id,
                 is_attacking: e.is_attacking,
                 target_edge: e.target_edge,
@@ -569,11 +571,13 @@ function DiscussionGraph() {
         if (node.id.indexOf('statement_') != -1) {
             var id = node.id.replace('statement_', '');
             if (id in rel_node_factor)
-                return node.size + node_factor_size * rel_node_factor[id];
+                return node_size + node_factor_size * rel_node_factor[id];
             else
-                return node.size;
+                return node_size;
         }
-        return node.size;
+        if (node.id.indexOf('argument_') != -1)
+            return 0;
+        return issue_size;
     }
 
     /**
