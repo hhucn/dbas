@@ -426,7 +426,6 @@ class ItemDictHelper(object):
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, argument_uid_sys, mode, db_user_argument, db_sys_argument)
-            logger('X', 'X', url)
             # TODO PREVENT LOOPING
             # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
             # additionalText = (' (<em>' + _tn.get(_.youUsedThisEarlier) + '<em>)') if newStepInUrl in url[url.index('?'):] else ''
@@ -491,11 +490,8 @@ class ItemDictHelper(object):
             # undercut for the users argument therefore now the users opinion is the new undercut (e.g. rebut)
             # because he supported it!
             url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
-            logger('X', 'Y', url)
-            logger('X', 'Y', str(arg_id_sys) + ' ' + str(db_sys_argument.argument_uid) + ' ' + str(db_sys_argument.uid))
         else:
             url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
-            logger('X', 'Z', url)
         return url
 
     @staticmethod
