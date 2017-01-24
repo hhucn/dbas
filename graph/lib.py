@@ -258,10 +258,10 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_size_on_virtual_nod
             else:  # second-order
                 db_targets_target = DBDiscussionSession.query(Argument).get(db_target.argument_uid)
 
-                logger('X', '2nd order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_targets_target.uid))
+                logger('X', '2nd order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_targets_target.conclusion_uid))
                 logger('X', '2nd order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
 
-                conclusion_uids_dict[db_undercut.uid] = db_targets_target.uid
+                conclusion_uids_dict[db_undercut.uid] = db_targets_target.conclusion_uid
                 edge_target_dict[db_undercut.uid] = db_target.uid
 
     for argument in db_arguments:
