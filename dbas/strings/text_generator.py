@@ -60,7 +60,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     return ret_text + ', ' + _t.get(_.because).lower() + '...'
 
 
-def get_header_for_users_confrontation_response(db_argument, lang, premise, attack_type, conclusion, start_lower_case, is_supportive, is_logged_in):
+def get_header_for_users_confrontation_response(db_argument, lang, premise, attack_type, conclusion, start_lower_case, is_supportive, is_logged_in, redirect_from_jump=False):
     """
     Based on the users reaction, text will be build. This text can be used for the speech bubbles where users
     justify an argument they have chosen.
@@ -72,6 +72,7 @@ def get_header_for_users_confrontation_response(db_argument, lang, premise, atta
     :param start_lower_case: boolean
     :param is_supportive: boolean
     :param is_logged_in: boolean
+    :param redirect_from_jump: boolean
     :return: string
     """
     _t = Translator(lang)
@@ -91,6 +92,9 @@ def get_header_for_users_confrontation_response(db_argument, lang, premise, atta
     if lang == 'de':
         r += _t.get(_.itIsTrueThat)[0:1].lower() + _t.get(_.itIsTrueThat)[1:] + ' '
         f = _t.get(_.wrong) + ', ' + _t.get(_.itIsFalseThat)[0:1].lower() + _t.get(_.itIsFalseThat)[1:] + ' '
+
+    if redirect_from_jump:
+        r = _t.get(_.maybeItIsTrueThat) + ' '
 
     # different cases
     user_msg = __get_user_msg_for_users_confrontation_response(db_argument, attack_type, premise, conclusion, f, t, r, is_supportive, _t)
@@ -365,7 +369,7 @@ def get_jump_to_argument_text_list(lang):
     answers.append(_t.get(_.jumpAnswer1).format(conclusion, premise))
     answers.append(_t.get(_.jumpAnswer2).format(conclusion, premise))
     answers.append(_t.get(_.jumpAnswer3).format(conclusion, premise))
-    answers.append(_t.get(_.jumpAnswer4).format(conclusion))
+    answers.append(_t.get(_.jumpAnswer4).format(premise))
 
     return answers
 

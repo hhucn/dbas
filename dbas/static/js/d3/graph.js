@@ -153,7 +153,7 @@ function DiscussionGraph() {
         var height = container.outerHeight() - offset;
 
         var svg = getGraphSvg(width, height);
-        var force = getForce(width, height + 100);
+        var force = getForce(width, height);
 
         // zoom and pan
         zoomAndPan();
@@ -303,13 +303,13 @@ function DiscussionGraph() {
     function getForce(width, height) {
         return d3.layout.force()
             .size([width, height])
-            // pull nodes toward layout center
-            .gravity(0.11)
             // nodes push each other away
-            .charge(-350)
+            .charge(-500)
             .linkDistance(function (d) {
-                return d.size;
-            });
+                  return d.size;
+            })
+            // modify linkDistance
+            .linkStrength(0.7);
     }
 
     /**
@@ -686,7 +686,7 @@ function DiscussionGraph() {
      * @param edges
      */
     function addListenerForBackgroundOfNodes(edges) {
-        $(document).on("click", function (d) {
+        $('#graph-svg').on("click", function (d) {
             if (d.target.id.indexOf("circle") === -1) {
                 highlightAllElements(edges);
             }
@@ -808,7 +808,7 @@ function DiscussionGraph() {
             showPath(jsonData, edges);
         });
         $('#hide-my-path').click(function () {
-            hidePath();
+            hidePath(edges);
         });
         $('#show-my-statements').click(function () {
             showMyStatements(edges, force);
@@ -902,21 +902,87 @@ function DiscussionGraph() {
         $('#hide-positions').hide();
     }
 
-    function showPath(jsonData, edges){
+    /**
+     * Show current path.
+     *
+     * @param jsonData
+     * @param edges
+     */
+    function showPath(jsonData, edges) {
         $('#show-my-path').hide();
         $('#hide-my-path').show();
-        var edgesCircleId = [];
+
         edges.forEach(function (d) {
             grayingElements(d);
         });
+
+        // if jsonData.path is not empty highlight path
+        if(jsonData.path.length != 0) {
+            highlightPath(jsonData);
+        }
+        // if jsonData.path is empty color issue
+        else{
+            d3.select('#circle-issue').attr('fill', grey);
+        }
+    }
+
+    /**
+     * Highlight path.
+     *
+     * @param jsonData
+     * @param edges
+     */
+    function highlightPath(jsonData, edges) {
+        let edgesCircleId = [];
+        // run through all values in jsonData.path
+        jsonData.path.forEach(function (d) {
+            // arrays in jsonData.path
+            d.forEach(function (e) {
+                // find edge with statement in jsonData.path as source
+                edges.forEach(function (edge) {
+                    if (edge.source.id === "statement_" + e) {
+                        edgesCircleId.push(edge);
+                        // find virtual nodes
+                        testVirtualNode();
+                    }
+                });
+            });
+        });
+
+        // highlight path
         edgesCircleId.forEach(function (d) {
             highlightElements(d);
         });
     }
 
-    function hidePath() {
+    /**
+     * Test if target of edge is a virtual node.
+     *
+     * @param edges
+     * @param edge
+     */
+    function testVirtualNode(edges, edge, edgeCircleId) {
+        if(edge.target.label === '') {
+            edges.forEach(function (e) {
+                // color edge if source of edge is an virtual nod
+                if (edge.target.id === e.source.id) {
+                    edgeCircleId.push(e);
+                }
+            });
+        }
+    }
+
+    /**
+     * Hide current path.
+     *
+     * @param edges
+     */
+    function hidePath(edges) {
         $('#show-my-path').show();
         $('#hide-my-path').hide();
+        edges.forEach(function (d) {
+            highlightElements(d);
+        });
     }
 
     /**
@@ -938,7 +1004,7 @@ function DiscussionGraph() {
         force.nodes().forEach(function (d) {
             if (d.author.name === $('#header_nickname')[0].innerText) {
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
-                showPartOfGraph(edges, d.id);
+                showAttacksSupports(edges, d.id);
             }
         });
 
@@ -1011,7 +1077,7 @@ function DiscussionGraph() {
         force.nodes().forEach(function (d) {
             if (d.author.name === $('#header_nickname')[0].innerText) {
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
-                showPartOfGraph(edges, d.id);
+                showAttacksSupports(edges, d.id);
             }
         });
         $('#show-supports-on-my-statements').hide();
@@ -1068,7 +1134,7 @@ function DiscussionGraph() {
         force.nodes().forEach(function (d) {
             if (d.author.name === $('#header_nickname')[0].innerText) {
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
-                showPartOfGraph(edges, d.id);
+                showAttacksSupports(edges, d.id);
             }
         });
         $('#show-attacks-on-my-statements').hide();
@@ -1226,6 +1292,48 @@ function DiscussionGraph() {
      * @param edges: all edges of graph
      * @param circleId: id of selected node
      */
+    function showAttacksSupports(edges, circleId) {
+        // edges with selected statement as target
+        let edgesCircleId = [];
+        let circleUid = selectUid(circleId);
+
+        // edge with circleUid as source
+        let edge;
+        edges.forEach(function (e) {
+            if(e.target.id === circleUid){
+                // if supports and attacks is clicked
+                if(isSupportVisible && isAttackVisible){
+                    edgesCircleId.push(e);
+                    findVirtualNodes(edges, edgesCircleId, e);
+                }
+                // if attacks is clicked
+                else if(isAttackVisible && (e.color === red)){
+                    if(!(e.is_undercut == true)){
+                        edgesCircleId.push(e);
+                    }
+                    findUndercutsForEdge(edges, edgesCircleId, e);
+                    findVirtualNodes(edges, edgesCircleId, e);
+                }
+                // if supports is clicked
+                else if(isSupportVisible && (e.color === green)){
+                    edgesCircleId.push(e);
+                    findVirtualNodes(edges, edgesCircleId, e);
+                }
+            }
+        });
+
+        // highlight incoming edges
+        edgesCircleId.forEach(function (d) {
+            highlightElements(d);
+        });
+    }
+
+    /**
+     * Highlight incoming and outgoing edges of selected node.
+     *
+     * @param edges: all edges of graph
+     * @param circleId: id of selected node
+     */
     function showPartOfGraph(edges, circleId) {
         // edges with selected circle as source or as target
         var edgesCircleId = [];
@@ -1357,11 +1465,15 @@ function DiscussionGraph() {
             edges.forEach(function (e) {
                 // source of edge is virtual node or target of edge is virtual node
                 if (((e.source.id === edge.target.id) || (e.target.id === edge.target.id)) && (edge.target.label === '')) {
-                    findUndercutsForEdge(edges, edgesCircleId, e);
+                    if(!isSupportVisible){
+                        findUndercutsForEdge(edges, edgesCircleId, e);
+                    }
                     edgesCircleId.push(e);
                 }
                 if ((e.source.id === edge.source.id) || (e.target.id === edge.source.id) && (edge.source.label === '')) {
-                    findUndercutsForEdge(edges, edgesCircleId, e);
+                    if(!isSupportVisible){
+                        findUndercutsForEdge(edges, edgesCircleId, e);
+                    }
                     edgesCircleId.push(e);
                 }
             });

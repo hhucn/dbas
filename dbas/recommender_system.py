@@ -90,7 +90,9 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
     if history:
         history = history.split('-')
         redirected_from_jump = 'jump' in history[-2 if len(history) > 1 else -1]
+
     # TODO COMMA16 Special Case (forbid: undercuts of undercuts)
+    # one URL for testing: /discuss/cat-or-dog/reaction/12/undercut/13?history=/attitude/2-/justify/2/t
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     is_current_arg_undercut = db_argument.argument_uid is not None
     tmp = restriction_on_attacks if restriction_on_attacks else ''

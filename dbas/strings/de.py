@@ -339,6 +339,7 @@ de_lang = {
     _.islandViewHeaderText: 'Dies sind alle Argumente für: ',
     _.irrelevant: 'Irrelevant',
     _.itIsTrueThat: 'ich akzeptiere, dass',
+    _.maybeItIsTrueThat: 'Vielleicht stimmt es, dass',
     _.itIsTrueThatAnonymous: 'Es ist richtig, dass',
     _.itIsTrue1: 'ich akzeptiere',
     _.itIsTrue2: '',

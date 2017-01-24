@@ -223,7 +223,8 @@ class DiscussionDictHelper(object):
         while conclusion.endswith(('.', '?', '!')):
             conclusion = premise[:-1]
 
-        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
+        redirect_from_jump = 'jump/' in self.history.split('-')[-1]
+        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise, attack, conclusion, False, is_supportive, self.nickname, redirect_from_jump=redirect_from_jump)
 
         if attack == 'undermine':
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack, conclusion, db_argument.is_supportive)
@@ -308,89 +309,27 @@ class DiscussionDictHelper(object):
         bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, nickname, self. lang, self.main_page, self.slug)
         add_premise_text    = ''
         save_statement_url  = 'ajax_set_new_start_statement'
-        mid_text            = ''
         bubble_mid          = ''
         splitted_history    = HistoryHelper.get_splitted_history(self.history)
         user_changed_opinion = splitted_history[-1].endswith(str(uid))
         statement_list      = list()
-        db_confrontation    = ''
         db_argument         = DBDiscussionSession.query(Argument).get(uid)
         gender_of_counter_arg = ''
 
         if attack.startswith('end'):
-            #  user_text        = _tn.get(_.soYourOpinionIsThat) + ': '
-            text             = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion, minimize_on_undercut=True)
-            user_text        = text[0:1].upper() + text[1:]
-            sys_text = (_tn.get(_.otherParticipantsDontHaveCounterForThat) + '.') if attack == 'end' else _tn.get(
-                _.otherParticipantsDontHaveNewCounterForThat)
-            tropy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
-            mid_text = tropy + ' ' + _tn.get(_.congratulation) + ' ' + tropy + '<br>'
-            mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
-
-            # do we have task in the queue?
-            if get_complete_review_count(nickname) > 0:
-                if nickname is not None:
-                    mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
-                else:
-                    mid_text += _tn.get(_.discussionEndLinkTextWithQueueNotLoggedIn)
-            else:
-                if nickname is not None:
-                    mid_text += _tn.get(_.discussionEndLinkTextLoggedIn)
-                else:
-                    mid_text += _tn.get(_.discussionEndLinkTextNotLoggedIn)
-        else:
-            premise, tmp     = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-            conclusion       = get_text_for_conclusion(db_argument)
-            db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
-            confr, tmp       = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
-            sys_conclusion   = get_text_for_conclusion(db_confrontation)
-            if attack == 'undermine':
-                if db_confrontation.conclusion_uid != 0:
-                    premise = get_text_for_statement_uid(db_confrontation.conclusion_uid)
-                else:
-                    premise = get_text_for_argument_uid(db_confrontation.argument_uid, True, colored_position=True, attack_type=attack)
-
-            # did the user changed his opinion?
-            history = HistoryHelper.get_splitted_history(history)
-            user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
-
-            # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
-            conclusion_uid     = db_argument.conclusion_uid
-            tmp_arg = db_argument
-            while not conclusion_uid:
-                tmp_arg = DBDiscussionSession.query(Argument).get(tmp_arg.argument_uid)
-                conclusion_uid = tmp_arg.conclusion_uid
-
-            db_statement       = DBDiscussionSession.query(Statement).get(conclusion_uid)
-            reply_for_argument = not (db_statement and db_statement.is_startpoint)
-            current_argument   = get_text_for_argument_uid(uid, with_html_tag=True, colored_position=True,
-                                                           user_changed_opinion=user_changed_opinion, attack_type=attack,
-                                                           minimize_on_undercut=True)
-
-            current_argument = current_argument[0:1].upper() + current_argument[1:]
-            if self.lang != 'de':
-                premise = premise[0:1].lower() + premise[1:]
-
-            # check for support and build text
-            user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
-            user_text += current_argument if current_argument != '' else premise
-
-            sys_text, gender = get_text_for_confrontation(self.main_page, self.lang, nickname, premise, conclusion, sys_conclusion,
-                                                          is_supportive, attack, confr, reply_for_argument,
-                                                          not db_argument.is_supportive, db_argument, db_confrontation)
-            gender_of_counter_arg = gender
-
-        bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
-                                               is_supportive=is_supportive, lang=self.lang, nickname=nickname)
-        if attack.startswith('end'):
+            user_text, mid_text, sys_text = self.__get_dict_for_argumentation_end(uid, user_changed_opinion, nickname, attack, _tn)
             bubble_sys  = create_speechbubble_dict(is_system=True, message=sys_text, omit_url=True, lang=self.lang)
             bubble_mid  = create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
         else:
-            uid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
-            bubble_sys  = create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True,
+            user_text, sys_text, gender_of_counter_arg, db_confrontation = self.__get_dict_for_argumentation(db_argument, additional_uid, history, attack, nickname, is_supportive, _tn)
+            quid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
+            bubble_sys  = create_speechbubble_dict(is_system=True, uid=quid, message=sys_text, omit_url=True,
                                                    lang=self.lang, is_flagable=True,
                                                    is_author=is_author_of_argument(nickname, db_confrontation.uid))
             statement_list = self.__get_all_statement_by_argument(db_confrontation)
+
+        bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid,
+                                               is_supportive=is_supportive, lang=self.lang, nickname=nickname)
 
         # dirty fixes
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
@@ -409,6 +348,74 @@ class DiscussionDictHelper(object):
                 'mode': '',
                 'extras': statement_list,
                 'gender': gender_of_counter_arg}
+
+    def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, nickname, attack, _tn):
+        #  user_text        = _tn.get(_.soYourOpinionIsThat) + ': '
+        text             = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion, minimize_on_undercut=True)
+        user_text        = text[0:1].upper() + text[1:]
+        sys_text = (_tn.get(_.otherParticipantsDontHaveCounterForThat) + '.') if attack == 'end' else _tn.get(
+            _.otherParticipantsDontHaveNewCounterForThat)
+        tropy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
+        mid_text = tropy + ' ' + _tn.get(_.congratulation) + ' ' + tropy + '<br>'
+        mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
+
+        # do we have task in the queue?
+        if get_complete_review_count(nickname) > 0:
+            if nickname is not None:
+                mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
+            else:
+                mid_text += _tn.get(_.discussionEndLinkTextWithQueueNotLoggedIn)
+        else:
+            if nickname is not None:
+                mid_text += _tn.get(_.discussionEndLinkTextLoggedIn)
+            else:
+                mid_text += _tn.get(_.discussionEndLinkTextNotLoggedIn)
+
+        return user_text, mid_text, sys_text
+
+    def __get_dict_for_argumentation(self, db_argument, additional_uid, history, attack, nickname, is_supportive, _tn):
+        premise, tmp     = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        conclusion       = get_text_for_conclusion(db_argument)
+        db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
+        confr, tmp       = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
+        sys_conclusion   = get_text_for_conclusion(db_confrontation)
+        if attack == 'undermine':
+            if db_confrontation.conclusion_uid != 0:
+                premise = get_text_for_statement_uid(db_confrontation.conclusion_uid)
+            else:
+                premise = get_text_for_argument_uid(db_confrontation.argument_uid, True, colored_position=True, attack_type=attack)
+
+        # did the user changed his opinion?
+        history = HistoryHelper.get_splitted_history(history)
+        user_changed_opinion = len(history) > 1 and '/undercut/' in history[-2]
+
+        # argumentation is a reply for an argument, if the arguments conclusion of the user is no position
+        conclusion_uid     = db_argument.conclusion_uid
+        tmp_arg = db_argument
+        while not conclusion_uid:
+            tmp_arg = DBDiscussionSession.query(Argument).get(tmp_arg.argument_uid)
+            conclusion_uid = tmp_arg.conclusion_uid
+
+        db_statement       = DBDiscussionSession.query(Statement).get(conclusion_uid)
+        reply_for_argument = not (db_statement and db_statement.is_startpoint)
+        current_argument   = get_text_for_argument_uid(db_argument.uid, with_html_tag=True, colored_position=True,
+                                                       user_changed_opinion=user_changed_opinion, attack_type=attack,
+                                                       minimize_on_undercut=True)
+
+        current_argument = current_argument[0:1].upper() + current_argument[1:]
+        if self.lang != 'de':
+            premise = premise[0:1].lower() + premise[1:]
+
+        # check for support and build text
+        user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
+        user_text += current_argument if current_argument != '' else premise
+
+        sys_text, gender = get_text_for_confrontation(self.main_page, self.lang, nickname, premise, conclusion, sys_conclusion,
+                                                      is_supportive, attack, confr, reply_for_argument,
+                                                      not db_argument.is_supportive, db_argument, db_confrontation)
+        gender_of_counter_arg = gender
+
+        return user_text, sys_text, gender_of_counter_arg, db_confrontation
 
     def get_dict_for_jump(self, uid):
         """

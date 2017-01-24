@@ -10,7 +10,6 @@ import random
 import sys
 
 import arrow
-import dbas.handler.password as password_handler
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
@@ -23,6 +22,7 @@ from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
+from dbas.handler.password import get_hashed_password
 
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
@@ -122,8 +122,8 @@ def blank_file(argv=sys.argv):
         DBDiscussionSession.flush()
 
         # adding some dummy users
-        pw0 = password_handler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-        pw1 = password_handler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
+        pw0 = get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+        pw1 = get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
 
         user0 = User(firstname=nick_of_anonymous_user,
                      surname=nick_of_anonymous_user,
@@ -583,14 +583,14 @@ def set_up_users(session, include_dummy_users=True):
     session.flush()
 
     # adding some dummy users
-    pwt = password_handler.get_hashed_password('iamatestuser2016')
-    pw0 = password_handler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-    pw1 = password_handler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
-    pw2 = password_handler.get_hashed_password('tobias89#')
-    pw3 = password_handler.get_hashed_password('martin')
-    pw4 = password_handler.get_hashed_password('christian')
-    pw8 = password_handler.get_hashed_password('bjoern')
-    pw9 = password_handler.get_hashed_password('teresa')
+    pwt = get_hashed_password('iamatestuser2016')
+    pw0 = get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
+    pw1 = get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
+    pw2 = get_hashed_password('tobias89#')
+    pw3 = get_hashed_password('martin')
+    pw4 = get_hashed_password('christian')
+    pw8 = get_hashed_password('bjoern')
+    pw9 = get_hashed_password('teresa')
 
     user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user, email='', password=pw0, group_uid=group2.uid, gender='m')
     user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1, group_uid=group0.uid, gender='m')
