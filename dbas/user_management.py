@@ -590,7 +590,7 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
         subject = _t.get(_.accountRegistration)
         body = _t.get(_.accountWasRegistered).format('"' + nickname + '"', email)
         email_helper.send_mail(request, subject, body, email, ui_locales)
-        send_welcome_notification(db_user.uid)
+        send_welcome_notification(db_user.uid, _t)
 
     else:
         logger('UserManagement', 'create_new_user', 'New data was not added')

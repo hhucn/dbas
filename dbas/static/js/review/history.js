@@ -5,9 +5,9 @@
 
 $(document).ready(function () {
 	$('.review-undo').click(function(){
-		let queue = $(this).data('queue');
-		let id = $(this).data('id');
-		let revoked_argument = $('#' + id).attr('title');
+		var queue = $(this).data('queue');
+		var id = $(this).data('id');
+		var revoked_argument = $('#' + id).attr('title');
 		new ReviewHistory().showUndoPopup(queue, id, revoked_argument);
 	})
 });
@@ -21,9 +21,9 @@ function ReviewHistory(){
 	 * @param revoked_argument
 	 */
 	this.showUndoPopup = function(queue, id, revoked_argument){
-		let span = '<span>' + _t(sureToDeleteReview) + '</span>';
-		let blockquote = '<blockquote><p>' + revoked_argument + '</p><small>' + _t(revokedArgument) + '</small>';
-		let icon = '<i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>';
+		var span = '<span>' + _t(sureToDeleteReview) + '</span>';
+		var blockquote = '<blockquote><p>' + revoked_argument + '</p><small>' + _t(revokedArgument) + '</small>';
+		var icon = '<i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>';
 		$('#' + popupConfirmDialogId).modal('show');
 		$('#' + popupConfirmDialogId + ' h4.modal-title').html(icon + ' ' + _t(caution));
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(span + blockquote);
@@ -49,7 +49,7 @@ function ReviewHistoryCallbacks(){
 	 * @param uid
 	 */
 	this.forUndoReview = function(jsonData, queue, uid){
-		let parsedData = $.parseJSON(jsonData);
+		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {

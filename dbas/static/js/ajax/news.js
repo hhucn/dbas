@@ -8,8 +8,8 @@ function AjaxNewsHandler(){
 	 *
 	 */
 	this.ajaxSendNews = function () {
-		const title = $('#' + writingNewNewsTitleId).val();
-		const text = $('#' + writingNewNewsTextId).val();
+		var title = $('#' + writingNewNewsTitleId).val();
+		var text = $('#' + writingNewNewsTextId).val();
 
 		if (title.length == 0 || text.length < 10) {
 			$('#' + writingNewsFailedId).show();
@@ -26,7 +26,7 @@ function AjaxNewsHandler(){
 			$('#' + writingNewsSuccessId).hide();
 		}
 
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_send_news',
 			type: 'POST',

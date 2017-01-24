@@ -69,7 +69,7 @@ class ItemDictHelper(object):
 
         for statement in db_statements:
             if db_user and statement.uid in uids:  # add seen by if the statement is visible
-                add_seen_statement(statement.uid, db_user.uid)
+                add_seen_statement(statement.uid, db_user)
             statements_array.append(self.__create_answer_dict(statement.uid,
                                                               [{'title': get_text_for_statement_uid(statement.uid),
                                                                   'id': statement.uid}],
@@ -147,7 +147,7 @@ class ItemDictHelper(object):
 
         for argument in db_arguments:
                 if db_user and argument.uid in uids:  # add seen by if the statement is visible
-                    add_seen_argument(argument.uid, db_user.uid)
+                    add_seen_argument(argument.uid, db_user)
 
                 # get all premises in the premisegroup of this argument
                 db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
@@ -206,7 +206,7 @@ class ItemDictHelper(object):
 
         for argument in db_arguments:
             if db_user:  # add seen by if the statement is visible
-                add_seen_argument(argument_uid, db_user.uid)
+                add_seen_argument(argument_uid, db_user)
             # get all premises in this group
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
             premises_array = []
@@ -308,7 +308,7 @@ class ItemDictHelper(object):
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         if db_user:  # add seen by if the statement is visible
-            add_seen_argument(argument_uid, db_user.uid)
+            add_seen_argument(argument_uid, db_user)
 
         rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, False, False, is_dont_know=True, gender=gender)
         current_mode = 't' if is_supportive else 'f'
@@ -584,7 +584,7 @@ class ItemDictHelper(object):
                 text = get_text_for_statement_uid(premise.statement_uid)
                 premise_array.append({'title': text, 'id': premise.statement_uid})
                 if db_user:  # add seen by if the statement is visible
-                    add_seen_statement(premise.statement_uid, db_user.uid)
+                    add_seen_statement(premise.statement_uid, db_user)
 
             # get attack for each premise, so the urls will be unique
             logger('ItemDictHelper', 'get_array_for_choosing', 'premisesgroup_uid: ' + str(group_id) +

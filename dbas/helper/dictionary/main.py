@@ -22,6 +22,7 @@ from dbas.strings.text_generator import get_relation_text_dict_with_substitution
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from dbas.review.helper.reputation import get_reputation_of
+from dbas.review.helper.queues import get_complete_review_count
 
 
 class DictionaryHelper(object):
@@ -137,6 +138,7 @@ class DictionaryHelper(object):
         return_dict['use_with_ldap']                 = is_ldap
         return_dict['is_development']                = rrs['mode'] == 'development' if 'mode' in rrs else ''
         return_dict['is_production']                 = rrs['mode'] == 'production' if 'mode' in rrs else ''
+        return_dict['review_count']                  = get_complete_review_count(nickname)
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:
@@ -357,11 +359,11 @@ class DictionaryHelper(object):
             mid_text = _tn.get(_.firstPremiseText1M).rstrip()
         else:
             mid_text = _tn.get(_.firstOneInformationText).rstrip()
-        mid_text = mid_text.format('<em>' + current_premise + '</em>')
+        mid_text = mid_text.format('<em>{}</em>'.format(current_premise))
 
         if not supportive:
             mid_text += ' ' + _tn.get(_.doesNotHold)
-        mid_text += '.<br>'
+        mid_text += '. '
 
         if nickname:
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style

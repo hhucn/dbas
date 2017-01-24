@@ -12,7 +12,7 @@ function AjaxReferenceHandler(){
 	 * @param ref_source
 	 */
 	this.setReference = function(uid, reference, ref_source){
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		console.log(uid);
 		console.log(reference);
 		console.log(ref_source);
@@ -29,7 +29,7 @@ function AjaxReferenceHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function (data) {
-			const parsedData = $.parseJSON(data);
+			var parsedData = $.parseJSON(data);
 			if (parsedData.error.length > 0)
 				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 			else
@@ -46,7 +46,7 @@ function AjaxReferenceHandler(){
 	 * @param is_argument
 	 */
 	this.getReferences = function(uid, is_argument){
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_references',
 			method: 'POST',

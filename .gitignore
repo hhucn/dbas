@@ -56,6 +56,7 @@ dbas/static/js/compiled/*
 dbas/static/js/min/*
 dbas/static/rss/*
 .sass-cache/
+.babelrc
 
 # node
 node_modules/

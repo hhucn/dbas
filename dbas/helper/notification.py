@@ -8,14 +8,13 @@ import transaction
 import dbas.helper.email as EmailHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, sql_timestamp_pretty_print
+from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.lib import escape_string, get_profile_picture
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, get_text_for_add_argument_message
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
 from websocket.lib import send_request_for_info_popup_to_socketio
-
-# TODO: IMPROVE TEXT (what happend, which text was added, ...)
 
 
 def send_edit_text_notification(db_user, textversion, path, request):
@@ -217,18 +216,24 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
     transaction.commit()
 
 
-def send_welcome_notification(user, lang='en'):
+def send_welcome_notification(user, translator):
     """
     Creates and send the welcome message to a new user.
 
     :param user: User.uid
-    :param lang: ui_locales
+    :param translator: translator
     :return: None
     """
-    _tn = Translator(lang)
-    topic = _tn.get(_.welcome)
-    content = _tn.get(_.welcomeMessage)
-    notification = Message(from_author_uid=1, to_author_uid=user, topic=topic, content=content, is_inbox=True)
+    topic = translator.get(_.welcome)
+    content = translator.get(_.welcomeMessage)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+    if not db_user:
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_admin).first()
+        if not db_user:
+            db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+            if not db_user:
+                return
+    notification = Message(from_author_uid=db_user.uid, to_author_uid=user, topic=topic, content=content, is_inbox=True)
     DBDiscussionSession.add(notification)
     DBDiscussionSession.flush()
     transaction.commit()

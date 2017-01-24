@@ -28,6 +28,7 @@ first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'H
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
 nick_of_anonymous_user = 'anonymous'
+nick_of_admin = 'admin'
 
 
 def usage(argv):
@@ -133,7 +134,7 @@ def blank_file(argv=sys.argv):
                      gender='m')
         user1 = User(firstname='admin',
                      surname='admin',
-                     nickname='admin',
+                     nickname=nick_of_admin,
                      email='dbas.hhu@gmail.com',
                      password=pw1,
                      group_uid=group0.uid,
@@ -525,7 +526,7 @@ def setup_news_db(session, ui_locale):
                   news='After the positive feedback at COMMA16, we decided to do a first field tests with D-BAS at our '
                        'university. Therefore we are working on current issues, so that we will releasing v1.0. soon.')
     news54 = News(title='Final version and Recaptachs',
-                  date=arrow.get('2016-01-02'),
+                  date=arrow.get('2017-01-03'),
                   author='Tobias Krauthoff',
                   news='We have a delayed christmas present for you. D-BAS reached it\'s first final version 1.0 '
                        'including reCAPTCHAS and several minor fixes!')
@@ -585,14 +586,14 @@ def set_up_users(session, include_dummy_users=True):
     pwt = password_handler.get_hashed_password('iamatestuser2016')
     pw0 = password_handler.get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
     pw1 = password_handler.get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
-    pw2 = password_handler.get_hashed_password('tobias')
+    pw2 = password_handler.get_hashed_password('tobias89#')
     pw3 = password_handler.get_hashed_password('martin')
     pw4 = password_handler.get_hashed_password('christian')
     pw8 = password_handler.get_hashed_password('bjoern')
     pw9 = password_handler.get_hashed_password('teresa')
 
     user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user, email='', password=pw0, group_uid=group2.uid, gender='m')
-    user1 = User(firstname='admin', surname='admin', nickname='admin', email='dbas.hhu@gmail.com', password=pw1, group_uid=group0.uid, gender='m')
+    user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1, group_uid=group0.uid, gender='m')
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group_uid=group0.uid, gender='m')
     user3 = User(firstname='Martin', surname='Mauve', nickname='Martin', email='mauve@cs.uni-duesseldorf.de', password=pw3, group_uid=group0.uid, gender='m')
     user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group_uid=group0.uid, gender='m')
@@ -766,9 +767,9 @@ def set_up_issue(session, user, lang1, lang2, is_field_test=False):
     if is_field_test:
         issue1 = Issue(title='Verbesserung des Informatik-Studiengangs',
                        info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark '
-                            'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B.Raumknappheit, überfüllte '
+                            'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte '
                             'Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu '
-                            'einladen gemeinsam mit den Dozenten der Informatik über Lösungsmöglicheiten zu '
+                            'einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu '
                             'diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die '
                             'große Anzahl der Studierenden entstanden sind, gelöst werden?',
                        author_uid=user.uid,

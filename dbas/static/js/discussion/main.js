@@ -89,7 +89,7 @@ function Main () {
 		});
 		
 		$('#' + popupEditStatementSubmitButtonId).click(function popupEditStatementSubmitButton() {
-			let elements = [];
+			var elements = [];
 			$('#' + popupEditStatementInputSpaceId).find('input').each(function(){
 				elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')})
 			});
@@ -105,7 +105,7 @@ function Main () {
 		 * Switch between shortened and long url
 		 */
 		$('#' + popupUrlSharingLongUrlButtonID).click(function () {
-			let input_field = $('#' + popupUrlSharingInputId);
+			var input_field = $('#' + popupUrlSharingInputId);
 			
 			if ($(this).data('is-short-url') == '0') {
 				input_field.val(input_field.data('short-url'));
@@ -141,7 +141,7 @@ function Main () {
 		 * Sharing shortened url on facebook
 		 */
 		$('#' + shareUrlButtonFacebook).click(function shareUrlButtonFacebook() {
-			let val = $('#' + popupUrlSharingInputId).val();
+			var val = $('#' + popupUrlSharingInputId).val();
 			new Sharing().facebookShare(val, "FB Sharing", _t(haveALookAt) + ' ' + val,
 				mainpage + "static/images/logo.png");
 		});
@@ -170,8 +170,8 @@ function Main () {
 		$('#' + issueDropdownListID + ' .enabled').each(function () {
 			if ($(this).children().length > 0) {
 				$(this).children().click(function () {
-					const href = $(this).attr('href');
-					let text = _t(switchDiscussionText).replace('XXX', $(this).attr('data-value'));
+					var href = $(this).attr('href');
+					var text = _t(switchDiscussionText).replace('XXX', $(this).attr('data-value'));
 					$(this).attr('href', '#');
 					displayConfirmationDialogWithCheckbox(_t(switchDiscussion), text, _t.keepSetting, href, true);
 				});
@@ -181,17 +181,17 @@ function Main () {
 		
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
-		let trianglel = $('.triangle-l');
+		var trianglel = $('.triangle-l');
 		trianglel.find('.triangle-content :not(a)').click(function () {
-			let url = window.location.href;
+			var url = window.location.href;
 			if (url.indexOf('/d?history') != -1) {
 				url = url.split('/d?history');
 				url = url[0].split('/');
-				let uid = url[url.length - 1];
+				var uid = url[url.length - 1];
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			} else {
 				if ($(this).closest('p').attr('id').indexOf(questionBubbleId) != -1) {
-					let uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
+					var uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
 					ajaxHandler.getMoreInfosAboutArgument(uid, true);
 				}
 			}
@@ -212,29 +212,29 @@ function Main () {
 		});
 		
 		trianglel.find('.triangle-flag').click(function () {
-			let uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 			popupHandler.showFlagArgumentPopup(uid);
 		});
 		
 		trianglel.find('.triangle-reference').click(function () {
-			let uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 			new AjaxReferenceHandler().getReferences(uid, true);
 		});
 		
 		trianglel.find('.triangle-trash').click(function () {
-			let uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
 			popupHandler.showDeleteContentPopup(uid, true);
 		});
 		
-		let list = $('#' + discussionSpaceListId);
+		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
-			let uid = $(this).parent().find('input').attr('id').replace('item_', '');
+			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
 			$('#popup-flag-statement-text').text($(this).parent().find('label').text());
 			popupHandler.showFlagStatementPopup(uid, false);
 		});
 		
 		list.find('.item-edit').click(function () {
-			let uids = [];
+			var uids = [];
 			$(this).parent().find('label:nth-child(even)').each(function(){
 				uids.push($(this).attr('id'))
 			});
@@ -242,12 +242,12 @@ function Main () {
 		});
 		
 		list.find('.item-trash').click(function () {
-			let uid = $(this).parent().find('label').attr('id');
+			var uid = $(this).parent().find('label').attr('id');
 			popupHandler.showDeleteContentPopup(uid, false);
 		});
 		
 		list.find('.item-reference').click(function () {
-			let uids = [];
+			var uids = [];
 			$(this).parent().find('label:nth-child(even)').each(function(){
 				uids.push($(this).attr('id'))
 			});
@@ -263,10 +263,10 @@ function Main () {
 		$('.triangle-r-info').each(function () {
 			if ($(this).data('votecount') > 0) {
 				$(this).click(function () {
-					const data_type = $(this).data('type');
-					const data_argument_uid = $(this).data('argument-uid');
-					const data_statement_uid = $(this).data('statement-uid');
-					const data_is_supportive = $(this).data('is-supportive');
+					var data_type = $(this).data('type');
+					var data_argument_uid = $(this).data('argument-uid');
+					var data_statement_uid = $(this).data('statement-uid');
+					var data_is_supportive = $(this).data('is-supportive');
 					new AjaxDiscussionHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid, data_is_supportive);
 				});
 			} else {
@@ -280,12 +280,12 @@ function Main () {
 		
 		$('#' + discussionSpaceShowItems).click(function(){
 			$(this).hide();
-			let hide_btn = $('#' + discussionSpaceHideItems);
-			let space = $('#' + discussionSpaceListId);
+			var hide_btn = $('#' + discussionSpaceHideItems);
+			var space = $('#' + discussionSpaceListId);
 			hide_btn.show();
 			// send request if it was not send until now
 			if ($(this).attr('data-send-request') !== 'true'){
-				let uids = [];
+				var uids = [];
 				$.each(space.find('li:not(:visible)'), function(){
 					$.each($(this).find('label:even'), function(){
 						uids.push($(this).attr('id'));
@@ -297,13 +297,13 @@ function Main () {
 			space.find('li[style="display: none;"]').addClass('cropped').fadeIn();
 			
 			// guification, resize main container and sidebar
-			let container = $('#' + discussionContainerId);
-			let add_height = space.find('li.cropped').length * space.find('li:visible:first').outerHeight() + hide_btn.outerHeight();
-			let container_height = parseInt(container.css('max-height').replace('px',''));
+			var container = $('#' + discussionContainerId);
+			var add_height = space.find('li.cropped').length * space.find('li:visible:first').outerHeight() + hide_btn.outerHeight();
+			var container_height = parseInt(container.css('max-height').replace('px',''));
 			container.css('max-height', (add_height + container_height) + 'px');
 			container.attr('data-add-height', add_height);
 			
-			let sidebar = $('.sidebar-wrapper:first');
+			var sidebar = $('.sidebar-wrapper:first');
 			sidebar.height(sidebar.height() + add_height);
 				
 		});
@@ -312,13 +312,13 @@ function Main () {
 			$(this).hide();
 			$('#' + discussionSpaceShowItems).show();
 			$('#' + discussionSpaceListId).find('li.cropped').fadeOut();
-			let container = $('#' + discussionContainerId);
-			let height = parseInt(container.css('max-height').replace('px',''));
-			let new_height = height - parseInt(container.attr('data-add-height'));
+			var container = $('#' + discussionContainerId);
+			var height = parseInt(container.css('max-height').replace('px',''));
+			var new_height = height - parseInt(container.attr('data-add-height'));
 			// guification, resize main container and sidebar
 			setTimeout(function() {
 				container.css('max-height', new_height + 'px');
-				let sidebar = $('.sidebar-wrapper:first');
+				var sidebar = $('.sidebar-wrapper:first');
 				sidebar.height(sidebar.height() - parseInt(container.attr('data-add-height')));
 			}, 400);
 		});
@@ -330,18 +330,18 @@ function Main () {
 	 * @param localStorageId - id of the parameter in the local storage
 	 */
 	this.setSidebarClicks = function (maincontainer, localStorageId) {
-		let gui = new GuiHandler();
-		let sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
-		let wrapper = maincontainer.find('.' + contentWrapperClass);
-		let hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
-		let tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
-		let tack = sidebarwrapper.find('.' + sidebarTackClass);
-		let sidebar = sidebarwrapper.find('.' + sidebarClass);
+		var gui = new GuiHandler();
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		var wrapper = maincontainer.find('.' + contentWrapperClass);
+		var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
+		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
+		var tack = sidebarwrapper.find('.' + sidebarTackClass);
+		var sidebar = sidebarwrapper.find('.' + sidebarClass);
 		
 		$(hamburger).click(function () {
 			$(this).toggleClass('open');
-			let width = wrapper.width();
-			let bg_color = $('#' + discussionBubbleSpaceId).css('background-color');
+			var width = wrapper.width();
+			var bg_color = $('#' + discussionBubbleSpaceId).css('background-color');
 			
 			if (sidebar.is(':visible')) {
 				tackwrapper.fadeOut();
@@ -372,7 +372,7 @@ function Main () {
 		
 		// action for tacking the sidebar
 		tackwrapper.click(function () {
-			let shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
+			var shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
 			if (shouldShowSidebar) {
 				gui.rotateElement(tack, '0');
 				setLocalStorage(localStorageId, 'false');
@@ -399,17 +399,17 @@ function Main () {
 	 */
 	this.setSidebarStyle = function (maincontainer, localStorageId) {
 		// read local storage for pinning the bar / set title
-		let shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
-		let sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
-		let wrapper = maincontainer.find('.' + contentWrapperClass);
-		let tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
-		let tack = sidebarwrapper.find('.' + sidebarTackClass);
-		let sidebar = sidebarwrapper.find('.' + sidebarClass);
-		let gui = new GuiHandler();
+		var shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		var wrapper = maincontainer.find('.' + contentWrapperClass);
+		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
+		var tack = sidebarwrapper.find('.' + sidebarTackClass);
+		var sidebar = sidebarwrapper.find('.' + sidebarClass);
+		var gui = new GuiHandler();
 		
 		if (shouldShowSidebar) {
-			let width = wrapper.width();
-			let hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
+			var width = wrapper.width();
+			var hamburger = sidebarwrapper.find('.' + hamburgerIconClass);
 			
 			gui.rotateElement(tack, '90');
 			gui.setAnimationSpeed(wrapper, '0.0');
@@ -445,7 +445,7 @@ function Main () {
 		// gui for the fuzzy search (statements)
 		$('#' + addStatementContainerMainInputId).keyup(function () {
 			setTimeout(function () {
-				let escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
+				var escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
 				if ($('#' + discussionBubbleSpaceId).find('p:last-child').text().indexOf(_t(initialPositionInterest)) != -1) {
 					// here we have our start statement
 					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
@@ -459,7 +459,7 @@ function Main () {
 		// gui for the fuzzy search (premises)
 		$('#' + addPremiseContainerMainInputId).keyup(function () {
 			setTimeout(function () {
-				let escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
+				var escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 			}, 200);
 		});
@@ -476,7 +476,7 @@ function Main () {
 		guiHandler.hideErrorDescription();
 		
 		// align buttons
-		// let restart, issues, restartWidth, issueWidth;
+		// var restart, issues, restartWidth, issueWidth;
 		// restart = $('#discussion-restart-btn');
 		// issues = $('#' + issueDropdownButtonID);
 		// restartWidth = restart.outerWidth();
@@ -485,8 +485,8 @@ function Main () {
 		// issues.attr('style', restartWidth>issueWidth ? 'width: ' + restartWidth + 'px;' : '');
 		
 		// no hover action on the systems bubble during the attitude question
-		let trianglel = $('.triangle-l');
-		const url = window.location.href.split('?')[0];
+		var trianglel = $('.triangle-l');
+		var url = window.location.href.split('?')[0];
 		if (url.indexOf('attitude') != -1 || url.indexOf('justify') != -1) {
 			trianglel.find('.triangle-content').each(function () {
 				$(this).hover(function () {
@@ -504,14 +504,14 @@ function Main () {
 		});
 		
 		// hover effects on text elements
-		let data = 'data-argumentation-type';
-		let list = $('#' + discussionSpaceListId);
+		var data = 'data-argumentation-type';
+		var list = $('#' + discussionSpaceListId);
 		list.find('span[' + data + '!=""]').each(function () {
-			let attr = $(this).attr(data);
-			let tmp = $('<span>').addClass(attr + '-highlighter');
+			var attr = $(this).attr(data);
+			var tmp = $('<span>').addClass(attr + '-highlighter');
 			tmp.appendTo(document.body);
-			let old_color = $(this).css('color');
-			let new_color = tmp.css('color');
+			var old_color = $(this).css('color');
+			var new_color = tmp.css('color');
 			tmp.remove();
 			$(this).hover(
 				function () {
@@ -563,16 +563,16 @@ function Main () {
 		//$(window).load(function windowLoad() {
 		//});
 		
-		let container = $('#' + discussionContainerId);
-		let oldContainerSize = container.width();
-		let burger = $('.hamburger');
-		let wrapper = $('#dialog-wrapper');
+		var container = $('#' + discussionContainerId);
+		var oldContainerSize = container.width();
+		var burger = $('.hamburger');
+		var wrapper = $('#dialog-wrapper');
 		
 		$(window).resize(function () {
 			new GuiHandler().setMaxHeightForBubbleSpace();
 			
 			// resize main container
-			let difference = oldContainerSize - container.width();
+			var difference = oldContainerSize - container.width();
 			if (difference > 0 && burger.hasClass('open')){
 				wrapper.width(wrapper.width() - difference);
 			} else if (difference < 0 && burger.hasClass('open')){
@@ -587,7 +587,7 @@ function Main () {
 	 */
 	this.setGuiOptions = function () {
 		$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
-			let login_item = $('#' + discussionSpaceListId).find('#item_login');
+			var login_item = $('#' + discussionSpaceListId).find('#item_login');
 			if (login_item.length > 0)
 				login_item.prop('checked', false)
 		}).on('shown.bs.modal', function () {
@@ -595,10 +595,10 @@ function Main () {
 		});
 		
 		// highlight edited statement
-		let pos = window.location.href.indexOf('edited_statement=');
+		var pos = window.location.href.indexOf('edited_statement=');
 		if (pos != -1) {
-			let ids = window.location.href.substr(pos + 'edited_statement='.length);
-			let splitted = ids.split(',');
+			var ids = window.location.href.substr(pos + 'edited_statement='.length);
+			var splitted = ids.split(',');
 			$.each(splitted, function (index, value) {
 				$('#' + value).css('background-color', '#FFF9C4');
 			});
@@ -611,16 +611,16 @@ function Main () {
 	 * @param interactionHandler
 	 */
 	this.setInputExtraOptions = function (guiHandler, interactionHandler) {
-		let spaceList = $('#' + discussionSpaceListId);
-		let input = spaceList.find('li:last-child input');
-		let text = [], splits, conclusion, supportive, arg, relation;
+		var spaceList = $('#' + discussionSpaceListId);
+		var input = spaceList.find('li:last-child input');
+		var text = [], splits, conclusion, supportive, arg, relation;
 		splits = window.location.href.split('?');
 		splits = splits[0].split('/');
-		const sendStartStatement = function () {
+		var sendStartStatement = function () {
 			text = $('#' + addStatementContainerMainInputId).val();
 			interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
 		};
-		const sendStartPremise = function () {
+		var sendStartPremise = function () {
 			conclusion = splits[splits.length - 2];
 			supportive = splits[splits.length - 1] == 't';
 			text = [];
@@ -630,13 +630,13 @@ function Main () {
 			});
 			interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
 		};
-		const sendArgumentsPremise = function () {
+		var sendArgumentsPremise = function () {
 			text = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
 				if ($(this).val().length > 0)
 					text.push($(this).val());
 			});
-			let add = window.location.href.indexOf('support') != -1 ? 1 : 0;
+			var add = window.location.href.indexOf('support') != -1 ? 1 : 0;
 			arg = splits[splits.length - 3 - add];
 			supportive = splits[splits.length - 2 - add] == 't';
 			relation = splits[splits.length - 1 - add];
@@ -669,17 +669,26 @@ function Main () {
 		});
 		
 		// hide one line options
-		let children = spaceList.find('input');
-		let id = children.eq(0).attr('id');
-		let ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
+		var children = spaceList.find('input');
+		var id = children.eq(0).attr('id');
+		id = id.replace('item_', '');
+		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
 		// if we have just one list element AND the list element has a special function AND we are logged in
+		console.log(children.length);
+		console.log(id);
+		console.log(($.inArray(id, ids)));
 		if (children.length == 1 && ($.inArray(id, ids) != -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
+			console.log(children.eq(0).outerHeight(true));
+			var container = $('#' + discussionContainerId);
+			var sidebar = $('.sidebar-wrapper');
+			container.height(container.height() - 50);
+			sidebar.height(sidebar.height() - 50);
 			children.eq(0).prop('checked', true).parent().hide();
 		}
 		
 		// options for the extra buttons, where the user can add input!
 		if (input.length == 0) {
-			let el = $('.line-wrapper-l').last().find('span');
+			var el = $('.line-wrapper-l').last().find('span');
 			el.hover(function () {
 				$(this).css('color', '#000').css('pointer', 'default');
 			});
@@ -730,14 +739,14 @@ function Main () {
  * main function
  */
 $(document).ready(function mainDocumentReady() {
-	let tacked_sidebar = 'tacked_sidebar';
-	let guiHandler = new GuiHandler();
-	let ajaxHandler = new AjaxDiscussionHandler();
-	let interactionHandler = new InteractionHandler();
-	let popupHandler = new PopupHandler();
-	let main = new Main();
-	let tmp;
-	let discussionContainer = $('#' + discussionContainerId);
+	var tacked_sidebar = 'tacked_sidebar';
+	var guiHandler = new GuiHandler();
+	var ajaxHandler = new AjaxDiscussionHandler();
+	var interactionHandler = new InteractionHandler();
+	var popupHandler = new PopupHandler();
+	var main = new Main();
+	var tmp;
+	var discussionContainer = $('#' + discussionContainerId);
 	
 	guiHandler.setHandler(interactionHandler);
 	main.setStyleOptions(guiHandler);
@@ -780,7 +789,7 @@ $(document).ready(function mainDocumentReady() {
 		new DiscussionBarometer().showBarometer();
 	}
 	if (location.hash.indexOf('access-review') != -1 || $('#review-link').attr('data-broke-limit') == 'true'){
-		const link = '<a href="' + mainpage + 'review">'  + _t(youAreAbleToReviewNow) + '</a>';
+		var link = '<a href="' + mainpage + 'review">'  + _t(youAreAbleToReviewNow) + '</a>';
 		setGlobalInfoHandler('Hey!', link)
 	}
 
@@ -788,7 +797,7 @@ $(document).ready(function mainDocumentReady() {
 		$(this).addClass('opened');
 		event.stopPropagation();
 	});
-	$(document).delegate('body', 'click', function(event) {
+	$(document).delegate('body', 'click', function() {
 		$('.open').removeClass('opened');
 	});
 	$(document).delegate('.cls', 'click', function(event){

@@ -112,17 +112,14 @@ def __get_user_msg_for_users_confrontation_response(db_argument, attack_type, pr
         return __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t)
 
     if attack_type == 'undercut':
-        return __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t)
-
-    if attack_type == 'overbid':
-        return __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t)
+        return __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, _t)
 
     if attack_type == 'rebut':
         return __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportive, _t)
 
 
 def __get_user_msg_for_users_undermine_response(premise, f):
-    return f + ' ' + premise + '.'
+    return '{}' + f + ' ' + premise + '{}'
 
 
 def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t):
@@ -130,10 +127,10 @@ def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _
     user_msg += ' ' + conclusion + ' '
     user_msg += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
     user_msg += '.'
-    return user_msg
+    return '{}' + user_msg + '{}'
 
 
-def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, is_supportive, _t):
+def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion, r, _t):
     tmp = None
     if db_argument.conclusion_uid is None and _t.get_lang() == 'de':
         # undercutting an undercut
@@ -143,20 +140,10 @@ def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion,
             tmp = _t.get(_.butThisDoesNotRejectArgument)
 
     if tmp is None:
-        tmp = _t.get(_.butIDoNotBelieveArgumentFor) if is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
+        tmp = _t.get(_.butIDoNotBelieveArgumentFor) if db_argument.is_supportive else _t.get(_.butIDoNotBelieveCounterFor)
     tmp = tmp.format(conclusion)
 
-    return r + premise + '. ' + tmp + '.'
-
-
-def __get_user_msg_for_users_overbid_response(premise, r, conclusion, is_supportive, _t):
-    user_msg = r + premise + ', '
-    user_msg += _t.get(_.andIDoBelieveCounterFor) if is_supportive else _t.get(_.andIDoBelieveArgument)
-    user_msg += ' ' + conclusion + '. '
-    user_msg += _t.get(_.howeverIHaveEvenStrongerArgumentAccepting) if is_supportive else _t.get(
-        _.howeverIHaveEvenStrongerArgumentRejecting)
-    user_msg += ' ' + conclusion + '.'
-    return user_msg
+    return r + premise + '. {}' + tmp + '{}'
 
 
 def __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportive, _t):
@@ -166,7 +153,7 @@ def __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportiv
     user_msg += _t.get(_.howeverIHaveMuchStrongerArgumentRejectingThat) if is_supportive else _t.get(
         _.howeverIHaveMuchStrongerArgumentAcceptingThat)
     user_msg += ' ' + conclusion + '.'
-    return user_msg
+    return '{}' + user_msg + '{}'
 
 
 def get_relation_text_dict_without_substitution(lang, start_lower_case, with_no_opinion_text, is_attacking, premise,
@@ -299,7 +286,7 @@ def __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, s
 
     ret_dict['support_text'] = r + premise + _t.get(_.itIsTrue2) + '.'
 
-    ret_dict['undercut_text'] = r + premise + _t.get(_.itIsTrue2) + ', '
+    ret_dict['undercut_text'] = r + premise + _t.get(_.itIsTrue2) + '. '
     if is_dont_know:
         ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgumentFor).format(conclusion) + '.'
     elif not is_attacking or not attack_type == 'undercut':
@@ -330,10 +317,7 @@ def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_p
     :param start_argument:
     :param start_position:
     :param end_tag:
-    :param first_conclusion:
     :param is_dont_know:
-    :param is_attacking:
-    :param attack_type:
     :param _t:
     :return:
     """
@@ -391,7 +375,9 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     """
     Text for the confrontation of the system
 
+    :param main_page: main_page
     :param lang: ui_locales
+    :param nickname: nickname
     :param premise: String
     :param conclusion: String
     :param sys_conclusion: String
@@ -437,7 +423,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                             confrontation)
 
     elif attack == 'undercut':
-        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_premise, _t,
+        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, nickname, db_users_premise, _t,
                                                                            premise, conclusion, confrontation,
                                                                            supportive, sys_arg)
 
@@ -583,18 +569,18 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sta
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_premise, _t, premise, conclusion, confrontation, supportive, system_argument):
+def __get_confrontation_text_for_undercut(main_page, nickname, db_users_premise, _t, premise, conclusion, confrontation, supportive, system_argument):
     """
 
-    :param lang:
-    :param: nickname of current user
+    :param main_page:
+    :param nickname:
     :param db_users_premise:
     :param _t:
     :param premise:
     :param conclusion:
     :param confrontation:
     :param supportive:
-    :param system_argument: Counter argument of the system
+    :param system_argument:
     :return:
     """
 
@@ -617,11 +603,8 @@ def __get_confrontation_text_for_undercut(main_page, lang, nickname, db_users_pr
     else:
         confrontation_text += (_t.get(_.butHeDoesNotBelieveCounter) if gender is 'm' else _t.get(_.butSheDoesNotBelieveCounter)) \
             if is_okay else _t.get(_.butTheyDoNotBelieveCounter)
-    confrontation_text += e + ' ' + conclusion + b
 
-    confrontation_text += '. ' + gender_think
-
-    confrontation_text += ' ' + e + confrontation
+    confrontation_text += e + ' ' + conclusion + b + '. ' + gender_think + ' ' + e + confrontation
     return confrontation_text, gender if is_okay else ''
 
 
@@ -710,11 +693,12 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
 def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=True):
     """
-    Get the first author, who wrote or agreed with the argument
+    Will return author of the argument, if the first supporting user
 
     :param main_page:
     :param argument:
     :param nickname:
+    :param with_link:
     :return:
     """
     text, is_okay = get_author_data(main_page, argument.author_uid, False, True)

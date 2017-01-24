@@ -12,15 +12,15 @@ $(function () {
 	// send notification to users
 	$('#send-notification').each(function () {
 		$(this).click(function () {
-			const _this = $(this);
+			var _this = $(this);
 			$('#' + popupWritingNotificationRecipient).hide();
 			$('#' + popupWritingNotification).modal('show');
 			$('#' + popupWritingNotificationSuccess).hide();
 			$('#' + popupWritingNotificationFailed).hide();
 			$('#' + popupWritingNotificationSend).click(function () {
-				const url = window.location.href;
-				const splitted = url.split('/');
-				let recipient;
+				var url = window.location.href;
+				var splitted = url.split('/');
+				var recipient;
 				if (url.indexOf('/user/') != -1) {
 					recipient = splitted[splitted.length - 1];
 				} else {
@@ -40,16 +40,16 @@ function User() {
 	// 1 is Teal
 	// 2 is Deep Orange
 	// 3 is Brown
-	const fillColorSet = ['rgba(187,222,251,0.4)', 'rgba(178,223,219,0.4)', 'rgba(255,204,188,0.4)', 'rgba(215,204,200,0.4']; //100
-	const strokeColorSet = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
-	const pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
+	var fillColorSet = ['rgba(187,222,251,0.4)', 'rgba(178,223,219,0.4)', 'rgba(255,204,188,0.4)', 'rgba(215,204,200,0.4']; //100
+	var strokeColorSet = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
+	var pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
 
 	/**
 	 *
 	 * @param jsonData
 	 */
 	this.callbackDone = function(jsonData){
-		const parsedData = $.parseJSON(jsonData);
+		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		}
@@ -69,7 +69,7 @@ function User() {
 	 * @param count
 	 */
 	this.createChart = function(parsedData, space, id, count){
-		let chart, data, div_legend;
+		var chart, data, div_legend;
 		space.append('<canvas id="' + id + '" width="500" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 		data = {
 			labels : parsedData['labels' + (count+1)],
@@ -94,7 +94,7 @@ function User() {
 	 *
 	 */
 	this.setLegendCSS = function() {
-		const legend = $('.chart-legend');
+		var legend = $('.chart-legend');
 
 		legend.find('ul').css({
 			'list-style-type': 'none'

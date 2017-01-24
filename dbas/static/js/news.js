@@ -4,21 +4,21 @@
  */
 
 function News() {
-	let BOOTSTRAP_COLLAPSE = 990;
+	var BOOTSTRAP_COLLAPSE = 990;
 	
 	/**
 	 *
 	 */
 	this.setNewsInRow = function()  {
-		const input = $('#raw-elements');
-		let array = input.find('.col-md-4');
-		let length = array.length;
+		var input = $('#raw-elements');
+		var array = input.find('.col-md-4');
+		var length = array.length;
 
 		// build rows
-		let div = '';
-		let counter;
-		let row = 0;
-		let container = '';
+		var div = '';
+		var counter;
+		var row = 0;
+		var container = '';
 		for (counter = 0; counter < length; counter++) {
 			if (counter % 3 == 0) {
 				if (div !== '') {
@@ -53,7 +53,7 @@ function News() {
 	 * @param data
 	 */
 	this.callbackIfDoneForSendingNews = function (data) {
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length == 0) {
 			// $('#' + writingNewsSuccessId).show();
 			// $('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
@@ -74,7 +74,7 @@ function News() {
 	 *
 	 */
 	this.setMaxHeightOfNewsRows = function () {
-		let counter, row = $('#' + newsBodyId).children().length, heights, maxHeight;
+		var counter, row = $('#' + newsBodyId).children().length, heights, maxHeight;
 
 		// bootstrap collapse
 		if ($(window).width() < BOOTSTRAP_COLLAPSE) {
@@ -98,10 +98,10 @@ function News() {
 	 *
 	 */
 	this.setSlimscrollForNewsRows = function () {
-		let placeholders = [];
-		let h;
-		const wrapperContent = $('#wrapper-content');
-		const footer = $('#footer');
+		var placeholders = [];
+		var h;
+		var wrapperContent = $('#wrapper-content');
+		var footer = $('#footer');
 		placeholders.push($('.navbar-collapse').height());
 		placeholders.push(parseInt(wrapperContent.css('padding-top').replace('px','')));
 		placeholders.push(parseInt(wrapperContent.css('padding-bottom').replace('px','')));
@@ -139,16 +139,16 @@ function News() {
 	 *
 	 */
 	this.setPageNavigation = function () {
-		let counter;
-		const row = $('#' + newsBodyId).children().length;
-		const pagebreak = 2;
-		const _this = this;
-		let pagecounter = 1;
-		const newsNavigator = $('#news-navigation');
-		let html;
-		let back;
-		let forth;
-		let pages='';
+		var counter;
+		var row = $('#' + newsBodyId).children().length;
+		var pagebreak = 2;
+		var _this = this;
+		var pagecounter = 1;
+		var newsNavigator = $('#news-navigation');
+		var html;
+		var back;
+		var forth;
+		var pages='';
 
 		newsNavigator.empty();
 
@@ -182,8 +182,8 @@ function News() {
 			});
 		}
 
-		let news1 = $('#news-1');
-		let news_back = $('#news-back');
+		var news1 = $('#news-1');
+		var news_back = $('#news-back');
 		news1.parent().addClass('active');
 		$('.news-page-1').show();
 		news_back.parent().addClass('disabled');
@@ -209,7 +209,7 @@ function News() {
 	};
 
 	this.setPlaceholder = function(index, pagecounter){
-		let i, p, s,
+		var i, p, s,
 			placeholder = $('<li>').addClass('disabled').append($('<a>').addClass('news-placeholder').text('...'));
 		$('.news-placeholder').remove();
 
@@ -237,14 +237,14 @@ function News() {
 	 * @param pagecounter
 	 */
 	this.turnThePage = function (isBack, pagecounter){
-		let activeElement = $('#news-navigation').find('.active');
-		let counter = parseInt(activeElement.children().eq(0).data('counter'));
+		var activeElement = $('#news-navigation').find('.active');
+		var counter = parseInt(activeElement.children().eq(0).data('counter'));
 		activeElement.removeClass('active');
 		if (isBack)
 			activeElement.prev().addClass('active');
 		else
 			activeElement.next().addClass('active');
-		let news_counter = $('.news-page-' + counter);
+		var news_counter = $('.news-page-' + counter);
 		news_counter.hide();
 		counter = isBack ? counter-1 : counter+1;
 		news_counter.show();
@@ -269,7 +269,7 @@ function News() {
 	//	SHARING IS CARING
 	// *********************
 	this.setSharingClickEvents = function () {
-		let news = new News();
+		var news = new News();
 		/**
 		 * Sharing shortened url with mail
 		 */
@@ -318,7 +318,7 @@ function News() {
 		if ($(_this).attr('id') === shareUrlButtonMail) {
 			return;
 		}
-		let id = $(_this).parent().attr('id'),
+		var id = $(_this).parent().attr('id'),
 				title = $('#' + id + '_title').text(),
 				date = $('#' + id + '_date').text(),
 				author = $('#' + id + '_author').text();
@@ -345,7 +345,7 @@ function News() {
 			return;
 		}
 
-		let id = $(_this).parent().attr('id'),
+		var id = $(_this).parent().attr('id'),
 				title = $('#' + id + '_title').text(),
 				date = $('#' + id + '_date').text(),
 				author = $('#' + id + '_author').text(),
@@ -360,7 +360,7 @@ function News() {
 		if ($(_this).attr('id') === shareUrlButtonTwitter) {
 			return;
 		}
-		let id = $(_this).parent().attr('id'),
+		var id = $(_this).parent().attr('id'),
 				title = $('#' + id + '_title').text();
 		new Sharing().twitterShare(title, window.location.href);
 	};
@@ -371,7 +371,7 @@ $(document).ready(function () {
 	if (window.location.href.indexOf(mainpage + 'news') == -1){
 		return;
 	}
-	const news = new News();
+	var news = new News();
 	news.setNewsInRow();
 	news.setSharingClickEvents();
 	news.setSlimscrollForNewsRows();

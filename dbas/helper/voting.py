@@ -69,9 +69,9 @@ def __add_vote_for_argument(db_user, db_argument):
     __vote_statement(db_conclusion, db_user, db_argument.is_supportive)
 
     # add seen values
-    __argument_seen_by_user(db_user.uid, db_argument.uid)
-    # __premisegroup_seen_by_user(db_user.uid, db_argument.premisesgroup_uid)
-    # __statement_seen_by_user(db_user.uid, db_argument.conclusion_uid)
+    __argument_seen_by_user(db_user, db_argument.uid)
+    # __premisegroup_seen_by_user(db_user, db_argument.premisesgroup_uid)
+    # __statement_seen_by_user(db_user, db_argument.conclusion_uid)
 
 
 def __add_vote_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user):
@@ -96,11 +96,11 @@ def __add_vote_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_use
     __vote_statement(db_undercuted_arg_step_1_concl, db_user, not db_argument.is_supportive)
 
     # add seen values
-    __argument_seen_by_user(db_user.uid, db_argument.uid)
-    __argument_seen_by_user(db_user.uid, db_undercuted_arg_step_1.uid)
-    # __premisegroup_seen_by_user(db_user.uid, db_argument.premisesgroup_uid)
-    # __premisegroup_seen_by_user(db_user.uid, db_undercuted_arg_step_1.premisesgroup_uid)
-    # __statement_seen_by_user(db_user.uid, db_undercuted_arg_step_1.conclusion_uid)
+    __argument_seen_by_user(db_user, db_argument.uid)
+    __argument_seen_by_user(db_user, db_undercuted_arg_step_1.uid)
+    # __premisegroup_seen_by_user(db_user, db_argument.premisesgroup_uid)
+    # __premisegroup_seen_by_user(db_user, db_undercuted_arg_step_1.premisesgroup_uid)
+    # __statement_seen_by_user(db_user, db_undercuted_arg_step_1.conclusion_uid)
 
 
 def __add_vote_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user):
@@ -126,13 +126,13 @@ def __add_vote_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_use
     # vote NOT for the undercutted undercut
 
     # add seen values
-    __argument_seen_by_user(db_user.uid, db_argument.uid)
-    __argument_seen_by_user(db_user.uid, db_undercuted_arg_step_1.uid)
-    __argument_seen_by_user(db_user.uid, db_undercuted_arg_step_2.uid)
-    # __premisegroup_seen_by_user(db_user.uid, db_argument.premisesgroup_uid)
-    # __premisegroup_seen_by_user(db_user.uid, db_undercuted_arg_step_1.premisesgroup_uid)
-    # __premisegroup_seen_by_user(db_user.uid, db_undercuted_arg_step_2.premisesgroup_uid)
-    # __statement_seen_by_user(db_user.uid, db_undercuted_arg_step_2.conclusion_uid)
+    __argument_seen_by_user(db_user, db_argument.uid)
+    __argument_seen_by_user(db_user, db_undercuted_arg_step_1.uid)
+    __argument_seen_by_user(db_user, db_undercuted_arg_step_2.uid)
+    # __premisegroup_seen_by_user(db_user, db_argument.premisesgroup_uid)
+    # __premisegroup_seen_by_user(db_user, db_undercuted_arg_step_1.premisesgroup_uid)
+    # __premisegroup_seen_by_user(db_user, db_undercuted_arg_step_2.premisesgroup_uid)
+    # __statement_seen_by_user(db_user, db_undercuted_arg_step_2.conclusion_uid)
 
 
 def add_vote_for_statement(statement_uid, nickname, supportive):
@@ -154,48 +154,47 @@ def add_vote_for_statement(statement_uid, nickname, supportive):
         return False
 
     __vote_statement(db_statement, db_user, supportive)
-    __statement_seen_by_user(db_user.uid, statement_uid)
+    __statement_seen_by_user(db_user, statement_uid)
     transaction.commit()
     return True
 
 
-def add_seen_statement(statement_uid, user_uid):
+def add_seen_statement(statement_uid, db_user):
     """
     Adds the uid of the statement into the seen_by list, mapped with the given user uid
 
-    :param user_uid: uid of current user
+    :param db_user:current user
     :param statement_uid: uid of the statement
     :return: undefined
     """
-    logger('VotingHelper', 'add_seen_statement', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid))
-    if not is_integer(statement_uid) or not is_integer(user_uid):
+    logger('VotingHelper', 'add_seen_statement', 'statement ' + str(statement_uid) + ', for user ' + str(db_user))
+    if not is_integer(statement_uid) or not isinstance(db_user, User):
         return False
 
-    val = __statement_seen_by_user(user_uid, statement_uid)
+    val = __statement_seen_by_user(db_user, statement_uid)
     if val:
         transaction.commit()
 
     return val
 
 
-def add_seen_argument(argument_uid, user_uid):
+def add_seen_argument(argument_uid, db_user):
     """
     Adds the uid of the argument into the seen_by list as well as all included statements, mapped with the given user uid
 
-    :param user_uid: uid of current user
+    :param db_user: current user
     :param argument_uid: uid of the argument
     :return: undefined
     """
-    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', for user ' + str(user_uid))
-    if not is_integer(argument_uid) or not is_integer(user_uid):
+    if not is_integer(argument_uid) or not isinstance(db_user, User):
         return False
+    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', for user ' + str(db_user))
 
-    db_user = DBDiscussionSession.query(User).get(user_uid)
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
-    if not db_user or not db_argument:
+    if not db_argument:
         return False
 
-    __argument_seen_by_user(user_uid, argument_uid)
+    __argument_seen_by_user(db_user, argument_uid)
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
     if not db_premises:
@@ -204,15 +203,15 @@ def add_seen_argument(argument_uid, user_uid):
     logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', premise count ' + str(len(db_premises)))
     for p in db_premises:
         logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', add premise ' + str(p.statement_uid))
-        __statement_seen_by_user(user_uid, p.statement_uid)
+        __statement_seen_by_user(db_user, p.statement_uid)
 
     # find the conclusion and mark all arguments on the way
     while db_argument.conclusion_uid is None:
         db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-        __argument_seen_by_user(user_uid, argument_uid)
+        __argument_seen_by_user(db_user, argument_uid)
 
     logger('VotingHelper', 'add_seen_argument', 'conclusion ' + str(db_argument.conclusion_uid))
-    __statement_seen_by_user(user_uid, db_argument.conclusion_uid)
+    __statement_seen_by_user(db_user, db_argument.conclusion_uid)
 
     transaction.commit()
 
@@ -313,13 +312,13 @@ def __vote_argument(argument, user, is_up_vote):
     DBDiscussionSession.flush()
 
 
-def __vote_statement(statement, user, is_up_vote):
+def __vote_statement(statement, db_user, is_up_vote):
     """
     Check if there is a vote for the statement. If not, we will create a new one, otherwise the current one will be
     invalid an we will create a new entry.
 
     :param statement: Statement
-    :param user: User
+    :param db_user: User
     :param is_up_vote: Boolean
     :return: None
     """
@@ -327,10 +326,10 @@ def __vote_statement(statement, user, is_up_vote):
         logger('VotingHelper', '__vote_statement', 'statement is None')
         return
 
-    logger('VotingHelper', '__vote_statement', 'statement ' + str(statement.uid) + ', user ' + user.nickname)
+    logger('VotingHelper', '__vote_statement', 'statement ' + str(statement.uid) + ', db_user ' + db_user.nickname)
 
     db_all_valid_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
-                                                                              VoteStatement.author_uid == user.uid,
+                                                                              VoteStatement.author_uid == db_user.uid,
                                                                               VoteStatement.is_valid == True))
     db_current_vote = db_all_valid_votes.filter_by(is_up_vote=is_up_vote).first()
     db_old_votes = db_all_valid_votes.all()
@@ -346,7 +345,7 @@ def __vote_statement(statement, user, is_up_vote):
 
     if not db_current_vote:
         logger('VotingHelper', '__vote_statement', 'add vote for statement ' + str(statement.uid))
-        db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=user.uid, is_up_vote=is_up_vote, is_valid=True)
+        db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=is_up_vote, is_valid=True)
         DBDiscussionSession.add(db_new_vote)
         DBDiscussionSession.flush()
 
@@ -372,63 +371,56 @@ def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
         __vote_statement(db_statement, user, is_up_vote)
 
 
-def __argument_seen_by_user(user_uid, argument_uid):
+def __argument_seen_by_user(db_user, argument_uid):
     """
     Adds an reference for an seen argument
 
-    :param user_uid: uid of current user
+    :param db_user: current user
     :param argument_uid: uid of the argument
     :return: True if the argument was not seen by the user (until now), false otherwise
     """
 
-    if not DBDiscussionSession.query(User).get(user_uid) or not DBDiscussionSession.query(Argument).get(argument_uid):
-        return False
-    logger('VotingHelper', '__argument_seen_by_user', 'argument ' + str(argument_uid) + ', for user ' + str(user_uid))
+    logger('VotingHelper', '__argument_seen_by_user', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid))
     db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter(and_(ArgumentSeenBy.argument_uid == argument_uid,
-                                                                       ArgumentSeenBy.user_uid == user_uid)).first()
+                                                                       ArgumentSeenBy.user_uid == db_user.uid)).first()
     if not db_seen_by:
-        DBDiscussionSession.add(ArgumentSeenBy(argument_uid=argument_uid, user_uid=user_uid))
+        DBDiscussionSession.add(ArgumentSeenBy(argument_uid=argument_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
-    logger('VotingHelper', '__argument_seen_by_user', 'argument ' + str(argument_uid) + ', for user ' + str(user_uid) + ' was already seen')
+    logger('VotingHelper', '__argument_seen_by_user', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid) + ' was already seen')
     return False
 
 
-def __statement_seen_by_user(user_uid, statement_uid):
+def __statement_seen_by_user(db_user, statement_uid):
     """
     Adds an reference for an seen statement
 
-    :param user_uid: uid of current user
+    :param db_user: current user
     :param statement_uid: uid of the statement
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    if not DBDiscussionSession.query(User).get(user_uid) or not DBDiscussionSession.query(Statement).get(statement_uid):
-        return False
-
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter(and_(StatementSeenBy.statement_uid == statement_uid,
-                                                                        StatementSeenBy.user_uid == user_uid)).first()
+                                                                        StatementSeenBy.user_uid == db_user.uid)).first()
     if not db_seen_by:
-        logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid) + ' is now marked as seen')
-        DBDiscussionSession.add(StatementSeenBy(statement_uid=statement_uid, user_uid=user_uid))
+        logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid) + ' is now marked as seen')
+        DBDiscussionSession.add(StatementSeenBy(statement_uid=statement_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
-    logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(user_uid) + ' was already seen')
+    logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid) + ' was already seen')
     return False
 
 
-def __premisegroup_seen_by_user(user_uid, premisesgroup_uid):
+def __premisegroup_seen_by_user(db_user, premisesgroup_uid):
     """
     Adds an reference for an seen premisesgroup
 
-    :param user_uid: uid of current user
+    :param db_user: current user
     :param premisesgroup_uid: uid of the premisesgroup
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    if not DBDiscussionSession.query(User).get(user_uid) or not DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all():
-        return False
     logger('VotingHelper', '__premisegroup_seen_by_user', 'Check premises of group ' + str(premisesgroup_uid))
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
     for premise in db_premises:
-        __statement_seen_by_user(user_uid, premise.statement_uid)
+        __statement_seen_by_user(db_user, premise.statement_uid)

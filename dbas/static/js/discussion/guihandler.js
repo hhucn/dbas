@@ -5,8 +5,8 @@
 
 function GuiHandler() {
 	'use strict';
-	let interactionHandler;
-	let maxHeightOfBubbleSpace = 300;
+	var interactionHandler;
+	var maxHeightOfBubbleSpace = 300;
 	
 	/**
 	 *
@@ -20,15 +20,15 @@ function GuiHandler() {
 	 * Adds a premise row in the 'add premise'-container
 	 */
 	this.appendAddPremiseRow = function () {
-		let body = $('#' + addPremiseContainerBodyId);
-		let send = $('#' + sendNewPremiseId);
-		let id = addPremiseContainerMainInputId + '-' + new Date().getTime();
+		var body = $('#' + addPremiseContainerBodyId);
+		var send = $('#' + sendNewPremiseId);
+		var id = addPremiseContainerMainInputId + '-' + new Date().getTime();
 		
-		let copy_div = $('.container-three-divs:first').clone();
+		var copy_div = $('.container-three-divs:first').clone();
 		copy_div.find('input').attr('id', id).val('');
 		copy_div.find('.text-counter-input').remove();
-		let img_plus = copy_div.find('.icon-add-premise');
-		let img_minus = copy_div.find('.icon-rem-premise');
+		var img_plus = copy_div.find('.icon-add-premise');
+		var img_minus = copy_div.find('.icon-rem-premise');
 		body.append(copy_div);
 		setTextWatcherInputLength(copy_div.find('input'));
 		
@@ -41,7 +41,7 @@ function GuiHandler() {
 		body.find('.icon-rem-premise').each(function () {
 			$(this).click(function () {
 				// removing bubble
-				let id = $(this).parent().parent().find('input').attr('id'),
+				var id = $(this).parent().parent().find('input').attr('id'),
 					tmpid = id.split('-').length == 6 ? id.split('-')[5] : '0';
 				$('#current_' + tmpid).fadeOut().remove();
 				$(this).parent().parent().remove();
@@ -61,7 +61,7 @@ function GuiHandler() {
 		// add fuzzy search
 		$('#' + id).keyup(function () {
 			setTimeout(function () {
-				let escapedText = escapeHtml($('#' + id).val());
+				var escapedText = escapeHtml($('#' + id).val());
 				new AjaxDiscussionHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
 			}, 200);
 		});
@@ -99,10 +99,10 @@ function GuiHandler() {
 	 * Full view, full interaction range for the graph
 	 */
 	this.setDisplayStyleAsGraphView = function () {
-		const graphViewContainer = $('#' + graphViewContainerId);
-		const main = new Main();
-		const tacked_sidebar = 'tacked_graph_sidebar';
-		const header = $('#' + graphViewContainerHeaderId);
+		var graphViewContainer = $('#' + graphViewContainerId);
+		var main = new Main();
+		var tacked_sidebar = 'tacked_graph_sidebar';
+		var header = $('#' + graphViewContainerHeaderId);
 		
 		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
 		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
@@ -116,7 +116,7 @@ function GuiHandler() {
 		header.html($('#issue_info').data('title'));
 		
 		// height
-		let innerHeight = this.getMaxSizeOfGraphViewContainer();
+		var innerHeight = this.getMaxSizeOfGraphViewContainer();
 		graphViewContainer.attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
 		innerHeight -= header.outerHeight(true) + 20;
 		$('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 95%');
@@ -132,8 +132,8 @@ function GuiHandler() {
 	 * @param resize
 	 */
 	this.setMaxHeightForDiscussionContainer = function(resize){
-		const maincontainer = $('#' + discussionContainerId);
-		const sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+		var maincontainer = $('#' + discussionContainerId);
+		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
 		maincontainer.css('max-height', maincontainer.outerHeight() + resize + 'px');
 		sidebarwrapper.css('height', maincontainer.outerHeight() + 'px');
 	};
@@ -143,12 +143,12 @@ function GuiHandler() {
 	 */
 	this.setMaxHeightForBubbleSpace = function () {
 		// max size of the container
-		let speechBubbles = $('#' + discussionBubbleSpaceId);
-		let height = 0;
-		let maxHeight = this.getMaxSizeOfDiscussionViewContainer();
-		let start;
-		let nowBubble = speechBubbles.find('*[id*=now]');
-		let oldSize = speechBubbles.height();
+		var speechBubbles = $('#' + discussionBubbleSpaceId);
+		var height = 0;
+		var maxHeight = this.getMaxSizeOfDiscussionViewContainer();
+		var start;
+		var nowBubble = speechBubbles.find('*[id*=now]');
+		var oldSize = speechBubbles.height();
 		$.each(speechBubbles.find('div p'), function () {
 			height += $(this).outerHeight(true);
 			// clear unnecessary a tags
@@ -231,7 +231,7 @@ function GuiHandler() {
 	 * @param conclusion
 	 */
 	this.showSetStatementContainer = function (undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
-		let gh = new GuiHandler(), page, page_no,
+		var gh = new GuiHandler(), page, page_no,
 			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
 			prev = $('#' + popupSetPremiseGroupsPreviousButton).hide(),
 			next = $('#' + popupSetPremiseGroupsNextButton).hide(),
@@ -240,7 +240,7 @@ function GuiHandler() {
 			prefix = 'insert_statements_page_';
 		
 		send.click(function sendClick() {
-			let selections = body.find('input:checked'), i, j, splitted;
+			var selections = body.find('input:checked'), i, j, splitted;
 			
 			// merge every text part to one array
 			for (i = 0; i < undecided_texts.length; i++) {
@@ -323,7 +323,7 @@ function GuiHandler() {
 	 * @param prefix
 	 */
 	this.displayNextPageOffSetStatementContainer = function (body, prev_btn, next_btn, counter_text, prefix) {
-		let tmp_el = body.find('div:visible'),
+		var tmp_el = body.find('div:visible'),
 			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length)),
 			input = tmp_el.find('input:checked');
 		
@@ -355,7 +355,7 @@ function GuiHandler() {
 	 * @param prefix
 	 */
 	this.displayPrevPageOffSetStatementContainer = function (body, prev_btn, next_btn, counter_text, prefix) {
-		let tmp_el = body.find('div:visible'),
+		var tmp_el = body.find('div:visible'),
 			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
 		
 		if (tmp_id > 0) {
@@ -374,12 +374,12 @@ function GuiHandler() {
 	 * @returns {*}
 	 */
 	this.getPageOfSetStatementContainer = function (page_no, text) {
-		let src = $('#insert_statements_page_');
-		let div_page = src.clone();
-		let id = src.attr('id');
-		let splitted = text.split(' ' + _t_discussion(and) + ' ');
-		let topic = $('#' + addPremiseContainerMainInputIntroId).text();
-		let input1, input2, input3, list, bigText, bigTextSpan, connection, i, infix;
+		var src = $('#insert_statements_page_');
+		var div_page = src.clone();
+		var id = src.attr('id');
+		var splitted = text.split(' ' + _t_discussion(and) + ' ');
+		var topic = $('#' + addPremiseContainerMainInputIntroId).text();
+		var input1, input2, input3, list, bigText, bigTextSpan, connection, i, infix;
 		topic = topic.substr(0, topic.length - 3);
 		
 		$('#popup-set-premisegroups-body-intro-statements').text(text.trim());
@@ -416,8 +416,8 @@ function GuiHandler() {
 		
 		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
-			let nl = i < splitted.length - 1 ? '<br>' : '';
-			let tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('padding-left', '20px');
+			var nl = i < splitted.length - 1 ? '<br>' : '';
+			var tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('padding-left', '20px');
 			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
 			infix = i == 0 ? '' : ('<em>' + _t_discussion(andAtTheSameTime) + '</em> ' + connection + ' ');
@@ -436,8 +436,8 @@ function GuiHandler() {
 	 * @param type
 	 */
 	this.setStatementsAsProposal = function (parsedData, callbackid, type) {
-		let callbackElement = $('#' + callbackid);
-		let uneditted_value;
+		var callbackElement = $('#' + callbackid);
+		var uneditted_value;
 		$('#' + proposalPremiseListGroupId).empty();
 		$('#' + proposalStatementListGroupId).empty();
 		$('#' + proposalEditListGroupId).empty();
@@ -448,7 +448,7 @@ function GuiHandler() {
 			return;
 		}
 		
-		let token, button, span_dist, span_text, distance, index, text, img;
+		var token, button, span_dist, span_text, distance, index, text, img;
 		callbackElement.focus();
 		
 		$.each(parsedData.values, function (key, val) {
@@ -456,7 +456,7 @@ function GuiHandler() {
 			index = val.index;
 			
 			token = callbackElement.val();
-			//let pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
+			//var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
 			
 			// make all tokens bold
 			uneditted_value = val.text;
@@ -506,21 +506,21 @@ function GuiHandler() {
 	 * @param jsonData json encoded return data
 	 */
 	this.showLogfileOfPremisegroup = function (jsonData) {
-		let space = $('#' + popupEditStatementLogfileSpaceId);
+		var space = $('#' + popupEditStatementLogfileSpaceId);
 		space.empty();
 		space.show();
 		space.prev().show();
-		let view = $('#' + popupEditStatementChangelogView);
-		let hide = $('#' + popupEditStatementChangelogHide);
+		var view = $('#' + popupEditStatementChangelogView);
+		var hide = $('#' + popupEditStatementChangelogHide);
 		view.text('(' + _t_discussion(changelogView) + ')').hide();
 		hide.text('(' + _t_discussion(changelogHide) + ')').hide();
 		
-		let at_least_one_history = false;
+		var at_least_one_history = false;
 		$.each(jsonData, function (key, value) {
 			if (key == 'error') {
 				return true;
 			}
-			let table, tr, tbody, thead;
+			var table, tr, tbody, thead;
 			table = $('<table>');
 			table.attr('class', 'table table-condensed table-striped table-hover')
 				.attr('border', '0')
@@ -533,7 +533,7 @@ function GuiHandler() {
 				.append($('<td>').text(_t(date)));
 			table.append(thead);
 			
-			let counter = 0;
+			var counter = 0;
 			$.each(value.content, function (key, val) {
 				tr = $('<tr>')
 					.append($('<td>').text(val.text))
@@ -614,7 +614,7 @@ function GuiHandler() {
 	 * @returns {*|jQuery}
 	 */
 	this.getNoDecisionsAlert = function () {
-		let div, strong, span;
+		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
 		span = $('<span>').text(_t_discussion(noDecisionstaken));
@@ -631,8 +631,8 @@ function GuiHandler() {
 	 * @returns {*|jQuery|HTMLElement}
 	 */
 	this.closePrepareTableForOpinonDialog = function (users_array, gh, element, tbody) {
-		let body = $('<div>');
-		let table = $('<table>')
+		var body = $('<div>');
+		var table = $('<table>')
 			.attr('class', 'table table-condensed table-hover center')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
@@ -650,16 +650,16 @@ function GuiHandler() {
 	 * @returns {Array}
 	 */
 	this.createUserRowsForOpinionDialog = function (users_array) {
-		let left = '';
-		let middle = '';
-		let right = '';
-		let j = 0;
-		let rows = [];
+		var left = '';
+		var middle = '';
+		var right = '';
+		var j = 0;
+		var rows = [];
 		
 		$.each(users_array, function (index, val) {
-			let img = $.parseHTML('<img class="img-circle" style="height: 40%; margin-left: 0.5em;" src="' + val.avatar_url + '">');
-			let span = $('<span>').text(val.nickname);
-			let link = $('<td>').append($('<a>').attr({
+			var img = $.parseHTML('<img class="img-circle" style="height: 40%; margin-left: 0.5em;" src="' + val.avatar_url + '">');
+			var span = $('<span>').text(val.nickname);
+			var link = $('<td>').append($('<a>').attr({
 				'target': '_blank',
 				'href': val.public_profile_url,
 				'style': 'padding-right: 0.5em;'
@@ -719,7 +719,7 @@ function GuiHandler() {
 	 * @returns {*}
 	 */
 	this.getMaxSizeOfGraphViewContainer = function () {
-		let header, footer, innerHeight;
+		var header, footer, innerHeight;
 		header = $('#' + customBootstrapMenuId);
 		footer = $('#footer');
 		innerHeight = window.innerHeight;
@@ -735,7 +735,7 @@ function GuiHandler() {
 	 * @returns {number}
 	 */
 	this.getMaxSizeOfDiscussionViewContainer = function () {
-		let bar, innerHeight, list;
+		var bar, innerHeight, list;
 		bar = $('#header-container');
 		list = $('#' + discussionSpaceListId);
 		innerHeight = this.getMaxSizeOfGraphViewContainer();
