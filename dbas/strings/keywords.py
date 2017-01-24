@@ -342,6 +342,7 @@ class Keywords(Enum):
     islandViewTitle = 'Shows the island View'
     irrelevant = 'Irrelevant'
     itIsTrueThat = 'it is true that'
+    maybeItIsTrueThat = 'Maybe it is true that'
     itIsTrueThatAnonymous = 'it is true that'
     itIsTrue1 = ' '
     itIsTrue2 = ' is true'

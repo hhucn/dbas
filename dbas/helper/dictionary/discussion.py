@@ -223,7 +223,8 @@ class DiscussionDictHelper(object):
         while conclusion.endswith(('.', '?', '!')):
             conclusion = premise[:-1]
 
-        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise, attack, conclusion, False, is_supportive, self.nickname)
+        redirect_from_jump = 'jump/' in self.history.split('-')[-1]
+        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise, attack, conclusion, False, is_supportive, self.nickname, redirect_from_jump=redirect_from_jump)
 
         if attack == 'undermine':
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack, conclusion, db_argument.is_supportive)
