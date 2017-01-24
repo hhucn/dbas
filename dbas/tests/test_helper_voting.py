@@ -41,19 +41,19 @@ class VotingHelperTest(unittest.TestCase):
         val = add_seen_argument([], 1100)
         self.assertFalse(val)
 
-        val = add_seen_argument([], self.user.uid)
+        val = add_seen_argument([], self.user)
         self.assertFalse(val)
 
-        val = add_seen_argument([0], self.user.uid)
+        val = add_seen_argument([0], self.user)
         self.assertFalse(val)
 
-        val = add_seen_argument([1], self.user.uid)
+        val = add_seen_argument([1], self.user)
         self.assertFalse(val)
 
-        val = add_seen_argument(None, self.user.uid)
+        val = add_seen_argument(None, self.user)
         self.assertFalse(val)
 
-        val = add_seen_argument('a', self.user.uid)
+        val = add_seen_argument('a', self.user)
         self.assertFalse(val)
 
         val = add_seen_argument(1, 1100)
@@ -64,15 +64,15 @@ class VotingHelperTest(unittest.TestCase):
 
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_seen_argument(1, self.user.uid)
+        val = add_seen_argument(1, self.user)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 2, 1)
 
-        val = add_seen_argument(2, self.user.uid)
+        val = add_seen_argument(2, self.user)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 3, 2)
 
-        val = add_seen_argument(2, self.user.uid)
+        val = add_seen_argument(2, self.user)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 3, 2)
 
@@ -90,19 +90,19 @@ class VotingHelperTest(unittest.TestCase):
         val = add_seen_statement([], 1100)
         self.assertFalse(val)
 
-        val = add_seen_statement([], self.user.uid)
+        val = add_seen_statement([], self.user)
         self.assertFalse(val)
 
-        val = add_seen_statement([0], self.user.uid)
+        val = add_seen_statement([0], self.user)
         self.assertFalse(val)
 
-        val = add_seen_statement([1], self.user.uid)
+        val = add_seen_statement([1], self.user)
         self.assertFalse(val)
 
-        val = add_seen_statement(None, self.user.uid)
+        val = add_seen_statement(None, self.user)
         self.assertFalse(val)
 
-        val = add_seen_statement('a', self.user.uid)
+        val = add_seen_statement('a', self.user)
         self.assertFalse(val)
 
         val = add_seen_statement(1, 1100)
@@ -113,15 +113,15 @@ class VotingHelperTest(unittest.TestCase):
 
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_seen_statement(1, self.user.uid)
+        val = add_seen_statement(1, self.user)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 1, 0)
 
-        val = add_seen_statement(2, self.user.uid)
+        val = add_seen_statement(2, self.user)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 2, 0)
 
-        val = add_seen_statement(2, self.user.uid)
+        val = add_seen_statement(2, self.user)
         self.assertFalse(val)
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 2, 0)
 

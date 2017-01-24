@@ -197,7 +197,7 @@ def process_seen_statements(uids, nickname, translator, additional_argument=None
         return error
 
     if additional_argument:
-        add_seen_argument(additional_argument, db_user.uid)
+        add_seen_argument(additional_argument, db_user)
 
     for uid in uids:
         # we get the premise group id's only
@@ -205,7 +205,7 @@ def process_seen_statements(uids, nickname, translator, additional_argument=None
             error = translator.get(_.internalKeyError)
             break
 
-        add_seen_statement(uid, db_user.uid)
+        add_seen_statement(uid, db_user)
 
     return error
 
