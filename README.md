@@ -1,6 +1,7 @@
 # D-BAS
 
 [![build status](https://gitlab.cs.uni-duesseldorf.de/project/dbas/badges/master/build.svg)](https://gitlab.cs.uni-duesseldorf.de/project/dbas/commits/master)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 D-BAS is based on [Pyramid](http://www.pylonsproject.org/), 
 [Bootstrap](http://getbootstrap.com/) and [jQuery](https://jquery.com/).
