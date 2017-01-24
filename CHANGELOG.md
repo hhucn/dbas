@@ -1,3 +1,7 @@
+## 1.1.2 (2017-01-24)
+- Update for the german language
+- Minor improvements and bugfix
+
 ## 1.1.1 (2017-01-16)
 - Update for the german language
 - Minor improvements and bugfix

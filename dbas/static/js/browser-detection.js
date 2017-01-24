@@ -19,24 +19,6 @@ navigator.sayswho = (function(){
     return M.join(' ');
 })();
 
-var splitted = navigator.sayswho.split(' ');
-var browser = splitted[0];
-var version = splitted[1];
-
-if (browser == 'Chrome' && version < 52
-	|| browser == 'Safari' && version < 10
-	|| browser == 'Firefox' && version < 47){
-	setTimeout(function() {
-	    setGlobalErrorHandlerWithoutIds();
-	}, 1500);
-}
-	
-if (browser == 'Safari' && version < 10){
-	setTimeout(function() {
-	    setGlobalErrorHandlerWithoutIds();
-	}, 1500);
-}
-
 /**
  * Sets data for the global sucess field
  */
@@ -54,3 +36,24 @@ function setGlobalErrorHandlerWithoutIds(){
     $('#request_failed_container_heading').html(heading);
     $('#request_failed_container_message').html(body);
 }
+
+$(document).ready(function mainDocumentReady() {
+	return;
+	var splitted = navigator.sayswho.split(' ');
+	var browser = splitted[0];
+	var version = splitted[1];
+	
+	if (browser == 'Chrome' && version < 52
+		|| browser == 'Safari' && version < 10
+		|| browser == 'Firefox' && version < 47) {
+		setTimeout(function () {
+			setGlobalErrorHandlerWithoutIds();
+		}, 1500);
+	}
+	
+	if (browser == 'Safari' && version < 10) {
+		setTimeout(function () {
+			setGlobalErrorHandlerWithoutIds();
+		}, 1500);
+	}
+});
