@@ -397,7 +397,7 @@ class DiscussionDictHelper(object):
 
         db_statement       = DBDiscussionSession.query(Statement).get(conclusion_uid)
         reply_for_argument = not (db_statement and db_statement.is_startpoint)
-        current_argument   = get_text_for_argument_uid(argument_uid, with_html_tag=True, colored_position=True,
+        current_argument   = get_text_for_argument_uid(db_argument.uid, with_html_tag=True, colored_position=True,
                                                        user_changed_opinion=user_changed_opinion, attack_type=attack,
                                                        minimize_on_undercut=True)
 
