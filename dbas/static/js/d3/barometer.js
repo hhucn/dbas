@@ -1,5 +1,5 @@
 // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
-const google_colors = [
+var google_colors = [
     //0          1          2          3          4          5          6          7          8          9          10         11         12         13         14
     ['#4caf50', '#e8f5e9', '#c8e6c9', '#a5d6a7', '#81c784', '#66bb6a', '#4caf50', '#43a047', '#388e3c', '#2e7d32', '#1b5e20', '#b9f6ca', '#69f0ae', '#00e676', '#00c853'],  // green
     ['#f44336', '#ffebee', '#ffcdd2', '#ef9a9a', '#e57373', '#ef5350', '#f44336', '#e53935', '#d32f2f', '#c62828', '#b71c1c', '#ff8a80', '#ff5252', '#ff1744', '#d50000'],  // red
@@ -22,25 +22,25 @@ const google_colors = [
 
 function DiscussionBarometer(){
     'use strict';
-    let is_attitude = false;
-    let dialog = $('#' + popupBarometerId);
-    let jsonData = [];
-    let address = 'position';
-    let barWidth;
-    let maxUsersNumber;
+    var is_attitude = false;
+    var dialog = $('#' + popupBarometerId);
+    var jsonData = [];
+    var address = 'position';
+    var barWidth;
+    var maxUsersNumber;
 
     /**
      * Displays barometer.
      */
     this.showBarometer = function(){
-        let uid = 0, uid_array = [];
+        var uid = 0, uid_array = [];
 
-        let url = window.location.href;
+        var url = window.location.href;
         url = url.split('#')[0];
         url = url.split('?')[0];
 
-        let splitted = url.split('/');
-        let inputs = $('#discussions-space-list').find('li:visible:not(:last-child) input');
+        var splitted = url.split('/');
+        var inputs = $('#discussions-space-list').find('li:visible:not(:last-child) input');
 
         // parse url
         if (url.indexOf('/attitude/') != -1){
@@ -50,7 +50,7 @@ function DiscussionBarometer(){
         } else if (url.indexOf('/justify/') != -1 || url.indexOf('/choose/') != -1) {
             address = 'justify';
             // dont know step
-            let tmp = url.split('/');
+            var tmp = url.split('/');
             if (tmp[tmp.length - 1] == 'd'){
                 address = 'dont_know';
                 uid_array.push(tmp[tmp.length - 2]);
@@ -146,10 +146,10 @@ function DiscussionBarometer(){
         // create div for barometer
         dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
         // width and height of chart
-        let width = 400, height = 400;
-        let barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
+        var width = 400, height = 400;
+        var barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
 
-        let usersDict = [];
+        var usersDict = [];
         usersDict = getUsersDict(usersDict);
 
         // create bars of chart
@@ -212,14 +212,14 @@ function DiscussionBarometer(){
      * @param height
      */
      function createXAxis(usersDict, svg, width, height){
-        let maxUsersNumber = getMaximum(usersDict);
+        var maxUsersNumber = getMaximum(usersDict);
         // add offset on scale
-        let offset = 5/100 * maxUsersNumber;
+        var offset = 5/100 * maxUsersNumber;
 
-        let xScale = d3.scale.linear().domain([0, maxUsersNumber + offset]).range([0, width]);
+        var xScale = d3.scale.linear().domain([0, maxUsersNumber + offset]).range([0, width]);
 
         // create y-axis
-        let xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+        var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
         svg.append("g")
             .attr({id: "xAxis", transform: "translate(50," + height + ")"})
             .call(xAxis);
@@ -231,7 +231,7 @@ function DiscussionBarometer(){
      * @param usersDict
      */
     function getMaximum(usersDict) {
-        let maxUsersNumber = 0;
+        var maxUsersNumber = 0;
         $.each(usersDict, function(key, value){
             if(value.usersNumber > maxUsersNumber){
                 maxUsersNumber = value.usersNumber;
@@ -247,10 +247,10 @@ function DiscussionBarometer(){
      * @param height
      */
     function createYAxis(svg, height){
-        let yScale = d3.scale.linear().domain([0, 100]).range([height, 0]);
+        var yScale = d3.scale.linear().domain([0, 100]).range([height, 0]);
 
         // create y-axis
-        let yAxis = d3.svg.axis().scale(yScale).orient("left");
+        var yAxis = d3.svg.axis().scale(yScale).orient("left");
         svg.append("g")
             .attr({id: "yAxis", transform: "translate(50,50)"})
             .call(yAxis)
@@ -315,8 +315,8 @@ function DiscussionBarometer(){
     function createBar(usersDict, width, height, barChartSvg, selector) {
         // if the chart is a bar chart, subtract offset on scale from width
         if(address === "argument" || address === "attitude"){
-            let maxUsersNumber = getMaximum(usersDict);
-            let offset = 5/100 * maxUsersNumber;
+            var maxUsersNumber = getMaximum(usersDict);
+            var offset = 5/100 * maxUsersNumber;
             width = width - (width/(maxUsersNumber+offset) * offset);
         }
         // width of one bar
@@ -329,7 +329,7 @@ function DiscussionBarometer(){
             barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
         }
 
-        let y_offset_height = 60;
+        var y_offset_height = 60;
         // set max-width of bar
         if(barWidth > 100){
             barWidth = 100;
@@ -484,15 +484,15 @@ function DiscussionBarometer(){
      * Create barometer.
      */
     function getD3BarometerDoughnutChart() {
-        let usersDict = [];
+        var usersDict = [];
         removeContentOfModal();
 
         // create div for barometer
         dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
 
         // width and height of chart
-        let width = 500, height = 410;
-        let doughnutChartSvg = getSvg(width, height + 40).attr('id', "barometer-svg");
+        var width = 500, height = 410;
+        var doughnutChartSvg = getSvg(width, height + 40).attr('id', "barometer-svg");
 
         getUsersDict(usersDict);
 
@@ -515,13 +515,13 @@ function DiscussionBarometer(){
      * @param usersDict
      */
     function createDoughnutChart(doughnutChartSvg, usersDict) {
-        let height = 400, width = 400,
+        var height = 400, width = 400,
             outerRadius = Math.min(width, height) / 2,
             innerRadius = 0.3 * outerRadius;
 
-        let doughnut = getDoughnut(usersDict);
+        var doughnut = getDoughnut(usersDict);
 
-        let data = [];
+        var data = [];
         // if there is no argument create donut-chart with one sector with small radius
         if(usersDict.length == 0){
             data.push({
@@ -533,8 +533,8 @@ function DiscussionBarometer(){
             data = usersDict;
         }
 
-        let innerCircle = getInnerCircle(innerRadius, outerRadius, data);
-        let outerCircle = getOuterCircle(innerRadius, outerRadius);
+        var innerCircle = getInnerCircle(innerRadius, outerRadius, data);
+        var outerCircle = getOuterCircle(innerRadius, outerRadius);
         createOuterPath(doughnutChartSvg, outerCircle, doughnut, data);
         createInnerPath(doughnutChartSvg, innerCircle, doughnut, data);
     }
@@ -546,7 +546,7 @@ function DiscussionBarometer(){
      * @returns {*}
      */
     function getDoughnut(data){
-        let sumUsersNumber = 0;
+        var sumUsersNumber = 0;
         $.each(data, function (key, value) {
             sumUsersNumber += value.usersNumber;
         });
@@ -648,7 +648,7 @@ function DiscussionBarometer(){
     function createShortTooltipDoughnutChart(doughnutChartSvg, usersDict, index){
         // append tooltip in middle of doughnut chart
         // text of tooltip depends on address
-        let tooltipText;
+        var tooltipText;
         if(address === "attitude"){
             tooltipText = usersDict[index].usersNumber;
         }
@@ -674,11 +674,11 @@ function DiscussionBarometer(){
      * @param selector: different selectors for bar chart and doughnut chart
      */
     function addListenerForTooltip(usersDict, chartSvg, selector) {
-        let isClicked = false;
-        let tooltipIsVisible = false;
+        var isClicked = false;
+        var tooltipIsVisible = false;
         // save index and id of object of last click event
-        let elementIndex;
-        let _index;
+        var elementIndex;
+        var _index;
 
         // add listener for click event
         chartSvg.selectAll(selector).on('click', function (d, index) {
@@ -792,10 +792,10 @@ function DiscussionBarometer(){
      * @param index
      */
     function getTooltip(usersDict, index){
-        let div = $('<div>').attr("class", "chartTooltip");
+        var div = $('<div>').attr("class", "chartTooltip");
         dialog.find('.col-md-5').append(div);
 
-        let tooltip = $(".chartTooltip");
+        var tooltip = $(".chartTooltip");
 
         // make tooltip visible
         tooltip.css("opacity", 1);
@@ -816,19 +816,19 @@ function DiscussionBarometer(){
      */
     function createTooltipContent(usersDict, index){
         // append list elements to div
-        let messageList = '';
+        var messageList = '';
         if (usersDict[index].message != null) {
             messageList = $('<li>').html(usersDict[index].message);
         }
-        let text_keyword = '';
+        var text_keyword = '';
         if (address == 'argument')
             text_keyword = usersDict[index].seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
         else
             text_keyword = usersDict[index].seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
-        let seenByList = $('<li>').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
-        let userList = $('<li>').html(_t_discussion(users) + ': ');
+        var seenByList = $('<li>').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
+        var userList = $('<li>').html(_t_discussion(users) + ': ');
 
-        let list;
+        var list;
         if (!is_attitude){
             list = messageList.append(seenByList);
         } else {
@@ -840,7 +840,7 @@ function DiscussionBarometer(){
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
-            let avatarImage = $('<img>').attr({'data-href': e.public_profile_url, 'title': e.nickname,
+            var avatarImage = $('<img>').attr({'data-href': e.public_profile_url, 'title': e.nickname,
                 'class': 'img-circle', 'src': e.avatar_url});
             list.append(avatarImage);
         });
@@ -854,7 +854,7 @@ function DiscussionBarometer(){
      * @param usersDict
      */
     function createLegend(usersDict){
-        let div, label, element;
+        var div, label, element;
         $.each(usersDict, function(key, value) {
             div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key));
             label = $('<label>').attr('class', 'legendLabel').html(value.text);

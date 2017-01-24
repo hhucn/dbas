@@ -11,7 +11,7 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewStartStatement = function (data) {
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length > 0) {
 			$('#' + addStatementErrorContainer).show();
 			$('#' + addStatementErrorMsg).text(parsedData.error);
@@ -26,7 +26,7 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewPremisesArgument = function (data) {
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length > 0) {
 			$('#' + addPremiseErrorContainer).show();
 			$('#' + addPremiseErrorMsg).text(parsedData.error);
@@ -40,7 +40,7 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewStartPremise = function (data) {
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length > 0) {
 			$('#' + addPremiseErrorContainer).show();
 			$('#' + addPremiseErrorMsg).text(parsedData.error);
@@ -54,7 +54,7 @@ function InteractionHandler() {
 	 * @param data of the ajax request
 	 */
 	this.callbackIfDoneForGettingLogfile = function (data) {
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		// status is the length of the content
 		console.log(parsedData.error.length)
 		if (parsedData.error.length == 0) {
@@ -70,7 +70,7 @@ function InteractionHandler() {
 	 * @param data of the ajax request
 	 */
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 		} else {
@@ -85,7 +85,7 @@ function InteractionHandler() {
 	 * @param long_url url which should be shortend
 	 */
 	this.callbackIfDoneForShortenUrl = function (data, long_url) {
-		let parsedData = $.parseJSON(data), service;
+		var parsedData = $.parseJSON(data), service;
 		if (parsedData.error.length == 0) {
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
 			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ', ' + _t_discussion(shortenedBy) + ' ' + service + ':');
@@ -103,7 +103,7 @@ function InteractionHandler() {
 	 * @param type
 	 */
 	this.callbackIfDoneFuzzySearch = function (data, callbackid, type) {
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		// if there is no returned data, we will clean the list
 
 		if (Object.keys(parsedData).length == 0) {
@@ -121,7 +121,7 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingInfosAboutArgument = function(data){
-		let parsedData = $.parseJSON(data), text, element;
+		var parsedData = $.parseJSON(data), text, element;
 		// status is the length of the content
 		if (parsedData.error.length != 0) {
 			text = parsedData.error;
@@ -131,9 +131,9 @@ function InteractionHandler() {
 		}
 
 		// supporters = parsedData.supporter.join(', ');
-		let author = parsedData.author;
+		var author = parsedData.author;
 		if (parsedData.author != 'anonymous'){
-			let img = '<img class="img-circle" style="height: 1em;" src="' + parsedData.gravatar + '">';
+			var img = '<img class="img-circle" style="height: 1em;" src="' + parsedData.gravatar + '">';
 			author = '<a href="' + mainpage + 'user/' + parsedData.author + '">' + img + ' ' + parsedData.author + '</a>';
 		} else {
 			author = _t_discussion(an_anonymous_user);
@@ -143,7 +143,7 @@ function InteractionHandler() {
 		text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
 		text +=_t_discussion(messageInfoParticipant) + '.';
 
-		let users_array = [];
+		var users_array = [];
 		$.each(parsedData.supporter, function (index, val) {
 			users_array.push({
 				'avatar_url': parsedData.gravatars[val],
@@ -152,14 +152,14 @@ function InteractionHandler() {
 			});
 		});
 		
-		let gh = new GuiHandler();
-		let tbody = $('<tbody>');
-		let rows = gh.createUserRowsForOpinionDialog(users_array);
+		var gh = new GuiHandler();
+		var tbody = $('<tbody>');
+		var rows = gh.createUserRowsForOpinionDialog(users_array);
 		$.each( rows, function( key, value ) {
 			tbody.append(value);
 		});
 		
-		let body = gh.closePrepareTableForOpinonDialog(parsedData.supporter, gh, text, tbody);
+		var body = gh.closePrepareTableForOpinonDialog(parsedData.supporter, gh, text, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function () {
@@ -167,7 +167,7 @@ function InteractionHandler() {
 		});
 		
 		setTimeout(function(){
-			let popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
+			var popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
 			if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
 				popup_table.slimScroll({
 					position: 'right',
@@ -184,11 +184,11 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForSendNewIssue = function(data){
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 
 		if (parsedData.error.length == 0) {
 			$('#popup-add-topic').modal('hide');
-			let li = $('<li>').addClass('enabled'),
+			var li = $('<li>').addClass('enabled'),
 				a = $('<a>').attr('href', parsedData.issue.url).attr('value', parsedData.issue.title),
 				spanTitle = $('<span>').text(parsedData.issue.title),
 				spanBadge = $('<span>').addClass('badge').attr('style', 'float: right; margin-left: 1em;').text(parsedData.issue.arg_count),
@@ -211,14 +211,14 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForSendNewIssueTable = function(data){
-	let parsedData = $.parseJSON(data);
+	var parsedData = $.parseJSON(data);
 
         if (parsedData.error.length == 0) {
 			$('#popup-add-topic').modal('hide');
 
-			let space = $('#issue-table');
+			var space = $('#issue-table');
 
-			let tr = $('<tr>')
+			var tr = $('<tr>')
 					.append($('<td>').html( parsedData.issue.uid ))
 					.append($('<td>').html( parsedData.issue.title ))
 					.append($('<td>').html( parsedData.issue.info ))
@@ -240,7 +240,7 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneRevokeContent = function(data) {
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
@@ -259,24 +259,24 @@ function InteractionHandler() {
 	 * @param is_argument
 	 */
 	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data, is_argument){
-		let parsedData = $.parseJSON(data), users_array, popup_table;
+		var parsedData = $.parseJSON(data), users_array, popup_table;
 
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 			return;
 		}
 		
-		let gh = new GuiHandler();
-		let tbody = $('<tbody>');
-		let span = is_argument? $('<span>').text(parsedData.opinions.message) : $('<span>').text(parsedData.opinions[0].message);
+		var gh = new GuiHandler();
+		var tbody = $('<tbody>');
+		var span = is_argument? $('<span>').text(parsedData.opinions.message) : $('<span>').text(parsedData.opinions[0].message);
 
 		users_array = is_argument ? parsedData.opinions.users : parsedData.opinions[0].users;
-		let rows = gh.createUserRowsForOpinionDialog(users_array);
+		var rows = gh.createUserRowsForOpinionDialog(users_array);
 		$.each( rows, function( key, value ) {
 			tbody.append(value);
 		});
 		
-		let body = gh.closePrepareTableForOpinonDialog(users_array, gh, span, tbody);
+		var body = gh.closePrepareTableForOpinonDialog(users_array, gh, span, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(usersWithSameOpinion), body);
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function (e) {
@@ -301,7 +301,7 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingReferences = function(data){
-		let parsedData = $.parseJSON(data);
+		var parsedData = $.parseJSON(data);
 		
 		if (parsedData.error.length != 0)
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
@@ -329,9 +329,9 @@ function InteractionHandler() {
 				$('#' + addPremiseErrorMsg).text(_t(inputEmpty));
 			}
 		} else {
-			let undecided_texts = [], decided_texts = [];
+			var undecided_texts = [], decided_texts = [];
 			if ($.isArray(text)) {
-				for (let i = 0; i < text.length; i++) {
+				for (var i = 0; i < text.length; i++) {
 					// replace multiple whitespaces
 					text[i] = text[i].replace(/\s\s+/g, ' ');
 
@@ -357,7 +357,7 @@ function InteractionHandler() {
 			}
 
 			if (undecided_texts.length > 0){
-				for (let j=0; j<undecided_texts.length; j++){
+				for (var j=0; j<undecided_texts.length; j++){
 					if (undecided_texts[j].match(/\.$/))
 						undecided_texts[j] = undecided_texts[j].substr(0, undecided_texts[j].length -1)
 				}

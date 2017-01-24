@@ -23,7 +23,7 @@ if (!window.console.log) window.console.log = function () { };
 
 $.fn.euCookieLawPopup = (function() {
 
-	const _self = this;
+	var _self = this;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// PARAMETERS (MODIFY THIS PART) //////////////////////////////////////////////////////////////
@@ -54,10 +54,10 @@ $.fn.euCookieLawPopup = (function() {
 	// PRIVATE FUNCTIONS FOR MANIPULATING DATA ////////////////////////////////////////////////////
 
 	// Overwrite default parameters if any of those is present
-	const parseParameters = function(object, markup, settings) {
+	var parseParameters = function(object, markup, settings) {
 
 		if (object) {
-			const className = $(object).attr('class') ? $(object).attr('class') : '';
+			var className = $(object).attr('class') ? $(object).attr('class') : '';
 			if (className.indexOf('eupopup-top') > -1) {				_self.params.popupPosition = 'top';			}
 			else if (className.indexOf('eupopup-fixedtop') > -1) {		_self.params.popupPosition = 'fixedtop';	}
 			else if (className.indexOf('eupopup-bottomright') > -1) {	_self.params.popupPosition = 'bottomright';	}
@@ -89,7 +89,7 @@ $.fn.euCookieLawPopup = (function() {
 
 	};
 
-	const createHtmlMarkup = function() {
+	var createHtmlMarkup = function() {
 
 		if (_self.params.htmlMarkup) {
 			return _self.params.htmlMarkup;
@@ -113,22 +113,22 @@ $.fn.euCookieLawPopup = (function() {
 	};
 
 	// Storing the consent in a cookie
-	const setUserAcceptsCookies = function(consent) {
-		const d = new Date();
-		const expiresInDays = _self.params.agreementExpiresInDays * 24 * 60 * 60 * 1000;
+	var setUserAcceptsCookies = function(consent) {
+		var d = new Date();
+		var expiresInDays = _self.params.agreementExpiresInDays * 24 * 60 * 60 * 1000;
 		d.setTime( d.getTime() + expiresInDays );
-		const expires = "expires=" + d.toGMTString();
+		var expires = "expires=" + d.toGMTString();
 		document.cookie = _self.vars.COOKIE_NAME + '=' + consent + "; " + expires + ";path=/";
 
 		$(document).trigger("user_cookie_consent_changed", {'consent' : consent});
 	};
 
 	// Let's see if we have a consent cookie already
-	const userAlreadyAcceptedCookies = function() {
-		let userAcceptedCookies = false;
-		const cookies = document.cookie.split(";");
-		for (let i = 0; i < cookies.length; i++) {
-			const c = cookies[i].trim();
+	var userAlreadyAcceptedCookies = function() {
+		var userAcceptedCookies = false;
+		var cookies = document.cookie.split(";");
+		for (var i = 0; i < cookies.length; i++) {
+			var c = cookies[i].trim();
 			if (c.indexOf(_self.vars.COOKIE_NAME) == 0) {
 				userAcceptedCookies = c.substring(_self.vars.COOKIE_NAME.length + 1, c.length);
 			}
@@ -137,7 +137,7 @@ $.fn.euCookieLawPopup = (function() {
 		return userAcceptedCookies;
 	};
 	
-	const hideContainer = function() {
+	var hideContainer = function() {
 		// $('.eupopup-container').slideUp(200);
 		$('.eupopup-container').animate({
 			opacity: 0,

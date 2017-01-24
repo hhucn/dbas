@@ -4,7 +4,7 @@
  */
 
 // colors from https://www.google.com/design/spec/style/color.html#color-color-palette
-const colors = [
+var colors = [
 	'#F44336', //  0 red
 	'#673AB7', //  1 deep purple
 	'#03A9F4', //  2 light blue
@@ -57,7 +57,7 @@ function DiscussionBarometer(){
 	 * Displays the barometer
 	 */
 	this.showBarometer = function(){
-		let uid = 0, uid_array = [],
+		var uid = 0, uid_array = [],
 			url = window.location.href.split('?')[0],
 			splitted = url.split('/'),
 			adress = 'position';
@@ -93,7 +93,7 @@ function DiscussionBarometer(){
 	 * @param adress: step of the discussion
 	 */
 	this.callbackIfDoneForGetDictionary = function(data, adress){
-		let obj, _db = new DiscussionBarometer();
+		var obj, _db = new DiscussionBarometer();
         try{
 	        obj = JSON.parse(data);
 			console.log(obj);
@@ -126,9 +126,9 @@ function DiscussionBarometer(){
 	 */
 	this.createAttitudeBarometer = function(obj) {
 		$('#' + popupConfirmDialogId + ' h4.modal-title').html(obj.text);
-    	let ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
+    	var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d");
 
-		let pieData = [
+		var pieData = [
         {
 			value: obj.agree_users.length,
         	color: colors[3],
@@ -148,7 +148,7 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		} else {
 			options = new DiscussionBarometer().createLegendOptions();
-			let chart = new Chart(ctx).Pie(pieData, options);
+			var chart = new Chart(ctx).Pie(pieData, options);
 			new DiscussionBarometer().createLegend(chart);
 		}
 	};
@@ -158,7 +158,7 @@ function DiscussionBarometer(){
 	 * @param obj: parsed JSON-object
 	 */
 	this.createStatementBarometer = function(obj) {
-		let ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d"),
+		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d"),
 			chart = new Chart(ctx).Pie(),
 			index = 0,
 			users = 0;
@@ -180,7 +180,7 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
 		else {
-			let options = new DiscussionBarometer().createLegendOptions();
+			var options = new DiscussionBarometer().createLegendOptions();
 			$.extend(chart.options, options);
 			new DiscussionBarometer().createLegend(chart);
 		}
@@ -191,7 +191,7 @@ function DiscussionBarometer(){
 	 * @param obj: parsed JSON-object
 	 */
 	this.createArgumentBarometer = function(obj) {
-		let ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d"),
+		var ctx = $('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").get(0).getContext("2d"),
 			chart = new Chart(ctx).Pie(),
 			index = 0,
 			users = 0;
@@ -213,7 +213,7 @@ function DiscussionBarometer(){
 			$('#' + popupConfirmDialogId + ' div.modal-body ' + "#chartCanvas").remove();
 		}
 		else{
-			let options = new DiscussionBarometer().createLegendOptions();
+			var options = new DiscussionBarometer().createLegendOptions();
 			$.extend(chart.options, options);
 			new DiscussionBarometer().createLegend(chart);
 		}
@@ -225,7 +225,7 @@ function DiscussionBarometer(){
 	this.createLegendOptions = function() {
 		return options = {
 			legendTemplate: '<ul class = "chart">'
-				+ '<% for (let i=0; i<segments.length; i++) { %>'
+				+ '<% for (var i=0; i<segments.length; i++) { %>'
 					+ '<li class = "chart">'
 						+ '<span class = "chart" style = "background-color: <%=segments[i].fillColor%>"> </span>'
 						+ '<% if (segments[i].label) { %><%= segments[i].label %><% } %>'
@@ -243,12 +243,12 @@ function DiscussionBarometer(){
 	 * @param chart
 	 */
 	this.createLegend = function(chart) {
-		let legend = chart.generateLegend();
+		var legend = chart.generateLegend();
 		$('#' + popupConfirmDialogId + ' div.modal-body').append('<div id = "chart-legend">' + legend + '</div>');
 	};
 
 	this.setAlertIntoDialog = function(){
-		let div, strong, span;
+		var div, strong, span;
 		div = $('<div>').attr('class', 'alert alert-dismissible alert-info');
 		strong = $('<strong>').text('Ohh...! ');
 		span = $('<span>').text(_t_discussion(noDecisionstaken));

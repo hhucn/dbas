@@ -10,7 +10,7 @@ function ReviewCallbacks() {
 	 * @param jsonData
 	 */
 	this.forReviewArgument = function(jsonData){
-		let parsedData = $.parseJSON(jsonData);
+		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
@@ -27,7 +27,7 @@ function ReviewCallbacks() {
 	 * @param review_instance
 	 */
 	this.forReviewLock = function(jsonData, review_instance){
-		let parsedData = $.parseJSON(jsonData);
+		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else if (parsedData.info.length != 0) {
@@ -42,14 +42,14 @@ function ReviewCallbacks() {
 				$('#request-not-lock-text').hide();
 	            $('#send_edit').removeClass('disabled');
 				
-				let review_argument_text = $('#reviewed-argument-text');
+				var review_argument_text = $('#reviewed-argument-text');
 				review_argument_text.attr('data-oem', review_argument_text.text());
 				
 				$.each($('#argument-part-table').find('input'), function(){
-					let html_text = review_argument_text.html();
-					let pos = html_text.toLowerCase().indexOf($(this).attr('placeholder').toLowerCase());
-					let replacement = '<span id="text' + $(this).data('id') + '">' + $(this).attr('placeholder') + '</span>';
-					let repl_text = html_text.substr(0, pos) + replacement + html_text.substr(pos + $(this).attr('placeholder').length);
+					var html_text = review_argument_text.html();
+					var pos = html_text.toLowerCase().indexOf($(this).attr('placeholder').toLowerCase());
+					var replacement = '<span id="text' + $(this).data('id') + '">' + $(this).attr('placeholder') + '</span>';
+					var repl_text = html_text.substr(0, pos) + replacement + html_text.substr(pos + $(this).attr('placeholder').length);
 					review_argument_text.html(repl_text);
 					
 					$(this).focusin(function(){
@@ -75,7 +75,7 @@ function ReviewCallbacks() {
 	 * @param jsonData
 	 */
 	this.forReviewUnlock = function(jsonData){
-		let parsedData = $.parseJSON(jsonData);
+		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else if (parsedData.info.length != 0) {

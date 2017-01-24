@@ -4,19 +4,19 @@
  */
 
 function Review() {
-	const sec = parseInt($('#request-lock').data('lock_sec'));
-	let countdown;
-	const _this = this;
-	const countdown_min = parseInt(sec/60);
-	const countdown_sec = sec - countdown_min * 60;
+	var sec = parseInt($('#request-lock').data('lock_sec'));
+	var countdown;
+	var _this = this;
+	var countdown_min = parseInt(sec/60);
+	var countdown_sec = sec - countdown_min * 60;
 	
 	/**
 	 *
 	 */
 	this.doOptimizationAck = function(review_uid) {
-		const container = $('#optimization-container');
-		const opti_ack = $('#opti_ack');
-		const send_edit = $('#send_edit');
+		var container = $('#optimization-container');
+		var opti_ack = $('#opti_ack');
+		var send_edit = $('#send_edit');
 		
 		send_edit.addClass('disabled');
 		$('#close-optimization-container').click(function(){
@@ -44,8 +44,8 @@ function Review() {
 	 *
 	 */
 	this.sendOptimization = function(){
-		const container = $('#optimization-container');
-		let edit_array = [];
+		var container = $('#optimization-container');
+		var edit_array = [];
 		// getting all edited values
 		$.each($('#argument-part-table').find('input'), function(){
 			if ($(this).val().length > 0 && $(this).val() != $(this).attr('placeholder')) {
@@ -59,7 +59,7 @@ function Review() {
 		});
 		
 		if (edit_array.length > 0){
-			const id = $('#send_edit').data('id');
+			var id = $('#send_edit').data('id');
 			new AjaxReviewHandler().reviewOptimizationArgument(true, id, edit_array);
 		} else {
 			setGlobalInfoHandler('Ohh!', _t(noEditsInOptimization));
@@ -100,9 +100,9 @@ function Review() {
 	 *
 	 */
 	this.startCountdown = function(){
-		const mm = $('#countdown_timer_min');
-		const ss = $('#countdown_timer_sec');
-		const point = $('#countdown_timer_point');
+		var mm = $('#countdown_timer_min');
+		var ss = $('#countdown_timer_sec');
+		var point = $('#countdown_timer_point');
 		mm.text(countdown_min).removeClass('text-danger').addClass('text-info');
 		ss.text(countdown_sec < 10 ? '0' + countdown_sec : countdown_sec).removeClass('text-danger').addClass('text-info');
 		point.removeClass('text-danger').addClass('text-info');
@@ -112,8 +112,8 @@ function Review() {
 		countdown = new Countdown({
             seconds: countdown_min * 60 + countdown_sec,  // number of seconds to count down
             onUpdateStatus: function(sec){
-            	const m = parseInt(sec / 60);
-	            const s = sec - m * 60;
+            	var m = parseInt(sec / 60);
+	            var s = sec - m * 60;
             	mm.text(m);
             	ss.text(s < 10 ? '0' + s : s);
 	            if (sec <= 60){
@@ -127,7 +127,7 @@ function Review() {
 	            $('#send_edit').addClass('disabled');
 				$('#request-lock-text').hide();
 				$('#request-not-lock-text').show();
-				const button = $('#request-lock');
+				var button = $('#request-lock');
 				button.show();
 				new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
             } // final action
@@ -141,7 +141,7 @@ function Review() {
 	this.stopCountdown = function(){
 		if (countdown)
 			countdown.stop();
-		const button = $('#request-lock');
+		var button = $('#request-lock');
 		button.hide();
 		new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
 	};

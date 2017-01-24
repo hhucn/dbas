@@ -12,7 +12,7 @@
  * @returns {String}
  */
 function cutTextOnChar (text, maxTextWidth, pattern) {
-	let i, p, l;
+	var i, p, l;
 		i = 1;
 		l = text.length;
 	while (i * maxTextWidth < l) {
@@ -31,7 +31,7 @@ function cutTextOnChar (text, maxTextWidth, pattern) {
  * @returns {*} escaped string
  */
 function escapeHtml (text) {
-	let div = document.createElement('div');
+	var div = document.createElement('div');
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
 }
@@ -51,11 +51,11 @@ function getCurrentIssueId (){
  * @param params dictionary with at least {'name': ?, 'content': ?}
  */
 function redirectInNewTabForContact (params){
-	let csrfToken = $('#' + hiddenCSRFTokenId).val();
-	let csrfField = '<input type="hidden" name="csrf_token" value="' + csrfToken + '">';
-	let f = $("<form target='_blank' method='POST' style='display:none;'>" + csrfField + "</form>").attr('action', mainpage + 'contact');
+	var csrfToken = $('#' + hiddenCSRFTokenId).val();
+	var csrfField = '<input type="hidden" name="csrf_token" value="' + csrfToken + '">';
+	var f = $("<form target='_blank' method='POST' style='display:none;'>" + csrfField + "</form>").attr('action', mainpage + 'contact');
 	f.appendTo(document.body);
-	for (let prms in params) {
+	for (var prms in params) {
 		if (params.hasOwnProperty(prms)) {
 			f.append($('<input type="hidden" />').attr('name', prms).attr('value', params[prms]));
 		}

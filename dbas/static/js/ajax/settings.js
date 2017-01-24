@@ -9,7 +9,7 @@ function AjaxSettingsHandler(){
 	 */
 	this.getUserHistoryData = function(){
 		'use strict';
-		const csrf_token = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_user_history',
 			method: 'GET',
@@ -28,7 +28,7 @@ function AjaxSettingsHandler(){
 	 */
 	this.deleteUserHistoryData = function(){
 		'use strict';
-		const csrf_token = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_delete_user_history',
 			method: 'POST',
@@ -49,8 +49,8 @@ function AjaxSettingsHandler(){
 	 * @param service
 	 */
 	this.setUserSetting = function(toggle_element, service) {
-		const settings_value = toggle_element.prop('checked');
-		const csrf_token = $('#hidden_csrf_token').val();
+		var settings_value = toggle_element.prop('checked');
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_user_setting',
 			method: 'POST',
@@ -71,7 +71,7 @@ function AjaxSettingsHandler(){
 	 * @param ui_locales
 	 */
 	this.setNotifcationLanguage = function(ui_locales){
-		const csrf_token = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_set_user_language',
 			method: 'POST',
@@ -80,10 +80,10 @@ function AjaxSettingsHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function setUserSettingDone(data) {
-			const parsedData = $.parseJSON(data);
+			var parsedData = $.parseJSON(data);
 
 			if (parsedData.error.length == 0){
-				const lang_image = $('#current-lang-images');
+				var lang_image = $('#current-lang-images');
 				$('#' + settingsSuccessDialog).fadeIn();
 				setTimeout(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 				$.each($('#settings-language-dropdown').find('li'), function(){
@@ -112,7 +112,7 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		const csrf_token = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_all_edits',
 			method: 'GET',
@@ -135,7 +135,7 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		const csrf_token = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_all_posted_statements',
 			method: 'GET',
@@ -158,7 +158,7 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		const csrf_token = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_all_argument_votes',
 			method: 'GET',
@@ -182,7 +182,7 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		const csrf_token = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_all_statement_votes',
 			method: 'GET',
@@ -201,7 +201,7 @@ function AjaxSettingsHandler(){
 	 * Ajax request for deleting the statitistics
 	 */
 	this.deleteStatisticsRequest = function() {
-		const csrf_token = $('#hidden_csrf_token').val();
+		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_delete_statistics',
 			method: 'GET',

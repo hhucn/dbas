@@ -4,35 +4,35 @@
  */
 
 function DiscussionGraph() {
-    let s;
-    let isPositionVisible = false;
-    let isContentVisible = false;
-    let isStatementVisible = false;
-    let isSupportVisible = false;
-    let isAttackVisible = false;
-    let light_grey = '#E0E0E0';
-    let grey = '#848484';
-    let yellow = '#FFC107';
-    let red = '#F44336';
-    let green = '#64DD17';
-    let blue = '#3D5AFE';
-    let black = '#000000';
-    let dark_grey = '#424242';
-    let dark_red = '#D32F2F';
-    let dark_green = '#689F38';
-    let dark_blue = '#1976D2';
-    let font_size = 14; // needed for rescaling
-    let line_height = 1.5; // needed for rescaling
-    let box_sizes = {}; // needed for rescaling
-    let node_id_prefix = 'node_'; // needed for rescaling
-    let old_scale = 1.0; // needed for rescaling
-    let statement_size = 6; // base node size of an statement
-    let other_size = 9; // base node size
-    let issue_size = 10; // node size of the issue
-    let node_factor_size = 10; // additional size for the doj, which is in [0,1]
-    let rel_node_factor;
-    let currentColorOfCircle;
-    let selectedCircleId;
+    var s;
+    var isPositionVisible = false;
+    var isContentVisible = false;
+    var isStatementVisible = false;
+    var isSupportVisible = false;
+    var isAttackVisible = false;
+    var light_grey = '#E0E0E0';
+    var grey = '#848484';
+    var yellow = '#FFC107';
+    var red = '#F44336';
+    var green = '#64DD17';
+    var blue = '#3D5AFE';
+    var black = '#000000';
+    var dark_grey = '#424242';
+    var dark_red = '#D32F2F';
+    var dark_green = '#689F38';
+    var dark_blue = '#1976D2';
+    var font_size = 14; // needed for rescaling
+    var line_height = 1.5; // needed for rescaling
+    var box_sizes = {}; // needed for rescaling
+    var node_id_prefix = 'node_'; // needed for rescaling
+    var old_scale = 1.0; // needed for rescaling
+    var statement_size = 6; // base node size of an statement
+    var other_size = 9; // base node size
+    var issue_size = 10; // node size of the issue
+    var node_factor_size = 10; // additional size for the doj, which is in [0,1]
+    var rel_node_factor;
+    var currentColorOfCircle;
+    var selectedCircleId;
 
     /**
      * Displays a graph of current discussion
@@ -47,7 +47,7 @@ function DiscussionGraph() {
      * @param data
      */
     this.callbackIfDoneForDiscussionGraph = function (data) {
-        let jsonData = $.parseJSON(data);
+        var jsonData = $.parseJSON(data);
         console.log(jsonData);
         s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
     };
@@ -58,10 +58,10 @@ function DiscussionGraph() {
      * @param data
      */
     this.callbackIfDoneForGetJumpDataForGraph = function (data) {
-        let jsonData = $.parseJSON(data);
-        let popup = $('#popup-jump-graph');
+        var jsonData = $.parseJSON(data);
+        var popup = $('#popup-jump-graph');
         if (jsonData.error.length === 0) {
-            let list = $('<ul>');
+            var list = $('<ul>');
             popup.find('div.modal-body div').empty();
             createContentOfModalBody(jsonData, list);
             popup.find('div.modal-body div').append(list);
@@ -85,7 +85,7 @@ function DiscussionGraph() {
      * @param list
      */
     function createContentOfModalBody(jsonData, list) {
-        let label, input, element, counter = 0;
+        var label, input, element, counter = 0;
 
         $.each(jsonData.arguments, function (key, value) {
             input = $('<input>').attr('type', 'radio').attr('value', value.url).attr('id', 'jump_' + counter);
@@ -105,7 +105,7 @@ function DiscussionGraph() {
      */
     this.setDefaultViewParams = function (startD3, jsonData, d3) {
         new DiscussionGraph().setButtonDefaultSettings();
-        let container = $('#' + graphViewContainerSpaceId);
+        var container = $('#' + graphViewContainerSpaceId);
         container.empty();
 
         if (startD3) {
@@ -140,46 +140,46 @@ function DiscussionGraph() {
      * @param jsonData
      */
     this.getD3Graph = function (jsonData) {
-        let container = $('#' + graphViewContainerSpaceId);
+        var container = $('#' + graphViewContainerSpaceId);
         container.empty();
         rel_node_factor = {};
         //rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
         //rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
 
         // height of the header (offset per line count)
-        let offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
+        var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
 
-        let width = container.width();
-        let height = container.outerHeight() - offset;
+        var width = container.width();
+        var height = container.outerHeight() - offset;
 
-        let svg = getGraphSvg(width, height);
-        let force = getForce(width, height + 100);
+        var svg = getGraphSvg(width, height);
+        var force = getForce(width, height + 100);
 
         // zoom and pan
         zoomAndPan();
-        let drag = enableDrag(force);
+        var drag = enableDrag(force);
 
         // resize
         resizeGraph(container, force);
 
         // edge
-        let edges = createEdgeDict(jsonData);
+        var edges = createEdgeDict(jsonData);
         setNodeColorsForData(jsonData);
         // create arrays of links, nodes and move layout forward one step
         force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-        let edgesTypeArrow = createArrowDict(edges);
-        let marker = createArrows(svg, edgesTypeArrow);
-        let link = createLinks(svg, edges, marker);
+        var edgesTypeArrow = createArrowDict(edges);
+        var marker = createArrows(svg, edgesTypeArrow);
+        var link = createLinks(svg, edges, marker);
 
         // node
-        let node = createNodes(svg, force, drag);
-        let circle = setNodeProperties(node).attr('class', 'circle');
+        var node = createNodes(svg, force, drag);
+        var circle = setNodeProperties(node).attr('class', 'circle');
 
         // tooltip
         // rect as background of label
-        let tooltip = node.append('g');
-        let rect = tooltip.append('rect').attr('class', 'labelBox');
-        let label = createLabel(tooltip);
+        var tooltip = node.append('g');
+        var rect = tooltip.append('rect').attr('class', 'labelBox');
+        var label = createLabel(tooltip);
 
         // reorder the elements so that the tooltips appear in front of the nodes
         tooltip.order();
@@ -189,7 +189,7 @@ function DiscussionGraph() {
         // legend
         createLegend();
         // call updated legend
-        let legend = d3.svg.legend();
+        var legend = d3.svg.legend();
         // create div for legend
         container.append("<div id = 'graphViewLegendId'></div>");
         getLegendSvg().call(legend);
@@ -259,8 +259,8 @@ function DiscussionGraph() {
      * @returns {*}
      */
     function getPositionOfLink(linkTargetCoordinate, nodeCoordinate, edges, d) {
-        let position;
-        let edge;
+        var position;
+        var edge;
         if (d.is_undercut === true) {
             edges.forEach(function (e) {
                 if (e.id === d.target_edge) {
@@ -316,28 +316,28 @@ function DiscussionGraph() {
      * Enable zoom and pan functionality on graph.
      */
     function zoomAndPan() {
-        let zoom = d3.behavior.zoom().on("zoom", redraw).scaleExtent([0.5, 5]);
+        var zoom = d3.behavior.zoom().on("zoom", redraw).scaleExtent([0.5, 5]);
 
         d3.select("#graph-svg").call(zoom).on("dblclick.zoom", null);
 
         function redraw() {
-            let zoom_scale = zoom.scale();
-            let change_scale = Math.abs(old_scale - zoom_scale) > 0.02;
+            var zoom_scale = zoom.scale();
+            var change_scale = Math.abs(old_scale - zoom_scale) > 0.02;
             old_scale = zoom_scale;
 
             d3.selectAll("g.zoom").attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom_scale + ")");
             if (change_scale) {
                 // resizing of font size, line height and the complete rectangle
                 $('#' + graphViewContainerSpaceId).find('.node').each(function () {
-                    let id = $(this).attr('id').replace(node_id_prefix, '');
+                    var id = $(this).attr('id').replace(node_id_prefix, '');
                     if (id.indexOf('statement') != -1 || id.indexOf('issue') != -1) {
                         $('#label-' + id).css({
                             'font-size': font_size / zoom_scale + 'px',
                             'line-height': line_height / zoom_scale
                         });
-                        let width = box_sizes[id].width / zoom_scale;
-                        let height = box_sizes[id].height / zoom_scale;
-                        let pos = calculateRectPos(box_sizes[id].width, box_sizes[id].height);
+                        var width = box_sizes[id].width / zoom_scale;
+                        var height = box_sizes[id].height / zoom_scale;
+                        var pos = calculateRectPos(box_sizes[id].width, box_sizes[id].height);
                         $('#rect-' + id).attr({
                             'width': width,
                             'height': height,
@@ -352,9 +352,9 @@ function DiscussionGraph() {
                 setTimeout(function () {
                     $('body').css({'line-height': '1.5'});
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
-                        let id = $(this).attr('id').replace(node_id_prefix, '');
-                        let label = $('#label-' + id);
-                        let rect = $('#rect-' + id);
+                        var id = $(this).attr('id').replace(node_id_prefix, '');
+                        var label = $('#label-' + id);
+                        var rect = $('#rect-' + id);
                         label.attr({
                             'y': -label.height() / zoom_scale + 45 / zoom_scale
                         });
@@ -386,7 +386,7 @@ function DiscussionGraph() {
     function resizeGraph(container, force) {
         d3.select(window).on("resize", resize);
         function resize() {
-            let graphSvg = $('#graph-svg');
+            var graphSvg = $('#graph-svg');
             graphSvg.width(container.width());
             // height of space between header and bottom of container
             graphSvg.height(container.outerHeight() - $('#graph-view-container-header').height() + 20);
@@ -415,17 +415,17 @@ function DiscussionGraph() {
      * @return edges: array, which contains dicts for edges
      */
     function createEdgeDict(jsonData) {
-        let edges = [];
+        var edges = [];
         jsonData.edges.forEach(function (e) {
             // get source and target nodes
-            let sourceNode = jsonData.nodes.filter(function (d) {
+            var sourceNode = jsonData.nodes.filter(function (d) {
                     return d.id === e.source;
                 })[0],
                 targetNode = jsonData.nodes.filter(function (d) {
                     return d.id === e.target;
                 })[0];
             // add edge, color, type, size and id to array
-            let color = e.is_attacking === 'none' ? dark_grey : e.is_attacking ? red : green;
+            var color = e.is_attacking === 'none' ? dark_grey : e.is_attacking ? red : green;
             edges.push({
                 source: sourceNode,
                 target: targetNode,
@@ -448,7 +448,7 @@ function DiscussionGraph() {
      * @return Array array, which contains edges of type arrow
      */
     function createArrowDict(edges) {
-        let edgesTypeArrow = [];
+        var edgesTypeArrow = [];
         edges.forEach(function (d) {
             if (d.edge_type === 'arrow') {
                 return edgesTypeArrow.push(d);
@@ -567,7 +567,7 @@ function DiscussionGraph() {
      */
     function calculateNodeSize(node) {
         if (node.id.indexOf('statement_') != -1) {
-            let id = node.id.replace('statement_', '');
+            var id = node.id.replace('statement_', '');
             if (id in rel_node_factor)
                 return node.size + node_factor_size * rel_node_factor[id];
             else
@@ -584,8 +584,8 @@ function DiscussionGraph() {
      */
     function createLabel(node) {
         return node.append("text").each(function (d) {
-            let node_text = d.label.split(" ");
-            for (let i = 0; i < node_text.length; i++) {
+            var node_text = d.label.split(" ");
+            for (var i = 0; i < node_text.length; i++) {
                 if ((i % 4) == 0) {
                     d3.select(this).append("tspan")
                         .text(node_text[i])
@@ -600,7 +600,7 @@ function DiscussionGraph() {
             }
             d3.select(this).attr("id", 'label-' + d.id);
             // set position of label
-            let height = $("#label-" + d.id).height();
+            var height = $("#label-" + d.id).height();
             d3.select(this).attr("y", -height + 45);
         });
     }
@@ -612,10 +612,10 @@ function DiscussionGraph() {
      */
     function setRectProperties(rect) {
         rect.each(function (d) {
-            let element = $("#label-" + d.id);
-            let width = element.width() + 24;
-            let height = element.height() + 10;
-            let pos = calculateRectPos(width, height);
+            var element = $("#label-" + d.id);
+            var width = element.width() + 24;
+            var height = element.height() + 10;
+            var pos = calculateRectPos(width, height);
             if (d.size === 0) {
                 width = 0;
                 height = 0;
@@ -665,7 +665,7 @@ function DiscussionGraph() {
      */
     function addListenerForNodes(circle, edges) {
         selectedCircleId;
-        let counter = 0;
+        var counter = 0;
         circle.on("click", function (d) {
             // distinguish between click and drag event
             if (d3.event.defaultPrevented) return;
@@ -673,7 +673,7 @@ function DiscussionGraph() {
             if (d.id === selectedCircleId && counter % 2 === 0) {
                 showModal(d);
             }
-            let circleId = this.id;
+            var circleId = this.id;
             showPartOfGraph(edges, circleId);
             selectedCircleId = d.id;
             counter++;
@@ -698,7 +698,7 @@ function DiscussionGraph() {
      */
     function createLegend() {
         // labels and colors for legend
-        let legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")],
+        var legendLabelCircle = [_t_discussion("issue"), _t_discussion("position"), _t_discussion("statement")],
             legendLabelRect = [_t_discussion("support"), _t_discussion("attack")],
             legendColorCircle = [grey, blue, yellow],
             legendColorRect = [green, red];
@@ -905,7 +905,7 @@ function DiscussionGraph() {
     function showPath(jsonData, edges){
         $('#show-my-path').hide();
         $('#hide-my-path').show();
-        let edgesCircleId = [];
+        var edgesCircleId = [];
         edges.forEach(function (d) {
             grayingElements(d);
         });
@@ -1028,7 +1028,7 @@ function DiscussionGraph() {
         isSupportVisible = false;
 
         // if attacks are not visible, show the default view of the graph
-        // else let them visible
+        // else var them visible
         if (!isAttackVisible) {
             highlightAllElements(edges);
 
@@ -1140,7 +1140,7 @@ function DiscussionGraph() {
      * @param mouseover
      */
     function determineShowOrHideTooltip(d, mouseover) {
-        let isPosition = testNodePosition(d);
+        var isPosition = testNodePosition(d);
         if(isPositionVisible && isContentVisible){
         }
         else if(!isPositionVisible && !isContentVisible){
@@ -1160,7 +1160,7 @@ function DiscussionGraph() {
      * @param d
      */
     function testNodePosition(d){
-        let isPosition = false;
+        var isPosition = false;
         d3.selectAll(".link").each(function (e) {
             if (e.source.id === d.id && e.target.id === 'issue') {
                 isPosition = true;
@@ -1203,10 +1203,10 @@ function DiscussionGraph() {
      * Show modal.
      */
     function showModal(d) {
-        let popup = $('#popup-jump-graph');
+        var popup = $('#popup-jump-graph');
         if (d.id != 'issue') {
             popup.modal('show');
-            let splitted = d.id.split('_'),
+            var splitted = d.id.split('_'),
                 uid = splitted[splitted.length - 1];
             new AjaxGraphHandler().getJumpDataForGraph(uid);
         }
@@ -1216,7 +1216,7 @@ function DiscussionGraph() {
      * Select uid.
      */
     function selectUid(id) {
-        let splitted = id.split('-');
+        var splitted = id.split('-');
         return splitted[splitted.length - 1];
     }
 
@@ -1228,11 +1228,11 @@ function DiscussionGraph() {
      */
     function showPartOfGraph(edges, circleId) {
         // edges with selected circle as source or as target
-        let edgesCircleId = [];
-        let circleUid = selectUid(circleId);
+        var edgesCircleId = [];
+        var circleUid = selectUid(circleId);
 
         // edge with circleUid as source
-        let edge;
+        var edge;
         edges.forEach(function (e) {
             if(e.source.id === circleUid){
                 edge = e;
@@ -1283,7 +1283,7 @@ function DiscussionGraph() {
                 }
             });
             // target edge of undercut
-            let targetEdge = getTargetEdgeOfEdge(edges, edgesCircleId, edge);
+            var targetEdge = getTargetEdgeOfEdge(edges, edgesCircleId, edge);
 
             // edge is an undercut on an undercut
             if (targetEdge.is_undercut === true) {
@@ -1302,7 +1302,7 @@ function DiscussionGraph() {
      */
     function findUndercuts(edges, edgesCircleId, circleUid){
         // incoming or outgoing edges of node
-        let sourceTargetEdges = [];
+        var sourceTargetEdges = [];
         // undercuts
         // highlight all incoming and outgoing edges
         edges.forEach(function (e) {
@@ -1326,7 +1326,7 @@ function DiscussionGraph() {
      * @param edge
      */
     function findUndercutsForEdge(edges, edgesCircleId, edge){
-        let undercuts = [];
+        var undercuts = [];
         // undercuts on edge
         edges.forEach(function (e) {
             if ((e.is_undercut == true) && (e.target_edge === edge.id)) {
@@ -1376,7 +1376,7 @@ function DiscussionGraph() {
      * @param d
      */
     function getTargetEdgeOfEdge(edges, edgesCircleId, d){
-        let targetEdge;
+        var targetEdge;
         edges.forEach(function (e) {
             // highlight all undercuts on undercut d
             if (e.target_edge === d.target_edge) {

@@ -12,7 +12,7 @@ function AjaxDiscussionHandler() {
 	 * @param text
 	 */
 	this.sendNewPremiseForArgument = function (arg_uid, relation, text) {
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_premises_for_argument',
 			method: 'POST',
@@ -42,7 +42,7 @@ function AjaxDiscussionHandler() {
 	 * @param supportive boolean, whether it is supportive
 	 */
 	this.sendNewStartPremise = function (text, conclusion_id, supportive) {
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
@@ -70,7 +70,7 @@ function AjaxDiscussionHandler() {
 	 * @param statement for sending
 	 */
 	this.sendNewStartStatement = function (statement) {
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_statement',
 			method: 'POST',
@@ -99,7 +99,7 @@ function AjaxDiscussionHandler() {
 	 * @param callbackFunctionOnDone
 	 */
 	this.sendNewIssue = function(info, title, language, callbackFunctionOnDone){
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$('#add-topic-error').hide();
 		$.ajax({
 			url: 'ajax_set_new_issue',
@@ -130,7 +130,7 @@ function AjaxDiscussionHandler() {
 	 * @param statements_uids current uid of the statement
 	 */
 	this.getLogfileForStatements = function (statements_uids) {
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_logfile_for_statements',
 			method: 'GET',
@@ -158,7 +158,7 @@ function AjaxDiscussionHandler() {
 	 * @param elements
 	 */
 	this.sendCorrectionOfStatement = function (elements) {
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_correction_of_statement',
 			method: 'POST',
@@ -185,8 +185,8 @@ function AjaxDiscussionHandler() {
 	 * @param long_url for shortening
 	 */
 	this.getShortenUrl = function (long_url) {
-		const encoded_url = encodeURI(long_url);
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var encoded_url = encodeURI(long_url);
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_shortened_url',
 			method: 'GET',
@@ -212,7 +212,7 @@ function AjaxDiscussionHandler() {
 	 * @param uid
 	 */
 	this.getMoreInfosAboutArgument = function(uid){
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_infos_about_argument',
 			method: 'POST',
@@ -241,10 +241,10 @@ function AjaxDiscussionHandler() {
 	 * @param is_supportive
 	 */
 	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
-		const is_argument = type == 'argument';
-		const is_position = type == 'position' || type == 'statement';
-		const uid = argument_uid == 'None' ? statement_uid : argument_uid;
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var is_argument = type == 'argument';
+		var is_position = type == 'position' || type == 'statement';
+		var uid = argument_uid == 'None' ? statement_uid : argument_uid;
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
@@ -278,11 +278,11 @@ function AjaxDiscussionHandler() {
 	 * @param extra optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
-		const callback = $('#' + callbackid);
-		const pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>';
-		const tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0';
-		const bubbleSpace = $('#' + discussionBubbleSpaceId);
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var callback = $('#' + callbackid);
+		var pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>';
+		var tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0';
+		var bubbleSpace = $('#' + discussionBubbleSpaceId);
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		// clear lists if input is empty
 		if(callback.val().length==0) {
 			$('#' + proposalStatementListGroupId).empty();
@@ -299,8 +299,8 @@ function AjaxDiscussionHandler() {
 			// add or remove bubble only iff we are not in an popup
 			if (type != fuzzy_statement_popup) {
 				if (bubbleSpace.find('#current_' + tmpid).length == 0) {
-					const text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil);
-					const current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
+					var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil);
+					var current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
 						bubbleSpace.find('.fa-pencil').fadeTo('slow', 0.2, function () {
@@ -312,8 +312,8 @@ function AjaxDiscussionHandler() {
 					$('#current_' + tmpid).html(value + '...' + pencil);
 				}
 			}
-			const gh = new GuiHandler();
-			const resize = gh.setMaxHeightForBubbleSpace();
+			var gh = new GuiHandler();
+			var resize = gh.setMaxHeightForBubbleSpace();
 			gh.setMaxHeightForDiscussionContainer(resize);
 		}
 
@@ -345,7 +345,7 @@ function AjaxDiscussionHandler() {
 	 * @param is_argument
 	 */
 	this.revokeContent = function(uid, is_argument){
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_revoke_content',
 			method: 'GET',
@@ -372,7 +372,7 @@ function AjaxDiscussionHandler() {
 	 * @param uids of the statements
 	 */
 	this.setSeenStatements = function(uids){
-		const csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_seen_statements',
 			method: 'POST',
@@ -385,7 +385,7 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function (data) {
-			const parsedData = $.parseJSON(data);
+			var parsedData = $.parseJSON(data);
 			// note that we already send data
 			if (parsedData.error.length == 0){
 				$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
