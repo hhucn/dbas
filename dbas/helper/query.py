@@ -14,7 +14,7 @@ from dbas.database.discussion_model import Argument, Statement, User, TextVersio
     RevokedContent, RevokedContentHistory, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
-    set_new_undercut_or_overbid, set_new_undermine_or_support
+    set_new_undercut, set_new_undermine_or_support_for_pgroup
 from dbas.helper.voting import add_seen_statement, add_seen_argument
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import escape_string, get_text_for_premisesgroup_uid, \
@@ -465,13 +465,13 @@ def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, i
 
     new_argument = None
     if current_attack == 'undermine':
-        new_argument = set_new_undermine_or_support(new_pgroup_uid, current_argument, current_attack, db_user, issue)
+        new_argument = set_new_undermine_or_support_for_pgroup(new_pgroup_uid, current_argument, False, db_user, issue)
 
     elif current_attack == 'support':
         new_argument, duplicate = set_new_support(new_pgroup_uid, current_argument, db_user, issue)
 
     elif current_attack == 'undercut' or current_attack == 'overbid':
-        new_argument, duplicate = set_new_undercut_or_overbid(new_pgroup_uid, current_argument, current_attack, db_user, issue)
+        new_argument, duplicate = set_new_undercut(new_pgroup_uid, current_argument, db_user, issue)
 
     elif current_attack == 'rebut':
         new_argument, duplicate = set_new_rebut(new_pgroup_uid, current_argument, db_user, issue)

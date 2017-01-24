@@ -12,6 +12,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User
 from dbas.lib import get_text_for_premisesgroup_uid
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
+from dbas.input_validator import is_integer
 
 
 def get_undermines_for_argument_uid(argument_uid, is_supportive=False):
@@ -23,8 +24,17 @@ def get_undermines_for_argument_uid(argument_uid, is_supportive=False):
     :return: array with dict() with id (of argument) and text.
     """
     # logger('RelationHelper', 'get_undermines_for_argument_uid', 'main with argument_uid ' + str(self.argument_uid))
+    if not is_integer(argument_uid):
+        return None
+
+    if int(argument_uid) < 1:
+        return None
+
     db_arguments = get_not_disabled_arguments_as_query()
     db_attacked_argument = db_arguments.filter_by(uid=argument_uid).first()
+    if not db_attacked_argument:
+        return []
+
     db_premises = get_not_disabled_premises_as_query()
     db_attacked_premises = db_premises\
         .filter_by(premisesgroup_uid=db_attacked_argument.premisesgroup_uid)\
@@ -40,17 +50,6 @@ def get_undermines_for_argument_uid(argument_uid, is_supportive=False):
     return __get_undermines_for_premises(premises_as_statements_uid, is_supportive)
 
 
-def get_overbids_for_argument_uid(argument_uid):
-    """
-    Returns all uid's of overbids for the argument.
-
-    :return argument_uid: UID of the argument
-    :return: array with dict() with id (of argumet) and text.
-    """
-    # logger('RelationHelper', 'get_overbids_for_argument_uid', 'main')
-    return __get_attack_or_support_for_justification_of_argument_uid(argument_uid, True)
-
-
 def get_undercuts_for_argument_uid(argument_uid):
     """
     Calls self.__get_attack_or_support_for_justification_of_argument_uid(key, argument_uid, False)
@@ -59,6 +58,12 @@ def get_undercuts_for_argument_uid(argument_uid):
     :return: array with dict() with id (of argumet) and text.
     """
     # logger('RelationHelper', 'get_undercuts_for_argument_uid', 'main ' + str(self.argument_uid))
+    if not is_integer(argument_uid):
+        return None
+
+    if int(argument_uid) < 1:
+        return None
+
     return __get_attack_or_support_for_justification_of_argument_uid(argument_uid, False)
 
 
@@ -69,6 +74,12 @@ def get_rebuts_for_argument_uid(argument_uid):
     :return argument_uid: UID of the argument
     :return: array with dict() with id (of argumet) and text.
     """
+    if not is_integer(argument_uid):
+        return None
+
+    if int(argument_uid) < 1:
+        return None
+
     # logger('RelationHelper', 'get_rebuts_for_argument_uid', 'main ' + str(self.argument_uid))
     db_arguments = get_not_disabled_arguments_as_query()
     db_argument = db_arguments.filter_by(uid=int(argument_uid)).first()
@@ -118,11 +129,19 @@ def get_supports_for_argument_uid(argument_uid):
     :return: array with dict() with id (of argumet) and text
     """
     # logger('RelationHelper', 'get_supports_for_argument_uid', 'main')
+    if not is_integer(argument_uid):
+        return None
+
+    if int(argument_uid) < 1:
+        return None
 
     return_array = []
     given_supports = set()
     db_arguments = get_not_disabled_arguments_as_query()
     db_argument = db_arguments.filter_by(uid=argument_uid).join(PremiseGroup).first()
+    if not db_argument:
+        return []
+
     db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
     index = 0
 
@@ -145,13 +164,13 @@ def get_supports_for_argument_uid(argument_uid):
     return [] if len(return_array) == 0 else return_array
 
 
-def set_new_undermine_or_support(premisegroup_uid, current_argument, current_attack, db_user, issue):
+def set_new_undermine_or_support_for_pgroup(premisegroup_uid, current_argument, is_supportive, db_user, issue):
     """
     Inserts a new undermine or support with the given parameters.
 
     :param premisegroup_uid: premisesgroup_uid
     :param current_argument: Argument
-    :param current_attack: String
+    :param is_supportive: Boolean
     :param db_user: User
     :param issue: Issue.uid
     :return: Argument, Boolean if the argument is a duplicate
@@ -164,13 +183,13 @@ def set_new_undermine_or_support(premisegroup_uid, current_argument, current_att
         db_arguments = get_not_disabled_arguments_as_query()
         db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                                Argument.is_supportive == True,
-                                               Argument.conclusion_uid == current_argument.conclusion_uid,
+                                               Argument.conclusion_uid == premise.statement_uid,
                                                Argument.argument_uid == None)).first()
         if db_argument:
-            return db_argument, True
+            continue
         else:
             new_argument = Argument(premisegroup=premisegroup_uid,
-                                    issupportive=current_attack == 'support',
+                                    issupportive=is_supportive,
                                     author=db_user.uid,
                                     conclusion=premise.statement_uid,
                                     issue=issue)
@@ -181,34 +200,32 @@ def set_new_undermine_or_support(premisegroup_uid, current_argument, current_att
             DBDiscussionSession.flush()
             transaction.commit()
 
-            for argument in new_arguments:
-                already_in.append(argument)
+            already_in += new_arguments
 
     rnd = random.randint(0, len(already_in) - 1)
     return already_in[rnd]
 
 
-def set_new_undercut_or_overbid(premisegroup_uid, current_argument, current_attack, db_user, issue):
+def set_new_undercut(premisegroup_uid, current_argument, db_user, issue):
     """
     Inserts a new undercut or overbid with the given parameters.
 
     :param premisegroup_uid: premisesgroup_uid
     :param current_argument: Argument
-    :param current_attack: String
     :param db_user: User
     :param issue: Issue.uid
     :return: Argument, Boolean if the argument is a duplicate
     """
     # duplicate?
     db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                  Argument.is_supportive == True,
+                                                                  Argument.is_supportive == False,
                                                                   Argument.conclusion_uid == current_argument.conclusion_uid,
                                                                   Argument.argument_uid == 0)).first()
     if db_argument:
         return db_argument, True
     else:
         new_argument = Argument(premisegroup=premisegroup_uid,
-                                issupportive=current_attack == 'overbid',
+                                issupportive=False,
                                 author=db_user.uid,
                                 issue=issue)
         new_argument.conclusions_argument(current_argument.uid)
