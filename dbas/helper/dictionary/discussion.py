@@ -321,8 +321,8 @@ class DiscussionDictHelper(object):
             bubble_mid  = create_speechbubble_dict(is_info=True, message=mid_text, omit_url=True, lang=self.lang)
         else:
             user_text, sys_text, gender_of_counter_arg, db_confrontation = self.__get_dict_for_argumentation(db_argument, additional_uid, history, attack, nickname, is_supportive, _tn)
-            uid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
-            bubble_sys  = create_speechbubble_dict(is_system=True, uid=uid, message=sys_text, omit_url=True,
+            quid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
+            bubble_sys  = create_speechbubble_dict(is_system=True, uid=quid, message=sys_text, omit_url=True,
                                                    lang=self.lang, is_flagable=True,
                                                    is_author=is_author_of_argument(nickname, db_confrontation.uid))
             statement_list = self.__get_all_statement_by_argument(db_confrontation)
