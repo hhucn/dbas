@@ -918,7 +918,7 @@ function DiscussionGraph() {
 
         // if jsonData.path is not empty highlight path
         if(jsonData.path.length != 0) {
-            highlightPath(jsonData);
+            highlightPath(jsonData, edges);
         }
         // if jsonData.path is empty color issue
         else{
@@ -943,7 +943,7 @@ function DiscussionGraph() {
                     if (edge.source.id === "statement_" + e) {
                         edgesCircleId.push(edge);
                         // find virtual nodes
-                        testVirtualNode();
+                        testVirtualNode(edges, edge, edgesCircleId);
                     }
                 });
             });
