@@ -412,7 +412,7 @@ def main_rss(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'D-BAS RSS',
+        'title': 'RSS',
         'project': project_name,
         'extras': extras_dict,
         'rss': rss
@@ -2030,7 +2030,10 @@ def get_users_with_same_opinion(request):
             else:
                 uids = json.loads(uids)
                 ids = uids if isinstance(uids, list) else [uids]
-                return_dict = get_user_with_same_opinion_for_premisegroups(ids, nickname, ui_locales, request.application_url)
+                if len(ids) == 0:
+                    return_dict['info'] = _tn.get(_.otherParticipantsDontHaveOpinionForThisStatement)
+                else:
+                    return_dict = get_user_with_same_opinion_for_premisegroups(ids, nickname, ui_locales, request.application_url)
         return_dict['error'] = ''
     except KeyError as e:
         logger('get_users_with_same_opinion', 'error', repr(e))

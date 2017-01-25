@@ -139,7 +139,7 @@ function InteractionHandler() {
 			author = _t_discussion(an_anonymous_user);
 		}
 		text = _t_discussion(messageInfoStatementCreatedBy) + ' ' + author;
-		text += ' (' + parsedData.timestamp + '). ';
+		text += ' (' + parsedData.timestamp + ') ';
 		text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
 		text +=_t_discussion(messageInfoParticipant) + '.';
 
@@ -263,6 +263,10 @@ function InteractionHandler() {
 
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			return;
+		}
+		if (parsedData.info.length != 0) {
+			setGlobalInfoHandler('Hey', parsedData.info);
 			return;
 		}
 		
