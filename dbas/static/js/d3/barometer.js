@@ -90,7 +90,7 @@ function DiscussionBarometer(){
         address = addressUrl;
         try{
             jsonData = JSON.parse(data);
-            console.log(address);
+            console.log('mode: ' + address);
             console.log(jsonData);
             mode = modeEnum[address];
         } catch(e) {
@@ -156,7 +156,6 @@ function DiscussionBarometer(){
         // width and height of chart
         var width = 400;
         var height = mode == modeEnum.attitude ? 300 : 400;
-        console.log(mode + ' ' + height);
         var barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
 
         var usersDict = [];
@@ -277,18 +276,18 @@ function DiscussionBarometer(){
      */
     function createDictForAttitude(usersDict){
         usersDict.push({
-            usersNumber: jsonData.agree_users.length,
+            usersNumber: jsonData.agree.users.length,
             seenBy: jsonData.seen_by,
-            text: jsonData.agree_text,
-            users: jsonData.agree_users,
-            message: jsonData.agree_message
+            text: jsonData.agree.text,
+            users: jsonData.agree.users,
+            message: jsonData.agree.message
         });
         usersDict.push({
-            usersNumber: jsonData.disagree_users.length,
+            usersNumber: jsonData.disagree.users.length,
             seenBy: jsonData.seen_by,
-            text: jsonData.disagree_text,
-            users: jsonData.disagree_users,
-            message: jsonData.disagree_message
+            text: jsonData.disagree.text,
+            users: jsonData.disagree.users,
+            message: jsonData.disagree.message
         });
         return usersDict;
     }

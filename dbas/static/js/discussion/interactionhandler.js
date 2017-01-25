@@ -88,7 +88,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data), service;
 		if (parsedData.error.length == 0) {
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
-			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ', ' + _t_discussion(shortenedBy) + ' ' + service + ':');
+			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ' (' + _t_discussion(shortenedBy) + ' ' + service + '):');
 			$('#' + popupUrlSharingInputId).val(parsedData.url).data('short-url', parsedData.url);
 		} else {
 			$('#' + popupUrlSharingDescriptionPId).text(_t_discussion(feelFreeToShareUrl) + '.');

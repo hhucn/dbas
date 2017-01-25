@@ -1981,7 +1981,7 @@ def get_all_infos_about_argument(request):
         if not is_integer(uid):
             return_dict['error'] = _t.get(_.internalError)
         else:
-            return_dict = get_infos_about_argument(uid, request.application_url)
+            return_dict = get_infos_about_argument(uid, request.application_url, request.authenticated_userid, _t)
             return_dict['error'] = ''
     except KeyError as e:
         logger('get_infos_about_argument', 'error', repr(e))

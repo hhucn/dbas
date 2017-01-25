@@ -648,6 +648,7 @@ class Keywords(Enum):
     whyAreYouDisagreeingWithInColor = 'Why are you <span class=\'text-danger\'>disagreeing</span> with'
     whyAreYouAgreeingWithInColor = 'Why are you <span class=\'text-success\'>agreeing</span> with'
     whyAreYouDisagreeingWithThat = 'Why are you disagreeing with that?'
+    itsYou = 'It\'s you'
     youMadeA = 'You made a'
     youMadeAn = 'You made an'
     relation_undermine = 'is a counter-argument for'
