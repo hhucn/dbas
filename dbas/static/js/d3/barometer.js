@@ -27,7 +27,13 @@ function DiscussionBarometer(){
     var jsonData = [];
     var address = 'position';
     var barWidth;
-    var maxUsersNumber;
+    var modeEnum = {
+    	'attitude': 1,
+	    'justify': 2,
+	    'argument': 3,
+	    'position': 4,
+    };
+    var mode;
 
     /**
      * Displays barometer.
@@ -84,7 +90,9 @@ function DiscussionBarometer(){
         address = addressUrl;
         try{
             jsonData = JSON.parse(data);
+            console.log(address);
             console.log(jsonData);
+            mode = modeEnum[address];
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             alert('parsing-json: ' + e);
@@ -146,7 +154,9 @@ function DiscussionBarometer(){
         // create div for barometer
         dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
         // width and height of chart
-        var width = 400, height = 400;
+        var width = 400;
+        var height = mode == modeEnum.attitude ? 300 : 400;
+        console.log(mode + ' ' + height);
         var barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
 
         var usersDict = [];
@@ -262,7 +272,6 @@ function DiscussionBarometer(){
 
     /**
      * Add length of each user-dictionary and value of key seen_by to array.
-     * @param jsonData
      * @param usersDict
      * @returns usersDict
      */
@@ -286,7 +295,6 @@ function DiscussionBarometer(){
 
     /**
      * Add length of each user-dictionary and value of key seen_by to array.
-     * @param jsonData
      * @param usersDict
      * @returns usersDict
      */
@@ -321,13 +329,8 @@ function DiscussionBarometer(){
         }
         // width of one bar
         // width/height - left padding to y-Axis - space between bars
-        barWidth;
-        if(address === "argument" || address === "attitude"){
-            barWidth = (height - 10 - (usersDict.length-1)*10) / usersDict.length;
-        }
-        else{
-            barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
-        }
+	    var tmp = address === "argument" || address === "attitude" ? height : width;
+        barWidth = (tmp - 10 - (usersDict.length-1)*10) / usersDict.length;
 
         var y_offset_height = 60;
         // set max-width of bar
@@ -476,7 +479,6 @@ function DiscussionBarometer(){
     }
 
     function divideWrapperIfZero(numerator, denominator){
-        console.log('? ' + numerator + ' ' + denominator);
         return denominator == 0 || numerator == 0 ? 0.005 : numerator / denominator;
     }
 

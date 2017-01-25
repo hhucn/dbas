@@ -524,7 +524,7 @@ de_lang = {
     _.reaction: 'Reaktionen',
     _.reactionFor: 'Reaktionen zu',
     _.attitudesOfOpinions: 'Meinungsverhalten',
-    _.agreeVsDisagree: 'Zustimmung vs. Ablehnung',
+    _.agreeVsDisagree: 'Zustimmung vs. Ablehnung bei der Aussage, dass',
     _.reference: 'Referenz',
     _.rep_reason_first_argument_click: 'Sie haben ihr erstes Argument ausgewählt',
     _.rep_reason_first_confrontation: 'Sie haben ihre erste Konfrontation überlebt',

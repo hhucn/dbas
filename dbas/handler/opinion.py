@@ -354,7 +354,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
                 'disagree_users': [],
                 'disagree_text': None,
                 'title': title}
-    title += ': ' + get_text_for_statement_uid(statement_uid)
+    title += ' ' + get_text_for_statement_uid(statement_uid)
 
     ret_dict = dict()
     text = get_text_for_statement_uid(statement_uid)
