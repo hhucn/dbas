@@ -633,7 +633,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     :param end_tag: String
     :param db_users_premise: Premise of the user
     :param system_argument: Counter argument of the system
-    :return: String
+    :return: String, String2
     """
     author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
                                                                                        db_users_premise.statements,
