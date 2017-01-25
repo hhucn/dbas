@@ -224,7 +224,10 @@ class DiscussionDictHelper(object):
             conclusion = premise[:-1]
 
         redirect_from_jump = 'jump/' in self.history.split('-')[-1]
-        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise, attack, conclusion, False, is_supportive, self.nickname, redirect_from_jump=redirect_from_jump)
+        user_msg, sys_msg = get_header_for_users_confrontation_response(db_argument, self.lang, premise,
+                                                                        attack, conclusion, False,
+                                                                        is_supportive, self.nickname,
+                                                                        redirect_from_jump=redirect_from_jump)
 
         if attack == 'undermine':
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack, conclusion, db_argument.is_supportive)
@@ -246,8 +249,21 @@ class DiscussionDictHelper(object):
         end = '</' + tag_type + '>'
         user_msg = user_msg.format(start, end)
 
-        sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument) if attack == 'undercut' else _tn.get(_.whatIsYourMostImportantReasonForStatement)
-        sys_msg += ': ' + user_msg + '?<br>' + _tn.get(_.because) + '...'
+        pro_tag = '<span class="text-success">'
+        con_tag = '<span class="text-danger">'
+        end_tag = '</span>'
+
+        if attack == 'undercut':
+            sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument).rstrip().format(pro_tag, end_tag) + ': '
+        else:
+            if attack == 'undermine':
+                sys_msg = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement).rstrip().format(con_tag, end_tag)
+                if self.lang == 'de':
+                    sys_msg += ', '
+            else:
+                sys_msg = _tn.get(_.whatIsYourMostImportantReasonForStatement).rstrip().format(pro_tag, end_tag) + ': '
+
+        sys_msg += user_msg + '?<br>' + _tn.get(_.because) + '...'
         # bubble_user = history_helper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() + user_msg[1:], omit_url=True, lang=self.lang)
 
         self.__append_now_bubble(bubbles_array)

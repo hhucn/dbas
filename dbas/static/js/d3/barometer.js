@@ -90,14 +90,21 @@ function DiscussionBarometer(){
         address = addressUrl;
         try{
             jsonData = JSON.parse(data);
-            console.log('mode: ' + address);
-            console.log(jsonData);
             mode = modeEnum[address];
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             alert('parsing-json: ' + e);
             return;
         }
+
+		if (jsonData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
+			return;
+		}
+		if (jsonData.info.length != 0) {
+			setGlobalInfoHandler('Hey', jsonData.info);
+			return;
+		}
 
         removeContentOfModal();
 
