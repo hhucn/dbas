@@ -336,8 +336,6 @@ function DiscussionBarometer(){
             y_offset_height = height - usersDict.length * barWidth;
         }
 
-        maxUsersNumber = getMaximum(usersDict);
-
         testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
         createRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
     }
@@ -354,10 +352,11 @@ function DiscussionBarometer(){
      */
     function testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector){
         // if there are no arguments show one thin bar
+        var maxUsersNumber = getMaximum(usersDict);
         if(usersDict.length === 0){
             barChartSvg.append("rect")
                 .attr({
-                    width: getRectWidth(0, width),
+                    width: getRectWidth(0, width, maxUsersNumber),
                     height: getRectHeight(0, 0, height, selector),
                     x: getRectX(0),
                     y: getRectY(0, 0, 0, y_offset_height, height, selector),
@@ -378,16 +377,17 @@ function DiscussionBarometer(){
      * @param selector
      */
     function createRects(usersDict, barChartSvg, width, height, y_offset_height, selector){
+        var maxUsersNumber = getMaximum(usersDict);
         barChartSvg.selectAll(selector)
             .data(usersDict)
             .enter().append("rect")
             .attr({
-                width: function (d) { return getRectWidth(d.usersNumber, width); },
-                height: function (d) { return getRectHeight(d.usersNumber, d.seenBy, height, selector); },
-                x: function (d, i) { return getRectX(i);},
-                y: function (d, i) { return getRectY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector); },
+                width: function (d) {   return getRectWidth(d.usersNumber, width, maxUsersNumber); },
+                height: function (d) {  return getRectHeight(d.usersNumber, d.seenBy, height, selector); },
+                x: function (d, i) {    return getRectX(i);},
+                y: function (d, i) {    return getRectY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector); },
                 fill: function (d, i) { return getRectColor(i, selector); },
-                id: function (d, i) { return selector + "-" + i; }
+                id: function (d, i) {   return selector + "-" + i; }
             });
     }
 
@@ -396,9 +396,10 @@ function DiscussionBarometer(){
      *
      * @param usersNumber
      * @param width
+     * @param maxUsersNumber
      * @returns {*}
      */
-    function getRectWidth(usersNumber, width) {
+    function getRectWidth(usersNumber, width, maxUsersNumber) {
         // height in percent: length/seen_by = x/height
         if(address === "argument" || address === "attitude"){
             return divideWrapperIfZero(usersNumber, maxUsersNumber) * width;
@@ -475,6 +476,7 @@ function DiscussionBarometer(){
     }
 
     function divideWrapperIfZero(numerator, denominator){
+        console.log('? ' + numerator + ' ' + denominator);
         return denominator == 0 || numerator == 0 ? 0.005 : numerator / denominator;
     }
 

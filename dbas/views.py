@@ -66,6 +66,7 @@ version = '1.1.2'
 full_version = version + 'b'
 project_name = name + ' ' + full_version
 
+# move this into the ini file when the time is right
 auto_completion_url = 'http://localhost:5103'
 recommender_system_url = 'http://localhost:5104'
 
@@ -406,12 +407,12 @@ def main_rss(request):
         return user_logout(request, True)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-    rss = get_list_of_all_feeds(request.registry.settings['pyramid.default_locale_name'])
+    rss = get_list_of_all_feeds(ui_locales)
 
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'RSS',
+        'title': 'D-BAS RSS',
         'project': project_name,
         'extras': extras_dict,
         'rss': rss

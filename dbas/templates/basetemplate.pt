@@ -29,10 +29,6 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/browser-detection.js')}"></script>
 
-	<!--
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/ads.js')}"></script>
-	-->
-
 	<!-- JS DISABLED -->
 	<noscript>
 		<div class="blocked jsdisabled">
