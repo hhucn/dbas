@@ -92,7 +92,12 @@ function PopupHandler() {
 	 * Display url sharing popup
 	 */
 	this.showUrlSharingPopup = function () {
-		$('#' + popupUrlSharingId).modal('show');
+		var popup = $('#' + popupUrlSharingId);
+		popup.modal('show');
+		popup.on('hidden.bs.modal', function (e) {
+			clearAnchor();
+		});
+		setAnchor('sharing');
 		new AjaxDiscussionHandler().getShortenUrl(window.location);
 		//$('#' + popupUrlSharingInputId).val(window.location);
 	};

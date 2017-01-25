@@ -675,7 +675,6 @@ function Main () {
 		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
 		// if we have just one list element AND the list element has a special function AND we are logged in
 		if (children.length == 1 && ($.inArray(id, ids) != -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
-			console.log(children.eq(0).outerHeight(true));
 			var container = $('#' + discussionContainerId);
 			var sidebar = $('.sidebar-wrapper');
 			container.height(container.height() - 50);
@@ -784,6 +783,9 @@ $(document).ready(function mainDocumentReady() {
 	}
 	if (location.hash.indexOf('barometer') != -1){
 		new DiscussionBarometer().showBarometer();
+	}
+	if (location.hash.indexOf('sharing') != -1){
+		new PopupHandler().showUrlSharingPopup();
 	}
 	if (location.hash.indexOf('access-review') != -1 || $('#review-link').attr('data-broke-limit') == 'true'){
 		var link = '<a href="' + mainpage + 'review">'  + _t(youAreAbleToReviewNow) + '</a>';
