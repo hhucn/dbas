@@ -1147,7 +1147,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion201 = TextVersion(content="dadurch die Lärmbelästigung in der Stadt sinkt.", author=user.uid)
     textversion202 = TextVersion(content="die Anzahl an Ladestationen in der Stadt nicht ausreichend ist.", author=user.uid)
     textversion203 = TextVersion(content="das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen.", author=user.uid)
-    textversion204 = TextVersion(content="man die Autos auch zuhause geladen werden können und pro Tag ausreichen sollte.", author=user.uid)
+    textversion204 = TextVersion(content="die Autos auch zuhause geladen werden können und das pro Tag ausreichen sollte.", author=user.uid)
     textversion205 = TextVersion(content="Elektroautos keine lauten Geräusche beim Anfahren produzieren.", author=user.uid)
     textversion206 = TextVersion(content="Lärmbelästigung kein wirkliches Problem in den Städten ist.", author=user.uid)
     textversion207 = TextVersion(content="nicht jede normale Tankstelle auch Stromtankstellen hat.", author=user.uid)

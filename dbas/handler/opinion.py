@@ -348,67 +348,83 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     title = _t.get(_.agreeVsDisagree)
 
     if not db_statement:
-        return {'text': None,
-                'agree_users': [],
-                'agree_text': None,
-                'disagree_users': [],
-                'disagree_text': None,
-                'title': title}
-    title += ': ' + get_text_for_statement_uid(statement_uid)
+        empty_dict = {
+            'users': [],
+            'text': None,
+            'message': ''
+        }
+        return {
+            'text': None,
+            'agree': empty_dict,
+            'disagree': empty_dict,
+            'title': title
+        }
+    title += ' ' + get_text_for_statement_uid(statement_uid)
 
     ret_dict = dict()
     text = get_text_for_statement_uid(statement_uid)
     ret_dict['text'] = text[0:1].upper() + text[1:]
     ret_dict['agree'] = None
     ret_dict['disagree'] = None
+    ret_dict['title'] = title
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_user_uid = db_user.uid if db_user else 0
-
-    db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(
-        and_(VoteStatement.statement_uid == statement_uid,
-             VoteStatement.is_up_vote == True,
-             VoteStatement.is_valid == True,
-             VoteStatement.author_uid != db_user_uid)).all()
-
-    db_con_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                                        VoteStatement.is_up_vote == False,
-                                                                        VoteStatement.is_valid == True,
-                                                                        VoteStatement.author_uid != db_user_uid)).all()
-    pro_array = []
-    for vote in db_pro_votes:
-        voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
-        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
-        pro_array.append(users_dict)
-    ret_dict['agree_users'] = pro_array
-    ret_dict['agree_text'] = _t.get(_.iAgreeWith)
-    if len(db_pro_votes) == 0:
-        ret_dict['agree_message'] = _t.get(_.agreeToThis0) + '.'
-    else:
-        ret_dict['agree_message'] = str(len(db_pro_votes)) + ' '
-        ret_dict['agree_message'] += _t.get(_.agreeToThis1) if len(db_pro_votes) == 1 else _t.get(_.agreeToThis2)
-        ret_dict['agree_message'] += '.'
-
-    con_array = []
-    for vote in db_con_votes:
-        voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
-        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
-        con_array.append(users_dict)
-    ret_dict['disagree_users'] = con_array
-    ret_dict['disagree_text'] = _t.get(_.iDisagreeWith)
-    if len(db_pro_votes) == 0:
-        ret_dict['disagree_message'] = _t.get(_.disagreeToThis0) + '.'
-    else:
-        ret_dict['disagree_message'] = str(len(db_con_votes)) + ' '
-        ret_dict['disagree_message'] += _t.get(_.disagreeToThis1) if len(db_con_votes) == 1 else _t.get(_.disagreeToThis2)
-        ret_dict['disagree_message'] += '.'
-
-    ret_dict['title'] = title
+    agree_dict    = __collect_pro_votes(statement_uid, db_user_uid, main_page, lang, _t)
+    disagree_dict = __collect_con_votes(statement_uid, db_user_uid, main_page, lang, _t)
+    ret_dict['agree'] = agree_dict
+    ret_dict['disagree'] = disagree_dict
 
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(statement_uid)).all()
     ret_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
     return ret_dict
+
+
+def __collect_pro_votes(statement_uid, user_uid, main_page, lang, _t):
+
+    db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
+                                                                        VoteStatement.is_up_vote == True,
+                                                                        VoteStatement.is_valid == True,
+                                                                        VoteStatement.author_uid != user_uid)).all()
+    pro_array = []
+    agree_dict = {}
+    for vote in db_pro_votes:
+        voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
+        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
+        pro_array.append(users_dict)
+    agree_dict['users'] = pro_array
+    agree_dict['text'] = _t.get(_.iAgreeWith)
+    if len(db_pro_votes) == 0:
+        agree_dict['message'] = _t.get(_.agreeToThis0) + '.'
+    else:
+        agree_dict['message'] = str(len(db_pro_votes)) + ' '
+        agree_dict['message'] += _t.get(_.agreeToThis1) if len(db_pro_votes) == 1 else _t.get(_.agreeToThis2)
+        agree_dict['message'] += '.'
+    return agree_dict
+
+
+def __collect_con_votes(statement_uid, user_uid, main_page, lang, _t):
+    db_con_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
+                                                                        VoteStatement.is_up_vote == False,
+                                                                        VoteStatement.is_valid == True,
+                                                                        VoteStatement.author_uid != user_uid)).all()
+
+    con_array = []
+    disagree_dict = {}
+    for vote in db_con_votes:
+        voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
+        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
+        con_array.append(users_dict)
+    disagree_dict['users'] = con_array
+    disagree_dict['text'] = _t.get(_.iDisagreeWith)
+    if len(db_con_votes) == 0:
+        disagree_dict['message'] = _t.get(_.disagreeToThis0) + '.'
+    else:
+        disagree_dict['message'] = str(len(db_con_votes)) + ' '
+        disagree_dict['message'] += _t.get(_.disagreeToThis1) if len(db_con_votes) == 1 else _t.get(_.disagreeToThis2)
+        disagree_dict['message'] += '.'
+    return disagree_dict
 
 
 def create_users_dict(db_user, timestamp, main_page, lang):
@@ -428,12 +444,14 @@ def create_users_dict(db_user, timestamp, main_page, lang):
             'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}
 
 
-def get_infos_about_argument(uid, main_page):
+def get_infos_about_argument(uid, main_page, nickname, _t):
     """
     Returns several infos about the argument.
 
     :param uid: Argument.uid
     :param main_page: url
+    :param nickname: current nickname
+    :param _t: Translator
     :return: dict()
     """
     return_dict = dict()
@@ -458,6 +476,8 @@ def get_infos_about_argument(uid, main_page):
     for vote in db_votes:
         db_user = DBDiscussionSession.query(User).get(vote.author_uid)
         name = db_user.get_global_nickname()
+        if db_user.nickname == nickname:
+            name += ' (' + _t.get(_.you) + ')'
         supporters.append(name)
         gravatars[name] = get_profile_picture(db_user)
         public_page[name] = main_page + '/user/' + name

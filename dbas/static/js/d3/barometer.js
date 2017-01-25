@@ -27,7 +27,13 @@ function DiscussionBarometer(){
     var jsonData = [];
     var address = 'position';
     var barWidth;
-    var maxUsersNumber;
+    var modeEnum = {
+    	'attitude': 1,
+	    'justify': 2,
+	    'argument': 3,
+	    'position': 4,
+    };
+    var mode;
 
     /**
      * Displays barometer.
@@ -84,12 +90,21 @@ function DiscussionBarometer(){
         address = addressUrl;
         try{
             jsonData = JSON.parse(data);
-            console.log(jsonData);
+            mode = modeEnum[address];
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             alert('parsing-json: ' + e);
             return;
         }
+
+		if (jsonData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
+			return;
+		}
+		if (jsonData.info.length != 0) {
+			setGlobalInfoHandler('Hey', jsonData.info);
+			return;
+		}
 
         removeContentOfModal();
 
@@ -146,7 +161,8 @@ function DiscussionBarometer(){
         // create div for barometer
         dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
         // width and height of chart
-        var width = 400, height = 400;
+        var width = 400;
+        var height = mode == modeEnum.attitude ? 300 : 400;
         var barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
 
         var usersDict = [];
@@ -262,31 +278,29 @@ function DiscussionBarometer(){
 
     /**
      * Add length of each user-dictionary and value of key seen_by to array.
-     * @param jsonData
      * @param usersDict
      * @returns usersDict
      */
     function createDictForAttitude(usersDict){
         usersDict.push({
-            usersNumber: jsonData.agree_users.length,
+            usersNumber: jsonData.agree.users.length,
             seenBy: jsonData.seen_by,
-            text: jsonData.agree_text,
-            users: jsonData.agree_users,
-            message: jsonData.agree_message
+            text: jsonData.agree.text,
+            users: jsonData.agree.users,
+            message: jsonData.agree.message
         });
         usersDict.push({
-            usersNumber: jsonData.disagree_users.length,
+            usersNumber: jsonData.disagree.users.length,
             seenBy: jsonData.seen_by,
-            text: jsonData.disagree_text,
-            users: jsonData.disagree_users,
-            message: jsonData.disagree_message
+            text: jsonData.disagree.text,
+            users: jsonData.disagree.users,
+            message: jsonData.disagree.message
         });
         return usersDict;
     }
 
     /**
      * Add length of each user-dictionary and value of key seen_by to array.
-     * @param jsonData
      * @param usersDict
      * @returns usersDict
      */
@@ -321,13 +335,8 @@ function DiscussionBarometer(){
         }
         // width of one bar
         // width/height - left padding to y-Axis - space between bars
-        barWidth;
-        if(address === "argument" || address === "attitude"){
-            barWidth = (height - 10 - (usersDict.length-1)*10) / usersDict.length;
-        }
-        else{
-            barWidth = (width - 10 - (usersDict.length-1)*10) / usersDict.length;
-        }
+	    var tmp = address === "argument" || address === "attitude" ? height : width;
+        barWidth = (tmp - 10 - (usersDict.length-1)*10) / usersDict.length;
 
         var y_offset_height = 60;
         // set max-width of bar
@@ -335,8 +344,6 @@ function DiscussionBarometer(){
             barWidth = 100;
             y_offset_height = height - usersDict.length * barWidth;
         }
-
-        maxUsersNumber = getMaximum(usersDict);
 
         testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
         createRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
@@ -354,10 +361,11 @@ function DiscussionBarometer(){
      */
     function testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector){
         // if there are no arguments show one thin bar
+        var maxUsersNumber = getMaximum(usersDict);
         if(usersDict.length === 0){
             barChartSvg.append("rect")
                 .attr({
-                    width: getRectWidth(0, width),
+                    width: getRectWidth(0, width, maxUsersNumber),
                     height: getRectHeight(0, 0, height, selector),
                     x: getRectX(0),
                     y: getRectY(0, 0, 0, y_offset_height, height, selector),
@@ -378,16 +386,17 @@ function DiscussionBarometer(){
      * @param selector
      */
     function createRects(usersDict, barChartSvg, width, height, y_offset_height, selector){
+        var maxUsersNumber = getMaximum(usersDict);
         barChartSvg.selectAll(selector)
             .data(usersDict)
             .enter().append("rect")
             .attr({
-                width: function (d) { return getRectWidth(d.usersNumber, width); },
-                height: function (d) { return getRectHeight(d.usersNumber, d.seenBy, height, selector); },
-                x: function (d, i) { return getRectX(i);},
-                y: function (d, i) { return getRectY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector); },
+                width: function (d) {   return getRectWidth(d.usersNumber, width, maxUsersNumber); },
+                height: function (d) {  return getRectHeight(d.usersNumber, d.seenBy, height, selector); },
+                x: function (d, i) {    return getRectX(i);},
+                y: function (d, i) {    return getRectY(d.usersNumber, d.seenBy, i, y_offset_height, height, selector); },
                 fill: function (d, i) { return getRectColor(i, selector); },
-                id: function (d, i) { return selector + "-" + i; }
+                id: function (d, i) {   return selector + "-" + i; }
             });
     }
 
@@ -396,9 +405,10 @@ function DiscussionBarometer(){
      *
      * @param usersNumber
      * @param width
+     * @param maxUsersNumber
      * @returns {*}
      */
-    function getRectWidth(usersNumber, width) {
+    function getRectWidth(usersNumber, width, maxUsersNumber) {
         // height in percent: length/seen_by = x/height
         if(address === "argument" || address === "attitude"){
             return divideWrapperIfZero(usersNumber, maxUsersNumber) * width;

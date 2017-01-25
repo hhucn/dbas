@@ -60,7 +60,8 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     return ret_text + ', ' + _t.get(_.because).lower() + '...'
 
 
-def get_header_for_users_confrontation_response(db_argument, lang, premise, attack_type, conclusion, start_lower_case, is_supportive, is_logged_in, redirect_from_jump=False):
+def get_header_for_users_confrontation_response(db_argument, lang, premise, attack_type, conclusion, start_lower_case,
+                                                is_supportive, is_logged_in, redirect_from_jump=False):
     """
     Based on the users reaction, text will be build. This text can be used for the speech bubbles where users
     justify an argument they have chosen.
@@ -110,7 +111,7 @@ def get_header_for_users_confrontation_response(db_argument, lang, premise, atta
 def __get_user_msg_for_users_confrontation_response(db_argument, attack_type, premise, conclusion, f, t, r, is_supportive, _t):
     # different cases
     if attack_type == 'undermine':
-        return __get_user_msg_for_users_undermine_response(premise, f)
+        return __get_user_msg_for_users_undermine_response(premise, _t.get(_.that))
 
     if attack_type == 'support':
         return __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t)
@@ -122,8 +123,8 @@ def __get_user_msg_for_users_confrontation_response(db_argument, attack_type, pr
         return __get_user_msg_for_users_rebut_response(premise, conclusion, r, is_supportive, _t)
 
 
-def __get_user_msg_for_users_undermine_response(premise, f):
-    return '{}' + f + ' ' + premise + '{}'
+def __get_user_msg_for_users_undermine_response(premise, that):
+    return that + ' ' + ' {}' + premise + '{}'
 
 
 def __get_user_msg_for_users_support_response(conclusion, t, f, is_supportive, _t):
@@ -436,7 +437,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                         user_arg, user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
                                                                         start_argument, end_tag, db_users_premise,
-                                                                        sys_arg,)
+                                                                        sys_arg)
 
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
@@ -632,7 +633,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     :param end_tag: String
     :param db_users_premise: Premise of the user
     :param system_argument: Counter argument of the system
-    :return: String
+    :return: String, String2
     """
     author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
                                                                                        db_users_premise.statements,
@@ -656,7 +657,9 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
         start_tag = ('<' + tag_type + ' data-argumentation-type="argument">') if tag_type in confrontation else ''
         end_tag = '</' + tag_type + '>' if tag_type in confrontation else ''
         accept = _.assistance if lang == 'de' else _.accept
-        tmp = start_tag + _t.get(_.reject if user_is_attacking else accept) + ' ' + end_tag
+        reject = _.rejection if lang == 'de' else _.reject
+        # tmp = start_tag + _t.get(reject if user_is_attacking else accept) + ' ' + end_tag
+        tmp = start_tag + _t.get(accept if system_argument.is_supportive else reject) + ' ' + end_tag
         confrontation_text += bind.format(tmp) + ' ' + conclusion + '.' + ' ' + b
 
         if is_okay:
@@ -675,10 +678,8 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             confrontation_text = b + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. '
             confrontation_text += _t.get(_.strongerStatementP)
 
-        tmp = start_argument
-        tmp += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
-        tmp += end_tag
-        confrontation_text = confrontation_text.format(premise, tmp) + e + ' '
+        tmp = _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
+        confrontation_text = confrontation_text.format(premise, start_argument, tmp, end_tag) + e + ' '
 
         tmp = _t.get(_.strongerStatementEnd)
         if tmp == '':

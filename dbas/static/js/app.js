@@ -449,9 +449,7 @@ function setGlobalInfoHandler(heading, body){
 		$('#' + requestInfoContainer).fadeOut();
 	});
 	$('#' + requestInfoContainerHeading).html(decodeString(heading));
-	console.log(body);
 	$('#' + requestInfoContainerMessage).html(decodeString(body));
-	console.log(decodeString(body));
 	setTimeout(function(){
 		$('#' + requestInfoContainer).fadeOut();
 	}, 5000);
