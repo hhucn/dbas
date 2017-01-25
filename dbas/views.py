@@ -2022,18 +2022,16 @@ def get_users_with_same_opinion(request):
                 return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
         elif is_pos:
             uids = json.loads(uids)
-            ids = uids if isinstance(uids, list) else [uids]
-            return_dict = get_user_with_same_opinion_for_statements(ids, is_sup, nickname, ui_locales, request.application_url)
+            uids = uids if isinstance(uids, list) else [uids]
+            return_dict = get_user_with_same_opinion_for_statements(uids, is_sup, nickname, ui_locales, request.application_url)
         else:
             if is_att:
                 return_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, request.application_url)
             else:
                 uids = json.loads(uids)
-                ids = uids if isinstance(uids, list) else [uids]
-                if len(ids) == 0:
-                    return_dict['info'] = _tn.get(_.otherParticipantsDontHaveOpinionForThisStatement)
-                else:
-                    return_dict = get_user_with_same_opinion_for_premisegroups(ids, nickname, ui_locales, request.application_url)
+                uids = uids if isinstance(uids, list) else [uids]
+                return_dict = get_user_with_same_opinion_for_premisegroups(uids, nickname, ui_locales, request.application_url)
+        return_dict['info'] = _tn.get(_.otherParticipantsDontHaveOpinionForThisStatement) if len(uids) == 0 else ''
         return_dict['error'] = ''
     except KeyError as e:
         logger('get_users_with_same_opinion', 'error', repr(e))

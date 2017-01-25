@@ -212,7 +212,8 @@ class ItemDictHelper(object):
             premises_array = []
             for premise in db_premises:
                 text = get_text_for_statement_uid(premise.statement_uid)
-                premises_array.append({'id': premise.statement_uid, 'title': text[0:1].upper() + text[1:]})
+                premises_array.append({'id': premise.statement_uid,
+                                       'title': text})
 
             # for each justifying premise, we need a new confrontation: (restriction is based on fix #38)
             is_undermine = 'undermine' if attack_type == 'undermine' else None

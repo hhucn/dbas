@@ -513,6 +513,7 @@ de_lang = {
     _.registered: 'Registriert',
     _.right: 'Ja',
     _.reject: 'gegen',
+    _.rejection: 'Ablehnung',
     _.requestTrack: 'Track anfragen',
     _.refreshTrack: 'Track neuladen',
     _.requestHistory: 'History anfragen',

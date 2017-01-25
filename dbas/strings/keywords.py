@@ -516,6 +516,7 @@ class Keywords(Enum):
     refreshHistory = 'Refresh history'
     requestFailed = 'Request failed'
     reject = 'reject'
+    rejection = 'rejection'
     remStatementRow = 'Removes this row.'
     reaction = 'Reactions'
     attitudesOfOpinions = 'Attitudes of the Opinions'

@@ -437,7 +437,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                         user_arg, user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
                                                                         start_argument, end_tag, db_users_premise,
-                                                                        sys_arg,)
+                                                                        sys_arg)
 
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
@@ -657,7 +657,9 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
         start_tag = ('<' + tag_type + ' data-argumentation-type="argument">') if tag_type in confrontation else ''
         end_tag = '</' + tag_type + '>' if tag_type in confrontation else ''
         accept = _.assistance if lang == 'de' else _.accept
-        tmp = start_tag + _t.get(_.reject if user_is_attacking else accept) + ' ' + end_tag
+        reject = _.rejection if lang == 'de' else _.reject
+        # tmp = start_tag + _t.get(reject if user_is_attacking else accept) + ' ' + end_tag
+        tmp = start_tag + _t.get(accept if system_argument.is_supportive else reject) + ' ' + end_tag
         confrontation_text += bind.format(tmp) + ' ' + conclusion + '.' + ' ' + b
 
         if is_okay:
