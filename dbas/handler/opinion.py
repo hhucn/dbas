@@ -349,14 +349,16 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
 
     if not db_statement:
         empty_dict = {
-                    'users': [],
-                    'text': None,
-                    'message': ''
-                }
-        return {'text': None,
-                'agree': empty_dict,
-                'disagree': empty_dict,
-                'title': title}
+            'users': [],
+            'text': None,
+            'message': ''
+        }
+        return {
+            'text': None,
+            'agree': empty_dict,
+            'disagree': empty_dict,
+            'title': title
+        }
     title += ' ' + get_text_for_statement_uid(statement_uid)
 
     ret_dict = dict()
