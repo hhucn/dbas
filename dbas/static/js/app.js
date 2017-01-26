@@ -186,24 +186,6 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 
 /**
  *
- */
-function displayBubbleInformationDialog(){
-	if (!Cookies.get(BUBBLE_INFOS)){
-		var img = $('<img>').attr('src','../static/images/explanation_bubbles_' + ($(document).width() > 992?'long' : 'short') + '.png');
-		$('#' + popupConfirmDialogId).modal('show');
-		$('#' + popupConfirmDialogId + ' .modal-dialog').attr('style', 'width: ' + ($(document).width() > 992? '430' : '200') + 'px;');
-		$('#' + popupConfirmDialogId + ' h4.modal-title').html('Introduction');
-		$('#' + popupConfirmDialogId + ' div.modal-body').html(img);
-		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
-			$('#' + popupConfirmDialogId).modal('hide');
-			Cookies.set(BUBBLE_INFOS, true, { expires: 180 });
-		}).removeClass('btn-success');
-		$('#' + popupConfirmDialogRefuseBtn).hide();
-	}
-}
-
-/**
- *
  * @param lang
  */
 function setPiwikOptOutLink(lang){
