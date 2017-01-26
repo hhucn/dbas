@@ -94,6 +94,7 @@ def field_test(argv=sys.argv):
         transaction.commit()
         # main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         # setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        add_reputation(DBDiscussionSession)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
@@ -191,6 +192,7 @@ def main_discussion_reload(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        add_reputation(DBDiscussionSession)
         setup_review_database(DBDiscussionSession)
         setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
@@ -1670,6 +1672,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([reason1, reason2])
     session.flush()
 
+
+def add_reputation(session):
     reputation01 = ReputationReason(reason='rep_reason_first_position', points=10)
     reputation02 = ReputationReason(reason='rep_reason_first_justification', points=10)
     reputation03 = ReputationReason(reason='rep_reason_first_argument_click', points=10)
