@@ -91,7 +91,7 @@
     			</div>
     			<div class="modal-body">
     				<span>
-    					Copyright &copy; 2016
+                        Copyright &copy; 2015-<span tal:replace="extras.year"></span>
     					<a href="mailto:krauthoff@cs.uni-duesseldorf.de">
     						Tobias Krauthoff
     					</a><br><br>

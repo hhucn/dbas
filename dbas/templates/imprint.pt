@@ -3,7 +3,8 @@
 		<div class="row" style="width: 95%">
             <div class="col-md-1"></div>
 			<div class="col-md-6 colored-container imprint-container">
-				<h3><span i18n:translate="imprint">Impressum</span> ${project}</h3>
+				<h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
+                <h6>Build <span tal:replace="extras.dbas_build"></span></h6>
 				<p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
 				<br>
 				<p>
@@ -64,7 +65,7 @@
 						<li><a target="_blank" href="http://www.bootstraptoggle.com/">Toogle Button</a> <span i18n:translate="for">for</span> Bootstrap</li>
 						<li><a target="_blank" href="https://bootswatch.com/paper/">Paper Theme</a> <span i18n:translate="for">for</span> Bootstrap</li>
 						<li><a target="_blank" href="http://bootstraptour.com/">Guided Tour</a> <span i18n:translate="for">for</span> Bootstrap</li>
-                        <li><span i18n:translate="icons_by">Icons by</span> <a target="_blank" href="https://www.iconfinder.com/">iconfinder</a> <span i18n:target="and">and</span> <a target="_blank" href="http://www.flaticon.com/">flaticon</a> (<span i18n:translate="designed_by">designed by</span> Roundicons <span i18n:translate="or">or</span> MadebyOliver)</li>
+                        <li><span i18n:translate="icons_by">Icons by</span> <a target="_blank" href="https://www.iconfinder.com/">iconfinder</a> <span i18n:translate="and">and</span> <a target="_blank" href="http://www.flaticon.com/">flaticon</a> (<span i18n:translate="designed_by">designed by</span> Roundicons <span i18n:translate="or">or</span> MadebyOliver)</li>
 						<li><span i18n:translate="tracking_by">Tracking by</span> <a target="_blank" href="http://piwik.org/">Piwik</a></li>
 						<li><span i18n:translate="avatare_by">Avatare by</span> <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
 						<li><span i18n:translate="chart_and_graphs_by">Charts and Graphs by</span> <a target="_blank" href="http://d3js.org">D3.js</a></li>

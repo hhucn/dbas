@@ -19,6 +19,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 import dbas.user_management as user_manager
 import requests
 import transaction
+from subprocess import check_output
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason, sql_timestamp_pretty_print
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
@@ -349,6 +350,8 @@ def main_imprint(request):
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
     import pkg_resources
     extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
+    # extras_dict.update({'dbas_build': check_output(['git', 'rev-parse', '--short', 'HEAD'])})
+    extras_dict.update({'dbas_build': check_output(["git", "describe"])})
 
     return {
         'layout': base_layout(),
