@@ -462,7 +462,7 @@ de_lang = {
     _.agreesThat: 'stimmt zu, dass',
     _.that: 'dass',
     _.otherParticipantsDontHaveOpinionForThisStatement: 'Andere Teilnehmer haben bisher keine Meinung dazu.',
-    _.otherParticipantsDontHaveOpinion: 'Andere Teilnehmer haben bisher keine Meinung, dazu dass',
+    _.otherParticipantsDontHaveOpinion: 'Andere Teilnehmer haben bisher keine Meinung dazu, dass',
     _.otherParticipantsDontHaveOpinionRegaringYourSelection: 'Andere Teilnehmer haben bisher keine Meinung zu Ihrer Aussage',
     _.otherParticipantsDontHaveCounter: 'Andere Teilnehmer haben kein Gegenargument für ',
     _.otherParticipantsDontHaveCounterForThat: 'Andere Teilnehmer haben kein Gegenargument dafür',
