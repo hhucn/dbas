@@ -90,11 +90,10 @@ def field_test(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2, is_field_test=True)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, use_anonyme_nicks=False)
-
         setup_fieltest_discussion_database(DBDiscussionSession, issue6)
         transaction.commit()
-        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        # main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+        # setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
