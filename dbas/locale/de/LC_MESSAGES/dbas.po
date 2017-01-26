@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-26 15:10+0100\n"
+"POT-Creation-Date: 2017-01-26 17:03+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -877,7 +877,7 @@ msgstr "Fehler:"
 #. Default: Success
 #: templates/snippet-popups.pt:304 templates/snippet-popups.pt:384
 #: templates/snippet-popups.pt:477 templates/settings.pt:251
-#: templates/content.pt:64
+#: templates/content.pt:66
 msgid "success"
 msgstr "Erfolg:"
 
@@ -1523,6 +1523,11 @@ msgstr "Repuations-Punktzahl"
 msgid "action"
 msgstr "Aktion"
 
+#. Default: No arguments to review in this queue!
+#: templates/review_content.pt:10
+msgid "no_arguments_to_review"
+msgstr "Keine Argumente zum begutachten!"
+
 #. Default: (more)
 #: templates/review_content.pt:30
 msgid "wrapped_more"
@@ -1815,72 +1820,72 @@ msgid "profile_picture_of"
 msgstr "Profilbild von"
 
 #. Default: more infos
-#: templates/content.pt:10 templates/content.pt:16
+#: templates/content.pt:11 templates/content.pt:18
 msgid "more_infos"
 msgstr "mehr Informationen"
 
 #. Default: Switch Topic
-#: templates/content.pt:21
+#: templates/content.pt:23
 msgid "switch_topc"
 msgstr "Thema wechseln"
 
 #. Default: Add a Topic
-#: templates/content.pt:37
+#: templates/content.pt:39
 msgid "add_topic"
 msgstr "Thema hinzufügen"
 
 #. Default: Restart
-#: templates/content.pt:44
+#: templates/content.pt:46
 msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Show all statements
-#: templates/content.pt:135
+#: templates/content.pt:137
 msgid "show_all_statements"
 msgstr "Alle Aussagen anzeigen"
 
 #. Default: Hide statements
-#: templates/content.pt:136
+#: templates/content.pt:138
 msgid "hide_statements"
 msgstr "Aussage ausblenden"
 
 #. Default: Default View
-#: templates/content.pt:279
+#: templates/content.pt:281
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:280 templates/content.pt:281
+#: templates/content.pt:282 templates/content.pt:283
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:282 templates/content.pt:283
+#: templates/content.pt:284 templates/content.pt:285
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: Show my path
-#: templates/content.pt:284
+#: templates/content.pt:286
 msgid "show_my_path"
 msgstr "Pfad einblenden"
 
 #. Default: Hide my path
-#: templates/content.pt:285
+#: templates/content.pt:287
 msgid "hide_my_path"
 msgstr "Pfad ausblenden"
 
 #. Default: My statements
-#: templates/content.pt:286 templates/content.pt:287
+#: templates/content.pt:288 templates/content.pt:289
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:288 templates/content.pt:289
+#: templates/content.pt:290 templates/content.pt:291
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:290 templates/content.pt:291
+#: templates/content.pt:292 templates/content.pt:293
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 

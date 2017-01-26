@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-26 15:10+0100\n"
+"POT-Creation-Date: 2017-01-26 17:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -779,7 +779,7 @@ msgstr ""
 #. Default: Success
 #: ././templates/snippet-popups.pt:304 ././templates/snippet-popups.pt:384
 #: ././templates/snippet-popups.pt:477 ././templates/settings.pt:251
-#: ././templates/content.pt:64
+#: ././templates/content.pt:66
 msgid "success"
 msgstr ""
 
@@ -1402,6 +1402,11 @@ msgstr ""
 msgid "action"
 msgstr ""
 
+#. Default: No arguments to review in this queue!
+#: ././templates/review_content.pt:10
+msgid "no_arguments_to_review"
+msgstr ""
+
 #. Default: (more)
 #: ././templates/review_content.pt:30
 msgid "wrapped_more"
@@ -1692,71 +1697,71 @@ msgid "profile_picture_of"
 msgstr ""
 
 #. Default: more infos
-#: ././templates/content.pt:10 ././templates/content.pt:16
+#: ././templates/content.pt:11 ././templates/content.pt:18
 msgid "more_infos"
 msgstr ""
 
 #. Default: Switch Topic
-#: ././templates/content.pt:21
+#: ././templates/content.pt:23
 msgid "switch_topc"
 msgstr ""
 
 #. Default: Add a Topic
-#: ././templates/content.pt:37
+#: ././templates/content.pt:39
 msgid "add_topic"
 msgstr ""
 
 #. Default: Restart
-#: ././templates/content.pt:44
+#: ././templates/content.pt:46
 msgid "restart_discussion"
 msgstr ""
 
 #. Default: Show all statements
-#: ././templates/content.pt:135
+#: ././templates/content.pt:137
 msgid "show_all_statements"
 msgstr ""
 
 #. Default: Hide statements
-#: ././templates/content.pt:136
+#: ././templates/content.pt:138
 msgid "hide_statements"
 msgstr ""
 
 #. Default: Default View
-#: ././templates/content.pt:279
+#: ././templates/content.pt:281
 msgid "default_view"
 msgstr ""
 
 #. Default: Labels
-#: ././templates/content.pt:280 ././templates/content.pt:281
+#: ././templates/content.pt:282 ././templates/content.pt:283
 msgid "labels"
 msgstr ""
 
 #. Default: Positions
-#: ././templates/content.pt:282 ././templates/content.pt:283
+#: ././templates/content.pt:284 ././templates/content.pt:285
 msgid "positions"
 msgstr ""
 
 #. Default: Show my path
-#: ././templates/content.pt:284
+#: ././templates/content.pt:286
 msgid "show_my_path"
 msgstr ""
 
 #. Default: Hide my path
-#: ././templates/content.pt:285
+#: ././templates/content.pt:287
 msgid "hide_my_path"
 msgstr ""
 
 #. Default: My statements
-#: ././templates/content.pt:286 ././templates/content.pt:287
+#: ././templates/content.pt:288 ././templates/content.pt:289
 msgid "my_statements"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/content.pt:288 ././templates/content.pt:289
+#: ././templates/content.pt:290 ././templates/content.pt:291
 msgid "supports_on_my_statements"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/content.pt:290 ././templates/content.pt:291
+#: ././templates/content.pt:292 ././templates/content.pt:293
 msgid "attacks_on_my_statements"
 msgstr ""
