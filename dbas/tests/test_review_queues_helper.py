@@ -54,7 +54,7 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         self.assertTrue(len(error) == 0)
         self.assertTrue(is_locked)
 
-        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Martin', 2, _tn)
+        success, info, error, is_locked = ReviewQueuesHelper.lock_optimization_review('Christian', 2, _tn)
         self.assertTrue(len(success) == 0)
         self.assertTrue(len(info) > 0)
         self.assertTrue(len(error) == 0)
