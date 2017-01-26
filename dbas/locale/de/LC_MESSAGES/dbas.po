@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-26 09:20+0100\n"
+"POT-Creation-Date: 2017-01-26 09:25+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -201,7 +201,7 @@ msgstr "Haftung für Inhalte"
 #. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir
 #. jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1
 #. TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
-#. verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch
+#. verantwortlich. Nach § 8 bis 10 TMG sind wir als Diensteanbieter jedoch
 #. nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu
 #. überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige
 #. Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der
@@ -217,7 +217,7 @@ msgstr ""
 "Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch "
 "keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG "
 "für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen "
-"verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch "
+"verantwortlich. Nach § 8 bis 10 TMG sind wir als Diensteanbieter jedoch "
 "nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu "
 "überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige "
 "Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der "
