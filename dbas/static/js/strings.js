@@ -12,19 +12,8 @@ var mainpage = location.origin + '/'; //get_hostname(window.location.href);
  * @private
  */
 _t = function(id){
-    var this_id;
-    var value = 'unknown identifier';
-    $('#' + languageDropdownId).children().each(function(){
-        if ($(this).hasClass('active')){
-            this_id = $(this).children().first().attr('id');
-
-            if (this_id.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){            value = dbas_en[id];
-            } else if (this_id.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){    value = dbas_de[id];
-            } else {                                                                value = 'unknown value';
-            }
-        }
-    });
-    return value;
+    var lang_id = $('#' + languageDropdownId).find('.active a').attr('id');
+    return get_it(lang_id, id);
 };
 
 
@@ -36,16 +25,21 @@ _t = function(id){
  */
 _t_discussion = function(id){
     var info = $('#issue_info');
-    if (info.length == 0){
+    if (info.length == 0)
         return _t(id);
-    }
     var lang = info.data('discussion-language');
-    var value = 'unknown identifier';
-    if (lang.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){        value = dbas_en[id];
-    } else if (lang.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){    value = dbas_de[id];
-    } else {                                                            value = 'unknown value';
+    return get_it(lang, id);
+};
+
+var get_it = function(val, id){
+    var value = 'unknown value';
+    if (val.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){
+        value = dbas_en[id];
+    } else if (val.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){
+        value = dbas_de[id];
     }
     return value;
+    
 };
 
 /**
@@ -497,7 +491,7 @@ var dbas_en = {
     'textMinCountMessageBegin2': 'characters',
     'textMinCountMessageDuringTyping': 'more to go ...',
     'textMaxCountMessage': 'characters left',
-    'textMaxCountMessageError': 'Please shorten!',
+    'textMaxCountMessageError': 'Put it in a nutshell!', //'Please shorten!',
     'users': 'Users',
     'usersWithSameOpinion': 'Users with same opinion',
     'unpinNavigation': 'Unpin Navigation',
@@ -719,7 +713,7 @@ var dbas_de = {
     'textMinCountMessageBegin2': 'Zeichen ein',
     'textMinCountMessageDuringTyping': 'Zeichen noch ...',
     'textMaxCountMessage': 'Zeichen verbleibend',
-    'textMaxCountMessageError': 'Versuchen Sie zu kürzen!',
+    'textMaxCountMessageError': 'Bringen Sie Ihre Aussagen auf den Punkt!', //Versuchen Sie zu kürzen!',
     'valid': 'Gültigkeit',
     'veryweak': 'sehr schwach',
     'youAreAbleToReviewNow': 'Sie können nun andere Beiträge begutachten.',
@@ -727,7 +721,7 @@ var dbas_de = {
     'vote': 'Stimme',
     'votes': 'Stimmen',
     'weak': 'schwach',
-    'next': 'Nächster',
+    'next': 'Weiter',
     'prev': 'Zurück',
     'tourEnd': 'Beenden',
     'welcomeDialogBody': 'Es scheint, dass Sie zum ersten mal hier sind. Möchten Sie eine kurze Einführung sehen?',
@@ -746,7 +740,7 @@ var dbas_de = {
     'tourSelectAnswertTitle': 'Erste Auswahl',
     'tourSelectAnswertContent': 'Im unteren Teil können Sie Antworten auswählen ...',
     'tourEnterStatementTitle': 'Eigene Antworten',
-    'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie eingeloggt sind.',
+    'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie angemeldet sind.',
     'tourHaveFunTitle': 'Und nun ...',
     'tourHaveFunContent': '... viel Spaß!',
 };
