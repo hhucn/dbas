@@ -296,20 +296,6 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
-    def test_set_new_issue_failure6(self):
-        # short info
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_issue as ajax
-        request = testing.DummyRequest(params={
-            'info': 'aaaaaaaaaaaaaaaaaa',
-            'title': 'Some new title for us',
-            'long_info': 'Some new long info',
-            'lang': 'en'
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
-
     def test_set_seen_statements(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_seen_statements as ajax

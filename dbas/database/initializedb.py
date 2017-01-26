@@ -88,7 +88,7 @@ def field_test(argv=sys.argv):
     with transaction.manager:
         user0, user1, user2, user3, user4 = set_up_users(DBDiscussionSession, include_dummy_users=False)
         lang1, lang2 = set_up_language(DBDiscussionSession)
-        issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2, is_field_test=True)
+        issue6 = set_up_issue(DBDiscussionSession, lang1, lang2, is_field_test=True)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, use_anonyme_nicks=False)
         setup_fieltest_discussion_database(DBDiscussionSession, issue6)
         transaction.commit()
@@ -809,9 +809,14 @@ def set_up_issue(session, lang1, lang2, is_field_test=False):
                    author_uid=db_user.uid,
                    lang_uid=lang2.uid,
                    is_disabled=not is_field_test)
-    session.add_all([issue1, issue2, issue3, issue4, issue5, issue6])
-    session.flush()
-    return issue1, issue2, issue3, issue4, issue5, issue6
+    if is_field_test:
+        session.add_all([issue6])
+        session.flush()
+        return issue6
+    else:
+        session.add_all([issue1, issue2, issue3, issue4, issue5, issue6])
+        session.flush()
+        return issue1, issue2, issue3, issue4, issue5, issue6
 
 
 def setup_dummy_seen_by(session):

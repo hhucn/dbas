@@ -27,7 +27,7 @@ class StringMatcherTest(unittest.TestCase):
 
     def test_get_strings_for_issues(self):
         mechanism, return_array = matcher.get_strings_for_issues('cat')
-        self.assertEqual(len(DBDiscussionSession.query(Issue).all()), len(return_array))
+        self.assertGreater(len(DBDiscussionSession.query(Issue).all()), len(return_array))
         count = 0
         for entry in return_array:
             if 'cat' in entry['text'].lower():
