@@ -127,6 +127,8 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 	dialog.on('hidden.bs.modal', function () {
 		$('#' + popupConfirmDialogRefuseBtn).show();
 		dialog.find('.modal-dialog').removeClass('modal-sm');
+		dialog.find('confirm-dialog-accept-btn').text(_t(okay));
+		dialog.find('confirm-dialog-refuse-btn').text(_t(cancel));
 	});
 }
 

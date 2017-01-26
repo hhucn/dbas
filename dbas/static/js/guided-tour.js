@@ -163,6 +163,8 @@ function GuidedTour(){
 				switcher.remove();
 			});
 			displayConfirmationDialog(title, text, start_fct, end_fct, false);
+			dialog.find('#confirm-dialog-accept-btn').text(_t(yes));
+			dialog.find('#confirm-dialog-refuse-btn').text(_t(no));
 			set_lang_click();
 		} else if(!part0 && part1 && !part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){ // part 2: discussion
 			tour.init();

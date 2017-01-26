@@ -86,7 +86,7 @@
 					</table>
 					<div>
                         <div class="center text-center" style="float:left; margin: 2em;">
-                            <img id="user_gravatar" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
+                            <img id="user_gravatar" class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
 						    <br>
 						    <span i18n:translate="profile_picture">Profile Picture</span>
                         </div>
@@ -154,14 +154,19 @@
 							</div>
 						</div>
 
-						<div class="col-md-12" tal:condition="settings.change_error">
+						<div class="col-md-12" tal:condition="settings.pw_change_error">
 							<div id="settings-danger-message" class="alert alert-danger alert-dismissible">
-								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>${settings.message}
 							</div>
 						</div>
+
+			            <div tal:condition="settings.pw_change_success" id="settings-success-message" class="alert alert-success" class="col-md-12">
+			            	<button type="button" class="close" data-dismiss="alert">&times;</button>
+			            	<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+			            	<span i18n:translate="password_changed">Your password was changed</span>.
+			            </div>
+
 						<input id="settings-password-submit" type="submit" onclick="$('body').addClass('loading')" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
 					</form>
 				</div>
@@ -209,12 +214,6 @@
 					<!--	<input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />-->
 					<!--</div>-->
 				</div>
-			</div>
-
-			<div tal:condition="settings.change_success" id="settings-success-message" class="alert alert-success" class="col-md-12">
-				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-				<span i18n:translate="password_changed">Your password was changed</span>.
 			</div>
 
 			<div class="col-md-12">

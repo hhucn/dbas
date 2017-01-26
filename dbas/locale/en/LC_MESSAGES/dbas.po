@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-26 09:27+0100\n"
+"POT-Creation-Date: 2017-01-26 11:08+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -426,14 +426,16 @@ msgstr "Avatare by"
 msgid "chart_and_graphs_by"
 msgstr "Charts and Graphs by"
 
+#. Default: by
+#.
+#: templates/imprint.pt:72 templates/imprint.pt:74
+msgid "by"
+msgstr "by"
+
 #. Default: Cookie Manager by
 #: templates/imprint.pt:73
 msgid "cookie_manager_by"
 msgstr "Cookie Manager by"
-
-#: templates/imprint.pt:74
-msgid "by"
-msgstr "by"
 
 #. Default: is generated with Pyramid Web Framework
 #: templates/imprint.pt:80

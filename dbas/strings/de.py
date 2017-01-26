@@ -34,7 +34,7 @@ de_lang = {
     _.oldPwdEmpty: 'Altes Passwortfeld ist leer.',
     _.newPwdEmtpy: 'Neues Passwortfeld ist leer.',
     _.confPwdEmpty: 'Bestätigungs-Passwordfeld ist leer.',
-    _.newPwdNotEqual: 'Passwort und Bestätigung stimmen nicht überein.',
+    _.newPwdNotEqual: 'Neues Passwort und Bestätigung stimmen nicht überein.',
     _.pwdsSame: 'Beide eingegeben Passwörter sind identisch.',
     _.oldPwdWrong: 'Ihr altes Passwort ist falsch.',
     _.pwdChanged: 'Ihr Passwort würde geändert.',

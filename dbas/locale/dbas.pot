@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-26 09:27+0100\n"
+"POT-Creation-Date: 2017-01-26 11:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -364,13 +364,15 @@ msgstr ""
 msgid "chart_and_graphs_by"
 msgstr ""
 
+#. Default: by
+#. 
+#: ././templates/imprint.pt:72 ././templates/imprint.pt:74
+msgid "by"
+msgstr ""
+
 #. Default: Cookie Manager by
 #: ././templates/imprint.pt:73
 msgid "cookie_manager_by"
-msgstr ""
-
-#: ././templates/imprint.pt:74
-msgid "by"
 msgstr ""
 
 #. Default: is generated with Pyramid Web Framework

@@ -69,7 +69,7 @@
 						<li><span i18n:translate="tracking_by">Tracking by</span> <a target="_blank" href="http://piwik.org/">Piwik</a></li>
 						<li><span i18n:translate="avatare_by">Avatare by</span> <a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
 						<li><span i18n:translate="chart_and_graphs_by">Charts and Graphs by</span> <a target="_blank" href="http://d3js.org">D3.js</a></li>
-                        <li>404-<a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">Tumbeasts</a> by Matthew Inman of The Oatmeal</li>
+                        <li>404-<a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">Tumbeasts</a> <span i18n:translate="by">by</span> Matthew Inman of The Oatmeal</li>
                         <li><span i18n:translate="cookie_manager_by">Cookie Manager by</span> <a target="_blank" href="https://github.com/js-cookie/js-cookie">js-cookie</a></li>
                         <li>reCAPTCHAs <span i18n:translate="">by</span> <a target="_blank" href="https://www.google.com/recaptcha">Google</a></li>
 					</ul>

@@ -198,14 +198,14 @@ class DictionaryHelper(object):
                     return_dict['show_island_icon'] = False
         return return_dict
 
-    def prepare_settings_dict(self, success, old_pw, new_pw, confirm_pw, error, message, db_user, main_page):
+    def prepare_settings_dict(self, pw_change_success, old_pw, new_pw, confirm_pw, pw_change_error, message, db_user, main_page):
         """
 
         :param success:
         :param old_pw:
         :param new_pw:
         :param confirm_pw:
-        :param error:
+        :param pw_change_error:
         :param message:
         :param db_user:
         :param main_page:
@@ -225,11 +225,11 @@ class DictionaryHelper(object):
         db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid) if db_settings else None
 
         return {
-            'passwordold': '' if success else old_pw,
-            'password': '' if success else new_pw,
-            'passwordconfirm': '' if success else confirm_pw,
-            'change_error': error,
-            'change_success': success,
+            'passwordold': '' if pw_change_success else old_pw,
+            'password': '' if pw_change_success else new_pw,
+            'passwordconfirm': '' if pw_change_success else confirm_pw,
+            'pw_change_error': pw_change_error,
+            'pw_change_success': pw_change_success,
             'message': message,
             'db_firstname': db_user.firstname if db_user else '',
             'db_surname': db_user.surname if db_user else '',

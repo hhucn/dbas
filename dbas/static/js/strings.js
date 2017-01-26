@@ -97,6 +97,7 @@ var author                          = 'author';
 var avatar                          = 'avatar';
 var acceptItTitle                   = 'acceptItTitle';
 var caution                         = 'caution';
+var cancel                          = 'cancel';
 var correctionsSet                  = 'correctionsSet';
 var because                         = 'because';
 var changelog                       = 'changelog';
@@ -198,11 +199,13 @@ var noReferencesButYouCanAdd        = 'noReferencesButYouCanAdd';
 var noEntries                       = 'noEntries';
 var noEntriesFor                    = 'noEntriesFor';
 var note                            = 'note';
+var no                              = 'no';
 var neww                            = 'new';
 var number                          = 'number';
 var notificationWasSend             = 'notificationWasSend';
 var noEditsInOptimization           = 'noEditsInOptimization';
 var opinionBarometer                = 'opinionBarometer';
+var okay                            = 'okay';
 var option                          = 'option';
 var ohsnap                          = 'ohsnap';
 var report                          = 'report';
@@ -262,9 +265,10 @@ var unpinNavigation                 = 'unpinNavigation';
 var veryweak                        = 'veryweak';
 var valid                           = 'valid';
 var vote                            = 'vote';
-var votes                           = 'votes';
+var vote                            = 'vote';
+var yes                             = 'yes';
 var youAreAbleToReviewNow           = 'youAreAbleToReviewNow';
-var yourAreNotTheAuthorOfThisAnymore = 'yourAreNotTheAuthorOfThisAnymore'
+var yourAreNotTheAuthorOfThisAnymore = 'yourAreNotTheAuthorOfThisAnymore';
 var weak                            = 'weak';
 
 var next                            = 'next';
@@ -336,6 +340,7 @@ var dbas_en = {
     'couldNotLock': 'Set could not be locked, please try again!',
     'confirmTranslation': 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
     'caution': 'Caution',
+    'cancel': 'cancel',
     'correctionsSet': 'Your correction was set.',
     'changelog': 'changelog',
     'checkFirstname': 'Better check your first name, because the input is empty!',
@@ -418,6 +423,7 @@ var dbas_en = {
     'messageInfoSupporterPl': 'Supporters are',
     'nickname': 'Nickname',
     'new': 'NEW',
+    'no': 'No',
     'noCorrections': 'No corrections for the given statement.',
     'noCorrectionsSet': 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?',
     'noDecisionDone': 'No decision was done.',
@@ -437,6 +443,7 @@ var dbas_en = {
     'opinionBarometer': 'Opinion Barometer',
     'option': 'Options',
     'ohsnap': 'Oh snap!',
+    'okay': 'Okay',
     'participantsSawThisStatement': 'participants saw this statement.',
     'participantSawThisStatement': 'participant saw this statement.',
     'participantsSawArgumentsToThis': 'participants saw an argument for this opinition.',
@@ -498,6 +505,7 @@ var dbas_en = {
     'unkownError': 'Unknown error',
     'youAreAbleToReviewNow': 'You are now able to visit the review section.',
     'yourAreNotTheAuthorOfThisAnymore': 'You are not the author of this post anymore.',
+    'yes': 'Yes',
     'valid': 'Valid',
     'veryweak': 'very weak',
     'vote': 'vote',
@@ -548,6 +556,7 @@ var dbas_de = {
     'because':'weil',
     'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
     'caution': 'Achtung',
+    'cancel': 'Abbrechen',
     'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
     'countOfArguments': 'Anzahl der Argumente',
     'countdownEnded': 'Ihre Zeit ist abgelaufen, leider können Sie auf dieser Seite keine Änderungen mehr vornehmen.',
@@ -645,6 +654,7 @@ var dbas_de = {
     'notInsertedErrorBecauseTooShort': 'Ihre Idee wurde aufgrund der Kürze nicht gespeichert.',
     'notificationWasSend': 'Nachricht wurde gesendet',
     'noEntries': 'Keine Einträge vorhanden',
+    'no': 'Nein',
     'noEntriesFor': 'Keine Einträge vorhanden für',
     'noTrackedData': 'Keine Daten wurden gespeichert.',
     'noDecisionstaken': 'Es wurden noch keine Entscheidungen getroffen',
@@ -655,6 +665,7 @@ var dbas_de = {
     'opinionBarometer': 'Meinungsbarometer',
     'option': 'Optionen',
     'ohsnap': 'Mist!',
+    'okay': 'Okay',
     'participantsSawThisStatement': 'Teilnehmer/innen sahen diese Aussage.',
     'participantSawThisStatement': 'Teilnehmer/in sah diese Aussage.',
     'participantsSawArgumentsToThis': 'Teilnehmer/innen sahen Argumente für diese Aussage.',
@@ -723,6 +734,7 @@ var dbas_de = {
     'weak': 'schwach',
     'next': 'Weiter',
     'prev': 'Zurück',
+    'yes': 'Ja',
     'tourEnd': 'Beenden',
     'welcomeDialogBody': 'Es scheint, dass Sie zum ersten mal hier sind. Möchten Sie eine kurze Einführung sehen?',
     'tourWelcomeTitle': 'Willkommen!',
