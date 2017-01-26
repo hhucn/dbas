@@ -1751,17 +1751,17 @@ def setup_review_database(session):
     reputation09 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_flag').first()
     reputation10 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
 
-    martin = session.query(User).filter_by(nickname='Martin').first()
+    anonym = session.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     christian = session.query(User).filter_by(nickname='Christian').first()
     tobias = session.query(User).filter_by(nickname='Tobias').first()
 
     today = arrow.utcnow()
     yesterday = today.replace(days=-1)
     day_before_yesterday = yesterday.replace(days=-1)
-    history01 = ReputationHistory(reputator=martin.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
-    history02 = ReputationHistory(reputator=martin.uid, reputation=reputation02.uid, timestamp=yesterday)
-    history03 = ReputationHistory(reputator=martin.uid, reputation=reputation03.uid, timestamp=today)
-    history04 = ReputationHistory(reputator=martin.uid, reputation=reputation08.uid, timestamp=today)
+    history01 = ReputationHistory(reputator=anonym.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
+    history02 = ReputationHistory(reputator=anonym.uid, reputation=reputation02.uid, timestamp=yesterday)
+    history03 = ReputationHistory(reputator=anonym.uid, reputation=reputation03.uid, timestamp=today)
+    history04 = ReputationHistory(reputator=anonym.uid, reputation=reputation08.uid, timestamp=today)
     history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=day_before_yesterday)
     history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
     history07 = ReputationHistory(reputator=christian.uid, reputation=reputation05.uid, timestamp=yesterday)
@@ -1779,6 +1779,6 @@ def setup_review_database(session):
     session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09,
                      history10, history11, history12, history13, history14, history15, history16, history17])
 
-    session.add(ReviewEdit(detector=martin.uid, statement=2))
+    session.add(ReviewEdit(detector=christian.uid, statement=2))
     session.flush()
     session.add(ReviewEditValue(1, 2, '', 'as'))
