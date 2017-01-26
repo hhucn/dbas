@@ -1379,7 +1379,7 @@ msgstr "Stärke"
 #. Default: Your password was changed
 #: templates/settings.pt:167
 msgid "password_changed"
-msgstr "Ihr Passwurd wurde geändert"
+msgstr "Ihr Passwort wurde geändert"
 
 #. Default: Discussion Statistics
 #: templates/settings.pt:175 templates/user.pt:38
