@@ -13,7 +13,7 @@
 - Minor improvements and bugfix
 
 ## 1.0.0 (2017-01-02)
-- reCAPTCHAS
+- Captchas
 - Minor improvements and language bugfix
 - Guided tour at the beginning
 
