@@ -747,11 +747,16 @@
     				<h4 id="myModalLabelAddTopic" class="modal-title">${structure:extras.tag.add_a_topic}</h4>
     			</div>
     			<div class="modal-body">
-                    <p>${structure:extras.tag.please_enter_topic}</p>
-                    <input class="form-control" type="text" placeholder="..." id="popup-add-topic-info-input">
-                    <p style="margin-top: 1em;">${structure:extras.tag.please_enter_shorttext_for_topic}</p>
+                    <p i18n:translate="please_enter_title">Please enter your title here:</p>
                     <input class="form-control" type="text" placeholder="..." id="popup-add-topic-title-input">
-                    <p style="margin-top: 1em;">${structure:extras.tag.please_select_language_for_topic}</p>
+
+                    <p style="margin: 2em 0 0 0;" i18n:translate="please_enter_info">Please enter a short-description or question here:</p>
+                    <input class="form-control" type="text" placeholder="..." id="popup-add-topic-info-input">
+
+                    <p style="margin: 2em 0 0 0;" i18n:translate="please_enter_long_info">Please enter the full description here:</p>
+                    <input class="form-control" type="text" placeholder="..." id="popup-add-topic-long-info-input">
+
+                    <p style="margin: 2em 0 0 0;" i18n:translate="please_select_language_for_topic">Please select the language of the new discussion here:</p>
                     <ul id="popup-add-topic-lang-input" style="list-style-type: none; display: inline-flex;">
                         <li style="margin-right: 1em;">
                             <input tal:condition="not:extras.lang_is_de" id="de" type="radio" name="lang_topic">

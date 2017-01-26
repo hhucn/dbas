@@ -1819,12 +1819,14 @@ def set_new_issue(request):
     return_dict = dict()
     ui_locales = get_language(request)
     _tn = Translator(ui_locales)
+    was_set = False
 
     try:
         info = escape_string(request.params['info'])
+        long_info = escape_string(request.params['long_info'])
         title = escape_string(request.params['title'])
         lang = escape_string(request.params['lang'])
-        was_set, error = issue_helper.set_issue(info, title, lang, request_authenticated_userid, ui_locales)
+        was_set, error = issue_helper.set_issue(info, long_info, title, lang, request_authenticated_userid, ui_locales)
         if was_set:
             db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
                                                                     Issue.info == info)).first()
@@ -1833,7 +1835,7 @@ def set_new_issue(request):
         logger('set_new_issue', 'error', repr(e))
         error = _tn.get(_.notInsertedErrorBecauseInternal)
 
-    return_dict['error'] = error
+    return_dict['error'] = '' if was_set else error
     return json.dumps(return_dict)
 
 

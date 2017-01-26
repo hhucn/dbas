@@ -178,6 +178,12 @@ function Main () {
 			}
 		});
 		$('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click').removeAttr('href');
+		$('#issue-long-info-link').click(function(){
+			var title = $('#issue_info').data('title');
+			var info = $(this).data('info');
+			var long_info = $(this).data('long-info');
+			displayConfirmationDialogWithoutCancelAndFunction(title, long_info + '<br><br>' + info);
+		});
 		
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
@@ -256,7 +262,7 @@ function Main () {
 		
 		// adding issues
 		$('#' + addTopicButtonId).click(function () {
-			popupHandler.showAddTopicPopup(new InteractionHandler().callbackIfDoneForSendNewIssue);
+			popupHandler.showAddTopicPopup();
 		});
 		
 		// user info click

@@ -61,7 +61,7 @@ def main_discussion(argv=sys.argv):
     with transaction.manager:
         user0, user1, user2, user3, user4, user6, user7, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, user8, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
         lang1, lang2 = set_up_language(DBDiscussionSession)
-        issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, user2, lang1, lang2)
+        issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30, use_anonyme_nicks=False)
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
@@ -88,9 +88,13 @@ def field_test(argv=sys.argv):
     with transaction.manager:
         user0, user1, user2, user3, user4 = set_up_users(DBDiscussionSession, include_dummy_users=False)
         lang1, lang2 = set_up_language(DBDiscussionSession)
-        set_up_issue(DBDiscussionSession, user0, lang1, lang2, is_field_test=True)
+        issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2, is_field_test=True)
         set_up_settings(DBDiscussionSession, user0, user1, user2, user3, user4, use_anonyme_nicks=False)
-        setup_fieltest_discussion_database(DBDiscussionSession)
+
+        setup_fieltest_discussion_database(DBDiscussionSession, issue6)
+        transaction.commit()
+        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+        setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
@@ -186,7 +190,7 @@ def main_discussion_reload(argv=sys.argv):
         drop_discussion_database(DBDiscussionSession)
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         lang1, lang2 = set_up_language(DBDiscussionSession)
-        issue1, issue2, issue4, issue5 = set_up_issue(DBDiscussionSession, main_author, lang1, lang2)
+        issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         setup_review_database(DBDiscussionSession)
         setup_dummy_seen_by(DBDiscussionSession)
@@ -212,10 +216,8 @@ def main_dummy_votes(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-        db_users = DBDiscussionSession.query(User).all()
-        users = {user.nickname: user for user in db_users}
-        setup_dummy_seen_by(DBDiscussionSession, users)
-        setup_dummy_votes(DBDiscussionSession, users)
+        setup_dummy_seen_by(DBDiscussionSession)
+        setup_dummy_votes(DBDiscussionSession)
         transaction.commit()
 
 
@@ -755,7 +757,7 @@ def set_up_language(session):
     return lang1, lang2
 
 
-def set_up_issue(session, user, lang1, lang2, is_field_test=False):
+def set_up_issue(session, lang1, lang2, is_field_test=False):
     """
 
     :param session:
@@ -764,47 +766,58 @@ def set_up_issue(session, user, lang1, lang2, is_field_test=False):
     :param lang2:
     :return:
     """
-    if is_field_test:
-        issue1 = Issue(title='Verbesserung des Informatik-Studiengangs',
-                       info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark '
-                            'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte '
-                            'Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu '
-                            'einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu '
-                            'diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die '
-                            'große Anzahl der Studierenden entstanden sind, gelöst werden?',
-                       author_uid=user.uid,
-                       lang_uid=lang2.uid)
-        session.add_all([issue1])
-        session.flush()
-        return issue1
-    else:
-        # adding our main issue
-        issue1 = Issue(title='Town has to cut spending ',
-                       info='Our town needs to cut spending. Please discuss ideas how this should be done.',
-                       author_uid=user.uid,
-                       lang_uid=lang1.uid)
-        issue2 = Issue(title='Cat or Dog',
-                       info='Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!',
-                       author_uid=user.uid,
-                       lang_uid=lang1.uid)
-        issue3 = Issue(title='Make the world better',
-                       info='How can we make this world a better place?',
-                       author_uid=user.uid,
-                       lang_uid=lang1.uid)
-        issue4 = Issue(title='Elektroautos',
-                       info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.',
-                       author_uid=user.uid,
-                       lang_uid=lang2.uid)
-        issue5 = Issue(title='Unterstützung der Sekretariate',
-                       info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.',
-                       author_uid=user.uid,
-                       lang_uid=lang2.uid)
-        session.add_all([issue1, issue2, issue3, issue4, issue5])
-        session.flush()
-        return issue1, issue2, issue4, issue5
+    # adding our main issue
+    db_user = session.query(User).filter_by(nickname=nick_of_admin).first()
+    issue1 = Issue(title='Town has to cut spending ',
+                   info='Our town needs to cut spending. Please discuss ideas how this should be done.',
+                   long_info='',
+                   author_uid=db_user.uid,
+                   lang_uid=lang1.uid,
+                   is_disabled=is_field_test)
+    issue2 = Issue(title='Cat or Dog',
+                   info='Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!',
+                   long_info='',
+                   author_uid=db_user.uid,
+                   lang_uid=lang1.uid,
+                   is_disabled=is_field_test)
+    issue3 = Issue(title='Make the world better',
+                   info='How can we make this world a better place?',
+                   long_info='',
+                   author_uid=db_user.uid,
+                   lang_uid=lang1.uid,
+                   is_disabled=is_field_test)
+    issue4 = Issue(title='Elektroautos',
+                   info='Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.',
+                   long_info='',
+                   author_uid=db_user.uid,
+                   lang_uid=lang2.uid,
+                   is_disabled=is_field_test)
+    issue5 = Issue(title='Unterstützung der Sekretariate',
+                   info='Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.',
+                   long_info='',
+                   author_uid=db_user.uid,
+                   lang_uid=lang2.uid,
+                   is_disabled=is_field_test)
+    issue6 = Issue(title='Verbesserung des Informatik-Studiengangs',
+                   info='Wie können der Informatik-Studiengang verbessert und die Probleme, die durch die '
+                        'große Anzahl der Studierenden entstanden sind, gelöst werden?',
+                   long_info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark '
+                        'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte '
+                        'Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu '
+                        'einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu '
+                        'diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die '
+                        'große Anzahl der Studierenden entstanden sind, gelöst werden?',
+                   author_uid=db_user.uid,
+                   lang_uid=lang2.uid,
+                   is_disabled=not is_field_test)
+    session.add_all([issue1, issue2, issue3, issue4, issue5, issue6])
+    session.flush()
+    return issue1, issue2, issue3, issue4, issue5, issue6
 
 
-def setup_dummy_seen_by(session, users):
+def setup_dummy_seen_by(session):
+    db_users = DBDiscussionSession.query(User).all()
+    users = {user.nickname: user for user in db_users}
     DBDiscussionSession.query(ArgumentSeenBy).delete()
     DBDiscussionSession.query(StatementSeenBy).delete()
 
@@ -840,7 +853,7 @@ def setup_dummy_seen_by(session, users):
     logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
-def setup_dummy_votes(session, users):
+def setup_dummy_votes(session):
     """
     Drops all votes and init new dummy votes
 
@@ -848,6 +861,8 @@ def setup_dummy_votes(session, users):
     :param users:
     :return:
     """
+    db_users = DBDiscussionSession.query(User).all()
+    users = {user.nickname: user for user in db_users}
     DBDiscussionSession.query(VoteStatement).delete()
     DBDiscussionSession.query(VoteArgument).delete()
 
@@ -1009,14 +1024,13 @@ def __set_downvotes_for_statements(firstnames, down_votes, statement_uid, new_vo
     return new_votes_for_statement
 
 
-def setup_fieltest_discussion_database(session):
+def setup_fieltest_discussion_database(session, db_issue):
     """
     Minimal discussion for a field test
     :param session:
     :return:
     """
     db_user = session.query(User).filter_by(nickname='Tobias').first()
-    db_issue = session.query(Issue).all()[0]
 
     textversion0 = TextVersion(content="eine Zulassungsbeschränkung eingeführt werden soll", author=db_user.uid)
     textversion1 = TextVersion(content="die Nachfrage nach dem Fach zu groß ist, sodass eine Beschränkung eingeführt werden muss", author=db_user.uid)

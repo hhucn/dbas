@@ -472,9 +472,6 @@ class DictionaryHelper(object):
 
         return_dict['tag'] = {
             'add_a_topic': _tn_dis.get(_.addATopic),
-            'please_enter_topic': _tn_dis.get(_.pleaseEnterTopic),
-            'please_enter_shorttext_for_topic': _tn_dis.get(_.pleaseEnterShorttextForTopic),
-            'please_select_language_for_topic': _tn_dis.get(_.pleaseSelectLanguageForTopic),
             'edit_issue_view_changelog': _tn_dis.get(_.editIssueViewChangelog),
             'edit_title_here': _tn_dis.get(_.editTitleHere),
             'edit_info_here': _tn_dis.get(_.editInfoHere),

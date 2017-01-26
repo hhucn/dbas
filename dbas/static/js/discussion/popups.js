@@ -118,15 +118,19 @@ function PopupHandler() {
 	/**
 	 * Displays add topic plugin
 	 *
-	 * @param callbackFunctionOnDone
 	 */
-	this.showAddTopicPopup = function (callbackFunctionOnDone) {
+	this.showAddTopicPopup = function () {
 		$('#popup-add-topic').modal('show');
 		$('#popup-add-topic-accept-btn').click(function () {
 			var info = $('#popup-add-topic-info-input').val();
+			var long_info = $('#popup-add-topic-long-info-input').val();
 			var title = $('#popup-add-topic-title-input').val();
 			var lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
-			new AjaxDiscussionHandler().sendNewIssue(info, title, lang, callbackFunctionOnDone);
+			console.log('info');
+			console.log('long_info');
+			console.log('title');
+			console.log('lang');
+			new AjaxDiscussionHandler().sendNewIssue(info, long_info, title, lang);
 		});
 		$('#popup-add-topic-refuse-btn').click(function () {
 			$('#popup-add-topic').modal('hide');

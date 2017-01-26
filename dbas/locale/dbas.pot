@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-26 11:08+0100\n"
+"POT-Creation-Date: 2017-01-26 15:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -592,7 +592,7 @@ msgstr ""
 #. Default: Cancel
 #: ././templates/review_history.pt:94 ././templates/snippet-popups.pt:172
 #: ././templates/snippet-popups.pt:195 ././templates/snippet-popups.pt:220
-#: ././templates/snippet-popups.pt:1007
+#: ././templates/snippet-popups.pt:1012
 msgid "cancel"
 msgstr ""
 
@@ -745,7 +745,7 @@ msgstr ""
 
 #. Default: Okay
 #: ././templates/snippet-popups.pt:171 ././templates/snippet-popups.pt:194
-#: ././templates/snippet-popups.pt:219 ././templates/snippet-popups.pt:1006
+#: ././templates/snippet-popups.pt:219 ././templates/snippet-popups.pt:1011
 msgid "okay"
 msgstr ""
 
@@ -778,8 +778,8 @@ msgstr ""
 #. Default: Success:
 #. Default: Success
 #: ././templates/snippet-popups.pt:304 ././templates/snippet-popups.pt:384
-#: ././templates/snippet-popups.pt:477 ././templates/settings.pt:252
-#: ././templates/content.pt:62
+#: ././templates/snippet-popups.pt:477 ././templates/settings.pt:251
+#: ././templates/content.pt:64
 msgid "success"
 msgstr ""
 
@@ -981,144 +981,164 @@ msgstr ""
 msgid "send_notification"
 msgstr ""
 
+#. Default: Please enter your title here:
+#: ././templates/snippet-popups.pt:750
+msgid "please_enter_title"
+msgstr ""
+
+#. Default: Please enter a short-description or question here:
+#: ././templates/snippet-popups.pt:753
+msgid "please_enter_info"
+msgstr ""
+
+#. Default: Please enter the full description here:
+#: ././templates/snippet-popups.pt:756
+msgid "please_enter_long_info"
+msgstr ""
+
+#. Default: Please select the language of the new discussion here:
+#: ././templates/snippet-popups.pt:759
+msgid "please_select_language_for_topic"
+msgstr ""
+
 #. Default: Selecting a reason
-#: ././templates/snippet-popups.pt:808
+#: ././templates/snippet-popups.pt:813
 msgid "select-reason"
 msgstr ""
 
 #. Default: The statement under consideration is as follows
-#: ././templates/snippet-popups.pt:811
+#: ././templates/snippet-popups.pt:816
 msgid "statement_under_consideration_is"
 msgstr ""
 
 #. Default: The argument under consideration is as follows
-#: ././templates/snippet-popups.pt:812 ././templates/snippet-popups.pt:861
+#: ././templates/snippet-popups.pt:817 ././templates/snippet-popups.pt:866
 msgid "argument_under_consideration_is"
 msgstr ""
 
 #. Default: Why do you want to report it
-#: ././templates/snippet-popups.pt:813
+#: ././templates/snippet-popups.pt:818
 msgid "why_do_you_want_to_report"
 msgstr ""
 
 #. Default: The text needs to be revised.
-#: ././templates/snippet-popups.pt:819
+#: ././templates/snippet-popups.pt:824
 msgid "text_need_to_be_revised"
 msgstr ""
 
 #. Default: This statement is acceptable but it needs correction for
 #. spelling/grammar.
-#: ././templates/snippet-popups.pt:820
+#: ././templates/snippet-popups.pt:825
 msgid "statement_optimization_description"
 msgstr ""
 
 #. Default: This argument is acceptable but it needs correction for
 #. spelling/grammar.
-#: ././templates/snippet-popups.pt:821
+#: ././templates/snippet-popups.pt:826
 msgid "argument_optimization_description"
 msgstr ""
 
 #. Default: This statement is off topic or irrelevant.
-#: ././templates/snippet-popups.pt:826
+#: ././templates/snippet-popups.pt:831
 msgid "statement_offtopic_or_irrelevant"
 msgstr ""
 
 #. Default: This statement does not belong to the topic under discussion.
-#: ././templates/snippet-popups.pt:827
+#: ././templates/snippet-popups.pt:832
 msgid "statement_offtopic_or_irrelevant_description"
 msgstr ""
 
 #. Default: This argument is off topic or irrelevant.
-#: ././templates/snippet-popups.pt:828
+#: ././templates/snippet-popups.pt:833
 msgid "argument_offtopic_or_irrelevant"
 msgstr ""
 
 #. Default: This argument does not belong to the topic under discussion.
-#: ././templates/snippet-popups.pt:829
+#: ././templates/snippet-popups.pt:834
 msgid "argument_offtopic_or_irrelevant_description"
 msgstr ""
 
 #. Default: This statement is harmful or abusive.
-#: ././templates/snippet-popups.pt:841
+#: ././templates/snippet-popups.pt:846
 msgid "statement_harmful"
 msgstr ""
 
 #. Default: This argument is harmful or abusive.
-#: ././templates/snippet-popups.pt:842
+#: ././templates/snippet-popups.pt:847
 msgid "argument_harmful"
 msgstr ""
 
 #. Default: Reporting (parts of) an argument
-#: ././templates/snippet-popups.pt:858
+#: ././templates/snippet-popups.pt:863
 msgid "reporting_parts_argument"
 msgstr ""
 
 #. Default: Please choose which part of the argument you want to report
-#: ././templates/snippet-popups.pt:863
+#: ././templates/snippet-popups.pt:868
 msgid "please_choose_part_to_report"
 msgstr ""
 
 #. Default: Report
-#: ././templates/snippet-popups.pt:870
+#: ././templates/snippet-popups.pt:875
 msgid "report"
 msgstr ""
 
 #. Default: Report the whole argument.
-#: ././templates/snippet-popups.pt:882
+#: ././templates/snippet-popups.pt:887
 msgid "report_whole_argument"
 msgstr ""
 
 #. Default: Caution
-#: ././templates/snippet-popups.pt:900
+#: ././templates/snippet-popups.pt:905
 msgid "caution"
 msgstr ""
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: ././templates/snippet-popups.pt:905
+#: ././templates/snippet-popups.pt:910
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 
 #. Default: Please choose a step to jump in
-#: ././templates/snippet-popups.pt:922
+#: ././templates/snippet-popups.pt:927
 msgid "choose_a_step_to_jump_in"
 msgstr ""
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: ././templates/snippet-popups.pt:925
+#: ././templates/snippet-popups.pt:930
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 
 #. Default: References
-#: ././templates/snippet-popups.pt:942
+#: ././templates/snippet-popups.pt:947
 msgid "refereces"
 msgstr ""
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: ././templates/snippet-popups.pt:950
+#: ././templates/snippet-popups.pt:955
 msgid "statement_reference_definition"
 msgstr ""
 
 #. Default: Statement
-#: ././templates/snippet-popups.pt:953 ././templates/snippet-popups.pt:974
+#: ././templates/snippet-popups.pt:958 ././templates/snippet-popups.pt:979
 msgid "statement"
 msgstr ""
 
 #. Default: Source
-#: ././templates/snippet-popups.pt:959
+#: ././templates/snippet-popups.pt:964
 msgid "source"
 msgstr ""
 
 #. Default: Please choose a statement for your reference!
-#: ././templates/snippet-popups.pt:964
+#: ././templates/snippet-popups.pt:969
 msgid "please_choose_a_reference"
 msgstr ""
 
 #. Default: Add reference
-#: ././templates/snippet-popups.pt:979
+#: ././templates/snippet-popups.pt:984
 msgid "add_reference"
 msgstr ""
 
@@ -1235,58 +1255,58 @@ msgstr ""
 msgid "strength"
 msgstr ""
 
+#. Default: Your password was changed
+#: ././templates/settings.pt:167
+msgid "password_changed"
+msgstr ""
+
 #. Default: Discussion Statistics
-#: ././templates/settings.pt:170 ././templates/user.pt:38
+#: ././templates/settings.pt:175 ././templates/user.pt:38
 msgid "discussion_stat"
 msgstr ""
 
 #. Default: Statements posted
-#: ././templates/settings.pt:174 ././templates/finish.pt:26
+#: ././templates/settings.pt:179 ././templates/finish.pt:26
 #: ././templates/user.pt:41
 msgid "statements_posted"
 msgstr ""
 
 #. Default: Edits done
-#: ././templates/settings.pt:181 ././templates/finish.pt:30
+#: ././templates/settings.pt:186 ././templates/finish.pt:30
 #: ././templates/user.pt:45
 msgid "edits_done"
 msgstr ""
 
 #. Default: Votes for Arguments
-#: ././templates/settings.pt:188 ././templates/finish.pt:38
+#: ././templates/settings.pt:193 ././templates/finish.pt:38
 #: ././templates/user.pt:49
 msgid "discussion_votes_statements"
 msgstr ""
 
 #. Default: Votes for Statements
-#: ././templates/settings.pt:195 ././templates/finish.pt:42
+#: ././templates/settings.pt:200 ././templates/finish.pt:42
 #: ././templates/user.pt:53
 msgid "discussion_votes_arguments"
 msgstr ""
 
 #. Default: Reputation
-#: ././templates/settings.pt:202 ././templates/review_reputation.pt:9
+#: ././templates/settings.pt:207 ././templates/review_reputation.pt:9
 #: ././templates/review_reputation.pt:27 ././templates/user.pt:57
 msgid "reputation"
 msgstr ""
 
-#. Default: Your password was changed
-#: ././templates/settings.pt:217
-msgid "password_changed"
-msgstr ""
-
 #. Default: Statistics could not be deleted.
-#: ././templates/settings.pt:224
+#: ././templates/settings.pt:223
 msgid "statistics_not_deleted"
 msgstr ""
 
 #. Default: Statistics were set successfully deleted.
-#: ././templates/settings.pt:230
+#: ././templates/settings.pt:229
 msgid "statistics_deletet"
 msgstr ""
 
 #. Default: Your last history
-#: ././templates/settings.pt:240
+#: ././templates/settings.pt:239
 msgid "last_history"
 msgstr ""
 
@@ -1671,67 +1691,72 @@ msgstr ""
 msgid "profile_picture_of"
 msgstr ""
 
+#. Default: more infos
+#: ././templates/content.pt:10 ././templates/content.pt:16
+msgid "more_infos"
+msgstr ""
+
 #. Default: Switch Topic
-#: ././templates/content.pt:19
+#: ././templates/content.pt:21
 msgid "switch_topc"
 msgstr ""
 
 #. Default: Add a Topic
-#: ././templates/content.pt:35
+#: ././templates/content.pt:37
 msgid "add_topic"
 msgstr ""
 
 #. Default: Restart
-#: ././templates/content.pt:42
+#: ././templates/content.pt:44
 msgid "restart_discussion"
 msgstr ""
 
 #. Default: Show all statements
-#: ././templates/content.pt:133
+#: ././templates/content.pt:135
 msgid "show_all_statements"
 msgstr ""
 
 #. Default: Hide statements
-#: ././templates/content.pt:134
+#: ././templates/content.pt:136
 msgid "hide_statements"
 msgstr ""
 
 #. Default: Default View
-#: ././templates/content.pt:277
+#: ././templates/content.pt:279
 msgid "default_view"
 msgstr ""
 
 #. Default: Labels
-#: ././templates/content.pt:278 ././templates/content.pt:279
+#: ././templates/content.pt:280 ././templates/content.pt:281
 msgid "labels"
 msgstr ""
 
 #. Default: Positions
-#: ././templates/content.pt:280 ././templates/content.pt:281
+#: ././templates/content.pt:282 ././templates/content.pt:283
 msgid "positions"
 msgstr ""
 
 #. Default: Show my path
-#: ././templates/content.pt:282
+#: ././templates/content.pt:284
 msgid "show_my_path"
 msgstr ""
 
 #. Default: Hide my path
-#: ././templates/content.pt:283
+#: ././templates/content.pt:285
 msgid "hide_my_path"
 msgstr ""
 
 #. Default: My statements
-#: ././templates/content.pt:284 ././templates/content.pt:285
+#: ././templates/content.pt:286 ././templates/content.pt:287
 msgid "my_statements"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/content.pt:286 ././templates/content.pt:287
+#: ././templates/content.pt:288 ././templates/content.pt:289
 msgid "supports_on_my_statements"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/content.pt:288 ././templates/content.pt:289
+#: ././templates/content.pt:290 ././templates/content.pt:291
 msgid "attacks_on_my_statements"
 msgstr ""

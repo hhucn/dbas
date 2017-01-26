@@ -93,19 +93,23 @@ function AjaxDiscussionHandler() {
 
 	/**
 	 * Sends a new topic
+	 *
 	 * @param info
+	 * @param long_info
 	 * @param title
 	 * @param language
-	 * @param callbackFunctionOnDone
 	 */
-	this.sendNewIssue = function(info, title, language, callbackFunctionOnDone){
+	this.sendNewIssue = function(info, long_info, title, language){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$('#add-topic-error').hide();
 		$.ajax({
 			url: 'ajax_set_new_issue',
 			method: 'POST',
 			data: {
-				info: info, title: title, lang: language
+				info: info,
+				long_info: long_info,
+				title: title,
+				lang: language
 			},
 			dataType: 'json',
 			async: true,
@@ -113,7 +117,7 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
-			callbackFunctionOnDone(data);
+			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
 			$('#' + addTopicPopupErrorText).text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). '

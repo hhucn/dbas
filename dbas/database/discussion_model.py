@@ -55,6 +55,7 @@ class Issue(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     title = Column(Text, nullable=False)
     info = Column(Text, nullable=False)
+    long_info = Column(Text, nullable=False)
     date = Column(ArrowType, default=get_now())
     author_uid = Column(Integer, ForeignKey('users.uid'))
     lang_uid = Column(Integer, ForeignKey('languages.uid'))
@@ -63,12 +64,13 @@ class Issue(DiscussionBase):
     users = relationship('User', foreign_keys=[author_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
 
-    def __init__(self, title, info, author_uid, lang_uid, is_disabled=False):
+    def __init__(self, title, info, long_info, author_uid, lang_uid, is_disabled=False):
         """
         Initializes a row in current position-table
         """
         self.title = title
         self.info = info
+        self.long_info = long_info
         self.author_uid = author_uid
         self.lang_uid = lang_uid
         self.is_disabled = is_disabled

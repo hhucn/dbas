@@ -16,7 +16,7 @@ from dbas.url_manager import UrlManager
 from slugify import slugify
 
 
-def set_issue(info, title, lang, nickname, ui_locales):
+def set_issue(info, long_info, title, lang, nickname, ui_locales):
     """
     Inserts new issue into database
 
@@ -34,13 +34,14 @@ def set_issue(info, title, lang, nickname, ui_locales):
         logger('IssueHelper', 'set_issue', 'User has no rights', error=True)
         return False, _tn.get(_.noRights)
 
-    if len(info) < 10:
+    if len(info) < 10 or len(long_info) < 10:
         logger('IssueHelper', 'set_issue', 'Short text', error=True)
         return False, (_tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)')
 
     db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
     db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
-    if db_duplicates1 or db_duplicates2:
+    db_duplicates3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
+    if db_duplicates1 or db_duplicates2 or db_duplicates3:
         logger('IssueHelper', 'set_issue', 'Duplicates', error=True)
         return False, _tn.get(_.duplicate)
 
@@ -49,61 +50,16 @@ def set_issue(info, title, lang, nickname, ui_locales):
         logger('IssueHelper', 'set_issue', 'No language', error=True)
         return False, _tn.get(_.internalError)
 
-    DBDiscussionSession.add(Issue(title=title, info=info, author_uid=db_user.uid, lang_uid=db_lang.uid))
+    DBDiscussionSession.add(Issue(title=title,
+                                  info=info,
+                                  long_info=long_info,
+                                  author_uid=db_user.uid,
+                                  lang_uid=db_lang.uid))
     DBDiscussionSession.flush()
 
     transaction.commit()
 
     return True, ''
-
-
-def __get_title_for_issue_uid(uid):
-    """
-    Returns the title or none for the issue uid
-
-    :param uid: Issue.uid
-    :return: String
-    """
-    #  logger('QueryHelper', 'get_title_for_issue_uid', str(uid))
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
-    return db_issue.title if db_issue else 'none'
-
-
-def __get_slug_for_issue_uid(uid):
-    """
-    Returns the slug of the title or none for the issue uid
-
-    :param uid: Issue.uid
-    :return: String
-    """
-    #  logger('QueryHelper', 'get_slug_for_issue_uid', str(uid))
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
-    return slugify(db_issue.title) if db_issue else 'none'
-
-
-def __get_info_for_issue_uid(uid):
-    """
-    Returns the slug or none for the issue uid
-
-    :param uid: Issue.uid
-    :return: String
-    """
-    #  logger('QueryHelper', 'get_info_for_issue_uid', str(uid))
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
-    return db_issue.info if db_issue else 'none'
-
-
-def __get_date_for_issue_uid(uid, lang):
-    """
-    Returns the date or none for the issue uid
-
-    :param uid: Issue.uid
-    :param lang: ui_locales ui_locales
-    :return: String
-    """
-    #  logger('QueryHelper', 'get_date_for_issue_uid', str(uid))
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
-    return sql_timestamp_pretty_print(db_issue.date, lang) if db_issue else 'none'
 
 
 def prepare_json_of_issue(uid, application_url, lang, for_api):
@@ -117,11 +73,14 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     :return: Issue-dict()
     """
     logger('issueHelper', 'prepare_json_of_issue', 'main')
-    slug = __get_slug_for_issue_uid(uid)
-    title = __get_title_for_issue_uid(uid)
-    info = __get_info_for_issue_uid(uid)
-    stat_count = get_number_of_statements(uid)
-    date = __get_date_for_issue_uid(uid, lang)
+    db_issue = DBDiscussionSession.query(Issue).get(uid)
+
+    slug        = slugify(db_issue.title) if db_issue else 'none'
+    title       = db_issue.title if db_issue else 'none'
+    info        = db_issue.info if db_issue else 'none'
+    long_info   = db_issue.long_info if db_issue else 'none'
+    stat_count  = get_number_of_statements(uid)
+    date        = sql_timestamp_pretty_print(db_issue.date, lang) if db_issue else 'none'
 
     db_issues = get_not_disabled_issues_as_query().all()
     all_array = []
@@ -136,6 +95,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
 
     return {'slug': slug,
             'info': info,
+            'long_info': long_info,
             'title': title,
             'uid': uid,
             'stat_count': stat_count,

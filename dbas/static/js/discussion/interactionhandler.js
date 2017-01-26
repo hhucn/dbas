@@ -186,7 +186,9 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewIssue = function(data){
 		var parsedData = $.parseJSON(data);
 
-		if (parsedData.error.length == 0) {
+		if (parsedData.error.length != 0) {
+			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		} else {
 			$('#popup-add-topic').modal('hide');
 			var li = $('<li>').addClass('enabled'),
 				a = $('<a>').attr('href', parsedData.issue.url).attr('value', parsedData.issue.title),
@@ -197,12 +199,7 @@ function InteractionHandler() {
 			if (divider.length>0){
 				li.insertBefore(divider);
 			}
-		} else {
-			$('#popup-add-topic-error-text').text(parsedData.error);
-			$('#popup-add-topic-error').show();
-			setTimeout(function(){
-				$('#popup-add-topic-error').hide();
-			}, 2500);
+			setGlobalSuccessHandler('Yeah!', _t(dataAdded));
 		}
 	};
 	
