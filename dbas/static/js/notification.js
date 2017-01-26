@@ -59,6 +59,7 @@ function Notifications() {
 			$('#popup-writing-notification-failed').hide();
 			$('#popup-writing-notification-recipient').show();
 			$('#popup-writing-notification-send').click(function() {
+					console.log('2');
 				new AjaxNotificationHandler().sendNotification($('#popup-writing-notification-recipient').val());
 			});
 		});
@@ -82,7 +83,7 @@ function Notifications() {
 				$('#popup-writing-notification-title').val(title);
 				$('#popup-writing-notification-text').text(content);
 				$('#popup-writing-notification-send').click(function() {
-					new AjaxNotificationHandler().sendNotification($('#popup-writing-notification-recipient').text());
+					new AjaxNotificationHandler().sendNotification($('#popup-writing-notification-recipient').val());
 				});
 			});
 		});
