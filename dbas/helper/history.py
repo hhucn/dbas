@@ -6,7 +6,7 @@ Provides helping function for creating the history as bubbles.
 
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print
+from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print, Issue
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_text_for_conclusion
@@ -50,7 +50,11 @@ def get_saved_issue(nickname):
     if not db_settings:
         return 0
 
-    return db_settings.last_topic_uid
+    val = db_settings.last_topic_uid
+    db_issue = DBDiscussionSession.query(Issue).get(val)
+    if not db_issue:
+        return 0
+    return 0 if db_issue.is_disabled else val
 
 
 def get_splitted_history(history):
