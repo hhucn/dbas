@@ -233,7 +233,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'info': 'Some new info',
             'title': 'Some new title',
-            'long-info': 'Some new long info',
+            'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
         response = json.loads(ajax(request))
@@ -247,7 +247,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'info': 'Some new info',
             'title': 'Cat or Dog',
-            'long-info': 'Some new long info',
+            'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
         response = json.loads(ajax(request))
@@ -261,7 +261,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'info': 'Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!',
             'title': 'Some new title',
-            'long-info': 'Some new long info',
+            'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
         response = json.loads(ajax(request))
@@ -275,7 +275,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'info': 'Some new info',
             'title': 'Some new title',
-            'long-info': 'Some new long info',
+            'long_info': 'Some new long info',
             'lang': 'sw'
         }, matchdict={})
         response = json.loads(ajax(request))
@@ -289,7 +289,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'info': 'Short',
             'title': 'Some new title',
-            'long-info': 'Some new long info',
+            'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
         response = json.loads(ajax(request))
@@ -303,7 +303,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'info': 'aaaaaaaaaaaaaaaaaa',
             'title': 'Some new title for us',
-            'long-info': 'Some new long info',
+            'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
         response = json.loads(ajax(request))
