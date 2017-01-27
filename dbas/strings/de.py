@@ -693,7 +693,7 @@ de_lang = {
     _.youAreInterestedIn: 'Sie interessieren sich für',
     _.youAgreeWith: 'Ich bin der Meinung, dass',
     _.youAgreeWithThatNow: 'Nun geben Sie an, dass',
-    _.youDisagreeWith: 'Ich widerspreche, dass',
+    _.youDisagreeWith: 'Ich widerspreche dem Vorschlag, dass',
     _.youSaidThat: 'Sie haben gesagt, dass',
     _.youUsedThisEarlier: 'Sie haben diese Aussage schon benutzt.',
     _.youRejectedThisEarlier: 'Sie haben diese Aussage schon abgelehnt.',

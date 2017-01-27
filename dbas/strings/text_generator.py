@@ -645,7 +645,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     if reply_for_argument:  # reply for argument
         # changing arguments for better understanding
         if not user_arg.is_supportive:
-            user_is_attacking = not user_is_attacking
+            # user_is_attacking = not user_is_attacking
             conclusion = sys_conclusion
 
         confrontation_text = (author + ' ' + b) if is_okay else b
