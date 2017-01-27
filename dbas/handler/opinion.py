@@ -477,7 +477,7 @@ def get_infos_about_argument(uid, main_page, nickname, _t):
         db_user = DBDiscussionSession.query(User).get(vote.author_uid)
         name = db_user.get_global_nickname()
         if db_user.nickname == nickname:
-            name += ' (' + _t.get(_.you) + ')'
+            name += ' (' + _t.get(_.itsYou) + ')'
         supporters.append(name)
         gravatars[name] = get_profile_picture(db_user)
         public_page[name] = main_page + '/user/' + name
