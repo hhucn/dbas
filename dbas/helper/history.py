@@ -219,10 +219,10 @@ def __get_bubble_from_dont_know_step(step, nickname, lang, url):
         intro = _tn.get(_.otherParticipantsThinkThat)
     sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
     sys_text += '<br><br>' + _tn.get(_.whatDoYouThinkAboutThat) + '?'
-    sys_bubble = create_speechbubble_dict(is_system=True, message=sys_text)
+    sys_bubble = create_speechbubble_dict(is_system=True, message=sys_text, nickname=nickname)
 
     text = _tn.get(_.showMeAnArgumentFor) + (' ' if lang == 'de' else ': ') + get_text_for_conclusion(db_argument)
-    user_bubble = create_speechbubble_dict(is_user=True, message=text)
+    user_bubble = create_speechbubble_dict(is_user=True, message=text, nickname=nickname)
 
     return [user_bubble, sys_bubble]
 

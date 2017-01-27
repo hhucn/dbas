@@ -1152,7 +1152,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion122 = TextVersion(content="the rate of non-swimmers is too high.", author=user.uid)
     textversion123 = TextVersion(content="the police cannot patrol in the park for 24/7.", author=user.uid)
 
-    textversion200 = TextVersion(content="E-Autos optimal für den Stadtverkehr sind.", author=user.uid)
+    textversion200 = TextVersion(content="E-Autos \"optimal\" für den Stadtverkehr sind.", author=user.uid)
     textversion201 = TextVersion(content="dadurch die Lärmbelästigung in der Stadt sinkt.", author=user.uid)
     textversion202 = TextVersion(content="die Anzahl an Ladestationen in der Stadt nicht ausreichend ist.", author=user.uid)
     textversion203 = TextVersion(content="das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen.", author=user.uid)

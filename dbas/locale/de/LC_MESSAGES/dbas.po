@@ -1151,7 +1151,7 @@ msgstr ""
 #. Default: This statement is off topic or irrelevant.
 #: templates/snippet-popups.pt:831
 msgid "statement_offtopic_or_irrelevant"
-msgstr "Die Aussage ist nicht themenbezogen /Spam."
+msgstr "Die Aussage ist nicht themenbezogen/Spam."
 
 #. Default: This statement does not belong to the topic under discussion.
 #: templates/snippet-popups.pt:832
@@ -1161,7 +1161,7 @@ msgstr "Die Beudeutung der Aussage ist nicht themenbezogen oder Spam."
 #. Default: This argument is off topic or irrelevant.
 #: templates/snippet-popups.pt:833
 msgid "argument_offtopic_or_irrelevant"
-msgstr "Das Argument ist nicht themenbezogen /Spam."
+msgstr "Das Argument ist nicht themenbezogen/Spam."
 
 #. Default: This argument does not belong to the topic under discussion.
 #: templates/snippet-popups.pt:834

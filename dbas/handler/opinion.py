@@ -91,6 +91,16 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
     """
     ret_list = []
     user_query = DBDiscussionSession.query(User)
+    db_user = DBDiscussionSession.query(User).get(db_user_uid)
+    if db_user:
+        if db_user.gender == 'm':
+            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+        elif db_user.gender == 'f':
+            msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
+        else:
+            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+    else:
+        msg = _t.get(_.voteCountTextMayBeFirst) + '.'
 
     for rel in relation:
         all_users       = []
@@ -99,7 +109,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
 
         if not arg_uids_for_reactions[relation.index(rel)]:
             ret_list.append({'users': [],
-                             'message': _t.get(_.voteCountTextMayBeFirst) + '.',
+                             'message': msg,
                              'text': relation_text[rel + '_text'],
                              'seen_by': 0})
             continue
@@ -116,7 +126,7 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
                 all_users.append(users_dict)
 
             if len(db_votes) == 0:
-                message = _t.get(_.voteCountTextMayBeFirst) + '.'
+                message = msg
             elif len(db_votes) == 1:
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
             else:
@@ -192,7 +202,17 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
         statement_dict['users'] = all_users
 
         if len(db_votes) == 0:
-            statement_dict['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
+            db_user = DBDiscussionSession.query(User).get(db_user_uid)
+            if db_user:
+                if db_user.gender == 'm':
+                    msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+                elif db_user.gender == 'f':
+                    msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
+                else:
+                    msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            else:
+                msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            statement_dict['message'] = msg
         elif len(db_votes) == 1:
             statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
         else:
@@ -257,7 +277,17 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
         statement_dict['users'] = all_users
 
         if len(db_votes) == 0:
-            statement_dict['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
+            db_user = DBDiscussionSession.query(User).get(db_user_uid)
+            if db_user:
+                if db_user.gender == 'm':
+                    msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+                elif db_user.gender == 'f':
+                    msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
+                else:
+                    msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            else:
+                msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            statement_dict['message'] = msg
         elif len(db_votes) == 1:
             statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
         else:
@@ -318,7 +348,17 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
     opinions['users'] = all_users
 
     if len(db_votes) == 0:
-        opinions['message'] = _t.get(_.voteCountTextMayBeFirst) + '.'
+        db_user = DBDiscussionSession.query(User).get(db_user_uid)
+        if db_user:
+            if db_user.gender == 'm':
+                msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            elif db_user.gender == 'f':
+                msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
+            else:
+                msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+        else:
+            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+        opinions['message'] = msg
     elif len(db_votes) == 1:
         opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
     else:
