@@ -1646,7 +1646,7 @@ msgstr "In der Diskussion über"
 #. Default: following argument was corrected.
 #: templates/review_content.pt:95
 msgid "following_argument_was_corrected"
-msgstr "folgendes Argument würde korrigiert."
+msgstr "folgendes Argument wurde korrigiert:"
 
 #. Default: following argument was flagged.
 #: templates/review_content.pt:106
