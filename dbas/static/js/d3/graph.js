@@ -593,7 +593,8 @@ function DiscussionGraph() {
      */
     function createLabel(node) {
         return node.append("text").each(function (d) {
-            var node_text = d.label.split(" ");
+        	var text = $("<div>").html(d.label).text();
+            var node_text = text.split(" ");
             for (var i = 0; i < node_text.length; i++) {
                 if ((i % 4) == 0) {
                     d3.select(this).append("tspan")
