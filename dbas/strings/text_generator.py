@@ -557,16 +557,25 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sta
     """
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
+    move_end_tag = False
+    if tag_type not in premise:
+        premise = b + premise + e
+    if tag_type not in confrontation:
+        confrontation = b + confrontation + e
+        move_end_tag = True
+
     author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     if is_okay:
         confrontation_text = author + ' ' + b + _t.get(_.thinksThat)
     else:
         confrontation_text = b + _t.get(_.otherParticipantsThinkThat)
+
     confrontation_text += e + ' ' + premise + ' '
     confrontation_text += start_position if attack != 'undermine' else start_argument
-    confrontation_text += _t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)
-    confrontation_text += end_tag
+    confrontation_text += b + (_t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)) + e
+    confrontation_text += end_tag if not move_end_tag else ''
     confrontation_text += b + ', ' + _t.get(_.because).lower() + e + ' ' + confrontation
+    confrontation_text += end_tag if move_end_tag else ''
     return confrontation_text, gender if is_okay else ''
 
 
