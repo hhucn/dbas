@@ -419,8 +419,6 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
         sys_conclusion = start_argument + sys_conclusion + end_tag
 
     confrontation_text = ''
-    db_users_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=user_arg.premisesgroup_uid).join(Statement).first()
-
     # build some confrontation text
     if attack == 'undermine':
         confrontation_text, gender = __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, start_position,
@@ -428,7 +426,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                             confrontation)
 
     elif attack == 'undercut':
-        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, nickname, db_users_premise, _t,
+        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, nickname, _t,
                                                                            premise, conclusion, confrontation,
                                                                            supportive, sys_arg)
 
@@ -436,8 +434,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
         confrontation_text, gender = __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument,
                                                                         user_arg, user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
-                                                                        start_argument, end_tag, db_users_premise,
-                                                                        sys_arg)
+                                                                        start_argument, end_tag, sys_arg)
 
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
@@ -574,12 +571,11 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sta
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_confrontation_text_for_undercut(main_page, nickname, db_users_premise, _t, premise, conclusion, confrontation, supportive, system_argument):
+def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conclusion, confrontation, supportive, system_argument):
     """
 
     :param main_page:
     :param nickname:
-    :param db_users_premise:
     :param _t:
     :param premise:
     :param conclusion:
@@ -615,13 +611,13 @@ def __get_confrontation_text_for_undercut(main_page, nickname, db_users_premise,
 
 
 def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion,
-                                       confrontation, premise, conclusion, start_argument, end_tag, db_users_premise,
-                                       system_argument):
+                                       confrontation, premise, conclusion, start_argument, end_tag, system_argument):
     """
     Builds the string for a rebut of the system.
 
+    :param main_page: main_page
     :param lang: ui_locales
-    :param: nickname of current user
+    :param nickname: of current user
     :param reply_for_argument: Boolean
     :param user_arg: Argument
     :param user_is_attacking: Boolean
@@ -632,7 +628,6 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     :param conclusion: String
     :param start_argument: String
     :param end_tag: String
-    :param db_users_premise: Premise of the user
     :param system_argument: Counter argument of the system
     :return: String, String2
     """
