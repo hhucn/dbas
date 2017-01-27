@@ -570,8 +570,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
 
     if not is_integer(statement_id, True) \
-            or not check_belonging_of_statement(issue, statement_id) \
-            or not is_position(statement_id):
+            or not check_belonging_of_statement(issue, statement_id):
         logger('discussion_attitude', 'def', 'param error', error=True)
         return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
     if is_statement_forbidden(statement_id):
