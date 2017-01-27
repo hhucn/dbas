@@ -202,6 +202,7 @@ function Main () {
 				}
 			}
 		});
+		
 		// do not hover the other spans on hovering the name
 		trianglel.find('.triangle-content a').hover(function() {
 			trianglel.find('.triangle-content :not(a)').each(function(){
@@ -216,6 +217,11 @@ function Main () {
 				}
 			});
 		});
+		
+		// remove hover on start
+		if (trianglel.length == 1 && trianglel.attr('id') == 'start'){
+			trianglel.html(trianglel.text().trim());
+		}
 		
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
