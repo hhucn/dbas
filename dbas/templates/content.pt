@@ -318,7 +318,7 @@
             	<div class="form-group">
             		<div class="col-sm-12 input-group">
                         <div class="input-group-addon"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></div>
-            			<input id="add-statement-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="140" style="width: 100%">
+            			<input id="add-statement-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="180" style="width: 100%">
             		</div>
             	</div>
 
@@ -349,7 +349,7 @@
             	            <div class="form-group">
             		            <div class="col-sm-12 input-group">
                                     <div class="input-group-addon"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></div>
-                        			<input id="add-premise-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="140" style="width: 100%">
+                        			<input id="add-premise-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="180" style="width: 100%">
             		            </div>
             	            </div>
 

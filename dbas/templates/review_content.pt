@@ -7,7 +7,7 @@
 		</div>
 
 		<div class="container colored-container" tal:condition="subpage.has_access and subpage.no_arguments_to_review">
-            <h5 class="center">No arguments to review in this queue!</h5>
+            <h5 class="center" i18n:translate="no_arguments_to_review">No arguments to review in this queue!</h5>
 		</div>
 
 		<div class="container colored-container" tal:condition="not:subpage.no_arguments_to_review">

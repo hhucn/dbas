@@ -22,6 +22,8 @@ from dbas.review.helper.reputation import add_reputation_for
 from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
 from websocket.lib import send_request_for_info_popup_to_socketio
 from dbas.review.helper.reputation import rep_reason_first_confrontation
+from dbas.helper.email import send_mail
+from dbas.helper.notification import send_welcome_notification
 
 import dbas.helper.issue as issue_helper
 import dbas.recommender_system as RecommenderSystem
@@ -448,7 +450,15 @@ def catch_user_from_ldap(request, nickname, password, _tn):
             logger('ViewHelper', 'user_ldap_login', 'Internal error occured')
             return False, info
 
-        success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group.uid, _tn.get_lang())
+        success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password, gender,
+                                                                 db_group.uid, _tn.get_lang())
+
+        if db_new_user:
+            # sending an email and message
+            subject = _tn.get(_.accountRegistration)
+            body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
+            send_mail(request, subject, body, email, _tn.get_lang())
+            send_welcome_notification(db_new_user.uid, _tn)
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         if db_user:
@@ -522,8 +532,16 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
             info = _t.get(_.errorTryLateOrContant)
             logger('ViewHelper', 'user_registration', 'Error occured')
         else:
-            success, info = UserHandler.create_new_user(request, firstname, lastname, email, nickname,
-                                                        password, gender, db_group.uid, ui_locales)
+            success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password,
+                                                                     gender, db_group.uid, ui_locales)
+
+            if db_new_user:
+                # sending an email and message
+                subject = _t.get(_.accountRegistration)
+                body = _t.get(_.accountWasRegistered).format(firstname, lastname, email)
+                send_mail(request, subject, body, email, ui_locales)
+                send_welcome_notification(db_new_user.uid, _t)
+
     return success, info
 
 

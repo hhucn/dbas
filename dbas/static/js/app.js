@@ -379,8 +379,11 @@ function setTextWatcherInputLength(element){
 			}
 			var left = max_length < current_length ? 0 : max_length - current_length;
 			field.text(left + ' ' + _t_discussion(textMaxCountMessage));
-			if (max_length <= current_length)
+			if (max_length <= current_length) {
+				field.removeClass('text-danger');
+			field.addClass('text-info');
 				field.text(_t_discussion(textMaxCountMessageError));
+			}
 		}
 	});
 }

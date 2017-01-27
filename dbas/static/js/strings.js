@@ -724,7 +724,7 @@ var dbas_de = {
     'textMinCountMessageBegin2': 'Zeichen ein',
     'textMinCountMessageDuringTyping': 'Zeichen noch ...',
     'textMaxCountMessage': 'Zeichen verbleibend',
-    'textMaxCountMessageError': 'Bringen Sie Ihre Aussagen auf den Punkt!', //Versuchen Sie zu kürzen!',
+    'textMaxCountMessageError': 'Bringen Sie Ihre Aussagen bitte auf den Punkt.', //Versuchen Sie zu kürzen!',
     'valid': 'Gültigkeit',
     'veryweak': 'sehr schwach',
     'youAreAbleToReviewNow': 'Sie können nun andere Beiträge begutachten.',

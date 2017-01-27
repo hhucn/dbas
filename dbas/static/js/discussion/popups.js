@@ -171,17 +171,19 @@ function PopupHandler() {
 	 */
 	this.showFlagArgumentPopup = function (uid) {
 		var popup = $('#popup-flag-argument');
+		var bubble = $('#question-bubble-' + uid);
 		// var text = $('.triangle-l:last-child .triangle-content').text();
 		
 		// clean text
 		// cut the part after <br><br>
-		var text = $('.triangle-l:last-child .triangle-content').html();
+		console.log(uid);
+		var text = bubble.find('.triangle-content').html();
 		text = text.substr(0, text.indexOf('<br>'));
 		
 		// cut the author
 		var tmp = text.indexOf('</a>');
 		if (tmp != -1) {
-			var a = $('.triangle-l:last-child .triangle-content a').attr('title');
+			var a = bubble.find('.triangle-content a').attr('title');
 			text = a + ' ' + text.substr(tmp + '</a>'.length);
 		}
 			

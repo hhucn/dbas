@@ -48,7 +48,13 @@ class LibTests(unittest.TestCase):
         # premise_group with more than one premises
         self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=13), ('cats are fluffy und cats are small', ['14', '15']))
 
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=12), ('cats are fluffy and cats are small', ['15', '16']))
+        values = lib.get_text_for_premisesgroup_uid(uid=12)
+        solution1 = 'cats are fluffy and cats are small', ['15', '16']
+        solution2 = 'cats are small and cats are fluffy', ['16', '15']
+        if values[1] == solution1[1]:
+            self.assertEqual(values, solution1)
+        else:
+            self.assertEqual(values, solution2)
 
         # premise, which is not in db_premises
         self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), ('', []))
