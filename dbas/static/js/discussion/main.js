@@ -224,7 +224,7 @@ function Main () {
 		}
 		
 		trianglel.find('.triangle-flag').click(function () {
-			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			var uid = trianglel.attr('id').replace(questionBubbleId + '-', '');
 			popupHandler.showFlagArgumentPopup(uid);
 		});
 		
