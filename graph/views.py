@@ -6,6 +6,9 @@ Introducing an graph manager.
 
 import json
 import dbas.helper.issue as IssueHelper
+from dbas.lib import get_language
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 from cornice import Service
 
@@ -33,9 +36,16 @@ def get_d3_dump(request):
     path = request.params['path'] if 'path' in request.params else ''
     issue = IssueHelper.get_issue_id(request)
 
-    return_dict = get_d3_data(issue, request.authenticated_userid)
-    return_dict.update({'node_doj_factors': get_doj_data(issue)})
-    return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
-    return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
+    return_dict, error = get_d3_data(issue, request.authenticated_userid)
+    if not error:
+        return_dict.update({'node_doj_factors': get_doj_data(issue)})
+        return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
+        return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
+        return_dict.update({'error': ''})
+    else:
+        ui_locales = get_language(request)
+        _t = Translator(ui_locales)
+        error = _t.get(_.internalKeyError)
+        return_dict = {'error': error}
 
-    return json.dumps(return_dict, True)
+    return json.dumps(return_dict)

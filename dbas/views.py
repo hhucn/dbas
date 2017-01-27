@@ -36,7 +36,7 @@ from dbas.helper.references import get_references_for_argument, get_references_f
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     try_to_register_new_user_via_ajax, request_password, prepare_parameter_for_justification, login_user
 from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values_of_user
-from dbas.input_validator import is_integer, is_position, is_statement_forbidden, check_belonging_of_argument, \
+from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author, \

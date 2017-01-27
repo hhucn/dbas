@@ -69,10 +69,10 @@ def get_d3_data(issue, nickname):
     edges_array += edges
     extras_dict.update(extras)
 
-    __sanity_check_of_d3_data(all_node_ids, edges_array)
+    error = __sanity_check_of_d3_data(all_node_ids, edges_array)
 
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
-    return d3_dict
+    return d3_dict, error
 
 
 def get_opinion_data(issue):
@@ -433,8 +433,10 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
         error = error or edge['source'] not in all_node_ids or edge['target'] not in all_node_ids
     if error:
         logger('Graph.lib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
+        return True
     else:
         logger('Graph.lib', 'get_d3_data', 'All nodes are connected well')
+        return False
 
 
 def __get_author_of_statement(uid, db_user):

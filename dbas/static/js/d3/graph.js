@@ -51,6 +51,11 @@ function DiscussionGraph() {
     this.callbackIfDoneForDiscussionGraph = function (data) {
         var jsonData = $.parseJSON(data);
         console.log(jsonData);
+        if (jsonData.error.length != 0){
+        	setGlobalErrorHandler('Ohh!', jsonData.error);
+        	new GuiHandler().setDisplayStyleAsDiscussion();
+        	return;
+        }
         s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
     };
 
