@@ -13,8 +13,6 @@ import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, VoteStatement, VoteArgument, TextVersion, Settings, \
     ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print
-from dbas.helper import email as email_helper
-from dbas.helper.notification import send_welcome_notification
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid,\
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
@@ -542,7 +540,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     return message, success
 
 
-def create_new_user(request, firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales):
+def create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales):
     """
 
     :param request:
@@ -586,14 +584,8 @@ def create_new_user(request, firstname, lastname, email, nickname, password, gen
         logger('UserManagement', 'create_new_user', 'New data was added with uid ' + str(db_user.uid))
         success = _t.get(_.accountWasAdded).format(nickname)
 
-        # sending an email
-        subject = _t.get(_.accountRegistration)
-        body = _t.get(_.accountWasRegistered).format('"' + nickname + '"', email)
-        email_helper.send_mail(request, subject, body, email, ui_locales)
-        send_welcome_notification(db_user.uid, _t)
-
     else:
         logger('UserManagement', 'create_new_user', 'New data was not added')
         info = _t.get(_.accoutErrorTryLateOrContant)
 
-    return success, info
+    return success, info, db_user
