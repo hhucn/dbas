@@ -723,7 +723,12 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     speech['votecounts'] = len(db_votecounts) if db_votecounts else 0
 
     votecount_keys = defaultdict(lambda: "{} {}.".format(speech['votecounts'], _t.get(_.voteCountTextMore)))
-    votecount_keys[0] = _t.get(_.voteCountTextFirst) + '.'
+    if is_user and db_user.gender == 'm':
+        votecount_keys[0] = _t.get(_.voteCountTextFirstM) + '.'
+    elif is_user and db_user.gender == 'f':
+        votecount_keys[0] = _t.get(_.voteCountTextFirstF) + '.'
+    else:
+        votecount_keys[0] = _t.get(_.voteCountTextFirst) + '.'
     votecount_keys[1] = _t.get(_.voteCountTextOneOther) + '.'
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]

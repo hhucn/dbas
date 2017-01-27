@@ -5,7 +5,7 @@ Provides helping function for dictionaries, which are used in discussions.
 """
 import dbas.helper.history as HistoryHelper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, Premise
+from dbas.database.discussion_model import Argument, Statement, Premise, User
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
     get_text_for_conclusion, create_speechbubble_dict, is_author_of_argument
 from dbas.logger import logger
@@ -136,9 +136,20 @@ class DiscussionDictHelper(object):
         bubbles_array.append(question_bubble)
 
         if not self.nickname and count_of_items == 1:
+            _t = Translator(self.lang)
+            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+            if db_user:
+                if db_user.gender == 'm':
+                    msg = _t.get(_.voteCountTextFirstM) + '.'
+                elif db_user.gender == 'f':
+                    msg = _t.get(_.voteCountTextFirstF) + '.'
+                else:
+                    msg = _t.get(_.voteCountTextFirst) + '.'
+            else:
+                msg = _t.get(_.voteCountTextFirst) + '.'
+
             bubbles_array.append(create_speechbubble_dict(is_info=True, uid='now',
-                                                          message=_tn.get(_.voteCountTextFirst) + '. ' + _tn.get(
-                                                              _.onlyOneItemWithLink),
+                                                          message=msg + _tn.get(_.onlyOneItemWithLink),
                                                           omit_url=True, lang=self.lang))
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
 
