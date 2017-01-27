@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-26 17:03+0100\n"
+"POT-Creation-Date: 2017-01-27 23:21+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -613,7 +613,7 @@ msgid "reason"
 msgstr "Reason"
 
 #. Default: Original
-#: templates/review_history.pt:43 templates/review_content.pt:174
+#: templates/review_history.pt:43 templates/review_content.pt:184
 msgid "original"
 msgstr "Original"
 
@@ -1613,7 +1613,7 @@ msgid "reject_itexplanation"
 msgstr "for correction which are inappropriate are wrong."
 
 #. Default: In the discussion about
-#: templates/review_content.pt:93 templates/review_content.pt:104
+#: templates/review_content.pt:93 templates/review_content.pt:113
 msgid "in_the_discussion_about"
 msgstr "In the discussion about"
 
@@ -1622,68 +1622,73 @@ msgstr "In the discussion about"
 msgid "following_argument_was_corrected"
 msgstr "following argument was corrected."
 
+#. Default: This are the edits:
+#: templates/review_content.pt:104
+msgid "this_are_the_edit"
+msgstr "This are the edits:"
+
 #. Default: following argument was flagged.
-#: templates/review_content.pt:106
+#: templates/review_content.pt:115
 msgid "following_argument_was_flagged"
 msgstr "following argument was flagged."
 
 #. Default: This is the original version
-#: templates/review_content.pt:109
+#: templates/review_content.pt:118
 msgid "this_is_original_version"
 msgstr "This is the original version"
 
 #. Default: Reported
-#: templates/review_content.pt:121
+#: templates/review_content.pt:131
 msgid "reported"
 msgstr "Reported"
 
 #. Default: Reported by
-#: templates/review_content.pt:125
+#: templates/review_content.pt:135
 msgid "reported_by"
 msgstr "Reported by"
 
 #. Default: Viewed
-#: templates/review_content.pt:135
+#: templates/review_content.pt:145
 msgid "viewed"
 msgstr "Viewed"
 
 #. Default: Attacks
-#: templates/review_content.pt:139
+#: templates/review_content.pt:149
 msgid "attacks"
 msgstr "Attacks"
 
 #. Default: Supports
-#: templates/review_content.pt:143
+#: templates/review_content.pt:153
 msgid "supports"
 msgstr "Supports"
 
 #. Default: Request lock
-#: templates/review_content.pt:163
+#: templates/review_content.pt:173
 msgid "request_lock"
 msgstr "Request lock"
 
 #. Default: This argument is locked for your edit. You have
-#: templates/review_content.pt:166
+#: templates/review_content.pt:176
 msgid "argument_is_locked"
 msgstr "This argument is locked for your edit. You have"
 
 #. Default: minutes
-#: templates/review_content.pt:167
+#: templates/review_content.pt:177
 msgid "minutes"
 msgstr "minutes"
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review_content.pt:168
+#: templates/review_content.pt:178
 msgid "please_make_your_edits"
 msgstr "Please make your edits in grammar and/or spelling here:"
 
 #. Default: Your correcture
-#: templates/review_content.pt:175
+#: templates/review_content.pt:185
 msgid "your correcture"
 msgstr "Your correcture"
 
 #. Default: Send
-#: templates/review_content.pt:189
+#: templates/review_content.pt:199
 msgid "send"
 msgstr "Send"
 

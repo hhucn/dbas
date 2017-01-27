@@ -95,7 +95,16 @@
                                 <span i18n:translate="following_argument_was_corrected">following argument was corrected.</span>
                             </div>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_argument.correction}</span>
+                            <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_argument.corrected_version}</span>
+                            <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                        </div>
+
+                        <div class="well well-sm center" style="text-align: justify; margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
+                            <div style="margin-bottom: 1em;">
+                                <span i18n:translate="this_are_the_edit">This are the edits:</span>
+                            </div>
+                            <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                            <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_argument.corrections}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                         </div>
 
@@ -113,6 +122,7 @@
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                             <br>
                         </div>
+
                     </div>
                     <div class="col-md-offset-2 col-md-3">
                         <table id="stats-table" class="table table-condensed pull-right" style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_argument.extra_info">

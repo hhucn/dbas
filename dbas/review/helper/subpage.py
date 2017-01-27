@@ -5,7 +5,9 @@ Provides helping function for displaying subpages like the edit queue.
 """
 
 import random
+import difflib
 
+from collections import OrderedDict
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
@@ -302,29 +304,56 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
     reason = translator.get(_.argumentFlaggedBecauseEdit)
 
     # build correction
-    correction = '<span class="text-muted">' + text + '</span>'
-    db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).all()
-    if not db_values:
-        correction = translator.get(_.internalKeyError)
-    for value in db_values:
-        oem_text = get_text_for_statement_uid(value.statement_uid)
-        pos = correction.lower().find(oem_text.lower())
-        correction = correction[0:pos] + '<span class="text-warning">' + value.content + '</span>' + correction[pos + len(oem_text):]
-
-        pos = text.lower().find(oem_text.lower())
-        text = text[0:pos] + '<span class="text-warning">' + text[pos:pos + len(oem_text)] + '</span>' + text[pos + len(oem_text):]
-
+    db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).first()
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+    if not db_edit_value:
+        correction = translator.get(_.internalKeyError)
+
+        return {'stats': stats,
+                'text': text,
+                'correction': correction,
+                'reason': reason,
+                'issue': issue,
+                'extra_info': extra_info}
+
+    correction_list = [char for char in text]
+    __difference_between_string(text, db_edit_value.content, correction_list)
+    correction = ''.join(correction_list)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_edit'] = already_seen
 
     return {'stats': stats,
             'text': text,
-            'correction': correction,
+            'corrected_version': db_edit_value.content,
+            'corrections': correction,
             'reason': reason,
             'issue': issue,
             'extra_info': extra_info}
+
+
+def __difference_between_string(a, b, correction_list):
+    tag_p = '<strong><span class="text-success">'
+    tag_m = '<strong><span class="text-danger">'
+    tag_e = '</span></strong>'
+    logger('X', 'X', a)
+    logger('X', 'X', b)
+    logger('X', 'X', str(correction_list))
+    for i, s in enumerate(difflib.ndiff(a, b)):
+        logger('X', 'X', str(s))
+
+    for i, s in enumerate(difflib.ndiff(a, b)):
+        if i >= len(correction_list):
+            correction_list.append('')
+        if s[0] == ' ':
+            continue
+        elif s[0] == '-':
+            logger('X', 'X', 'Delete "{}" from position {}'.format(s[-1], i))
+            correction_list[i] = tag_m + s[-1] + tag_e
+        elif s[0] == '+':
+            logger('X', 'X', 'Add "{}" to position {}'.format(s[-1], i))
+            correction_list[i] = tag_p + s[-1] + tag_e
+    logger('X', 'X', str(correction_list))
 
 
 def __get_stats_for_review(review, ui_locales, main_page):
