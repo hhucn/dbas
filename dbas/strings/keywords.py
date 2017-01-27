@@ -694,6 +694,7 @@ class Keywords(Enum):
     # insertDontCare = 'I don’t care about this, leave me alone and take my statement as it is!'
     youAreAbleToReviewNow = 'You are now able to visit the review section.'
     youArgue = 'You argue about'
+    youAgreeWithThecounterargument = 'You agree with the counter-argument which says that'
 
     @staticmethod
     def get_key_by_string(string):

@@ -170,7 +170,8 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
 
 def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
-                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True, anonymous_style=False):
+                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True, anonymous_style=False,
+                              support_counter_argument=False):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -184,6 +185,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     :param attack_type: String
     :param minimize_on_undercut: Boolean
     :param anonymous_style: Boolean
+    :param support_counter_argument: Boolean
     :return: String
     """
     logger('DBAS.LIB', 'get_text_for_argument_uid', 'main ' + str(uid))
@@ -208,7 +210,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     if len(arg_array) == 1:
         # build one argument only
         return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
-                                       start_with_intro, is_users_opinion, anonymous_style)
+                                       start_with_intro, is_users_opinion, anonymous_style, support_counter_argument)
 
     else:
         # get all pgroups and at last, the conclusion
@@ -325,7 +327,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
 
 
 def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
-                            is_users_opinion, anonymous_style):
+                            is_users_opinion, anonymous_style, support_counter_argument=False):
     """
 
     :param uid:
@@ -335,6 +337,9 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param attack_type:
     :param _t:
     :param start_with_intro:
+    :param is_users_opinion:
+    :param anonymous_style:
+    :param support_counter_argument:
     :return:
     """
     logger('DBAS.LIB', '__build_single_argument', 'main ' + str(uid))
@@ -377,7 +382,9 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
             ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
-            ret_value = sb_none + _t.get(_.youArgue) + se + ' '
+            ret_value = sb_none
+            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else _t.get(_.youArgue)
+            ret_value += se + ' '
         else:
             ret_value = sb_none + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
         ret_value += ' {}{}{} '.format(sb, _t.get(_.itIsNotRight), se) if not db_argument.is_supportive else ''

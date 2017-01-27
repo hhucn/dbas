@@ -661,6 +661,7 @@ de_lang = {
     _.youMadeAn: 'Sie machten ein/e',
     _.youAreAbleToReviewNow: 'Sie können nun andere Beiträge begutachten.',
     _.youArgue: 'Sie argumentieren, dass',
+    _.youAgreeWithThecounterargument: 'Sie stimmen dem Gegenargument zu, dass',
     _.relation_undermine: 'ist ein Gegenargument für',
     _.relation_support: 'ist ein Argument für',
     _.relation_undercut: 'ist ein Gegenargument für',

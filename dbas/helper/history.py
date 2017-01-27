@@ -251,7 +251,15 @@ def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hi
     last_relation = splitted_history[-1].split('/')[2]
 
     user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
-    current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion)
+    support_counter_argument = False
+    if step in splitted_history:
+        index = splitted_history.index(step)
+        try:
+            support_counter_argument = 'reaction' in splitted_history[index - 1]
+        except IndexError:
+            support_counter_argument = False
+    current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion,
+                                                 support_counter_argument=support_counter_argument)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
     db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)

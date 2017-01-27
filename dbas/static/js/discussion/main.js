@@ -682,16 +682,19 @@ function Main () {
 		
 		// hide one line options
 		var children = spaceList.find('input');
-		var id = children.eq(0).attr('id');
-		id = id.replace('item_', '');
-		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
-		// if we have just one list element AND the list element has a special function AND we are logged in
-		if (children.length == 1 && ($.inArray(id, ids) != -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
-			var container = $('#' + discussionContainerId);
-			var sidebar = $('.sidebar-wrapper');
-			container.height(container.height() - 50);
-			sidebar.height(sidebar.height() - 50);
-			children.eq(0).prop('checked', true).parent().hide();
+		if (children.length > 0) {
+			var id = children.eq(0).attr('id');
+			id = id.replace('item_', '');
+			var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
+			
+			// if we have just one list element AND the list element has a special function AND we are logged in
+			if (children.length == 1 && ($.inArray(id, ids) != -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
+				var container = $('#' + discussionContainerId);
+				var sidebar = $('.sidebar-wrapper');
+				container.height(container.height() - 50);
+				sidebar.height(sidebar.height() - 50);
+				children.eq(0).prop('checked', true).parent().hide();
+			}
 		}
 		
 		// options for the extra buttons, where the user can add input!

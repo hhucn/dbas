@@ -433,9 +433,11 @@ class DiscussionDictHelper(object):
 
         db_statement       = DBDiscussionSession.query(Statement).get(conclusion_uid)
         reply_for_argument = not (db_statement and db_statement.is_startpoint)
+        support_counter_argument = 'reaction' in self.history.split('-')[-1]
+
         current_argument   = get_text_for_argument_uid(db_argument.uid, with_html_tag=True, colored_position=True,
                                                        user_changed_opinion=user_changed_opinion, attack_type=attack,
-                                                       minimize_on_undercut=True)
+                                                       minimize_on_undercut=True, support_counter_argument=support_counter_argument)
 
         current_argument = current_argument[0:1].upper() + current_argument[1:]
         if self.lang != 'de':
