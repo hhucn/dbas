@@ -69,8 +69,6 @@ def get_d3_data(issue, nickname):
     edges_array += edges
     extras_dict.update(extras)
 
-    logger('X', 'all_nodes', str(all_node_ids))
-
     error = __sanity_check_of_d3_data(all_node_ids, edges_array)
 
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
@@ -261,7 +259,6 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
     # determine target-node and target-edge of all undercuts
     for argument in db_arguments:
         if argument.conclusion_uid is None:  # argument is undercut
-            logger('X', 'X', 'Argument {} is an undercut towards {}'.format(argument.uid, argument.argument_uid))
             __collect_edges_and_conclusions_of_undercut(conclusion_uids_dict, edge_target_dict, argument)
             __add_intersection(argument, x, y, nodes, all_ids)
 
@@ -401,10 +398,6 @@ def __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges):
         target = 'statement_' + str(argument.conclusion_uid)
     else:
         target = 'argument_' + str(argument.argument_uid)
-        # TODO WRONG TARGET
-        logger('X', 'X', 'Argument {} has target {} argument'.format(argument.uid, argument.argument_uid))
-        logger('X', 'X', 'Argument {} has target {} argument'.format(argument.uid, argument.argument_uid))
-        logger('X', 'X', 'Argument {} has target {} argument'.format(argument.uid, argument.argument_uid))
 
     # edge from premisegroup to the middle point
     for premise in db_premises:
