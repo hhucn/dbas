@@ -37,7 +37,7 @@ de_lang = {
     _.newPwdNotEqual: 'Neues Passwort und Bestätigung stimmen nicht überein.',
     _.pwdsSame: 'Beide eingegeben Passwörter sind identisch.',
     _.oldPwdWrong: 'Ihr altes Passwort ist falsch.',
-    _.pwdChanged: 'Ihr Passwort würde geändert.',
+    _.pwdChanged: 'Ihr Passwort wurde geändert.',
     _.emptyName: 'Ihr Name ist leer!',
     _.emptyEmail: 'Ihre E-Mail ist leer!',
     _.emtpyContent: 'Ihr Inhalt ist leer!',
