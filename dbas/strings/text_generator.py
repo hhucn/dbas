@@ -535,8 +535,7 @@ def __get_text_dict_for_attacks_only(lang, premises, conclusion, start_lower_cas
     ret_dict['undercut_text'] = r + ', ' + conclusion + ', ' + _t.get(_.butIDoNotBelieveArgumentFor).format(counter_justi) + '.'
     ret_dict['rebut_text'] = r + ', ' + premise + ' ' + _t.get(_.iAcceptArgumentThat) + ' ' + conclusion + '. '
     ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgumentRejectingThat) + ' ' + conclusion + '.'
-    ret_dict['no_opinion_text'] = _t.get(_.iNoOpinion) + ': ' + conclusion + ', ' + _t.get(
-        _.because).toLocaleLowerCase()
+    ret_dict['no_opinion_text'] = _t.get(_.iNoOpinion) + ': ' + conclusion + ', ' + _t.get(_.because).toLocaleLowerCase()
     ret_dict['no_opinion_text'] += ' ' + premise + '. ' + _t.get(_.goStepBack) + '.'
     return ret_dict
 
