@@ -205,7 +205,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
                                                            )).first()
 
     topic = _t_user.get(_.argumentAdded)
-    content = get_text_for_add_argument_message(db_author.fistname, user_lang, url, True)
+    content = get_text_for_add_argument_message(db_author.firstname, user_lang, url, True)
 
     DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
                                     to_author_uid=db_author.uid,
