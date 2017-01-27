@@ -329,7 +329,7 @@ de_lang = {
     _.internalFailureWhileDeletingTrack: 'Interner Fehler, bitte versuchen Sie es später erneut.',
     _.internalFailureWhileDeletingHistory: 'Interner Fehler, bitte versuchen Sie es später erneut.',
     _.internalError: '<strong>Interner Fehler:</strong> Wahrscheinlich ist der Server nicht erreichbar. Bitte laden Sie die Seite erneut!.',
-    _.internalKeyError: 'Interner Fehler beim verarbeiten von Daten.',
+    _.internalKeyError: 'Interner Fehler beim Verarbeiten von Daten.',
     _.inputEmpty: 'Ihre Eingabe ist leer!',
     _.informationForExperts: 'Infos für Experten',
     _.issueList: 'Themen',

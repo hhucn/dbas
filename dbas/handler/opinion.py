@@ -165,7 +165,6 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
         statement_dict['uid'] = str(uid)
         text = get_text_for_statement_uid(uid)
         try:
-            text = text[0:1].upper() + text[1:]
             if db_statement.is_startpoint and lang == 'de':
                 text = _t.get(_.statementIsAbout) + ' ' + text
             statement_dict['text'] = text

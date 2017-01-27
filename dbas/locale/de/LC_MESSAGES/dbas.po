@@ -125,7 +125,7 @@ msgstr "Los geht's"
 #. Default: News
 #: templates/snippet-header.pt:49
 msgid "news"
-msgstr "Nachrichten"
+msgstr "Neuigkeiten"
 
 #. Default: Login
 #. Default: Log In

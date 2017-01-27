@@ -69,6 +69,8 @@ def get_d3_data(issue, nickname):
     edges_array += edges
     extras_dict.update(extras)
 
+    logger('X', 'all_nodes', str(all_node_ids))
+
     error = __sanity_check_of_d3_data(all_node_ids, edges_array)
 
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
@@ -259,7 +261,9 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
     # determine target-node and target-edge of all undercuts
     for argument in db_arguments:
         if argument.conclusion_uid is None:  # argument is undercut
+            logger('X', 'X', 'Argument {} is an undercut towards {}'.format(argument.uid, argument.argument_uid))
             __collect_edges_and_conclusions_of_undercut(conclusion_uids_dict, edge_target_dict, argument)
+            __add_intersection(argument, x, y, nodes, all_ids)
 
     for argument in db_arguments:
         __collect_all_nodes_and_edges(all_ids, nodes, edges, conclusion_uids_dict, edge_target_dict, argument, x, y, edge_type)
@@ -278,7 +282,7 @@ def __collect_edges_and_conclusions_of_undercut(conclusion_uids_dict, edge_targe
     db_target = DBDiscussionSession.query(Argument).get(argument.argument_uid)
     db_undercut = argument
 
-    if db_target.conclusion_uid is not None:  # first-order
+    if db_target.argument_uid is None:  # first-order
         # logger('X', '1st order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_target.conclusion_uid))
         # logger('X', '1st order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
         conclusion_uids_dict[db_undercut.uid] = db_target.conclusion_uid
@@ -290,6 +294,40 @@ def __collect_edges_and_conclusions_of_undercut(conclusion_uids_dict, edge_targe
         # logger('X', '2nd order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
         conclusion_uids_dict[db_undercut.uid] = db_targets_target.conclusion_uid
         edge_target_dict[db_undercut.uid] = db_target.uid
+
+
+def __collect_all_nodes_and_edges(all_ids, nodes, edges, conclusion_uids_dict, edge_target_dict, argument, x, y, edge_type):
+    """
+
+    :param all_ids:
+    :param nodes:
+    :param edges:
+    :param conclusion_uids_dict:
+    :param edge_target_dict:
+    :param argument:
+    :param x:
+    :param y:
+    :param edge_type:
+    :return:
+    """
+    counter = 1
+
+    # we have an argument with:
+    # 1) with one premise and no undercuts for this argument
+    # 2) with at least two premises, one conclusion or an undercut is done on this argument
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+
+    # if there are different premises for one argument add invisible nodes
+    if len(db_premises) > 1:
+        __add_intersection(argument, x, y, nodes, all_ids)
+
+    # if there is at most one premise create edge without virtual nodes
+    if len(db_premises) < 2:
+        __create_edge_without_vnode(argument, conclusion_uids_dict, edge_target_dict, counter, db_premises, edge_type, edges)
+
+    # target of the edge (case 1) or last edge (case 2)
+    else:
+        __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges)
 
 
 def __add_intersection(argument, x, y, nodes, all_ids):
@@ -363,6 +401,10 @@ def __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges):
         target = 'statement_' + str(argument.conclusion_uid)
     else:
         target = 'argument_' + str(argument.argument_uid)
+        # TODO WRONG TARGET
+        logger('X', 'X', 'Argument {} has target {} argument'.format(argument.uid, argument.argument_uid))
+        logger('X', 'X', 'Argument {} has target {} argument'.format(argument.uid, argument.argument_uid))
+        logger('X', 'X', 'Argument {} has target {} argument'.format(argument.uid, argument.argument_uid))
 
     # edge from premisegroup to the middle point
     for premise in db_premises:
@@ -387,40 +429,6 @@ def __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges):
     edges.append(edge_dict)
 
 
-def __collect_all_nodes_and_edges(all_ids, nodes, edges, conclusion_uids_dict, edge_target_dict, argument, x, y, edge_type):
-    """
-
-    :param all_ids:
-    :param nodes:
-    :param edges:
-    :param conclusion_uids_dict:
-    :param edge_target_dict:
-    :param argument:
-    :param x:
-    :param y:
-    :param edge_type:
-    :return:
-    """
-    counter = 1
-
-    # we have an argument with:
-    # 1) with one premise and no undercuts for this argument
-    # 2) with at least two premises, one conclusion or an undercut is done on this argument
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
-
-    # if there are different premises for one argument add invisible nodes
-    if len(db_premises) > 1:
-        __add_intersection(argument, x, y, nodes, all_ids)
-
-    # if there is at most one premise create edge without virtual nodes
-    if len(db_premises) < 2:
-        __create_edge_without_vnode(argument, conclusion_uids_dict, edge_target_dict, counter, db_premises, edge_type, edges)
-
-    # target of the edge (case 1) or last edge (case 2)
-    else:
-        __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges)
-
-
 def __sanity_check_of_d3_data(all_node_ids, edges_array):
     """
 
@@ -430,7 +438,13 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
     """
     error = False
     for edge in edges_array:
-        error = error or edge['source'] not in all_node_ids or edge['target'] not in all_node_ids
+        err1 = edge['source'] not in all_node_ids
+        err2 = edge['target'] not in all_node_ids
+        if err1:
+            logger('Graph.lib', 'get_d3_data', 'Source of ' + str(edge) + ' is not valid')
+        if err2:
+            logger('Graph.lib', 'get_d3_data', 'Target of ' + str(edge) + ' is not valid')
+        error = error or err1 or err2
     if error:
         logger('Graph.lib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
         return True
@@ -443,7 +457,7 @@ def __get_author_of_statement(uid, db_user):
     """
 
     :param uid:
-    :param main_page:
+    :param db_user:
     :return:
     """
     if not db_user:
@@ -459,7 +473,7 @@ def __get_editor_of_statement(uid, db_user):
     """
 
     :param uid:
-    :param main_page:
+    :param db_user:
     :return:
     """
     if not db_user:

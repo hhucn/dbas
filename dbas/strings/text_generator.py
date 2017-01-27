@@ -3,7 +3,7 @@
 
 from dbas.lib import get_author_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Premise, Statement, VoteStatement, VoteArgument, User, Argument
+from dbas.database.discussion_model import VoteStatement, VoteArgument, User, Argument
 from dbas.database.initializedb import nick_of_anonymous_user
 from sqlalchemy import and_
 from .keywords import Keywords as _
