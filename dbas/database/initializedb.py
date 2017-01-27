@@ -65,7 +65,7 @@ def main_discussion(argv=sys.argv):
         set_up_settings(DBDiscussionSession, user0, user1, user2, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30, use_anonyme_nicks=False)
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
-        add_reputation(DBDiscussionSession)
+        add_reputation_and_delete_reason(DBDiscussionSession)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
@@ -95,7 +95,7 @@ def field_test(argv=sys.argv):
         transaction.commit()
         # main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         # setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
-        add_reputation(DBDiscussionSession)
+        add_reputation_and_delete_reason(DBDiscussionSession)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
@@ -193,7 +193,7 @@ def main_discussion_reload(argv=sys.argv):
         lang1, lang2 = set_up_language(DBDiscussionSession)
         issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2)
         setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
-        add_reputation(DBDiscussionSession)
+        add_reputation_and_delete_reason(DBDiscussionSession)
         setup_review_database(DBDiscussionSession)
         setup_dummy_seen_by(DBDiscussionSession)
         setup_dummy_votes(DBDiscussionSession)
@@ -1672,13 +1672,8 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([reference200, reference201, reference014, reference015])
     session.flush()
 
-    reason1 = ReviewDeleteReason(reason='offtopic')
-    reason2 = ReviewDeleteReason(reason='harmful')
-    session.add_all([reason1, reason2])
-    session.flush()
 
-
-def add_reputation(session):
+def add_reputation_and_delete_reason(session):
     reputation01 = ReputationReason(reason='rep_reason_first_position', points=10)
     reputation02 = ReputationReason(reason='rep_reason_first_justification', points=10)
     reputation03 = ReputationReason(reason='rep_reason_first_argument_click', points=10)
@@ -1690,6 +1685,11 @@ def add_reputation(session):
     reputation09 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
     reputation10 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
     session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07, reputation08, reputation09, reputation10])
+    session.flush()
+
+    reason1 = ReviewDeleteReason(reason='offtopic')
+    reason2 = ReviewDeleteReason(reason='harmful')
+    session.add_all([reason1, reason2])
     session.flush()
 
 
