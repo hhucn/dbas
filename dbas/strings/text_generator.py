@@ -3,7 +3,7 @@
 
 from dbas.lib import get_author_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Premise, Statement, VoteStatement, VoteArgument, User
+from dbas.database.discussion_model import Premise, Statement, VoteStatement, VoteArgument, User, Argument
 from dbas.database.initializedb import nick_of_anonymous_user
 from sqlalchemy import and_
 from .keywords import Keywords as _
@@ -589,9 +589,10 @@ def __get_confrontation_text_for_undercut(main_page, nickname, db_users_premise,
     :return:
     """
 
-    author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
-                                                                                       db_users_premise.statements,
-                                                                                       nickname)
+    # author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
+    #                                                                                    db_users_premise.statements,
+    #                                                                                    nickname)
+    author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
     if is_okay:
@@ -635,9 +636,10 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     :param system_argument: Counter argument of the system
     :return: String, String2
     """
-    author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
-                                                                                       db_users_premise.statements,
-                                                                                       nickname)
+    # author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
+    #                                                                                    db_users_premise.statements,
+    #                                                                                    nickname)
+    author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
 
@@ -718,7 +720,7 @@ def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=T
         nickname = nickname if nickname is not None else nick_of_anonymous_user
         db_current_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-        db_user = get_first_supporter_of_argument(argument.uid, db_current_user)
+        db_user = get_author_or_first_supporter_of_argument(argument.uid, db_current_user)
 
         if db_user:
             text, is_okay = get_author_data(main_page, db_user.uid, gravatar_on_right_side=False, linked_with_users_page=with_link)
@@ -777,7 +779,7 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
     return text, gender, is_okay
 
 
-def get_first_supporter_of_argument(argument_uid, current_user):
+def get_author_or_first_supporter_of_argument(argument_uid, current_user):
     """
 
     :param argument_uid:
@@ -793,8 +795,16 @@ def get_first_supporter_of_argument(argument_uid, current_user):
         VoteArgument.is_up_vote == True
     ))
 
-    if current_user:
+    if current_user and db_vote:
         db_vote = db_vote.filter(VoteArgument.author_uid != current_user.uid)
 
-    db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
-    return DBDiscussionSession.query(User).get(db_vote.author_uid) if db_vote else None
+    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
+    if db_vote:
+        db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
+
+    if db_vote:
+        return DBDiscussionSession.query(User).get(db_vote.author_uid)
+    elif db_argument:
+        DBDiscussionSession.query(User).get(db_argument.author_uid)
+    else:
+        return None
