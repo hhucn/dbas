@@ -148,10 +148,10 @@ def send_add_text_notification(url, conclusion_id, user, request):
 
     # get topic and content for messages to both authors
     topic1 = _t_root.get(_.statementAdded)
-    content1 = get_text_for_add_text_message(root_lang, url, True)
+    content1 = get_text_for_add_text_message(db_root_author.firstname, root_lang, url, True)
 
     topic2 = _t_editor.get(_.statementAdded)
-    content2 = get_text_for_add_text_message(editor_lang, url, True)
+    content2 = get_text_for_add_text_message(db_last_editor.firstname, editor_lang, url, True)
 
     if db_root_author != db_current_user:
         DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
@@ -189,8 +189,8 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
     user_lang = DBDiscussionSession.query(Language).get(db_author_settings.lang_uid).ui_locales
 
     # send notification via websocket to last author
+    _t_user = Translator(user_lang)
     if db_author_settings.should_send_notifications:
-        _t_user = Translator(user_lang)
         send_request_for_info_popup_to_socketio(db_author.nickname, _t_user.get(_.argumentAdded), url)
 
     # send mail to last author
@@ -204,9 +204,8 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
                                                            User.public_nickname == 'admin',
                                                            )).first()
 
-    _t = Translator(user)
-    topic = _t.get(_.argumentAdded)
-    content = get_text_for_add_argument_message(user_lang, url, True)
+    topic = _t_user.get(_.argumentAdded)
+    content = get_text_for_add_argument_message(db_author.fistname, user_lang, url, True)
 
     DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
                                     to_author_uid=db_author.uid,

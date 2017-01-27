@@ -30,7 +30,7 @@ def send_mail_due_to_added_text(lang, url, recipient, request):
     """
     _t = Translator(lang)
     subject = _t.get(_.statementAdded)
-    body = get_text_for_add_text_message(lang, url, False)
+    body = get_text_for_add_text_message(recipient.firstname, lang, url, False)
 
     return send_mail(request, subject, body, recipient.email, lang)
 
@@ -47,7 +47,7 @@ def send_mail_due_to_added_argument(lang, url, recipient, request):
     """
     _t = Translator(lang)
     subject = _t.get(_.argumentAdded)
-    body = get_text_for_add_argument_message(lang, url, False)
+    body = get_text_for_add_argument_message(recipient.firstname, lang, url, False)
 
     return send_mail(request, subject, body, recipient.email, lang)
 

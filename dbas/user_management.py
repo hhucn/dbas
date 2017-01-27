@@ -572,7 +572,7 @@ def create_new_user(firstname, lastname, email, nickname, password, gender, db_g
     transaction.commit()
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     settings = Settings(author_uid=db_user.uid,
-                        send_mails=True,
+                        send_mails=False,
                         send_notifications=True,
                         should_show_public_nickname=True)
     DBDiscussionSession.add(settings)

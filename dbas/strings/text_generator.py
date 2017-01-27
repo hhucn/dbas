@@ -467,7 +467,7 @@ def get_text_for_edit_text_message(lang, nickname, original, edited, url, for_ht
     return content
 
 
-def get_text_for_add_text_message(lang, url, for_html=True):
+def get_text_for_add_text_message(nickname, lang, url, for_html=True):
     """
 
     :param lang:
@@ -477,7 +477,7 @@ def get_text_for_add_text_message(lang, url, for_html=True):
     """
     nl = '<br>' if for_html else '\n'
     _t = Translator(lang)
-    content = _t.get(_.statementAddedMessageContent) + nl
+    content = _t.get(_.statementAddedMessageContent).format(nickname) + nl
     content += (_t.get(_.where)[0:1].upper() + _t.get(_.where)[1:]) + ': '
     if for_html:
         content += '<a href="' + url + '">' + url + '</a>'
@@ -487,7 +487,7 @@ def get_text_for_add_text_message(lang, url, for_html=True):
     return content
 
 
-def get_text_for_add_argument_message(lang, url, for_html=True):
+def get_text_for_add_argument_message(nickname, lang, url, for_html=True):
     """
 
     :param lang:
@@ -497,7 +497,7 @@ def get_text_for_add_argument_message(lang, url, for_html=True):
     """
     nl = '<br>' if for_html else '\n'
     _t = Translator(lang)
-    content = _t.get(_.statementAddedMessageContent) + nl
+    content = _t.get(_.statementAddedMessageContent).format(nickname) + nl
     content += (_t.get(_.where)[0:1].upper() + _t.get(_.where)[1:]) + ': '
     if for_html:
         content += '<a href="' + url + '">' + url + '</a>'
