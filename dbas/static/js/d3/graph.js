@@ -251,8 +251,6 @@ function DiscussionGraph() {
         // highlight nodes and edges
         addListenerForNodes(circle, edges);
 
-        addListenerForBackgroundOfNodes(edges);
-        
         return true;
     };
 
@@ -687,19 +685,6 @@ function DiscussionGraph() {
             showPartOfGraph(edges, circleId);
             selectedCircleId = d.id;
             counter++;
-        });
-    }
-
-    /**
-     * Make whole graph visible if background of graph is clicked.
-     *
-     * @param edges
-     */
-    function addListenerForBackgroundOfNodes(edges) {
-        $('#graph-svg').on("click", function (d) {
-            if (d.target.id.indexOf("circle") === -1) {
-                highlightAllElements(edges);
-            }
         });
     }
 
