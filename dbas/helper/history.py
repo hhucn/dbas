@@ -238,7 +238,7 @@ def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hi
     :param url: String
     :return: [dict()]
     """
-    logger('history_helper', '__reaction_step', 'def: ' + str(splitted_history))
+    logger('history_helper', '__reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
     steps = step.split('/')
     uid = int(steps[1])
     additional_uid = int(steps[3])
@@ -262,13 +262,16 @@ def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hi
                                                  support_counter_argument=support_counter_argument)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
-    db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
+    if db_argument.conclusion_uid is not None:
+        db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
+        reply_for_argument = not (db_statement and db_statement.is_startpoint)
+    else:
+        reply_for_argument = True
 
     premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_conclusion(db_argument)
     sys_conclusion = get_text_for_conclusion(db_confrontation)
     confr, tmp = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
-    reply_for_argument = not (db_statement and db_statement.is_startpoint)
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
