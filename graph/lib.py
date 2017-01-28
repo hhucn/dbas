@@ -324,7 +324,7 @@ def __collect_all_nodes_and_edges(all_ids, nodes, edges, conclusion_uids_dict, e
 
     # target of the edge (case 1) or last edge (case 2)
     else:
-        __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges)
+        __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges, edge_target_dict, conclusion_uids_dict)
 
 
 def __add_intersection(argument, x, y, nodes, all_ids):
@@ -384,7 +384,7 @@ def __create_edge_without_vnode(argument, conclusion_uids_dict, edge_target_dict
     edges.append(edge_dict)
 
 
-def __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges):
+def __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges, edge_target_dict, conclusion_uids_dict):
     """
 
     :param argument:
@@ -392,12 +392,24 @@ def __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges):
     :param db_premises:
     :param edge_type:
     :param edges:
+    :param edge_target_dict:
     :return:
     """
+
     if argument.conclusion_uid is not None:
         target = 'statement_' + str(argument.conclusion_uid)
+    # target of undercut
     else:
-        target = 'argument_' + str(argument.argument_uid)
+        target = 'statement_' + str(conclusion_uids_dict[argument.uid])
+
+    is_undercut = 'none'
+    if argument.conclusion_uid is None:
+        target_edge = 'edge_' + str(edge_target_dict[argument.uid]) + '_' + str(counter)
+        # the edge on the argument is an undercut
+        is_undercut = True
+    else:
+        target_edge = 'none'
+
 
     # edge from premisegroup to the middle point
     for premise in db_premises:
@@ -417,8 +429,8 @@ def __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges):
                                 target=target,
                                 is_attacking=not argument.is_supportive,
                                 edge_type=edge_type,
-                                target_edge='none',
-                                is_undercut='none')
+                                target_edge=target_edge,
+                                is_undercut=is_undercut)
     edges.append(edge_dict)
 
 

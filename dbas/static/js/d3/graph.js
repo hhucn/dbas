@@ -268,7 +268,7 @@ function DiscussionGraph() {
     function getPositionOfLink(linkTargetCoordinate, nodeCoordinate, edges, d) {
         var position;
         var edge;
-        if (d.is_undercut === true) {
+        if (d.is_undercut === true && d.target_edge != 'none') {
             edges.forEach(function (e) {
                 if (e.id === d.target_edge) {
                     edge = e;
@@ -1350,10 +1350,10 @@ function DiscussionGraph() {
         var circleUid = selectUid(circleId);
 
         // edge with circleUid as source
-        var edge;
+        var edgesWithSourceCircleUid = [];
         edges.forEach(function (e) {
             if(e.source.id === circleUid){
-                edge = e;
+                edgesWithSourceCircleUid.push(e);
             }
         });
 
@@ -1367,7 +1367,9 @@ function DiscussionGraph() {
         }
         else {
             // edge is an undercut
-            testEdgeUndercut(edges, edgesCircleId, edge);
+            edgesWithSourceCircleUid.forEach(function (edge) {
+                testEdgeUndercut(edges, edgesCircleId, edge);
+            });
 
             // undercuts on edge of circleUid to target or of source to circleUid
             findUndercuts(edges, edgesCircleId, circleUid);
@@ -1398,6 +1400,7 @@ function DiscussionGraph() {
             edges.forEach(function (e) {
                 if (e.target_edge === edge.id) {
                     edgesCircleId.push(e);
+                    findVirtualNodes(edges, edgesCircleId, e);
                 }
             });
             // target edge of undercut
@@ -1450,6 +1453,7 @@ function DiscussionGraph() {
             if ((e.is_undercut == true) && (e.target_edge === edge.id)) {
                 undercuts.push(e);
                 edgesCircleId.push(e);
+                findVirtualNodes(edges, edgesCircleId, e);
             }
         });
         // undercuts on undercuts on edge
@@ -1457,6 +1461,7 @@ function DiscussionGraph() {
             edges.forEach(function (e) {
                 if ((e.is_undercut == true) && (e.target_edge === k.id)) {
                     edgesCircleId.push(e);
+                    findVirtualNodes(edges, edgesCircleId, e);
                 }
             });
         });
@@ -1477,10 +1482,12 @@ function DiscussionGraph() {
                 if (((e.source.id === edge.target.id) || (e.target.id === edge.target.id)) && (edge.target.label === '')) {
                     if(!isSupportVisible){
                         findUndercutsForEdge(edges, edgesCircleId, e);
+                        // check if e is an Undercut
+                        testEdgeUndercut(edges, edgesCircleId, e);
                     }
                     edgesCircleId.push(e);
                 }
-                if ((e.source.id === edge.source.id) || (e.target.id === edge.source.id) && (edge.source.label === '')) {
+                if (((e.source.id === edge.source.id) || (e.target.id === edge.source.id)) && (edge.source.label === '')) {
                     if(!isSupportVisible){
                         findUndercutsForEdge(edges, edgesCircleId, e);
                     }
