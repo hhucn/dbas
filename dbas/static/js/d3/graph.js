@@ -624,7 +624,8 @@ function DiscussionGraph() {
             var width = element.width() + 24;
             var height = element.height() + 10;
             var pos = calculateRectPos(width, height);
-            if (d.size === 0) {
+            // if d is a virtual node do not show label
+            if (d.label === '') {
                 width = 0;
                 height = 0;
             }
