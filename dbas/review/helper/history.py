@@ -9,7 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit,\
     LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print
-from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author, get_text_for_statement_uid
+from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author_or_admin, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
@@ -43,7 +43,7 @@ def __get_data(main_page, nickname, translator, is_executed=False):
     if is_executed:
         ret_dict['has_access'] = __has_access_to_history(nickname)
     else:
-        ret_dict['has_access'] = is_user_author(nickname)
+        ret_dict['has_access'] = is_user_author_or_admin(nickname)
     ret_dict['is_history'] = is_executed
 
     deletes_list = __get_executed_reviews_of('deletes', main_page, ReviewDelete, LastReviewerDelete, translator, is_executed)

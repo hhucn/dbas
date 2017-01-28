@@ -8,7 +8,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now
-from dbas.lib import get_profile_picture, is_user_author
+from dbas.lib import get_profile_picture, is_user_author_or_admin
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.review.helper.subpage import reputation_borders
@@ -31,13 +31,14 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return None
+    count, all_rights = get_reputation_of(nickname)
 
     review_list = list()
-    review_list.append(__get_delete_dict(main_page, translator, nickname))
-    review_list.append(__get_optimization_dict(main_page, translator, nickname))
-    review_list.append(__get_edit_dict(main_page, translator, nickname))
-    review_list.append(__get_history_dict(main_page, translator, nickname))
-    if is_user_author(nickname):
+    review_list.append(__get_delete_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_optimization_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_edit_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_history_dict(main_page, translator, nickname, count, all_rights))
+    if is_user_author_or_admin(nickname):
         review_list.append(__get_ongoing_dict(main_page, translator))
 
     return review_list
@@ -55,7 +56,7 @@ def get_complete_review_count(nickname):
     return count1 + count2 + count3
 
 
-def __get_delete_dict(main_page, translator, nickname):
+def __get_delete_dict(main_page, translator, nickname, count, all_rights):
     """
     Prepares dictionary for the a section.
 
@@ -68,7 +69,6 @@ def __get_delete_dict(main_page, translator, nickname):
     task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
 
     key = 'deletes'
-    count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
                 'url': main_page + '/review/' + key,
@@ -83,7 +83,7 @@ def __get_delete_dict(main_page, translator, nickname):
     return tmp_dict
 
 
-def __get_optimization_dict(main_page, translator, nickname):
+def __get_optimization_dict(main_page, translator, nickname, count, all_rights):
     """
     Prepares dictionary for the a section.
 
@@ -96,7 +96,6 @@ def __get_optimization_dict(main_page, translator, nickname):
     task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
 
     key = 'optimizations'
-    count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
                 'url': main_page + '/review/' + key,
@@ -110,7 +109,7 @@ def __get_optimization_dict(main_page, translator, nickname):
     return tmp_dict
 
 
-def __get_edit_dict(main_page, translator, nickname):
+def __get_edit_dict(main_page, translator, nickname, count, all_rights):
     """
     Prepares dictionary for the a section.
 
@@ -123,7 +122,6 @@ def __get_edit_dict(main_page, translator, nickname):
     task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname)
 
     key = 'edits'
-    count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
                 'url': main_page + '/review/' + key,
@@ -137,7 +135,7 @@ def __get_edit_dict(main_page, translator, nickname):
     return tmp_dict
 
 
-def __get_history_dict(main_page, translator, nickname):
+def __get_history_dict(main_page, translator, nickname, count, all_rights):
     """
     Prepares dictionary for the a section. Queue should be added iff the user is author!
 
@@ -148,7 +146,6 @@ def __get_history_dict(main_page, translator, nickname):
     """
     #  logger('ReviewQueues', '__get_history_dict', 'main')
     key = 'history'
-    count, all_rights = get_reputation_of(nickname)
     tmp_dict = {'task_name': translator.get(_.queueHistory),
                 'id': 'flags',
                 'url': main_page + '/review/' + key,

@@ -7,7 +7,7 @@ Provides helping function for issues.
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print
-from dbas.lib import is_user_author
+from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query
 from dbas.strings.keywords import Keywords as _
@@ -30,7 +30,7 @@ def set_issue(info, long_info, title, lang, nickname, ui_locales):
     _tn = Translator(ui_locales)
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not is_user_author(nickname):
+    if not is_user_author_or_admin(nickname):
         logger('IssueHelper', 'set_issue', 'User has no rights', error=True)
         return False, _tn.get(_.noRights)
 

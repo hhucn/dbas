@@ -525,7 +525,7 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     # lets go
     else:
         # getting the authors group
-        db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
+        db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
 
         # does the group exists?
         if not db_group:

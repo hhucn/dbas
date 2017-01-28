@@ -39,7 +39,7 @@ from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
 from dbas.lib import get_language, escape_string, get_discussion_language, \
-    get_user_by_private_or_public_nickname, is_user_author, \
+    get_user_by_private_or_public_nickname, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
     get_changelog
 from dbas.logger import logger
@@ -266,7 +266,7 @@ def main_news(request):
         return user_logout(request, True)
 
     ui_locales = get_language(request)
-    is_author = is_user_author(request_authenticated_userid)
+    is_author = is_user_author_or_admin(request_authenticated_userid)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
 
@@ -914,6 +914,11 @@ def discussion_jump(request, for_api=False, api_data=None):
         return return_dict
 
 
+# ####################################
+# REVIEW                             #
+# ####################################
+
+# index page for reviews
 # ####################################
 # REVIEW                             #
 # ####################################
@@ -2463,7 +2468,7 @@ def undo_review(request):
         uid = request.params['uid']
         nickname = request.authenticated_userid
 
-        if is_user_author(nickname):
+        if is_user_author_or_admin(nickname):
             success, error = review_history_helper.revoke_old_decision(queue, uid, ui_locales, nickname)
             return_dict['success'] = success
             return_dict['error'] = error
@@ -2495,7 +2500,7 @@ def cancel_review(request):
         uid = request.params['uid']
         nickname = request.authenticated_userid
 
-        if is_user_author(nickname):
+        if is_user_author_or_admin(nickname):
             success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales, nickname)
             return_dict['success'] = success
             return_dict['error'] = error

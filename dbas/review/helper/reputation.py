@@ -7,7 +7,7 @@ Provides helping function for handling reputation.
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
-from dbas.lib import is_user_author
+from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
@@ -97,7 +97,7 @@ def get_reputation_of(nickname):
     for reputation in db_reputation:
         count += reputation.reputations.points
 
-    return count, is_user_author(nickname)
+    return count, is_user_author_or_admin(nickname)
 
 
 def add_reputation_for(user, reason):

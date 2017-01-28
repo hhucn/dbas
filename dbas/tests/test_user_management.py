@@ -1,6 +1,6 @@
 import unittest
 
-from dbas.lib import is_user_author
+from dbas.lib import is_user_author_or_admin
 
 from sqlalchemy import engine_from_config
 
@@ -46,8 +46,8 @@ class UserManagementTest(unittest.TestCase):
         self.assertFalse(user_management.is_user_admin('Torben'))
 
     def test_is_user_author(self):
-        self.assertTrue(is_user_author('Tobias'))
-        self.assertFalse(is_user_author('Torben'))
+        self.assertTrue(is_user_author_or_admin('Tobias'))
+        self.assertFalse(is_user_author_or_admin('Torben'))
 
     def change_password(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str('Tobias')).first()
