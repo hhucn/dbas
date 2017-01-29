@@ -10,6 +10,7 @@ function DiscussionGraph() {
     var isStatementVisible = false;
     var isSupportVisible = false;
     var isAttackVisible = false;
+    var isDefaultView = false;
     var light_grey = '#E0E0E0';
     var grey = '#848484';
     var yellow = '#FFC107';
@@ -26,6 +27,7 @@ function DiscussionGraph() {
     var box_sizes = {}; // needed for rescaling
     var node_id_prefix = 'node_'; // needed for rescaling
     var old_scale = 1.0; // needed for rescaling
+    var zoom_scale;
     var statement_size = 6; // base node size of an statement
     var node_factor_size = 10; // additional size for the doj, which is in [0,1]
     var rel_node_factor;
@@ -128,15 +130,15 @@ function DiscussionGraph() {
      */
     this.setButtonDefaultSettings = function (jsonData) {
     	$('#graph-view-container').find('.sidebar').find('li').each(function(){
-    		$(this).removeClass('hidden')
+    		$(this).removeClass('hidden');
 	    });
     	
         $('#show-labels').show();
         $('#hide-labels').hide();
-        $('#show-attacks-on-my-statements').show();
-        $('#hide-attacks-on-my-statements').hide();
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
+        $('#show-attacks-on-my-statements').show();
+        $('#hide-attacks-on-my-statements').hide();
         $('#show-supports-on-my-statements').show();
         $('#hide-supports-on-my-statements').hide();
         $('#show-positions').show();
@@ -145,7 +147,7 @@ function DiscussionGraph() {
         // show or hide my path
 	    $('#hide-my-path').hide();
         if (jsonData.path.length == 0) {
-            $('#show-my-path').hide();
+            $('#show-my-path').addClass('hidden');
         } else {
             $('#show-my-path').show();
         }
@@ -173,7 +175,8 @@ function DiscussionGraph() {
         var force = getForce(width, height);
 
         // zoom and pan
-        zoomAndPan();
+        var zoom = d3.behavior.zoom();
+        zoomAndPan(zoom);
         var drag = enableDrag(force);
 
         // resize
@@ -212,11 +215,9 @@ function DiscussionGraph() {
         getLegendSvg().call(legend);
 
         // buttons of sidebar
-        addListenersForSidebarButtons(jsonData, label, rect, edges, force);
+        addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom);
         // add listener to show/hide tooltip on mouse over
         addListenerForTooltip();
-
-        force.start();
 
         // update force layout calculations
         function forceTick() {
@@ -256,6 +257,9 @@ function DiscussionGraph() {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
             });
         }
+
+        force.start();
+
 
         //////////////////////////////////////////////////////////////////////////////
         // highlight nodes and edges
@@ -330,17 +334,31 @@ function DiscussionGraph() {
     /**
      * Enable zoom and pan functionality on graph.
      */
-    function zoomAndPan() {
-        var zoom = d3.behavior.zoom().on("zoom", redraw).scaleExtent([0.5, 5]);
+    function zoomAndPan(zoom) {
+        zoom.on("zoom", redraw).scaleExtent([0.5, 5]);
 
         d3.select("#graph-svg").call(zoom).on("dblclick.zoom", null);
 
+        // if default view button is clicked redraw graph once
+        if(isDefaultView){
+            redraw();
+        }
+
         function redraw() {
-            var zoom_scale = zoom.scale();
-            var change_scale = Math.abs(old_scale - zoom_scale) > 0.02;
+            var change_scale = true;
+            if(isDefaultView){
+                zoom_scale = 1;
+                isDefaultView = false;
+            }
+            else{
+                zoom_scale = zoom.scale();
+                change_scale = Math.abs(old_scale - zoom_scale) > 0.02;
+            }
+
             old_scale = zoom_scale;
 
             d3.selectAll("g.zoom").attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom_scale + ")");
+
             if (change_scale) {
                 // resizing of font size, line height and the complete rectangle
                 $('#' + graphViewContainerSpaceId).find('.node').each(function () {
@@ -684,18 +702,21 @@ function DiscussionGraph() {
      */
     function addListenerForNodes(circle, edges) {
         selectedCircleId;
-        var counter = 0;
         circle.on("click", function (d) {
             // distinguish between click and drag event
             if (d3.event.defaultPrevented) return;
-            // show modal when node clicked twice
-            if (d.id === selectedCircleId && counter % 2 === 0) {
-                showModal(d);
-            }
             var circleId = this.id;
             showPartOfGraph(edges, circleId);
             selectedCircleId = d.id;
-            counter++;
+        });
+        circle.on("dblclick", function (d) {
+            // distinguish between click and drag event
+            if (d3.event.defaultPrevented) return;
+            // show modal when node clicked twice
+            showModal(d);
+            var circleId = this.id;
+            showPartOfGraph(edges, circleId);
+            selectedCircleId = d.id;
         });
     }
 
@@ -796,8 +817,8 @@ function DiscussionGraph() {
      * @param edges
      * @param force
      */
-    function addListenersForSidebarButtons(jsonData, label, rect, edges, force) {
-        showDefaultView(jsonData);
+    function addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom) {
+        showDefaultView(jsonData, force, edges, label, rect, zoom);
         $('#show-labels').click(function () {
             showLabels(label, rect);
         });
@@ -841,10 +862,49 @@ function DiscussionGraph() {
      *
      * @param jsonData
      */
-    function showDefaultView(jsonData) {
+    function showDefaultView(jsonData, force, edges, label, rect, zoom) {
+
         $('#start-view').click(function () {
-            new DiscussionGraph().setDefaultViewParams(true, jsonData, s);
+            isDefaultView = true;
+
+            // reset buttons
+            new DiscussionGraph().setButtonDefaultSettings(jsonData);
+
+            // set position of graph and set scale
+            d3.selectAll("g.zoom").attr("transform", "translate(" + 0 + ")" + " scale(" + 1 + ")");
+
+            // stop zoom event
+            zoom.on("zoom", null);
+
+            // create new zoom event listener
+            var zoomDefaultView = d3.behavior.zoom();
+            zoomAndPan(zoomDefaultView);
+
+            resetButtons(label, rect, edges, force)
         });
+    }
+
+    /**
+     * Reset graph if button default view is clicked.
+     *
+     * @param label
+     * @param rect
+     * @param edges
+     * @param force
+     */
+    function resetButtons(label, rect, edges, force) {
+        isPositionVisible = true;
+        isContentVisible = true;
+        isStatementVisible = true;
+        isSupportVisible = true;
+        isAttackVisible = true;
+
+        hideLabels(label, rect);
+        hidePositions();
+        hidePath(edges);
+        hideMyStatements(edges, force);
+        hideSupportsOnMyStatements(edges, force);
+        hideAttacksOnMyStatements(edges, force);
     }
 
     /**
