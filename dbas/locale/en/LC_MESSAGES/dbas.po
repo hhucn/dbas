@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-27 23:21+0100\n"
+"POT-Creation-Date: 2017-01-29 11:12+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -1843,15 +1843,10 @@ msgstr "Lables"
 msgid "positions"
 msgstr "Positions"
 
-#. Default: Show my path
-#: templates/content.pt:286
-msgid "show_my_path"
-msgstr "Show path"
-
-#. Default: Hide my path
-#: templates/content.pt:287
-msgid "hide_my_path"
-msgstr "Hide path"
+#. Default: My path
+#: templates/content.pt:286 templates/content.pt:287
+msgid "my_path"
+msgstr "My path"
 
 #. Default: My statements
 #: templates/content.pt:288 templates/content.pt:289
@@ -1867,6 +1862,9 @@ msgstr "Supports"
 #: templates/content.pt:292 templates/content.pt:293
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "hide_my_path"
+#~ msgstr "Hide path"
 
 #~ msgid "user_group"
 #~ msgstr "User group"

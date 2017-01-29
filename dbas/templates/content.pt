@@ -283,8 +283,8 @@
                     <li id="hide-labels"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="labels">Labels</span></li>
                     <li class="indented-button" id="show-positions"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="positions">Positions</span></li>
                     <li class="indented-button" id="hide-positions"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="positions">Positions</span></li>
-                    <li id="show-my-path"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="show_my_path">Show my path</span></li>
-                    <li id="hide-my-path"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="hide_my_path">Hide my path</span></li>
+                    <li id="show-my-path"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
+                    <li id="hide-my-path"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
                     <li id="show-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
                     <li id="hide-my-statements" tal:condition="extras.logged_in"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
                     <li class="indented-button" id="show-supports-on-my-statements" tal:condition="extras.logged_in"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>

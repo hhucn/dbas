@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-27 23:21+0100\n"
+"POT-Creation-Date: 2017-01-29 11:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1746,14 +1746,9 @@ msgstr ""
 msgid "positions"
 msgstr ""
 
-#. Default: Show my path
-#: ././templates/content.pt:286
-msgid "show_my_path"
-msgstr ""
-
-#. Default: Hide my path
-#: ././templates/content.pt:287
-msgid "hide_my_path"
+#. Default: My path
+#: ././templates/content.pt:286 ././templates/content.pt:287
+msgid "my_path"
 msgstr ""
 
 #. Default: My statements
