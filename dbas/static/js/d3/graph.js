@@ -111,7 +111,7 @@ function DiscussionGraph() {
      * @param d3
      */
     this.setDefaultViewParams = function (startD3, jsonData, d3) {
-        new DiscussionGraph().setButtonDefaultSettings();
+        new DiscussionGraph().setButtonDefaultSettings(jsonData);
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
 
@@ -126,19 +126,28 @@ function DiscussionGraph() {
     /**
      * Set default settings of buttons.
      */
-    this.setButtonDefaultSettings = function () {
+    this.setButtonDefaultSettings = function (jsonData) {
+    	$('#graph-view-container').find('.sidebar').find('li').each(function(){
+    		$(this).removeClass('hidden')
+	    });
         $('#show-labels').show();
         $('#hide-labels').hide();
         $('#show-attacks-on-my-statements').show();
         $('#hide-attacks-on-my-statements').hide();
-        $('#show-my-path').show();
-        $('#hide-my-path').hide();
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
         $('#show-supports-on-my-statements').show();
         $('#hide-supports-on-my-statements').hide();
         $('#show-positions').show();
         $('#hide-positions').hide();
+        
+        // show or hide my path
+	    $('#hide-my-path').hide();
+        if (jsonData.path.length == 0) {
+            $('#show-my-path').hide();
+        } else {
+            $('#show-my-path').show();
+        }
     };
 
     /**
