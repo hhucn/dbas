@@ -130,6 +130,7 @@ function DiscussionGraph() {
     	$('#graph-view-container').find('.sidebar').find('li').each(function(){
     		$(this).removeClass('hidden')
 	    });
+    	
         $('#show-labels').show();
         $('#hide-labels').hide();
         $('#show-attacks-on-my-statements').show();
