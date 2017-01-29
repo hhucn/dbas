@@ -632,7 +632,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     ui_locales = get_language(request)
     slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
 
-    item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, api_data, ui_locales, nickname)
+    item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, ui_locales, nickname, history)
     if type(item_dict) is HTTPFound:
         return item_dict
 
