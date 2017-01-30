@@ -115,6 +115,8 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
 def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, url):
     logger('history_helper', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
     steps = step.split('/')
+    if len(steps) < 3:
+        return
     mode = steps[2]
     relation = steps[3] if len(steps) > 3 else ''
 
