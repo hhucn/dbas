@@ -166,6 +166,8 @@ var keepSetting                     = 'keepSetting';
 var hideAllUsers                    = 'hideAllUsers';
 var hideAllArguments                = 'hideAllArguments';
 var languageCouldNotBeSwitched      = 'languageCouldNotBeSwitched';
+var languageSwitchModalTitle        = 'languageSwitchModalTitle';
+var languageSwitchModalBody         = 'languageSwitchModalBody';
 var last_action                     = 'last_action';
 var last_login                      = 'last_login';
 var legend                          = 'legend';
@@ -301,6 +303,7 @@ var BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
 var GUIDED_TOUR = 'DID_GUIDED_TOUR';
 var GUIDED_TOUR_RUNNING = 'GUIDED_TOUR_RUNNING';
 var ADMIN_WARNING = 'hide-admin-caution-warning';
+var LANG_SWITCH_WARNING = 'LANG_SWITCH_WARNING';
 
 /**
  * URL's
@@ -404,6 +407,8 @@ var dbas_en = {
     'hideAllUsers': 'Hide all users',
     'hideAllArguments': 'Hide all arguments',
     'languageCouldNotBeSwitched': 'Unfortunately, the language could not be switched',
+    'languageSwitchModalTitle': 'Change of Language',
+    'languageSwitchModalBody': 'Changing current language does not affect the discussion language, because this language is mapped to the content of the discussion.',
     'last_action': 'Last Action',
     'last_login': 'Last Login',
     'legend': 'Legend',
@@ -626,6 +631,8 @@ var dbas_de = {
     'hideAllArguments': 'Verstecke alle Argumente',
     'hideAllAttacks': 'Verstecke alle Angriffe',
     'languageCouldNotBeSwitched': 'Leider konnte die Sprache nicht gewechselt werden',
+    'languageSwitchModalTitle': 'Wechseln der Sprache',
+    'languageSwitchModalBody': 'Eine Umstellung der Sprache ändert nicht die Diskussionssprache. Diese ist an den Inhalt der Diskussion geknüpft.',
     'last_action': 'Letzte Aktion',
     'last_login': 'Letze Anmeldung',
     'logfile': 'Logdatei für',

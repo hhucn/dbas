@@ -778,4 +778,19 @@ function GuiHandler() {
 			.css('transition', 'all ' + speed + 's ease');
 	};
 	
+	/**
+	 *
+	 * @param lang
+	 */
+	this.lang_switch = function(lang){
+		if (!Cookies.get(LANG_SWITCH_WARNING)) {
+			displayConfirmationDialogWithoutCancelAndFunction(get_it(lang, languageSwitchModalTitle), get_it(lang, languageSwitchModalBody));
+			$('#' + popupConfirmDialogId).on('hide.bs.modal', function (e) {
+				new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
+				Cookies.set(LANG_SWITCH_WARNING, true, {expires: 180});
+			});
+		} else {
+			new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
+		}
+	};
 }

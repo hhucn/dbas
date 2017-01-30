@@ -610,10 +610,11 @@ $(document).ready(function () {
 		new GuidedTour().start();
 
 	// language switch
-	$('#' + translationLinkDe).click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
-	$('#' + translationLinkEn).click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
-	$('#' + translationLinkDe + ' img').click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('de') });
-	$('#' + translationLinkEn + ' img').click(function(){ new AjaxMainHandler().ajaxSwitchDisplayLanguage('en') });
+	
+	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de') });
+	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en') });
+	$('#' + translationLinkDe + ' img').click(function(){ new GuiHandler().lang_switch('de') });
+	$('#' + translationLinkEn + ' img').click(function(){ new GuiHandler().lang_switch('en') });
 	$('#' + logoutLinkId).click(function(e){
 		e.preventDefault();
 		new AjaxMainHandler().ajaxLogout();
