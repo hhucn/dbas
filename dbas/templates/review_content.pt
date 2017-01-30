@@ -95,7 +95,7 @@
                                 <span i18n:translate="following_argument_was_corrected">following argument was corrected.</span>
                             </div>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_argument.corrected_version}</span>
+                            <span class="lead" id="reviewed-argument-corrected-version">${structure:subpage.elements.reviewed_argument.corrected_version}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                         </div>
 

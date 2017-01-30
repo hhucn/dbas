@@ -56,12 +56,19 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingLogfile = function (data) {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
-		console.log(parsedData.error.length)
-		if (parsedData.error.length == 0) {
-			new GuiHandler().showLogfileOfPremisegroup(parsedData);
-		} else {
-			$('#' + popupEditStatementErrorDescriptionId).text(parsedData.error);
+		var description = $('#' + popupEditStatementErrorDescriptionId);
+		if (parsedData.error.length != 0) {
+			description.text(parsedData.error);
+			description.addClass('text-danger');
+			description.removeClass('text-info');
 			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
+		} else if (parsedData.info.length != 0) {
+			description.text(parsedData.error);
+			description.removeClass('text-danger');
+			description.addClass('text-info');
+			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
+		} else {
+			new GuiHandler().showLogfileOfPremisegroup(parsedData);
 		}
 	};
 
@@ -73,6 +80,8 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
+		} else if (parsedData.info.length != 0) {
+			setGlobalInfoHandler(_t_discussion(ohsnap), parsedData.error);
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
 			new PopupHandler().hideAndClearEditStatementsPopup();

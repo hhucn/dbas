@@ -1741,9 +1741,12 @@ def set_correction_of_statement(request):
     return_dict = dict()
     try:
         elements = json.loads(request.params['elements'])
-        return_dict['error'] = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn)
+        msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn)
+        return_dict['error'] = msg if error else ''
+        return_dict['info'] = msg if len(msg) > 0 else ''
     except KeyError as e:
-        return_dict['error'] = _tn.get(_.noCorrections)
+        return_dict['error'] = _tn.get(_.internalError)
+        return_dict['info'] = ''
         logger('set_correction_of_statement', 'error', repr(e))
 
     return json.dumps(return_dict)
@@ -1917,10 +1920,12 @@ def get_logfile_for_some_statements(request):
         ui_locales = get_discussion_language(request, issue)
         return_dict = get_logfile_for_statements(uids, ui_locales, request.application_url)
         return_dict['error'] = ''
+        return_dict['info'] = ''
     except KeyError as e:
         logger('get_logfile_for_premisegroup', 'error', repr(e))
         _tn = Translator(ui_locales)
         return_dict['error'] = _tn.get(_.noCorrections)
+        return_dict['info'] = ''
 
     return json.dumps(return_dict)
 

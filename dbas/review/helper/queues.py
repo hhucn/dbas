@@ -276,14 +276,14 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
-        return translator.get(_.noRights)
+        return translator.get(_.noRights), True
     counter = 0
     for el in elements:
         if len(el['text']) > 0:
             DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
             counter += 1
     if counter == 0:
-        return translator.get(_.noCorrections)
+        return translator.get(_.noCorrections), True
     DBDiscussionSession.flush()
     transaction.commit()
 
@@ -295,7 +295,7 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     DBDiscussionSession.flush()
     transaction.commit()
 
-    return ''
+    return '', False
 
 
 def lock_optimization_review(nickname, review_uid, translator):

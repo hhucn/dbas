@@ -59,7 +59,7 @@ de_lang = {
     _.errorTryLateOrContant: 'Leider ist ein Fehler aufgetreten, bitte versuchen Sie später erneut oder kontaktieren Sie uns.',
     _.accountWasAdded: 'Ihr Account {} wurde angelegt. Sie können sich nun anmelden.',
     _.accountRegistration: 'D-BAS Registrierung',
-    _.accountWasRegistered: 'Hi {} {},\n\nein Account wurde erfolgreich für Sie eingerichtet.\nIhre E-Mail {} wurde dazu ebenfalls hinterlegt.\n\nNun Viel Spaß!',
+    _.accountWasRegistered: 'Hi {} {},\n\nein Account wurde erfolgreich für Sie eingerichtet.\nIhre E-Mail {} wurde dazu ebenfalls hinterlegt.\n\nNun viel Spaß!',
     _.accoutErrorTryLateOrContant: 'Ihr Account konnte nicht angelegt werden, bitte versuchen Sie später erneut oder kontaktieren Sie uns.',
     _.nicknameIs: 'Ihr Nickname lautet: ',
     _.newPwdIs: 'Ihr Passwort lautet: ',
