@@ -119,7 +119,7 @@
                         <span tal:condition="not:extras.use_with_ldap" i18n:translate="change_password">Change your password</span>
                         <span tal:condition="extras.use_with_ldap" i18n:translate="change_dbas_password">Change your password in D-BAS</span>
                     </h4>
-                    <p tal:condition="extras.use_with_ldap" i18n:translate="this_does_not_effext_other_services">This does not effect other services next to D-BAS.</p>
+                    <p tal:condition="extras.use_with_ldap" i18n:translate="this_does_not_affect_other_services">This does not affect other services next to D-BAS.</p>
 					<form action="/settings" method="post">
                         <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
 

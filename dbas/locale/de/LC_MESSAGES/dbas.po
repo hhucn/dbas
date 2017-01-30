@@ -875,7 +875,7 @@ msgstr "Passwort vergessen?"
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
 #. Default: Please fill in your e-mail below. A new password will be send this
-#. address. This does not effect other services of the HHU:
+#. address. This does not affect other services of the HHU:
 #: templates/snippet-popups.pt:297 templates/snippet-popups.pt:375
 msgid "fill_in_mail_for_password"
 msgstr ""
@@ -1358,9 +1358,9 @@ msgstr "Passwort ändern"
 msgid "change_dbas_password"
 msgstr "Passwort von D-BAS ändern"
 
-#. Default: This does not effect other services next to D-BAS.
+#. Default: This does not affect other services next to D-BAS.
 #: templates/settings.pt:122
-msgid "this_does_not_effext_other_services"
+msgid "this_does_not_affect_other_services"
 msgstr ""
 "Die Änderung betrifft nur die Anmeldung in D-BAS und nicht weitere Dienste "
 "der HHU."

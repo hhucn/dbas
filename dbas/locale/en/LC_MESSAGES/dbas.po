@@ -861,11 +861,11 @@ msgstr "Forgot your password?"
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
 #. Default: Please fill in your e-mail below. A new password will be send this
-#. address. This does not effect other services of the HHU:
+#. address. This does not affect other services of the HHU:
 #: templates/snippet-popups.pt:297 templates/snippet-popups.pt:375
 msgid "fill_in_mail_for_password"
 msgstr ""
-"Please fill in your e-mail below. A new password will be send this address. This does not effect other services of the HHU:"
+"Please fill in your e-mail below. A new password will be send this address. This does not affect other services of the HHU:"
 
 #. Default: Error:
 #: templates/snippet-popups.pt:309 templates/snippet-popups.pt:387
@@ -1335,10 +1335,10 @@ msgstr "Change your password"
 msgid "change_dbas_password"
 msgstr "Change your password in D-BAS"
 
-#. Default: This does not effect other services next to D-BAS.
+#. Default: This does not affect other services next to D-BAS.
 #: templates/settings.pt:122
-msgid "this_does_not_effext_other_services"
-msgstr "This does not effect other services next to D-BAS."
+msgid "this_does_not_affect_other_services"
+msgstr "This does not affect other services next to D-BAS."
 
 #. Default: Old password
 #: templates/settings.pt:127
