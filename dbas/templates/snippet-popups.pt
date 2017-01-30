@@ -291,6 +291,17 @@
                             <input id="keep-login-box" type="checkbox" style="float:left;">
                             <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
                         </label>
+                        <a id="popup-login-forgot-password-text" i18n:translate="forgot_password" style="cursor: pointer; float:right;">Forgot your password?</a>
+                    </div>
+                    <div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">
+                        <label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>
+                        <div class="form-group">
+                            <div class="col-md-12 input-group">
+                                <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+                                <input id="password-request-email-input" type="email" class="form-control" tal:attributes="placeholder extras.tag.placeholder_mail" placeholder="" autocomplete="on">
+                            </div>
+                        </div>
+                        <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.tag.request_password"/>
                     </div>
                     <div class="col-md-12" id="popup-login-failed">
                         <div class="alert alert-danger" role="alert">
@@ -361,16 +372,14 @@
     							<a id="popup-login-forgot-password-text" i18n:translate="forgot_password" style="cursor: pointer; float:right;">Forgot your password?</a>
                             </div>
     						<div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">
-    							<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>
+    							<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address. This does not effect other services of the HHU:</label>
     						    <div class="form-group">
     						    	<div class="col-md-12 input-group">
                                         <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
     						    		<input id="password-request-email-input" type="email" class="form-control" tal:attributes="placeholder extras.tag.placeholder_mail" placeholder="" autocomplete="on">
     						    	</div>
     						    </div>
-                                <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request
-    							Password" class="btn
-    							btn-primary" />
+                                <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.tag.request_password"/>
     						</div>
     						<div class="col-md-12" id="popup-login-failed">
     							<div class="alert alert-danger" role="alert">

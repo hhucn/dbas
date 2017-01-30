@@ -506,5 +506,6 @@ class DictionaryHelper(object):
             'placeholder_lastname': _tn_sys.get(_.exampleLastname),
             'placeholder_mail': _tn_sys.get(_.exampleMail),
             'placeholder_statement': _tn_sys.get(_.exampleStatement),
-            'placeholder_source': _tn_sys.get(_.exampleSource)
+            'placeholder_source': _tn_sys.get(_.exampleSource),
+            'request_password': _tn_sys.get(_.requestPassword)
         }
