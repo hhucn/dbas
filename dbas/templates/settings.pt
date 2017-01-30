@@ -91,7 +91,7 @@
 						    <span i18n:translate="profile_picture">Profile Picture</span>
                         </div>
                         <span i18n:translate="change_gravatar">Change your profile picture on the</span>
-                        <a style="color: #2196f3;" href="https://en.gravatar.com/site/login">Gravatar-Website</a>.
+                        <a style="color: #2196f3;" href="https://en.gravatar.com/site/login">Gravatar website</a>.
                         <span i18n:translate="what_is_gravatar">A Gravatar is a globally recognized avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
 					</div>
 				</div>
