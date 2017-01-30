@@ -572,7 +572,8 @@ def request_password(request, ui_locales):
         db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         body = _t.get(_.nicknameIs) + db_user.nickname + '\n'
-        body += _t.get(_.newPwdIs) + pwd
+        body += _t.get(_.newPwdIs) + pwd + '\n\n'
+        body += _t.get(_.newPwdInfo)
         subject = _t.get(_.dbasPwdRequest)
         reg_success, message = EmailHelper.send_mail(request, subject, body, email, db_language.ui_locales)
 
