@@ -59,7 +59,7 @@ from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
     send_request_for_info_popup_to_socketio
-from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
@@ -304,7 +304,7 @@ def main_user(request):
         raise HTTPNotFound
 
     current_user = DBDiscussionSession.query(User).get(uid)
-    if current_user is None:
+    if current_user is None or current_user.nickname == nick_of_anonymous_user or current_user.nickname == nick_of_admin:
         logger('main_user', 'def', 'no user: ' + str(uid), error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
