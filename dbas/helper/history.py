@@ -112,6 +112,16 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     return bubble_array
 
 
+def __is_last_step_duplicate(index, step, splitted_history, main_url):
+    if step not in main_url:
+        return False
+
+    if 'justify/' in splitted_history[index:] or 'reaction/' in splitted_history[index:]:
+        return False
+
+    return True
+
+
 def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, url):
     logger('history_helper', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
     steps = step.split('/')
@@ -121,9 +131,9 @@ def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, 
     relation = steps[3] if len(steps) > 3 else ''
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
-        bubbles = __get_bubble_from_justify_statement_step(step, nickname, lang, url)
-        if bubbles:
-            bubble_array += bubbles
+        bubble = __get_bubble_from_justify_statement_step(step, nickname, lang, url)
+        if bubble:
+            bubble_array += bubble
 
     elif 'd' in mode and relation == '':
         bubbles = __get_bubble_from_dont_know_step(step, nickname, lang, url)
@@ -165,9 +175,9 @@ def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
         text = text[0:1].upper() + text[1:]
 
     msg = intro + '<' + tag_type + '>' + text + '</' + tag_type + '>'
-    bubbsle_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
-                                            is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
-    return [bubbsle_user]
+    bubble_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
+                                           is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
+    return [bubble_user]
 
 
 def __get_bubble_from_attitude_step(step, nickname, lang, url):

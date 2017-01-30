@@ -194,6 +194,7 @@
                             </tr>
                         </tbody>
                     </table>
+
                 </div>
             </div>
             <a id="send_edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Send</a>
