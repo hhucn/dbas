@@ -214,8 +214,9 @@ class User(DiscussionBase):
         self.public_nickname = nick
 
     def get_global_nickname(self):
+        # TODO CHANGE THIS IF YOU WANT TO SEE OTHER NAMES
         db_settings = DBDiscussionSession.query(Settings).get(self.uid)
-        return self.nickname if db_settings.should_show_public_nickname else self.public_nickname
+        return self.firstname if db_settings.should_show_public_nickname else self.public_nickname
 
 
 class Settings(DiscussionBase):
