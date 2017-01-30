@@ -428,7 +428,8 @@ class DictionaryHelper(object):
                                   'lets_go_back': _tn_sys.get(_.letsGoBack),
                                   'go_back': _tn_sys.get(_.goBack),
                                   'go_forward': _tn_sys.get(_.goForward),
-                                  'resume_here': _tn_sys.get(_.resumeHere)}
+                                  'resume_here': _tn_sys.get(_.resumeHere),
+                                  'request_password': _tn_sys.get(_.requestPassword)}
 
     def add_title_text(self, return_dict):
         """
@@ -506,6 +507,5 @@ class DictionaryHelper(object):
             'placeholder_lastname': _tn_sys.get(_.exampleLastname),
             'placeholder_mail': _tn_sys.get(_.exampleMail),
             'placeholder_statement': _tn_sys.get(_.exampleStatement),
-            'placeholder_source': _tn_sys.get(_.exampleSource),
-            'request_password': _tn_sys.get(_.requestPassword)
+            'placeholder_source': _tn_sys.get(_.exampleSource)
         }

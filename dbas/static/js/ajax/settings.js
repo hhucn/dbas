@@ -119,9 +119,9 @@ function AjaxSettingsHandler(){
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function deleteStatisticsRequestDone(data) {
+		}).done(function getEditsDoneDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
-		}).fail(function deleteStatisticsRequestFail() {
+		}).fail(function getEditsDoneFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 	};
@@ -142,9 +142,9 @@ function AjaxSettingsHandler(){
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function deleteStatisticsRequestDone(data) {
+		}).done(function getStatementsSendDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
-		}).fail(function deleteStatisticsRequestFail() {
+		}).fail(function getStatementsSendFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 	};
@@ -165,9 +165,9 @@ function AjaxSettingsHandler(){
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function deleteStatisticsRequestDone(data) {
+		}).done(function getArgumentVotesDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
-		}).fail(function deleteStatisticsRequestFail() {
+		}).fail(function getArgumentVotesFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 
@@ -189,9 +189,9 @@ function AjaxSettingsHandler(){
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function deleteStatisticsRequestDone(data) {
+		}).done(function getStatementVotesDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
-		}).fail(function deleteStatisticsRequestFail() {
+		}).fail(function getStatementVotesFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 
@@ -211,7 +211,7 @@ function AjaxSettingsHandler(){
 		}).done(function deleteStatisticsRequestDone(data) {
 			new StatisticsHandler().callbackDeleteStatisticsDone(data);
 		}).fail(function deleteStatisticsRequestFail() {
-			new StatisticsHandler().callbackStatisticsFail();
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 		});
 	};
 }

@@ -301,7 +301,7 @@
                                 <input id="password-request-email-input" type="email" class="form-control" tal:attributes="placeholder extras.tag.placeholder_mail" placeholder="" autocomplete="on">
                             </div>
                         </div>
-                        <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.tag.request_password"/>
+                        <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.buttons.request_password"/>
                     </div>
                     <div class="col-md-12" id="popup-login-failed">
                         <div class="alert alert-danger" role="alert">
@@ -379,7 +379,7 @@
     						    		<input id="password-request-email-input" type="email" class="form-control" tal:attributes="placeholder extras.tag.placeholder_mail" placeholder="" autocomplete="on">
     						    	</div>
     						    </div>
-                                <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.tag.request_password"/>
+                                <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.buttons.request_password"/>
     						</div>
     						<div class="col-md-12" id="popup-login-failed">
     							<div class="alert alert-danger" role="alert">
