@@ -7,7 +7,6 @@ Introducing an admin interface to enable easy database management.
 import json
 
 import admin.lib as lib
-import dbas.helper.history as HistoryHelper
 import dbas.user_management as UserHandler
 from cornice import Service
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -83,7 +82,6 @@ def main_admin(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_admin', 'def')
     request_authenticated_userid = request.authenticated_userid
-    HistoryHelper.save_path_in_database(request_authenticated_userid, request.path)
     should_log_out = UserHandler.update_last_action(request_authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
@@ -112,7 +110,6 @@ def main_table(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     logger('Admin', 'main_table', 'def')
-    HistoryHelper.save_path_in_database(request_authenticated_userid, request.path)
     should_log_out = UserHandler.update_last_action(request_authenticated_userid)
     if should_log_out:
         return user_logout(request, True)

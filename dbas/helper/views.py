@@ -88,14 +88,14 @@ def prepare_parameter_for_justification(request, for_api):
     return slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict
 
 
-def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
+def handle_justification_step(request, for_api, ui_locales, nickname, history):
     """
 
     :param request:
     :param for_api:
-    :param api_data:
     :param ui_locales:
     :param nickname:
+    :param history:
     :return:
     """
     slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
@@ -108,32 +108,29 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
         logger('ViewHelper', 'handle_justification_step', 'justify statement')
         if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
-        item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, api_data,
-                                                                                    main_page, slug,
-                                                                                    statement_or_arg_id,
-                                                                                    supportive, ui_locales,
-                                                                                    nickname, mode)
+        item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, main_page, slug,
+                                                                                    statement_or_arg_id, supportive,
+                                                                                    ui_locales, nickname, mode,
+                                                                                    nickname, history)
 
     elif 'd' in mode and relation == '':
         logger('ViewHelper', 'handle_justification_step', 'do not know')
         if not check_belonging_of_argument(issue, statement_or_arg_id) and \
                 not check_belonging_of_statement(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
-        item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, api_data,
-                                                                                      main_page, slug,
-                                                                                      statement_or_arg_id,
+        item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, main_page,
+                                                                                      slug, statement_or_arg_id,
                                                                                       supportive, ui_locales,
-                                                                                      nickname)
+                                                                                      nickname, nickname, history)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
         logger('ViewHelper', 'handle_justification_step', 'justify argument')
         if not check_belonging_of_argument(issue, statement_or_arg_id):
             return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
-        item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, api_data,
-                                                                                   main_page, slug,
-                                                                                   statement_or_arg_id,
-                                                                                   supportive, ui_locales,
-                                                                                   nickname, relation)
+        item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, main_page, slug,
+                                                                                   statement_or_arg_id, supportive,
+                                                                                   ui_locales, nickname, relation,
+                                                                                   nickname, history)
         # add reputation
         add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
         # send message if the user is now able to review
@@ -148,7 +145,7 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, mode):
+def preparation_for_justify_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, mode, nickname, history):
     """
 
     :param request:
@@ -164,7 +161,6 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     """
     logger('ViewHelper', 'preparation_for_justify_statement', 'main')
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
@@ -182,7 +178,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_dont_know_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid):
+def preparation_for_dont_know_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, nickname, history):
     """
 
     :param request:
@@ -197,8 +193,6 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     :return:
     """
     logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
-
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
 
     issue               = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales     = get_discussion_language(request, issue)
@@ -220,7 +214,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, relation):
+def preparation_for_justify_argument(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, relation, nickname, history):
     """
 
     :param request:
@@ -236,7 +230,6 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     """
     logger('ViewHelper', 'preparation_for_justify_argument', 'main')
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     logged_in = db_user is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
