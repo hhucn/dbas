@@ -693,6 +693,15 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
               'data_is_supportive': str(is_supportive),
               # 'url': url if len(str(url)) > 0 else 'None'
               }
+
+    votecount_keys = __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
+
+    speech['votecounts_message'] = votecount_keys[speech['votecounts']]
+
+    return speech
+
+
+def __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
     db_votecounts = None
 
     if is_supportive is None:
@@ -731,9 +740,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         votecount_keys[0] = _t.get(_.voteCountTextFirst) + '.'
     votecount_keys[1] = _t.get(_.voteCountTextOneOther) + '.'
 
-    speech['votecounts_message'] = votecount_keys[speech['votecounts']]
-
-    return speech
+    return votecount_keys
 
 
 def is_user_author_or_admin(nickname):

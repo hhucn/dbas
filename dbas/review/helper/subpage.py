@@ -7,7 +7,6 @@ Provides helping function for displaying subpages like the edit queue.
 import random
 import difflib
 
-from collections import OrderedDict
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
