@@ -159,6 +159,7 @@ var interestingOnDBAS               = 'interestingOnDBAS';
 var initialPositionInterest         = 'initialPositionInterest';
 var itIsTrueThat                    = 'itIsTrueThat';
 var itIsFalseThat                   = 'itIsFalseThat';
+var interestingNews                 = 'interestingNews';
 var isItTrueThat                    = 'isItTrueThat';
 var isItFalseThat                   = 'isItFalseThat';
 var keepSetting                     = 'keepSetting';
@@ -395,6 +396,7 @@ var dbas_en = {
     'interestingOnDBAS': 'Interesting discussion on DBAS',
     'itIsTrueThat': 'it is true that',
     'itIsFalseThat': 'it is false that',
+    'interestingNews': 'Interesting news from',
     'isItTrueThat': 'it is true that',
     'isItFalseThat': 'it is false that',
     'issue': 'Issue',
@@ -615,6 +617,7 @@ var dbas_de = {
     'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
     'itIsTrueThat': 'es ist richtig, dass',
     'itIsFalseThat': 'es ist falsch, dass',
+    'interestingNews': 'Interessante Neuigkeiten vom',
     'isItTrueThat': 'ist es richtig, dass',
     'isItFalseThat': 'ist es falsch, dass',
     'issue': 'Thema',

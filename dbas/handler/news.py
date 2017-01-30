@@ -74,6 +74,9 @@ def get_news(ui_locales):
         news_dict['author'] = news.author
         news_dict['date'] = sql_timestamp_pretty_print(news.date, ui_locales, False)
         news_dict['news'] = news.news
+        news_dict['title_id'] = 'news_{}_title'.format(news.uid)
+        news_dict['date_id'] = 'news_{}_date'.format(news.uid)
+        news_dict['author_id'] = 'news_{}_author'.format(news.uid)
         news_dict['uid'] = 'news_' + str(news.uid)
         ret_news.append(news_dict)
 

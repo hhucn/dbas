@@ -26,12 +26,12 @@
                         <a class="share-icon-small share-google-small" data-toggle="tooltip" data-placement="bottom" title="Google+"></a>
                         <a class="share-icon-small share-facebook-small" data-toggle="tooltip" data-placement="bottom" title="Facebook"></a>
                         <h5>
-                            <span class="font-semi-bold" id="news_' + no + '_title"> ${n.title} </span>
+                            <span class="font-semi-bold" tal:attributes="id n.title_id"> ${n.title} </span>
                         </h5>
                     </div>
                     <div class="panel-body" style="text-align: justify;">
                         <h6>
-                            <span id="news_' + no + '_author">${n.author}</span>, <span id="news_' + no + '_date">${n.date}</span>
+                            <span tal:attributes="id n.author_id">${n.author}</span>, <span tal:attributes="id n.date_id">${n.date}</span>
                         </h6>
                         <span style="margin-top: 1em;">${structure:n.news}</span>
                     </div>
