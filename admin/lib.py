@@ -12,7 +12,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS
-from dbas.lib import get_profile_picture, is_user_admin
+from dbas.lib import get_profile_picture, is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy.exc import IntegrityError, ProgrammingError
@@ -278,6 +278,21 @@ def __get_rows_of(columns, db_elements, main_page):
             # resolve password
             elif column == 'password':
                 tmp.append(str(attribute)[:5] + '...')
+            elif column == 'premisesgroup_uid':
+                text = 'None'
+                if attribute is not None:
+                    text, l = get_text_for_premisesgroup_uid(attribute)
+                tmp.append(str(attribute) + ' - ' + str(text))
+            elif column == 'conclusion_uid':
+                text = 'None'
+                if attribute is not None:
+                    text = get_text_for_statement_uid(attribute)
+                tmp.append(str(attribute) + ' - ' + str(text))
+            elif column == 'argument_uid':
+                text = 'None'
+                if attribute is not None:
+                    text = get_text_for_argument_uid(attribute)
+                tmp.append(str(attribute) + ' - ' + str(text))
             else:
                 tmp.append(str(attribute))
         data.append(tmp)
