@@ -1,5 +1,8 @@
-## 1.1.3 (2017-02-30)
+## 1.2.0 (2017-01-31)
 - Improvements and bugfix during a second experiment
+- Security fixes for better password handling
+- Improved 404 pages
+- Minors, majors and many more
 
 ## 1.1.2 (2017-01-24)
 - Update for the german language
