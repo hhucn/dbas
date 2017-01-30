@@ -1,7 +1,8 @@
-## 1.2.0 (2017-01-31)
+## 1.2.0 (2017-01-30)
 - Improvements and bugfix during a second experiment
 - Security fixes for better password handling
 - Improved 404 pages
+- Use of firstname instead of LDAP-name
 - Minors, majors and many more
 
 ## 1.1.2 (2017-01-24)
