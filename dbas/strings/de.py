@@ -11,7 +11,7 @@ de_lang = {
     _.arguments: 'Argumente',
     _.error: 'Fehler',
     _.iActuallyHave: 'Ich habe',
-    _.insertOneArgument: 'Ich habe eine Aussage:',
+    _.insertOneArgument: 'Ich habe ein Argument mit mehreren Begründungen:',
     _.insertDontCare: 'Es ist ein Argument und das System interpretiert es falsch!',
     _.forgotInputRadio: 'Sie haben eine Auswahl vergessen',
     _.needHelpToUnderstandStatement: 'Wir brauchen Hilfe zum Verständnis Ihrer Aussage!',
@@ -708,5 +708,4 @@ de_lang = {
     _.youRejectedThisEarlier: 'Sie haben diese Aussage schon abgelehnt.',
     _.youHaveMuchStrongerArgumentForAccepting: 'Sie haben eine viel stärker Begründung für',
     _.youHaveMuchStrongerArgumentForRejecting: 'Sie haben eine viel stärker Ablehnung für',
-    # _.insertDontCare': Es ist mir egal. Nimm\' meine Aussage wie sie ist!'
 }
