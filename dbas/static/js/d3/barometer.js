@@ -826,27 +826,17 @@ function DiscussionBarometer(){
      */
     function createTooltipContent(usersDict, index){
         // append list elements to div
-        var messageList = '';
-        if (usersDict[index].message != null) {
-            messageList = $('<li>').html(usersDict[index].message);
-        }
+        
+        var message_list = usersDict[index].message != null ? $('<li>').html(usersDict[index].message) : '';
         var text_keyword = '';
         if (address == 'argument')
             text_keyword = usersDict[index].seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
         else
             text_keyword = usersDict[index].seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
+        
         var seenByList = $('<li>').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
-        var userList = $('<li>').html(_t_discussion(users) + ': ');
 
-        var list;
-        if (!is_attitude){
-            list = messageList.append(seenByList);
-        } else {
-            list = messageList;
-        }
-        if (usersDict[index].seenBy != 0){
-            list.append(userList);
-        }
+        var list = !is_attitude ? seenByList.append(message_list):  message_list;
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
