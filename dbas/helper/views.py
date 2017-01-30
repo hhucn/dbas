@@ -439,7 +439,7 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         email = user[email][0].decode('utf-8')
 
         # getting the authors group
-        db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
+        db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
 
         # does the group exists?
         if not db_group:
