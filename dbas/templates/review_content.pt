@@ -123,6 +123,15 @@
                             <br>
                         </div>
 
+                        <div class="well well-sm center" style="text-align: justify;">
+                            <span i18n:translate="context_where_statement_is_used">Context, where the statement is used:</span>
+                            <div tal:repeat="context subpage.elements.reviewed_argument.context">
+                                <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                                <span class="lead" id="reviewed-argument-text">${structure:context}</span>
+                                <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="col-md-offset-2 col-md-3">
                         <table id="stats-table" class="table table-condensed pull-right" style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_argument.extra_info">

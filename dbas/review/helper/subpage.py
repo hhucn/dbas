@@ -14,6 +14,7 @@ from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimizatio
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
+from dbas.lib import get_all_arguments_by_statement
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
@@ -228,6 +229,7 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
                 'text': None,
                 'reason': None,
                 'issue': None,
+                'context':  [],
                 'extra_info': None}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
@@ -236,11 +238,16 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
         text = get_text_for_argument_uid(db_argument.uid)
         issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
         parts = __get_text_parts_of_argument(db_argument)
+        context = [text]
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = get_text_for_statement_uid(db_statement.uid)
         issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
         parts = [__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
+        context = []
+        args = get_all_arguments_by_statement(rnd_review.statement_uid)
+        if args:
+            context = [get_text_for_argument_uid(arg.uid).replace(text, '<span class="text-info"><strong>{}</strong></span>'.format(text)) for arg in args]
 
     reason = translator.get(_.argumentFlaggedBecauseOptimization)
 
@@ -254,6 +261,7 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
             'reason': reason,
             'issue': issue,
             'extra_info': extra_info,
+            'context': context,
             'parts': parts}
 
 
