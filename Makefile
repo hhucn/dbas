@@ -57,7 +57,7 @@ docker_dump_db:
 	docker-compose -f docker-compose-export-db.yml up --force-recreate --abort-on-container-exit
 	docker start dbas_db_1
 	sleep 1 # wait for db inside of dbas_db_1
-	docker exec -it dbas_db_1 pg_dumpall -U postgres --file=db.sql -c --if-exists
+	docker exec dbas_db_1 pg_dumpall -U postgres --file=db.sql -c --if-exists
 	docker cp dbas_db_1:db.sql ./db.sql
 	echo ">>> Now push db.sql to the seeded branch in the postgres repo! <<<"
 
