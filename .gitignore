@@ -57,8 +57,6 @@ dbas/static/js/min/*
 dbas/static/rss/*
 .sass-cache/
 .babelrc
-*.po
-*.pot
 startSession.py
 
 # node
