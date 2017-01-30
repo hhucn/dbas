@@ -1,7 +1,7 @@
 import unittest
 
 from pyramid import testing
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_votes_of, clear_seen_by_of
 from sqlalchemy import engine_from_config
@@ -26,22 +26,31 @@ class ReviewContentViewTests(unittest.TestCase):
         from dbas.views import review_content as d
 
         request = testing.DummyRequest(matchdict={'queue': 'deletes'})
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
     def test_page_edits(self):
         from dbas.views import review_content as d
 
         request = testing.DummyRequest(matchdict={'queue': 'edits'})
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
     def test_page_optimizations(self):
         from dbas.views import review_content as d
 
         request = testing.DummyRequest(matchdict={'queue': 'optimizations'})
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
     def test_page_deletes_logged_in(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

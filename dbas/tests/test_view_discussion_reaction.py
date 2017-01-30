@@ -2,7 +2,7 @@ import unittest
 import transaction
 
 from pyramid import testing
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
@@ -209,8 +209,11 @@ class DiscussionReactionViewTests(unittest.TestCase):
             'mode': 'undermine',
             'arg_id_sys': 16,
         })
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
     def test_page_failure_argument2(self):
         from dbas.views import discussion_reaction as d
@@ -221,8 +224,11 @@ class DiscussionReactionViewTests(unittest.TestCase):
             'mode': 'undermine',
             'arg_id_sys': 45,
         })
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
     def test_page_failure_mode(self):
         from dbas.views import discussion_reaction as d
@@ -233,5 +239,8 @@ class DiscussionReactionViewTests(unittest.TestCase):
             'mode': 'rebut',
             'arg_id_sys': 16,
         })
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
