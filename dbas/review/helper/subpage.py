@@ -335,22 +335,16 @@ def __difference_between_string(a, b, correction_list):
     tag_p = '<strong><span class="text-success">'
     tag_m = '<strong><span class="text-danger">'
     tag_e = '</span></strong>'
-    logger('X', 'X', a)
-    logger('X', 'X', b)
-    logger('X', 'X', str(correction_list))
-    for i, s in enumerate(difflib.ndiff(a, b)):
-        logger('X', 'X', str(s))
 
     for i, s in enumerate(difflib.ndiff(a, b)):
         if i >= len(correction_list):
             correction_list.append('')
         if s[0] == ' ':
+            correction_list[i] = s[-1]
             continue
         elif s[0] == '-':
-            logger('X', 'X', 'Delete "{}" from position {}'.format(s[-1], i))
             correction_list[i] = tag_m + s[-1] + tag_e
         elif s[0] == '+':
-            logger('X', 'X', 'Add "{}" to position {}'.format(s[-1], i))
             correction_list[i] = tag_p + s[-1] + tag_e
     logger('X', 'X', str(correction_list))
 
