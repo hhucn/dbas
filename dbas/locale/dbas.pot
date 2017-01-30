@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-29 11:22+0100\n"
+"POT-Creation-Date: 2017-01-30 10:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -778,7 +778,7 @@ msgstr ""
 #. Default: Success:
 #. Default: Success
 #: ././templates/snippet-popups.pt:304 ././templates/snippet-popups.pt:384
-#: ././templates/snippet-popups.pt:477 ././templates/settings.pt:251
+#: ././templates/snippet-popups.pt:477 ././templates/settings.pt:252
 #: ././templates/content.pt:66
 msgid "success"
 msgstr ""
@@ -1235,78 +1235,83 @@ msgstr ""
 msgid "change_dbas_password"
 msgstr ""
 
+#. Default: This does not effect other services next to D-BAS.
+#: ././templates/settings.pt:122
+msgid "this_does_not_effext_other_services"
+msgstr ""
+
 #. Default: Old password
-#: ././templates/settings.pt:126
+#: ././templates/settings.pt:127
 msgid "old_password"
 msgstr ""
 
 #. Default: New Password
-#: ././templates/settings.pt:134
+#: ././templates/settings.pt:135
 msgid "new_password"
 msgstr ""
 
 #. Default: New Password (confirm)
-#: ././templates/settings.pt:142
+#: ././templates/settings.pt:143
 msgid "new_password_confirm"
 msgstr ""
 
 #. Default: Strength
-#: ././templates/settings.pt:150
+#: ././templates/settings.pt:151
 msgid "strength"
 msgstr ""
 
 #. Default: Your password was changed
-#: ././templates/settings.pt:167
+#: ././templates/settings.pt:168
 msgid "password_changed"
 msgstr ""
 
 #. Default: Discussion Statistics
-#: ././templates/settings.pt:175 ././templates/user.pt:38
+#: ././templates/settings.pt:176 ././templates/user.pt:38
 msgid "discussion_stat"
 msgstr ""
 
 #. Default: Statements posted
-#: ././templates/settings.pt:179 ././templates/finish.pt:26
+#: ././templates/settings.pt:180 ././templates/finish.pt:26
 #: ././templates/user.pt:41
 msgid "statements_posted"
 msgstr ""
 
 #. Default: Edits done
-#: ././templates/settings.pt:186 ././templates/finish.pt:30
+#: ././templates/settings.pt:187 ././templates/finish.pt:30
 #: ././templates/user.pt:45
 msgid "edits_done"
 msgstr ""
 
 #. Default: Votes for Arguments
-#: ././templates/settings.pt:193 ././templates/finish.pt:38
+#: ././templates/settings.pt:194 ././templates/finish.pt:38
 #: ././templates/user.pt:49
 msgid "discussion_votes_statements"
 msgstr ""
 
 #. Default: Votes for Statements
-#: ././templates/settings.pt:200 ././templates/finish.pt:42
+#: ././templates/settings.pt:201 ././templates/finish.pt:42
 #: ././templates/user.pt:53
 msgid "discussion_votes_arguments"
 msgstr ""
 
 #. Default: Reputation
-#: ././templates/settings.pt:207 ././templates/review_reputation.pt:9
+#: ././templates/settings.pt:208 ././templates/review_reputation.pt:9
 #: ././templates/review_reputation.pt:27 ././templates/user.pt:57
 msgid "reputation"
 msgstr ""
 
 #. Default: Statistics could not be deleted.
-#: ././templates/settings.pt:223
+#: ././templates/settings.pt:224
 msgid "statistics_not_deleted"
 msgstr ""
 
 #. Default: Statistics were set successfully deleted.
-#: ././templates/settings.pt:229
+#: ././templates/settings.pt:230
 msgid "statistics_deletet"
 msgstr ""
 
 #. Default: Your last history
-#: ././templates/settings.pt:239
+#: ././templates/settings.pt:240
 msgid "last_history"
 msgstr ""
 

@@ -119,6 +119,7 @@
                         <span tal:condition="not:extras.use_with_ldap" i18n:translate="change_password">Change your password</span>
                         <span tal:condition="extras.use_with_ldap" i18n:translate="change_dbas_password">Change your password in D-BAS</span>
                     </h4>
+                    <p tal:condition="extras.use_with_ldap" i18n:translate="this_does_not_effext_other_services">This does not effect other services next to D-BAS.</p>
 					<form action="/settings" method="post">
                         <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
 
@@ -126,7 +127,7 @@
 							<label for="settings-password-old-input" class="col-md-5 control-label lead" i18n:translate="old_password">Old password</label>
 							<div class="col-md-7 input-group">
                                 <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" value="${settings.passwordold}">
+								<input class="form-control passwordold" id="settings-password-old-input" type="password" name="passwordold" autocomplete="off" placeholder="example: ******" required>
 							</div>
 						</div>
 
@@ -134,7 +135,7 @@
 							<label for="settings-password-input" class="col-md-5 control-label lead" i18n:translate="new_password">New Password</label>
 							<div class="col-md-7 input-group">
                                 <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
-								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" value="${settings.password}">
+								<input class="form-control password" id="settings-password-input" type="password" name="password" autocomplete="off" placeholder="example: ******" required>
 							</div>
 						</div>
 
@@ -142,7 +143,7 @@
 							<p class="col-md-5 control-label lead" i18n:translate="new_password_confirm">New Password (confirm)</p>
 							<div class="col-md-7 input-group">
                                 <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
-								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" value="${settings.passwordconfirm}">
+								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" required>
 							</div>
 
 							<div id="settings-password-extras" class="hidden">
