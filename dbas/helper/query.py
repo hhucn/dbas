@@ -446,7 +446,7 @@ def __get_logfile_dict(textversion, main_page, lang):
     corr_dict = dict()
     corr_dict['uid'] = str(textversion.uid)
     corr_dict['author'] = str(db_author.get_global_nickname())
-    corr_dict['author_url'] = main_page + '/user/' + str(db_author.get_global_nickname())
+    corr_dict['author_url'] = main_page + '/user/' + str(db_author.uid)
     corr_dict['author_gravatar'] = get_profile_picture(db_author, 20)
     corr_dict['date'] = sql_timestamp_pretty_print(textversion.timestamp, lang)
     corr_dict['text'] = str(textversion.content)

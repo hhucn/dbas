@@ -205,7 +205,7 @@ def __get_user_dict_for_review(user_id, main_page):
     return {
         'gravatar_url': image_url,
         'nickname': db_user.get_global_nickname(),
-        'userpage_url': main_page + '/user/' + db_user.get_global_nickname()
+        'userpage_url': main_page + '/user/' + db_user.uid
     }
 
 

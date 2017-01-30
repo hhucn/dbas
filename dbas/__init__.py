@@ -168,7 +168,7 @@ def main(global_config, **settings):
     config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
 
     # logic at the end, otherwise the * pattern will do shit
-    config.add_route('main_user', '/user/{nickname}')
+    config.add_route('main_user', '/user/{uid}')
     config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
     config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
     config.add_route('discussion_attitude', '/discuss/{slug}/attitude/*statement_id')

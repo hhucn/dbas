@@ -442,7 +442,7 @@ def create_users_dict(db_user, timestamp, main_page, lang):
     """
     tmp = db_user.get_global_nickname()
     return {'nickname': tmp,
-            'public_profile_url': main_page + '/user/' + tmp,
+            'public_profile_url': main_page + '/user/' + str(db_user.uid),
             'avatar_url': get_profile_picture(db_user),
             'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}
 
@@ -483,7 +483,7 @@ def get_infos_about_argument(uid, main_page, nickname, _t):
             name += ' (' + _t.get(_.itsYou) + ')'
         supporters.append(name)
         gravatars[name] = get_profile_picture(db_user)
-        public_page[name] = main_page + '/user/' + name
+        public_page[name] = main_page + '/user/' + str(db_user.uid)
 
     return_dict['supporter'] = supporters
     return_dict['gravatars'] = gravatars

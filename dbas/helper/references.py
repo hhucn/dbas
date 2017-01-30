@@ -84,7 +84,7 @@ def __get_values_of_reference(reference, main_page):
 
     img = get_profile_picture(db_user, 20, True)
     name = db_user.get_global_nickname()
-    link = main_page + '/user/' + name
+    link = main_page + '/user/' + str(db_user.uid)
 
     return {'uid': reference.uid,
             'reference': reference.reference,

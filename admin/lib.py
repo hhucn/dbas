@@ -235,7 +235,7 @@ def __get_author_data(uid, query, main_page):
 
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
 
-    link_begin = '<a href="{}/user/{}">'.format(main_page, db_user.get_global_nickname())
+    link_begin = '<a href="{}/user/{}">'.format(main_page, db_user.uid)
     link_end = '</a>'
     return link_begin + db_user.nickname + ' ' + img + link_end, True
 

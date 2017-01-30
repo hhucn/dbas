@@ -297,13 +297,15 @@ def main_user(request):
     logger('main_user', 'def', 'main, request.matchdict: ' + str(match_dict))
     logger('main_user', 'def', 'main, request.params: ' + str(params))
 
-    nickname = match_dict['nickname'] if 'nickname' in match_dict else ''
-    nickname = nickname.replace('%20', ' ')
-    logger('main_user', 'def', 'nickname: ' + str(nickname))
+    uid = match_dict['uid'] if 'uid' in match_dict else 0
+    logger('main_user', 'def', 'uid: ' + str(uid))
 
-    current_user = get_user_by_private_or_public_nickname(nickname)
+    if not is_integer(uid):
+        raise HTTPNotFound
+
+    current_user = DBDiscussionSession.query(User).get(uid)
     if current_user is None:
-        logger('main_user', 'def', 'no user: ' + str(nickname), error=True)
+        logger('main_user', 'def', 'no user: ' + str(uid), error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
