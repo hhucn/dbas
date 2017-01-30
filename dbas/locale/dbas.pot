@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-30 10:55+0100\n"
+"POT-Creation-Date: 2017-01-30 21:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -545,7 +545,7 @@ msgid "reason"
 msgstr ""
 
 #. Default: Original
-#: ././templates/review_history.pt:43 ././templates/review_content.pt:184
+#: ././templates/review_history.pt:43 ././templates/review_content.pt:193
 msgid "original"
 msgstr ""
 
@@ -777,7 +777,7 @@ msgstr ""
 #. Default: Please fill in your e-mail below. A new password will be send this
 #. address:
 #. Default: Please fill in your e-mail below. A new password will be send this
-#. address. This does not effect other services of the HHU:
+#. address. This does not affect other services of the HHU:
 #: ././templates/snippet-popups.pt:297 ././templates/snippet-popups.pt:375
 msgid "fill_in_mail_for_password"
 msgstr ""
@@ -1237,9 +1237,9 @@ msgstr ""
 msgid "change_dbas_password"
 msgstr ""
 
-#. Default: This does not effect other services next to D-BAS.
+#. Default: This does not affect other services next to D-BAS.
 #: ././templates/settings.pt:122
-msgid "this_does_not_effext_other_services"
+msgid "this_does_not_affect_other_services"
 msgstr ""
 
 #. Default: Old password
@@ -1547,58 +1547,63 @@ msgstr ""
 msgid "this_is_original_version"
 msgstr ""
 
+#. Default: Context, where the statement is used:
+#: ././templates/review_content.pt:127
+msgid "context_where_statement_is_used"
+msgstr ""
+
 #. Default: Reported
-#: ././templates/review_content.pt:131
+#: ././templates/review_content.pt:140
 msgid "reported"
 msgstr ""
 
 #. Default: Reported by
-#: ././templates/review_content.pt:135
+#: ././templates/review_content.pt:144
 msgid "reported_by"
 msgstr ""
 
 #. Default: Viewed
-#: ././templates/review_content.pt:145
+#: ././templates/review_content.pt:154
 msgid "viewed"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/review_content.pt:149
+#: ././templates/review_content.pt:158
 msgid "attacks"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/review_content.pt:153
+#: ././templates/review_content.pt:162
 msgid "supports"
 msgstr ""
 
 #. Default: Request lock
-#: ././templates/review_content.pt:173
+#: ././templates/review_content.pt:182
 msgid "request_lock"
 msgstr ""
 
 #. Default: This argument is locked for your edit. You have
-#: ././templates/review_content.pt:176
+#: ././templates/review_content.pt:185
 msgid "argument_is_locked"
 msgstr ""
 
 #. Default: minutes
-#: ././templates/review_content.pt:177
+#: ././templates/review_content.pt:186
 msgid "minutes"
 msgstr ""
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: ././templates/review_content.pt:178
+#: ././templates/review_content.pt:187
 msgid "please_make_your_edits"
 msgstr ""
 
 #. Default: Your correcture
-#: ././templates/review_content.pt:185
+#: ././templates/review_content.pt:194
 msgid "your correcture"
 msgstr ""
 
 #. Default: Send
-#: ././templates/review_content.pt:199
+#: ././templates/review_content.pt:208
 msgid "send"
 msgstr ""
 

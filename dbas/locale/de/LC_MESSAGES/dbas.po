@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-30 10:55+0100\n"
+"POT-Creation-Date: 2017-01-30 21:22+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -625,7 +625,7 @@ msgid "reason"
 msgstr "Grund"
 
 #. Default: Original
-#: templates/review_history.pt:43 templates/review_content.pt:184
+#: templates/review_history.pt:43 templates/review_content.pt:193
 msgid "original"
 msgstr "Original"
 
@@ -1665,65 +1665,70 @@ msgstr "Dies sind die Änderungen_"
 #. Default: following argument was flagged.
 #: templates/review_content.pt:115
 msgid "following_argument_was_flagged"
-msgstr "wurde folgendes Argument markiert:"
+msgstr "wurde folgende/s Aussage/Argument markiert:"
 
 #. Default: This is the original version
 #: templates/review_content.pt:118
 msgid "this_is_original_version"
 msgstr "Dies ist die ursprüngliche Version"
 
+#. Default: Context, where the statement is used:
+#: templates/review_content.pt:127
+msgid "context_where_statement_is_used"
+msgstr "Kontext, indem die Aussage verwendet wird:"
+
 #. Default: Reported
-#: templates/review_content.pt:131
+#: templates/review_content.pt:140
 msgid "reported"
 msgstr "Gemeldet am"
 
 #. Default: Reported by
-#: templates/review_content.pt:135
+#: templates/review_content.pt:144
 msgid "reported_by"
 msgstr "Gemeldet von"
 
 #. Default: Viewed
-#: templates/review_content.pt:145
+#: templates/review_content.pt:154
 msgid "viewed"
 msgstr "Gesehen von"
 
 #. Default: Attacks
-#: templates/review_content.pt:149
+#: templates/review_content.pt:158
 msgid "attacks"
 msgstr "Attackiert von"
 
 #. Default: Supports
-#: templates/review_content.pt:153
+#: templates/review_content.pt:162
 msgid "supports"
 msgstr "Unterstützt von"
 
 #. Default: Request lock
-#: templates/review_content.pt:173
+#: templates/review_content.pt:182
 msgid "request_lock"
 msgstr "Sperrung anfragen"
 
 #. Default: This argument is locked for your edit. You have
-#: templates/review_content.pt:176
+#: templates/review_content.pt:185
 msgid "argument_is_locked"
 msgstr "Dieses Argument ist für Sie gesperrt. Sie haben"
 
 #. Default: minutes
-#: templates/review_content.pt:177
+#: templates/review_content.pt:186
 msgid "minutes"
 msgstr "Minuten"
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review_content.pt:178
+#: templates/review_content.pt:187
 msgid "please_make_your_edits"
 msgstr "Bitte geben Sie Änderungen in Grammatik/Rechschreibung hier an:"
 
 #. Default: Your correcture
-#: templates/review_content.pt:185
+#: templates/review_content.pt:194
 msgid "your correcture"
 msgstr "Ihre Änderung"
 
 #. Default: Send
-#: templates/review_content.pt:199
+#: templates/review_content.pt:208
 msgid "send"
 msgstr "Änderungen schicken"
 
