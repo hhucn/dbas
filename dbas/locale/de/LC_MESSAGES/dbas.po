@@ -1660,7 +1660,7 @@ msgstr "würde folgendes Argument korrigiert:"
 #. Default: This are the edits:
 #: templates/review_content.pt:104
 msgid "this_are_the_edit"
-msgstr "Dies sind die Änderungen_"
+msgstr "Dies sind die Änderungen:"
 
 #. Default: following argument was flagged.
 #: templates/review_content.pt:115
