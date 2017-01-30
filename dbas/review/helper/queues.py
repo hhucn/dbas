@@ -17,6 +17,11 @@ from sqlalchemy import and_
 
 max_lock_time_in_sec = 180
 
+key_deletes = 'deletes'
+key_optimizations = 'optimizations'
+key_edits = 'edits'
+key_history = 'history'
+
 
 def get_review_queues_as_lists(main_page, translator, nickname):
     """
@@ -37,7 +42,7 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     review_list.append(__get_delete_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_optimization_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_edit_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_history_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_history_dict(main_page, translator, count, all_rights))
     if is_user_author_or_admin(nickname):
         review_list.append(__get_ongoing_dict(main_page, translator))
 
@@ -50,9 +55,15 @@ def get_complete_review_count(nickname):
     :param nickname:
     :return:
     """
-    count1 = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
-    count2 = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
-    count3 = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname)
+    count, all_rights = get_reputation_of(nickname)
+
+    rights1 = count >= reputation_borders[key_deletes] or all_rights
+    rights2 = count >= reputation_borders[key_optimizations] or all_rights
+    rights3 = count >= reputation_borders[key_edits] or all_rights
+
+    count1 = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname) if rights1 else 0
+    count2 = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname) if rights2 else 0
+    count3 = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname) if rights3 else 0
     return count1 + count2 + count3
 
 
@@ -68,16 +79,14 @@ def __get_delete_dict(main_page, translator, nickname, count, all_rights):
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
     task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
 
-    key = 'deletes'
     tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
-                'url': main_page + '/review/' + key,
+                'url': main_page + '/review/' + key_deletes,
                 'icon': 'fa fa-trash-o',
                 'task_count': task_count,
-                'is_allowed': count >= reputation_borders[key] or all_rights,
+                'is_allowed': count >= reputation_borders[key_deletes] or all_rights,
                 'is_allowed_text': translator.get(_.visitDeleteQueue),
-                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).format(str(
-                    reputation_borders[key])),
+                'is_not_allowed_text': translator.get(_.visitDeleteQueueLimitation).format(str(reputation_borders[key_deletes])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDelete, main_page)
                 }
     return tmp_dict
@@ -95,15 +104,14 @@ def __get_optimization_dict(main_page, translator, nickname, count, all_rights):
     #  logger('ReviewQueues', '__get_optimization_dict', 'main')
     task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
 
-    key = 'optimizations'
     tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
-                'url': main_page + '/review/' + key,
+                'url': main_page + '/review/' + key_optimizations,
                 'icon': 'fa fa-flag',
                 'task_count': task_count,
-                'is_allowed': count >= reputation_borders[key] or all_rights,
+                'is_allowed': count >= reputation_borders[key_optimizations] or all_rights,
                 'is_allowed_text': translator.get(_.visitOptimizationQueue),
-                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).format(str(reputation_borders[key])),
+                'is_not_allowed_text': translator.get(_.visitOptimizationQueueLimitation).format(str(reputation_borders[key_optimizations])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerOptimization, main_page)
                 }
     return tmp_dict
@@ -121,21 +129,20 @@ def __get_edit_dict(main_page, translator, nickname, count, all_rights):
     #  logger('ReviewQueues', '__get_edit_dict', 'main')
     task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname)
 
-    key = 'edits'
     tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
-                'url': main_page + '/review/' + key,
+                'url': main_page + '/review/' + key_edits,
                 'icon': 'fa fa-pencil-square-o',
                 'task_count': task_count,
-                'is_allowed': count >= reputation_borders[key] or all_rights,
+                'is_allowed': count >= reputation_borders[key_edits] or all_rights,
                 'is_allowed_text': translator.get(_.visitEditQueue),
-                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(str(reputation_borders[key])),
+                'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(str(reputation_borders[key_edits])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerEdit, main_page)
                 }
     return tmp_dict
 
 
-def __get_history_dict(main_page, translator, nickname, count, all_rights):
+def __get_history_dict(main_page, translator, count, all_rights):
     """
     Prepares dictionary for the a section. Queue should be added iff the user is author!
 
@@ -145,15 +152,14 @@ def __get_history_dict(main_page, translator, nickname, count, all_rights):
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_history_dict', 'main')
-    key = 'history'
     tmp_dict = {'task_name': translator.get(_.queueHistory),
                 'id': 'flags',
-                'url': main_page + '/review/' + key,
+                'url': main_page + '/review/' + key_history,
                 'icon': 'fa fa-history',
                 'task_count': __get_review_count_for_history(True),
-                'is_allowed': count >= reputation_borders[key] or all_rights,
+                'is_allowed': count >= reputation_borders[key_history] or all_rights,
                 'is_allowed_text': translator.get(_.visitHistoryQueue),
-                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).format(str(reputation_borders[key])),
+                'is_not_allowed_text': translator.get(_.visitHistoryQueueLimitation).format(str(reputation_borders[key_history])),
                 'last_reviews': list()
                 }
     return tmp_dict

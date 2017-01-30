@@ -406,7 +406,8 @@ class DiscussionDictHelper(object):
         mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
 
         # do we have task in the queue?
-        if get_complete_review_count(nickname) > 0:
+        count = get_complete_review_count(nickname)
+        if count > 0:
             if nickname is not None:
                 mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
             else:
