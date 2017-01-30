@@ -148,7 +148,7 @@ function Notifications() {
 							'<span class="text-primary notification-title">' + title + '</span>' +
 						'</a>' +
 						'<i style="float: right; margin-left: 1.0em; cursor: pointer;" class="fa center fa-trash"></i>' +
-						'<span style="float: right; padding-right: 1em;"><span>To:</span> ' + recipient + ', ' + timestamp + '</span>' +
+						'<span style="float: right; padding-right: 1em;"><span>' + _t(to) + ':</span> ' + recipient + ', ' + timestamp + '</span>' +
 					'</h4>' +
 				'</div>' +
 				'<div id="collapse' + uid + '" class="panel-collapse collapse">' +
