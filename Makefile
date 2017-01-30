@@ -54,7 +54,7 @@ minimal_db: users db
 	init_empty_sql development.ini
 
 docker_dump_db:
-	docker-compose -f docker-compose-export.yml up --force-recreate --abort-on-container-exit
+	docker-compose -f docker-compose-export-db.yml up --force-recreate --abort-on-container-exit
 	docker start dbas_db_1
 	sleep 1 # wait for db inside of dbas_db_1
 	docker exec -it dbas_db_1 pg_dumpall -U postgres --file=db.sql -c --if-exists
