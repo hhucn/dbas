@@ -365,19 +365,9 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
 
         # if the user does not exists and we are using LDAP, we'll grep the user
         if is_ldap:
-            user_data = verify_ldap_user_data(request, nickname, password)
-
-            if not user_data:
-                return _tn.get(_.userPasswordNotMatch)
-            firstname = user_data[0]
-            lastname = user_data[1]
-            gender = user_data[2]
-            email = user_data[3]
-            success, db_user = set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
-
-            if not success:
-                error = _tn.get(_.userPasswordNotMatch)
-                return error
+            msg = __login_user_ldap(request, nickname, password, _tn)
+            if msg is not None:
+                return msg
 
         else:
             success, msg, db_user = try_to_register_new_user_via_ajax(request, _tn)
@@ -398,6 +388,38 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
                 error = _tn.get(_.userPasswordNotMatch)
                 return error
 
+    headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
+
+    if for_api:
+        logger('ViewHelper', 'user_login', 'return for api: success')
+        return {'status': 'success'}
+    else:
+        logger('ViewHelper', 'user_login', 'return success: ' + url)
+        sleep(0.5)
+        return HTTPFound(
+            location=url,
+            headers=headers,
+        )
+
+
+def __login_user_ldap(request, nickname, password, _tn):
+    user_data = verify_ldap_user_data(request, nickname, password)
+
+    if not user_data:
+        return _tn.get(_.userPasswordNotMatch)
+    firstname = user_data[0]
+    lastname = user_data[1]
+    gender = user_data[2]
+    email = user_data[3]
+    success, db_user = set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
+
+    if not success:
+        error = _tn.get(_.userPasswordNotMatch)
+        return error
+    return None
+
+
+def __refresh_headers_and_url(request, db_user, keep_login, url):
     logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_settings.should_hold_the_login(keep_login)
@@ -414,16 +436,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         if url.endswith(e):
             url = url[0:-len(e)]
 
-    if for_api:
-        logger('ViewHelper', 'user_login', 'return for api: success')
-        return {'status': 'success'}
-    else:
-        logger('ViewHelper', 'user_login', 'return success: ' + url)
-        sleep(0.5)
-        return HTTPFound(
-            location=url,
-            headers=headers,
-        )
+    return headers, url
 
 
 def verify_ldap_user_data(request, nickname, password):
