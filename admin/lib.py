@@ -275,34 +275,34 @@ def __get_rows_of(columns, db_elements, main_page):
 def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp):
     if column in _user_columns:
         text, success = __get_author_data(attribute, db_users, main_page)
-        if success:
-            tmp.append(str(attribute) + ' - ' + str(text))
+        text = str(text) if success else ''
+        tmp.append(str(attribute) + ' - ' + text)
+
     elif column == 'lang_uid':
         tmp.append(__get_language(attribute, db_languages))
+
     elif column == 'password':
         tmp.append(str(attribute)[:5] + '...')
+
     elif column == 'premisesgroup_uid':
-        text = 'None'
-        if attribute is not None:
-            text, l = get_text_for_premisesgroup_uid(attribute)
-        tmp.append(str(attribute) + ' - ' + str(text))
+        text, l = get_text_for_premisesgroup_uid(attribute) if attribute is not None else 'None', '-'
+        tmp.append(str(attribute) + ' - ' + str(text) + ' ({})'.format(l))
+
     elif column == 'conclusion_uid':
-        text = 'None'
-        if attribute is not None:
-            text = get_text_for_statement_uid(attribute)
+        text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
         tmp.append(str(attribute) + ' - ' + str(text))
+
     elif column == 'argument_uid':
-        text = 'None'
-        if attribute is not None:
-            text = get_text_for_argument_uid(attribute)
+        text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
         tmp.append(str(attribute) + ' - ' + str(text))
+
     elif column == 'textversion_uid':
         text = 'None'
         if attribute is not None:
             db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
-            if db_tv:
-                text = db_tv.content
+            text = db_tv.content if db_tv else ''
         tmp.append(str(attribute) + ' - ' + str(text))
+
     else:
         tmp.append(str(attribute))
 

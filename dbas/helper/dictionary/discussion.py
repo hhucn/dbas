@@ -273,7 +273,7 @@ class DiscussionDictHelper(object):
         # user_msg[1:], omit_url=True, lang=self.lang)
 
         self.__append_now_bubble(bubbles_array)
-        sys_bubble =create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang)
+        sys_bubble = create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang)
         if not bubbles_already_last_in_list(bubbles_array, sys_bubble):
             bubbles_array.append(sys_bubble)
 

@@ -4,9 +4,6 @@ D-BAS database Model
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import datetime
-import time
-
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from dbas.database import DBDiscussionSession, DiscussionBase
