@@ -76,7 +76,7 @@ google_colors = [
     ['#ffffff']]  # white
 
 # list of all columns with FK of users table
-_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid']
+_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid', 'from_author_uid', 'to_author_uid']
 
 # list of all columns, which will not be displayed
 _forbidden_columns = ['token', 'token_timestamp']
@@ -267,15 +267,12 @@ def __get_rows_of(columns, db_elements, main_page):
         tmp = []
         for column in columns:
             attribute = getattr(row, column)
-            # all keywords for getting a user
             if column in _user_columns:
                 text, success = __get_author_data(attribute, db_users, main_page)
                 if success:
-                    tmp.append(text)
-            # resolve language
+                    tmp.append(str(attribute) + ' - ' + str(text))
             elif column == 'lang_uid':
                 tmp.append(__get_language(attribute, db_languages))
-            # resolve password
             elif column == 'password':
                 tmp.append(str(attribute)[:5] + '...')
             elif column == 'premisesgroup_uid':
@@ -292,6 +289,13 @@ def __get_rows_of(columns, db_elements, main_page):
                 text = 'None'
                 if attribute is not None:
                     text = get_text_for_argument_uid(attribute)
+                tmp.append(str(attribute) + ' - ' + str(text))
+            elif column == 'textversion_uid':
+                text = 'None'
+                if attribute is not None:
+                    db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
+                    if db_tv:
+                        text = db_tv.content
                 tmp.append(str(attribute) + ' - ' + str(text))
             else:
                 tmp.append(str(attribute))
