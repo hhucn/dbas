@@ -53,7 +53,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
-from pyshorteners.shorteners import Shortener
+from pyshorteners.shorteners import Shortener, Shorteners
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
@@ -1949,24 +1949,10 @@ def get_shortened_url(request):
 
     try:
         url = request.params['url']
-        # google_api_key = 'AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0' # browser is
-        # google_api_key = 'AIzaSyDneaEJN9FNGUpXHDZahe9Rhb21FsFNS14' # server id
-        # service = 'GoogleShortener'
-        # service_url = 'https://goo.gl/'
-        # shortener = Shortener(service, api_key=google_api_key)
-
-        # bitly_login = 'dbashhu'
-        # bitly_key = ''
-        # bitly_token = 'R_d8c4acf2fb554494b65529314d1e11d1'
-
-        # service = 'BitlyShortener'
-        # service_url = 'https://bitly.com/'
-        # shortener = Shortener(service, bitly_token=bitly_token)
-
         service = 'TinyurlShortener'
-        service_ = 'Tinyurl'
         service_url = 'http://tinyurl.com/'
-        shortener = Shortener(service_)
+        from pyshorteners import Shorteners
+        shortener = Shortener(Shorteners.TINYURL)
 
         short_url = format(shortener.short(url))
         return_dict['url'] = short_url
