@@ -14,6 +14,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 from validate_email import validate_email
+from sqlalchemy import func
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.security import remember
@@ -495,8 +496,8 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
-    db_nick2 = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-    db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
+    db_nick2 = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname) == func.lower(nickname)).first()
+    db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     is_mail_valid = validate_email(email, check_mx=True)
 
     # are the password equal?
@@ -529,7 +530,7 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
             info = _t.get(_.errorTryLateOrContant)
             logger('ViewHelper', 'user_registration', 'Error occured')
         else:
-            success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password,
+            success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email.lower(), nickname, password,
                                                                      gender, db_group.uid, ui_locales)
 
             if db_new_user:
@@ -555,7 +556,7 @@ def request_password(request, ui_locales):
 
     _t = Translator(ui_locales)
     email = escape_string(request.params['email'])
-    db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
+    db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
 
     # does the user exists?
     if db_user:
