@@ -590,8 +590,8 @@ def set_up_users(session, include_dummy_users=True):
     pwt = get_hashed_password('iamatestuser2016')
     pw0 = get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
     pw1 = get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
-    pw2 = get_hashed_password('$2a$10$9P5biPvyX2xVeMcCLm82tO0XFQhmdMFwgAhPaUkCHoVL1F5kEAjIa')
-    pw4 = get_hashed_password('$2a$10$Ou/pHV1MoZRqvt5U8cV09up0qqbIz70ZjwEeanRkyyfR/rrMHcBfe')
+    pw2 = '$2a$10$9P5biPvyX2xVeMcCLm82tO0XFQhmdMFwgAhPaUkCHoVL1F5kEAjIa'
+    pw4 = '$2a$10$Ou/pHV1MoZRqvt5U8cV09up0qqbIz70ZjwEeanRkyyfR/rrMHcBfe'
     pw8 = get_hashed_password('bjoern')
     pw9 = get_hashed_password('teresa')
 
