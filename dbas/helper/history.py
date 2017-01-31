@@ -9,7 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print, Issue
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid,\
-    get_text_for_premisesgroup_uid, get_text_for_conclusion
+    get_text_for_premisesgroup_uid, get_text_for_conclusion, bubbles_already_last_in_list
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation
@@ -121,20 +121,20 @@ def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, 
     relation = steps[3] if len(steps) > 3 else ''
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
-        bubbles = __get_bubble_from_justify_statement_step(step, nickname, lang, url)
-        if bubbles:
-            bubble_array += bubbles
+        bubble = __get_bubble_from_justify_statement_step(step, nickname, lang, url)
+        if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
+            bubble_array += bubble
 
     elif 'd' in mode and relation == '':
         bubbles = __get_bubble_from_dont_know_step(step, nickname, lang, url)
-        if bubbles:
+        if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
             bubble_array += bubbles
 
 
 def __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url):
     logger('history_helper', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
     bubbles = __get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
-    if bubbles:
+    if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
 
 
