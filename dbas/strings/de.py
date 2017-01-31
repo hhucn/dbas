@@ -505,6 +505,7 @@ de_lang = {
     _.review: 'Prüfung',
     _.review_history: 'Vergangene Entscheidungen',
     _.review_ongoing: 'Aktuelle Entscheidungen',
+    _.reputation: 'Reputation',
     _.reason: 'Begründung',
     _.reportStatement: 'Aussage melden',
     _.reportArgument: 'Argument melden',

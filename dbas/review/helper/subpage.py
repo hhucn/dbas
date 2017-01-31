@@ -354,7 +354,6 @@ def __difference_between_string(a, b, correction_list):
             correction_list[i] = tag_m + s[-1] + tag_e
         elif s[0] == '+':
             correction_list[i] = tag_p + s[-1] + tag_e
-    logger('X', 'X', str(correction_list))
 
 
 def __get_stats_for_review(review, ui_locales, main_page):

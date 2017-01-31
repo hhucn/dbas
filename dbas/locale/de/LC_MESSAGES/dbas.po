@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-30 21:22+0100\n"
+"POT-Creation-Date: 2017-01-31 16:21+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -867,21 +867,6 @@ msgstr "Ihr Passwort"
 msgid "keep_me_logged_in"
 msgstr "Angemeldet bleiben"
 
-#. Default: Forgot your password?
-#: templates/snippet-popups.pt:294 templates/snippet-popups.pt:372
-msgid "forgot_password"
-msgstr "Passwort vergessen?"
-
-#. Default: Please fill in your e-mail below. A new password will be send this
-#. address:
-#. Default: Please fill in your e-mail below. A new password will be send this
-#. address. This does not affect other services of the HHU:
-#: templates/snippet-popups.pt:297 templates/snippet-popups.pt:375
-msgid "fill_in_mail_for_password"
-msgstr ""
-"Bitte trage Sie unten Ihre E-Mail-Adresse ein. Ein neues Passwort wird an "
-"diese Adresse gesendet. Dies betrifft nicht weitere Dienste der HHU."
-
 #. Default: Error:
 #: templates/snippet-popups.pt:309 templates/snippet-popups.pt:387
 #: templates/snippet-popups.pt:493
@@ -891,7 +876,7 @@ msgstr "Fehler:"
 #. Default: Success:
 #. Default: Success
 #: templates/snippet-popups.pt:315 templates/snippet-popups.pt:393
-#: templates/snippet-popups.pt:486 templates/settings.pt:252
+#: templates/snippet-popups.pt:486 templates/settings.pt:328
 #: templates/content.pt:66
 msgid "success"
 msgstr "Erfolg:"
@@ -911,6 +896,19 @@ msgstr "Registrieren"
 #: templates/snippet-popups.pt:353
 msgid "your_nickname"
 msgstr "Ihr Nickname"
+
+#. Default: Forgot your password?
+#: templates/snippet-popups.pt:372
+msgid "forgot_password"
+msgstr "Passwort vergessen?"
+
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address. This does not affect other services of the HHU:
+#: templates/snippet-popups.pt:375
+msgid "fill_in_mail_for_password"
+msgstr ""
+"Bitte trage Sie unten Ihre E-Mail-Adresse ein. Ein neues Passwort wird an "
+"diese Adresse gesendet. Dies betrifft nicht weitere Dienste der HHU."
 
 #. Default: We will never display your real name to other users!
 #: templates/snippet-popups.pt:404
@@ -1315,12 +1313,12 @@ msgid "guided_tour_on_start_up"
 msgstr "Einführung auf der Startseite"
 
 #. Default: Profile Picture
-#: templates/settings.pt:91
+#: templates/settings.pt:91 templates/settings.pt:166
 msgid "profile_picture"
 msgstr "Profilbild"
 
 #. Default: Change your profile picture on the
-#: templates/settings.pt:93
+#: templates/settings.pt:93 templates/settings.pt:168
 msgid "change_gravatar"
 msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
 
@@ -1328,7 +1326,7 @@ msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
 #. create your profile just once, and then when you participate in any
 #. Gravatar-enabled site, your Gravatar image will automatically follow you
 #. there.
-#: templates/settings.pt:95
+#: templates/settings.pt:95 templates/settings.pt:170
 msgid "what_is_gravatar"
 msgstr ""
 "Ein Gravatar ist ein Globally Recognized Avatar (Global wiedererkennbarer "
@@ -1348,91 +1346,96 @@ msgstr ""
 msgid "settings_set"
 msgstr "Einstellungen wurden gesichert."
 
+#. Default: Discussion Statistics
+#: templates/settings.pt:119 templates/settings.pt:252 templates/user.pt:38
+msgid "discussion_stat"
+msgstr "Diskussionsstatistik"
+
+#. Default: Statements posted
+#: templates/settings.pt:123 templates/settings.pt:256 templates/finish.pt:26
+#: templates/user.pt:41
+msgid "statements_posted"
+msgstr "Aussagen hinzugefügt"
+
+#. Default: Edits done
+#: templates/settings.pt:130 templates/settings.pt:263 templates/finish.pt:30
+#: templates/user.pt:45
+msgid "edits_done"
+msgstr "Änderungen"
+
+#. Default: Votes for Arguments
+#: templates/settings.pt:137 templates/settings.pt:270 templates/finish.pt:38
+#: templates/user.pt:49
+msgid "discussion_votes_statements"
+msgstr "Stimmen für Aussagen"
+
+#. Default: Votes for Statements
+#: templates/settings.pt:144 templates/settings.pt:277 templates/finish.pt:42
+#: templates/user.pt:53
+msgid "discussion_votes_arguments"
+msgstr "Stimmen für Argumente"
+
+#. Default: Reputation
+#: templates/settings.pt:151 templates/settings.pt:284
+#: templates/review_reputation.pt:9 templates/review_reputation.pt:27
+#: templates/user.pt:57
+msgid "reputation"
+msgstr "Reputation"
+
+#. Default: Statistics could not be deleted.
+#: templates/settings.pt:178 templates/settings.pt:300
+msgid "statistics_not_deleted"
+msgstr "Statistiken konnten nicht gelöscht werden."
+
+#. Default: Statistics were set successfully deleted.
+#: templates/settings.pt:184 templates/settings.pt:306
+msgid "statistics_deletet"
+msgstr "Statistiken wurden gelöscht."
+
 #. Default: Change your password
-#: templates/settings.pt:119
+#: templates/settings.pt:195
 msgid "change_password"
 msgstr "Passwort ändern"
 
 #. Default: Change your password in D-BAS
-#: templates/settings.pt:120
+#: templates/settings.pt:196
 msgid "change_dbas_password"
 msgstr "Passwort von D-BAS ändern"
 
 #. Default: This does not affect other services next to D-BAS.
-#: templates/settings.pt:122
+#: templates/settings.pt:198
 msgid "this_does_not_affect_other_services"
 msgstr ""
 "Die Änderung betrifft nur die Anmeldung in D-BAS und nicht weitere Dienste "
 "der HHU."
 
 #. Default: Old password
-#: templates/settings.pt:127
+#: templates/settings.pt:203
 msgid "old_password"
 msgstr "Altes Passwort"
 
 #. Default: New Password
-#: templates/settings.pt:135
+#: templates/settings.pt:211
 msgid "new_password"
 msgstr "Neues Passwort"
 
 #. Default: New Password (confirm)
-#: templates/settings.pt:143
+#: templates/settings.pt:219
 msgid "new_password_confirm"
 msgstr "Neues Passwort (Bestätigung)"
 
 #. Default: Strength
-#: templates/settings.pt:151
+#: templates/settings.pt:227
 msgid "strength"
 msgstr "Stärke"
 
 #. Default: Your password was changed
-#: templates/settings.pt:168
+#: templates/settings.pt:244
 msgid "password_changed"
 msgstr "Ihr Passwort wurde geändert"
 
-#. Default: Discussion Statistics
-#: templates/settings.pt:176 templates/user.pt:38
-msgid "discussion_stat"
-msgstr "Diskussionsstatistik"
-
-#. Default: Statements posted
-#: templates/settings.pt:180 templates/finish.pt:26 templates/user.pt:41
-msgid "statements_posted"
-msgstr "Aussagen hinzugefügt"
-
-#. Default: Edits done
-#: templates/settings.pt:187 templates/finish.pt:30 templates/user.pt:45
-msgid "edits_done"
-msgstr "Änderungen"
-
-#. Default: Votes for Arguments
-#: templates/settings.pt:194 templates/finish.pt:38 templates/user.pt:49
-msgid "discussion_votes_statements"
-msgstr "Stimmen für Aussagen"
-
-#. Default: Votes for Statements
-#: templates/settings.pt:201 templates/finish.pt:42 templates/user.pt:53
-msgid "discussion_votes_arguments"
-msgstr "Stimmen für Argumente"
-
-#. Default: Reputation
-#: templates/settings.pt:208 templates/review_reputation.pt:9
-#: templates/review_reputation.pt:27 templates/user.pt:57
-msgid "reputation"
-msgstr "Reputation"
-
-#. Default: Statistics could not be deleted.
-#: templates/settings.pt:224
-msgid "statistics_not_deleted"
-msgstr "Statistiken konnten nicht gelöscht werden."
-
-#. Default: Statistics were set successfully deleted.
-#: templates/settings.pt:230
-msgid "statistics_deletet"
-msgstr "Statistiken wurden gelöscht."
-
 #. Default: Your last history
-#: templates/settings.pt:240
+#: templates/settings.pt:316
 msgid "last_history"
 msgstr "Ihre letzte URL-History"
 
@@ -1728,7 +1731,7 @@ msgid "your correcture"
 msgstr "Ihre Änderung"
 
 #. Default: Send
-#: templates/review_content.pt:208
+#: templates/review_content.pt:209
 msgid "send"
 msgstr "Änderungen schicken"
 

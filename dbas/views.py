@@ -1010,10 +1010,18 @@ def review_content(request):
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
 
+    title = _tn.get(_.review)
+    if subpage_name == 'deletes':
+        title = _tn.get(_.queueDelete)
+    if subpage_name == 'optimizations':
+        title = _tn.get(_.queueOptimization)
+    if subpage_name == 'edits':
+        title = _tn.get(_.queueEdit)
+
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _tn.get(_.review),
+        'title': title,
         'project': project_name,
         'extras': extras_dict,
         'subpage': subpage_dict,
@@ -1075,7 +1083,7 @@ def ongoing_history(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _tn.get(_.review_history),
+        'title': _tn.get(_.review_ongoing),
         'project': project_name,
         'extras': extras_dict,
         'history': history
@@ -1107,7 +1115,7 @@ def review_reputation(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _tn.get(_.review),
+        'title': _tn.get(_.reputation),
         'project': project_name,
         'extras': extras_dict,
         'reputation': reputation_dict

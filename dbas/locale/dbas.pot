@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-30 21:22+0100\n"
+"POT-Creation-Date: 2017-01-31 16:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -769,19 +769,6 @@ msgstr ""
 msgid "keep_me_logged_in"
 msgstr ""
 
-#. Default: Forgot your password?
-#: ././templates/snippet-popups.pt:294 ././templates/snippet-popups.pt:372
-msgid "forgot_password"
-msgstr ""
-
-#. Default: Please fill in your e-mail below. A new password will be send this
-#. address:
-#. Default: Please fill in your e-mail below. A new password will be send this
-#. address. This does not affect other services of the HHU:
-#: ././templates/snippet-popups.pt:297 ././templates/snippet-popups.pt:375
-msgid "fill_in_mail_for_password"
-msgstr ""
-
 #. Default: Error:
 #: ././templates/snippet-popups.pt:309 ././templates/snippet-popups.pt:387
 #: ././templates/snippet-popups.pt:493
@@ -791,7 +778,7 @@ msgstr ""
 #. Default: Success:
 #. Default: Success
 #: ././templates/snippet-popups.pt:315 ././templates/snippet-popups.pt:393
-#: ././templates/snippet-popups.pt:486 ././templates/settings.pt:252
+#: ././templates/snippet-popups.pt:486 ././templates/settings.pt:328
 #: ././templates/content.pt:66
 msgid "success"
 msgstr ""
@@ -810,6 +797,17 @@ msgstr ""
 #. Default: Your Nickname
 #: ././templates/snippet-popups.pt:353
 msgid "your_nickname"
+msgstr ""
+
+#. Default: Forgot your password?
+#: ././templates/snippet-popups.pt:372
+msgid "forgot_password"
+msgstr ""
+
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address. This does not affect other services of the HHU:
+#: ././templates/snippet-popups.pt:375
+msgid "fill_in_mail_for_password"
 msgstr ""
 
 #. Default: We will never display your real name to other users!
@@ -1200,12 +1198,12 @@ msgid "guided_tour_on_start_up"
 msgstr ""
 
 #. Default: Profile Picture
-#: ././templates/settings.pt:91
+#: ././templates/settings.pt:91 ././templates/settings.pt:166
 msgid "profile_picture"
 msgstr ""
 
 #. Default: Change your profile picture on the
-#: ././templates/settings.pt:93
+#: ././templates/settings.pt:93 ././templates/settings.pt:168
 msgid "change_gravatar"
 msgstr ""
 
@@ -1213,7 +1211,7 @@ msgstr ""
 #. create your profile just once, and then when you participate in any
 #. Gravatar-enabled site, your Gravatar image will automatically follow you
 #. there.
-#: ././templates/settings.pt:95
+#: ././templates/settings.pt:95 ././templates/settings.pt:170
 msgid "what_is_gravatar"
 msgstr ""
 
@@ -1227,93 +1225,95 @@ msgstr ""
 msgid "settings_set"
 msgstr ""
 
-#. Default: Change your password
-#: ././templates/settings.pt:119
-msgid "change_password"
-msgstr ""
-
-#. Default: Change your password in D-BAS
-#: ././templates/settings.pt:120
-msgid "change_dbas_password"
-msgstr ""
-
-#. Default: This does not affect other services next to D-BAS.
-#: ././templates/settings.pt:122
-msgid "this_does_not_affect_other_services"
-msgstr ""
-
-#. Default: Old password
-#: ././templates/settings.pt:127
-msgid "old_password"
-msgstr ""
-
-#. Default: New Password
-#: ././templates/settings.pt:135
-msgid "new_password"
-msgstr ""
-
-#. Default: New Password (confirm)
-#: ././templates/settings.pt:143
-msgid "new_password_confirm"
-msgstr ""
-
-#. Default: Strength
-#: ././templates/settings.pt:151
-msgid "strength"
-msgstr ""
-
-#. Default: Your password was changed
-#: ././templates/settings.pt:168
-msgid "password_changed"
-msgstr ""
-
 #. Default: Discussion Statistics
-#: ././templates/settings.pt:176 ././templates/user.pt:38
+#: ././templates/settings.pt:119 ././templates/settings.pt:252
+#: ././templates/user.pt:38
 msgid "discussion_stat"
 msgstr ""
 
 #. Default: Statements posted
-#: ././templates/settings.pt:180 ././templates/finish.pt:26
-#: ././templates/user.pt:41
+#: ././templates/settings.pt:123 ././templates/settings.pt:256
+#: ././templates/finish.pt:26 ././templates/user.pt:41
 msgid "statements_posted"
 msgstr ""
 
 #. Default: Edits done
-#: ././templates/settings.pt:187 ././templates/finish.pt:30
-#: ././templates/user.pt:45
+#: ././templates/settings.pt:130 ././templates/settings.pt:263
+#: ././templates/finish.pt:30 ././templates/user.pt:45
 msgid "edits_done"
 msgstr ""
 
 #. Default: Votes for Arguments
-#: ././templates/settings.pt:194 ././templates/finish.pt:38
-#: ././templates/user.pt:49
+#: ././templates/settings.pt:137 ././templates/settings.pt:270
+#: ././templates/finish.pt:38 ././templates/user.pt:49
 msgid "discussion_votes_statements"
 msgstr ""
 
 #. Default: Votes for Statements
-#: ././templates/settings.pt:201 ././templates/finish.pt:42
-#: ././templates/user.pt:53
+#: ././templates/settings.pt:144 ././templates/settings.pt:277
+#: ././templates/finish.pt:42 ././templates/user.pt:53
 msgid "discussion_votes_arguments"
 msgstr ""
 
 #. Default: Reputation
-#: ././templates/settings.pt:208 ././templates/review_reputation.pt:9
-#: ././templates/review_reputation.pt:27 ././templates/user.pt:57
+#: ././templates/settings.pt:151 ././templates/settings.pt:284
+#: ././templates/review_reputation.pt:9 ././templates/review_reputation.pt:27
+#: ././templates/user.pt:57
 msgid "reputation"
 msgstr ""
 
 #. Default: Statistics could not be deleted.
-#: ././templates/settings.pt:224
+#: ././templates/settings.pt:178 ././templates/settings.pt:300
 msgid "statistics_not_deleted"
 msgstr ""
 
 #. Default: Statistics were set successfully deleted.
-#: ././templates/settings.pt:230
+#: ././templates/settings.pt:184 ././templates/settings.pt:306
 msgid "statistics_deletet"
 msgstr ""
 
+#. Default: Change your password
+#: ././templates/settings.pt:195
+msgid "change_password"
+msgstr ""
+
+#. Default: Change your password in D-BAS
+#: ././templates/settings.pt:196
+msgid "change_dbas_password"
+msgstr ""
+
+#. Default: This does not affect other services next to D-BAS.
+#: ././templates/settings.pt:198
+msgid "this_does_not_affect_other_services"
+msgstr ""
+
+#. Default: Old password
+#: ././templates/settings.pt:203
+msgid "old_password"
+msgstr ""
+
+#. Default: New Password
+#: ././templates/settings.pt:211
+msgid "new_password"
+msgstr ""
+
+#. Default: New Password (confirm)
+#: ././templates/settings.pt:219
+msgid "new_password_confirm"
+msgstr ""
+
+#. Default: Strength
+#: ././templates/settings.pt:227
+msgid "strength"
+msgstr ""
+
+#. Default: Your password was changed
+#: ././templates/settings.pt:244
+msgid "password_changed"
+msgstr ""
+
 #. Default: Your last history
-#: ././templates/settings.pt:240
+#: ././templates/settings.pt:316
 msgid "last_history"
 msgstr ""
 
@@ -1603,7 +1603,7 @@ msgid "your correcture"
 msgstr ""
 
 #. Default: Send
-#: ././templates/review_content.pt:208
+#: ././templates/review_content.pt:209
 msgid "send"
 msgstr ""
 

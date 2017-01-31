@@ -507,6 +507,7 @@ class Keywords(Enum):
     review = 'Review'
     review_history = 'Review History'
     review_ongoing = 'Current Reviews'
+    reputation = 'Reputation'
     right = 'Right'
     reason = 'Reason'
     requestTrack = 'Request track'

@@ -123,7 +123,7 @@
                             <br>
                         </div>
 
-                        <div class="well well-sm center" style="text-align: justify;">
+                        <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_optimize">
                             <span i18n:translate="context_where_statement_is_used">Context, where the statement is used:</span>
                             <div tal:repeat="context subpage.elements.reviewed_argument.context">
                                 <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
