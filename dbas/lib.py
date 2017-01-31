@@ -8,6 +8,7 @@ import hashlib
 import locale
 import time
 import os
+import re
 
 import requests
 
@@ -957,3 +958,39 @@ def validate_recaptcha(recaptcha):
             error = True
 
     return json['success'], error
+
+
+def bubbles_already_last_in_list(bubble_list, bubbles):
+    if isinstance(bubbles, list):
+        length = len(bubbles)
+    else:
+        length = 1
+        bubbles = [bubbles]
+
+    if len(bubble_list) < length:
+        return False
+
+    for bubble in bubbles:
+        if 'message' not in bubble:
+            return False
+
+    start_index = - length
+    is_already_in = False
+    for bubble in bubbles:
+
+        last = bubble_list[start_index]
+        if 'message' not in last or 'message' not in bubble:
+            return False
+
+        text1 = __cleanhtml(last['message'].lower()).strip()
+        text2 = __cleanhtml(bubble['message'].lower()).strip()
+        is_already_in = is_already_in or (text1 == text2)
+        start_index += 1
+
+    return is_already_in
+
+
+def __cleanhtml(raw_html):
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, '', raw_html)
+    return cleantext

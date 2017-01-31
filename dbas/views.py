@@ -2275,8 +2275,6 @@ def fuzzy_search(request, for_api=False, api_data=None):
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
         extra = request.params['extra'] if 'extra' in request.params else None
 
-        logger('Graph.lib', 'get_doj_data', 'main')
-
         # try:
         #     url = auto_completion_url + '?issue={}&mode={}&value={}'.format(str(issue), str(mode), str(value))
         #     resp = requests.get(url)
@@ -2287,7 +2285,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
         #         return json.dumps(return_dict)
 
         # except Exception as e:
-        #     logger('fuzzy_search', 'def', 'Error grepping data via microserver: ' + str(e))
+        #     logger('fuzzy_search', 'def', 'Error grepping data via microservice: ' + str(e))
 
         return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 

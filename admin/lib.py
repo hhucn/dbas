@@ -267,40 +267,44 @@ def __get_rows_of(columns, db_elements, main_page):
         tmp = []
         for column in columns:
             attribute = getattr(row, column)
-            if column in _user_columns:
-                text, success = __get_author_data(attribute, db_users, main_page)
-                if success:
-                    tmp.append(str(attribute) + ' - ' + str(text))
-            elif column == 'lang_uid':
-                tmp.append(__get_language(attribute, db_languages))
-            elif column == 'password':
-                tmp.append(str(attribute)[:5] + '...')
-            elif column == 'premisesgroup_uid':
-                text = 'None'
-                if attribute is not None:
-                    text, l = get_text_for_premisesgroup_uid(attribute)
-                tmp.append(str(attribute) + ' - ' + str(text))
-            elif column == 'conclusion_uid':
-                text = 'None'
-                if attribute is not None:
-                    text = get_text_for_statement_uid(attribute)
-                tmp.append(str(attribute) + ' - ' + str(text))
-            elif column == 'argument_uid':
-                text = 'None'
-                if attribute is not None:
-                    text = get_text_for_argument_uid(attribute)
-                tmp.append(str(attribute) + ' - ' + str(text))
-            elif column == 'textversion_uid':
-                text = 'None'
-                if attribute is not None:
-                    db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
-                    if db_tv:
-                        text = db_tv.content
-                tmp.append(str(attribute) + ' - ' + str(text))
-            else:
-                tmp.append(str(attribute))
+            __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp)
         data.append(tmp)
     return data
+
+
+def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp):
+    if column in _user_columns:
+        text, success = __get_author_data(attribute, db_users, main_page)
+        if success:
+            tmp.append(str(attribute) + ' - ' + str(text))
+    elif column == 'lang_uid':
+        tmp.append(__get_language(attribute, db_languages))
+    elif column == 'password':
+        tmp.append(str(attribute)[:5] + '...')
+    elif column == 'premisesgroup_uid':
+        text = 'None'
+        if attribute is not None:
+            text, l = get_text_for_premisesgroup_uid(attribute)
+        tmp.append(str(attribute) + ' - ' + str(text))
+    elif column == 'conclusion_uid':
+        text = 'None'
+        if attribute is not None:
+            text = get_text_for_statement_uid(attribute)
+        tmp.append(str(attribute) + ' - ' + str(text))
+    elif column == 'argument_uid':
+        text = 'None'
+        if attribute is not None:
+            text = get_text_for_argument_uid(attribute)
+        tmp.append(str(attribute) + ' - ' + str(text))
+    elif column == 'textversion_uid':
+        text = 'None'
+        if attribute is not None:
+            db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
+            if db_tv:
+                text = db_tv.content
+        tmp.append(str(attribute) + ' - ' + str(text))
+    else:
+        tmp.append(str(attribute))
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
