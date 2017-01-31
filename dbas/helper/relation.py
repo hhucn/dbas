@@ -218,7 +218,7 @@ def set_new_undercut(premisegroup_uid, current_argument, db_user, issue):
     # duplicate?
     db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                                                   Argument.is_supportive == False,
-                                                                  Argument.conclusion_uid == current_argument.conclusion_uid)).first()
+                                                                  Argument.argument_uid == current_argument.uid)).first()
     if db_argument:
         return db_argument, True
     else:
