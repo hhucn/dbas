@@ -42,8 +42,8 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 
 
 def get_now():
-    # return arrow.utcnow()
-    return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+    return arrow.utcnow().to('local')
+    # return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Issue(DiscussionBase):

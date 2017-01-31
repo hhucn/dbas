@@ -231,13 +231,17 @@ function GuiHandler() {
 	 * @param conclusion
 	 */
 	this.showSetStatementContainer = function (undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
-		var gh = new GuiHandler(), page, page_no,
-			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
-			prev = $('#' + popupSetPremiseGroupsPreviousButton).hide(),
-			next = $('#' + popupSetPremiseGroupsNextButton).hide(),
-			send = $('#' + popupSetPremiseGroupsSendButton).addClass('disabled'),
-			counter = $('#' + popupSetPremiseGroupsCounter).hide(),
-			prefix = 'insert_statements_page_';
+		var gh = new GuiHandler(), page, page_no;
+		var body = $('#' + popupSetPremiseGroupsBodyContent).empty();
+		var prev = $('#' + popupSetPremiseGroupsPreviousButton).hide();
+		var next = $('#' + popupSetPremiseGroupsNextButton).hide();
+		var send = $('#' + popupSetPremiseGroupsSendButton).addClass('disabled');
+		var counter = $('#' + popupSetPremiseGroupsCounter).hide();
+		var prefix = 'insert_statements_page_';
+		var popup = $('#' + popupSetPremiseGroups);
+		
+		console.log(undecided_texts);
+		console.log(decided_texts);
 		
 		send.click(function sendClick() {
 			var selections = body.find('input:checked'), i, j, splitted;
@@ -286,9 +290,11 @@ function GuiHandler() {
 			counter.show().text('1/' + undecided_texts.length);
 			send.text(_t(saveMyStatements));
 			
+			
 			// for each statement a new page div will be added
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
 				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no]);
+				body.attr('data-text-' + page_no, undecided_texts[page_no]);
 				if (page_no > 0)
 					page.hide();
 				body.append(page);
@@ -311,7 +317,8 @@ function GuiHandler() {
 			});
 		}
 		
-		$('#' + popupSetPremiseGroups).modal('show');
+		popup.find('strong').text(body.data('text-0'));
+		popup.modal('show');
 	};
 	
 	/**
@@ -323,9 +330,9 @@ function GuiHandler() {
 	 * @param prefix
 	 */
 	this.displayNextPageOffSetStatementContainer = function (body, prev_btn, next_btn, counter_text, prefix) {
-		var tmp_el = body.find('div:visible'),
-			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length)),
-			input = tmp_el.find('input:checked');
+		var tmp_el = body.find('div:visible');
+		var tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
+		var input = tmp_el.find('input:checked');
 		
 		// is current page filled?
 		if (input.length == 0) {
@@ -337,7 +344,8 @@ function GuiHandler() {
 				tmp_el.hide().next().fadeIn();
 				prev_btn.parent().removeClass('disabled');
 				counter_text.show().text((tmp_id + 2) + '/' + next_btn.attr('max'));
-				
+
+				$('#' + popupSetPremiseGroups).find('strong').text(body.data('text-' + (tmp_id + 1)));
 				if ((tmp_id + 2) == parseInt(next_btn.attr('max')))
 					next_btn.parent().addClass('disabled');
 			} else {
@@ -355,14 +363,16 @@ function GuiHandler() {
 	 * @param prefix
 	 */
 	this.displayPrevPageOffSetStatementContainer = function (body, prev_btn, next_btn, counter_text, prefix) {
-		var tmp_el = body.find('div:visible'),
-			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
+		var tmp_el = body.find('div:visible');
+		var tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
 		
 		if (tmp_id > 0) {
 			tmp_el.hide().prev().fadeIn();
 			next_btn.parent().removeClass('disabled');
 			counter_text.show().text((tmp_id) + '/' + prev_btn.attr('max'));
-			if (tmp_id == 0)
+
+			$('#' + popupSetPremiseGroups).find('strong').text(body.data('text-' + (tmp_id - 1)));
+			if (tmp_id == 1)
 				prev_btn.parent().addClass('disabled');
 		}
 	};
