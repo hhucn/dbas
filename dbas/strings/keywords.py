@@ -423,7 +423,7 @@ class Keywords(Enum):
     nickname = 'Nickname'
     noOtherAttack = 'The system has no other counter-argument'
     noIslandView = 'Could not fetch data for the island view. Sorry!'
-    noCorrections = 'No corrections for the given statement could be fetched.'
+    noCorrections = 'No valid corrections for the given statement could be fetched.'
     noCorrectionsSet = 'Correction could not be set, because your user was not fount in the database. Are you currently logged in?'
     noDecisionDone = 'No decision was done.'
     notInsertedErrorBecauseEmpty = 'Your idea was not inserted, because your text is too short or empty.'

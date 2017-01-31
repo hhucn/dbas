@@ -6,8 +6,9 @@ Provides helping function for displaying the review queues and locking entries.
 
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, \
-    LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now
+from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, TextVersion, \
+    LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now, \
+    Statement
 from dbas.lib import get_profile_picture, is_user_author_or_admin
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
@@ -277,21 +278,28 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return translator.get(_.noRights), True
+
     counter = 0
     for el in elements:
-        if len(el['text']) > 0:
-            DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
-            counter += 1
+        db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
+        if db_statement:
+            db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+            if len(el['text']) > 0 and db_textversion.content.toLowerCase().strip() != el['text'].toLowerCase().strip():
+                DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
+                counter += 1
     if counter == 0:
         return translator.get(_.noCorrections), True
     DBDiscussionSession.flush()
     transaction.commit()
 
     for el in elements:
-        if len(el['text']) > 0:
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
-                                                                               ReviewEdit.statement_uid == el['uid'])).order_by(ReviewEdit.uid.desc()).first()
-            DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, el['uid'], 'statement', el['text']))
+        db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
+        if db_statement:
+            db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+            if len(el['text']) > 0 and db_textversion.content.toLowerCase().strip() != el['text'].toLowerCase().strip():
+                db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
+                                                                                   ReviewEdit.statement_uid == el['uid'])).order_by(ReviewEdit.uid.desc()).first()
+                DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, el['uid'], 'statement', el['text']))
     DBDiscussionSession.flush()
     transaction.commit()
 
