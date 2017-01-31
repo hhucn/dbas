@@ -496,8 +496,8 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
-    db_nick2 = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-    db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
+    db_nick2 = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname) == func.lower(nickname)).first()
+    db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     is_mail_valid = validate_email(email, check_mx=True)
 
     # are the password equal?
