@@ -2277,17 +2277,17 @@ def fuzzy_search(request, for_api=False, api_data=None):
 
         logger('Graph.lib', 'get_doj_data', 'main')
 
-        try:
-            url = auto_completion_url + '?issue={}&mode={}&value={}'.format(str(issue), str(mode), str(value))
-            resp = requests.get(url)
-            if resp.status_code == 200:
-                return_dict = json.loads(resp.text)
-                if for_api:
-                    return return_dict
-                return json.dumps(return_dict)
+        # try:
+        #     url = auto_completion_url + '?issue={}&mode={}&value={}'.format(str(issue), str(mode), str(value))
+        #     resp = requests.get(url)
+        #     if resp.status_code == 200:
+        #         return_dict = json.loads(resp.text)
+        #         if for_api:
+        #             return return_dict
+        #         return json.dumps(return_dict)
 
-        except Exception as e:
-            logger('fuzzy_search', 'def', 'Error grepping data via microserver: ' + str(e))
+        # except Exception as e:
+        #     logger('fuzzy_search', 'def', 'Error grepping data via microserver: ' + str(e))
 
         return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 

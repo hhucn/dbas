@@ -458,7 +458,7 @@ function Main () {
 		$('#' + addStatementContainerMainInputId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
-				if ($('#' + discussionBubbleSpaceId).find('p:last-child').text().indexOf(_t(initialPositionInterest)) != -1) {
+				if ($('#' + discussionBubbleSpaceId).find('.triangle-l:last-child').text().indexOf(_t_discussion(initialPositionInterest)) != -1) {
 					// here we have our start statement
 					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 				} else {
