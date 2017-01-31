@@ -84,7 +84,7 @@
 							</td>
 						</tr>
 					</table>
-					<div>
+					<div tal:condition="not:extras.use_with_ldap">
                         <div class="center text-center" style="float:left; margin: 2em;">
                             <img id="user_gravatar" class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
 						    <br>
@@ -112,14 +112,90 @@
 			</div>
 		</div>
 
-		<div class="container colored-container">
+		<div class="container colored-container" tal:condition="extras.use_with_ldap">
+			<div class="content row">
+
+				<div class="col-md-6" id="statistics">
+					<h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
+					<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="statements_posted">Statements posted</span>
+								<a href="#"><i id="info-statements" class="fa fa-info-circle"></i></a>
+							</td>
+							<td id="statements-done-count" style="text-align: right">${settings.statements_posted}</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="edits_done">Edits done</span>
+								<a href="#"><i id="info-edits" class="fa fa-info-circle"></i></a>
+							</td>
+							<td id="edits-done-count" style="text-align: right">${settings.edits_done}</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>
+								<a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
+							</td>
+							<td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span>
+								<a href="#"><i id="info-vote-statements" class="fa fa-info-circle"></i></a>
+							</td>
+							<td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="reputation">Reputation</span>
+								<a href="${request.application_url}/review/reputation"><i class="fa fa-info-circle"></i></a>
+							</td>
+							<td style="text-align: right">${settings.reputation}</td>
+						</tr>
+					</table>
+					<!--<div class="text-center">-->
+					<!--	<input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />-->
+					<!--</div>-->
+				</div>
+
+                <div class="col-md-6" style="font-size: 14px; margin-top: 5em">
+                    <div class="center text-center" style="float:left; margin: 2em;">
+                        <img id="user_gravatar" class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
+                        <br>
+                        <span i18n:translate="profile_picture">Profile Picture</span>
+                    </div>
+                    <span i18n:translate="change_gravatar">Change your profile picture on the</span>
+                    <a style="color: #2196f3;" href="https://en.gravatar.com/site/login">Gravatar website</a>.
+                    <span i18n:translate="what_is_gravatar">A Gravatar is a globally recognized avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
+                </div>
+			</div>
+
+			<div class="col-md-12">
+				<div id="statistics-alert" class="alert alert-dismissible alert-danger hidden">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+					<span id="statistics-alert-message" i18n:translate="statistics_not_deleted">Statistics could not be deleted.</span>
+
+				</div>
+				<div id="statistics-success" class="alert alert-dismissible alert-success hidden">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<i class="fa fa-circle" aria-hidden="true"></i>
+					<span id="statistics-success-message" i18n:translate="statistics_deletet">Statistics were set successfully deleted.</span>
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="container colored-container" tal:condition="not:extras.use_with_ldap">
 			<div class="content row">
 				<div class="col-md-7">
 					<h4><i class="fa fa-lock" aria-hidden="true" style="margin-right: 0.5em;"></i>
                         <span tal:condition="not:extras.use_with_ldap" i18n:translate="change_password">Change your password</span>
                         <span tal:condition="extras.use_with_ldap" i18n:translate="change_dbas_password">Change your password in D-BAS</span>
                     </h4>
-                    <p tal:condition="extras.use_with_ldap" i18n:translate="this_does_not_affect_other_services">This does not affect other services next to D-BAS.</p>
+                    <p i18n:translate="this_does_not_affect_other_services">This does not affect other services next to D-BAS.</p>
 					<form action="/settings" method="post">
                         <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
 

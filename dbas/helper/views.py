@@ -357,24 +357,46 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         password = escape_string(password)
         url = ''
 
+    is_ldap = is_usage_with_ldap(request)
+
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # check if the user exists
         logger('ViewHelper', 'user_login', 'user \'' + nickname + '\' does not exists')
-        success = False
-        is_ldap = is_usage_with_ldap(request)
 
         # if the user does not exists and we are using LDAP, we'll grep the user
         if is_ldap:
-            success, db_user = catch_user_from_ldap(request, nickname, password, _tn)
+            user_data = verify_ldap_user_data(request, nickname, password)
 
-        if not success:
-            error = _tn.get(_.userPasswordNotMatch)
-            return error
+            if not user_data:
+                return _tn.get(_.userPasswordNotMatch)
+            firstname = user_data[0]
+            lastname = user_data[1]
+            gender = user_data[2]
+            email = user_data[3]
+            success, db_user = set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
 
-    elif not db_user.validate_password(password):  # check password
-        logger('ViewHelper', 'user_login', 'wrong password')
-        error = _tn.get(_.userPasswordNotMatch)
-        return error
+            if not success:
+                error = _tn.get(_.userPasswordNotMatch)
+                return error
+
+        else:
+            success, msg, db_user = try_to_register_new_user_via_ajax
+            if not success:
+                return msg
+
+    else:
+        if is_ldap:
+            user_data = verify_ldap_user_data(request, nickname, password)
+
+            if not user_data and not db_user.validate_password(password):  # check password
+                logger('ViewHelper', 'user_login', 'wrong password')
+                error = _tn.get(_.userPasswordNotMatch)
+                return error
+        else:
+            if not db_user.validate_password(password):  # check password
+                logger('ViewHelper', 'user_login', 'wrong password')
+                error = _tn.get(_.userPasswordNotMatch)
+                return error
 
     logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
@@ -404,7 +426,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         )
 
 
-def catch_user_from_ldap(request, nickname, password, _tn):
+def verify_ldap_user_data(request, nickname, password):
     """
 
     :param nickname:
@@ -415,22 +437,23 @@ def catch_user_from_ldap(request, nickname, password, _tn):
 
     try:
         r = request.registry.settings
-        server    = r['settings:ldap:server']
-        base      = r['settings:ldap:base']
-        scope     = r['settings:ldap:account.scope']
-        filter    = r['settings:ldap:account.filter']
+        server = r['settings:ldap:server']
+        base = r['settings:ldap:base']
+        scope = r['settings:ldap:account.scope']
+        filter = r['settings:ldap:account.filter']
         firstname = r['settings:ldap:account.firstname']
-        lastname  = r['settings:ldap:account.lastname']
-        title     = r['settings:ldap:account.title']
-        email     = r['settings:ldap:account.email']
-        logger('ViewHelper', 'catch_user_from_ldap', 'parsed data')
+        lastname = r['settings:ldap:account.lastname']
+        title = r['settings:ldap:account.title']
+        email = r['settings:ldap:account.email']
+        logger('ViewHelper', 'verify_ldap_user_data', 'parsed data')
 
-        logger('ViewHelper', 'catch_user_from_ldap', 'ldap.initialize(\'' + server + '\')')
+        logger('ViewHelper', 'verify_ldap_user_data', 'ldap.initialize(\'' + server + '\')')
         l = ldap.initialize(server)
         l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
-        logger('ViewHelper', 'catch_user_from_ldap', 'simple_bind_s(\'' + nickname + scope + '\', \'***\')')
+        logger('ViewHelper', 'verify_ldap_user_data', 'simple_bind_s(\'' + nickname + scope + '\', \'***\')')
         l.simple_bind_s(nickname + scope, password)
-        logger('ViewHelper', 'catch_user_from_ldap', 'l.search_s(' + base + ', ldap.SCOPE_SUBTREE, (\'' + filter + '=' + nickname + '\'))[0][1]')
+        logger('ViewHelper', 'verify_ldap_user_data',
+               'l.search_s(' + base + ', ldap.SCOPE_SUBTREE, (\'' + filter + '=' + nickname + '\'))[0][1]')
         user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
 
         firstname = user[firstname][0].decode('utf-8')
@@ -438,40 +461,44 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         title = user[title][0].decode('utf-8')
         gender = 'm' if 'Herr' in title else 'f' if 'Frau' in title else 'n'
         email = user[email][0].decode('utf-8')
+        logger('ViewHelper', 'verify_ldap_user_data', 'success')
 
-        # getting the authors group
-        db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
-
-        # does the group exists?
-        if not db_group:
-            info = _tn.get(_.errorTryLateOrContant)
-            logger('ViewHelper', 'user_ldap_login', 'Internal error occured')
-            return False, info
-
-        success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                                 db_group.uid, _tn.get_lang())
-
-        if db_new_user:
-            # sending an email and message
-            subject = _tn.get(_.accountRegistration)
-            body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
-            send_mail(request, subject, body, email, _tn.get_lang())
-            send_welcome_notification(db_new_user.uid, _tn)
-
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        if db_user:
-            return success, db_user
-
-        logger('ViewHelper', 'user_ldap_login', 'new user not found in db')
-        return False, _tn.get(_.errorTryLateOrContant)
+        return [firstname, lastname, gender, email]
 
     except ldap.INVALID_CREDENTIALS:
-        logger('ViewHelper', 'user_ldap_login', 'ldap credential error')
-        return False, None
+        logger('ViewHelper', 'verify_ldap_user_data', 'ldap credential error')
+        return None
 
     except ldap.SERVER_DOWN:
-        logger('ViewHelper', 'user_ldap_login', 'can\'t reach server within 5s')
-        return False, None
+        logger('ViewHelper', 'verify_ldap_user_data', 'can\'t reach server within 5s')
+        return None
+
+
+def set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn):
+    # getting the authors group
+    db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
+
+    # does the group exists?
+    if not db_group:
+        info = _tn.get(_.errorTryLateOrContant)
+        logger('ViewHelper', 'set_new_user', 'Internal error occured')
+        return False, info
+
+    success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password, gender,
+                                                             db_group.uid, _tn.get_lang())
+
+    if db_new_user:
+        # sending an email and message
+        subject = _tn.get(_.accountRegistration)
+        body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
+        send_mail(request, subject, body, email, _tn.get_lang())
+        send_welcome_notification(db_new_user.uid, _tn)
+
+        logger('ViewHelper', 'set_new_user', 'set new user in db')
+        return success, db_new_user
+
+    logger('ViewHelper', 'set_new_user', 'new user not found in db')
+    return False, _tn.get(_.errorTryLateOrContant)
 
 
 def try_to_register_new_user_via_ajax(request, ui_locales):
@@ -493,6 +520,7 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
     recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
     is_human, error = validate_recaptcha(recaptcha)
+    db_new_user = None
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
@@ -503,44 +531,46 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     # are the password equal?
     if not password == passwordconfirm:
         logger('ViewHelper', 'user_registration', 'Passwords are not equal')
-        info = _t.get(_.pwdNotEqual)
+        msg = _t.get(_.pwdNotEqual)
     # is the nick already taken?
     elif db_nick1 or db_nick2:
         logger('ViewHelper', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
-        info = _t.get(_.nickIsTaken)
+        msg = _t.get(_.nickIsTaken)
     # is the email already taken?
     elif db_mail:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is taken')
-        info = _t.get(_.mailIsTaken)
+        msg = _t.get(_.mailIsTaken)
     # is the email valid?
     elif not is_mail_valid:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
-        info = _t.get(_.mailNotValid)
+        msg = _t.get(_.mailNotValid)
     # is anti-spam correct?
     elif not is_human or error:
         logger('ViewHelper', 'user_registration', 'recaptcha error')
-        info = _t.get(_.maliciousAntiSpam)
+        msg = _t.get(_.maliciousAntiSpam)
     # lets go
     else:
+
         # getting the authors group
         db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
 
         # does the group exists?
         if not db_group:
-            info = _t.get(_.errorTryLateOrContant)
+            msg = _t.get(_.errorTryLateOrContant)
             logger('ViewHelper', 'user_registration', 'Error occured')
-        else:
-            success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email.lower(), nickname, password,
-                                                                     gender, db_group.uid, ui_locales)
+            return success, msg, db_new_user
 
-            if db_new_user:
-                # sending an email and message
-                subject = _t.get(_.accountRegistration)
-                body = _t.get(_.accountWasRegistered).format(firstname, lastname, email)
-                send_mail(request, subject, body, email, ui_locales)
-                send_welcome_notification(db_new_user.uid, _t)
+        success, msg, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password,
+                                                                gender, db_group.uid, ui_locales)
 
-    return success, info
+        if db_new_user:
+            # sending an email and message
+            subject = _t.get(_.accountRegistration)
+            body = _t.get(_.accountWasRegistered).format(firstname, lastname, email)
+            send_mail(request, subject, body, email, ui_locales)
+            send_welcome_notification(db_new_user.uid, _t)
+
+    return success, msg, db_new_user
 
 
 def request_password(request, ui_locales):

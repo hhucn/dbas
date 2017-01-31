@@ -249,7 +249,7 @@ class DictionaryHelper(object):
             'title_notifications': _tn.get(_.notificationSettingsTitle),
             'title_public_nick': _tn.get(_.publicNickTitle),
             'title_preferred_lang': _tn.get(_.preferedLangTitle),
-            'public_page_url': (main_page + '/user/' + (db_user.nickname if db_settings.should_show_public_nickname else public_nick)) if db_user else '',
+            'public_page_url': (main_page + '/user/' + str(db_user.uid)) if db_user else '',
             'on': _tn.get(_.on),
             'off': _tn.get(_.off),
             'current_lang': db_language.name if db_language else '?',
