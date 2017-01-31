@@ -284,7 +284,7 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
         db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
         if db_statement:
             db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-            if len(el['text']) > 0 and db_textversion.content.toLowerCase().strip() != el['text'].toLowerCase().strip():
+            if len(el['text']) > 0 and db_textversion.content.lower().strip() != el['text'].lower().strip():
                 DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
                 counter += 1
     if counter == 0:
@@ -296,7 +296,7 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
         db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
         if db_statement:
             db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-            if len(el['text']) > 0 and db_textversion.content.toLowerCase().strip() != el['text'].toLowerCase().strip():
+            if len(el['text']) > 0 and db_textversion.content.lower().strip() != el['text'].lower().strip():
                 db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
                                                                                    ReviewEdit.statement_uid == el['uid'])).order_by(ReviewEdit.uid.desc()).first()
                 DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, el['uid'], 'statement', el['text']))
