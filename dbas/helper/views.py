@@ -380,7 +380,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
                 return error
 
         else:
-            success, msg, db_user = try_to_register_new_user_via_ajax
+            success, msg, db_user = try_to_register_new_user_via_ajax(request, _tn)
             if not success:
                 return msg
 
@@ -501,7 +501,7 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
     return False, _tn.get(_.errorTryLateOrContant)
 
 
-def try_to_register_new_user_via_ajax(request, ui_locales):
+def try_to_register_new_user_via_ajax(request, _tn):
     """
 
     :param request:
@@ -509,7 +509,6 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     :return:
     """
     success = ''
-    _t = Translator(ui_locales)
     params          = request.params
     firstname       = escape_string(params['firstname']) if 'firstname' in params else ''
     lastname        = escape_string(params['lastname']) if 'lastname' in params else ''
@@ -531,23 +530,23 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     # are the password equal?
     if not password == passwordconfirm:
         logger('ViewHelper', 'user_registration', 'Passwords are not equal')
-        msg = _t.get(_.pwdNotEqual)
+        msg = _tn.get(_.pwdNotEqual)
     # is the nick already taken?
     elif db_nick1 or db_nick2:
         logger('ViewHelper', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
-        msg = _t.get(_.nickIsTaken)
+        msg = _tn.get(_.nickIsTaken)
     # is the email already taken?
     elif db_mail:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is taken')
-        msg = _t.get(_.mailIsTaken)
+        msg = _tn.get(_.mailIsTaken)
     # is the email valid?
     elif not is_mail_valid:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
-        msg = _t.get(_.mailNotValid)
+        msg = _tn.get(_.mailNotValid)
     # is anti-spam correct?
     elif not is_human or error:
         logger('ViewHelper', 'user_registration', 'recaptcha error')
-        msg = _t.get(_.maliciousAntiSpam)
+        msg = _tn.get(_.maliciousAntiSpam)
     # lets go
     else:
 
@@ -556,19 +555,19 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
 
         # does the group exists?
         if not db_group:
-            msg = _t.get(_.errorTryLateOrContant)
+            msg = _tn.get(_.errorTryLateOrContant)
             logger('ViewHelper', 'user_registration', 'Error occured')
             return success, msg, db_new_user
 
         success, msg, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password,
-                                                                gender, db_group.uid, ui_locales)
+                                                                gender, db_group.uid, _tn.get_lang)
 
         if db_new_user:
             # sending an email and message
-            subject = _t.get(_.accountRegistration)
-            body = _t.get(_.accountWasRegistered).format(firstname, lastname, email)
-            send_mail(request, subject, body, email, ui_locales)
-            send_welcome_notification(db_new_user.uid, _t)
+            subject = _tn.get(_.accountRegistration)
+            body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
+            send_mail(request, subject, body, email, _tn.get_lang)
+            send_welcome_notification(db_new_user.uid, _tn)
 
     return success, msg, db_new_user
 
