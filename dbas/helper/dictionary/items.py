@@ -607,17 +607,18 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_jump(self, arg_uid, slug, for_api):
+    def get_array_for_jump(self, arg_uid, slug, for_api, history):
         """
 
         :param arg_uid:
         :param slug:
         :param for_api:
+        :param history:
         :return:
         """
-        # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
-        item_text = get_jump_to_argument_text_list(self.lang)
-        coming_from_jump = False # TODO
+        splitted_history = history.split('-')
+        coming_from_jump = '/jump' in history[:-1] if len(splitted_history) > 0 else False
+        item_text = get_jump_to_argument_text_list(self.lang, coming_from_jump)
         url = self.__get_url_for_jump_array(slug, for_api, arg_uid)
 
         answers = list()

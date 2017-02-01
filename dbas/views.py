@@ -911,7 +911,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid)
-    item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
+    item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api, history)
     extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                     True, True, request,
                                                                                     application_url=request.application_url,

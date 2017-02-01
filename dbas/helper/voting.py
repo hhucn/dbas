@@ -167,9 +167,9 @@ def add_seen_statement(statement_uid, db_user):
     :param statement_uid: uid of the statement
     :return: undefined
     """
-    logger('VotingHelper', 'add_seen_statement', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid))
     if not is_integer(statement_uid) or not isinstance(db_user, User):
         return False
+    logger('VotingHelper', 'add_seen_statement', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid))
 
     val = __statement_seen_by_user(db_user, statement_uid)
     if val:

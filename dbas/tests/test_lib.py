@@ -120,9 +120,9 @@ class LibTests(unittest.TestCase):
 
     def test_get_all_arguments_by_statement(self):
         argument_list = lib.get_all_arguments_by_statement(3)
-        self.assertEqual(len(argument_list), 2)
+        self.assertEqual(len(argument_list), 4)
         for argument in argument_list:
-            self.assertTrue(argument.uid in [4, 5])
+            self.assertTrue(argument.uid in [4, 5, 6, 7])
 
         self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 4)
         self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)

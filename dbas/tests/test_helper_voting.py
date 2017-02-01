@@ -87,7 +87,8 @@ class VotingHelperTest(unittest.TestCase):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_seen_statement([], 1100)
+        db_user = DBDiscussionSession.query(User).get(1100)
+        val = add_seen_statement([], db_user)
         self.assertFalse(val)
 
         val = add_seen_statement([], self.user)
@@ -105,9 +106,10 @@ class VotingHelperTest(unittest.TestCase):
         val = add_seen_statement('a', self.user)
         self.assertFalse(val)
 
-        val = add_seen_statement(1, 1100)
+        val = add_seen_statement(1, db_user)
         self.assertFalse(val)
 
+        db_user = DBDiscussionSession.query(User).get(1)
         val = add_seen_statement(0, 1)
         self.assertFalse(val)
 
