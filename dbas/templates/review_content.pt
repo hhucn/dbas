@@ -52,7 +52,7 @@
                     <div class="col-md-7">
                         <blockquote tal:condition="not:subpage.button_set.is_edit">
                             <div style="padding-left: 0.5em">
-                                <span>Information for the different reasons</span>
+                                <span i18n:translate="information_for_the_different_reasons">Information for the different reasons</span>
                                 <ul style="padding-left: 0.5em">
                                     <li><strong i18n:translate="off_topic_or_irrelevant">Off topic or irrelevant</strong> <span i18n:translate="off_topic_explanation">text does not belong to the topic under discussion</span>.</li>
                                     <li><strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abusive</strong> <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.</li>

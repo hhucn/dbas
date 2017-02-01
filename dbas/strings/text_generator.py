@@ -4,11 +4,11 @@
 from dbas.lib import get_author_data
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import VoteStatement, VoteArgument, User, Argument
-from dbas.database.initializedb import nick_of_anonymous_user
 from sqlalchemy import and_
 from .keywords import Keywords as _
 from .translator import Translator
 
+nick_of_anonymous_user = 'anonymous'
 
 tag_type = 'span'
 
@@ -313,8 +313,7 @@ def __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, s
     return ret_dict
 
 
-def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_position, end_tag,
-                                    is_dont_know, _t):
+def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_position, end_tag, is_dont_know, _t):
     """
 
     :param premise:

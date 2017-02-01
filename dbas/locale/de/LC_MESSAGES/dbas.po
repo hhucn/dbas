@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-31 16:21+0100\n"
+"POT-Creation-Date: 2017-02-01 15:51+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1583,6 +1583,11 @@ msgstr "Lass' mich eine Verbesserungen angeben"
 #: templates/review_content.pt:46 templates/review_content.pt:82
 msgid "reject_it"
 msgstr "Ablehnen"
+
+#. Default: Information for the different reasons
+#: templates/review_content.pt:55
+msgid "information_for_the_different_reasons"
+msgstr "Informationen zu den Gründen"
 
 #. Default: Off topic or irrelevant
 #: templates/review_content.pt:57
