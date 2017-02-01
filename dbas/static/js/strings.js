@@ -159,12 +159,15 @@ var interestingOnDBAS               = 'interestingOnDBAS';
 var initialPositionInterest         = 'initialPositionInterest';
 var itIsTrueThat                    = 'itIsTrueThat';
 var itIsFalseThat                   = 'itIsFalseThat';
+var interestingNews                 = 'interestingNews';
 var isItTrueThat                    = 'isItTrueThat';
 var isItFalseThat                   = 'isItFalseThat';
 var keepSetting                     = 'keepSetting';
 var hideAllUsers                    = 'hideAllUsers';
 var hideAllArguments                = 'hideAllArguments';
 var languageCouldNotBeSwitched      = 'languageCouldNotBeSwitched';
+var languageSwitchModalTitle        = 'languageSwitchModalTitle';
+var languageSwitchModalBody         = 'languageSwitchModalBody';
 var last_action                     = 'last_action';
 var last_login                      = 'last_login';
 var legend                          = 'legend';
@@ -300,6 +303,7 @@ var BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
 var GUIDED_TOUR = 'DID_GUIDED_TOUR';
 var GUIDED_TOUR_RUNNING = 'GUIDED_TOUR_RUNNING';
 var ADMIN_WARNING = 'hide-admin-caution-warning';
+var LANG_SWITCH_WARNING = 'LANG_SWITCH_WARNING';
 
 /**
  * URL's
@@ -391,10 +395,11 @@ var dbas_en = {
     'hideGenerator': 'Hide Generator',
     'internalError': '<strong>Internal Error:</strong> Maybe the server is offline.',
     'inputEmpty': 'Input is empty!',
-    'initialPositionInterest': 'What is the initial position you are interested in?',
+    'initialPositionInterest': 'I want to talk about the position',
     'interestingOnDBAS': 'Interesting discussion on DBAS',
     'itIsTrueThat': 'it is true that',
     'itIsFalseThat': 'it is false that',
+    'interestingNews': 'Interesting news from',
     'isItTrueThat': 'it is true that',
     'isItFalseThat': 'it is false that',
     'issue': 'Issue',
@@ -402,6 +407,8 @@ var dbas_en = {
     'hideAllUsers': 'Hide all users',
     'hideAllArguments': 'Hide all arguments',
     'languageCouldNotBeSwitched': 'Unfortunately, the language could not be switched',
+    'languageSwitchModalTitle': 'Change of Language',
+    'languageSwitchModalBody': 'Changing current language does not affect the discussion language, because this language is mapped to the content of the discussion.',
     'last_action': 'Last Action',
     'last_login': 'Last Login',
     'legend': 'Legend',
@@ -482,7 +489,7 @@ var dbas_en = {
     'statisticsDeleted': 'Statistics were deleted.',
     'statisticsNotDeleted': 'Statistics could not be deleted.',
     'statisticsNotFetched': 'Statistics could not be fetched.',
-    'statisticsNotThere': 'You have no statistics.',
+    'statisticsNotThere': 'You have no statistics for this point.',
     'support': 'Support',
     'surname' : 'Surname',
     'sureToDeleteReview': 'Are you sure, that you want to revoke this decision? This revoke cannot be undone!',
@@ -611,10 +618,11 @@ var dbas_de = {
     'hideGenerator': 'Verstecke Generator',
     'internalError': '<strong>Interner Fehler:</strong> Wahrscheinlich ist der Server nicht erreichbar. Bitte laden Sie die Seite erneut!.',
     'inputEmpty': 'Ihre Eingabe ist leer!',
-    'initialPositionInterest': 'An welcher Aussage sind Sie interessiert?',
+    'initialPositionInterest': 'Ich möchte darüber reden, dass',
     'interestingOnDBAS': 'Interessante Diskussion in D-BAS',
     'itIsTrueThat': 'es ist richtig, dass',
     'itIsFalseThat': 'es ist falsch, dass',
+    'interestingNews': 'Interessante Neuigkeiten vom',
     'isItTrueThat': 'ist es richtig, dass',
     'isItFalseThat': 'ist es falsch, dass',
     'issue': 'Thema',
@@ -623,6 +631,8 @@ var dbas_de = {
     'hideAllArguments': 'Verstecke alle Argumente',
     'hideAllAttacks': 'Verstecke alle Angriffe',
     'languageCouldNotBeSwitched': 'Leider konnte die Sprache nicht gewechselt werden',
+    'languageSwitchModalTitle': 'Wechseln der Sprache',
+    'languageSwitchModalBody': 'Eine Umstellung der Sprache ändert nicht die Diskussionssprache. Diese ist an den Inhalt der Diskussion geknüpft.',
     'last_action': 'Letzte Aktion',
     'last_login': 'Letze Anmeldung',
     'logfile': 'Logdatei für',
@@ -700,7 +710,7 @@ var dbas_de = {
     'statisticsDeleted': 'Statistiken wurden gelöscht.',
     'statisticsNotDeleted': 'Statistiken konnten nicht gelöscht werden.',
     'statisticsNotFetched': 'Statistiken konnten nicht angefordert werden.',
-    'statisticsNotThere': 'Sie haben keine Statistiken.',
+    'statisticsNotThere': 'Sie haben keine Statistiken für diesen Punkt.',
     'strength': 'Stärke',
     'strong': 'stark',
     'statement': 'Aussage',

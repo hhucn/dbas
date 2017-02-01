@@ -435,10 +435,9 @@ def get_information_of(db_user, lang):
     :param lang: ui_locales
     :return:
     """
-    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
     ret_dict = dict()
-    ret_dict['public_nick'] = db_user.nickname if db_settings.should_show_public_nickname else db_user.public_nickname
+    ret_dict['public_nick'] = db_user.get_global_nickname()
     ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)
     ret_dict['last_login']  = sql_timestamp_pretty_print(db_user.last_login, lang)
     ret_dict['registered']  = sql_timestamp_pretty_print(db_user.registered, lang)

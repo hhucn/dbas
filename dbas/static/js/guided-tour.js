@@ -19,6 +19,19 @@ function GuidedTour(){
 			'</div>' +
 			'<button class="btn btn-sm btn-default" data-role="end">' + _t(tourEnd) + '</button>' +
 		'</div>';
+	
+	var template_end =
+		'<div class="popover tour">' +
+			'<div class="arrow"></div>' +
+			'<h3 class="popover-title"></h3>' +
+			'<div class="popover-content"></div>' +
+			'<div class="popover-navigation">' +
+				'<div class="btn-group">' +
+					'<button class="btn btn-sm btn-default" data-role="prev">&#xab; ' + _t(prev) + '</button>' +
+					'<button class="btn btn-sm btn-default" data-role="next">' + _t(next) + ' &#xbb;</button>' +
+			'</div>' +
+			'<button class="btn btn-sm btn-success" data-role="end">' + _t(tourEnd) + '</button>' +
+		'</div>';
 		
 	// click function for lang switch
 	var set_lang_click = function () {
@@ -110,7 +123,8 @@ function GuidedTour(){
 			title: _t(tourHaveFunTitle) + lang_switcher,
 			content: _t(tourHaveFunContent),
 			placement: 'bottom',
-			path: '/#tour2'
+			path: '/#tour2',
+			template: template_end
 		};
 		
 		//data-placement="bottom"

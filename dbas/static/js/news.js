@@ -318,12 +318,12 @@ function News() {
 		if ($(_this).attr('id') === shareUrlButtonMail) {
 			return;
 		}
-		var id = $(_this).parent().attr('id'),
+		var id = $(_this).closest('.panel-heading').attr('id'),
 				title = $('#' + id + '_title').text(),
 				date = $('#' + id + '_date').text(),
 				author = $('#' + id + '_author').text();
 
-		new Sharing().emailShare('user@example.com', "DBAS: " + title, "Interesting news from " + date + ", by " + author + " - " + window.location.href);
+		new Sharing().emailShare('', "DBAS: " + title, _t(interestingNews) + ' ' + date + ", by " + author + " - " + window.location.href);
 	};
 
 	/**

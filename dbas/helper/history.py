@@ -9,7 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print, Issue
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid,\
-    get_text_for_premisesgroup_uid, get_text_for_conclusion
+    get_text_for_premisesgroup_uid, get_text_for_conclusion, bubbles_already_last_in_list
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation
@@ -112,27 +112,39 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     return bubble_array
 
 
+def __is_last_step_duplicate(index, step, splitted_history, main_url):
+    if step not in main_url:
+        return False
+
+    if 'justify/' in splitted_history[index:] or 'reaction/' in splitted_history[index:]:
+        return False
+
+    return True
+
+
 def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, url):
     logger('history_helper', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
     steps = step.split('/')
+    if len(steps) < 3:
+        return
     mode = steps[2]
     relation = steps[3] if len(steps) > 3 else ''
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
-        bubbles = __get_bubble_from_justify_statement_step(step, nickname, lang, url)
-        if bubbles:
-            bubble_array += bubbles
+        bubble = __get_bubble_from_justify_statement_step(step, nickname, lang, url)
+        if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
+            bubble_array += bubble
 
     elif 'd' in mode and relation == '':
         bubbles = __get_bubble_from_dont_know_step(step, nickname, lang, url)
-        if bubbles:
+        if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
             bubble_array += bubbles
 
 
 def __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url):
     logger('history_helper', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
     bubbles = __get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
-    if bubbles:
+    if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
 
 
@@ -163,9 +175,9 @@ def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
         text = text[0:1].upper() + text[1:]
 
     msg = intro + '<' + tag_type + '>' + text + '</' + tag_type + '>'
-    bubbsle_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
-                                            is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
-    return [bubbsle_user]
+    bubble_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
+                                           is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
+    return [bubble_user]
 
 
 def __get_bubble_from_attitude_step(step, nickname, lang, url):

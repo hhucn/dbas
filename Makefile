@@ -42,7 +42,6 @@ clean_users:
 
 clean: clean_db clean_users
 
-
 refresh:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
@@ -54,6 +53,13 @@ fieldtest: users db
 minimal_db: users db
 	init_empty_sql development.ini
 
+docker_dump_db:
+	docker-compose -f docker-compose-export-db.yml up --force-recreate --abort-on-container-exit
+	docker start dbas_db_1
+	sleep 1 # wait for db inside of dbas_db_1
+	docker exec dbas_db_1 pg_dumpall -U postgres --file=db.sql -c --if-exists
+	docker cp dbas_db_1:db.sql ./db.sql
+	echo ">>> Now push db.sql to the seeded branch in the postgres repo! <<<"
 
 nosetests:
 	nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export

@@ -162,68 +162,64 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
     title = _t.get(_.relativePopularityOfStatements)
 
     for uid in statement_uids:
-        statement_dict = dict()
-        all_users = []
-        db_statement = DBDiscussionSession.query(Statement).get(uid)
-        if not db_statement:
-            statement_dict['uid']       = None
-            statement_dict['text']      = None
-            statement_dict['message']   = None
-            statement_dict['users']     = None
-            statement_dict['seen_by']   = None
-
-        statement_dict['uid'] = str(uid)
-        text = get_text_for_statement_uid(uid)
-        try:
-            if db_statement.is_startpoint and lang == 'de':
-                text = _t.get(_.statementIsAbout) + ' ' + text
-            statement_dict['text'] = text
-        except TypeError:
-            statement_dict['uid']       = None
-            statement_dict['text']      = None
-            statement_dict['message']   = None
-            statement_dict['users']     = None
-            statement_dict['seen_by']   = None
-
-        if is_supportive is not None:
-            is_supportive = True if str(is_supportive) == 'True' else False
-        else:
-            is_supportive = False
-
-        db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == uid,
-                                                                        VoteStatement.is_up_vote == is_supportive,
-                                                                        VoteStatement.is_valid == True,
-                                                                        VoteStatement.author_uid != db_user_uid)).all()
-
-        for vote in db_votes:
-            voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
-            users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
-            all_users.append(users_dict)
-        statement_dict['users'] = all_users
-
-        if len(db_votes) == 0:
-            db_user = DBDiscussionSession.query(User).get(db_user_uid)
-            if db_user:
-                if db_user.gender == 'm':
-                    msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-                elif db_user.gender == 'f':
-                    msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
-                else:
-                    msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-            else:
-                msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-            statement_dict['message'] = msg
-        elif len(db_votes) == 1:
-            statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
-        else:
-            statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
-
-        db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(uid)).all()
-        statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
-
+        statement_dict = __get_opinions_for_uid(uid, is_supportive, db_user_uid, lang, _t, main_page)
         opinions.append(statement_dict)
 
     return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
+
+
+def __get_opinions_for_uid(uid, is_supportive, db_user_uid, lang, _t, main_page):
+    none_dict = {'uid': None,  'text': None,  'message': None,  'users': None,  'seen_by': None}
+    statement_dict = dict()
+    all_users = []
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
+    if not db_statement:
+        statement_dict.update(none_dict)
+
+    statement_dict['uid'] = str(uid)
+    text = get_text_for_statement_uid(uid)
+    try:
+        if db_statement.is_startpoint and lang == 'de':
+            text = _t.get(_.statementIsAbout) + ' ' + text
+        statement_dict['text'] = text
+    except TypeError:
+        statement_dict.update(none_dict)
+
+    is_supportive = (True if str(is_supportive) == 'True' else False) if is_supportive is not None else False
+    db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == uid,
+                                                                    VoteStatement.is_up_vote == is_supportive,
+                                                                    VoteStatement.is_valid == True,
+                                                                    VoteStatement.author_uid != db_user_uid)).all()
+
+    for vote in db_votes:
+        voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
+        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
+        all_users.append(users_dict)
+    statement_dict['users'] = all_users
+    statement_dict['message'] = __get_genered_text_for_votecount(db_votes, db_user_uid, _t)
+
+    db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(uid)).all()
+    statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
+    return statement_dict
+
+
+def __get_genered_text_for_votecount(db_votes, db_user_uid, _t):
+    if len(db_votes) == 0:
+        db_user = DBDiscussionSession.query(User).get(db_user_uid)
+        if db_user:
+            if db_user.gender == 'm':
+                msg = _t.get(_.voteCountTextMayBeFirst)
+            elif db_user.gender == 'f':
+                msg = _t.get(_.voteCountTextMayBeFirstF)
+            else:
+                msg = _t.get(_.voteCountTextMayBeFirst)
+        else:
+            msg = _t.get(_.voteCountTextMayBeFirst)
+        return msg + '.'
+    elif len(db_votes) == 1:
+        return str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
+    else:
+        return str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
 
 def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, main_page):
@@ -275,23 +271,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
             users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
             all_users.append(users_dict)
         statement_dict['users'] = all_users
-
-        if len(db_votes) == 0:
-            db_user = DBDiscussionSession.query(User).get(db_user_uid)
-            if db_user:
-                if db_user.gender == 'm':
-                    msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-                elif db_user.gender == 'f':
-                    msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
-                else:
-                    msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-            else:
-                msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-            statement_dict['message'] = msg
-        elif len(db_votes) == 1:
-            statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
-        else:
-            statement_dict['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
+        statement_dict['message'] = __get_genered_text_for_votecount(db_votes, db_user_uid, _t)
 
         db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid)).all()
         statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
@@ -346,23 +326,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         all_users.append(users_dict)
     opinions['users'] = all_users
-
-    if len(db_votes) == 0:
-        db_user = DBDiscussionSession.query(User).get(db_user_uid)
-        if db_user:
-            if db_user.gender == 'm':
-                msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-            elif db_user.gender == 'f':
-                msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
-            else:
-                msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-        else:
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-        opinions['message'] = msg
-    elif len(db_votes) == 1:
-        opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
-    else:
-        opinions['message'] = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
+    opinions['message'] = __get_genered_text_for_votecount(db_votes, db_user_uid, _t)
 
     db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(argument_uid)).all()
     opinions['seen_by'] = len(db_seen_by) if db_seen_by else 0
@@ -478,7 +442,7 @@ def create_users_dict(db_user, timestamp, main_page, lang):
     """
     tmp = db_user.get_global_nickname()
     return {'nickname': tmp,
-            'public_profile_url': main_page + '/user/' + tmp,
+            'public_profile_url': main_page + '/user/' + str(db_user.uid),
             'avatar_url': get_profile_picture(db_user),
             'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}
 
@@ -519,7 +483,7 @@ def get_infos_about_argument(uid, main_page, nickname, _t):
             name += ' (' + _t.get(_.itsYou) + ')'
         supporters.append(name)
         gravatars[name] = get_profile_picture(db_user)
-        public_page[name] = main_page + '/user/' + name
+        public_page[name] = main_page + '/user/' + str(db_user.uid)
 
     return_dict['supporter'] = supporters
     return_dict['gravatars'] = gravatars

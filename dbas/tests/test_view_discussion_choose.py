@@ -1,7 +1,7 @@
 import unittest
 
 from pyramid import testing
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Premise, StatementSeenBy
@@ -77,8 +77,11 @@ class DiscussionChhoseViewTests(unittest.TestCase):
             'id': 5,
             'pgroup_ids': [15, 17, 'a'],
         }
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -88,8 +91,11 @@ class DiscussionChhoseViewTests(unittest.TestCase):
             'id': 5,
             'pgroup_ids': [15, 17, 'a'],
         }
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -99,5 +105,8 @@ class DiscussionChhoseViewTests(unittest.TestCase):
             'id': 5,
             'pgroup_ids': [15, 17, 55],
         }
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass

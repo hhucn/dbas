@@ -4,9 +4,6 @@ D-BAS database Model
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import datetime
-import time
-
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from dbas.database import DBDiscussionSession, DiscussionBase
@@ -42,8 +39,8 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 
 
 def get_now():
-    # return arrow.utcnow()
-    return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+    return arrow.utcnow().to('local')
+    # return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Issue(DiscussionBase):
@@ -214,8 +211,9 @@ class User(DiscussionBase):
         self.public_nickname = nick
 
     def get_global_nickname(self):
+        # TODO CHANGE THIS IF YOU WANT TO SEE OTHER NAMES
         db_settings = DBDiscussionSession.query(Settings).get(self.uid)
-        return self.nickname if db_settings.should_show_public_nickname else self.public_nickname
+        return self.firstname if db_settings.should_show_public_nickname else self.public_nickname
 
 
 class Settings(DiscussionBase):

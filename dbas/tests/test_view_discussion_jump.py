@@ -1,7 +1,7 @@
 import unittest
 
 from pyramid import testing
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
@@ -38,5 +38,8 @@ class DiscussionJumpViewTests(unittest.TestCase):
             'arg_id': 35,
         }
         request = testing.DummyRequest(matchdict=matchdict)
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass

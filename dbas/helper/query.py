@@ -136,8 +136,11 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     for group in premisegroups:  # premise groups is a list of lists
         new_argument = __insert_new_premises_for_argument(request, group, attack_type, arg_id, issue, user)
         if not isinstance(new_argument, Argument):  # break on error
-            error = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
-                statement_min_length) + ')'
+            a = _tn.get(_.notInsertedErrorBecauseEmpty)
+            b = _tn.get(_.minLength)
+            c = str(statement_min_length)
+            d = _tn.get(_.eachStatement)
+            error = '{} ({}: {} {})'.format(a, b, c, d)
             return -1, None, error
 
         new_argument_uids.append(new_argument.uid)
@@ -267,7 +270,7 @@ def __get_url_for_new_argument(new_argument_uids, history, lang, urlmanager):
     return url
 
 
-def correct_statement(user, uid, corrected_text, url='', request=None):
+def correct_statement(user, uid, corrected_text):
     """
     Corrects a statement
 
@@ -446,7 +449,7 @@ def __get_logfile_dict(textversion, main_page, lang):
     corr_dict = dict()
     corr_dict['uid'] = str(textversion.uid)
     corr_dict['author'] = str(db_author.get_global_nickname())
-    corr_dict['author_url'] = main_page + '/user/' + str(db_author.get_global_nickname())
+    corr_dict['author_url'] = main_page + '/user/' + str(db_author.uid)
     corr_dict['author_gravatar'] = get_profile_picture(db_author, 20)
     corr_dict['date'] = sql_timestamp_pretty_print(textversion.timestamp, lang)
     corr_dict['text'] = str(textversion.content)
@@ -491,11 +494,11 @@ def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, i
     return new_argument
 
 
-def __set_statement(statement, user, is_start, issue):
+def __set_statement(text, user, is_start, issue):
     """
     Saves statement for user
 
-    :param statement: given statement
+    :param text: given statement
     :param user: User.nickname given user
     :param is_start: if it is a start statement
     :param issue: Issue
@@ -506,38 +509,35 @@ def __set_statement(statement, user, is_start, issue):
         return None, False
 
     logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) +
-           ', statement: ' + str(statement) + ', issue: ' + str(issue))
+           ', text: ' + str(text) + ', issue: ' + str(issue))
 
-    # escaping
-    statement = escape_string(statement)
+    # escaping and cleaning
+    text = text.strip()
+    text = ' '.join(text.split())
+    text = escape_string(text)
 
     # check for dot at the end
-    while statement.endswith(','):
-        statement = statement[:-1]
+    while text.endswith(('.', '?', '!', ',')):
+        text = text[:-1]
 
-    if not statement.endswith(('.', '?', '!')):
-        statement += '.'
-    if statement.lower().startswith('because '):
-        statement = statement[8:]
-
-    # check, if the statement already exists
-    db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == statement.lower()).first()
+    # check, if the text already exists
+    db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
     if db_duplicate:
         db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == db_duplicate.uid,
                                                                         Statement.issue_uid == issue)).first()
         return db_statement, True
 
     # add textversion
-    textversion = TextVersion(content=statement, author=db_user.uid)
+    textversion = TextVersion(content=text, author=db_user.uid)
     DBDiscussionSession.add(textversion)
     DBDiscussionSession.flush()
 
-    # add statement
-    statement = Statement(textversion=textversion.uid, is_position=is_start, issue=issue)
-    DBDiscussionSession.add(statement)
+    # add text
+    text = Statement(textversion=textversion.uid, is_position=is_start, issue=issue)
+    DBDiscussionSession.add(text)
     DBDiscussionSession.flush()
 
-    # get new statement
+    # get new text
     new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == textversion.uid,
                                                                      Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
     textversion.set_statement(new_statement.uid)

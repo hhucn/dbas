@@ -410,7 +410,6 @@ def __create_edge_with_vnode(argument, counter, db_premises, edge_type, edges, e
     else:
         target_edge = 'none'
 
-
     # edge from premisegroup to the middle point
     for premise in db_premises:
         edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),

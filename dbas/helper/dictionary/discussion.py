@@ -7,7 +7,7 @@ import dbas.helper.history as HistoryHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, User
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
-    get_text_for_conclusion, create_speechbubble_dict, is_author_of_argument
+    get_text_for_conclusion, create_speechbubble_dict, is_author_of_argument, bubbles_already_last_in_list
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
@@ -131,9 +131,13 @@ class DiscussionDictHelper(object):
                                                  statement_uid=uid, is_supportive=is_supportive, nickname=nickname,
                                                  lang=self.lang)
 
-        bubbles_array.append(select_bubble)
+        if not bubbles_already_last_in_list(bubbles_array, select_bubble):
+            bubbles_array.append(select_bubble)
+
         self.__append_now_bubble(bubbles_array)
-        bubbles_array.append(question_bubble)
+
+        if not bubbles_already_last_in_list(bubbles_array, question_bubble):
+            bubbles_array.append(question_bubble)
 
         if not self.nickname and count_of_items == 1:
             _t = Translator(self.lang)
@@ -269,7 +273,9 @@ class DiscussionDictHelper(object):
         # user_msg[1:], omit_url=True, lang=self.lang)
 
         self.__append_now_bubble(bubbles_array)
-        bubbles_array.append(create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang))
+        sys_bubble = create_speechbubble_dict(is_system=True, message=sys_msg, omit_url=True, lang=self.lang)
+        if not bubbles_already_last_in_list(bubbles_array, sys_bubble):
+            bubbles_array.append(sys_bubble)
 
         return {'bubbles': bubbles_array,
                 'add_premise_text': add_premise_text,
@@ -330,7 +336,8 @@ class DiscussionDictHelper(object):
             sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
             sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
             bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text)
-            bubbles_array.append(bubble_sys)
+            if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
+                bubbles_array.append(bubble_sys)
 
         return {'bubbles': bubbles_array,
                 'add_premise_text': add_premise_text,
@@ -382,8 +389,10 @@ class DiscussionDictHelper(object):
             bubbles_array.remove(bubbles_array[-1])
 
         self.__append_now_bubble(bubbles_array)
-        bubbles_array.append(bubble_user)
-        bubbles_array.append(bubble_sys)
+        if not bubbles_already_last_in_list(bubbles_array, bubble_user):
+            bubbles_array.append(bubble_user)
+        if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
+            bubbles_array.append(bubble_sys)
 
         if attack.startswith('end'):
             bubbles_array.append(bubble_mid)
@@ -406,7 +415,8 @@ class DiscussionDictHelper(object):
         mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
 
         # do we have task in the queue?
-        if get_complete_review_count(nickname) > 0:
+        count = get_complete_review_count(nickname)
+        if count > 0:
             if nickname is not None:
                 mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
             else:
@@ -536,10 +546,11 @@ class DiscussionDictHelper(object):
         text += get_text_for_argument_uid(uid) if is_uid_argument else get_text_for_statement_uid(uid)
         text += '?<br>' + _tn.get(_.because) + '...'
 
-        bubbles_array.append(
-            create_speechbubble_dict(is_status=True, uid='now', message='Now', omit_url=True, lang=self.lang))
-        bubbles_array.append(
-            create_speechbubble_dict(is_user=True, uid='question-bubble', message=text, omit_url=True, lang=self.lang))
+        self.__append_now_bubble(bubbles_array)
+
+        question_bubble = create_speechbubble_dict(is_user=True, uid='question-bubble', message=text, omit_url=True, lang=self.lang)
+        if not bubbles_already_last_in_list(bubbles_array, question_bubble):
+            bubbles_array.append(question_bubble)
 
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': ''}
 

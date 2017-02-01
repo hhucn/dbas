@@ -95,7 +95,7 @@
                                 <span i18n:translate="following_argument_was_corrected">following argument was corrected.</span>
                             </div>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_argument.corrected_version}</span>
+                            <span class="lead" id="reviewed-argument-corrected-version">${structure:subpage.elements.reviewed_argument.corrected_version}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                         </div>
 
@@ -121,6 +121,15 @@
                             <span class="lead" id="reviewed-argument-text">${structure:subpage.elements.reviewed_argument.text}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                             <br>
+                        </div>
+
+                        <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_optimize">
+                            <span i18n:translate="context_where_statement_is_used">Context, where the statement is used:</span>
+                            <div tal:repeat="context subpage.elements.reviewed_argument.context">
+                                <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                                <span class="lead" id="reviewed-argument-text">${structure:context}</span>
+                                <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                            </div>
                         </div>
 
                     </div>
@@ -194,6 +203,7 @@
                             </tr>
                         </tbody>
                     </table>
+
                 </div>
             </div>
             <a id="send_edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Send</a>

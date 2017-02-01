@@ -14,9 +14,9 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 from validate_email import validate_email
+from sqlalchemy import func
 
-from dbas.url_manager import UrlManager
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.security import remember
 from dbas.review.helper.reputation import add_reputation_for
 from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
@@ -88,52 +88,53 @@ def prepare_parameter_for_justification(request, for_api):
     return slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict
 
 
-def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
+def handle_justification_step(request, for_api, ui_locales, nickname, history):
     """
 
     :param request:
     :param for_api:
-    :param api_data:
     :param ui_locales:
     :param nickname:
+    :param history:
     :return:
     """
     slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
     main_page = request.application_url
 
     if not is_integer(statement_or_arg_id, True):
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True)), None, None
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True)), None, None
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
         logger('ViewHelper', 'handle_justification_step', 'justify statement')
         if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
-        item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, api_data,
-                                                                                    main_page, slug,
-                                                                                    statement_or_arg_id,
-                                                                                    supportive, ui_locales,
-                                                                                    nickname, mode)
+            raise HTTPNotFound()
+            # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
+        item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, main_page, slug,
+                                                                                    statement_or_arg_id, supportive,
+                                                                                    ui_locales, nickname, mode,
+                                                                                    nickname, history)
 
     elif 'd' in mode and relation == '':
         logger('ViewHelper', 'handle_justification_step', 'do not know')
         if not check_belonging_of_argument(issue, statement_or_arg_id) and \
                 not check_belonging_of_statement(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
-        item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, api_data,
-                                                                                      main_page, slug,
-                                                                                      statement_or_arg_id,
+            raise HTTPNotFound()
+            # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
+        item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, main_page,
+                                                                                      slug, statement_or_arg_id,
                                                                                       supportive, ui_locales,
-                                                                                      nickname)
+                                                                                      nickname, nickname, history)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
         logger('ViewHelper', 'handle_justification_step', 'justify argument')
         if not check_belonging_of_argument(issue, statement_or_arg_id):
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
-        item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, api_data,
-                                                                                   main_page, slug,
-                                                                                   statement_or_arg_id,
-                                                                                   supportive, ui_locales,
-                                                                                   nickname, relation)
+            raise HTTPNotFound()
+            # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
+        item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, main_page, slug,
+                                                                                   statement_or_arg_id, supportive,
+                                                                                   ui_locales, nickname, relation,
+                                                                                   nickname, history)
         # add reputation
         add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
         # send message if the user is now able to review
@@ -143,12 +144,13 @@ def handle_justification_step(request, for_api, api_data, ui_locales, nickname):
 
     else:
         logger('ViewHelper', 'handle_justification_step', '404')
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation])), None, None
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, 'justify', statement_or_arg_id, mode, relation])), None, None
 
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, mode):
+def preparation_for_justify_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, mode, nickname, history):
     """
 
     :param request:
@@ -164,7 +166,6 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     """
     logger('ViewHelper', 'preparation_for_justify_statement', 'main')
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
@@ -182,7 +183,7 @@ def preparation_for_justify_statement(request, for_api, api_data, main_page, slu
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_dont_know_statement(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid):
+def preparation_for_dont_know_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, nickname, history):
     """
 
     :param request:
@@ -197,8 +198,6 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     :return:
     """
     logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
-
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
 
     issue               = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales     = get_discussion_language(request, issue)
@@ -220,7 +219,7 @@ def preparation_for_dont_know_statement(request, for_api, api_data, main_page, s
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_argument(request, for_api, api_data, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, relation):
+def preparation_for_justify_argument(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, relation, nickname, history):
     """
 
     :param request:
@@ -236,7 +235,6 @@ def preparation_for_justify_argument(request, for_api, api_data, main_page, slug
     """
     logger('ViewHelper', 'preparation_for_justify_argument', 'main')
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     logged_in = db_user is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
@@ -359,25 +357,69 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         password = escape_string(password)
         url = ''
 
+    is_ldap = is_usage_with_ldap(request)
+
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # check if the user exists
         logger('ViewHelper', 'user_login', 'user \'' + nickname + '\' does not exists')
-        success = False
-        is_ldap = is_usage_with_ldap(request)
 
         # if the user does not exists and we are using LDAP, we'll grep the user
         if is_ldap:
-            success, db_user = catch_user_from_ldap(request, nickname, password, _tn)
+            msg = __login_user_ldap(request, nickname, password, _tn)
+            if msg is not None:
+                return msg
 
-        if not success:
-            error = _tn.get(_.userPasswordNotMatch)
-            return error
+        else:
+            success, msg, db_user = try_to_register_new_user_via_ajax(request, _tn)
+            if not success:
+                return msg
 
-    elif not db_user.validate_password(password):  # check password
-        logger('ViewHelper', 'user_login', 'wrong password')
+    else:
+        if is_ldap:
+            user_data = verify_ldap_user_data(request, nickname, password)
+
+            if not user_data and not db_user.validate_password(password):  # check password
+                logger('ViewHelper', 'user_login', 'wrong password')
+                error = _tn.get(_.userPasswordNotMatch)
+                return error
+        else:
+            if not db_user.validate_password(password):  # check password
+                logger('ViewHelper', 'user_login', 'wrong password')
+                error = _tn.get(_.userPasswordNotMatch)
+                return error
+
+    headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
+
+    if for_api:
+        logger('ViewHelper', 'user_login', 'return for api: success')
+        return {'status': 'success'}
+    else:
+        logger('ViewHelper', 'user_login', 'return success: ' + url)
+        sleep(0.5)
+        return HTTPFound(
+            location=url,
+            headers=headers,
+        )
+
+
+def __login_user_ldap(request, nickname, password, _tn):
+    user_data = verify_ldap_user_data(request, nickname, password)
+
+    if not user_data:
+        return _tn.get(_.userPasswordNotMatch)
+    firstname = user_data[0]
+    lastname = user_data[1]
+    gender = user_data[2]
+    email = user_data[3]
+    success, db_user = set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
+
+    if not success:
         error = _tn.get(_.userPasswordNotMatch)
         return error
+    return None
 
+
+def __refresh_headers_and_url(request, db_user, keep_login, url):
     logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_settings.should_hold_the_login(keep_login)
@@ -394,19 +436,10 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         if url.endswith(e):
             url = url[0:-len(e)]
 
-    if for_api:
-        logger('ViewHelper', 'user_login', 'return for api: success')
-        return {'status': 'success'}
-    else:
-        logger('ViewHelper', 'user_login', 'return success: ' + url)
-        sleep(0.5)
-        return HTTPFound(
-            location=url,
-            headers=headers,
-        )
+    return headers, url
 
 
-def catch_user_from_ldap(request, nickname, password, _tn):
+def verify_ldap_user_data(request, nickname, password):
     """
 
     :param nickname:
@@ -417,22 +450,23 @@ def catch_user_from_ldap(request, nickname, password, _tn):
 
     try:
         r = request.registry.settings
-        server    = r['settings:ldap:server']
-        base      = r['settings:ldap:base']
-        scope     = r['settings:ldap:account.scope']
-        filter    = r['settings:ldap:account.filter']
+        server = r['settings:ldap:server']
+        base = r['settings:ldap:base']
+        scope = r['settings:ldap:account.scope']
+        filter = r['settings:ldap:account.filter']
         firstname = r['settings:ldap:account.firstname']
-        lastname  = r['settings:ldap:account.lastname']
-        title     = r['settings:ldap:account.title']
-        email     = r['settings:ldap:account.email']
-        logger('ViewHelper', 'catch_user_from_ldap', 'parsed data')
+        lastname = r['settings:ldap:account.lastname']
+        title = r['settings:ldap:account.title']
+        email = r['settings:ldap:account.email']
+        logger('ViewHelper', 'verify_ldap_user_data', 'parsed data')
 
-        logger('ViewHelper', 'catch_user_from_ldap', 'ldap.initialize(\'' + server + '\')')
+        logger('ViewHelper', 'verify_ldap_user_data', 'ldap.initialize(\'' + server + '\')')
         l = ldap.initialize(server)
         l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
-        logger('ViewHelper', 'catch_user_from_ldap', 'simple_bind_s(\'' + nickname + scope + '\', \'***\')')
+        logger('ViewHelper', 'verify_ldap_user_data', 'simple_bind_s(\'' + nickname + scope + '\', \'***\')')
         l.simple_bind_s(nickname + scope, password)
-        logger('ViewHelper', 'catch_user_from_ldap', 'l.search_s(' + base + ', ldap.SCOPE_SUBTREE, (\'' + filter + '=' + nickname + '\'))[0][1]')
+        logger('ViewHelper', 'verify_ldap_user_data',
+               'l.search_s(' + base + ', ldap.SCOPE_SUBTREE, (\'' + filter + '=' + nickname + '\'))[0][1]')
         user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
 
         firstname = user[firstname][0].decode('utf-8')
@@ -440,43 +474,47 @@ def catch_user_from_ldap(request, nickname, password, _tn):
         title = user[title][0].decode('utf-8')
         gender = 'm' if 'Herr' in title else 'f' if 'Frau' in title else 'n'
         email = user[email][0].decode('utf-8')
+        logger('ViewHelper', 'verify_ldap_user_data', 'success')
 
-        # getting the authors group
-        db_group = DBDiscussionSession.query(Group).filter_by(name="authors").first()
-
-        # does the group exists?
-        if not db_group:
-            info = _tn.get(_.errorTryLateOrContant)
-            logger('ViewHelper', 'user_ldap_login', 'Internal error occured')
-            return False, info
-
-        success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                                 db_group.uid, _tn.get_lang())
-
-        if db_new_user:
-            # sending an email and message
-            subject = _tn.get(_.accountRegistration)
-            body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
-            send_mail(request, subject, body, email, _tn.get_lang())
-            send_welcome_notification(db_new_user.uid, _tn)
-
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        if db_user:
-            return success, db_user
-
-        logger('ViewHelper', 'user_ldap_login', 'new user not found in db')
-        return False, _tn.get(_.errorTryLateOrContant)
+        return [firstname, lastname, gender, email]
 
     except ldap.INVALID_CREDENTIALS:
-        logger('ViewHelper', 'user_ldap_login', 'ldap credential error')
-        return False, None
+        logger('ViewHelper', 'verify_ldap_user_data', 'ldap credential error')
+        return None
 
     except ldap.SERVER_DOWN:
-        logger('ViewHelper', 'user_ldap_login', 'can\'t reach server within 5s')
-        return False, None
+        logger('ViewHelper', 'verify_ldap_user_data', 'can\'t reach server within 5s')
+        return None
 
 
-def try_to_register_new_user_via_ajax(request, ui_locales):
+def set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn):
+    # getting the authors group
+    db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
+
+    # does the group exists?
+    if not db_group:
+        info = _tn.get(_.errorTryLateOrContant)
+        logger('ViewHelper', 'set_new_user', 'Internal error occured')
+        return False, info
+
+    success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password, gender,
+                                                             db_group.uid, _tn.get_lang())
+
+    if db_new_user:
+        # sending an email and message
+        subject = _tn.get(_.accountRegistration)
+        body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
+        send_mail(request, subject, body, email, _tn.get_lang())
+        send_welcome_notification(db_new_user.uid, _tn)
+
+        logger('ViewHelper', 'set_new_user', 'set new user in db')
+        return success, db_new_user
+
+    logger('ViewHelper', 'set_new_user', 'new user not found in db')
+    return False, _tn.get(_.errorTryLateOrContant)
+
+
+def try_to_register_new_user_via_ajax(request, _tn):
     """
 
     :param request:
@@ -484,7 +522,6 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     :return:
     """
     success = ''
-    _t = Translator(ui_locales)
     params          = request.params
     firstname       = escape_string(params['firstname']) if 'firstname' in params else ''
     lastname        = escape_string(params['lastname']) if 'lastname' in params else ''
@@ -495,54 +532,57 @@ def try_to_register_new_user_via_ajax(request, ui_locales):
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
     recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
     is_human, error = validate_recaptcha(recaptcha)
+    db_new_user = None
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
-    db_nick2 = DBDiscussionSession.query(User).filter_by(public_nickname=nickname).first()
-    db_mail = DBDiscussionSession.query(User).filter_by(email=email).first()
+    db_nick2 = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname) == func.lower(nickname)).first()
+    db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     is_mail_valid = validate_email(email, check_mx=True)
 
     # are the password equal?
     if not password == passwordconfirm:
         logger('ViewHelper', 'user_registration', 'Passwords are not equal')
-        info = _t.get(_.pwdNotEqual)
+        msg = _tn.get(_.pwdNotEqual)
     # is the nick already taken?
     elif db_nick1 or db_nick2:
         logger('ViewHelper', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
-        info = _t.get(_.nickIsTaken)
+        msg = _tn.get(_.nickIsTaken)
     # is the email already taken?
     elif db_mail:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is taken')
-        info = _t.get(_.mailIsTaken)
+        msg = _tn.get(_.mailIsTaken)
     # is the email valid?
     elif not is_mail_valid:
         logger('ViewHelper', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
-        info = _t.get(_.mailNotValid)
+        msg = _tn.get(_.mailNotValid)
     # is anti-spam correct?
     elif not is_human or error:
         logger('ViewHelper', 'user_registration', 'recaptcha error')
-        info = _t.get(_.maliciousAntiSpam)
+        msg = _tn.get(_.maliciousAntiSpam)
     # lets go
     else:
+
         # getting the authors group
         db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
 
         # does the group exists?
         if not db_group:
-            info = _t.get(_.errorTryLateOrContant)
+            msg = _tn.get(_.errorTryLateOrContant)
             logger('ViewHelper', 'user_registration', 'Error occured')
-        else:
-            success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password,
-                                                                     gender, db_group.uid, ui_locales)
+            return success, msg, db_new_user
 
-            if db_new_user:
-                # sending an email and message
-                subject = _t.get(_.accountRegistration)
-                body = _t.get(_.accountWasRegistered).format(firstname, lastname, email)
-                send_mail(request, subject, body, email, ui_locales)
-                send_welcome_notification(db_new_user.uid, _t)
+        success, msg, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password,
+                                                                gender, db_group.uid, _tn.get_lang)
 
-    return success, info
+        if db_new_user:
+            # sending an email and message
+            subject = _tn.get(_.accountRegistration)
+            body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
+            send_mail(request, subject, body, email, _tn.get_lang)
+            send_welcome_notification(db_new_user.uid, _tn)
+
+    return success, msg, db_new_user
 
 
 def request_password(request, ui_locales):
@@ -558,7 +598,7 @@ def request_password(request, ui_locales):
 
     _t = Translator(ui_locales)
     email = escape_string(request.params['email'])
-    db_user = DBDiscussionSession.query(User).filter_by(email=email).first()
+    db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
 
     # does the user exists?
     if db_user:
@@ -575,7 +615,8 @@ def request_password(request, ui_locales):
         db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         body = _t.get(_.nicknameIs) + db_user.nickname + '\n'
-        body += _t.get(_.newPwdIs) + pwd
+        body += _t.get(_.newPwdIs) + pwd + '\n\n'
+        body += _t.get(_.newPwdInfo)
         subject = _t.get(_.dbasPwdRequest)
         reg_success, message = EmailHelper.send_mail(request, subject, body, email, db_language.ui_locales)
 

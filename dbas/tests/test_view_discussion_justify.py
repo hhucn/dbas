@@ -3,7 +3,7 @@ import transaction
 from sqlalchemy import and_
 
 from pyramid import testing
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 from dbas.database.discussion_model import StatementSeenBy, VoteStatement, ArgumentSeenBy, VoteArgument, ReputationHistory
 
 from dbas.database import DBDiscussionSession
@@ -245,8 +245,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'mode': 't',
             'relation': 'blabla',
         }
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -255,8 +258,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'mode': 't',
             'relation': '',
         }
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -265,8 +271,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'mode': 'babla',
             'relation': '',
         }
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -275,8 +284,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'mode': 't',
             'relation': '',
         }
-        response = d(request)
-        self.assertTrue(type(response) is HTTPFound)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
         len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
         len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())

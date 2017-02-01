@@ -57,6 +57,7 @@ dbas/static/js/min/*
 dbas/static/rss/*
 .sass-cache/
 .babelrc
+startSession.py
 
 # node
 node_modules/

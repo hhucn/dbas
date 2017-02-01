@@ -8,6 +8,7 @@ import hashlib
 import locale
 import time
 import os
+import re
 
 import requests
 
@@ -693,6 +694,15 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
               'data_is_supportive': str(is_supportive),
               # 'url': url if len(str(url)) > 0 else 'None'
               }
+
+    votecount_keys = __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
+
+    speech['votecounts_message'] = votecount_keys[speech['votecounts']]
+
+    return speech
+
+
+def __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
     db_votecounts = None
 
     if is_supportive is None:
@@ -731,9 +741,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         votecount_keys[0] = _t.get(_.voteCountTextFirst) + '.'
     votecount_keys[1] = _t.get(_.voteCountTextOneOther) + '.'
 
-    speech['votecounts_message'] = votecount_keys[speech['votecounts']]
-
-    return speech
+    return votecount_keys
 
 
 def is_user_author_or_admin(nickname):
@@ -909,7 +917,7 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
     img = '<img class="img-circle" src="' + get_profile_picture(db_user, profile_picture_size) + '">'
 
     nick = db_user.get_global_nickname()
-    link_begin = ('<a href="' + main_page + '/user/' + nick + ' " title="' + nick + '">') if linked_with_users_page else ''
+    link_begin = ('<a href="' + main_page + '/user/' + str(db_user.uid) + ' " title="' + nick + '">') if linked_with_users_page else ''
     link_end = ('</a>') if linked_with_users_page else ''
     if gravatar_on_right_side:
         return link_begin + nick + ' ' + img + link_end, True
@@ -950,3 +958,39 @@ def validate_recaptcha(recaptcha):
             error = True
 
     return json['success'], error
+
+
+def bubbles_already_last_in_list(bubble_list, bubbles):
+    if isinstance(bubbles, list):
+        length = len(bubbles)
+    else:
+        length = 1
+        bubbles = [bubbles]
+
+    if len(bubble_list) < length:
+        return False
+
+    for bubble in bubbles:
+        if 'message' not in bubble:
+            return False
+
+    start_index = - length
+    is_already_in = False
+    for bubble in bubbles:
+
+        last = bubble_list[start_index]
+        if 'message' not in last or 'message' not in bubble:
+            return False
+
+        text1 = __cleanhtml(last['message'].lower()).strip()
+        text2 = __cleanhtml(bubble['message'].lower()).strip()
+        is_already_in = is_already_in or (text1 == text2)
+        start_index += 1
+
+    return is_already_in
+
+
+def __cleanhtml(raw_html):
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, '', raw_html)
+    return cleantext

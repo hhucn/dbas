@@ -49,21 +49,21 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
-from pyshorteners.shorteners import Shortener
+from pyshorteners.shorteners import Shortener, Shorteners
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
     send_request_for_info_popup_to_socketio
-from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
-version = '1.1.2'
+version = '1.2.0'
 full_version = version + 'b'
 project_name = name + ' ' + full_version
 
@@ -196,7 +196,8 @@ def main_settings(request):
     _t          = Translator(ui_locales)
 
     if not db_user:
-        return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
     if db_user and 'form.passwordchange.submitted' in request.params:
         old_pw = escape_string(request.params['passwordold'])
@@ -296,14 +297,17 @@ def main_user(request):
     logger('main_user', 'def', 'main, request.matchdict: ' + str(match_dict))
     logger('main_user', 'def', 'main, request.params: ' + str(params))
 
-    nickname = match_dict['nickname'] if 'nickname' in match_dict else ''
-    nickname = nickname.replace('%20', ' ')
-    logger('main_user', 'def', 'nickname: ' + str(nickname))
+    uid = match_dict['uid'] if 'uid' in match_dict else 0
+    logger('main_user', 'def', 'uid: ' + str(uid))
 
-    current_user = get_user_by_private_or_public_nickname(nickname)
-    if current_user is None:
-        logger('main_user', 'def', 'no user: ' + str(nickname), error=True)
-        return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
+    if not is_integer(uid):
+        raise HTTPNotFound
+
+    current_user = DBDiscussionSession.query(User).get(uid)
+    if current_user is None or current_user.nickname == nick_of_anonymous_user or current_user.nickname == nick_of_admin:
+        logger('main_user', 'def', 'no user: ' + str(uid), error=True)
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     history_helper.save_path_in_database(request_authenticated_userid, request.path)
@@ -499,7 +503,8 @@ def discussion_init(request, for_api=False, api_data=None):
     count_of_slugs = len(match_dict['slug']) if 'slug' in match_dict and isinstance(match_dict['slug'], ()) else 1
     if count_of_slugs > 1:
         logger('discussion_init', 'def', 'to many slugs', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
 
     ui_locales = get_language(request)
     if for_api:
@@ -572,10 +577,12 @@ def discussion_attitude(request, for_api=False, api_data=None):
     if not is_integer(statement_id, True) \
             or not check_belonging_of_statement(issue, statement_id):
         logger('discussion_attitude', 'def', 'param error', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
     if is_statement_forbidden(statement_id):
         logger('discussion_attitude', 'def', 'forbidden statement', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], revoked_content=True))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], revoked_content=True))
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
@@ -584,7 +591,8 @@ def discussion_attitude(request, for_api=False, api_data=None):
         .get_dict_for_attitude(statement_id)
     if not discussion_dict:
         logger('discussion_attitude', 'def', 'no discussion dict', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_id]))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_id]))
 
     item_dict = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)\
         .prepare_item_dict_for_attitude(statement_id)
@@ -632,9 +640,13 @@ def discussion_justify(request, for_api=False, api_data=None):
     ui_locales = get_language(request)
     slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
 
-    item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, api_data, ui_locales, nickname)
-    if type(item_dict) is HTTPFound:
-        return item_dict
+    try:
+        item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, ui_locales, nickname, history)
+    except HTTPNotFound:
+        raise HTTPNotFound()
+
+    if type(item_dict) is HTTPNotFound:
+        raise HTTPNotFound()
 
     return_dict = dict()
     return_dict['issues'] = issue_dict
@@ -680,7 +692,8 @@ def discussion_reaction(request, for_api=False, api_data=None):
             or not valid_reaction and not check_belonging_of_argument(issue, arg_id_user)\
             or not valid_reaction and not check_belonging_of_argument(issue, arg_id_sys):
         logger('discussion_reaction', 'def', 'wrong belonging of arguments', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     supportive = tmp_argument.is_supportive
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
@@ -690,7 +703,8 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # sanity check
     if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
         logger('discussion_reaction', 'def', 'wrong value in attack', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
     ui_locales      = get_language(request)
 
     # set votes and reputation
@@ -806,11 +820,13 @@ def discussion_choose(request, for_api=False, api_data=None):
     for pgroup in pgroup_ids:
         if not is_integer(pgroup):
             logger('discussion_choose', 'def', 'integer error', error=True)
-            return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+            raise HTTPNotFound()
+            # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     if not check_belonging_of_premisegroups(issue, pgroup_ids) or not is_integer(uid):
         logger('discussion_choose', 'def', 'wrong belonging of pgroup', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
     if session_expired:
@@ -822,7 +838,8 @@ def discussion_choose(request, for_api=False, api_data=None):
         .get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, nickname)
     if not item_dict:
         logger('discussion_choose', 'def', 'no item dict', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                         True, True, request,
@@ -887,7 +904,8 @@ def discussion_jump(request, for_api=False, api_data=None):
 
     if not check_belonging_of_argument(issue, arg_uid):
         logger('discussion_choose', 'def', 'no item dict', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
@@ -987,14 +1005,23 @@ def review_content(request):
                                                                request_authenticated_userid, _tn)
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
         logger('review_content', 'def', 'subpage error', error=True)
-        return HTTPFound(location=UrlManager(request.application_url, for_api=False).get_404([request.path[1:]]))
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=False).get_404([request.path[1:]]))
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+
+    title = _tn.get(_.review)
+    if subpage_name == 'deletes':
+        title = _tn.get(_.queueDelete)
+    if subpage_name == 'optimizations':
+        title = _tn.get(_.queueOptimization)
+    if subpage_name == 'edits':
+        title = _tn.get(_.queueEdit)
 
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _tn.get(_.review),
+        'title': title,
         'project': project_name,
         'extras': extras_dict,
         'subpage': subpage_dict,
@@ -1056,7 +1083,7 @@ def ongoing_history(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _tn.get(_.review_history),
+        'title': _tn.get(_.review_ongoing),
         'project': project_name,
         'extras': extras_dict,
         'history': history
@@ -1088,7 +1115,7 @@ def review_reputation(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _tn.get(_.review),
+        'title': _tn.get(_.reputation),
         'project': project_name,
         'extras': extras_dict,
         'reputation': reputation_dict
@@ -1546,7 +1573,11 @@ def set_new_start_statement(request, for_api=False, api_data=None):
         new_statement = insert_as_statements(request, statement, nickname, issue, is_start=True)
 
         if new_statement == -1:
-            return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
+            a = _tn.get(_.notInsertedErrorBecauseEmpty)
+            b = _tn.get(_.minLength)
+            c = _tn.get(_.eachStatement)
+            error = '{} ({}: {} {})'.format(a, b, str(10), c)
+            return_dict['error'] = error
         elif new_statement == -2:
             return_dict['error'] = _tn.get(_.noRights)
         else:
@@ -1624,8 +1655,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
             ui_locales = get_language(request)
             _t = Translator(ui_locales)
             send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
-            url += '#access-review'
-            return_dict['url'] = url
+            return_dict['url'] = str(url) + str('#access-review')
 
         if url == -1:
             return json.dumps(return_dict)
@@ -1724,9 +1754,12 @@ def set_correction_of_statement(request):
     return_dict = dict()
     try:
         elements = json.loads(request.params['elements'])
-        return_dict['error'] = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn)
+        msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn)
+        return_dict['error'] = msg if error else ''
+        return_dict['info'] = msg if len(msg) > 0 else ''
     except KeyError as e:
-        return_dict['error'] = _tn.get(_.noCorrections)
+        return_dict['error'] = _tn.get(_.internalError)
+        return_dict['info'] = ''
         logger('set_correction_of_statement', 'error', repr(e))
 
     return json.dumps(return_dict)
@@ -1900,10 +1933,12 @@ def get_logfile_for_some_statements(request):
         ui_locales = get_discussion_language(request, issue)
         return_dict = get_logfile_for_statements(uids, ui_locales, request.application_url)
         return_dict['error'] = ''
+        return_dict['info'] = ''
     except KeyError as e:
         logger('get_logfile_for_premisegroup', 'error', repr(e))
         _tn = Translator(ui_locales)
         return_dict['error'] = _tn.get(_.noCorrections)
+        return_dict['info'] = ''
 
     return json.dumps(return_dict)
 
@@ -1925,24 +1960,10 @@ def get_shortened_url(request):
 
     try:
         url = request.params['url']
-        # google_api_key = 'AIzaSyAw0aPsBsAbqEJUP_zJ9Fifbhzs8xkNSw0' # browser is
-        # google_api_key = 'AIzaSyDneaEJN9FNGUpXHDZahe9Rhb21FsFNS14' # server id
-        # service = 'GoogleShortener'
-        # service_url = 'https://goo.gl/'
-        # shortener = Shortener(service, api_key=google_api_key)
-
-        # bitly_login = 'dbashhu'
-        # bitly_key = ''
-        # bitly_token = 'R_d8c4acf2fb554494b65529314d1e11d1'
-
-        # service = 'BitlyShortener'
-        # service_url = 'https://bitly.com/'
-        # shortener = Shortener(service, bitly_token=bitly_token)
-
         service = 'TinyurlShortener'
-        service_ = 'Tinyurl'
         service_url = 'http://tinyurl.com/'
-        shortener = Shortener(service_)
+        from pyshorteners import Shorteners
+        shortener = Shortener(Shorteners.TINYURL)
 
         short_url = format(shortener.short(url))
         return_dict['url'] = short_url
@@ -2251,19 +2272,17 @@ def fuzzy_search(request, for_api=False, api_data=None):
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
         extra = request.params['extra'] if 'extra' in request.params else None
 
-        logger('Graph.lib', 'get_doj_data', 'main')
+        # try:
+        #     url = auto_completion_url + '?issue={}&mode={}&value={}'.format(str(issue), str(mode), str(value))
+        #     resp = requests.get(url)
+        #     if resp.status_code == 200:
+        #         return_dict = json.loads(resp.text)
+        #         if for_api:
+        #             return return_dict
+        #         return json.dumps(return_dict)
 
-        try:
-            url = auto_completion_url + '?issue={}&mode={}&value={}'.format(str(issue), str(mode), str(value))
-            resp = requests.get(url)
-            if resp.status_code == 200:
-                return_dict = json.loads(resp.text)
-                if for_api:
-                    return return_dict
-                return json.dumps(return_dict)
-
-        except Exception as e:
-            logger('fuzzy_search', 'def', 'Error grepping data via microserver: ' + str(e))
+        # except Exception as e:
+        #     logger('fuzzy_search', 'def', 'Error grepping data via microservice: ' + str(e))
 
         return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 

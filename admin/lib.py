@@ -12,7 +12,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS
-from dbas.lib import get_profile_picture, is_user_admin
+from dbas.lib import get_profile_picture, is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy.exc import IntegrityError, ProgrammingError
@@ -76,7 +76,7 @@ google_colors = [
     ['#ffffff']]  # white
 
 # list of all columns with FK of users table
-_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid']
+_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid', 'from_author_uid', 'to_author_uid']
 
 # list of all columns, which will not be displayed
 _forbidden_columns = ['token', 'token_timestamp']
@@ -235,7 +235,7 @@ def __get_author_data(uid, query, main_page):
 
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
 
-    link_begin = '<a href="{}/user/{}">'.format(main_page, db_user.get_global_nickname())
+    link_begin = '<a href="{}/user/{}">'.format(main_page, db_user.uid)
     link_end = '</a>'
     return link_begin + db_user.nickname + ' ' + img + link_end, True
 
@@ -267,21 +267,44 @@ def __get_rows_of(columns, db_elements, main_page):
         tmp = []
         for column in columns:
             attribute = getattr(row, column)
-            # all keywords for getting a user
-            if column in _user_columns:
-                text, success = __get_author_data(attribute, db_users, main_page)
-                if success:
-                    tmp.append(text)
-            # resolve language
-            elif column == 'lang_uid':
-                tmp.append(__get_language(attribute, db_languages))
-            # resolve password
-            elif column == 'password':
-                tmp.append(str(attribute)[:5] + '...')
-            else:
-                tmp.append(str(attribute))
+            __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp)
         data.append(tmp)
     return data
+
+
+def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp):
+    if column in _user_columns:
+        text, success = __get_author_data(attribute, db_users, main_page)
+        text = str(text) if success else ''
+        tmp.append(str(attribute) + ' - ' + text)
+
+    elif column == 'lang_uid':
+        tmp.append(__get_language(attribute, db_languages))
+
+    elif column == 'password':
+        tmp.append(str(attribute)[:5] + '...')
+
+    elif column == 'premisesgroup_uid':
+        text, l = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
+        tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(l))
+
+    elif column == 'conclusion_uid':
+        text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
+        tmp.append(str(attribute) + ' - ' + str(text))
+
+    elif column == 'argument_uid':
+        text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
+        tmp.append(str(attribute) + ' - ' + str(text))
+
+    elif column == 'textversion_uid':
+        text = 'None'
+        if attribute is not None:
+            db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
+            text = db_tv.content if db_tv else ''
+        tmp.append(str(attribute) + ' - ' + str(text))
+
+    else:
+        tmp.append(str(attribute))
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):

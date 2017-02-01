@@ -7,7 +7,6 @@ Provides helping function for displaying subpages like the edit queue.
 import random
 import difflib
 
-from collections import OrderedDict
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
@@ -15,6 +14,7 @@ from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimizatio
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
+from dbas.lib import get_all_arguments_by_statement
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
@@ -229,6 +229,7 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
                 'text': None,
                 'reason': None,
                 'issue': None,
+                'context':  [],
                 'extra_info': None}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
@@ -237,11 +238,16 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
         text = get_text_for_argument_uid(db_argument.uid)
         issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
         parts = __get_text_parts_of_argument(db_argument)
+        context = [text]
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = get_text_for_statement_uid(db_statement.uid)
         issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
         parts = [__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
+        context = []
+        args = get_all_arguments_by_statement(rnd_review.statement_uid)
+        if args:
+            context = [get_text_for_argument_uid(arg.uid).replace(text, '<span class="text-info"><strong>{}</strong></span>'.format(text)) for arg in args]
 
     reason = translator.get(_.argumentFlaggedBecauseOptimization)
 
@@ -255,6 +261,7 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
             'reason': reason,
             'issue': issue,
             'extra_info': extra_info,
+            'context': context,
             'parts': parts}
 
 
@@ -336,24 +343,17 @@ def __difference_between_string(a, b, correction_list):
     tag_p = '<strong><span class="text-success">'
     tag_m = '<strong><span class="text-danger">'
     tag_e = '</span></strong>'
-    logger('X', 'X', a)
-    logger('X', 'X', b)
-    logger('X', 'X', str(correction_list))
-    for i, s in enumerate(difflib.ndiff(a, b)):
-        logger('X', 'X', str(s))
 
     for i, s in enumerate(difflib.ndiff(a, b)):
         if i >= len(correction_list):
             correction_list.append('')
         if s[0] == ' ':
+            correction_list[i] = s[-1]
             continue
         elif s[0] == '-':
-            logger('X', 'X', 'Delete "{}" from position {}'.format(s[-1], i))
             correction_list[i] = tag_m + s[-1] + tag_e
         elif s[0] == '+':
-            logger('X', 'X', 'Add "{}" to position {}'.format(s[-1], i))
             correction_list[i] = tag_p + s[-1] + tag_e
-    logger('X', 'X', str(correction_list))
 
 
 def __get_stats_for_review(review, ui_locales, main_page):
@@ -385,7 +385,7 @@ def __get_stats_for_review(review, ui_locales, main_page):
     stats['reported'] = sql_timestamp_pretty_print(review.timestamp, ui_locales)
     stats['reporter'] = db_reporter.get_global_nickname()
     stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
-    stats['reporter_url'] = main_page + '/user/' + stats['reporter']
+    stats['reporter_url'] = main_page + '/user/' + str(db_reporter.uid)
     stats['id'] = str(review.uid)
     # stats['viewed'] = viewed
     # stats['attacks'] = attacks

@@ -262,7 +262,7 @@ function StatisticsHandler(){
 		$.each(parsedData, function callbackGetStatisticsDoneTableEach(key, val) {
 			tr = $('<tr>')
 				.append($('<td>').text(val.timestamp))
-				.append($('<td>').text(is_vote ? val.text : val.content));
+				.append($('<td>').html(is_vote ? val.text : val.content));
 			if (is_vote) {
 				tr.append($('<td>').html(val.is_up_vote ? span_up.clone() : span_down.clone()).css('text-align', 'center'))
 					.append($('<td>').html(val.is_valid ? checkmark : ballot).css('text-align', 'center'));
@@ -320,7 +320,7 @@ function StatisticsHandler(){
 			$('#' + discussionArgVoteCountId).text('0');
 			$('#' + discussionStatVoteCountId).text('0');
 		} else {
-			new StatisticsHandler().callbackStatisticsFail();
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 		}
 	};
 
@@ -329,9 +329,7 @@ function StatisticsHandler(){
 	 * @param text
 	 */
 	this.callbackStatisticsFail = function(text){
-		$('#' + statisticsAlertDialog).fadeIn();
-		$('#' + statisticsAlertMessage).text(text);
-		setTimeout(function() { $('#' + statisticsAlertDialog).fadeOut(); }, 3000);
+		setGlobalInfoHandler('Ohh', text);
 	};
 
 }

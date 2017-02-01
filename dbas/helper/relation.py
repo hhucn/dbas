@@ -183,8 +183,7 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid, current_argument, 
         db_arguments = get_not_disabled_arguments_as_query()
         db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                                Argument.is_supportive == True,
-                                               Argument.conclusion_uid == premise.statement_uid,
-                                               Argument.argument_uid == None)).first()
+                                               Argument.conclusion_uid == premise.statement_uid)).first()
         if db_argument:
             continue
         else:
@@ -219,8 +218,7 @@ def set_new_undercut(premisegroup_uid, current_argument, db_user, issue):
     # duplicate?
     db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                                                   Argument.is_supportive == False,
-                                                                  Argument.conclusion_uid == current_argument.conclusion_uid,
-                                                                  Argument.argument_uid == 0)).first()
+                                                                  Argument.argument_uid == current_argument.uid)).first()
     if db_argument:
         return db_argument, True
     else:
@@ -248,8 +246,7 @@ def set_new_rebut(premisegroup_uid, current_argument, db_user, issue):
     db_arguments = get_not_disabled_arguments_as_query()
     db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                            Argument.is_supportive == True,
-                                           Argument.conclusion_uid == current_argument.conclusion_uid,
-                                           Argument.argument_uid == None)).first()
+                                           Argument.conclusion_uid == current_argument.conclusion_uid)).first()
     if db_argument:
         return db_argument, True
     else:
@@ -277,8 +274,7 @@ def set_new_support(premisegroup_uid, current_argument, db_user, issue):
     db_arguments = get_not_disabled_arguments_as_query()
     db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                            Argument.is_supportive == True,
-                                           Argument.conclusion_uid == current_argument.conclusion_uid,
-                                           Argument.argument_uid == 0)).first()
+                                           Argument.conclusion_uid == current_argument.conclusion_uid)).first()
     if db_argument:
         return db_argument, True
     else:

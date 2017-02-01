@@ -94,7 +94,8 @@ function AjaxNotificationHandler(){
 				$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
 				var out_counter = $('#total_out_counter');
 				out_counter.text(' ' + (parseInt(out_counter.text()) + 1) + ' ');
-				new Notifications().appendMessageInOutbox(recipient, parsedData.recipient_avatar, title, text, parsedData.timestamp, parsedData.uid)
+				location.reload();
+				// new Notifications().appendMessageInOutbox(recipient, parsedData.recipient_avatar, title, text, parsedData.timestamp, parsedData.uid)
 			} else {
 				$('#popup-writing-notification-failed').show();
 				$('#popup-writing-notification-failed-message').html(parsedData.error);

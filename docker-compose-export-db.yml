@@ -1,0 +1,12 @@
+version: '2'
+services:
+  db:
+    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/postgres
+  web:
+    build: .
+    command: /bin/bash docker_export_db.sh
+    volumes:
+      - .:/code
+    links:
+      - db:hhucn__docker-dbas-postgres
+    tmpfs: /tmp

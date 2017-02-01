@@ -35,7 +35,7 @@ function GuiHandler() {
 		img_plus.click(function () {
 			new GuiHandler().appendAddPremiseRow();
 			$(this).hide().prev().show(); // hide +, show -
-			send.val(_t(saveMyStatements));
+			send.val(_t_discussion(saveMyStatements));
 		});
 		
 		body.find('.icon-rem-premise').each(function () {
@@ -49,10 +49,10 @@ function GuiHandler() {
 				// hide minus icon, when there is only one child
 				if (body.find('.container-three-divs').length == 1) {
 					body.find('.icon-rem-premise').hide();
-					send.val(_t(saveMyStatement));
+					send.val(_t_discussion(saveMyStatement));
 				} else {
 					body.find('.icon-rem-premise').show();
-					send.val(_t(saveMyStatements));
+					send.val(_t_discussion(saveMyStatements));
 				}
 			});
 		});
@@ -231,13 +231,17 @@ function GuiHandler() {
 	 * @param conclusion
 	 */
 	this.showSetStatementContainer = function (undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
-		var gh = new GuiHandler(), page, page_no,
-			body = $('#' + popupSetPremiseGroupsBodyContent).empty(),
-			prev = $('#' + popupSetPremiseGroupsPreviousButton).hide(),
-			next = $('#' + popupSetPremiseGroupsNextButton).hide(),
-			send = $('#' + popupSetPremiseGroupsSendButton).addClass('disabled'),
-			counter = $('#' + popupSetPremiseGroupsCounter).hide(),
-			prefix = 'insert_statements_page_';
+		var gh = new GuiHandler(), page, page_no;
+		var body = $('#' + popupSetPremiseGroupsBodyContent).empty();
+		var prev = $('#' + popupSetPremiseGroupsPreviousButton).hide();
+		var next = $('#' + popupSetPremiseGroupsNextButton).hide();
+		var send = $('#' + popupSetPremiseGroupsSendButton).addClass('disabled');
+		var counter = $('#' + popupSetPremiseGroupsCounter).hide();
+		var prefix = 'insert_statements_page_';
+		var popup = $('#' + popupSetPremiseGroups);
+		
+		console.log(undecided_texts);
+		console.log(decided_texts);
 		
 		send.click(function sendClick() {
 			var selections = body.find('input:checked'), i, j, splitted;
@@ -284,11 +288,13 @@ function GuiHandler() {
 			prev.parent().addClass('disabled');
 			next.show().attr('max', undecided_texts.length);
 			counter.show().text('1/' + undecided_texts.length);
-			send.text(_t(saveMyStatements));
+			send.text(_t_discussion(saveMyStatements));
+			
 			
 			// for each statement a new page div will be added
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
 				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no]);
+				body.attr('data-text-' + page_no, undecided_texts[page_no]);
 				if (page_no > 0)
 					page.hide();
 				body.append(page);
@@ -311,7 +317,8 @@ function GuiHandler() {
 			});
 		}
 		
-		$('#' + popupSetPremiseGroups).modal('show');
+		popup.find('strong').text(body.data('text-0'));
+		popup.modal('show');
 	};
 	
 	/**
@@ -323,9 +330,9 @@ function GuiHandler() {
 	 * @param prefix
 	 */
 	this.displayNextPageOffSetStatementContainer = function (body, prev_btn, next_btn, counter_text, prefix) {
-		var tmp_el = body.find('div:visible'),
-			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length)),
-			input = tmp_el.find('input:checked');
+		var tmp_el = body.find('div:visible');
+		var tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
+		var input = tmp_el.find('input:checked');
 		
 		// is current page filled?
 		if (input.length == 0) {
@@ -337,7 +344,8 @@ function GuiHandler() {
 				tmp_el.hide().next().fadeIn();
 				prev_btn.parent().removeClass('disabled');
 				counter_text.show().text((tmp_id + 2) + '/' + next_btn.attr('max'));
-				
+
+				$('#' + popupSetPremiseGroups).find('strong').text(body.data('text-' + (tmp_id + 1)));
 				if ((tmp_id + 2) == parseInt(next_btn.attr('max')))
 					next_btn.parent().addClass('disabled');
 			} else {
@@ -355,14 +363,16 @@ function GuiHandler() {
 	 * @param prefix
 	 */
 	this.displayPrevPageOffSetStatementContainer = function (body, prev_btn, next_btn, counter_text, prefix) {
-		var tmp_el = body.find('div:visible'),
-			tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
+		var tmp_el = body.find('div:visible');
+		var tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
 		
 		if (tmp_id > 0) {
 			tmp_el.hide().prev().fadeIn();
 			next_btn.parent().removeClass('disabled');
 			counter_text.show().text((tmp_id) + '/' + prev_btn.attr('max'));
-			if (tmp_id == 0)
+
+			$('#' + popupSetPremiseGroups).find('strong').text(body.data('text-' + (tmp_id - 1)));
+			if (tmp_id == 1)
 				prev_btn.parent().addClass('disabled');
 		}
 	};
@@ -388,7 +398,10 @@ function GuiHandler() {
 			topic = topic.substr(0, topic.length - 1) + ', '
 		}
 		
-		div_page.attr('id', id + page_no).attr('page', page_no).show();
+		div_page.attr('id', id + page_no);
+		div_page.attr('page', page_no);
+		div_page.show();
+		console.log('page id: ' + div_page.attr('id'));
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
 		list = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
@@ -402,9 +415,9 @@ function GuiHandler() {
 		input1.attr('name', input1.attr('name') + '_' + page_no);
 		input2.attr('name', input2.attr('name') + '_' + page_no);
 		input3.attr('name', input3.attr('name') + '_' + page_no);
-		input1.parent().attr('for', input1.parent().attr('for') + '_' + page_no);
-		input2.parent().attr('for', input2.parent().attr('for') + '_' + page_no);
-		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
+		input1.parent().attr('for', input1.attr('id'));
+		input2.parent().attr('for', input2.attr('id'));
+		input3.parent().attr('for', input3.attr('id'));
 		
 		//connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
 		connection = _t_discussion(isItTrueThat);
@@ -417,7 +430,7 @@ function GuiHandler() {
 		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
 			var nl = i < splitted.length - 1 ? '<br>' : '';
-			var tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('padding-left', '20px');
+			var tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('margin-left', '1em');
 			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
 			infix = i == 0 ? '' : ('<em>' + _t_discussion(andAtTheSameTime) + '</em> ' + connection + ' ');
@@ -778,4 +791,19 @@ function GuiHandler() {
 			.css('transition', 'all ' + speed + 's ease');
 	};
 	
+	/**
+	 *
+	 * @param lang
+	 */
+	this.lang_switch = function(lang){
+		if (!Cookies.get(LANG_SWITCH_WARNING)) {
+			displayConfirmationDialogWithoutCancelAndFunction(get_it(lang, languageSwitchModalTitle), get_it(lang, languageSwitchModalBody));
+			$('#' + popupConfirmDialogId).on('hide.bs.modal', function (e) {
+				new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
+				Cookies.set(LANG_SWITCH_WARNING, true, {expires: 180});
+			});
+		} else {
+			new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
+		}
+	};
 }

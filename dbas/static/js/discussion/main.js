@@ -458,7 +458,7 @@ function Main () {
 		$('#' + addStatementContainerMainInputId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
-				if ($('#' + discussionBubbleSpaceId).find('p:last-child').text().indexOf(_t(initialPositionInterest)) != -1) {
+				if ($('#' + discussionBubbleSpaceId).find('.triangle-l:last-child').text().indexOf(_t_discussion(initialPositionInterest)) != -1) {
 					// here we have our start statement
 					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 				} else {
@@ -559,21 +559,8 @@ function Main () {
 	 * Sets some style options for the window
 	 */
 	this.setWindowOptions = function () {
-		// ajax loading animation
-		$(document).on({
-			ajaxStart: function ajaxStartFct() {
-				setTimeout("$('body').addClass('loading')", 0);
-			},
-			ajaxStop: function ajaxStopFct() {
-				setTimeout("$('body').removeClass('loading')", 0);
-			}
-		});
-		
 		// some hack
 		$('#navbar-left').empty();
-		
-		//$(window).load(function windowLoad() {
-		//});
 		
 		var container = $('#' + discussionContainerId);
 		var oldContainerSize = container.width();

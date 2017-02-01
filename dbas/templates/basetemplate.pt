@@ -88,7 +88,9 @@
 			<div metal:use-macro="load: snippet-footer.pt"></div>
 		</div>
 
-		<div class="ajaxloader"></div>
+        <div class="ajaxloader">
+            <img class="center rotating" src="${request.static_url('dbas:static/images/icon.png')}">
+        </div>
 	</div>
 
 	<div class="eupopup eupopup-bottomright"></div>

@@ -19,7 +19,7 @@ function PopupHandler() {
 		$('#' + popupEditStatementErrorDescriptionId).text('');
 		$('#' + popupEditStatementSuccessDescriptionId).text('');
 		$('#' + popupEditStatementInfoDescriptionId).text('');
-		$('#' + popupEditStatementSubmitButtonId).addClass('disabled');
+		$('#' + popupEditStatementSubmitButtonId).addClass('disabled').off('click');
 		
 		// Get logfile
 		ajaxHandler.getLogfileForStatements(statements_uids);
@@ -63,10 +63,21 @@ function PopupHandler() {
 				var tmp = _t_discussion(pleaseEditAtLeast).replace('X', 5 - levensthein);
 				$('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? tmp : '');
 				
-				if (now && oem && now.toLowerCase() == oem.toLowerCase() && levensthein < 5)
-					$('#' + popupEditStatementSubmitButtonId).addClass('disabled');
-				else
-					$('#' + popupEditStatementSubmitButtonId).removeClass('disabled');
+				var btn = $('#' + popupEditStatementSubmitButtonId);
+				if (now && oem && now.toLowerCase() == oem.toLowerCase()) {
+					btn.addClass('disabled');
+					btn.off('click');
+					
+				} else {
+					btn.removeClass('disabled');
+					btn.click(function popupEditStatementSubmitButton() {
+						var elements = [];
+						$('#' + popupEditStatementInputSpaceId).find('input').each(function(){
+							elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')})
+						});
+						new AjaxDiscussionHandler().sendCorrectionOfStatement(elements);
+					});
+				}
 				
 				
 				setTimeout(function () {

@@ -42,7 +42,7 @@ unit:
   script:
     - pserve $INIFILE --daemon --log-file pserve.log
     - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
-    - nosetests --with-timer -w $(pwd) dbas graph admin api export
+    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w $(pwd) dbas graph admin api export
 
 acceptance:
   <<: *job-definition
