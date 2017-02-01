@@ -303,6 +303,11 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
             text = db_tv.content if db_tv else ''
         tmp.append(str(attribute) + ' - ' + str(text))
 
+    elif column == 'path':
+        url = main_page + '/discuss' + str(attribute)
+        link = '<a href={}>{}</a>'
+        tmp.append(link.format(url, str(attribute)))
+
     else:
         tmp.append(str(attribute))
 
