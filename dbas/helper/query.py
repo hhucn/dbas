@@ -511,8 +511,9 @@ def __set_statement(text, user, is_start, issue):
     logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) +
            ', text: ' + str(text) + ', issue: ' + str(issue))
 
-    # escaping
+    # escaping and cleaning
     text = text.strip()
+    text = ' '.join(text.split())
     text = escape_string(text)
 
     # check for dot at the end

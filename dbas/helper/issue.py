@@ -36,7 +36,11 @@ def set_issue(info, long_info, title, lang, nickname, ui_locales):
 
     if len(info) < 10 or len(long_info) < 10:
         logger('IssueHelper', 'set_issue', 'Short text', error=True)
-        return False, (_tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)')
+        a = _tn.get(_.notInsertedErrorBecauseEmpty)
+        b = _tn.get(_.minLength)
+        c = _tn.get(_.eachStatement)
+        error = '{} ({}: {} {})'.format(a, b, str(10), c)
+        return False, error
 
     db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
     db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()

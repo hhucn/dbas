@@ -35,7 +35,7 @@ function GuiHandler() {
 		img_plus.click(function () {
 			new GuiHandler().appendAddPremiseRow();
 			$(this).hide().prev().show(); // hide +, show -
-			send.val(_t(saveMyStatements));
+			send.val(_t_discussion(saveMyStatements));
 		});
 		
 		body.find('.icon-rem-premise').each(function () {
@@ -49,10 +49,10 @@ function GuiHandler() {
 				// hide minus icon, when there is only one child
 				if (body.find('.container-three-divs').length == 1) {
 					body.find('.icon-rem-premise').hide();
-					send.val(_t(saveMyStatement));
+					send.val(_t_discussion(saveMyStatement));
 				} else {
 					body.find('.icon-rem-premise').show();
-					send.val(_t(saveMyStatements));
+					send.val(_t_discussion(saveMyStatements));
 				}
 			});
 		});
@@ -288,7 +288,7 @@ function GuiHandler() {
 			prev.parent().addClass('disabled');
 			next.show().attr('max', undecided_texts.length);
 			counter.show().text('1/' + undecided_texts.length);
-			send.text(_t(saveMyStatements));
+			send.text(_t_discussion(saveMyStatements));
 			
 			
 			// for each statement a new page div will be added

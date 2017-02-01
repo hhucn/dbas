@@ -263,7 +263,7 @@ def get_distance(string_a, string_b):
     """
     # logger('fuzzy_string_matcher', 'get_distance', string_a + ' - ' + string_b)
     if mechanism == 'Levensthein':
-        dist = distance(string_a.lower(), string_b.lower())
+        dist = distance(string_a.strip().lower(), string_b.strip().lower())
         #  logger('fuzzy_string_matcher', 'get_distance', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())
     else:
         matcher = difflib.SequenceMatcher(lambda x: x == " ", string_a.lower(), string_b.lower())

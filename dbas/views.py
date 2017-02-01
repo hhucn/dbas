@@ -1573,7 +1573,11 @@ def set_new_start_statement(request, for_api=False, api_data=None):
         new_statement = insert_as_statements(request, statement, nickname, issue, is_start=True)
 
         if new_statement == -1:
-            return_dict['error'] = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': 10)'
+            a = _tn.get(_.notInsertedErrorBecauseEmpty)
+            b = _tn.get(_.minLength)
+            c = _tn.get(_.eachStatement)
+            error = '{} ({}: {} {})'.format(a, b, str(10), c)
+            return_dict['error'] = error
         elif new_statement == -2:
             return_dict['error'] = _tn.get(_.noRights)
         else:
