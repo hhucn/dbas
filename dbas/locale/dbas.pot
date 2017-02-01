@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-31 16:21+0100\n"
+"POT-Creation-Date: 2017-02-01 15:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1456,6 +1456,11 @@ msgstr ""
 #. Default: Reject it
 #: ././templates/review_content.pt:46 ././templates/review_content.pt:82
 msgid "reject_it"
+msgstr ""
+
+#. Default: Information for the different reasons
+#: ././templates/review_content.pt:55
+msgid "information_for_the_different_reasons"
 msgstr ""
 
 #. Default: Off topic or irrelevant

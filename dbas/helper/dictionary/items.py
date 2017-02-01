@@ -615,37 +615,14 @@ class ItemDictHelper(object):
         :param for_api:
         :return:
         """
-
-        _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
-        db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-
         # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
         item_text = get_jump_to_argument_text_list(self.lang)
-
-        # which part of the argument should be attacked ?
-        base = db_argument.argument_uid if db_argument.conclusion_uid is None else arg_uid
-        arg_id_sys, sys_attack = rs.get_attack_for_argument(base, self.lang)
-
-        url0 = _um.get_url_for_reaction_on_argument(not for_api, arg_uid, sys_attack, arg_id_sys)
-        if db_argument.conclusion_uid is None:  # conclusion is an argument
-            url1 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.argument_uid, sys_attack, arg_id_sys)
-            url3 = _um.get_url_for_justifying_argument(not for_api, db_argument.argument_uid, 'f', 'undercut')
-        else:
-            url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
-            url3 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
-        url2 = _um.get_url_for_justifying_argument(not for_api, arg_uid, 't', 'undercut')
-        if len(db_premises) == 1:
-            url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
-        else:
-            url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+        url = self.__get_url_for_jump_array(slug, for_api, arg_uid)
 
         answers = list()
-        answers.append({'text': item_text[0], 'url': url0})
-        answers.append({'text': item_text[1], 'url': url1})
-        answers.append({'text': item_text[2], 'url': url2})
-        answers.append({'text': item_text[3], 'url': url3})
-        answers.append({'text': item_text[4], 'url': url4})
+        for i in range(0, 5):
+            if url[i]:
+                answers.append({'text': item_text[i], 'url': url[i]})
 
         statements_array = []
         for no in range(0, len(answers)):
@@ -653,6 +630,63 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_answer_dict('jump' + str(no), arr, 'jump', answers[no]['url']))
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
+
+    def __get_url_for_jump_array(self, slug, for_api, arg_uid):
+        """
+
+        :param slug:
+        :param for_api:
+        :param arg_uid:
+        :return:
+        """
+
+        db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
+        _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+
+        db_undercutted_arg = None
+        db_undercutted_undercut = None
+        len_undercut = 0
+        if db_argument.argument_uid is not None:
+            db_undercutted_arg = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
+            len_undercut = 1
+            if db_undercutted_arg.argument_uid is not None:
+                db_undercutted_undercut = DBDiscussionSession.query(Argument).get(db_undercutted_arg.argument_uid)
+                len_undercut = 2
+
+        if len_undercut == 0:
+            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang)
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
+            url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
+            url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 't', 'undercut')
+            url3 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
+            if len(db_premises) == 1:
+                url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
+            else:
+                url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+
+        elif len_undercut == 1:
+            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_undercutted_arg.uid, self.lang)
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_undercutted_arg.uid, sys_attack, arg_id_sys)
+            url1 = None
+            url2 = _um.get_url_for_justifying_argument(not for_api, db_undercutted_arg.uid, 't', 'undercut')
+            url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)
+            if len(db_premises) == 1:
+                url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
+            else:
+                url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+        else:
+            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_undercutted_arg.uid, self.lang, restriction_on_attacks='undercut')
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_undercutted_undercut.uid, sys_attack, arg_id_sys)
+            url1 = None
+            url2 = None
+            url3 = _um.get_url_for_jump(not for_api, db_undercutted_undercut.uid)
+            if len(db_premises) == 1:
+                url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
+            else:
+                url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+
+        return [url0, url1, url2, url3, url4]
 
     @staticmethod
     def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text='', is_flagable=False, is_author=False, is_visible=True):

@@ -16,7 +16,7 @@ from dbas.lib import escape_string
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import func
-import dbas.helper.email as EmailHelper
+from dbas.helper.email import send_mail
 
 
 # http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
@@ -92,7 +92,7 @@ def request_password(request, ui_locales):
         body += _t.get(_.newPwdIs) + pwd + '\n\n'
         body += _t.get(_.newPwdInfo)
         subject = _t.get(_.dbasPwdRequest)
-        reg_success, message = EmailHelper.send_mail(request, subject, body, email, db_language.ui_locales)
+        reg_success, message = send_mail(request, subject, body, email, db_language.ui_locales)
 
         if reg_success:
             success = message
