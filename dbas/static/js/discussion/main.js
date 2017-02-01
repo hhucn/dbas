@@ -562,7 +562,7 @@ function Main () {
 		// ajax loading animation
 		$(document).on({
 			ajaxStart: function ajaxStartFct() {
-				setTimeout("$('body').addClass('loading')", 0);
+				setTimeout("$('body').addClass('loading')", 150);
 			},
 			ajaxStop: function ajaxStopFct() {
 				setTimeout("$('body').removeClass('loading')", 0);
