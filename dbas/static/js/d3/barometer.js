@@ -23,7 +23,7 @@ var google_colors = [
 function DiscussionBarometer(){
     'use strict';
     var is_attitude = false;
-    var dialog = $('#' + popupBarometerId);
+    var global_dialog = $('#' + popupBarometerId);
     var jsonData = [];
     var address = 'position';
     var barWidth;
@@ -115,24 +115,24 @@ function DiscussionBarometer(){
         // create bar chart as default view
         getD3BarometerBarChart();
 
-        dialog.modal('show').on('hidden.bs.modal', function () {
+        global_dialog.modal('show').on('hidden.bs.modal', function () {
             clearAnchor();
         });
         
         $('#' + popupBarometerAcceptBtn).show().click( function () {
-            dialog.modal('hide');
+            global_dialog.modal('hide');
         }).removeClass('btn-success');
         $('#' + popupBarometerRefuseBtn).hide();
 
-        dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
+        global_dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
     };
 
     /**
      * Remove content of barometer-modal.
      */
     function removeContentOfModal(){
-        dialog.find('.col-md-6').empty();
-        dialog.find('.col-md-5').empty();
+        global_dialog.find('.col-md-6').empty();
+        global_dialog.find('.col-md-5').empty();
     }
 
     /**
@@ -159,7 +159,7 @@ function DiscussionBarometer(){
         removeContentOfModal();
 
         // create div for barometer
-        dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
+        global_dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
         // width and height of chart
         var width = 400;
         var height = mode == modeEnum.attitude ? 300 : 400;
@@ -498,7 +498,7 @@ function DiscussionBarometer(){
         removeContentOfModal();
 
         // create div for barometer
-        dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
+        global_dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
 
         // width and height of chart
         var width = 500, height = 410;
@@ -735,7 +735,7 @@ function DiscussionBarometer(){
         });
 
         // add click-event-listener for popup
-        dialog.on('click', function (d) {
+        global_dialog.on('click', function (d) {
             // select area of popup without tooltip and listen for click event
             // if tooltip is visible hide tooltip
             if (d.target.id.indexOf("path") === -1 && d.target.id.indexOf("rect") === -1 && tooltipIsVisible === true) {
@@ -803,7 +803,9 @@ function DiscussionBarometer(){
      */
     function getTooltip(usersDict, index){
         var div = $('<div>').attr("class", "chartTooltip");
-        dialog.find('.col-md-5').append(div);
+        var append_left = global_dialog.find('.col-md-5').outerHeight() > global_dialog.find('.col-md-6').outerHeight() + 100;
+        var col = append_left ? '.col-md-6' : '.col-md-5';
+        global_dialog.find(col).append(div);
 
         var tooltip = $(".chartTooltip");
 
@@ -859,7 +861,7 @@ function DiscussionBarometer(){
             div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key));
             label = $('<label>').attr('class', 'legendLabel').html(value.text);
             element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
-            dialog.find('.col-md-5').append(element);
+            global_dialog.find('.col-md-5').append(element);
         });
     }
 
