@@ -20,6 +20,8 @@ from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
+from dbas.helper.email import send_mail
+from dbas.helper.notification import send_welcome_notification
 
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',
@@ -588,3 +590,30 @@ def create_new_user(firstname, lastname, email, nickname, password, gender, db_g
         info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info, db_user
+
+
+def set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn):
+    # getting the authors group
+    db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
+
+    # does the group exists?
+    if not db_group:
+        info = _tn.get(_.errorTryLateOrContant)
+        logger('ViewHelper', 'set_new_user', 'Internal error occured')
+        return False, info
+
+    success, info, db_new_user = create_new_user(firstname, lastname, email, nickname, password, gender,
+                                                 db_group.uid, _tn.get_lang())
+
+    if db_new_user:
+        # sending an email and message
+        subject = _tn.get(_.accountRegistration)
+        body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
+        send_mail(request, subject, body, email, _tn.get_lang())
+        send_welcome_notification(db_new_user.uid, _tn)
+
+        logger('ViewHelper', 'set_new_user', 'set new user in db')
+        return success, db_new_user
+
+    logger('ViewHelper', 'set_new_user', 'new user not found in db')
+    return False, _tn.get(_.errorTryLateOrContant)

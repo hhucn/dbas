@@ -6,7 +6,17 @@ Class for handling passwords.
 
 
 import random
+import transaction
 from cryptacular.bcrypt import BCRYPTPasswordManager
+
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Settings, Language
+from dbas.logger import logger
+from dbas.lib import escape_string
+from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
+from sqlalchemy import func
+import dbas.helper.email as EmailHelper
 
 
 # http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
@@ -47,3 +57,49 @@ def get_hashed_password(password):
     """
     manager = BCRYPTPasswordManager()
     return manager.encode(password)
+
+
+def request_password(request, ui_locales):
+    """
+
+    :param request:
+    :param ui_locales:
+    :return:
+    """
+    success = ''
+    error = ''
+    info = ''
+
+    _t = Translator(ui_locales)
+    email = escape_string(request.params['email'])
+    db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
+
+    # does the user exists?
+    if db_user:
+        # get password and hashed password
+        pwd = get_rnd_passwd()
+        hashedpwd = get_hashed_password(pwd)
+
+        # set the hashed one
+        db_user.password = hashedpwd
+        DBDiscussionSession.add(db_user)
+        transaction.commit()
+
+        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
+
+        body = _t.get(_.nicknameIs) + db_user.nickname + '\n'
+        body += _t.get(_.newPwdIs) + pwd + '\n\n'
+        body += _t.get(_.newPwdInfo)
+        subject = _t.get(_.dbasPwdRequest)
+        reg_success, message = EmailHelper.send_mail(request, subject, body, email, db_language.ui_locales)
+
+        if reg_success:
+            success = message
+        else:
+            error = message
+    else:
+        logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
+        info = _t.get(_.emailUnknown)
+
+    return success, error, info

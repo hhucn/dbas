@@ -34,8 +34,9 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
     process_seen_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
-    try_to_register_new_user_via_ajax, request_password, prepare_parameter_for_justification, login_user
+    try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
 from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values_of_user
+from dbas.handler.password import request_password
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
 from dbas.lib import get_language, escape_string, get_discussion_language, \
@@ -1960,10 +1961,9 @@ def get_shortened_url(request):
 
     try:
         url = request.params['url']
-        service = 'TinyurlShortener'
+        service = Shorteners.TINYURL
         service_url = 'http://tinyurl.com/'
-        from pyshorteners import Shorteners
-        shortener = Shortener(Shorteners.TINYURL)
+        shortener = Shortener(service)
 
         short_url = format(shortener.short(url))
         return_dict['url'] = short_url
