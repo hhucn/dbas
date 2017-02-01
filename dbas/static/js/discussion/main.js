@@ -559,13 +559,32 @@ function Main () {
 	 * Sets some style options for the window
 	 */
 	this.setWindowOptions = function () {
+		/*
+		var loader = $('#loading'), timer;
+
+		loader.hide().ajaxStart(function(){
+            timer && clearTimeout(timer);
+            timer = setTimeout(function(){
+                loader.show();
+            }, 1000);
+		}).ajaxStop(function(){
+            clearTimeout(timer);
+            loader.hide();
+        });
+		*/
+		
 		// ajax loading animation
+		var timer;
 		$(document).on({
 			ajaxStart: function ajaxStartFct() {
-				setTimeout("$('body').addClass('loading')", 150);
+                timer && clearTimeout(timer);
+                timer = setTimeout(function(){
+                    $('body').addClass('loading');
+                }, 150);
 			},
 			ajaxStop: function ajaxStopFct() {
-				setTimeout("$('body').removeClass('loading')", 0);
+                clearTimeout(timer);
+                $('body').removeClass('loading')
 			}
 		});
 		
