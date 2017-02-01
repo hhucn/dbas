@@ -241,7 +241,7 @@ de_lang = {
     _.doesNotJustify: 'nicht gerechtfertigen, dass',
     _.deleteTrack: 'Track löschen',
     _.deleteStatement: 'Aussage löschen',
-    _.disassociateStatement: 'Vom Statement entfernen',
+    _.disassociateStatement: 'Vom Statement distanzieren',
     _.delete: 'Löschen',
     _.deleteHistory: 'History löschen',
     _.doYouWantToEnterYourStatements: 'Möchten Sie Ihre eigenen Gründe angeben?',
