@@ -245,6 +245,7 @@ class Keywords(Enum):
     dataAlreadyLockedByYou = 'You are already editing data. Please finish your work first!'
     dataAlreadyLockedByOthers = 'Sorry, this data edited by other participants.'
     earlierYouArguedThat = 'Earlier you argued that'
+    eachStatement = 'per Statement'
     editIndex = 'Edit Index - Last 30 Tage'
     editIndexInfo = 'Count of Edits'
     euCookiePopupTitle = 'This website is using cookies and Piwik.'

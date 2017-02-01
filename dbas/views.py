@@ -1651,8 +1651,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
             ui_locales = get_language(request)
             _t = Translator(ui_locales)
             send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
-            url += '#access-review'
-            return_dict['url'] = url
+            return_dict['url'] = str(url) + str('#access-review')
 
         if url == -1:
             return json.dumps(return_dict)

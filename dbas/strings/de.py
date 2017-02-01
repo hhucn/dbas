@@ -251,6 +251,7 @@ de_lang = {
     _.dataAlreadyLockedByYou: 'Sie bearbeiten schon einen Datensatz. Schließen Sie diese Bearbeitung bitte zuerst ab!',
     _.dataAlreadyLockedByOthers: 'Dieser Datensatz wird gerade durch andere Teilnehmer bearbeitet.',
     _.earlierYouArguedThat: 'Zuerst haben Sie argumentiert, dass',
+    _.eachStatement: 'pro Aussage',
     _.editIndex: 'Änderungs Index - Letzte 30 Tage',
     _.editIndexInfo: 'Anzahl an Änderungen',
     _.euCookiePopupTitle: 'Diese Seite nutzt Cookies und Piwik.',

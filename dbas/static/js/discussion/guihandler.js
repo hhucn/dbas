@@ -398,7 +398,10 @@ function GuiHandler() {
 			topic = topic.substr(0, topic.length - 1) + ', '
 		}
 		
-		div_page.attr('id', id + page_no).attr('page', page_no).show();
+		div_page.attr('id', id + page_no);
+		div_page.attr('page', page_no);
+		div_page.show();
+		console.log('page id: ' + div_page.attr('id'));
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
 		list = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
@@ -412,9 +415,9 @@ function GuiHandler() {
 		input1.attr('name', input1.attr('name') + '_' + page_no);
 		input2.attr('name', input2.attr('name') + '_' + page_no);
 		input3.attr('name', input3.attr('name') + '_' + page_no);
-		input1.parent().attr('for', input1.parent().attr('for') + '_' + page_no);
-		input2.parent().attr('for', input2.parent().attr('for') + '_' + page_no);
-		input3.parent().attr('for', input3.parent().attr('for') + '_' + page_no);
+		input1.parent().attr('for', input1.attr('id'));
+		input2.parent().attr('for', input2.attr('id'));
+		input3.parent().attr('for', input3.attr('id'));
 		
 		//connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
 		connection = _t_discussion(isItTrueThat);
@@ -427,7 +430,7 @@ function GuiHandler() {
 		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
 			var nl = i < splitted.length - 1 ? '<br>' : '';
-			var tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('padding-left', '20px');
+			var tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('margin-left', '1em');
 			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
 			infix = i == 0 ? '' : ('<em>' + _t_discussion(andAtTheSameTime) + '</em> ' + connection + ' ');

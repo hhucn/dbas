@@ -136,8 +136,11 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     for group in premisegroups:  # premise groups is a list of lists
         new_argument = __insert_new_premises_for_argument(request, group, attack_type, arg_id, issue, user)
         if not isinstance(new_argument, Argument):  # break on error
-            error = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
-                statement_min_length) + ')'
+            a = _tn.get(_.notInsertedErrorBecauseEmpty)
+            b = _tn.get(_.minLength)
+            c = str(statement_min_length)
+            d = _tn.get(_.eachStatement)
+            error = '{} ({}: {} {})'.format(a, b, c, d)
             return -1, None, error
 
         new_argument_uids.append(new_argument.uid)
