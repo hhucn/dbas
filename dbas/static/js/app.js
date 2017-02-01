@@ -550,6 +550,22 @@ function callbackIfDoneForPasswordRequest(data){
 //	MAIN
 // *********************
 $(document).ready(function () {
+	// ajax loading animation
+	var timer;
+	$(document).on({
+		ajaxStart: function ajaxStartFct() {
+            timer && clearTimeout(timer);
+            timer = setTimeout(function(){
+                $('body').addClass('loading');
+            }, 150);
+		},
+		ajaxStop: function ajaxStopFct() {
+            clearTimeout(timer);
+            $('body').removeClass('loading')
+		}
+	});
+	
+	
 	'use strict';
 	var path = window.location.href;
 	var lang = $('#hidden_language').val();
@@ -578,19 +594,6 @@ $(document).ready(function () {
 	$(function () {
 		$('body').tooltip({ selector: '[data-toggle=tooltip]' });
     });
-
-	// ajax loading animation
-	$(document).on({
-		ajaxStart: function ajaxStartFct() {
-			setTimeout("$('body').addClass('loading')", 0);
-		},
-		ajaxStop: function ajaxStopFct() {
-			setTimeout("$('body').removeClass('loading')", 0);
-		}
-	});
-	//$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
-    //    alert("There was an ajax error!");
-	//});
 
 	// add minimal text length field
 	$('input[data-min-length]').each(function(){

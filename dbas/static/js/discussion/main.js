@@ -559,40 +559,8 @@ function Main () {
 	 * Sets some style options for the window
 	 */
 	this.setWindowOptions = function () {
-		/*
-		var loader = $('#loading'), timer;
-
-		loader.hide().ajaxStart(function(){
-            timer && clearTimeout(timer);
-            timer = setTimeout(function(){
-                loader.show();
-            }, 1000);
-		}).ajaxStop(function(){
-            clearTimeout(timer);
-            loader.hide();
-        });
-		*/
-		
-		// ajax loading animation
-		var timer;
-		$(document).on({
-			ajaxStart: function ajaxStartFct() {
-                timer && clearTimeout(timer);
-                timer = setTimeout(function(){
-                    $('body').addClass('loading');
-                }, 150);
-			},
-			ajaxStop: function ajaxStopFct() {
-                clearTimeout(timer);
-                $('body').removeClass('loading')
-			}
-		});
-		
 		// some hack
 		$('#navbar-left').empty();
-		
-		//$(window).load(function windowLoad() {
-		//});
 		
 		var container = $('#' + discussionContainerId);
 		var oldContainerSize = container.width();
