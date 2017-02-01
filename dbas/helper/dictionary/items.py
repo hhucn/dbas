@@ -617,6 +617,7 @@ class ItemDictHelper(object):
         """
         # Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not leads to the conclusion, both hold]
         item_text = get_jump_to_argument_text_list(self.lang)
+        coming_from_jump = False # TODO
         url = self.__get_url_for_jump_array(slug, for_api, arg_uid)
 
         answers = list()
@@ -666,8 +667,8 @@ class ItemDictHelper(object):
                 url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
 
         elif len_undercut == 1:
-            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_undercutted_arg.uid, self.lang)
-            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_undercutted_arg.uid, sys_attack, arg_id_sys)
+            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang)
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
             url1 = None
             url2 = _um.get_url_for_justifying_argument(not for_api, db_undercutted_arg.uid, 't', 'undercut')
             url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)
@@ -675,9 +676,10 @@ class ItemDictHelper(object):
                 url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
             else:
                 url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+
         else:
-            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_undercutted_arg.uid, self.lang, restriction_on_attacks='undercut')
-            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_undercutted_undercut.uid, sys_attack, arg_id_sys)
+            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, restriction_on_attacks='undercut')
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
             url1 = None
             url2 = None
             url3 = _um.get_url_for_jump(not for_api, db_undercutted_undercut.uid)
