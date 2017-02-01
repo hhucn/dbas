@@ -65,7 +65,7 @@
                     <div class="col-md-5">
                         <blockquote class="blockquote-reverse" style="text-align: left;">
                             <div>
-                                <span>Information for the different buttons</span>
+                                <span i18n:translate="information_for_the_different_buttons">Information for the different buttons</span>
                             </div>
                             <ul tal:condition="subpage.button_set.is_delete">
                                 <li><span class="text-success" i18n:translate="its_okay">It's Okay</span> <span i18n:translate="its_okay_explanation">for arguments, which should not be deleted.</span></li>

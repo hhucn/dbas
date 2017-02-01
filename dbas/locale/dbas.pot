@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-01 15:51+0100\n"
+"POT-Creation-Date: 2017-02-01 16:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1491,6 +1491,11 @@ msgstr ""
 #. Default: if posts are useful, but need edits in grammar and/or spelling
 #: ././templates/review_content.pt:59
 msgid "needs_optimization_explanation"
+msgstr ""
+
+#. Default: Information for the different buttons
+#: ././templates/review_content.pt:68
+msgid "information_for_the_different_buttons"
 msgstr ""
 
 #. Default: for arguments, which should not be deleted.

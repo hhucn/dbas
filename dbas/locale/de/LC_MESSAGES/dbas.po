@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-01 15:51+0100\n"
+"POT-Creation-Date: 2017-02-01 16:03+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1618,6 +1618,11 @@ msgstr "Der Text sollte überarbeitet werden"
 #: templates/review_content.pt:59
 msgid "needs_optimization_explanation"
 msgstr "wenn Beiträge rein sprachlich überarbeitet werden sollten"
+
+#. Default: Information for the different buttons
+#: templates/review_content.pt:68
+msgid "information_for_the_different_buttons"
+msgstr "Informationen zu den Knöpfen"
 
 #. Default: for arguments, which should not be deleted.
 #. Default: , if the correction is acceptable and the argument is not
