@@ -361,7 +361,7 @@ function DiscussionGraph() {
 
             if (change_scale) {
                 // resizing of font size, line height and the complete rectangle
-                $('#' + graphViewContainerSpaceId).find('.node').each(function () {
+                $('#graph-svg').find('.node').each(function () {
                     var id = $(this).attr('id').replace(node_id_prefix, '');
                     if (id.indexOf('statement') != -1 || id.indexOf('issue') != -1) {
                         $('#label-' + id).css({
@@ -381,9 +381,9 @@ function DiscussionGraph() {
                 });
 
                 // dirty hack to accept new line height and label position
-                $('body').css({'line-height': '1.0'});
+                $('#graph-svg').css({'line-height': '1.0'});
                 setTimeout(function () {
-                    $('body').css({'line-height': '1.5'});
+                    $('#graph-svg').css({'line-height': '1.5'});
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
                         var id = $(this).attr('id').replace(node_id_prefix, '');
                         var label = $('#label-' + id);
