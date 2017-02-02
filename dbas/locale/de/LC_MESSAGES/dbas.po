@@ -1528,7 +1528,7 @@ msgstr "Zurück zur Diskussion!"
 #. Default: Reputation count
 #: templates/review_reputation.pt:15
 msgid "reputation_count"
-msgstr "Repuations-Punktzahl"
+msgstr "Reputations-Punktzahl"
 
 #. Default: Action
 #: templates/review_reputation.pt:26
