@@ -640,7 +640,7 @@ def get_all_attacking_arg_uids_from_history(history):
             if 'reaction' in part:
                 parts = part.split('/')
                 pos = parts.index('reaction')
-                uids.append(part.split('/')[pos+3])
+                uids.append(part.split('/')[pos + 3])
         return uids
     except AttributeError:
         return []
