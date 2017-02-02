@@ -348,7 +348,7 @@ def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_p
     return ret_dict
 
 
-def get_jump_to_argument_text_list(lang, is_second_jump):
+def get_jump_to_argument_text_list(lang):
     """
 
     :param lang: ui_locales

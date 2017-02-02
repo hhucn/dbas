@@ -475,7 +475,7 @@ class DiscussionDictHelper(object):
 
         return user_text, sys_text, gender_of_counter_arg, db_confrontation
 
-    def get_dict_for_jump(self, uid):
+    def get_dict_for_jump(self, uid, history):
         """
         Prepares the discussion dict with all bubbles for the jump step
 
@@ -486,15 +486,21 @@ class DiscussionDictHelper(object):
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
 
+        splitted_history = history.split('-')
+        coming_from_jump = '/jump' in history[:-1] if len(splitted_history) > 0 else False
+        intro = (_tn.get(_.canYouBeMorePrecise) + '<br><br>') if coming_from_jump else ''
+
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         if db_argument.conclusion_uid is not None:
-            intro = _tn.get(_.whatDoYouThinkArgument) + ': '
+            intro += _tn.get(_.whatDoYouThinkArgument) + ': '
         else:
-            intro = ''
+            bind = ', ' if self.lang == 'de' else ' '
+            intro += _tn.get(_.whatDoYouThinkAboutThat) + bind + _tn.get(_.that) + ' '
 
-        offset = len('</' + tag_type + '>') if tag_type in argument_text else 1
-        while argument_text[:-offset].endswith(('.', '?', '!')):
-            argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
+        offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
+
+        while argument_text[-offset:].endswith(('.', '?', '!')):
+            argument_text = argument_text[:-offset]
 
         text = intro + argument_text + '?'
         bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)

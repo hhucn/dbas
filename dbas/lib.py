@@ -346,10 +346,10 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         conclusion_premise = tag_conclusion + conclusion_premise + tag_end
         conclusion_conclusion = tag_conclusion + conclusion_conclusion + tag_end
 
-        intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
+        # intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
         bind = _t.get(_.isNotAGoodReasonFor)
         because = _t.get(_.because)
-        ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because, premise)
+        ret_value = '{} {} {}. {} {}.'.format(conclusion_premise, bind, conclusion_conclusion, because, premise)
     else:
         db_undercut1 = DBDiscussionSession.query(Argument).get(arg_array[0])
         db_undercut2 = DBDiscussionSession.query(Argument).get(arg_array[1])
@@ -359,7 +359,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         premise3, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
-        intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
+        # intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
         bind = _t.get(_.isNotAGoodReasonAgainstArgument)
         because = _t.get(_.because)
         seperator = ',' if lang == 'de' else ''
@@ -371,7 +371,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         bind = tag_conclusion + bind + tag_end
 
         # P2 ist kein guter Grund gegen das Argument, dass C weil P3. Weil P1
-        ret_value = '{}{} {} {}. {} {}'.format(intro, premise2, bind, argument, because, premise1)
+        ret_value = '{} {} {}. {} {}'.format(premise2, bind, argument, because, premise1)
 
     return ret_value
 

@@ -33,7 +33,7 @@ statement_min_length = 10
 
 
 def process_input_of_start_premises_and_receive_url(request, premisegroups, conclusion_id, supportive,
-                                                    issue, user, for_api, mainpage, lang):
+                                                    issue, user, for_api, mainpage, discussion_lang):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
@@ -50,7 +50,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     """
     logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    _tn = Translator(lang)
+    _tn = Translator(discussion_lang)
     if not db_user:
         return '', '', _tn.get(_.userNotFound)
 
@@ -64,7 +64,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument, statement_uids = __create_argument_by_raw_input(request, user, group, conclusion_id, supportive, issue)
+        new_argument, statement_uids = __create_argument_by_raw_input(request, user, group, conclusion_id, supportive, issue, discussion_lang)
         if not isinstance(new_argument, Argument):  # break on error
             error = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
                 statement_min_length) + ')'
@@ -100,7 +100,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
 
 
 def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, attack_type, premisegroups,
-                                                            issue, user, for_api, mainpage, lang):
+                                                            issue, user, for_api, mainpage, discussion_lang):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
@@ -121,7 +121,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     """
     logger('QueryHelper', 'process_input_of_premises_for_arguments_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    _tn = Translator(lang)
+    _tn = Translator(discussion_lang)
     if not db_user:
         return '', '', _tn.get(_.userNotFound)
 
@@ -134,7 +134,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     # all new arguments are collected in a list
     new_argument_uids = []
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument = __insert_new_premises_for_argument(request, group, attack_type, arg_id, issue, user)
+        new_argument = __insert_new_premises_for_argument(request, group, attack_type, arg_id, issue, user, discussion_lang)
         if not isinstance(new_argument, Argument):  # break on error
             a = _tn.get(_.notInsertedErrorBecauseEmpty)
             b = _tn.get(_.minLength)
@@ -316,7 +316,7 @@ def correct_statement(user, uid, corrected_text):
     return return_dict
 
 
-def insert_as_statements(request, text_list, user, issue, is_start=False):
+def insert_as_statements(request, text_list, user, issue, lang, is_start=False):
     """
     Inserts the given texts as statements and returns the uids
 
@@ -338,7 +338,7 @@ def insert_as_statements(request, text_list, user, issue, is_start=False):
         if len(text) < statement_min_length:
             return -1
         else:
-            new_statement, is_duplicate = __set_statement(text, user, is_start, issue)
+            new_statement, is_duplicate = __set_statement(text, user, is_start, issue, lang)
             if new_statement:
                 statements.append(new_statement)
 
@@ -456,7 +456,7 @@ def __get_logfile_dict(textversion, main_page, lang):
     return corr_dict
 
 
-def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, issue, user):
+def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, issue, user, discussion_lang):
     """
 
     :param text: String
@@ -468,7 +468,7 @@ def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, i
     """
     logger('QueryHelper', '__insert_new_premises_for_argument', 'def')
 
-    statements = insert_as_statements(request, text, user, issue)
+    statements = insert_as_statements(request, text, user, issue, discussion_lang)
     if statements == -1:
         return -1
 
@@ -494,7 +494,7 @@ def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, i
     return new_argument
 
 
-def __set_statement(text, user, is_start, issue):
+def __set_statement(text, user, is_start, issue, lang):
     """
     Saves statement for user
 
@@ -515,15 +515,16 @@ def __set_statement(text, user, is_start, issue):
     text = text.strip()
     text = ' '.join(text.split())
     text = escape_string(text)
-
-    # check for dot at the end
+    _tn = Translator(lang)
+    if text.startswith(_tn.get(_.because).lower() + ' '):
+        text = text[len(_tn.get(_.because) + ' '):]
     while text.endswith(('.', '?', '!', ',')):
         text = text[:-1]
 
     # check, if the text already exists
     db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
     if db_duplicate:
-        db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == db_duplicate.uid,
+        db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == db_duplicate.statement_uid,
                                                                         Statement.issue_uid == issue)).first()
         return db_statement, True
 
@@ -575,7 +576,7 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     return return_array
 
 
-def __create_argument_by_raw_input(request, user, text, conclusion_id, is_supportive, issue):
+def __create_argument_by_raw_input(request, user, text, conclusion_id, is_supportive, issue, discussion_lang):
     """
 
     :param user: User.nickname
@@ -590,7 +591,7 @@ def __create_argument_by_raw_input(request, user, text, conclusion_id, is_suppor
     # current conclusion
     db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                      Statement.issue_uid == issue)).first()
-    statements = insert_as_statements(request, text, user, issue)
+    statements = insert_as_statements(request, text, user, issue, discussion_lang)
     if statements == -1:
         return -1, None
 

@@ -102,7 +102,7 @@ msgstr "Online-Partizipation"
 #. Default: It is funded by the
 #: templates/index.pt:35
 msgid "funded_by"
-msgstr "Es wird finanziert bei dem"
+msgstr "Es wird finanziert vom"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia

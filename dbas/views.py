@@ -910,8 +910,8 @@ def discussion_jump(request, for_api=False, api_data=None):
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
-    discussion_dict = _ddh.get_dict_for_jump(arg_uid)
-    item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api, history)
+    discussion_dict = _ddh.get_dict_for_jump(arg_uid, history)
+    item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
     extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                     True, True, request,
                                                                                     application_url=request.application_url,
@@ -1571,7 +1571,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
 
         # escaping will be done in QueryHelper().set_statement(...)
         user_manager.update_last_action(nickname)
-        new_statement = insert_as_statements(request, statement, nickname, issue, is_start=True)
+        new_statement = insert_as_statements(request, statement, nickname, issue, discussion_lang, is_start=True)
 
         if new_statement == -1:
             a = _tn.get(_.notInsertedErrorBecauseEmpty)
@@ -1620,7 +1620,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
     logger('set_new_start_premise', 'def', 'main, request.params: ' + str(request.params))
 
     return_dict = dict()
-    lang = get_language(request)
+    lang = get_discussion_language(request)
     _tn = Translator(lang)
     try:
         if for_api and api_data:
@@ -1702,11 +1702,13 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
             attack_type = request.params['attack_type']
 
         # escaping will be done in QueryHelper().set_statement(...)
+        discussion_lang = get_discussion_language(request)
         url, statement_uids, error = process_input_of_premises_for_arguments_and_receive_url(request,
                                                                                              arg_uid, attack_type,
                                                                                              premisegroups, issue,
                                                                                              nickname, for_api,
-                                                                                             request.application_url, lang)
+                                                                                             request.application_url,
+                                                                                             discussion_lang)
         user_manager.update_last_action(nickname)
 
         return_dict['error'] = error

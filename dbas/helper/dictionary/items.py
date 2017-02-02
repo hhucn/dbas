@@ -607,7 +607,7 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_jump(self, arg_uid, slug, for_api, history):
+    def get_array_for_jump(self, arg_uid, slug, for_api):
         """
 
         :param arg_uid:
@@ -616,9 +616,7 @@ class ItemDictHelper(object):
         :param history:
         :return:
         """
-        splitted_history = history.split('-')
-        coming_from_jump = '/jump' in history[:-1] if len(splitted_history) > 0 else False
-        item_text = get_jump_to_argument_text_list(self.lang, coming_from_jump)
+        item_text = get_jump_to_argument_text_list(self.lang)
         url = self.__get_url_for_jump_array(slug, for_api, arg_uid)
 
         answers = list()
