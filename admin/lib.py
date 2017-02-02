@@ -305,12 +305,48 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         tmp.append(str(attribute) + ' - ' + str(text))
 
     elif column == 'path':
-        url = main_page + '/discuss' + str(attribute)
+        try:
+            url = __build_url_from_attribute(main_page, attribute)
+        except:
+            logger('ADMIN LIB', 'Exception URL Build', str(attribute), error=True)
+            url = main_page + '/discuss'
         link = '<a href={}>{}</a>'
         tmp.append(link.format(url, str(attribute)))
 
     else:
         tmp.append(str(attribute))
+
+
+def __build_url_from_attribute(main_page, attribute):
+    # main_page + slug + discuss + ...
+    splitted_attribute = attribute.split('/')
+    keywords = ['attitude', 'choose', 'justify', 'reaction']
+    if len(splitted_attribute) < 2:
+        return main_page + '/' + attribute
+
+    if splitted_attribute[1] not in keywords:
+        if 'discuss' in attribute:
+            return main_page + '/discuss'
+        return main_page
+
+    if 'attitude' in attribute:
+        db_statement = DBDiscussionSession.query(Statement).get(splitted_attribute[2])
+        slug = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).get_slug()
+        return main_page + '/' + slug  + '/discuss/' + attribute
+    elif 'choose' in attribute:
+        db_statement = DBDiscussionSession.query(Statement).get(splitted_attribute[4])
+        slug = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).get_slug()
+        return main_page + '/' + slug  + '/discuss/' + attribute
+    elif 'justify' in attribute:
+        db_statement = DBDiscussionSession.query(Statement).get(splitted_attribute[2])
+        slug = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).get_slug()
+        return main_page + '/' + slug  + '/discuss/' + attribute
+    elif 'reaction' in attribute:
+        db_argument = DBDiscussionSession.query(Argument).get(splitted_attribute[2])
+        slug = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).get_slug()
+        return main_page + '/' + slug  + '/discuss/' + attribute
+    else:
+        return main_page + '/' + attribute
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
