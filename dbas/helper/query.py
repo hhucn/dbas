@@ -83,7 +83,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
         error = __get_error_for_empty_argument_list(_tn)
 
     elif len(new_argument_uids) == 1:
-        url = __get_url_for_new_argument(new_argument_uids, history, lang, _um)
+        url = __get_url_for_new_argument(new_argument_uids, history, discussion_lang, _um)
 
     else:
         pgroups = []
