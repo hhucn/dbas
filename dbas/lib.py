@@ -346,10 +346,10 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         conclusion_premise = tag_conclusion + conclusion_premise + tag_end
         conclusion_conclusion = tag_conclusion + conclusion_conclusion + tag_end
 
-        # intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
+        intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
         bind = _t.get(_.isNotAGoodReasonFor)
         because = _t.get(_.because)
-        ret_value = '{} {} {}. {} {}.'.format(conclusion_premise, bind, conclusion_conclusion, because, premise)
+        ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because, premise)
     else:
         db_undercut1 = DBDiscussionSession.query(Argument).get(arg_array[0])
         db_undercut2 = DBDiscussionSession.query(Argument).get(arg_array[1])
@@ -638,8 +638,9 @@ def get_all_attacking_arg_uids_from_history(history):
         uids = []
         for part in splitted_history:
             if 'reaction' in part:
-                tmp = part.replace('/', 'X', 2).find('/') + 1
-                uids.append(part[tmp])
+                parts = part.split('/')
+                pos = parts.index('reaction')
+                uids.append(part.split('/')[pos+3])
         return uids
     except AttributeError:
         return []

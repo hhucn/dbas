@@ -179,6 +179,39 @@ class UrlManager(object):
         url = self.slug + '/jump/' + str(argument_uid)
         return self.__return_discussion_url(as_location_href, url)
 
+    def get_last_valid_url_before_reaction(self, as_location_href):
+        """
+
+        :return:
+        """
+        splitted_history = self.history.split('-')
+        # get last valid step
+        last_valid_step = ''
+        for history in splitted_history:
+            if 'reaction' not in history:
+                last_valid_step = history
+
+        # cut history
+        if len(last_valid_step) > 0:
+            try:
+                splitted_history = splitted_history[:splitted_history.index(last_valid_step)]
+            except ValueError:
+                c = len(splitted_history)
+                for index, step in enumerate, splitted_history:
+                    if last_valid_step in step:
+                        c = index
+                splitted_history = splitted_history[:c]
+
+        self.history = '-'.join(splitted_history)
+
+        if last_valid_step.startswith('/'):
+            last_valid_step = last_valid_step[1:]
+
+        if len(self.slug) > 0 and self.slug not in (self.api_url if self.for_api else self.discussion_url):
+            last_valid_step = self.slug + '/' + last_valid_step
+
+        return self.__return_discussion_url(as_location_href, last_valid_step)
+
     def __return_discussion_url(self, as_location_href, url):
         """
 
@@ -187,10 +220,8 @@ class UrlManager(object):
         :param url: String
         :return: Valid URL
         """
-        if self.history and len(self.history) > 1:
-            history = '?history=' + self.history
-        else:
-            history = ''
+        history = '?history=' + self.history if self.history and len(self.history) > 1 else ''
+
         if self.for_api:
             return self.api_url + url + history
         else:

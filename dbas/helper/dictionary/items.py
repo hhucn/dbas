@@ -437,12 +437,13 @@ class ItemDictHelper(object):
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
         attacking_arg_uids.append(argument_uid_sys)
         arg_id_sys, new_attack = rs.get_attack_for_argument(argument_uid_user, self.lang,
-                                                            restriction_on_attacks=attack,
-                                                            restriction_on_arg_uids=attacking_arg_uids)
+                                                            restriction_on_arg_uids=attacking_arg_uids,
+                                                            history=self.path)
 
         if new_attack == 'no_other_attack' or new_attack.startswith('end'):
+            url = _um.get_last_valid_url_before_reaction(True)
             relation = 'step_back'
-            url = 'back' if self.for_api else 'window.history.go(-1)'
+            # url = 'back' if self.for_api else 'window.history.go(-1)'
         else:
             relation = 'no_opinion'
             url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)

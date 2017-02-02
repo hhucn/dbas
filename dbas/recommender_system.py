@@ -108,6 +108,7 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
         else:
             return 0, 'end'
     else:
+        logger('BULL', 'SHIT', str(attacks_array))
         attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
         attack_uid = attacks_array[attack_no]['id']
 
@@ -250,7 +251,12 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
             new_attack_step = str(argument_uid) + '/' + str(key) + '/' + str(return_array[0]['id'])
             is_attack_in_history = new_attack_step in str(history)
 
+            # kick all malicious steps
+            real_return_array = [item for item in return_array if item['id'] not in restriction_on_argument_uids and '/{}'.format(str(item['id'])) not in str(history)]
+            return_array = real_return_array
+
             if str(key) not in restriction_on_attacks \
+                    and len(return_array) > 0\
                     and return_array[0]['id'] not in restriction_on_argument_uids \
                     and not is_attack_in_history:  # no duplicated attacks
                 logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range',
