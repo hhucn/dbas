@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-01 16:03+0100\n"
+"POT-Creation-Date: 2017-02-02 19:25+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1625,9 +1625,7 @@ msgid "information_for_the_different_buttons"
 msgstr "Informationen zu den Knöpfen"
 
 #. Default: for arguments, which should not be deleted.
-#. Default: , if the correction is acceptable and the argument is not
-#. falsified.
-#: templates/review_content.pt:71 templates/review_content.pt:81
+#: templates/review_content.pt:71
 msgid "its_okay_explanation"
 msgstr "für Argumente, die nicht gelöscht werden sollen."
 
@@ -1655,6 +1653,12 @@ msgstr ""
 msgid "its_okay_so_explanation"
 msgstr "für Argumente, die so gut verständlich sind."
 
+#. Default: , if the correction is acceptable and the argument is not
+#. falsified.
+#: templates/review_content.pt:81
+msgid "correction_is_okay"
+msgstr "für Änderungen, die korrekt sind."
+
 #. Default: for correction which are inappropriate are wrong.
 #: templates/review_content.pt:82
 msgid "reject_itexplanation"
@@ -1668,7 +1672,7 @@ msgstr "In der Diskussion über"
 #. Default: following argument was corrected.
 #: templates/review_content.pt:95
 msgid "following_argument_was_corrected"
-msgstr "würde folgendes Argument korrigiert:"
+msgstr "wurde folgendes Argument korrigiert:"
 
 #. Default: This are the edits:
 #: templates/review_content.pt:104
