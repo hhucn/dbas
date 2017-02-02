@@ -233,7 +233,8 @@ def __get_author_data(uid, query, main_page):
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
 
-    img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
+    # img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
+    img = ''
 
     link_begin = '<a href="{}/user/{}">'.format(main_page, db_user.uid)
     link_end = '</a>'

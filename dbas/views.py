@@ -893,7 +893,7 @@ def discussion_jump(request, for_api=False, api_data=None):
         arg_uid = match_dict['arg_id'] if 'arg_id' in match_dict else ''
 
     session_expired = user_manager.update_last_action(nickname)
-    history_helper.save_path_in_database(nickname, request.path)
+    history_helper.save_path_in_database(nickname, request.path, history)
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)

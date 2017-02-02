@@ -325,7 +325,7 @@ def save_history_in_cookie(request, path, history):
         request.response.set_cookie('_HISTORY_', history + '-' + path)
 
 
-def save_path_in_database(nickname, path):
+def save_path_in_database(nickname, path, history=''):
     """
     Saves a path into the database
 
@@ -345,7 +345,9 @@ def save_path_in_database(nickname, path):
     if not db_user:
         return []
 
-    DBDiscussionSession.add(History(author_uid=db_user.uid, path=path))
+    if len(history) > 0:
+        history = '?history=' + history
+    DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()
     # transaction.commit()  # 207
 
