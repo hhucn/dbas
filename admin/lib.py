@@ -330,23 +330,23 @@ def __build_url_from_attribute(main_page, attribute):
         return main_page
 
     if 'attitude' in attribute:
-        db_statement = DBDiscussionSession.query(Statement).get(splitted_attribute[2])
-        slug = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).get_slug()
-        return main_page + '/' + slug  + '/discuss/' + attribute
+        table_type = Statement
+        index = 2
     elif 'choose' in attribute:
-        db_statement = DBDiscussionSession.query(Statement).get(splitted_attribute[4])
-        slug = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).get_slug()
-        return main_page + '/' + slug  + '/discuss/' + attribute
+        table_type = Statement
+        index = 4
     elif 'justify' in attribute:
-        db_statement = DBDiscussionSession.query(Statement).get(splitted_attribute[2])
-        slug = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).get_slug()
-        return main_page + '/' + slug  + '/discuss/' + attribute
+        table_type = Statement
+        index = 2
     elif 'reaction' in attribute:
-        db_argument = DBDiscussionSession.query(Argument).get(splitted_attribute[2])
-        slug = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).get_slug()
-        return main_page + '/' + slug  + '/discuss/' + attribute
+        table_type = Argument
+        index = 2
     else:
         return main_page + '/' + attribute
+
+    db_val = DBDiscussionSession.query(table_type).get(splitted_attribute[index])
+    slug = DBDiscussionSession.query(Issue).get(db_val.issue_uid).get_slug()
+    return main_page + '/' + slug  + '/discuss/' + attribute
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
