@@ -645,17 +645,13 @@ class ItemDictHelper(object):
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
 
         db_undercutted_arg = None
-        db_undercutted_undercut = None
         len_undercut = 0
         if db_argument.argument_uid is not None:
             db_undercutted_arg = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-            len_undercut = 1
-            if db_undercutted_arg.argument_uid is not None:
-                db_undercutted_undercut = DBDiscussionSession.query(Argument).get(db_undercutted_arg.argument_uid)
-                len_undercut = 2
+            len_undercut = 1 if db_undercutted_arg.argument_uid is None else 2
 
         if len_undercut == 0:
-            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang)
+            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True)
             url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
             url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
             url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 't', 'undercut')
@@ -666,10 +662,10 @@ class ItemDictHelper(object):
                 url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
 
         elif len_undercut == 1:
-            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang)
-            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
+            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True)
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)  # TODO
             url1 = None
-            url2 = _um.get_url_for_justifying_argument(not for_api, db_undercutted_arg.uid, 't', 'undercut')
+            url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 't', 'undercut')
             url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)
             if len(db_premises) == 1:
                 url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
@@ -677,11 +673,11 @@ class ItemDictHelper(object):
                 url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
 
         else:
-            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, restriction_on_attacks='undercut')
+            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True)
             url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
             url1 = None
             url2 = None
-            url3 = _um.get_url_for_jump(not for_api, db_undercutted_undercut.uid)
+            url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)
             if len(db_premises) == 1:
                 url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
             else:

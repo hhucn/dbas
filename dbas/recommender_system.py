@@ -70,7 +70,7 @@ def __select_random(some_list):
 
 
 def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, restriction_on_arg_uids=[],
-                            last_attack=None, history=None):
+                            last_attack=None, history=None, redirected_from_jump=False):
     """
     Selects an attack out of the web of reasons.
 
@@ -86,10 +86,10 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
     logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
            str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
 
-    redirected_from_jump = False
     if history:
         history = history.split('-')
-        redirected_from_jump = 'jump' in history[-2 if len(history) > 1 else -1]
+        redirected_from_jump = 'jump' in history[-2 if len(history) > 1 else -1] or redirected_from_jump
+    logger('RecommenderSystem', 'get_attack_for_argument', 'redirected_from_jump ' + str(redirected_from_jump))
 
     # TODO COMMA16 Special Case (forbid: undercuts of undercuts)
     # one URL for testing: /discuss/cat-or-dog/reaction/12/undercut/13?history=/attitude/2-/justify/2/t
@@ -237,7 +237,8 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
             is_supportive = last_attack == 'undermine'
 
         elif attack == 5:
-            key = 'rebut'
+            tmp_arg = DBDiscussionSession.query(Argument).get(int(argument_uid))
+            key = 'rebut' if tmp_arg and tmp_arg.argument_uid is None else 'undercut'
             return_array = get_rebuts_for_argument_uid(argument_uid)
 
         else:

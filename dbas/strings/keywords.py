@@ -167,7 +167,7 @@ class Keywords(Enum):
     canYouGiveACounterArgumentWhy1 = 'Can you give a counter-argument, why are you against'
     canYouGiveACounterArgumentWhy2 = '?'
     canYouGiveAReasonForThat = 'Can you give a reason for that?'
-    canYouBeMorePrecise = 'Can you be more precise, please?'
+    canYouBeMorePrecise = 'Can you be more precise, please? What is wrong with the conclusion?'
     clickHereForRegistration = 'Click <a data-toggle="modal" data-target="#popup-login" title="Login" data-href="login" >here</a> for log in or registration!'
     clickForMore = 'Click for more!'
     countOfArguments = 'Count of arguments'

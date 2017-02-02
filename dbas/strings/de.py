@@ -191,7 +191,7 @@ de_lang = {
     _.canYouGiveACounterArgumentWhy2: 'sind?',
     _.canYouGiveACounter: 'Können Sie einen Grund dagegen angeben?',
     _.canYouGiveAReasonForThat: 'Können Sie dafür einen Grund angeben?',
-    _.canYouBeMorePrecise: 'Können Sie bitte noch genauer sein?',
+    _.canYouBeMorePrecise: 'Können Sie bitte noch genauer sein? Was finden Sie an der Behauptung falsch?',
     _.completeView: 'Komplette View',
     _.completeViewTitle: 'Kompletten Graphen anzeigen',
     _.currentDiscussion: 'Die aktuelle Diskussion hat folgendes Thema',
