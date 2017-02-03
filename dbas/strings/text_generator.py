@@ -701,7 +701,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             confrontation_text += _t.get(_.strongerStatementP)
 
         tmp = _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
-        confrontation_text = confrontation_text.format(premise, start_argument, tmp, end_tag) + e + ' '
+        confrontation_text = confrontation_text.format(premise, start_argument, tmp, end_tag) + ' '
 
         tmp = _t.get(_.strongerStatementEnd)
         if tmp == '':
