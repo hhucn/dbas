@@ -530,9 +530,11 @@ function GuiHandler() {
 		
 		var at_least_one_history = false;
 		$.each(jsonData, function (key, value) {
-			if (key == 'error') {
+			if (key == 'error' || key == 'info') {
 				return true;
 			}
+			console.log('key ' + key);
+			console.log('value ' + value);
 			var table, tr, tbody, thead;
 			table = $('<table>');
 			table.attr('class', 'table table-condensed table-striped table-hover')
