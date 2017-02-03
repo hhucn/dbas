@@ -430,7 +430,7 @@ def get_logfile_for_statements(uids, lang, main_page):
 
     main_dict = dict()
     for uid in uids:
-        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).all()
+        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).all()
         if len(db_textversions) == 0:
             continue
         return_dict = dict()

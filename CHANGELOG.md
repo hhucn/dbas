@@ -1,3 +1,7 @@
+## 1.2.1 (2017-02-03)
+- Reworked lateral entry
+- Minor language fixes
+
 ## 1.2.0 (2017-01-30)
 - Improvements and bugfix during a second experiment
 - Security fixes for better password handling
