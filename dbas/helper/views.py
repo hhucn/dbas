@@ -358,11 +358,11 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
 
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # check if the user exists
-        logger('ViewHelper', 'user_login', 'user \'' + nickname + '\' does not exists')
+        logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' does not exists')
 
         # if the user does not exists and we are using LDAP, we'll grep the user
         if is_ldap:
-            msg = __login_user_ldap(request, nickname, password, _tn)
+            msg, db_user = __login_user_ldap(request, nickname, password, _tn)
             if msg is not None:
                 return msg
 
@@ -376,7 +376,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
             user_data = verify_ldap_user_data(request, nickname, password)
 
             if not user_data and not db_user.validate_password(password):  # check password
-                logger('ViewHelper', 'user_login', 'wrong password')
+                logger('ViewHelper', 'login_user', 'wrong password')
                 error = _tn.get(_.userPasswordNotMatch)
                 return error
         else:
@@ -388,10 +388,10 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
 
     if for_api:
-        logger('ViewHelper', 'user_login', 'return for api: success')
+        logger('ViewHelper', 'login_user', 'return for api: success')
         return {'status': 'success'}
     else:
-        logger('ViewHelper', 'user_login', 'return success: ' + url)
+        logger('ViewHelper', 'login_user', 'return success: ' + url)
         sleep(0.5)
         return HTTPFound(
             location=url,
@@ -400,6 +400,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
 
 
 def __login_user_ldap(request, nickname, password, _tn):
+    logger('ViewHelper', '__login_user_ldap', nickname)
     user_data = verify_ldap_user_data(request, nickname, password)
 
     if not user_data:
@@ -412,8 +413,8 @@ def __login_user_ldap(request, nickname, password, _tn):
 
     if not success:
         error = _tn.get(_.userPasswordNotMatch)
-        return error
-    return None
+        return error, db_user
+    return None, db_user
 
 
 def __refresh_headers_and_url(request, db_user, keep_login, url):
