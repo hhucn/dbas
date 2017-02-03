@@ -563,7 +563,7 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sta
         confrontation = b + confrontation + e
         move_end_tag = True
 
-    author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
+    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     if is_okay:
         confrontation_text = author + ' ' + b + _t.get(_.thinksThat)
     else:
@@ -595,7 +595,7 @@ def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conc
     # author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
     #                                                                                    db_users_premise.statements,
     #                                                                                    nickname)
-    author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
+    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
     if is_okay:
@@ -641,9 +641,24 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     # author, gender, is_okay = __get_name_link_of_arguments_author_with_statement_agree(main_page, system_argument,
     #                                                                                    db_users_premise.statements,
     #                                                                                    nickname)
-    author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
+    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
+
+    # has the other user any opinion for the users conclusion?
+    has_other_user_opinion = False
+    if is_okay:
+        if user_arg.argument_uid is None:
+            db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == user_arg.argument_uid,
+                                                                          VoteArgument.author_uid == db_other_user.uid,
+                                                                          VoteArgument.is_up_vote == True,
+                                                                          VoteArgument.is_valid == True)).all()
+        else:
+            db_vote = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == user_arg.conclusion_uid,
+                                                                           VoteStatement.author_uid == db_other_user.uid,
+                                                                           VoteStatement.is_up_vote == True,
+                                                                           VoteStatement.is_valid == True)).all()
+        has_other_user_opinion = db_vote and len(db_vote) > 0
 
     # distinguish between reply for argument and reply for premise group
     if reply_for_argument:  # reply for argument
@@ -676,7 +691,10 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
     else:  # reply for premise group
         if is_okay:
-            confrontation_text = author + ' ' + b + _t.get(_.agreesThat) + ' {}. '
+            if has_other_user_opinion:
+                confrontation_text = author + ' ' + b + _t.get(_.agreesThat) + ' {}. '
+            else:
+                confrontation_text = author + ' ' + _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
             confrontation_text += _t.get(_.strongerStatementM) if gender is 'm' else _t.get(_.strongerStatementF)
         else:
             confrontation_text = b + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. '
@@ -710,7 +728,7 @@ def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=T
     :param with_link:
     :return:
     """
-    text, is_okay = get_author_data(main_page, argument.author_uid, False, True)
+    user, text, is_okay = get_author_data(main_page, argument.author_uid, False, True)
     db_user = DBDiscussionSession.query(User).get(argument.author_uid)
     gender = db_user.gender if db_user else 'n'
 
@@ -725,13 +743,13 @@ def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=T
         db_user = get_author_or_first_supporter_of_argument(argument.uid, db_current_user)
 
         if db_user:
-            text, is_okay = get_author_data(main_page, db_user.uid, gravatar_on_right_side=False, linked_with_users_page=with_link)
+            user, text, is_okay = get_author_data(main_page, db_user.uid, gravatar_on_right_side=False, linked_with_users_page=with_link)
             db_user = DBDiscussionSession.query(User).get(db_user.uid)
             gender = db_user.gender if db_user else 'n'
         else:
-            return '', 'n', False
+            return None, '', 'n', False
 
-    return text if is_okay else '', gender, is_okay
+    return user, text if is_okay else '', gender, is_okay
 
 
 def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument, statement, nickname):
@@ -772,7 +790,7 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
     is_okay = False
     gender = 'n'
     for vote in votes:
-        text, is_okay = get_author_data(main_page, vote.author_uid, False, True)
+        user, text, is_okay = get_author_data(main_page, vote.author_uid, False, True)
         if is_okay:
             db_user = DBDiscussionSession.query(User).get(vote.author_uid)
             gender = db_user.gender if db_user else 'n'

@@ -533,8 +533,7 @@ function GuiHandler() {
 			if (key == 'error' || key == 'info') {
 				return true;
 			}
-			console.log('key ' + key);
-			console.log('value ' + value);
+
 			var table, tr, tbody, thead;
 			table = $('<table>');
 			table.attr('class', 'table table-condensed table-striped table-hover')
@@ -553,7 +552,7 @@ function GuiHandler() {
 				tr = $('<tr>')
 					.append($('<td>').text(val.text))
 					.append($('<td>')
-						.append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em'))
+						.append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em').addClass('img-circle'))
 						.append($('<a>')
 							.addClass('img-circle')
 							.attr('target', '_blank')

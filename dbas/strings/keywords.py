@@ -459,6 +459,7 @@ class Keywords(Enum):
     thinksThat = 'thinks that'
     agreesThat = 'agrees that'
     that = 'that'
+    otherUserDoesntHaveOpinionForThisStatement = 'does not have any opinion for {}.'
     otherParticipantsDontHaveOpinionForThisStatement = 'Other participants do not have any opinion for this statement.'
     otherParticipantsDontHaveOpinion = 'Other participants do not have any opinion regarding'
     otherParticipantsDontHaveOpinionRegaringYourSelection = 'Other participants do not have any opinion regarding your selection'

@@ -42,7 +42,10 @@ function escapeHtml (text) {
  * @returns {number}
  */
 function getCurrentIssueId (){
-	return $('#' + issueDropdownButtonID).attr('issue');
+	var issue = $('#' + issueDropdownButtonID).attr('issue');
+	if (!issue)
+		issue = $('#issue_info').data('issue');
+	return issue;
 }
 
 /**

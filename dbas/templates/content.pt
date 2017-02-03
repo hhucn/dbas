@@ -5,14 +5,14 @@
             <div class="row cn">
                 <div class="col-md-8" tal:condition="len(issues.all)>1">
                     <p class="center">${structure:issues.intro}:</p>
-                    <span class="lead" id="issue_info" tal:attributes="data-discussion-language extras.tag.language; data-title issues.title" style="text-align: justify;">${structure:issues.info}</span>
+                    <span class="lead" id="issue_info" tal:attributes="data-discussion-language extras.tag.language; data-title issues.title; data-issue issues.uid" style="text-align: justify;">${structure:issues.info}</span>
                     <!--<i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip; data-long-info issues.long_info"></i>-->
                     <br>
                     <a id="issue-long-info-link" href="#" tal:attributes="data-info issues.tooltip; data-long-info issues.long_info">(<span i18n:translate="more_infos">more infos</span>)</a>
                 </div>
                 <div class="col-md-10" tal:condition="len(issues.all)<2">
                     <p class="center">${structure:issues.intro}:</p>
-                    <span class="lead" id="issue_info" tal:attributes="data-discussion-language extras.tag.language; data-title issues.title" style="text-align: justify;">${structure:issues.info}</span>
+                    <span class="lead" id="issue_info" tal:attributes="data-discussion-language extras.tag.language; data-title issues.title; data-issue issues.uid" style="text-align: justify;">${structure:issues.info}</span>
                     <!--<i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip; data-long-info issues.long_info"></i>-->
                     <br>
                     <a id="issue-long-info-link" href="#" tal:attributes="data-info issues.tooltip; data-long-info issues.long_info">(<span i18n:translate="more_infos">more infos</span>)</a>

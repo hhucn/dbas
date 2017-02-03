@@ -224,7 +224,7 @@ def __get_bubble_from_dont_know_step(step, nickname, lang, url):
     from dbas.strings.text_generator import get_name_link_of_arguments_author
     _tn = Translator(lang)
 
-    author, gender, is_okay = get_name_link_of_arguments_author(url, db_argument, nickname, False)
+    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(url, db_argument, nickname, False)
     if is_okay:
         intro = author + ' ' + _tn.get(_.thinksThat)
     else:

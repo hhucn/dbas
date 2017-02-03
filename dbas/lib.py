@@ -968,11 +968,11 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
 
     nick = db_user.get_global_nickname()
     link_begin = ('<a href="' + main_page + '/user/' + str(db_user.uid) + ' " title="' + nick + '">') if linked_with_users_page else ''
-    link_end = ('</a>') if linked_with_users_page else ''
+    link_end = '</a>' if linked_with_users_page else ''
     if gravatar_on_right_side:
-        return link_begin + nick + ' ' + img + link_end, True
+        return db_user, link_begin + nick + ' ' + img + link_end, True
     else:
-        return link_begin + img + ' ' + nick + link_end, True
+        return db_user, link_begin + img + ' ' + nick + link_end, True
 
 
 def validate_recaptcha(recaptcha):

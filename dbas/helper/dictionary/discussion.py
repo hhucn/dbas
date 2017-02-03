@@ -328,7 +328,7 @@ class DiscussionDictHelper(object):
             db_argument = DBDiscussionSession.query(Argument).get(uid)
             if not db_argument:
                 text = ''
-            author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_argument, nickname)
+            db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_argument, nickname)
             if is_okay:
                 intro = author + ' ' + b + _tn.get(_.thinksThat) + e
             else:
