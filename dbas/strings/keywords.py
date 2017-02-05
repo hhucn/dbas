@@ -410,6 +410,7 @@ class Keywords(Enum):
     langNotFound = 'Language not found'
     latestNewsFromDiscussion = 'Latest news about actions in the discussion'
     latestNewsFromDBAS = 'Latest news about D-BAS, a Dialog-Based Argumentation System'
+    ldapInfo = 'We are using the register of persons of the Uni Düsseldorf. All data and information are of course sent SSL encrypted and will never be passed on to any third parties after receipt.'
     more = 'More'
     medium = 'medium'
     minLength = 'Minimal length'
