@@ -1006,7 +1006,7 @@ function DiscussionGraph() {
             d.forEach(function (e) {
                 // find edge with statement in jsonData.path as source
                 edges.forEach(function (edge) {
-                    if (edge.source.id === "statement_" + e) {
+                    if ((edge.source.id === "statement_" + e) && checkInPathArray(edge.target.id, jsonData)) {
                         edgesCircleId.push(edge);
                         // find virtual nodes
                         testVirtualNode(edges, edge, edgesCircleId);
@@ -1022,6 +1022,25 @@ function DiscussionGraph() {
     }
 
     /**
+     *
+     *
+     * @param edge
+     * @param jsonData
+     */
+    function checkInPathArray(id, jsonData){
+        let isInPathArray = false;
+
+        jsonData.path.forEach(function (d) {
+            d.forEach(function (e) {
+                if (id === "statement_" + e || id === "argument_" + e || id === "issue") {
+                    isInPathArray = true;
+                }
+            });
+        });
+        return isInPathArray;
+    }
+
+    /**
      * Test if target of edge is a virtual node.
      *
      * @param edges
@@ -1031,7 +1050,7 @@ function DiscussionGraph() {
         if(edge.target.label === '') {
             edges.forEach(function (e) {
                 // color edge if source of edge is an virtual nod
-                if (edge.target.id === e.source.id) {
+                if (edge.target.id === e.source.id && checkInPathArray(e.target.id, jsonData)) {
                     edgeCircleId.push(e);
                 }
             });
