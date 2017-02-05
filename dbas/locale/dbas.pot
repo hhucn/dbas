@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-31 16:21+0100\n"
+"POT-Creation-Date: 2017-02-02 19:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1484,6 +1484,11 @@ msgstr ""
 msgid "reject_it"
 msgstr ""
 
+#. Default: Information for the different reasons
+#: ././templates/review_content.pt:55
+msgid "information_for_the_different_reasons"
+msgstr ""
+
 #. Default: Off topic or irrelevant
 #: ././templates/review_content.pt:57
 msgid "off_topic_or_irrelevant"
@@ -1514,10 +1519,13 @@ msgstr ""
 msgid "needs_optimization_explanation"
 msgstr ""
 
+#. Default: Information for the different buttons
+#: ././templates/review_content.pt:68
+msgid "information_for_the_different_buttons"
+msgstr ""
+
 #. Default: for arguments, which should not be deleted.
-#. Default: , if the correction is acceptable and the argument is not
-#. falsified.
-#: ././templates/review_content.pt:71 ././templates/review_content.pt:81
+#: ././templates/review_content.pt:71
 msgid "its_okay_explanation"
 msgstr ""
 
@@ -1541,6 +1549,12 @@ msgstr ""
 #. Default: for arguments, which can be understood as-is.
 #: ././templates/review_content.pt:77
 msgid "its_okay_so_explanation"
+msgstr ""
+
+#. Default: , if the correction is acceptable and the argument is not
+#. falsified.
+#: ././templates/review_content.pt:81
+msgid "correction_is_okay"
 msgstr ""
 
 #. Default: for correction which are inappropriate are wrong.

@@ -114,16 +114,16 @@ class LibTests(unittest.TestCase):
         none_history = None
         correct_history = "/attitude/60-/justify/60/t-/reaction/52/rebut/53"
         broken_history = "/attitude/60/justify/60/t/broooken/52/rebut/53"
-        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(correct_history), ["r"], "Missing element")
+        self.assertEqual(lib.get_all_attacking_arg_uids_from_history(correct_history), ['53'], "Missing element")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(broken_history), [], "Should match nothing")
         self.assertEqual(lib.get_all_attacking_arg_uids_from_history(none_history), [], "No history has no elements in list")
 
     def test_get_all_arguments_by_statement(self):
         argument_list = lib.get_all_arguments_by_statement(3)
-        self.assertEqual(len(argument_list), 2)
+        self.assertEqual(len(argument_list), 4)
         for argument in argument_list:
-            self.assertTrue(argument.uid in [4, 5])
+            self.assertTrue(argument.uid in [4, 5, 6, 7])
 
-        self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 4)
+        self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 6)
         self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)
         self.assertEqual(lib.get_all_arguments_by_statement(-1), None)

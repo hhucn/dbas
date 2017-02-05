@@ -218,6 +218,18 @@ function Main () {
 			});
 		});
 		
+		var splitted_url = window.location.href.split('/');
+		if (splitted_url.length > 5) {
+			if (window.location.href.split('/')[5].indexOf('jump') != -1) {
+				trianglel.find('.triangle-content').hover(function () {
+					$(this).css('color', '#000').css('cursor', 'default');
+					
+				}, function () {
+					$(this).css('color', '');
+				});
+			}
+		}
+		
 		// remove hover on start
 		if (trianglel.length == 1 && trianglel.attr('id') == 'start'){
 			trianglel.html(trianglel.text().trim());

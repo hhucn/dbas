@@ -165,6 +165,28 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
         if db_arguments:
             return_array = return_array + db_arguments
 
+    # undercuts
+    db_all_undercuts = []
+    for arg in return_array:
+        db_undercuts = DBDiscussionSession.query(Argument).filter_by(
+            is_disabled=include_disabled,
+            argument_uid=arg.uid
+        ).all()
+        if db_undercuts:
+            db_all_undercuts = db_all_undercuts + db_undercuts
+
+    # undercutted undercuts
+    db_all_undercutted_undercuts = []
+    for arg in db_all_undercuts:
+        db_undercutcuts = DBDiscussionSession.query(Argument).filter_by(
+            is_disabled=include_disabled,
+            argument_uid=arg.uid
+        ).all()
+        if db_undercutcuts:
+            db_all_undercutted_undercuts = db_all_undercuts + db_undercutcuts
+
+    return_array = list(set(return_array + db_all_undercuts + db_all_undercutted_undercuts))
+
     logger('DBAS.LIB', 'get_all_arguments_by_statement', 'returning arguments ' + str([arg.uid for arg in return_array]))
     return return_array if len(return_array) > 0 else None
 
@@ -252,20 +274,25 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     """
     logger('DBAS.LIB', 'get_all_arguments_with_text_by_statement_id', 'main ' + str(statement_uid))
     arguments = get_all_arguments_by_statement(statement_uid)
+    uids = [arg.uid for arg in arguments] if arguments else None
     results = list()
     sb = '<{} data-argumentation-type="position">'.format(tag_type) if color_statement else ''
     se = '</{}>'.format(tag_type) if color_statement else ''
-    if arguments:
-        for argument in arguments:
-            statement_text = get_text_for_statement_uid(statement_uid)
-            attack_type = 'jump' if is_jump else ''
-            argument_text = get_text_for_argument_uid(argument.uid, anonymous_style=True, attack_type=attack_type)
-            pos = argument_text.lower().find(statement_text.lower())
-            argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
-            results.append({'uid': argument.uid,
-                            'text': argument_text,
-                            'url': urlmanager.get_url_for_jump(False, argument.uid)})
-        return results
+
+    if not uids:
+        return []
+
+    uids.sort()
+    for uid in uids:
+        statement_text = get_text_for_statement_uid(statement_uid)
+        attack_type = 'jump' if is_jump else ''
+        argument_text = get_text_for_argument_uid(uid, anonymous_style=True, attack_type=attack_type)
+        pos = argument_text.lower().find(statement_text.lower())
+        argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
+        results.append({'uid': uid,
+                        'text': argument_text,
+                        'url': urlmanager.get_url_for_jump(False, uid)})
+    return results
 
 
 def get_slug_by_statement_uid(uid):
@@ -308,21 +335,43 @@ def __build_argument_for_jump(arg_array, with_html_tag):
             ret_value += tag_end + ' ' + _t.get(_.because).lower() + ' '
             ret_value += tag_premise + premises + tag_end
 
+    elif len(arg_array) == 2:
+        db_undercut = DBDiscussionSession.query(Argument).get(arg_array[0])
+        db_conclusion_argument = DBDiscussionSession.query(Argument).get(arg_array[1])
+        premise, uids = get_text_for_premisesgroup_uid(db_undercut.premisesgroup_uid)
+        conclusion_premise, uids = get_text_for_premisesgroup_uid(db_conclusion_argument.premisesgroup_uid)
+        conclusion_conclusion = get_text_for_statement_uid(db_conclusion_argument.conclusion_uid)
+
+        premise = tag_premise + premise + tag_end
+        conclusion_premise = tag_conclusion + conclusion_premise + tag_end
+        conclusion_conclusion = tag_conclusion + conclusion_conclusion + tag_end
+
+        intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
+        bind = _t.get(_.isNotAGoodReasonFor)
+        because = _t.get(_.because)
+        ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because, premise)
     else:
-        db_argument = DBDiscussionSession.query(Argument).get(arg_array[1])
-        conclusions_premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        if db_argument.conclusion_uid:
-            conclusions_conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
-        else:
-            conclusions_conclusion = get_text_for_argument_uid(db_argument.argument_uid)
+        db_undercut1 = DBDiscussionSession.query(Argument).get(arg_array[0])
+        db_undercut2 = DBDiscussionSession.query(Argument).get(arg_array[1])
+        db_argument = DBDiscussionSession.query(Argument).get(arg_array[2])
+        premise1, uids = get_text_for_premisesgroup_uid(db_undercut1.premisesgroup_uid)
+        premise2, uids = get_text_for_premisesgroup_uid(db_undercut2.premisesgroup_uid)
+        premise3, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
-        db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
-        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        # intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
+        bind = _t.get(_.isNotAGoodReasonAgainstArgument)
+        because = _t.get(_.because)
+        seperator = ',' if lang == 'de' else ''
 
-        ret_value = tag_conclusion + conclusions_premises + ' '
-        ret_value += _t.get(_.doesNotJustify) + ' '
-        ret_value += conclusions_conclusion + tag_end + ' '
-        ret_value += _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
+        premise1 = tag_premise + premise1 + tag_end
+        premise2 = tag_conclusion + premise2 + tag_end
+        argument = '{}{} {} {}'.format(conclusion, seperator, because.lower(), premise3)
+        argument = tag_conclusion + argument + tag_end
+        bind = tag_conclusion + bind + tag_end
+
+        # P2 ist kein guter Grund gegen das Argument, dass C weil P3. Weil P1
+        ret_value = '{} {} {}. {} {}'.format(premise2, bind, argument, because, premise1)
 
     return ret_value
 
@@ -589,8 +638,9 @@ def get_all_attacking_arg_uids_from_history(history):
         uids = []
         for part in splitted_history:
             if 'reaction' in part:
-                tmp = part.replace('/', 'X', 2).find('/') + 1
-                uids.append(part[tmp])
+                parts = part.split('/')
+                pos = parts.index('reaction')
+                uids.append(part.split('/')[pos + 3])
         return uids
     except AttributeError:
         return []
@@ -918,11 +968,11 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
 
     nick = db_user.get_global_nickname()
     link_begin = ('<a href="' + main_page + '/user/' + str(db_user.uid) + ' " title="' + nick + '">') if linked_with_users_page else ''
-    link_end = ('</a>') if linked_with_users_page else ''
+    link_end = '</a>' if linked_with_users_page else ''
     if gravatar_on_right_side:
-        return link_begin + nick + ' ' + img + link_end, True
+        return db_user, link_begin + nick + ' ' + img + link_end, True
     else:
-        return link_begin + img + ' ' + nick + link_end, True
+        return db_user, link_begin + img + ' ' + nick + link_end, True
 
 
 def validate_recaptcha(recaptcha):

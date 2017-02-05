@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-31 16:21+0100\n"
+"POT-Creation-Date: 2017-02-02 19:25+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -89,10 +89,10 @@ msgstr "Letzte Gutachter"
 msgid "None"
 msgstr "Keine"
 
-#. Default: What is reputation? How do I earn (and lose) it?
-#: templates/review.pt:80
-msgid "what_is_reputation"
-msgstr "Was ist Reputation? Wie bekomme (verliere) ich diese?"
+#. Default: It is funded by the
+#: templates/index.pt:35
+msgid "funded_by"
+msgstr "Es wird finanziert vom"
 
 #. Default: Reputation is a rough measurement of how work you are doing for the
 #. discussion and the community;
@@ -1651,7 +1651,7 @@ msgstr "Prüfen"
 #. Default: Reputation count
 #: templates/review_reputation.pt:15
 msgid "reputation_count"
-msgstr "Repuations-Punktzahl"
+msgstr "Reputations-Punktzahl"
 
 #. Default: Action
 #: templates/review_reputation.pt:26
@@ -1763,6 +1763,11 @@ msgstr "Lass' mich eine Verbesserungen angeben"
 msgid "reject_it"
 msgstr "Ablehnen"
 
+#. Default: Information for the different reasons
+#: templates/review_content.pt:55
+msgid "information_for_the_different_reasons"
+msgstr "Informationen zu den Gründen"
+
 #. Default: Off topic or irrelevant
 #: templates/review_content.pt:57
 msgid "off_topic_or_irrelevant"
@@ -1793,10 +1798,13 @@ msgstr "Der Text sollte überarbeitet werden"
 msgid "needs_optimization_explanation"
 msgstr "wenn Beiträge rein sprachlich überarbeitet werden sollten"
 
+#. Default: Information for the different buttons
+#: templates/review_content.pt:68
+msgid "information_for_the_different_buttons"
+msgstr "Informationen zu den Knöpfen"
+
 #. Default: for arguments, which should not be deleted.
-#. Default: , if the correction is acceptable and the argument is not
-#. falsified.
-#: templates/review_content.pt:71 templates/review_content.pt:81
+#: templates/review_content.pt:71
 msgid "its_okay_explanation"
 msgstr "für Argumente, die nicht gelöscht werden sollen."
 
@@ -1824,6 +1832,12 @@ msgstr ""
 msgid "its_okay_so_explanation"
 msgstr "für Argumente, die so gut verständlich sind."
 
+#. Default: , if the correction is acceptable and the argument is not
+#. falsified.
+#: templates/review_content.pt:81
+msgid "correction_is_okay"
+msgstr "für Änderungen, die korrekt sind."
+
 #. Default: for correction which are inappropriate are wrong.
 #: templates/review_content.pt:82
 msgid "reject_itexplanation"
@@ -1837,7 +1851,7 @@ msgstr "In der Diskussion über"
 #. Default: following argument was corrected.
 #: templates/review_content.pt:95
 msgid "following_argument_was_corrected"
-msgstr "würde folgendes Argument korrigiert:"
+msgstr "wurde folgendes Argument korrigiert:"
 
 #. Default: This are the edits:
 #: templates/review_content.pt:104

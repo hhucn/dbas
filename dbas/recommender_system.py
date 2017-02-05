@@ -70,7 +70,7 @@ def __select_random(some_list):
 
 
 def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, restriction_on_arg_uids=[],
-                            last_attack=None, history=None):
+                            last_attack=None, history=None, redirected_from_jump=False):
     """
     Selects an attack out of the web of reasons.
 
@@ -86,10 +86,10 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
     logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
            str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
 
-    redirected_from_jump = False
     if history:
         history = history.split('-')
-        redirected_from_jump = 'jump' in history[-2 if len(history) > 1 else -1]
+        redirected_from_jump = 'jump' in history[-2 if len(history) > 1 else -1] or redirected_from_jump
+    logger('RecommenderSystem', 'get_attack_for_argument', 'redirected_from_jump ' + str(redirected_from_jump))
 
     # TODO COMMA16 Special Case (forbid: undercuts of undercuts)
     # one URL for testing: /discuss/cat-or-dog/reaction/12/undercut/13?history=/attitude/2-/justify/2/t
@@ -108,6 +108,7 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
         else:
             return 0, 'end'
     else:
+        logger('BULL', 'SHIT', str(attacks_array))
         attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
         attack_uid = attacks_array[attack_no]['id']
 
@@ -237,7 +238,8 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
             is_supportive = last_attack == 'undermine'
 
         elif attack == 5:
-            key = 'rebut'
+            tmp_arg = DBDiscussionSession.query(Argument).get(int(argument_uid))
+            key = 'rebut' if tmp_arg and tmp_arg.argument_uid is None else 'undercut'
             return_array = get_rebuts_for_argument_uid(argument_uid)
 
         else:
@@ -249,7 +251,12 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
             new_attack_step = str(argument_uid) + '/' + str(key) + '/' + str(return_array[0]['id'])
             is_attack_in_history = new_attack_step in str(history)
 
+            # kick all malicious steps
+            real_return_array = [item for item in return_array if item['id'] not in restriction_on_argument_uids and '/{}'.format(str(item['id'])) not in str(history)]
+            return_array = real_return_array
+
             if str(key) not in restriction_on_attacks \
+                    and len(return_array) > 0\
                     and return_array[0]['id'] not in restriction_on_argument_uids \
                     and not is_attack_in_history:  # no duplicated attacks
                 logger('RecommenderSystem', '__get_attack_for_argument_by_random_in_range',

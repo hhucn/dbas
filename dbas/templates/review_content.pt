@@ -52,7 +52,7 @@
                     <div class="col-md-7">
                         <blockquote tal:condition="not:subpage.button_set.is_edit">
                             <div style="padding-left: 0.5em">
-                                <span>Information for the different reasons</span>
+                                <span i18n:translate="information_for_the_different_reasons">Information for the different reasons</span>
                                 <ul style="padding-left: 0.5em">
                                     <li><strong i18n:translate="off_topic_or_irrelevant">Off topic or irrelevant</strong> <span i18n:translate="off_topic_explanation">text does not belong to the topic under discussion</span>.</li>
                                     <li><strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abusive</strong> <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.</li>
@@ -65,7 +65,7 @@
                     <div class="col-md-5">
                         <blockquote class="blockquote-reverse" style="text-align: left;">
                             <div>
-                                <span>Information for the different buttons</span>
+                                <span i18n:translate="information_for_the_different_buttons">Information for the different buttons</span>
                             </div>
                             <ul tal:condition="subpage.button_set.is_delete">
                                 <li><span class="text-success" i18n:translate="its_okay">It's Okay</span> <span i18n:translate="its_okay_explanation">for arguments, which should not be deleted.</span></li>
@@ -78,7 +78,7 @@
                                 <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
                             </ul>
                             <ul tal:condition="subpage.button_set.is_edit" style="padding-left: 0.5em">
-                                <li><span class="text-success" i18n:translate="its_okay">It's okay</span> <span i18n:translate="its_okay_explanation">, if the correction is acceptable and the argument is not falsified.</span></li>
+                                <li><span class="text-success" i18n:translate="its_okay">It's okay</span> <span i18n:translate="correction_is_okay">, if the correction is acceptable and the argument is not falsified.</span></li>
                                 <li><span class="text-danger" i18n:translate="reject_it">Reject it</span> <span i18n:translate="reject_itexplanation">for correction which are inappropriate are wrong.</span></li>
                                 <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next argument.</span></li>
                             </ul>

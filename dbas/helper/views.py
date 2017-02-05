@@ -5,7 +5,7 @@ Helper for D-BAS Views
 """
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Settings, Language
+from dbas.database.discussion_model import User, Group, Settings
 from dbas.logger import logger
 from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap, validate_recaptcha
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
@@ -13,6 +13,7 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
+from dbas.auth.ldap import verify_ldap_user_data
 from validate_email import validate_email
 from sqlalchemy import func
 
@@ -22,8 +23,6 @@ from dbas.review.helper.reputation import add_reputation_for
 from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
 from websocket.lib import send_request_for_info_popup_to_socketio
 from dbas.review.helper.reputation import rep_reason_first_confrontation
-from dbas.helper.email import send_mail
-from dbas.helper.notification import send_welcome_notification
 
 import dbas.helper.issue as issue_helper
 import dbas.recommender_system as RecommenderSystem
@@ -31,7 +30,6 @@ import dbas.helper.email as EmailHelper
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.user_management as UserHandler
-import dbas.handler.password as PasswordHandler
 import dbas.helper.voting as VotingHelper
 import transaction
 
@@ -64,7 +62,7 @@ def preparation_for_view(for_api, api_data, request, request_authenticated_useri
     nickname = get_nickname(request_authenticated_userid, for_api, api_data)
     session_expired = UserHandler.update_last_action(nickname)
     history         = request.params['history'] if 'history' in request.params else ''
-    HistoryHelper.save_path_in_database(nickname, request.path)
+    HistoryHelper.save_path_in_database(nickname, request.path, history)
     HistoryHelper.save_history_in_cookie(request, request.path, history)
     return nickname, session_expired, history
 
@@ -155,7 +153,6 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
 
     :param request:
     :param for_api:
-    :param api_data:
     :param main_page:
     :param slug:
     :param statement_or_arg_id:
@@ -188,13 +185,14 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
 
     :param request:
     :param for_api:
-    :param api_data:
     :param main_page:
     :param slug:
     :param statement_or_arg_id:
     :param supportive:
     :param ui_locales:
     :param request_authenticated_userid:
+    :param nickname:
+    :param history:
     :return:
     """
     logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
@@ -224,7 +222,6 @@ def preparation_for_justify_argument(request, for_api, main_page, slug, statemen
 
     :param request:
     :param for_api:
-    :param api_data:
     :param main_page:
     :param slug:
     :param statement_or_arg_id:
@@ -282,7 +279,7 @@ def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
     :param phone:
     :param content:
     :param ui_locales:
-    :param spamanswer:
+    :param recaptcha:
     :return:
     """
     logger('ViewHelper', 'try_to_contact', 'name: ' + name + ', email: ' + email + ', phone: ' + phone + ', content: ' + content)
@@ -361,11 +358,11 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
 
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # check if the user exists
-        logger('ViewHelper', 'user_login', 'user \'' + nickname + '\' does not exists')
+        logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' does not exists')
 
         # if the user does not exists and we are using LDAP, we'll grep the user
         if is_ldap:
-            msg = __login_user_ldap(request, nickname, password, _tn)
+            msg, db_user = __login_user_ldap(request, nickname, password, _tn)
             if msg is not None:
                 return msg
 
@@ -379,7 +376,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
             user_data = verify_ldap_user_data(request, nickname, password)
 
             if not user_data and not db_user.validate_password(password):  # check password
-                logger('ViewHelper', 'user_login', 'wrong password')
+                logger('ViewHelper', 'login_user', 'wrong password')
                 error = _tn.get(_.userPasswordNotMatch)
                 return error
         else:
@@ -391,10 +388,10 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
 
     if for_api:
-        logger('ViewHelper', 'user_login', 'return for api: success')
+        logger('ViewHelper', 'login_user', 'return for api: success')
         return {'status': 'success'}
     else:
-        logger('ViewHelper', 'user_login', 'return success: ' + url)
+        logger('ViewHelper', 'login_user', 'return success: ' + url)
         sleep(0.5)
         return HTTPFound(
             location=url,
@@ -403,6 +400,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
 
 
 def __login_user_ldap(request, nickname, password, _tn):
+    logger('ViewHelper', '__login_user_ldap', nickname)
     user_data = verify_ldap_user_data(request, nickname, password)
 
     if not user_data:
@@ -411,12 +409,12 @@ def __login_user_ldap(request, nickname, password, _tn):
     lastname = user_data[1]
     gender = user_data[2]
     email = user_data[3]
-    success, db_user = set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
+    success, db_user = UserHandler.set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
 
     if not success:
         error = _tn.get(_.userPasswordNotMatch)
-        return error
-    return None
+        return error, db_user
+    return None, db_user
 
 
 def __refresh_headers_and_url(request, db_user, keep_login, url):
@@ -439,86 +437,11 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     return headers, url
 
 
-def verify_ldap_user_data(request, nickname, password):
-    """
-
-    :param nickname:
-    :param password:
-    :return:
-    """
-    import ldap
-
-    try:
-        r = request.registry.settings
-        server = r['settings:ldap:server']
-        base = r['settings:ldap:base']
-        scope = r['settings:ldap:account.scope']
-        filter = r['settings:ldap:account.filter']
-        firstname = r['settings:ldap:account.firstname']
-        lastname = r['settings:ldap:account.lastname']
-        title = r['settings:ldap:account.title']
-        email = r['settings:ldap:account.email']
-        logger('ViewHelper', 'verify_ldap_user_data', 'parsed data')
-
-        logger('ViewHelper', 'verify_ldap_user_data', 'ldap.initialize(\'' + server + '\')')
-        l = ldap.initialize(server)
-        l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
-        logger('ViewHelper', 'verify_ldap_user_data', 'simple_bind_s(\'' + nickname + scope + '\', \'***\')')
-        l.simple_bind_s(nickname + scope, password)
-        logger('ViewHelper', 'verify_ldap_user_data',
-               'l.search_s(' + base + ', ldap.SCOPE_SUBTREE, (\'' + filter + '=' + nickname + '\'))[0][1]')
-        user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
-
-        firstname = user[firstname][0].decode('utf-8')
-        lastname = user[lastname][0].decode('utf-8')
-        title = user[title][0].decode('utf-8')
-        gender = 'm' if 'Herr' in title else 'f' if 'Frau' in title else 'n'
-        email = user[email][0].decode('utf-8')
-        logger('ViewHelper', 'verify_ldap_user_data', 'success')
-
-        return [firstname, lastname, gender, email]
-
-    except ldap.INVALID_CREDENTIALS:
-        logger('ViewHelper', 'verify_ldap_user_data', 'ldap credential error')
-        return None
-
-    except ldap.SERVER_DOWN:
-        logger('ViewHelper', 'verify_ldap_user_data', 'can\'t reach server within 5s')
-        return None
-
-
-def set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn):
-    # getting the authors group
-    db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
-
-    # does the group exists?
-    if not db_group:
-        info = _tn.get(_.errorTryLateOrContant)
-        logger('ViewHelper', 'set_new_user', 'Internal error occured')
-        return False, info
-
-    success, info, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                             db_group.uid, _tn.get_lang())
-
-    if db_new_user:
-        # sending an email and message
-        subject = _tn.get(_.accountRegistration)
-        body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
-        send_mail(request, subject, body, email, _tn.get_lang())
-        send_welcome_notification(db_new_user.uid, _tn)
-
-        logger('ViewHelper', 'set_new_user', 'set new user in db')
-        return success, db_new_user
-
-    logger('ViewHelper', 'set_new_user', 'new user not found in db')
-    return False, _tn.get(_.errorTryLateOrContant)
-
-
 def try_to_register_new_user_via_ajax(request, _tn):
     """
 
     :param request:
-    :param ui_locales:
+    :param _tn:
     :return:
     """
     success = ''
@@ -572,60 +495,11 @@ def try_to_register_new_user_via_ajax(request, _tn):
             logger('ViewHelper', 'user_registration', 'Error occured')
             return success, msg, db_new_user
 
-        success, msg, db_new_user = UserHandler.create_new_user(firstname, lastname, email, nickname, password,
-                                                                gender, db_group.uid, _tn.get_lang)
-
-        if db_new_user:
-            # sending an email and message
-            subject = _tn.get(_.accountRegistration)
-            body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
-            send_mail(request, subject, body, email, _tn.get_lang)
-            send_welcome_notification(db_new_user.uid, _tn)
+        success, tmp = UserHandler.set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
+        if success:
+            msg = _tn.get(_.accountWasAdded).format(nickname)
+            db_new_user = db_new_user
+        else:
+            msg = tmp
 
     return success, msg, db_new_user
-
-
-def request_password(request, ui_locales):
-    """
-
-    :param request:
-    :param ui_locales:
-    :return:
-    """
-    success = ''
-    error = ''
-    info = ''
-
-    _t = Translator(ui_locales)
-    email = escape_string(request.params['email'])
-    db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
-
-    # does the user exists?
-    if db_user:
-        # get password and hashed password
-        pwd = PasswordHandler.get_rnd_passwd()
-        hashedpwd = PasswordHandler.get_hashed_password(pwd)
-
-        # set the hashed one
-        db_user.password = hashedpwd
-        DBDiscussionSession.add(db_user)
-        transaction.commit()
-
-        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
-
-        body = _t.get(_.nicknameIs) + db_user.nickname + '\n'
-        body += _t.get(_.newPwdIs) + pwd + '\n\n'
-        body += _t.get(_.newPwdInfo)
-        subject = _t.get(_.dbasPwdRequest)
-        reg_success, message = EmailHelper.send_mail(request, subject, body, email, db_language.ui_locales)
-
-        if reg_success:
-            success = message
-        else:
-            error = message
-    else:
-        logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
-        info = _t.get(_.emailUnknown)
-
-    return success, error, info

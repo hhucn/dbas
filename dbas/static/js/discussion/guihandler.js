@@ -530,9 +530,10 @@ function GuiHandler() {
 		
 		var at_least_one_history = false;
 		$.each(jsonData, function (key, value) {
-			if (key == 'error') {
+			if (key == 'error' || key == 'info') {
 				return true;
 			}
+
 			var table, tr, tbody, thead;
 			table = $('<table>');
 			table.attr('class', 'table table-condensed table-striped table-hover')
@@ -551,7 +552,7 @@ function GuiHandler() {
 				tr = $('<tr>')
 					.append($('<td>').text(val.text))
 					.append($('<td>')
-						.append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em'))
+						.append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em').addClass('img-circle'))
 						.append($('<a>')
 							.addClass('img-circle')
 							.attr('target', '_blank')

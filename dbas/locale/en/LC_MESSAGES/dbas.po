@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-01-31 16:21+0100\n"
+"POT-Creation-Date: 2017-02-02 19:25+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -1730,6 +1730,11 @@ msgstr "Let me correct it"
 msgid "reject_it"
 msgstr "Reject it"
 
+#. Default: Information for the different reasons
+#: templates/review_content.pt:55
+msgid "information_for_the_different_reasons"
+msgstr "Information for the different reasons"
+
 #. Default: Off topic or irrelevant
 #: templates/review_content.pt:57
 msgid "off_topic_or_irrelevant"
@@ -1760,10 +1765,13 @@ msgstr "Needs optimization"
 msgid "needs_optimization_explanation"
 msgstr "if posts are useful, but need edits in grammar and/or spelling"
 
+#. Default: Information for the different buttons
+#: templates/review_content.pt:68
+msgid "information_for_the_different_buttons"
+msgstr "Information for the different buttons"
+
 #. Default: for arguments, which should not be deleted.
-#. Default: , if the correction is acceptable and the argument is not
-#. falsified.
-#: templates/review_content.pt:71 templates/review_content.pt:81
+#: templates/review_content.pt:71
 msgid "its_okay_explanation"
 msgstr "for arguments, which should not be deleted."
 
@@ -1788,6 +1796,12 @@ msgstr ", if you have an idea for a better formulation with the same"
 #: templates/review_content.pt:77
 msgid "its_okay_so_explanation"
 msgstr "for arguments, which can be understood as-is."
+
+#. Default: , if the correction is acceptable and the argument is not
+#. falsified.
+#: templates/review_content.pt:81
+msgid "correction_is_okay"
+msgstr ", if the correction is acceptable and the argument is not"
 
 #. Default: for correction which are inappropriate are wrong.
 #: templates/review_content.pt:82

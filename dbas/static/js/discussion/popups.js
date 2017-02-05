@@ -137,10 +137,6 @@ function PopupHandler() {
 			var long_info = $('#popup-add-topic-long-info-input').val();
 			var title = $('#popup-add-topic-title-input').val();
 			var lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
-			console.log('info');
-			console.log('long_info');
-			console.log('title');
-			console.log('lang');
 			new AjaxDiscussionHandler().sendNewIssue(info, long_info, title, lang);
 		});
 		$('#popup-add-topic-refuse-btn').click(function () {
@@ -187,7 +183,6 @@ function PopupHandler() {
 		
 		// clean text
 		// cut the part after <br><br>
-		console.log(uid);
 		var text = bubble.find('.triangle-content').html();
 		text = text.substr(0, text.indexOf('<br>'));
 		
