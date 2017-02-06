@@ -1006,10 +1006,12 @@ function DiscussionGraph() {
             d.forEach(function (e) {
                 // find edge with statement in jsonData.path as source
                 edges.forEach(function (edge) {
-                    if ((edge.source.id === "statement_" + e) && checkInPathArray(edge.target.id, jsonData)) {
-                        edgesCircleId.push(edge);
+                    if ((edge.source.id === "statement_" + e)/* && */) {
+                        if(checkInPathArray(edge.target.id, jsonData)){
+                            edgesCircleId.push(edge);
+                        }
                         // find virtual nodes
-                        testVirtualNode(edges, edge, edgesCircleId);
+                        testVirtualNode(edges, edge, edgesCircleId, jsonData);
                     }
                 });
             });
@@ -1024,7 +1026,7 @@ function DiscussionGraph() {
     /**
      *
      *
-     * @param edge
+     * @param id
      * @param jsonData
      */
     function checkInPathArray(id, jsonData){
@@ -1032,7 +1034,7 @@ function DiscussionGraph() {
 
         jsonData.path.forEach(function (d) {
             d.forEach(function (e) {
-                if (id === "statement_" + e || id === "argument_" + e || id === "issue") {
+                if (id === "statement_" + e || id === "issue") {
                     isInPathArray = true;
                 }
             });
@@ -1045,12 +1047,15 @@ function DiscussionGraph() {
      *
      * @param edges
      * @param edge
+     * @param edgeCircleId
+     * @param jsonData
      */
-    function testVirtualNode(edges, edge, edgeCircleId) {
+    function testVirtualNode(edges, edge, edgeCircleId, jsonData) {
         if(edge.target.label === '') {
             edges.forEach(function (e) {
                 // color edge if source of edge is an virtual nod
-                if (edge.target.id === e.source.id && checkInPathArray(e.target.id, jsonData)) {
+                if ((edge.target.id === e.source.id) && checkInPathArray(e.target.id, jsonData)) {
+                    edgeCircleId.push(edge);
                     edgeCircleId.push(e);
                 }
             });
@@ -1405,7 +1410,7 @@ function DiscussionGraph() {
      * Highlight incoming and outgoing edges of selected nodes.
      *
      * @param edges: all edges of graph
-     * @param circleId: id of selected node
+     * @param circleIds: id of selected node
      */
     function showAttacksSupports(edges, circleIds) {
         // edges with selected statement as target
