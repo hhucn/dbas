@@ -681,7 +681,7 @@ var dbas_de = {
     'participantsSawArgumentsToThis': 'Teilnehmer/innen sahen Argumente für diese Aussage.',
     'participantSawArgumentsToThis': 'Teilnehmer/in sah Argumente für diese Aussage.',
     'passwordSubmit': 'Passwort ändern',
-    'proposalsWereForwarded': 'Ihre Vorschläge wurden eingereicht!',
+    'proposalsWereForwarded': 'Ihr Vorschlag wurde eingereicht!',
     'pinNavigation': 'Navigation anheften',
     'pleaseEditAtLeast': 'Bitte ändern Sie mindestens X Zeichen um unnötige Änderungen zu vermeiden.',
     'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',

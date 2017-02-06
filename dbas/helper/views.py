@@ -356,6 +356,9 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         password = escape_string(password)
         url = ''
 
+    is_ldap = is_usage_with_ldap(request)
+    logger('ViewHelper', 'login_user', '{} via ldap: '.format(nickname, is_ldap))
+
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # check if the user exists
         logger('ViewHelper', 'user_login', 'user \'' + nickname + '\' does not exists')

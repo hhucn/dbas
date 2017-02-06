@@ -81,7 +81,7 @@ function InteractionHandler() {
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 		} else if (parsedData.info.length != 0) {
-			setGlobalInfoHandler(_t_discussion(ohsnap), parsedData.error);
+			setGlobalInfoHandler('Ohh!', parsedData.info);
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
 			new PopupHandler().hideAndClearEditStatementsPopup();
