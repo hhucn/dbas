@@ -569,10 +569,12 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sta
     else:
         confrontation_text = b + _t.get(_.otherParticipantsThinkThat)
 
-    confrontation_text += e + ' ' + premise + ' '
-    confrontation_text += start_position if attack != 'undermine' else start_argument
-    confrontation_text += b + (_t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)) + e
-    confrontation_text += end_tag if not move_end_tag else ''
+    confrontation_text += e + ' ' + premise
+    # confrontation_text += start_position if attack != 'undermine' else start_argument
+    confrontation_text += '<{} data-attitude="{}">'.format(tag_type, 'pro' if system_argument.is_supportive else 'con')
+    confrontation_text += b + ' ' + (_t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)) + e
+    confrontation_text += end_tag
+    # confrontation_text += end_tag if not move_end_tag else ''
     confrontation_text += b + ', ' + _t.get(_.because).lower() + e + ' ' + confrontation
     confrontation_text += end_tag if move_end_tag else ''
     return confrontation_text, gender if is_okay else ''

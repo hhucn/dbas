@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-03 15:02+0100\n"
+"POT-Creation-Date: 2017-02-06 11:09+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -1872,10 +1872,161 @@ msgstr "Your correcture"
 msgid "send"
 msgstr "Send"
 
-#. Default: Imprint and Copyrights
-#: templates/snippet-footer.pt:11
-msgid "imprint_copyright"
-msgstr "Imprint and Copyright"
+#. Default: You have got
+#: templates/notifications.pt:8
+msgid "youHaveGot"
+msgstr "You have got"
+
+#. Default: unread notifications and
+#: templates/notifications.pt:10
+msgid "unreadNotificationAnd"
+msgstr "unread notifications and"
+
+#. Default: total in the inbox.
+#: templates/notifications.pt:12
+msgid "totalInTheInbox"
+msgstr "total in the inbox."
+
+#. Default: There are
+#: templates/notifications.pt:13
+msgid "thereAre"
+msgstr "There are"
+
+#. Default: in the outbox.
+#: templates/notifications.pt:15
+msgid "inTheOutbox"
+msgstr "in the outbox."
+
+#. Default: Inbox
+#: templates/notifications.pt:20
+msgid "inbox"
+msgstr "Inbox"
+
+#. Default: Outbox
+#: templates/notifications.pt:21
+msgid "outbox"
+msgstr "Outbox"
+
+#. Default: NEW
+#: templates/notifications.pt:37
+msgid "new"
+msgstr "NEW"
+
+#. Default: From:
+#: templates/notifications.pt:42 templates/notifications.pt:49
+msgid "from"
+msgstr "From:"
+
+#. Default: answer
+#: templates/notifications.pt:54 templates/notifications.pt:83
+msgid "answer"
+msgstr "answer"
+
+#. Default: To:
+#. Default: to:
+#: templates/notifications.pt:71 templates/notifications.pt:78
+msgid "to"
+msgstr "To:"
+
+#. Default: JavaScript is not enabled:
+#: templates/basetemplate.pt:35
+msgid "js_disabled1"
+msgstr "JavaScript is not enabled:"
+
+#. Default: Please enable JavaScript!
+#: templates/basetemplate.pt:36
+msgid "js_disabled2"
+msgstr "Please enable JavaScript!"
+
+#. Default: Your request failed!
+#: templates/basetemplate.pt:56
+msgid "request_failed"
+msgstr "Your request failed!"
+
+#. Default: Please reload the page.
+#: templates/basetemplate.pt:57
+msgid "please_reload"
+msgstr "Please reload the page."
+
+#. Default: Your request succeded!
+#: templates/basetemplate.pt:63 templates/basetemplate.pt:64
+msgid "request_success"
+msgstr "Your request succeded!"
+
+#. Default: Public Information of
+#: templates/user.pt:9
+msgid "public_information_of"
+msgstr "Public Information of"
+
+#. Default: Last Action
+#: templates/user.pt:13
+msgid "last_action"
+msgstr "Last Action"
+
+#. Default: Last Login
+#: templates/user.pt:17
+msgid "last_login"
+msgstr "Last Login"
+
+#. Default: Registered
+#: templates/user.pt:21
+msgid "registered"
+msgstr "Registered"
+
+#. Default: Profile Picture of
+#: templates/user.pt:33
+msgid "profile_picture_of"
+msgstr "Profile Picture of"
+
+#. Default: more infos
+#: templates/content.pt:11 templates/content.pt:18
+msgid "more_infos"
+msgstr "more infos"
+
+#. Default: Switch Topic
+#: templates/content.pt:23
+msgid "switch_topc"
+msgstr "Switch Topic"
+
+#. Default: Add a Topic
+#: templates/content.pt:39
+msgid "add_topic"
+msgstr "Add a Topic"
+
+#. Default: Restart
+#: templates/content.pt:46
+msgid "restart_discussion"
+msgstr "Restart"
+
+#. Default: Show all statements
+#: templates/content.pt:137
+msgid "show_all_statements"
+msgstr "Show all statements"
+
+#. Default: Hide statements
+#: templates/content.pt:138
+msgid "hide_statements"
+msgstr "Hide statements"
+
+#. Default: Default View
+#: templates/content.pt:281
+msgid "default_view"
+msgstr "Default View"
+
+#. Default: Labels
+#: templates/content.pt:282 templates/content.pt:283
+msgid "labels"
+msgstr "Lables"
+
+#. Default: Positions
+#: templates/content.pt:284 templates/content.pt:285
+msgid "positions"
+msgstr "Positions"
+
+#. Default: My path
+#: templates/content.pt:286 templates/content.pt:287
+msgid "my_path"
+msgstr "My path"
 
 #. Default: Publications
 #: templates/snippet-footer.pt:14

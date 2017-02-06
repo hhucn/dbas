@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-03 15:02+0100\n"
+"POT-Creation-Date: 2017-02-06 11:09+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1537,41 +1537,20 @@ msgstr ""
 "und den Weg, den Sie durch unsere Website gewählt haben. Durch das "
 "Überwachen dieser Informationen können wir unsere Websites verbessern. "
 
-#. Default: Piwik
-#: templates/imprint.pt:50
-msgid "disclaimer_piwik"
-msgstr "Piwik"
+#. Default: Old password
+#: templates/settings.pt:203
+msgid "old_password"
+msgstr "Altes Password"
 
-#. Default: Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur
-#. statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”,
-#. Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine
-#. Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch
-#. den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden
-#. auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird
-#. sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer
-#. können die Installation der Cookies durch eine entsprechende Einstellung
-#. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
-#. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
-#. Funktionen dieser Website vollumfänglich nutzen können.
-#: templates/imprint.pt:51
-msgid "disclaimer_piwik_content"
-msgstr ""
-"Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur "
-"statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”, "
-"Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine "
-"Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch "
-"den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden "
-"auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird "
-"sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer "
-"können die Installation der Cookies durch eine entsprechende Einstellung "
-"Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch "
-"darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche "
-"Funktionen dieser Website vollumfänglich nutzen können."
+#. Default: New Password
+#: templates/settings.pt:211
+msgid "new_password"
+msgstr "Neues Password"
 
-#. Default: Copyrights and used Software
-#: templates/imprint.pt:61
-msgid "copyright_and_used_software"
-msgstr "Copyright und benutze Software"
+#. Default: New Password (confirm)
+#: templates/settings.pt:219
+msgid "new_password_confirm"
+msgstr "Neues Password (Bestätigung)"
 
 #. Default: for
 #: templates/imprint.pt:65 templates/imprint.pt:66 templates/imprint.pt:67
@@ -2078,9 +2057,6 @@ msgstr "RSS"
 
 #~ msgid "i_actually_have"
 #~ msgstr "Aktuell habe ich"
-
-#~ msgid "forgot_input_radio"
-#~ msgstr "Eingabe vergessen"
 
 #~ msgid "keep_setting"
 #~ msgstr "Auswahl merken"
