@@ -279,14 +279,7 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     if not db_user:
         return translator.get(_.noRights), True
 
-    counter = 0
-    for el in elements:
-        db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
-        if db_statement:
-            db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-            if len(el['text']) > 0 and db_textversion.content.lower().strip() != el['text'].lower().strip():
-                DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
-                counter += 1
+    counter = __count_proposals(elements, db_user)
 
     if counter == 0:
         return translator.get(_.noCorrections), True
@@ -327,6 +320,18 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
             return translator.get(_.alreadyEditedByOthers), False
 
     return '', False
+
+
+def __count_proposals(elements, db_user):
+    counter = 0
+    for el in elements:
+        db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
+        if db_statement:
+            db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+            if len(el['text']) > 0 and db_textversion.content.lower().strip() != el['text'].lower().strip():
+                DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
+                counter += 1
+    return counter
 
 
 def lock_optimization_review(nickname, review_uid, translator):
