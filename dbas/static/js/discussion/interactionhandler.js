@@ -143,7 +143,7 @@ function InteractionHandler() {
 		var author = parsedData.author;
 		if (parsedData.author != 'anonymous'){
 			var img = '<img class="img-circle" style="height: 1em;" src="' + parsedData.gravatar + '">';
-			author = '<a href="' + mainpage + 'user/' + parsedData.author + '">' + img + ' ' + parsedData.author + '</a>';
+			author = '<a href="' + parsedData.author_url + '">' + img + ' ' + parsedData.author + '</a>';
 		} else {
 			author = _t_discussion(an_anonymous_user);
 		}
