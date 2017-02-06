@@ -467,7 +467,8 @@ def get_infos_about_argument(uid, main_page, nickname, _t):
 
     db_author = DBDiscussionSession.query(User).get(db_argument.author_uid)
     return_dict['vote_count'] = str(len(db_votes))
-    return_dict['author'] = db_author.public_nickname
+    return_dict['author'] = db_author.get_global_nickname()
+    return_dict['author_url'] = main_page + '/user/' + str(db_author.uid)
     return_dict['gravatar'] = get_profile_picture(db_author)
     return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
     text = get_text_for_argument_uid(uid)
