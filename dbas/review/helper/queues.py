@@ -287,21 +287,44 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
             if len(el['text']) > 0 and db_textversion.content.lower().strip() != el['text'].lower().strip():
                 DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
                 counter += 1
+
     if counter == 0:
         return translator.get(_.noCorrections), True
+
     DBDiscussionSession.flush()
     transaction.commit()
+
+    edit_count = 0
 
     for el in elements:
         db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
         if db_statement:
             db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+
+            # already set an correction to his?
+            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
+                                                                               ReviewEdit.statement_uid == el['uid'],
+                                                                               ReviewEdit.is_executed == False)).first()
+            if db_review_edit:  # if we already have an edit, skip this
+                continue
+
+            edit_count += 1
+
             if len(el['text']) > 0 and db_textversion.content.lower().strip() != el['text'].lower().strip():
                 db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
                                                                                    ReviewEdit.statement_uid == el['uid'])).order_by(ReviewEdit.uid.desc()).first()
                 DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, el['uid'], 'statement', el['text']))
+
     DBDiscussionSession.flush()
     transaction.commit()
+
+    if edit_count == 0:
+        return translator.get(_.alreadyEditedByYou), False
+    elif edit_count < counter:
+        if edit_count > 0:
+            return translator.get(_.alreadyEditedByYouAndOthers), False
+        else:
+            return translator.get(_.alreadyEditedByOthers), False
 
     return '', False
 
