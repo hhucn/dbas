@@ -59,7 +59,6 @@ dbas/static/rss/*
 .babelrc
 startSession.py
 getMails.py
-analyzeDiscussion.py
 
 # node
 node_modules/
