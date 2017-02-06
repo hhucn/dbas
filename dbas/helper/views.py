@@ -373,10 +373,10 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
             error = _tn.get(_.userPasswordNotMatch)
             return error
 
-    elif not db_user.validate_password(password):  # check password
-        logger('ViewHelper', 'user_login', 'wrong password')
-        error = _tn.get(_.userPasswordNotMatch)
-        return error
+    else:
+        logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' exists')
+        if is_ldap:
+            user_data = verify_ldap_user_data(request, nickname, password)
 
     logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
