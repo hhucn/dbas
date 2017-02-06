@@ -1,3 +1,6 @@
+## 1.2.2 (2017-02-07)
+- Reworked feedback options
+
 ## 1.2.1 (2017-02-03)
 - Reworked lateral entry
 - Minor language fixes

@@ -29,6 +29,9 @@ dummys:
 	dummy_votes
 	dummy_reviews
 
+merge_discussion:
+	merge_main_discussion development.ini
+
 all: users db dummy_discussion dummy_votes dummy_reviews
 
 

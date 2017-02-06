@@ -12,7 +12,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS
-from dbas.lib import get_profile_picture, is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
+from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy.exc import IntegrityError, ProgrammingError
@@ -305,11 +305,7 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         tmp.append(str(attribute) + ' - ' + str(text))
 
     elif column == 'path':
-        try:
-            url = __build_url_from_attribute(main_page, attribute)
-        except:
-            logger('ADMIN LIB', 'Exception URL Build', str(attribute), error=True)
-            url = main_page + '/discuss'
+        url = __build_url_from_attribute(main_page, attribute)
         link = '<a href={}>{}</a>'
         tmp.append(link.format(url, str(attribute)))
 
@@ -318,35 +314,39 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
 
 
 def __build_url_from_attribute(main_page, attribute):
-    # main_page + slug + discuss + ...
-    splitted_attribute = attribute.split('/')
-    keywords = ['attitude', 'choose', 'justify', 'reaction']
-    if len(splitted_attribute) < 2:
-        return main_page + '/' + attribute
+    try:
+        # main_page + slug + discuss + ...
+        splitted_attribute = attribute.split('/')
+        keywords = ['attitude', 'choose', 'justify', 'reaction']
+        if len(splitted_attribute) < 2:
+            return main_page + '/' + attribute
 
-    if splitted_attribute[1] not in keywords:
-        if 'discuss' in attribute:
-            return main_page + '/discuss'
-        return main_page
+        if splitted_attribute[1] not in keywords:
+            if 'discuss' in attribute:
+                return main_page + '/discuss'
+            return main_page
 
-    if 'attitude' in attribute:
-        table_type = Statement
-        index = 2
-    elif 'choose' in attribute:
-        table_type = Statement
-        index = 4
-    elif 'justify' in attribute:
-        table_type = Statement
-        index = 2
-    elif 'reaction' in attribute:
-        table_type = Argument
-        index = 2
-    else:
-        return main_page + '/' + attribute
+        if 'attitude' in attribute:
+            table_type = Statement
+            index = 2
+        elif 'choose' in attribute:
+            table_type = Statement
+            index = 4
+        elif 'justify' in attribute:
+            table_type = Statement
+            index = 2
+        elif 'reaction' in attribute:
+            table_type = Argument
+            index = 2
+        else:
+            return main_page + '/' + attribute
 
-    db_val = DBDiscussionSession.query(table_type).get(splitted_attribute[index])
-    slug = DBDiscussionSession.query(Issue).get(db_val.issue_uid).get_slug()
-    return main_page + '/' + slug  + '/discuss/' + attribute
+        db_val = DBDiscussionSession.query(table_type).get(splitted_attribute[index])
+        slug = DBDiscussionSession.query(Issue).get(db_val.issue_uid).get_slug()
+        return main_page + '/' + slug  + '/discuss/' + attribute
+    except:
+        logger('ADMIN LIB', 'Exception URL Build', str(attribute), error=True)
+        return main_page + '/discuss'
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):

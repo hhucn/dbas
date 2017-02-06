@@ -429,7 +429,8 @@ class DictionaryHelper(object):
                                   'go_back': _tn_sys.get(_.goBack),
                                   'go_forward': _tn_sys.get(_.goForward),
                                   'resume_here': _tn_sys.get(_.resumeHere),
-                                  'request_password': _tn_sys.get(_.requestPassword)}
+                                  'request_password': _tn_sys.get(_.requestPassword),
+                                  'ldap_info': _tn_sys.get(_.ldapInfo)}
 
     def add_title_text(self, return_dict):
         """

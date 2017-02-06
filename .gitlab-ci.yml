@@ -20,6 +20,7 @@ variables:
     paths:
         - ./pserve.log
     when: on_failure
+    expire_in: "1 day"
 
 start-server:
   <<: *job-definition

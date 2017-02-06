@@ -70,6 +70,31 @@ def main_discussion(argv=sys.argv):
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
+def merge_discussion(argv=sys.argv):
+    """
+
+    :param argv:
+    :return:
+    """
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
+
+    with transaction.manager:
+        lang1 = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
+        lang2 = DBDiscussionSession.query(Language).filter_by(ui_locales='de').first()
+        issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2)
+        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+        setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        transaction.commit()
+
+
 def field_test(argv=sys.argv):
     """
 

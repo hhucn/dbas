@@ -277,18 +277,18 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         except HTTPNotFound:
             pass
 
-        request = testing.DummyRequest()
-        request.matchdict = {
-            'slug': 'cat-or-doggy-dog-dog',
-            'statement_or_arg_id': 2,
-            'mode': 't',
-            'relation': '',
-        }
-        try:
-            response = d(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        # request = testing.DummyRequest()
+        # request.matchdict = {
+        #     'slug': 'cat-or-doggy-dog-dog',
+        #     'statement_or_arg_id': 2,
+        #     'mode': 't',
+        #     'relation': '',
+        # }
+        # try:
+        #     response = d(request)
+        #     self.assertTrue(type(response) is HTTPNotFound)
+        # except HTTPNotFound:
+        #     pass
 
         len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
         len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())

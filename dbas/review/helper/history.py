@@ -150,17 +150,13 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
 
         is_okay = False if table == 'optimizations' else True
         # getting all pro and contra votes for this review
-        pro_votes = DBDiscussionSession.query(last_review_type).filter(and_(last_review_type.review_uid == review.uid,
-                                                                            last_review_type.is_okay == is_okay)).all()
-        con_votes = DBDiscussionSession.query(last_review_type).filter(and_(last_review_type.review_uid == review.uid,
-                                                                            last_review_type.is_okay != is_okay)).all()
+        all_votes = DBDiscussionSession.query(last_review_type).filter_by(review_uid=review.uid)
+        pro_votes = all_votes.filter_by(is_okay=is_okay).all()
+        con_votes = all_votes.filter(and_(last_review_type.is_okay != is_okay)).all()
+
         # getting the users which have voted
-        pro_list = list()
-        con_list = list()
-        for pro in pro_votes:
-            pro_list.append(__get_user_dict_for_review(pro.reviewer_uid, main_page))
-        for con in con_votes:
-            con_list.append(__get_user_dict_for_review(con.reviewer_uid, main_page))
+        pro_list = [__get_user_dict_for_review(pro.reviewer_uid, main_page) for pro in pro_votes]
+        con_list = [__get_user_dict_for_review(con.reviewer_uid, main_page) for con in con_votes]
 
         # and build up some dict
         entry = dict()

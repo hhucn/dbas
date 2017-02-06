@@ -64,7 +64,7 @@ from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
-version = '1.2.0'
+version = '1.2.2'
 full_version = version + 'b'
 project_name = name + ' ' + full_version
 
@@ -710,15 +710,6 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
-    # ATM NOT NEEDED, BECAUSE BROKE LIMIT WILL BE SET AS DATA TAG INTO THE TEMPLATE
-    # send message if the user is now able to review
-    # if broke_limit:
-    #     _t = Translator(ui_locales)
-    #     try:
-    #         args = (nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review', False, 5, )
-    #         _thread.start_new_thread(send_request_for_info_popup_to_socketio_with_delay, args)
-    #     except:
-    #         logger('discussion_reaction', 'def', 'unable to start thread', error=True)
 
     add_vote_for_argument(arg_id_user, nickname)
 
@@ -2134,12 +2125,14 @@ def get_references(request):
     logger('get_references', 'def', 'main: ' + str(request.params))
     ui_locales = get_language(request)
     _tn = Translator(ui_locales)
+    data = ''
+    text = ''
 
     try:
         # uid is an integer if it is an argument and a list otherwise
         uid = json.loads(request.params['uid'])
         is_argument = True if str(request.params['is_argument']) == 'true' else False
-        are_all_integer = all(is_integer(id) for id in uid) if isinstance(uid, list) else is_integer(uid)
+        are_all_integer = all(is_integer(tmp) for tmp in uid) if isinstance(uid, list) else is_integer(uid)
 
         error = ''
         if are_all_integer:

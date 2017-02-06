@@ -372,6 +372,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
                 return msg
 
     else:
+        logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' exists')
         if is_ldap:
             user_data = verify_ldap_user_data(request, nickname, password)
 
