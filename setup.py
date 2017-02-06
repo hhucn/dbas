@@ -66,5 +66,6 @@ setup(name='dbas',
       initialize_news_sql = dbas.database.initializedb:main_news
       init_field_test_sql = dbas.database.initializedb:field_test
       init_empty_sql = dbas.database.initializedb:blank_file
+      merge_main_discussion = dbas.database.initializedb:merge_discussion
       """,
       )
