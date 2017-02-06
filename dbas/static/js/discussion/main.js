@@ -540,14 +540,14 @@ function Main () {
 			$(this).hover(
 				function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
-						.css('color', new_color)
-						.css('background-color', '#edf3e6')
-						.css('border-radius', '2px');
+						.css({'color': new_color, 'background-color': '#edf3e6', 'border-radius': '2px'});
+					$('span[data-attitude="pro"]').last().addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+					$('span[data-attitude="con"]').last().addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
 				}, function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
-						.css('color', old_color)
-						.css('background-color', '')
-						.css('border-radius', '0');
+						.css({'color': old_color, 'background-color': '', 'border-radius': ''});
+					$('span[data-attitude="pro"]').last().removeClass('text-success').css({'background-color': '', 'border-radius': ''});
+					$('span[data-attitude="con"]').last().removeClass('text-danger').css({'background-color': '', 'border-radius': ''});
 				}
 			);
 		});
