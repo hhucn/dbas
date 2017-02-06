@@ -546,7 +546,7 @@ de_lang = {
     _.rep_reason_bad_flag: 'Sie haben die Melde-Funktion missbrauchen',
     _.rep_reason_bad_edit: 'Sie haben einen schlechten Editierungsvorschlag gemacht',
 
-    _.reaction_text_undermine: 'Ich halte {} für falsch.',
+    _.reaction_text_undermine: 'Ich halte {} für falsch und möchte wiedersprechen.',
     _.reaction_text_support: 'Ich halte {} für richtig und finde sie überzeugend.',
     _.reaction_text_undercut: 'Ich halte {} für richtig, aber sie widerspricht nicht {}.',
     _.reaction_text_undercut_for_dont_know: 'Ich halte {} für richtig, aber sie wird nicht von der {} gestützt.',
