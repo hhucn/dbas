@@ -13,6 +13,10 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 
 class TestReviewHistoryHelper(unittest.TestCase):
 
+    def setUp(self):
+        from dbas.review.helper.queues import add_proposals_for_statement_corrections
+        add_proposals_for_statement_corrections([{'uid': 4, 'text': 'some random text'}], 'Tobias', Translator('en'))
+
     def test_flag_argument(self):
         history = ReviewHistoryHelper.get_review_history('mainpage', 'nickname', Translator('en'))
         self.assertNotIn('has_access', history)

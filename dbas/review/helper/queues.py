@@ -279,59 +279,84 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     if not db_user:
         return translator.get(_.noRights), True
 
-    counter = __count_proposals(elements, db_user)
+    review_count = len(elements)
+    added_reviews = [__add_edit_reviews(element, db_user) for element in elements]
 
-    if counter == 0:
+    if added_reviews.count(0) > 0:  # no edits set
+        if added_reviews.count(-1) > 0:
+            return translator.get(_.internalKeyError), True
+        if added_reviews.count(-2) > 0:
+            return translator.get(_.alreadyEditProposals), True
         return translator.get(_.noCorrections), True
 
     DBDiscussionSession.flush()
     transaction.commit()
 
-    edit_count = 0
-
-    for el in elements:
-        db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
-        if db_statement:
-            db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-
-            # already set an correction to his?
-            db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
-                                                                               ReviewEdit.statement_uid == el['uid'],
-                                                                               ReviewEdit.is_executed == False)).first()
-            if db_review_edit:  # if we already have an edit, skip this
-                continue
-
-            edit_count += 1
-
-            if len(el['text']) > 0 and db_textversion.content.lower().strip() != el['text'].lower().strip():
-                db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
-                                                                                   ReviewEdit.statement_uid == el['uid'])).order_by(ReviewEdit.uid.desc()).first()
-                DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, el['uid'], 'statement', el['text']))
-
+    added_values = [__add_edit_values_review(element, db_user) for element in elements]
+    if added_values == 0:
+        return translator.get(_.alreadyEditProposals), True
     DBDiscussionSession.flush()
     transaction.commit()
 
-    if edit_count == 0:
-        return translator.get(_.alreadyEditedByYou), False
-    elif edit_count < counter:
-        if edit_count > 0:
-            return translator.get(_.alreadyEditedByYouAndOthers), False
-        else:
-            return translator.get(_.alreadyEditedByOthers), False
+    msg = ''
+    if review_count > added_values.count(1) or added_reviews.count(1) != added_values.count(1):
+        msg = translator.get(_.alreadyEditProposals)
 
-    return '', False
+    return msg, False
 
 
-def __count_proposals(elements, db_user):
-    counter = 0
-    for el in elements:
-        db_statement = DBDiscussionSession.query(Statement).get(el['uid'])
-        if db_statement:
-            db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-            if len(el['text']) > 0 and db_textversion.content.lower().strip() != el['text'].lower().strip():
-                DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=el['uid']))
-                counter += 1
-    return counter
+def __add_edit_reviews(element, db_user):
+    """
+
+    :param element:
+    :param db_user:
+    :return:
+    """
+    logger('ReviewQueues', '__add_edit_reviews', 'current element: ' + str(element))
+    db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
+    if not db_statement:
+        return -1
+
+    # already set an correction for this?
+    db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == element['uid'],
+                                                                        ReviewEdit.is_executed == False)).all()
+    if db_already_edit and len(db_already_edit) > 0:  # if we already have an edit, skip this
+        logger('ReviewQueues', '__add_edit_values_review', str(element['uid']) + ' already got an edit with ' + str(db_already_edit[0].uid))
+        return -2
+
+    db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+    if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
+        logger('ReviewQueues', '__add_edit_reviews', 'added review element for: ' + str(element['uid']))
+        DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=element['uid']))
+        return 1
+
+    return 0
+
+
+def __add_edit_values_review(element, db_user):
+    """
+
+    :param element:
+    :param db_user:
+    :return:
+    """
+    logger('ReviewQueues', '__add_edit_values_review', 'current element: ' + str(element))
+    db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
+    if not db_statement:
+        logger('ReviewQueues', '__add_edit_values_review', str(element['uid']) + ' not found')
+        return 0
+
+    db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+
+    if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
+        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
+                                                                           ReviewEdit.statement_uid == element['uid'])).order_by(ReviewEdit.uid.desc()).first()
+        DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, element['uid'], 'statement', element['text']))
+        logger('ReviewQueues', '__add_edit_values_review', '{} - \'{}\' accepted'.format(element['uid'], element['text']))
+        return 1
+    else:
+        logger('ReviewQueues', '__add_edit_values_review', '{} - \'{}\' malicious edit'.format(element['uid'], element['text']))
+        return 0
 
 
 def lock_optimization_review(nickname, review_uid, translator):

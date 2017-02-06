@@ -70,7 +70,7 @@ function PopupHandler() {
 					
 				} else {
 					btn.removeClass('disabled');
-					btn.click(function popupEditStatementSubmitButton() {
+					btn.off('click').click(function popupEditStatementSubmitButton() {
 						var elements = [];
 						$('#' + popupEditStatementInputSpaceId).find('input').each(function(){
 							elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')})

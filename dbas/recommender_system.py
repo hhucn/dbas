@@ -108,7 +108,6 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
         else:
             return 0, 'end'
     else:
-        logger('BULL', 'SHIT', str(attacks_array))
         attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
         attack_uid = attacks_array[attack_no]['id']
 
