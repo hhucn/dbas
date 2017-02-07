@@ -10,7 +10,7 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
-    Statement, User
+    Statement, User, ReviewDuplicate
 from dbas.strings.keywords import Keywords as _
 
 
@@ -40,7 +40,7 @@ def flag_element(uid, reason, nickname, is_argument):
         return '', _.error, ''
 
     # sanity check
-    if None in [db_element, db_user, db_reason] and not reason == 'optimization':
+    if None in [db_element, db_user, db_reason] and reason not in ['optimization', 'duplicate']:
         return '', '', _.internalKeyError
 
     argument_uid = uid if is_argument else None
@@ -63,6 +63,11 @@ def flag_element(uid, reason, nickname, is_argument):
             # flagged for the first time
             __add_optimization_review(argument_uid, statement_uid, db_user.uid)
 
+        # and another reason for duplicates
+        elif reason == 'duplicate':
+            # flagged for the first time
+            __add_duplication_review(statement_uid, db_user.uid)
+
         return _.thxForFlagText, '', ''
 
 
@@ -78,12 +83,14 @@ def __get_flag_status(argument_uid, statement_uid, user_uid):
     ret_val = None
 
     if any((__is_argument_flagged_for_delete(argument_uid, statement_uid),
-            __is_argument_flagged_for_optimization(argument_uid, statement_uid))):
+            __is_argument_flagged_for_optimization(argument_uid, statement_uid),
+            __is_argument_flagged_for_duplication(statement_uid))):
         ret_val = 'other'
         logger('FlagingHelper', '__get_flag_status', 'Already flagged by others')
 
     if any((__is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid),
-            __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid))):
+            __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid),
+            __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid))):
         ret_val = 'user'
         logger('FlagingHelper', '__get_flag_status', 'Already flagged by the user')
 
@@ -162,6 +169,38 @@ def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, 
     return len(db_review) > 0
 
 
+def __is_argument_flagged_for_duplication(statement_uid, is_executed=False, is_revoked=False):
+    """
+
+    :param statement_uid:
+    :param is_executed:
+    :param is_revoked:
+    :return:
+    """
+    db_review = DBDiscussionSession.query(ReviewDuplicate).filter(
+        and_(ReviewDuplicate.statement_uid == statement_uid,
+             ReviewDuplicate.is_executed == is_executed,
+             ReviewDuplicate.is_revoked == is_revoked)).all()
+    return len(db_review) > 0
+
+
+def __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid, is_executed=False, is_revoked=False):
+    """
+
+    :param statement_uid:
+    :param user_uid:
+    :param is_executed:
+    :param is_revoked:
+    :return:
+    """
+    db_review = DBDiscussionSession.query(ReviewDuplicate).filter(
+        and_(ReviewDuplicate.statement_uid == statement_uid,
+             ReviewDuplicate.is_executed == is_executed,
+             ReviewDuplicate.detector_uid == user_uid,
+             ReviewDuplicate.is_revoked == is_revoked)).all()
+    return len(db_review) > 0
+
+
 def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
     """
 
@@ -187,5 +226,18 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
     """
     review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
     DBDiscussionSession.add(review_optimization)
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def __add_duplication_review(statement_uid, user_uid):
+    """
+
+    :param statement_uid:
+    :param user_uid:
+    :return:
+    """
+    review_duplication = ReviewDuplicate(detector=user_uid, statement=statement_uid)
+    DBDiscussionSession.add(review_duplication)
     DBDiscussionSession.flush()
     transaction.commit()

@@ -918,6 +918,54 @@ class ReviewOptimization(DiscussionBase):
         self.timestamp = get_now()
 
 
+class ReviewDuplicate(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'review_duplicates'
+    uid = Column(Integer, primary_key=True)
+    detector_uid = Column(Integer, ForeignKey('users.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+    is_executed = Column(Boolean, nullable=False, default=False)
+    is_revoked = Column(Boolean, nullable=False, default=False)
+
+    detectors = relationship('User', foreign_keys=[detector_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
+    def __init__(self, detector, statement=None, is_executed=False, is_revoked=False):
+        """
+
+        :param detector:
+        :param argument:
+        :param is_executed:
+        """
+        self.detector_uid = detector
+        self.statement_uid = statement
+        self.timestamp = get_now()
+        self.is_executed = is_executed
+        self.is_revoked = is_revoked
+
+    def set_executed(self, is_executed):
+        """
+
+        :param is_executed:
+        :return:
+        """
+        self.is_executed = is_executed
+
+    def set_revoked(self, is_revoked):
+        """
+
+        :param is_revoked:
+        :return:
+        """
+        self.is_revoked = is_revoked
+
+    def update_timestamp(self):
+        self.timestamp = get_now()
+
+
 class ReviewDeleteReason(DiscussionBase):
     """
 
