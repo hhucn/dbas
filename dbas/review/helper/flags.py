@@ -36,9 +36,6 @@ def flag_element(uid, reason, nickname, is_argument):
     # we could have only one reason!
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
-    if reason == 'duplicate':
-        return '', _.error, ''
-
     # sanity check
     if None in [db_element, db_user, db_reason] and reason not in ['optimization', 'duplicate']:
         return '', '', _.internalKeyError
