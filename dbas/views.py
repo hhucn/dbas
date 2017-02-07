@@ -2333,32 +2333,25 @@ def flag_argument_or_statement(request):
     logger('flag_argument_or_statement', 'def', 'main: ' + str(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
-    return_dict = {'error': _t.get(_.internalError)}
+    return_dict = {'error': _t.get(_.internalError), 'info': '', 'success': ''}
 
     try:
         uid = request.params['uid']
         reason = request.params['reason']
         is_argument = True if request.params['is_argument'] == 'true' else False
         nickname = request.authenticated_userid
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        if not db_user:
-            return_dict = {'error': _t.get(_.noRights)}
-        else:
-            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
-            if not is_integer(uid):
-                logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
-            elif db_reason is None and reason != 'optimization':
-                logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
-            else:
-                success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument)
-                return_dict = {
-                    'success': '' if isinstance(success, str) else _t.get(success),
-                    'info': '' if isinstance(info, str) else _t.get(info),
-                    'error': '' if isinstance(error, str) else _t.get(error)
-                }
+        if not is_integer(uid):
+            logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
+        else:
+            success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument)
+            return_dict = {
+                'success': '' if isinstance(success, str) else _t.get(success),
+                'info': '' if isinstance(info, str) else _t.get(info),
+                'error': '' if isinstance(error, str) else _t.get(error)
+            }
     except KeyError as e:
-        logger('flag_argument', 'error', repr(e))
+        logger('flag_element', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
 
     return json.dumps(return_dict)

@@ -48,7 +48,8 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, 
     elif mode == '2':  # start premise
         return_dict['distance_name'], return_dict['values'] = get_strings_for_start(value, issue, False)
     elif mode == '3':  # adding reasons
-        return_dict['distance_name'], return_dict['values'] = get_strings_for_reasons(value, issue)
+        count = 1000 if str(extra) == 'all' else list_length
+        return_dict['distance_name'], return_dict['values'] = get_strings_for_reasons(value, issue, count)
     elif mode == '4':  # getting text
         return_dict = get_strings_for_search(value)
     elif mode == '5':  # getting public nicknames
@@ -109,12 +110,13 @@ def get_strings_for_edits(value, statement_uid):
     return mechanism, return_array[:list_length]
 
 
-def get_strings_for_reasons(value, issue):
+def get_strings_for_reasons(value, issue, count=list_length):
     """
     Checks different textversion-strings for a match with given value
 
     :param value: string
     :param issue: int
+    :param issue: count
     :return: dict()
     """
     db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
@@ -133,7 +135,7 @@ def get_strings_for_reasons(value, issue):
     # logger('fuzzy_string_matcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
     #        ', dictionary length: ' + str(len(return_array)), debug=True)
 
-    return mechanism, return_array[:list_length]
+    return mechanism, return_array[:count]
 
 
 def get_strings_for_issues(value):

@@ -260,11 +260,11 @@ function AjaxMainHandler(){
 		}).done(function ajaxFlagArgumentDone(data) {
 			var parsedData = $.parseJSON(data);
 			if (parsedData['error'].length != 0){
-				setGlobalErrorHandler('', parsedData['error']);
+				setGlobalErrorHandler(_t(ohsnap), parsedData['error']);
 			} else if (parsedData['info'].length != 0) {
-				setGlobalInfoHandler('', parsedData['info'])
+				setGlobalInfoHandler('Ohh!', parsedData['info'])
 			} else {
-				setGlobalSuccessHandler('', parsedData['success'])
+				setGlobalSuccessHandler('Yeah!', parsedData['success'])
 			}
 			
 		}).fail(function ajaxFlagArgumentFail() {

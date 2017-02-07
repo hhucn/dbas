@@ -10,25 +10,34 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
-    Statement
+    Statement, User
 from dbas.strings.keywords import Keywords as _
 
 
-def flag_argument(uid, reason, db_user, is_argument):
+def flag_element(uid, reason, nickname, is_argument):
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
 
     :param uid: Uid of the argument/statement, which should be flagged
     :param reason: String which describes the reason
-    :param db_user: User model of requests sender
+    :param nickname: Users nickname
     :param is_argument: Boolean
-    :return:
+    :return: success, info, error
     """
+
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return '', '', _.noRights
+
+    logger('FlagingHelper', 'flag_element', 'Flag {} as {} for {} by user {}'.format(uid, 'argument' if is_argument else 'statement', reason, nickname))
     db_element = DBDiscussionSession.query(Argument if is_argument else Statement).get(uid)
 
     # we could have only one reason!
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
+
+    if reason == 'duplicate':
+        return '', _.error, ''
 
     # sanity check
     if None in [db_element, db_user, db_reason] and not reason == 'optimization':

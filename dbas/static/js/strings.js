@@ -203,6 +203,7 @@ var noEntries                       = 'noEntries';
 var noEntriesFor                    = 'noEntriesFor';
 var note                            = 'note';
 var no                              = 'no';
+var no_data_selected                = 'no_data_selected';
 var neww                            = 'new';
 var number                          = 'number';
 var notificationWasSend             = 'notificationWasSend';
@@ -447,6 +448,7 @@ var dbas_en = {
     'number': 'No',
     'note': 'Note',
     'noEditsInOptimization': 'You have edited nothing!',
+    'no_data_selected': 'no data selected',
     'opinionBarometer': 'Opinion Barometer',
     'option': 'Options',
     'ohsnap': 'Oh snap!',
@@ -671,6 +673,7 @@ var dbas_de = {
     'noReferencesButYouCanAdd': 'Aktuell wurden noch keine Referenzen eingetragen, aber Sie können eine hinzufügen (Quelle aus einer Zeitung o.Ä.):',
     'number': 'Nr',
     'note': 'Hinweis',
+    'no_data_selected': 'Nichts ausgewählt',
     'noEditsInOptimization': 'Sie haben keine Änderungen vorgenommen!',
     'opinionBarometer': 'Meinungsbarometer',
     'option': 'Optionen',

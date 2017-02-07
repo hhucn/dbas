@@ -805,8 +805,8 @@
                     </div>
                 </div>
     			<div class="modal-footer">
-    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.sys_save}</button>
-    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-default">${structure:extras.tag.sys_cancel}</button>
+    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.save}</button>
+    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-default">${structure:extras.tag.cancel}</button>
     			</div>
     		</div>
     	</div>
@@ -855,6 +855,11 @@
                                 <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
                                 <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
                             </label>
+                            <br>
+                            <input type="radio" id="dupl" value="duplicate" name="flag-statement">
+                            <label for="dupl">
+                                <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span>
+                            </label>
                         </fieldset>
                     </form>
     			</div>
@@ -899,6 +904,40 @@
                         </fieldset>
                     </form>
     			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- FLAG ARGUMENTS -->
+    <div class="modal fade" id="popup-duplicate-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagArgument" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-duplicate-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelDuplicateStatement" i18n:translate="statement_is_duplicate">Statement is a duplicate</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead"><span i18n:translate="you_have_selected_statement">You have selected the statement</span>:</p>
+                    <p class="well well-sm" id="popup-duplicate-statement-text"></p>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label" for="popup-duplicate-statement-text-search" i18n:translate="search">Search</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="popup-duplicate-statement-text-search" type="text" placeholder="...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="popup-duplicate-statement-text-selects" class="col-lg-2 control-label" i18n:translate="duplicate_of">Duplicate</label>
+                        <div class="col-lg-10">
+                            <select id="popup-duplicate-statement-text-selects" class="form-control">
+                                <option data-uid="0" i18n:translate="no_data_selected">no data selected</option>
+                            </select>
+                        </div>
+                    </div>
+    			</div>
+    			<div class="modal-footer">
+    				<button id="popup-flag-statement-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.submit}</button>
+                </div>
     		</div>
     	</div>
     </div>

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-06 16:32+0100\n"
+"POT-Creation-Date: 2017-02-07 18:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -592,7 +592,7 @@ msgstr ""
 #. Default: Cancel
 #: ././templates/review_history.pt:94 ././templates/snippet-popups.pt:172
 #: ././templates/snippet-popups.pt:195 ././templates/snippet-popups.pt:220
-#: ././templates/snippet-popups.pt:1021
+#: ././templates/snippet-popups.pt:1060
 msgid "cancel"
 msgstr ""
 
@@ -745,7 +745,7 @@ msgstr ""
 
 #. Default: Okay
 #: ././templates/snippet-popups.pt:171 ././templates/snippet-popups.pt:194
-#: ././templates/snippet-popups.pt:219 ././templates/snippet-popups.pt:1020
+#: ././templates/snippet-popups.pt:219 ././templates/snippet-popups.pt:1059
 msgid "okay"
 msgstr ""
 
@@ -1012,7 +1012,7 @@ msgid "statement_under_consideration_is"
 msgstr ""
 
 #. Default: The argument under consideration is as follows
-#: ././templates/snippet-popups.pt:826 ././templates/snippet-popups.pt:875
+#: ././templates/snippet-popups.pt:826 ././templates/snippet-popups.pt:880
 msgid "argument_under_consideration_is"
 msgstr ""
 
@@ -1068,77 +1068,107 @@ msgstr ""
 msgid "argument_harmful"
 msgstr ""
 
+#. Default: This statement is a duplicate.
+#: ././templates/snippet-popups.pt:861
+msgid "this_statement_duplicate"
+msgstr ""
+
 #. Default: Reporting (parts of) an argument
-#: ././templates/snippet-popups.pt:872
+#: ././templates/snippet-popups.pt:877
 msgid "reporting_parts_argument"
 msgstr ""
 
 #. Default: Please choose which part of the argument you want to report
-#: ././templates/snippet-popups.pt:877
+#: ././templates/snippet-popups.pt:882
 msgid "please_choose_part_to_report"
 msgstr ""
 
 #. Default: Report
-#: ././templates/snippet-popups.pt:884
+#: ././templates/snippet-popups.pt:889
 msgid "report"
 msgstr ""
 
 #. Default: Report the whole argument.
-#: ././templates/snippet-popups.pt:896
+#: ././templates/snippet-popups.pt:901
 msgid "report_whole_argument"
 msgstr ""
 
+#. Default: Statement is a duplicate
+#: ././templates/snippet-popups.pt:918
+msgid "statement_is_duplicate"
+msgstr ""
+
+#. Default: You have selected the statement
+#: ././templates/snippet-popups.pt:921
+msgid "you_have_selected_statement"
+msgstr ""
+
+#. Default: Search
+#: ././templates/snippet-popups.pt:924
+msgid "search"
+msgstr ""
+
+#. Default: Duplicate
+#: ././templates/snippet-popups.pt:930
+msgid "duplicate_of"
+msgstr ""
+
+#. Default: no data selected
+#: ././templates/snippet-popups.pt:933
+msgid "no_data_selected"
+msgstr ""
+
 #. Default: Caution
-#: ././templates/snippet-popups.pt:914
+#: ././templates/snippet-popups.pt:953
 msgid "caution"
 msgstr ""
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: ././templates/snippet-popups.pt:919
+#: ././templates/snippet-popups.pt:958
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 
 #. Default: Please choose a step to jump in
-#: ././templates/snippet-popups.pt:936
+#: ././templates/snippet-popups.pt:975
 msgid "choose_a_step_to_jump_in"
 msgstr ""
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: ././templates/snippet-popups.pt:939
+#: ././templates/snippet-popups.pt:978
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 
 #. Default: References
-#: ././templates/snippet-popups.pt:956
+#: ././templates/snippet-popups.pt:995
 msgid "refereces"
 msgstr ""
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: ././templates/snippet-popups.pt:964
+#: ././templates/snippet-popups.pt:1003
 msgid "statement_reference_definition"
 msgstr ""
 
 #. Default: Statement
-#: ././templates/snippet-popups.pt:967 ././templates/snippet-popups.pt:988
+#: ././templates/snippet-popups.pt:1006 ././templates/snippet-popups.pt:1027
 msgid "statement"
 msgstr ""
 
 #. Default: Source
-#: ././templates/snippet-popups.pt:973
+#: ././templates/snippet-popups.pt:1012
 msgid "source"
 msgstr ""
 
 #. Default: Please choose a statement for your reference!
-#: ././templates/snippet-popups.pt:978
+#: ././templates/snippet-popups.pt:1017
 msgid "please_choose_a_reference"
 msgstr ""
 
 #. Default: Add reference
-#: ././templates/snippet-popups.pt:993
+#: ././templates/snippet-popups.pt:1032
 msgid "add_reference"
 msgstr ""
 
@@ -1748,46 +1778,46 @@ msgid "restart_discussion"
 msgstr ""
 
 #. Default: Show all statements
-#: ././templates/content.pt:137
+#: ././templates/content.pt:139
 msgid "show_all_statements"
 msgstr ""
 
 #. Default: Hide statements
-#: ././templates/content.pt:138
+#: ././templates/content.pt:140
 msgid "hide_statements"
 msgstr ""
 
 #. Default: Default View
-#: ././templates/content.pt:281
+#: ././templates/content.pt:283
 msgid "default_view"
 msgstr ""
 
 #. Default: Labels
-#: ././templates/content.pt:282 ././templates/content.pt:283
+#: ././templates/content.pt:284 ././templates/content.pt:285
 msgid "labels"
 msgstr ""
 
 #. Default: Positions
-#: ././templates/content.pt:284 ././templates/content.pt:285
+#: ././templates/content.pt:286 ././templates/content.pt:287
 msgid "positions"
 msgstr ""
 
 #. Default: My path
-#: ././templates/content.pt:286 ././templates/content.pt:287
+#: ././templates/content.pt:288 ././templates/content.pt:289
 msgid "my_path"
 msgstr ""
 
 #. Default: My statements
-#: ././templates/content.pt:288 ././templates/content.pt:289
+#: ././templates/content.pt:290 ././templates/content.pt:291
 msgid "my_statements"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/content.pt:290 ././templates/content.pt:291
+#: ././templates/content.pt:292 ././templates/content.pt:293
 msgid "supports_on_my_statements"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/content.pt:292 ././templates/content.pt:293
+#: ././templates/content.pt:294 ././templates/content.pt:295
 msgid "attacks_on_my_statements"
 msgstr ""

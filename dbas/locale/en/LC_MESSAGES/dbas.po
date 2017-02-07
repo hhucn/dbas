@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-06 16:32+0100\n"
+"POT-Creation-Date: 2017-02-07 18:47+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -660,7 +660,7 @@ msgstr "Undo"
 #. Default: Cancel
 #: templates/review_history.pt:94 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1021
+#: templates/snippet-popups.pt:1060
 msgid "cancel"
 msgstr "Cancel"
 
@@ -829,7 +829,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1020
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1059
 msgid "okay"
 msgstr "Okay"
 
@@ -1102,7 +1102,7 @@ msgid "statement_under_consideration_is"
 msgstr "The statement under consideration is as follows"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:826 templates/snippet-popups.pt:875
+#: templates/snippet-popups.pt:826 templates/snippet-popups.pt:880
 msgid "argument_under_consideration_is"
 msgstr "The argument under consideration is as follows"
 
@@ -1159,82 +1159,112 @@ msgstr "This statement is harmful or abusive."
 msgid "argument_harmful"
 msgstr "This argument is harmful or abusive."
 
+#. Default: This statement is a duplicate.
+#: templates/snippet-popups.pt:861
+msgid "this_statement_duplicate"
+msgstr "This statement is a duplicate."
+
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:872
+#: templates/snippet-popups.pt:877
 msgid "reporting_parts_argument"
 msgstr "Reporting (parts of) an argument"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:877
+#: templates/snippet-popups.pt:882
 msgid "please_choose_part_to_report"
 msgstr "Please choose which part of the argument you want to report"
 
 #. Default: Report
-#: templates/snippet-popups.pt:884
+#: templates/snippet-popups.pt:889
 msgid "report"
 msgstr "Report"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:896
+#: templates/snippet-popups.pt:901
 msgid "report_whole_argument"
 msgstr "Report the whole argument."
 
+#. Default: Statement is a duplicate
+#: templates/snippet-popups.pt:918
+msgid "statement_is_duplicate"
+msgstr "Statement is a duplicate"
+
+#. Default: You have selected the statement
+#: templates/snippet-popups.pt:921
+msgid "you_have_selected_statement"
+msgstr "You have selected the statement"
+
+#. Default: Search
+#: templates/snippet-popups.pt:924
+msgid "search"
+msgstr "Search"
+
+#. Default: Duplicate
+#: templates/snippet-popups.pt:930
+msgid "duplicate_of"
+msgstr "Duplicate of"
+
+#. Default: no data selected
+#: templates/snippet-popups.pt:933
+msgid "no_data_selected"
+msgstr "no data selected"
+
 #. Default: Caution
-#: templates/snippet-popups.pt:914
+#: templates/snippet-popups.pt:953
 msgid "caution"
 msgstr "Caution"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:919
+#: templates/snippet-popups.pt:958
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Do you really want to disassociate yourself from your content? This step is "
 "irreversible! Subsequently you will not be the author of this"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:936
+#: templates/snippet-popups.pt:975
 msgid "choose_a_step_to_jump_in"
 msgstr "Please choose a step to jump in"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:939
+#: templates/snippet-popups.pt:978
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 "Below you find a list with all arguments, where your selected text is used:"
 
 #. Default: References
-#: templates/snippet-popups.pt:956
+#: templates/snippet-popups.pt:995
 msgid "refereces"
 msgstr "References"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:964
+#: templates/snippet-popups.pt:1003
 msgid "statement_reference_definition"
 msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:967 templates/snippet-popups.pt:988
+#: templates/snippet-popups.pt:1006 templates/snippet-popups.pt:1027
 msgid "statement"
 msgstr "Statement"
 
 #. Default: Source
-#: templates/snippet-popups.pt:973
+#: templates/snippet-popups.pt:1012
 msgid "source"
 msgstr "Source"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:978
+#: templates/snippet-popups.pt:1017
 msgid "please_choose_a_reference"
 msgstr "Please choose a statement for your reference!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:993
+#: templates/snippet-popups.pt:1032
 msgid "add_reference"
 msgstr "Add reference"
 
@@ -1849,47 +1879,47 @@ msgid "restart_discussion"
 msgstr "Restart"
 
 #. Default: Show all statements
-#: templates/content.pt:137
+#: templates/content.pt:139
 msgid "show_all_statements"
 msgstr "Show all statements"
 
 #. Default: Hide statements
-#: templates/content.pt:138
+#: templates/content.pt:140
 msgid "hide_statements"
 msgstr "Hide statements"
 
 #. Default: Default View
-#: templates/content.pt:281
+#: templates/content.pt:283
 msgid "default_view"
 msgstr "Default View"
 
 #. Default: Labels
-#: templates/content.pt:282 templates/content.pt:283
+#: templates/content.pt:284 templates/content.pt:285
 msgid "labels"
 msgstr "Lables"
 
 #. Default: Positions
-#: templates/content.pt:284 templates/content.pt:285
+#: templates/content.pt:286 templates/content.pt:287
 msgid "positions"
 msgstr "Positions"
 
 #. Default: My path
-#: templates/content.pt:286 templates/content.pt:287
+#: templates/content.pt:288 templates/content.pt:289
 msgid "my_path"
 msgstr "My path"
 
 #. Default: My statements
-#: templates/content.pt:288 templates/content.pt:289
+#: templates/content.pt:290 templates/content.pt:291
 msgid "my_statements"
 msgstr "My statements"
 
 #. Default: Supports
-#: templates/content.pt:290 templates/content.pt:291
+#: templates/content.pt:292 templates/content.pt:293
 msgid "supports_on_my_statements"
 msgstr "Supports"
 
 #. Default: Attacks
-#: templates/content.pt:292 templates/content.pt:293
+#: templates/content.pt:294 templates/content.pt:295
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
 
@@ -1920,9 +1950,6 @@ msgstr "Attacks"
 #~ msgid "complete_view"
 #~ msgstr "Complete View"
 
-#~ msgid "statement_spam"
-#~ msgstr "It is not relevant at all."
-
 #~ msgid "statement_spam_description"
 #~ msgstr "This statement is not important for any discussion on D-BAS."
 
@@ -1950,7 +1977,7 @@ msgstr "Attacks"
 #~ msgid "argument_wrong"
 #~ msgstr "The implication is wrong."
 
-#~ msgid "flag_argument"
+#~ msgid "flag_element"
 #~ msgstr "Report whole argument, because it is harmful or abusive."
 
 #~ msgid "keep_in_mind_that_you_can_argue"
@@ -2318,12 +2345,6 @@ msgstr "Attacks"
 
 #~ msgid "news_page"
 #~ msgstr "news-page"
-
-#~ msgid "research"
-#~ msgstr "Research"
-
-#~ msgid "our_datastructure"
-#~ msgstr "Our data structure:"
 
 #~ msgid "data_structure_description"
 #~ msgstr ""

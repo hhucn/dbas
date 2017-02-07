@@ -277,8 +277,33 @@ function AjaxDiscussionHandler() {
 	/***
 	 * Ajax request for the fuzzy search
 	 * @param value
+	 * @param type
+	 */
+	this.fuzzySearchForDuplicate = function (value, type) {
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_fuzzy_search',
+			method: 'GET',
+			dataType: 'json',
+			data: { value: value, type:type, extra: 'all', issue: getCurrentIssueId() },
+			async: true,
+			global: false,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxGetAllUsersDone(data) {
+			new InteractionHandler().callbackIfDoneFuzzySearchForDuplicate(data);
+		}).fail(function ajaxGetAllUsersFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+		
+	};
+
+	/***
+	 * Ajax request for the fuzzy search
+	 * @param value
 	 * @param callbackid
-	 * @param type 0 for statements, 1 for edit-popup
+	 * @param type
 	 * @param extra optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
