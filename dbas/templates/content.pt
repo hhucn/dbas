@@ -120,9 +120,11 @@
                                         <span class="item-flag" tal:condition="item.is_flagable " tal:attributes="title extras.title.report_statement">
                                             <i class="fa fa-flag" aria-hidden="true"></i>
                                         </span>
-                                        <!--<span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.delete_statement">-->
                                         <span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.disassociate_statement">
-                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        </span>
+                                        <span class="item-attack" tal:condition="item.is_attackable" tal:attributes="title extras.title.attack_statement">
+                                            <i class="fa fa-bomb" aria-hidden="true"><a href="" tal:attributes="href item.attack_url"></a></i>
                                         </span>
                                         <span class="item-reference" tal:attributes="title extras.title.reference">
                                             <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_flagable or item.is_deletable)"></span>

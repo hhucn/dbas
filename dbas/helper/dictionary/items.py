@@ -169,7 +169,9 @@ class ItemDictHelper(object):
                                                                   already_used_text=additional_text,
                                                                   is_flagable=True,
                                                                   is_author=is_author_of_argument(nickname, argument.uid),
-                                                                  is_visible=argument.uid in uids))
+                                                                  is_visible=argument.uid in uids,
+                                                                  is_attackable=True,
+                                                                  attack_url=_um.get_url_for_jump(True, argument.uid)))
 
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
@@ -227,7 +229,9 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                                               is_flagable=True,
                                                               is_author=is_author_of_argument(nickname, argument.uid),
-                                                              is_visible=argument.uid in uids))
+                                                              is_visible=argument.uid in uids,
+                                                              is_attackable=True,
+                                                              attack_url=_um.get_url_for_jump(True, argument.uid)))
 
         if logged_in:
             if len(statements_array) == 0:
@@ -687,7 +691,8 @@ class ItemDictHelper(object):
         return [url0, url1, url2, url3, url4]
 
     @staticmethod
-    def __create_answer_dict(uid, premises, attitude, url, already_used=False, already_used_text='', is_flagable=False, is_author=False, is_visible=True):
+    def __create_answer_dict(uid, premises, attitude, url, attack_url='', already_used=False, already_used_text='',
+                             is_flagable=False, is_author=False, is_attackable=False, is_visible=True):
         """
         Return dictionary
 
@@ -695,6 +700,7 @@ class ItemDictHelper(object):
         :param premises: Array of dict with title and id
         :param attitude: String
         :param url: String
+        :param attack_url: String
         :param already_used: Boolean
         :param already_used_text: String
         :param is_flagable: Boolean
@@ -707,9 +713,11 @@ class ItemDictHelper(object):
             'premises': premises,
             'attitude': attitude,
             'url': url,
+            'attack_url': attack_url,
             'already_used': already_used,
             'already_used_text': already_used_text,
             'is_flagable': is_flagable,
             'is_editable': is_flagable,
             'is_deletable': is_author,
+            'is_attackable': is_attackable,
             'style': '' if is_visible else 'display: none;'}
