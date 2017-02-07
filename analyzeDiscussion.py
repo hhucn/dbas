@@ -77,4 +77,3 @@ print('  - optimizations: ' + str(len(db_review_optimizations)))
 print('    - executed:    ' + str(len([review for review in db_review_optimizations if review.is_executed])))
 print('    - revoked:     ' + str(len([review for review in db_review_optimizations if review.is_revoked])))
 print('')
-
