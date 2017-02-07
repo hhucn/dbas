@@ -117,7 +117,7 @@ class Keywords(Enum):
     asReasonFor = 'as reason for'
     argument = 'Argument'
     attackPosition = 'attack Position'
-    attackStatement = 'Attack Statement'
+    attackStatement = 'Attack statement'
     at = 'at'
     assertion = 'assertion'
     accept = 'accept'

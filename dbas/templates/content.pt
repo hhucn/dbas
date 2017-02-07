@@ -113,20 +113,20 @@
                                 <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
                                 <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
                                     <div tal:omit-tag="" tal:condition="item.is_editable or item.is_flagable or item.is_deletable">
-                                        <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flagable or item.is_deletable"></span>
-                                        <span class="item-edit" tal:condition="item.is_editable" tal:attributes="title extras.title.edit_statement">
+                                        <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flagable or item.is_deletable or item.is_attackable"></span>
+                                        <span class="item-actions item-edit" tal:condition="item.is_editable" tal:attributes="title extras.title.edit_statement">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </span>
-                                        <span class="item-flag" tal:condition="item.is_flagable " tal:attributes="title extras.title.report_statement">
+                                        <span class="item-actions item-flag" tal:condition="item.is_flagable " tal:attributes="title extras.title.report_statement">
                                             <i class="fa fa-flag" aria-hidden="true"></i>
                                         </span>
-                                        <span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.disassociate_statement">
+                                        <span class="item-actions item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.disassociate_statement">
                                             <i class="fa fa-trash-o" aria-hidden="true"></i>
                                         </span>
-                                        <span class="item-attack" tal:condition="item.is_attackable" tal:attributes="title extras.title.attack_statement">
-                                            <i class="fa fa-bomb" aria-hidden="true"><a href="" tal:attributes="href item.attack_url"></a></i>
+                                        <span class="item-actions item-attack" tal:condition="item.is_attackable" tal:attributes="title extras.title.attack_statement">
+                                            <a href="" tal:attributes="href item.attack_url"><i class="fa fa-bomb" aria-hidden="true"></i></a>
                                         </span>
-                                        <span class="item-reference" tal:attributes="title extras.title.reference">
+                                        <span class="item-actions item-reference" tal:attributes="title extras.title.reference">
                                             <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_flagable or item.is_deletable)"></span>
                                             <i class="fa fa-link" aria-hidden="true"></i>
                                         </span>

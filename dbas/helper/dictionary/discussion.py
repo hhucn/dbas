@@ -250,21 +250,20 @@ class DiscussionDictHelper(object):
         add_premise_text = self.__get_add_premise_text_for_justify_argument(confrontation, premise, attack,
                                                                             conclusion, db_argument, is_supportive,
                                                                             user_msg, _tn)
-        start = '<' + tag_type + ' data-argumentation-type="position">'
-        end = '</' + tag_type + '>'
+        start = '<{} data-argumentation-type="position">'.format(tag_type)
+        end = '</{}>'.format(tag_type)
         user_msg = user_msg.format(start, end)
 
-        pro_tag = '<span class="text-success">'
-        con_tag = '<span class="text-danger">'
-        end_tag = '</span>'
+        pro_tag = '<{} class="text-success">'.format(tag_type)
+        con_tag = '<{} class="text-danger">'.format(tag_type)
+        end_tag = '</{}>'.format(tag_type)
 
         if attack == 'undercut':
             sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument).rstrip().format(pro_tag, end_tag) + ': '
         else:
             if attack == 'undermine':
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement).rstrip().format(con_tag, end_tag)
-                if self.lang == 'de':
-                    sys_msg += ', '
+                sys_msg += ', ' if self.lang == 'de' else ' '
             else:
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonForStatement).rstrip().format(pro_tag, end_tag) + ': '
 
@@ -492,15 +491,15 @@ class DiscussionDictHelper(object):
 
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         if db_argument.conclusion_uid is not None:
-            intro += _tn.get(_.whatDoYouThinkArgument) + ': '
+            intro += _tn.get(_.whatDoYouThinkArgument).strip() + ': '
         else:
             bind = ', ' if self.lang == 'de' else ' '
             intro += _tn.get(_.whatDoYouThinkAboutThat) + bind + _tn.get(_.that) + ' '
 
         offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
-
-        while argument_text[-offset:].endswith(('.', '?', '!')):
-            argument_text = argument_text[:-offset]
+        logger('X', str(offset), argument_text)
+        while argument_text[:-offset].endswith(('.', '?', '!')):
+            argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
         text = intro + argument_text + '?'
         bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)

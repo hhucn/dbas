@@ -170,8 +170,7 @@ class ItemDictHelper(object):
                                                                   is_flagable=True,
                                                                   is_author=is_author_of_argument(nickname, argument.uid),
                                                                   is_visible=argument.uid in uids,
-                                                                  is_attackable=True,
-                                                                  attack_url=_um.get_url_for_jump(True, argument.uid)))
+                                                                  attack_url=_um.get_url_for_jump(False, argument.uid)))
 
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
@@ -230,8 +229,7 @@ class ItemDictHelper(object):
                                                               is_flagable=True,
                                                               is_author=is_author_of_argument(nickname, argument.uid),
                                                               is_visible=argument.uid in uids,
-                                                              is_attackable=True,
-                                                              attack_url=_um.get_url_for_jump(True, argument.uid)))
+                                                              attack_url=_um.get_url_for_jump(False, argument.uid)))
 
         if logged_in:
             if len(statements_array) == 0:
@@ -692,7 +690,7 @@ class ItemDictHelper(object):
 
     @staticmethod
     def __create_answer_dict(uid, premises, attitude, url, attack_url='', already_used=False, already_used_text='',
-                             is_flagable=False, is_author=False, is_attackable=False, is_visible=True):
+                             is_flagable=False, is_author=False, is_visible=True):
         """
         Return dictionary
 
@@ -719,5 +717,5 @@ class ItemDictHelper(object):
             'is_flagable': is_flagable,
             'is_editable': is_flagable,
             'is_deletable': is_author,
-            'is_attackable': is_attackable,
+            'is_attackable': len(attack_url) > 0,
             'style': '' if is_visible else 'display: none;'}
