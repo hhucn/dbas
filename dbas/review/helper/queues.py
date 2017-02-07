@@ -8,10 +8,10 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, TextVersion, \
     LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now, \
-    Statement
+    Statement, ReviewDuplicate, LastReviewerDuplicate
 from dbas.lib import get_profile_picture, is_user_author_or_admin
 from dbas.logger import logger
-from dbas.review.helper.reputation import get_reputation_of
+from dbas.review.helper.reputation import get_reputation_of, reputation_icons
 from dbas.review.helper.subpage import reputation_borders
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
@@ -22,6 +22,8 @@ key_deletes = 'deletes'
 key_optimizations = 'optimizations'
 key_edits = 'edits'
 key_history = 'history'
+key_duplicates = 'duplicates'
+key_ongoing = 'ongoing'
 
 
 def get_review_queues_as_lists(main_page, translator, nickname):
@@ -43,6 +45,7 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     review_list.append(__get_delete_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_optimization_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_edit_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_duplicates_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_history_dict(main_page, translator, count, all_rights))
     if is_user_author_or_admin(nickname):
         review_list.append(__get_ongoing_dict(main_page, translator))
@@ -83,7 +86,7 @@ def __get_delete_dict(main_page, translator, nickname, count, all_rights):
     tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
                 'url': main_page + '/review/' + key_deletes,
-                'icon': 'fa fa-trash-o',
+                'icon': reputation_icons[key_deletes],
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_deletes] or all_rights,
                 'is_allowed_text': translator.get(_.visitDeleteQueue),
@@ -108,7 +111,7 @@ def __get_optimization_dict(main_page, translator, nickname, count, all_rights):
     tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
                 'url': main_page + '/review/' + key_optimizations,
-                'icon': 'fa fa-flag',
+                'icon': reputation_icons[key_optimizations],
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_optimizations] or all_rights,
                 'is_allowed_text': translator.get(_.visitOptimizationQueue),
@@ -133,12 +136,37 @@ def __get_edit_dict(main_page, translator, nickname, count, all_rights):
     tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
                 'url': main_page + '/review/' + key_edits,
-                'icon': 'fa fa-pencil-square-o',
+                'icon': reputation_icons[key_edits],
                 'task_count': task_count,
                 'is_allowed': count >= reputation_borders[key_edits] or all_rights,
                 'is_allowed_text': translator.get(_.visitEditQueue),
                 'is_not_allowed_text': translator.get(_.visitEditQueueLimitation).format(str(reputation_borders[key_edits])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerEdit, main_page)
+                }
+    return tmp_dict
+
+
+def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
+    """
+    Prepares dictionary for the a section. Queue should be added iff the user is author!
+
+    :param main_page: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    #  logger('ReviewQueues', '__get_duplicates_dict', 'main')
+    task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname)
+
+    tmp_dict = {'task_name': translator.get(_.queueDuplicates),
+                'id': 'edits',
+                'url': main_page + '/review/' + key_duplicates,
+                'icon': reputation_icons[key_duplicates],
+                'task_count': task_count,
+                'is_allowed': count >= reputation_borders[key_duplicates] or all_rights,
+                'is_allowed_text': translator.get(_.visitDuplicateQueue),
+                'is_not_allowed_text': translator.get(_.visitDuplicateQueueLimitation).format(str(reputation_borders[key_duplicates])),
+                'last_reviews': __get_last_reviewer_of(LastReviewerDuplicate, main_page)
                 }
     return tmp_dict
 
@@ -156,7 +184,7 @@ def __get_history_dict(main_page, translator, count, all_rights):
     tmp_dict = {'task_name': translator.get(_.queueHistory),
                 'id': 'flags',
                 'url': main_page + '/review/' + key_history,
-                'icon': 'fa fa-history',
+                'icon': reputation_icons[key_history],
                 'task_count': __get_review_count_for_history(True),
                 'is_allowed': count >= reputation_borders[key_history] or all_rights,
                 'is_allowed_text': translator.get(_.visitHistoryQueue),
@@ -179,7 +207,7 @@ def __get_ongoing_dict(main_page, translator):
     tmp_dict = {'task_name': translator.get(_.queueOngoing),
                 'id': 'flags',
                 'url': main_page + '/review/' + key,
-                'icon': 'fa fa-clock-o',
+                'icon': reputation_icons[key_ongoing],
                 'task_count': __get_review_count_for_history(False),
                 'is_allowed': True,
                 'is_allowed_text': translator.get(_.visitOngoingQueue),

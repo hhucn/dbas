@@ -15,12 +15,15 @@ from sqlalchemy import and_
 reputation_borders = {'deletes': 30,
                       'optimizations': 30,
                       'edits': 30,
+                      'duplicates': 30,
                       'history': 150}
 
 reputation_icons = {'deletes': 'fa fa-pencil-square-o',
                     'optimizations': 'fa fa-flag',
                     'edits': 'fa fa-pencil-square-o',
-                    'history': 'fa fa-history'}
+                    'duplicates': 'fa fa-files-o',
+                    'history': 'fa fa-history',
+                    'ongoing': 'fa fa-clock-o'}
 
 # every reason by its name
 rep_reason_first_position = 'rep_reason_first_position'

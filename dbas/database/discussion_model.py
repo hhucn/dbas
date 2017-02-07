@@ -1005,6 +1005,33 @@ class LastReviewerDelete(DiscussionBase):
         self.timestamp = get_now()
 
 
+class LastReviewerDuplicate(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'last_reviewers_duplicates'
+    uid = Column(Integer, primary_key=True)
+    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
+    review_uid = Column(Integer, ForeignKey('review_duplicates.uid'))
+    is_okay = Column(Boolean, nullable=False, default=False)
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviewer = relationship('User', foreign_keys=[reviewer_uid])
+    review = relationship('ReviewDuplicate', foreign_keys=[review_uid])
+
+    def __init__(self, reviewer, review, is_okay):
+        """
+
+        :param reviewer:
+        :param review:
+        :param is_okay:
+        """
+        self.reviewer_uid = reviewer
+        self.review_uid = review
+        self.is_okay = is_okay
+        self.timestamp = get_now()
+
+
 class LastReviewerEdit(DiscussionBase):
     """
 
