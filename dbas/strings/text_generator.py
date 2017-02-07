@@ -335,8 +335,8 @@ def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_p
         tmp = start_argument + _t.get(_.reason) + end_tag
         ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut_for_dont_know).format(premise, tmp)
     else:
-        tmp = start_position + _t.get(_.myPositionGenitiv) + end_tag
-        ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut).format(premise, tmp)
+        # tmp = start_position + _t.get(_.myPositionGenitiv) + end_tag
+        ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut).format(premise, conclusion)
 
     if is_dont_know:
         conclusion_genitiv = conclusion.replace('ihre', 'ihrer').replace('seine', 'seiner')
@@ -432,7 +432,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
         confrontation_text, gender = __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument,
                                                                         user_arg, user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
-                                                                        start_argument, end_tag, sys_arg)
+                                                                        start_argument, sys_arg)
 
     b = '<' + tag_type + '>'
     e = '</' + tag_type + '>'
@@ -621,7 +621,7 @@ def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conc
 
 
 def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion,
-                                       confrontation, premise, conclusion, start_argument, end_tag, system_argument):
+                                       confrontation, premise, conclusion, start_argument, system_argument):
     """
     Builds the string for a rebut of the system.
 
@@ -699,7 +699,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             if has_other_user_opinion:
                 confrontation_text = author + ' ' + b + _t.get(_.agreesThat) + ' {}. '
             else:
-                confrontation_text = author + ' ' + _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
+                confrontation_text = author + ' ' + b + _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
             confrontation_text += _t.get(_.strongerStatementM) if gender is 'm' else _t.get(_.strongerStatementF)
         else:
             confrontation_text = b + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. '

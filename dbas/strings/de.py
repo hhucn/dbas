@@ -549,7 +549,8 @@ de_lang = {
 
     _.reaction_text_undermine: 'Ich halte {} für falsch und möchte wiedersprechen.',
     _.reaction_text_support: 'Ich halte {} für richtig und finde sie überzeugend.',
-    _.reaction_text_undercut: 'Ich halte {} für richtig, aber sie widerspricht nicht {}.',
+    # _.reaction_text_undercut: 'Ich halte {} für richtig, aber sie widerspricht nicht {}.',
+    _.reaction_text_undercut: 'Ich halte {} für richtig, aber sie stützt nicht {}.',
     _.reaction_text_undercut_for_dont_know: 'Ich halte {} für richtig, aber sie wird nicht von der {} gestützt.',
     _.reaction_text_rebut: 'Ich halte {} für richtig und sie stützt auch {}, aber ich möchte {} trotzdem verteidigen.',
     _.reaction_text_rebut_for_dont_know: 'Ich halte {} für richtig und sie stützt auch {}, aber ich möchte {} trotzdem widersprechen.',
