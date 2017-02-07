@@ -1116,7 +1116,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     """
 
     # Adding all textversions
-    textversion0 = TextVersion(content="Cars are fucking stupid and bloody fuzzy critters!", author=user.uid)
+    textversion0 = TextVersion(content="Cats are fucking stupid and bloody fuzzy critters!", author=user.uid)
     textversion1 = TextVersion(content="we should get a cat", author=user.uid)
     textversion2 = TextVersion(content="we should get a dog", author=user.uid)
     textversion3 = TextVersion(content="we could get both, a cat and a dog", author=user.uid)
