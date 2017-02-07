@@ -19,6 +19,20 @@ print('')
 
 db_issue = session.query(Issue).filter_by(title='Verbesserung des Informatik-Studiengangs').first()
 
+db_users = session.query(User).all()
+db_users = [user for user in db_users if user.nickname != 'anonymous' and user.nickname != 'admin']
+db_votes_statements = session.query(VoteStatement).all()
+db_votes_statements = [vote for vote in db_votes_statements if session.query(Statement).get(vote.statement_uid).issue_uid == db_issue.uid]
+l = [len([vote for vote in db_votes_statements if vote.author_uid == u.uid]) for u in db_users]
+
+print('Users:')
+print('  - count:    ' + str(len(db_users)))
+print('  - activity: ' + str(len(db_votes_statements) / len(db_users)) + ' per user')
+print('  - activity: (max): ' + str(max(l)))
+print('  - activity: (min): ' + str(min(l)))
+print('')
+
+
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
 db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid,
                                                               Statement.is_disabled == True)).all()
@@ -77,4 +91,3 @@ print('  - optimizations: ' + str(len(db_review_optimizations)))
 print('    - executed:    ' + str(len([review for review in db_review_optimizations if review.is_executed])))
 print('    - revoked:     ' + str(len([review for review in db_review_optimizations if review.is_revoked])))
 print('')
-
