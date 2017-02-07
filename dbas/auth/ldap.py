@@ -40,10 +40,14 @@ def verify_ldap_user_data(request, nickname, password):
 
         return [firstname, lastname, gender, email]
 
-    except ldap.INVALID_CREDENTIALS:
-        logger('ViewHelper', 'verify_ldap_user_data', 'ldap credential error')
+    except ldap.INVALID_CREDENTIALS as e:
+        logger('ViewHelper', 'verify_ldap_user_data', 'ldap credential error: ' + str(e))
         return None
 
-    except ldap.SERVER_DOWN:
-        logger('ViewHelper', 'verify_ldap_user_data', 'can\'t reach server within 5s')
+    except ldap.SERVER_DOWN as e:
+        logger('ViewHelper', 'verify_ldap_user_data', 'can\'t reach server within 5s: ' + str(e))
+        return None
+
+    except ldap.OPERATIONS_ERROR as e:
+        logger('ViewHelper', 'verify_ldap_user_data', 'OPERATIONS_ERROR: ' + str(e))
         return None

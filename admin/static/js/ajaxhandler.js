@@ -179,7 +179,6 @@ function AdminCallbackHandler(){
         if (jsonData.error.length === 0) {
         	console.log(jsonData);
         	$.each(jsonData.data, function(index, element){
-        		console.log(element);
         		$('#' + element['name']).find('.badge').text(element['count']);
 	        });
         } else {
