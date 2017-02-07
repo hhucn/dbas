@@ -541,8 +541,10 @@ function Main () {
 				function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css({'color': new_color, 'background-color': '#edf3e6', 'border-radius': '2px'});
-					$('span[data-attitude="pro"]').last().addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
-					$('span[data-attitude="con"]').last().addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+					if ($(this).attr(data) == 'argument') {
+						$('span[data-attitude="pro"]').last().addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+						$('span[data-attitude="con"]').last().addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+					}
 				}, function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css({'color': old_color, 'background-color': '', 'border-radius': ''});

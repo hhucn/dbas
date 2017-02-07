@@ -312,8 +312,12 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     :param with_html_tag:
     :return:
     """
-    tag_premise = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
-    tag_conclusion = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
+    tag_premise = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
+    tag_conclusion = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
+
+    pro_tag = '<{} data-attitude="pro">'.format(tag_type)
+    con_tag = '<{} data-attitude="con">'.format(tag_type)
+    end_tag = '</{}>'.format(tag_type)
     tag_end = ('</' + tag_type + '>') if with_html_tag else ''
     lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     _t = Translator(lang)
@@ -327,12 +331,14 @@ def __build_argument_for_jump(arg_array, with_html_tag):
 
         if lang == 'de':
             intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
-            ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end
+            intro = intro[0:1].upper() + intro[1:]
+            intro = (pro_tag if db_argument.is_supportive else con_tag) + intro + end_tag
+            ret_value = intro + ' ' + tag_conclusion + conclusion + tag_end
             ret_value += ', ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
         else:
-            ret_value = tag_conclusion + conclusion + ' '
-            ret_value += _t.get(_.isNotRight).lower() if not db_argument.is_supportive else ''
-            ret_value += tag_end + ' ' + _t.get(_.because).lower() + ' '
+            ret_value = tag_conclusion + conclusion + ' ' + tag_end
+            ret_value += (con_tag + _t.get(_.isNotRight).lower() + end_tag) if not db_argument.is_supportive else ''
+            ret_value += ' ' + _t.get(_.because).lower() + ' '
             ret_value += tag_premise + premises + tag_end
 
     elif len(arg_array) == 2:
@@ -347,7 +353,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         conclusion_conclusion = tag_conclusion + conclusion_conclusion + tag_end
 
         intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
-        bind = _t.get(_.isNotAGoodReasonFor)
+        bind = con_tag + _t.get(_.isNotAGoodReasonFor) + end_tag
         because = _t.get(_.because)
         ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because, premise)
     else:
@@ -360,7 +366,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
         # intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
-        bind = _t.get(_.isNotAGoodReasonAgainstArgument)
+        bind = con_tag + _t.get(_.isNotAGoodReasonAgainstArgument) + end_tag
         because = _t.get(_.because)
         seperator = ',' if lang == 'de' else ''
 
@@ -368,7 +374,6 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         premise2 = tag_conclusion + premise2 + tag_end
         argument = '{}{} {} {}'.format(conclusion, seperator, because.lower(), premise3)
         argument = tag_conclusion + argument + tag_end
-        bind = tag_conclusion + bind + tag_end
 
         # P2 ist kein guter Grund gegen das Argument, dass C weil P3. Weil P1
         ret_value = '{} {} {}. {} {}'.format(premise2, bind, argument, because, premise1)
