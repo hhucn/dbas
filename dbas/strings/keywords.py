@@ -108,6 +108,7 @@ class Keywords(Enum):
     argumentFlaggedBecauseHarmful = 'This argument was reported by a participant, because it probably is <strong>inappropriate, harmful or abbusive</strong>.'
     argumentFlaggedBecauseOptimization = 'This argument was reported by a participant, because it probably <strong>needs optimization</strong>.'
     argumentFlaggedBecauseEdit = 'This argument was improved from a grammatical point of view.'
+    argumentFlaggedBecauseDuplicate = 'This statement was flagged, because maybe it is a duplicate.'
     alternatively = 'Alternatively'
     addArguments = 'Add arguments'
     addStatements = 'Add statements'

@@ -10,7 +10,7 @@ import difflib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
-    sql_timestamp_pretty_print
+    sql_timestamp_pretty_print, ReviewDuplicate, LastReviewerDuplicate
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
@@ -19,7 +19,7 @@ from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
 
-pages = ['deletes', 'optimizations', 'edits']
+pages = ['deletes', 'optimizations', 'edits', 'duplicates']
 
 
 def get_subpage_elements_for(request, subpage_name, nickname, translator):
@@ -358,22 +358,22 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
     :param main_page:
     :return:
     """
-    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_edits', 'main')
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
                                                                                                 'already_seen_edit',
                                                                                                 db_user,
-                                                                                                ReviewEdit,
-                                                                                                LastReviewerEdit)
+                                                                                                ReviewDuplicate,
+                                                                                                LastReviewerDuplicate)
 
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
         already_seen = list()
         extra_info = 'already_seen' if not first_time else ''
-        db_reviews = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.is_executed == False,
-                                                                       ReviewEdit.detector_uid != db_user.uid))
+        db_reviews = DBDiscussionSession.query(ReviewDuplicate).filter(and_(ReviewDuplicate.is_executed == False,
+                                                                            ReviewDuplicate.detector_uid != db_user.uid))
         if len(already_reviewed) > 0:
-            db_reviews = db_reviews.filter(~ReviewEdit.uid.in_(already_reviewed))
+            db_reviews = db_reviews.filter(~ReviewDuplicate.uid.in_(already_reviewed))
         db_reviews = db_reviews.all()
 
     if not db_reviews:
@@ -384,40 +384,22 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
                 'extra_info': None}
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
-    if rnd_review.statement_uid is None:
-        db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
-        text = get_text_for_argument_uid(db_argument.uid)
-        issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
-    else:
-        db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
-        text = get_text_for_statement_uid(db_statement.uid)
-        issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
-    reason = translator.get(_.argumentFlaggedBecauseEdit)
+    db_statement = DBDiscussionSession.query(Statement).get(rnd_review.duplicate_statement_uid)
+    text = get_text_for_statement_uid(db_statement.uid)
+    issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
+    reason = translator.get(_.argumentFlaggedBecauseDuplicate)
 
-    # build correction
-    db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).first()
+    db_duplicate_of = DBDiscussionSession.query(Statement).get(rnd_review.original_statement_uid)
+    duplicate_of_text = get_text_for_statement_uid(db_duplicate_of)
+
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
-    if not db_edit_value:
-        correction = translator.get(_.internalKeyError)
-
-        return {'stats': stats,
-                'text': text,
-                'correction': correction,
-                'reason': reason,
-                'issue': issue,
-                'extra_info': extra_info}
-
-    correction_list = [char for char in text]
-    __difference_between_string(text, db_edit_value.content, correction_list)
-    correction = ''.join(correction_list)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_edit'] = already_seen
 
     return {'stats': stats,
             'text': text,
-            'corrected_version': db_edit_value.content,
-            'corrections': correction,
+            'duplicate_of': duplicate_of_text,
             'reason': reason,
             'issue': issue,
             'extra_info': extra_info}

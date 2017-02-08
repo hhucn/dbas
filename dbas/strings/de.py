@@ -112,6 +112,7 @@ de_lang = {
     _.argumentFlaggedBecauseHarmful: 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>nicht angebracht, schädlich oder missbräuchlich</strong> ist.',
     _.argumentFlaggedBecauseOptimization: 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>sprachlicher Korrektur</strong> bedarf.',
     _.argumentFlaggedBecauseEdit: 'Dieses Argument wurde von einer/m Benutzer/in sprachlich verbessert.',
+    _.argumentFlaggedBecauseDuplicate: 'Dieses Argument wurde von einer/m Benutzer/in als Duplikat markiert.',
     _.alternatively: 'Alternativ',
     _.argument: 'Argument',
     _.accept: 'für',
