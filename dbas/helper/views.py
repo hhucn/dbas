@@ -405,7 +405,7 @@ def __login_user_ldap(request, nickname, password, _tn):
     user_data = verify_ldap_user_data(request, nickname, password)
 
     if not user_data:
-        return _tn.get(_.userPasswordNotMatch)
+        return _tn.get(_.userPasswordNotMatch), ''
     firstname = user_data[0]
     lastname = user_data[1]
     gender = user_data[2]

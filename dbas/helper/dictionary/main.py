@@ -459,7 +459,8 @@ class DictionaryHelper(object):
                                 'recipient': _tn_dis.get(_.recipient),
                                 'topic': _tn_dis.get(_.topicString),
                                 'message': _tn_dis.get(_.message),
-                                'reference': _tn_dis.get(_.reference)
+                                'reference': _tn_dis.get(_.reference),
+                                'attack_statement': _tn_dis.get(_.attackStatement)
                                 }
 
     def add_tag_text(self, is_ldap, return_dict):
