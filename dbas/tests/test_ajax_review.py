@@ -464,11 +464,6 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertTrue(len(response['error']) != 0)
         self.assertTrue(db_reviews1, db_reviews2)
 
-        # TODO author error
-        # TODO uid error
-        # TODO cancel duplicate
-        # TODO revoke duplicate
-
     def test_review_duplicate_statement_author_error(self):
         db_review = DBDiscussionSession.query(ReviewDuplicate).first()
         self.config.testing_securitypolicy(userid='', permissive=True)
@@ -476,6 +471,17 @@ class AjaxReviewTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'is_duplicate': 'true',
             'review_uid': db_review.uid,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertIsNotNone(response)
+        self.assertTrue(len(response['error']) != 0)
+
+    def test_review_duplicate_uid_error(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        from dbas.views import review_duplicate_statement as ajax
+        request = testing.DummyRequest(params={
+            'is_duplicate': 'true',
+            'review_uid': 'a'
         }, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
@@ -560,6 +566,9 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertNotIn('success', response)
         self.assertTrue(len(response['info']) != 0)
         self.assertEqual(db_canceled1, db_canceled2)
+
+    # TODO cancel duplicate
+    # TODO revoke duplicate
 
     def test_review_lock(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
