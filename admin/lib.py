@@ -11,7 +11,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
-    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS
+    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate
 from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -39,10 +39,12 @@ table_mapper = {
     'ReviewEdit'.lower(): {'table': ReviewEdit, 'name': 'ReviewEdit'},
     'ReviewEditValue'.lower(): {'table': ReviewEditValue, 'name': 'ReviewEditValue'},
     'ReviewOptimization'.lower(): {'table': ReviewOptimization, 'name': 'ReviewOptimization'},
+    'ReviewDuplicate'.lower(): {'table': ReviewDuplicate, 'name': 'ReviewDuplicate'},
     'ReviewDeleteReason'.lower(): {'table': ReviewDeleteReason, 'name': 'ReviewDeleteReason'},
     'LastReviewerDelete'.lower(): {'table': LastReviewerDelete, 'name': 'LastReviewerDelete'},
     'LastReviewerEdit'.lower(): {'table': LastReviewerEdit, 'name': 'LastReviewerEdit'},
     'LastReviewerOptimization'.lower(): {'table': LastReviewerOptimization, 'name': 'LastReviewerOptimization'},
+    'LastReviewerDuplicate'.lower(): {'table': LastReviewerDuplicate, 'name': 'LastReviewerDuplicate'},
     'ReputationHistory'.lower(): {'table': ReputationHistory, 'name': 'ReputationHistory'},
     'ReputationReason'.lower(): {'table': ReputationReason, 'name': 'ReputationReason'},
     'OptimizationReviewLocks'.lower(): {'table': OptimizationReviewLocks, 'name': 'OptimizationReviewLocks'},
@@ -129,12 +131,14 @@ def get_overview(page):
     reviews.append(__get_dash_dict('ReviewEditValue', page + 'ReviewEditValue'))
     reviews.append(__get_dash_dict('ReviewOptimization', page + 'ReviewOptimization'))
     reviews.append(__get_dash_dict('ReviewDeleteReason', page + 'ReviewDeleteReason'))
+    reviews.append(__get_dash_dict('ReviewDuplicate', page + 'ReviewDuplicate'))
 
     # all tables for the 'reviewer' group
     reviewer = list()
     reviewer.append(__get_dash_dict('LastReviewerDelete', page + 'LastReviewerDelete'))
     reviewer.append(__get_dash_dict('LastReviewerEdit', page + 'LastReviewerEdit'))
     reviewer.append(__get_dash_dict('LastReviewerOptimization', page + 'LastReviewerOptimization'))
+    reviewer.append(__get_dash_dict('LastReviewerDuplicate', page + 'LastReviewerDuplicate'))
 
     # all tables for the 'reputation' group
     reputation = list()
