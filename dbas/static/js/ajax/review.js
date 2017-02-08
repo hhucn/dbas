@@ -46,7 +46,7 @@ function AjaxReviewHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewCallbacks().forReviewArgument(data);
+			new ReviewCallbacks().forReviewArgumentOrStatement(data);
 		}).fail(function reviewDeleteArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
@@ -67,8 +67,31 @@ function AjaxReviewHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewCallbacks().forReviewArgument(data);
+			new ReviewCallbacks().forReviewArgumentOrStatement(data);
 		}).fail(function reviewDeleteArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	};
+	
+	/**
+	 *
+	 * @param is_duplicate
+	 * @param review_uid
+	 */
+	this.reviewDuplicateStatement = function(is_duplicate, review_uid){
+		alert('TODO AJAX 1 ' + is_duplicate + ' ' + review_uid);
+		return 0;
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_review_duplicate_statement',
+			method: 'POST',
+			data:{ 'is_duplicate': is_duplicate, 'review_uid': review_uid },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function reviewDuplicateStatementDone(data) {
+			new ReviewCallbacks().forReviewArgumentOrStatement(data);
+		}).fail(function reviewDuplicateStatementFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
@@ -90,7 +113,7 @@ function AjaxReviewHandler(){
 				'new_data': JSON.stringify(new_data) },
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
-			new ReviewCallbacks().forReviewArgument(data);
+			new ReviewCallbacks().forReviewArgumentOrStatement(data);
 		}).fail(function reviewDeleteArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
@@ -102,6 +125,7 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.undoReview = function(queue, uid){
+		
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_undo_review',
@@ -123,6 +147,7 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.cancelReview = function(queue, uid){
+		console.log(queue);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_cancel_review',

@@ -58,28 +58,32 @@ def __get_data(main_page, nickname, translator, is_executed=False):
         'queue': 'deletes',
         'content': deletes_list,
         'has_reason': True,
-        'has_oem_text': False
+        'has_oem_text': False,
+        'has_duplicate_text': False
     }, {
         'title': 'Optimization Queue',
         'queue': 'optimizations',
         'icon': reputation_icons['optimizations'],
         'content': optimizations_list,
         'has_reason': False,
-        'has_oem_text': False
+        'has_oem_text': False,
+        'has_duplicate_text': False
     }, {
         'title': 'Edit Queue',
         'queue': 'edits',
         'icon': reputation_icons['edits'],
         'content': edits_list,
         'has_reason': False,
-        'has_oem_text': True
+        'has_oem_text': True,
+        'has_duplicate_text': False
     }, {
         'title': 'Duplicates Queue',
         'queue': 'duplicates',
         'icon': reputation_icons['duplicates'],
         'content': duplicates_list,
         'has_reason': False,
-        'has_oem_text': True
+        'has_oem_text': False,
+        'has_duplicate_text': True
     }]
     ret_dict['past_decision'] = past_decision
 
@@ -191,8 +195,8 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
                 entry['argument_fulltext'] = db_edit_value.content
         if table == 'duplicates':
             text = get_text_for_statement_uid(review.original_statement_uid)
-            entry['argument_oem_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
-            entry['argument_oem_fulltext'] = text
+            entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
+            entry['statement_duplicate_fulltext'] = text
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())

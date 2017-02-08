@@ -14,6 +14,9 @@ $(document).ready(function () {
 	var edit_ack = $('#edit_ack');
 	var edit_nack = $('#edit_nack');
 	var edit_skip = $('#edit_skip');
+	var duplicate_ack = $('#duplicate_ack');
+	var duplicate_nack = $('#duplicate_nack');
+	var duplicate_skip = $('#duplicate_skip');
 	var request_lock = $('#request-lock');
 	var send_edit  = $('#send_edit');
 	
@@ -68,6 +71,21 @@ $(document).ready(function () {
 	});
 	
 	edit_skip.click(function(){
+		new Review().reloadPageAndUnlockData(false);
+	});
+	
+	/**
+	 * Duplicate
+	 */
+	duplicate_ack.click(function(){
+		new Review().doDuplicateAck($(this).data('id'));
+	});
+	
+	duplicate_nack.click(function(){
+		new Review().doDuplicateNack($(this).data('id'));
+	});
+	
+	duplicate_skip.click(function(){
 		new Review().reloadPageAndUnlockData(false);
 	});
 	
