@@ -63,18 +63,28 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
         button_set['is_delete'] = True
         button_set['is_optimize'] = False
         button_set['is_edit'] = False
+        button_set['is_duplicate'] = False
 
     elif subpage_name == 'optimizations':
         subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, request.application_url)
         button_set['is_delete'] = False
         button_set['is_optimize'] = True
         button_set['is_edit'] = False
+        button_set['is_duplicate'] = False
 
     elif subpage_name == 'edits':
         subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, request.application_url)
         button_set['is_delete'] = False
         button_set['is_optimize'] = False
         button_set['is_edit'] = True
+        button_set['is_duplicate'] = False
+
+    elif subpage_name == 'duplicates':
+        subpage_dict = __get_subpage_dict_for_duplicates(request, db_user, translator, request.application_url)
+        button_set['is_delete'] = False
+        button_set['is_optimize'] = False
+        button_set['is_edit'] = False
+        button_set['is_duplicate'] = True
 
     else:
         subpage_dict = {'stats': stats, 'text': text, 'reason': reason, 'issue': issue}
@@ -266,6 +276,80 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
 
 
 def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
+    """
+
+    :param request:
+    :param db_user:
+    :param translator:
+    :param main_page:
+    :return:
+    """
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_edits', 'main')
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
+                                                                                                'already_seen_edit',
+                                                                                                db_user,
+                                                                                                ReviewEdit,
+                                                                                                LastReviewerEdit)
+
+    extra_info = ''
+    # if we have no reviews, try again with fewer restrictions
+    if not db_reviews:
+        already_seen = list()
+        extra_info = 'already_seen' if not first_time else ''
+        db_reviews = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.is_executed == False,
+                                                                       ReviewEdit.detector_uid != db_user.uid))
+        if len(already_reviewed) > 0:
+            db_reviews = db_reviews.filter(~ReviewEdit.uid.in_(already_reviewed))
+        db_reviews = db_reviews.all()
+
+    if not db_reviews:
+        return {'stats': None,
+                'text': None,
+                'reason': None,
+                'issue': None,
+                'extra_info': None}
+
+    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
+    if rnd_review.statement_uid is None:
+        db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
+        text = get_text_for_argument_uid(db_argument.uid)
+        issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
+    else:
+        db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
+        text = get_text_for_statement_uid(db_statement.uid)
+        issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
+    reason = translator.get(_.argumentFlaggedBecauseEdit)
+
+    # build correction
+    db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).first()
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+    if not db_edit_value:
+        correction = translator.get(_.internalKeyError)
+
+        return {'stats': stats,
+                'text': text,
+                'correction': correction,
+                'reason': reason,
+                'issue': issue,
+                'extra_info': extra_info}
+
+    correction_list = [char for char in text]
+    __difference_between_string(text, db_edit_value.content, correction_list)
+    correction = ''.join(correction_list)
+
+    already_seen.append(rnd_review.uid)
+    request.session['already_seen_edit'] = already_seen
+
+    return {'stats': stats,
+            'text': text,
+            'corrected_version': db_edit_value.content,
+            'corrections': correction,
+            'reason': reason,
+            'issue': issue,
+            'extra_info': extra_info}
+
+
+def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
     """
 
     :param request:

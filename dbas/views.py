@@ -1009,6 +1009,8 @@ def review_content(request):
         title = _tn.get(_.queueOptimization)
     if subpage_name == 'edits':
         title = _tn.get(_.queueEdit)
+    if subpage_name == 'duplicates':
+        title = _tn.get(_.queueDuplicates)
 
     return {
         'layout': base_layout(),
