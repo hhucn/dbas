@@ -18,7 +18,7 @@ reputation_borders = {'deletes': 30,
                       'duplicates': 30,
                       'history': 150}
 
-reputation_icons = {'deletes': 'fa fa-pencil-square-o',
+reputation_icons = {'deletes': 'fa fa-trash-o',
                     'optimizations': 'fa fa-flag',
                     'edits': 'fa fa-pencil-square-o',
                     'duplicates': 'fa fa-files-o',
@@ -45,14 +45,13 @@ def get_privilege_list(translator):
     :param translator: instance of translator
     :return: list()
     """
-    return [{'points': reputation_borders['history'], 'icon': reputation_icons['history'],
-             'text': translator.get(_.priv_history_queue)},
-            {'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'],
-             'text': translator.get(_.priv_access_opti_queue)},
-            {'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'],
-             'text': translator.get(_.priv_access_del_queue)},
-            {'points': reputation_borders['edits'], 'icon': reputation_icons['optimizations'],
-             'text': translator.get(_.priv_access_edit_queue)}]
+    return [
+        {'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'], 'text': translator.get(_.priv_access_opti_queue)},
+        {'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'], 'text': translator.get(_.priv_access_del_queue)},
+        {'points': reputation_borders['edits'], 'icon': reputation_icons['edits'], 'text': translator.get(_.priv_access_edit_queue)},
+        {'points': reputation_borders['duplicates'], 'icon': reputation_icons['duplicates'], 'text': translator.get(_.priv_access_duplicate_queue)},
+        {'points': reputation_borders['history'], 'icon': reputation_icons['history'], 'text': translator.get(_.priv_history_queue)}
+    ]
 
 
 def get_reputation_list(translator):

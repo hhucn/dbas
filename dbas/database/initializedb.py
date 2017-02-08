@@ -1707,9 +1707,12 @@ def add_reputation_and_delete_reason(session):
     reputation06 = ReputationReason(reason='rep_reason_new_statement', points=2)
     reputation07 = ReputationReason(reason='rep_reason_success_flag', points=3)
     reputation08 = ReputationReason(reason='rep_reason_success_edit', points=3)
-    reputation09 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
-    reputation10 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
-    session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07, reputation08, reputation09, reputation10])
+    reputation09 = ReputationReason(reason='rep_reason_success_duplicate', points=3)
+    reputation10 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
+    reputation11 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
+    reputation12 = ReputationReason(reason='rep_reason_bad_duplicate', points=-1)
+    session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07,
+                     reputation08, reputation09, reputation10, reputation11, reputation12])
     session.flush()
 
     reason1 = ReviewDeleteReason(reason='offtopic')
@@ -1782,8 +1785,10 @@ def setup_review_database(session):
     reputation06 = session.query(ReputationReason).filter_by(reason='rep_reason_new_statement').first()
     reputation07 = session.query(ReputationReason).filter_by(reason='rep_reason_success_flag').first()
     reputation08 = session.query(ReputationReason).filter_by(reason='rep_reason_success_edit').first()
-    reputation09 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_flag').first()
-    reputation10 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
+    reputation09 = session.query(ReputationReason).filter_by(reason='rep_reason_success_duplicate').first()
+    reputation10 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_flag').first()
+    reputation11 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
+    reputation12 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_duplicate').first()
 
     admin = session.query(User).filter_by(nickname=nick_of_admin).first()
     christian = session.query(User).filter_by(nickname='Christian').first()

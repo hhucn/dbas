@@ -64,11 +64,14 @@ def get_complete_review_count(nickname):
     rights1 = count >= reputation_borders[key_deletes] or all_rights
     rights2 = count >= reputation_borders[key_optimizations] or all_rights
     rights3 = count >= reputation_borders[key_edits] or all_rights
+    rights4 = count >= reputation_borders[key_duplicates] or all_rights
 
     count1 = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname) if rights1 else 0
     count2 = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname) if rights2 else 0
     count3 = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname) if rights3 else 0
-    return count1 + count2 + count3
+    count4 = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname) if rights4 else 0
+
+    return count1 + count2 + count3 + count4
 
 
 def __get_delete_dict(main_page, translator, nickname, count, all_rights):
@@ -177,7 +180,6 @@ def __get_history_dict(main_page, translator, count, all_rights):
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_history_dict', 'main')

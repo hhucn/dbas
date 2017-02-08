@@ -227,6 +227,22 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     return ''
 
 
+def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, application_url):
+    """
+
+    :param nickname:
+    :param is_duplicate:
+    :param review_uid:
+    :param _t:
+    :param application_url:
+    :return:
+    """
+    logger('review_main_helper', 'add_review_opinion_for_duplicate', 'main ' + str(review_uid) + ', duplicate ' + str(is_duplicate))
+    logger('X', 'X', 'X')
+    logger('X', 'X', 'X')
+    logger('X', 'X', 'X')
+
+
 def __keep_the_element(db_review, application_url, _t):
     """
 
@@ -356,9 +372,11 @@ def en_or_disable_statement_and_premise_of_review(review, is_disabled):
     db_statement.set_disable(is_disabled)
     DBDiscussionSession.add(db_statement)
     db_premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).all()
+
     for premise in db_premises:
         premise.set_disable(is_disabled)
         DBDiscussionSession.add(premise)
+
     DBDiscussionSession.flush()
     transaction.commit()
 
@@ -386,6 +404,7 @@ def en_or_disable_arguments_and_premise_of_review(review, is_disabled):
         db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
         db_statement.set_disable(is_disabled)
         DBDiscussionSession.add(db_statement)
+
     DBDiscussionSession.flush()
     transaction.commit()
 
