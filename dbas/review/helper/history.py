@@ -9,7 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit,\
     LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print,\
-    ReviewDuplicate, LastReviewerDuplicate
+    ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author_or_admin, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
@@ -278,6 +278,12 @@ def revoke_old_decision(queue, uid, lang, nickname):
 
         success = _t.get(_.dataRemoved)
 
+    elif queue == 'duplicates':
+        db_review = DBDiscussionSession.query(ReviewDuplicate).get(uid)
+        db_review.set_revoked(True)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid))
+        __rebend_objects_of_duplicate_review(db_review)
+
     else:
         error = _t.get(_.internalKeyError)
 
@@ -324,7 +330,7 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
         DBDiscussionSession.query(ReviewDuplicate).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicates=uid, was_ongoing=True))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid, was_ongoing=True))
 
     else:
         error = _t.get(_.internalKeyError)
@@ -349,6 +355,25 @@ def __revoke_decision_and_implications(type, reviewer_type, uid):
     db_review = DBDiscussionSession.query(type).get(uid)
     db_review.set_revoked(True)
     en_or_disable_object_of_review(db_review, False)
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def __rebend_objects_of_duplicate_review(db_review):
+    logger('review_history_helper', '__rebend_objects_of_duplicate_review', 'review: ' + str(db_review.uid))
+
+    db_revoked_elements = DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).all()
+    for element in db_revoked_elements:
+        if element.argument_uid is not None:
+            db_argument = DBDiscussionSession.query(Argument).get(element.argument_uid)
+            db_argument.conclusion_uid = ReviewDuplicate.duplicate_statement_uid
+            DBDiscussionSession.add(db_argument)
+
+        if element.statement_uid is not None:
+            db_premise = DBDiscussionSession.query(Premise).get(element.statement_uid)
+            db_premise.statement_uid = db_review.duplicate_statement_uid
+            DBDiscussionSession.add(db_premise)
 
     DBDiscussionSession.flush()
     transaction.commit()

@@ -79,8 +79,6 @@ function AjaxReviewHandler(){
 	 * @param review_uid
 	 */
 	this.reviewDuplicateStatement = function(is_duplicate, review_uid){
-		alert('TODO AJAX 1 ' + is_duplicate + ' ' + review_uid);
-		return 0;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_review_duplicate_statement',
@@ -125,11 +123,6 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.undoReview = function(queue, uid){
-		if (queue == 'duplicates'){
-			alert('TODO AJAX 2');
-			return 0;
-		}
-		
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_undo_review',

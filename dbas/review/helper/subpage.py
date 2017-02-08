@@ -390,7 +390,6 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
     reason = translator.get(_.argumentFlaggedBecauseDuplicate)
 
     duplicate_of_text = get_text_for_statement_uid(rnd_review.original_statement_uid)
-    logger('X', 'X', duplicate_of_text)
 
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
 

@@ -2438,15 +2438,14 @@ def review_duplicate_statement(request):
     return_dict = dict()
 
     try:
-        l = request.params['fuck_it_up']
-        is_edit_okay = True if str(request.params['is_edit_okay']) == 'true' else False
+        is_duplicate = True if str(request.params['is_duplicate']) == 'true' else False
         review_uid = request.params['review_uid']
         nickname = request.authenticated_userid
         if not is_integer(review_uid):
             logger('review_duplicate_statement', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_duplicate(nickname, is_edit_okay, review_uid, _t, request.application_url)
+            error = review_main_helper.add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, request.application_url)
             if len(error) == 0:
                 send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
     except KeyError as e:

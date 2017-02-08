@@ -1168,7 +1168,7 @@ class ReviewCanceled(DiscussionBase):
     optimizations = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
     duplicates = relationship('ReviewDuplicate', foreign_keys=[review_duplicate_uid])
 
-    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, review_duplicates=None, was_ongoing=False):
+    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, review_duplicate=None, was_ongoing=False):
         """
 
         :param author:
@@ -1180,7 +1180,7 @@ class ReviewCanceled(DiscussionBase):
         self.review_edit_uid = review_edit
         self.review_delete_uid = review_delete
         self.review_optimization_uid = review_optimization
-        self.review_duplicate_uid = review_duplicates
+        self.review_duplicate_uid = review_duplicate
         self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 
@@ -1222,6 +1222,28 @@ class RevokedContentHistory(DiscussionBase):
         self.new_author_uid = new_author_uid
         self.textversion_uid = textversion_uid
         self.argument_uid = argument_uid
+
+
+class RevokedDuplicate(DiscussionBase):
+    __tablename__ = 'revoked_duplicate'
+    uid = Column(Integer, primary_key=True)
+    author_uid = Column(Integer, ForeignKey('users.uid'))
+    review_uid = Column(Integer, ForeignKey('review_duplicates.uid'))
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+    review = relationship('ReviewDuplicate', foreign_keys=[review_uid])
+
+    authors = relationship('User', foreign_keys=[author_uid])
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
+    def __init__(self, author, review, in_argument_as_conclusion=None, in_premise_as_statement=None):
+        self.author_uid = author
+        self.review_uid = review
+        self.argument_uid = in_argument_as_conclusion
+        self.statement_uid = in_premise_as_statement
+        self.timestamp = get_now()
 
 
 class RSS(DiscussionBase):

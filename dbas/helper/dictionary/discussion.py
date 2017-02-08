@@ -497,7 +497,6 @@ class DiscussionDictHelper(object):
             intro += _tn.get(_.whatDoYouThinkAboutThat) + bind + _tn.get(_.that) + ' '
 
         offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
-        logger('X', str(offset), argument_text)
         while argument_text[:-offset].endswith(('.', '?', '!')):
             argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
