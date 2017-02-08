@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-08 07:29+0100\n"
+"POT-Creation-Date: 2017-02-08 12:19+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -613,52 +613,53 @@ msgid "reason"
 msgstr "Reason"
 
 #. Default: Original
-#: templates/review_history.pt:43 templates/review_content.pt:193
+#: templates/review_history.pt:43 templates/review_history.pt:44
+#: templates/review_content.pt:204
 msgid "original"
 msgstr "Original"
 
 #. Default: Votes
-#: templates/review_history.pt:44
+#: templates/review_history.pt:45
 msgid "votes"
 msgstr "Votes"
 
 #. Default: Accepted
-#: templates/review_history.pt:45
+#: templates/review_history.pt:46
 msgid "accepted"
 msgstr "Accepted"
 
 #. Default: Voters Pro
-#: templates/review_history.pt:46
+#: templates/review_history.pt:47
 msgid "voters_pro"
 msgstr "Voters Pro"
 
 #. Default: Voters Con
-#: templates/review_history.pt:47
+#: templates/review_history.pt:48
 msgid "voters_con"
 msgstr "Voters Con"
 
 #. Default: Timestamp
-#: templates/review_history.pt:48
+#: templates/review_history.pt:49
 msgid "timestamp"
 msgstr "Timestamp"
 
 #. Default: Reporter
-#: templates/review_history.pt:49
+#: templates/review_history.pt:50
 msgid "reporter"
 msgstr "Reporter"
 
 #. Default: Action
-#: templates/review_history.pt:50
+#: templates/review_history.pt:51
 msgid "actions"
 msgstr "Action"
 
 #. Default: Undo
-#: templates/review_history.pt:91
+#: templates/review_history.pt:93
 msgid "undo"
 msgstr "Undo"
 
 #. Default: Cancel
-#: templates/review_history.pt:94 templates/snippet-popups.pt:172
+#: templates/review_history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
 #: templates/snippet-popups.pt:1060
 msgid "cancel"
@@ -1546,209 +1547,241 @@ msgid "no_arguments_to_review"
 msgstr "No arguments to review in this queue!"
 
 #. Default: (more)
-#: templates/review_content.pt:30
+#: templates/review_content.pt:31
 msgid "wrapped_more"
 msgstr "(more)"
 
 #. Default: (less)
-#: templates/review_content.pt:31
+#: templates/review_content.pt:32
 msgid "wrapped_less"
 msgstr "(less)"
 
 #. Default: Skip it
-#: templates/review_content.pt:35 templates/review_content.pt:40
-#: templates/review_content.pt:45 templates/review_content.pt:73
-#: templates/review_content.pt:78 templates/review_content.pt:83
+#: templates/review_content.pt:36 templates/review_content.pt:41
+#: templates/review_content.pt:46 templates/review_content.pt:51
+#: templates/review_content.pt:79 templates/review_content.pt:84
+#: templates/review_content.pt:89 templates/review_content.pt:94
 msgid "skip_it"
 msgstr "Skip it"
 
 #. Default: Delete it
-#: templates/review_content.pt:36 templates/review_content.pt:72
+#: templates/review_content.pt:37 templates/review_content.pt:78
 msgid "delete_it"
 msgstr "Delete it"
 
 #. Default: It's Okay
 #. Default: It's okay
-#: templates/review_content.pt:37 templates/review_content.pt:47
-#: templates/review_content.pt:71 templates/review_content.pt:81
+#: templates/review_content.pt:38 templates/review_content.pt:48
+#: templates/review_content.pt:77 templates/review_content.pt:87
 msgid "its_okay"
 msgstr "It's Okay"
 
 #. Default: It's okay so
-#: templates/review_content.pt:41 templates/review_content.pt:77
+#: templates/review_content.pt:42 templates/review_content.pt:83
 msgid "its_okay_so"
 msgstr "It's okay so"
 
 #. Default: Let me correct it
-#: templates/review_content.pt:42 templates/review_content.pt:76
+#: templates/review_content.pt:43 templates/review_content.pt:82
 msgid "correct_it"
 msgstr "Let me correct it"
 
 #. Default: Reject it
-#: templates/review_content.pt:46 templates/review_content.pt:82
+#: templates/review_content.pt:47 templates/review_content.pt:88
 msgid "reject_it"
 msgstr "Reject it"
 
+#. Default: Unique
+#: templates/review_content.pt:52
+msgid "unique"
+msgstr "Unique"
+
+#. Default: Duplicate
+#: templates/review_content.pt:53
+msgid "duplicate"
+msgstr "Duplicate"
+
 #. Default: Information for the different reasons
-#: templates/review_content.pt:55
+#: templates/review_content.pt:61
 msgid "information_for_the_different_reasons"
 msgstr "Information for the different reasons"
 
 #. Default: Off topic or irrelevant
-#: templates/review_content.pt:57
+#: templates/review_content.pt:63
 msgid "off_topic_or_irrelevant"
 msgstr "Off topic or irrelevant"
 
 #. Default: text does not belong to the topic under discussion
-#: templates/review_content.pt:57
+#: templates/review_content.pt:63
 msgid "off_topic_explanation"
 msgstr "text does not belong to the topic under discussion"
 
 #. Default: Inappropriate, harmful or abusive
-#: templates/review_content.pt:58
+#: templates/review_content.pt:64
 msgid "inappropriate_harmful_abbusive"
 msgstr "Inappropriate, harmful or abbusive"
 
 #. Default: are posts, which are inappropriate, harmful or abbusive
-#: templates/review_content.pt:58
+#: templates/review_content.pt:64
 msgid "inappropriate_harmful_abbusive_explanation"
 msgstr "are posts, which are inappropriate, harmful or abbusive"
 
 #. Default: Needs optimization
-#: templates/review_content.pt:59
+#: templates/review_content.pt:65
 msgid "needs_optimization"
 msgstr "Needs optimization"
 
 #. Default: if posts are useful, but need edits in grammar and/or spelling
-#: templates/review_content.pt:59
+#: templates/review_content.pt:65
 msgid "needs_optimization_explanation"
 msgstr "if posts are useful, but need edits in grammar and/or spelling"
 
 #. Default: Information for the different buttons
-#: templates/review_content.pt:68
+#: templates/review_content.pt:74
 msgid "information_for_the_different_buttons"
 msgstr "Information for the different buttons"
 
 #. Default: for arguments, which should not be deleted.
-#: templates/review_content.pt:71
+#: templates/review_content.pt:77
 msgid "its_okay_explanation"
 msgstr "for arguments, which should not be deleted."
 
 #. Default: for arguments, that should be deleted based on the reason above.
-#: templates/review_content.pt:72
+#: templates/review_content.pt:78
 msgid "delete_it_explanation"
 msgstr "for arguments, that should be deleted based on the reason above."
 
 #. Default: if you are not sure and want to go to the next argument.
-#: templates/review_content.pt:73 templates/review_content.pt:78
-#: templates/review_content.pt:83
+#. Default: if you are not sure and want to go to the next statement.
+#: templates/review_content.pt:79 templates/review_content.pt:84
+#: templates/review_content.pt:89 templates/review_content.pt:94
 msgid "skip_it_explanation"
 msgstr "if you are not sure and want to go to the next argument."
 
 #. Default: , if you have an idea for a better formulation with the same
 #. content.
-#: templates/review_content.pt:76
+#: templates/review_content.pt:82
 msgid "correct_it_explanation"
 msgstr ", if you have an idea for a better formulation with the same"
 
 #. Default: for arguments, which can be understood as-is.
-#: templates/review_content.pt:77
+#: templates/review_content.pt:83
 msgid "its_okay_so_explanation"
 msgstr "for arguments, which can be understood as-is."
 
 #. Default: , if the correction is acceptable and the argument is not
 #. falsified.
-#: templates/review_content.pt:81
+#: templates/review_content.pt:87
 msgid "correction_is_okay"
 msgstr ", if the correction is acceptable and the argument is not"
 
 #. Default: for correction which are inappropriate are wrong.
-#: templates/review_content.pt:82
+#: templates/review_content.pt:88
 msgid "reject_itexplanation"
 msgstr "for correction which are inappropriate are wrong."
 
+#. Default: It's a duplicate
+#: templates/review_content.pt:92
+msgid "its_duplicate"
+msgstr "It's a duplicate"
+
+#. Default: , if the marked statement is a duplicate.
+#: templates/review_content.pt:92
+msgid "marked_statement_is_duplicate"
+msgstr ", if the marked statement is a duplicate."
+
+#. Default: It's unique
+#: templates/review_content.pt:93
+msgid "its_unique"
+msgstr "It's unique"
+
+#. Default: for marked statements, which are unique.
+#: templates/review_content.pt:93
+msgid "duplicate_is_unique"
+msgstr "for marked statements, which are unique."
+
 #. Default: In the discussion about
-#: templates/review_content.pt:93 templates/review_content.pt:113
+#: templates/review_content.pt:104 templates/review_content.pt:124
 msgid "in_the_discussion_about"
 msgstr "In the discussion about"
 
 #. Default: following argument was corrected.
-#: templates/review_content.pt:95
+#: templates/review_content.pt:106
 msgid "following_argument_was_corrected"
 msgstr "following argument was corrected."
 
 #. Default: This are the edits:
-#: templates/review_content.pt:104
+#: templates/review_content.pt:115
 msgid "this_are_the_edit"
 msgstr "This are the edits:"
 
 #. Default: following argument was flagged.
-#: templates/review_content.pt:115
+#: templates/review_content.pt:126
 msgid "following_argument_was_flagged"
 msgstr "following argument/statement was flagged."
 
 #. Default: This is the original version
-#: templates/review_content.pt:118
+#: templates/review_content.pt:129
 msgid "this_is_original_version"
 msgstr "This is the original version"
 
 #. Default: Context, where the statement is used:
-#: templates/review_content.pt:127
+#: templates/review_content.pt:138
 msgid "context_where_statement_is_used"
 msgstr "Context, where the statement is used:"
 
 #. Default: Reported
-#: templates/review_content.pt:140
+#: templates/review_content.pt:151
 msgid "reported"
 msgstr "Reported"
 
 #. Default: Reported by
-#: templates/review_content.pt:144
+#: templates/review_content.pt:155
 msgid "reported_by"
 msgstr "Reported by"
 
 #. Default: Viewed
-#: templates/review_content.pt:154
+#: templates/review_content.pt:165
 msgid "viewed"
 msgstr "Viewed"
 
 #. Default: Attacks
-#: templates/review_content.pt:158
+#: templates/review_content.pt:169
 msgid "attacks"
 msgstr "Attacks"
 
 #. Default: Supports
-#: templates/review_content.pt:162
+#: templates/review_content.pt:173
 msgid "supports"
 msgstr "Supports"
 
 #. Default: Request lock
-#: templates/review_content.pt:182
+#: templates/review_content.pt:193
 msgid "request_lock"
 msgstr "Request lock"
 
 #. Default: This argument is locked for your edit. You have
-#: templates/review_content.pt:185
+#: templates/review_content.pt:196
 msgid "argument_is_locked"
 msgstr "This argument is locked for your edit. You have"
 
 #. Default: minutes
-#: templates/review_content.pt:186
+#: templates/review_content.pt:197
 msgid "minutes"
 msgstr "minutes"
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review_content.pt:187
+#: templates/review_content.pt:198
 msgid "please_make_your_edits"
 msgstr "Please make your edits in grammar and/or spelling here:"
 
 #. Default: Your correcture
-#: templates/review_content.pt:194
+#: templates/review_content.pt:205
 msgid "your correcture"
 msgstr "Your correcture"
 
 #. Default: Send
-#: templates/review_content.pt:209
+#: templates/review_content.pt:220
 msgid "send"
 msgstr "Send"
 
