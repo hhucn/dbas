@@ -497,7 +497,7 @@ def __bend_objects_of_duplicate_review(db_review, db_user):
             logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Reset conclusion')
             argument.conclusion_uid = db_review.original_statement_uid
             DBDiscussionSession.add(argument)
-            DBDiscussionSession.add(RevokedDuplicate(author=db_user.uid, in_argument_as_conclusion=argument.uid))
+            DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, author=db_user.uid, in_argument_as_conclusion=argument.uid))
 
         # recalibrate premises
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
