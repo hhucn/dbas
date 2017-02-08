@@ -147,41 +147,57 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :return: [Arguments]
     """
     logger('DBAS.LIB', 'get_all_arguments_by_statement', 'main ' + str(statement_uid))
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(
-        is_disabled=include_disabled,
-        conclusion_uid=statement_uid
-    ).all()
+    if include_disabled:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
+    else:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=False,
+                                                                     conclusion_uid=statement_uid).all()
 
-    premises = DBDiscussionSession.query(Premise).filter_by(
-        is_disabled=include_disabled,
-        statement_uid=statement_uid
-    ).all()
+    if include_disabled:
+        premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid).all()
+    else:
+        premises = DBDiscussionSession.query(Premise).filter_by(
+            is_disabled=False,
+            statement_uid=statement_uid
+        ).all()
 
     return_array = [arg for arg in db_arguments] if db_arguments else []
 
     for premise in premises:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=include_disabled,
-                                                                     premisesgroup_uid=premise.premisesgroup_uid).all()
+        if include_disabled:
+            db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premise.premisesgroup_uid).all()
+        else:
+            db_arguments = DBDiscussionSession.query(Argument).filter_by(
+                is_disabled=False,
+                premisesgroup_uid=premise.premisesgroup_uid).all()
         if db_arguments:
             return_array = return_array + db_arguments
 
     # undercuts
     db_all_undercuts = []
     for arg in return_array:
-        db_undercuts = DBDiscussionSession.query(Argument).filter_by(
-            is_disabled=include_disabled,
-            argument_uid=arg.uid
-        ).all()
+
+        if include_disabled:
+            db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=arg.uid).all()
+        else:
+            db_undercuts = DBDiscussionSession.query(Argument).filter_by(
+                is_disabled=False,
+                argument_uid=arg.uid
+            ).all()
         if db_undercuts:
             db_all_undercuts = db_all_undercuts + db_undercuts
 
     # undercutted undercuts
     db_all_undercutted_undercuts = []
     for arg in db_all_undercuts:
-        db_undercutcuts = DBDiscussionSession.query(Argument).filter_by(
-            is_disabled=include_disabled,
-            argument_uid=arg.uid
-        ).all()
+
+        if include_disabled:
+            db_undercutcuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=arg.uid).all()
+        else:
+            db_undercutcuts = DBDiscussionSession.query(Argument).filter_by(
+                is_disabled=False,
+                argument_uid=arg.uid
+            ).all()
         if db_undercutcuts:
             db_all_undercutted_undercuts = db_all_undercuts + db_undercutcuts
 

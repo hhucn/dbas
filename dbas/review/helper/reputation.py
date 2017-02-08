@@ -34,8 +34,10 @@ rep_reason_first_new_argument = 'rep_reason_first_new_argument'
 rep_reason_new_statement = 'rep_reason_new_statement'
 rep_reason_success_flag = 'rep_reason_success_flag'
 rep_reason_success_edit = 'rep_reason_success_edit'
+rep_reason_success_duplicate = 'rep_reason_success_duplicate'
 rep_reason_bad_flag = 'rep_reason_bad_flag'
 rep_reason_bad_edit = 'rep_reason_bad_edit'
+rep_reason_bad_duplicate = 'rep_reason_bad_duplicate'
 
 
 def get_privilege_list(translator):
@@ -118,6 +120,7 @@ def add_reputation_for(user, reason):
         logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')
         return False, False
 
+    logger('ReputationPointHelper', 'add_reputation_for', 'user ' + str(db_user.uid))
     # special case:
     if '_first_' in reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(

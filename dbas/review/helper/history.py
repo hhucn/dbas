@@ -371,7 +371,9 @@ def __rebend_objects_of_duplicate_review(db_review):
             DBDiscussionSession.add(db_argument)
 
         if element.statement_uid is not None:
-            db_premise = DBDiscussionSession.query(Premise).get(element.statement_uid)
+            db_premise = DBDiscussionSession.query(Premise).filter(and_(
+                Premise.statement_uid == element.statement_uid,
+                Premise.premisesgroup_uid == element.premisesgroup_uid)).first()
             db_premise.statement_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_premise)
 

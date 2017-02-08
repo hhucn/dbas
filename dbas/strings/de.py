@@ -140,6 +140,7 @@ de_lang = {
     _.alreadyFlaggedByOthers: 'Diese Aussage wurde uns schon gemeldet!',
     _.alreadyFlaggedByYou: 'Du hast diese Aussage schon gemeldet!',
     _.alreadyEditProposals: 'Wir konnten nicht alle Vorschläge annehmen, da schon Vorschläge gemacht wurden.',
+    _.alreadyExecuted: 'Da war wohl jemand schneller! Diese Entscheidung ist schon gelaufen.',
     _.breadcrumbsStart: 'Start',
     _.breadcrumbsChoose: 'Mehrere Gründe für',
     _.breadcrumbsJustifyStatement: 'Wieso denken Sie das',

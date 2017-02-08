@@ -2432,7 +2432,7 @@ def review_duplicate_statement(request):
     :return:
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_duplicate_statement', 'def', 'main: ' + str(request.params))
+    logger('review_duplicate_statement', 'def', 'main: ' + str(request.params) + ' ' + str(request.authenticated_userid))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()

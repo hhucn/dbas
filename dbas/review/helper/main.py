@@ -11,7 +11,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
     LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit, LastReviewerDuplicate,\
     ReviewDuplicate, RevokedDuplicate
-from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag
+from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag, \
+    rep_reason_success_duplicate, rep_reason_bad_duplicate, rep_reason_success_edit, rep_reason_bad_edit
 from dbas.helper.query import correct_statement
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -31,7 +32,17 @@ def __add_vote_for(user, review, is_okay, review_type):
     :param review_type:
     :return:
     """
-    logger('review_main_helper', '__add_vote_for', '...')
+    msg = '...'
+    if review_type == LastReviewerDelete:
+        msg = 'LastReviewerDelete'
+    if review_type == LastReviewerEdit:
+        msg = 'LastReviewerEdit'
+    if review_type == LastReviewerOptimization:
+        msg = 'LastReviewerOptimization'
+    if review_type == LastReviewerDuplicate:
+        msg = 'LastReviewerDuplicate'
+
+    logger('review_main_helper', '__add_vote_for', '{}, user {}'.format(msg, user.uid))
     already_voted = DBDiscussionSession.query(review_type).filter(and_(review_type.reviewer_uid == user.uid,
                                                                        review_type.review_uid == review.uid)).first()
     if not already_voted:
@@ -39,6 +50,7 @@ def __add_vote_for(user, review, is_okay, review_type):
         DBDiscussionSession.add(db_new_review)
         DBDiscussionSession.flush()
         transaction.commit()
+        logger('review_main_helper', '__add_vote_for', 'vote added')
     else:
         logger('review_main_helper', '__add_vote_for', 'already voted')
 
@@ -72,10 +84,10 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, appli
     db_review = DBDiscussionSession.query(ReviewDelete).get(review_uid)
     if db_review.is_executed:
         logger('review_main_helper', 'add_review_opinion_for_delete', 'already executed')
-        return ''
+        return _t.get(_.alreadyExecuted)
 
     if not db_user:
-        logger('review_main_helper', 'add_review_opinion_for_delete', 'already executed')
+        logger('review_main_helper', 'add_review_opinion_for_delete', 'no user')
         return _t.get(_.justLookDontTouch)
 
     db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
@@ -139,11 +151,11 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, applicat
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewEdit).get(review_uid)
     if db_review.is_executed:
-        logger('review_main_helper', 'add_review_opinion_for_delete', 'already executed')
-        return ''
+        logger('review_main_helper', 'add_review_opinion_for_edit', 'already executed')
+        return _t.get(_.alreadyExecuted)
 
     if not db_user:
-        logger('review_main_helper', 'add_review_opinion_for_delete', 'already executed')
+        logger('review_main_helper', 'add_review_opinion_for_edit', 'no user')
         return _t.get(_.justLookDontTouch)
 
     db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
@@ -160,20 +172,20 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, applicat
     if reached_max:
         if count_of_dont_edit < count_of_edit:  # accept the edit
             __accept_edit_review(db_review, db_user_created_flag)
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_edit)
         else:  # just close the review
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
         __accept_edit_review(db_review, db_user_created_flag)
-        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_edit)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
-        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
@@ -204,11 +216,11 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewOptimization).get(review_uid)
     if not db_review or db_review.is_executed:
-        logger('review_main_helper', 'add_review_opinion_for_delete', 'not found / already executed')
-        return ''
+        logger('review_main_helper', 'add_review_opinion_for_optimization', 'not found / already executed')
+        return _t.get(_.alreadyExecuted)
 
     if not db_user:
-        logger('review_main_helper', 'add_review_opinion_for_delete', 'no use found')
+        logger('review_main_helper', 'add_review_opinion_for_optimization', 'no use found')
         return _t.get(_.justLookDontTouch)
 
     # add new review
@@ -245,10 +257,10 @@ def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, app
     db_review = DBDiscussionSession.query(ReviewDuplicate).get(review_uid)
     if db_review.is_executed:
         logger('review_main_helper', 'add_review_opinion_for_duplicate', 'already executed')
-        return ''
+        return _t.get(_.alreadyExecuted)
 
     if not db_user:
-        logger('review_main_helper', 'add_review_opinion_for_duplicate', 'already executed')
+        logger('review_main_helper', 'add_review_opinion_for_duplicate', 'no user')
         return _t.get(_.justLookDontTouch)
 
     db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
@@ -264,25 +276,25 @@ def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, app
     reached_max = max(count_of_keep, count_of_reset) >= max_votes
     if reached_max:
         if count_of_reset > count_of_keep:  # disable the flagged part
-            logger('review_main_helper', 'add_review_opinion_for_duplicate', 'max reached / delete for review ' + str(review_uid))
+            logger('review_main_helper', 'add_review_opinion_for_duplicate', 'max reached / bend for review ' + str(review_uid))
             __bend_objects_of_duplicate_review(db_review, db_user)
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_duplicate)
         else:  # just close the review
-            logger('review_main_helper', 'add_review_opinion_for_duplicate', 'max reached / keep for review ' + str(review_uid))
-            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+            logger('review_main_helper', 'add_review_opinion_for_duplicate', 'max reached / forget about review ' + str(review_uid))
+            add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_duplicate)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_reset >= min_difference:  # just close the review
-        logger('review_main_helper', 'add_review_opinion_for_duplicate', 'vote says keep for review ' + str(review_uid))
-        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
+        logger('review_main_helper', 'add_review_opinion_for_duplicate', 'vote says forget about review ' + str(review_uid))
+        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_duplicate)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_reset - count_of_keep >= min_difference:  # disable the flagged part
-        logger('review_main_helper', 'add_review_opinion_for_duplicate', 'vote says delete for review ' + str(review_uid))
+        logger('review_main_helper', 'add_review_opinion_for_duplicate', 'vote says bend for review ' + str(review_uid))
         __bend_objects_of_duplicate_review(db_review, db_user)
-        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
+        add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_duplicate)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
@@ -470,6 +482,7 @@ def __bend_objects_of_duplicate_review(db_review, db_user):
     :param db_user:
     :return:
     """
+    logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Review {} with dupl {} and oem {}'.format(db_review.uid, db_review.duplicate_statement_uid, db_review.original_statement_uid))
     db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
     db_statement.set_disable(True)
     DBDiscussionSession.add(db_statement)
@@ -487,13 +500,16 @@ def __bend_objects_of_duplicate_review(db_review, db_user):
             DBDiscussionSession.add(RevokedDuplicate(author=db_user.uid, in_argument_as_conclusion=argument.uid))
 
         # recalibrate premises
-        db_premises = DBDiscussionSession(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
         for premise in db_premises:
             if premise.statement_uid == db_review.duplicate_statement_uid:
                 logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Reset premise')
                 premise.statement_uid = db_review.original_statement_uid
                 DBDiscussionSession.add(premise)
-                DBDiscussionSession.add(RevokedDuplicate(author=db_user.uid, in_premise_as_statement=premise.uid))
+                DBDiscussionSession.add(RevokedDuplicate(author=db_user.uid,
+                                                         review=db_review.uid,
+                                                         in_premise_as_statement=premise.statement_uid,
+                                                         premise_in_group=premise.premisesgroup_uid))
 
     DBDiscussionSession.flush()
     transaction.commit()
