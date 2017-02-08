@@ -242,7 +242,7 @@ function AjaxMainHandler(){
 	 * @param reason
 	 * @param is_argument
 	 */
-	this.ajaxFlagArgumentOrStatement = function(uid, reason, is_argument){
+	this.ajaxFlagArgumentOrStatement = function(uid, reason, is_argument, extra_uid){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_flag_argument_or_statement',
@@ -250,6 +250,7 @@ function AjaxMainHandler(){
 			data: {
 				uid: uid,
 				reason: reason,
+				extra_uid: extra_uid,
 				is_argument: is_argument
 			},
 			global: false,
@@ -262,9 +263,11 @@ function AjaxMainHandler(){
 			if (parsedData['error'].length != 0){
 				setGlobalErrorHandler(_t(ohsnap), parsedData['error']);
 			} else if (parsedData['info'].length != 0) {
-				setGlobalInfoHandler('Ohh!', parsedData['info'])
+				setGlobalInfoHandler('Ohh!', parsedData['info']);
+				$('#popup-duplicate-statement').modal('hide');
 			} else {
-				setGlobalSuccessHandler('Yeah!', parsedData['success'])
+				setGlobalSuccessHandler('Yeah!', parsedData['success']);
+				$('#popup-duplicate-statement').modal('hide');
 			}
 			
 		}).fail(function ajaxFlagArgumentFail() {

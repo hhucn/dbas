@@ -173,7 +173,7 @@ function PopupHandler() {
 		});
 		popup.find('input').not('#dupl').click(function () {
 			var reason = $(this).attr('value');
-			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
+			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument, null);
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 		});
@@ -296,9 +296,9 @@ function PopupHandler() {
 			if ($(this).data('uid') != 0){
 				selects.find('option:first-child').remove();
 				var btn = $('#popup-flag-statement-accept-btn');
-				btn.removeClass('disabled');
+				btn.off('click').removeClass('disabled');
 				btn.click(function(){
-					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false);
+					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, $(this).data('uid'));
 				});
 			}
 		});
@@ -324,7 +324,7 @@ function PopupHandler() {
 	 */
 	this.setDefaultOfSelectionOfDuplicatePopup = function() {
 		var btn = $('#popup-flag-statement-accept-btn');
-		btn.addClass('disabled').off('click');
+		btn.off('click').addClass('disabled');
 		var selects = $('#popup-duplicate-statement-text-selects');
 		selects.empty();
 		selects.append($('<option>').attr('data-uid', 0).text(_t_discussion(no_data_selected)));

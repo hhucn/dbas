@@ -14,7 +14,7 @@ from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewD
 from dbas.strings.keywords import Keywords as _
 
 
-def flag_element(uid, reason, nickname, is_argument):
+def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
@@ -23,6 +23,7 @@ def flag_element(uid, reason, nickname, is_argument):
     :param reason: String which describes the reason
     :param nickname: Users nickname
     :param is_argument: Boolean
+    :param extra_uid: Uid of the argument/statement, which should be flagged
     :return: success, info, error
     """
 
@@ -63,7 +64,7 @@ def flag_element(uid, reason, nickname, is_argument):
         # and another reason for duplicates
         elif reason == 'duplicate':
             # flagged for the first time
-            __add_duplication_review(statement_uid, db_user.uid)
+            __add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
         return _.thxForFlagText, '', ''
 
@@ -79,17 +80,17 @@ def __get_flag_status(argument_uid, statement_uid, user_uid):
     """
     ret_val = None
 
-    if any((__is_argument_flagged_for_delete(argument_uid, statement_uid),
-            __is_argument_flagged_for_optimization(argument_uid, statement_uid),
-            __is_argument_flagged_for_duplication(statement_uid))):
-        ret_val = 'other'
-        logger('FlagingHelper', '__get_flag_status', 'Already flagged by others')
-
     if any((__is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid),
             __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid),
             __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid))):
-        ret_val = 'user'
         logger('FlagingHelper', '__get_flag_status', 'Already flagged by the user')
+        return 'user'
+
+    if any((__is_argument_flagged_for_delete(argument_uid, statement_uid),
+            __is_argument_flagged_for_optimization(argument_uid, statement_uid),
+            __is_argument_flagged_for_duplication(statement_uid))):
+        logger('FlagingHelper', '__get_flag_status', 'Already flagged by others')
+        return 'other'
 
     return ret_val
 
@@ -175,7 +176,7 @@ def __is_argument_flagged_for_duplication(statement_uid, is_executed=False, is_r
     :return:
     """
     db_review = DBDiscussionSession.query(ReviewDuplicate).filter(
-        and_(ReviewDuplicate.statement_uid == statement_uid,
+        and_(ReviewDuplicate.duplicate_statement_uid == statement_uid,
              ReviewDuplicate.is_executed == is_executed,
              ReviewDuplicate.is_revoked == is_revoked)).all()
     return len(db_review) > 0
@@ -191,7 +192,7 @@ def __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid, is_ex
     :return:
     """
     db_review = DBDiscussionSession.query(ReviewDuplicate).filter(
-        and_(ReviewDuplicate.statement_uid == statement_uid,
+        and_(ReviewDuplicate.duplicate_statement_uid == statement_uid,
              ReviewDuplicate.is_executed == is_executed,
              ReviewDuplicate.detector_uid == user_uid,
              ReviewDuplicate.is_revoked == is_revoked)).all()
@@ -227,14 +228,15 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
     transaction.commit()
 
 
-def __add_duplication_review(statement_uid, user_uid):
+def __add_duplication_review(duplicate_statement_uid, original_statement_uid, user_uid):
     """
 
     :param statement_uid:
+    :param extra_uid:
     :param user_uid:
     :return:
     """
-    review_duplication = ReviewDuplicate(detector=user_uid, statement=statement_uid)
+    review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid, original_statement=original_statement_uid)
     DBDiscussionSession.add(review_duplication)
     DBDiscussionSession.flush()
     transaction.commit()

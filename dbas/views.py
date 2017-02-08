@@ -2338,13 +2338,14 @@ def flag_argument_or_statement(request):
     try:
         uid = request.params['uid']
         reason = request.params['reason']
+        extra_uid = request.params['extra_uid'] if 'extra_uid' in request.params else None
         is_argument = True if request.params['is_argument'] == 'true' else False
         nickname = request.authenticated_userid
 
         if not is_integer(uid):
             logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
         else:
-            success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument)
+            success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument, extra_uid)
             return_dict = {
                 'success': '' if isinstance(success, str) else _t.get(success),
                 'info': '' if isinstance(info, str) else _t.get(info),

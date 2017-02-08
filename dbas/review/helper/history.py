@@ -142,7 +142,9 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     for review in db_reviews:
         length = 35
         # getting text
-        if review.statement_uid is None:
+        if table == 'duplicates':
+            full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
+        elif review.statement_uid is None:
             full_text = get_text_for_argument_uid(review.argument_uid)
         else:
             full_text = get_text_for_statement_uid(review.statement_uid)
@@ -188,8 +190,8 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
                 entry['argument_shorttext'] = short_text.replace(short_text, (db_edit_value.content[0:length] + '...') if len(full_text) > length else db_edit_value.content)
                 entry['argument_fulltext'] = db_edit_value.content
         if table == 'duplicates':
-            text = get_text_for_statement_uid(review.statement_uid)
-            entry['argument_oem_shorttext'] = text[0:length]
+            text = get_text_for_statement_uid(review.original_statement_uid)
+            entry['argument_oem_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
             entry['argument_oem_fulltext'] = text
         entry['pro'] = pro_list
         entry['con'] = con_list

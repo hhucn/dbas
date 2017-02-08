@@ -15,7 +15,7 @@ from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsS
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
-    ReputationHistory, ReviewEdit, ReviewEditValue
+    ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate
 from dbas.database.news_model import News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
@@ -1744,8 +1744,10 @@ def setup_review_database(session):
     review13 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review14 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review15 = ReviewDelete(detector=2, argument=1, reason=reason1.uid, is_executed=True)
+    review17 = ReviewDuplicate(detector=random.randint(int_start, int_end), duplicate_statement=random.randint(int_start, int_end), original_statement=random.randint(int_start, int_end))
+    review18 = ReviewDuplicate(detector=random.randint(int_start, int_end), duplicate_statement=random.randint(int_start, int_end), original_statement=random.randint(int_start, int_end), is_executed=True)
     session.add_all([review01, review02, review03, review04, review05, review06, review07, review08, review09, review10,
-                     review11, review12, review13, review14, review15, review16])
+                     review11, review12, review13, review14, review15, review16, review17, review18])
     session.flush()
 
     reviewer01 = LastReviewerOptimization(random.randint(int_start, int_end), review01.uid, True)
@@ -1772,9 +1774,11 @@ def setup_review_database(session):
     reviewer22 = LastReviewerDelete(random.randint(int_start, int_end), review13.uid, True)
     reviewer23 = LastReviewerDelete(random.randint(int_start, int_end), review13.uid, True)
     reviewer24 = LastReviewerDelete(random.randint(int_start, int_end), review13.uid, True)
+    reviewer25 = LastReviewerDuplicate(random.randint(int_start, int_end), review17.uid, True)
     session.add_all([reviewer01, reviewer02, reviewer03, reviewer04, reviewer05, reviewer06, reviewer07, reviewer08,
                      reviewer09, reviewer10, reviewer11, reviewer12, reviewer13, reviewer14, reviewer15, reviewer16,
-                     reviewer17, reviewer18, reviewer19, reviewer20, reviewer21, reviewer22, reviewer23, reviewer24])
+                     reviewer17, reviewer18, reviewer19, reviewer20, reviewer21, reviewer22, reviewer23, reviewer24,
+                     reviewer25])
     session.flush()
 
     reputation01 = session.query(ReputationReason).filter_by(reason='rep_reason_first_position').first()
@@ -1814,9 +1818,12 @@ def setup_review_database(session):
     history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation07.uid, timestamp=today)
     history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation10.uid, timestamp=today)
     history17 = ReputationHistory(reputator=tobias.uid, reputation=reputation08.uid, timestamp=today)
+    history18 = ReputationHistory(reputator=tobias.uid, reputation=reputation11.uid, timestamp=today)
+    history19 = ReputationHistory(reputator=tobias.uid, reputation=reputation12.uid, timestamp=today)
 
     session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09,
-                     history10, history11, history12, history13, history14, history15, history16, history17])
+                     history10, history11, history12, history13, history14, history15, history16, history17, history18,
+                     history19])
 
     session.add(ReviewEdit(detector=christian.uid, statement=2))
     session.flush()

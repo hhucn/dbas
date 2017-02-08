@@ -46,13 +46,13 @@ class TestReviewFlagHelper(unittest.TestCase):
         success, info, error = rf_helper.flag_element(4, 'optimization', self.christian, True)
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
 
-        success, info, error = rf_helper.flag_element(5, 'duplicate', self.tobias, False)
+        success, info, error = rf_helper.flag_element(5, 'duplicate', self.tobias, False, 1)
         self.__assert_equal_text([[success, _.thxForFlagText], [info, ''], [error, '']])
 
-        success, info, error = rf_helper.flag_element(5, 'duplicate', self.tobias, False)
+        success, info, error = rf_helper.flag_element(5, 'duplicate', self.tobias, False, 1)
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByYou], [error, '']])
 
-        success, info, error = rf_helper.flag_element(5, 'duplicate', self.christian, False)
+        success, info, error = rf_helper.flag_element(5, 'duplicate', self.christian, False, 1)
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
 
         tobias = DBDiscussionSession.query(User).filter_by(nickname=self.tobias).first()
@@ -61,7 +61,7 @@ class TestReviewFlagHelper(unittest.TestCase):
         DBDiscussionSession.flush()
         transaction.commit()
 
-        DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=tobias.uid, statement_uid=5).delete()
+        DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=tobias.uid, duplicate_statement_uid=5).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 

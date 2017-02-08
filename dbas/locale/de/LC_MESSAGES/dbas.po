@@ -617,7 +617,7 @@ msgstr "Argument"
 #. Default: Edit
 #: templates/review_history.pt:41
 msgid "edit"
-msgstr "Ändern"
+msgstr "Änderung"
 
 #. Default: Reason
 #: templates/review_history.pt:42

@@ -925,15 +925,17 @@ class ReviewDuplicate(DiscussionBase):
     __tablename__ = 'review_duplicates'
     uid = Column(Integer, primary_key=True)
     detector_uid = Column(Integer, ForeignKey('users.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    duplicate_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    original_statement_uid = Column(Integer, ForeignKey('statements.uid'))
     timestamp = Column(ArrowType, default=get_now())
     is_executed = Column(Boolean, nullable=False, default=False)
     is_revoked = Column(Boolean, nullable=False, default=False)
 
     detectors = relationship('User', foreign_keys=[detector_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
+    duplicate_statement = relationship('Statement', foreign_keys=[duplicate_statement_uid])
+    original_statement = relationship('Statement', foreign_keys=[original_statement_uid])
 
-    def __init__(self, detector, statement=None, is_executed=False, is_revoked=False):
+    def __init__(self, detector, duplicate_statement=None, original_statement=None, is_executed=False, is_revoked=False):
         """
 
         :param detector:
@@ -941,7 +943,8 @@ class ReviewDuplicate(DiscussionBase):
         :param is_executed:
         """
         self.detector_uid = detector
-        self.statement_uid = statement
+        self.duplicate_statement_uid = duplicate_statement
+        self.original_statement_uid = original_statement
         self.timestamp = get_now()
         self.is_executed = is_executed
         self.is_revoked = is_revoked

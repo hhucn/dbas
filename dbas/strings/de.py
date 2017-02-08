@@ -137,6 +137,7 @@ de_lang = {
     _.agreeToThis2: 'stimmen der Aussage zu',
     _.attitudeFor: 'Einstellungen zu',
     _.alreadyFlaggedByOthers: 'Diese Aussage wurde uns schon gemeldet!',
+    _.alreadyFlaggedByYou: 'Du hast diese Aussage schon gemeldet!',
     _.alreadyEditProposals: 'Wir konnten nicht alle Vorschläge annehmen, da schon Vorschläge gemacht wurden.',
     _.breadcrumbsStart: 'Start',
     _.breadcrumbsChoose: 'Mehrere Gründe für',
