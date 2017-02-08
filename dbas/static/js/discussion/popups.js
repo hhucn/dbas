@@ -287,24 +287,25 @@ function PopupHandler() {
 		var input = $('#popup-duplicate-statement-text-search');
 		input.on('keyup', function(){
 			var escapedText = escapeHtml($(this).val());
-			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_add_reason);
+			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_add_reason, text);
 		});
 		
 		// dropdown
 		var selects = $('#popup-duplicate-statement-text-selects');
 		selects.on('change', function() {
-			if ($(this).data('uid') != 0){
+			var uid = $(this).data('uid');
+			if (uid != 0){
 				selects.find('option:first-child').remove();
 				var btn = $('#popup-flag-statement-accept-btn');
 				btn.off('click').removeClass('disabled');
 				btn.click(function(){
-					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, $(this).data('uid'));
+					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, uid);
 				});
 			}
 		});
 		
 		// initial start for fuzzy search
-		new AjaxDiscussionHandler().fuzzySearchForDuplicate('', fuzzy_add_reason);
+		new AjaxDiscussionHandler().fuzzySearchForDuplicate('', fuzzy_add_reason, text);
 	};
 	
 	/**

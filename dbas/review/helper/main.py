@@ -241,6 +241,7 @@ def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, app
     logger('X', 'X', 'X')
     logger('X', 'X', 'X')
     logger('X', 'X', 'X')
+    return 'COMING SOON'
 
 
 def __keep_the_element(db_review, application_url, _t):

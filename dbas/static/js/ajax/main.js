@@ -241,9 +241,14 @@ function AjaxMainHandler(){
 	 * @param uid
 	 * @param reason
 	 * @param is_argument
+	 * @param extra_uid
 	 */
 	this.ajaxFlagArgumentOrStatement = function(uid, reason, is_argument, extra_uid){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		console.log('uid: ' + uid);
+		console.log('reason: ' + reason);
+		console.log('extra_uid: ' + extra_uid);
+		console.log('is_argument: ' + is_argument);
 		$.ajax({
 			url: 'ajax_flag_argument_or_statement',
 			method: 'POST',

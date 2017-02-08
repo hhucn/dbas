@@ -276,16 +276,23 @@ function AjaxDiscussionHandler() {
 
 	/***
 	 * Ajax request for the fuzzy search
+	 *
 	 * @param value
 	 * @param type
+	 * @param oem_text
 	 */
-	this.fuzzySearchForDuplicate = function (value, type) {
+	this.fuzzySearchForDuplicate = function (value, type, oem_text) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_fuzzy_search',
 			method: 'GET',
 			dataType: 'json',
-			data: { value: value, type:type, extra: 'all', issue: getCurrentIssueId() },
+			data: {
+				value: value,
+				type:type,
+				extra: JSON.stringify(['all', oem_text]),
+				issue: getCurrentIssueId()
+			},
 			async: true,
 			global: false,
 			headers: {

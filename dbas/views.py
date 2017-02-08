@@ -2422,6 +2422,39 @@ def review_edit_argument(request):
     return json.dumps(return_dict)
 
 
+# ajax - for feedback on duplicated statements
+@view_config(route_name='ajax_review_duplicate_statement', renderer='json')
+def review_duplicate_statement(request):
+    """
+
+    :return:
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('review_duplicate_statement', 'def', 'main: ' + str(request.params))
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+    return_dict = dict()
+
+    try:
+        l = request.params['fuck_it_up']
+        is_edit_okay = True if str(request.params['is_edit_okay']) == 'true' else False
+        review_uid = request.params['review_uid']
+        nickname = request.authenticated_userid
+        if not is_integer(review_uid):
+            logger('review_duplicate_statement', 'error', str(review_uid) + ' is no int')
+            error = _t.get(_.internalKeyError)
+        else:
+            error = review_main_helper.add_review_opinion_for_duplicate(nickname, is_edit_okay, review_uid, _t, request.application_url)
+            if len(error) == 0:
+                send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
+    except KeyError as e:
+        logger('review_duplicate_statement', 'error', repr(e))
+        error = _t.get(_.internalKeyError)
+
+    return_dict['error'] = error
+    return json.dumps(return_dict)
+
+
 # ajax - for feedback on optimization arguments
 @view_config(route_name='ajax_review_optimization_argument', renderer='json')
 def review_optimization_argument(request):
