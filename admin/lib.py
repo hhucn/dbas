@@ -293,7 +293,7 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         text, l = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
         tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(l))
 
-    elif column == 'conclusion_uid':
+    elif column in ['conclusion_uid', 'duplicate_statement_uid', 'original_statement_uid']:
         text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
         tmp.append(str(attribute) + ' - ' + str(text))
 

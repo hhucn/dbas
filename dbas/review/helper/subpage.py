@@ -360,7 +360,7 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
-                                                                                                'already_seen_edit',
+                                                                                                'already_seen_duplicate',
                                                                                                 db_user,
                                                                                                 ReviewDuplicate,
                                                                                                 LastReviewerDuplicate)
@@ -389,13 +389,13 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
     issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseDuplicate)
 
-    db_duplicate_of = DBDiscussionSession.query(Statement).get(rnd_review.original_statement_uid)
-    duplicate_of_text = get_text_for_statement_uid(db_duplicate_of)
+    duplicate_of_text = get_text_for_statement_uid(rnd_review.original_statement_uid)
+    logger('X', 'X', duplicate_of_text)
 
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
 
     already_seen.append(rnd_review.uid)
-    request.session['already_seen_edit'] = already_seen
+    request.session['already_seen_duplicate'] = already_seen
 
     return {'stats': stats,
             'text': text,

@@ -17,10 +17,10 @@
                     <div class="col-md-12">
                         <ul class="breadcrumb">
                             <li><a href="${request.application_url}/review" i18n:translate="review">Review</a></li>
-                            <li tal:condition="subpage.button_set.is_delete" class="active" i18n:attributes="deletes">Deletes</li>
-                            <li tal:condition="subpage.button_set.is_optimize" class="active" i18n:attributes="optimizations">Optimizations</li>
-                            <li tal:condition="subpage.button_set.is_edit" class="active" i18n:attributes="edits">Edits</li>
-                            <li tal:condition="subpage.button_set.is_duplicate" class="active" i18n:attributes="duplicates">Duplicates</li>
+                            <li tal:condition="subpage.button_set.is_delete" class="active" i18n:translate="deletes">Deletes</li>
+                            <li tal:condition="subpage.button_set.is_optimize" class="active" i18n:translate="optimizations">Optimizations</li>
+                            <li tal:condition="subpage.button_set.is_edit" class="active" i18n:translate="edits">Edits</li>
+                            <li tal:condition="subpage.button_set.is_duplicate" class="active" i18n:translate="duplicates">Duplicates</li>
                         </ul>
                     </div>
                 </div>
@@ -99,6 +99,7 @@
 
                 <div class="row" style="margin-bottom: 1em;">
                     <div class="col-md-offset-1 col-md-6">
+
                         <div class="well well-sm center" style="text-align: justify; margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
                             <div style="margin-bottom: 1em;">
                                 <span i18n:translate="in_the_discussion_about">In the discussion about</span>
@@ -123,7 +124,8 @@
                             <div style="margin-bottom: 1em;" tal:condition="not:subpage.button_set.is_edit">
                                 <span i18n:translate="in_the_discussion_about">In the discussion about</span>
                                 <i>${structure:subpage.elements.reviewed_argument.issue}</i>
-                                <span i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
+                                <span tal:condition="not:subpage.button_set.is_duplicate" i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
+                                <span tal:condition="subpage.button_set.is_duplicate" i18n:translate="following_statement_was_flagged">following statement was flagged.</span>
                             </div>
                             <div style="margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
                                 <span i18n:translate="this_is_original_version">This is the original version</span>:
@@ -141,6 +143,14 @@
                                 <span class="lead" id="reviewed-argument-text">${structure:context}</span>
                                 <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                             </div>
+                        </div>
+
+                        <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_duplicate">
+                            <span i18n:translate="this_is_original_statements">This is the original statement:</span>
+                            <br>
+                            <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                            <span class="lead" id="reviewed-argument-text">${subpage.elements.reviewed_argument.duplicate_of}</span>
+                            <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                         </div>
 
                     </div>

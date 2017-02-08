@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-08 12:19+0100\n"
+"POT-Creation-Date: 2017-02-08 12:56+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -626,7 +626,7 @@ msgstr "Grund"
 
 #. Default: Original
 #: templates/review_history.pt:43 templates/review_history.pt:44
-#: templates/review_content.pt:204
+#: templates/review_content.pt:214
 msgid "original"
 msgstr "Original"
 
@@ -1571,6 +1571,26 @@ msgstr "Aktion"
 msgid "no_arguments_to_review"
 msgstr "Keine Argumente zum begutachten!"
 
+#. Default: Deletes
+#: templates/review_content.pt:20
+msgid "deletes"
+msgstr "Löschen"
+
+#. Default: Optimizations
+#: templates/review_content.pt:21
+msgid "optimizations"
+msgstr "Optimieren"
+
+#. Default: Edits
+#: templates/review_content.pt:22
+msgid "edits"
+msgstr "Änderung"
+
+#. Default: Duplicates
+#: templates/review_content.pt:23
+msgid "duplicates"
+msgstr "Duplikate"
+
 #. Default: (more)
 #: templates/review_content.pt:31
 msgid "wrapped_more"
@@ -1728,87 +1748,97 @@ msgid "duplicate_is_unique"
 msgstr ", wenn es kein Duplikat ist."
 
 #. Default: In the discussion about
-#: templates/review_content.pt:104 templates/review_content.pt:124
+#: templates/review_content.pt:105 templates/review_content.pt:125
 msgid "in_the_discussion_about"
 msgstr "In der Diskussion über"
 
 #. Default: following argument was corrected.
-#: templates/review_content.pt:106
+#: templates/review_content.pt:107
 msgid "following_argument_was_corrected"
 msgstr "wurde folgendes Argument korrigiert:"
 
 #. Default: This are the edits:
-#: templates/review_content.pt:115
+#: templates/review_content.pt:116
 msgid "this_are_the_edit"
 msgstr "Dies sind die Änderungen:"
 
 #. Default: following argument was flagged.
-#: templates/review_content.pt:126
+#: templates/review_content.pt:127
 msgid "following_argument_was_flagged"
 msgstr "wurde folgende/s Aussage/Argument markiert:"
 
+#. Default: following statement was flagged.
+#: templates/review_content.pt:128
+msgid "following_statement_was_flagged"
+msgstr "wurde folgende Aussage markiert:"
+
 #. Default: This is the original version
-#: templates/review_content.pt:129
+#: templates/review_content.pt:131
 msgid "this_is_original_version"
 msgstr "Dies ist die ursprüngliche Version"
 
 #. Default: Context, where the statement is used:
-#: templates/review_content.pt:138
+#: templates/review_content.pt:140
 msgid "context_where_statement_is_used"
 msgstr "Kontext, indem die Aussage verwendet wird:"
 
+#. Default: This is the original statement:
+#: templates/review_content.pt:149
+msgid "this_is_original_statements"
+msgstr "Dies ist die ursprüngliche Version:"
+
 #. Default: Reported
-#: templates/review_content.pt:151
+#: templates/review_content.pt:161
 msgid "reported"
-msgstr "Gemeldet am"
+msgstr "Gemeldet"
 
 #. Default: Reported by
-#: templates/review_content.pt:155
+#: templates/review_content.pt:165
 msgid "reported_by"
-msgstr "Gemeldet von"
+msgstr "Von"
 
 #. Default: Viewed
-#: templates/review_content.pt:165
+#: templates/review_content.pt:175
 msgid "viewed"
 msgstr "Gesehen von"
 
 #. Default: Attacks
-#: templates/review_content.pt:169
+#: templates/review_content.pt:179
 msgid "attacks"
 msgstr "Attackiert von"
 
 #. Default: Supports
-#: templates/review_content.pt:173
+#: templates/review_content.pt:183
 msgid "supports"
 msgstr "Unterstützt von"
 
 #. Default: Request lock
-#: templates/review_content.pt:193
+#: templates/review_content.pt:203
 msgid "request_lock"
 msgstr "Sperrung anfragen"
 
 #. Default: This argument is locked for your edit. You have
-#: templates/review_content.pt:196
+#: templates/review_content.pt:206
 msgid "argument_is_locked"
 msgstr "Dieses Argument ist für Sie gesperrt. Sie haben"
 
 #. Default: minutes
-#: templates/review_content.pt:197
+#: templates/review_content.pt:207
 msgid "minutes"
 msgstr "Minuten"
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review_content.pt:198
+#: templates/review_content.pt:208
 msgid "please_make_your_edits"
 msgstr "Bitte geben Sie Änderungen in Grammatik/Rechschreibung hier an:"
 
 #. Default: Your correcture
-#: templates/review_content.pt:205
+#: templates/review_content.pt:215
 msgid "your correcture"
 msgstr "Ihre Änderung"
 
 #. Default: Send
-#: templates/review_content.pt:220
+#: templates/review_content.pt:230
 msgid "send"
 msgstr "Änderungen schicken"
 
