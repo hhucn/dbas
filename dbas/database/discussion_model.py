@@ -1158,6 +1158,7 @@ class ReviewCanceled(DiscussionBase):
     review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'), nullable=True)
     review_delete_uid = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
     review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
+    review_duplicate_uid = Column(Integer, ForeignKey('review_duplicates.uid'), nullable=True)
     was_ongoing = Column(Boolean)
     timestamp = Column(ArrowType, default=get_now())
 
@@ -1165,8 +1166,9 @@ class ReviewCanceled(DiscussionBase):
     edits = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
     deletes = relationship('ReviewDelete', foreign_keys=[review_delete_uid])
     optimizations = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
+    duplicates = relationship('ReviewDuplicate', foreign_keys=[review_duplicate_uid])
 
-    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, was_ongoing=False):
+    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, review_duplicates=None, was_ongoing=False):
         """
 
         :param author:
@@ -1178,6 +1180,7 @@ class ReviewCanceled(DiscussionBase):
         self.review_edit_uid = review_edit
         self.review_delete_uid = review_delete
         self.review_optimization_uid = review_optimization
+        self.review_duplicate_uid = review_duplicates
         self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 

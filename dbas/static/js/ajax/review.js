@@ -125,6 +125,10 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.undoReview = function(queue, uid){
+		if (queue == 'duplicates'){
+			alert('TODO AJAX 2');
+			return 0;
+		}
 		
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
@@ -147,7 +151,7 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.cancelReview = function(queue, uid){
-		console.log(queue);
+
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_cancel_review',

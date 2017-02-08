@@ -320,6 +320,12 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_edit=uid, was_ongoing=True))
 
+    elif queue == 'duplicates':
+        DBDiscussionSession.query(ReviewDuplicate).get(uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
+        success = _t.get(_.dataRemoved)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicates=uid, was_ongoing=True))
+
     else:
         error = _t.get(_.internalKeyError)
 

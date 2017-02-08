@@ -21,10 +21,6 @@ function ReviewHistory(){
 	 * @param revoked_argument
 	 */
 	this.showUndoPopup = function(queue, id, revoked_argument){
-		if (queue == 'duplicates'){
-			alert('TODO AJAX 2');
-			return 0;
-		}
 		var span = '<span>' + _t(sureToDeleteReview) + '</span>';
 		var blockquote = '<blockquote><p>' + revoked_argument + '</p><small>' + _t(revokedArgument) + '</small>';
 		var icon = '<i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>';
