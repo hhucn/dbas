@@ -293,13 +293,13 @@ function PopupHandler() {
 		// dropdown
 		var selects = $('#popup-duplicate-statement-text-selects');
 		selects.on('change', function() {
-			var uid = $(this).data('uid');
-			if (uid != 0){
+			var oem_uid = $(this).find("option:selected").data('uid');
+			if (oem_uid != 0){
 				selects.find('option:first-child').remove();
 				var btn = $('#popup-flag-statement-accept-btn');
 				btn.off('click').removeClass('disabled');
 				btn.click(function(){
-					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, uid);
+					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, oem_uid);
 				});
 			}
 		});

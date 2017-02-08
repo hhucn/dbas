@@ -567,9 +567,6 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertTrue(len(response['info']) != 0)
         self.assertEqual(db_canceled1, db_canceled2)
 
-    # TODO cancel duplicate
-    # TODO revoke duplicate
-
     def test_review_lock(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
@@ -715,3 +712,62 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertTrue(len(response['error']) != 0)
         self.assertFalse(response['is_deleted'])
         self.assertEqual(db_content1, db_content2)
+
+    def test_duplicate_statement_review(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+
+        from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement
+        from dbas.views import flag_argument_or_statement as ajax
+        argument_uid = get_all_arguments_by_statement(5)[0].uid
+
+        db_review1 = len(DBDiscussionSession.query(ReviewDuplicate).all())
+        oem_text = get_text_for_argument_uid(argument_uid)
+        request = testing.DummyRequest(params={
+            'uid': 5,  # 'cats are very independent
+            'reason': 'duplicate',
+            'extra_uid': 1,  # Cats are fucking stupid and bloody fuzzy critters!,
+            'is_argument': 'false'
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review2 = len(DBDiscussionSession.query(ReviewDuplicate).all())
+        self.assertIsNotNone(response)
+        self.assertEqual(response['error'], '')
+        self.assertEqual(response['info'], '')
+        self.assertGreater(len(response['success']), 0)
+        self.assertLess(db_review1, db_review2)
+
+        db_review = DBDiscussionSession.query(ReviewDuplicate).filter_by(duplicate_statement_uid=5, original_statement_uid=1).first()
+
+        # vote for duplicate
+        from dbas.views import review_duplicate_statement as ajax
+        for name in ['Marga', 'Emmi', 'Rupert']:
+            self.config.testing_securitypolicy(userid=name, permissive=True)
+            db_review1 = len(DBDiscussionSession.query(LastReviewerDuplicate).all())
+            request = testing.DummyRequest(params={
+                'is_duplicate': 'true',
+                'review_uid': db_review.uid
+            }, matchdict={})
+            response = json.loads(ajax(request))
+            db_review2 = len(DBDiscussionSession.query(LastReviewerDuplicate).all())
+            self.assertIsNotNone(response)
+            self.assertEqual(len(response['error']), 0)
+            self.assertLess(db_review1, db_review2)
+
+        new_text = get_text_for_argument_uid(argument_uid)
+        self.assertNotEqual(oem_text, new_text)
+        self.assertTrue('fucking' in new_text)
+
+        # revoke the decision
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        from dbas.views import undo_review as ajax
+        request = testing.DummyRequest(params={
+            'uid': db_review.uid,
+            'queue': 'duplicates',
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertGreater(len(response['success']), 0)
+        self.assertEqual(len(response['error']), 0)
+
+        new_oem_text = get_text_for_argument_uid(argument_uid)
+        self.assertEqual(oem_text, new_oem_text)
+        self.assertFalse('fucking' in new_oem_text)

@@ -231,8 +231,8 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
 def __add_duplication_review(duplicate_statement_uid, original_statement_uid, user_uid):
     """
 
-    :param statement_uid:
-    :param extra_uid:
+    :param duplicate_statement_uid:
+    :param original_statement_uid:
     :param user_uid:
     :return:
     """

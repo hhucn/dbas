@@ -1824,6 +1824,13 @@ def setup_review_database(session):
     history18 = ReputationHistory(reputator=tobias.uid, reputation=reputation11.uid, timestamp=today)
     history19 = ReputationHistory(reputator=tobias.uid, reputation=reputation12.uid, timestamp=today)
 
+    for name in ['Marga', 'Emmi', 'Rupert', 'Hanne']:
+        db_user = session.query(User).filter_by(nickname=name).first()
+        history1 = ReputationHistory(reputator=db_user.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
+        history2 = ReputationHistory(reputator=db_user.uid, reputation=reputation02.uid, timestamp=yesterday)
+        history3 = ReputationHistory(reputator=db_user.uid, reputation=reputation03.uid, timestamp=today)
+        session.add_all([history1, history2, history3])
+
     session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09,
                      history10, history11, history12, history13, history14, history15, history16, history17, history18,
                      history19])

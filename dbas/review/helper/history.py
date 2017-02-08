@@ -173,6 +173,12 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
         pro_list = [__get_user_dict_for_review(pro.reviewer_uid, main_page) for pro in pro_votes]
         con_list = [__get_user_dict_for_review(con.reviewer_uid, main_page) for con in con_votes]
 
+        if table == 'duplicates':
+            # switch it, because contra is: it should not be there!
+            tmp_list = pro_list
+            pro_list = con_list
+            con_list = tmp_list
+
         # and build up some dict
         entry = dict()
         entry['entry_id'] = review.uid
@@ -284,6 +290,8 @@ def revoke_old_decision(queue, uid, lang, nickname):
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid))
         __rebend_objects_of_duplicate_review(db_review)
 
+        success = _t.get(_.dataRemoved)
+
     else:
         error = _t.get(_.internalKeyError)
 
@@ -367,7 +375,7 @@ def __rebend_objects_of_duplicate_review(db_review):
     for element in db_revoked_elements:
         if element.argument_uid is not None:
             db_argument = DBDiscussionSession.query(Argument).get(element.argument_uid)
-            db_argument.conclusion_uid = ReviewDuplicate.duplicate_statement_uid
+            db_argument.conclusion_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_argument)
 
         if element.statement_uid is not None:
