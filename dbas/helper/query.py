@@ -646,7 +646,7 @@ def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_u
     if not new_argument:
         new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
                                 conclusion=conclusion_uid, issue=issue)
-        new_argument.conclusions_argument(argument_uid)
+        new_argument.set_conclusions_argument(argument_uid)
 
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()

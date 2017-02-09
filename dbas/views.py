@@ -21,7 +21,7 @@ import requests
 import transaction
 from subprocess import check_output, CalledProcessError
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, ReviewDeleteReason, sql_timestamp_pretty_print
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, sql_timestamp_pretty_print
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
@@ -1009,6 +1009,8 @@ def review_content(request):
         title = _tn.get(_.queueOptimization)
     if subpage_name == 'edits':
         title = _tn.get(_.queueEdit)
+    if subpage_name == 'duplicates':
+        title = _tn.get(_.queueDuplicates)
 
     return {
         'layout': base_layout(),
@@ -2333,32 +2335,26 @@ def flag_argument_or_statement(request):
     logger('flag_argument_or_statement', 'def', 'main: ' + str(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
-    return_dict = {'error': _t.get(_.internalError)}
+    return_dict = {'error': _t.get(_.internalError), 'info': '', 'success': ''}
 
     try:
         uid = request.params['uid']
         reason = request.params['reason']
+        extra_uid = request.params['extra_uid'] if 'extra_uid' in request.params else None
         is_argument = True if request.params['is_argument'] == 'true' else False
         nickname = request.authenticated_userid
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        if not db_user:
-            return_dict = {'error': _t.get(_.noRights)}
-        else:
-            db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
 
-            if not is_integer(uid):
-                logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
-            elif db_reason is None and reason != 'optimization':
-                logger('flag_argument_or_statement', 'def', 'invalid reason', error=True)
-            else:
-                success, info, error = review_flag_helper.flag_argument(uid, reason, db_user, is_argument)
-                return_dict = {
-                    'success': '' if isinstance(success, str) else _t.get(success),
-                    'info': '' if isinstance(info, str) else _t.get(info),
-                    'error': '' if isinstance(error, str) else _t.get(error)
-                }
+        if not is_integer(uid):
+            logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
+        else:
+            success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument, extra_uid)
+            return_dict = {
+                'success': '' if isinstance(success, str) else _t.get(success),
+                'info': '' if isinstance(info, str) else _t.get(info),
+                'error': '' if isinstance(error, str) else _t.get(error)
+            }
     except KeyError as e:
-        logger('flag_argument', 'error', repr(e))
+        logger('flag_element', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
 
     return json.dumps(return_dict)
@@ -2422,6 +2418,38 @@ def review_edit_argument(request):
                 send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
     except KeyError as e:
         logger('review_delete_argument', 'error', repr(e))
+        error = _t.get(_.internalKeyError)
+
+    return_dict['error'] = error
+    return json.dumps(return_dict)
+
+
+# ajax - for feedback on duplicated statements
+@view_config(route_name='ajax_review_duplicate_statement', renderer='json')
+def review_duplicate_statement(request):
+    """
+
+    :return:
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('review_duplicate_statement', 'def', 'main: ' + str(request.params) + ' ' + str(request.authenticated_userid))
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+    return_dict = dict()
+
+    try:
+        is_duplicate = True if str(request.params['is_duplicate']) == 'true' else False
+        review_uid = request.params['review_uid']
+        nickname = request.authenticated_userid
+        if not is_integer(review_uid):
+            logger('review_duplicate_statement', 'error', str(review_uid) + ' is no int')
+            error = _t.get(_.internalKeyError)
+        else:
+            error = review_main_helper.add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, request.application_url)
+            if len(error) == 0:
+                send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
+    except KeyError as e:
+        logger('review_duplicate_statement', 'error', repr(e))
         error = _t.get(_.internalKeyError)
 
     return_dict['error'] = error

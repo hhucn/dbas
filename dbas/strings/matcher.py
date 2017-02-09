@@ -5,6 +5,7 @@ Provides methods for comparing strings.
 """
 
 import difflib
+import json
 from itertools import islice
 
 from collections import OrderedDict
@@ -17,6 +18,7 @@ from dbas.lib import get_public_profile_picture
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.views import get_nickname
 from dbas.strings.keywords import Keywords as _
+from dbas.query_wrapper import get_not_disabled_statement_as_query
 
 list_length = 5
 max_count_zeros = 5
@@ -48,7 +50,18 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, 
     elif mode == '2':  # start premise
         return_dict['distance_name'], return_dict['values'] = get_strings_for_start(value, issue, False)
     elif mode == '3':  # adding reasons
-        return_dict['distance_name'], return_dict['values'] = get_strings_for_reasons(value, issue)
+        global mechanism
+        try:
+            extra = json.loads(extra)
+        except TypeError:
+            extra = ['', '']
+        if isinstance(extra, list):
+            mechanism = 'SequenceMatcher'
+        else:
+            extra = ['', '']
+        count = 1000 if str(extra[0]) == 'all' else list_length
+        return_dict['distance_name'], return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
+        mechanism = 'Levensthein'
     elif mode == '4':  # getting text
         return_dict = get_strings_for_search(value)
     elif mode == '5':  # getting public nicknames
@@ -69,8 +82,8 @@ def get_strings_for_start(value, issue, is_startpoint):
     :param is_startpoint: boolean
     :return: dict()
     """
-    db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.is_startpoint == is_startpoint,
-                                                                     Statement.issue_uid == issue)).all()
+    db_statements = get_not_disabled_statement_as_query().filter(and_(Statement.is_startpoint == is_startpoint,
+                                                                      Statement.issue_uid == issue)).all()
     return_array = []
     index = 1
     for stat in db_statements:
@@ -109,31 +122,30 @@ def get_strings_for_edits(value, statement_uid):
     return mechanism, return_array[:list_length]
 
 
-def get_strings_for_reasons(value, issue):
+def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
     """
     Checks different textversion-strings for a match with given value
 
     :param value: string
     :param issue: int
+    :param issue: count
     :return: dict()
     """
-    db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
+    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
     return_array = []
 
-    index = 1
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
-        if value.lower() in db_tv.content.lower():
+        if value.lower() in db_tv.content.lower() and db_tv.content.lower() != oem_value.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             return_array.append(rd)
-            index += 1
 
     return_array = __sort_array(return_array)
 
     # logger('fuzzy_string_matcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
     #        ', dictionary length: ' + str(len(return_array)), debug=True)
 
-    return mechanism, return_array[:list_length]
+    return mechanism, return_array[:count]
 
 
 def get_strings_for_issues(value):
@@ -163,7 +175,7 @@ def get_strings_for_search(value):
     :return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
     """
     tmp_dict = OrderedDict()
-    db_statements = DBDiscussionSession.query(Statement).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
+    db_statements = get_not_disabled_statement_as_query().join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
     for stat in db_statements:
         if value.lower() in stat.textversions.content.lower():
             # get distance between input value and saved value

@@ -33,7 +33,7 @@
                     <h5><i tal:attributes="class past.icon"></i> ${past.title}</h5>
                     <div tal:switch="len(past.content)>0">
                         <p tal:case="False" class="lead" i18n:translate="no_decision_for_this_queue">No decisions for this queue.</p>
-                        <div tal:case="True">
+                        <div tal:case="True" tal:attributes="class past.queue">
                             <table class="table table-condensed">
                                 <thead>
                                     <tr>
@@ -41,6 +41,7 @@
                                         <td tal:condition="past.has_oem_text" i18n:translate="edit">Edit</td>
                                         <td tal:condition="past.has_reason" i18n:translate="reason">Reason</td>
                                         <td tal:condition="past.has_oem_text" i18n:translate="original">Original</td>
+                                        <td tal:condition="past.has_duplicate_text" i18n:translate="original">Original</td>
                                         <td i18n:translate="votes" class="center">Votes</td>
                                         <td tal:condition="history.is_history" i18n:translate="accepted" class="center">Accepted</td>
                                         <td i18n:translate="voters_pro" class="center">Voters Pro</td>
@@ -55,6 +56,7 @@
                                         <td tal:attributes="title rep.argument_fulltext; id rep.entry_id">${structure:rep.argument_shorttext}</td>
                                         <td tal:condition="past.has_reason">${rep.reason}</td>
                                         <td tal:condition="past.has_oem_text" tal:attributes="title rep.argument_oem_fulltext; id rep.entry_id">${structure:rep.argument_oem_shorttext}</td>
+                                        <td tal:condition="past.has_duplicate_text" tal:attributes="title rep.statement_duplicate_fulltext; id rep.entry_id">${structure:rep.statement_duplicate_shorttext}</td>
                                         <td class="center">
                                             <a href="#">
                                                 <span class="text-success">${len(rep.votes_pro)}</span>:
