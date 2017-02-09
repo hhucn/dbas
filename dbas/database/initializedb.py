@@ -1760,8 +1760,9 @@ def setup_review_database(session):
     review15 = ReviewDelete(detector=user[15], argument=1, reason=reason1.uid, is_executed=True)
     review17 = ReviewDuplicate(detector=user[16], duplicate_statement=6, original_statement=1)
     review18 = ReviewDuplicate(detector=user[17], duplicate_statement=4, original_statement=1, is_executed=True)
+    review19 = ReviewDuplicate(detector=user[18], duplicate_statement=22, original_statement=7)
     session.add_all([review01, review02, review03, review04, review05, review06, review07, review08, review09, review10,
-                     review11, review12, review13, review14, review15, review16, review17, review18])
+                     review11, review12, review13, review14, review15, review16, review17, review18, review19])
     session.flush()
 
     reviewer01 = LastReviewerOptimization(user[18], review01.uid, True)
@@ -1789,10 +1790,12 @@ def setup_review_database(session):
     reviewer23 = LastReviewerDelete(user[23], review13.uid, True)
     reviewer24 = LastReviewerDelete(user[24], review13.uid, True)
     reviewer25 = LastReviewerDuplicate(user[0], review17.uid, True)
+    reviewer26 = LastReviewerDuplicate(user[1], review18.uid, True)
+    reviewer27 = LastReviewerDuplicate(user[2], review18.uid, True)
     session.add_all([reviewer01, reviewer02, reviewer03, reviewer04, reviewer05, reviewer06, reviewer07, reviewer08,
                      reviewer09, reviewer10, reviewer11, reviewer12, reviewer13, reviewer14, reviewer15, reviewer16,
                      reviewer17, reviewer18, reviewer19, reviewer20, reviewer21, reviewer22, reviewer23, reviewer24,
-                     reviewer25])
+                     reviewer25, reviewer26, reviewer27])
     session.flush()
 
     reputation01 = session.query(ReputationReason).filter_by(reason='rep_reason_first_position').first()

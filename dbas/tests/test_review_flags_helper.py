@@ -2,7 +2,8 @@ import unittest
 
 import dbas.review.helper.flags as rf_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewOptimization, ReviewDuplicate
+from dbas.database.discussion_model import User, ReviewOptimization, ReviewDuplicate, RevokedDuplicate, \
+    LastReviewerDuplicate, ReviewCanceled
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.keywords import Keywords as _
 from dbas.views import transaction
@@ -60,6 +61,11 @@ class TestReviewFlagHelper(unittest.TestCase):
         DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=tobias.uid, argument_uid=4).delete()
         DBDiscussionSession.flush()
         transaction.commit()
+
+        tmp = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=tobias.uid, duplicate_statement_uid=5).first()
+        DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(ReviewCanceled).filter_by(review_duplicate_uid=tmp.uid).delete()
 
         DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=tobias.uid, duplicate_statement_uid=5).delete()
         DBDiscussionSession.flush()

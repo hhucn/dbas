@@ -89,6 +89,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
     else:
         subpage_dict = {'stats': stats, 'text': text, 'reason': reason, 'issue': issue}
 
+    logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'subpage_dict ' + str(subpage_dict))
     ret_dict['reviewed_argument'] = subpage_dict
     if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
         no_arguments_to_review = True
@@ -368,15 +369,18 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '1')
         already_seen = list()
         extra_info = 'already_seen' if not first_time else ''
         db_reviews = DBDiscussionSession.query(ReviewDuplicate).filter(and_(ReviewDuplicate.is_executed == False,
                                                                             ReviewDuplicate.detector_uid != db_user.uid))
         if len(already_reviewed) > 0:
+            logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '2')
             db_reviews = db_reviews.filter(~ReviewDuplicate.uid.in_(already_reviewed))
         db_reviews = db_reviews.all()
 
     if not db_reviews:
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '3')
         return {'stats': None,
                 'text': None,
                 'reason': None,

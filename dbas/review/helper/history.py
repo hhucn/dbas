@@ -395,7 +395,7 @@ def __rebend_objects_of_duplicate_review(db_review):
             logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
             db_premise.statement_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_premise)
-    db_revoked_elements = DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).delete()
+    DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).delete()
 
     DBDiscussionSession.flush()
     transaction.commit()
