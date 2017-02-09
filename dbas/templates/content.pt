@@ -335,8 +335,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <div class="col-md-12 text-center">
-                <h5>${structure:extras.tag.add_premise_title}</h5>
-                <p class="lead" id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</p>
+                <h5 style="margin-bottom: 0"><span>${structure:extras.tag.add_premise_title}</span>: <span id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</span></h5>
                 <div id="add-premise-error-container" class="alert alert-danger" role="alert" style="display:none">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
