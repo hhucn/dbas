@@ -253,8 +253,11 @@ function Main () {
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
-			$('#popup-flag-statement-text').text($(this).parent().find('label').text());
-			popupHandler.showFlagStatementPopup(uid, false);
+			var text = [];
+			$.each($(this).parent().find('label'), function(){
+				text.push($(this).text());
+			});
+			popupHandler.showFlagStatementPopup(uid, false, text.join(' '));
 		});
 		
 		list.find('.item-edit').click(function () {
