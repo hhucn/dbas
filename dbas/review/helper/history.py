@@ -371,20 +371,27 @@ def __revoke_decision_and_implications(type, reviewer_type, uid):
 def __rebend_objects_of_duplicate_review(db_review):
     logger('review_history_helper', '__rebend_objects_of_duplicate_review', 'review: ' + str(db_review.uid))
 
+    db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
+    db_statement.set_disable(False)   # TODO reset more than this ?
+    DBDiscussionSession.add(db_statement)
+
     db_revoked_elements = DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).all()
-    for element in db_revoked_elements:
-        if element.argument_uid is not None:
-            db_argument = DBDiscussionSession.query(Argument).get(element.argument_uid)
-            text = 'Rebend conclusion of argument {} from {} to {}'.format(element.argument_uid, db_argument.conclusion_uid, db_review.duplicate_statement_uid)
+    for revoke in db_revoked_elements:
+        if revoke.bend_position:
+            db_statement = DBDiscussionSession.query(Statement).get(revoke.statement_uid)
+            db_statement.set_position(False)
+            DBDiscussionSession.add(db_statement)
+
+        if revoke.argument_uid is not None:
+            db_argument = DBDiscussionSession.query(Argument).get(revoke.argument_uid)
+            text = 'Rebend conclusion of argument {} from {} to {}'.format(revoke.argument_uid, db_argument.conclusion_uid, db_review.duplicate_statement_uid)
             logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
             db_argument.conclusion_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_argument)
 
-        if element.statement_uid is not None:
-            db_premise = DBDiscussionSession.query(Premise).filter(and_(
-                Premise.statement_uid == element.statement_uid,
-                Premise.premisesgroup_uid == element.premisesgroup_uid)).first()
-            text = 'Rebend premise from {} to {}'.format(db_premise.statement_uid, db_review.duplicate_statement_uid)
+        if revoke.premise_uid is not None:
+            db_premise = DBDiscussionSession.query(Premise).get(revoke.premise_uid)
+            text = 'Rebend premise {} from {} to {}'.format(revoke.premise_uid, db_premise.statement_uid, db_review.duplicate_statement_uid)
             logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
             db_premise.statement_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_premise)

@@ -293,7 +293,7 @@ def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, app
 
     elif count_of_reset - count_of_keep >= min_difference:  # disable the flagged part
         logger('review_main_helper', 'add_review_opinion_for_duplicate', 'vote says bend for review ' + str(review_uid))
-        __bend_objects_of_duplicate_review(db_review, db_user)
+        __bend_objects_of_duplicate_review(db_review)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_duplicate)
         db_review.set_executed(True)
         db_review.update_timestamp()
@@ -475,7 +475,7 @@ def __en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     transaction.commit()
 
 
-def __bend_objects_of_duplicate_review(db_review, db_user):
+def __bend_objects_of_duplicate_review(db_review):
     """
 
     :param db_review:
@@ -487,7 +487,15 @@ def __bend_objects_of_duplicate_review(db_review, db_user):
     db_statement.set_disable(True)
     DBDiscussionSession.add(db_statement)
 
-    # TODO   Wrong UID, POSITION, SINGLE STATEMENT
+    # TODO   SINGLE STATEMENT SET DISABLE
+
+    # do we need a new position
+    db_dupl_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
+    db_orig_statement = DBDiscussionSession.query(Statement).get(db_review.original_statement_uid)
+    if db_dupl_statement.is_startpoint and not db_orig_statement.is_startpoint:
+        logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Duplicate is startpoint, but original one is not')
+        DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, bend_position=True, statement=db_orig_statement.uid))
+        db_orig_statement.set_position(True)
 
     # getting all argument where the duplicated statement is used
     all_arguments = get_all_arguments_by_statement(db_review.duplicate_statement_uid, True)
@@ -501,21 +509,18 @@ def __bend_objects_of_duplicate_review(db_review, db_user):
             logger('review_main_helper', '__bend_objects_of_duplicate_review', tmp)
             argument.set_conclusion(db_review.original_statement_uid)
             DBDiscussionSession.add(argument)
-            DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, author=db_user.uid, in_argument_as_conclusion=argument.uid))
+            DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, conclusion_of_argument=argument.uid))
             used = True
 
         # recalibrate premises
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
         for premise in db_premises:
             if premise.statement_uid == db_review.duplicate_statement_uid:
-                tmp = '{}, bend premise from {} to {}' .format(text, premise.statement_uid, db_review.original_statement_uid)
+                tmp = '{}, bend premise {} from {} to {}' .format(text, premise.uid, premise.statement_uid, db_review.original_statement_uid)
                 logger('review_main_helper', '__bend_objects_of_duplicate_review', tmp)
                 premise.set_statement(db_review.original_statement_uid)
                 DBDiscussionSession.add(premise)
-                DBDiscussionSession.add(RevokedDuplicate(author=db_user.uid,
-                                                         review=db_review.uid,
-                                                         in_premise_as_statement=premise.statement_uid,
-                                                         premise_in_group=premise.premisesgroup_uid))
+                DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, premise=premise.uid))
                 used = True
 
         if not used:
