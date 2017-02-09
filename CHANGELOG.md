@@ -1,5 +1,10 @@
-## 1.2.2 (2017-02-07)
+## 1.2.3 (2017-02-08)
+- Queue for duplicates
+
+## 1.2.2 (2017-02-06)
 - Reworked feedback options
+- Improved coloring of arguments
+- Spelling corrections
 
 ## 1.2.1 (2017-02-03)
 - Reworked lateral entry

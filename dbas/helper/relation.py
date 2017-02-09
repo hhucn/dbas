@@ -226,7 +226,7 @@ def set_new_undercut(premisegroup_uid, current_argument, db_user, issue):
                                 issupportive=False,
                                 author=db_user.uid,
                                 issue=issue)
-        new_argument.conclusions_argument(current_argument.uid)
+        new_argument.set_conclusions_argument(current_argument.uid)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
         transaction.commit()
@@ -316,7 +316,7 @@ def __set_argument(user, premisegroup_uid, conclusion_uid, argument_uid, is_supp
     if not new_argument:
         new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
                                 conclusion=conclusion_uid, issue=issue)
-        new_argument.conclusions_argument(argument_uid)
+        new_argument.set_conclusions_argument(argument_uid)
 
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()

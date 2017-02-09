@@ -1083,8 +1083,18 @@ function DiscussionGraph() {
      */
     function showMyStatements(edges, force) {
         isStatementVisible = true;
-        isSupportVisible = true;
-        isAttackVisible = true;
+
+        // hide supports and attacks on statements
+        if (isSupportVisible) {
+            $('#show-supports-on-my-statements').show();
+            $('#hide-supports-on-my-statements').hide();
+            isSupportVisible = false;
+        }
+        if (isAttackVisible) {
+            $('#show-attacks-on-my-statements').show();
+            $('#hide-attacks-on-my-statements').hide();
+            isAttackVisible = false;
+        }
 
         // graying all elements of graph
         edges.forEach(function (d) {
@@ -1095,11 +1105,6 @@ function DiscussionGraph() {
 
         $('#show-my-statements').hide();
         $('#hide-my-statements').show();
-        // also show supports and attacks on statements
-        $('#show-supports-on-my-statements').hide();
-        $('#hide-supports-on-my-statements').show();
-        $('#show-attacks-on-my-statements').hide();
-        $('#hide-attacks-on-my-statements').show();
     }
 
     /**
@@ -1110,6 +1115,8 @@ function DiscussionGraph() {
      */
     function hideMyStatements(edges, force) {
         isStatementVisible = false;
+
+        // hide supports and attacks on statements
         if (isSupportVisible) {
             $('#show-supports-on-my-statements').show();
             $('#hide-supports-on-my-statements').hide();
@@ -1124,23 +1131,10 @@ function DiscussionGraph() {
         highlightAllElements(edges);
 
         // delete border of nodes
-        force.nodes().forEach(function (d) {
-            d3.select('#circle-' + d.id).attr('stroke', 'none');
-        });
+        deleteBorderOfCircle(force);
 
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
-    }
-
-    /**
-     * Highlight all elements of graph.
-     *
-     * @param edges
-     */
-    function highlightAllElements(edges) {
-        edges.forEach(function (d) {
-            highlightElements(d);
-        });
     }
 
     /**
@@ -1151,6 +1145,13 @@ function DiscussionGraph() {
      */
     function showSupportsOnMyStatements(edges, force) {
         isSupportVisible = true;
+
+        // hide statements
+        // delete border of nodes
+        deleteBorderOfCircle(force);
+        $('#show-my-statements').show();
+        $('#hide-my-statements').hide();
+        isStatementVisible = false;
 
         // if attacks on statements of current user are visible, highlight additionally the supports
         if (!isAttackVisible) {
@@ -1164,11 +1165,6 @@ function DiscussionGraph() {
 
         $('#show-supports-on-my-statements').hide();
         $('#hide-supports-on-my-statements').show();
-
-        if(isSupportVisible && isAttackVisible){
-            $('#show-my-statements').hide();
-            $('#hide-my-statements').show();
-        }
     }
 
     /**
@@ -1188,19 +1184,11 @@ function DiscussionGraph() {
             highlightAllElements(edges);
         }
         else {
-            if (isStatementVisible) {
-                $('#show-my-statements').show();
-                $('#hide-my-statements').hide();
-                isStatementVisible = false;
-            }
             showAttacksOnMyStatements(edges, force);
         }
+
         $('#show-supports-on-my-statements').show();
         $('#hide-supports-on-my-statements').hide();
-
-        // hide my statements
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
     }
 
     /**
@@ -1211,6 +1199,13 @@ function DiscussionGraph() {
      */
     function showAttacksOnMyStatements(edges, force) {
         isAttackVisible = true;
+
+        // hide statements
+        // delete border of nodes
+        deleteBorderOfCircle(force);
+        $('#show-my-statements').show();
+        $('#hide-my-statements').hide();
+        isStatementVisible = false;
 
         // if supports on statements of current user are visible, highlight additionally the attacks
         if (!isSupportVisible) {
@@ -1224,11 +1219,6 @@ function DiscussionGraph() {
 
         $('#show-attacks-on-my-statements').hide();
         $('#hide-attacks-on-my-statements').show();
-
-        if(isSupportVisible && isAttackVisible){
-            $('#show-my-statements').hide();
-            $('#hide-my-statements').show();
-        }
     }
 
     /**
@@ -1246,19 +1236,21 @@ function DiscussionGraph() {
             highlightAllElements(edges);
         }
         else {
-            if (isStatementVisible) {
-                $('#show-my-statements').show();
-                $('#hide-my-statements').hide();
-                isStatementVisible = false;
-            }
             showSupportsOnMyStatements(edges, force);
         }
         $('#show-attacks-on-my-statements').show();
         $('#hide-attacks-on-my-statements').hide();
+    }
 
-        // hide my statements
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
+    /**
+     * Highlight all elements of graph.
+     *
+     * @param edges
+     */
+    function highlightAllElements(edges) {
+        edges.forEach(function (d) {
+            highlightElements(d);
+        });
     }
 
     /**
@@ -1275,7 +1267,19 @@ function DiscussionGraph() {
                 circleIds.push(d.id);
             }
         });
-        showAttacksSupports(edges, circleIds);
+        // show attacks or supports on statements of current user
+        // if button "show statements" is not selected
+        if(!isStatementVisible){
+            showAttacksSupports(edges, circleIds);
+        }
+        else{
+            // highlight all statements of current user
+            force.nodes().forEach(function (d) {
+                if($.inArray(d.id, circleIds) != -1) {
+                    d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
+                }
+            });
+        }
     }
 
     /**
@@ -1430,9 +1434,9 @@ function DiscussionGraph() {
                     else if (isAttackVisible && (e.color === red)) {
                         if (!(e.is_undercut == true)) {
                             edgesCircleId.push(e);
+                            findUndercutsForEdge(edges, edgesCircleId, e);
+                            findVirtualNodes(edges, edgesCircleId, e);
                         }
-                        findUndercutsForEdge(edges, edgesCircleId, e);
-                        findVirtualNodes(edges, edgesCircleId, e);
                     }
                     // if supports is clicked
                     else if (isSupportVisible && (e.color === green)) {
@@ -1446,10 +1450,10 @@ function DiscussionGraph() {
         // highlight incoming edges
         edgesCircleId.forEach(function (d) {
             // add border to statements of user, if they are source or target of edge in edgesCircleId
-            if($.inArray(d.source.id, circleIds) != -1){
+            if(($.inArray(d.source.id, circleIds) != -1) && (d.is_undercut == 'none')){
                 d3.select('#circle-' + d.source.id).attr({fill: d.source.color, stroke: 'black'});
             }
-            else if($.inArray(d.target.id, circleIds) != -1){
+            if(($.inArray(d.target.id, circleIds) != -1) && (d.is_undercut == 'none')){
                 d3.select('#circle-' + d.target.id).attr({fill: d.target.color, stroke: 'black'});
             }
             highlightElements(d);

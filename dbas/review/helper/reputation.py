@@ -15,12 +15,15 @@ from sqlalchemy import and_
 reputation_borders = {'deletes': 30,
                       'optimizations': 30,
                       'edits': 30,
+                      'duplicates': 30,
                       'history': 150}
 
-reputation_icons = {'deletes': 'fa fa-pencil-square-o',
+reputation_icons = {'deletes': 'fa fa-trash-o',
                     'optimizations': 'fa fa-flag',
                     'edits': 'fa fa-pencil-square-o',
-                    'history': 'fa fa-history'}
+                    'duplicates': 'fa fa-files-o',
+                    'history': 'fa fa-history',
+                    'ongoing': 'fa fa-clock-o'}
 
 # every reason by its name
 rep_reason_first_position = 'rep_reason_first_position'
@@ -31,8 +34,10 @@ rep_reason_first_new_argument = 'rep_reason_first_new_argument'
 rep_reason_new_statement = 'rep_reason_new_statement'
 rep_reason_success_flag = 'rep_reason_success_flag'
 rep_reason_success_edit = 'rep_reason_success_edit'
+rep_reason_success_duplicate = 'rep_reason_success_duplicate'
 rep_reason_bad_flag = 'rep_reason_bad_flag'
 rep_reason_bad_edit = 'rep_reason_bad_edit'
+rep_reason_bad_duplicate = 'rep_reason_bad_duplicate'
 
 
 def get_privilege_list(translator):
@@ -42,14 +47,13 @@ def get_privilege_list(translator):
     :param translator: instance of translator
     :return: list()
     """
-    return [{'points': reputation_borders['history'], 'icon': reputation_icons['history'],
-             'text': translator.get(_.priv_history_queue)},
-            {'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'],
-             'text': translator.get(_.priv_access_opti_queue)},
-            {'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'],
-             'text': translator.get(_.priv_access_del_queue)},
-            {'points': reputation_borders['edits'], 'icon': reputation_icons['optimizations'],
-             'text': translator.get(_.priv_access_edit_queue)}]
+    return [
+        {'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'], 'text': translator.get(_.priv_access_opti_queue)},
+        {'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'], 'text': translator.get(_.priv_access_del_queue)},
+        {'points': reputation_borders['edits'], 'icon': reputation_icons['edits'], 'text': translator.get(_.priv_access_edit_queue)},
+        {'points': reputation_borders['duplicates'], 'icon': reputation_icons['duplicates'], 'text': translator.get(_.priv_access_duplicate_queue)},
+        {'points': reputation_borders['history'], 'icon': reputation_icons['history'], 'text': translator.get(_.priv_history_queue)}
+    ]
 
 
 def get_reputation_list(translator):
@@ -116,6 +120,7 @@ def add_reputation_for(user, reason):
         logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')
         return False, False
 
+    logger('ReputationPointHelper', 'add_reputation_for', 'user ' + str(db_user.uid))
     # special case:
     if '_first_' in reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(
