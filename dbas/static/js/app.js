@@ -97,7 +97,6 @@ function replace_gravtar_with_default_image(only_on_error){
 			$(this).attr('src', src);
 		$(this).css('width', width + 'px');
 	});
-	$('#navbar-right').find('.img-circle').css('width', '30px');
 }
 
 /**

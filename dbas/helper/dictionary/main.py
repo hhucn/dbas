@@ -460,7 +460,12 @@ class DictionaryHelper(object):
                                 'topic': _tn_dis.get(_.topicString),
                                 'message': _tn_dis.get(_.message),
                                 'reference': _tn_dis.get(_.reference),
-                                'attack_statement': _tn_dis.get(_.attackStatement)
+                                'attack_statement': _tn_dis.get(_.attackStatement),
+                                'statement_is_duplicate': _tn_dis.get(_.statementIsDuplicate),
+                                'you_have_selected_statement': _tn_dis.get(_.youHaveSelectedStatement),
+                                'no_data_selected': _tn_dis.get(_.noDataSelected),
+                                'select_statement': _tn_dis.get(_.selectStatement),
+                                'select_multiple_statements': _tn_dis.get(_.selectMultipleStatementsWhichFlag),
                                 }
 
     def add_tag_text(self, is_ldap, return_dict):
