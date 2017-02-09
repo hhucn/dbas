@@ -1251,14 +1251,14 @@ class RevokedDuplicate(DiscussionBase):
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
 
     argument_uid = Column(Integer, ForeignKey('arguments.uid'))
-    premise_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    premise_uid = Column(Integer, ForeignKey('premises.uid'))
 
     timestamp = Column(ArrowType, default=get_now())
     review = relationship('ReviewDuplicate', foreign_keys=[review_uid])
 
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
-    premises = relationship('PremiseGroup', foreign_keys=[premise_uid])
+    premises = relationship('Premise', foreign_keys=[premise_uid])
 
     def __init__(self, review, bend_position=False, statement=None, conclusion_of_argument=None, premise=None):
         self.review_uid = review

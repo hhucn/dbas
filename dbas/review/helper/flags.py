@@ -10,7 +10,7 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
-    Statement, User, ReviewDuplicate, Premise
+    Statement, User, ReviewDuplicate
 from dbas.strings.keywords import Keywords as _
 
 

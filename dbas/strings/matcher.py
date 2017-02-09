@@ -18,6 +18,7 @@ from dbas.lib import get_public_profile_picture
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.views import get_nickname
 from dbas.strings.keywords import Keywords as _
+from dbas.query_wrapper import get_not_disabled_statement_as_query
 
 list_length = 5
 max_count_zeros = 5
@@ -81,8 +82,8 @@ def get_strings_for_start(value, issue, is_startpoint):
     :param is_startpoint: boolean
     :return: dict()
     """
-    db_statements = DBDiscussionSession.query(Statement).filter(and_(Statement.is_startpoint == is_startpoint,
-                                                                     Statement.issue_uid == issue)).all()
+    db_statements = get_not_disabled_statement_as_query().filter(and_(Statement.is_startpoint == is_startpoint,
+                                                                      Statement.issue_uid == issue)).all()
     return_array = []
     index = 1
     for stat in db_statements:
@@ -130,7 +131,7 @@ def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
     :param issue: count
     :return: dict()
     """
-    db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
+    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
     return_array = []
 
     for stat in db_statements:
@@ -174,7 +175,7 @@ def get_strings_for_search(value):
     :return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
     """
     tmp_dict = OrderedDict()
-    db_statements = DBDiscussionSession.query(Statement).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
+    db_statements = get_not_disabled_statement_as_query().join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
     for stat in db_statements:
         if value.lower() in stat.textversions.content.lower():
             # get distance between input value and saved value

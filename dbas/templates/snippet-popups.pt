@@ -824,7 +824,7 @@
     			<div class="modal-body">
                     <p class="statement_text lead"><span i18n:translate="statement_under_consideration_is">The statement under consideration is as follows</span>:</p>
                     <p class="argument_text lead"><span i18n:translate="argument_under_consideration_is">The argument under consideration is as follows</span>:</p>
-                    <p><span i18n:translate="why_do_you_want_to_report">Why do you want to report it</span>:</p>
+                    <!--<p><span i18n:translate="why_do_you_want_to_report">Why do you want to report it</span>:</p>-->
                     <p class="well well-sm" id="popup-flag-statement-text"></p>
                     <form>
                         <fieldset>
