@@ -15,7 +15,7 @@ from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsS
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
-    ReputationHistory, ReviewEdit, ReviewEditValue
+    ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate
 from dbas.database.news_model import News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
@@ -559,11 +559,22 @@ def setup_news_db(session, ui_locale):
                   author='Tobias Krauthoff',
                   news='We have a delayed christmas present for you. D-BAS reached it\'s first final version '
                        'including reCAPTCHAS and several minor fixes!')
+    news55 = News(title='Final version and Captachs',
+                  date=arrow.get('2017-01-21'),
+                  author='Tobias Krauthoff',
+                  news='Today we submitted a journal paper about D-BAS and its implementation at Springers CSCW.')
+    news56 = News(title='Experiment',
+                  date=arrow.get('2017-02-09'),
+                  author='Tobias Krauthoff',
+                  news='Last week we finished our second experiment at our professorial chair. In short we are '
+                       'very happy with the results and with the first, bigger argumentation map created by '
+                       'inexperienced participants! Now we will fix a few smaller things and looking forward '
+                       'to out first field test!')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52, news53, news54]
+                  news50, news51, news52, news53, news54, news55, news56]
     session.add_all(news_array[::-1])
     session.flush()
 
@@ -1116,7 +1127,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     """
 
     # Adding all textversions
-    textversion0 = TextVersion(content="Cars are fucking stupid and bloody fuzzy critters!", author=user.uid)
+    textversion0 = TextVersion(content="Cats are fucking stupid and bloody fuzzy critters!", author=user.uid)
     textversion1 = TextVersion(content="we should get a cat", author=user.uid)
     textversion2 = TextVersion(content="we should get a dog", author=user.uid)
     textversion3 = TextVersion(content="we could get both, a cat and a dog", author=user.uid)
@@ -1639,23 +1650,23 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([argument303, argument304, argument305, argument306, argument307])
     session.flush()
 
-    argument5.conclusions_argument(argument3.uid)
-    argument6.conclusions_argument(argument4.uid)
-    argument8.conclusions_argument(argument7.uid)
-    argument12.conclusions_argument(argument11.uid)
-    argument13.conclusions_argument(argument12.uid)
-    argument17.conclusions_argument(argument1.uid)
-    argument21.conclusions_argument(argument2.uid)
-    argument24.conclusions_argument(argument10.uid)
-    argument31.conclusions_argument(argument14.uid)
-    argument102.conclusions_argument(argument101.uid)
-    argument106.conclusions_argument(argument105.uid)
-    argument107.conclusions_argument(argument105.uid)
-    argument111.conclusions_argument(argument108.uid)
-    argument113.conclusions_argument(argument112.uid)
-    argument117.conclusions_argument(argument116.uid)
-    argument202.conclusions_argument(argument200.uid)
-    argument203.conclusions_argument(argument201.uid)
+    argument5.set_conclusions_argument(argument3.uid)
+    argument6.set_conclusions_argument(argument4.uid)
+    argument8.set_conclusions_argument(argument7.uid)
+    argument12.set_conclusions_argument(argument11.uid)
+    argument13.set_conclusions_argument(argument12.uid)
+    argument17.set_conclusions_argument(argument1.uid)
+    argument21.set_conclusions_argument(argument2.uid)
+    argument24.set_conclusions_argument(argument10.uid)
+    argument31.set_conclusions_argument(argument14.uid)
+    argument102.set_conclusions_argument(argument101.uid)
+    argument106.set_conclusions_argument(argument105.uid)
+    argument107.set_conclusions_argument(argument105.uid)
+    argument111.set_conclusions_argument(argument108.uid)
+    argument113.set_conclusions_argument(argument112.uid)
+    argument117.set_conclusions_argument(argument116.uid)
+    argument202.set_conclusions_argument(argument200.uid)
+    argument203.set_conclusions_argument(argument201.uid)
     session.flush()
 
     # Add seen-by values
@@ -1707,9 +1718,12 @@ def add_reputation_and_delete_reason(session):
     reputation06 = ReputationReason(reason='rep_reason_new_statement', points=2)
     reputation07 = ReputationReason(reason='rep_reason_success_flag', points=3)
     reputation08 = ReputationReason(reason='rep_reason_success_edit', points=3)
-    reputation09 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
-    reputation10 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
-    session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07, reputation08, reputation09, reputation10])
+    reputation09 = ReputationReason(reason='rep_reason_success_duplicate', points=3)
+    reputation10 = ReputationReason(reason='rep_reason_bad_flag', points=-1)
+    reputation11 = ReputationReason(reason='rep_reason_bad_edit', points=-1)
+    reputation12 = ReputationReason(reason='rep_reason_bad_duplicate', points=-1)
+    session.add_all([reputation01, reputation02, reputation03, reputation04, reputation05, reputation06, reputation07,
+                     reputation08, reputation09, reputation10, reputation11, reputation12])
     session.flush()
 
     reason1 = ReviewDeleteReason(reason='offtopic')
@@ -1725,53 +1739,63 @@ def setup_review_database(session):
     int_start = 6
     int_end = 30
 
-    review01 = ReviewOptimization(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), is_executed=True)
-    review02 = ReviewOptimization(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), is_executed=True)
-    review03 = ReviewOptimization(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end))
-    review16 = ReviewOptimization(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end))
-    review04 = ReviewOptimization(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end))
-    review05 = ReviewOptimization(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end))
-    review06 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
-    review07 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
-    review08 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
-    review09 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review10 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review11 = ReviewDelete(detector=random.randint(int_start, int_end), statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review12 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review13 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review14 = ReviewDelete(detector=random.randint(int_start, int_end), argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review15 = ReviewDelete(detector=2, argument=1, reason=reason1.uid, is_executed=True)
+    names = first_names[5:]  # 31 - 5 = 26
+    user = [session.query(User).filter_by(nickname=name).first().uid for name in names]
+
+    review01 = ReviewOptimization(detector=user[0], argument=random.randint(int_start, int_end), is_executed=True)
+    review02 = ReviewOptimization(detector=user[1], statement=random.randint(int_start, int_end), is_executed=True)
+    review03 = ReviewOptimization(detector=user[2], statement=random.randint(int_start, int_end))
+    review16 = ReviewOptimization(detector=user[3], statement=random.randint(int_start, int_end))
+    review04 = ReviewOptimization(detector=user[4], argument=random.randint(int_start, int_end))
+    review05 = ReviewOptimization(detector=user[5], argument=random.randint(int_start, int_end))
+    review06 = ReviewDelete(detector=user[6], argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review07 = ReviewDelete(detector=user[7], argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review08 = ReviewDelete(detector=user[8], statement=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review09 = ReviewDelete(detector=user[9], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review10 = ReviewDelete(detector=user[10], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review11 = ReviewDelete(detector=user[11], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review12 = ReviewDelete(detector=user[12], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review13 = ReviewDelete(detector=user[13], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review14 = ReviewDelete(detector=user[14], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review15 = ReviewDelete(detector=user[15], argument=1, reason=reason1.uid, is_executed=True)
+    review17 = ReviewDuplicate(detector=user[16], duplicate_statement=6, original_statement=1)
+    review18 = ReviewDuplicate(detector=user[17], duplicate_statement=4, original_statement=1, is_executed=True)
+    review19 = ReviewDuplicate(detector=user[18], duplicate_statement=22, original_statement=7)
     session.add_all([review01, review02, review03, review04, review05, review06, review07, review08, review09, review10,
-                     review11, review12, review13, review14, review15, review16])
+                     review11, review12, review13, review14, review15, review16, review17, review18, review19])
     session.flush()
 
-    reviewer01 = LastReviewerOptimization(random.randint(int_start, int_end), review01.uid, True)
-    reviewer02 = LastReviewerOptimization(random.randint(int_start, int_end), review01.uid, True)
-    reviewer03 = LastReviewerOptimization(random.randint(int_start, int_end), review01.uid, True)
-    reviewer04 = LastReviewerOptimization(random.randint(int_start, int_end), review02.uid, False)
-    reviewer05 = LastReviewerOptimization(random.randint(int_start, int_end), review02.uid, False)
-    reviewer06 = LastReviewerOptimization(random.randint(int_start, int_end), review02.uid, False)
-    reviewer07 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, True)
-    reviewer08 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, False)
-    reviewer09 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, True)
-    reviewer10 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, True)
-    reviewer11 = LastReviewerDelete(random.randint(int_start, int_end), review06.uid, True)
-    reviewer12 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, False)
-    reviewer13 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, True)
-    reviewer14 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, False)
-    reviewer15 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, True)
-    reviewer16 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, False)
-    reviewer17 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, False)
-    reviewer18 = LastReviewerDelete(random.randint(int_start, int_end), review07.uid, False)
-    reviewer19 = LastReviewerDelete(random.randint(int_start, int_end), review08.uid, False)
-    reviewer20 = LastReviewerDelete(random.randint(int_start, int_end), review08.uid, False)
-    reviewer21 = LastReviewerDelete(random.randint(int_start, int_end), review08.uid, False)
-    reviewer22 = LastReviewerDelete(random.randint(int_start, int_end), review13.uid, True)
-    reviewer23 = LastReviewerDelete(random.randint(int_start, int_end), review13.uid, True)
-    reviewer24 = LastReviewerDelete(random.randint(int_start, int_end), review13.uid, True)
+    reviewer01 = LastReviewerOptimization(user[18], review01.uid, True)
+    reviewer02 = LastReviewerOptimization(user[19], review01.uid, True)
+    reviewer03 = LastReviewerOptimization(user[20], review01.uid, True)
+    reviewer04 = LastReviewerOptimization(user[0], review02.uid, False)
+    reviewer05 = LastReviewerOptimization(user[1], review02.uid, False)
+    reviewer06 = LastReviewerOptimization(user[3], review02.uid, False)
+    reviewer07 = LastReviewerDelete(user[2], review06.uid, True)
+    reviewer08 = LastReviewerDelete(user[4], review06.uid, False)
+    reviewer09 = LastReviewerDelete(user[5], review06.uid, True)
+    reviewer10 = LastReviewerDelete(user[10], review06.uid, True)
+    reviewer11 = LastReviewerDelete(user[11], review06.uid, True)
+    reviewer12 = LastReviewerDelete(user[8], review07.uid, False)
+    reviewer13 = LastReviewerDelete(user[9], review07.uid, True)
+    reviewer14 = LastReviewerDelete(user[6], review07.uid, False)
+    reviewer15 = LastReviewerDelete(user[22], review07.uid, True)
+    reviewer16 = LastReviewerDelete(user[12], review07.uid, False)
+    reviewer17 = LastReviewerDelete(user[13], review07.uid, False)
+    reviewer18 = LastReviewerDelete(user[14], review07.uid, False)
+    reviewer19 = LastReviewerDelete(user[15], review08.uid, False)
+    reviewer20 = LastReviewerDelete(user[16], review08.uid, False)
+    reviewer21 = LastReviewerDelete(user[21], review08.uid, False)
+    reviewer22 = LastReviewerDelete(user[7], review13.uid, True)
+    reviewer23 = LastReviewerDelete(user[23], review13.uid, True)
+    reviewer24 = LastReviewerDelete(user[24], review13.uid, True)
+    reviewer25 = LastReviewerDuplicate(user[0], review17.uid, True)
+    reviewer26 = LastReviewerDuplicate(user[1], review18.uid, True)
+    reviewer27 = LastReviewerDuplicate(user[2], review18.uid, True)
     session.add_all([reviewer01, reviewer02, reviewer03, reviewer04, reviewer05, reviewer06, reviewer07, reviewer08,
                      reviewer09, reviewer10, reviewer11, reviewer12, reviewer13, reviewer14, reviewer15, reviewer16,
-                     reviewer17, reviewer18, reviewer19, reviewer20, reviewer21, reviewer22, reviewer23, reviewer24])
+                     reviewer17, reviewer18, reviewer19, reviewer20, reviewer21, reviewer22, reviewer23, reviewer24,
+                     reviewer25, reviewer26, reviewer27])
     session.flush()
 
     reputation01 = session.query(ReputationReason).filter_by(reason='rep_reason_first_position').first()
@@ -1782,8 +1806,10 @@ def setup_review_database(session):
     reputation06 = session.query(ReputationReason).filter_by(reason='rep_reason_new_statement').first()
     reputation07 = session.query(ReputationReason).filter_by(reason='rep_reason_success_flag').first()
     reputation08 = session.query(ReputationReason).filter_by(reason='rep_reason_success_edit').first()
-    reputation09 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_flag').first()
-    reputation10 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
+    reputation09 = session.query(ReputationReason).filter_by(reason='rep_reason_success_duplicate').first()
+    reputation10 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_flag').first()
+    reputation11 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
+    reputation12 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_duplicate').first()
 
     admin = session.query(User).filter_by(nickname=nick_of_admin).first()
     christian = session.query(User).filter_by(nickname='Christian').first()
@@ -1809,9 +1835,19 @@ def setup_review_database(session):
     history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation07.uid, timestamp=today)
     history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation10.uid, timestamp=today)
     history17 = ReputationHistory(reputator=tobias.uid, reputation=reputation08.uid, timestamp=today)
+    history18 = ReputationHistory(reputator=tobias.uid, reputation=reputation11.uid, timestamp=today)
+    history19 = ReputationHistory(reputator=tobias.uid, reputation=reputation12.uid, timestamp=today)
+
+    for name in ['Marga', 'Emmi', 'Rupert', 'Hanne']:
+        db_user = session.query(User).filter_by(nickname=name).first()
+        history1 = ReputationHistory(reputator=db_user.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
+        history2 = ReputationHistory(reputator=db_user.uid, reputation=reputation02.uid, timestamp=yesterday)
+        history3 = ReputationHistory(reputator=db_user.uid, reputation=reputation03.uid, timestamp=today)
+        session.add_all([history1, history2, history3])
 
     session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09,
-                     history10, history11, history12, history13, history14, history15, history16, history17])
+                     history10, history11, history12, history13, history14, history15, history16, history17, history18,
+                     history19])
 
     session.add(ReviewEdit(detector=christian.uid, statement=2))
     session.flush()

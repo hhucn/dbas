@@ -479,8 +479,6 @@ class DictionaryHelper(object):
             'edit_title_here': _tn_dis.get(_.editTitleHere),
             'edit_info_here': _tn_dis.get(_.editInfoHere),
             'edit_statement_here': _tn_dis.get(_.editStatementHere),
-            'sys_save': _tn_dis.get(_.save),
-            'sys_cancel': _tn_dis.get(_.cancel),
             'save': _tn_dis.get(_.save),
             'cancel': _tn_dis.get(_.cancel),
             'submit': _tn_dis.get(_.submit),

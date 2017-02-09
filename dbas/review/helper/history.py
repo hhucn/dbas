@@ -8,7 +8,8 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit,\
-    LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print
+    LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print,\
+    ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author_or_admin, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
@@ -49,6 +50,7 @@ def __get_data(main_page, nickname, translator, is_executed=False):
     deletes_list = __get_executed_reviews_of('deletes', main_page, ReviewDelete, LastReviewerDelete, translator, is_executed)
     optimizations_list = __get_executed_reviews_of('optimizations', main_page, ReviewOptimization, LastReviewerOptimization, translator, is_executed)
     edits_list = __get_executed_reviews_of('edits', main_page, ReviewEdit, LastReviewerEdit, translator, is_executed)
+    duplicates_list = __get_executed_reviews_of('duplicates', main_page, ReviewDuplicate, LastReviewerDuplicate, translator, is_executed)
 
     past_decision = [{
         'title': 'Delete Queue',
@@ -56,21 +58,32 @@ def __get_data(main_page, nickname, translator, is_executed=False):
         'queue': 'deletes',
         'content': deletes_list,
         'has_reason': True,
-        'has_oem_text': False
+        'has_oem_text': False,
+        'has_duplicate_text': False
     }, {
         'title': 'Optimization Queue',
         'queue': 'optimizations',
         'icon': reputation_icons['optimizations'],
         'content': optimizations_list,
         'has_reason': False,
-        'has_oem_text': False
+        'has_oem_text': False,
+        'has_duplicate_text': False
     }, {
         'title': 'Edit Queue',
         'queue': 'edits',
         'icon': reputation_icons['edits'],
         'content': edits_list,
         'has_reason': False,
-        'has_oem_text': True
+        'has_oem_text': True,
+        'has_duplicate_text': False
+    }, {
+        'title': 'Duplicates Queue',
+        'queue': 'duplicates',
+        'icon': reputation_icons['duplicates'],
+        'content': duplicates_list,
+        'has_reason': False,
+        'has_oem_text': False,
+        'has_duplicate_text': True
     }]
     ret_dict['past_decision'] = past_decision
 
@@ -133,7 +146,9 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     for review in db_reviews:
         length = 35
         # getting text
-        if review.statement_uid is None:
+        if table == 'duplicates':
+            full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
+        elif review.statement_uid is None:
             full_text = get_text_for_argument_uid(review.argument_uid)
         else:
             full_text = get_text_for_statement_uid(review.statement_uid)
@@ -158,6 +173,12 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
         pro_list = [__get_user_dict_for_review(pro.reviewer_uid, main_page) for pro in pro_votes]
         con_list = [__get_user_dict_for_review(con.reviewer_uid, main_page) for con in con_votes]
 
+        if table == 'duplicates':
+            # switch it, because contra is: it should not be there!
+            tmp_list = pro_list
+            pro_list = con_list
+            con_list = tmp_list
+
         # and build up some dict
         entry = dict()
         entry['entry_id'] = review.uid
@@ -178,6 +199,10 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
                 entry['argument_oem_fulltext'] = full_text
                 entry['argument_shorttext'] = short_text.replace(short_text, (db_edit_value.content[0:length] + '...') if len(full_text) > length else db_edit_value.content)
                 entry['argument_fulltext'] = db_edit_value.content
+        if table == 'duplicates':
+            text = get_text_for_statement_uid(review.original_statement_uid)
+            entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
+            entry['statement_duplicate_fulltext'] = text
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
@@ -259,6 +284,14 @@ def revoke_old_decision(queue, uid, lang, nickname):
 
         success = _t.get(_.dataRemoved)
 
+    elif queue == 'duplicates':
+        db_review = DBDiscussionSession.query(ReviewDuplicate).get(uid)
+        db_review.set_revoked(True)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid))
+        __rebend_objects_of_duplicate_review(db_review)
+
+        success = _t.get(_.dataRemoved)
+
     else:
         error = _t.get(_.internalKeyError)
 
@@ -301,6 +334,12 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_edit=uid, was_ongoing=True))
 
+    elif queue == 'duplicates':
+        DBDiscussionSession.query(ReviewDuplicate).get(uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
+        success = _t.get(_.dataRemoved)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid, was_ongoing=True))
+
     else:
         error = _t.get(_.internalKeyError)
 
@@ -324,6 +363,39 @@ def __revoke_decision_and_implications(type, reviewer_type, uid):
     db_review = DBDiscussionSession.query(type).get(uid)
     db_review.set_revoked(True)
     en_or_disable_object_of_review(db_review, False)
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def __rebend_objects_of_duplicate_review(db_review):
+    logger('review_history_helper', '__rebend_objects_of_duplicate_review', 'review: ' + str(db_review.uid))
+
+    db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
+    db_statement.set_disable(False)   # TODO reset more than this ?
+    DBDiscussionSession.add(db_statement)
+
+    db_revoked_elements = DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).all()
+    for revoke in db_revoked_elements:
+        if revoke.bend_position:
+            db_statement = DBDiscussionSession.query(Statement).get(revoke.statement_uid)
+            db_statement.set_position(False)
+            DBDiscussionSession.add(db_statement)
+
+        if revoke.argument_uid is not None:
+            db_argument = DBDiscussionSession.query(Argument).get(revoke.argument_uid)
+            text = 'Rebend conclusion of argument {} from {} to {}'.format(revoke.argument_uid, db_argument.conclusion_uid, db_review.duplicate_statement_uid)
+            logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
+            db_argument.conclusion_uid = db_review.duplicate_statement_uid
+            DBDiscussionSession.add(db_argument)
+
+        if revoke.premise_uid is not None:
+            db_premise = DBDiscussionSession.query(Premise).get(revoke.premise_uid)
+            text = 'Rebend premise {} from {} to {}'.format(revoke.premise_uid, db_premise.statement_uid, db_review.duplicate_statement_uid)
+            logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
+            db_premise.statement_uid = db_review.duplicate_statement_uid
+            DBDiscussionSession.add(db_premise)
+    DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).delete()
 
     DBDiscussionSession.flush()
     transaction.commit()

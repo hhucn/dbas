@@ -149,14 +149,13 @@ def get_path_of_user(base_url, path, issue):
         if steps:
             tmp_list += steps
 
-    logger('Graph.lib', 'get_path_of_user', 'returning tmp statement ' + str(tmp_list))
     # return same neighbours
     if len(tmp_list) > 1:
         ret_list = [x for index, x in enumerate(tmp_list[: - 1]) if tmp_list[index] != tmp_list[index + 1]] + [tmp_list[- 1]]
     else:
         ret_list = tmp_list
 
-    logger('Graph.lib', 'get_path_of_user', 'returning statement ' + str(ret_list))
+    logger('Graph.lib', 'get_path_of_user', 'returning path ' + str(ret_list))
     return ret_list
 
 
@@ -280,15 +279,11 @@ def __collect_edges_and_conclusions_of_undercut(conclusion_uids_dict, edge_targe
     db_undercut = argument
 
     if db_target.argument_uid is None:  # first-order
-        # logger('X', '1st order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_target.conclusion_uid))
-        # logger('X', '1st order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
         conclusion_uids_dict[db_undercut.uid] = db_target.conclusion_uid
         edge_target_dict[db_undercut.uid] = db_target.uid
     # target of undercuts on undercuts
     else:  # second-order
         db_targets_target = DBDiscussionSession.query(Argument).get(db_target.argument_uid)
-        # logger('X', '2nd order', 'conclusion_uids_dict ' + str(db_undercut.uid) + ':' + str(db_targets_target.conclusion_uid))
-        # logger('X', '2nd order', 'edge_target_dict ' + str(db_undercut.uid) + ':' + str(db_target.uid))
         conclusion_uids_dict[db_undercut.uid] = db_targets_target.conclusion_uid
         edge_target_dict[db_undercut.uid] = db_target.uid
 
@@ -445,12 +440,15 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
         err1 = edge['source'] not in all_node_ids
         err2 = edge['target'] not in all_node_ids
         if err1:
-            logger('Graph.lib', 'get_d3_data', 'Source of ' + str(edge) + ' is not valid')
+            logger('Graph.lib', 'get_d3_data', 'Source of {} is not valid'.format(edge))
+            # logger('Graph.lib', 'get_d3_data', '{} is not in dict of all node ids'.format(edge['source']))
         if err2:
-            logger('Graph.lib', 'get_d3_data', 'Target of ' + str(edge) + ' is not valid')
+            logger('Graph.lib', 'get_d3_data', 'Target of {} is not valid'.format(edge))
+            # logger('Graph.lib', 'get_d3_data', '{} is not in dict of all node ids'.format(edge['target']))
         error = error or err1 or err2
     if error:
         logger('Graph.lib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
+        logger('Graph.lib', 'get_d3_data', 'List of all node ids: ' + str(all_node_ids))
         return True
     else:
         logger('Graph.lib', 'get_d3_data', 'All nodes are connected well')

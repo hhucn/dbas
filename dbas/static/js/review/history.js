@@ -7,7 +7,7 @@ $(document).ready(function () {
 	$('.review-undo').click(function(){
 		var queue = $(this).data('queue');
 		var id = $(this).data('id');
-		var revoked_argument = $('#' + id).attr('title');
+		var revoked_argument = $('#' + queue + id + ' td:first-child').attr('title');
 		new ReviewHistory().showUndoPopup(queue, id, revoked_argument);
 	})
 });
