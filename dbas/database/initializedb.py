@@ -559,11 +559,22 @@ def setup_news_db(session, ui_locale):
                   author='Tobias Krauthoff',
                   news='We have a delayed christmas present for you. D-BAS reached it\'s first final version '
                        'including reCAPTCHAS and several minor fixes!')
+    news55 = News(title='Final version and Captachs',
+                  date=arrow.get('2017-01-21'),
+                  author='Tobias Krauthoff',
+                  news='Today we submitted a journal paper about D-BAS and its implementation at Springers CSCW.')
+    news56 = News(title='Experiment',
+                  date=arrow.get('2017-02-09'),
+                  author='Tobias Krauthoff',
+                  news='Last week we finished our second experiment at our professorial chair. In short we are '
+                       'very happy with the results and with the first, bigger argumentation map created by '
+                       'inexperienced participants! Now we will fix a few smaller things and looking forward '
+                       'to out first field test!')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52, news53, news54]
+                  news50, news51, news52, news53, news54, news55, news56]
     session.add_all(news_array[::-1])
     session.flush()
 
