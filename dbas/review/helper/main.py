@@ -487,29 +487,39 @@ def __bend_objects_of_duplicate_review(db_review, db_user):
     db_statement.set_disable(True)
     DBDiscussionSession.add(db_statement)
 
+    # TODO   Wrong UID, POSITION, SINGLE STATEMENT
+
     # getting all argument where the duplicated statement is used
     all_arguments = get_all_arguments_by_statement(db_review.duplicate_statement_uid, True)
     for argument in all_arguments:
-        logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Statement {} was used in argument {}'.format(db_review.duplicate_statement_uid, argument.uid))
+        text = 'Statement {} was used in argument {}'.format(db_review.duplicate_statement_uid, argument.uid)
+        used = False
 
         # recalibrate conclusion
         if argument.conclusion_uid == db_review.duplicate_statement_uid:
-            logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Reset conclusion')
-            argument.conclusion_uid = db_review.original_statement_uid
+            tmp = '{}, bend conclusion from {} to {}' .format(text, argument.conclusion_uid, db_review.original_statement_uid)
+            logger('review_main_helper', '__bend_objects_of_duplicate_review', tmp)
+            argument.set_conclusion(db_review.original_statement_uid)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, author=db_user.uid, in_argument_as_conclusion=argument.uid))
+            used = True
 
         # recalibrate premises
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
         for premise in db_premises:
             if premise.statement_uid == db_review.duplicate_statement_uid:
-                logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Reset premise')
-                premise.statement_uid = db_review.original_statement_uid
+                tmp = '{}, bend premise from {} to {}' .format(text, premise.statement_uid, db_review.original_statement_uid)
+                logger('review_main_helper', '__bend_objects_of_duplicate_review', tmp)
+                premise.set_statement(db_review.original_statement_uid)
                 DBDiscussionSession.add(premise)
                 DBDiscussionSession.add(RevokedDuplicate(author=db_user.uid,
                                                          review=db_review.uid,
                                                          in_premise_as_statement=premise.statement_uid,
                                                          premise_in_group=premise.premisesgroup_uid))
+                used = True
+
+        if not used:
+            logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Nothing was bend - undercut from {} to {}'.format(argument.uid, argument.argument_uid), error=True)
 
     DBDiscussionSession.flush()
     transaction.commit()

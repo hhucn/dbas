@@ -930,7 +930,7 @@
                         <label for="popup-duplicate-statement-text-selects" class="col-lg-2 control-label" i18n:translate="duplicate_of">Duplicate</label>
                         <div class="col-lg-10">
                             <select id="popup-duplicate-statement-text-selects" class="form-control">
-                                <option data-uid="0" i18n:translate="no_data_selected">no data selected</option>
+                                <option data-uid="0"><span i18n:translate="no_data_selected">no data selected</span></option>
                             </select>
                         </div>
                     </div>

@@ -49,14 +49,18 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, 
     elif mode == '2':  # start premise
         return_dict['distance_name'], return_dict['values'] = get_strings_for_start(value, issue, False)
     elif mode == '3':  # adding reasons
+        global mechanism
         try:
             extra = json.loads(extra)
         except TypeError:
             extra = ['', '']
-        if not isinstance(extra, list):
+        if isinstance(extra, list):
+            mechanism = 'SequenceMatcher'
+        else:
             extra = ['', '']
         count = 1000 if str(extra[0]) == 'all' else list_length
         return_dict['distance_name'], return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
+        mechanism = 'Levensthein'
     elif mode == '4':  # getting text
         return_dict = get_strings_for_search(value)
     elif mode == '5':  # getting public nicknames

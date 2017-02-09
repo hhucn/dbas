@@ -375,6 +375,8 @@ def __rebend_objects_of_duplicate_review(db_review):
     for element in db_revoked_elements:
         if element.argument_uid is not None:
             db_argument = DBDiscussionSession.query(Argument).get(element.argument_uid)
+            text = 'Rebend conclusion of argument {} from {} to {}'.format(element.argument_uid, db_argument.conclusion_uid, db_review.duplicate_statement_uid)
+            logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
             db_argument.conclusion_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_argument)
 
@@ -382,6 +384,8 @@ def __rebend_objects_of_duplicate_review(db_review):
             db_premise = DBDiscussionSession.query(Premise).filter(and_(
                 Premise.statement_uid == element.statement_uid,
                 Premise.premisesgroup_uid == element.premisesgroup_uid)).first()
+            text = 'Rebend premise from {} to {}'.format(db_premise.statement_uid, db_review.duplicate_statement_uid)
+            logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
             db_premise.statement_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_premise)
 

@@ -503,6 +503,12 @@ class Premise(DiscussionBase):
         """
         self.is_disabled = is_disabled
 
+    def set_statement(self, statement):
+        self.statement_uid = statement
+
+    def set_premisegroup(self, premisegroup):
+        self.premisesgroup_uid = premisegroup
+
 
 class Argument(DiscussionBase):
     """
@@ -548,8 +554,11 @@ class Argument(DiscussionBase):
         self.issue_uid = issue
         self.is_disabled = is_disabled
 
-    def conclusions_argument(self, argument):
-        self.argument_uid = None if argument == 0 else argument
+    def set_conclusions_argument(self, argument):
+        self.argument_uid = argument
+
+    def set_conclusion(self, conclusion):
+        self.conclusion_uid = conclusion
 
     def set_disable(self, is_disabled):
         """

@@ -133,7 +133,7 @@ class Keywords(Enum):
     andIDoBelieveArgument = 'and I do believe that this is an argument for'
     attitudeFor = 'Attitudes for'
     alreadyFlaggedByOthers = 'This argument was already reported by others!'
-    alreadyFlaggedByYou = 'You have already reported this argument!'
+    alreadyFlaggedByYou = 'You already have reported this argument/statement!'
     alreadyEditProposals = 'We could just accept just some of the proposals, because there are already proposals.'
     alreadyExecuted = 'Someone was faster, this decision is already done!'
     breadcrumbsStart = 'Start'

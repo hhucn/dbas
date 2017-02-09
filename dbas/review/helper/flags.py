@@ -10,7 +10,7 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
-    Statement, User, ReviewDuplicate
+    Statement, User, ReviewDuplicate, Premise
 from dbas.strings.keywords import Keywords as _
 
 
@@ -31,7 +31,6 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
     if not db_user:
         return '', '', _.noRights
 
-    logger('FlagingHelper', 'flag_element', 'Flag {} as {} for {} by user {}'.format(uid, 'argument' if is_argument else 'statement', reason, nickname))
     db_element = DBDiscussionSession.query(Argument if is_argument else Statement).get(uid)
 
     # we could have only one reason!
@@ -39,6 +38,7 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
 
     # sanity check
     if None in [db_element, db_user, db_reason] and reason not in ['optimization', 'duplicate']:
+        logger('FlagingHelper', 'flag_element', 'Key error', error=True)
         return '', '', _.internalKeyError
 
     argument_uid = uid if is_argument else None
@@ -47,6 +47,7 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
     # was this already flagged?
     flag_status = __get_flag_status(argument_uid, statement_uid, db_user.uid)
     if flag_status:
+        logger('FlagingHelper', 'flag_element', 'already flagged')
         # who flagged this argument?
         return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
 
@@ -208,6 +209,7 @@ def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
     :param reason_uid:
     :return:
     """
+    logger('FlagingHelper', 'flag_element', 'Flag argument/statement {}/{} by user {} for delete'.format(argument_uid, statement_uid, user_uid))
     review_delete = ReviewDelete(detector=user_uid, argument=argument_uid, statement=statement_uid, reason=reason_uid)
     DBDiscussionSession.add(review_delete)
     DBDiscussionSession.flush()
@@ -222,6 +224,7 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
     :param user_uid:
     :return:
     """
+    logger('FlagingHelper', 'flag_element', 'Flag argument/statement {}/{} by user {} for optimization'.format(argument_uid, statement_uid, user_uid))
     review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
     DBDiscussionSession.add(review_optimization)
     DBDiscussionSession.flush()
@@ -233,9 +236,11 @@ def __add_duplication_review(duplicate_statement_uid, original_statement_uid, us
 
     :param duplicate_statement_uid:
     :param original_statement_uid:
+    :param is_premisegroup:
     :param user_uid:
     :return:
     """
+    logger('FlagingHelper', 'flag_element', 'Flag statement {} by user {} as duplicate of'.format(duplicate_statement_uid, user_uid, original_statement_uid))
     review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid, original_statement=original_statement_uid)
     DBDiscussionSession.add(review_duplication)
     DBDiscussionSession.flush()

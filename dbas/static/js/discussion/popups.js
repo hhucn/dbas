@@ -299,6 +299,10 @@ function PopupHandler() {
 				var btn = $('#popup-flag-statement-accept-btn');
 				btn.off('click').removeClass('disabled');
 				btn.click(function(){
+					var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') != -1;
+					if (is_premisegroup){
+						uid = $('label[for="item_' + uid + '"]').attr('id');
+					}
 					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, oem_uid);
 				});
 			}

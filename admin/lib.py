@@ -1,7 +1,7 @@
 # Common library for Admin Component
 #
 # @author Tobias Krauthoff
-# @email krautho66@cs.uni-duesseldorf.de
+# @email krauthoff@cs.uni-duesseldorf.de
 
 
 import arrow
@@ -77,8 +77,9 @@ google_colors = [
     ['#000000'],  # black
     ['#ffffff']]  # white
 
-# list of all columns with FK of users table
-_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid', 'from_author_uid', 'to_author_uid']
+# list of all columns with FK of users/statement table
+_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid', 'from_author_uid', 'to_author_uid', 'detector_uid']
+_statement_columns = ['conclusion_uid', 'duplicate_statement_uid', 'original_statement_uid']
 
 # list of all columns, which will not be displayed
 _forbidden_columns = ['token', 'token_timestamp']
@@ -167,7 +168,7 @@ def get_table_dict(table_name, main_page):
     Returns information about a specific table
 
     :param table_name: Name of the table
-    :params main_page: URL
+    :param main_page: URL
     :return: Dictionary with head, row, count and has_elements
     """
     logger('AdminLib', 'get_table_dict', str(table_name))
@@ -293,7 +294,7 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         text, l = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
         tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(l))
 
-    elif column in ['conclusion_uid', 'duplicate_statement_uid', 'original_statement_uid']:
+    elif column in _statement_columns:
         text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
         tmp.append(str(attribute) + ' - ' + str(text))
 
