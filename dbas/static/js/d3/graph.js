@@ -982,12 +982,9 @@ function DiscussionGraph() {
             grayingElements(d);
         });
 
-        // if jsonData.path is not empty highlight path
-        if(jsonData.path.length != 0) {
+        if(jsonData.path.length != 0) { // if jsonData.path is not empty highlight path
             highlightPath(jsonData, edges);
-        }
-        // if jsonData.path is empty color issue
-        else{
+        } else{ // if jsonData.path is empty color issue
             d3.select('#circle-issue').attr('fill', grey);
         }
     }
@@ -1000,6 +997,7 @@ function DiscussionGraph() {
      */
     function highlightPath(jsonData, edges) {
         let edgesCircleId = [];
+        
         // run through all values in jsonData.path
         jsonData.path.forEach(function (d) {
             // arrays in jsonData.path
