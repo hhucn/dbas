@@ -347,6 +347,7 @@ function prepareLoginRegistrationPopup(){
 /**
  *
  * @param element
+ * @param display_at_top
  */
 function setTextWatcherInputLength(element, display_at_top){
 	var min_length = element.data('min-length');
@@ -600,10 +601,10 @@ $(document).ready(function () {
 
 	// add minimal text length field
 	$('input[data-min-length]').each(function(){
-		setTextWatcherInputLength($(this), true);
+		setTextWatcherInputLength($(this), false);
 	});
 	$('textarea[data-min-length]').each(function(){
-		setTextWatcherInputLength($(this), true);
+		setTextWatcherInputLength($(this), false);
 	});
 
 	// session expired popup

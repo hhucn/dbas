@@ -369,7 +369,7 @@ class Keywords(Enum):
     initialPosition = 'Initial Position'
     initialPositionSupport = 'What is your initial position you are supporting?'
     initialPositionAttack = 'What is your initial position you want to attack?'
-    initialPositionInterest = 'I want to talk about the position that ...'  # What is the initial position you are interested in?'
+    initialPositionInterest = 'I want to talk about the position that'  # What is the initial position you are interested in?'
     invalidEmail = 'Your mail is invalid!'
     iAcceptCounter = 'and I do accept that this is a counter-argument for'
     iAcceptArgument = 'and I do accept that this is an argument for'

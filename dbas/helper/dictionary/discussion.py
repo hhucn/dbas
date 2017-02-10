@@ -170,7 +170,8 @@ class DiscussionDictHelper(object):
             add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
         else:
             add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea)
-        add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
+        # add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
+        add_premise_text += ', ' + '...'
 
         if self.lang == 'de':
             intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
@@ -298,7 +299,8 @@ class DiscussionDictHelper(object):
                                                                   conclusion, is_supportive)
 
         elif attack == 'undercut':
-            add_premise_text = user_msg.format('', '') + ', ' + _tn.get(_.because).lower() + '...'
+            # add_premise_text = user_msg.format('', '') + ', ' + _tn.get(_.because).lower() + '...'
+            add_premise_text = user_msg.format('', '') + ', ' + '...'
 
         else:
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,

@@ -664,7 +664,7 @@ de_lang = {
     _.whatDoYouThinkArgument: 'Was halten sie von dem Argument',
     _.whatDoYouThinkOf: 'Was halten Sie von',
     _.whatDoYouThinkAboutThat: 'Was denken Sie darüber',
-    _.whatIsYourIdea: 'Ich möchte darüber reden, dass ...',
+    _.whatIsYourIdea: 'Ich möchte darüber reden, dass',
     _.whatIsYourMostImportantReasonForArgument: 'Was ist Ihr wichtigster Grund {}für{} das Argument',
     _.whatIsYourMostImportantReasonForStatement: 'Was ist Ihr wichtigster Grund {}für{} die Aussage',
     _.whatIsYourMostImportantReasonAgainstArgument: 'Was ist Ihr wichtigster Grund {}gegen{} das Argument',

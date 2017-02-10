@@ -466,6 +466,7 @@ class DictionaryHelper(object):
                                 'no_data_selected': _tn_dis.get(_.noDataSelected),
                                 'select_statement': _tn_dis.get(_.selectStatement),
                                 'select_multiple_statements': _tn_dis.get(_.selectMultipleStatementsWhichFlag),
+                                'because': _tn_dis.get(_.because).lower(),
                                 }
 
     def add_tag_text(self, is_ldap, return_dict):
