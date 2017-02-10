@@ -31,7 +31,7 @@ table_mapper = {
     'PremiseGroup'.lower(): {'table': PremiseGroup, 'name': 'PremiseGroup'},
     'Premise'.lower(): {'table': Premise, 'name': 'Premise'},
     'Argument'.lower(): {'table': Argument, 'name': 'Argument'},
-    'History'.lower(): {'table': History, 'name': 'History'},
+    # 'History'.lower(): {'table': History, 'name': 'History'},
     'VoteArgument'.lower(): {'table': VoteArgument, 'name': 'VoteArgument'},
     'VoteStatement'.lower(): {'table': VoteStatement, 'name': 'VoteStatement'},
     'Message'.lower(): {'table': Message, 'name': 'Message'},
@@ -100,7 +100,7 @@ def get_overview(page):
     general = list()
     general.append(__get_dash_dict('Issue', page + 'Issue'))
     general.append(__get_dash_dict('Language', page + 'Language'))
-    general.append(__get_dash_dict('History', page + 'History'))
+    # general.append(__get_dash_dict('History', page + 'History'))
     general.append(__get_dash_dict('RSS', page + 'RSS'))
 
     # all tables for the 'users' group

@@ -90,7 +90,7 @@ def main_page(request):
     logger('main_page', 'def', 'main, request.params: ' + str(request.params))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -122,7 +122,7 @@ def main_contact(request):
     logger('main_contact', 'def', 'main, request.params: ' + str(request.params))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -181,7 +181,7 @@ def main_settings(request):
     logger('main_settings', 'def', 'main, request.params: ' + str(request.params))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -235,7 +235,7 @@ def main_notifications(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
 
     if session_expired:
         return user_logout(request, True)
@@ -263,7 +263,7 @@ def main_news(request):
     logger('main_news', 'def', 'main')
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -311,7 +311,7 @@ def main_user(request):
         # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -349,7 +349,7 @@ def main_imprint(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -386,7 +386,7 @@ def main_publications(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -415,7 +415,7 @@ def main_rss(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -758,7 +758,7 @@ def discussion_finish(request):
     ui_locales      = get_language(request)
     nickname        = request.authenticated_userid
     session_expired = user_manager.update_last_action(nickname)
-    history_helper.save_path_in_database(nickname, request.path)
+    #  history_helper.save_path_in_database(nickname, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -884,7 +884,7 @@ def discussion_jump(request, for_api=False, api_data=None):
         arg_uid = match_dict['arg_id'] if 'arg_id' in match_dict else ''
 
     session_expired = user_manager.update_last_action(nickname)
-    history_helper.save_path_in_database(nickname, request.path, history)
+    #  history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -946,7 +946,7 @@ def main_review(request):
     ui_locales = get_language(request)
     nickname = request.authenticated_userid
     session_expired = user_manager.update_last_action(nickname)
-    history_helper.save_path_in_database(nickname, request.path)
+    #  history_helper.save_path_in_database(nickname, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -987,7 +987,7 @@ def review_content(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1036,7 +1036,7 @@ def review_history(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1066,7 +1066,7 @@ def ongoing_history(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1097,7 +1097,7 @@ def review_reputation(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    history_helper.save_path_in_database(request_authenticated_userid, request.path)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
