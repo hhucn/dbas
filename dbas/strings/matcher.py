@@ -53,7 +53,7 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, 
         global mechanism
         try:
             extra = json.loads(extra)
-        except TypeError:
+        except TypeError and json.JSONDecodeError:
             extra = ['', '']
         if isinstance(extra, list):
             mechanism = 'SequenceMatcher'
