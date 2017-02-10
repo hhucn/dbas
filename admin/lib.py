@@ -12,7 +12,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate,\
-    RevokedDuplicate  #, History
+    RevokedDuplicate  # , History
 from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _

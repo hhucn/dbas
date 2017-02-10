@@ -52,7 +52,7 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, 
     elif mode == '3':  # adding reasons
         global mechanism
         try:
-            extra = json.loads(extra)
+            extra = json.loads(extra) if extra is not None else ['', '']
         except TypeError and json.JSONDecodeError:
             extra = ['', '']
         if isinstance(extra, list):
