@@ -325,7 +325,7 @@ def save_history_in_cookie(request, path, history):
         request.response.set_cookie('_HISTORY_', history + '-' + path)
 
 
-def save_path_in_database(nickname, path, history=''):
+def save_path_in_database(nickname, path, history=''):  # TODO 322
     """
     Saves a path into the database
 

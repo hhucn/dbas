@@ -310,42 +310,42 @@
 			</div>
 		</div>
 
-		<div class="container colored-container">
-			<div class="content row">
-				<div class="col-md-12">
-					<h4><i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="last_history">Your last history</span></h4>
-
-					<div style="text-align:center;">
-						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.request_history" />
-						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.delete_history" />
-					</div>
-
-					<div id="history-table-success" class="alert alert-success hidden" role="alert">
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-						<span class="lead" i18n:translate="success" style="color: white;">Success:</span>
-						<span id="history-success-msg"></span>
-					</div>
-
-					<div id="history-table-failure" class="alert alert-danger hidden" role="alert" style="padding: 1em;">
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-						<span id="history-failure-msg"></span>
-					</div>
-
-					<div id="history-table-space">
-						<table id="history-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
-							<tr>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
+<!--		<div class="container colored-container">-->
+<!--			<div class="content row">-->
+<!--				<div class="col-md-12">-->
+<!--					<h4><i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="last_history">Your last history</span></h4>-->
+<!---->
+<!--					<div style="text-align:center;">-->
+<!--						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.request_history" />-->
+<!--						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.delete_history" />-->
+<!--					</div>-->
+<!---->
+<!--					<div id="history-table-success" class="alert alert-success hidden" role="alert">-->
+<!--						<button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
+<!--							<span aria-hidden="true">&times;</span>-->
+<!--						</button>-->
+<!--						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>-->
+<!--						<span class="lead" i18n:translate="success" style="color: white;">Success:</span>-->
+<!--						<span id="history-success-msg"></span>-->
+<!--					</div>-->
+<!---->
+<!--					<div id="history-table-failure" class="alert alert-danger hidden" role="alert" style="padding: 1em;">-->
+<!--						<button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
+<!--							<span aria-hidden="true">&times;</span>-->
+<!--						</button>-->
+<!--						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>-->
+<!--						<span id="history-failure-msg"></span>-->
+<!--					</div>-->
+<!---->
+<!--					<div id="history-table-space">-->
+<!--						<table id="history-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">-->
+<!--							<tr>-->
+<!--							</tr>-->
+<!--						</table>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/settings.js')}"></script>
 
