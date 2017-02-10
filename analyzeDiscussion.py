@@ -18,6 +18,14 @@ print(' ----------------- ')
 print('')
 
 db_issue = session.query(Issue).filter_by(title='Verbesserung des Informatik-Studiengangs').first()
+if db_issue is None:
+    print('WRONG DATABASE')
+    exit()
+elif db_issue.is_disabled:
+    print('ISSUE DISABLED')
+    exit()
+
+print(str(db_issue.title))
 
 db_users = session.query(User).all()
 db_users = [user for user in db_users if user.nickname != 'anonymous' and user.nickname != 'admin']
@@ -37,8 +45,9 @@ db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
 db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid,
                                                               Statement.is_disabled == True)).all()
 print('Statements:')
-print('  - count:    ' + str(len(db_statements)))
-print('  - disabled: ' + str(len(db_disabled_statements)))
+print('  - count:     ' + str(len(db_statements)))
+print('  - disabled:  ' + str(len(db_disabled_statements)))
+print('  - positions: ' + str(len([statement for statement in db_statements if statement.is_startpoint])))
 print('')
 
 db_arguments = session.query(Argument).filter_by(issue_uid=db_issue.uid)
