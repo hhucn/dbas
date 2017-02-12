@@ -9,7 +9,8 @@ $(document).ready(function () {
 		new AjaxMainHandler().ajaxLogin($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
 	});
 	
-	new AdminAjaxHandler().updateCountBadges();
+	if ($('.batman').length == 0)
+		new AdminAjaxHandler().updateCountBadges();
 	
 	const data = $('#data');
 	

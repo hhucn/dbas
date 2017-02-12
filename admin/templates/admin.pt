@@ -58,6 +58,84 @@
 
                 </div>
             </div>
+
+            <div class="container">
+                <!--batman-->
+                <div class="batman">
+                    <!--face-->
+                    <div class="center-block" id="face">
+                        <!--ear-->
+                        <div>
+                            <div class="ear1"></div>
+                            <div class="ear2"></div>
+                        </div>
+                        <!--face shading-->
+                        <div class="face_shade"></div>
+                        <!--face shine-->
+                        <div>
+                            <div class="circle1"></div>
+                            <div class="circle2"></div>
+                        </div>
+                        <!--lower face-->
+                        <div>
+                            <div class="lower_face_shade"></div>
+                            <div class="lower_face"></div>
+                            <div class="mouth"></div>
+                            <div class="chin"></div>
+                        </div>
+                        <!--eyes-->
+                        <div>
+                            <div class="eye1">
+                                <div class="eyebrow"></div>
+                            </div>
+                            <div class="eye1 eye2">
+                                <div class="eyebrow"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--lower body,hands, and cape-->
+                    <div class="center-block" id="cape">
+                        <!--hands-->
+                        <div class="hands center-block">
+                            <div class="hand1"></div>
+                            <div class="hand1 hand2"></div>
+                        </div>
+                        <!--torso-->
+                        <div class="center-block" id="torso">
+                            <div class="torso_shade"></div>
+                            <!--belt-->
+                                <div class="dark1"></div>
+                                <div class="belt-position">
+                                     <div class="belt">
+                                       <div class="belt_"></div>
+                                     </div>
+                                     <div class="belt1">
+                                        <div class="belt_1"></div>
+                                     </div>
+                                    <div class="belt2">
+                                        <div class="belt_2"></div>
+                                    </div>
+                                    <div class="belt3"></div>
+                                    <div class="belt4"></div>
+                                </div>
+                            <!--bat sign-->
+                            <div class="bat-sign">
+                                <div class="bat"></div>
+                                <div class="lower_tail"></div>
+                                <div class="white_shine"></div>
+                                <div class="white_shine rotate"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--batman's shadow-->
+                <div class="scaling">
+                    <div class="center-block batman_shadow">
+
+                    </div>
+                </div>
+            </div>
+        <p class="text-center lead">You are the admin D-BAS deserves, but not the one it needs right now.</p>
 		</div>
 
         <div id="admin-overview" class="container" tal:condition="extras.is_admin">
