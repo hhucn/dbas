@@ -481,7 +481,7 @@ def get_text_for_support(db_arg, argument_text, nickname, main_page, _t):
             intro = _t.get(_.goodPointAndUserIsInterestedTooF)
         intro = intro.format(b, e, author, b, e, argument_text)
     else:
-        intro = _t.get(_.goodPointAndUserIsInterestedToo).format(b, e, argument_text)
+        intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(b, e, argument_text)
 
     question = '<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?'
 

@@ -391,7 +391,7 @@ class Keywords(Enum):
     jumpAnswer4 = 'Wrong, the {} does not hold.'
     supportAnswer0 = 'I accept the {}.'
     supportAnswer1 = 'I want to add a new {}.'
-    supportAnswer2 = 'The {} does not support it.'
+    supportAnswer2 = 'The {} does not support the {}.'
     supportAnswer3 = 'The {} does not hold.'
     justLookDontTouch = 'Just look, do not touch anything!'
     keyword = 'Keyword'

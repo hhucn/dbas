@@ -12,6 +12,7 @@ from dbas.database.discussion_model import Argument, Statement, Premise, Issue, 
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
+from dbas.helper.query import get_another_argument_with_same_support_and_conclusion
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, get_support_to_argument_text_list
 from dbas.strings.translator import Translator
@@ -184,7 +185,7 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
-    def get_array_for_justify_argument(self, argument_uid, attack_type, logged_in, nickname):
+    def get_array_for_justify_argument(self, argument_uid, attack_type, logged_in, nickname, history):
         """
         Prepares the dict with all items for a step in discussion, where the user justifies his attack she has done.
 
@@ -224,7 +225,20 @@ class ItemDictHelper(object):
                                                             restriction_on_arg_uids=attacking_arg_uids,
                                                             history=self.path)
 
-            url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
+            the_other_one = True
+            url = ''
+            if 'end' in attack or random.uniform(0, 1) > 0.5:  # TODO 343
+                new_arg = get_another_argument_with_same_support_and_conclusion(argument.uid, history)
+                the_other_one = new_arg is None
+                logger('X', 'X', '1')
+                if new_arg:
+                    the_other_one = False
+                    url = _um.get_url_for_support_each_other(True, argument.uid, new_arg.uid)
+                    logger('X', 'X', '2 ' + str(the_other_one))
+                    logger('X', 'X', url)
+
+            if the_other_one:
+                url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                                               is_flagable=True,
                                                               is_author=is_author_of_argument(nickname, argument.uid),
@@ -691,7 +705,7 @@ class ItemDictHelper(object):
 
         elif len_undercut == 1:
             arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True)
-            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)  # TODO
+            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
             url1 = None
             url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 't', 'undercut')
             url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)

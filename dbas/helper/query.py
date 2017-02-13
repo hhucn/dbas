@@ -444,6 +444,36 @@ def get_logfile_for_statements(uids, lang, main_page):
     return main_dict
 
 
+def get_another_argument_with_same_support_and_conclusion(uid, history):
+    """
+
+    :param uid:
+    :param history:
+    :return:
+    """
+    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
+    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
+    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
+    db_arg = DBDiscussionSession.query(Argument).get(uid)
+    if not db_arg:
+        return None
+
+    if db_arg.conclusion_uid is None:
+        return None
+
+    # get forbidden uids
+    splitted_histoy = history.split('-')
+    forbidden_uids = [history.split('/')[2] for history in splitted_histoy if 'reaction' in history] + [uid]
+
+    db_supports = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_arg.conclusion_uid,
+                                                                  Argument.is_supportive == db_arg.is_supportive,
+                                                                  ~Argument.uid.in_(forbidden_uids))).all()
+    if len(db_supports) == 0:
+        return None
+
+    return db_supports[random.randint(0, len(db_supports) - 1)]
+
+
 def __get_logfile_dict(textversion, main_page, lang):
     db_author = DBDiscussionSession.query(User).get(textversion.author_uid)
     corr_dict = dict()

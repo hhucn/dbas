@@ -217,7 +217,8 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_argument(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, relation, nickname, history):
+def preparation_for_justify_argument(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales,
+                                     request_authenticated_userid, relation, nickname, history):
     """
 
     :param request:
@@ -238,7 +239,7 @@ def preparation_for_justify_argument(request, for_api, main_page, slug, statemen
 
     # justifying argument
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-    item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname)
+    item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname, history)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request,
                                               argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api,
