@@ -7,7 +7,6 @@ $(function () {
 	if (window.location.href.indexOf(mainpage + 'user/') == -1){
 		return;
 	}
-	'use strict';
 
 	// send notification to users
 	$('#send-notification').each(function () {

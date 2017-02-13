@@ -156,9 +156,8 @@ function PasswordHandler(){
 		var password = '';
 		var i = 0;
 		while (!(upperCase.test(password) && lowerCase.test(password) && numbers.test(password) && specialchars.test(password))) {
-			i = 0;
 			password = '';
-			for (i; i < 8; i = i + 1) {
+			for (i = 0; i < 8; i = i + 1) {
 				password += keylist.charAt(Math.floor(Math.random() * keylist.length));
 			}
 		}

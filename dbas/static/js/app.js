@@ -570,7 +570,6 @@ $(document).ready(function () {
 	});
 	
 	
-	'use strict';
 	var path = window.location.href;
 	var lang = $('#hidden_language').val();
 
