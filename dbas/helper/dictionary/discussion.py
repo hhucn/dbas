@@ -539,7 +539,7 @@ class DiscussionDictHelper(object):
                                                is_supportive=db_arg_user.is_supportive, lang=self.lang, nickname=nickname)
         bubbles_array.append(bubble_user)
 
-        bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+        bubble = create_speechbubble_dict(is_system=True, uid='question-bubble-' + str(uid_system), message=text, omit_url=True, lang=self.lang)
         bubbles_array.append(bubble)
 
         return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
