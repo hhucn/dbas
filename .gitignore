@@ -59,6 +59,7 @@ dbas/static/rss/*
 .babelrc
 startSession.py
 getMails.py
+out.js
 
 # node
 node_modules/
