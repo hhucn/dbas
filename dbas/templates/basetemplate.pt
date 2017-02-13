@@ -100,12 +100,12 @@
     <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery/jquery.slimscroll-1.3.8.min.js')}"></script>
 
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/ids.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/guided-tour.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/app.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/sharing.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/strings.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/settings.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/ids.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/guided-tour.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/app.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/sharing.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/strings.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/settings.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/popups.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
@@ -121,7 +121,7 @@
     <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/user.js')}"></script>
 
     <script type="text/javascript" src="${request.static_url('dbas:static/js/dolan.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('dbas:static/js/socketio/socket.io-1.4.5.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/socket.io-1.4.5.js')}"></script>
     <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}"></script>
 	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}"></script>-->
 
