@@ -38,7 +38,6 @@ function setGlobalErrorHandlerWithoutIds(){
 }
 
 $(document).ready(function mainDocumentReady() {
-	return;
 	/*
 	var splitted = navigator.sayswho.split(' ');
 	var browser = splitted[0];
