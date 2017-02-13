@@ -13,7 +13,7 @@ from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list
+from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, get_support_to_argument_text_list
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from dbas.helper.voting import add_seen_argument, add_seen_statement
@@ -616,7 +616,6 @@ class ItemDictHelper(object):
         :param arg_uid:
         :param slug:
         :param for_api:
-        :param history:
         :return:
         """
         item_text = get_jump_to_argument_text_list(self.lang)
@@ -624,6 +623,32 @@ class ItemDictHelper(object):
 
         answers = list()
         for i in range(0, 5):
+            if url[i]:
+                answers.append({'text': item_text[i], 'url': url[i]})
+
+        statements_array = []
+        for no in range(0, len(answers)):
+            arr = [{'title': answers[no]['text'], 'id': 0}]
+            statements_array.append(self.__create_answer_dict('jump' + str(no), arr, 'jump', answers[no]['url']))
+
+        return {'elements': statements_array, 'extras': {'cropped_list': False}}
+
+    def get_array_for_support(self, arg_uid, slug, for_api, only_include_reason=False):
+        """
+
+        :param arg_uid:
+        :param slug:
+        :param for_api:
+        :param only_include_assertion:
+        :return:
+        """
+        item_text = get_support_to_argument_text_list(self.lang)
+        url = self.__get_url_for_jump_array(slug, for_api, arg_uid)
+        del url[3]  # remove step, where we could attack the premise
+        url[1], url[3] = url[3], url[1]
+
+        answers = list()
+        for i in range(0, 4):
             if url[i]:
                 answers.append({'text': item_text[i], 'url': url[i]})
 

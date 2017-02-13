@@ -179,6 +179,18 @@ class UrlManager(object):
         url = self.slug + '/jump/' + str(argument_uid)
         return self.__return_discussion_url(as_location_href, url)
 
+    def get_url_for_support_each_other(self, as_location_href, argument_uid_user, argument_uid_system):
+        """
+        TODO
+
+        :param as_location_href:
+        :param argument_uid_user:
+        :param argument_uid_system:
+        :return:
+        """
+        url = self.slug + '/support/' + str(argument_uid_user) + '/' + str(argument_uid_system)
+        return self.__return_discussion_url(as_location_href, url)
+
     def get_last_valid_url_before_reaction(self, as_location_href):
         """
 

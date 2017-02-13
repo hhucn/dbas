@@ -356,8 +356,8 @@ def get_jump_to_argument_text_list(lang):
     """
     _t = Translator(lang)
 
-    tag_premise = '<' + tag_type + ' data-argumentation-type="argument">'
-    tag_conclusion = '<' + tag_type + ' data-argumentation-type="attack">'
+    tag_premise = '<' + tag_type + ' data-argumentation-type="attack">'
+    tag_conclusion = '<' + tag_type + ' data-argumentation-type="argument">'
     tag_end = '</' + tag_type + '>'
     premise = tag_premise + (_t.get(_.reason).lower() if lang != 'de' else _t.get(_.reason)) + tag_end
     conclusion = tag_conclusion + (
@@ -370,6 +370,31 @@ def get_jump_to_argument_text_list(lang):
     answers.append(_t.get(_.jumpAnswer2).format(conclusion, premise))
     answers.append(_t.get(_.jumpAnswer3).format(conclusion, premise))
     answers.append(_t.get(_.jumpAnswer4).format(premise))
+
+    return answers
+
+
+def get_support_to_argument_text_list(lang):
+    """
+
+    :param lang: ui_locales
+    :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not lead to the conclusion, both hold]
+    """
+    _t = Translator(lang)
+
+    tag_premise = '<' + tag_type + ' data-argumentation-type="attack">'
+    tag_conclusion = '<' + tag_type + ' data-argumentation-type="argument">'
+    tag_end = '</' + tag_type + '>'
+    premise = tag_premise + (_t.get(_.reason).lower() if lang != 'de' else _t.get(_.reason)) + tag_end
+    conclusion = tag_conclusion + (
+        _t.get(_.assertion).lower() if lang != 'de' else _t.get(_.assertion)) + tag_end
+
+    answers = list()
+
+    answers.append(_t.get(_.supportAnswer0).format(premise))
+    answers.append(_t.get(_.supportAnswer3).format(premise))
+    answers.append(_t.get(_.supportAnswer1).format(premise))
+    answers.append(_t.get(_.supportAnswer2).format(premise, conclusion))
 
     return answers
 
@@ -438,6 +463,29 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     e = '</' + tag_type + '>'
     sys_text = confrontation_text + b + '.<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?' + e
     return sys_text, gender
+
+
+def get_text_for_support(db_arg, argument_text, nickname, main_page, _t):
+    """
+
+    :param uid:
+    :return:
+    """
+    b = '<' + tag_type + '>'
+    e = '</' + tag_type + '>'
+    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_arg, nickname)
+    if is_okay:
+        if gender == 'm':
+            intro = _t.get(_.goodPointAndUserIsInterestedTooM)
+        else:
+            intro = _t.get(_.goodPointAndUserIsInterestedTooF)
+        intro = intro.format(b, e, author, b, e, argument_text)
+    else:
+        intro = _t.get(_.goodPointAndUserIsInterestedToo).format(b, e, argument_text)
+
+    question = '<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?'
+
+    return intro + question
 
 
 def get_text_for_edit_text_message(lang, nickname, original, edited, url, for_html=True):

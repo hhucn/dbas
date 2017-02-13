@@ -11,10 +11,10 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
-    get_text_for_add_premise_container, get_text_for_confrontation
+    get_text_for_add_premise_container, get_text_for_confrontation, get_text_for_support, \
+    get_name_link_of_arguments_author
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from dbas.strings.text_generator import get_name_link_of_arguments_author
 from dbas.review.helper.queues import get_complete_review_count
 
 
@@ -250,7 +250,7 @@ class DiscussionDictHelper(object):
 
         add_premise_text = self.__get_add_premise_text_for_justify_argument(confrontation, premise, attack,
                                                                             conclusion, db_argument, is_supportive,
-                                                                            user_msg, _tn)
+                                                                            user_msg)
         start = '<{} data-argumentation-type="position">'.format(tag_type)
         end = '</{}>'.format(tag_type)
         user_msg = user_msg.format(start, end)
@@ -285,7 +285,7 @@ class DiscussionDictHelper(object):
                 'arg_uid': uid}
 
     def __get_add_premise_text_for_justify_argument(self, confrontation, premise, attack, conclusion, db_argument,
-                                                    is_supportive, user_msg, _tn):
+                                                    is_supportive, user_msg):
         if attack == 'undermine':
             add_premise_text = get_text_for_add_premise_container(self.lang, confrontation, premise, attack,
                                                                   conclusion, db_argument.is_supportive)
@@ -476,7 +476,7 @@ class DiscussionDictHelper(object):
 
         return user_text, sys_text, gender_of_counter_arg, db_confrontation
 
-    def get_dict_for_jump(self, uid, history):
+    def get_dict_for_jump(self, uid, nickname, history):
         """
         Prepares the discussion dict with all bubbles for the jump step
 
@@ -486,6 +486,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'get_dict_for_jump', 'argument ' + str(uid))
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
+        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, nickname, self. lang, self.main_page, self.slug)
 
         splitted_history = history.split('-')
         coming_from_jump = '/jump' in history[:-1] if len(splitted_history) > 0 else False
@@ -504,8 +505,44 @@ class DiscussionDictHelper(object):
 
         text = intro + argument_text + '?'
         bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+        bubbles_array.append(bubble)
 
-        return {'bubbles': [bubble], 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
+        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
+
+    def get_dict_for_supporting_each_other(self, uid_system, uid_user, nickname, main_page):
+        """
+
+        :param uid_system:
+        :param uid_user:
+        :param nickname:
+        :param main_page:
+        :return:
+        """
+        logger('DictionaryHelper', 'get_dict_for_supporting_each_other', str(uid_system))
+        _tn = Translator(self.lang)
+        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, nickname, self. lang, self.main_page, self.slug)
+        db_arg_system = DBDiscussionSession.query(Argument).get(uid_system)
+        db_arg_user = DBDiscussionSession.query(Argument).get(uid_user)
+
+        argument_text = get_text_for_argument_uid(uid_system, colored_position=True, with_html_tag=True, attack_type='jump')
+
+        offset = len('</' + tag_type + '>') if argument_text.endswith('</' + tag_type + '>') else 1
+        while argument_text[:-offset].endswith(('.', '?', '!')):
+            argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
+
+        text = get_text_for_support(db_arg_system, argument_text, nickname, main_page, _tn)
+
+        self.__append_now_bubble(bubbles_array)
+
+        user_text = get_text_for_argument_uid(uid_user)
+        bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid_user,
+                                               is_supportive=db_arg_user.is_supportive, lang=self.lang, nickname=nickname)
+        bubbles_array.append(bubble_user)
+
+        bubble = create_speechbubble_dict(is_system=True, message=text, omit_url=True, lang=self.lang)
+        bubbles_array.append(bubble)
+
+        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
 
     def get_dict_for_jump_decision(self, uid):
         """
