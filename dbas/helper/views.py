@@ -374,9 +374,13 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     else:
         logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' exists')
         if is_ldap:
-            user_data = verify_ldap_user_data(request, nickname, password)
+            local_login = db_user.validate_password(password)
 
-            if not user_data and not db_user.validate_password(password):  # check password
+            user_data = None
+            if not local_login:
+                user_data = verify_ldap_user_data(request, nickname, password)
+
+            if user_data is None and not local_login:  # check password
                 logger('ViewHelper', 'login_user', 'wrong password')
                 error = _tn.get(_.userPasswordNotMatch)
                 return error
