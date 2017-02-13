@@ -227,15 +227,14 @@ class ItemDictHelper(object):
 
             the_other_one = True
             url = ''
+
+            # with a chance of 50% or at the end we will seed the new "support step"
             if 'end' in attack or random.uniform(0, 1) > 0.5:  # TODO 343
                 new_arg = get_another_argument_with_same_support_and_conclusion(argument.uid, history)
                 the_other_one = new_arg is None
-                logger('X', 'X', '1')
                 if new_arg:
                     the_other_one = False
                     url = _um.get_url_for_support_each_other(True, argument.uid, new_arg.uid)
-                    logger('X', 'X', '2 ' + str(the_other_one))
-                    logger('X', 'X', url)
 
             if the_other_one:
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
