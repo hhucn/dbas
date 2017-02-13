@@ -28,7 +28,7 @@
                             <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                <input id="admin-login-user" type="text" class="form-control" autocomplete="on" placeholder="Democrator" autofocus>
+                                <input id="admin-login-user" type="text" class="form-control" autocomplete="on" placeholder="Bruce Wayne" autofocus>
                             </div>
                         </div>
                         <div class="form-group">
@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <div class="container">
+            <div class="container batman-container">
                 <!--batman-->
                 <div class="batman">
                     <!--face-->
@@ -135,7 +135,9 @@
                     </div>
                 </div>
             </div>
-        <p class="text-center lead">You are the admin D-BAS deserves, but not the one it needs right now.</p>
+
+            <p class="text-center lead">You are the admin D-BAS deserves, but not the one it needs right now.</p>
+
 		</div>
 
         <div id="admin-overview" class="container" tal:condition="extras.is_admin">
