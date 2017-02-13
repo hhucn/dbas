@@ -58,7 +58,8 @@
 
                 </div>
             </div>
-
+        </div>
+        <div tal:condition="not:extras.is_admin" >
             <div class="container batman-container">
                 <!--batman-->
                 <div class="batman">

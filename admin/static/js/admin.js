@@ -6,7 +6,9 @@
 // main function
 $(document).ready(function () {
 	$('#admin-login-button').click(function(){
-		new AjaxMainHandler().ajaxLogin($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
+		var user = $('#admin-login-user').val();
+		var pw = $('#admin-login-pw').val();
+		new AjaxMainHandler().ajaxLogin(user, pw, true);
 	});
 	
 	if ($('.batman').length == 0)
