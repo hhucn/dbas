@@ -349,6 +349,24 @@ function Main () {
 				sidebar.height(sidebar.height() - parseInt(container.attr('data-add-height')));
 			}, 400);
 		});
+		
+		// star click
+		$('.' + checkAsUsersOpinion).click(function(){
+			alert('todo1');
+		}).hover(function(){
+			$(this).removeClass('fa-star-o').addClass('fa-star');
+		}, function(){
+			$(this).removeClass('fa-star').addClass('fa-star-o');
+		});
+		
+		$('.' + uncheckAsUsersOpinion).click(function(){
+			alert('todo2');
+		}).hover(function(){
+			$(this).removeClass('fa-star').addClass('fa-star-o');
+		}, function(){
+			$(this).removeClass('fa-star-o').addClass('fa-star');
+		});
+		
 	};
 	
 	/**

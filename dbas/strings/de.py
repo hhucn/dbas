@@ -430,6 +430,8 @@ de_lang = {
     _.medium: 'mittel',
     _.minLength: 'Mindestlänge',
     _.myArgument: 'mein Argument',
+    _.mark_as_opnion: 'Klicken Sie, um dies als Ihre Meinung zu markieren',
+    _.unmark_as_opinon: 'Klicken Sie, um sich von dieser Meinung zu entfernen',
     _.newNotification: 'Sie haben eine neue Benachrichtigung.',
     _.newMention: 'Sie wurden in einem Beitrag erwähnt.',
     _.newPremiseRadioButtonText: 'Nichts von all dem. Ich möchte einen neuen Grund angeben!',

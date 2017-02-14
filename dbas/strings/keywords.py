@@ -425,6 +425,8 @@ class Keywords(Enum):
     medium = 'medium'
     minLength = 'Minimal length'
     myArgument = 'my argument'
+    mark_as_opnion = 'Click to mark this as your opinion'
+    unmark_as_opinon = 'Click to remove this as your opinion'
     next = 'Next Entry'
     now = 'Now'
     nowYouSayThat = 'Now you say that'

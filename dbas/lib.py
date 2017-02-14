@@ -714,7 +714,8 @@ def get_user_by_case_insensitive_public_nickname(public_nickname):
 
 def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flagable=False,
                              is_author=False, uid='', url='', message='', omit_url=False, argument_uid=None,
-                             statement_uid=None, is_supportive=None, nickname='anonymous', lang='en'):
+                             statement_uid=None, is_supportive=None, nickname='anonymous', lang='en',
+                             is_users_opinion=False):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
@@ -764,7 +765,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
               'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
               'data_argument_uid': str(argument_uid), 'data_statement_uid': str(statement_uid),
               'data_is_supportive': str(is_supportive),
-              # 'url': url if len(str(url)) > 0 else 'None'
+              'is_users_opinion': is_users_opinion
               }
 
     votecount_keys = __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
