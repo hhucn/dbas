@@ -154,17 +154,17 @@
                             <table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
                                 <tr>
                                     <td>
-                                        <span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>
-                                        <a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
-                                    </td>
-                                    <td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span>
+                                        <span class="lead" i18n:translate="discussion_votes_statements">Votes for Statements</span>
                                         <a href="#"><i id="info-vote-statements" class="fa fa-info-circle"></i></a>
                                     </td>
                                     <td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="lead" i18n:translate="discussion_votes_arguments">Votes for Arguments</span>
+                                        <a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
+                                    </td>
+                                    <td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -305,17 +305,17 @@
 						</tr>
 						<tr>
 							<td>
-								<span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>
-								<a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span>
+								<span class="lead" i18n:translate="discussion_votes_statements">Votes for Statements</span>
 								<a href="#"><i id="info-vote-statements" class="fa fa-info-circle"></i></a>
 							</td>
 							<td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="discussion_votes_arguments">Votes for Arguments</span>
+								<a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
+							</td>
+							<td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
 						</tr>
 						<tr>
 							<td>

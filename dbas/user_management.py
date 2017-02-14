@@ -443,10 +443,10 @@ def get_votes_of_user(user, is_argument, lang):
         vote_dict['timestamp'] = sql_timestamp_pretty_print(vote.timestamp, lang)
         if is_argument:
             vote_dict['argument_uid'] = str(vote.argument_uid)
-            vote_dict['text'] = get_text_for_argument_uid(vote.argument_uid, lang)
+            vote_dict['content'] = get_text_for_argument_uid(vote.argument_uid, lang)
         else:
             vote_dict['statement_uid'] = str(vote.statement_uid)
-            vote_dict['text'] = get_text_for_statement_uid(vote.statement_uid)
+            vote_dict['content'] = get_text_for_statement_uid(vote.statement_uid)
         return_array.append(vote_dict)
 
     return return_array
@@ -479,10 +479,10 @@ def get_clicks_of_user(user, is_argument, lang):
         vote_dict['is_valid'] = str(vote.is_valid)
         if is_argument:
             vote_dict['argument_uid'] = str(vote.argument_uid)
-            vote_dict['text'] = get_text_for_argument_uid(vote.argument_uid, lang)
+            vote_dict['content'] = get_text_for_argument_uid(vote.argument_uid, lang)
         else:
             vote_dict['statement_uid'] = str(vote.statement_uid)
-            vote_dict['text'] = get_text_for_statement_uid(vote.statement_uid)
+            vote_dict['content'] = get_text_for_statement_uid(vote.statement_uid)
         return_array.append(vote_dict)
 
     return return_array

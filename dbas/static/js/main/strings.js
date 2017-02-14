@@ -93,6 +93,7 @@ var an_anonymous_user               = 'an_anonymous_user';
 var allEditsDone                    = 'allEditsDone';
 var allStatementsPosted             = 'allStatementsPosted';
 var allGivenVotes                   = 'allGivenVotes';
+var allGivenInterests               = 'allGivenInterests';
 var author                          = 'author';
 var avatar                          = 'avatar';
 var acceptItTitle                   = 'acceptItTitle';
@@ -335,6 +336,7 @@ var dbas_en = {
     'allEditsDone': 'All edits you\'ve done',
     'allStatementsPosted': 'All statements you\'ve posted',
     'allGivenVotes': 'All Votes',
+    'allGivenInterests': 'All Interests',
     'attack': 'Attack',
     'author': 'Author',
     'because': 'because',
@@ -559,6 +561,7 @@ var dbas_de = {
     'allEditsDone': 'Alle Änderungen von Ihnen:',
     'allStatementsPosted': 'Alle Aussagen von Ihnen:',
     'allGivenVotes': 'Alle Stimmen',
+    'allGivenInterests': 'Alle Interessen',
     'attack': 'Angriff',
     'author': 'Autor',
     'because':'weil',

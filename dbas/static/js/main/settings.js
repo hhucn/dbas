@@ -227,29 +227,29 @@ function StatisticsHandler(){
 			$('#' + popupConfirmDialogId).modal('hide');
 		});
 	};
-
+	
 	/**
 	 *
 	 * @param jsonData
 	 * @param titleText
-	 * @param is_vote
+	 * @param is_clicked_element
 	 */
-	this.callbackGetStatisticsDone = function(jsonData, titleText, is_vote){
+	this.callbackGetStatisticsDone = function(jsonData, titleText, is_clicked_element){
 		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.length == 0){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
 
-		var table, tr, span_up, span_down, modalBody;
+		var table, tr, span_up, span_down;
 		table = $('<table>');
 		table.attr('class', 'table table-condensed table-hover')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		tr = $('<tr>')
-			.append($('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center'))
-			.append($('<td>').html('<strong>' + _t(date) + '</strong>').css('text-align', 'center'));
-		if (is_vote) {
+			.append($('<td>').html('<strong>' + _t(date) + '</strong>').css('text-align', 'center'))
+			.append($('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center'));
+		if (is_clicked_element) {
 			tr.append($('<td>').html('<strong>' + _t(typeofVote) + '</strong>').css('text-align', 'center'))
 				.append($('<td>').html('<strong>' + _t(valid) + '</strong>').css('text-align', 'center'));
 		}
@@ -261,13 +261,19 @@ function StatisticsHandler(){
 		$.each(parsedData, function callbackGetStatisticsDoneTableEach(key, val) {
 			tr = $('<tr>')
 				.append($('<td>').text(val.timestamp))
-				.append($('<td>').html(is_vote ? val.text : val.content));
-			if (is_vote) {
+				.append($('<td>').html(val.content));
+			if (is_clicked_element) {
 				tr.append($('<td>').html(val.is_up_vote ? span_up.clone() : span_down.clone()).css('text-align', 'center'))
 					.append($('<td>').html(val.is_valid ? checkmark : ballot).css('text-align', 'center'));
 			}
 			table.append(tr);
 		});
+		
+		this.setGuiOfCallbackStatisticsModal(table, titleText)
+	};
+	
+	this.setGuiOfCallbackStatisticsModal = function(table, titleText){
+		var modalBody;
 
 		$('#' + popupConfirmDialogId).off('hidden.bs.modal').on('hidden.bs.modal', function () {
 			// re-hanging our modal body and delete the slimscrolldiv

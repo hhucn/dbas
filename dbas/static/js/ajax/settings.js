@@ -166,7 +166,7 @@ function AjaxSettingsHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getArgumentClicksDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenInterests), true);
 		}).fail(function getArgumentClicksFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
@@ -189,7 +189,7 @@ function AjaxSettingsHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getStatementClicksDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenInterests), true);
 		}).fail(function getStatementClicksFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
@@ -199,8 +199,6 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
 	this.getArgumentVotes = function(){
-		alert('TODO 3');
-		return;
 		if ($('#' + discussionArgVoteCountId).text() == '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
@@ -214,7 +212,7 @@ function AjaxSettingsHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getArgumentVotesDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
 		}).fail(function getArgumentVotesFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
@@ -224,8 +222,6 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting all edits done by the user
 	 */
 	this.getStatementVotes = function(){
-		alert('TODO 4');
-		return;
 		if ($('#' + discussionStatVoteCountId).text() == '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
@@ -239,7 +235,7 @@ function AjaxSettingsHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getStatementVotesDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
 		}).fail(function getStatementVotesFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
