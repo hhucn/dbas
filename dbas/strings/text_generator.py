@@ -3,7 +3,7 @@
 
 from dbas.lib import get_author_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import VoteStatement, VoteArgument, User, Argument
+from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, Argument
 from sqlalchemy import and_
 from .keywords import Keywords as _
 from .translator import Translator
@@ -702,15 +702,15 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     has_other_user_opinion = False
     if is_okay:
         if user_arg.argument_uid is None:
-            db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == user_arg.argument_uid,
-                                                                          VoteArgument.author_uid == db_other_user.uid,
-                                                                          VoteArgument.is_up_vote == True,
-                                                                          VoteArgument.is_valid == True)).all()
+            db_vote = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == user_arg.argument_uid,
+                                                                             ClickedArgument.author_uid == db_other_user.uid,
+                                                                             ClickedArgument.is_up_vote == True,
+                                                                             ClickedArgument.is_valid == True)).all()
         else:
-            db_vote = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == user_arg.conclusion_uid,
-                                                                           VoteStatement.author_uid == db_other_user.uid,
-                                                                           VoteStatement.is_up_vote == True,
-                                                                           VoteStatement.is_valid == True)).all()
+            db_vote = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == user_arg.conclusion_uid,
+                                                                              ClickedStatement.author_uid == db_other_user.uid,
+                                                                              ClickedStatement.is_up_vote == True,
+                                                                              ClickedStatement.is_valid == True)).all()
         has_other_user_opinion = db_vote and len(db_vote) > 0
 
     # distinguish between reply for argument and reply for premise group
@@ -817,10 +817,10 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
     """
 
     # grep all participants who agree with the users premise
-    db_statement_votes = DBDiscussionSession.query(VoteStatement).filter(and_(
-        VoteStatement.statement_uid == statement.uid,
-        VoteStatement.is_valid == True,
-        VoteStatement.is_up_vote == True
+    db_statement_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(
+        ClickedStatement.statement_uid == statement.uid,
+        ClickedStatement.is_valid == True,
+        ClickedStatement.is_up_vote == True
     )).all()
     statement_agrees = [s.author_uid for s in db_statement_votes]
 
@@ -830,10 +830,10 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
         statement_agrees.remove(db_current_user.uid)
 
     # grep all participants who agree with system counter argument
-    db_argument_votes = DBDiscussionSession.query(VoteArgument).filter(and_(
-        VoteArgument.argument_uid == argument.uid,
-        VoteArgument.is_valid == True,
-        VoteArgument.is_up_vote == True
+    db_argument_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(
+        ClickedArgument.argument_uid == argument.uid,
+        ClickedArgument.is_valid == True,
+        ClickedArgument.is_up_vote == True
     )).all()
 
     # grep the set of participants who agree with counter and users premise
@@ -862,19 +862,19 @@ def get_author_or_first_supporter_of_argument(argument_uid, current_user):
     """
 
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-    db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(
-        VoteArgument.author_uid != db_anonymous_user.uid,
-        VoteArgument.argument_uid == argument_uid,
-        VoteArgument.is_valid == True,
-        VoteArgument.is_up_vote == True
+    db_vote = DBDiscussionSession.query(ClickedArgument).filter(and_(
+        ClickedArgument.author_uid != db_anonymous_user.uid,
+        ClickedArgument.argument_uid == argument_uid,
+        ClickedArgument.is_valid == True,
+        ClickedArgument.is_up_vote == True
     ))
 
     if current_user and db_vote:
-        db_vote = db_vote.filter(VoteArgument.author_uid != current_user.uid)
+        db_vote = db_vote.filter(ClickedArgument.author_uid != current_user.uid)
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     if db_vote:
-        db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
+        db_vote = db_vote.order_by(ClickedArgument.uid.desc()).first()
 
     if db_vote:
         return DBDiscussionSession.query(User).get(db_vote.author_uid)

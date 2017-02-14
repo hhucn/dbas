@@ -607,12 +607,12 @@ class History(DiscussionBase):
         self.timestamp = get_now()
 
 
-class VoteArgument(DiscussionBase):
+class ClickedArgument(DiscussionBase):
     """
     Vote-table with several columns for arguments.
     An argument will be voted, if the user has selected the premise and conclusion of this argument.
     """
-    __tablename__ = 'vote_arguments'
+    __tablename__ = 'clicked_arguments'
     uid = Column(Integer, primary_key=True)
     argument_uid = Column(Integer, ForeignKey('arguments.uid'))
     author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -664,12 +664,12 @@ class VoteArgument(DiscussionBase):
         self.timestamp = get_now()
 
 
-class VoteStatement(DiscussionBase):
+class ClickedStatement(DiscussionBase):
     """
     Vote-table with several columns for statements.
     A statement will be voted, if the user has selected the statement as justification or if the statement is used as part of an argument.
     """
-    __tablename__ = 'vote_statements'
+    __tablename__ = 'clicked_statements'
     uid = Column(Integer, primary_key=True)
     statement_uid = Column(Integer, ForeignKey('statements.uid'))
     author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -719,6 +719,42 @@ class VoteStatement(DiscussionBase):
         :return: None
         """
         self.timestamp = get_now()
+
+
+class MarkedArgument(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'marked_arguments'
+    uid = Column(Integer, primary_key=True)
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    author_uid = Column(Integer, ForeignKey('users.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
+    users = relationship('User', foreign_keys=[author_uid])
+
+    def __init__(self, argument, author):
+        self.argument_uid = argument
+        self.author_uid = author
+
+
+class MarkedStatement(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'marked_statements'
+    uid = Column(Integer, primary_key=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    author_uid = Column(Integer, ForeignKey('users.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+    users = relationship('User', foreign_keys=[author_uid])
+
+    def __init__(self, statement, author):
+        self.statement_uid = statement
+        self.author_uid = author
 
 
 class Message(DiscussionBase):

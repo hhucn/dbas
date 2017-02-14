@@ -1,7 +1,7 @@
 from dbas.database import DBDiscussionSession as session
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, \
     StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, \
-    Argument, History, VoteArgument, VoteStatement, Message, ReviewDelete, ReviewEdit, \
+    Argument, History, ClickedArgument, ClickedStatement, Message, ReviewDelete, ReviewEdit, \
     ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, \
     OptimizationReviewLocks, ReviewCanceled, RevokedContent, RevokedContentHistory, \
@@ -29,7 +29,7 @@ print(str(db_issue.title))
 
 db_users = session.query(User).all()
 db_users = [user for user in db_users if user.nickname != 'anonymous' and user.nickname != 'admin']
-db_votes_statements = session.query(VoteStatement).all()
+db_votes_statements = session.query(ClickedStatement).all()
 db_votes_statements = [vote for vote in db_votes_statements if session.query(Statement).get(vote.statement_uid).issue_uid == db_issue.uid]
 l = [len([vote for vote in db_votes_statements if vote.author_uid == u.uid]) for u in db_users]
 
@@ -62,8 +62,8 @@ print('  - disabled: ' + str(len(db_disabled_arguments)))
 print('')
 
 
-db_votes_arguments = session.query(VoteArgument).all()
-db_votes_statements = session.query(VoteStatement).all()
+db_votes_arguments = session.query(ClickedArgument).all()
+db_votes_statements = session.query(ClickedStatement).all()
 db_votes_arguments = [vote for vote in db_votes_arguments if session.query(Argument).get(vote.argument_uid).issue_uid == db_issue.uid]
 db_votes_statements = [vote for vote in db_votes_statements if session.query(Statement).get(vote.statement_uid).issue_uid == db_issue.uid]
 db_votes_arguments_valid = [vote for vote in db_votes_arguments if vote.is_valid]
@@ -115,8 +115,8 @@ session.query(PremiseGroup).all()
 session.query(Premise).all()
 session.query(Argument).all()
 session.query(History).all()
-session.query(VoteArgument).all()
-session.query(VoteStatement).all()
+session.query(ClickedArgument).all()
+session.query(ClickedStatement).all()
 session.query(Message).all()
 session.query(ReviewDelete).all()
 session.query(ReviewEdit).all()

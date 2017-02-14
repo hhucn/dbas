@@ -12,7 +12,7 @@ import transaction
 
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, Premise, VoteArgument, VoteStatement, User, \
+from dbas.database.discussion_model import Argument, Statement, Premise, ClickedArgument, ClickedStatement, User, \
     StatementSeenBy, ArgumentSeenBy
 from dbas.logger import logger
 from dbas.input_validator import is_integer
@@ -245,8 +245,8 @@ def __clear_votes_of_user(user_uid):
     :param user_uid: User.uid
     :return:
     """
-    DBDiscussionSession.query(VoteArgument).filter_by(author_uid=user_uid).delete()
-    DBDiscussionSession.query(VoteStatement).filter_by(author_uid=user_uid).delete()
+    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user_uid).delete()
+    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user_uid).delete()
 
 
 def __clear_seen_by_values_of_user(user_uid):
@@ -276,9 +276,9 @@ def __vote_argument(argument, user, is_up_vote):
 
     logger('VotingHelper', '__vote_argument', 'argument ' + str(argument.uid) + ', user ' + user.nickname)
 
-    db_all_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument.uid,
-                                                                             VoteArgument.author_uid == user.uid,
-                                                                             VoteArgument.is_valid == True))
+    db_all_valid_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == argument.uid,
+                                                                                ClickedArgument.author_uid == user.uid,
+                                                                                ClickedArgument.is_valid == True))
     db_current_vote = db_all_valid_votes.filter_by(is_up_vote=is_up_vote).first()
     db_old_votes = db_all_valid_votes.all()
 
@@ -294,17 +294,17 @@ def __vote_argument(argument, user, is_up_vote):
     db_new_vote = None
     if not db_current_vote:
         logger('VotingHelper', '__vote_argument', 'add vote for argument ' + str(argument.uid))
-        db_new_vote = VoteArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_up_vote, is_valid=True)
+        db_new_vote = ClickedArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_up_vote, is_valid=True)
         DBDiscussionSession.add(db_new_vote)
         DBDiscussionSession.flush()
 
     # do we have some inconsequences?
     db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=argument.conclusion_uid).all()
     for arg in db_arguments:
-        db_votes_for_arg = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == arg.uid,
-                                                                               VoteArgument.is_valid == True,
-                                                                               VoteArgument.author_uid == user.uid,
-                                                                               VoteArgument.is_up_vote == argument.is_supportive)).all()
+        db_votes_for_arg = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == arg.uid,
+                                                                                  ClickedArgument.is_valid == True,
+                                                                                  ClickedArgument.author_uid == user.uid,
+                                                                                  ClickedArgument.is_up_vote == argument.is_supportive)).all()
         if db_new_vote and db_new_vote in db_votes_for_arg:
             db_votes_for_arg.remove(db_new_vote)
 
@@ -329,9 +329,9 @@ def __vote_statement(statement, db_user, is_up_vote):
 
     logger('VotingHelper', '__vote_statement', 'statement ' + str(statement.uid) + ', db_user ' + db_user.nickname)
 
-    db_all_valid_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
-                                                                              VoteStatement.author_uid == db_user.uid,
-                                                                              VoteStatement.is_valid == True))
+    db_all_valid_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement.uid,
+                                                                                 ClickedStatement.author_uid == db_user.uid,
+                                                                                 ClickedStatement.is_valid == True))
     db_current_vote = db_all_valid_votes.filter_by(is_up_vote=is_up_vote).first()
     db_old_votes = db_all_valid_votes.all()
 
@@ -346,7 +346,7 @@ def __vote_statement(statement, db_user, is_up_vote):
 
     if not db_current_vote:
         logger('VotingHelper', '__vote_statement', 'add vote for statement ' + str(statement.uid))
-        db_new_vote = VoteStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=is_up_vote, is_valid=True)
+        db_new_vote = ClickedStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=is_up_vote, is_valid=True)
         DBDiscussionSession.add(db_new_vote)
         DBDiscussionSession.flush()
 

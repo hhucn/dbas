@@ -10,7 +10,7 @@ from sqlalchemy import and_
 from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
     get_undercuts_for_argument_uid
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, VoteArgument
+from dbas.database.discussion_model import Argument, User, ClickedArgument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 
@@ -313,12 +313,12 @@ def __evaluate_argument(argument_uid):
     """
     logger('RecommenderSystem', '__evaluate_argument', 'argument ' + str(argument_uid))
 
-    db_votes = DBDiscussionSession.query(VoteArgument).filter_by(argument_uid=argument_uid).all()
-    db_valid_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                                         VoteArgument.is_valid == True)).all()
-    db_valid_upvotes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                                           VoteArgument.is_valid == True,
-                                                                           VoteArgument.is_up_vote == True)).all()
+    db_votes = DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=argument_uid).all()
+    db_valid_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == argument_uid,
+                                                                            ClickedArgument.is_valid == True)).all()
+    db_valid_upvotes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == argument_uid,
+                                                                              ClickedArgument.is_valid == True,
+                                                                              ClickedArgument.is_up_vote == True)).all()
     votes = len(db_votes)
     valid_votes = len(db_valid_votes)
     valid_upvotes = len(db_valid_upvotes)

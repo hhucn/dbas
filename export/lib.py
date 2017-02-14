@@ -6,8 +6,8 @@
 from dbas.input_validator import is_integer
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, VoteArgument,\
-    VoteStatement, Issue, sql_timestamp_pretty_print
+from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, ClickedArgument,\
+    ClickedStatement, Issue, sql_timestamp_pretty_print
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
 
 
@@ -148,7 +148,7 @@ def __get_all_premises(issue, premisegroup_uid_set, lang):
 
 
 def __get_all_votearguments(argument_uid_set):
-    db_votes = DBDiscussionSession.query(VoteArgument).all()
+    db_votes = DBDiscussionSession.query(ClickedArgument).all()
     vote_dict = dict()
     for index, vote in enumerate(db_votes):
         if vote.argument_uid in argument_uid_set:
@@ -163,7 +163,7 @@ def __get_all_votearguments(argument_uid_set):
 
 
 def __get_all_votestatements(statement_uid_set):
-    db_votes = DBDiscussionSession.query(VoteStatement).all()
+    db_votes = DBDiscussionSession.query(ClickedStatement).all()
     vote_dict = dict()
     for index, vote in enumerate(db_votes):
         if vote.statement_uid in statement_uid_set:

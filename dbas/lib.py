@@ -19,7 +19,7 @@ from urllib import parse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
-    VoteArgument, VoteStatement, Group
+    ClickedArgument, ClickedStatement, Group
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import and_, func
@@ -788,19 +788,19 @@ def __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, sta
         db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
 
     if argument_uid:
-        db_votecounts = DBDiscussionSession.query(VoteArgument). \
-            filter(and_(VoteArgument.argument_uid == argument_uid,
-                        VoteArgument.is_up_vote == is_supportive,
-                        VoteArgument.is_valid,
-                        VoteArgument.author_uid != db_user.uid)). \
+        db_votecounts = DBDiscussionSession.query(ClickedArgument). \
+            filter(and_(ClickedArgument.argument_uid == argument_uid,
+                        ClickedArgument.is_up_vote == is_supportive,
+                        ClickedArgument.is_valid,
+                        ClickedArgument.author_uid != db_user.uid)). \
             all()
 
     elif statement_uid:
-        db_votecounts = DBDiscussionSession.query(VoteStatement). \
-            filter(and_(VoteStatement.statement_uid == statement_uid,
-                        VoteStatement.is_up_vote == is_supportive,
-                        VoteStatement.is_valid,
-                        VoteStatement.author_uid != db_user.uid)). \
+        db_votecounts = DBDiscussionSession.query(ClickedStatement). \
+            filter(and_(ClickedStatement.statement_uid == statement_uid,
+                        ClickedStatement.is_up_vote == is_supportive,
+                        ClickedStatement.is_valid,
+                        ClickedStatement.author_uid != db_user.uid)). \
             all()
     _t = Translator(lang)
     speech['votecounts'] = len(db_votecounts) if db_votecounts else 0

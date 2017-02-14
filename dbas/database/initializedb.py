@@ -13,7 +13,7 @@ import arrow
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Message, Settings, VoteArgument, VoteStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
+    Message, Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate
 from dbas.database.news_model import News
@@ -591,10 +591,10 @@ def drop_discussion_database(session):
     for tmp in db_textversions:
         tmp.set_statement(None)
 
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(VoteArgument).delete()) + ' in VoteArgument')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(VoteStatement).delete()) + ' in VoteStatement')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(ArgumentSeenBy).delete()) + ' in VoteArgument')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementSeenBy).delete()) + ' in VoteStatement')
+    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(ClickedArgument).delete()) + ' in ClickedArgument')
+    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(ClickedStatement).delete()) + ' in ClickedStatement')
+    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(ArgumentSeenBy).delete()) + ' in ClickedArgument')
+    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementSeenBy).delete()) + ' in ClickedStatement')
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Message).delete()) + ' in Message')
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementReferences).delete()) + ' in StatementReferences')
     logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Argument).delete()) + ' in Argument')
@@ -893,8 +893,8 @@ def setup_dummy_votes(session):
     """
     db_users = DBDiscussionSession.query(User).all()
     users = {user.nickname: user for user in db_users}
-    DBDiscussionSession.query(VoteStatement).delete()
-    DBDiscussionSession.query(VoteArgument).delete()
+    DBDiscussionSession.query(ClickedStatement).delete()
+    DBDiscussionSession.query(ClickedArgument).delete()
 
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
@@ -928,11 +928,11 @@ def setup_dummy_votes(session):
     session.flush()
 
     # random timestamps
-    db_votestatements = session.query(VoteStatement).all()
+    db_votestatements = session.query(ClickedStatement).all()
     for vs in db_votestatements:
         vs.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
-    db_votearguments = session.query(VoteArgument).all()
+    db_votearguments = session.query(ClickedArgument).all()
     for va in db_votearguments:
         va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
@@ -974,7 +974,7 @@ def __set_upvotes_for_arguments(firstnames, up_votes, argument_uid, new_votes_fo
     tmp_firstname = list(firstnames)
     for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_votes_for_arguments.append(VoteArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=True, is_valid=True))
+        new_votes_for_arguments.append(ClickedArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=True, is_valid=True))
         tmp_firstname.remove(nick)
     return new_votes_for_arguments
 
@@ -992,7 +992,7 @@ def __set_downvotes_for_arguments(firstnames, down_votes, argument_uid, new_vote
     tmp_firstname = list(firstnames)
     for i in range(1, down_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_votes_for_arguments.append(VoteArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
+        new_votes_for_arguments.append(ClickedArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
     return new_votes_for_arguments
 
 
@@ -1033,7 +1033,7 @@ def __set_upvotes_for_statements(firstnames, up_votes, statement_uid, new_votes_
     tmp_firstname = list(firstnames)
     for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_votes_for_statement.append(VoteStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=True, is_valid=True))
+        new_votes_for_statement.append(ClickedStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=True, is_valid=True))
     return new_votes_for_statement
 
 
@@ -1050,7 +1050,7 @@ def __set_downvotes_for_statements(firstnames, down_votes, statement_uid, new_vo
     tmp_firstname = list(firstnames)
     for i in range(0, down_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_votes_for_statement.append(VoteStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
+        new_votes_for_statement.append(ClickedStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
     return new_votes_for_statement
 
 

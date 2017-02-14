@@ -857,9 +857,9 @@ def __revoke_statement(db_user, statement_uid, translator):
     # db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == statement_uid,
     #                                                                              Argument.is_supportive == True,
     #                                                                              Argument.author_uid != db_user.uid)).first()
-    # db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid != db_user.uid,
-    #                                                                 VoteStatement.is_up_vote == True,
-    #                                                                 VoteStatement.is_valid == True)).first()
+    # db_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid != db_user.uid,
+    #                                                                 ClickedStatement.is_up_vote == True,
+    #                                                                 ClickedStatement.is_valid == True)).first()
     # # search new author who supported this statement
     # if db_statement_as_conclusion or db_votes:  # TODO 197 DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
     #     db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()

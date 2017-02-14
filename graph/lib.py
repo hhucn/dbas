@@ -9,7 +9,7 @@ import json
 from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, VoteStatement, Statement, \
+from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
     StatementSeenBy
 from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
@@ -83,13 +83,13 @@ def get_opinion_data(issue):
     """
     db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
     db_all_seen = DBDiscussionSession.query(StatementSeenBy)
-    db_all_votes = DBDiscussionSession.query(VoteStatement)
+    db_all_votes = DBDiscussionSession.query(ClickedStatement)
     ret_dict = dict()
     for statement in db_statements:
         db_seen = len(db_all_seen.filter_by(statement_uid=statement.uid).all())
-        db_votes = len(db_all_votes.filter(and_(VoteStatement.statement_uid == statement.uid,
-                                                VoteStatement.is_up_vote == True,
-                                                VoteStatement.is_valid == True)).all())
+        db_votes = len(db_all_votes.filter(and_(ClickedStatement.statement_uid == statement.uid,
+                                                ClickedStatement.is_up_vote == True,
+                                                ClickedStatement.is_valid == True)).all())
         ret_dict[str(statement.uid)] = (db_votes / db_seen) if db_seen != 0 else 1
 
     return ret_dict
@@ -543,9 +543,9 @@ def __get_extras_dict(statement):
     db_author   = DBDiscussionSession.query(User).get(db_textversion_author.author_uid)
     db_modifier = DBDiscussionSession.query(User).get(db_textversion_modifier.author_uid)
 
-    db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
-                                                                    VoteStatement.is_up_vote == True,
-                                                                    VoteStatement.is_valid == True)).all()
+    db_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement.uid,
+                                                                       ClickedStatement.is_up_vote == True,
+                                                                       ClickedStatement.is_valid == True)).all()
 
     return_dict = {'text': db_textversion_author.content,
                    'author': db_author.get_global_nickname(),

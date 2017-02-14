@@ -5,7 +5,7 @@ Provides helping function for getting some opinions.
 """
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, VoteArgument, VoteStatement, Premise, ArgumentSeenBy, StatementSeenBy, sql_timestamp_pretty_print
+from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise, ArgumentSeenBy, StatementSeenBy, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, get_undermines_for_argument_uid, get_supports_for_argument_uid
 from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
@@ -115,10 +115,10 @@ def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, d
             continue
 
         for uid in arg_uids_for_reactions[relation.index(rel)]:
-            db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid['id'],
-                                                                           VoteArgument.is_up_vote == True,
-                                                                           VoteArgument.is_valid == True,
-                                                                           VoteArgument.author_uid != db_user_uid)).all()
+            db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == uid['id'],
+                                                                              ClickedArgument.is_up_vote == True,
+                                                                              ClickedArgument.is_valid == True,
+                                                                              ClickedArgument.author_uid != db_user_uid)).all()
 
             for vote in db_votes:
                 voted_user = user_query.get(vote.author_uid)
@@ -186,10 +186,10 @@ def __get_opinions_for_uid(uid, is_supportive, db_user_uid, lang, _t, main_page)
         statement_dict.update(none_dict)
 
     is_supportive = (True if str(is_supportive) == 'True' else False) if is_supportive is not None else False
-    db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == uid,
-                                                                    VoteStatement.is_up_vote == is_supportive,
-                                                                    VoteStatement.is_valid == True,
-                                                                    VoteStatement.author_uid != db_user_uid)).all()
+    db_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == uid,
+                                                                       ClickedStatement.is_up_vote == is_supportive,
+                                                                       ClickedStatement.is_valid == True,
+                                                                       ClickedStatement.author_uid != db_user_uid)).all()
 
     for vote in db_votes:
         voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
@@ -261,10 +261,10 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
         for premise in db_premises:
             logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'group ' + str(uid) +
                    ' premises statement ' + str(premise.statement_uid))
-            db_votes += DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == premise.statement_uid,
-                                                                             VoteStatement.is_up_vote == True,
-                                                                             VoteStatement.is_valid == True,
-                                                                             VoteStatement.author_uid != db_user_uid)).all()
+            db_votes += DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == premise.statement_uid,
+                                                                                ClickedStatement.is_up_vote == True,
+                                                                                ClickedStatement.is_valid == True,
+                                                                                ClickedStatement.author_uid != db_user_uid)).all()
 
         for vote in db_votes:
             voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
@@ -316,10 +316,10 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
     text = get_text_for_argument_uid(argument_uid, lang)
     opinions['text'] = text[0:1].upper() + text[1:]
 
-    db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == argument_uid,
-                                                                   VoteArgument.is_up_vote == True,
-                                                                   VoteArgument.is_valid == True,
-                                                                   VoteArgument.author_uid != db_user_uid)).all()
+    db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == argument_uid,
+                                                                      ClickedArgument.is_up_vote == True,
+                                                                      ClickedArgument.is_valid == True,
+                                                                      ClickedArgument.author_uid != db_user_uid)).all()
 
     for vote in db_votes:
         voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
@@ -386,10 +386,10 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
 
 def __collect_pro_votes(statement_uid, user_uid, main_page, lang, _t):
 
-    db_pro_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                                        VoteStatement.is_up_vote == True,
-                                                                        VoteStatement.is_valid == True,
-                                                                        VoteStatement.author_uid != user_uid)).all()
+    db_pro_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement_uid,
+                                                                           ClickedStatement.is_up_vote == True,
+                                                                           ClickedStatement.is_valid == True,
+                                                                           ClickedStatement.author_uid != user_uid)).all()
     pro_array = []
     agree_dict = {}
     for vote in db_pro_votes:
@@ -408,10 +408,10 @@ def __collect_pro_votes(statement_uid, user_uid, main_page, lang, _t):
 
 
 def __collect_con_votes(statement_uid, user_uid, main_page, lang, _t):
-    db_con_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement_uid,
-                                                                        VoteStatement.is_up_vote == False,
-                                                                        VoteStatement.is_valid == True,
-                                                                        VoteStatement.author_uid != user_uid)).all()
+    db_con_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement_uid,
+                                                                           ClickedStatement.is_up_vote == False,
+                                                                           ClickedStatement.is_valid == True,
+                                                                           ClickedStatement.author_uid != user_uid)).all()
 
     con_array = []
     disagree_dict = {}
@@ -458,9 +458,9 @@ def get_infos_about_argument(uid, main_page, nickname, _t):
     :return: dict()
     """
     return_dict = dict()
-    db_votes = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == uid,
-                                                                   VoteArgument.is_valid == True,
-                                                                   VoteStatement.is_up_vote == True)).all()
+    db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == uid,
+                                                                      ClickedArgument.is_valid == True,
+                                                                      ClickedStatement.is_up_vote == True)).all()
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return return_dict
