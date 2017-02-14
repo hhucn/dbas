@@ -219,7 +219,7 @@ class DictionaryHelper(object):
         public_nick = db_user.get_global_nickname() if db_user else ''
         db_group    = DBDiscussionSession.query(Group).get(db_user.group_uid) if db_user else None
         group       = db_group.name if db_group else '-'
-        gravatar_public_url = get_public_profile_picture(db_user)
+        gravatar_public_url = get_public_profile_picture(db_user, 120)
         reputation, tmp = get_reputation_of(db_user.nickname)
 
         db_settings = DBDiscussionSession.query(Settings).get(db_user.uid) if db_user else None

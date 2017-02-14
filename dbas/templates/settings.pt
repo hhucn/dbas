@@ -85,7 +85,7 @@
 						</tr>
 					</table>
 					<div tal:condition="not:extras.use_with_ldap">
-                        <div class="center text-center" style="float:left; margin: 2em;">
+                        <div class="center text-center" style="float:left; margin: 1em;">
                             <img id="user_gravatar" class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
 						    <br>
 						    <span i18n:translate="profile_picture">Profile Picture</span>
@@ -115,52 +115,76 @@
 		<div class="container colored-container" tal:condition="extras.use_with_ldap">
 			<div class="content row">
 
-				<div class="col-md-6" id="statistics">
+				<div class="col-md-8">
 					<h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
-					<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="statements_posted">Statements posted</span>
-								<a href="#"><i id="info-statements" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="statements-done-count" style="text-align: right">${settings.statements_posted}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="edits_done">Edits done</span>
-								<a href="#"><i id="info-edits" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="edits-done-count" style="text-align: right">${settings.edits_done}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>
-								<a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span>
-								<a href="#"><i id="info-vote-statements" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="reputation">Reputation</span>
-								<a href="${request.application_url}/review/reputation"><i class="fa fa-info-circle"></i></a>
-							</td>
-							<td style="text-align: right">${settings.reputation}</td>
-						</tr>
-					</table>
+                    <div class="row">
+				        <div class="col-md-6 statistics">
+                            <table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
+                                <tr>
+                                    <td>
+                                        <span class="lead" i18n:translate="statements_posted">Statements posted</span>
+                                        <a href="#"><i id="info-statements" class="fa fa-info-circle"></i></a>
+                                    </td>
+                                    <td id="statements-done-count" style="text-align: right">${settings.statements_posted}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="lead" i18n:translate="edits_done">Edits done</span>
+                                        <a href="#"><i id="info-edits" class="fa fa-info-circle"></i></a>
+                                    </td>
+                                    <td id="edits-done-count" style="text-align: right">${settings.edits_done}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="lead" i18n:translate="discussion_clicked_statements">Clicks for Arguments</span>
+                                        <a href="#"><i id="info-click-arguments" class="fa fa-info-circle"></i></a>
+                                    </td>
+                                    <td id="discussion-arg-click-count" style="text-align: right">${settings.discussion_arg_clicks}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="lead" i18n:translate="discussion_clicked_arguments">Clicks for Statements</span>
+                                        <a href="#"><i id="info-click-statements" class="fa fa-info-circle"></i></a>
+                                    </td>
+                                    <td id="discussion-stat-click-count" style="text-align: right">${settings.discussion_stat_clicks}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6 statistics">
+                            <table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
+                                <tr>
+                                    <td>
+                                        <span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>
+                                        <a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
+                                    </td>
+                                    <td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span>
+                                        <a href="#"><i id="info-vote-statements" class="fa fa-info-circle"></i></a>
+                                    </td>
+                                    <td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="lead" i18n:translate="reputation">Reputation</span>
+                                        <a href="${request.application_url}/review/reputation"><i class="fa fa-info-circle"></i></a>
+                                    </td>
+                                    <td style="text-align: right">${settings.reputation}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+				<!--<div class="col-md-4">-->
 					<!--<div class="text-center">-->
 					<!--	<input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />-->
 					<!--</div>-->
-				</div>
+				<!--</div>-->
 
-                <div class="col-md-6" style="font-size: 14px; margin-top: 5em">
-                    <div class="center text-center" style="float:left; margin: 2em;">
+                <div class="col-md-4" style="font-size: 14px; margin-top: 5em">
+                    <div class="center text-center" style="float:left; margin: 1em;">
                         <img id="user_gravatar" class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
                         <br>
                         <span i18n:translate="profile_picture">Profile Picture</span>
@@ -274,7 +298,7 @@
 						</tr>
 						<tr>
 							<td>
-								<span class="lead" i18n:translate="discussion_clicks_arguments">Clicks for Statements</span>
+								<span class="lead" i18n:translate="discussion_clicked_arguments">Clicks for Statements</span>
 								<a href="#"><i id="info-click-statements" class="fa fa-info-circle"></i></a>
 							</td>
 							<td id="discussion-stat-click-count" style="text-align: right">${settings.discussion_stat_clicks}</td>

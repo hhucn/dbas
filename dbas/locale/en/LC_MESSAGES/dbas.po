@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-14 08:13+0100\n"
+"POT-Creation-Date: 2017-02-14 08:18+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -1411,13 +1411,13 @@ msgid "password_changed"
 msgstr "Your password was changed"
 
 #. Default: Clicks for Arguments
-#: templates/settings.pt:270
+#: templates/settings.pt:270 templates/finish.pt:46
 msgid "discussion_clicked_statements"
 msgstr "Clicked Arguments"
 
 #. Default: Clicks for Statements
-#: templates/settings.pt:277
-msgid "discussion_clicks_arguments"
+#: templates/settings.pt:277 templates/finish.pt:50
+msgid "discussion_clicked_arguments"
 msgstr "Clicked Statements"
 
 #. Default: Get In Touch With Us
@@ -1496,12 +1496,12 @@ msgid "statements_reported"
 msgstr "Statements reported"
 
 #. Default: Let's go home!
-#: templates/finish.pt:56
+#: templates/finish.pt:64
 msgid "lets_go_home"
 msgstr "Let's go home!"
 
 #. Default: Back to the discussion!
-#: templates/finish.pt:59
+#: templates/finish.pt:67
 msgid "back_to_the_discussion"
 msgstr "Back to the discussion!"
 
@@ -1959,6 +1959,9 @@ msgstr "Supports"
 #: templates/content.pt:296 templates/content.pt:297
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "discussion_clicks_arguments"
+#~ msgstr "Clicked Statements"
 
 #~ msgid "why_do_you_want_to_report"
 #~ msgstr "Why do you want to report it"
