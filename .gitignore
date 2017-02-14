@@ -44,6 +44,7 @@ gource.sh
 dbas_timelapse.mp4
 git-delete-history.sh
 *.jar
+mergeDatabase.py
 
 # Pycharm
 .idea/
