@@ -31,7 +31,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
-    process_seen_statements
+    process_seen_statements, mark_or_unmark_statement_or_argument
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
@@ -181,7 +181,7 @@ def main_settings(request):
     logger('main_settings', 'def', 'main, request.params: ' + str(request.params))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
+    #  history_helper.save_path_set_sin_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -2006,6 +2006,34 @@ def set_seen_statements(request):
 
     return json.dumps(return_dict)
 
+
+# ajax - set users opinion
+@view_config(route_name='ajax_mark_statement_or_argument', renderer='json')
+def mark_statement_or_argument(request):
+    """
+    Set statements as seen, when they were hidden
+
+    :return: json
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('mark_statement_or_argument', 'def', 'main ' + str(request.params))
+    return_dict = dict()
+    ui_locales = get_language(request)
+    _t = Translator(ui_locales)
+
+    try:
+        uid = request.params['uid']
+        is_argument = request.params['is_argument'] == 'true'
+        should_mark = request.params['should_mark'] == 'true'
+
+        success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
+        return_dict['success'] = success
+        return_dict['error'] = error
+    except KeyError as e:
+        logger('set_seen_statements', 'error', repr(e))
+        return_dict['error'] = _t.get(_.internalKeyError)
+
+    return json.dumps(return_dict)
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #

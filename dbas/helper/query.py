@@ -11,7 +11,7 @@ import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
-    RevokedContent, RevokedContentHistory, sql_timestamp_pretty_print
+    RevokedContent, RevokedContentHistory, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
     set_new_undercut, set_new_undermine_or_support_for_pgroup
@@ -211,6 +211,44 @@ def process_seen_statements(uids, nickname, translator, additional_argument=None
         add_seen_statement(uid, db_user)
 
     return error
+
+
+def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname, _t):
+    """
+
+    :param uid:
+    :param is_argument:
+    :param should_mark:
+    :param nickname:
+    :param _t:
+    :return:
+    """
+    logger('QueryHelper', 'mark_or_unmark_statement_or_argument', '{} {} {}'.format(uid, is_argument, nickname))
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    if not db_user:
+        return '', _t.get(_.internalError)
+
+    base_type = Argument if is_argument else Statement
+    table = MarkedArgument if is_argument else MarkedStatement
+    column = MarkedArgument.argument_uid if is_argument else MarkedStatement.statement_uid
+
+    db_base = DBDiscussionSession.query(base_type).get(uid)
+    if not db_base:
+        return '', _t.get(_.internalError)
+
+    if should_mark:
+        db_el = DBDiscussionSession.query(table).filter(column == uid).first()
+        logger('QueryHelper', 'mark_or_unmark_statement_or_argument', 'Element {}is present'.format('yet ' if db_el else ''))
+        if not db_el:
+            new_el = MarkedArgument(argument=uid, user=db_user.uid) if is_argument else MarkedStatement(statement=uid, user=db_user.uid)
+            DBDiscussionSession.add(new_el)
+    else:
+        DBDiscussionSession.query(table).filter(column == uid).delete()
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+    return _t.get(_.everythingSaved), ''
 
 
 def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive):

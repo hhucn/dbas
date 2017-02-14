@@ -104,6 +104,22 @@ function InteractionHandler() {
 			$('#' + popupUrlSharingInputId).val(long_url);
 		}
 	};
+	
+	this.callbackForMarkedStatementOrArgument = function (data, should_mark, callback_id){
+		var parsedData = $.parseJSON(data);
+		if (parsedData.error.length != 0) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
+			return;
+		}
+		
+		setGlobalSuccessHandler('Yeah!', parsedData.success);
+		if (should_mark){
+			$('#' + callback_id).hide().prev().show();
+		} else {
+			$('#' + callback_id).hide().next().show();
+			
+		}
+	};
 
 	/**
 	 * Callback for Fuzzy Search

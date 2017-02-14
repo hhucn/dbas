@@ -76,8 +76,10 @@
                                         <span class="triangle-content">${structure:bubble.message}</span>
                                     </a>
                                     <br>
-                                    <i class="fa fa-star user-star uncheck-as-users-opinion" aria-hidden="true" tal:condition="bubble.is_users_opinion" tal:attributes="title extras.title.unmarkAsOpinion"></i>
-                                    <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true" tal:condition="not:bubble.is_users_opinion" tal:attributes="title extras.title.markAsOpinon"></i>
+                                    <div tal:omit-tag="" tal:condition="extras.logged_in">
+                                        <i class="fa fa-star user-star uncheck-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.unmark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
+                                        <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.mark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
+                                    </div>
                                     <em class="triangle-r-info" tal:attributes="data-type bubble.data_type; data-argument-uid bubble.data_argument_uid; data-statement-uid bubble.data_statement_uid; data-votecount bubble.votecounts; data-is-supportive bubble.data_is_supportive">${bubble.votecounts_message}</em>
                                 </p>
                             </div>

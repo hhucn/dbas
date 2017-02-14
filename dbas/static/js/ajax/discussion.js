@@ -430,4 +430,35 @@ function AjaxDiscussionHandler() {
 		}).fail(function () {
 		});
 	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param is_argument
+	 * @param should_mark
+	 * @param callback_id
+	 */
+	this.markStatementOrArgument = function(uid, is_argument, should_mark, callback_id){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_mark_statement_or_argument',
+			method: 'GET',
+			dataType: 'json',
+			data: {
+				uid: uid,
+				is_argument: is_argument,
+				should_mark: should_mark
+			},
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxMarkStatementOrArgumentDone(data) {
+			new InteractionHandler().callbackForMarkedStatementOrArgument(data, should_mark, callback_id);
+		}).fail(function ajaxMarkStatementOrArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			new PopupHandler().hideAndClearUrlSharingPopup();
+		});
+		
+	}
 }

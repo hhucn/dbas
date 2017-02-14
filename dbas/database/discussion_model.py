@@ -734,9 +734,9 @@ class MarkedArgument(DiscussionBase):
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     users = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, argument, author):
+    def __init__(self, argument, user):
         self.argument_uid = argument
-        self.author_uid = author
+        self.author_uid = user
 
 
 class MarkedStatement(DiscussionBase):
@@ -752,9 +752,9 @@ class MarkedStatement(DiscussionBase):
     statements = relationship('Statement', foreign_keys=[statement_uid])
     users = relationship('User', foreign_keys=[author_uid])
 
-    def __init__(self, statement, author):
+    def __init__(self, statement, user):
         self.statement_uid = statement
-        self.author_uid = author
+        self.author_uid = user
 
 
 class Message(DiscussionBase):
