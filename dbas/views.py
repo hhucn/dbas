@@ -1274,6 +1274,38 @@ def get_all_statement_votes(request):
     return json.dumps(return_array)
 
 
+# ajax - getting all votes for arguments
+@view_config(route_name='ajax_get_all_argument_clicks', renderer='json')
+def get_all_argument_clicks(request):
+    """
+
+    :return:
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    request_authenticated_userid = request.authenticated_userid
+    user_manager.update_last_action(request_authenticated_userid)
+    logger('get_all_argument_clicks', 'def', 'main')
+    ui_locales = get_language(request)
+    return_array = user_manager.get_clicks_of_user(request_authenticated_userid, True, ui_locales)
+    return json.dumps(return_array)
+
+
+# ajax - getting all votes for statements
+@view_config(route_name='ajax_get_all_statement_clicks', renderer='json')
+def get_all_statement_clicks(request):
+    """
+
+    :return:
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    request_authenticated_userid = request.authenticated_userid
+    user_manager.update_last_action(request_authenticated_userid)
+    logger('get_all_statement_clicks', 'def', 'main')
+    ui_locales = get_language(request)
+    return_array = user_manager.get_clicks_of_user(request_authenticated_userid, False, ui_locales)
+    return json.dumps(return_array)
+
+
 # ajax - deleting complete history of the user
 @view_config(route_name='ajax_delete_user_history', renderer='json')
 def delete_user_history(request):

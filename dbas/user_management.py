@@ -12,7 +12,7 @@ import arrow
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, ClickedStatement, ClickedArgument, TextVersion, Settings, \
-    ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print
+    ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid,\
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
@@ -335,18 +335,43 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     if not user:
         return 0
 
-    db_arg_votes = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
-    db_stat_votes = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
+    db_arg = DBDiscussionSession.query(MarkedArgument).filter(ClickedArgument.author_uid == user.uid)
+    db_stat = DBDiscussionSession.query(MarkedStatement).filter(ClickedStatement.author_uid == user.uid)
 
     if limit_on_today:
         today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
-        db_arg_votes = db_arg_votes.filter(ClickedArgument.timestamp >= today)
-        db_stat_votes = db_stat_votes.filter(ClickedStatement.timestamp >= today)
+        db_arg = db_arg.filter(ClickedArgument.timestamp >= today)
+        db_stat = db_stat.filter(ClickedStatement.timestamp >= today)
 
-    db_arg_votes = db_arg_votes.all()
-    db_stat_votes = db_stat_votes.all()
+    db_arg = db_arg.all()
+    db_stat = db_stat.all()
 
-    return len(db_arg_votes), len(db_stat_votes)
+    return len(db_arg), len(db_stat)
+
+
+def get_count_of_clicks_of_user(user, limit_on_today=False):
+    """
+    Returns the count of votes of the user
+
+    :param user: User
+    :param limit_on_today: Boolean
+    :return:
+    """
+    if not user:
+        return 0
+
+    db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
+    db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
+
+    if limit_on_today:
+        today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
+        db_arg = db_arg.filter(ClickedArgument.timestamp >= today)
+        db_stat = db_stat.filter(ClickedStatement.timestamp >= today)
+
+    db_arg = db_arg.all()
+    db_stat = db_stat.all()
+
+    return len(db_arg), len(db_stat)
 
 
 def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timestamp_before=None):
@@ -394,6 +419,40 @@ def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timest
 
 
 def get_votes_of_user(user, is_argument, lang):
+    """
+
+    :param user:
+    :param is_argument:
+    :param lang:
+    :return:
+    """
+    return_array = []
+
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    if not db_user:
+        return return_array
+
+    if is_argument:
+        db_votes = DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).all()
+    else:
+        db_votes = DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=db_user.uid).all()
+
+    for vote in db_votes:
+        vote_dict = dict()
+        vote_dict['uid'] = str(vote.uid)
+        vote_dict['timestamp'] = sql_timestamp_pretty_print(vote.timestamp, lang)
+        if is_argument:
+            vote_dict['argument_uid'] = str(vote.argument_uid)
+            vote_dict['text'] = get_text_for_argument_uid(vote.argument_uid, lang)
+        else:
+            vote_dict['statement_uid'] = str(vote.statement_uid)
+            vote_dict['text'] = get_text_for_statement_uid(vote.statement_uid)
+        return_array.append(vote_dict)
+
+    return return_array
+
+
+def get_clicks_of_user(user, is_argument, lang):
     """
 
     :param user:

@@ -267,6 +267,20 @@
 						</tr>
 						<tr>
 							<td>
+								<span class="lead" i18n:translate="discussion_clicked_statements">Clicks for Arguments</span>
+								<a href="#"><i id="info-click-arguments" class="fa fa-info-circle"></i></a>
+							</td>
+							<td id="discussion-arg-click-count" style="text-align: right">${settings.discussion_arg_clicks}</td>
+						</tr>
+						<tr>
+							<td>
+								<span class="lead" i18n:translate="discussion_clicks_arguments">Clicks for Statements</span>
+								<a href="#"><i id="info-click-statements" class="fa fa-info-circle"></i></a>
+							</td>
+							<td id="discussion-stat-click-count" style="text-align: right">${settings.discussion_stat_clicks}</td>
+						</tr>
+						<tr>
+							<td>
 								<span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>
 								<a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
 							</td>

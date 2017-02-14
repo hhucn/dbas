@@ -8,7 +8,7 @@ import random
 import arrow
 import datetime
 
-from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user
+from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user, get_count_of_clicks_of_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -215,6 +215,7 @@ class DictionaryHelper(object):
         edits       = get_count_of_statements_of_user(db_user, True) if db_user else 0
         statements  = get_count_of_statements_of_user(db_user, False) if db_user else 0
         arg_vote, stat_vote = get_count_of_votes_of_user(db_user) if db_user else (0, 0)
+        arg_clicks, stat_clicks = get_count_of_clicks_of_user(db_user) if db_user else (0, 0)
         public_nick = db_user.get_global_nickname() if db_user else ''
         db_group    = DBDiscussionSession.query(Group).get(db_user.group_uid) if db_user else None
         group       = db_group.name if db_group else '-'
@@ -242,6 +243,8 @@ class DictionaryHelper(object):
             'statements_posted': statements,
             'discussion_arg_votes': arg_vote,
             'discussion_stat_votes': stat_vote,
+            'discussion_arg_clicks': arg_clicks,
+            'discussion_stat_clicks': stat_clicks,
             'send_mails': db_settings.should_send_mails if db_settings else False,
             'send_notifications': db_settings.should_send_notifications if db_settings else False,
             'public_nick': db_settings.should_show_public_nickname if db_settings else True,

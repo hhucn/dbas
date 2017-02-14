@@ -152,7 +152,55 @@ function AjaxSettingsHandler(){
 	/**
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
+	this.getArgumentClicks = function(){
+		if ($('#' + discussionArgClickCountId).text() == '0'){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
+
+		var csrf_token = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_get_all_argument_clicks',
+			method: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function getArgumentClicksDone(data) {
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
+		}).fail(function getArgumentClicksFail() {
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
+		});
+	};
+
+	/**
+	 * Ajax request for getting all edits done by the user
+	 */
+	this.getStatementClicks = function(){
+		if ($('#' + discussionStatVoteCountId).text() == '0'){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
+
+		var csrf_token = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_get_all_statement_clicks',
+			method: 'GET',
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function getStatementClicksDone(data) {
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), true);
+		}).fail(function getStatementClicksFail() {
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
+		});
+	};
+
+	/**
+	 * Ajax request for getting all arguments, which the user voted for
+	 */
 	this.getArgumentVotes = function(){
+		alert('TODO 3');
+		return;
 		if ($('#' + discussionArgVoteCountId).text() == '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
@@ -170,13 +218,14 @@ function AjaxSettingsHandler(){
 		}).fail(function getArgumentVotesFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
-
 	};
 
 	/**
 	 * Ajax request for getting all edits done by the user
 	 */
 	this.getStatementVotes = function(){
+		alert('TODO 4');
+		return;
 		if ($('#' + discussionStatVoteCountId).text() == '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
@@ -194,7 +243,6 @@ function AjaxSettingsHandler(){
 		}).fail(function getStatementVotesFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
-
 	};
 
 	/**

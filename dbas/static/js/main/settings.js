@@ -396,6 +396,14 @@ $(function () {
 		new AjaxSettingsHandler().getStatementVotes();
 	});
 
+	$('#' + infoClickArgumentsId).click(function (){
+		new AjaxSettingsHandler().getArgumentClicks();
+	});
+
+	$('#' + infoClickStatementsId).click(function (){
+		new AjaxSettingsHandler().getStatementClicks();
+	});
+
 	$('#' + settingsReceiveNotifications).change(function notificationReceiverChange() {
 		new AjaxSettingsHandler().setUserSetting($(this), 'notification');
 	});
