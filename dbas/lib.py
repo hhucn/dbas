@@ -756,11 +756,11 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     if is_user and nickname != 'anonymous':
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         db_el = None
-        if argument_uid is not None:
+        if argument_uid is not None and db_user is not None:
             db_el = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == argument_uid,
                                                                           MarkedArgument.author_uid == db_user.uid)).first()
 
-        if statement_uid is not None:
+        if statement_uid is not None and db_user is not None:
             db_el = DBDiscussionSession.query(MarkedStatement).filter(and_(MarkedStatement.statement_uid == statement_uid,
                                                                            MarkedStatement.author_uid == db_user.uid)).first()
 
