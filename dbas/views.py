@@ -64,7 +64,7 @@ from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
-version = '1.2.2'
+version = '1.2.3'
 full_version = version + 'b'
 project_name = name + ' ' + full_version
 

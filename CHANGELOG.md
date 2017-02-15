@@ -1,9 +1,10 @@
 ## 1.2.4 (2017-02-??)
-- New step, where the user gets another support/attack for the same conclusion
 - Perfomance tweaks
 
 ## 1.2.3 (2017-02-08)
 - Queue for duplicates
+- New step, where the user gets another support/attack for the same conclusion
+- Mark statements/arguments as your opinion
 
 ## 1.2.2 (2017-02-06)
 - Reworked feedback options
