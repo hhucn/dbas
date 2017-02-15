@@ -358,10 +358,6 @@ function Main () {
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');
 			ajaxHandler.markStatementOrArgument(uid, is_argument, true, id);
-		}).hover(function(){
-			$(this).removeClass('fa-star').addClass('fa-star-o');
-		}, function(){
-			$(this).removeClass('fa-star-o').addClass('fa-star');
 		});
 		
 		$('.' + uncheckAsUsersOpinion).click(function(){
@@ -371,10 +367,6 @@ function Main () {
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');
 			ajaxHandler.markStatementOrArgument(uid, is_argument, false, id);
-		}).hover(function(){
-			$(this).removeClass('fa-star-o').addClass('fa-star');
-		}, function(){
-			$(this).removeClass('fa-star').addClass('fa-star-o');
 		});
 		
 		// styling
