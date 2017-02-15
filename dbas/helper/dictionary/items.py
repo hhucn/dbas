@@ -12,7 +12,7 @@ from dbas.database.discussion_model import Argument, Statement, Premise, Issue, 
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
-from dbas.helper.query import get_another_argument_with_same_support_and_conclusion
+from dbas.helper.query import get_another_argument_with_same_conclusion
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, get_support_to_argument_text_list
 from dbas.strings.translator import Translator
@@ -166,7 +166,7 @@ class ItemDictHelper(object):
 
             logger('ItemDictHelper', 'get_array_for_justify_statement', 'take support? {}'.format(support_step))
             if support_step or 'end' in attack:  # TODO 343
-                new_arg = get_another_argument_with_same_support_and_conclusion(argument.uid, history)
+                new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 support_step = new_arg is None
                 url = ''
                 if new_arg:
@@ -241,7 +241,7 @@ class ItemDictHelper(object):
             # with a chance of 50% or at the end we will seed the new "support step"
             logger('ItemDictHelper', 'get_array_for_justify_argument', 'take support? is end: {} or rnd: {}'.format('end' in attack, support_step))
             if 'end' in attack or support_step:  # TODO 343
-                new_arg = get_another_argument_with_same_support_and_conclusion(argument.uid, history)
+                new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 the_other_one = new_arg is None
                 if new_arg:
                     the_other_one = False
