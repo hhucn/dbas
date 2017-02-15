@@ -180,7 +180,7 @@ function DiscussionGraph() {
         var height = container.outerHeight() - offset;
 
         var svg = getGraphSvg(width, height);
-        var force = getForce(width, height);
+        var force = getForce(width, height, jsonData);
 
         // zoom and pan
         var zoom = d3.behavior.zoom();
@@ -201,6 +201,13 @@ function DiscussionGraph() {
 
         // node
         var node = createNodes(svg, force, drag);
+        // update position of nodes
+        d3.selectAll(".node").each(function (d) {
+            d.x = 100,
+            d.y = 100,
+            d.px = 100,
+            d.py = 100
+        });
         var circle = setNodeProperties(node).attr('class', 'circle');
 
         // tooltip
@@ -327,16 +334,15 @@ function DiscussionGraph() {
      * @param height: height of container
      * @return force layout
      */
-    function getForce(width, height) {
+    function getForce(width, height, jsonData) {
+        let factor = jsonData.nodes.length/5 * 100;
         return d3.layout.force()
             .size([width, height])
             // nodes push each other away
-            .charge(-1000)
-            // modify linkDistance
+            .charge(-factor)
             .linkDistance(function (d) {
                   return d.size;
-            })
-            .linkStrength(1);
+            });
     }
 
     /**
