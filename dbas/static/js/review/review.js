@@ -98,6 +98,22 @@ function Review() {
 	
 	/**
 	 *
+	 * @param review_uid
+	 */
+	this.doDuplicateAck = function(review_uid){
+		new AjaxReviewHandler().reviewDuplicateStatement(true, review_uid);
+	};
+	
+	/**
+	 *
+	 * @param review_uid
+	 */
+	this.doDuplicateNack = function(review_uid){
+		new AjaxReviewHandler().reviewDuplicateStatement(false, review_uid);
+	};
+	
+	/**
+	 *
 	 */
 	this.startCountdown = function(){
 		var mm = $('#countdown_timer_min');

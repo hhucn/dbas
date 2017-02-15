@@ -10,7 +10,7 @@ import difflib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
-    sql_timestamp_pretty_print
+    sql_timestamp_pretty_print, ReviewDuplicate, LastReviewerDuplicate
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
@@ -19,7 +19,7 @@ from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
 
-pages = ['deletes', 'optimizations', 'edits']
+pages = ['deletes', 'optimizations', 'edits', 'duplicates']
 
 
 def get_subpage_elements_for(request, subpage_name, nickname, translator):
@@ -63,22 +63,33 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
         button_set['is_delete'] = True
         button_set['is_optimize'] = False
         button_set['is_edit'] = False
+        button_set['is_duplicate'] = False
 
     elif subpage_name == 'optimizations':
         subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, request.application_url)
         button_set['is_delete'] = False
         button_set['is_optimize'] = True
         button_set['is_edit'] = False
+        button_set['is_duplicate'] = False
 
     elif subpage_name == 'edits':
         subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, request.application_url)
         button_set['is_delete'] = False
         button_set['is_optimize'] = False
         button_set['is_edit'] = True
+        button_set['is_duplicate'] = False
+
+    elif subpage_name == 'duplicates':
+        subpage_dict = __get_subpage_dict_for_duplicates(request, db_user, translator, request.application_url)
+        button_set['is_delete'] = False
+        button_set['is_optimize'] = False
+        button_set['is_edit'] = False
+        button_set['is_duplicate'] = True
 
     else:
         subpage_dict = {'stats': stats, 'text': text, 'reason': reason, 'issue': issue}
 
+    logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'subpage_dict ' + str(subpage_dict))
     ret_dict['reviewed_argument'] = subpage_dict
     if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
         no_arguments_to_review = True
@@ -334,6 +345,64 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
             'text': text,
             'corrected_version': db_edit_value.content,
             'corrections': correction,
+            'reason': reason,
+            'issue': issue,
+            'extra_info': extra_info}
+
+
+def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
+    """
+
+    :param request:
+    :param db_user:
+    :param translator:
+    :param main_page:
+    :return:
+    """
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', 'main')
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
+                                                                                                'already_seen_duplicate',
+                                                                                                db_user,
+                                                                                                ReviewDuplicate,
+                                                                                                LastReviewerDuplicate)
+
+    extra_info = ''
+    # if we have no reviews, try again with fewer restrictions
+    if not db_reviews:
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '1')
+        already_seen = list()
+        extra_info = 'already_seen' if not first_time else ''
+        db_reviews = DBDiscussionSession.query(ReviewDuplicate).filter(and_(ReviewDuplicate.is_executed == False,
+                                                                            ReviewDuplicate.detector_uid != db_user.uid))
+        if len(already_reviewed) > 0:
+            logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '2')
+            db_reviews = db_reviews.filter(~ReviewDuplicate.uid.in_(already_reviewed))
+        db_reviews = db_reviews.all()
+
+    if not db_reviews:
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '3')
+        return {'stats': None,
+                'text': None,
+                'reason': None,
+                'issue': None,
+                'extra_info': None}
+
+    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
+    db_statement = DBDiscussionSession.query(Statement).get(rnd_review.duplicate_statement_uid)
+    text = get_text_for_statement_uid(db_statement.uid)
+    issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
+    reason = translator.get(_.argumentFlaggedBecauseDuplicate)
+
+    duplicate_of_text = get_text_for_statement_uid(rnd_review.original_statement_uid)
+
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+
+    already_seen.append(rnd_review.uid)
+    request.session['already_seen_duplicate'] = already_seen
+
+    return {'stats': stats,
+            'text': text,
+            'duplicate_of': duplicate_of_text,
             'reason': reason,
             'issue': issue,
             'extra_info': extra_info}

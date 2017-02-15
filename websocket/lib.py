@@ -121,7 +121,7 @@ def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
     :param nickname:
     :return:
     """
-    logger('Websocket.lib', 'send_request_for_recent_delete_review_to_socketio', 'main')
+    logger('Websocket.lib', 'send_request_for_recent_delete_review_to_socketio', 'main - nickname ' + str(nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
@@ -135,7 +135,7 @@ def send_request_for_recent_edit_review_to_socketio(nickname, main_page):
     :param nickname:
     :return:
     """
-    logger('Websocket.lib', 'send_request_for_recent_edit_review_to_socketio', 'main')
+    logger('Websocket.lib', 'send_request_for_recent_edit_review_to_socketio', 'main - nickname ' + str(nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
@@ -150,7 +150,7 @@ def send_request_for_recent_optimization_review_to_socketio(nickname, main_page)
     :param main_page:
     :return:
     """
-    logger('Websocket.lib', 'send_request_for_recent_optimization_review_to_socketio', 'main')
+    logger('Websocket.lib', 'send_request_for_recent_optimization_review_to_socketio', 'main - nickname ' + str(nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)

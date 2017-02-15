@@ -1,7 +1,7 @@
 # Common library for Admin Component
 #
 # @author Tobias Krauthoff
-# @email krautho66@cs.uni-duesseldorf.de
+# @email krauthoff@cs.uni-duesseldorf.de
 
 
 import arrow
@@ -11,7 +11,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
-    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS
+    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate, RevokedDuplicate
 from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -31,7 +31,7 @@ table_mapper = {
     'PremiseGroup'.lower(): {'table': PremiseGroup, 'name': 'PremiseGroup'},
     'Premise'.lower(): {'table': Premise, 'name': 'Premise'},
     'Argument'.lower(): {'table': Argument, 'name': 'Argument'},
-    'History'.lower(): {'table': History, 'name': 'History'},
+    # 'History'.lower(): {'table': History, 'name': 'History'},
     'VoteArgument'.lower(): {'table': VoteArgument, 'name': 'VoteArgument'},
     'VoteStatement'.lower(): {'table': VoteStatement, 'name': 'VoteStatement'},
     'Message'.lower(): {'table': Message, 'name': 'Message'},
@@ -39,16 +39,19 @@ table_mapper = {
     'ReviewEdit'.lower(): {'table': ReviewEdit, 'name': 'ReviewEdit'},
     'ReviewEditValue'.lower(): {'table': ReviewEditValue, 'name': 'ReviewEditValue'},
     'ReviewOptimization'.lower(): {'table': ReviewOptimization, 'name': 'ReviewOptimization'},
+    'ReviewDuplicate'.lower(): {'table': ReviewDuplicate, 'name': 'ReviewDuplicate'},
     'ReviewDeleteReason'.lower(): {'table': ReviewDeleteReason, 'name': 'ReviewDeleteReason'},
     'LastReviewerDelete'.lower(): {'table': LastReviewerDelete, 'name': 'LastReviewerDelete'},
     'LastReviewerEdit'.lower(): {'table': LastReviewerEdit, 'name': 'LastReviewerEdit'},
     'LastReviewerOptimization'.lower(): {'table': LastReviewerOptimization, 'name': 'LastReviewerOptimization'},
+    'LastReviewerDuplicate'.lower(): {'table': LastReviewerDuplicate, 'name': 'LastReviewerDuplicate'},
     'ReputationHistory'.lower(): {'table': ReputationHistory, 'name': 'ReputationHistory'},
     'ReputationReason'.lower(): {'table': ReputationReason, 'name': 'ReputationReason'},
     'OptimizationReviewLocks'.lower(): {'table': OptimizationReviewLocks, 'name': 'OptimizationReviewLocks'},
     'ReviewCanceled'.lower(): {'table': ReviewCanceled, 'name': 'ReviewCanceled'},
     'RevokedContent'.lower(): {'table': RevokedContent, 'name': 'RevokedContent'},
     'RevokedContentHistory'.lower(): {'table': RevokedContentHistory, 'name': 'RevokedContentHistory'},
+    'RevokedDuplicate'.lower(): {'table': RevokedDuplicate, 'name': 'RevokedDuplicate'},
     'RSS'.lower(): {'table': RSS, 'name': 'RSS'}
 }
 
@@ -75,8 +78,9 @@ google_colors = [
     ['#000000'],  # black
     ['#ffffff']]  # white
 
-# list of all columns with FK of users table
-_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid', 'from_author_uid', 'to_author_uid']
+# list of all columns with FK of users/statement table
+_user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid', 'from_author_uid', 'to_author_uid', 'detector_uid']
+_statement_columns = ['conclusion_uid', 'duplicate_statement_uid', 'original_statement_uid']
 
 # list of all columns, which will not be displayed
 _forbidden_columns = ['token', 'token_timestamp']
@@ -96,7 +100,7 @@ def get_overview(page):
     general = list()
     general.append(__get_dash_dict('Issue', page + 'Issue'))
     general.append(__get_dash_dict('Language', page + 'Language'))
-    general.append(__get_dash_dict('History', page + 'History'))
+    # general.append(__get_dash_dict('History', page + 'History'))
     general.append(__get_dash_dict('RSS', page + 'RSS'))
 
     # all tables for the 'users' group
@@ -129,12 +133,14 @@ def get_overview(page):
     reviews.append(__get_dash_dict('ReviewEditValue', page + 'ReviewEditValue'))
     reviews.append(__get_dash_dict('ReviewOptimization', page + 'ReviewOptimization'))
     reviews.append(__get_dash_dict('ReviewDeleteReason', page + 'ReviewDeleteReason'))
+    reviews.append(__get_dash_dict('ReviewDuplicate', page + 'ReviewDuplicate'))
 
     # all tables for the 'reviewer' group
     reviewer = list()
     reviewer.append(__get_dash_dict('LastReviewerDelete', page + 'LastReviewerDelete'))
     reviewer.append(__get_dash_dict('LastReviewerEdit', page + 'LastReviewerEdit'))
     reviewer.append(__get_dash_dict('LastReviewerOptimization', page + 'LastReviewerOptimization'))
+    reviewer.append(__get_dash_dict('LastReviewerDuplicate', page + 'LastReviewerDuplicate'))
 
     # all tables for the 'reputation' group
     reputation = list()
@@ -144,6 +150,7 @@ def get_overview(page):
     reputation.append(__get_dash_dict('ReviewCanceled', page + 'ReviewCanceled'))
     reputation.append(__get_dash_dict('RevokedContent', page + 'RevokedContent'))
     reputation.append(__get_dash_dict('RevokedContentHistory', page + 'RevokedContentHistory'))
+    reputation.append(__get_dash_dict('RevokedDuplicate', page + 'RevokedDuplicate'))
 
     # first row
     return_list.append([{'name': 'General', 'content': general},
@@ -163,7 +170,7 @@ def get_table_dict(table_name, main_page):
     Returns information about a specific table
 
     :param table_name: Name of the table
-    :params main_page: URL
+    :param main_page: URL
     :return: Dictionary with head, row, count and has_elements
     """
     logger('AdminLib', 'get_table_dict', str(table_name))
@@ -289,7 +296,7 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         text, l = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
         tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(l))
 
-    elif column == 'conclusion_uid':
+    elif column in _statement_columns:
         text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
         tmp.append(str(attribute) + ' - ' + str(text))
 

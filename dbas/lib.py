@@ -147,48 +147,65 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :return: [Arguments]
     """
     logger('DBAS.LIB', 'get_all_arguments_by_statement', 'main ' + str(statement_uid))
-    db_arguments = DBDiscussionSession.query(Argument).filter_by(
-        is_disabled=include_disabled,
-        conclusion_uid=statement_uid
-    ).all()
+    db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
 
-    premises = DBDiscussionSession.query(Premise).filter_by(
-        is_disabled=include_disabled,
-        statement_uid=statement_uid
-    ).all()
+    if include_disabled:
+        premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid).all()
+    else:
+        premises = DBDiscussionSession.query(Premise).filter_by(
+            is_disabled=False,
+            statement_uid=statement_uid
+        ).all()
 
     return_array = [arg for arg in db_arguments] if db_arguments else []
 
     for premise in premises:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=include_disabled,
-                                                                     premisesgroup_uid=premise.premisesgroup_uid).all()
-        if db_arguments:
-            return_array = return_array + db_arguments
+        return_array = return_array + __get_argument_of_premisegroup(premise.premisesgroup_uid, include_disabled)
 
     # undercuts
     db_all_undercuts = []
     for arg in return_array:
-        db_undercuts = DBDiscussionSession.query(Argument).filter_by(
-            is_disabled=include_disabled,
-            argument_uid=arg.uid
-        ).all()
-        if db_undercuts:
-            db_all_undercuts = db_all_undercuts + db_undercuts
+        db_all_undercuts = db_all_undercuts + __get_undercuts_of_argument(arg.uid, include_disabled)
 
     # undercutted undercuts
     db_all_undercutted_undercuts = []
     for arg in db_all_undercuts:
-        db_undercutcuts = DBDiscussionSession.query(Argument).filter_by(
-            is_disabled=include_disabled,
-            argument_uid=arg.uid
-        ).all()
-        if db_undercutcuts:
-            db_all_undercutted_undercuts = db_all_undercuts + db_undercutcuts
+        db_all_undercutted_undercuts = db_all_undercuts + __get_undercuts_of_argument(arg.uid, include_disabled)
 
     return_array = list(set(return_array + db_all_undercuts + db_all_undercutted_undercuts))
 
     logger('DBAS.LIB', 'get_all_arguments_by_statement', 'returning arguments ' + str([arg.uid for arg in return_array]))
     return return_array if len(return_array) > 0 else None
+
+
+def __get_argument_of_premisegroup(premisesgroup_uid, include_disabled):
+    if include_disabled:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premisesgroup_uid).all()
+    else:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(
+            is_disabled=False,
+            premisesgroup_uid=premisesgroup_uid).all()
+    return db_arguments if db_arguments else []
+
+
+def __get_undercuts_of_argument(argument_uid, include_disabled):
+    if include_disabled:
+        db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument_uid).all()
+    else:
+        db_undercuts = DBDiscussionSession.query(Argument).filter_by(
+            is_disabled=False,
+            argument_uid=argument_uid
+        ).all()
+    return db_undercuts if db_undercuts else []
+
+
+def __get_arguments_of_conclusion(statement_uid, include_disabled):
+    if include_disabled:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
+    else:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=False,
+                                                                     conclusion_uid=statement_uid).all()
+    return db_arguments if db_arguments else []
 
 
 def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
@@ -312,8 +329,12 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     :param with_html_tag:
     :return:
     """
-    tag_premise = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
-    tag_conclusion = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
+    tag_premise = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
+    tag_conclusion = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
+
+    pro_tag = '<{} data-attitude="pro">'.format(tag_type)
+    con_tag = '<{} data-attitude="con">'.format(tag_type)
+    end_tag = '</{}>'.format(tag_type)
     tag_end = ('</' + tag_type + '>') if with_html_tag else ''
     lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
     _t = Translator(lang)
@@ -327,12 +348,14 @@ def __build_argument_for_jump(arg_array, with_html_tag):
 
         if lang == 'de':
             intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
-            ret_value = tag_conclusion + intro[0:1].upper() + intro[1:] + ' ' + conclusion + tag_end
+            intro = intro[0:1].upper() + intro[1:]
+            intro = (pro_tag if db_argument.is_supportive else con_tag) + intro + end_tag
+            ret_value = intro + ' ' + tag_conclusion + conclusion + tag_end
             ret_value += ', ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
         else:
-            ret_value = tag_conclusion + conclusion + ' '
-            ret_value += _t.get(_.isNotRight).lower() if not db_argument.is_supportive else ''
-            ret_value += tag_end + ' ' + _t.get(_.because).lower() + ' '
+            ret_value = tag_conclusion + conclusion + ' ' + tag_end
+            ret_value += (con_tag + _t.get(_.isNotRight).lower() + end_tag) if not db_argument.is_supportive else ''
+            ret_value += ' ' + _t.get(_.because).lower() + ' '
             ret_value += tag_premise + premises + tag_end
 
     elif len(arg_array) == 2:
@@ -347,7 +370,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         conclusion_conclusion = tag_conclusion + conclusion_conclusion + tag_end
 
         intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
-        bind = _t.get(_.isNotAGoodReasonFor)
+        bind = con_tag + _t.get(_.isNotAGoodReasonFor) + end_tag
         because = _t.get(_.because)
         ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because, premise)
     else:
@@ -360,7 +383,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
         # intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
-        bind = _t.get(_.isNotAGoodReasonAgainstArgument)
+        bind = con_tag + _t.get(_.isNotAGoodReasonAgainstArgument) + end_tag
         because = _t.get(_.because)
         seperator = ',' if lang == 'de' else ''
 
@@ -368,7 +391,6 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         premise2 = tag_conclusion + premise2 + tag_end
         argument = '{}{} {} {}'.format(conclusion, seperator, because.lower(), premise3)
         argument = tag_conclusion + argument + tag_end
-        bind = tag_conclusion + bind + tag_end
 
         # P2 ist kein guter Grund gegen das Argument, dass C weil P3. Weil P1
         ret_value = '{} {} {}. {} {}'.format(premise2, bind, argument, because, premise1)

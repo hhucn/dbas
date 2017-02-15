@@ -31,7 +31,7 @@ function PopupHandler() {
 			var group = $('<div>').addClass('form-group');
 			var outerInputGroup = $('<div>').addClass('col-md-12').addClass('input-group');
 			var innerInputGroup = $('<div>').addClass('input-group-addon');
-			var group_icon = $('<i>').addClass('fa').addClass('fa-2x').addClass('fa-file-text-o').attr('aria-hidden', '"true"');
+			var group_icon = $('<i>').addClass('fa').addClass('fa-2x').addClass('fa-pencil-square-o').attr('aria-hidden', '"true"');
 			var input = $('<input>')
 				.addClass('form-control')
 				.attr('id', 'popup-edit-statement-input-' + index)
@@ -149,25 +149,52 @@ function PopupHandler() {
 	 *
 	 * @param uid of the argument
 	 * @param is_argument is true if the statement is a complete argument
+	 * @param text of the statement
 	 */
-	this.showFlagStatementPopup = function (uid, is_argument) {
+	this.showFlagStatementPopup = function (uid, is_argument, text) {
 		var popup = $('#popup-flag-statement');
+		$('#popup-flag-statement-text').text(text);
 		if (is_argument) {
 			popup.find('.statement_text').hide();
 			popup.find('.argument_text').show();
+			// arguments are never duplicates
+			popup.find('#dupl').prev().hide();
+			popup.find('#dupl').next().hide();
+			popup.find('#dupl').hide();
 		} else {
 			popup.find('.statement_text').show();
 			popup.find('.argument_text').hide();
+			// only statements are duplicates
+			popup.find('#dupl').prev().show();
+			popup.find('#dupl').next().show();
+			popup.find('#dupl').show();
 		}
 		popup.modal('show');
 		popup.on('hide.bs.modal', function () {
 			popup.find('input').off('click').unbind('click');
 		});
-		popup.find('input').click(function () {
+		popup.find('input').not('#dupl').click(function () {
 			var reason = $(this).attr('value');
-			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument);
+			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument, null);
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
+		});
+		popup.find('#dupl').click(function () {
+			popup.find('input').prop('checked', false);
+			popup.modal('hide');
+			var text = $('#popup-flag-statement-text').text();
+			var reason = $(this).attr('value');
+			// check for premisegroup
+			if ($('#item_' + uid).parent().find('label').length > 1){
+				new PopupHandler().showPopupForSelectingDuplicateFromPrgroup(uid, reason);
+			} else {
+				// correct uid
+				var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') != -1;
+				if (is_premisegroup) {
+					uid = $('label[for="item_' + uid + '"]').attr('id');
+				}
+				new PopupHandler().showStatementDuplicatePopup(uid, text, reason);
+			}
 		});
 	};
 	
@@ -209,12 +236,11 @@ function PopupHandler() {
 				$('#item_undercut').click();
 				
 			} else if ($(this).data('special') === 'argument') {
-				$('#popup-flag-statement-text').text(text);
-				new PopupHandler().showFlagStatementPopup(uid, true);
+				new PopupHandler().showFlagStatementPopup(uid, true, text);
 				
 			} else {
-				new PopupHandler().showFlagStatementPopup($(this).attr('id'), false);
-				$('#popup-flag-statement-text').text($(this).next().find('em').text());
+				var tmp = $('#popup-flag-statement-text').text($(this).next().find('em').text());
+				new PopupHandler().showFlagStatementPopup($(this).attr('id'), false, tmp);
 			}
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
@@ -247,6 +273,104 @@ function PopupHandler() {
 				});
 			}
 		});
+	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param reason
+	 */
+	this.showPopupForSelectingDuplicateFromPrgroup = function(uid, reason){
+		console.log(reason);
+		var popup = $('#popup-choose-statement');
+		var body = $('#popup-choose-statement-radios');
+		body.empty();
+		popup.modal('show');
+		
+		$.each($('#item_' + uid).parent().find('label:even'), function(){
+			var div = $('<div>').addClass('radio');
+			var label = $('<label>').attr({'data-uid': $(this).attr('id')});
+			var input = $('<input>').attr({'type': 'radio', 'name': 'selectStatementDupl'});
+			var span = $('<span>').text($(this).text());
+			body.append(div.append(label.append(input).append(span)));
+			label.click(function(){
+				new PopupHandler().showStatementDuplicatePopup($(this).data('uid'), $(this).text(), reason);
+				popup.modal('hide');
+			});
+			label.hover(function () {
+					$(this).find('input').prop('checked', true);
+			}, function () {
+					$(this).find('input').prop('checked', false);
+			});
+		});
+	};
+	
+	/**
+	 * Displays popup for marking a duplicate
+	 *
+	 * @param uid of the statement
+	 * @param text of the statement
+	 * @param reason
+	 */
+	this.showStatementDuplicatePopup = function(uid, text, reason){
+		var popup = $('#popup-duplicate-statement');
+		popup.modal('show');
+		popup.on('hide.bs.modal', function () {
+			popup.find('input').off('click').unbind('click');
+		});
+		
+		$('#popup-duplicate-statement-text').text(text);
+		
+		// default button settings
+		this.setDefaultOfSelectionOfDuplicatePopup();
+		
+		// fuzzy search
+		var input = $('#popup-duplicate-statement-text-search');
+		input.on('keyup', function(){
+			var escapedText = escapeHtml($(this).val());
+			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_add_reason, text);
+		});
+		
+		// dropdown
+		var selects = $('#popup-duplicate-statement-text-selects');
+		selects.on('change', function() {
+			var oem_uid = $(this).find("option:selected").data('uid');
+			var def = $(this).find('option[data-uid="0"]');
+			if (def.length == 1) {
+				def.remove();
+				var btn = $('#popup-flag-statement-accept-btn');
+				btn.off('click').removeClass('disabled');
+				btn.click(function(){
+					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, oem_uid);
+				});
+			}
+		});
+		
+		// initial start for fuzzy search
+		new AjaxDiscussionHandler().fuzzySearchForDuplicate('', fuzzy_add_reason, text);
+	};
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.setSelectsOfDuplicatePopup = function(data){
+		var selects = $('#popup-duplicate-statement-text-selects');
+		this.setDefaultOfSelectionOfDuplicatePopup();
+		$.each(data.values, function (index, val) {
+			selects.append($('<option>').attr('data-uid', val.statement_uid).html(val.text));
+		});
+	};
+	
+	/**
+	 *
+	 */
+	this.setDefaultOfSelectionOfDuplicatePopup = function() {
+		var btn = $('#popup-flag-statement-accept-btn');
+		btn.off('click').addClass('disabled');
+		var selects = $('#popup-duplicate-statement-text-selects');
+		selects.empty();
+		selects.append($('<option>').attr('data-uid', 0).text(_t_discussion(no_data_selected)));
 	};
 	
 	/**
@@ -383,7 +507,6 @@ function PopupHandler() {
 			} else {
 				text = data.text[statement_uid];
 			}
-			console.log(text);
 			var tmp = $('<a>').attr('href', '#').attr('data-id', statement_uid).text(text).click(function () {
 				// set text, remove popup
 				dropdown_title.text($(this).text()).parent().attr('aria-expanded', false);

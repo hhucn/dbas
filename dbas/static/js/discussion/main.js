@@ -253,8 +253,11 @@ function Main () {
 		var list = $('#' + discussionSpaceListId);
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
-			$('#popup-flag-statement-text').text($(this).parent().find('label').text());
-			popupHandler.showFlagStatementPopup(uid, false);
+			var text = [];
+			$.each($(this).parent().find('label'), function(){
+				text.push($(this).text());
+			});
+			popupHandler.showFlagStatementPopup(uid, false, text.join(' '));
 		});
 		
 		list.find('.item-edit').click(function () {
@@ -530,6 +533,7 @@ function Main () {
 		// hover effects on text elements
 		var data = 'data-argumentation-type';
 		var list = $('#' + discussionSpaceListId);
+		var trianglel = $('.triangle-l').last();
 		list.find('span[' + data + '!=""]').each(function () {
 			var attr = $(this).attr(data);
 			var tmp = $('<span>').addClass(attr + '-highlighter');
@@ -541,13 +545,15 @@ function Main () {
 				function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css({'color': new_color, 'background-color': '#edf3e6', 'border-radius': '2px'});
-					$('span[data-attitude="pro"]').last().addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
-					$('span[data-attitude="con"]').last().addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+					if ($(this).attr(data) == 'argument') {
+						trianglel.find('span[data-attitude="pro"]').addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+						trianglel.find('span[data-attitude="con"]').addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+					}
 				}, function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css({'color': old_color, 'background-color': '', 'border-radius': ''});
-					$('span[data-attitude="pro"]').last().removeClass('text-success').css({'background-color': '', 'border-radius': ''});
-					$('span[data-attitude="con"]').last().removeClass('text-danger').css({'background-color': '', 'border-radius': ''});
+					trianglel.find('span[data-attitude="pro"]').removeClass('text-success').css({'background-color': '', 'border-radius': ''});
+					trianglel.find('span[data-attitude="con"]').removeClass('text-danger').css({'background-color': '', 'border-radius': ''});
 				}
 			);
 		});

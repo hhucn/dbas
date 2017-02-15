@@ -58,12 +58,7 @@
 
 					<li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left">
 						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
-                            <!--
-							<i class="fa fa-male" aria-hidden="true" id="header_user" tal:condition="extras.is_user_male"></i>
-							<i class="fa fa-female" aria-hidden="true" id="header_user" tal:condition="extras.is_user_female"></i>
-							<i class="fa fa-user" aria-hidden="true" id="header_user" tal:condition="extras.is_user_neutral"></i>
-							-->
-                            <img tal:attributes="src extras.users_avatar" class="img-circle" alt="gravatar">
+                            <img tal:attributes="src extras.users_avatar" class="img-circle" alt="gravatar" style="width: 25px;">
                             <span id="header_nickname">${extras.nickname}</span>
                             <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
 							<span class="caret"></span>

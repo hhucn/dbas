@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-06 16:30+0100\n"
+"POT-Creation-Date: 2017-02-08 12:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -545,54 +545,55 @@ msgid "reason"
 msgstr ""
 
 #. Default: Original
-#: ././templates/review_history.pt:43 ././templates/review_content.pt:193
+#: ././templates/review_history.pt:43 ././templates/review_history.pt:44
+#: ././templates/review_content.pt:214
 msgid "original"
 msgstr ""
 
 #. Default: Votes
-#: ././templates/review_history.pt:44
+#: ././templates/review_history.pt:45
 msgid "votes"
 msgstr ""
 
 #. Default: Accepted
-#: ././templates/review_history.pt:45
+#: ././templates/review_history.pt:46
 msgid "accepted"
 msgstr ""
 
 #. Default: Voters Pro
-#: ././templates/review_history.pt:46
+#: ././templates/review_history.pt:47
 msgid "voters_pro"
 msgstr ""
 
 #. Default: Voters Con
-#: ././templates/review_history.pt:47
+#: ././templates/review_history.pt:48
 msgid "voters_con"
 msgstr ""
 
 #. Default: Timestamp
-#: ././templates/review_history.pt:48
+#: ././templates/review_history.pt:49
 msgid "timestamp"
 msgstr ""
 
 #. Default: Reporter
-#: ././templates/review_history.pt:49
+#: ././templates/review_history.pt:50
 msgid "reporter"
 msgstr ""
 
 #. Default: Action
-#: ././templates/review_history.pt:50
+#: ././templates/review_history.pt:51
 msgid "actions"
 msgstr ""
 
 #. Default: Undo
-#: ././templates/review_history.pt:91
+#: ././templates/review_history.pt:93
 msgid "undo"
 msgstr ""
 
 #. Default: Cancel
-#: ././templates/review_history.pt:94 ././templates/snippet-popups.pt:172
+#: ././templates/review_history.pt:96 ././templates/snippet-popups.pt:172
 #: ././templates/snippet-popups.pt:195 ././templates/snippet-popups.pt:220
-#: ././templates/snippet-popups.pt:1021
+#: ././templates/snippet-popups.pt:1060
 msgid "cancel"
 msgstr ""
 
@@ -745,7 +746,7 @@ msgstr ""
 
 #. Default: Okay
 #: ././templates/snippet-popups.pt:171 ././templates/snippet-popups.pt:194
-#: ././templates/snippet-popups.pt:219 ././templates/snippet-popups.pt:1020
+#: ././templates/snippet-popups.pt:219 ././templates/snippet-popups.pt:1059
 msgid "okay"
 msgstr ""
 
@@ -1012,7 +1013,7 @@ msgid "statement_under_consideration_is"
 msgstr ""
 
 #. Default: The argument under consideration is as follows
-#: ././templates/snippet-popups.pt:826 ././templates/snippet-popups.pt:875
+#: ././templates/snippet-popups.pt:826 ././templates/snippet-popups.pt:880
 msgid "argument_under_consideration_is"
 msgstr ""
 
@@ -1068,77 +1069,107 @@ msgstr ""
 msgid "argument_harmful"
 msgstr ""
 
+#. Default: This statement is a duplicate.
+#: ././templates/snippet-popups.pt:861
+msgid "this_statement_duplicate"
+msgstr ""
+
 #. Default: Reporting (parts of) an argument
-#: ././templates/snippet-popups.pt:872
+#: ././templates/snippet-popups.pt:877
 msgid "reporting_parts_argument"
 msgstr ""
 
 #. Default: Please choose which part of the argument you want to report
-#: ././templates/snippet-popups.pt:877
+#: ././templates/snippet-popups.pt:882
 msgid "please_choose_part_to_report"
 msgstr ""
 
 #. Default: Report
-#: ././templates/snippet-popups.pt:884
+#: ././templates/snippet-popups.pt:889
 msgid "report"
 msgstr ""
 
 #. Default: Report the whole argument.
-#: ././templates/snippet-popups.pt:896
+#: ././templates/snippet-popups.pt:901
 msgid "report_whole_argument"
 msgstr ""
 
+#. Default: Statement is a duplicate
+#: ././templates/snippet-popups.pt:918
+msgid "statement_is_duplicate"
+msgstr ""
+
+#. Default: You have selected the statement
+#: ././templates/snippet-popups.pt:921
+msgid "you_have_selected_statement"
+msgstr ""
+
+#. Default: Search
+#: ././templates/snippet-popups.pt:924
+msgid "search"
+msgstr ""
+
+#. Default: Duplicate
+#: ././templates/snippet-popups.pt:930
+msgid "duplicate_of"
+msgstr ""
+
+#. Default: no data selected
+#: ././templates/snippet-popups.pt:933
+msgid "no_data_selected"
+msgstr ""
+
 #. Default: Caution
-#: ././templates/snippet-popups.pt:914
+#: ././templates/snippet-popups.pt:953
 msgid "caution"
 msgstr ""
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: ././templates/snippet-popups.pt:919
+#: ././templates/snippet-popups.pt:958
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 
 #. Default: Please choose a step to jump in
-#: ././templates/snippet-popups.pt:936
+#: ././templates/snippet-popups.pt:975
 msgid "choose_a_step_to_jump_in"
 msgstr ""
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: ././templates/snippet-popups.pt:939
+#: ././templates/snippet-popups.pt:978
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 
 #. Default: References
-#: ././templates/snippet-popups.pt:956
+#: ././templates/snippet-popups.pt:995
 msgid "refereces"
 msgstr ""
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: ././templates/snippet-popups.pt:964
+#: ././templates/snippet-popups.pt:1003
 msgid "statement_reference_definition"
 msgstr ""
 
 #. Default: Statement
-#: ././templates/snippet-popups.pt:967 ././templates/snippet-popups.pt:988
+#: ././templates/snippet-popups.pt:1006 ././templates/snippet-popups.pt:1027
 msgid "statement"
 msgstr ""
 
 #. Default: Source
-#: ././templates/snippet-popups.pt:973
+#: ././templates/snippet-popups.pt:1012
 msgid "source"
 msgstr ""
 
 #. Default: Please choose a statement for your reference!
-#: ././templates/snippet-popups.pt:978
+#: ././templates/snippet-popups.pt:1017
 msgid "please_choose_a_reference"
 msgstr ""
 
 #. Default: Add reference
-#: ././templates/snippet-popups.pt:993
+#: ././templates/snippet-popups.pt:1032
 msgid "add_reference"
 msgstr ""
 
@@ -1414,210 +1445,272 @@ msgstr ""
 msgid "no_arguments_to_review"
 msgstr ""
 
+#. Default: Deletes
+#: ././templates/review_content.pt:20
+msgid "deletes"
+msgstr ""
+
+#. Default: Optimizations
+#: ././templates/review_content.pt:21
+msgid "optimizations"
+msgstr ""
+
+#. Default: Edits
+#: ././templates/review_content.pt:22
+msgid "edits"
+msgstr ""
+
+#. Default: Duplicates
+#: ././templates/review_content.pt:23
+msgid "duplicates"
+msgstr ""
+
 #. Default: (more)
-#: ././templates/review_content.pt:30
+#: ././templates/review_content.pt:31
 msgid "wrapped_more"
 msgstr ""
 
 #. Default: (less)
-#: ././templates/review_content.pt:31
+#: ././templates/review_content.pt:32
 msgid "wrapped_less"
 msgstr ""
 
 #. Default: Skip it
-#: ././templates/review_content.pt:35 ././templates/review_content.pt:40
-#: ././templates/review_content.pt:45 ././templates/review_content.pt:73
-#: ././templates/review_content.pt:78 ././templates/review_content.pt:83
+#: ././templates/review_content.pt:36 ././templates/review_content.pt:41
+#: ././templates/review_content.pt:46 ././templates/review_content.pt:51
+#: ././templates/review_content.pt:79 ././templates/review_content.pt:84
+#: ././templates/review_content.pt:89 ././templates/review_content.pt:94
 msgid "skip_it"
 msgstr ""
 
 #. Default: Delete it
-#: ././templates/review_content.pt:36 ././templates/review_content.pt:72
+#: ././templates/review_content.pt:37 ././templates/review_content.pt:78
 msgid "delete_it"
 msgstr ""
 
 #. Default: It's Okay
 #. Default: It's okay
-#: ././templates/review_content.pt:37 ././templates/review_content.pt:47
-#: ././templates/review_content.pt:71 ././templates/review_content.pt:81
+#: ././templates/review_content.pt:38 ././templates/review_content.pt:48
+#: ././templates/review_content.pt:77 ././templates/review_content.pt:87
 msgid "its_okay"
 msgstr ""
 
 #. Default: It's okay so
-#: ././templates/review_content.pt:41 ././templates/review_content.pt:77
+#: ././templates/review_content.pt:42 ././templates/review_content.pt:83
 msgid "its_okay_so"
 msgstr ""
 
 #. Default: Let me correct it
-#: ././templates/review_content.pt:42 ././templates/review_content.pt:76
+#: ././templates/review_content.pt:43 ././templates/review_content.pt:82
 msgid "correct_it"
 msgstr ""
 
 #. Default: Reject it
-#: ././templates/review_content.pt:46 ././templates/review_content.pt:82
+#: ././templates/review_content.pt:47 ././templates/review_content.pt:88
 msgid "reject_it"
 msgstr ""
 
+#. Default: Unique
+#: ././templates/review_content.pt:52
+msgid "unique"
+msgstr ""
+
+#. Default: Duplicate
+#: ././templates/review_content.pt:53
+msgid "duplicate"
+msgstr ""
+
 #. Default: Information for the different reasons
-#: ././templates/review_content.pt:55
+#: ././templates/review_content.pt:61
 msgid "information_for_the_different_reasons"
 msgstr ""
 
 #. Default: Off topic or irrelevant
-#: ././templates/review_content.pt:57
+#: ././templates/review_content.pt:63
 msgid "off_topic_or_irrelevant"
 msgstr ""
 
 #. Default: text does not belong to the topic under discussion
-#: ././templates/review_content.pt:57
+#: ././templates/review_content.pt:63
 msgid "off_topic_explanation"
 msgstr ""
 
 #. Default: Inappropriate, harmful or abusive
-#: ././templates/review_content.pt:58
+#: ././templates/review_content.pt:64
 msgid "inappropriate_harmful_abbusive"
 msgstr ""
 
 #. Default: are posts, which are inappropriate, harmful or abbusive
-#: ././templates/review_content.pt:58
+#: ././templates/review_content.pt:64
 msgid "inappropriate_harmful_abbusive_explanation"
 msgstr ""
 
 #. Default: Needs optimization
-#: ././templates/review_content.pt:59
+#: ././templates/review_content.pt:65
 msgid "needs_optimization"
 msgstr ""
 
 #. Default: if posts are useful, but need edits in grammar and/or spelling
-#: ././templates/review_content.pt:59
+#: ././templates/review_content.pt:65
 msgid "needs_optimization_explanation"
 msgstr ""
 
 #. Default: Information for the different buttons
-#: ././templates/review_content.pt:68
+#: ././templates/review_content.pt:74
 msgid "information_for_the_different_buttons"
 msgstr ""
 
 #. Default: for arguments, which should not be deleted.
-#: ././templates/review_content.pt:71
+#: ././templates/review_content.pt:77
 msgid "its_okay_explanation"
 msgstr ""
 
 #. Default: for arguments, that should be deleted based on the reason above.
-#: ././templates/review_content.pt:72
+#: ././templates/review_content.pt:78
 msgid "delete_it_explanation"
 msgstr ""
 
 #. Default: if you are not sure and want to go to the next argument.
-#: ././templates/review_content.pt:73 ././templates/review_content.pt:78
-#: ././templates/review_content.pt:83
+#. Default: if you are not sure and want to go to the next statement.
+#: ././templates/review_content.pt:79 ././templates/review_content.pt:84
+#: ././templates/review_content.pt:89 ././templates/review_content.pt:94
 msgid "skip_it_explanation"
 msgstr ""
 
 #. Default: , if you have an idea for a better formulation with the same
 #. content.
-#: ././templates/review_content.pt:76
+#: ././templates/review_content.pt:82
 msgid "correct_it_explanation"
 msgstr ""
 
 #. Default: for arguments, which can be understood as-is.
-#: ././templates/review_content.pt:77
+#: ././templates/review_content.pt:83
 msgid "its_okay_so_explanation"
 msgstr ""
 
 #. Default: , if the correction is acceptable and the argument is not
 #. falsified.
-#: ././templates/review_content.pt:81
+#: ././templates/review_content.pt:87
 msgid "correction_is_okay"
 msgstr ""
 
 #. Default: for correction which are inappropriate are wrong.
-#: ././templates/review_content.pt:82
+#: ././templates/review_content.pt:88
 msgid "reject_itexplanation"
 msgstr ""
 
+#. Default: It's a duplicate
+#: ././templates/review_content.pt:92
+msgid "its_duplicate"
+msgstr ""
+
+#. Default: , if the marked statement is a duplicate.
+#: ././templates/review_content.pt:92
+msgid "marked_statement_is_duplicate"
+msgstr ""
+
+#. Default: It's unique
+#: ././templates/review_content.pt:93
+msgid "its_unique"
+msgstr ""
+
+#. Default: for marked statements, which are unique.
+#: ././templates/review_content.pt:93
+msgid "duplicate_is_unique"
+msgstr ""
+
 #. Default: In the discussion about
-#: ././templates/review_content.pt:93 ././templates/review_content.pt:113
+#: ././templates/review_content.pt:105 ././templates/review_content.pt:125
 msgid "in_the_discussion_about"
 msgstr ""
 
 #. Default: following argument was corrected.
-#: ././templates/review_content.pt:95
+#: ././templates/review_content.pt:107
 msgid "following_argument_was_corrected"
 msgstr ""
 
 #. Default: This are the edits:
-#: ././templates/review_content.pt:104
+#: ././templates/review_content.pt:116
 msgid "this_are_the_edit"
 msgstr ""
 
 #. Default: following argument was flagged.
-#: ././templates/review_content.pt:115
+#: ././templates/review_content.pt:127
 msgid "following_argument_was_flagged"
 msgstr ""
 
+#. Default: following statement was flagged.
+#: ././templates/review_content.pt:128
+msgid "following_statement_was_flagged"
+msgstr ""
+
 #. Default: This is the original version
-#: ././templates/review_content.pt:118
+#: ././templates/review_content.pt:131
 msgid "this_is_original_version"
 msgstr ""
 
 #. Default: Context, where the statement is used:
-#: ././templates/review_content.pt:127
+#: ././templates/review_content.pt:140
 msgid "context_where_statement_is_used"
 msgstr ""
 
+#. Default: This is the original statement:
+#: ././templates/review_content.pt:149
+msgid "this_is_original_statements"
+msgstr ""
+
 #. Default: Reported
-#: ././templates/review_content.pt:140
+#: ././templates/review_content.pt:161
 msgid "reported"
 msgstr ""
 
 #. Default: Reported by
-#: ././templates/review_content.pt:144
+#: ././templates/review_content.pt:165
 msgid "reported_by"
 msgstr ""
 
 #. Default: Viewed
-#: ././templates/review_content.pt:154
+#: ././templates/review_content.pt:175
 msgid "viewed"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/review_content.pt:158
+#: ././templates/review_content.pt:179
 msgid "attacks"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/review_content.pt:162
+#: ././templates/review_content.pt:183
 msgid "supports"
 msgstr ""
 
 #. Default: Request lock
-#: ././templates/review_content.pt:182
+#: ././templates/review_content.pt:203
 msgid "request_lock"
 msgstr ""
 
 #. Default: This argument is locked for your edit. You have
-#: ././templates/review_content.pt:185
+#: ././templates/review_content.pt:206
 msgid "argument_is_locked"
 msgstr ""
 
 #. Default: minutes
-#: ././templates/review_content.pt:186
+#: ././templates/review_content.pt:207
 msgid "minutes"
 msgstr ""
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: ././templates/review_content.pt:187
+#: ././templates/review_content.pt:208
 msgid "please_make_your_edits"
 msgstr ""
 
 #. Default: Your correcture
-#: ././templates/review_content.pt:194
+#: ././templates/review_content.pt:215
 msgid "your correcture"
 msgstr ""
 
 #. Default: Send
-#: ././templates/review_content.pt:209
+#: ././templates/review_content.pt:230
 msgid "send"
 msgstr ""
 
@@ -1748,46 +1841,46 @@ msgid "restart_discussion"
 msgstr ""
 
 #. Default: Show all statements
-#: ././templates/content.pt:137
+#: ././templates/content.pt:139
 msgid "show_all_statements"
 msgstr ""
 
 #. Default: Hide statements
-#: ././templates/content.pt:138
+#: ././templates/content.pt:140
 msgid "hide_statements"
 msgstr ""
 
 #. Default: Default View
-#: ././templates/content.pt:281
+#: ././templates/content.pt:283
 msgid "default_view"
 msgstr ""
 
 #. Default: Labels
-#: ././templates/content.pt:282 ././templates/content.pt:283
+#: ././templates/content.pt:284 ././templates/content.pt:285
 msgid "labels"
 msgstr ""
 
 #. Default: Positions
-#: ././templates/content.pt:284 ././templates/content.pt:285
+#: ././templates/content.pt:286 ././templates/content.pt:287
 msgid "positions"
 msgstr ""
 
 #. Default: My path
-#: ././templates/content.pt:286 ././templates/content.pt:287
+#: ././templates/content.pt:288 ././templates/content.pt:289
 msgid "my_path"
 msgstr ""
 
 #. Default: My statements
-#: ././templates/content.pt:288 ././templates/content.pt:289
+#: ././templates/content.pt:290 ././templates/content.pt:291
 msgid "my_statements"
 msgstr ""
 
 #. Default: Supports
-#: ././templates/content.pt:290 ././templates/content.pt:291
+#: ././templates/content.pt:292 ././templates/content.pt:293
 msgid "supports_on_my_statements"
 msgstr ""
 
 #. Default: Attacks
-#: ././templates/content.pt:292 ././templates/content.pt:293
+#: ././templates/content.pt:294 ././templates/content.pt:295
 msgid "attacks_on_my_statements"
 msgstr ""

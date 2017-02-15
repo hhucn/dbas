@@ -40,35 +40,35 @@ z_table = Service(name='table_page',
                   path='/{table}',
                   description="Table Page",
                   renderer='templates/table.pt',
-                  permission='use',
+                  permission='admin',
                   cors_policy=cors_policy)
 
 update_row = Service(name='update_table_row',
                      path='/{url:.*}ajax_admin_update',
                      description="Update",
                      renderer='json',
-                     permission='use',
+                     permission='admin',
                      cors_policy=cors_policy)
 
 delete_row = Service(name='delete_table_row',
                      path='/{url:.*}ajax_admin_delete',
                      description="Delete",
                      renderer='json',
-                     permission='use',
+                     permission='admin',
                      cors_policy=cors_policy)
 
 add_row = Service(name='add_table_row',
                   path='/{url:.*}ajax_admin_add',
                   description="Add",
                   renderer='json',
-                  permission='use',
+                  permission='admin',
                   cors_policy=cors_policy)
 
 update_badge = Service(name='update_badge_counter',
                        path='/{url:.*}ajax_admin_update_badges',
                        description="Update",
                        renderer='json',
-                       permission='use',
+                       permission='admin',
                        cors_policy=cors_policy)
 
 

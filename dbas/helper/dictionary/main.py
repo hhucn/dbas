@@ -459,7 +459,13 @@ class DictionaryHelper(object):
                                 'recipient': _tn_dis.get(_.recipient),
                                 'topic': _tn_dis.get(_.topicString),
                                 'message': _tn_dis.get(_.message),
-                                'reference': _tn_dis.get(_.reference)
+                                'reference': _tn_dis.get(_.reference),
+                                'attack_statement': _tn_dis.get(_.attackStatement),
+                                'statement_is_duplicate': _tn_dis.get(_.statementIsDuplicate),
+                                'you_have_selected_statement': _tn_dis.get(_.youHaveSelectedStatement),
+                                'no_data_selected': _tn_dis.get(_.noDataSelected),
+                                'select_statement': _tn_dis.get(_.selectStatement),
+                                'select_multiple_statements': _tn_dis.get(_.selectMultipleStatementsWhichFlag),
                                 }
 
     def add_tag_text(self, is_ldap, return_dict):
@@ -478,8 +484,6 @@ class DictionaryHelper(object):
             'edit_title_here': _tn_dis.get(_.editTitleHere),
             'edit_info_here': _tn_dis.get(_.editInfoHere),
             'edit_statement_here': _tn_dis.get(_.editStatementHere),
-            'sys_save': _tn_dis.get(_.save),
-            'sys_cancel': _tn_dis.get(_.cancel),
             'save': _tn_dis.get(_.save),
             'cancel': _tn_dis.get(_.cancel),
             'submit': _tn_dis.get(_.submit),

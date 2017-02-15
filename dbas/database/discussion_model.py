@@ -310,6 +310,14 @@ class Statement(DiscussionBase):
         """
         self.is_disabled = is_disabled
 
+    def set_position(self, is_position):
+        """
+
+        :param is_position:
+        :return:
+        """
+        self.is_startpoint = is_position
+
     @hybrid_property
     def lang(self):
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
@@ -462,8 +470,9 @@ class Premise(DiscussionBase):
     Each premises has a value pair of group and statement, an author, a timestamp as well as a boolean whether it is negated
     """
     __tablename__ = 'premises'
-    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'), primary_key=True)
-    statement_uid = Column(Integer, ForeignKey('statements.uid'), primary_key=True)
+    uid = Column(Integer, primary_key=True)
+    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
     is_negated = Column(Boolean, nullable=False)
     author_uid = Column(Integer, ForeignKey('users.uid'))
     timestamp = Column(ArrowType, default=get_now())
@@ -502,6 +511,12 @@ class Premise(DiscussionBase):
         :return:
         """
         self.is_disabled = is_disabled
+
+    def set_statement(self, statement):
+        self.statement_uid = statement
+
+    def set_premisegroup(self, premisegroup):
+        self.premisesgroup_uid = premisegroup
 
 
 class Argument(DiscussionBase):
@@ -548,8 +563,11 @@ class Argument(DiscussionBase):
         self.issue_uid = issue
         self.is_disabled = is_disabled
 
-    def conclusions_argument(self, argument):
-        self.argument_uid = None if argument == 0 else argument
+    def set_conclusions_argument(self, argument):
+        self.argument_uid = argument
+
+    def set_conclusion(self, conclusion):
+        self.conclusion_uid = conclusion
 
     def set_disable(self, is_disabled):
         """
@@ -918,6 +936,57 @@ class ReviewOptimization(DiscussionBase):
         self.timestamp = get_now()
 
 
+class ReviewDuplicate(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'review_duplicates'
+    uid = Column(Integer, primary_key=True)
+    detector_uid = Column(Integer, ForeignKey('users.uid'))
+    duplicate_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    original_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+    is_executed = Column(Boolean, nullable=False, default=False)
+    is_revoked = Column(Boolean, nullable=False, default=False)
+
+    detectors = relationship('User', foreign_keys=[detector_uid])
+    duplicate_statement = relationship('Statement', foreign_keys=[duplicate_statement_uid])
+    original_statement = relationship('Statement', foreign_keys=[original_statement_uid])
+
+    def __init__(self, detector, duplicate_statement=None, original_statement=None, is_executed=False, is_revoked=False):
+        """
+
+        :param detector:
+        :param argument:
+        :param is_executed:
+        """
+        self.detector_uid = detector
+        self.duplicate_statement_uid = duplicate_statement
+        self.original_statement_uid = original_statement
+        self.timestamp = get_now()
+        self.is_executed = is_executed
+        self.is_revoked = is_revoked
+
+    def set_executed(self, is_executed):
+        """
+
+        :param is_executed:
+        :return:
+        """
+        self.is_executed = is_executed
+
+    def set_revoked(self, is_revoked):
+        """
+
+        :param is_revoked:
+        :return:
+        """
+        self.is_revoked = is_revoked
+
+    def update_timestamp(self):
+        self.timestamp = get_now()
+
+
 class ReviewDeleteReason(DiscussionBase):
     """
 
@@ -943,6 +1012,33 @@ class LastReviewerDelete(DiscussionBase):
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewDelete', foreign_keys=[review_uid])
+
+    def __init__(self, reviewer, review, is_okay):
+        """
+
+        :param reviewer:
+        :param review:
+        :param is_okay:
+        """
+        self.reviewer_uid = reviewer
+        self.review_uid = review
+        self.is_okay = is_okay
+        self.timestamp = get_now()
+
+
+class LastReviewerDuplicate(DiscussionBase):
+    """
+
+    """
+    __tablename__ = 'last_reviewers_duplicates'
+    uid = Column(Integer, primary_key=True)
+    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
+    review_uid = Column(Integer, ForeignKey('review_duplicates.uid'))
+    is_okay = Column(Boolean, nullable=False, default=False)
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviewer = relationship('User', foreign_keys=[reviewer_uid])
+    review = relationship('ReviewDuplicate', foreign_keys=[review_uid])
 
     def __init__(self, reviewer, review, is_okay):
         """
@@ -1080,6 +1176,7 @@ class ReviewCanceled(DiscussionBase):
     review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'), nullable=True)
     review_delete_uid = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
     review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
+    review_duplicate_uid = Column(Integer, ForeignKey('review_duplicates.uid'), nullable=True)
     was_ongoing = Column(Boolean)
     timestamp = Column(ArrowType, default=get_now())
 
@@ -1087,8 +1184,9 @@ class ReviewCanceled(DiscussionBase):
     edits = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
     deletes = relationship('ReviewDelete', foreign_keys=[review_delete_uid])
     optimizations = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
+    duplicates = relationship('ReviewDuplicate', foreign_keys=[review_duplicate_uid])
 
-    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, was_ongoing=False):
+    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, review_duplicate=None, was_ongoing=False):
         """
 
         :param author:
@@ -1100,6 +1198,7 @@ class ReviewCanceled(DiscussionBase):
         self.review_edit_uid = review_edit
         self.review_delete_uid = review_delete
         self.review_optimization_uid = review_optimization
+        self.review_duplicate_uid = review_duplicate
         self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 
@@ -1141,6 +1240,33 @@ class RevokedContentHistory(DiscussionBase):
         self.new_author_uid = new_author_uid
         self.textversion_uid = textversion_uid
         self.argument_uid = argument_uid
+
+
+class RevokedDuplicate(DiscussionBase):
+    __tablename__ = 'revoked_duplicate'
+    uid = Column(Integer, primary_key=True)
+    review_uid = Column(Integer, ForeignKey('review_duplicates.uid'))
+
+    bend_position = Column(Boolean, nullable=False)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    premise_uid = Column(Integer, ForeignKey('premises.uid'))
+
+    timestamp = Column(ArrowType, default=get_now())
+    review = relationship('ReviewDuplicate', foreign_keys=[review_uid])
+
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+    premises = relationship('Premise', foreign_keys=[premise_uid])
+
+    def __init__(self, review, bend_position=False, statement=None, conclusion_of_argument=None, premise=None):
+        self.review_uid = review
+        self.bend_position = bend_position
+        self.statement_uid = statement
+        self.argument_uid = conclusion_of_argument
+        self.premise_uid = premise
+        self.timestamp = get_now()
 
 
 class RSS(DiscussionBase):

@@ -129,7 +129,7 @@
     <div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelEditStatements" aria-hidden="true">
     	<div class="modal-dialog modal-lg">
     		<div class="modal-content">
-    			<div class="modal-header" style="display: none">
+    			<div class="modal-header">
     				<button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
     				<h5 class="modal-title" id="myModalLabelEditStatements">${extras.title.edit_statement}</h5>
@@ -805,8 +805,8 @@
                     </div>
                 </div>
     			<div class="modal-footer">
-    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.sys_save}</button>
-    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-default">${structure:extras.tag.sys_cancel}</button>
+    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.save}</button>
+    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-default">${structure:extras.tag.cancel}</button>
     			</div>
     		</div>
     	</div>
@@ -824,7 +824,7 @@
     			<div class="modal-body">
                     <p class="statement_text lead"><span i18n:translate="statement_under_consideration_is">The statement under consideration is as follows</span>:</p>
                     <p class="argument_text lead"><span i18n:translate="argument_under_consideration_is">The argument under consideration is as follows</span>:</p>
-                    <p><span i18n:translate="why_do_you_want_to_report">Why do you want to report it</span>:</p>
+                    <!--<p><span i18n:translate="why_do_you_want_to_report">Why do you want to report it</span>:</p>-->
                     <p class="well well-sm" id="popup-flag-statement-text"></p>
                     <form>
                         <fieldset>
@@ -854,6 +854,11 @@
                             <label for="bad">
                                 <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
                                 <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
+                            </label>
+                            <br>
+                            <input type="radio" id="dupl" value="duplicate" name="flag-statement">
+                            <label for="dupl">
+                                <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span>
                             </label>
                         </fieldset>
                     </form>
@@ -898,6 +903,64 @@
                             </label>
                         </fieldset>
                     </form>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- DUPLICATED STATEMENT -->
+    <div class="modal fade" id="popup-duplicate-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagArgument" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-duplicate-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelDuplicateStatement">${extras.title.statement_is_duplicate}</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead">${extras.title.you_have_selected_statement}:</p>
+                    <p class="well well-sm" id="popup-duplicate-statement-text"></p>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12 input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-2x fa-search" aria-hidden="&quot;true&quot;"></i>
+                            </div>
+                            <input class="form-control" id="popup-duplicate-statement-text-search" type="text" placeholder="...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12 input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-2x fa-files-o" aria-hidden="&quot;true&quot;"></i>
+                            </div>
+                            <select id="popup-duplicate-statement-text-selects" class="form-control">
+                                <option data-uid="0">${extras.title.no_data_selected}</option>
+                            </select>
+                        </div>
+                    </div>
+    			</div>
+    			<div class="modal-footer">
+    				<button id="popup-flag-statement-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.submit}</button>
+                </div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- CHOOSE STATEMENT -->
+    <div class="modal fade" id="popup-choose-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagArgument" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-choose-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelChooseStatement">${extras.title.select_statement}</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead">${extras.title.select_multiple_statements}</p>
+                    <div id="popup-choose-statement-radios"></div>
     			</div>
     		</div>
     	</div>

@@ -124,6 +124,22 @@ function InteractionHandler() {
 			new GuiHandler().setStatementsAsProposal(parsedData, callbackid, type);
 		}
 	};
+	
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackIfDoneFuzzySearchForDuplicate = function (data) {
+		var parsedData = $.parseJSON(data);
+		// if there is no returned data, we will clean the list
+
+		var ph = new PopupHandler();
+		if (Object.keys(parsedData).length == 0) {
+			ph.setDefaultOfSelectionOfDuplicatePopup();
+		} else {
+			ph.setSelectsOfDuplicatePopup(parsedData);
+		}
+	};
 
 	/**
 	 *
@@ -143,7 +159,7 @@ function InteractionHandler() {
 		var author = parsedData.author;
 		if (parsedData.author != 'anonymous'){
 			var img = '<img class="img-circle" style="height: 1em;" src="' + parsedData.gravatar + '">';
-			author = '<a href="' + mainpage + 'user/' + parsedData.author + '">' + img + ' ' + parsedData.author + '</a>';
+			author = '<a href="' + parsedData.author_url + '">' + img + ' ' + parsedData.author + '</a>';
 		} else {
 			author = _t_discussion(an_anonymous_user);
 		}
@@ -251,7 +267,6 @@ function InteractionHandler() {
 		if (parsedData.error.length != 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
-			console.log(parsedData['is_deleted']);
 			if (parsedData['is_deleted'])
 				setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
 			else

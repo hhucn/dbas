@@ -7,15 +7,15 @@
                     <p class="center">${structure:issues.intro}:</p>
                     <span class="lead" id="issue_info" tal:attributes="data-discussion-language extras.tag.language; data-title issues.title; data-issue issues.uid" style="text-align: justify;">${structure:issues.info}</span>
                     <!--<i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip; data-long-info issues.long_info"></i>-->
-                    <br>
-                    <a id="issue-long-info-link" href="#" tal:attributes="data-info issues.tooltip; data-long-info issues.long_info">(<span i18n:translate="more_infos">more infos</span>)</a>
+                    <br tal:condition="len(issues.long_info)>0">
+                    <a tal:condition="len(issues.long_info)>0" id="issue-long-info-link" href="#" tal:attributes="data-info issues.tooltip; data-long-info issues.long_info">(<span i18n:translate="more_infos">more infos</span>)</a>
                 </div>
                 <div class="col-md-10" tal:condition="len(issues.all)<2">
                     <p class="center">${structure:issues.intro}:</p>
                     <span class="lead" id="issue_info" tal:attributes="data-discussion-language extras.tag.language; data-title issues.title; data-issue issues.uid" style="text-align: justify;">${structure:issues.info}</span>
                     <!--<i id="issue-info" class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="auto" tal:attributes="data-original-title issues.tooltip; data-long-info issues.long_info"></i>-->
-                    <br>
-                    <a id="issue-long-info-link" href="#" tal:attributes="data-info issues.tooltip; data-long-info issues.long_info">(<span i18n:translate="more_infos">more infos</span>)</a>
+                    <br tal:condition="len(issues.long_info)>0">
+                    <a tal:condition="len(issues.long_info)>0" id="issue-long-info-link" href="#" tal:attributes="data-info issues.tooltip; data-long-info issues.long_info">(<span i18n:translate="more_infos">more infos</span>)</a>
                 </div>
                 <div class="col-md-2 center inner" tal:condition="len(issues.all)>1">
                     <div class="dropdown">
@@ -113,18 +113,20 @@
                                 <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
                                 <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
                                     <div tal:omit-tag="" tal:condition="item.is_editable or item.is_flagable or item.is_deletable">
-                                        <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flagable or item.is_deletable"></span>
-                                        <span class="item-edit" tal:condition="item.is_editable" tal:attributes="title extras.title.edit_statement">
+                                        <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_flagable or item.is_deletable or item.is_attackable"></span>
+                                        <span class="item-actions item-edit" tal:condition="item.is_editable" tal:attributes="title extras.title.edit_statement">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </span>
-                                        <span class="item-flag" tal:condition="item.is_flagable " tal:attributes="title extras.title.report_statement">
+                                        <span class="item-actions item-flag" tal:condition="item.is_flagable " tal:attributes="title extras.title.report_statement">
                                             <i class="fa fa-flag" aria-hidden="true"></i>
                                         </span>
-                                        <!--<span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.delete_statement">-->
-                                        <span class="item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.disassociate_statement">
-                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        <span class="item-actions item-trash" tal:condition="item.is_deletable" tal:attributes="title extras.title.disassociate_statement">
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
                                         </span>
-                                        <span class="item-reference" tal:attributes="title extras.title.reference">
+                                        <span class="item-actions item-attack" tal:condition="item.is_attackable" tal:attributes="title extras.title.attack_statement">
+                                            <a href="" tal:attributes="href item.attack_url"><i class="fa fa-bomb" aria-hidden="true"></i></a>
+                                        </span>
+                                        <span class="item-actions item-reference" tal:attributes="title extras.title.reference">
                                             <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_flagable or item.is_deletable)"></span>
                                             <i class="fa fa-link" aria-hidden="true"></i>
                                         </span>
@@ -333,8 +335,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <div class="col-md-12 text-center">
-                <h5>${structure:extras.tag.add_premise_title}</h5>
-                <p class="lead" id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</p>
+                <h5 style="margin-bottom: 0"><span>${structure:extras.tag.add_premise_title}</span>: <span id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</span></h5>
                 <div id="add-premise-error-container" class="alert alert-danger" role="alert" style="display:none">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

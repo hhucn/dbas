@@ -144,7 +144,8 @@ def add_vote_for_statement(statement_uid, nickname, supportive):
     :param supportive: boolean
     :return: Boolean
     """
-    logger('VotingHelper', 'add_vote_for_statement', 'increasing statement ' + str(statement_uid) + ' vote')
+
+    logger('VotingHelper', 'add_vote_for_statement', 'increasing {}vote for statement {}'.format('up' if supportive else 'down', str(statement_uid)))
     if not is_integer(statement_uid):
         return False
 

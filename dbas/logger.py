@@ -16,7 +16,7 @@ def logger(who, when, what, warning=False, error=False, debug=False):
 
     :param who: which class
     :param when: which method
-    :param what: what mesage
+    :param what: what message
     :param warning: Boolean, default False
     :param error: Boolean, default False
     :param debug: Boolean, default False
