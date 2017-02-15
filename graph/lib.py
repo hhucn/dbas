@@ -171,7 +171,7 @@ def __get_statements_of_path_step(step):
     splitted = step.split('/')
 
     if 'attitude' in step:
-        statements.append(['issue', int(splitted[2])])
+        statements.append([int(splitted[2]), 'issue'])
 
     # elif 'justify' in step:
     #     if len(splitted) == 4:  # statement
