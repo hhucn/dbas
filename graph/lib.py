@@ -24,6 +24,9 @@ def get_d3_data(issue, nickname):
     :return: dictionary
     """
     logger('Graph.lib', 'get_d3_data', 'main')
+    from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
+    # l = get_partial_graph_for_argument(2)
+    l = get_partial_graph_for_statement(35)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     # default values
@@ -308,7 +311,6 @@ def __collect_all_nodes_and_edges(all_ids, nodes, edges, conclusion_uids_dict, e
     # 1) with one premise and no undercuts for this argument
     # 2) with at least two premises, one conclusion or an undercut is done on this argument
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
-    logger('X', 'X', 'premisesgroup_uid={}'.format(argument.premisesgroup_uid))
 
     # if there are different premises for one argument add invisible nodes
     if len(db_premises) > 1:
