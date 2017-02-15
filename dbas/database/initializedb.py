@@ -1852,7 +1852,6 @@ def setup_review_database(session):
     session.flush()
     session.add(ReviewEditValue(1, 2, '', 'as'))
 
-
 def add_data_from_chair2(session):
     session.add(Issue(title='Verbesserung des Informatik-Studiengangs', info='Wie können der Informatik-Studiengang verbessert und die Probleme, die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?', long_info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?', author_uid=2, lang_uid=2, is_disabled=False, date=arrow.get("2017-01-26T17:08:49+00:00")))
 
