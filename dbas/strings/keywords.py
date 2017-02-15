@@ -604,6 +604,7 @@ class Keywords(Enum):
     statementIsDuplicate = 'Statement is duplicate'
     settings = 'Settings'
     senderReceiverSame = 'Sender and reveicer are equal'
+    seperated = 'seperated'
     argumentAdded = 'Argument was added'
     positionAdded = 'Position was added'
     statementAddedMessageContent = 'Hey, someone has added his/her opinion regarding your argument!'

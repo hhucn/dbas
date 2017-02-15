@@ -605,6 +605,7 @@ de_lang = {
     _.supportsNot: 'unterstützt nicht',
     _.isupport: 'ich halte',
     _.settings: 'Einstellungen',
+    _.seperated: 'getrennte',
     _.statement: 'Aussage',
     _.statementIsAbout: 'Die Aussage ist, dass',
     _.statementAbout: 'Die Aussage, dass',

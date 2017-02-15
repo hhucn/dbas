@@ -430,7 +430,8 @@ function GuiHandler() {
 		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
 			var nl = i < splitted.length - 1 ? '<br>' : '';
-			var tmp = $('<span>').html('&#9900;   ' + topic + ' ' + splitted[i] + '.' + nl).css('margin-left', '1em');
+			var line_text = '&#9900;   ' + topic + ' ' + _t(because) + ' ' + splitted[i] + '.' + nl;
+			var tmp = $('<span>').html(line_text).css('margin-left', '1em');
 			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
 			infix = i == 0 ? '' : ('<em>' + _t_discussion(andAtTheSameTime) + '</em> ' + connection + ' ');

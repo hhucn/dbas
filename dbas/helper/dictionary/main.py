@@ -504,6 +504,7 @@ class DictionaryHelper(object):
             'aand': _tn_dis.get(_.aand),
             'add_premise_title': _tn_dis.get(_.addPremiseRadioButtonText),
             'arguments': _tn_dis.get(_.arguments),
+            'seperated': _tn_dis.get(_.seperated),
             'error': _tn_dis.get(_.error),
             'forgot_input_radio': _tn_dis.get(_.forgotInputRadio),
             'i_actually_have': _tn_dis.get(_.iActuallyHave),
