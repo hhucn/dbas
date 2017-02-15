@@ -308,6 +308,7 @@ def __collect_all_nodes_and_edges(all_ids, nodes, edges, conclusion_uids_dict, e
     # 1) with one premise and no undercuts for this argument
     # 2) with at least two premises, one conclusion or an undercut is done on this argument
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+    logger('X', 'X', 'premisesgroup_uid={}'.format(argument.premisesgroup_uid))
 
     # if there are different premises for one argument add invisible nodes
     if len(db_premises) > 1:
@@ -464,8 +465,8 @@ def __get_author_of_statement(uid, db_user):
     """
     if not db_user:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-    db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
-    db_author = DBDiscussionSession.query(User).get(db_statement.author_uid)
+    db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
+    db_author = DBDiscussionSession.query(User).get(db_tv.author_uid)
     gravatar = get_profile_picture(db_author, 40)
     name = db_author.get_global_nickname() if db_user.uid != db_author.uid else db_user.nickname
     return {'name': name, 'gravatar_url': gravatar}
